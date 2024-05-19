@@ -6,6 +6,7 @@ import { PopupEditor } from "../popupEditor.js";
 import { Toast } from "../toast.js";
 import { Html } from "../utils/html.js";
 import { Utils } from "../utils/utils.js";
+import { NotificationBL } from "./notificationBL.js";
 
 export class LoginBL extends PopupEditor {
     static _instance;

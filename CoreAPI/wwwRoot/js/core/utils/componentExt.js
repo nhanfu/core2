@@ -61,18 +61,19 @@ export class ComponentExt {
                     reject(new Error('Feature not found'));
                     return;
                 }
-                const instance = new EditForm(); // Assuming it creates an instance of the required type
+                const instance = new TabEditor(feature.EntityName);
+                if (feature.Script)
+                {
+                    ComponentExt.AssignMethods(feature, instance);
+                }
+                EditForm.Portal = portal;
                 instance.Feature = feature;
                 instance.Name = feature.Name;
                 instance.Id = feature.Name + feature.Id;
                 instance.Icon = feature.Icon;
-                if (portal) {
-                    instance.RenderPortal(); // Assuming a method to render in a portal context
-                } else {
-                    instance.Render();
-                }
+                instance.Render();
                 resolve(instance);
-            }).catch(err => reject(err));
+            }).catch(reject);
         });
     }
 

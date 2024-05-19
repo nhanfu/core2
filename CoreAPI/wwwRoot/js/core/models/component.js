@@ -422,4 +422,5 @@ export class Component {
     Children = [];
     /** @type {string} */
     ViewClass = '';
+    Script = '';
 };

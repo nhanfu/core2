@@ -3,12 +3,11 @@ import { Utils } from "./utils/utils.js";
 import EventType from './models/eventType.js';
 import { Action } from "./models/action.js";
 import "./utils/fix.js";
-import { Component } from 'models/component.js';
-import { ConfirmDialog } from 'confirmDialog.js';
-import { HttpMethod } from 'models/enum.js';
-import { Uuid7 } from 'structs/uuidv7.js';
-import { Spinner } from 'spinner.js';
-import { Client } from 'clients/client.js';
+import { Component } from './models/component.js';
+import { ConfirmDialog } from './confirmDialog.js';
+import { Uuid7 } from './structs/uuidv7.js';
+import { Spinner } from './spinner.js';
+import { Client } from './clients/client.js';
 
 export class Image extends EditableComponent {
     static PathSeparator = "    ";
@@ -324,22 +323,6 @@ export class Image extends EditableComponent {
         });
     }
 
-    /**
-     * @param {string | ArrayBuffer} base64Image
-     * @param {any} fileName
-     */
-    UploadBase64Image(base64Image, fileName) {
-        /** @type {XHRWrapper} */
-        // @ts-ignore
-        const p = {
-            Value : base64Image,
-            Url : `/user/image/?name=${fileName}`,
-            IsRawString : true,
-            Method : HttpMethod.POST
-        };
-        return Client.Instance.SubmitAsync(p);
-    }
-
     UpdateView(force = false, dirty = null, ...componentNames) {
         this.Path = Utils.GetPropValue(this.Entity, this.Name)?.toString();
         super.UpdateView(force, dirty, ...componentNames);
@@ -362,7 +345,7 @@ export class Image extends EditableComponent {
                 const reader = new FileReader();
                 reader.onload = async (e) => {
                     try {
-                        const path = await this.UploadBase64Image(e.target.result, file.name);
+                        const path = await Utils.UploadBase64Image(e.target.result, file.name);
                         resolve(path);
     
                         await Client.Instance.PatchAsync({

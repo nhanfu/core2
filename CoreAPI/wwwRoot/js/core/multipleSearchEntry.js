@@ -1,6 +1,4 @@
-import EventType from "models/eventType";
-import { SearchEntry } from "searchEntry";
-import { Html } from "utils/html";
+import { SearchEntry } from "./searchEntry.js";
 
 export class MultipleSearchEntry extends SearchEntry {
     static MultipleClass = "multiple";

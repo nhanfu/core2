@@ -72,6 +72,9 @@ export class EditForm extends EditableComponent {
         this.href = value;
     }
 
+    static Portal = false;
+
+
 
     /**
      * Constructor for EditForm.

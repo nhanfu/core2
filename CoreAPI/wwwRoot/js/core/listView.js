@@ -25,7 +25,6 @@ import ObservableArgs from "./models/observable.js";
 import { ElementType } from "./models/elementType.js";
 import { ComponentExt } from "./utils/componentExt.js";
 import { EntityRef } from "./models/entityRef.js";
-import './utils/ext.js';
 
 /**
  * Represents a list view component that allows editable features and other interactions like sorting and pagination.
@@ -377,7 +376,7 @@ export class ListView extends EditableComponent {
         this.RowData.Clear();
         this.RowAction(x => x.Dispose(), x => !x.EmptyRow);
         this.MainSection.Element.innerHTML = null;
-        if (this.Entity == null || this.Parent instanceof EditableComponent.SearchMd.SearchEntry) {
+        if (this.Entity == null || this.Parent.IsSearchEntry) {
             return;
         }
         if (this.ShouldSetEntity) {
@@ -611,8 +610,9 @@ export class ListView extends EditableComponent {
      * @returns 
      */
     async OpenFeature(meta) {
-        /** @type {TabEditor[]} */
-        const tabs = EditableComponent.TabEditorMd.TabEditor.Tabs;
+        const tabEditorMd = await import('./tabEditor.js');
+        const searchEntryMd = await import('./searchEntry.js');
+        const tabs = tabEditorMd.TabEditor.Tabs;
         let tab = tabs.find(tab => tab.Name === meta.ViewClass);
         if (tab) {
             tab.Focus();
@@ -621,17 +621,16 @@ export class ListView extends EditableComponent {
             return;
         }
         this.HasLoadRef = false;
-        const md = await import('./tabEditor.js');
         const feature = await ComponentExt.LoadFeature(meta.ViewClass);
         const Id = feature.Name + feature.Id;
-        tab = new md.TabEditor(feature.EntityName);
+        tab = new tabEditorMd.TabEditor(feature.EntityName);
         tab.Name = feature.Name;
         tab.Id = Id;
         tab.Icon = feature.Icon;
         tab.Feature = tab.Meta = feature;
         tab.Render();
         tab.DOMContentLoaded.add(() => {
-            const grdiView = tab.FilterChildren(x => x instanceof EditableComponent.SearchMd.SearchEntry)
+            const grdiView = tab.FilterChildren(x => x instanceof searchEntryMd.SearchEntry)
                 .find(X => X.Meta.Id === meta.TargetComId);
             grdiView.DOMContentLoaded.add(() => {
                 if (this.HasLoadRef) {

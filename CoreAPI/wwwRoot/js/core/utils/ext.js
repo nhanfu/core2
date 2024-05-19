@@ -1,7 +1,6 @@
-import { KeyCodeEnum } from "../models/enum.js";
+import { KeyCodeEnum, Entity } from "../models/enum.js";
 import { Utils } from "./utils.js";
 import { OutOfViewPort } from "./outOfViewPort.js";
-import { Entity } from '../models/enum.js';
 
 export function HasNonSpaceChar() { return this.trim() !== ''; }
 

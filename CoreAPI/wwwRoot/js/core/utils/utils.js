@@ -2,6 +2,7 @@ import { Decimal } from '../structs/decimal.js';
 import { Component } from "../models/component.js";
 import { Client } from '../clients/client.js';
 import { Str } from './ext.js';
+import { HttpMethod } from '../models/enum.js';
 
 export class Utils {
     static SystemId = "1";
@@ -531,6 +532,22 @@ export class Utils {
         } else {
             return null;
         }
+    }
+
+    /**
+     * @param {string | ArrayBuffer} base64Image
+     * @param {any} fileName
+     */
+    static UploadBase64Image(base64Image, fileName) {
+        /** @type {XHRWrapper} */
+        // @ts-ignore
+        const p = {
+            Value : base64Image,
+            Url : `/user/image/?name=${fileName}`,
+            IsRawString : true,
+            Method : HttpMethod.POST
+        };
+        return Client.Instance.SubmitAsync(p);
     }
 
     static GetMimeType(extension) {

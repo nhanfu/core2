@@ -9,14 +9,15 @@ import { ObservableList } from './models/observableList.js';
 import { PositionEnum ,KeyCodeEnum} from './models/enum.js';
 import { ComponentExt } from './utils/componentExt.js';
 import "./utils/fix.js";
-import { ListViewItem } from 'listViewItem.js';
-import { GridView } from 'gridView.js';
-import { ListView } from 'listView.js';
-import { TabEditor } from 'tabEditor.js';
-import { MultipleSearchEntry } from 'multipleSearchEntry.js';
-import { GroupGridView } from 'groupGridView.js';
+import { ListViewItem } from './listViewItem.js';
+import { GridView } from './gridView.js';
+import { ListView } from './listView.js';
+import { TabEditor } from './tabEditor.js';
+import { MultipleSearchEntry } from './multipleSearchEntry.js';
+import { GroupGridView } from './groupGridView.js';
 
 export class SearchEntry extends EditableComponent {
+    IsSearchEntry = true;
     /**
      * @param {import('./models/component.js').Component} ui
      * @param {HTMLElement} [ele=null] 

@@ -30,27 +30,6 @@ import { Component } from "./models/component.js";
  * It handles the parent-child relationships, event handling, and disposal of the component.
  */
 export default class EditableComponent {
-
-    /** @type {import('./searchEntry.js')} */
-    static SearchMd;
-    /** @type {import('./section.js')} */
-    static SectionMd;
-    /** @type {import('./label.js')} */
-    static LabelMd;
-    /** @type {import('./listViewItem.js')} */
-    static ListViewItemMd;
-    /** @type {import('./listView.js')} */
-    static ListViewMd;
-    /** @type {import('./tabEditor.js')} */
-    static TabEditorMd;
-    /** @type {import('./gridView.js')} */
-    static GridViewMd;
-    /** @type {import('./editForm.js')} */
-    static EditFormMd;
-    /** @type {import('./textbox.js')} */
-    static TextboxMd;
-    /** @type {import('./datepicker.js')} */
-    static DatepickerMd;
     /**
      * Create instance of component
      * @param {Component | null} meta 
@@ -74,10 +53,6 @@ export default class EditableComponent {
                 this.DispatchEvent(meta.Events, EventType.DOMContentLoaded, this.Entity).Done();
             }
         });
-        if (!EditableComponent._moduleLoaded) {
-            EditableComponent._moduleLoaded = true;
-            this.loadClasses().then(() => console.log('Classes loaded'));
-        }
     }
 
     /**
@@ -109,18 +84,6 @@ export default class EditableComponent {
      * @type {number}
      */
     static ExLargeScreen = 1452;
-    static _moduleLoaded = false;
-
-    async loadClasses() {
-        EditableComponent.SearchMd = await import('./searchEntry.js');
-        EditableComponent.SectionMd = await import('./section.js');
-        EditableComponent.LabelMd = await import('./label.js');
-        EditableComponent.ListViewMd = await import('./listView.js');
-        EditableComponent.ListViewItemMd = await import('./listViewItem.js');
-        EditableComponent.GridViewMd = await import('./gridView.js');
-        EditableComponent.EditFormMd = await import('./editForm.js');
-        EditableComponent.TabEditorMd = await import('./tabEditor.js');
-    }
 
     /**
      * @param {any} events
@@ -223,11 +186,6 @@ export default class EditableComponent {
     #editForm;
     /** @type {EditForm} */
     get EditForm() {
-        if (this.#editForm == null) {
-            // @ts-ignore
-            this.#editForm = this.FindClosest(x => EditableComponent.EditFormMd != null
-                && x instanceof EditableComponent.EditFormMd.EditForm);
-        }
         return this.#editForm;
     }
     /**
@@ -327,9 +285,6 @@ export default class EditableComponent {
     }
     /** @type {boolean} emptyRow - True if the component is in empty row or screen, otherwise false. */
     get EmptyRow() {
-        if (this.#emptyRow == null) {
-            this.#emptyRow = this.FindClosest(x => x instanceof EditableComponent.ListViewItemMd.ListViewItem)?.EmptyRow;
-        }
         return this.#emptyRow;
     }
     set EmptyRow(val) {
@@ -461,12 +416,18 @@ export default class EditableComponent {
         }
     }
 
+    GetInvalid() {
+        return this.Children.Flattern(x => x.AlwaysValid ? null : x.Children).Where(x => !x.IsValid);
+    }
+
+    IsRow = false;
+    IsSearchEntry = false;
     CascadeField() {
         if (!this.Meta.CascadeField) {
             return;
         }
 
-        const root = this.FindClosest(x => x instanceof EditableComponent.ListViewItemMd.ListViewItem) ?? this.EditForm;
+        const root = this.FindClosest(x => x.IsRow) ?? this.EditForm;
         const cascadeFields = this.Meta.CascadeField.split(",").map(field => field.trim()).filter(x => x !== "");
         if (cascadeFields.length === 0) {
             return;
@@ -484,10 +445,6 @@ export default class EditableComponent {
                 }
             });
         });
-    }
-
-    GetInvalid() {
-        return this.Children.Flattern(x => x.AlwaysValid ? null : x.Children).Where(x => !x.IsValid);
     }
 
     PopulateFields(entity = null) {

@@ -22,6 +22,7 @@ import { ComponentType } from "./models/componentType.js";
  * @extends Section
  */
 export class ListViewItem extends Section {
+    IsRow = true;
     /**
      * Creates an instance of ListViewItem.
      * @param {ElementType} [elementType=ElementType.tr] - The type of HTML element.

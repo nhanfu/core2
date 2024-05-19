@@ -23,6 +23,7 @@ export class TabEditor extends EditForm {
     static Tabs = [];
     static ActiveTab = () => TabEditor.Tabs.find(x => x.Show);
     static FindTab = (id) => TabEditor.Tabs.find(x => x.Id === id);
+    /** @type {boolean} */
     static ShowTabText;
     static ActiveClass = "active";
     Popup = false;
