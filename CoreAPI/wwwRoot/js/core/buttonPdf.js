@@ -1,7 +1,7 @@
 import { GridView } from "gridView.js";
 import { Button } from "./button.js";
 import { Html } from "./utils/html.js";
-import { html2pdf } from './utils/html2pdf.js'
+import { html2pdf } from './libs/html2pdf.js'
 import { Client } from "clients/client.js";
 import { Component } from "models/component.js";
 import { PdfReport } from "pdfReport.js";

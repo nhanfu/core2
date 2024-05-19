@@ -7,7 +7,7 @@ import { SqlViewModel } from "models/sqlViewModel";
 import { Section } from "section";
 import { ComponentExt } from "utils/componentExt";
 import { Html } from "utils/html";
-import { html2pdf } from "utils/html2pdf";
+import { html2pdf } from "libs/html2pdf";
 import { Utils } from "utils/utils";
 
 export class PdfReport extends EditableComponent {

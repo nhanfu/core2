@@ -1,13 +1,8 @@
-import { Client } from "clients/client";
-import EditableComponent from "./editableComponent.js";
-import { WebSocketClient } from "clients/websocketClient";
-import { KeyCodeEnum, RoleEnum } from "models/enum";
-import EventType from "models/eventType";
-import { PopupEditor } from "popupEditor";
-import { Toast } from "toast";
-import { Html } from "utils/html";
-import { Utils } from "utils/utils";
-import { TaskStateEnum } from "Core/Enums"
+import { Client } from "../clients/client.js";
+import EditableComponent from "../editableComponent.js";
+import { Toast } from "../toast.js";
+import { Utils } from "../utils/utils.js";
+import { TaskStateEnum } from "../models/enum.js"
 
 
 export class NotificationBL extends EditableComponent {

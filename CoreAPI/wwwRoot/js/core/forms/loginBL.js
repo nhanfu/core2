@@ -1,11 +1,11 @@
-import { Client } from "clients/client";
-import { WebSocketClient } from "clients/websocketClient";
-import { KeyCodeEnum, RoleEnum } from "models/enum";
-import EventType from "models/eventType";
-import { PopupEditor } from "popupEditor";
-import { Toast } from "toast";
-import { Html } from "utils/html";
-import { Utils } from "utils/utils";
+import { Client } from "../clients/client.js";
+import { WebSocketClient } from "../clients/websocketClient.js";
+import { KeyCodeEnum, RoleEnum } from "../models/enum.js";
+import EventType from "../models/eventType.js";
+import { PopupEditor } from "../popupEditor.js";
+import { Toast } from "../toast.js";
+import { Html } from "../utils/html.js";
+import { Utils } from "../utils/utils.js";
 
 export class LoginBL extends PopupEditor {
     static _instance;
