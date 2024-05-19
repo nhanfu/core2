@@ -1,4 +1,4 @@
-import { TabEditor } from "tabEditor";
+import { TabEditor } from "./tabEditor.js";
 
 export class PopupEditor extends TabEditor {
     constructor(entity) {

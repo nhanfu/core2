@@ -5,12 +5,11 @@ import EventType from "./models/eventType.js";
 import { KeyCodeEnum } from "./models/enum.js";
 import { Html } from "./utils/html.js";
 import { LangSelect } from "./utils/langSelect.js";
-import { ComponentExt } from "utils/componentExt.js";
-import { GridView } from "gridView.js";
-import { ListView } from "listView.js";
-import { App } from "app.js";
-import { Button } from "button.js";
-import EditableComponent from "editableComponent.js";
+import { ComponentExt } from "./utils/componentExt.js";
+import { GridView } from "./gridView.js";
+import { ListView } from "./listView.js";
+import { Button } from "./button.js";
+import EditableComponent from "./editableComponent.js";
 
 /**
  * Represents a tab editor component, which can manage multiple tabs and their content.
@@ -291,7 +290,7 @@ export class TabEditor extends EditForm {
     Focus() {
         if (!this.Popup) {
             TabEditor.Tabs.forEach(x => x.Show = false);
-            if (this.FeatureName && App.FeatureLoaded) {
+            if (this.FeatureName) {
                 this.Href = Client.BaseUri + '/' + this.FeatureName + (this.EntityId ? `?Id=${this.EntityId}` : '');
                 window.history.pushState(null, LangSelect.Get(this.TabTitle), this.Href);
             }

@@ -11,9 +11,9 @@ import { TabEditor } from "./tabEditor.js";
 import { Str } from "./utils/ext.js";
 import * as dayjs from './structs/dayjs.min.js';
 import { Textbox } from "./textbox.js";
-import { FeaturePolicy } from "models/featurePolicy.js";
-import { NumBox } from "numbox.js";
-import { Datepicker } from "datepicker.js";
+import { FeaturePolicy } from "./models/featurePolicy.js";
+import { NumBox } from "./numbox.js";
+import { Datepicker } from "./datepicker.js";
 
 /** @typedef {import("./gridView.js").GridView} GridView */
 /** @typedef {import("./listView.js").ListView} ListView */

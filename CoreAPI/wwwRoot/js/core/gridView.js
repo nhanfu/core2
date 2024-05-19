@@ -1,21 +1,21 @@
 import "./utils/fix.js";
-import { Toast } from 'toast.js';
+import { Toast } from './toast.js';
 import { Spinner } from './spinner.js';
 import { Utils } from "./utils/utils.js";
 import { ListView } from './listView.js';
-import { Uuid7 } from 'structs/uuidv7.js';
-import { ContextMenu } from 'contextMenu.js';
+import { Uuid7 } from './structs/uuidv7.js';
+import { ContextMenu } from './contextMenu.js';
 import { Client } from "./clients/client.js";
 import { SearchEntry } from 'searchEntry.js';
 import EventType from './models/eventType.js';
-import { GridViewItem } from 'gridViewItem.js';
-import { ConfirmDialog } from 'confirmDialog.js';
+import { GridViewItem } from './gridViewItem.js';
+import { ConfirmDialog } from './confirmDialog.js';
 import { Direction, Html } from "./utils/html.js";
-import { ElementType } from 'models/elementType.js';
-import { HotKeyModel } from 'models/hotKeyModel.js';
-import { ListViewSection, Section } from 'section.js';
-import { CustomEventType } from 'models/customEventType.js';
-import { ListViewSearch, ListViewSearchVM } from 'listViewSearch.js';
+import { ElementType } from './models/elementType.js';
+import { HotKeyModel } from './models/hotKeyModel.js';
+import { ListViewSection, Section } from './section.js';
+import { CustomEventType } from './models/customEventType.js';
+import { ListViewSearch, ListViewSearchVM } from './listViewSearch.js';
 import { OperatorEnum, KeyCodeEnum, OrderbyDirection, AdvSearchOperation, LogicOperation} from './models/enum.js';
 
 
@@ -1674,7 +1674,15 @@ export class GridView extends ListView {
         });
     }
 
-    // @ts-ignore
+    /**
+     * @typedef {import('./listViewItem.js').ListViewItem} ListViewItem
+     * Handles custom events based on row changes, applying data updates and managing component state.
+     * @param {object} rowData The data of the row that triggered the change.
+     * @param {ListViewItem} rowSection The ListViewItem corresponding to the row.
+     * @param {import("editableComponent.js").ObservableArgs} observableArgs Additional arguments or data relevant to the event.
+     * @param {import("models/observable.js").EditableComponent} [component=null] Optional component that might be affected by the row change.
+     * @returns {Promise<boolean>} A promise that resolves to a boolean indicating success or failure of the event handling.
+     */
     async RowChangeHandler(rowData, rowSection, observableArgs, component = null) {
         const com = ['SearchEntry'];
         if (rowSection.EmptyRow && observableArgs.EvType === EventType.Change) {
@@ -1705,7 +1713,7 @@ export class GridView extends ListView {
             }
             await this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterCreated, rowData);
         }
-        if (component && component.ComponentType === 'GridView') {
+        if (component && component.ComponentType.includes('GridView')) {
             await this.DispatchEvent(component.Meta.Events, observableArgs.EvType, rowData, rowSection);
         }
         await this.DispatchEvent(this.Meta.Events, observableArgs.EvType, rowData, rowSection);
@@ -1717,12 +1725,12 @@ export class GridView extends ListView {
             }
             this.LastListViewItem = rowSection;
             let headers = this.Header.filter(y => y.Editable);
-            let currentComponent = headers.find(y => y.FieldName === component?.FieldName);
+            let currentComponent = headers.find(y => y.FieldName === component?.Name);
             if (com.includes(currentComponent?.ComponentType) && rowData[currentComponent.FieldName] != null) {
                 let index = headers.indexOf(currentComponent);
                 if (headers.length > index + 1) {
                     let nextGrid = headers[index + 1];
-                    let nextComponent = rowSection.Children.find(y => y?.FieldName === nextGrid.FieldName);
+                    let nextComponent = rowSection.Children.find(y => y?.Name === nextGrid.FieldName);
                     this.ClearSelected();
                     rowSection.Selected = true;
                     rowSection.Focus();
@@ -1731,8 +1739,12 @@ export class GridView extends ListView {
                 }
             }
         }
+        return true;
     }
 
+    /**
+     * @param {ListViewItem} rowSection
+     */
     MoveEmptyRow(rowSection) {
         if (this.RowData.Data.includes(rowSection.Entity)) {
             return;

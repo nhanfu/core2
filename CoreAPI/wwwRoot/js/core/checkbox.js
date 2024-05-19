@@ -4,7 +4,7 @@ import EventType from "./models/eventType.js";
 import ObservableArgs from "./models/observable.js";
 import { Html } from "./utils/html.js";
 import { Utils } from "./utils/utils.js";
-import { ElementType } from "models/elementType.js";
+import { ElementType } from "./models/elementType.js";
 
 /**
  * Represents a Checkbox component.

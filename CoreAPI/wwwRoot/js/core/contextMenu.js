@@ -1,4 +1,4 @@
-import { Html } from "utils/html.js";
+import { Html } from "./utils/html.js";
 import EditableComponent from "./editableComponent.js";
 
 /**

@@ -88,7 +88,7 @@ export default class EditableComponent {
     /**
      * @param {any} events
      * @param {string} eventType
-     * @param {(number | this | this | import("./structs/decimal.js").default)[]} parameters
+     * @param {any[]} parameters
      */
     DispatchEvent(events, eventType, ...parameters) {
         if (!events) {

@@ -1,4 +1,4 @@
-﻿import { Component } from "models/component.js";
+﻿import { Component } from "./models/component.js";
 import { Client } from "./clients/client.js";
 import EditableComponent from "./editableComponent.js";
 import { Direction, Html } from "./utils/html.js";

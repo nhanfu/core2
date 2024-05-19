@@ -1,4 +1,4 @@
-import Swal from 'sweetalert2';
+import Swal from './libs/sweetalert2.js';
 
 /**
  * Options for creating a toast notification.

@@ -1,5 +1,4 @@
 import { ListView } from "./listView.js";
-import { ElementType } from "./models/elementType.js";
 import { ListViewSection, Section } from "./section.js";
 import { Html } from "./utils/html.js";
 import EventType from "./models/eventType.js";
@@ -16,7 +15,7 @@ import { Toast } from "./toast.js";
 import { Button } from "./button.js";
 import { Textbox } from "./textbox.js";
 import { ComponentType } from "./models/componentType.js";
-
+import {ElementType} from './models/elementType.js';
 /**
  * Represents a list view item.
  * @extends Section

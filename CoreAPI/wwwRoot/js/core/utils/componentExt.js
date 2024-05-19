@@ -1,15 +1,12 @@
-import { Datepicker } from "../datepicker.js";
 import { ComponentType } from "../models/componentType.js";
 import { Utils } from "./utils.js";
-import { EditForm } from "../editForm.js";
 import { Component } from "../models/component.js";
 import { Client } from "../clients/client.js";
-import { SqlViewModel } from "../models/sqlViewModel.js";
-import { TabEditor } from "tabEditor.js";
-import { ListViewItem } from "listViewItem.js";
-import EditableComponent from "editableComponent.js";
 
 export class ComponentExt {
+    /**
+     * @param {Component} com
+     */
     static MapToPatch(com, table = null, fields = null) {
         const patch = {
             Table: table,
@@ -25,6 +22,10 @@ export class ComponentExt {
         return patch;
     }
 
+    /**
+     * @param {Component} component
+     * @param {string} searchTerm
+     */
     static MapToFilterOperator(component, searchTerm) {
         if (!searchTerm || !component.FieldName) {
             return '';
@@ -35,9 +36,10 @@ export class ComponentExt {
         if (!fieldName) return '';
 
         if (component.ComponentType === ComponentType.Datepicker) {
-            const { parsed, datetime } = Datepicker.TryParseDateTime(searchTerm);
-            if (parsed) {
-                const dateStr = datetime.toISOString().slice(0, 10).replace(/-/g, '/');
+            let datetime = Date.parse(searchTerm);
+            if (!Number.isNaN(datetime)) {
+                let date = new Date(datetime);
+                const dateStr = date.toISOString();
                 return `cast(${fieldName} as date) = cast('${dateStr}' as date)`;
             }
             return '';
@@ -54,27 +56,28 @@ export class ComponentExt {
         return component.FilterTemplate ? `${component.FilterTemplate.replace(/\{0\}/g, searchTerm)}` : `charindex(N'${searchTerm}', ${fieldName}) >= 1`;
     }
 
-    static InitFeatureByName(featureName, portal = true) {
-        return new Promise((resolve, reject) => {
-            this.LoadFeature(featureName).then(feature => {
-                if (!feature) {
-                    reject(new Error('Feature not found'));
-                    return;
-                }
-                const instance = new TabEditor(feature.EntityName);
-                if (feature.Script)
-                {
-                    ComponentExt.AssignMethods(feature, instance);
-                }
-                EditForm.Portal = portal;
-                instance.Feature = feature;
-                instance.Name = feature.Name;
-                instance.Id = feature.Name + feature.Id;
-                instance.Icon = feature.Icon;
-                instance.Render();
-                resolve(instance);
-            }).catch(reject);
-        });
+    /**
+     * @param {string} featureName
+     * @param {boolean | undefined} portal
+     */
+    static async InitFeatureByName(featureName, portal = true) {
+        const {EditForm} = await import('../editForm.js');
+        const {TabEditor} = await import('../tabEditor.js');
+        const feature = await this.LoadFeature(featureName);
+        if (!feature) {
+            throw new Error('Feature not found');
+        }
+        const instance = new TabEditor(feature.EntityName);
+        if (feature.Script) {
+            ComponentExt.AssignMethods(feature, instance);
+        }
+        EditForm.Portal = portal;
+        instance.Feature = feature;
+        instance.Name = feature.Name;
+        instance.Id = feature.Name + feature.Id;
+        instance.Icon = feature.Icon;
+        instance.Render();
+        return instance;
     }
 
     /**
@@ -210,7 +213,7 @@ export class ComponentExt {
         if (component instanceof Type) {
             return component;
         }
-    
+
         while (component.Parent != null) {
             component = component.Parent;
             if (component instanceof Type) {
@@ -220,12 +223,20 @@ export class ComponentExt {
         return null;
     }
 
-    static OpenTabOrPopup(com, tab) {
+    /**
+     * @typedef {import("../editableComponent.js").default} EditableComponent
+     * @param {EditableComponent} com
+     * @param {TabEditor} tab
+     */
+    static async OpenTabOrPopup(com, tab) {
+        const editablMd = await import('../editableComponent.js');
+        const {EditForm} = await import('../editForm.js');
+        const {TabEditor} = await import('../tabEditor.js');
         let parentTab;
         if (com instanceof EditForm) {
             parentTab = com;
-        } else if (com instanceof EditableComponent) {
-            parentTab = com.EditForm || this.FindClosest(com , EditForm);
+        } else if (com instanceof editablMd.default) {
+            parentTab = EditForm || this.FindClosest(com, EditForm);
         }
         if (tab instanceof TabEditor) {
             if (tab.Popup) {
@@ -233,64 +244,77 @@ export class ComponentExt {
             } else {
                 tab.Render();
             }
-        
+
             tab.ParentForm = parentTab;
-            tab.OpenFrom = parentTab instanceof EditForm && parentTab?.FilterChildren(x => x.Entity === tab.Entity)?.[0];
+            tab.OpenFrom = parentTab instanceof EditForm && parentTab?.FirstOrDefault(x => x.Entity === tab.Entity);
         }
     }
-    
-    OpenTabOrPopup(com, tab) {
+
+    /**
+     * 
+     * @param {EditableComponent} com 
+     * @param {TabEditor} tab 
+     */
+    async OpenTabOrPopup(com, tab) {
+        const { EditForm } = await import('../editForm.js');
         let parentTab;
         if (com instanceof EditForm) {
             parentTab = com;
         } else {
-            parentTab = com.EditForm || com.FindClosest(EditForm);
+            parentTab = com.EditForm || com.FindClosest(x => x instanceof EditForm);
         }
-    
+
         if (tab.Popup) {
             com.AddChild(tab);
         } else {
             tab.Render();
         }
-    
+
         tab.ParentForm = parentTab;
         tab.OpenFrom = parentTab?.FilterChildren(x => x.Entity === tab.Entity)?.[0];
     }
 
-    static OpenTab(com, id, featureName, factory, popup = false, anonymous = false) {
-        return new Promise((resolve, reject) => {
-            if (!popup && TabEditor.FindTab(id)) {
-                const Exists = TabEditor.FindTab(id);
-                Exists.Focus();
-                resolve(Exists);
-                return;
-            }
-            this.LoadFeature(featureName).then(Feature => {
-                const Tab = factory();
-                Tab.Popup = popup;
-                Tab.Name = featureName;
-                Tab.Id = id;
-                Tab.Feature = Feature;
-                this.AssignMethods(Feature, Tab);
-                this.OpenTabOrPopup(com, Tab);
-                resolve(Tab);
-            });
-        });
+    /**
+     * @typedef {import('../tabEditor.js').TabEditor} TabEditor
+     * @param {EditableComponent} com
+     * @param {string} id
+     * @param {string} featureName
+     * @param {() => TabEditor} factory
+     */
+    static async OpenTab(com, id, featureName, factory, popup = false, anonymous = false) {
+        const md = await import('../tabEditor.js');
+        if (!popup && md.TabEditor.FindTab(id)) {
+            const exists = md.TabEditor.FindTab(id);
+            exists.Focus();
+            return exists;
+        }
+        const feature = await this.LoadFeature(featureName);
+        const tab = factory();
+        tab.Popup = popup;
+        tab.Name = featureName;
+        tab.Id = id;
+        tab.Feature = feature;
+        this.AssignMethods(feature, tab);
+        await this.OpenTabOrPopup(com, tab);
+        return tab;
     }
 
-    static OpenPopup (com , featureName, factory, anonymous = false, child = false) {
+    /**
+     * @param {EditableComponent} com
+     * @param {string} featureName
+     * @param {{ (): import("../advancedSearch.js").AdvancedSearch; (): import("../tabEditor.js").TabEditor; }} factory
+     */
+    static OpenPopup(com, featureName, factory, anonymous = false, child = false) {
         const hashCode = () => {
             let hash = 0;
-            let str = JSON.stringify(com); 
+            let str = JSON.stringify(com);
             for (let i = 0; i < str.length; i++) {
                 const char = str.charCodeAt(i);
                 hash = ((hash << 5) - hash) + char;
-                hash |= 0; 
+                hash |= 0;
             }
             return hash;
         };
         return this.OpenTab(com, hashCode().toString(), featureName, factory, true, anonymous);
     };
-
-    
 }

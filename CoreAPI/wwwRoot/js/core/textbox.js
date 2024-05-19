@@ -5,9 +5,8 @@ import { ValidationRule } from "./models/validationRule.js";
 import { LangSelect } from "./utils/langSelect.js";
 import { Client } from "./clients/client.js";
 import EventType from './models/eventType.js';
-import { ComponentType } from './models/componentType.js';
 import { Str } from './utils/ext.js';
-import { Component } from 'models/component.js';
+import { Component } from './models/component.js';
 
 
 export class Textbox extends EditableComponent {

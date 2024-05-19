@@ -9,12 +9,11 @@ import "./utils/fix.js";
 import { Uuid7 } from './structs/uuidv7.js';
 import { AdvancedSearch } from './advancedSearch.js';
 import { ComponentType } from './models/componentType.js';
-import { Textbox } from './textbox.js';
 import { ElementType } from './models/elementType.js';
 import { Toast } from './toast.js';
 import { ContextMenu } from './contextMenu.js';
-import { ComponentExt } from 'utils/componentExt.js';
-import { ExportCustomData } from 'exportCustomData.js';
+import { ComponentExt } from './utils/componentExt.js';
+import { ExportCustomData } from './exportCustomData.js';
 
 /**
  * @typedef {import('./models/component').Component} Component
@@ -85,7 +84,7 @@ export class ListViewSearch extends EditableComponent {
         this._dateTimeField = value;
     }
 
-    
+
     get TabEditor() {
         return this.Parent.TabEditor || this.Parent.EditForm instanceof this.TabEditor ? this.Parent.EditForm : null;
     }
@@ -166,7 +165,10 @@ export class ListViewSearch extends EditableComponent {
         }
     }
 
-    Render() {
+    async Render() {
+        const { Textbox } = await import('./textbox.js');
+        const { Datepicker } = await import('./datepicker');
+        const { SearchEntry } = await import('./searchEntry.js');
         this.Parent.DataLoaded.add(this.ListView_DataLoaded.bind(this));
         if (!this.Meta.CanSearch) {
             return;
@@ -222,7 +224,7 @@ export class ListViewSearch extends EditableComponent {
             txtScan.UserInput = null;
             this.AddChild(txtScan);
         }
-        var startDate = new EditableComponent.DatepickerMd.Datepicker({
+        var startDate = new Datepicker({
             FieldName: 'ListViewSearchVM.StartDate',
             Visibility: true,
             Label: 'From date',
@@ -232,7 +234,7 @@ export class ListViewSearch extends EditableComponent {
         startDate.ParentElement = this.Element;
         startDate.UserInput = null;
         this.AddChild(startDate);
-        var endDate = new EditableComponent.DatepickerMd.Datepicker({
+        var endDate = new Datepicker({
             FieldName: 'ListViewSearchVM.EndDate',
             Visibility: true,
             Label: 'To date',
@@ -244,7 +246,7 @@ export class ListViewSearch extends EditableComponent {
         this.AddChild(endDate);
         if (this.Parent.Meta.ShowDatetimeField) {
             // @ts-ignore
-            var dateType = new EditableComponent.SearchMd.SearchEntry({
+            var dateType = new SearchEntry({
                 FieldName: 'Component.DateTimeField',
                 PlainText: 'Loại ngày',
                 FormatData: '{ShortDesc}',
@@ -334,15 +336,9 @@ export class ListViewSearch extends EditableComponent {
 
     FullScreen() {
         var elem = this.Parent.Element;
-        /*@
-         if (elem.requestFullscreen) {
-                        elem.requestFullscreen();
-                    } else if (elem.webkitRequestFullscreen) { 
-                                        elem.webkitRequestFullscreen();
-                                } else if (elem.msRequestFullscreen) {
-                        elem.msRequestFullscreen();
-                    }
-         */
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        }
     }
 
     /**
@@ -366,7 +362,6 @@ export class ListViewSearch extends EditableComponent {
             return;
         }
 
-        var fileName = files[0].name;
         /** @type {HTMLFormElement} */
         // @ts-ignore
         var uploadForm = this._uploader.parentElement;
@@ -378,7 +373,7 @@ export class ListViewSearch extends EditableComponent {
             Url: `/user/importCsv?table=${meta.RefName}&comId=${meta.Id}&connKey=${meta.MetaConn}`,
             Method: HttpMethod.POST,
             ResponseMimeType: Utils.GetMimeType('csv')
-        }).Done(success => {
+        }).Done(() => {
             Toast.Success('Import excel success');
             this._uploader.value = '';
         }).catch(error => {
@@ -573,11 +568,11 @@ export class ListViewSearch extends EditableComponent {
     }
 
     AdvancedSearch(arg) {
-        ComponentExt.OpenPopup(this.TabEditor,"AdvancedSearch", () => {
+        ComponentExt.OpenPopup(this.TabEditor, "AdvancedSearch", () => {
             // @ts-ignore
             var editor = new AdvancedSearch(this.ParentListView);
             editor.Parent = this.Parent,
-            editor.ParentElement = this.TabEditor.Element
+                editor.ParentElement = this.TabEditor.Element
             return editor;
         }).Done();
     }

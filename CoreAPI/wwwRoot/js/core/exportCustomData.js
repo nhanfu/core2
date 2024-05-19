@@ -1,10 +1,9 @@
-import { Client } from "clients/client";
-import { ListView } from "listView";
-import { Component } from "models/component";
-import { PopupEditor } from "popupEditor";
-import { Toast } from "toast";
-import { Html } from "utils/html";
-import { Utils } from "utils/utils";
+import { Client } from "./clients/client.js";
+import { ListView } from "./listView.js";
+import { PopupEditor } from "./popupEditor.js";
+import { Toast } from "./toast.js";
+import { Html } from "./utils/html.js";
+import { Utils } from "./utils/utils.js";
 
 export class ExportCustomData extends PopupEditor {
     static Prefix = "Export";
