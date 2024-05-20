@@ -128,6 +128,8 @@
  * @property {string} Lang
  * @property {string} DelCmd
  * @property {string} DelParam
+ * @property {Date | string} MinDate
+ * @property {Date | string} MaxDate
  */
 
 import { FeaturePolicy } from './featurePolicy.js';
@@ -284,6 +286,8 @@ export class Component {
     IgnoreConfirmHardDelete = false;
     ComponentGroup = null;
     Reference = null;
+    MinDate = new Date('01-01-0001');
+    MaxDate = new Date('01-01-9999');
     /**
      * Represents whether the component is a tab.
      * @type {boolean}

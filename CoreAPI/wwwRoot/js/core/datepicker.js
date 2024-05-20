@@ -402,7 +402,7 @@ export class Datepicker extends EditableComponent {
             return Promise.resolve(true);
         }
         let isValid = true;
-        let rules = ['GreaterThan', 'LessThan', 'GreaterThanOrEqual', 'LessThanOrEqual', 'Equal', 'NotEqual'];
+        let rules = ['gt', 'lt', 'min', 'max', 'eq', 'ne'];
         rules.forEach(rule => {
             isValid = isValid && this.Validate(rule, this.value);
         });
@@ -418,9 +418,9 @@ export class Datepicker extends EditableComponent {
     Validate(rule, value) {
         // Example: Extend to include specific rule validation
         switch (rule) {
-            case 'GreaterThan':
+            case 'gt':
                 return value > new Date(this.Meta.MinDate);
-            case 'LessThan':
+            case 'lt':
                 return value < new Date(this.Meta.MaxDate);
             default:
                 return true;

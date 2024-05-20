@@ -17,7 +17,7 @@ export class CompareGridView extends GridView {
                 ComponentType: "Label",
                 Label: "Người thao tác",
                 Description: "Người thao tác",
-                ReferenceId: Utils.GetEntity("User")?.Id,
+                ReferenceId: Utils.GetEntity("User")?.Id.toString(),
                 RefName: "User",
                 FormatData: "{" + "FullName" + "}",
                 Active: true,

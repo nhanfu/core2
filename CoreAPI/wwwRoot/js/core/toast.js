@@ -1,4 +1,4 @@
-import './libs/sweetalert2.js';
+import Swal from '../../../../node_modules/sweetalert2/dist/sweetalert2.all.min';
 
 /**
  * Options for creating a toast notification.
@@ -18,6 +18,7 @@ export class Toast {
      * @param {ToastOptions} options - Options for the toast.
      */
     static Create(options) {
+        // @ts-ignore
         if (typeof Swal !== 'undefined') {
             // @ts-ignore
             const Toast = Swal.mixin({
