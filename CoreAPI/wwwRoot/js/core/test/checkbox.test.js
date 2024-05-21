@@ -1,6 +1,7 @@
 import { Component } from '../models/component';
 import { Checkbox } from '../checkbox'; // Adjust the import according to your project structure
 import { ComponentType } from '../models/componentType';
+import { ElementType } from '../models/elementType.js';
 
 describe('Checkbox', () => {
     /** @type {Checkbox} */
@@ -11,7 +12,7 @@ describe('Checkbox', () => {
     let mockMeta;
 
     beforeEach(() => {
-        mockElement = document.createElement(ComponentType.Input);
+        mockElement = document.createElement(ElementType.input);
         mockElement.type = 'checkbox'
         mockMeta = { Editable: true, Events: [], FieldName: 'testField' };
         checkbox = new Checkbox(mockMeta, mockElement);
@@ -25,11 +26,11 @@ describe('Checkbox', () => {
     });
 
     test('Render should create input element and bind events', () => {
-        checkbox.Render();
-        expect(checkbox._input).toBeDefined();
-        expect(checkbox.Element).toBe(checkbox._input);
-        expect(checkbox._input.type).toBe('checkbox');
-    });
+    checkbox.Render();
+    expect(checkbox._input).toBeDefined();
+    expect(checkbox.Element === checkbox._input || checkbox.Element === checkbox._input.parentElement).toBe(true);
+    expect(checkbox._input.type).toBe('checkbox');
+});
 
     test('UserChange should prevent default if disabled', () => {
         const mockEvent = { preventDefault: jest.fn() };

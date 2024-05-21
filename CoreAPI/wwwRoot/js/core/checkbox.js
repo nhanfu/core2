@@ -27,7 +27,7 @@ export class Checkbox extends EditableComponent {
         if (!ui) throw new Error("ui is required");
         this.Meta = ui;
         this.ParentElement = ele;
-        if (ele.tagName === ElementType.input) {
+        if (ele && ele.tagName.toLowerCase() === 'input') {
             this.Element = ele;
             // @ts-ignore
             this._input = ele;
@@ -101,7 +101,7 @@ export class Checkbox extends EditableComponent {
     get Value() { return this._value; }
     set Value(val) {
         this._value = val;
-        this._input.checked = val;
+            this._input.checked = val;
     }
     /**
      * Updates the view of the Checkbox based on the current state.
