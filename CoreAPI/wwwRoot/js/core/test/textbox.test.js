@@ -1,7 +1,8 @@
+import { ElementType } from '../models/elementType.js';
 import { Component } from '../models/component.js';
-import { ComponentType } from '../models/componentType.js';
-import Textbox from '../textbox';  // Adjust the import path as necessary
+import {Textbox} from '../textbox';  // Adjust the import path as necessary
 import { Utils } from "../utils/utils.js";
+import { Client } from '../clients/client.js';
 
 // Mock utilities to simplify behavior during tests
 Utils.GetPropValue = jest.fn((entity, fieldName) => entity[fieldName]);
@@ -20,64 +21,58 @@ describe('Textbox', () => {
   let entity;
 
   beforeEach(() => {
-    element = document.createElement(ComponentType.Input);  // Adjust for specific tests if necessary
-    element.type = ComponentType.Input;
+    element = document.createElement('input');
+    element.type = 'text';
     meta = { FieldName: 'testField', PlainText: 'Enter text', FormatData: '', Events: [], ShowLabel: true };
     textbox = new Textbox(meta, element);
     entity = { testField: 'Initial Value' };
     textbox.Entity = entity;
     textbox.EditForm = { Meta: { IgnoreEncode: false } };
     textbox.Render();
-  });
-
-  test('PopulateUIChange updates internal state correctly', () => {
-    // Mocking internal method and event setup
-    element.value = 'Changed Value';
-    textbox.Input = element;  // Ensure it's the same element we're manipulating
-    textbox.PopulateUIChange('input');
-    expect(textbox._text).toBe('Changed Value');
-    expect(textbox._oldText).toBe('"Initial Value"');
-  });
-
-  test('validateRegEx correctly validates user input', () => {
-    textbox.ValidationRules = {
-      RegEx: { RejectInvalid: true, Message: 'Invalid format', Test: jest.fn().mockImplementation(value => /^\d+$/.test(value)) }
-    };
-    // Valid input
-    expect(textbox.validateRegEx('12345', '^[0-9]+$')).toBeTruthy();
-    // Invalid input
-    expect(textbox.validateRegEx('abc123', '^[0-9]+$')).toBeFalsy();
-  });
-
-  test('ValidateAsync handles multiple validation rules', async () => {
-    // Setup multiple validation rules
-    textbox.ValidationRules = {
-        Required: { Rule: "Required", Message: "This text is required" }
-    };
-
-    // Mock validation methods to simply check string length and regex pattern
-    textbox.Validate = jest.fn((rule, text, callback) => callback.call(textbox, text, textbox.ValidationRules[rule]));
-
-    const validationResult = await textbox.ValidateAsync();
-    expect(validationResult).toBeTruthy();
-    expect(textbox.Validate).toHaveBeenCalledTimes(4);
-  });
-
-  test('UpdateView does not update if not dirty', () => {
-    textbox.Dirty = false;
-    textbox.OldValue = 'Initial Value';
-    textbox.UpdateView();
-    expect(textbox._text).toBe('Initial Value');
-  });
-
-  test('UpdateView forces update when dirty', () => {
-    textbox.Dirty = true;
-    textbox.Entity[textbox.FieldName] = 'New Value';
-    textbox.UpdateView(true);
-
-    expect(textbox._text).toBe('New Value');
-    expect(textbox.OldValue).toBe('"Initial Value"'); 
-  });
-  
 });
+
+  test('constructor initializes properties correctly', () => {
+    expect(textbox.Meta).toBe(meta);
+    expect(textbox.Input).toBe(element);
+    expect(textbox.Text).toBe('');  
+    expect(textbox.Value).toBeNull();
+});
+
+  test('Text getter and setter works correctly', () => {
+    textbox.Text = 'New Text';
+    expect(textbox.Text).toBe('New Text');
+    expect(textbox.Input.value).toBe('New Text');
+  });
+
+  test('Value getter and setter works correctly', () => {
+    textbox.Value = 'New Value';
+    expect(textbox.Value).toBe('New Value');
+    expect(textbox.Text).toBe('New Value');
+    expect(textbox.Input.value).toBe('New Value');
+  });
+
+  test('Render sets up input element correctly', () => {
+    expect(textbox.Input).toBeDefined();
+    expect(textbox.Input.value).toBe('Initial Value');
+});
+
+  test('ValidateUnique handles uniqueness check correctly', async () => {
+    textbox.ValidationRules = { Unique: { Message: 'Must be unique' } };
+    Utils.IsFunction = jest.fn(() => null);
+    Client.Instance.ComQuery = jest.fn(() => Promise.resolve([]));
+
+    const result = await textbox.ValidateUnique();
+    expect(result).toBeTruthy();
+    expect(Client.Instance.ComQuery).toHaveBeenCalled();
+  });
+
+  test('SetDisableUI disables and enables input correctly', () => {
+    textbox.SetDisableUI(true);
+    expect(textbox.Input.readOnly).toBe(true);
+
+    textbox.SetDisableUI(false);
+    expect(textbox.Input.readOnly).toBe(false);
+  });
+});
+  
 

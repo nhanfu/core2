@@ -80,8 +80,8 @@ export class Textbox extends EditableComponent {
             const encode = Utils.EncodeSpecialChar(decode);
             this.Entity.SetComplexPropValue(this.Name, encode);
         }
-        var text = Utils.IsFunction(this.Meta.FormatEntity)?.call(null, this);
-        this._text = this.EditForm != null && this.EditForm.Meta != null && this.EditForm.Meta.IgnoreEncode ? text : Utils.DecodeSpecialChar(text);
+        var text = Utils.IsFunction(this.Meta.FormatEntity)?.call(null, this) ?? '';
+        this._text = this.EditForm != null && this.EditForm.Meta != null && this.EditForm.Meta.IgnoreEncode ? text : Utils.DecodeSpecialChar(text) ?? '';
         this.OldValue = this._text;
         if (this.MultipleLine || this.TextArea != null) {
             if (this.TextArea == null) {
