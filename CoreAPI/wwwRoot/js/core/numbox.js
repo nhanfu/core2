@@ -26,24 +26,27 @@ export class NumBox extends EditableComponent {
 
     set Value(value) {
         const oldValue = this._value;
+        if (value === null && !this._nullable) {
+            value = new Decimal(0);  
+        }
         this._value = value;
-        var [success, parsedVal] = Utils.TryParseDecimal(this._value.toString());
+        var [success, parsedVal] = Utils.TryParseDecimal(this._value?.toString());
         if (success) {
             this._value = new Decimal(parsedVal.toFixed(this.Meta.Precision || 0));
-            const dotCount = (this._input.value.match(/,/g) || []).length;
+            const dotCount = (this._input.value?.match(/,/g) || []).length;
             const selectionEnd = this._input.selectionEnd;
             this._input.value = this.EmptyRow ? '' : this._value.toFixed(this.Meta.Precision || 0, 7);
-            const addedDot = (this._input.value.match(/,/g) || []).length - dotCount;
+            const addedDot = (this._input.value?.match(/,/g) || []).length - dotCount;
             if (this.SetSelection) {
                 this._input.selectionStart = selectionEnd + addedDot;
                 this._input.selectionEnd = selectionEnd + addedDot;
             }
         } else if (!this._nullable) {
-            var [success, parsedVal] = Utils.TryParseDecimal(oldValue.toString());
+            var [success, parsedVal] = Utils.TryParseDecimal(oldValue?.toString());
             if (!success) {
                 this.parsedVal = new Decimal(0);
             }
-            this._value =  new Decimal(parsedVal);;
+            this._value =  new Decimal(parsedVal);
             this._input.value = parsedVal.toFixed(this.Meta.Precision || 0);
         } else {
             this._input.value = '';
