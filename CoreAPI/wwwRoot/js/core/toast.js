@@ -1,4 +1,4 @@
-import Swal from '../../../../node_modules/sweetalert2/dist/sweetalert2.all.min';
+import 'sweetalert2';
 
 /**
  * Options for creating a toast notification.
