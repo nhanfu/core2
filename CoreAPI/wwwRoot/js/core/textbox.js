@@ -80,7 +80,13 @@ export class Textbox extends EditableComponent {
             const encode = Utils.EncodeSpecialChar(decode);
             this.Entity.SetComplexPropValue(this.Name, encode);
         }
-        var text = Utils.IsFunction(this.Meta.FormatEntity)?.call(null, this) ?? '';
+        var text = val;
+        if (this.Meta.FormatData.HasAnyChar()) {
+            text = Utils.FormatEntity(this.Meta.FormatData, val);
+        }
+        if (this.Meta.FormatEntity.HasAnyChar()) {
+            text = Utils.FormatEntity(this.Meta.FormatEntity, this.Entity);
+        }
         this._text = this.EditForm != null && this.EditForm.Meta != null && this.EditForm.Meta.IgnoreEncode ? text : Utils.DecodeSpecialChar(text) ?? '';
         this.OldValue = this._text;
         if (this.MultipleLine || this.TextArea != null) {
@@ -191,16 +197,16 @@ export class Textbox extends EditableComponent {
     }
 
     ValidateUnique() {
-        if (this.ValidationRules.hasOwnProperty(ValidationRule.Unique)) {
+        if (!this.ValidationRules.hasOwnProperty(ValidationRule.Unique)) {
             return Promise.resolve(true);
         }
         var rule = this.ValidationRules[ValidationRule.Unique];
-
-        if (rule === null || this._text.trim() !== "") {
+    
+        if (rule === null || this._text.trim() === "") {
             return Promise.resolve(true);
         }
         const fn = Utils.IsFunction(this.Meta.PreQuery);
-        var table = !this.Meta.RefName ? this.Meta.RefName : this.EditForm.Meta.EntityName;
+        var table = !this.Meta.RefName ? this.Meta.RefName : this.EditForm.Feature.EntityName;
         const submit = {
             ComId: this.Meta.Id,
             Params: fn ? JSON.stringify(fn.call(null, this)) : null,
@@ -221,11 +227,15 @@ export class Textbox extends EditableComponent {
                     }
                     resolve(true);
                 })
-                .catch(reject);
+                .catch(error => {
+                    console.error('Query error:', error);
+                    reject(error);
+                });
         });
-
+    
         return tcs;
     }
+    
     SetDisableUI(value) {
         if (this.Input != null) {
             this.Input.readOnly = value;
