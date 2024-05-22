@@ -33,6 +33,7 @@ import { EntityRef } from "./models/entityRef.js";
  * @typedef {import('./gridView.js').GridView} GridView
  */
 export class ListView extends EditableComponent {
+    IsListView = true;
     /** @type {ListViewSection} */
     MainSection;
     /**

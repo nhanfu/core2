@@ -1,5 +1,4 @@
-import { ListView } from "./listView.js";
-import { ListViewSection, Section } from "./section.js";
+import { Section } from "./section.js";
 import { Html } from "./utils/html.js";
 import EventType from "./models/eventType.js";
 import { Component } from "./models/component.js";
@@ -16,7 +15,10 @@ import { Button } from "./button.js";
 import { Textbox } from "./textbox.js";
 import { ComponentType } from "./models/componentType.js";
 import {ElementType} from './models/elementType.js';
+
 /**
+ * @typedef {import('./section.js').ListViewSection} ListViewSection
+ * @typedef {import('./listView.js').ListView} ListView
  * Represents a list view item.
  * @extends Section
  */
@@ -135,9 +137,7 @@ export class ListViewItem extends Section {
      */
     Render() {
         // @ts-ignore
-        this.ListViewSection = this.ListViewSection ?? this.FindClosest(ListViewSection);
-        // @ts-ignore
-        this.ListView = this.ListView ?? this.FindClosest(ListView);
+        this.ListView = this.ListView ?? this.FindClosest(x => x instanceof ListView);
         this.Meta = this.ListView.Meta;
         super.Render();
         if (this._selected) {

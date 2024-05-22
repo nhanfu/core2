@@ -420,7 +420,9 @@ export default class EditableComponent {
         return this.Children.Flattern(x => x.AlwaysValid ? null : x.Children).Where(x => !x.IsValid);
     }
 
+    IsButton = false;
     IsRow = false;
+    IsListView = false;
     IsSearchEntry = false;
     CascadeField() {
         if (!this.Meta.CascadeField) {

@@ -13,8 +13,6 @@ import { StringBuilder } from "./utils/stringBuilder.js";
 import { FeaturePolicy } from "./models/featurePolicy.js";
 import { ComponentFactory } from "./utils/componentFactory.js";
 import { Toast } from "./toast.js";
-import { Button } from "./button.js";
-import { ListView } from "./listView.js";
 import { Label } from "./label.js";
 import { ComponentType } from "./models/componentType.js";
 import { ConfirmDialog } from "./confirmDialog.js";
@@ -24,6 +22,7 @@ import { ContextMenu } from "./contextMenu.js";
 import { SqlViewModel } from "./models/sqlViewModel.js";
 
 /**
+ * @typedef {import('./listView.js').ListView} ListView
  * Represents an editable form component.
  */
 export class EditForm extends EditableComponent {
@@ -95,10 +94,10 @@ export class EditForm extends EditableComponent {
     GetPatchEntity() {
         const shouldGetAll = this.EntityId == null;
         const details = this.FilterChildren(child => {
-            return !(child instanceof Button)
+            return !(child.IsButton)
                 && (shouldGetAll || child.Dirty) && child.Meta != null
                 && child.Name != null;
-        }, x => x instanceof ListView || x.AlwaysValid || !x.PopulateDirty);
+        }, x => x.IsListView || x.AlwaysValid || !x.PopulateDirty);
         const patches = details
             .DistinctBy(x => x.Meta.Id)
             .SelectMany(child => {
@@ -167,7 +166,7 @@ export class EditForm extends EditableComponent {
             return;
         }
 
-        const allListView = VisibleListView.Parent.Children.filter(x => x instanceof ListView);
+        const allListView = VisibleListView.Parent.Children.filter(x => x.IsListView);
         const responsive = allListView.some(x => x.Name.includes("Mobile"));
         allListView.forEach(lv => {
             if (responsive) {

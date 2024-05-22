@@ -9,7 +9,6 @@ import EventType from "./models/eventType.js";
 import { PatchVM } from "./models/patch.js";
 import { Client } from "./clients/client.js";
 import { Component } from "./models/component.js";
-import { ListView } from "./listView.js";
 
 export class Section extends EditableComponent {
     /**
@@ -121,7 +120,7 @@ export class Section extends EditableComponent {
                 const component = ComponentFactory.GetComponent(ui, this.EditForm);
                 if (component == null) return;
                 // @ts-ignore
-                if (component instanceof ListView) {
+                if (component.IsListView) {
                     // @ts-ignore
                     this.EditForm.ListViews.push(component);
                 }
@@ -523,11 +522,11 @@ export class Section extends EditableComponent {
                 html.End.Render();
             }
     
-            const childCom = ComponentFactory.GetComponent(ui, this.EditForm);
-            if (childCom === null) return;
-            let childComponent = childCom instanceof EditableComponent ? childCom : { v: childCom };
+            const childComponent = ComponentFactory.GetComponent(ui, this.EditForm);
+            if (childComponent === null) return;
 
-            if (childComponent instanceof ListView) {
+            if (childComponent.IsListView) {
+                // @ts-ignore
                 this.EditForm.ListViews.push(childComponent);
                 this.AddChild(childComponent);
             }
@@ -626,7 +625,8 @@ export class Section extends EditableComponent {
         const childCom = ComponentFactory.GetComponent(ui, this.EditForm);
         if (childCom === null) return;
 
-        if (childCom instanceof ListView) {
+        if (childCom.IsListView) {
+            // @ts-ignore
             this.EditForm.ListViews.push(childCom);
         }
         this.AddChild(childCom);
@@ -734,7 +734,8 @@ export class Section extends EditableComponent {
             const childCom = ComponentFactory.GetComponent(ui, this.EditForm);
             if (childCom === null) return;
 
-            if (childCom instanceof ListView) {
+            if (childCom.IsListView) {
+                // @ts-ignore
                 this.EditForm.ListViews.push(childCom);
             }
             this.AddChild(childCom);
@@ -778,6 +779,7 @@ export class Section extends EditableComponent {
 }
 
 export class ListViewSection extends Section {
+    /** @typedef {import('./listView.js').ListView} ListView */
     /** @type {ListView} */
     ListView;
     Render() {

@@ -7,6 +7,7 @@ import { Html } from "./utils/html.js";
  * Represents a button component that can be rendered and managed on a web page.
  */
 export class Button extends EditableComponent {
+    IsButton = true;
     /**
      * Creates an instance of the Button component.
      * @param {Component} ui - The UI component metadata.
