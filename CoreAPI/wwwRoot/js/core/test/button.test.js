@@ -1,29 +1,30 @@
-// Import statements if needed
-import { Button } from '../button'; // Uncomment if Button class is in a separate file
+import { Button } from '../button';
 import { Component } from '../models/component';
+import { Spinner } from '../spinner';
+
+jest.mock('../spinner', () => ({
+    __esModule: true,
+    Spinner: {
+        AppendTo: jest.fn(),
+        Hide: jest.fn(),
+    },
+}));
 
 describe('Button', () => {
     /** @type {Component} */
     let ui;
     /** @type {HTMLDivElement} */
     let element;
-    let spinnerMock;
 
     beforeEach(() => {
         ui = { Id: '123', FieldName: 'btnSave', ClassName: 'btn-class', Style: 'color: red;', Icon: 'icon-path', Label: 'Click me', Events: {} };
         element = document.createElement('div');
         document.body.appendChild(element);
-
-        spinnerMock = {
-            AppendTo: jest.fn(),
-            Hide: jest.fn()
-        };
-
-        global.Spinner = spinnerMock;
     });
 
     afterEach(() => {
         document.body.removeChild(element);
+        jest.clearAllMocks();
     });
 
     test('should throw error if ui is not provided', () => {
@@ -40,9 +41,9 @@ describe('Button', () => {
 
         await button.DispatchClick();
 
-        expect(spinnerMock.AppendTo).toHaveBeenCalledWith(element);
+        expect(Spinner.AppendTo).toHaveBeenCalledWith(element);
         expect(mockDispatchEvent).toHaveBeenCalledWith(ui.Events, "click", button.Entity, button);
-        expect(spinnerMock.Hide).toHaveBeenCalled();
+        expect(Spinner.Hide).toHaveBeenCalled();
     });
 
     test('GetValueText should return textContent of _textEle if Entity or Meta is null', () => {
@@ -51,5 +52,29 @@ describe('Button', () => {
 
         expect(button.GetValueText()).toEqual("Some text");
     });
-});
 
+    test('should render the button with correct properties', () => {
+        const button = new Button(ui, element);
+        button.Render();
+    
+        expect(button.Element).toBe(element);
+        expect(button.Element.className).toContain('btn-class');
+        expect(button.Element.style.color).toBe('red');
+        expect(button.Element.querySelector('.caption').textContent).toBe('Click me');
+    });
+
+    test('DispatchClick should not proceed if button is disabled', async () => {
+        const button = new Button(ui, element);
+        button.Render();
+        button.Disabled = true;
+    
+        const mockDispatchEvent = jest.fn().mockResolvedValue();
+        button.DispatchEvent = mockDispatchEvent;
+    
+        await button.DispatchClick();
+    
+        expect(Spinner.AppendTo).not.toHaveBeenCalled();
+        expect(mockDispatchEvent).not.toHaveBeenCalled();
+        expect(Spinner.Hide).not.toHaveBeenCalled();
+    });
+});
