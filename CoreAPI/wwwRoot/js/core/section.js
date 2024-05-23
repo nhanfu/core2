@@ -31,8 +31,13 @@ export class Section extends EditableComponent {
             if (typeof this.elementType !== 'string' && 'value' in this.elementType) {
                 const valueAsString = String(this.elementType.value); 
                 Html.Take(this.ParentElement).Add(valueAsString);
-                this.Element = Html.Context;;
-            }
+                this.Element = Html.Context;
+            } else {
+                // @ts-ignore
+                const element = document.createElement(this.elementType);
+                this.ParentElement.appendChild(element);
+                this.Element = element;
+              }
         } else {
             throw 'Element type must be not null and parent element or element must be supplied'
         }
@@ -90,7 +95,6 @@ export class Section extends EditableComponent {
         }
         this.RenderChildrenSection(this.Meta);
     }
-
     /**
      * 
      * @param {HTMLElement[]} hTMLElements 

@@ -17,7 +17,7 @@ describe('Section', () => {
     container = null;
   });
 
-  it('should render content correctly', () => {
+  test('should render content correctly', () => {
     // Assume Section's Render method adds a div with class 'section-content'
     const section = new Section(null, container);
     // @ts-ignore
@@ -28,7 +28,7 @@ describe('Section', () => {
     expect(container.id).toBe('abc');
   });
 
-  it('should only render children when condition is met', () => {
+  test('should only render children when condition is met', () => {
     const section = new Section(ElementType.div);
     section.ParentElement = container; // Assume this property controls whether children are rendered
     section.Render();
@@ -36,7 +36,7 @@ describe('Section', () => {
     expect(container.innerHTML).toBe('<div></div>');
   });
   
-  it('should apply dynamic styles correctly', () => {
+  test('should apply dynamic styles correctly', () => {
     const section = new Section(ElementType.div);
     section.Meta = { Id: 'abc', Html: '<div></div>', Css: '#abc { backgroundColor: "blue" }'}; // Assume dynamic styling can be applied
     section.ParentElement = container;
@@ -45,7 +45,7 @@ describe('Section', () => {
     expect(style != null).toBe(true);
   });
 
-  it('should clean up resources on destruction', () => {
+  test('should clean up resources on destruction', () => {
     const section = new Section(ElementType.div);
     section.ParentElement = container;
     section.Render();
@@ -53,7 +53,7 @@ describe('Section', () => {
     expect(container.innerHTML).toBe('');
   });
 
-  it('should properly manage child components', () => {
+  test('should properly manage child components', () => {
     const section = new Section(ElementType.div);
     section.ParentElement = container;
     const childComponent = { Render: jest.fn(), ToggleShow: jest.fn(), ToggleDisabled: jest.fn() };
