@@ -29,7 +29,7 @@ export class Section extends EditableComponent {
             this.elementType = this.Element?.tagName?.toLowerCase();
         } else if (this.ParentElement != null && this.elementType != null) {
             if (typeof this.elementType !== 'string' && 'value' in this.elementType) {
-                const valueAsString = String(this.elementType.value); 
+                const valueAsString = String(this.elementType.value);
                 Html.Take(this.ParentElement).Add(valueAsString);
                 this.Element = Html.Context;
             } else {
@@ -37,7 +37,7 @@ export class Section extends EditableComponent {
                 const element = document.createElement(this.elementType);
                 this.ParentElement.appendChild(element);
                 this.Element = element;
-              }
+            }
         } else {
             throw 'Element type must be not null and parent element or element must be supplied'
         }
@@ -47,6 +47,14 @@ export class Section extends EditableComponent {
             const cssContent = this.Meta.Css;
             const section = (this.Meta.FieldName?.toLowerCase() ?? Str.Empty) + this.Meta.Id;
             if (cssContent) {
+                const regex = /(?:^|[\s\r\n])\.([a-zA-Z0-9-_]+)/g;
+                cssContent = cssContent.replace(regex, (match) => {
+                    if (/\d/.test(match) || match.includes("minmax")) {
+                        return match;
+                    } else {
+                        return match.replace(/([.])/, `[${section}]$1`);
+                    }
+                });
                 if (!document.head.querySelector("#" + section)) {
                     const style = document.createElement("style");
                     style.id = section;
@@ -267,7 +275,7 @@ export class Section extends EditableComponent {
         if (source === null || source.length === 0) {
             return false;
         }
-    
+
         return source.every(predicate);
     }
 
@@ -316,7 +324,7 @@ export class Section extends EditableComponent {
         Html.Instance.Display(!GroupInfo.Hidden).Style(GroupInfo.Style || "").Width(Width);
         const section = new Section(Html.Context);
         section.Id = GroupInfo.FieldName + GroupInfo.Id,
-        section.Name = GroupInfo.FieldName;
+            section.Name = GroupInfo.FieldName;
         section.Meta = GroupInfo;
         section.Disabled = Parent.Disabled || GroupInfo.Disabled || !WritePermission || form.IsLock || section.Disabled;
         // @ts-ignore
@@ -508,14 +516,14 @@ export class Section extends EditableComponent {
             if (ui.Hidden) {
                 return;
             }
-    
+
             const comPolicies = allComPolicies.filter(x => x.RecordId === ui.Id);
             const readPermission = !ui.IsPrivate || comPolicies.every(x => x.CanRead);
             const writePermission = !ui.IsPrivate || comPolicies.every(x => x.CanWrite);
             if (!readPermission) {
                 return;
             }
-    
+
             Html.Take(this.Element);
             const colSpan = ui.Column || 2;
             ui.Label = ui.Label || '';
@@ -525,7 +533,7 @@ export class Section extends EditableComponent {
                 label = Html.Context;
                 html.End.Render();
             }
-    
+
             const childComponent = ComponentFactory.GetComponent(ui, this.EditForm);
             if (childComponent === null) return;
 
@@ -546,11 +554,11 @@ export class Section extends EditableComponent {
                     if (ui.ClassName.HasAnyChar()) {
                         childComponent.Element.AddClass(ui.ClassName);
                     }
-        
+
                     if (ui.Row === 1) {
                         childComponent.ParentElement.parentElement.AddClass("inline-label");
                     }
-        
+
                     if (Client.SystemRole) {
                         // @ts-ignore
                         childComponent.Element.AddEventListener("ContextMenu", (e) => this.EditForm.SysConfigMenu(e, ui, group, childComponent));
@@ -558,13 +566,13 @@ export class Section extends EditableComponent {
                     if (ui.Focus) {
                         childComponent.Focus();
                     }
-            
+
                 }
                 if (colSpan <= innerCol) {
                     if (label !== null && label.nextElementSibling !== null && colSpan !== 2) {
-                        if(label.nextElementSibling instanceof HTMLElement) {
+                        if (label.nextElementSibling instanceof HTMLElement) {
                             label.nextElementSibling.style.gridColumn = `${column + 2}/${column + colSpan + 1}`;
-    
+
                         }
                     } else if (childComponent.Element !== null) {
                         childComponent.Element.style.gridColumn = `${column + 2}/${column + colSpan + 1}`;
@@ -653,7 +661,7 @@ export class Section extends EditableComponent {
             }
 
             if (Client.SystemRole) {
-                childCom.Element.addEventListener('contextmenu', e => this.EditForm.SysConfigMenu(e, ui,  ui, childCom));
+                childCom.Element.addEventListener('contextmenu', e => this.EditForm.SysConfigMenu(e, ui, ui, childCom));
             }
         }
         if (ui.Focus) {
@@ -662,7 +670,7 @@ export class Section extends EditableComponent {
 
         if (colSpan <= innerCol) {
             if (label && label.nextElementSibling && colSpan !== 2) {
-                if(label.nextElementSibling instanceof HTMLElement) {
+                if (label.nextElementSibling instanceof HTMLElement) {
                     label.nextElementSibling.style.gridColumn = `${column + 2}/${column + colSpan + 1}`;
                 }
             } else if (childCom.Element) {
@@ -678,8 +686,8 @@ export class Section extends EditableComponent {
     }
 
     async ComponentProperties(component) {
-        const { ComponentBL} = await import('./forms/componentBL.js');
-        const { EditForm} = await import('./editForm.js');
+        const { ComponentBL } = await import('./forms/componentBL.js');
+        const { EditForm } = await import('./editForm.js');
         // @ts-ignore
         var editor = new ComponentBL({
             Entity: component,
