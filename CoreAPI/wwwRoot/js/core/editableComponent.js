@@ -420,6 +420,8 @@ export default class EditableComponent {
         return this.Children.Flattern(x => x.AlwaysValid ? null : x.Children).Where(x => !x.IsValid);
     }
 
+
+    IsListViewItem = false;
     IsButton = false;
     IsRow = false;
     IsListView = false;

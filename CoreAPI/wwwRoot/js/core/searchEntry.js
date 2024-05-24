@@ -9,10 +9,10 @@ import { ObservableList } from './models/observableList.js';
 import { PositionEnum ,KeyCodeEnum} from './models/enum.js';
 import { ComponentExt } from './utils/componentExt.js';
 import "./utils/fix.js";
-import { ListViewItem } from './listViewItem.js';
 import { GridView } from './gridView.js';
 import { ListView } from './listView.js';
-import { GroupGridView } from './groupGridView.js';
+
+
 
 export class SearchEntry extends EditableComponent {
     IsSearchEntry = true;
@@ -280,7 +280,7 @@ export class SearchEntry extends EditableComponent {
         let oldValue = this.Value;
         this.Dirty = true;
         this.Matched = entity;
-        if (!(this.Parent instanceof ListViewItem)) {
+        if (!(this.Parent.IsListViewItem)) {
             this.Value = entity[this.IdField]?.toString();
             this.Dirty = true;
             if (this.UserInput !== null) {
@@ -321,7 +321,7 @@ export class SearchEntry extends EditableComponent {
         this.RenderGridView(Utils.DecodeSpecialChar(term));
     }
 
-    RenderGridView(term = null) {
+    async RenderGridView(term = null) {
         if (this._isRendering) {
             return;
         }
@@ -341,7 +341,8 @@ export class SearchEntry extends EditableComponent {
         if (this.Meta.GroupBy.trim() !== ""()) {
             this._gv = new GridView(this.Meta);
         } else {
-            this._gv = new GroupGridView(this.Meta);
+            const md = await import('./groupGridView.js');
+            this._gv = new md.GroupGridView(this.Meta);
         }
         this.RenderRootResult();
         this.ParentElement = this._rootResult;
@@ -416,14 +417,14 @@ export class SearchEntry extends EditableComponent {
         }
     }
 
-    GridResultDomLoaded() {
+    async GridResultDomLoaded() {
+        const md = await import('./listViewItem.js');
         this.FocusBackWithoutEvent();
         this._gv.SelectedIndex = -1;
         this._gv.RowAction(x => {
-            if (x instanceof ListViewItem) {
+            if (x instanceof md.ListViewItem) {
                 x.Selected = false;
-            }
-        });
+        }});
         this._gv.Element.style.inset = null;
         this.RenderRootResult();
         this._rootResult.appendChild(this._gv.Element);

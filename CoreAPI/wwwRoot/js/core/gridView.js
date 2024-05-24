@@ -17,6 +17,7 @@ import { ListViewSection, Section } from './section.js';
 import { CustomEventType } from './models/customEventType.js';
 import { ListViewSearch, ListViewSearchVM } from './listViewSearch.js';
 import { OperatorEnum, KeyCodeEnum, OrderbyDirection, AdvSearchOperation, LogicOperation} from './models/enum.js';
+import EditableComponent from "./editableComponent.js";
 
 
 
@@ -97,22 +98,22 @@ export class GridView extends ListView {
 
     StickyColumn(rows, top = null) {
         let shouldStickEle = ["th", "td"];
-        let frozen = rows.FilterChildren(x => x.Meta != null && x.Meta.Frozen, x => !(x instanceof ListViewSearch));
-        frozen.forEach(x => {
-            let cell = x.Element;
-            let isCell = shouldStickEle.includes(x.Element.tagName.toLowerCase());
-            if (!isCell) {
-                cell = x.Element.closest("td");
-            }
-            if (top && top.HasAnyChar()) {
-                // @ts-ignore
-                Html.Take(cell).Sticky({ top });
-            } else {
-                // @ts-ignore
-                Html.Take(cell).Sticky({ left: "0" });
-            }
-        });
-    }
+            let frozen = rows.FilterChildren(x => x.Meta != null && x.Meta.Frozen, x => !(x instanceof ListViewSearch));
+            frozen.forEach(x => {
+                let cell = x.Element;
+                let isCell = shouldStickEle.includes(x.Element.tagName.toLowerCase());
+                if (!isCell) {
+                    cell = x.Element.closest("td");
+                }
+                if (top) {
+                    // @ts-ignore
+                    Html.Take(cell).Sticky({ top });
+                } else {
+                    // @ts-ignore
+                    Html.Take(cell).Sticky({ left: "0" });
+                }
+            });
+}
 
     AddSections() {
         if (this.HeaderSection && this.HeaderSection.Element != null) {
@@ -189,41 +190,96 @@ export class GridView extends ListView {
         this.Header.splice(newIndex, 0, item);
     }
 
+    // ClickHeader(e, header) {
+    //     let index = this.LastNumClick;
+    //     const table = this.DataTable;
+    //     if (this.LastNumClick != null) {
+    //         table.querySelectorAll('tr:not(.summary)').forEach(function(row) {
+    //             if(row.hasAttribute('virtualrow') || row.classList.contains('group-row')){
+    //                 return;
+    //             }
+    //             /** @type {HTMLElement[]} */
+    //             const cells = Array.from(row.querySelectorAll('th, td'));
+    //             if (cells[index]) {
+    //                 cells[index].style.removeProperty("background-color");
+    //                 cells[index].style.removeProperty("color");
+    //             }
+    //         });
+    //     }
+    //     const th = e.target.closest("th");
+    //     const tr = Array.from(th.parentElement.querySelectorAll("th"));
+    //     index = tr.findIndex(x => x === th);
+    //     if (index < 0) {
+    //         return;
+    //     }
+    //     this.LastThClick = th;
+    //     this.LastNumClick = index;
+    //     table.querySelectorAll('tr:not(.summary)').forEach(function(row) {
+    //         if(row.hasAttribute('virtualrow') || row.classList.contains('group-row')){
+    //             return;
+    //         }
+    //         /** @type {HTMLElement[]} */
+    //         const cells = Array.from(row.querySelectorAll('th, td'));
+    //         if (cells[index]) {
+    //             cells[index].style.backgroundColor = "#cbdcc2";
+    //             cells[index].style.color = "#000";
+    //         }
+    //     });
+    // } 
+
     ClickHeader(e, header) {
         let index = this.LastNumClick;
         const table = this.DataTable;
-        if (this.LastNumClick !== null) {
+    
+        console.log('Initial LastNumClick:', this.LastNumClick);
+    
+        if (this.LastNumClick != null) {
             table.querySelectorAll('tr:not(.summary)').forEach(function(row) {
-                if(row.hasAttribute('virtualrow') || row.classList.contains('group-row')){
+                if (row.hasAttribute('virtualrow') || row.classList.contains('group-row')) {
                     return;
                 }
+                /** @type {HTMLElement[]} */
                 const cells = Array.from(row.querySelectorAll('th, td'));
-                // @ts-ignore
-                cells[index].style.removeProperty("background-color");
-                // @ts-ignore
-                cells[index].style.removeProperty("color");
+                if (cells[index]) {
+                    console.log('Removing properties from cell:', cells[index]);
+                    cells[index].style.removeProperty("background-color");
+                    cells[index].style.removeProperty("color");
+                }
             });
         }
-
+    
         const th = e.target.closest("th");
+        console.log('Target th:', th);
+    
         const tr = Array.from(th.parentElement.querySelectorAll("th"));
         index = tr.findIndex(x => x === th);
+        console.log('New index:', index);
+    
         if (index < 0) {
             return;
         }
+    
         this.LastThClick = th;
         this.LastNumClick = index;
+    
         table.querySelectorAll('tr:not(.summary)').forEach(function(row) {
-            if(row.hasAttribute('virtualrow') || row.classList.contains('group-row')){
+            if (row.hasAttribute('virtualrow') || row.classList.contains('group-row')) {
                 return;
             }
+            /** @type {HTMLElement[]} */
             const cells = Array.from(row.querySelectorAll('th, td'));
-            // @ts-ignore
-            cells[index].style.backgroundColor = "#cbdcc2";
-            // @ts-ignore
-            cells[index].style.color = "#000";
+            if (cells[index]) {
+                console.log('Setting properties for cell:', cells[index]);
+                cells[index].style.backgroundColor = "#cbdcc2";
+                cells[index].style.color = "#000";
+            }
         });
     }
+    
+    
+    
+    
+    
 
     FocusOutHeader(e, header) {
         let index = this.LastNumClick;
