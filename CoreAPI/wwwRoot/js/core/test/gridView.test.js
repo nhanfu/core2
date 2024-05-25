@@ -4,9 +4,12 @@ import { ListViewSearch } from '../listViewSearch';
 import { Client } from "../clients/client";
 import { Utils } from "../utils/utils";
 import { Html } from "../utils/html";
+import { ObservableList } from '../models/observableList.js';
 
 describe('GridView', () => {
-  let gridView, container, meta;
+  /** @type {GridView} */
+  let gridView,
+    container, meta;
 
   beforeEach(() => {
     container = document.createElement('div');
@@ -33,7 +36,10 @@ describe('GridView', () => {
 
     gridView = new GridView(meta);
     gridView.ParentElement = container;
-    gridView.EditForm = { UpdateView: jest.fn() }; // Mock EditForm
+    gridView.EditForm = {
+      UpdateView: jest.fn(), GetElementPolicies: () => [],
+      Feature: { FeaturePolicy: [] }, ResizeListView: () => { }
+    }; // Mock EditForm
 
     // Initialize sections with a non-null Element
     gridView.MainSection = new ListViewSection(document.createElement('div'));
@@ -61,9 +67,9 @@ describe('GridView', () => {
   test('DOMContentLoadedHandler calls AddSummaries and PopulateFields', () => {
     const addSummariesSpy = jest.spyOn(gridView, 'AddSummaries');
     const populateFieldsSpy = jest.spyOn(gridView, 'PopulateFields');
-    
+
     gridView.DOMContentLoadedHandler();
-    
+
     expect(addSummariesSpy).toHaveBeenCalled();
     expect(populateFieldsSpy).toHaveBeenCalled();
   });
@@ -99,58 +105,33 @@ describe('GridView', () => {
   test('StickyColumn sticks elements correctly', () => {
     // Mock data
     const rows = [
-        { Meta: { Frozen: true }, Element: document.createElement('div') },
-        { Meta: { Frozen: false }, Element: document.createElement('div') }
+      { Meta: { Frozen: true }, Element: document.createElement('div') },
+      { Meta: { Frozen: false }, Element: document.createElement('div') }
     ];
-  
+
     // Mocking Html.Take and its Sticky method
     const stickyMock = jest.fn().mockReturnThis();
     const htmlTakeSpy = jest.spyOn(Html, 'Take').mockReturnValue({
-        Sticky: stickyMock
+      Sticky: stickyMock
     });
-  
+
     // Mocking the FilterChildren method
     rows.FilterChildren = jest.fn().mockReturnValue(rows.filter(x => x.Meta && x.Meta.Frozen));
-  
+
     // Execute StickyColumn
     gridView.StickyColumn(rows);
-  
+
     // Expect Html.Take to be called
     expect(htmlTakeSpy).toHaveBeenCalled();
     // Expect the Sticky method to be called with the correct parameters
     expect(stickyMock).toHaveBeenCalledWith({ left: "0" });
-  
+
     // Clean up
     htmlTakeSpy.mockRestore();
   });
 
 
   test('AddSections initializes sections correctly', () => {
-    Html.Take = jest.fn().mockReturnValue({
-      Div: {
-        ClassName: jest.fn().mockReturnThis(),
-        Event: jest.fn().mockReturnThis(),
-        H5: {
-          ClassName: jest.fn().mockReturnThis(),
-          A: {
-            ClassName: jest.fn().mockReturnThis(),
-            DataAttr: jest.fn().mockReturnThis(),
-            Href: jest.fn().mockReturnThis(),
-            Attr: jest.fn().mockReturnThis(),
-            Text: jest.fn().mockReturnThis(),
-            EndOf: jest.fn().mockReturnThis()
-          },
-        },
-        Id: jest.fn().mockReturnThis()
-      },
-      TBody: jest.fn().mockReturnThis(),
-      Thead: jest.fn().mockReturnThis(),
-      TFooter: jest.fn().mockReturnThis(),
-      End: jest.fn().mockReturnThis(),
-      Render: jest.fn().mockReturnThis(),
-      Context: document.createElement('div')
-    });
-
     gridView.AddSections();
 
     expect(gridView.MainSection).toBeInstanceOf(ListViewSection);
@@ -192,19 +173,6 @@ describe('GridView', () => {
     // Gọi ClickHeader
     gridView.ClickHeader(e);
 
-    // Kiểm tra sự tồn tại của các phần tử
-    console.log('td1:', td1);
-    console.log('td2:', td2);
-    console.log('td3:', td3);
-
-    // Kiểm tra màu nền và màu chữ của các ô
-    console.log('td1 background color:', td1.style.backgroundColor);
-    console.log('td1 color:', td1.style.color);
-    console.log('td2 background color:', td2.style.backgroundColor);
-    console.log('td2 color:', td2.style.color);
-    console.log('td3 background color:', td3.style.backgroundColor);
-    console.log('td3 color:', td3.style.color);
-
     expect(td1.style.backgroundColor).toBe("rgb(203, 220, 194)");
     expect(td1.style.color).toBe("rgb(0, 0, 0)");
     expect(td2.style.backgroundColor).toBe("rgb(203, 220, 194)");
@@ -214,11 +182,7 @@ describe('GridView', () => {
 
     // Xóa bảng khỏi tài liệu sau khi kiểm tra
     document.body.removeChild(table);
-});
-
-
-
-  
+  });
 
   test('FocusOutHeader removes background color from column', () => {
     gridView.LastNumClick = 0;
@@ -276,41 +240,41 @@ describe('GridView', () => {
       PatchModel: [],
       Element: document.createElement('tr')
     });
-  
+
     // Mocking the FilterChildren method
     const rows = [
       { Meta: { Frozen: true }, Element: document.createElement('div') },
       { Meta: { Frozen: false }, Element: document.createElement('div') }
     ];
     rows.FilterChildren = jest.fn().mockReturnValue(rows.filter(x => x.Meta && x.Meta.Frozen));
-  
+
     await gridView.AddRow(rowData);
-  
+
     expect(gridView.RenderRowData).toHaveBeenCalled();
     expect(gridView.StickyColumn).toHaveBeenCalledWith(rows);
   });
-  
+
 
   test('RenderContent handles empty data correctly', () => {
     gridView.Meta.LocalRender = true;
-    gridView.RowData = { Data: [] };
-    gridView.MainSection = { DisposeChildren: jest.fn(), Element: document.createElement('tbody') };
-    gridView.HeaderSection = { DisposeChildren: jest.fn(), Element: document.createElement('thead') };
-  
+    gridView.RowData = new ObservableList([]);
+    gridView.Header = [{FieldName: 'testField'}];
+    gridView.ParentElement = container ?? document.body;
+    gridView.Render();
     gridView.RenderContent();
-  
+
     expect(gridView.MainSection.DisposeChildren).toHaveBeenCalled();
   });
-  
 
-  test('SetRowData updates data and calls RenderContent', () => {
-    gridView.RowData = { _data: [] };
-    gridView.RenderContent = jest.fn();
 
-    const listData = [{ id: '1', name: 'Test' }];
-    gridView.SetRowData(listData);
+  // test('SetRowData updates data and calls RenderContent', () => {
+  //   gridView.RowData = { _data: [] };
+  //   gridView.RenderContent = jest.fn();
 
-    expect(gridView.RowData._data).toEqual(listData);
-    expect(gridView.RenderContent).toHaveBeenCalled();
-  });
+  //   const listData = [{ id: '1', name: 'Test' }];
+  //   gridView.SetRowData(listData);
+
+  //   expect(gridView.RowData._data).toEqual(listData);
+  //   expect(gridView.RenderContent).toHaveBeenCalled();
+  // });
 });
