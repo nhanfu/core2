@@ -1,4 +1,3 @@
-import "./utils/fix.js";
 import { Toast } from './toast.js';
 import { Spinner } from './spinner.js';
 import { Utils } from "./utils/utils.js";
@@ -17,7 +16,6 @@ import { ListViewSection, Section } from './section.js';
 import { CustomEventType } from './models/customEventType.js';
 import { ListViewSearch, ListViewSearchVM } from './listViewSearch.js';
 import { OperatorEnum, KeyCodeEnum, OrderbyDirection, AdvSearchOperation, LogicOperation} from './models/enum.js';
-import EditableComponent from "./editableComponent.js";
 
 
 
@@ -136,7 +134,7 @@ export class GridView extends ListView {
             .ClassName(this.Editable ? "editable" : "");
         this.Element = Html.Context;
         if (this.Meta.CanSearch) {
-            Html.Instance.Div.ClassName("grid-toolbar search").End.Render();
+            Html.Div.ClassName("grid-toolbar search").End.Render();
         }
         this.ListViewSearch = new ListViewSearch(this.Meta);
         this.ListViewSearch.Entity = new ListViewSearchVM();
@@ -158,7 +156,7 @@ export class GridView extends ListView {
         }
         this.AddChild(this.ListViewSearch);
         this.DataTable = Html.Take(this.Element).Div.ClassName("table-wrapper").Table.ClassName("table").Id(idtb).GetContext();
-        Html.Instance.Thead.TabIndex(-1).End.TBody.ClassName("empty").End.TBody.End.TFooter.Render();
+        Html.Thead.TabIndex(-1).End.TBody.ClassName("empty").End.TBody.End.TFooter.Render();
 
         this.FooterSection = new ListViewSection(Html.Context);
         this.FooterSection.ParentElement = this.DataTable;
@@ -175,7 +173,7 @@ export class GridView extends ListView {
         this.HeaderSection = new ListViewSection(this.EmptySection.Element.previousElementSibling);
         this.HeaderSection.ParentElement = this.DataTable;
         this.AddChild(this.HeaderSection);
-        Html.Instance.EndOf(".table-wrapper");
+        Html.EndOf(".table-wrapper");
         this.RenderPaginator();
     }
 
@@ -190,96 +188,42 @@ export class GridView extends ListView {
         this.Header.splice(newIndex, 0, item);
     }
 
-    // ClickHeader(e, header) {
-    //     let index = this.LastNumClick;
-    //     const table = this.DataTable;
-    //     if (this.LastNumClick != null) {
-    //         table.querySelectorAll('tr:not(.summary)').forEach(function(row) {
-    //             if(row.hasAttribute('virtualrow') || row.classList.contains('group-row')){
-    //                 return;
-    //             }
-    //             /** @type {HTMLElement[]} */
-    //             const cells = Array.from(row.querySelectorAll('th, td'));
-    //             if (cells[index]) {
-    //                 cells[index].style.removeProperty("background-color");
-    //                 cells[index].style.removeProperty("color");
-    //             }
-    //         });
-    //     }
-    //     const th = e.target.closest("th");
-    //     const tr = Array.from(th.parentElement.querySelectorAll("th"));
-    //     index = tr.findIndex(x => x === th);
-    //     if (index < 0) {
-    //         return;
-    //     }
-    //     this.LastThClick = th;
-    //     this.LastNumClick = index;
-    //     table.querySelectorAll('tr:not(.summary)').forEach(function(row) {
-    //         if(row.hasAttribute('virtualrow') || row.classList.contains('group-row')){
-    //             return;
-    //         }
-    //         /** @type {HTMLElement[]} */
-    //         const cells = Array.from(row.querySelectorAll('th, td'));
-    //         if (cells[index]) {
-    //             cells[index].style.backgroundColor = "#cbdcc2";
-    //             cells[index].style.color = "#000";
-    //         }
-    //     });
-    // } 
-
     ClickHeader(e, header) {
         let index = this.LastNumClick;
         const table = this.DataTable;
-    
-        console.log('Initial LastNumClick:', this.LastNumClick);
-    
         if (this.LastNumClick != null) {
             table.querySelectorAll('tr:not(.summary)').forEach(function(row) {
-                if (row.hasAttribute('virtualrow') || row.classList.contains('group-row')) {
+                if(row.hasAttribute('virtualrow') || row.classList.contains('group-row')){
                     return;
                 }
                 /** @type {HTMLElement[]} */
                 const cells = Array.from(row.querySelectorAll('th, td'));
                 if (cells[index]) {
-                    console.log('Removing properties from cell:', cells[index]);
                     cells[index].style.removeProperty("background-color");
                     cells[index].style.removeProperty("color");
                 }
             });
         }
-    
         const th = e.target.closest("th");
-        console.log('Target th:', th);
-    
         const tr = Array.from(th.parentElement.querySelectorAll("th"));
         index = tr.findIndex(x => x === th);
-        console.log('New index:', index);
-    
         if (index < 0) {
             return;
         }
-    
         this.LastThClick = th;
         this.LastNumClick = index;
-    
         table.querySelectorAll('tr:not(.summary)').forEach(function(row) {
-            if (row.hasAttribute('virtualrow') || row.classList.contains('group-row')) {
+            if(row.hasAttribute('virtualrow') || row.classList.contains('group-row')){
                 return;
             }
             /** @type {HTMLElement[]} */
             const cells = Array.from(row.querySelectorAll('th, td'));
             if (cells[index]) {
-                console.log('Setting properties for cell:', cells[index]);
                 cells[index].style.backgroundColor = "#cbdcc2";
                 cells[index].style.color = "#000";
             }
         });
-    }
-    
-    
-    
-    
-    
+    } 
 
     FocusOutHeader(e, header) {
         let index = this.LastNumClick;
@@ -424,6 +368,7 @@ export class GridView extends ListView {
             this.ActionFilter();
         };
         confirmDialog.Entity = { ReasonOfChange: "" };
+        confirmDialog.PElement = this.Element;
         confirmDialog.Render();
         if (!subFilter.IsNullOrWhiteSpace()) {
             if (header.ComponentType === "Datepicker") {
@@ -1507,15 +1452,15 @@ export class GridView extends ListView {
 
     RenderRowData(headers, row, section, index = null, emptyRow = false) {
         const tbody = section.element;
-        const rowSection = new GridViewItem({
-            type: ElementType.tr,
-            EmptyRow: emptyRow,
-            Entity: row,
-            ParentElement: tbody,
-            PreQueryFn: this._preQueryFn,
-            ListView: this,
-            Meta: this.Meta
-        });
+        Html.Take(tbody);
+        const rowSection = new GridViewItem(ElementType.tr);
+        rowSection.EmptyRow = emptyRow;
+        rowSection.Entity = row;
+        rowSection.ParentElement = tbody;
+        rowSection.PreQueryFn = this._preQueryFn;
+        // @ts-ignore
+        rowSection.ListView = this;
+        rowSection.Meta = this.Meta
         section.AddChild(rowSection, index);
 
         const tr = document.createElement('tr');
@@ -1852,12 +1797,12 @@ export class GridView extends ListView {
                     return;
                 }
     
-                Html.Instance.Th.Render();
-                Html.Instance.ColSpan(headers.filter(x => x.GroupName === header.GroupName).length);
-                Html.Instance.IHtml(header.GroupName).Render();
+                Html.Th.Render();
+                Html.ColSpan(headers.filter(x => x.GroupName === header.GroupName).length);
+                Html.IHtml(header.GroupName).Render();
                 return;
             }
-            Html.Instance.Th
+            Html.Th
                 .TabIndex(-1)
                 .DataAttr("field", header.FieldName)
                 .DataAttr("id", header.Id).Width(header.AutoFit ? "auto" : header.Width)
@@ -1870,48 +1815,51 @@ export class GridView extends ListView {
             // @ts-ignore
             this.HeaderSection.AddChild(new Section(Html.Context.parentElement, { Meta: header }));
             if (anyGroup && header.GroupName === "") {
-                Html.Instance.RowSpan(2);
+                Html.RowSpan(2);
             }
             if (!anyGroup && this.Header.some(x => x.GroupName && x.GroupName.length)) {
-                Html.Instance.ClassName("header-group");
+                Html.ClassName("header-group");
             }
             if (header.StatusBar) {
-                Html.Instance.Icon("fa fa-edit").Event(EventType.Click, this.ToggleAll).End.Render();
+                Html.Icon("fa fa-edit").Event(EventType.Click, this.ToggleAll).End.Render();
             }
             const orderBy = this.AdvSearchVM.OrderBy?.find(x => x.ComId === header.Id);
             if (orderBy) {
-                Html.Instance.ClassName(orderBy.OrderbyDirectionId === OrderbyDirection.ASC ? "asc" : "desc").Render();
+                Html.ClassName(orderBy.OrderbyDirectionId === OrderbyDirection.ASC ? "asc" : "desc").Render();
             }
             if (header.Icon) {
-                Html.Instance.Icon(header.Icon).Margin(Direction.Right, 0).End.Render();
+                Html.Icon(header.Icon).Margin(Direction.Right, 0).End.Render();
             } else if (!header.StatusBar) {
-                Html.Instance.Event(EventType.Click, e => this.ClickHeader(e, header)).IHtml(header.Label).Render();
+                Html.Event(EventType.Click, e => this.ClickHeader(e, header)).IHtml(header.Label).Render();
             }
             if (header.ComponentType === "Number") {
-                Html.Instance.Div.End.Render();
-                Html.Instance.Span.Style("display: block;").End.Render();
+                Html.Div.End.Render();
+                Html.Span.Style("display: block;").End.Render();
             }
             if (header.Description) {
-                Html.Instance.Attr("title", header.Description);
+                Html.Attr("title", header.Description);
             }
             if (Client.SystemRole) {
-                Html.Instance.Attr("contenteditable", "true");
-                Html.Instance.Event(EventType.Input, e => this.ChangeHeader(e, header));
+                Html.Attr("contenteditable", "true");
+                Html.Event(EventType.Input, e => this.ChangeHeader(e, header));
             }
-            Html.Instance.EndOf(ElementType.th);
+            Html.EndOf(ElementType.th);
         }).EndOf(ElementType.tr).Render();
     
         if (anyGroup) {
-            Html.Instance.TRow.ForEach(headers, (header, index) => {
+            Html.TRow.ForEach(headers, (header, index) => {
                 if (anyGroup && header.GroupName !== "") {
-                    Html.Instance.Th
+                    Html.Th
                         .DataAttr("field", header.FieldName).Width(header.Width)
                         .Style(`min-width: ${header.MinWidth}; max-width: ${header.MaxWidth}`)
                         .TextAlign(header.TextAlignEnum)
                         .Event(EventType.ContextMenu, this.HeaderContextMenu, header)
                         .InnerHTML(header.Label);
                     // @ts-ignore
-                    this.HeaderSection.AddChild(new Section(Html.Context.parentElement),{ Meta: header });
+                    const section = new Section(ElementType.tr);
+                    section.ParentElement = Html.Context.parentElement;
+                    section.Meta = header;
+                    this.HeaderSection.AddChild(section);
                 }
             });
         }

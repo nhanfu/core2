@@ -127,13 +127,15 @@ export class ListView extends EditableComponent {
      * Renders the list view, setting up necessary configurations and data bindings.
      */
     Render() {
-        this.GridPolicies = this.EditForm.GetElementPolicies(this.Meta.Id);
-        this.GeneralPolicies = this.EditForm.Feature.FeaturePolicy.Where(x => x.RecordId);
+        if (this.EditForm) {
+            this.GridPolicies = this.EditForm.GetElementPolicies(this.Meta.Id) ?? [];
+            this.GeneralPolicies = this.EditForm.Feature.FeaturePolicy.Where(x => x.RecordId);
+        }
         this.CanWrite = this.CanDo(x => x.CanWrite || x.CanWriteAll);
         Html.Take(this.ParentElement).DataAttr('name', this.Name);
         this.AddSections();
         this.SetRowDataIfExists();
-        this.EditForm.ResizeListView();
+        this.EditForm?.ResizeListView();
         if (this.Meta.LocalRender) this.LocalRender();
         else this.LoadAllData();
     }
@@ -143,7 +145,7 @@ export class ListView extends EditableComponent {
      */
     LocalRender() {
         // Setting the header from the local metadata configuration
-        this.Header = this.Meta.LocalHeader;
+        this.Header = this.Header ?? this.Meta.LocalHeader;
 
         if (this.Meta.LocalRender) {
             // If local rendering is enabled, re-render the view
@@ -1277,7 +1279,7 @@ export class ListView extends EditableComponent {
         }, 100);
     }
 
-     GetItemFocus() {
+    GetItemFocus() {
         return this.AllListViewItem.Where(x => x.Focused()).FirstOrDefault();
     }
 
@@ -1295,96 +1297,93 @@ export class ListView extends EditableComponent {
     }
 
     GetRowCountByHeight(scrollTop) {
-        return (scrollTop / this._rowHeight >= 0) ? 
-               Math.floor(scrollTop / this._rowHeight) : 
-               Math.ceil(scrollTop / this._rowHeight);
+        return (scrollTop / this._rowHeight >= 0) ?
+            Math.floor(scrollTop / this._rowHeight) :
+            Math.ceil(scrollTop / this._rowHeight);
     }
 
-    RemoveRow(row)
-        {
-            if (row === null)
-            {
-                return;
-            }
-            this.RowData.Data.Remove(row);
-            this.MainSection.FirstOrDefault(x => x.Entity == row)?.Dispose();
+    RemoveRow(row) {
+        if (row === null) {
+            return;
         }
+        this.RowData.Data.Remove(row);
+        this.MainSection.FirstOrDefault(x => x.Entity == row)?.Dispose();
+    }
 
-        CalcTextAlign(header) {
-            if (header.TextAlign && header.TextAlign.length > 0) {
-                const parsed = Object.values(header.TextAlign).includes(header.textAlign);
-                if (parsed) {
-                    header.textAlignEnum = header.textAlign;
-                }
+    CalcTextAlign(header) {
+        if (header.TextAlign && header.TextAlign.length > 0) {
+            const parsed = Object.values(header.TextAlign).includes(header.textAlign);
+            if (parsed) {
+                header.textAlignEnum = header.textAlign;
             }
-            return header;
         }
+        return header;
+    }
 
-        MergeComponent(sysSetting, userSetting) {
-            if (!userSetting) return sysSetting;
-            const column = JSON.parse(userSetting.value);
-            if (!column || column.length === 0) {
-                return sysSetting;
-            }
-            const userSettings = column.reduce((acc, current) => {
-                acc[current.id] = current;
-                return acc;
-            }, {});
-        
-            sysSetting.forEach(component => {
-                const current = userSettings[component.id];
-                if (current) {
-                    component.width = current.width;
-                    component.maxWidth = current.maxWidth;
-                    component.minWidth = current.minWidth;
-                    component.order = current.order;
-                    component.frozen = current.frozen;
-                }
-            });
+    MergeComponent(sysSetting, userSetting) {
+        if (!userSetting) return sysSetting;
+        const column = JSON.parse(userSetting.value);
+        if (!column || column.length === 0) {
             return sysSetting;
         }
+        const userSettings = column.reduce((acc, current) => {
+            acc[current.id] = current;
+            return acc;
+        }, {});
 
-         ActionFilter()
-        {
-            this.ClearRowData();
-            this.ReloadData().Done();
-        }
-
-        MoveUp() {
-            this.ClearSelected();
-            if (this.SelectedIndex <= 0 || this.SelectedIndex === this.AllListViewItem.length) {
-                this.SelectedIndex = this.AllListViewItem.length - 1;
+        sysSetting.forEach(component => {
+            const current = userSettings[component.id];
+            if (current) {
+                component.width = current.width;
+                component.maxWidth = current.maxWidth;
+                component.minWidth = current.minWidth;
+                component.order = current.order;
+                component.frozen = current.frozen;
             }
-            this.RowAction(x => {
-                if (x instanceof ListViewItem) {
-                    x.Selected = true;
-                }
-            // @ts-ignore
-            }, true);
-        }
+        });
+        return sysSetting;
+    }
 
-        MoveDown() {
-            this.ClearSelected();
-            if (this.SelectedIndex === -1 || this.SelectedIndex === this.AllListViewItem.length) {
-                this.SelectedIndex = 0;
+    ActionFilter() {
+        this.ClearRowData();
+        this.ReloadData().Done();
+    }
+
+    MoveUp() {
+        this.ClearSelected();
+        if (this.SelectedIndex <= 0 || this.SelectedIndex === this.AllListViewItem.length) {
+            this.SelectedIndex = this.AllListViewItem.length - 1;
+        }
+        this.RowAction(x => {
+            if (x instanceof ListViewItem) {
+                x.Selected = true;
             }
-            this.RowAction(x => {
-                if (x instanceof ListViewItem) {
-                    x.Selected = true;
-                }
             // @ts-ignore
-            }, false);
-        }
+        }, true);
+    }
 
-        GetUserSetting(prefix) {
-            // @ts-ignore
-            return Client.Instance.UserSvc({
-                MetaConn: this.MetaConn,
-                DataConn: this.DataConn,
-                ComId: "UserSetting",
-                Action: "GetByComId",
-                Params: JSON.stringify({ ComId: this.Meta.Id, Prefix: prefix })
-            });
+    MoveDown() {
+        this.ClearSelected();
+        if (this.SelectedIndex === -1 || this.SelectedIndex === this.AllListViewItem.length) {
+            this.SelectedIndex = 0;
         }
-        
+        this.RowAction(x => {
+            if (x instanceof ListViewItem) {
+                x.Selected = true;
+            }
+            // @ts-ignore
+        }, false);
+    }
+
+    GetUserSetting(prefix) {
+        // @ts-ignore
+        return Client.Instance.UserSvc({
+            MetaConn: this.MetaConn,
+            DataConn: this.DataConn,
+            ComId: "UserSetting",
+            Action: "GetByComId",
+            Params: JSON.stringify({ ComId: this.Meta.Id, Prefix: prefix })
+        });
+    }
+
 }

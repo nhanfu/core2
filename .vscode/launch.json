@@ -2,6 +2,20 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Debug Jest Tests",
+            "type": "node",
+            "request": "launch",
+            "runtimeArgs": [
+                "--inspect-brk",
+                "${workspaceRoot}/node_modules/jest/bin/jest.js",
+                "--runInBand",
+                "gridView.test.js"
+            ],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "port": 9229
+        },
+        {
             // Use IntelliSense to find out which attributes exist for C# debugging
             // Use hover for the description of the existing attributes
             // For further information visit https://github.com/dotnet/vscode-csharp/blob/main/debugger-launchjson.md.

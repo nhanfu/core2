@@ -37,8 +37,8 @@ export class ConfirmDialog extends EditableComponent {
     DisposeAfterYes = true;
 
     Render() {
-        let element = Html.Take(this.PElement || document.body);
-        element.Div.ClassName("backdrop").Style("align-items: center;").Escape(() => this.Dispose());
+        Html.Take(this.PElement || document.body);
+        Html.Div.ClassName("backdrop").Style("align-items: center;").Escape(() => this.Dispose());
         if (this.PElement) {
             Html.Instance.Style("position: fixed !important;");
         }

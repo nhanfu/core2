@@ -123,13 +123,14 @@ export class ListViewItem extends Section {
 
     set EmptyRow(value) {
         this._emptyRow = value;
+        this.FilterChildren().forEach(x => x.EmptyRow = value);
+        this.AlwaysValid = value;
+        if (this.Element == null) return;
         if (value) {
             this.Element.classList.add(ListViewItem.EmptyRowClass);
         } else {
             this.Element.classList.remove(ListViewItem.EmptyRowClass);
         }
-        this.FilterChildren().forEach(x => x.EmptyRow = value);
-        this.AlwaysValid = value;
     }
 
     /**
@@ -137,8 +138,8 @@ export class ListViewItem extends Section {
      */
     Render() {
         // @ts-ignore
-        this.ListView = this.ListView ?? this.FindClosest(x => x instanceof ListView);
-        this.Meta = this.ListView.Meta;
+        this.ListView = this.ListView ?? this.FindClosest(x => x.IsListView);
+        this.Meta = this.Meta ?? this.ListView.Meta;
         super.Render();
         if (this._selected) {
             this.Element.classList.add(ListViewItem.SelectedClass);

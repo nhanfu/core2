@@ -1,5 +1,4 @@
 import EditableComponent from "./editableComponent.js";
-import { Str } from "./utils/ext.js";
 import { Html } from "./utils/html.js";
 import { Utils } from "./utils/utils.js";
 import { ElementType } from './models/elementType.js'
@@ -44,8 +43,8 @@ export class Section extends EditableComponent {
         if (this.Meta === null) return;
         this.Element.id = this.Meta.Id;
         if (this.Meta.Html) {
-            const cssContent = this.Meta.Css;
-            const section = (this.Meta.FieldName?.toLowerCase() ?? Str.Empty) + this.Meta.Id;
+            let cssContent = this.Meta.Css;
+            const section = (this.Meta.FieldName?.toLowerCase() ?? '') + this.Meta.Id;
             if (cssContent) {
                 const regex = /(?:^|[\s\r\n])\.([a-zA-Z0-9-_]+)/g;
                 cssContent = cssContent.replace(regex, (match) => {
@@ -63,7 +62,7 @@ export class Section extends EditableComponent {
                 }
             }
             if (this.Element != null) {
-                const cellText = Utils.GetHtmlCode(this.Meta.Html, [this.Entity]) ?? Str.Empty;
+                const cellText = Utils.GetHtmlCode(this.Meta.Html, [this.Entity]) ?? '';
                 this.Element.innerHTML = cellText;
             }
             const allComPolicies = !this.Meta.Id && this.EditForm

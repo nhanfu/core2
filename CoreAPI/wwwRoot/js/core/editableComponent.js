@@ -581,9 +581,20 @@ export default class EditableComponent {
         }
     }
 
+    /**
+     * 
+     * @param {Boolean | String | Function} disabled 
+     */
     ToggleDisabled(disabled) {
+        // @ts-ignore
+        if (disabled instanceof Boolean) {
+            // @ts-ignore
+            this.Disabled = disabled;
+            return;
+        }
+        // @ts-ignore
         var disabledFn = Utils.IsFunction(disabled);
-        if (disabled !== null) {
+        if (disabledFn) {
             let shouldDisabled = disabledFn(null, this) || false;
             this.Disabled = shouldDisabled;
         }
@@ -777,7 +788,7 @@ export default class EditableComponent {
      * @param {(item: EditableComponent) => boolean} ignore 
      * @returns {EditableComponent[] | null}
      */
-    FilterChildren(filter = null, ignore = null) {
+    FilterChildren(filter = () => true, ignore = null) {
         return this.Children.Flattern(x => x.Children.Where(child => {
             return ignore?.call(this, child) !== true &&
                 (filter == null || filter?.call(this, child) === true);
