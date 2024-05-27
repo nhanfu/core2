@@ -7,15 +7,15 @@ import { SqlViewModel } from "models/sqlViewModel";
 import { Section } from "section";
 import { ComponentExt } from "utils/componentExt";
 import { Html } from "utils/html";
-import { html2pdf } from "libs/html2pdf";
 import { Utils } from "utils/utils";
+import 'html2pdf.js';
 
 export class PdfReport extends EditableComponent {
     static ErrorMessage = "ErrorMessage";
     static DataNotFound = "Không tìm thấy dữ liệu";
     static TemplateNotFound = "Template is null or empty";
 
-     /**
+    /**
      * @param {Component} ui 
      * @param {HTMLElement} ele
      */
@@ -75,7 +75,6 @@ export class PdfReport extends EditableComponent {
     }
 
     async GeneratePdf(format) {
-        await Client.LoadScript("https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js");
         let element = this.Element.parentElement.querySelector(".printable");
         if (this.Meta.Precision === 2) {
             element = this.Element.parentElement.querySelector(".print-group");
@@ -191,11 +190,11 @@ export class PdfReport extends EditableComponent {
             template[i].innerHTML = Utils.FormatEntity(template[i].innerHTML, null, arrItem, x => "", x => "");
             res.push(template[i]);
         }
-    
+
         if (subRowIndex < 0) {
             return res;
         }
-    
+
         let cloned = template.slice(subRowIndex);
         let subGridRows = this.BindingSubGrid(cloned, arrItem);
         if (subGridRows && subGridRows.length > 0) {
@@ -203,7 +202,6 @@ export class PdfReport extends EditableComponent {
         }
         return res;
     }
-    
 
     BindingSubGrid(template, groupItem) {
         let arrayField = "SubRpt";
@@ -240,16 +238,16 @@ export class PdfReport extends EditableComponent {
             let res = this.ProcessData(this.Data);
             return Promise.resolve(res);
         }
-    
+
         let promise = new Promise((resolve, reject) => {
             const fn = this.Meta.PreQuery;
             let isFn = Utils.IsFunction(fn);
-    
+
             if (!isFn) {
                 reject(new Error("PreQuery is not a function"));
                 return;
             }
-    
+
             let sql = {
                 ComId: this.Meta.Id,
                 Params: JSON.stringify(isFn.call(null, this)),
@@ -257,7 +255,7 @@ export class PdfReport extends EditableComponent {
                 DataConn: this.DataConn,
                 WrapQuery: false
             };
-    
+
             Client.Instance.ComQuery(sql).then(ds => {
                 this.Data = ds;
                 let res = this.ProcessData(this.Data);
@@ -267,7 +265,7 @@ export class PdfReport extends EditableComponent {
                 reject(e);
             });
         });
-    
+
         return promise;
     }
 
@@ -319,8 +317,6 @@ export class PdfReport extends EditableComponent {
         }
         return res;
     }
-    
-    
 
     UpdateView(force = false, dirty = null, ...componentNames) {
         this.Data = null;
