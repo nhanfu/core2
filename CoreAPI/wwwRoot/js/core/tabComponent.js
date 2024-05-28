@@ -64,10 +64,12 @@ export class TabComponent extends Section {
 
     set DisplayBadge(value) {
         this._displayBadge = value;
-        if (value) {
-            this.BadgeElement.style.display = 'block';
-        } else {
-            this.BadgeElement.style.display = 'none';
+        if (this.BadgeElement) {
+            if (value) {
+                this.BadgeElement.style.display = 'block';
+            } else {
+                this.BadgeElement.style.display = 'none';
+            }
         }
     }
 
@@ -116,9 +118,11 @@ export class TabComponent extends Section {
 
     Focus() {
         const parentTabGroup = this.Parent instanceof TabGroup ? this.Parent : null;
-        parentTabGroup.Children
-            .filter(x => x !== this)
-            .forEach(x => x.Show = false);
+        if (parentTabGroup) {
+            parentTabGroup.Children
+                .filter(x => x !== this)
+                .forEach(x => x.Show = false);
+        }
         this.Show = true;
         this.EditForm.ResizeListView();
         this.DispatchEvent(this.Meta.Events, "FocusIn", this.Entity).Done();
