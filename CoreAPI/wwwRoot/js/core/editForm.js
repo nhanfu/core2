@@ -26,6 +26,7 @@ import { SqlViewModel } from "./models/sqlViewModel.js";
  * Represents an editable form component.
  */
 export class EditForm extends EditableComponent {
+    IsEditForm = true;
     /** @type {EditForm} */
     static LayoutForm;
     /** @type {EditableComponent} */

@@ -426,6 +426,7 @@ export default class EditableComponent {
     IsRow = false;
     IsListView = false;
     IsSearchEntry = false;
+    IsEditForm = false;
     CascadeField() {
         if (!this.Meta.CascadeField) {
             return;

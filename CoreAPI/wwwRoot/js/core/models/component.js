@@ -130,6 +130,7 @@
  * @property {string} DelParam
  * @property {Date | string} MinDate
  * @property {Date | string} MaxDate
+ * @property {boolean} IsVertialTab
  */
 
 import { FeaturePolicy } from './featurePolicy.js';
@@ -288,6 +289,8 @@ export class Component {
     Reference = null;
     MinDate = new Date('01-01-0001');
     MaxDate = new Date('01-01-9999');
+    IsVertialTab = false;
+
     /**
      * Represents whether the component is a tab.
      * @type {boolean}
