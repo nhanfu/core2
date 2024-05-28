@@ -54,7 +54,10 @@ let gvMeta = {
 };
 var gridView = new GridView(gvMeta);
 gridView.Meta.LocalRender = true;
-gridView.RowData = new ObservableList([]);
-gridView.Header = [{ FieldName: 'testField' }];
+gridView.RowData = new ObservableList([{ Name: 'Test', Email: 'Join@gmail.com' }, { Name: 'Test2', Email: 'nhan@gmail.com' }]);;
+gridView.Header = [ 
+  { FieldName: 'Name', Label: 'Name', ComponentType: 'Textbox' },
+  { FieldName: 'Email', Label: 'Email', ComponentType: 'Textbox' },
+];
 gridView.ParentElement = document.body;
 gridView.Render();

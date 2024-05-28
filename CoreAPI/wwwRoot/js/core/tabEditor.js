@@ -26,6 +26,7 @@ export class TabEditor extends EditForm {
     static ShowTabText;
     static ActiveClass = "active";
     Popup = false;
+    IsTab = true;
 
     constructor(entity = null) {
         super(entity);

@@ -83,16 +83,6 @@ export class ListViewSearch extends EditableComponent {
         this._dateTimeField = value;
     }
 
-
-    get TabEditor() {
-        return this.Parent.TabEditor || this.Parent.EditForm instanceof this.TabEditor ? this.Parent.EditForm : null;
-    }
-
-    set TabEditor(value) {
-        // @ts-ignore
-        this.Parent.TabEditor = value;
-    }
-
     /**
      * @type {Component[]}
      */
@@ -395,17 +385,17 @@ export class ListViewSearch extends EditableComponent {
         ctxMenu.Left = buttonRect.left;
         ctxMenu.MenuItems = [
             // @ts-ignore
-            { Icon: 'fa fa-search-plus mr-1', Text: 'Advanced search', Click: this.AdvancedSearch },
+            { Icon: 'fa fa-search-plus mr-1', Text: 'Advanced search', Click: this.AdvancedSearch.bind(this) },
             // @ts-ignore
-            { Icon: 'fa fa-search mr-1', Text: 'Show selected only', Click: this.FilterSelected },
+            { Icon: 'fa fa-search mr-1', Text: 'Show selected only', Click: this.FilterSelected.bind(this) },
             // @ts-ignore
-            { Icon: 'fa fa-download mr-1', Text: 'Import csv', Click: obj => this._uploader.Click() },
+            { Icon: 'fa fa-download mr-1', Text: 'Import csv', Click: () => this._uploader.Click() },
             // @ts-ignore
-            { Icon: 'fa fa-download mr-1', Text: 'Export all', Click: this.ExportAllData },
+            { Icon: 'fa fa-download mr-1', Text: 'Export all', Click: this.ExportAllData.bind(this) },
             // @ts-ignore
-            { Icon: 'fa fal fa-ballot-check mr-1', Text: 'Export selected', Click: this.ExportSelectedData },
+            { Icon: 'fa fal fa-ballot-check mr-1', Text: 'Export selected', Click: this.ExportSelectedData.bind(this) },
             // @ts-ignore
-            { Icon: 'fa fa-download mr-1', Text: 'Customize export', Click: this.ExportCustomData },
+            { Icon: 'fa fa-download mr-1', Text: 'Customize export', Click: this.ExportCustomData.bind(this) },
         ];
         ctxMenu.Render();
     }
@@ -451,7 +441,7 @@ export class ListViewSearch extends EditableComponent {
      * @param {object} arg
      */
     ExportCustomData(arg) {
-        this.TabEditor.OpenPopup('Export CustomData', () => this.Exporter()).Done();
+        this.TabEditor?.OpenPopup('Export CustomData', () => this.Exporter()).Done();
     }
 
     /**
@@ -462,9 +452,8 @@ export class ListViewSearch extends EditableComponent {
         const { ExportCustomData } = await import('./exportCustomData.js');
         if (!this._export) {
             this._export = new ExportCustomData(this.Parent);
-            this._export.ParentElement = this.TabEditor.Element;
-            // @ts-ignore
-            this._export.Disposed += () => this._export = null;
+            this._export.ParentElement = this.TabEditor?.Element;
+            this._export.Disposed.add(() => this._export = null);
         }
         return this._export;
     }

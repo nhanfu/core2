@@ -177,7 +177,7 @@ export default class EditableComponent {
     get TabEditor() {
         if (this.#rootTab != null) return this.#rootTab;
         // @ts-ignore
-        this.#rootTab = this.FindClosest(TabEditor, x => !x.Popup);
+        this.#rootTab = this.FindClosest(x => x.IsTab);
     }
     set TabEditor(editor) {
         this.#rootTab = editor;
@@ -818,6 +818,7 @@ export default class EditableComponent {
 
     static TabContainer = document.getElementById("tab-content");
     Popup = false;
+    IsTab = false;
     /**
      * 
      * @param {EditableComponent} child 
