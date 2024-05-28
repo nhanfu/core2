@@ -1,4 +1,4 @@
-import 'sweetalert2';
+import './libs/sweetalert2.js';
 
 /**
  * Options for creating a toast notification.

@@ -1,3 +1,4 @@
+import { Client } from "../clients/client.js";
 /**
  * Represents a view model for SQL operations.
  */

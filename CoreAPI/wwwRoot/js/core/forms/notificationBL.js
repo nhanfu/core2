@@ -47,20 +47,20 @@ export class NotificationBL extends EditableComponent {
         const entity = Utils.getEntityById(task.EntityId);
         task.Entity = { Name: entity.Name };
 
-    //     if (typeof(Notification) !== 'undefined' && Notification.permission === "granted") {
-    //         this.showNativeNtf(task);
-    //     } else if (typeof(Notification) !== 'undefined' && Notification.permission !== "denied") {
-    //         Notification.requestPermission().then((permission) => {
-    //             if (permission !== 'granted') {
-    //                 this.showToast(task);
-    //             } else {
-    //                 this.showNativeNtf(task);
-    //             }
-    //         });
-    //     } else {
-    //         this.showToast(task);
-    //     }
-    // }
+        if (typeof (Notification) !== 'undefined' && Notification.permission === "granted") {
+            this.showNativeNtf(task);
+        } else if (typeof (Notification) !== 'undefined' && Notification.permission !== "denied") {
+            Notification.requestPermission().then((permission) => {
+                if (permission !== 'granted') {
+                    this.showToast(task);
+                } else {
+                    this.showNativeNtf(task);
+                }
+            });
+        } else {
+            this.showToast(task);
+        }
+    }
 
     setBadgeNumber() {
         const unreadCount = this.notifications.filter(x => x.StatusId === TaskStateEnum.UnreadStatus.toString()).length;
