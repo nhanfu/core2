@@ -30,11 +30,14 @@
 class XHRWrapper {
     AllowNested = false;
     NoQueue = false;
+    /** @type {boolean?} */
     Retry = false;
+    /** @type {boolean?} */
     ShowError = true;
     AllowAnonymous = false;
     AddTenant = false;
     Method = 'GET'; // Default HTTP method
+    /** @type {string} */
     Url = '';
     NameSpace = '';
     Prefix = '';

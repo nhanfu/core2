@@ -2,18 +2,23 @@ import { ComponentType } from "../models/componentType.js";
 import { Utils } from "./utils.js";
 import { Component } from "../models/component.js";
 import { Client } from "../clients/client.js";
+import { PatchVM } from "../models/patch.js";
 
 export class ComponentExt {
     /**
-     * @param {Component} com
+     * @param {any} com
+     * @returns {PatchVM}
      */
     static MapToPatch(com, table = null, fields = null) {
+        /** @type {PatchVM} */
+        // @ts-ignore
         const patch = {
             Table: table,
             Changes: [],
         };
         Utils.ForEachProp(com, (prop, val) => {
             if (prop.startsWith("$") || (fields && !fields.includes(prop))) return;
+            // @ts-ignore
             patch.Changes.push({
                 Field: prop,
                 Value: val?.toString()

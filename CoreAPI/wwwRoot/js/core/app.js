@@ -38,6 +38,9 @@ export class App {
             LoginBL.Instance.Render();
         }
         App.AlterDeviceScreen();
+        Client.SignOutEventHandler.add((x) => {
+            EditForm.NotificationClient?.Close();
+        });
     }
 
     /**
@@ -46,7 +49,7 @@ export class App {
     static InitPortal() {
         LoginBL.Instance.SignedInHandler += (x) => window.location.reload();
         App.LoadByFromUrl();
-        NotificationBL.Instance.Render();
+        // NotificationBL.Instance.Render();
         EditForm.NotificationClient = new WebSocketClient("task");
         window.addEventListener(EventType.PopState, (e) => {
             App.LoadByFromUrl();
@@ -109,3 +112,5 @@ export class App {
         return typeof cordova !== 'undefined';
     }
 }
+
+App.Main();

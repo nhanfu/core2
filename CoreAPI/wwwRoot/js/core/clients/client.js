@@ -7,6 +7,7 @@ import { EmailVM } from "../models/emailVM.js";
 import { Toast } from "../toast.js";
 import { Path } from "../utils/path.js";
 import { Entity } from "../models/enum.js";
+import { Action } from "../models/action.js";
 
 export class Client {
     /** @type {Entity[]} */
@@ -36,8 +37,8 @@ export class Client {
     // @ts-ignore
     static Config = document.head.config?.content || "";
     static BadGatewayRequest = new BadGatewayQueue();
-    static UnAuthorizedEventHandler;
-    static SignOutEventHandler;
+    static UnAuthorizedEventHandler = new Action();
+    static SignOutEventHandler = new Action();
     // @ts-ignore
     static get Origin() { return document.head.origin?.content || window.location.origin; }
     _nameSpace;

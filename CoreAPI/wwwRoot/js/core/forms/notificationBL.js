@@ -3,13 +3,20 @@ import EditableComponent from "../editableComponent.js";
 import { Toast } from "../toast.js";
 import { Utils } from "../utils/utils.js";
 import { TaskStateEnum } from "../models/enum.js"
-
+import { Html } from "../utils/html.js";
+import { ElementType } from "../models/elementType.js";
+import EventType from "../models/eventType.js";
+import { Spinner } from "../spinner.js";
+import { SqlViewModel } from "../models/sqlViewModel.js";
+import { TaskNotification } from "../models/task.js";
+import { ComponentExt } from "../utils/componentExt.js";
 
 export class NotificationBL extends EditableComponent {
     static NoMoreTask = "No more task";
     static _instance = null;
     static _countNtf = null;
     static _countUser = null;
+    /** @type {TaskNotification[]} */
     static Notifications = [];
     static UserActive = [];
     static NotiRoot = document.getElementById("notification-list");
@@ -17,6 +24,7 @@ export class NotificationBL extends EditableComponent {
 
     constructor() {
         super(null);
+        /** @type {TaskNotification[]} */
         this.notifications = [];
         this.userActive = [];
         this._countNtf = "";
@@ -41,80 +49,90 @@ export class NotificationBL extends EditableComponent {
         const existTask = this.notifications.find(x => x.Id === task.Id);
         if (!existTask) {
             this.notifications.push(task);
-            this.toggleBadgeCount(this.notifications.length);
+            this.ToggleBadgeCount(this.notifications.length);
         }
-        this.setBadgeNumber();
-        const entity = Utils.getEntityById(task.EntityId);
+        this.SetBadgeNumber();
+        const entity = Utils.GetEntityById(task.EntityId);
         task.Entity = { Name: entity.Name };
 
         if (typeof (Notification) !== 'undefined' && Notification.permission === "granted") {
-            this.showNativeNtf(task);
+            this.ShowNativeNtf(task);
         } else if (typeof (Notification) !== 'undefined' && Notification.permission !== "denied") {
             Notification.requestPermission().then((permission) => {
                 if (permission !== 'granted') {
-                    this.showToast(task);
+                    this.ShowToast(task);
                 } else {
-                    this.showNativeNtf(task);
+                    this.ShowNativeNtf(task);
                 }
             });
         } else {
-            this.showToast(task);
+            this.ShowToast(task);
         }
     }
 
-    setBadgeNumber() {
+    SetBadgeNumber() {
         const unreadCount = this.notifications.filter(x => x.StatusId === TaskStateEnum.UnreadStatus.toString()).length;
         this._countNtf = unreadCount > 9 ? "9+" : unreadCount.toString();
         const badge = unreadCount > 9 ? 9 : unreadCount;
 
-        // if (typeof(cordova) !== 'undefined' &&
-        //     typeof(cordova.plugins) !== 'undefined' &&
-        //     typeof(cordova.plugins.notification) !== 'undefined') {
-        //     cordova.plugins.notification.badge.requestPermission(function(granted) {
-        //         cordova.plugins.notification.badge.set(unreadCount);
-        //     });
-        // }
+        if (typeof (cordova) !== 'undefined' &&
+            typeof (cordova.plugins) !== 'undefined' &&
+            typeof (cordova.plugins.notification) !== 'undefined') {
+            cordova.plugins.notification.badge.requestPermission(function (granted) {
+                cordova.plugins.notification.badge.set(unreadCount);
+            });
+        }
         return badge;
     }
 
-    // showNativeNtf(task) {
-    //     if (!task) {
-    //         return;
-    //     }
+    /**
+     * Show native notification
+     * @param {TaskNotification} task 
+     * @returns 
+     */
+    ShowNativeNtf(task) {
+        if (!task) {
+            return;
+        }
 
-    //     const nativeNtf = new Notification(task.Title, {
-    //         body: task.Description,
-    //         icon: task.Attachment,
-    //         vibrate: [200, 100, 200],
-    //         badge: "./favicon.ico"
-    //     });
+        const nativeNtf = new Notification(task.Title, {
+            body: task.Description,
+            icon: task.Attachment,
+            // @ts-ignore
+            vibrate: [200, 100, 200],
+            badge: "./favicon.ico"
+        });
 
-    //     nativeNtf.addEventListener('click', () => this.openNotification(task));
-    //     setTimeout(() => {
-    //         nativeNtf.close();
-    //     }, 7000);
-    // }
+        nativeNtf.addEventListener('click', () => this.OpenNotification(task));
+        setTimeout(() => {
+            nativeNtf.close();
+        }, 7000);
+    }
 
-    // showToast(task) {
-    //     // Implementation for showing toast notification
-    // }
+    /**
+     * Toast to show notification's information
+     * @param {TaskNotification} task 
+     */
+    ShowToast(task) {
+        Toast.Success(task.Title + '\n' + task.Description, 400);
+    }
 
-    // toggleBadgeCount(count) {
-    //     // Implementation for toggling badge count
-    // }
+    /**
+     * Open detail form from task notification
+     * @param {TaskNotification} task 
+     */
+    OpenNotification(task) {
+        this.MarkAsRead(task);
+    }
 
-    // openNotification(task) {
-    //     // Implementation for opening notification
-    // }
-
-    static getInstance() {
+    static get Instance() {
         if (!this._instance) {
             this._instance = new NotificationBL();
         }
         return this._instance;
     }
 
-    render() {
+    Render() {
         const notiRoot = document.getElementById("notification-list");
         const profileRoot = document.getElementById("profile-info1");
 
@@ -124,158 +142,145 @@ export class NotificationBL extends EditableComponent {
 
         notiRoot.innerHTML = '';
         document.querySelector("#user-active").innerHTML = '';
-        this.setBadgeNumber();
+        this.SetBadgeNumber();
 
         this.currentUser = Client.token;
         if (!this.currentUser) return;
 
-        this.currentUser.Avatar = (this.currentUser.Avatar.includes("://") ? "" : Client.origin) + (this.currentUser.Avatar.trim() === "" ? "./image/chinese.jfif" : this.currentUser.Avatar);
-        this.renderNotification();
-        this.renderProfile(profileRoot);
+        this.currentUser.Avatar = (this.currentUser.Avatar.includes("://") ? "" : Client.Origin) + (this.currentUser.Avatar.trim() === "" ? "./image/chinese.jfif" : this.currentUser.Avatar);
+        this.RenderNotification();
+        this.RenderProfile(profileRoot);
 
+        /** @type {XHRWrapper} */
+        // @ts-ignore
         const xhr = {
-            url: "/GetUserActive",
-            method: "POST",
-            showError: false
+            Url: "/GetUserActive",
+            Method: "POST",
+            ShowError: false
         };
 
-        Client.instance.submitAsync(xhr)
+        Client.Instance.SubmitAsync(xhr)
             .then(users => this.userActive = users)
             .catch(console.log);
     }
 
-    renderProfile(profileRoot) {
+    RenderProfile(profileRoot) {
         if (!profileRoot) return;
 
         const isSave = window.localStorage.getItem("isSave");
         profileRoot.innerHTML = '';
 
-        const html = new HtmlElementWrapper(profileRoot);
-        html.addClassName("navbar-nav-link d-flex align-items-center dropdown-toggle")
-            .setDataAttr("toggle", "dropdown")
-            .appendSpan("text-truncate", this.currentUser.TenantCode + ": " + this.currentUser.FullName)
-            .end(ElementType.a)
-            .appendDiv("dropdown-menu dropdown-menu-right notClose mt-0 border-0", "border-top-left-radius: 0; border-top-right-radius: 0")
-            .appendA("dropdown-item", this.viewProfile.bind(this))
-            .appendI("far fa-user")
-            .end("Account (" + this.currentUser.TenantCode + ": " + this.currentUser.FullName + ")")
-            .end(ElementType.a)
-            .appendDiv("dropdown-divider")
-            .end(ElementType.div);
+        Html.Take(profileRoot);
+        Html.ClassName("navbar-nav-link d-flex align-items-center dropdown-toggle")
+            .Attr("toggle", "dropdown")
+            .Span.ClassName("text-truncate").Text(this.currentUser.TenantCode + ": " + this.currentUser.FullName)
+            .EndOf(ElementType.a)
+            .Div.ClassName("dropdown-menu dropdown-menu-right notClose mt-0 border-0").Style("border-top-left-radius: 0; border-top-right-radius: 0")
+            .A.ClassName("dropdown-item").Event(EventType.Click, this.ViewProfile.bind(this))
+            .Text("Account (" + this.currentUser.TenantCode + ": " + this.currentUser.FullName + ")")
+            .I.ClassName("far fa-user").End
+            .EndOf(ElementType.a)
+            .Div.ClassName("dropdown-divider").End;
 
-        const langSelect = new LangSelect(new Component(), html.getContext());
-        langSelect.render();
+        // const langSelect = new LangSelect(new Component(), html.getContext());
+        // langSelect.render();
 
-        html.appendDiv("dropdown-divider")
-            .end(ElementType.div)
-            .appendA("dropdown-item", this.darkOrLightModeSwitcher.bind(this))
-            .appendI("far fa-moon-cloud")
-            .end("Dark/Light Mode")
-            .end(ElementType.a)
-            .appendA("dropdown-item", this.signOut.bind(this))
-            .appendI("far fa-power-off")
-            .end("Logout")
-            .end(ElementType.a);
+        Html.Div.ClassName("dropdown-divider").End
+            .A.ClassName("dropdown-item").Event(EventType.Click, this.DarkOrLightModeSwitcher.bind(this))
+            .Text("Dark/Light Mode")
+            .I.ClassName("far fa-moon-cloud").End
+            .EndOf(ElementType.a)
+            .A.ClassName("dropdown-item").Event(EventType.Click, this.SignOut.bind(this))
+            .Text('Log out')
+            .I.ClassName("far fa-power-off")
+            .EndOf(ElementType.a);
     }
 
-    signOut(event) {
+    SignOut(event) {
         event.preventDefault();
-        const task = Client.instance.postAsync(Client.token, "/user/signOut");
+        const task = Client.Instance.PostAsync(Client.token, "/user/signOut");
         task.then(res => {
-            Client.signOutEventHandler?.();
+            Client.SignOutEventHandler?.Invoke();
             Client.token = null;
-            EditForm.notificationClient?.close();
             setTimeout(() => {
                 window.location.reload();
             }, 1000);
         });
     }
 
-    darkOrLightModeSwitcher(event) {
+    DarkOrLightModeSwitcher(event) {
         event.preventDefault();
         const htmlElement = document.documentElement;
         htmlElement.style.filter = htmlElement.style.filter.includes("(1)") ? "invert(0)" : "invert(1)";
     }
 
-    viewProfile(event) {
-        event.preventDefault();
-        this.openTab({
-            id: "User" + Client.token.UserId,
-            featureName: "UserProfile",
-            factory: () => {
-                const type = Type.getType("Core.Fw.User.UserProfileBL");
-                const instance = new type();
-                return instance;
-            }
-        }).then(() => {
-            this.dispose();
-        });
+    ViewProfile(event) {
+        // open user profile here
     }
 
-    renderNotification() {
+    RenderNotification() {
         const notiRoot = NotificationBL.NotiRoot;
         if (!notiRoot) return;
 
-        const html = new HtmlElementWrapper(notiRoot);
-        html.addClassName("navbar-nav-link")
-            .setDataAttr("toggle", "dropdown")
-            .appendI("far fa-bell fa-lg")
-            .end(ElementType.i);
+        const html = Html.Take(notiRoot);
+        html.ClassName("navbar-nav-link")
+            .Attr("toggle", "dropdown")
+            .I.ClassName("far fa-bell fa-lg")
+            .EndOf(ElementType.i);
 
         if (this._countNtf !== '') {
-            html.appendSpan("badge badge-pill bg-warning-400 ml-auto ml-md-0", this._countNtf);
-            this._countBadge = html.getContext();
+            html.Span.ClassName("badge badge-pill bg-warning-400 ml-auto ml-md-0").Text(this._countNtf);
+            this._countBadge = html.Context;
         }
 
-        html.end(ElementType.a)
-            .appendDiv("dropdown-menu dropdown-menu-right dropdown-content wmin-md-300 mt-0", "border-top-left-radius: 0; border-top-right-radius: 0")
-            .forEach(this.notifications, (task, index) => {
-                this.renderTask(task);
+        html.EndOf(ElementType.a)
+            .Div.ClassName("dropdown-menu dropdown-menu-right dropdown-content wmin-md-300 mt-0")
+            .Text("border-top-left-radius: 0; border-top-right-radius: 0")
+            .ForEach(this.notifications, (task, index) => {
+                this.RenderTask(task);
             })
-            .end()
-            .appendA("dropdown-item dropdown-footer", this.seeMore.bind(this), "See more")
-            .end(ElementType.a);
+            .End
+            .A.ClassName("dropdown-item dropdown-footer").Event(EventType.Click, this.SeeMore.bind(this), "See more")
+            .EndOf(ElementType.a);
     }
 
-    renderTask(task) {
-        if (!task) {
-            return;
-        }
+    RenderTask(task) {
+        if (!task) return;
 
-        const className = task.StatusId === TaskStateEnum.UnreadStatus.toString() ? "text-danger" : "text-muted";
-        const html = new HtmlElementWrapper();
+        const className = task.StatusId.toString() === TaskStateEnum.UnreadStatus.toString() ? 'text-danger' : 'text-muted';
 
-        html.appendA("dropdown-item")
-            .appendDiv("media", (event) => {
-                this.openNotification(task);
-            })
-            .appendDiv("media-body")
-            .appendH3("dropdown-item-title", task.Title)
-            .appendSpan("float-right text-sm " + className)
-            .appendI("fas fa-star")
-            .end()
-            .end()
-            .appendP("text-sm", task.Description)
-            .end()
-            .appendP("text-sm text-muted")
-            .appendI("far fa-clock mr-1")
-            .end(task.Deadline.toLocaleDateString("en-GB") + " " + task.Deadline.toLocaleTimeString("en-GB"))
-            .end(ElementType.a);
+        Html.Instance.A.ClassName('dropdown-item').Div.ClassName('media').Event('click', () => {
+            this.OpenNotification(task);
+        })
+            .Div.ClassName('media-body')
+            .H3.ClassName('dropdown-item-title').Text(task.Title)
+            .Span.ClassName('float-right text-sm ' + className).I.ClassName('fas fa-star').End
+            .End
+            .P.ClassName('text-sm').Text(task.Description).End
+            .P.ClassName('text-sm text-muted')
+            .I.ClassName('far fa-clock mr-1').End.Text(new Date(task.Deadline).toLocaleString('en-GB')).EndOf('a');
     }
 
-    toggleBadgeCount(count) {
+    ToggleBadgeCount(count) {
         this._countBadge.style.display = count === 0 ? 'none' : 'inline-block';
     }
 
-    seeMore(event) {
+    /**
+     * Load more notification to show
+     * @param {Event} event 
+     * @returns 
+     */
+    SeeMore(event) {
         event.preventDefault();
-        const lastSeenTask = this.notifications.sort((a, b) => new Date(b.InsertedDate) - new Date(a.InsertedDate))[0];
+        const lastSeenTask = this.notifications.sort((a, b) => b.InsertedDate?.getTime() - a.InsertedDate?.getTime()).FirstOrDefault();
         if (!lastSeenTask) {
-            Toast.warning(NotificationBL.NoMoreTask);
+            Toast.Warning(NotificationBL.NoMoreTask);
             return;
         }
-        Spinner.appendTo(Element, 250);
+        Spinner.AppendTo(this.Element, false, true, 250);
         const lastSeenDateStr = new Date(lastSeenTask.InsertedDate).toISOString();
+        /** @type {SqlViewModel} */
+        // @ts-ignore
         const sql = {
             ComId: "Task",
             Action: "SeeMore",
@@ -283,45 +288,51 @@ export class NotificationBL extends EditableComponent {
             DataConn: Client.DataConn,
             Params: JSON.stringify({ Date: lastSeenDateStr })
         };
-        Client.instance.userSvc(sql).then(ds => {
-            const olderItems = ds.length > 0 ? ds[0].map(x => new TaskNotification(x)) : null;
+        Client.Instance.UserSvc(sql).then(ds => {
+            const olderItems = ds.length > 0 ? ds[0] : null;
             if (!olderItems || olderItems.length === 0) {
-                Toast.warning(NotificationBL.NoMoreTask);
+                Toast.Warning(NotificationBL.NoMoreTask);
                 return;
             }
             const taskList = [...this.notifications, ...olderItems];
             this.notifications = taskList;
         }).catch(err => {
-            Toast.warning(err?.message ?? NotificationBL.NoMoreTask);
+            Toast.Warning(err?.message ?? NotificationBL.NoMoreTask);
         });
     }
 
-    markAllAsRead(event) {
+    /**
+     * 
+     * @param {Event} event 
+     */
+    MarkAllAsRead(event) {
         event.preventDefault();
-        Client.instance.postAsync(null, `${TaskNotification.name}/MarkAllAsRead`).then(res => {
-            this.toggleBadgeCount(this.notifications.filter(x => x.StatusId === TaskStateEnum.UnreadStatus.toString()).length);
+        Client.Instance.PostAsync(null, `/tasks/MarkAllAsRead`).then(res => {
+            this.ToggleBadgeCount(this.notifications.filter(x => x.StatusId === TaskStateEnum.UnreadStatus.toString()).length);
             document.querySelectorAll(".task-unread").forEach(task => {
                 task.classList.replace("task-unread", "task-read");
             });
         });
     }
 
-    openNotification(notification) {
-        this.markAsRead(notification);
-    }
-
-    removeDOM() {
+    RemoveDOM() {
         document.querySelector("#notification").innerHTML = '';
     }
 
-    markAsRead(task) {
+    /**
+     * 
+     * @param {TaskNotification} task 
+     */
+    MarkAsRead(task) {
         task.StatusId = TaskStateEnum.Read.toString();
-        Client.instance.patchAsync(task.toPatch()).then(x => {
-            this.setBadgeNumber();
+
+        const patch = ComponentExt.MapToPatch(task, 'TaskNotification');
+        Client.Instance.PatchAsync(patch).then(x => {
+            this.SetBadgeNumber();
         });
     }
 
-    dispose() {
+    Dispose() {
         this._task.classList.add("hide");
     }
 }
