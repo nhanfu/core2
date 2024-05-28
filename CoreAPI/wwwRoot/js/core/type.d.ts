@@ -83,10 +83,6 @@ declare global {
   }
 
   interface String {
-    HasAnyChar(): boolean;
-    HasElement(): boolean;
-    HasNonSpaceChar(): boolean;
-    IsNullOrWhiteSpace(): boolean;
     DecodeSpecialChar(): string;
   }
 

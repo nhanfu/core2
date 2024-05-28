@@ -99,7 +99,7 @@ export class TreeView extends ListView {
 
     CalcFilterQuery() {
         let res = super.CalcFilterQuery();
-        const resetSearch = this.ListViewSearch.EntityVM.SearchTerm.IsNullOrWhiteSpace() && this.AdvSearchVM.Conditions.Nothing();
+        const resetSearch = this.ListViewSearch.EntityVM.SearchTerm && this.AdvSearchVM.Conditions.Nothing();
         if (!resetSearch) {
             let filterPart = OdataExt.GetClausePart(res, OdataExt.FilterKeyword);
             filterPart = filterPart.replace(new RegExp("((and|or) )?Parent(\\w|\\W)* eq null( (and|or)$)?", "g"), "");

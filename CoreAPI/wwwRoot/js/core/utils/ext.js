@@ -163,12 +163,6 @@ Array.prototype.LastOrDefault = function (predicate = null) {
     return this.length > 0 ? this[this.length - 1] : null;
 };
 
-String.prototype.HasElement = HasElement;
-String.prototype.HasAnyChar = HasElement;
-String.prototype.HasNonSpaceChar = HasNonSpaceChar;
-String.prototype.IsNullOrWhiteSpace = function () {
-    return this.trim() === '';
-};
 String.prototype.DecodeSpecialChar = function () {
     return Utils.DecodeSpecialChar(this);
 };

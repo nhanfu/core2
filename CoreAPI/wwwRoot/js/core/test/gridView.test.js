@@ -38,7 +38,7 @@ describe('GridView', () => {
     gridView.ParentElement = container;
     gridView.EditForm = {
       UpdateView: jest.fn(), GetElementPolicies: () => [],
-      Feature: { FeaturePolicy: [] }, ResizeListView: () => { }
+      Meta: { FeaturePolicy: [] }, ResizeListView: () => { }
     }; // Mock EditForm
 
     // Initialize sections with a non-null Element

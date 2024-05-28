@@ -70,7 +70,7 @@ export class Label extends EditableComponent {
             } else {
                 Html.Instance.Span.Render();
             }
-            Html.Instance.Event("click", this.LabelClickHandler).ClassName("cell-text").InnerHTML(cellText);
+            Html.Instance.Event("click", this.LabelClickHandler.bind(this)).ClassName("cell-text").InnerHTML(cellText);
         }
         this.Element = Html.Context;
         Html.Instance.End.Render();

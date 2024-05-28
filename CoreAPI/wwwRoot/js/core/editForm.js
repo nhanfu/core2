@@ -50,15 +50,15 @@ export class EditForm extends EditableComponent {
     get AllCom() {
         if (this._allCom !== null) return this._allCom;
         if (EditForm.LayoutForm === null) {
-            this._allCom = this.Feature.Component.slice(); // Assuming Feature.Component is an array
+            this._allCom = this.Meta.Component.slice(); // Assuming Feature.Component is an array
         } else {
-            this._allCom = this.Feature.Component.concat(EditForm.LayoutForm.Meta.Component);
+            this._allCom = this.Meta.Component.concat(EditForm.LayoutForm.Meta.Component);
         }
         return this._allCom;
     }
 
     get FeatureName() {
-        return this.Name || this.Feature?.Name;
+        return this.Name || this.Meta?.Name;
     }
 
     // Standard property getter and setter for Href
@@ -605,7 +605,7 @@ export class EditForm extends EditableComponent {
     async LoadEntity() {
         const urlFeature = EditForm.GetFeatureNameFromUrl();
         const urlId = urlFeature === this.FeatureName ? Utils.GetUrlParam(Utils.IdField) : this.EntityId;
-        if (!this.ShouldLoadEntity || urlId.IsNullOrWhiteSpace()) {
+        if (!this.ShouldLoadEntity || !urlId) {
             return null;
         }
         try {
@@ -625,8 +625,8 @@ export class EditForm extends EditableComponent {
      * Locks updates if the user does not have permission.
      */
     LockUpdate() {
-        const generalRule = this.Feature.FeaturePolicy.filter(x => x.RecordId);
-        const noPermission = (!this.Feature.IsPublic || !Utils.IsOwner(this.Entity)) && generalRule.every(x => !x.CanWrite && !x.CanWriteAll);
+        const generalRule = this.Meta.FeaturePolicy.filter(x => x.RecordId);
+        const noPermission = (!this.Meta.IsPublic || !Utils.IsOwner(this.Entity)) && generalRule.every(x => !x.CanWrite && !x.CanWriteAll);
         if (noPermission) {
             this.LockUpdateButCancel();
         }
@@ -675,7 +675,6 @@ export class EditForm extends EditableComponent {
     SetFeatureProperties(feature) {
         if (!feature) return;
 
-        this.Feature = feature;
         this.Meta = feature;
         this.Element.classList.add(feature.ClassName);
         Html.Take(this.Element).Style(feature.Style);
@@ -739,7 +738,7 @@ export class EditForm extends EditableComponent {
             const sql = {
                 ComId: 'Intro',
                 Action: 'GetByFeatureId',
-                Params: JSON.stringify({ Id: this.Feature.Id }),
+                Params: JSON.stringify({ Id: this.Meta.Id }),
                 MetaConn: this.MetaConn,
                 DataConn: this.DataConn
             };
@@ -777,7 +776,7 @@ export class EditForm extends EditableComponent {
             this.ParentForm = null;
         }
         entryPoint.innerHTML = Str.Empty;
-        if (feature.Template.HasAnyChar()) {
+        if (feature.Template) {
             entryPoint.innerHTML = feature.Template;
             this.BindingTemplate(entryPoint, this);
             const innerEntry = Array.from(entryPoint.querySelectorAll("[id='inner-entry']")).shift();
@@ -1036,7 +1035,7 @@ export class EditForm extends EditableComponent {
         confirm.Content = "Are you sure you want to delete this?";
         confirm.YesConfirmed = async () => {
             try {
-                const success = await Client.Instance.HardDeleteAsync([this.EntityId], this.Feature.EntityName, this.DataConn, this.MetaConn);
+                const success = await Client.Instance.HardDeleteAsync([this.EntityId], this.Meta.EntityName, this.DataConn, this.MetaConn);
                 if (success) {
                     Toast.Success("Data deleted successfully");
                     this.ParentForm?.UpdateView();
@@ -1206,7 +1205,7 @@ export class EditForm extends EditableComponent {
             { Icon: "fal fa-cogs", Text: "Tùy chọn vùng dữ liệu", Click: this.SectionProperties, Parameter: group },
             { Icon: "fal fa-folder-open", Text: "Thiết lập chung", Click: this.FeatureProperties },
             { Icon: "fal fa-folder-open", Text: "Layout", Click: this.LayoutProperties },
-            { Icon: "fal fa-clone", Text: "Clone feature", Click: this.CloneFeature, Parameter: this.Feature }
+            { Icon: "fal fa-clone", Text: "Clone feature", Click: this.CloneFeature, Parameter: this.Meta }
         );
         ctxMenu.Render();
     }
@@ -1238,7 +1237,7 @@ export class EditForm extends EditableComponent {
     async FeatureProperties(arg) {
         const md = await import('./forms/featureDetailBL.js');
         const editor = new md.FeatureDetailBL();
-        editor.Entity = this.Feature;
+        editor.Entity = this.Meta;
         editor.ParentElement = this.FindClosest(x => x instanceof EditForm)?.Element;
         // @ts-ignore
         editor.OpenFrom = this.FindClosest(x => x instanceof EditForm);
@@ -1262,7 +1261,7 @@ export class EditForm extends EditableComponent {
         editor.Entity = arg;
         editor.ParentElement = this.Element;
         editor.OpenFrom = this.CtxCom;
-        editor.FeatureComponent = this.Feature;
+        editor.FeatureComponent = this.Meta;
         this.AddChild(editor);
     }
 

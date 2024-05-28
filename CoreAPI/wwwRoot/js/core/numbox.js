@@ -68,7 +68,7 @@ export class NumBox extends EditableComponent {
     SetValue() {
         const oldVal = this._value;
         this.EmptyRow = false;
-        if (this._input.value.IsNullOrWhiteSpace()) {
+        if (!this._input.value) {
             this.Value = null;
             return;
         }
@@ -115,7 +115,7 @@ export class NumBox extends EditableComponent {
         this._input.autocomplete = 'off';
         this.Value = this._value; // set again to render in correct format
         let fn = Utils.IsFunction(this.Meta.Renderer);
-        if (!this.Meta.ChildStyle?.IsNullOrWhiteSpace() && fn) {
+        if (fn) {
             window.setTimeout(() => fn.call(this, this, this._input), 100);
         }
         this.DOMContentLoaded?.invoke();
@@ -129,7 +129,7 @@ export class NumBox extends EditableComponent {
     ChangeSetValue() {
         const oldVal = this._value;
         this.EmptyRow = false;
-        if (this._input.value.IsNullOrWhiteSpace()) {
+        if (!this._input.value) {
             this.Value = null;
             this.UserInput?.Invoke({ NewData: null, OldData: oldVal, EvType: EventType.Change });
             return;

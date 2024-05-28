@@ -160,7 +160,7 @@ export class SearchEntry extends EditableComponent {
             this.Search(this._input.value, true, 0, true);
             return;
         }
-        if (this.EditForm.Feature.CustomNextCell && (this._gv === null || !this._gv.Show)) {
+        if (this.EditForm.Meta.CustomNextCell && (this._gv === null || !this._gv.Show)) {
             return;
         }
         if (this._gv !== null && this._gv.Show) {
@@ -568,7 +568,7 @@ export class SearchEntry extends EditableComponent {
         this.Matched = rowData;
         let oldValue = this._value;
         this._value = rowData[this.IdField];
-        if (this.Entity !== null && this.Name.HasAnyChar()) {
+        if (this.Entity !== null && this.Name) {
             this.Entity.SetComplexPropValue(this.Name, this._value);
         }
         this.Dirty = true;

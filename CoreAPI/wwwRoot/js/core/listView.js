@@ -120,16 +120,16 @@ export class ListView extends EditableComponent {
     }
 
     /** @type {FeaturePolicy[]} */
-    GridPolicies;
+    GridPolicies = [];
     /** @type {FeaturePolicy[]} */
-    GeneralPolicies;
+    GeneralPolicies = [];
     /**
      * Renders the list view, setting up necessary configurations and data bindings.
      */
     Render() {
         if (this.EditForm) {
             this.GridPolicies = this.EditForm.GetElementPolicies(this.Meta.Id) ?? [];
-            this.GeneralPolicies = this.EditForm.Feature.FeaturePolicy.Where(x => x.RecordId);
+            this.GeneralPolicies = this.EditForm.Meta.FeaturePolicy.Where(x => x.RecordId);
         }
         this.CanWrite = this.CanDo(x => x.CanWrite || x.CanWriteAll);
         Html.Take(this.ParentElement).DataAttr('name', this.Name);
@@ -169,7 +169,7 @@ export class ListView extends EditableComponent {
      * @returns {boolean} True if any policy meets the condition, otherwise false.
      */
     CanDo(predicate) {
-        return this.GeneralPolicies.some(predicate) || this.GridPolicies.some(predicate);
+        return this.GeneralPolicies?.some(predicate) || this.GridPolicies?.some(predicate);
     }
 
     /**
@@ -190,7 +190,7 @@ export class ListView extends EditableComponent {
             this.SetRowData(this.Meta.LocalData);
             return this.Meta.LocalData;
         }
-        if (this.Paginator !== null) {
+        if (this.Paginator != null) {
             this.Paginator.Options.PageSize = this.Paginator.Options.PageSize === 0 ? (this.Meta.Row ?? 12) : this.Paginator.Options.PageSize;
         }
         pageSize = pageSize ?? this.Paginator?.Options?.PageSize ?? this.Meta.Row ?? 12;
@@ -220,7 +220,7 @@ export class ListView extends EditableComponent {
         }) : null;
         let basicCondition = this.CalcFilterQuery();
         let fnBtnCondition = this.Wheres.Combine(x => `(${x.Condition})`, " and ");
-        let finalCon = [basicCondition, fnBtnCondition].filter(x => !x.IsNullOrWhiteSpace()).Combine(null, " and ");
+        let finalCon = [basicCondition, fnBtnCondition].filter(x => x).Combine(null, " and ");
         /** @type {SqlViewModel} */
         // @ts-ignore
         const res = {
@@ -630,7 +630,7 @@ export class ListView extends EditableComponent {
         tab.Name = feature.Name;
         tab.Id = Id;
         tab.Icon = feature.Icon;
-        tab.Feature = tab.Meta = feature;
+        tab.Meta = tab.Meta = feature;
         tab.Render();
         tab.DOMContentLoaded.add(() => {
             const grdiView = tab.FilterChildren(x => x instanceof searchEntryMd.SearchEntry)

@@ -74,7 +74,7 @@ export class TabEditor extends EditForm {
     }
 
     get TabTitle() {
-        return this.Feature?.Label ?? this.Title;
+        return this.Meta?.Label ?? this.Title;
     }
 
     /**
@@ -92,7 +92,7 @@ export class TabEditor extends EditForm {
             html.Icon("fa fa-times").Event(EventType.Click, (e) => {
                 e.stopPropagation();
                 this.DirtyCheckAndCancel();
-            }).End.Span.ClassName(this.Feature?.Icon ?? "").End.Span.ClassName("title").IText(this.TabTitle).End.Render();
+            }).End.Span.ClassName(this.Meta?.Icon ?? "").End.Span.ClassName("title").IText(this.TabTitle).End.Render();
             this._li = Html.Context.parentElement;
             // @ts-ignore
             this.IconElement = this._li.firstElementChild;

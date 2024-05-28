@@ -86,7 +86,7 @@ export class Section extends EditableComponent {
         }
         if (this.Meta.IsDropDown) {
             Html.Take(this.Element).ClassName("dd-wrap").Style("position: relative;").TabIndex(-1).Event(EventType.FocusOut, this.HideDetailIfButtonOnly)
-                .Button.ClassName("btn ribbon").IText(this.Meta.Label).Event(EventType.Click, this.DropdownBtnClick)
+                .Button.ClassName("btn ribbon").IText(this.Meta.Label).Event(EventType.Click, this.DropdownBtnClick.bind(this))
                 .Span.Text("▼").EndOf(ElementType.button).Div.ClassName("dropdown").TabIndex(-1).Render();
             if (this.Meta.IsCollapsible === true) {
                 Html.Instance.Style("display: none;");
@@ -545,12 +545,12 @@ export class Section extends EditableComponent {
                 childComponent.Disabled = ui.Disabled || this.Disabled || !writePermission || this.EditForm.IsLock || childComponent.Disabled;
                 this.AddChild(childComponent);
                 if (childComponent.Element != null) {
-                    if (ui.ChildStyle.HasAnyChar()) {
+                    if (ui.ChildStyle) {
                         const current = Html.Context;
                         Html.Take(childComponent.Element).Style(ui.ChildStyle);
                         Html.Take(current);
                     }
-                    if (ui.ClassName.HasAnyChar()) {
+                    if (ui.ClassName) {
                         childComponent.Element.AddClass(ui.ClassName);
                     }
 

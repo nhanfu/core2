@@ -70,7 +70,7 @@ export class LoginBL extends PopupEditor {
                 return;
             }
             Html.Take("#tab-content")
-                .Div.ClassName("modal is-open").Event(EventType.KeyPress, this.KeyCodeEnter);
+                .Div.ClassName("modal is-open").Event(EventType.KeyPress, e => this.KeyCodeEnter(e));
                 this._backdrop = Html.Context;
             
             Html.Instance.Div.ClassName("modal-container")
@@ -96,8 +96,13 @@ export class LoginBL extends PopupEditor {
         }, 100);
     }
 
+    /**
+     * 
+     * @param {Event} event 
+     * @returns {void}
+     */
     KeyCodeEnter(event) {
-        if (event.keyCode !== KeyCodeEnum.Enter) {
+        if (event.KeyCodeEnum() !== KeyCodeEnum.Enter) {
             return;
         }
         event.preventDefault();

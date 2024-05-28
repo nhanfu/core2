@@ -113,7 +113,7 @@ export class PdfReport extends EditableComponent {
         }
         this.DisposeChildren();
         let template;
-        if (this.Meta.Template.HasAnyChar()) {
+        if (this.Meta.Template) {
             template = this.Meta.Template;
             this.TemplateLoaded(template);
         } else {

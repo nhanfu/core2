@@ -72,7 +72,7 @@ export class ComponentExt {
             ComponentExt.AssignMethods(feature, instance);
         }
         EditForm.Portal = portal;
-        instance.Feature = feature;
+        instance.Meta = feature;
         instance.Name = feature.Name;
         instance.Id = feature.Name + feature.Id;
         instance.Icon = feature.Icon;
@@ -293,7 +293,7 @@ export class ComponentExt {
         tab.Popup = popup;
         tab.Name = featureName;
         tab.Id = id;
-        tab.Feature = feature;
+        tab.Meta = feature;
         this.AssignMethods(feature, tab);
         await this.OpenTabOrPopup(com, tab);
         return tab;

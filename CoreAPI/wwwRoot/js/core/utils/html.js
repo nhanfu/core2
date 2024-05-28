@@ -19,14 +19,10 @@ export const Direction =
 export class HTML {
     /** @type {HTMLElement} */
     Context;
-    /**
-     * @type {HTML}
-     */
-    _instance;
+
     /** @type {HTML} */
     get Instance() {
-        if (this._instance == null) this._instance = new HTML();
-        return this._instance;
+        return this; // This method is for backward compatibility
     }
     /**
      * 
@@ -190,10 +186,10 @@ export class HTML {
     /**
      * @param {string} name
      * @param {(...args) => any} handler
-     * @param {Date[]} args
+     * @param {any[]} args
      */
     Event(name, handler, ...args) {
-        this.Context.addEventListener(name, () => handler(...args));
+        this.Context.addEventListener(name, (e) => handler(e, ...args));
         return this;
     }
     /**
@@ -270,8 +266,11 @@ export class HTML {
         return this.ClassName(className).IText(text);
     }
 
+    /**
+     * @param {string} langKey
+     */
     Title(langKey) {
-        if (langKey.IsNullOrWhiteSpace()) {
+        if (!langKey) {
             return this;
         }
         this.MarkLangProp(this.Context, langKey, "title");

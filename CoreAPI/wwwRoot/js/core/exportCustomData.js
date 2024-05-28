@@ -8,6 +8,9 @@ import { Utils } from "./utils/utils.js";
 export class ExportCustomData extends PopupEditor {
     static Prefix = "Export";
 
+    /**
+     * @param {ListView} ParentListView
+     */
     constructor(ParentListView) {
         super('Component');
         this.Name = "Export CustomData";

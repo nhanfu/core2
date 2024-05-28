@@ -575,7 +575,7 @@ export default class EditableComponent {
      */
     ToggleShow(showExp) {
         var fn = Utils.IsFunction(showExp);
-        if (showExp?.HasAnyChar() && fn) {
+        if (fn) {
             var shown = fn.call(null, this);
             this.Show = shown ?? false;
         }
@@ -638,7 +638,7 @@ export default class EditableComponent {
                 break;
 
             case KeyCodeEnum.Enter:
-                if (listViewItem && this.EditForm.Feature.CustomNextCell) {
+                if (listViewItem && this.EditForm.Meta.CustomNextCell) {
                     // @ts-ignore
                     if (this instanceof SearchEntry && this._gv && this._gv.Show) {
                         return;
@@ -738,7 +738,7 @@ export default class EditableComponent {
 
     SendQueueAction(action) {
         var queueName = this.QueueName;
-        if (queueName?.IsNullOrWhiteSpace()) return;
+        if (!queueName) return;
         const param = { QueueName: queueName, Action: action };
         // @ts-ignore
         this.EditForm?.NotificationClient?.Send(JSON.stringify(param));

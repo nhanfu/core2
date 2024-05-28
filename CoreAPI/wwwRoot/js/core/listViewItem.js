@@ -15,6 +15,7 @@ import { Button } from "./button.js";
 import { Textbox } from "./textbox.js";
 import { ComponentType } from "./models/componentType.js";
 import {ElementType} from './models/elementType.js';
+import { Action } from "./models/action.js";
 
 /**
  * @typedef {import('./section.js').ListViewSection} ListViewSection
@@ -41,7 +42,7 @@ export class ListViewItem extends Section {
         this._focused = false;
         this._emptyRow = false;
         this.RowNo = 0;
-        this.FocusEvent = null;
+        this.FocusEvent = new Action();
         this.GroupRow = false;
         this._focusAwaiter = 0;
         /** @type {PatchDetail[]} */
@@ -97,7 +98,7 @@ export class ListViewItem extends Section {
             this.Element.classList.remove(ListViewItem.FocusedClass);
             this.ListView.FocusId = null;
         }
-        if (triggerEvent) this.FocusEvent?.(this._focused);
+        if (triggerEvent) this.FocusEvent?.invoke(this._focused);
         return this._focused;
     }
 
@@ -152,13 +153,13 @@ export class ListViewItem extends Section {
     */
     SaveEvent() {
         this.AfterSaved.add(this.AfterSaveHandler.bind(this));
-        this.EditForm.AfterSaved.add(this.AfterSaveHandler.bind(this));
-        this.FocusEvent += (/** @type {Boolean} */ focus) => {
+        this.EditForm?.AfterSaved.add(this.AfterSaveHandler.bind(this));
+        this.FocusEvent?.add((focus) => {
             window.clearTimeout(this._focusAwaiter);
             this._focusAwaiter = window.setTimeout(() => {
                 if (!focus && this.Dirty && this.Meta.IsRealtime) this.PatchUpdateOrCreate().Done();
             }, 100);
-        };
+        });
     }
 
     /**
@@ -176,8 +177,8 @@ export class ListViewItem extends Section {
     BindingEvents() {
         if (!this.Element) return;
         Html.Take(this.Element)
-            .Event(EventType.Click, this.RowItemClick)
-            .Event(EventType.DblClick, this.RowDblClick)
+            .Event(EventType.Click, this.RowItemClick.bind(this))
+            .Event(EventType.DblClick, this.RowDblClick.bind(this))
             .Event(EventType.FocusIn, () => {
                 this.ListView.AllListViewItem.forEach(x => {
                     if (x._focused) {
@@ -185,11 +186,11 @@ export class ListViewItem extends Section {
                     }
                 });
                 this._focused = true;
-                this.FocusEvent?.(true);
+                this.FocusEvent?.invoke(true);
             })
-            .Event(EventType.FocusOut, this.RowFocusOut)
-            .Event(EventType.MouseEnter, this.MouseEnter)
-            .Event(EventType.MouseLeave, this.MouseLeave);
+            .Event(EventType.FocusOut, this.RowFocusOut.bind(this))
+            .Event(EventType.MouseEnter, this.MouseEnter.bind(this))
+            .Event(EventType.MouseLeave, this.MouseLeave.bind(this));
     }
 
     /**
@@ -317,7 +318,7 @@ export class ListViewItem extends Section {
                 listDetail = child['PatchDetail'].call(child);
             } else {
                 let actValue = child.FieldVal;
-                if (this.EditForm.Feature.IgnoreEncode && child instanceof Textbox) {
+                if (this.EditForm.Meta.IgnoreEncode && child instanceof Textbox) {
                     actValue = actValue?.toString().trim().EncodeSpecialChar();
                 }
                 if (actValue.trim().length === 0) {

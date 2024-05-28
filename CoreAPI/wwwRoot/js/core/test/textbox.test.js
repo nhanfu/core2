@@ -27,7 +27,7 @@ describe('Textbox', () => {
       FieldName: 'testField', 
       PlainText: 'Enter text', 
       FormatData: '', 
-      FormatEntity: { HasAnyChar: jest.fn(() => false) }, // Ensure FormatEntity is defined
+      FormatEntity: '',
       Events: [], 
       ShowLabel: true 
     };

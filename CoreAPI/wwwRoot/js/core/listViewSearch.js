@@ -173,7 +173,7 @@ export class ListViewSearch extends EditableComponent {
             return;
         }
         // @ts-ignore
-        Html.Take(this.Parent.Element.firstChild).TabIndex(-1).Event(EventType.KeyPress, this.EnterSearch);
+        Html.Take(this.Parent.Element.firstChild).TabIndex(-1).Event(EventType.KeyPress, this.EnterSearch.bind(this));
         this.Element = Html.Context;
         this.RenderImportBtn();
         if (this.Meta.ComponentType === 'GridView' || this.Meta.ComponentType === 'TreeView' || !this.Meta.IsRealtime) {
@@ -264,14 +264,14 @@ export class ListViewSearch extends EditableComponent {
             }).End
             .Icon('btn fa fa-cog')
             .Title('Advance')
-            .Event(EventType.Click, this.AdvancedOptions).End
+            .Event(EventType.Click, this.AdvancedOptions.bind(this)).End
             .Icon('btn fa fa-undo')
             .Title('Refresh')
             .Event(EventType.Click, this.RefreshListView.bind(this)).End
             .Render();
         if (this.Meta.ShowHotKey && this.ParentGridView != null) {
             Html.Take(this.Element).Div.ClassName('hotkey-block')
-                .Button2('F1', "btn btn-light btn-sm").Event(EventType.Click, this.ParentGridView.ToggleAll)
+                .Button2('F1', "btn btn-light btn-sm").Event(EventType.Click, () => this.ParentGridView.ToggleAll())
                 .Attr('title', 'Uncheck all').End
                 .Button2('F2', "btn btn-light btn-sm").Event(EventType.Click, (e) => {
                     var com = this.Parent.LastListViewItem.Children.find(x => x.Meta.Id === this.ParentGridView.LastComponentFocus.Id);
@@ -416,7 +416,6 @@ export class ListViewSearch extends EditableComponent {
         // @ts-ignore
         this._uploader = Html.Context;
         this._uploader.addEventListener(EventType.Change, (/** @type {Event} */ ev) => this.UploadCsv(ev));
-        Html.Instance.End.End.Render();
     }
 
     /**
@@ -507,12 +506,12 @@ export class ListViewSearch extends EditableComponent {
         }
 
         const searchTerm = Utils.EncodeSpecialChar(this.EntityVM.SearchTerm.trim()) || '';
-        const headers = this.Parent.Header.filter(x => x && x.FieldName.HasNonSpaceChar() && !x.ComponentType.includes("Button"));
-        const operators = headers.map(x => ComponentExt.MapToFilterOperator(x, searchTerm)).filter(x => x.HasAnyChar());
+        const headers = this.Parent.Header.filter(x => x && x.FieldName && !x.ComponentType.includes("Button"));
+        const operators = headers.map(x => ComponentExt.MapToFilterOperator(x, searchTerm)).filter(x => x != null);
         let finalFilter = operators.join(" or ");
 
         const basicsAddDate = this.Parent.Header.filter(x => x.AddDate).map(x => x.Id);
-        const parentGrid = basicsAddDate.length && basicsAddDate.some(id => this.ParentGridView.AdvSearchVM.Conditions.some(cond => cond.FieldId === id && !cond.Value.IsNullOrWhiteSpace()));
+        const parentGrid = basicsAddDate.length && basicsAddDate.some(id => this.ParentGridView.AdvSearchVM.Conditions.some(cond => cond.FieldId === id && cond.Value));
 
         if (!parentGrid && this.EntityVM.StartDate) {
             const startDateCondition = `ds.[${this.DateTimeField}] >= '${this.EntityVM.StartDate.toISOString().slice(0, 10)}'`;

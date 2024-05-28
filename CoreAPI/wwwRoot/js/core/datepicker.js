@@ -159,7 +159,7 @@ export class Datepicker extends EditableComponent {
     ParseDate() {
         let datetime = new Date(this.Input.value);
         if (!datetime || !this.Input.value.trim()) {
-            if (this.EditForm.Feature.CustomNextCell) {
+            if (this.EditForm.Meta.CustomNextCell) {
                 return;
             }
             this.Input.value = "";

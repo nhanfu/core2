@@ -46,7 +46,7 @@ export class AdvancedSearch extends EditableComponent {
         var orderby = this.Parent.Meta.OrderBy;
         this.Parent.OrderBy = !orderby ? this.Parent.OrderBy :
             orderby.split(",").map(x => {
-                if (x.IsNullOrWhiteSpace()) return null;
+                if (!x) return null;
                 var orderField = x.trim().replace(new RegExp("\\s+", "g"), " ").replace("ds.", "").split(" ");
                 if (orderField.length < 1) {
                     return null;
@@ -241,7 +241,7 @@ export class AdvancedSearch extends EditableComponent {
 
     HeaderForAdvSearch() {
         return this.Parent.Header
-            .filter(x => x.Id != null && !x.Label.IsNullOrWhiteSpace() && x.Active && !x.Hidden);
+            .filter(x => x.Id != null && x.Label && x.Active && !x.Hidden);
     }
 
     /**

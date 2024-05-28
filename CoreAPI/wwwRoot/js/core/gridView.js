@@ -48,7 +48,7 @@ export class GridView extends ListView {
             Frozen: true
         };
 
-        this.DOMContentLoaded = this.DOMContentLoadedHandler.bind(this);
+        this.DOMContentLoaded.add(this.DOMContentLoadedHandler.bind(this));
     }
 
     static ToolbarColumn = {
@@ -158,19 +158,22 @@ export class GridView extends ListView {
         this.DataTable = Html.Take(this.Element).Div.ClassName("table-wrapper").Table.ClassName("table").Id(idtb).GetContext();
         Html.Thead.TabIndex(-1).End.TBody.ClassName("empty").End.TBody.End.TFooter.Render();
 
-        this.FooterSection = new ListViewSection(Html.Context);
+        this.FooterSection = new ListViewSection(ElementType.tfoot, Html.Context);
         this.FooterSection.ParentElement = this.DataTable;
         this.AddChild(this.FooterSection);
 
-        this.MainSection = new ListViewSection(this.FooterSection.Element.previousElementSibling);
+        // @ts-ignore
+        this.MainSection = new ListViewSection(ElementType.tbody, this.FooterSection.Element.previousElementSibling);
         this.MainSection.ParentElement = this.DataTable;
         this.AddChild(this.MainSection);
 
-        this.EmptySection = new ListViewSection(this.MainSection.Element.previousElementSibling);
+        // @ts-ignore
+        this.EmptySection = new ListViewSection(ElementType.tbody, this.MainSection.Element.previousElementSibling);
         this.EmptySection.ParentElement = this.DataTable;
         this.AddChild(this.EmptySection);
 
-        this.HeaderSection = new ListViewSection(this.EmptySection.Element.previousElementSibling);
+        // @ts-ignore
+        this.HeaderSection = new ListViewSection(ElementType.thead, this.EmptySection.Element.previousElementSibling);
         this.HeaderSection.ParentElement = this.DataTable;
         this.AddChild(this.HeaderSection);
         Html.EndOf(".table-wrapper");
@@ -370,7 +373,7 @@ export class GridView extends ListView {
         confirmDialog.Entity = { ReasonOfChange: "" };
         confirmDialog.PElement = this.Element;
         confirmDialog.Render();
-        if (!subFilter.IsNullOrWhiteSpace()) {
+        if (subFilter) {
             if (header.ComponentType === "Datepicker") {
                 confirmDialog.Datepicker.Value = new Date(subFilter);
                 let input = confirmDialog.Datepicker.Element;
@@ -396,7 +399,7 @@ export class GridView extends ListView {
             return;
         }
         Spinner.AppendTo(this.DataTable);
-        const dropdowns = this.CellSelected.filter(x => (!x.Value.IsNullOrWhiteSpace() || !x.ValueText.IsNullOrWhiteSpace()) && x.ComponentType === 'SearchEntry' || x.FieldName.includes('.'));
+        const dropdowns = this.CellSelected.filter(x => (x.Value || x.ValueText) && x.ComponentType === 'SearchEntry' || x.FieldName.includes('.'));
         const groups = this.CellSelected.filter(x => x.FieldName.includes('.'));
         this.FilterDropdownIds(dropdowns).done(data => {
             let index = 0;
@@ -1450,8 +1453,14 @@ export class GridView extends ListView {
         return allChildren;
     }
 
+    /**
+     * @typedef {import("./groupGridView.js").GroupRowData} GroupRowData
+     * @param {import("./models/component.js").Component[]} headers
+     * @param {GroupRowData} row - Group row data
+     * @param {ListViewSection | import("./groupViewItem.js").GroupViewItem} section
+     */
     RenderRowData(headers, row, section, index = null, emptyRow = false) {
-        const tbody = section.element;
+        const tbody = section.Element;
         Html.Take(tbody);
         const rowSection = new GridViewItem(ElementType.tr);
         rowSection.EmptyRow = emptyRow;
@@ -1808,8 +1817,8 @@ export class GridView extends ListView {
                 .DataAttr("id", header.Id).Width(header.AutoFit ? "auto" : header.Width)
                 .Style(`${header.Style};min-width: ${header.MinWidth}; max-width: ${header.MaxWidth}`)
                 .TextAlign('center')
-                .Event(EventType.DblClick, this.EditForm.ComponentProperties, header)
-                .Event(EventType.ContextMenu, this.HeaderContextMenu, header)
+                .Event(EventType.DblClick, this.EditForm.ComponentProperties.bind(this), header)
+                .Event(EventType.ContextMenu, this.HeaderContextMenu.bind(this), header)
                 .Event(EventType.FocusOut, e => this.FocusOutHeader(e, header))
                 .Event(EventType.KeyDown, e => this.ThHotKeyHandler(e, header));
             // @ts-ignore
@@ -1821,7 +1830,7 @@ export class GridView extends ListView {
                 Html.ClassName("header-group");
             }
             if (header.StatusBar) {
-                Html.Icon("fa fa-edit").Event(EventType.Click, this.ToggleAll).End.Render();
+                Html.Icon("fa fa-edit").Event(EventType.Click, this.ToggleAll.bind(this)).End.Render();
             }
             const orderBy = this.AdvSearchVM.OrderBy?.find(x => x.ComId === header.Id);
             if (orderBy) {
@@ -1853,7 +1862,7 @@ export class GridView extends ListView {
                         .DataAttr("field", header.FieldName).Width(header.Width)
                         .Style(`min-width: ${header.MinWidth}; max-width: ${header.MaxWidth}`)
                         .TextAlign(header.TextAlignEnum)
-                        .Event(EventType.ContextMenu, this.HeaderContextMenu, header)
+                        .Event(EventType.ContextMenu, this.HeaderContextMenu.bind(this), header)
                         .InnerHTML(header.Label);
                     // @ts-ignore
                     const section = new Section(ElementType.tr);
@@ -1947,7 +1956,7 @@ export class GridView extends ListView {
                 {Icon: "fal fa-trash-alt", Text: "Xóa cột", Click: () => this.RemoveHeader(header),},
                 {Icon: "fal fa-cog", Text: "Tùy chọn bảng dữ liệu", Click: () => this.EditForm.ComponentProperties(this.Meta),},
                 {Icon: "fal fa-cogs", Text: "Tùy chọn vùng dữ liệu", Click: () => this.EditForm.SectionProperties(section.Meta),},
-                {Icon: "fal fa-folder-open", Text: "Thiết lập chung", Click: () => this.EditForm.FeatureProperties(this.EditForm.Feature),}
+                {Icon: "fal fa-folder-open", Text: "Thiết lập chung", Click: () => this.EditForm.FeatureProperties(this.EditForm.Meta),}
             );
         }
         menu.Render();

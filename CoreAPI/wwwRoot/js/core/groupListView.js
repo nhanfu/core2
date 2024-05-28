@@ -84,10 +84,10 @@ export class GroupListView extends ListView {
         listViewSection.AddChild(groupSection);
         let first = row.Children[0];
         let groupText = Utils.FormatEntity2(this.Meta.GroupFormat, null, first, x => "N/A", x => "N/A");
-        Html.Take(groupSection.Element).Event(EventType.Click, this.DispatchClick, first)
-            .Event(EventType.DblClick, this.DispatchDblClick, first)
+        Html.Take(groupSection.Element).Event(EventType.Click, this.DispatchClick.bind(this), first)
+            .Event(EventType.DblClick, this.DispatchDblClick.bind(this), first)
             // @ts-ignore
-            .Icon("fa fa-chevron-right").Event(EventType.Click, this.ToggleGroupRow, groupSection).End
+            .Icon("fa fa-chevron-right").Event(EventType.Click, this.ToggleGroupRow.bind(this), groupSection).End
             .Span.InnerHTML(groupText);
         groupSection.GroupText = Html.Context;
         row.Children.forEach(child => {

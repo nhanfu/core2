@@ -58,11 +58,11 @@ export class Textbox extends EditableComponent {
         }
 
         let text = (this.EditForm && this.EditForm.Meta && this.EditForm.Meta.IgnoreEncode) ? this._value : Utils.DecodeSpecialChar(this._value);
-        if (this.Meta.FormatData && this.Meta.FormatData.HasAnyChar()) {
+        if (this.Meta.FormatData) {
             text = Utils.FormatEntity(this.Meta.FormatData, this.Entity.GetPropValue(this.Name));
         }
 
-        if (this.Meta.FormatEntity && this.Meta.FormatEntity.HasAnyChar()) {
+        if (this.Meta.FormatEntity) {
             text = Utils.FormatEntity2(this.Meta.FormatEntity, null, this.Entity, Utils.EmptyFormat, Utils.EmptyFormat);
         }
         Utils.IsFunction(this.Meta.Renderer)?.call(this, this);
@@ -81,10 +81,10 @@ export class Textbox extends EditableComponent {
             this.Entity.SetComplexPropValue(this.Name, encode);
         }
         var text = val;
-        if (this.Meta.FormatData.HasAnyChar()) {
+        if (this.Meta.FormatData) {
             text = Utils.FormatEntity(this.Meta.FormatData, val);
         }
-        if (this.Meta.FormatEntity.HasAnyChar()) {
+        if (this.Meta.FormatEntity) {
             text = Utils.FormatEntity(this.Meta.FormatEntity, this.Entity);
         }
         this._text = this.EditForm != null && this.EditForm.Meta != null && this.EditForm.Meta.IgnoreEncode ? text : Utils.DecodeSpecialChar(text) ?? '';
@@ -206,7 +206,7 @@ export class Textbox extends EditableComponent {
             return Promise.resolve(true);
         }
         const fn = Utils.IsFunction(this.Meta.PreQuery);
-        var table = !this.Meta.RefName ? this.Meta.RefName : this.EditForm.Feature.EntityName;
+        var table = !this.Meta.RefName ? this.Meta.RefName : this.EditForm.Meta.EntityName;
         const submit = {
             ComId: this.Meta.Id,
             Params: fn ? JSON.stringify(fn.call(null, this)) : null,
