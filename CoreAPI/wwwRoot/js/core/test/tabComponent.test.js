@@ -1,9 +1,35 @@
 import { TabGroup, TabComponent } from '../tabComponent';
 import { Html } from '../utils/html';
+import { Client } from "../clients/client.js";
+import { Token } from '../models/token';
+import EditableComponent from "../editableComponent";
+
+// Mock class EditForm
+class MockEditForm {
+    GetElementPolicies(ids, groupId) {
+        return [{ CanRead: true }];
+    }
+    GetOuterColumn(groupInfo) {
+        return 1;
+    }
+    GetInnerColumn(groupInfo) {
+        return 1;
+    }
+    ResizeListView() {}
+}
+
+// Mock cho Client và Token
+Client.token = {
+    AccessToken: 'mockAccessToken',
+    RefreshToken: 'mockRefreshToken',
+    AccessTokenExp: new Date(Date.now() + 60 * 60 * 1000), // Thêm thời gian hết hạn token
+    RefreshTokenExp: new Date(Date.now() + 24 * 60 * 60 * 1000) // Thêm thời gian hết hạn refresh token
+};
+
+Token.parse = jest.fn().mockReturnValue({ SystemRole: 'mockSystemRole' });
 
 describe('TabGroup', () => {
     let tabGroup;
-
     beforeEach(() => {
         tabGroup = new TabGroup();
         tabGroup.Meta = { IsVertialTab: false, Children: [] };
@@ -28,24 +54,26 @@ describe('TabGroup', () => {
 
 describe('TabComponent', () => {
     let tabComponent;
-    let mockGroup;
+    let mockGroup,
+    container, meta;;
 
     beforeEach(() => {
+        container = document.createElement('div');
+        document.body.appendChild(container);
         mockGroup = {
             FieldName: 'TestTab',
             Id: 'test-id',
             Icon: 'test-icon',
             Label: 'Test Label',
             Description: 'Test Description',
-            Events: []
+            Events: [],
+            ClassName: 'test-class', // Đảm bảo ClassName là một chuỗi hợp lệ
+            Children: []
         };
         tabComponent = new TabComponent(mockGroup);
-        tabComponent.Parent = { Children: [tabComponent] };
+        tabComponent.Parent = new EditableComponent(document.createElement('div')); // Khởi tạo ParentElement cho EditableComponent
         tabComponent.Meta = mockGroup;
-        tabComponent.EditForm = {
-            GetElementPolicies: jest.fn().mockReturnValue([{ CanRead: true }]),
-            ResizeListView: jest.fn()
-        };
+        tabComponent.EditForm = new MockEditForm();
     });
 
     test('should initialize TabComponent with default values', () => {
@@ -60,6 +88,7 @@ describe('TabComponent', () => {
 
     test('should render TabComponent', () => {
         tabComponent.Parent = new TabGroup();
+        tabComponent.Parent.ParentElement = document.createElement('div'); // Khởi tạo ParentElement cho TabGroup
         tabComponent.Parent.Ul = document.createElement('ul');
         tabComponent.Render();
         expect(tabComponent._li).toBeInstanceOf(HTMLLIElement);
@@ -67,7 +96,9 @@ describe('TabComponent', () => {
     });
 
     test('should render TabComponent with badge', () => {
+        tabComponent.DisplayBadge = true;
         tabComponent.Parent = new TabGroup();
+        tabComponent.Parent.ParentElement = document.createElement('div'); // Khởi tạo ParentElement cho TabGroup
         tabComponent.Parent.Ul = document.createElement('ul');
         tabComponent.Render();
         expect(tabComponent.BadgeElement).not.toBeNull();
@@ -84,13 +115,20 @@ describe('TabComponent', () => {
         tabComponent.DisplayBadge = true;
         expect(tabComponent.DisplayBadge).toBe(true);
     });
+    
 
     test('should focus on TabComponent', () => {
         tabComponent.Parent = new TabGroup();
-        tabComponent.Parent.Children = [tabComponent]; 
-        tabComponent.ParentElement = document.createElement('div');
+        tabComponent.Parent.TabContent = container ?? document.body;
+        tabComponent.Parent.TabContent.ParentElement = container ?? document.body;
+        tabComponent.ParentElement = container ?? document.body;
+        tabComponent.Parent.ParentElement = container ?? document.body;
+        tabComponent.Parent.Ul = document.createElement('ul');
         tabComponent.Render();
+        tabComponent.RenderTabContent();
+        expect(tabComponent.Element).not.toBeNull();
         tabComponent.Focus();
         expect(tabComponent.Show).toBe(true);
+        expect(tabComponent._li.classList.contains(TabComponent.ActiveClass)).toBe(true);
     });
 });

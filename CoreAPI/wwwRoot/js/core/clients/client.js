@@ -16,6 +16,7 @@ export class Client {
     static ErrorMessage = "Hệ thống đang cập nhật vui lòng chờ trong 30s!";
     static ModelNamespace;
     static entities;
+    /** @type {Token} */
     static token;
     static GuidLength = 36;
     // @ts-ignore
@@ -78,7 +79,6 @@ export class Client {
         }
         return Client.#systemRole;
     }
-
     /**
      * @param {SqlViewModel} vm
      */

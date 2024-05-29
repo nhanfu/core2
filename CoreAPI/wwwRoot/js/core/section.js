@@ -8,6 +8,7 @@ import EventType from "./models/eventType.js";
 import { PatchVM } from "./models/patch.js";
 import { Client } from "./clients/client.js";
 import { Component } from "./models/component.js";
+import { EditForm } from "./editForm.js";
 
 export class Section extends EditableComponent {
     /**
@@ -283,13 +284,12 @@ export class Section extends EditableComponent {
      * @param {EditableComponent} Parent - The parent component.
      * @param {Component} GroupInfo - The group info component.
      * @param {Object} Entity - Optional entity parameter.
-     * @param {EditForm} form - Optional edit form.
      * @returns {Section} - The rendered section, or null if not permitted.
      */
     // @ts-ignore
     static RenderSection(Parent, GroupInfo, Entity = null, form = null) {
-        const EditForm = form || Parent.EditForm;
-        const UIPolicy = form.GetElementPolicies([GroupInfo.Id], Utils.ComponentGroupId);
+        const editform = form instanceof EditForm && form || Parent.EditForm;
+        const UIPolicy = editform.GetElementPolicies([GroupInfo.Id], Utils.ComponentGroupId);
         const ReadPermission = !GroupInfo.IsPrivate || this.HasElementAndAll(UIPolicy, x => x.CanRead);
         const WritePermission = !GroupInfo.IsPrivate || this.HasElementAndAll(UIPolicy, x => x.CanWrite);
         if (!ReadPermission) {
@@ -297,8 +297,8 @@ export class Section extends EditableComponent {
         }
 
         let Width = GroupInfo.Width;
-        const OuterColumn = form.GetOuterColumn(GroupInfo);
-        const ParentColumn = form.GetInnerColumn(GroupInfo.Parent);
+        const OuterColumn = editform.GetOuterColumn(GroupInfo);
+        const ParentColumn = editform.GetInnerColumn(GroupInfo.Parent);
         const HasOuterColumn = OuterColumn > 0 && ParentColumn > 0;
         if (HasOuterColumn) {
             const Per = (OuterColumn / ParentColumn * 100).toFixed(2);
@@ -312,20 +312,20 @@ export class Section extends EditableComponent {
             if (Client.SystemRole) {
                 Html.Instance.Attr("contenteditable", "true");
                 Html.Instance.Event("input", e => this.ChangeComponentGroupLabel(e, GroupInfo));
-                Html.Instance.Event("dblclick", e => form.SectionProperties(GroupInfo));
+                Html.Instance.Event("dblclick", e => editform.SectionProperties(GroupInfo));
             }
             Html.Instance.End.Render();
         }
-        Html.Instance.ClassName(GroupInfo.ClassName).Event("contextmenu", e => form.SysConfigMenu(e, null, GroupInfo, null));
+        Html.Instance.ClassName(GroupInfo.ClassName).Event("contextmenu", e => editform.SysConfigMenu(e, null, GroupInfo, null));
         if (!GroupInfo.ClassName.includes("ribbon")) {
             Html.Instance.ClassName("panel").ClassName("group");
         }
         Html.Instance.Display(!GroupInfo.Hidden).Style(GroupInfo.Style || "").Width(Width);
         const section = new Section(Html.Context);
-        section.Id = GroupInfo.FieldName + GroupInfo.Id,
-            section.Name = GroupInfo.FieldName;
+        section.Id = GroupInfo.FieldName + GroupInfo.Id?.toString(),
+        section.Name = GroupInfo.FieldName;
         section.Meta = GroupInfo;
-        section.Disabled = Parent.Disabled || GroupInfo.Disabled || !WritePermission || form.IsLock || section.Disabled;
+        section.Disabled = Parent.Disabled || GroupInfo.Disabled || !WritePermission || editform.IsLock || section.Disabled;
         // @ts-ignore
         Parent.AddChild(section, null, GroupInfo.ShowExp);
         Html.Take(Parent.Element);
