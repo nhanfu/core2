@@ -1,10 +1,10 @@
 import { GridView } from "gridView.js";
 import { Button } from "./button.js";
 import { Html } from "./utils/html.js";
-import { html2pdf } from './libs/html2pdf.js'
 import { Client } from "clients/client.js";
 import { Component } from "./models/component.js";
 import { PdfReport } from "./pdfReport.js";
+import 'html2pdf.js';
 
 export class ButtonPdf extends Button {
     /**
@@ -141,8 +141,7 @@ export class ButtonPdf extends Button {
      * Called when the PDF library is loaded.
      */
     GeneratePdf(format) {
-        let task = Client.LoadScript("https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js");
-        task.Done(() => this.PdfLibLoaded(format));
+        this.PdfLibLoaded(format);
     }
     
     PdfLibLoaded(format) {
