@@ -2,9 +2,6 @@ import EditableComponent from "./editableComponent.js";
 import * as QRCodeLib from 'qrcode';
 import { Html } from "./utils/html.js";
 
-/**
- * Represents a barcode component that can be rendered and updated.
- */
 export class QRCodeCom extends EditableComponent {
     /**
      * Creates an instance of BarCode.
@@ -22,9 +19,6 @@ export class QRCodeCom extends EditableComponent {
         this.Value = '';
     }
 
-    /**
-     * Renders the barcode into the parent element.
-     */
     Render() {
         const ctx = Html.Take(this.ParentElement)
             .Clear()
@@ -34,17 +28,14 @@ export class QRCodeCom extends EditableComponent {
         this.Element = ctx;
         this.Value = this.FieldVal;
 
-        // Clear previous QR code if exists
         const barcodeElement = document.getElementById("barcode" + this.Meta.Id);
         if (barcodeElement) {
             barcodeElement.innerHTML = '';
         }
 
-        // Create canvas element
         const canvas = document.createElement('canvas');
         barcodeElement.appendChild(canvas);
-
-        // Render QR code on the canvas
+        
         QRCodeLib.toCanvas(canvas, this.Value, {
             width: this.Meta.Width,
             color: {

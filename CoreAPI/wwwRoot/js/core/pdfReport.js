@@ -1,13 +1,12 @@
-import { Client } from "clients/client";
-import { ConfirmDialog } from "confirmDialog";
-import EditableComponent from "editableComponent";
-import { Component } from "models/component";
-import { ElementType } from "models/elementType";
-import { SqlViewModel } from "models/sqlViewModel";
-import { Section } from "section";
-import { ComponentExt } from "utils/componentExt";
-import { Html } from "utils/html";
-import { Utils } from "utils/utils";
+import { Client } from "./clients/client";
+import { ConfirmDialog } from "./confirmDialog";
+import EditableComponent from "./editableComponent";
+import { Component } from "./models/component";
+import { ElementType } from "./models/elementType";
+import { Section } from "./section";
+import { ComponentExt } from "./utils/componentExt";
+import { Html } from "./utils/html";
+import { Utils } from "./utils/utils";
 import 'html2pdf.js';
 
 export class PdfReport extends EditableComponent {

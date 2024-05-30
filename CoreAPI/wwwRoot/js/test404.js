@@ -5,16 +5,8 @@ import { EditForm } from './core/editForm.js';
 import { Component } from './core/models/component.js';
 import { ObservableList } from './core/models/observableList.js';
 import { GridView } from './core/gridView.js';
-import { Button } from './core/button.js'
-import { Checkbox } from './core/checkbox.js'
-import { CodeEditor } from './core/codeEditor.js'
 import { CompareGridView } from './core/compareGridView.js'
 import { ContextMenu, ContextMenuItem } from './core/contextMenu.js';
-import { Image } from './core/image.js';
-import { Label } from './core/label.js';
-import { NumBox } from './core/numbox.js';
-// import { QRCode } from './core/qrcode.js';
-import { SearchEntry } from './core/searchEntry.js';
 
 window.EditForm = EditForm;
 var a = new Datepicker({
@@ -76,6 +68,7 @@ gridView.ParentElement = document.body;
 gridView.Render();
 
 
+import { Button } from './core/button.js'
 var buttonElement = document.getElementById('test3');
 var buttonMeta = {
   Id: 'testButton',
@@ -90,6 +83,7 @@ var button = new Button(buttonMeta, buttonElement);
 button.Render();
 
 
+import { Checkbox } from './core/checkbox.js'
 var checkboxElement = document.getElementById('test4');
 var checkboxMeta = {
   Id: 'testCheckbox',
@@ -104,6 +98,7 @@ var checkbox = new Checkbox(checkboxMeta, checkboxElement);
 checkbox.Render();
 
 
+import { CodeEditor } from './core/codeEditor.js'
 var codeEditorElement = document.getElementById('test5');
 var codeEditorMeta = {
   Id: 'testCodeEditor',
@@ -197,26 +192,7 @@ codeEditor.Render();
 
 // contextMenu.Render();
 
-var labelElement = document.getElementById('test9');
-var labelMeta = {
-  Id: 'labelComponent',
-  ComponentType: 'Label',
-  Label: 'Test Label',
-  TextAlign: 'center',
-  SimpleText: true,
-  FormatEntity: null,
-  Renderer: null,
-  PreQuery: false,
-  Editable: false,
-  Events: {
-    click: (e) => { console.log('Label clicked!', e); }
-  }
-};
-var labelComponent = new Label(labelMeta);
-labelComponent.ParentElement = labelElement;
-labelComponent.Entity = { labelComponent: "This is a test label." }; 
-labelComponent.Name = 'labelComponent';
-labelComponent.Render();
+
 
 
 // var numboxContainer = document.createElement('div');
@@ -240,29 +216,141 @@ labelComponent.Render();
 // var numBox = new NumBox(numboxMeta, numboxElement);
 // numBox.Render();
 
-// let qrMeta = {
-//   Id: 'testQRCode',
-//   Width: 128 
-// };
-// let qrElement = document.getElementById('qrCodeContainer');
-// let qrCode = new QRCode(qrMeta, qrElement);
-// qrCode.Render();
 
-var searchEntryElement = document.getElementById('test10');
-var searchEntryMeta = {
-    FieldText: 'Name',
-    LocalQuery: '[{"Id":1,"Name":"Option 1"},{"Id":2,"Name":"Option 2"},{"Id":3,"Name":"Option 3"}]', // Example data
-    PlainText: 'Search...',
-    HideGrid: false,
-    Events: {
-        change: (e) => { console.log('SearchEntry changed!', e); }
-    }
+import { QRCodeCom } from './core/qrcode.js';
+var qrCodeElement = document.getElementById('test7');
+var qrCodeMeta = {
+  Id: 'qrCodeComponent',
+  ComponentType: 'QRCodeCom',
+  Width: 200,  
 };
-var searchEntry = new SearchEntry(searchEntryMeta, searchEntryElement);
-searchEntry.Render();
+var qrCodeComponent = new QRCodeCom(qrCodeMeta, qrCodeElement);
+qrCodeComponent.ParentElement = qrCodeElement;
+qrCodeComponent.Entity = { qrCodeComponent: "https://www.google.com/" }; 
+qrCodeComponent.Name = 'qrCodeComponent'; 
+qrCodeComponent.Render();
 
 
-var imageElement = document.getElementById('test8');
+import { ButtonPdf } from './core/buttonPdf.js';
+var buttonElement = document.getElementById('test8');
+var buttonPdfMeta = {
+  Id: 'buttonPdfComponent',
+  ComponentType: 'ButtonPdf',
+  Label: 'Generate PDF',
+  PlainText: 'Preview PDF',
+  ClassName: 'btn btn-primary',
+  Style: 'width: 120px; height: 40px;',
+  Precision: 2,
+  Events: {
+    click: () => { console.log('Button PDF clicked!'); }
+  }
+};
+var buttonPdfComponent = new ButtonPdf(buttonPdfMeta, buttonElement);
+buttonPdfComponent.ParentElement = buttonElement;
+buttonPdfComponent.Render();
+
+
+import { Textbox } from './core/textbox.js';
+var textboxElement = document.getElementById('test9');
+var textboxMeta = {
+  Id: 'textboxComponent',
+  ComponentType: 'Textbox',
+  PlainText: 'Enter text here...',
+  ShowLabel: true,
+  Events: {
+    input: () => { console.log('Textbox input event'); },
+    change: () => { console.log('Textbox change event'); }
+  }
+};
+var textboxComponent = new Textbox(textboxMeta, textboxElement);
+textboxComponent.ParentElement = textboxElement;
+textboxComponent.Entity = { textboxComponent: "Sample text" };
+textboxComponent.Name = 'textboxComponent'; 
+textboxComponent.Render();
+
+
+import { Rating } from './core/rating.js';
+var ratingElement = document.getElementById('test10');
+var ratingMeta = {
+  Id: 'ratingComponent',
+  ComponentType: 'Rating',
+  Precision: 5,  
+  Style: 'margin-right: 5px;', 
+  Events: {
+    click: (entity) => { console.log('Rating clicked!', entity); }
+  }
+};
+var ratingComponent = new Rating(ratingMeta, ratingElement);
+ratingComponent.ParentElement = ratingElement;
+ratingComponent.Entity = { ratingComponent: 3 };
+ratingComponent.Name = 'ratingComponent';
+ratingComponent.Render();
+
+
+import { Paginator, PaginationOptions } from './core/paginator.js';
+var tabGroupElement = document.getElementById('test11');
+var paginationOptions = new PaginationOptions(
+  100, 
+  10,  
+  1,  
+  0,  
+  1, 
+  10,
+  1,   
+  10,  
+  (pageIndex, event) => { console.log('Page changed to:', pageIndex); }
+);
+var paginatorComponent = new Paginator(paginationOptions);
+paginatorComponent.ParentElement = tabGroupElement;
+paginatorComponent.Render();
+
+
+
+// import { NumBox } from './core/numbox.js';
+// var numboxElement = document.getElementById('test19');
+// var numboxMeta = {
+//   Id: 'numboxComponent',
+//   ComponentType: 'NumBox',
+//   PlainText: 'Enter a number...',
+//   ShowLabel: true,
+//   Precision: 2, 
+//   Events: {
+//     input: () => { console.log('NumBox input event'); },
+//     change: () => { console.log('NumBox change event'); }
+//   }
+// };
+// var numboxComponent = new NumBox(numboxMeta, numboxElement);
+// numboxComponent.ParentElement = numboxElement;
+// numboxComponent.Entity = { numboxComponent: 123.45 }; 
+// numboxComponent.Name = 'numboxComponent'; 
+// numboxComponent.Render();
+
+
+import { Label } from './core/label.js';
+var labelElement = document.getElementById('test20');
+var labelMeta = {
+  Id: 'labelComponent',
+  ComponentType: 'Label',
+  Label: 'Test Label',
+  TextAlign: 'center',
+  SimpleText: true,
+  FormatEntity: null,
+  Renderer: null,
+  PreQuery: false,
+  Editable: false,
+  Events: {
+    click: (e) => { console.log('Label clicked!', e); }
+  }
+};
+var labelComponent = new Label(labelMeta);
+labelComponent.ParentElement = labelElement;
+labelComponent.Entity = { labelComponent: "This is a test label." }; 
+labelComponent.Name = 'labelComponent';
+labelComponent.Render();
+
+
+import { Image } from './core/image.js';
+var imageElement = document.getElementById('test21');
 var imageMeta = {
   Id: 'imageComponent',
   ComponentType: 'Image',
@@ -279,3 +367,58 @@ var imageComponent = new Image(imageMeta);
 imageComponent.ParentElement = imageElement;
 imageComponent.Render();
 
+
+// import { SearchEntry } from './core/searchEntry.js';
+// var searchEntryElement = document.getElementById('test22');
+// var searchEntryMeta = {
+//     FieldText: 'Name',
+//     LocalQuery: '[{"Id":1,"Name":"Option 1"},{"Id":2,"Name":"Option 2"},{"Id":3,"Name":"Option 3"}]', // Example data
+//     PlainText: 'Search...',
+//     HideGrid: false,
+//     Events: {
+//         change: (e) => { console.log('SearchEntry changed!', e); }
+//     }
+// };
+// var searchEntry = new SearchEntry(searchEntryMeta, searchEntryElement);
+// searchEntry.Render();
+
+
+// import { TabGroup, TabComponent } from './core/tabComponent.js';
+// var tabGroupElement = document.getElementById('test23');
+// var tabGroupMeta = {
+//   Id: 'tabGroupComponent',
+//   ComponentType: 'TabGroup',
+//   IsVertialTab: false,
+//   Children: [
+//     {
+//       Id: 'tab1',
+//       FieldName: 'Tab 1',
+//       ComponentType: 'TabComponent',
+//       Label: 'Tab 1',
+//       Icon: 'fa fa-home',
+//       Description: 'This is tab 1',
+//       Children: [
+//       ]
+//     },
+//     {
+//       Id: 'tab2',
+//       FieldName: 'Tab 2',
+//       ComponentType: 'TabComponent',
+//       Label: 'Tab 2',
+//       Icon: 'fa fa-user',
+//       Description: 'This is tab 2',
+//       Children: [
+//       ]
+//     }
+//   ]
+// };
+// var tabGroupComponent = new TabGroup();
+// tabGroupComponent.Meta = tabGroupMeta;
+// tabGroupComponent.ParentElement = tabGroupElement;
+// tabGroupComponent.Render();
+// tabGroupMeta.Children.forEach(childMeta => {
+//   var tabComponent = new TabComponent(childMeta);
+//   tabComponent.Parent = tabGroupComponent;
+//   tabComponent.Render();
+//   tabGroupComponent.Children.push(tabComponent);
+// });
