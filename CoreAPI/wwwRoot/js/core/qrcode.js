@@ -1,11 +1,11 @@
 import EditableComponent from "./editableComponent.js";
-import { QRCode as QR } from "./structs/qrcode.js";
+import * as QRCodeLib from 'qrcode';
 import { Html } from "./utils/html.js";
 
 /**
  * Represents a barcode component that can be rendered and updated.
  */
-export class QRCode extends EditableComponent {
+export class QRCodeCom extends EditableComponent {
     /**
      * Creates an instance of BarCode.
      * @param {Object} meta - The UI component associated with the barcode.
@@ -33,12 +33,27 @@ export class QRCode extends EditableComponent {
         // @ts-ignore
         this.Element = ctx;
         this.Value = this.FieldVal;
-        new QR("barcode" + this.Meta.Id, {
-            text: this.Value,
+
+        // Clear previous QR code if exists
+        const barcodeElement = document.getElementById("barcode" + this.Meta.Id);
+        if (barcodeElement) {
+            barcodeElement.innerHTML = '';
+        }
+
+        // Create canvas element
+        const canvas = document.createElement('canvas');
+        barcodeElement.appendChild(canvas);
+
+        // Render QR code on the canvas
+        QRCodeLib.toCanvas(canvas, this.Value, {
             width: this.Meta.Width,
-            height: this.Meta.Width,
-            colorDark: "#000000",
-            colorLight: "#ffffff",
+            color: {
+                dark: "#000000",
+                light: "#ffffff"
+            }
+        }, function (error) {
+            if (error) console.error(error);
+            console.log('QR code rendered!');
         });
     }
 
