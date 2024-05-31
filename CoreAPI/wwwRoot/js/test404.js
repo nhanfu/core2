@@ -384,42 +384,43 @@ searchEntry.ParentElement = searchEntryElement;
 searchEntry.Render();
 
 
-// import { TabGroup, TabComponent } from './core/tabComponent.js';
-// var tabGroupElement = document.getElementById('test23');
-// var tabGroupMeta = {
-//   Id: 'tabGroupComponent',
-//   ComponentType: 'TabGroup',
-//   IsVertialTab: false,
-//   Children: [
-//     {
-//       Id: 'tab1',
-//       FieldName: 'Tab 1',
-//       ComponentType: 'TabComponent',
-//       Label: 'Tab 1',
-//       Icon: 'fa fa-home',
-//       Description: 'This is tab 1',
-//       Children: [
-//       ]
-//     },
-//     {
-//       Id: 'tab2',
-//       FieldName: 'Tab 2',
-//       ComponentType: 'TabComponent',
-//       Label: 'Tab 2',
-//       Icon: 'fa fa-user',
-//       Description: 'This is tab 2',
-//       Children: [
-//       ]
-//     }
-//   ]
-// };
-// var tabGroupComponent = new TabGroup();
-// tabGroupComponent.Meta = tabGroupMeta;
-// tabGroupComponent.ParentElement = tabGroupElement;
-// tabGroupComponent.Render();
-// tabGroupMeta.Children.forEach(childMeta => {
-//   var tabComponent = new TabComponent(childMeta);
-//   tabComponent.Parent = tabGroupComponent;
-//   tabComponent.Render();
-//   tabGroupComponent.Children.push(tabComponent);
-// });
+import { TabGroup, TabComponent } from './core/tabComponent.js';
+var tabGroupElement = document.getElementById('test23');
+var tabGroupMeta = {
+  Id: 'tabGroupComponent',
+  ComponentType: 'TabGroup',
+  IsVertialTab: false,
+  Children: [
+    {
+      Id: 'tab1',
+      FieldName: 'Tab 1',
+      ComponentType: 'TabComponent',
+      Label: 'Tab 1',
+      Icon: 'fa fa-home',
+      Description: 'This is tab 1',
+      Children: [
+      ]
+    },
+    {
+      Id: 'tab2',
+      FieldName: 'Tab 2',
+      ComponentType: 'TabComponent',
+      Label: 'Tab 2',
+      Icon: 'fa fa-user',
+      Description: 'This is tab 2',
+      Children: [
+      ]
+    }
+  ]
+};
+var tabGroupComponent = new TabGroup();
+tabGroupComponent.Meta = tabGroupMeta;
+tabGroupComponent.ParentElement = tabGroupElement;
+tabGroupComponent.Render();
+console.log(tabGroupMeta.Children);
+tabGroupMeta.Children.forEach(childMeta => {
+  var tabComponent = new TabComponent(childMeta);
+  tabComponent.Parent = tabGroupComponent;
+  tabComponent.Render();
+  tabGroupComponent.Children.push(tabComponent);
+});

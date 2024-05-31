@@ -23,7 +23,7 @@ export class TabGroup extends EditableComponent {
         this.Element = this.Ul.parentElement;
         Html.Instance.End.End.Div.ClassName("tabs-content");
         this.TabContent = Html.Context instanceof HTMLDivElement && Html.Context;
-        this.ShouldCountBage = this.Meta.Children.every(x => x.Children.HasElement() && this.ListViewType.includes(x.Children[0].ComponentType));
+        this.ShouldCountBage = this.Meta.Children.every(x => x.Children?.HasElement() && this.ListViewType.includes(x.Children[0].ComponentType));
     }
 }
 
@@ -74,8 +74,8 @@ export class TabComponent extends Section {
     }
 
     Render() {
-        const policies = this.EditForm.GetElementPolicies([this.Meta.Id], Utils.ComponentGroupId);
-        const readPermission = !this.Meta.IsPrivate || policies.every(x => x.CanRead);
+            const policies = this.EditForm?.GetElementPolicies([this.Meta.Id], Utils.ComponentGroupId);
+            const readPermission = !this.Meta.IsPrivate || policies.every(x => x.CanRead);
         if (!readPermission) {
             return;
         }
