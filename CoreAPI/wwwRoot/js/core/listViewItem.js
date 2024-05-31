@@ -14,7 +14,7 @@ import { Toast } from "./toast.js";
 import { Button } from "./button.js";
 import { Textbox } from "./textbox.js";
 import { ComponentType } from "./models/componentType.js";
-import {ElementType} from './models/elementType.js';
+import { ElementType } from './models/elementType.js';
 import { Action } from "./models/action.js";
 
 /**
@@ -62,15 +62,12 @@ export class ListViewItem extends Section {
         this._selected = value;
         this.SetSelected(value);
         const id = this.EntityId;
+        const index = this.ListView.SelectedIds?.indexOf(id);
         if (value) {
-            if (!this.ListView.SelectedIds.includes(id)) {
+            if (index >= 0)
                 this.ListView.SelectedIds.push(id);
-            }
-        } else {
-            const index = this.ListView.SelectedIds.indexOf(id);
-            if (index !== -1) {
+            else
                 this.ListView.SelectedIds.splice(index, 1);
-            }
         }
     }
 

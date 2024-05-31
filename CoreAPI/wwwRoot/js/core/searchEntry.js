@@ -6,11 +6,12 @@ import { LangSelect } from "./utils/langSelect.js";
 import EventType from './models/eventType.js';
 import ObservableArgs from './models/observable.js';
 import { ObservableList } from './models/observableList.js';
-import { PositionEnum ,KeyCodeEnum} from './models/enum.js';
+import { PositionEnum, KeyCodeEnum } from './models/enum.js';
 import { ComponentExt } from './utils/componentExt.js';
 import "./utils/fix.js";
 import { GridView } from './gridView.js';
 import { ListView } from './listView.js';
+import { Str } from './utils/ext.js';
 
 
 
@@ -32,7 +33,7 @@ export class SearchEntry extends EditableComponent {
         this.RowData = new ObservableList();
         /** @type {HTMLInputElement} */
         this.Element = ele;
-            /** @type {HTMLInputElement} */
+        /** @type {HTMLInputElement} */
         this._input = null;
         /** @type {HTMLElement} */
         this._rootResult = null;
@@ -54,7 +55,12 @@ export class SearchEntry extends EditableComponent {
     }
 
     DeserializeLocalData(ui) {
-        if (ui.LocalQuery.trim() !== "") {
+        if (ui.LocalData != null) return;
+        if (ui.LocalQuery != null && typeof ui.LocalQuery !== Str.Type) {
+            ui.LocalData = ui.LocalQuery;
+            return;
+        }
+        if (ui.LocalQuery.trim() !== Str.Empty) {
             return;
         }
         this.Meta.LocalData = JSON.parse(ui.LocalQuery);
@@ -64,15 +70,15 @@ export class SearchEntry extends EditableComponent {
     Render() {
         this.SetDefaultVal();
         let entityVal = Utils.GetPropValue(this.Entity, this.Name);
-        if (typeof entityVal === 'string') {
+        if (typeof entityVal === Str.Type) {
             this._value = entityVal;
         }
         this.RenderInputAndEvents();
         this.RenderIcons();
         this.FindMatchText();
         // @ts-ignore
-        this.SearchResultEle = this.FindClosest(ListView)?.Element ?? document.body;
-        this.Element.Closest('td')?.addEventListener('keydown', this.ListViewItemTab.bind(this));
+        this.SearchResultEle = this.FindClosest(x => x instanceof ListView)?.Element ?? document.body;
+        this.Element.closest('td')?.addEventListener('keydown', this.ListViewItemTab.bind(this));
     }
 
     RenderInputAndEvents() {
@@ -204,7 +210,7 @@ export class SearchEntry extends EditableComponent {
     }
 
     DiposeGvWrapper(e = null) {
-        if (e !== null && e['shiftKey'] !== null && e.shiftKey()) {
+        if (e !== null && e.ShiftKey()) {
             return;
         }
         window.clearTimeout(this._waitForDispose);
@@ -222,9 +228,10 @@ export class SearchEntry extends EditableComponent {
     RenderIcons() {
         let title = LangSelect.Get('Tạo mới dữ liệu ');
         Html.Take(this.Element.parentElement).Div.ClassName('search-icons');
-        let div = Html.Instance.Icon('fa fa-info-circle').Title(LangSelect.Get('Thông tin chi tiết ') + LangSelect.Get(this.Meta.Label).toLowerCase())
+        const label = LangSelect.Get(this.Meta.Label)?.toLowerCase() ?? '';
+        let div = Html.Instance.Icon('fa fa-info-circle').Title(LangSelect.Get('Thông tin chi tiết ') + label)
             .Event('click', this.OpenRefDetail.bind(this)).End
-            .Icon('fa fa-plus').Title(`${title} ${LangSelect.Get(this.Meta.Label).toLowerCase()}`).Event('click', this.OpenRefDetail.bind(this)).End.GetContext();
+            .Icon('fa fa-plus').Title(`${title} ${label}`).Event('click', this.OpenRefDetail.bind(this)).End.GetContext();
         if (this.Element.nextElementSibling !== null) {
             this.Element.parentElement.insertBefore(div, this.Element.nextElementSibling);
         } else {
@@ -233,7 +240,7 @@ export class SearchEntry extends EditableComponent {
     }
 
     OpenRefDetail() {
-        if (!this.Meta.RefClass|| this.Matched === null) {
+        if (!this.Meta.RefClass || this.Matched === null) {
             return;
         }
 
@@ -286,7 +293,7 @@ export class SearchEntry extends EditableComponent {
             if (this.UserInput !== null) {
                 this.CascadeAndPopulate();
                 // @ts-ignore
-                this.UserInput.Invoke(new ObservableArgs ({ NewData: this._value, OldData: oldValue, EvType: EventType.Change }));
+                this.UserInput.Invoke(new ObservableArgs({ NewData: this._value, OldData: oldValue, EvType: EventType.Change }));
             }
             return;
         }
@@ -294,7 +301,7 @@ export class SearchEntry extends EditableComponent {
             this.CascadeAndPopulate();
             this.DispatchEvent(this.Meta.Events, EventType.Change, this.Entity, this.Parent.Entity, this.Matched);
             // @ts-ignore
-            this.UserInput.Invoke(new ObservableArgs ({ NewData: this._value, OldData: oldValue, EvType: EventType.Change }));
+            this.UserInput.Invoke(new ObservableArgs({ NewData: this._value, OldData: oldValue, EvType: EventType.Change }));
         }
     }
 
@@ -306,7 +313,7 @@ export class SearchEntry extends EditableComponent {
         this._waitForInput = window.setTimeout(() => {
             if (this._gv !== null) {
                 this._gv.Wheres.Clear();
-                this._gv.AdvSearchVM.Conditions.Clear();
+                this._gv.AdvSearchVM.Conditions?.Clear();
                 this._gv.CellSelected.Clear();
             }
             if (changeEvent && !this._input.value) {
@@ -338,7 +345,7 @@ export class SearchEntry extends EditableComponent {
             return;
         }
         // @ts-ignore
-        if (this.Meta.GroupBy.trim() !== ""()) {
+        if (!this.Meta.GroupBy) {
             this._gv = new GridView(this.Meta);
         } else {
             const md = await import('./groupGridView.js');
@@ -357,7 +364,7 @@ export class SearchEntry extends EditableComponent {
         this._gv.AlwaysValid = true;
         this._gv.PopulateDirty = false;
         this._gv.ShouldSetEntity = false;
-        this._gv.DOMContentLoaded = this.GridResultDomLoaded.bind(this);
+        this._gv.DOMContentLoaded.add(this.GridResultDomLoaded.bind(this));
         this._gv.AddSections();
         this._gv.Show = false;
         this._gv.Render();
@@ -392,10 +399,10 @@ export class SearchEntry extends EditableComponent {
             Html.Take(EditableComponent.TabContainer).Div.ClassName('backdrop');
             this._backdrop = Html.Context;
             Html.Instance.Div.ClassName('popup-content').Style('top: 0;width: 100%;')
-            .Div.ClassName('popup-title').Span.IconForSpan('fa fal fa-search').End
-            .Span.IText('Search').End.Div.ClassName('icon-box')
-            .Span.ClassName('fa fa-times').Event('click', this.DisposeMobileSearchResult.bind(this)).End
-            .End.End.Div.ClassName('popup-body scroll-content');
+                .Div.ClassName('popup-title').Span.IconForSpan('fa fal fa-search').End
+                .Span.IText('Search').End.Div.ClassName('icon-box')
+                .Span.ClassName('fa fa-times').Event('click', this.DisposeMobileSearchResult.bind(this)).End
+                .End.End.Div.ClassName('popup-body scroll-content');
             this._rootResult = Html.Context;
             this._rootResult.appendChild(this._input);
         } else if (this.IsSmallUp) {
@@ -424,7 +431,8 @@ export class SearchEntry extends EditableComponent {
         this._gv.RowAction(x => {
             if (x instanceof md.ListViewItem) {
                 x.Selected = false;
-        }});
+            }
+        });
         this._gv.Element.style.inset = null;
         this.RenderRootResult();
         this._rootResult.appendChild(this._gv.Element);
@@ -463,7 +471,7 @@ export class SearchEntry extends EditableComponent {
             this.CascadeAndPopulate();
             this.DispatchEvent(this.Meta.Events, EventType.Change, this.Entity, this.Matched, oldMatch).Done();
             // @ts-ignore
-            this.UserInput?.Invoke(new ObservableArgs ({ NewData: null, OldData: oldValue, EvType: EventType.Change }));
+            this.UserInput?.Invoke(new ObservableArgs({ NewData: null, OldData: oldValue, EvType: EventType.Change }));
         }
         if (deleteFlag && !this._input.value) {
             return;
@@ -484,7 +492,7 @@ export class SearchEntry extends EditableComponent {
             this._input.value = null;
             return true;
         }
-        this.Matched = this.Meta.LocalData.HasElement()
+        this.Matched = this.Meta.LocalData?.HasElement()
             ? this.Meta.LocalData.find(x => x[this.IdField] === this._value)
             : this.RowData.Data.find(x => x[this.IdField] === this.Value);
 
@@ -499,13 +507,13 @@ export class SearchEntry extends EditableComponent {
 
     SetMatchedValue() {
         let origin = null;
-        let displayObj = Utils.GetPropValue(this.Entity,this.Meta.DisplayField);
+        let displayObj = Utils.GetPropValue(this.Entity, this.Meta.DisplayField);
         let isString = typeof displayObj === 'string';
         if (isString && this.Meta.DisplayField !== this.Meta.DisplayDetail) {
             try {
                 displayObj = JSON.parse(displayObj);
-                origin = Utils.GetPropValue(displayObj,this.Meta.DisplayDetail);
-            } catch (e) {}
+                origin = Utils.GetPropValue(displayObj, this.Meta.DisplayDetail);
+            } catch (e) { }
         } else if (!isString) {
             origin = displayObj;
         }
@@ -580,7 +588,7 @@ export class SearchEntry extends EditableComponent {
         this.CascadeAndPopulate();
         this.DispatchEvent(this.Meta.Events, EventType.Change, this.Entity, rowData, oldMatch).Done(() => {
             // @ts-ignore
-            this.UserInput?.Invoke(new ObservableArgs ({ NewData: this._value, OldData: oldValue, EvType: EventType.Change }));
+            this.UserInput?.Invoke(new ObservableArgs({ NewData: this._value, OldData: oldValue, EvType: EventType.Change }));
             this.DiposeGvWrapper();
         });
     }

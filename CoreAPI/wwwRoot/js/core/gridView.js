@@ -138,7 +138,7 @@ export class GridView extends ListView {
         }
         this.ListViewSearch = new ListViewSearch(this.Meta);
         this.ListViewSearch.Entity = new ListViewSearchVM();
-        if (this.Meta.DefaultAddStart.HasValue) {
+        if (this.Meta.DefaultAddStart) {
             let pre = this.Meta.DefaultAddStart.Value;
             this.ListViewSearch.EntityVM.StartDate = new Date(Date.now() + pre * 24 * 3600 * 1000);
         }
@@ -146,7 +146,7 @@ export class GridView extends ListView {
         if (lFrom != null) {
             this.ListViewSearch.EntityVM.StartDate = new Date(lFrom);
         }
-        if (this.Meta.DefaultAddEnd.HasValue) {
+        if (this.Meta.DefaultAddEnd) {
             let pre = this.Meta.DefaultAddEnd.Value;
             this.ListViewSearch.EntityVM.EndDate = new Date(Date.now() + pre * 24 * 3600 * 1000);
         }

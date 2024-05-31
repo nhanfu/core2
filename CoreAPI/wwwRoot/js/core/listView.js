@@ -181,9 +181,10 @@ export class ListView extends EditableComponent {
      */
     async ReloadData(cacheHeader = false, skip = null, pageSize = null) {
         if (this.Meta.LocalQuery) {
-            this.Meta.LocalData = this.Meta.LocalData ?? typeof this.Meta.LocalQuery === Str.Type
-                ? JSON.parse(this.Meta.LocalQuery.toString())
-                : this.Meta.LocalQuery;
+            this.Meta.LocalData = this.Meta.LocalData != null ? this.Meta.LocalData:
+                typeof this.Meta.LocalQuery === Str.Type
+                    ? JSON.parse(this.Meta.LocalQuery.toString())
+                    : this.Meta.LocalQuery;
             this.Meta.LocalRender = true;
         }
         if (this.Meta.LocalRender && this.Meta.LocalData != null) {
