@@ -231,23 +231,23 @@ codeEditor.Render();
 // qrCodeComponent.Render();
 
 
-// import { ButtonPdf } from './core/buttonPdf.js';
-// var buttonElement = document.getElementById('test8');
-// var buttonPdfMeta = {
-//   Id: 'buttonPdfComponent',
-//   ComponentType: 'ButtonPdf',
-//   Label: 'Generate PDF',
-//   PlainText: 'Preview PDF',
-//   ClassName: 'btn btn-primary',
-//   Style: 'width: 120px; height: 40px;',
-//   Precision: 2,
-//   Events: {
-//     click: () => { console.log('Button PDF clicked!'); }
-//   }
-// };
-// var buttonPdfComponent = new ButtonPdf(buttonPdfMeta, buttonElement);
-// buttonPdfComponent.ParentElement = buttonElement;
-// buttonPdfComponent.Render();
+import { ButtonPdf } from './core/buttonPdf.js';
+var buttonElement = document.getElementById('test8');
+var buttonPdfMeta = {
+  Id: 'buttonPdfComponent',
+  ComponentType: 'ButtonPdf',
+  Label: 'Generate PDF',
+  PlainText: 'Preview PDF',
+  ClassName: 'btn btn-primary',
+  Style: 'width: 120px; height: 40px;',
+  Precision: 2,
+  Events: {
+    click: () => { console.log('Button PDF clicked!'); }
+  }
+};
+var buttonPdfComponent = new ButtonPdf(buttonPdfMeta, buttonElement);
+buttonPdfComponent.ParentElement = buttonElement;
+buttonPdfComponent.Render();
 
 
 // import { Textbox } from './core/textbox.js';

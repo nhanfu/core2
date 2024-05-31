@@ -29,7 +29,8 @@ export class ButtonPdf extends Button {
      * Asynchronously handles the click dispatch.
      */
     async DispatchClickAsync() {
-        Html.Take(this.TabEditor.Element).Div.ClassName("backdrop")
+        const parentEle = this.TabEditor?.Element ?? document.body;
+        Html.Take(parentEle).Div.ClassName("backdrop")
             .Style("align-items: center;").Escape((e) => this.Preview.remove());
         this.Preview = Html.Context;
         Html.Instance.Div.ClassName("popup-content confirm-dialog").Style("top: 0;")
@@ -56,7 +57,7 @@ export class ButtonPdf extends Button {
             if (this.Meta.Precision === 2) {
                 // @ts-ignore
                 let parentGridView = this.TabEditor.FindActiveComponent(x => x instanceof GridView).FirstOrDefault();
-                if(parentGridView instanceof GridView){
+                if (parentGridView instanceof GridView) {
                     let selectedData = parentGridView.CacheData;
                     if (!selectedData) {
                         selectedData = parentGridView.RowData.Data;
@@ -90,7 +91,7 @@ export class ButtonPdf extends Button {
                         this.Preview.remove();
                     }, 2000);
                 }
-                
+
             } else {
                 this.Parent.AddChild(this.PdfReport);
                 let printWindow = window.open("", "_blank");
@@ -116,8 +117,8 @@ export class ButtonPdf extends Button {
             }
         } else {
             if (this.Meta.Precision === 2) {
-                let parentGridView = this.TabEditor.FindActiveComponent(x => x instanceof GridView).FirstOrDefault();
-                if(parentGridView instanceof GridView){
+                let parentGridView = this.TabEditor?.FindActiveComponent(x => x instanceof GridView).FirstOrDefault();
+                if (parentGridView != null && parentGridView instanceof GridView) {
                     let selectedData = parentGridView.CacheData;
                     if (!selectedData) {
                         selectedData = parentGridView.RowData.Data;
@@ -142,11 +143,11 @@ export class ButtonPdf extends Button {
     GeneratePdf(format) {
         this.PdfLibLoaded(format);
     }
-    
+
     PdfLibLoaded(format) {
         let element = this.Preview.querySelector(".print-group");
         let first = element.querySelector(".printable");
-        if (first instanceof HTMLElement) { 
+        if (first instanceof HTMLElement) {
             first.style.pageBreakBefore = "auto";
         }
         const openPdfInNewWindow = (pdf) => {
@@ -161,7 +162,7 @@ export class ButtonPdf extends Button {
                 window.location.href = window.URL.createObjectURL(blob);
                 return;
             }
-            if (window['cordova']) { 
+            if (window['cordova']) {
                 window['cordova'].InAppBrowser.open(window.URL.createObjectURL(blob), "_system");
             }
         };
