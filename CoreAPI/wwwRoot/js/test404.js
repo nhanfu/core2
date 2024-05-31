@@ -306,24 +306,24 @@ buttonPdfComponent.Render();
 
 
 
-// import { NumBox } from './core/numbox.js';
-// var numboxElement = document.getElementById('test19');
-// var numboxMeta = {
-//   Id: 'numboxComponent',
-//   ComponentType: 'NumBox',
-//   PlainText: 'Enter a number...',
-//   ShowLabel: true,
-//   Precision: 2, 
-//   Events: {
-//     input: () => { console.log('NumBox input event'); },
-//     change: () => { console.log('NumBox change event'); }
-//   }
-// };
-// var numboxComponent = new NumBox(numboxMeta, numboxElement);
-// numboxComponent.ParentElement = numboxElement;
-// numboxComponent.Entity = { numboxComponent: 123.45 }; 
-// numboxComponent.Name = 'numboxComponent'; 
-// numboxComponent.Render();
+import { NumBox } from './core/numbox.js';
+var numboxElement = document.getElementById('test19');
+var numboxMeta = {
+  Id: 'numboxComponent',
+  ComponentType: 'NumBox',
+  PlainText: 'Enter a number...',
+  ShowLabel: true,
+  Precision: 2, 
+  Events: {
+    input: () => { console.log('NumBox input event'); },
+    change: () => { console.log('NumBox change event'); }
+  }
+};
+var numboxComponent = new NumBox(numboxMeta, numboxElement);
+numboxComponent.ParentElement = numboxElement;
+numboxComponent.Entity = { numboxComponent: 123.45 }; 
+numboxComponent.Name = 'numboxComponent'; 
+numboxComponent.Render();
 
 
 // import { Label } from './core/label.js';

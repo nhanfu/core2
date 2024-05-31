@@ -27,7 +27,7 @@ export class NumBox extends EditableComponent {
     set Value(value) {
         const oldValue = this._value;
         if (value === null && !this._nullable) {
-            value = new Decimal(0);  
+            value = new Decimal(0);
         }
         this._value = value;
         var [success, parsedVal] = Utils.TryParseDecimal(this._value?.toString());
@@ -46,7 +46,7 @@ export class NumBox extends EditableComponent {
             if (!success) {
                 this.parsedVal = new Decimal(0);
             }
-            this._value =  new Decimal(parsedVal);
+            this._value = new Decimal(parsedVal);
             this._input.value = parsedVal.toFixed(this.Meta.Precision || 0);
         } else {
             this._input.value = '';
@@ -83,7 +83,7 @@ export class NumBox extends EditableComponent {
             this.Value = this._value; // Set old value to avoid accepting an invalid value
             return;
         }
-        this._value = new Decimal(parsedResult); ;
+        this._value = new Decimal(parsedResult);;
         this.Value = this._value;
         this.UserInput?.invoke({ NewData: this._value, OldData: oldVal, EvType: EventType.Input });
         this.DispatchEvent(this.Meta.Events, EventType.Input, this.Entity, this._value, oldVal).done();
@@ -98,12 +98,12 @@ export class NumBox extends EditableComponent {
             this._value = this.GetDecimalValue();
             this.Entity.SetComplexPropValue(this.Name, this._value);
         }
-        if (this._input === null) {
+        if (this._input.tagName.toUpperCase() != "input") {
             Html.Take(this.ParentElement).Input.Render();
-                const inputElement = Html.Context;
-                if (inputElement instanceof HTMLInputElement) {
-                    this.Element = this._input = inputElement;
-                }
+            const inputElement = Html.Context;
+            if (inputElement instanceof HTMLInputElement) {
+                this.Element = this._input = inputElement;
+            }
         } else {
             this.Element = this._input;
         }
@@ -145,7 +145,7 @@ export class NumBox extends EditableComponent {
             this.Value = this._value; // Set old value to avoid accept invalid value
             return;
         }
-        this.Value = new Decimal(parsedResult) ;
+        this.Value = new Decimal(parsedResult);
         this.UserInput?.Invoke({ NewData: parsedResult, OldData: oldVal, EvType: EventType.Change });
         this.PopulateFields();
         this.DispatchEvent(this.Meta.Events, EventType.Change, this.Entity, parsedResult, oldVal).done();
