@@ -122,7 +122,7 @@ public class UserController(UserService _userSvc, WebSocketService socketSvc, IW
         return _userSvc.GeneratePdf(email, host, absolute);
     }
 
-    [HttpPost("api/[Controller]/DeleteFile")]
+    [HttpPost("api/fileUpload/deleteFile")]
     public ValueTask<bool> DeleteFile([FromBody] string path)
     {
         return _userSvc.DeleteFile(path);
