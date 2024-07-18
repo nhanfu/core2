@@ -97,7 +97,7 @@ public class UserController(UserService _userSvc, WebSocketService socketSvc, IW
         return _userSvc.ImportCsv(files, table, comId, connKey);
     }
 
-    [HttpPost("api/[Controller]/File")]
+    [HttpPost("/api/fileUpload/file")]
     public Task<string> PostFileAsync([FromForm] IFormFile file, bool reup = false)
     {
         return _userSvc.PostFileAsync(file, reup);
@@ -144,7 +144,7 @@ public class UserController(UserService _userSvc, WebSocketService socketSvc, IW
     [HttpPatch("/api/feature/run")]
     public Task<SqlResult> Run([FromBody] PatchVM entity)
     {
-        return _userSvc.SavePatch(entity);
+        return _userSvc.SavePatch2(entity);
     }
 
     [HttpPost("/api/feature/com")]

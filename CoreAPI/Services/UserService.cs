@@ -87,11 +87,11 @@ public class UserService
         var claims = _ctx.HttpContext?.User?.Claims;
         if (claims is null) return;
         BranchId = claims.FirstOrDefault(x => x.Type == UserServiceHelpers.BranchIdClaim)?.Value;
-        UserId = claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+        UserId = claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
         ConnKey = claims.FirstOrDefault(x => x.Type == UserServiceHelpers.ConnKeyClaim)?.Value;
         UserName = claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
         CenterIds = claims.Where(x => x.Type == nameof(CenterIds)).Select(x => x.Value).Where(x => x != null).ToList();
-        RoleIds = claims.Where(x => x.Type == ClaimTypes.Actor).Select(x => x.Value).Where(x => x != null).ToList();
+        RoleIds = claims.Where(x => x.Type == "RoleIds").Select(x => x.Value).Where(x => x != null).ToList();
         RoleNames = claims.Where(x => x.Type == UserServiceHelpers.RoleNameClaim).Select(x => x.Value).Where(x => x != null).ToList();
         VendorId = claims.FirstOrDefault(x => x.Type == ClaimTypes.GroupSid)?.Value;
         TenantCode = claims.FirstOrDefault(x => x.Type == UserServiceHelpers.TenantClaim)?.Value.ToUpper();
@@ -470,7 +470,25 @@ public class UserService
         }
     }
 
-    public async Task<SqlResult> SavePatch(PatchVM vm)
+    public async Task<int> SavePatch(PatchVM vm)
+    {
+        vm.CachedDataConn ??= await _sql.GetConnStrFromKey(vm.DataConn, vm.TenantCode, vm.Env);
+        vm.CachedMetaConn ??= await _sql.GetConnStrFromKey(vm.MetaConn, vm.TenantCode, vm.Env);
+        var canWrite = await HasWritePermission(vm);
+        if (!canWrite) throw new ApiException($"Unauthorized to write on \"{vm.Table}\"")
+        {
+            StatusCode = HttpStatusCode.Unauthorized
+        };
+        var cmd = _sql.GetCreateOrUpdateCmd(vm);
+        if (cmd.IsNullOrWhiteSpace()) return 0;
+        var result = await _sql.RunSqlCmd(vm.CachedDataConn, cmd);
+        if (result == 0) return result;
+        await TryNotifyChanges("Patch", null, vm);
+        await AfterActionSvc(vm, "AfterPatch");
+        return result;
+    }
+
+    public async Task<SqlResult> SavePatch2(PatchVM vm)
     {
         var id = vm.Changes.FirstOrDefault(x => x.Field == "Id").Value;
         var tableColumns = (await GetTableColumns(vm.Table))[0];
@@ -498,9 +516,14 @@ public class UserService
                         command.Transaction = transaction;
                         command.Connection = connection;
                         var update = filteredChanges.Select(x => $"@{id.Replace("-", "") + x.Field.ToLower()}");
-                        command.CommandText += $"INSERT into [{vm.Table}]({filteredChanges.Combine()}) values({update.Combine()})";
+                        var cells = filteredChanges.Select(x => x.Field).ToList();
+                        command.CommandText += $"INSERT into [{vm.Table}]({cells.Combine()}) values({update.Combine()})";
                         foreach (var item in filteredChanges)
                         {
+                            if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
+                            {
+                                item.Value = item.Value.Substring(1);
+                            }
                             command.Parameters.AddWithValue($"@{id.Replace("-", "") + item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
                         }
                         int index = 1;
@@ -515,11 +538,11 @@ public class UserService
                                     var filteredDetailChanges = detail.Changes.Where(change => tableDetailColumns.SelectMany(x => x.Values).Contains(change.Field)).ToList();
                                     if (idDetail.StartsWith("-"))
                                     {
-                                        var updateDetail = filteredChanges.Select(x => $"@{idDetail.Replace("-", "") + x.Field.ToLower()}");
+                                        var updateDetail = filteredDetailChanges.Select(x => $"@{idDetail.Replace("-", "") + x.Field.ToLower()}");
                                         command.CommandText += $";INSERT into [{detail.Table}]({filteredDetailChanges.Combine()}) values({updateDetail.Combine()})";
                                         foreach (var item in filteredDetailChanges)
                                         {
-                                            if (item.Value != null && item.Value.Contains(id) && item.Value.StartsWith("-"))
+                                            if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
                                             {
                                                 item.Value = item.Value.Substring(1);
                                             }
@@ -533,7 +556,7 @@ public class UserService
                                         command.CommandText += $";UPDATE [{detail.Table}] SET {updateDetail.Combine()} WHERE Id = '{idDetail}';";
                                         foreach (var item in filteredDetailChanges)
                                         {
-                                            if (item.Value != null && item.Value.Contains(id) && item.Value.StartsWith("-"))
+                                            if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
                                             {
                                                 item.Value = item.Value.Substring(1);
                                             }
@@ -608,6 +631,10 @@ public class UserService
                         command.CommandText += $" UPDATE [{vm.Table}] SET {update.Combine()} WHERE Id = '{id}';";
                         foreach (var item in updates)
                         {
+                            if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
+                            {
+                                item.Value = item.Value.Substring(1);
+                            }
                             command.Parameters.AddWithValue($"@{id.Replace("-", "") + item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
                         }
                         int index = 1;
@@ -622,11 +649,11 @@ public class UserService
                                     var filteredDetailChanges = detail.Changes.Where(change => tableDetailColumns.SelectMany(x => x.Values).Contains(change.Field)).ToList();
                                     if (idDetail.StartsWith("-"))
                                     {
-                                        var updateDetail = filteredChanges.Select(x => $"@{idDetail.Replace("-", "") + x.Field.ToLower()}");
+                                        var updateDetail = filteredDetailChanges.Select(x => $"@{idDetail.Replace("-", "") + x.Field.ToLower()}");
                                         command.CommandText += $";INSERT into [{detail.Table}]({filteredDetailChanges.Combine()}) values({updateDetail.Combine()})";
                                         foreach (var item in filteredDetailChanges)
                                         {
-                                            if (item.Value != null && item.Value.Contains(id) && item.Value.StartsWith("-"))
+                                            if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
                                             {
                                                 item.Value = item.Value.Substring(1);
                                             }
@@ -640,7 +667,7 @@ public class UserService
                                         command.CommandText += $";UPDATE [{detail.Table}] SET {updateDetail.Combine()} WHERE Id = '{idDetail}';";
                                         foreach (var item in filteredDetailChanges)
                                         {
-                                            if (item.Value != null && item.Value.Contains(id) && item.Value.StartsWith("-"))
+                                            if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
                                             {
                                                 item.Value = item.Value.Substring(1);
                                             }
@@ -1320,7 +1347,7 @@ public class UserService
 
     public async Task<string> PostFileAsync(IFormFile file, bool reup = false)
     {
-        var fileName = $"{Path.GetFileNameWithoutExtension(file.FileName)}{Uuid7.Guid().ToString()}{Path.GetExtension(file.FileName)}";
+        var fileName = $"{Path.GetFileNameWithoutExtension(file.FileName)}-{Uuid7.Guid()}{Path.GetExtension(file.FileName)}";
         var path = GetUploadPath(fileName, _host.WebRootPath);
         EnsureDirectoryExist(path);
         path = reup ? IncreaseFileName(path) : path;
