@@ -45,11 +45,11 @@ services.AddMvc(options =>
 {
     options.SerializerSettings.ContractResolver = new IgnoreNullOrEmptyEnumResolver();
     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-    options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+    options.SerializerSettings.NullValueHandling = NullValueHandling.Include;
 
     options.SerializerSettings.Converters.Add(new DateParser());
     options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
-    options.SerializerSettings.DateParseHandling = DateParseHandling.DateTimeOffset;
+    options.SerializerSettings.DateParseHandling = DateParseHandling.DateTime;
     options.SerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
 });
 var tokenOptions = new TokenValidationParameters()

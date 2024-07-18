@@ -18,14 +18,14 @@ namespace Core.Extensions
               || type.IsEnum
               || type.Equals(typeof(string))
               || type.Equals(typeof(DateTime))
-              || type.Equals(typeof(DateTimeOffset))
+              || type.Equals(typeof(DateTime))
               || type.Equals(typeof(TimeSpan))
               || type.Equals(typeof(decimal));
         }
 
         public static bool IsDate(this Type type)
         {
-            return type.Equals(typeof(DateTime)) || type.Equals(typeof(DateTime?)) || type.Equals(typeof(DateTimeOffset)) || type.Equals(typeof(DateTimeOffset?));
+            return type.Equals(typeof(DateTime)) || type.Equals(typeof(DateTime?)) || type.Equals(typeof(DateTime)) || type.Equals(typeof(DateTime?));
         }
 
         public static bool IsNumber(this Type type)
@@ -214,7 +214,7 @@ namespace Core.Extensions
                 patch.Changes.Add(new PatchDetail
                 {
                     Field = prop.Name,
-                    Value = val is DateTimeOffset time ? time.ToISOFormat() : val?.ToString()
+                    Value = val is DateTime time ? time.ToISOFormat() : val?.ToString()
                 });
             });
             return patch;

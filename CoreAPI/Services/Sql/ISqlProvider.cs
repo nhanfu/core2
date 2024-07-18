@@ -13,9 +13,9 @@ namespace CoreAPI.Services.Sql
         Task<string> GetConnStrFromKey(string connKey, string tenantCode = null, string env = null);
         string GetCreateOrUpdateCmd(PatchVM vm);
         bool HasSideEffect(string sql, params TSqlTokenType[] allowCmds);
-        Task<Dictionary<string, object>[][]> ReadDataSet(string query, string connInfo, bool shouldMapToConnStr = false);
-        Task<T> ReadDsAs<T>(string query, string connInfo) where T : class;
-        Task<T[]> ReadDsAsArr<T>(string query, string connInfo) where T : class;
+        Task<Dictionary<string, object>[][]> ReadDataSet(string query, string connInfo = null, bool shouldMapToConnStr = false);
+        Task<T> ReadDsAs<T>(string query, string connInfo = null) where T : class;
+        Task<T[]> ReadDsAsArr<T>(string query, string connInfo = null) where T : class;
         public Task<int> RunSqlCmd(string connStr, string cmdText);
     }
 }

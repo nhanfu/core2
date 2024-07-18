@@ -38,7 +38,7 @@
 
         public static string ToOdataFormat(this DateTime date)
         {
-            return string.Concat("cast(", date.ToISOFormat(), ",Edm.DateTimeOffset)");
+            return string.Concat("cast(", date.ToISOFormat(), ",Edm.DateTime)");
         }
 
         public static (int, int, int) ToDayHourMinute(this TimeSpan span)
@@ -50,7 +50,7 @@
             return (days, hour, leftMinute);
         }
 
-        public static string DateString(this DateTimeOffset yourDate, DateTime? compareDate = null)
+        public static string DateString(this DateTime yourDate, DateTime? compareDate = null)
         {
             if (compareDate == null)
             {

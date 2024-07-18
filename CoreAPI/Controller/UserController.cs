@@ -4,10 +4,9 @@ using Core.Middlewares;
 using Core.Models;
 using Core.Services;
 using Core.ViewModels;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
-using System.Text;
 
 namespace Core.Controllers;
 
@@ -15,14 +14,13 @@ namespace Core.Controllers;
 public class UserController(UserService _userSvc, WebSocketService socketSvc, IWebHostEnvironment env) : ControllerBase
 {
     [AllowAnonymous]
-    [HttpPost("api/{tenant}/[Controller]/SignIn")]
-    public async Task<ActionResult<Token>> SignInAsync([FromBody] LoginVM login, [FromRoute] string tenant)
+    [HttpPost("/api/auth/login")]
+    public async Task<ActionResult<Token>> SignInAsync([FromBody] LoginVM login)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
-        login.CompanyName ??= tenant;
         return await _userSvc.SignInAsync(login);
     }
 
@@ -34,7 +32,7 @@ public class UserController(UserService _userSvc, WebSocketService socketSvc, IW
     }
 
     [AllowAnonymous]
-    [HttpPost("api/[Controller]/Refresh")]
+    [HttpPost("/api/auth/refreshToken")]
     public async Task<Token> RefreshAsync([FromBody] RefreshVM token)
     {
         if (token is null)
@@ -73,24 +71,11 @@ public class UserController(UserService _userSvc, WebSocketService socketSvc, IW
         return res;
     }
 
-    [HttpPost("api/[Controller]/excel")]
-    public Task<string> ExportExcel([FromBody] SqlViewModel vm)
-    {
-        return _userSvc.ExportExcel(vm);
-    }
-
     [HttpPost("api/[Controller]/del", Order = 0)]
     public Task<bool> HardDeleteAsync([FromBody] PatchVM patch)
     {
         patch.ByPassPerm = false;
         return _userSvc.HardDelete(patch);
-    }
-
-    [HttpPatch("api/v2/[Controller]", Order = 0)]
-    public Task<int> PatchAsync([FromBody] PatchVM patch)
-    {
-        patch.ByPassPerm = false;
-        return _userSvc.SavePatch(patch);
     }
 
     [HttpPatch("api/[Controller]/SavePatches", Order = 0)]
@@ -144,18 +129,41 @@ public class UserController(UserService _userSvc, WebSocketService socketSvc, IW
     }
 
     [AllowAnonymous]
-    [HttpPost("api/[Controller]/ComQuery")]
-    public Task<object> ComQuery([FromBody] SqlViewModel model)
+    [HttpGet("api/dictionary")]
+    public Task<Dictionary<string, object>[]> Dictionary()
     {
-        return _userSvc.ComQuery(model);
+        return _userSvc.GetDictionary();
+    }
+
+    [HttpPost("/api/feature/go")]
+    public Task<SqlResult> Go([FromBody] SqlViewModel entity)
+    {
+        return _userSvc.Go(entity);
+    }
+
+    [HttpPatch("/api/feature/run")]
+    public Task<SqlResult> Run([FromBody] PatchVM entity)
+    {
+        return _userSvc.SavePatch(entity);
+    }
+
+    [HttpPost("/api/feature/com")]
+    public Task<SqlComResult> Com([FromBody] SqlViewModel entity)
+    {
+        return _userSvc.ComQuery(entity);
     }
 
     [AllowAnonymous]
-    [HttpGet("/{tenant?}/{area?}/{env?}/{path?}")]
-    public Task Index([FromRoute] string tenant = "system", [FromRoute] string area = "admin",
-        [FromRoute] string env = "test", [FromRoute] string path = "")
+    [HttpGet("/api/feature/getMenu")]
+    public Task<Dictionary<string, object>[]> GetMenu()
     {
-        return _userSvc.Launch(tenant, area, env, path);
+        return _userSvc.GetMenu();
+    }
+
+    [HttpGet("/api/feature/getFeature")]
+    public Task<Feature> GetFeature([FromQuery] string name)
+    {
+        return _userSvc.GetFeature(name);
     }
 
     [HttpPost("/api/chat")]

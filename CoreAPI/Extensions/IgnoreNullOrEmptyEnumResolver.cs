@@ -10,13 +10,13 @@ namespace Core.Extensions
     {
         public override object ReadJson(JsonReader reader, Type type, object existingValue, JsonSerializer serializer)
         {
-            var isNull = type == typeof(DateTimeOffset?);
-            if (type == typeof(DateTimeOffset) || isNull)
+            var isNull = type == typeof(DateTime?);
+            if (type == typeof(DateTime) || isNull)
             {
                 string dateText = reader.Value?.ToString();
-                if (DateTimeOffset.TryParse(dateText, out var res))
+                if (DateTime.TryParse(dateText, out var res))
                     return res;
-                else return isNull ? null : DateTimeOffset.MinValue;
+                else return isNull ? null : DateTime.MinValue;
             }
             return base.ReadJson(reader, type, existingValue, serializer);
         }

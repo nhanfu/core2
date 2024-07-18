@@ -11,49 +11,49 @@
         }
         return getValue(obj);
     };
-    System.DateTimeOffset.prototype.getUTCFullYear = function () {
+    System.DateTime.prototype.getUTCFullYear = function () {
         var date = this instanceof Date ? this : this.m_dateTime;
         return date.getUTCFullYear();
     };
-    System.DateTimeOffset.prototype.getFullYear = function () {
+    System.DateTime.prototype.getFullYear = function () {
         var date = this instanceof Date ? this : this.m_dateTime;
         return date.getFullYear();
     };
-    System.DateTimeOffset.prototype.getYear = function () {
+    System.DateTime.prototype.getYear = function () {
         var date = this instanceof Date ? this : this.m_dateTime;
         return date.getFullYear();
     };
-    System.DateTimeOffset.prototype.getDay = function () {
+    System.DateTime.prototype.getDay = function () {
         var date = this instanceof Date ? this : this.m_dateTime;
         return date.getDay();
     };
-    System.DateTimeOffset.prototype.getUTCMonth = function () {
+    System.DateTime.prototype.getUTCMonth = function () {
         var date = this instanceof Date ? this : this.m_dateTime;
         return date.getUTCMonth();
     };
-    System.DateTimeOffset.prototype.getMonth = function () {
+    System.DateTime.prototype.getMonth = function () {
         var date = this instanceof Date ? this : this.m_dateTime;
         return date.getMonth();
     };
 
-    System.DateTimeOffset.prototype.getUTCDate = function () {
+    System.DateTime.prototype.getUTCDate = function () {
         var date = this instanceof Date ? this : this.m_dateTime;
         return date.getUTCDate();
     };
-    System.DateTimeOffset.prototype.getDate = function () {
+    System.DateTime.prototype.getDate = function () {
         var date = this instanceof Date ? this : this.m_dateTime;
         return date.getDate();
     };
 
-    System.DateTimeOffset.prototype.getTime = function () {
+    System.DateTime.prototype.getTime = function () {
         var date = this instanceof Date ? this : this.m_dateTime;
         return date.getTime();
     };
-    System.DateTimeOffset.prototype.getTimezoneOffset = function () {
+    System.DateTime.prototype.getTimezoneOffset = function () {
         var date = this instanceof Date ? this : this.m_dateTime;
         return date.getTimezoneOffset();
     };
-    System.DateTimeOffset.prototype.getTicks = function () {
+    System.DateTime.prototype.getTicks = function () {
         var date = this instanceof Date ? this : this.m_dateTime;
         return date.ticks;
     };

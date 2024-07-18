@@ -6,6 +6,6 @@ public class MQEvent
     public string Action { get; set; }
     public string Id { get; set; }
     public string PrevId { get; set; }
-    public DateTimeOffset Time { get; set; } = DateTimeOffset.Now;
+    public DateTime Time { get; set; } = DateTime.Now;
     public dynamic Message { get; set; }
 }

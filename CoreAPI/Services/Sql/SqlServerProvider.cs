@@ -23,9 +23,13 @@ public class SqlServerProvider(IDistributedCache cache, IConfiguration cfg) : IS
     public string Env { get; set; }
     public string UserId { get; set; }
 
-    public async Task<Dictionary<string, object>[][]> ReadDataSet(string query, string connInfo, bool shouldMapToConnStr = false)
+    public async Task<Dictionary<string, object>[][]> ReadDataSet(string query, string connInfo = null, bool shouldMapToConnStr = false)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(query);
+        if (connInfo is null)
+        {
+            connInfo = cfg.GetConnectionString("Default");
+        }
         ArgumentException.ThrowIfNullOrWhiteSpace(connInfo);
         var sideEffect = HasSideEffect(query);
         if (sideEffect) throw new ApiException("Side effect of query is NOT allowed");
@@ -93,27 +97,17 @@ public class SqlServerProvider(IDistributedCache cache, IConfiguration cfg) : IS
 
     public async Task<string> GetConnStrFromKey(string connKey, string tenantCode = null, string env = null)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(connKey);
-        tenantCode = TenantCode ?? tenantCode;
-        env = Env ?? env;
-        var key = $"{tenantCode}_{connKey}_{env}";
-        var conStr = await cache.GetStringAsync(key);
-        if (conStr != null) return conStr;
-        var query = $"select * from [Tenant] where TenantCode = '{tenantCode}' and ConnKey = '{connKey}' and Env = '{env}'";
-        var tenantEnv = await ReadDsAs<Tenant>(query, cfg.GetConnectionString(Utils.ConnKey))
-            ?? throw new ApiException($"Tenant environment NOT found {key}");
-        await cache.SetStringAsync(key, tenantEnv.ConnStr, Utils.CacheTTL);
-        return tenantEnv.ConnStr;
+        return cfg.GetConnectionString("Default");
     }
 
-    public async Task<T> ReadDsAs<T>(string query, string connInfo) where T : class
+    public async Task<T> ReadDsAs<T>(string query, string connInfo = null) where T : class
     {
         var ds = await ReadDataSet(query, connInfo);
         if (ds.Length == 0 || ds[0].Length == 0) return null;
         return ds[0][0].MapTo<T>();
     }
 
-    public async Task<T[]> ReadDsAsArr<T>(string query, string connInfo) where T : class
+    public async Task<T[]> ReadDsAsArr<T>(string query, string connInfo = null) where T : class
     {
         var ds = await ReadDataSet(query, connInfo);
         if (ds.Length == 0 || ds[0].Length == 0) return [];
@@ -190,7 +184,7 @@ public class SqlServerProvider(IDistributedCache cache, IConfiguration cfg) : IS
         }).ToList();
         var idField = vm.Id;
         var valueFields = vm.Changes.Where(x => !SystemFields.Contains(x.Field.ToLower())).ToArray();
-        var now = DateTimeOffset.Now.ToString(DateTimeExt.DateFormat);
+        var now = DateTime.Now.ToString(DateTimeExt.DateFormat);
         var oldId = idField?.OldVal;
         if (oldId is not null)
         {

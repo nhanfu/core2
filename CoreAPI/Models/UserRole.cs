@@ -12,15 +12,15 @@
 
         public bool Active { get; set; }
 
-        public DateTimeOffset? EffectiveDate { get; set; }
+        public DateTime? EffectiveDate { get; set; }
 
-        public DateTimeOffset? ExpiredDate { get; set; }
+        public DateTime? ExpiredDate { get; set; }
 
-        public DateTimeOffset InsertedDate { get; set; }
+        public DateTime InsertedDate { get; set; }
 
         public string InsertedBy { get; set; }
 
-        public DateTimeOffset? UpdatedDate { get; set; }
+        public DateTime? UpdatedDate { get; set; }
 
         public string UpdatedBy { get; set; }
 

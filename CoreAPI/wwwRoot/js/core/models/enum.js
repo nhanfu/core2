@@ -397,7 +397,7 @@ export class MQEvent {
         this.Action = '';
         this.Id = '';
         this.PrevId = '';
-        this.Time = null; // JavaScript does not have a direct equivalent to DateTimeOffset, using Date instead
+        this.Time = null; // JavaScript does not have a direct equivalent to DateTime, using Date instead
         this.Message = null;
     }
 }

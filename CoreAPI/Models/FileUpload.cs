@@ -16,11 +16,11 @@
 
         public string InsertedBy { get; set; }
 
-        public DateTimeOffset InsertedDate { get; set; }
+        public DateTime InsertedDate { get; set; }
 
         public string UpdatedBy { get; set; }
 
-        public DateTimeOffset? UpdatedDate { get; set; }
+        public DateTime? UpdatedDate { get; set; }
 
         public string FieldName { get; set; }
 

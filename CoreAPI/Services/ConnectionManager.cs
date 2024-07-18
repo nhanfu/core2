@@ -45,7 +45,7 @@ namespace Core.Services
 
         public string AddDeviceSocket(WebSocket socket, string userId, List<string> roleIds, string ip)
         {
-            var deviceKey = $"{userId}/{roleIds.Combine()}/{ip}/{Uuid7.Id25()}";
+            var deviceKey = $"{userId}/{roleIds.Combine()}/{ip}/{Uuid7.Guid().ToString()}";
             _sockets.TryAdd(deviceKey, socket);
             return deviceKey;
         }

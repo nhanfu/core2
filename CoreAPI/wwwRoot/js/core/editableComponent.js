@@ -499,7 +499,7 @@ export default class EditableComponent {
         const idFieldIndex = details.findIndex(x => x.Field === Utils.IdField);
         if (idFieldIndex !== -1) details.splice(idFieldIndex, 1);
         if (this.EntityId === null) {
-            details.push({ Field: Utils.IdField, Value: Uuid7.Id25() });
+            details.push({ Field: Utils.IdField, Value: Uuid7.Guid().ToString() });
         } else {
             details.push({ Field: Utils.IdField, Value: this.EntityId, OldVal: this.EntityId });
         }

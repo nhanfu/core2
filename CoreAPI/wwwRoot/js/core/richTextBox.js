@@ -32,7 +32,7 @@ export class RichTextBox extends EditableComponent {
     }
 
     BindingWebComponent() {
-        this.Element = Html.Take(this.ParentElement).Div.Id(Uuid7.Id25()).GetContext();
+        this.Element = Html.Take(this.ParentElement).Div.Id(Uuid7.Guid().ToString()).GetContext();
     }
 
     Render() {

@@ -69,7 +69,7 @@ public class LoadBalaceMiddleware
         {
             await Dispatch(context, options, node);
             node.Alive = true;
-            node.LastResponse = DateTimeOffset.Now;
+            node.LastResponse = DateTime.Now;
         }
         catch (HttpRequestException)
         {
@@ -90,7 +90,7 @@ public class LoadBalaceMiddleware
         for (var i = 0; i < Balancer.Nodes.Count; i++)
         {
             var node = Balancer.Nodes[i];
-            if (node.Alive || node.LastResponse < DateTimeOffset.Now.AddMinutes(-RecoveryMinutes))
+            if (node.Alive || node.LastResponse < DateTime.Now.AddMinutes(-RecoveryMinutes))
                 nodes.Add(node);
         }
         Balancer.AvailableNodes = nodes;
@@ -276,7 +276,7 @@ public class Clusters
 public class Node
 {
     public bool Alive { get; set; } = true;
-    public DateTimeOffset LastResponse { get; set; } = DateTimeOffset.Now;
+    public DateTime LastResponse { get; set; } = DateTime.Now;
     public string Id { get; set; }
     public string Host { get; set; }
     public int Port { get; set; }

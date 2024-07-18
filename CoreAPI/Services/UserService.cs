@@ -5,12 +5,13 @@ using Core.Middlewares;
 using Core.Models;
 using Core.ViewModels;
 using CoreAPI.Services.Sql;
-using Elsa.Workflows.Core.Activities;
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Ocsp;
 using PuppeteerSharp;
 using System.Buffers;
 using System.Data;
@@ -39,6 +40,7 @@ public class UserService
     private readonly IWebHostEnvironment _host;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly WebSocketService _taskSocketSvc;
+    private readonly IConfiguration _configuration;
     public readonly ISqlProvider _sql;
 
     public string UserId { get; set; }
@@ -53,8 +55,9 @@ public class UserService
     public List<string> RoleNames { get; set; }
 
     public UserService(IHttpContextAccessor ctx, IConfiguration conf, IDistributedCache cache, IWebHostEnvironment host,
-        IHttpClientFactory httpClientFactory, WebSocketService taskSocket, ISqlProvider sql)
+        IHttpClientFactory httpClientFactory, WebSocketService taskSocket, ISqlProvider sql, IConfiguration configuration)
     {
+        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         _cfg = conf ?? throw new ArgumentNullException(nameof(conf));
         _cache = cache ?? throw new ArgumentNullException(nameof(cache)); ;
         _host = host ?? throw new ArgumentNullException(nameof(host));
@@ -130,11 +133,10 @@ public class UserService
 
     public async Task<Token> SignInAsync(LoginVM login)
     {
-        if (login.CompanyName.HasAnyChar())
+        if (login.TanentCode.HasAnyChar())
         {
-            login.CompanyName = login.CompanyName.Trim();
+            login.TanentCode = login.TanentCode.Trim();
         }
-        login.CachedConnStr = await _sql.GetConnStrFromKey(login.ConnKey, login.CompanyName, login.Env);
         var (matchedUser, roles) = await GetUserByLogin(login);
         if (matchedUser is null)
         {
@@ -143,7 +145,7 @@ public class UserService
                 StatusCode = HttpStatusCode.BadRequest
             };
         }
-        if (matchedUser.LoginFailedCount >= UserServiceHelpers.MAX_LOGIN && matchedUser.LastFailedLogin < DateTimeOffset.Now.AddMinutes(5))
+        if (matchedUser.LoginFailedCount >= UserServiceHelpers.MAX_LOGIN && matchedUser.LastFailedLogin < DateTime.Now.AddMinutes(5))
         {
             throw new ApiException($"Tài khoản {login.UserName} đã bị khóa trong 5 phút!")
             {
@@ -156,22 +158,20 @@ public class UserService
         if (!matchPassword)
         {
             var loginFailedCount = matchedUser.LoginFailedCount.HasValue ? matchedUser.LoginFailedCount + 1 : 1;
-            changes.Add(new PatchDetail { Field = nameof(User.LastFailedLogin), Value = DateTimeOffset.Now.ToISOFormat() });
+            changes.Add(new PatchDetail { Field = nameof(User.LastFailedLogin), Value = DateTime.Now.ToISOFormat() });
             changes.Add(new PatchDetail { Field = nameof(User.LoginFailedCount), Value = loginFailedCount.ToString() });
         }
         else
         {
-            matchedUser.LastLogin = DateTimeOffset.Now;
+            matchedUser.LastLogin = DateTime.Now;
             matchedUser.LoginFailedCount = 0;
-            changes.Add(new PatchDetail { Field = nameof(User.LastLogin), Value = DateTimeOffset.Now.ToISOFormat() });
+            changes.Add(new PatchDetail { Field = nameof(User.LastLogin), Value = DateTime.Now.ToISOFormat() });
             changes.Add(new PatchDetail { Field = nameof(User.LoginFailedCount), Value = 0.ToString() });
         }
         await SavePatch(new PatchVM
         {
             Table = nameof(User),
-            TenantCode = login.CompanyName,
-            Env = login.Env,
-            CachedDataConn = login.CachedConnStr,
+            TenantCode = login.TanentCode,
             Changes = changes
         });
         if (!matchPassword)
@@ -188,20 +188,66 @@ public class UserService
     {
         var query = @$"
         declare @username varchar(100) = '{login.UserName}';
-        declare @tenant varchar(100) = '{login.CompanyName}';
-            select u.* from [User] u 
-            join [Vendor] v on u.VendorId = v.Id
-            where u.Active = 1 and u.Username = @username and v.Code = @tenant;
+        select u.* from [User] u 
+        where u.Active = 1 and u.Username = @username;
         select r.* from [User] u 
-            join [Vendor] v on u.VendorId = v.Id
-            left join [UserRole] ur on u.Id = ur.UserId
-            left join [Role] r on ur.RoleId = r.Id
-            where u.Active = 1 and u.Username = @username and v.Code = @tenant"
-        ;
-        var ds = await _sql.ReadDataSet(query, login.CachedConnStr);
+        left join [UserRole] ur on u.Id = ur.UserId
+        left join [Role] r on ur.RoleId = r.Id
+        where u.Active = 1 and u.Username = @username";
+        var ds = await _sql.ReadDataSet(query);
         var userDb = ds.Length > 0 && ds[0].Length > 0 ? ds[0][0].MapTo<User>() : null;
         var roles = ds.Length > 1 && ds[1].Length > 0 ? ds[1].Select(x => x.MapTo<Role>()).ToArray() : null;
         return (userDb, roles);
+    }
+
+    public async Task<Dictionary<string, object>[]> GetDictionary()
+    {
+        var query = @$"select * from [Dictionary]";
+        var ds = await _sql.ReadDataSet(query, _configuration.GetConnectionString("Default"));
+        return ds[0];
+    }
+
+    public async Task<SqlResult> Go(SqlViewModel sqlViewModel)
+    {
+        var query = @$"select * from [{sqlViewModel.Table}] where Id in ({sqlViewModel.Id.CombineStrings()})";
+        var ds = await _sql.ReadDataSet(query, _configuration.GetConnectionString("Default"));
+        return new SqlResult()
+        {
+            data = ds[0],
+            status = 200,
+            message = "Select successful"
+        };
+    }
+
+    public async Task<Dictionary<string, object>[]> GetMenu()
+    {
+        var query = @$"select * from [Feature] where IsMenu = 1";
+        var ds = await _sql.ReadDataSet(query, _configuration.GetConnectionString("Default"));
+        return ds[0];
+    }
+
+
+    public async Task<Feature> GetFeature(string name)
+    {
+        var query = @$"select * from [Feature] where Name = N'{name}'";
+        var feature = await _sql.ReadDsAs<Feature>(query, _configuration.GetConnectionString("Default"));
+        var query2 = @$"select * from [Component] where FeatureId = '{feature.Id}'
+        select * from [FeaturePolicy] where FeatureId = '{feature.Id}'";
+        var childs = await _sql.ReadDataSet(query2, _configuration.GetConnectionString("Default"));
+        var components = childs.Length > 0 && childs[0].Length > 0 ? childs[0].Select(x => x.MapTo<Component>()).ToList() : null;
+        var policys = childs.Length > 1 && childs[1].Length > 0 ? childs[1].Select(x => x.MapTo<FeaturePolicy>()).ToList() : null;
+        feature.Components = components;
+        var filteredComponentGroups = feature.Components
+            .Where(component => component.ComponentType == "Section")
+            .ToList();
+        filteredComponentGroups.ForEach(group =>
+        {
+            group.Components = feature.Components.Where(c => c.ComponentGroupId == group.Id).ToList();
+        });
+        feature.ComponentGroup = filteredComponentGroups;
+        feature.FeaturePolicies = policys;
+        feature.GridPolicies = feature.Components.Where(component => component.ComponentGroupId == null && component.EntityId != null).ToList();
+        return feature;
     }
 
     protected async Task<Token> GetUserToken(User user, Role[] roles, LoginVM login, string refreshToken = null)
@@ -211,33 +257,30 @@ public class UserService
             return null;
         }
         var roleIds = roles.Select(x => x.Id).Distinct().ToList();
-        var roleNames = roles.Select(x => x.RoleName).Distinct().ToList();
-        var signinDate = DateTimeOffset.Now;
-        var jit = Uuid7.Id25().ToString();
+        var roleNames = roles.Select(x => x.Name).Distinct().ToList();
+        var signinDate = DateTime.Now;
+        var jit = Uuid7.Guid().ToString();
         List<Claim> claims =
         [
-            new(ClaimTypes.GroupSid, user.VendorId.ToString()),
-            new (ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(ClaimTypes.GroupSid, user.PartnerId.ToString()),
+            new ("UserId", user.Id.ToString()),
             new (ClaimTypes.Name, user.UserName),
-            new (UserServiceHelpers.BranchIdClaim, user.BranchId?.ToString() ?? string.Empty),
             new (JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
-            new (JwtRegisteredClaimNames.Birthdate, user.DoB?.ToString() ?? string.Empty),
+            new (JwtRegisteredClaimNames.Birthdate, user.Dob?.ToString() ?? string.Empty),
         ];
         List<Claim> claim2 = [
             new (JwtRegisteredClaimNames.FamilyName, user.FullName?? string.Empty),
             new (JwtRegisteredClaimNames.Iat, signinDate.ToString()),
             new (JwtRegisteredClaimNames.Jti, jit),
-            new (UserServiceHelpers.TenantClaim, login.CompanyName),
-            new (UserServiceHelpers.EnvClaim, login.Env),
-            new (UserServiceHelpers.ConnKeyClaim, login.ConnKey),
+            new (UserServiceHelpers.TenantClaim, login.TanentCode),
         ];
         claims.AddRange(claim2);
-        claims.AddRange(roleIds.Select(x => new Claim(ClaimTypes.Actor, x.ToString())));
+        claims.AddRange(roleIds.Select(x => new Claim("RoleIds", x.ToString())));
         claims.AddRange(roleNames.Select(x => new Claim(UserServiceHelpers.RoleNameClaim, x.ToString())));
         var newLogin = refreshToken is null;
         refreshToken ??= GenerateRandomToken();
         var (token, exp) = AccessToken(claims);
-        var res = JsonToken(user, roles, login.CompanyName, refreshToken, token, exp, signinDate);
+        var res = JsonToken(user, roles, login.TanentCode, refreshToken, token, exp, signinDate);
         if (!newLogin || !login.AutoSignIn)
         {
             return res;
@@ -245,44 +288,39 @@ public class UserService
         var userLogin = new UserLogin
         {
             Id = jit,
-            TenantCode = login.CompanyName,
             UserId = user.Id,
             IpAddress = GetRemoteIpAddress(_ctx.HttpContext),
             RefreshToken = refreshToken,
-            ExpiredDate = res.RefreshTokenExp,
-            SignInDate = signinDate,
+            RefreshTokenExp = res.RefreshTokenExp,
+            InsertedDate = signinDate,
         };
         var patch = userLogin.MapToPatch();
-        patch.TenantCode = login.CompanyName;
-        patch.Env = login.Env;
-        patch.CachedDataConn = login.CachedConnStr;
+        patch.TenantCode = login.TanentCode;
         await SavePatch(patch);
         return res;
     }
 
-    public (JwtSecurityToken, DateTimeOffset) AccessToken(IEnumerable<Claim> claims, DateTimeOffset? expire = null)
+    public (JwtSecurityToken, DateTime) AccessToken(IEnumerable<Claim> claims, DateTime? expire = null)
     {
-        var exp = expire ?? DateTimeOffset.Now.AddDays(1);
+        var exp = expire ?? DateTime.Now.AddDays(1);
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_cfg["Tokens:Key"]));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
         var token = new JwtSecurityToken(
             _cfg["Tokens:Issuer"],
             _cfg["Tokens:Issuer"],
             claims,
-            expires: exp.DateTime,
+            expires: exp,
             signingCredentials: creds);
         return (token, exp);
     }
 
     private static Token JsonToken(User user, Role[] roles, string tanent, string refreshToken,
-        JwtSecurityToken token, DateTimeOffset exp, DateTimeOffset signinDate)
+        JwtSecurityToken token, DateTime exp, DateTime signinDate)
     {
-        var vendor = new Vendor();
-        vendor.CopyPropFrom(user.Vendor);
+        var vendor = new Partner();
         return new Token
         {
             UserId = user.Id,
-            CostCenterId = user.BranchId,
             FullName = user.FullName,
             UserName = user.UserName,
             Address = user.Address,
@@ -291,10 +329,10 @@ public class UserService
             Ssn = user.Ssn,
             AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
             AccessTokenExp = exp,
-            RefreshTokenExp = DateTimeOffset.Now.AddYears(1),
+            RefreshTokenExp = DateTime.Now.AddYears(1),
             RefreshToken = refreshToken,
             RoleIds = roles.Select(x => x.Id).ToList(),
-            RoleNames = roles.Select(x => x.RoleName).ToList(),
+            RoleNames = roles.Select(x => x.Name).ToList(),
             Vendor = vendor,
             TenantCode = tanent,
             SigninDate = signinDate,
@@ -314,18 +352,15 @@ public class UserService
     public async Task<Token> RefreshAsync(RefreshVM token)
     {
         var principal = Utils.GetPrincipalFromAccessToken(token.AccessToken, _cfg);
-        var userId = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+        var userId = principal.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
         var userName = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
         var tenant = principal.Claims.FirstOrDefault(x => x.Type == UserServiceHelpers.TenantClaim)?.Value;
-        var env = principal.Claims.FirstOrDefault(x => x.Type == UserServiceHelpers.EnvClaim)?.Value;
-        var connKey = principal.Claims.FirstOrDefault(x => x.Type == UserServiceHelpers.ConnKeyClaim)?.Value;
-        EnsureTokenParam(userId, userName, tenant, env, connKey);
+        EnsureTokenParam(userId, userName, tenant);
         var query =
             @$"select * from UserLogin 
             where UserId = '{userId}' and RefreshToken = '{token.RefreshToken}'
-            and ExpiredDate > '{DateTimeOffset.Now}' order by SignInDate desc";
-        token.CachedConnStr ??= await _sql.GetConnStrFromKey(connKey, tenant, env);
-        var userLogin = await _sql.ReadDsAs<UserLogin>(query, token.CachedConnStr);
+            and RefreshTokenExp > '{DateTime.Now}' order by InsertedDate desc";
+        var userLogin = await _sql.ReadDsAs<UserLogin>(query);
 
         if (userLogin == null)
         {
@@ -333,11 +368,8 @@ public class UserService
         }
         var login = new LoginVM
         {
-            CompanyName = tenant,
+            TanentCode = tenant,
             UserName = userName,
-            ConnKey = connKey,
-            CachedConnStr = token.CachedConnStr,
-            Env = env,
         };
         var (updatedUser, roles) = await GetUserByLogin(login);
         return await GetUserToken(updatedUser, roles, login, token.RefreshToken);
@@ -360,7 +392,7 @@ public class UserService
             var map = new { UserId, RoleIds, TenantCode, Env, CenterIds, BranchId, VendorId };
             engine.SetValue("claims", JsonConvert.SerializeObject(map));
         }
-        engine.SetValue("args", vm.Params ?? "{}");
+        engine.SetValue("args", vm.Params);
         engine.SetValue("sv", this);
         engine.SetValue("vm", vm);
 
@@ -407,7 +439,7 @@ public class UserService
             {
                 ComId = vm.Table,
                 Action = "HardDelete",
-                Ids = vm.DeletedIds,
+                Id = vm.DeletedIds,
                 DataConn = vm.DataConn,
                 MetaConn = vm.MetaConn,
                 CachedDataConn = vm.CachedDataConn,
@@ -422,22 +454,250 @@ public class UserService
         return true;
     }
 
-    public async Task<int> SavePatch(PatchVM vm)
+    public void AddDefaultFields(List<PatchDetail> changes, List<PatchDetail> defaultFields)
     {
-        vm.CachedDataConn ??= await _sql.GetConnStrFromKey(vm.DataConn, vm.TenantCode, vm.Env);
-        vm.CachedMetaConn ??= await _sql.GetConnStrFromKey(vm.MetaConn, vm.TenantCode, vm.Env);
-        var canWrite = await HasWritePermission(vm);
-        if (!canWrite) throw new ApiException($"Unauthorized to write on \"{vm.Table}\"")
+        foreach (var field in defaultFields)
         {
-            StatusCode = HttpStatusCode.Unauthorized
-        };
-        var cmd = _sql.GetCreateOrUpdateCmd(vm);
-        if (cmd.IsNullOrWhiteSpace()) return 0;
-        var result = await _sql.RunSqlCmd(vm.CachedDataConn, cmd);
-        if (result == 0) return result;
-        await TryNotifyChanges("Patch", null, vm);
-        await AfterActionSvc(vm, "AfterPatch");
-        return result;
+            var existingField = changes.FirstOrDefault(change => change.Field == field.Field);
+            if (existingField != null)
+            {
+                existingField.Value = field.Value;
+            }
+            else
+            {
+                changes.Add(field);
+            }
+        }
+    }
+
+    public async Task<SqlResult> SavePatch(PatchVM vm)
+    {
+        var id = vm.Changes.FirstOrDefault(x => x.Field == "Id").Value;
+        var tableColumns = (await GetTableColumns(vm.Table))[0];
+        var filteredChanges = vm.Changes.Where(change => tableColumns.SelectMany(x => x.Values).Contains(change.Field)).ToList();
+        var selectIds = new List<DetailData>();
+        if (id.StartsWith("-"))
+        {
+            id = id.Substring(1);
+            AddDefaultFields(filteredChanges, new List<PatchDetail>()
+            {
+                new PatchDetail { Field = "InsertedDate", Value = DateTime.Now.ToISOFormat() },
+                new PatchDetail { Field = "InsertedBy", Value = UserId },
+                new PatchDetail { Field = "UpdatedDate", Value = null },
+                new PatchDetail { Field = "UpdatedBy", Value = null },
+                new PatchDetail { Field = "Active", Value = "1" }
+            });
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("Default")))
+            {
+                await connection.OpenAsync();
+                SqlTransaction transaction = connection.BeginTransaction();
+                try
+                {
+                    using (SqlCommand command = new SqlCommand())
+                    {
+                        command.Transaction = transaction;
+                        command.Connection = connection;
+                        var update = filteredChanges.Select(x => $"@{id.Replace("-", "") + x.Field.ToLower()}");
+                        command.CommandText += $"INSERT into [{vm.Table}]({filteredChanges.Combine()}) values({update.Combine()})";
+                        foreach (var item in filteredChanges)
+                        {
+                            command.Parameters.AddWithValue($"@{id.Replace("-", "") + item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
+                        }
+                        int index = 1;
+                        if (!vm.Detail.Nothing())
+                        {
+                            foreach (var detailArray in vm.Detail)
+                            {
+                                foreach (var detail in detailArray)
+                                {
+                                    var tableDetailColumns = (await GetTableColumns(detail.Table))[0];
+                                    var idDetail = detail.Changes.FirstOrDefault(x => x.Field == "Id").Value;
+                                    var filteredDetailChanges = detail.Changes.Where(change => tableDetailColumns.SelectMany(x => x.Values).Contains(change.Field)).ToList();
+                                    if (idDetail.StartsWith("-"))
+                                    {
+                                        var updateDetail = filteredChanges.Select(x => $"@{idDetail.Replace("-", "") + x.Field.ToLower()}");
+                                        command.CommandText += $";INSERT into [{detail.Table}]({filteredDetailChanges.Combine()}) values({updateDetail.Combine()})";
+                                        foreach (var item in filteredDetailChanges)
+                                        {
+                                            if (item.Value != null && item.Value.Contains(id) && item.Value.StartsWith("-"))
+                                            {
+                                                item.Value = item.Value.Substring(1);
+                                            }
+                                            command.Parameters.AddWithValue($"@{idDetail.Replace("-", "") + item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        filteredDetailChanges = filteredDetailChanges.Where(x => x.Field != "Id").ToList();
+                                        var updateDetail = filteredDetailChanges.Select(x => $"[{x.Field}] = @{idDetail.Replace("-", "") + x.Field.ToLower()}");
+                                        command.CommandText += $";UPDATE [{detail.Table}] SET {updateDetail.Combine()} WHERE Id = '{idDetail}';";
+                                        foreach (var item in filteredDetailChanges)
+                                        {
+                                            if (item.Value != null && item.Value.Contains(id) && item.Value.StartsWith("-"))
+                                            {
+                                                item.Value = item.Value.Substring(1);
+                                            }
+                                            command.Parameters.AddWithValue($"@{idDetail.Replace("-", "") + item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
+                                        }
+                                    }
+                                }
+                                selectIds.Add(new DetailData()
+                                {
+                                    Index = index,
+                                    Table = detailArray[0].Table,
+                                    ComId = detailArray[0].ComId,
+                                    Ids = detailArray.SelectMany(x => x.Changes).Where(x => x.Field == "Id").Select(x => { return x.Value.StartsWith("-") ? x.Value.Substring(1) : x.Value; }).ToList(),
+                                });
+                                index++;
+                            }
+                        }
+                        await command.ExecuteNonQueryAsync();
+                        transaction.Commit();
+                        var childs = new List<string>();
+                        var sql = $"SELECT * FROM [{vm.Table}] where Id = '{id}'";
+                        foreach (var item in selectIds)
+                        {
+                            sql += $";SELECT * FROM [{item.Table}] where Id in ({item.Ids.CombineStrings()})";
+                        }
+                        var entity = await _sql.ReadDataSet(sql);
+                        selectIds.ForEach(x =>
+                        {
+                            x.Data = entity[x.Index];
+                        });
+                        return new SqlResult()
+                        {
+                            updatedItem = entity[0],
+                            Detail = selectIds,
+                            status = 200,
+                            message = "create successfull"
+                        };
+                    }
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    var entity = await _sql.ReadDataSet($"SELECT * FROM [{vm.Table}] where Id = '{id}'");
+                    return new SqlResult()
+                    {
+                        updatedItem = entity[0],
+                        status = 500,
+                        message = "create fail"
+                    };
+                }
+            }
+        }
+        else
+        {
+            AddDefaultFields(filteredChanges, new List<PatchDetail>()
+            {
+                new PatchDetail { Field = "UpdatedDate", Value = DateTime.Now.ToISOFormat()},
+                new PatchDetail { Field = "UpdatedBy", Value = UserId },
+            });
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("Default")))
+            {
+                await connection.OpenAsync();
+                SqlTransaction transaction = connection.BeginTransaction();
+                try
+                {
+                    using (SqlCommand command = new SqlCommand())
+                    {
+                        command.Transaction = transaction;
+                        command.Connection = connection;
+                        var updates = filteredChanges.Where(x => x.Field != "Id").ToList();
+                        var update = updates.Select(x => $"[{x.Field}] = @{id.Replace("-", "") + x.Field.ToLower()}");
+                        command.CommandText += $" UPDATE [{vm.Table}] SET {update.Combine()} WHERE Id = '{id}';";
+                        foreach (var item in updates)
+                        {
+                            command.Parameters.AddWithValue($"@{id.Replace("-", "") + item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
+                        }
+                        int index = 1;
+                        if (!vm.Detail.Nothing())
+                        {
+                            foreach (var detailArray in vm.Detail)
+                            {
+                                foreach (var detail in detailArray)
+                                {
+                                    var tableDetailColumns = (await GetTableColumns(detail.Table))[0];
+                                    var idDetail = detail.Changes.FirstOrDefault(x => x.Field == "Id").Value;
+                                    var filteredDetailChanges = detail.Changes.Where(change => tableDetailColumns.SelectMany(x => x.Values).Contains(change.Field)).ToList();
+                                    if (idDetail.StartsWith("-"))
+                                    {
+                                        var updateDetail = filteredChanges.Select(x => $"@{idDetail.Replace("-", "") + x.Field.ToLower()}");
+                                        command.CommandText += $";INSERT into [{detail.Table}]({filteredDetailChanges.Combine()}) values({updateDetail.Combine()})";
+                                        foreach (var item in filteredDetailChanges)
+                                        {
+                                            if (item.Value != null && item.Value.Contains(id) && item.Value.StartsWith("-"))
+                                            {
+                                                item.Value = item.Value.Substring(1);
+                                            }
+                                            command.Parameters.AddWithValue($"@{idDetail.Replace("-", "") + item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        filteredDetailChanges = filteredDetailChanges.Where(x => x.Field != "Id").ToList();
+                                        var updateDetail = filteredDetailChanges.Select(x => $"[{x.Field}] = @{idDetail.Replace("-", "") + x.Field.ToLower()}");
+                                        command.CommandText += $";UPDATE [{detail.Table}] SET {updateDetail.Combine()} WHERE Id = '{idDetail}';";
+                                        foreach (var item in filteredDetailChanges)
+                                        {
+                                            if (item.Value != null && item.Value.Contains(id) && item.Value.StartsWith("-"))
+                                            {
+                                                item.Value = item.Value.Substring(1);
+                                            }
+                                            command.Parameters.AddWithValue($"@{idDetail.Replace("-", "") + item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
+                                        }
+                                    }
+                                }
+                                selectIds.Add(new DetailData()
+                                {
+                                    Index = index,
+                                    Table = detailArray[0].Table,
+                                    ComId = detailArray[0].ComId,
+                                    Ids = detailArray.SelectMany(x => x.Changes).Where(x => x.Field == "Id").Select(x => { return x.Value.StartsWith("-") ? x.Value.Substring(1) : x.Value; }).ToList(),
+                                });
+                                index++;
+                            }
+                        }
+                        await command.ExecuteNonQueryAsync();
+                        transaction.Commit();
+                        var sql = $"SELECT * FROM [{vm.Table}] where Id = '{id}'";
+                        foreach (var item in selectIds)
+                        {
+                            sql += $";SELECT * FROM [{item.Table}] where Id in ({item.Ids.CombineStrings()})";
+                        }
+                        var entity = await _sql.ReadDataSet(sql);
+                        selectIds.ForEach(x =>
+                        {
+                            x.Data = entity[x.Index];
+                        });
+                        return new SqlResult()
+                        {
+                            updatedItem = entity[0],
+                            Detail = selectIds,
+                            status = 200,
+                            message = "update successfull"
+                        };
+                    }
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    var entity = await _sql.ReadDataSet($"SELECT * FROM [{vm.Table}] where Id = '{id}'");
+                    return new SqlResult()
+                    {
+                        updatedItem = entity[0],
+                        status = 500,
+                        message = "update fail"
+                    };
+                }
+            }
+        }
+    }
+
+    public async Task<Dictionary<string, object>[][]> GetTableColumns(string tableName)
+    {
+        string query = $"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{tableName}'";
+        return await _sql.ReadDataSet(query);
     }
 
     private async Task AfterActionSvc(PatchVM vm, string action)
@@ -453,7 +713,6 @@ public class UserService
         var sv = await GetService(sql);
         if (sv is not null)
         {
-            sql.Params = vm.ToJson();
             sql.JsScript = sv.Content;
             try
             {
@@ -482,7 +741,7 @@ public class UserService
         await patches.ForEachAsync(vm =>
             vm.QueueName.IsNullOrWhiteSpace() ? null : TryNotifyDeviceInternal(new MQEvent
             {
-                Id = Uuid7.Id25(),
+                Id = Uuid7.Guid().ToString(),
                 Action = action,
                 Message = vm.ToJson(),
                 QueueName = vm.QueueName
@@ -649,7 +908,7 @@ public class UserService
         var allRights = await GetEntityPerm(vm.Table, null, vm.CachedDataConn);
         var canDeactivateAll = allRights.Any(x => x.CanDeactivateAll);
         var canDeactivateSelf = allRights.Any(x => x.CanDeactivate);
-        var query = $"select * from [{vm.Table}] where Id in ({vm.Ids.CombineStrings()})";
+        var query = $"select * from [{vm.Table}] where Id in ({vm.Id.CombineStrings()})";
         var ds = await _sql.ReadDataSet(query, vm.CachedDataConn);
         var rows = ds.Length > 0 ? ds[0] : null;
         if (rows.Nothing()) return null;
@@ -663,12 +922,11 @@ public class UserService
         return canDeactivateRows;
     }
 
-    public async Task<object> ComQuery(SqlViewModel vm)
+    public async Task<SqlComResult> ComQuery(SqlViewModel vm)
     {
-        vm.CachedDataConn ??= await _sql.GetConnStrFromKey(vm.DataConn, vm.AnnonymousTenant, vm.AnnonymousEnv);
-        vm.CachedMetaConn ??= await _sql.GetConnStrFromKey(vm.MetaConn, vm.AnnonymousTenant, vm.AnnonymousEnv);
-        var com = await GetComponent(vm) ?? throw new ApiException("Component not found or not public to the current user") { 
-            StatusCode = HttpStatusCode.NotFound 
+        var com = await GetComponent(vm) ?? throw new ApiException("Component not found or not public to the current user")
+        {
+            StatusCode = HttpStatusCode.NotFound
         };
         var anyInvalid = UserServiceHelpers.FobiddenTerms.Any(term =>
         {
@@ -688,36 +946,44 @@ public class UserService
         return await RunjsWrap(vm);
     }
 
-    private static void CalcFinalQuery(SqlViewModel vm, SqlQueryResult jsRes)
+    private static string CalcFinalQuery(SqlViewModel vm)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(jsRes.Query);
-        var select = vm.Select.HasAnyChar() ? $"select {vm.Select}" : string.Empty;
-        var where = vm.Where.HasAnyChar() ? $"where {vm.Where}" : string.Empty;
-        var groupBy = vm.GroupBy.HasAnyChar() ? $"group by {vm.GroupBy}" : string.Empty;
-        var having = vm.Having.HasAnyChar() ? $"having {vm.Having}" : string.Empty;
-        var orderBy = vm.OrderBy.HasAnyChar() ? $"order by {vm.OrderBy}" : string.Empty;
-        var xQuery = vm.SkipXQuery ? string.Empty : jsRes.XQuery;
-        var countQuery = vm.Count ?
-$@"select count(*) as total from (
-    {jsRes.Query}
-) as ds 
-{where}
-{groupBy}
-{having};" : string.Empty;
-        var dataQuery = vm.WrapQuery ?
-@$"{select}
-from ({jsRes.Query}) as ds
-{where}
-{groupBy}
-{having}
-{orderBy}
-{vm.Paging};
-{countQuery}" : jsRes.Query;
-        jsRes.DataConn ??= vm.DataConn;
-        jsRes.MetaConn ??= vm.MetaConn;
-        jsRes.SameContext = jsRes.DataConn == jsRes.MetaConn;
-        jsRes.DataQuery = jsRes.SameContext ? $"{dataQuery}\n{xQuery}" : dataQuery;
-        jsRes.MetaQuery = jsRes.SameContext ? string.Empty : xQuery;
+        var dictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(vm.Params);
+        var data = JsonConvert.DeserializeObject<SqlQuery>(vm.JsScript);
+        data.total = Utils.FormatEntity(data.total, dictionary);
+        data.sql = Utils.FormatEntity(data.sql, dictionary);
+        var sqlSelect = data.sql;
+        var sqlTotal = data.total;
+        if (!vm.Where.IsNullOrWhiteSpace())
+        {
+            if (sqlSelect.ToLower().Contains("where"))
+            {
+                sqlSelect += $" AND ({vm.Where})";
+                sqlTotal += $" AND ({vm.Where})";
+            }
+            else
+            {
+                sqlSelect += $" WHERE {vm.Where}";
+                sqlTotal += $" WHERE {vm.Where}";
+            }
+        }
+        if (!vm.OrderBy.IsNullOrWhiteSpace())
+        {
+            sqlSelect += $" ORDER BY {vm.OrderBy}";
+        }
+        if (vm.Skip != null)
+        {
+            sqlSelect += $" OFFSET {vm.Skip} ROWS";
+        }
+        if (vm.Top != null)
+        {
+            sqlSelect += $" FETCH NEXT {vm.Top} ROWS ONLY";
+        }
+        if (vm.Count)
+        {
+            sqlSelect += $"; {sqlTotal}";
+        }
+        return sqlSelect;
     }
 
     private async Task<Component> GetComponent(SqlViewModel vm)
@@ -738,21 +1004,11 @@ from ({jsRes.Query}) as ds
         }
         if (com is null)
         {
-            var query = @$"select top 1 * from [Component] 
-            where Id = '{vm.ComId}' and (Annonymous = 1 or IsPrivate = 0 and '{TenantCode}' != '' or TenantCode = '{TenantCode}')";
-            vm.CachedMetaConn ??= await _sql.GetConnStrFromKey(vm.MetaConn, vm.AnnonymousTenant, vm.AnnonymousEnv);
+            var query = @$"select top 1 * from [Component] where Id = '{vm.ComId}'";
             com = await _sql.ReadDsAs<Component>(query, vm.CachedMetaConn);
             if (com is null) return null;
             await SetStringAsync(comKey, JsonConvert.SerializeObject(com), Utils.CacheTTL);
         }
-        var readPermission = await GetEntityPerm("Component", vm.ComId, vm.CachedMetaConn, x => x.CanRead);
-        var hasPerm = com.Annonymous || !com.IsPrivate && UserId != null || readPermission.Length != 0;
-        if (!hasPerm)
-            throw new ApiException("Access denied")
-            {
-                StatusCode = HttpStatusCode.Unauthorized
-            };
-
         return com;
     }
 
@@ -782,7 +1038,7 @@ from ({jsRes.Query}) as ds
         return permissions;
     }
 
-    public async Task<object> RunUserSvc(SqlViewModel vm)
+    public async Task<SqlComResult> RunUserSvc(SqlViewModel vm)
     {
         vm.CachedDataConn ??= await _sql.GetConnStrFromKey(vm.DataConn, vm.AnnonymousTenant, vm.AnnonymousEnv);
         vm.CachedMetaConn ??= await _sql.GetConnStrFromKey(vm.MetaConn, vm.AnnonymousTenant, vm.AnnonymousEnv);
@@ -795,18 +1051,15 @@ from ({jsRes.Query}) as ds
         return await RunjsWrap(vm);
     }
 
-    private async Task<object> RunjsWrap(SqlViewModel vm)
+    private async Task<SqlComResult> RunjsWrap(SqlViewModel vm)
     {
-        var jsRes = await RunJs(vm);
-        if (jsRes.Result is not null)
+        var actQuery = CalcFinalQuery(vm);
+        var ds = await _sql.ReadDataSet(actQuery);
+        return new SqlComResult()
         {
-            return jsRes.Result;
-        }
-        CalcFinalQuery(vm, jsRes);
-        var data = await _sql.ReadDataSet(jsRes.DataQuery, vm.CachedDataConn);
-        if (jsRes.SameContext || vm.SkipXQuery || jsRes.MetaQuery.IsNullOrWhiteSpace()) return data;
-        var meta = await _sql.ReadDataSet(jsRes.MetaQuery, vm.CachedMetaConn);
-        return data.Concat(meta);
+            count = ds.Length > 1 && ds[1].Length > 0 ? Convert.ToInt32(ds[1][0]["total"]) : null,
+            value = ds[0]
+        };
     }
 
     private async Task<Models.Services> GetService(SqlViewModel vm)
@@ -849,23 +1102,6 @@ from ({jsRes.Query}) as ds
                      join usrRole in RoleIds on svRole equals usrRole
                      select svRole).Any();
         if (!isValidRole) throw new UnauthorizedAccessException("The service is not accessible by your roles");
-    }
-
-    public async Task<string> ExportExcel(SqlViewModel vm)
-    {
-        var comDs = await ComQuery(vm);
-        var dataSets = comDs as Dictionary<string, object>[][];
-        var table = dataSets.ElementAt(0);
-        var headers = JsonConvert.DeserializeObject<List<Component>>(JsonConvert.SerializeObject(dataSets.ElementAt(1)));
-        if (vm.FieldName.HasElement())
-        {
-            headers = headers.Where(x =>
-            {
-                var field = x.FieldText.HasNonSpaceChar() ? x.FieldText : x.FieldName;
-                return x.Active && x.ShortDesc.HasNonSpaceChar() && vm.FieldName.Contains(x.FieldName);
-            }).ToList();
-        }
-        return ExportExcel(vm.Params ?? "Export data", headers, table);
     }
 
     public string ConvertHtmlToPlainText(string htmlContent)
@@ -993,7 +1229,7 @@ from ({jsRes.Query}) as ds
             worksheet.Cell(x, 1).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
             foreach (var header in headers)
             {
-                var field = header.FieldText.HasNonSpaceChar() ? header.FieldText : header.FieldName;
+                var field = header.FieldName;
                 var vl = item.GetValueOrDefault(field);
                 switch (header.ComponentType)
                 {
@@ -1064,7 +1300,7 @@ from ({jsRes.Query}) as ds
             worksheet.Cell(last, k).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
             k++;
         }
-        var url = $"{refName}{DateTimeOffset.Now:ddMMyyyyhhmm}.xlsx";
+        var url = $"{refName}{DateTime.Now:ddMMyyyyhhmm}.xlsx";
         worksheet.Columns().AdjustToContents();
         workbook.SaveAs($"wwwroot\\excel\\Download\\{url}");
         return url;
@@ -1084,7 +1320,7 @@ from ({jsRes.Query}) as ds
 
     public async Task<string> PostFileAsync(IFormFile file, bool reup = false)
     {
-        var fileName = $"{Path.GetFileNameWithoutExtension(file.FileName)}{Uuid7.Id25()}{Path.GetExtension(file.FileName)}";
+        var fileName = $"{Path.GetFileNameWithoutExtension(file.FileName)}{Uuid7.Guid().ToString()}{Path.GetExtension(file.FileName)}";
         var path = GetUploadPath(fileName, _host.WebRootPath);
         EnsureDirectoryExist(path);
         path = reup ? IncreaseFileName(path) : path;
@@ -1114,7 +1350,7 @@ from ({jsRes.Query}) as ds
             ComId = comId,
             DataConn = connKey
         });
-        var connStr = await _sql.GetConnStrFromKey(com.ConnKey);
+        var connStr = await _sql.GetConnStrFromKey(_configuration.GetConnectionString("Default"));
         var tableRights = await GetEntityPerm(table, recordId: null, connStr);
         if (!tableRights.Any(x => x.CanAdd || x.CanWriteAll))
             throw new UnauthorizedAccessException("Cannot import data due to lack of permission");
@@ -1159,7 +1395,7 @@ from ({jsRes.Query}) as ds
         var oldId = idField?.OldVal;
         var valueFields = vm.Changes.Where(x => !_sql.SystemFields.Contains(x.Field.ToLower())).ToList();
         var update = valueFields.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
-        var now = DateTimeOffset.Now.ToString(DateTimeExt.DateFormat);
+        var now = DateTime.Now.ToString(DateTimeExt.DateFormat);
 
         var fields = valueFields.Combine(x => $"[{x.Field}]");
         var fieldParams = valueFields.Combine(x => $"@{x.Field}{index}");
@@ -1277,7 +1513,7 @@ from ({jsRes.Query}) as ds
         await email.PdfText.ForEachAsync(async pdf =>
         {
             await page.SetContentAsync(pdf);
-            var path = Path.Combine(host.WebRootPath, "download", UserId, Uuid7.Id25() + ".pdf");
+            var path = Path.Combine(host.WebRootPath, "download", UserId, Uuid7.Guid().ToString() + ".pdf");
             EnsureDirectoryExist(path);
             await page.PdfAsync(path);
             paths.Add(path);
@@ -1294,7 +1530,7 @@ from ({jsRes.Query}) as ds
         return true;
     }
 
-    public async Task SendMail(EmailVM email, string connStr, string webRoot = null)
+    public async Task SendMail(EmailVM email, string connStr = null, string webRoot = null)
     {
         var query = $"select * from [MasterData] m join [MasterData] p on m.ParentId = p.Id where p.Name = 'ConfigEmail'";
         var config = await _sql.ReadDsAsArr<MasterData>(query, connStr);
@@ -1338,7 +1574,7 @@ from ({jsRes.Query}) as ds
             Changes =
             [
                 new PatchDetail { Field = nameof(UserLogin.Id), OldVal = userLogin.Id },
-                new PatchDetail { Field = nameof(UserLogin.ExpiredDate), Value = DateTimeOffset.Now.ToISOFormat() },
+                new PatchDetail { Field = nameof(UserLogin.AccessTokenExp), Value = DateTime.Now.ToISOFormat() },
             ]
         });
         return true;
@@ -1346,21 +1582,19 @@ from ({jsRes.Query}) as ds
 
     public async Task<bool> ForgotPassword(LoginVM login)
     {
-        login.CachedConnStr ??= await _sql.GetConnStrFromKey(login.ConnKey, login.CompanyName, login.Env);
-        var user = await _sql.ReadDsAs<User>($"select * from [User] where UserName = '{login.UserName}'", login.CachedConnStr);
-        var span = DateTimeOffset.Now - (user.UpdatedDate ?? DateTimeOffset.Now);
+        var user = await _sql.ReadDsAs<User>($"select * from [User] where UserName = '{login.UserName}'");
+        var span = DateTime.Now - (user.UpdatedDate ?? DateTime.Now);
         if (user.LoginFailedCount >= UserServiceHelpers.MAX_LOGIN && span.TotalMinutes < 5)
         {
             throw new ApiException($"The account {login.UserName} has been locked for a while! Please contact your administrator to unlock.");
         }
         // Send mail
-        var emailTemplate = await _sql.ReadDsAs<MasterData>($"select * from [MasterData] where Name = 'ForgotPassEmail'", login.CachedConnStr)
+        var emailTemplate = await _sql.ReadDsAs<MasterData>($"select * from [MasterData] where Name = 'ForgotPassEmail'")
             ?? throw new InvalidOperationException("Cannot find recovery email template!");
         var oneClickLink = GenerateRandomToken();
         user.Recover = oneClickLink;
         await SavePatch(new PatchVM
         {
-            CachedDataConn = login.CachedConnStr,
             Table = nameof(User),
             Changes = [new PatchDetail { Field = nameof(User.Recover), Value = oneClickLink }],
         });
@@ -1368,9 +1602,8 @@ from ({jsRes.Query}) as ds
         {
             ToAddresses = [user.Email],
             Subject = "Email recovery",
-            Body = Utils.FormatEntity(emailTemplate.Description, user)
         };
-        await SendMail(email, login.CachedConnStr);
+        await SendMail(email);
         return true;
     }
 
@@ -1378,7 +1611,7 @@ from ({jsRes.Query}) as ds
     {
         vm.CachedMetaConn ??= await _sql.GetConnStrFromKey(vm.MetaConn);
         vm.CachedDataConn ??= await _sql.GetConnStrFromKey(vm.DataConn);
-        var user = await _sql.ReadDsAs<User>($"select * from [User] where Id in ({vm.Ids.CombineStrings()})", vm.CachedMetaConn);
+        var user = await _sql.ReadDsAs<User>($"select * from [User] where Id in ({vm.Id.CombineStrings()})", vm.CachedMetaConn);
         user.Salt = GenerateRandomToken();
         var randomPassword = GenerateRandomToken(10);
         user.Password = GetHash(Utils.SHA256, randomPassword + user.Salt);
@@ -1427,7 +1660,7 @@ from ({jsRes.Query}) as ds
             && x.Attributes[attr].Value.IndexOf("?v=") < 0;
         if (shouldAdd)
         {
-            x.Attributes[attr].Value += "?v=" + Uuid7.Id25().ToString();
+            x.Attributes[attr].Value += "?v=" + Uuid7.Guid().ToString().ToString();
         }
     }
 
@@ -1479,86 +1712,6 @@ from ({jsRes.Query}) as ds
         (string query, string connStr, bool shouldMapToConnStr = false)
         => _sql.ReadDataSet(query, connStr, shouldMapToConnStr);
 
-    public async Task<bool> CloneFeature(SqlViewModel vm)
-    {
-        if (vm.Ids.Nothing())
-        {
-            return false;
-        }
-        vm.CachedMetaConn ??= await _sql.GetConnStrFromKey(vm.MetaConn);
-        var id = vm.Ids.Combine();
-        var query = @$"select * from [Feature] where Id = '{id}';
-            select * from [FeaturePolicy] where FeatureId = '{id}';
-            select * from [Component] where FeatureId = '{id}';
-            select * from [Component] c left join ComponentGroup g on c.ComponentGroupId = g.Id
-            where g.FeatureId = '{id}' or c.FeatureId = '{id}'";
-        var ds = await _sql.ReadDataSet(query, vm.CachedMetaConn);
-        if (ds.Length == 0 || ds[0].Length == 0) return false;
-        var feature = ds[0][0].MapTo<Feature>();
-        var policies = ds.Length > 1 ? ds[1].Select(x => x.MapTo<FeaturePolicy>()).ToList() : [];
-        var groups = ds.Length > 2 ? ds[2].Select(x => x.MapTo<Component>()).ToList() : [];
-        var components = ds.Length > 3 ? ds[3].Select(x => x.MapTo<Component>()).ToList() : [];
-
-        feature.Id = Uuid7.Id25().ToString();
-        var featurePatch = feature.MapToPatch();
-        var policyPatches = policies.Select(x =>
-        {
-            x.Id = Uuid7.Id25().ToString();
-            x.FeatureId = feature.Id;
-            return x.MapToPatch();
-        }).ToArray();
-        groups.Action(x => x.FeatureId = feature.Id);
-        var groupMap = groups.DistinctBy(x => x.Id).ToDictionary(x => x.Id);
-        var visited = new HashSet<Component>();
-        var comVisited = new HashSet<Component>();
-        var groupPatches = groups.Select(group =>
-        {
-            var notVisited = visited.Add(group);
-            var parentGroup = group.ParentId is null ? null : groupMap.GetValueOrDefault(group.ParentId);
-            if (parentGroup is not null && visited.Contains(parentGroup))
-            {
-                group.ParentId = parentGroup.Id;
-            }
-            else if (parentGroup is not null)
-            {
-                CloneComponentToGroup(parentGroup, components);
-                visited.Add(parentGroup);
-            }
-
-            if (notVisited) CloneComponentToGroup(group, components);
-            return group.MapToPatch();
-        }).ToArray();
-        var standAlonePatches = components.Except(groups.SelectMany(x => x.ComponentChildren))
-        .Select(x =>
-        {
-            x.Id = Uuid7.Id25();
-            x.FeatureId = feature.Id;
-            return x.MapToPatch(table: nameof(Component));
-        });
-        components.Action(x => { if (x.Id.IsNullOrWhiteSpace()) x.Id = Uuid7.Id25(); });
-        var comPatches = components.Select(x => x.MapToPatch()).ToArray();
-        PatchVM[] patches = [
-            featurePatch, ..policyPatches, ..groupPatches, ..comPatches, ..standAlonePatches,
-        ];
-        patches.SelectForEach(x => x.CachedMetaConn = vm.CachedMetaConn);
-        await SavePatches(patches);
-
-        return true;
-    }
-
-    private static void CloneComponentToGroup(Component group, List<Component> components)
-    {
-        var com = components.Where(c => c.ComponentGroupId == group.Id).ToList();
-        group.Id = Uuid7.Id25();
-        group.ComponentChildren = com;
-        com.ForEach(c =>
-        {
-            c.Id = Uuid7.Id25().ToString();
-            c.ComponentGroupId = group.Id;
-            c.FeatureId = group.FeatureId;
-        });
-    }
-
     public Task NotifyDevices(IEnumerable<TaskNotification> tasks, string queueName)
     {
         return tasks
@@ -1566,7 +1719,7 @@ from ({jsRes.Query}) as ds
             .Select(x => new MQEvent
             {
                 QueueName = queueName,
-                Id = Uuid7.Id25(),
+                Id = Uuid7.Guid().ToString(),
                 Message = x.ToJson()
             })
         .ForEachAsync(SendMessageToUser);
@@ -1599,7 +1752,7 @@ from ({jsRes.Query}) as ds
         var entity = new MQEvent
         {
             QueueName = queueName,
-            Id = Uuid7.Id25(),
+            Id = Uuid7.Guid().ToString(),
             Message = task
         };
         await _taskSocketSvc.SendMessageToSocketAsync(socket, entity.ToJson());
@@ -1673,7 +1826,7 @@ from ({jsRes.Query}) as ds
             {
                 QueueName = entity.QueueName,
                 Message = rs1,
-                Id = Uuid7.Id25(),
+                Id = Uuid7.Guid().ToString(),
             };
             await SendMessageToUser(chat);
         }
@@ -1683,7 +1836,7 @@ from ({jsRes.Query}) as ds
             {
                 QueueName = entity.QueueName,
                 Message = entity,
-                Id = Uuid7.Id25(),
+                Id = Uuid7.Guid().ToString(),
             };
             await SendMessageToUser(chat);
         }
@@ -1729,7 +1882,7 @@ from ({jsRes.Query}) as ds
         {
             await ws.ConnectAsync(new Uri(url), CancellationToken.None);
             //await Listen(ws);
-            _conn.AddClusterSocket(ws, $"Balancer/{Uuid7.Id25()}");
+            _conn.AddClusterSocket(ws, $"Balancer/{Uuid7.Guid().ToString()}");
         }
         catch
         {
@@ -1740,7 +1893,7 @@ from ({jsRes.Query}) as ds
     {
         EnsureSystemRole();
         var delCmd = @$"insert into Cluster (Id, TenantCode, Host, Env, Port, Scheme, ClusterRole, Active, InsertedDate, InsertedBy) values
-            ('{node.Id}', '{TenantCode}', '{node.Host}', '{Env}', '{node.Port}', '{node.Scheme}', '{node.Role}', 1, '{DateTimeOffset.UtcNow}', 1)";
+            ('{node.Id}', '{TenantCode}', '{node.Host}', '{Env}', '{node.Port}', '{node.Scheme}', '{node.Role}', 1, '{DateTime.UtcNow}', 1)";
         await _sql.RunSqlCmd(DefaultConnStr(), delCmd);
         Clusters.Data.Nodes.Add(node);
     }
@@ -1822,7 +1975,7 @@ from ({jsRes.Query}) as ds
 
     internal async Task<object> LoadComponent(SqlViewModel vm)
     {
-        var query =$"select c.* from Component c " +
+        var query = $"select c.* from Component c " +
             $"join Feature f on c.FeatureId = f.Id " +
             $"where f.TenantCode = '{vm.AnnonymousTenant}' and f.Env = '{vm.AnnonymousEnv}' and f.Name = '{vm.Action}' and f.IsPublic = 1";
         return await ReadDs(query, DefaultConnStr());

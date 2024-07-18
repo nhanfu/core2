@@ -2027,7 +2027,7 @@ export class GridView extends ListView {
             confirm.YesConfirmed += () =>
             {
                 var cloned = entity.Clone();
-                cloned.Id = Uuid7.Id25();
+                cloned.Id = Uuid7.Guid().ToString();
                 var patch = cloned.MapToPatch();
                 Client.Instance.PatchAsync(patch).then(success =>
                 {

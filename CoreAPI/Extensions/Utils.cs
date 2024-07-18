@@ -19,7 +19,7 @@ namespace Core.Extensions
         public const string TenantCode = "System";
         public const string Balancer = "Balancer";
         public const string Env = "test";
-        public const string ConnKey = "default";
+        public const string ConnKey = "Default";
         public const string InsertedBy = "InsertedBy";
         public const string OwnerUserIds = "OwnerUserIds";
         public const string OwnerRoleIds = "OwnerRoleIds";
@@ -133,7 +133,7 @@ namespace Core.Extensions
             return res.ToString();
         }
 
-        public static string FormatEntity(string format, object source)
+        public static string FormatEntity(string format, Dictionary<string, object> source)
         {
             if (!format.HasAnyChar())
             {
@@ -151,8 +151,7 @@ namespace Core.Extensions
         public readonly static Func<string, string> NotFoundHandler = x => "{" + x + "}";
         public readonly static Func<string, string> EmptyFormat = x => string.Empty;
 
-        public static string FormatEntity(string format, IFormatProvider provider, object source,
-            Func<string, string> nullHandler = null, Func<string, string> notFoundHandler = null)
+        public static string FormatEntity(string format, IFormatProvider provider, Dictionary<string, object> source)
         {
             if (format == null)
             {
@@ -163,10 +162,6 @@ namespace Core.Extensions
             {
                 return format;
             }
-
-            nullHandler ??= NullFormatHandler;
-
-            notFoundHandler ??= NotFoundHandler;
 
             var formatted = new StringBuilder();
             var index = 0;
@@ -193,7 +188,7 @@ namespace Core.Extensions
                         {
                             beforeColon = false;
                             formatted.Append(ch);
-                            GetValues(source, nullHandler, notFoundHandler, field.ToString(), objList);
+                            GetValues(source, field.ToString(), objList);
                             field.Clear();
                         }
                         else
@@ -207,7 +202,7 @@ namespace Core.Extensions
                             isInGroup = false;
                             formatted.Append(ch);
                             index++;
-                            GetValues(source, nullHandler, notFoundHandler, field.ToString(), objList);
+                            GetValues(source, field.ToString(), objList);
                             field.Clear();
                         }
                         break;
@@ -227,24 +222,13 @@ namespace Core.Extensions
             return string.Format(provider, formatted.ToString(), objList.ToArray());
         }
 
-        private static void GetValues(object source, Func<string, string> nullHandler,
-            Func<string, string> notFoundHandler, string field, List<object> objList)
+        private static void GetValues(Dictionary<string, object> source, string field, List<object> objList)
         {
             if (field.IsNullOrEmpty())
             {
                 return;
             }
-
-            var (hasKey, value) = source.GetComplexProp(field);
-            if (value == null && hasKey)
-            {
-                value = nullHandler.Invoke(field);
-            }
-            else if (value == null && !hasKey)
-            {
-                value = notFoundHandler.Invoke(field);
-            }
-
+            var value = source.GetValueOrDefault(field);
             objList.Add(field == "0" ? source : value);
         }
 

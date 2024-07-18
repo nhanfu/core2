@@ -28,7 +28,7 @@ export class CodeEditor extends EditableComponent {
     Render() {
         if (!this.Element) {
             this.ParentElement.style.textAlign = 'unset';
-            Html.Take(this.ParentElement).Div.Id(Uuid7.Id25());
+            Html.Take(this.ParentElement).Div.Id(Uuid7.Guid().ToString());
             this.Element = Html.Context;
         }
         this.Config().then(() => {

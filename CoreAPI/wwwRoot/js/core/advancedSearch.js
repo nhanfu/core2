@@ -100,7 +100,7 @@ export class AdvancedSearch extends EditableComponent {
         /** @type {GridView} */
         // @ts-ignore
         this._filterGrid = new GridView({
-            Id: Uuid7.Id25(),
+            Id: Uuid7.Guid().ToString(),
             FieldName: "Conditions",
             Column: 4,
             RefName: "FieldCondition",

@@ -864,7 +864,7 @@ export class ListView extends EditableComponent {
             .Div.ClassName("popup-body scroll-content");
         const body = Html.Context;
         const com = new Component();
-        com.Id = Uuid7.Id25();
+        com.Id = Uuid7.Guid().ToString();
         com.FieldName = 'Conditions';
         com.Column = 4;
         com.RefName = 'History';

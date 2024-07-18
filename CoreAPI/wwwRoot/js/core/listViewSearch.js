@@ -29,7 +29,7 @@ import { ComponentExt } from './utils/componentExt.js';
 // @ts-ignore
 export class ListViewSearchVM {
     constructor() {
-        this.Id = Uuid7.Id25();
+        this.Id = Uuid7.Guid().ToString();
         this.SearchTerm = '';
         this.FullTextSearch = '';
         this.ScanTerm = '';
@@ -402,7 +402,7 @@ export class ListViewSearch extends EditableComponent {
 
     RenderImportBtn() {
         Html.Take(this.Element).Form.Attr('method', 'POST').Attr('enctype', 'multipart/form-data')
-            .Display(false).Input.Type('file').Id(`id_${Uuid7.Id25()}`).Attr('name', 'files').Attr('accept', '.csv');
+            .Display(false).Input.Type('file').Id(`id_${Uuid7.Guid().ToString()}`).Attr('name', 'files').Attr('accept', '.csv');
         // @ts-ignore
         this._uploader = Html.Context;
         this._uploader.addEventListener(EventType.Change, (/** @type {Event} */ ev) => this.UploadCsv(ev));

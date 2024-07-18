@@ -20,7 +20,16 @@ namespace Core.ViewModels
         public string CachedDataConn { get; internal set; }
         public string CachedMetaConn { get; internal set; }
         public List<PatchDetail> Changes { get; set; } = [];
+        public List<List<PatchVM>> Detail { get; set; } = [];
+        public List<string> Ids { get; set; } = [];
+        public int? Index { get; set; }
         public PatchDetail Id => Changes.FirstOrDefault(x => x.Field == Utils.IdField);
+    }
+
+    public class DeleteItem
+    {
+        public string Table { get; set; }
+        public List<string> Ids { get; set; }
     }
 
     public class PatchDetail

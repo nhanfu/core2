@@ -3,87 +3,40 @@
     public partial class Feature
     {
         public string Id { get; set; }
-
-        public string TenantCode { get; set; }
-
         public string Name { get; set; }
-
         public string Label { get; set; }
-
         public string ParentId { get; set; }
-
         public int? Order { get; set; }
-
         public string ClassName { get; set; }
-
         public string Style { get; set; }
-
         public string StyleSheet { get; set; }
-
         public string Script { get; set; }
-
         public string Events { get; set; }
-
         public string Icon { get; set; }
-
         public bool IsDevider { get; set; }
-
         public bool IsGroup { get; set; }
-
         public bool IsMenu { get; set; }
-
         public bool IsPublic { get; set; }
-
         public bool StartUp { get; set; }
-
         public string ViewClass { get; set; }
-
         public string EntityId { get; set; }
-
-        public string EntityName { get; set; }
-
         public string Description { get; set; }
-
-        public bool Active { get; set; }
-
-        public DateTimeOffset InsertedDate { get; set; }
-
+        public bool? Active { get; set; }
+        public DateTime? InsertedDate { get; set; }
         public string InsertedBy { get; set; }
-
-        public DateTimeOffset? UpdatedDate { get; set; }
-
+        public DateTime? UpdatedDate { get; set; }
         public string UpdatedBy { get; set; }
-
         public bool IsSystem { get; set; }
-
         public bool IgnoreEncode { get; set; }
-
-        public string RequireJS { get; set; }
-
-        public string GuiInfo { get; set; }
-
-        public string RoleId { get; set; }
-
-        public bool IsPermissionInherited { get; set; }
-
-        public string FeatureGroup { get; set; }
-
         public bool InheritParentFeature { get; set; }
-
-        public string Properties { get; set; }
-
-        public string Template { get; set; }
-        public string LayoutId { get; set; }
-        public string DataSource { get; set; }
-        public string Gallery { get; set; }
         public bool DeleteTemp { get; set; }
         public bool CustomNextCell { get; set; }
-        public bool IsPortal { get; set; }
-        public string ConnKey { get; set; }
-        public virtual ICollection<Component> ComponentGroup { get; set; } = new List<Component>();
-        public virtual Entity Entity { get; set; }
-        public virtual ICollection<FeaturePolicy> FeaturePolicy { get; set; } = new List<FeaturePolicy>();
-        public virtual ICollection<Feature> InverseParent { get; set; } = new List<Feature>();
-        public virtual Feature Parent { get; set; }
+        public bool LoadEntity { get; set; }
+        public bool IsLock { get; set; }
+        public string CreatedBy { get; set; }
+        public List<Component> ComponentGroup { get; set; }
+        public List<Component> GridPolicies { get; set; }
+        public List<Component> Components { get; set; }
+        public List<FeaturePolicy> FeaturePolicies { get; set; }
     }
 }

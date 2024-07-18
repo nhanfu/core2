@@ -15,9 +15,9 @@ namespace Core.ViewModels
         public string Avatar { get; set; }
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
-        public DateTimeOffset AccessTokenExp { get; set; }
-        public DateTimeOffset RefreshTokenExp { get; set; }
-        public Vendor Vendor { get; set; }
+        public DateTime AccessTokenExp { get; set; }
+        public DateTime RefreshTokenExp { get; set; }
+        public Partner Vendor { get; set; }
         public List<string> RoleIds { get; set; }
         public List<string> RoleNames { get; set; }
         public List<string> CenterIds { get; set; }
@@ -26,7 +26,7 @@ namespace Core.ViewModels
         public string TeamId { get; set; }
         public string PartnerId { get; set; }
         public string RegionId { get; set; }
-        public DateTimeOffset SigninDate { get; set; }
+        public DateTime SigninDate { get; set; }
         public string TenantCode { get; set; }
         public string Env { get; set; }
         public string ConnKey { get; set; }
@@ -36,6 +36,5 @@ namespace Core.ViewModels
     {
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
-        public string CachedConnStr { get; internal set; }
     }
 }

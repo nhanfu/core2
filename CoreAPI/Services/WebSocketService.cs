@@ -50,7 +50,7 @@ namespace Core.Services
 
         public virtual string OnClusterConnected(WebSocket socket, string deviceKey)
         {
-            return connManager.AddClusterSocket(socket, $"{deviceKey}/{Uuid7.Id25()}");
+            return connManager.AddClusterSocket(socket, $"{deviceKey}/{Uuid7.Guid().ToString()}");
         }
 
         public async Task SendMessageAsync(WebSocket socket, string message)

@@ -14,7 +14,7 @@
 
         public string RecordId { get; set; }
 
-        public DateTimeOffset Deadline { get; set; }
+        public DateTime Deadline { get; set; }
 
         public string StatusId { get; set; }
 
@@ -34,11 +34,11 @@
 
         public bool Active { get; set; }
 
-        public DateTimeOffset InsertedDate { get; set; }
+        public DateTime InsertedDate { get; set; }
 
         public string InsertedBy { get; set; }
 
-        public DateTimeOffset? UpdatedDate { get; set; }
+        public DateTime? UpdatedDate { get; set; }
 
         public string UpdatedBy { get; set; }
 

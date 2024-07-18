@@ -1,5 +1,6 @@
 ﻿using Core.Extensions;
 using Core.Models;
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using System.Text.Json.Serialization;
 
 namespace Core.ViewModels
@@ -9,10 +10,10 @@ namespace Core.ViewModels
         public string SvcId { get; set; }
         public string ComId { get; set; }
         public string Action { get; set; }
-        public string Params { get; set; }
+        public dynamic Params { get; set; }
         public string Table { get; set; }
         public string QueueName { get; set; }
-        public string[] Ids { get; set; }
+        public string[] Id { get; set; }
         public Component Component { get; set; }
         public string AnnonymousTenant { get; set; }
         public string AnnonymousEnv { get; set; }
@@ -23,6 +24,8 @@ namespace Core.ViewModels
         public string Having { get; set; }
         public string OrderBy { get; set; }
         public string Paging { get; set; }
+        public int? Top { get; set; }
+        public int? Skip { get; set; }
         public bool Count { get; set; }
         public bool WrapQuery { get; set; } = true;
         public string[] FieldName { get; set; }
@@ -45,5 +48,35 @@ namespace Core.ViewModels
         internal string DataQuery { get; set; }
         internal string MetaQuery { get; set; }
         internal bool SameContext { get; set; }
+    }
+
+    public class SqlResult
+    {
+        public string message { get; set; }
+        public int status { get; set; }
+        public Dictionary<string, object>[] updatedItem { get; set; }
+        public List<DetailData> Detail { get; set; }
+        public Dictionary<string, object>[] data { get; set; }
+    }
+
+    public class SqlComResult
+    {
+        public int? count { get; set; }
+        public Dictionary<string, object>[] value { get; set; }
+    }
+
+    public class DetailData
+    {
+        public int Index { get; set; }
+        public string Table { get; set; }
+        public List<string> Ids { get; set; }
+        public string ComId { get; set; }
+        public Dictionary<string, object>[] Data { get; set; }
+    }
+
+    public class SqlQuery
+    {
+        public string sql { get; set; }
+        public string total { get; set; }
     }
 }

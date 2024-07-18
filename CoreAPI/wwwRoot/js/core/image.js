@@ -352,7 +352,7 @@ export class Image extends EditableComponent {
                             Table: "FileUpload",
                             Changes: [
                                 // @ts-ignore
-                                { Field: "Id", Value: Uuid7.Id25() },
+                                { Field: "Id", Value: Uuid7.Guid().ToString() },
                                 // @ts-ignore
                                 { Field: "EntityName", Value: this.Meta.RefName },
                                 // @ts-ignore

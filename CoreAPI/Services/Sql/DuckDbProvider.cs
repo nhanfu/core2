@@ -63,7 +63,7 @@ namespace CoreAPI.Services.Sql
             }).ToList();
             var idField = vm.Id;
             var valueFields = vm.Changes.Where(x => !SystemFields.Contains(x.Field.ToLower())).ToArray();
-            var now = DateTimeOffset.Now.ToString(DateTimeExt.DateFormat);
+            var now = DateTime.Now.ToString(DateTimeExt.DateFormat);
             var oldId = idField?.OldVal;
             if (oldId is not null)
             {
