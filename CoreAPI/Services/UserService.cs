@@ -425,8 +425,6 @@ public class UserService
         {
             return false;
         }
-        await TryNotifyChanges("HardDelete", null, vm);
-        await AfterActionSvc(vm, "AfterDelete");
         return true;
     }
 
