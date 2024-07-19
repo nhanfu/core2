@@ -604,7 +604,7 @@ public class UserService
                     {
                         updatedItem = entity[0],
                         status = 500,
-                        message = "create fail"
+                        message = ex.Message
                     };
                 }
             }
@@ -715,7 +715,7 @@ public class UserService
                     {
                         updatedItem = entity[0],
                         status = 500,
-                        message = "update fail"
+                        message = ex.Message
                     };
                 }
             }
