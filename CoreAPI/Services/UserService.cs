@@ -517,7 +517,7 @@ public class UserService
                         command.Connection = connection;
                         var update = filteredChanges.Select(x => $"@{id.Replace("-", "") + x.Field.ToLower()}");
                         var cells = filteredChanges.Select(x => x.Field).ToList();
-                        command.CommandText += $"INSERT into [{vm.Table}]({cells.Combine()}) values({update.Combine()})";
+                        command.CommandText += $"INSERT into [{vm.Table}]([{cells.Combine("],[")}]) values({update.Combine()})";
                         foreach (var item in filteredChanges)
                         {
                             if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
