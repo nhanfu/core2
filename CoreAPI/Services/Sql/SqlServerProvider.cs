@@ -117,9 +117,9 @@ public class SqlServerProvider(IDistributedCache cache, IConfiguration cfg) : IS
     public async Task<int> RunSqlCmd(string connStr, string cmdText)
     {
         if (cmdText.IsNullOrWhiteSpace()) return 0;
-        if (connStr.IsNullOrWhiteSpace()) throw new ApiException("ConnStr is null")
+        if (connStr.IsNullOrWhiteSpace())
         {
-            StatusCode = HttpStatusCode.InternalServerError
+            connStr = cfg.GetConnectionString("Default");
         };
         SqlConnection connection = new(connStr);
         await connection.OpenAsync();

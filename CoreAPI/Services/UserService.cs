@@ -5,13 +5,11 @@ using Core.Middlewares;
 using Core.Models;
 using Core.ViewModels;
 using CoreAPI.Services.Sql;
-using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
-using Org.BouncyCastle.Ocsp;
 using PuppeteerSharp;
 using System.Buffers;
 using System.Data;
@@ -418,39 +416,17 @@ public class UserService
 
     public async Task<bool> HardDelete(PatchVM vm)
     {
-        vm.CachedDataConn ??= await _sql.GetConnStrFromKey(vm.DataConn, vm.TenantCode, vm.Env);
-        vm.CachedMetaConn ??= await _sql.GetConnStrFromKey(vm.MetaConn, vm.TenantCode, vm.Env);
-        var unthorizedDeletedIds = await UnauthorizedDeleteRecords(vm);
-        if (unthorizedDeletedIds.HasNonSpaceChar())
-        {
-            throw new ApiException($"Unauthorized to delete on \"{vm.Table}\" records {unthorizedDeletedIds}")
-            {
-                StatusCode = HttpStatusCode.Unauthorized
-            };
-        }
-        var cmd = $"delete from [{vm.Table}] where Id in ({vm.DeletedIds.CombineStrings()})";
+        var sql = vm.Delete.Select(x => $"delete from [{x.Table}] where Id in ({vm.Ids.CombineStrings()})");
         try
         {
-            await _sql.RunSqlCmd(vm.CachedDataConn, cmd);
+            await _sql.RunSqlCmd(null, sql.Combine(";"));
         }
         catch
         {
-            await RunUserSvc(new SqlViewModel
-            {
-                ComId = vm.Table,
-                Action = "HardDelete",
-                Id = vm.DeletedIds,
-                DataConn = vm.DataConn,
-                MetaConn = vm.MetaConn,
-                CachedDataConn = vm.CachedDataConn,
-                CachedMetaConn = vm.CachedMetaConn,
-            });
-            throw;
+            return false;
         }
-        var keys = vm.DeletedIds.Select(x => vm.Table + x).ToArray();
-        await TryNotifyChanges("HardDelete", keys, vm);
+        await TryNotifyChanges("HardDelete", null, vm);
         await AfterActionSvc(vm, "AfterDelete");
-
         return true;
     }
 
@@ -517,6 +493,10 @@ public class UserService
                         command.Connection = connection;
                         var update = filteredChanges.Select(x => $"@{id.Replace("-", "") + x.Field.ToLower()}");
                         var cells = filteredChanges.Select(x => x.Field).ToList();
+                        if (!vm.Delete.Nothing())
+                        {
+                            command.CommandText += vm.Delete.Select(x => $"delete from [{x.Table}] where Id in ({vm.Ids.CombineStrings()})").Combine(";");
+                        }
                         command.CommandText += $"INSERT into [{vm.Table}]([{cells.Combine("],[")}]) values({update.Combine()})";
                         foreach (var item in filteredChanges)
                         {
@@ -628,6 +608,10 @@ public class UserService
                         command.Connection = connection;
                         var updates = filteredChanges.Where(x => x.Field != "Id").ToList();
                         var update = updates.Select(x => $"[{x.Field}] = @{id.Replace("-", "") + x.Field.ToLower()}");
+                        if (!vm.Delete.Nothing())
+                        {
+                            command.CommandText += vm.Delete.Select(x => $"delete from [{x.Table}] where Id in ({vm.Ids.CombineStrings()})").Combine(";");
+                        }
                         command.CommandText += $" UPDATE [{vm.Table}] SET {update.Combine()} WHERE Id = '{id}';";
                         foreach (var item in updates)
                         {
@@ -887,9 +871,8 @@ public class UserService
     {
         if (vm.ByPassPerm) return null;
         var allRights = vm.ByPassPerm ? [] : await GetEntityPerm(vm.Table, recordId: null, vm.CachedMetaConn);
-        var idField = vm.DeletedIds;
-
-        var origin = @$"select t.* from [{vm.Table}] as t where t.Id in ({vm.DeletedIds.CombineStrings()})";
+        var idField = vm.Delete;
+        var origin = @$"select t.* from [{vm.Table}] as t where t.Id in ()";
         var ds = await _sql.ReadDataSet(origin, vm.CachedDataConn);
         var originRows = ds.Length > 0 && ds[0].Length > 0 ? ds[0] : null;
         return originRows.WhereNot(x =>

@@ -71,13 +71,6 @@ public class UserController(UserService _userSvc, WebSocketService socketSvc, IW
         return res;
     }
 
-    [HttpPost("api/[Controller]/del", Order = 0)]
-    public Task<bool> HardDeleteAsync([FromBody] PatchVM patch)
-    {
-        patch.ByPassPerm = false;
-        return _userSvc.HardDelete(patch);
-    }
-
     [HttpPatch("api/[Controller]/SavePatches", Order = 0)]
     public Task<int> SavePatches([FromBody] PatchVM[] patches)
     {
@@ -145,6 +138,12 @@ public class UserController(UserService _userSvc, WebSocketService socketSvc, IW
     public Task<SqlResult> Run([FromBody] PatchVM entity)
     {
         return _userSvc.SavePatch2(entity);
+    }
+
+    [HttpDelete("/api/feature/delete")]
+    public Task<bool> Delete([FromBody] PatchVM entity)
+    {
+        return _userSvc.HardDelete(entity);
     }
 
     [HttpPost("/api/feature/com")]
