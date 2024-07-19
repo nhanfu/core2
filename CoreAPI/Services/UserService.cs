@@ -539,7 +539,7 @@ public class UserService
                                     if (idDetail.StartsWith("-"))
                                     {
                                         var updateDetail = filteredDetailChanges.Select(x => $"@{idDetail.Replace("-", "") + x.Field.ToLower()}");
-                                        command.CommandText += $";INSERT into [{detail.Table}]({filteredDetailChanges.Combine()}) values({updateDetail.Combine()})";
+                                        command.CommandText += $";INSERT into [{detail.Table}]([{filteredDetailChanges.Combine("],[")}]) values({updateDetail.Combine()})";
                                         foreach (var item in filteredDetailChanges)
                                         {
                                             if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
