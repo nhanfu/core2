@@ -416,7 +416,7 @@ public class UserService
 
     public async Task<bool> HardDelete(PatchVM vm)
     {
-        var sql = vm.Delete.Select(x => $"delete from [{x.Table}] where Id in ({vm.Ids.CombineStrings()})");
+        var sql = vm.Delete.Select(x => $"delete from [{x.Table}] where Id in ({x.Ids.CombineStrings()})");
         try
         {
             await _sql.RunSqlCmd(null, sql.Combine(";"));
@@ -495,7 +495,7 @@ public class UserService
                         var cells = filteredChanges.Select(x => x.Field).ToList();
                         if (!vm.Delete.Nothing())
                         {
-                            command.CommandText += vm.Delete.Select(x => $"delete from [{x.Table}] where Id in ({vm.Ids.CombineStrings()})").Combine(";");
+                            command.CommandText += vm.Delete.Select(x => $"delete from [{x.Table}] where Id in ({x.Ids.CombineStrings()})").Combine(";");
                         }
                         command.CommandText += $"INSERT into [{vm.Table}]([{cells.Combine("],[")}]) values({update.Combine()})";
                         foreach (var item in filteredChanges)
@@ -610,7 +610,7 @@ public class UserService
                         var update = updates.Select(x => $"[{x.Field}] = @{id.Replace("-", "") + x.Field.ToLower()}");
                         if (!vm.Delete.Nothing())
                         {
-                            command.CommandText += vm.Delete.Select(x => $"delete from [{x.Table}] where Id in ({vm.Ids.CombineStrings()})").Combine(";");
+                            command.CommandText += vm.Delete.Select(x => $"delete from [{x.Table}] where Id in ({x.Ids.CombineStrings()})").Combine(";");
                         }
                         command.CommandText += $" UPDATE [{vm.Table}] SET {update.Combine()} WHERE Id = '{id}';";
                         foreach (var item in updates)
