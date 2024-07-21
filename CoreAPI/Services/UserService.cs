@@ -619,6 +619,15 @@ public class UserService
                             }
                             command.Parameters.AddWithValue($"@{id.Replace("-", "") + item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
                         }
+                        var changes = updates.Where(x => !x.HistoryValue.IsNullOrWhiteSpace());
+                        if (!changes.Nothing())
+                        {
+                            var history = changes.Select(x => x.HistoryValue).Combine("\n").Replace("'","''");
+                            if (!history.IsNullOrWhiteSpace())
+                            {
+                                command.CommandText += $" INSERT INTO [History](Id,TextContent,RecordId,TableName,Active,InsertedDate,InsertedBy) values('{Uuid7.Guid()}',N'{history}','{id}','{vm.Table}',1,'{DateTime.Now.ToISOFormat()}','{UserId}');";
+                            }
+                        }
                         int index = 1;
                         if (!vm.Detail.Nothing())
                         {

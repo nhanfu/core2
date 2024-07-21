@@ -4,7 +4,6 @@ using Core.Middlewares;
 using Core.Models;
 using Core.Services;
 using Core.ViewModels;
-using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -150,6 +149,12 @@ public class UserController(UserService _userSvc, WebSocketService socketSvc, IW
     public Task<SqlComResult> Com([FromBody] SqlViewModel entity)
     {
         return _userSvc.ComQuery(entity);
+    }
+
+    [HttpPost("/api/feature/getService")]
+    public Task<Dictionary<string, object>[][]> GetService([FromBody] ServiceVM vm)
+    {
+        return _userSvc.ReadDs($"Select * from Component where FieldName = N'{vm.Name}' and ComponentType = 'Service'", null);
     }
 
     [AllowAnonymous]

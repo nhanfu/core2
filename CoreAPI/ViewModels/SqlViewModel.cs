@@ -79,4 +79,9 @@ namespace Core.ViewModels
         public string sql { get; set; }
         public string total { get; set; }
     }
+
+    public class ServiceVM
+    {
+        public string Name { get; set; }
+    }
 }
