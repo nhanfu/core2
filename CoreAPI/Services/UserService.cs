@@ -941,7 +941,6 @@ public class UserService
         {
             return vm.Select != null && term.IsMatch(vm.Select.ToLower())
             || vm.Table != null && term.IsMatch(vm.Table.ToLower())
-            || vm.Where != null && term.IsMatch(vm.Where.ToLower())
             || vm.GroupBy != null && term.IsMatch(vm.GroupBy.ToLower())
             || vm.Having != null && term.IsMatch(vm.Having.ToLower())
             || vm.OrderBy != null && term.IsMatch(vm.OrderBy.ToLower())
