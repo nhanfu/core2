@@ -861,7 +861,7 @@ public class UserService
         var oldId = idField?.OldVal;
         if (oldId is null)
         {
-            writePerm = allRights.Any(x => x.CanAdd || x.CanWriteAll);
+            writePerm = allRights.Any(x => x.CanWriteAll);
         }
         else
         {
@@ -899,8 +899,8 @@ public class UserService
         string rightQuery = @$"select * from [FeaturePolicy] 
             where Active = 1 and (CanWrite = 1 or CanWriteAll = 1) and EntityName in ({tables.CombineStrings()}) and RoleId in ({RoleIds.CombineStrings()})";
         var permissions = await _sql.ReadDsAsArr<FeaturePolicy>(rightQuery, patches[0].CachedMetaConn);
-        permissions = permissions.DistinctBy(x => x.EntityName).ToArray();
-        var lackPerTables = patches.Select(x => x.Table).Except(permissions.Select(x => x.EntityName)).ToArray();
+        permissions = permissions.DistinctBy(x => x.TableName).ToArray();
+        var lackPerTables = patches.Select(x => x.Table).Except(permissions.Select(x => x.TableName)).ToArray();
         if (lackPerTables.Length > 0)
         {
             throw new ApiException($"All table must have write permission {lackPerTables.CombineStrings()}")
@@ -1369,7 +1369,7 @@ public class UserService
         });
         var connStr = await _sql.GetConnStrFromKey(_configuration.GetConnectionString("Default"));
         var tableRights = await GetEntityPerm(table, recordId: null, connStr);
-        if (!tableRights.Any(x => x.CanAdd || x.CanWriteAll))
+        if (!tableRights.Any(x => x.CanWriteAll))
             throw new UnauthorizedAccessException("Cannot import data due to lack of permission");
 
         var file = files.FirstOrDefault();
