@@ -139,6 +139,12 @@ public class UserController(UserService _userSvc, WebSocketService socketSvc, IW
         return _userSvc.SavePatch2(entity);
     }
 
+    [HttpPost("/api/feature/SendEntity")]
+    public Task<SqlResult> SendEntity([FromBody] PatchVM entity)
+    {
+        return _userSvc.SendEntity(entity);
+    }
+
     [HttpDelete("/api/feature/delete")]
     public Task<bool> Delete([FromBody] PatchVM entity)
     {

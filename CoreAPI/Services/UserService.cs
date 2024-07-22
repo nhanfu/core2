@@ -462,6 +462,45 @@ public class UserService
         return result;
     }
 
+    public async Task<SqlResult> SendEntity(PatchVM vm)
+    {
+        var rs = await SavePatch2(vm);
+        var id = vm.Changes.FirstOrDefault(x => x.Field == "Id").Value;
+        var query2 = @$"SELECT * FROM ApprovalConfig where TableName = '{vm.Table}' order by Level asc";
+        var approvalConfig = await _sql.ReadDsAsArr<ApprovalConfig>(query2);
+        var matchApprovalConfig = approvalConfig.FirstOrDefault(x => x.Level == 1);
+        if (matchApprovalConfig is null)
+        {
+            return new SqlResult()
+            {
+                status = 500
+            };
+        }
+        var sqlUser = matchApprovalConfig.Sql;
+        var user = await _sql.ReadDsAsArr<User>(sqlUser);
+        var task = user.Select(x => new TaskNotification()
+        {
+            Id = Uuid7.Guid().ToString(),
+            EntityId = vm.Table,
+            Title = Utils.FormatEntity(matchApprovalConfig.Title, rs.updatedItem[0]),
+            Description = Utils.FormatEntity(matchApprovalConfig.Description, rs.updatedItem[0]),
+            InsertedBy = UserId,
+            InsertedDate = new DateTime(),
+            AssignedId = x.Id
+        }).ToList();
+        foreach (var item in task)
+        {
+            var patch = item.MapToPatch();
+            await SavePatch(patch);
+        }
+        await NotifyDevices(task, "RequestApprove");
+        return new SqlResult()
+        {
+            status = 200
+        };
+    }
+
+
     public async Task<SqlResult> SavePatch2(PatchVM vm)
     {
         var id = vm.Changes.FirstOrDefault(x => x.Field == "Id").Value;
@@ -622,7 +661,7 @@ public class UserService
                         var changes = updates.Where(x => !x.HistoryValue.IsNullOrWhiteSpace());
                         if (!changes.Nothing())
                         {
-                            var history = changes.Select(x => x.HistoryValue).Combine("\n").Replace("'","''");
+                            var history = changes.Select(x => x.HistoryValue).Combine("\n").Replace("'", "''");
                             if (!history.IsNullOrWhiteSpace())
                             {
                                 command.CommandText += $" INSERT INTO [History](Id,TextContent,RecordId,TableName,Active,InsertedDate,InsertedBy) values('{Uuid7.Guid()}',N'{history}','{id}','{vm.Table}',1,'{DateTime.Now.ToISOFormat()}','{UserId}');";
