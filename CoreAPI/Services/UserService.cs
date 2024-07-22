@@ -457,8 +457,6 @@ public class UserService
         if (cmd.IsNullOrWhiteSpace()) return 0;
         var result = await _sql.RunSqlCmd(vm.CachedDataConn, cmd);
         if (result == 0) return result;
-        await TryNotifyChanges("Patch", null, vm);
-        await AfterActionSvc(vm, "AfterPatch");
         return result;
     }
 
@@ -1776,7 +1774,8 @@ public class UserService
             {
                 QueueName = queueName,
                 Id = Uuid7.Guid().ToString(),
-                Message = x.ToJson()
+                Message = x.ToJson(),
+                AssignedId = x.AssignedId
             })
         .ForEachAsync(SendMessageToUser);
     }
@@ -1787,7 +1786,7 @@ public class UserService
         var env = Env;
         var fcm = new FCMWrapper
         {
-            To = $"/topics/{tenantCode}/{env}/U{task.Message.AssignedId:0000000}",
+            To = $"/topics/{tenantCode}/{env}/U{task.AssignedId:0000000}",
             Data = new FCMData
             {
                 Title = task.Message.Title,
@@ -1798,7 +1797,7 @@ public class UserService
                 Title = task.Message.Title,
                 Body = task.Message.Description,
                 ClickAction = "com.softek.tms.push.background.MESSAGING_EVENT"
-            }
+            },
         };
         await _taskSocketSvc.SendMessageToUsersAsync([task.Message.AssignedId], task.ToJson(), fcm.ToJson());
     }
