@@ -5,6 +5,8 @@ using Core.Middlewares;
 using Core.Models;
 using Core.ViewModels;
 using CoreAPI.Services.Sql;
+using DocumentFormat.OpenXml.Vml.Office;
+using Elsa.Common.Entities;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
@@ -462,26 +464,35 @@ public class UserService
 
     public async Task<SqlResult> SendEntity(PatchVM vm)
     {
+        var name = vm.Name ?? vm.Table;
         var rs = await SavePatch2(vm);
         var id = vm.Changes.FirstOrDefault(x => x.Field == "Id").Value;
-        var query2 = @$"SELECT * FROM ApprovalConfig where TableName = '{vm.Table}' order by Level asc";
+        var query2 = @$"SELECT * FROM ApprovalConfig where TableName = '{name}' order by Level asc";
         var approvalConfig = await _sql.ReadDsAsArr<ApprovalConfig>(query2);
-        var matchApprovalConfig = approvalConfig.FirstOrDefault(x => x.Level == 1);
-        if (matchApprovalConfig is null)
+        if (approvalConfig.Nothing())
         {
             return new SqlResult()
             {
                 status = 500
             };
         }
-        var sqlUser = matchApprovalConfig.Sql;
-        var user = await _sql.ReadDsAsArr<User>(sqlUser);
+        var matchApprovalConfig = approvalConfig.FirstOrDefault(x => x.Level == 1);
+        if (matchApprovalConfig is null)
+        {
+            return new SqlResult()
+            {
+                status = 500,
+            };
+        }
+        var sqlUser = matchApprovalConfig.SqlSendUser;
+        var user = await _sql.ReadDsAsArr<User>(Utils.FormatEntity(sqlUser, rs.updatedItem[0]));
+
         var task = user.Select(x => new TaskNotification()
         {
             Id = Uuid7.Guid().ToString(),
-            EntityId = vm.Table,
-            Title = Utils.FormatEntity(matchApprovalConfig.Title, rs.updatedItem[0]),
-            Description = Utils.FormatEntity(matchApprovalConfig.Description, rs.updatedItem[0]),
+            EntityId = name,
+            Title = Utils.FormatEntity(matchApprovalConfig.TitleSend, rs.updatedItem[0]),
+            Description = Utils.FormatEntity(matchApprovalConfig.DescriptionSend, rs.updatedItem[0]),
             InsertedBy = UserId,
             InsertedDate = new DateTime(),
             AssignedId = x.Id
@@ -494,10 +505,144 @@ public class UserService
         await NotifyDevices(task, "RequestApprove");
         return new SqlResult()
         {
-            status = 200
+            status = 200,
+            updatedItem = rs.updatedItem
         };
     }
 
+    public async Task<SqlResult> ApprovedEntity(PatchVM vm)
+    {
+        var now = DateTime.Now;
+        var name = vm.Name ?? vm.Table;
+        var rs = await SavePatch2(vm);
+        var id = vm.Changes.FirstOrDefault(x => x.Field == "Id").Value;
+        var query2 = @$"SELECT * FROM ApprovalConfig where TableName = '{name}' order by Level asc";
+        var approvalConfig = await _sql.ReadDsAsArr<ApprovalConfig>(query2);
+        if (approvalConfig.Nothing())
+        {
+            return new SqlResult()
+            {
+                status = 500
+            };
+        }
+        var matchApprovalConfig = approvalConfig.FirstOrDefault(x => x.Level == 1);
+        if (matchApprovalConfig is null)
+        {
+            return new SqlResult()
+            {
+                status = 500
+            };
+        }
+        var maxLevel = approvalConfig.Max(x => x.Level);
+        var queryApprovement = @$"SELECT * FROM Approvement where Name = '{name}' and RecordId = '{id}' order by CurrentLevel asc";
+        var approvements = await _sql.ReadDsAsArr<Approvement>(queryApprovement);
+        if (approvements.Any(x => x.CurrentLevel == maxLevel))
+        {
+            var config = approvalConfig.FirstOrDefault(x => x.Level == maxLevel);
+            var sqlEndApprovedUser = Utils.FormatEntity(config.SqlApprovedUser, rs.updatedItem[0]);
+            var userEndApproved = await _sql.ReadDsAsArr<User>(sqlEndApprovedUser);
+            vm.Changes.FirstOrDefault(x => x.Field == "StatusId").Value = "3";
+            rs = await SavePatch2(vm);
+            var task = userEndApproved.Select(x => new TaskNotification()
+            {
+                Id = Uuid7.Guid().ToString(),
+                EntityId = vm.Table,
+                Title = Utils.FormatEntity(matchApprovalConfig.TitleApproved, rs.updatedItem[0]),
+                Description = Utils.FormatEntity(matchApprovalConfig.DescriptionApproved, rs.updatedItem[0]),
+                InsertedBy = UserId,
+                InsertedDate = new DateTime(),
+                AssignedId = x.Id
+            }).ToList();
+            foreach (var item in task)
+            {
+                var patch = item.MapToPatch();
+                await SavePatch(patch);
+            }
+            return new SqlResult()
+            {
+                status = 200,
+                message = "Your data has been approved.",
+                data = rs.updatedItem
+            };
+        }
+        var currentLevel = approvements.FirstOrDefault()?.CurrentLevel ?? 1;
+        var currentConfig = approvalConfig.FirstOrDefault(x => x.Level == currentLevel + 1);
+        var sqlUser = matchApprovalConfig.SqlSendUser;
+
+        var user = await _sql.ReadDsAsArr<User>(sqlUser);
+        var ids = user.Select(x => x.Id).ToList();
+        if (!ids.Contains(UserId))
+        {
+            return new SqlResult()
+            {
+                status = 500,
+                message = "You do not have permission to browse the data"
+            };
+        }
+        var approval = new Approvement
+        {
+            Approved = true,
+            CurrentLevel = currentConfig.Level,
+            NextLevel = currentConfig.Level + 1,
+            EntityId = name,
+            RecordId = id,
+            StatusId = 3,
+            UserApproveId = UserId,
+            ApprovedBy = UserId,
+            ApprovedDate = now,
+            InsertedBy = UserId,
+            InsertedDate = now
+        };
+        var patchQpproval = approval.MapToPatch();
+        await SavePatch(patchQpproval);
+        var sqlApprovedUser = Utils.FormatEntity(matchApprovalConfig.SqlApprovedUser, rs.updatedItem[0]);
+        var userApproved = await _sql.ReadDsAsArr<User>(sqlApprovedUser);
+        if (approvalConfig.Where(x => x.Level == currentLevel + 1).Nothing())
+        {
+            vm.Changes.FirstOrDefault(x => x.Field == "StatusId").Value = "3";
+            rs = await SavePatch2(vm);
+            var task = userApproved.Select(x => new TaskNotification()
+            {
+                Id = Uuid7.Guid().ToString(),
+                EntityId = vm.Table,
+                Title = Utils.FormatEntity(matchApprovalConfig.TitleApproved, rs.updatedItem[0]),
+                Description = Utils.FormatEntity(matchApprovalConfig.DescriptionApproved, rs.updatedItem[0]),
+                InsertedBy = UserId,
+                InsertedDate = new DateTime(),
+                AssignedId = x.Id
+            }).ToList();
+            foreach (var item in task)
+            {
+                var patch = item.MapToPatch();
+                await SavePatch(patch);
+            }
+            await NotifyDevices(task, "Approved");
+        }
+        else
+        {
+            var task = user.Select(x => new TaskNotification()
+            {
+                Id = Uuid7.Guid().ToString(),
+                EntityId = vm.Table,
+                Title = Utils.FormatEntity(matchApprovalConfig.TitleApproved, rs.updatedItem[0]),
+                Description = Utils.FormatEntity(matchApprovalConfig.DescriptionApproved, rs.updatedItem[0]),
+                InsertedBy = UserId,
+                InsertedDate = new DateTime(),
+                AssignedId = x.Id
+            }).ToList();
+            foreach (var item in task)
+            {
+                var patch = item.MapToPatch();
+                await SavePatch(patch);
+            }
+            await NotifyDevices(task, "Approved");
+        }
+        return new SqlResult()
+        {
+            status = 200,
+            data = rs.updatedItem
+        };
+    }
 
     public async Task<SqlResult> SavePatch2(PatchVM vm)
     {

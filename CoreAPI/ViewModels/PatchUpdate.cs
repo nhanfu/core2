@@ -10,6 +10,7 @@ namespace Core.ViewModels
         public string ComId { get; set; }
         public string QueueName { get; set; }
         public string CacheName { get; set; }
+        public string Name { get; set; }
         public string Table { get; set; }
         public List<DeleteItem> Delete { get; set; } = [];
         public string TenantCode { get; set; }
