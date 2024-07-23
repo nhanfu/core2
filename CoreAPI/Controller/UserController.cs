@@ -145,6 +145,18 @@ public class UserController(UserService _userSvc, WebSocketService socketSvc, IW
         return _userSvc.SendEntity(entity);
     }
 
+    [HttpPost("/api/feature/ApprovedEntity")]
+    public Task<SqlResult> ApprovedEntity([FromBody] PatchVM entity)
+    {
+        return _userSvc.ApprovedEntity(entity);
+    }
+
+    [HttpPost("/api/feature/DeclineEntity")]
+    public Task<SqlResult> DeclineEntity([FromBody] PatchVM entity)
+    {
+        return _userSvc.DeclineEntity(entity);
+    }
+
     [HttpDelete("/api/feature/delete")]
     public Task<bool> Delete([FromBody] PatchVM entity)
     {

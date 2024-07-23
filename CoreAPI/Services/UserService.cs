@@ -484,16 +484,16 @@ public class UserService
                 status = 500,
             };
         }
-        var sqlUser = matchApprovalConfig.SqlSendUser;
+        var sqlUser = matchApprovalConfig.SqlApprovedUser;
         var user = await _sql.ReadDsAsArr<User>(Utils.FormatEntity(sqlUser, rs.updatedItem[0]));
-
         var task = user.Select(x => new TaskNotification()
         {
             Id = Uuid7.Guid().ToString(),
             EntityId = name,
-            Title = Utils.FormatEntity(matchApprovalConfig.TitleSend, rs.updatedItem[0]),
-            Description = Utils.FormatEntity(matchApprovalConfig.DescriptionSend, rs.updatedItem[0]),
+            Title = Utils.FormatEntity(matchApprovalConfig.TitleSend ?? "You have request approved", rs.updatedItem[0]),
+            Description = Utils.FormatEntity(matchApprovalConfig.DescriptionSend ?? "You have request approved", rs.updatedItem[0]),
             InsertedBy = UserId,
+            RecordId = id,
             InsertedDate = new DateTime(),
             AssignedId = x.Id
         }).ToList();
@@ -539,7 +539,7 @@ public class UserService
         if (approvements.Any(x => x.CurrentLevel == maxLevel))
         {
             var config = approvalConfig.FirstOrDefault(x => x.Level == maxLevel);
-            var sqlEndApprovedUser = Utils.FormatEntity(config.SqlApprovedUser, rs.updatedItem[0]);
+            var sqlEndApprovedUser = Utils.FormatEntity(config.SqlSendUser, rs.updatedItem[0]);
             var userEndApproved = await _sql.ReadDsAsArr<User>(sqlEndApprovedUser);
             vm.Changes.FirstOrDefault(x => x.Field == "StatusId").Value = "3";
             rs = await SavePatch2(vm);
@@ -547,9 +547,10 @@ public class UserService
             {
                 Id = Uuid7.Guid().ToString(),
                 EntityId = vm.Table,
-                Title = Utils.FormatEntity(matchApprovalConfig.TitleApproved, rs.updatedItem[0]),
-                Description = Utils.FormatEntity(matchApprovalConfig.DescriptionApproved, rs.updatedItem[0]),
+                Title = Utils.FormatEntity(matchApprovalConfig.TitleApproved ?? "Request is approved", rs.updatedItem[0]),
+                Description = Utils.FormatEntity(matchApprovalConfig.DescriptionApproved ?? "Request is approved", rs.updatedItem[0]),
                 InsertedBy = UserId,
+                RecordId = id,
                 InsertedDate = new DateTime(),
                 AssignedId = x.Id
             }).ToList();
@@ -562,13 +563,12 @@ public class UserService
             {
                 status = 200,
                 message = "Your data has been approved.",
-                data = rs.updatedItem
+                updatedItem = rs.updatedItem
             };
         }
         var currentLevel = approvements.FirstOrDefault()?.CurrentLevel ?? 1;
         var currentConfig = approvalConfig.FirstOrDefault(x => x.Level == currentLevel + 1);
-        var sqlUser = matchApprovalConfig.SqlSendUser;
-
+        var sqlUser = Utils.FormatEntity(matchApprovalConfig.SqlApprovedUser, rs.updatedItem[0]);
         var user = await _sql.ReadDsAsArr<User>(sqlUser);
         var ids = user.Select(x => x.Id).ToList();
         if (!ids.Contains(UserId))
@@ -581,10 +581,11 @@ public class UserService
         }
         var approval = new Approvement
         {
+            Id = Uuid7.Guid().ToString(),
             Approved = true,
             CurrentLevel = currentConfig.Level,
             NextLevel = currentConfig.Level + 1,
-            EntityId = name,
+            Name = name,
             RecordId = id,
             StatusId = 3,
             UserApproveId = UserId,
@@ -595,8 +596,8 @@ public class UserService
         };
         var patchQpproval = approval.MapToPatch();
         await SavePatch(patchQpproval);
-        var sqlApprovedUser = Utils.FormatEntity(matchApprovalConfig.SqlApprovedUser, rs.updatedItem[0]);
-        var userApproved = await _sql.ReadDsAsArr<User>(sqlApprovedUser);
+        var sqlSendUser = Utils.FormatEntity(matchApprovalConfig.SqlSendUser, rs.updatedItem[0]);
+        var userApproved = await _sql.ReadDsAsArr<User>(sqlSendUser);
         if (approvalConfig.Where(x => x.Level == currentLevel + 1).Nothing())
         {
             vm.Changes.FirstOrDefault(x => x.Field == "StatusId").Value = "3";
@@ -605,8 +606,9 @@ public class UserService
             {
                 Id = Uuid7.Guid().ToString(),
                 EntityId = vm.Table,
-                Title = Utils.FormatEntity(matchApprovalConfig.TitleApproved, rs.updatedItem[0]),
-                Description = Utils.FormatEntity(matchApprovalConfig.DescriptionApproved, rs.updatedItem[0]),
+                Title = Utils.FormatEntity(matchApprovalConfig.TitleApproved ?? "Request is approved", rs.updatedItem[0]),
+                Description = Utils.FormatEntity(matchApprovalConfig.DescriptionApproved ?? "Request is approved", rs.updatedItem[0]),
+                RecordId = id,
                 InsertedBy = UserId,
                 InsertedDate = new DateTime(),
                 AssignedId = x.Id
@@ -624,8 +626,9 @@ public class UserService
             {
                 Id = Uuid7.Guid().ToString(),
                 EntityId = vm.Table,
-                Title = Utils.FormatEntity(matchApprovalConfig.TitleApproved, rs.updatedItem[0]),
-                Description = Utils.FormatEntity(matchApprovalConfig.DescriptionApproved, rs.updatedItem[0]),
+                Title = Utils.FormatEntity(matchApprovalConfig.TitleSend ?? "You have request approved", rs.updatedItem[0]),
+                Description = Utils.FormatEntity(matchApprovalConfig.DescriptionSend ?? "You have request approved", rs.updatedItem[0]),
+                RecordId = id,
                 InsertedBy = UserId,
                 InsertedDate = new DateTime(),
                 AssignedId = x.Id
@@ -640,7 +643,80 @@ public class UserService
         return new SqlResult()
         {
             status = 200,
-            data = rs.updatedItem
+            updatedItem = rs.updatedItem
+        };
+    }
+
+    public async Task<SqlResult> DeclineEntity(PatchVM vm)
+    {
+        vm.Changes.FirstOrDefault(x => x.Field == "StatusId").Value = "4";
+        var now = DateTime.Now;
+        var name = vm.Name ?? vm.Table;
+        var rs = await SavePatch2(vm);
+        var id = vm.Changes.FirstOrDefault(x => x.Field == "Id").Value;
+        var query2 = @$"SELECT * FROM ApprovalConfig where TableName = '{name}' order by Level asc";
+        var approvalConfig = await _sql.ReadDsAsArr<ApprovalConfig>(query2);
+        if (approvalConfig.Nothing())
+        {
+            return new SqlResult()
+            {
+                status = 500,
+                message = "Please config approved"
+            };
+        }
+        var matchApprovalConfig = approvalConfig.FirstOrDefault(x => x.Level == 1);
+        if (matchApprovalConfig is null)
+        {
+            return new SqlResult()
+            {
+                status = 500,
+                message = "Please config approved"
+            };
+        }
+        var maxLevel = approvalConfig.Max(x => x.Level);
+        var queryApprovement = @$"SELECT * FROM Approvement where Name = '{name}' and RecordId = '{id}' order by CurrentLevel asc";
+        var approvements = await _sql.ReadDsAsArr<Approvement>(queryApprovement);
+        var currentLevel = approvements.FirstOrDefault()?.CurrentLevel ?? 1;
+        var approval = new Approvement
+        {
+            Id = Uuid7.Guid().ToString(),
+            Approved = true,
+            CurrentLevel = currentLevel,
+            NextLevel = 1,
+            Name = name,
+            RecordId = id,
+            StatusId = 4,
+            UserApproveId = UserId,
+            ApprovedBy = UserId,
+            ApprovedDate = now,
+            InsertedBy = UserId,
+            InsertedDate = now
+        };
+        var patchQpproval = approval.MapToPatch();
+        await SavePatch(patchQpproval);
+        var sqlSendUser = Utils.FormatEntity(matchApprovalConfig.SqlSendUser, rs.updatedItem[0]);
+        var userSend = await _sql.ReadDsAsArr<User>(sqlSendUser);
+        var task = userSend.Select(x => new TaskNotification()
+        {
+            Id = Uuid7.Guid().ToString(),
+            EntityId = vm.Table,
+            Title = Utils.FormatEntity(matchApprovalConfig.TitleDecline ?? "Request is decline", rs.updatedItem[0]),
+            Description = Utils.FormatEntity(matchApprovalConfig.DescriptionDecline ?? "Request is decline", rs.updatedItem[0]),
+            InsertedBy = UserId,
+            RecordId = id,
+            InsertedDate = new DateTime(),
+            AssignedId = x.Id
+        }).ToList();
+        foreach (var item in task)
+        {
+            var patch = item.MapToPatch();
+            await SavePatch(patch);
+        }
+        await NotifyDevices(task, "Decline");
+        return new SqlResult()
+        {
+            status = 200,
+            updatedItem = rs.updatedItem
         };
     }
 
@@ -1919,7 +1995,7 @@ public class UserService
             {
                 QueueName = queueName,
                 Id = Uuid7.Guid().ToString(),
-                Message = x.ToJson(),
+                Message = x,
                 AssignedId = x.AssignedId
             })
         .ForEachAsync(SendMessageToUser);

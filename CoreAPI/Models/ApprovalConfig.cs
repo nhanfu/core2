@@ -8,6 +8,8 @@
         public string DescriptionSend { get; set; }
         public string TitleApproved { get; set; }
         public string DescriptionApproved { get; set; }
+        public string TitleDecline { get; set; }
+        public string DescriptionDecline { get; set; }
         public string UserId { get; set; }
         public string RoleId { get; set; }
         public string TableName { get; set; }

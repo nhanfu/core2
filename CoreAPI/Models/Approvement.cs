@@ -4,7 +4,7 @@
     {
         public string Id { get; set; }
         public string ReasonOfChange { get; set; }
-        public string EntityId { get; set; }
+        public string Name { get; set; }
         public string RecordId { get; set; }
         public int? StatusId { get; set; }
         public string UserApproveId { get; set; }

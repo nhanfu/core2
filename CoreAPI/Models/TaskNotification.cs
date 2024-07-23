@@ -7,6 +7,7 @@
         public string Description { get; set; }
         public string EntityId { get; set; }
         public string AssignedId { get; set; }
+        public string RecordId { get; set; }
         public bool Active { get; set; }
         public DateTime InsertedDate { get; set; }
         public string InsertedBy { get; set; }
