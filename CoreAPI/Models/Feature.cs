@@ -38,5 +38,6 @@
         public List<Component> GridPolicies { get; set; }
         public List<Component> Components { get; set; }
         public List<FeaturePolicy> FeaturePolicies { get; set; }
+        public List<UserSetting> UserSettings { get; set; }
     }
 }

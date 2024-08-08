@@ -232,10 +232,12 @@ public class UserService
         var query = @$"select * from [Feature] where Name = N'{name}'";
         var feature = await _sql.ReadDsAs<Feature>(query, _configuration.GetConnectionString("Default"));
         var query2 = @$"select * from [Component] where FeatureId = '{feature.Id}'
-        select * from [FeaturePolicy] where FeatureId = '{feature.Id}'";
+        select * from [FeaturePolicy] where FeatureId = '{feature.Id}'
+        select * from [UserSetting] where FeatureId = '{feature.Id}' and UserId = '{UserId}'";
         var childs = await _sql.ReadDataSet(query2, _configuration.GetConnectionString("Default"));
         var components = childs.Length > 0 && childs[0].Length > 0 ? childs[0].Select(x => x.MapTo<Component>()).ToList() : null;
         var policys = childs.Length > 1 && childs[1].Length > 0 ? childs[1].Select(x => x.MapTo<FeaturePolicy>()).ToList() : null;
+        feature.UserSettings = childs.Length > 2 && childs[2].Length > 0 ? childs[2].Select(x => x.MapTo<UserSetting>()).ToList() : null;
         feature.Components = components;
         var filteredComponentGroups = feature.Components
             .Where(component => component.ComponentType == "Section")
