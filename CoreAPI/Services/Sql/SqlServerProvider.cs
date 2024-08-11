@@ -204,6 +204,39 @@ public class SqlServerProvider(IDistributedCache cache, IConfiguration cfg) : IS
         }
     }
 
+    public string GetUpdateCmd(PatchVM vm)
+    {
+        if (vm == null || vm.Table.IsNullOrWhiteSpace() || vm.Changes.Nothing())
+        {
+            throw new ApiException("Table name and change details can NOT be empty") { StatusCode = HttpStatusCode.BadRequest };
+        }
+        if (vm.Id is null)
+        {
+            throw new ApiException("Id cannot be null") { StatusCode = HttpStatusCode.BadRequest };
+        }
+
+        vm.Table = Utils.RemoveWhiteSpace(vm.Table);
+        vm.Changes = vm.Changes.Where(patch =>
+        {
+            if (patch.Field.IsNullOrWhiteSpace())
+                throw new ApiException($"Field name of the patch can NOT be empty")
+                {
+                    StatusCode = HttpStatusCode.BadRequest
+                };
+            patch.Field = Utils.RemoveWhiteSpace(patch.Field);
+            patch.Value = patch.Value?.Replace("'", "''");
+            patch.OldVal = patch.OldVal?.Replace("'", "''");
+            return !SystemFields.Contains(patch.Field);
+        }).ToList();
+        var idField = vm.Id;
+        var valueFields = vm.Changes.Where(x => !SystemFields.Contains(x.Field.ToLower())).ToArray();
+        var now = DateTime.Now.ToString(DateTimeExt.DateFormat);
+        var oldId = idField?.Value;
+        var update = valueFields.Combine(x => x.Value is null ? $"[{x.Field}] = null" : $"[{x.Field}] = N'{x.Value}'");
+        if (update.IsNullOrWhiteSpace()) return null;
+        return @$"update [{vm.Table}] set {update},UpdatedBy = '{UserId ?? 1.ToString()}', UpdatedDate = '{now}' where Id = '{oldId}';";
+    }
+
     public bool HasSqlComment(string sql)
     {
         TSql110Parser parser = new(true);

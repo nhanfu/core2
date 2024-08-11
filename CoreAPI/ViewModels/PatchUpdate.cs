@@ -25,6 +25,7 @@ namespace Core.ViewModels
         public List<List<PatchVM>> Detail { get; set; } = [];
         public List<string> Ids { get; set; } = [];
         public int? Index { get; set; }
+        public bool Update { get; set; } = false;
         public PatchDetail Id => Changes.FirstOrDefault(x => x.Field == Utils.IdField);
     }
 

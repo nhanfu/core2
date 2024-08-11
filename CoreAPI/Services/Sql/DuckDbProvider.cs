@@ -160,7 +160,7 @@ namespace CoreAPI.Services.Sql
                     {
                         Table = table.TableName,
                         DataConn = duckConnStr,
-                        Changes = cell.Select(x => new PatchDetail { Field = x.Key, Value = x.Value?.ToString()}).ToList()
+                        Changes = cell.Select(x => new PatchDetail { Field = x.Key, Value = x.Value?.ToString() }).ToList()
                     });
                     return insertCmd;
                 }).Combine(";");
@@ -168,6 +168,39 @@ namespace CoreAPI.Services.Sql
             await Task.WhenAll(tasks);
             var cmd = tasks.Select(x => x.Result).Combine(";");
             await RunSqlCmd(duckConnStr, cmd);
+        }
+
+        public string GetUpdateCmd(PatchVM vm)
+        {
+            if (vm == null || vm.Table.IsNullOrWhiteSpace() || vm.Changes.Nothing())
+            {
+                throw new ApiException("Table name and change details can NOT be empty")
+                {
+                    StatusCode = HttpStatusCode.BadRequest
+                };
+            }
+            if (vm.Id is null)
+            {
+                throw new ApiException("Id cannot be null") { StatusCode = HttpStatusCode.BadRequest };
+            }
+
+            vm.Table = Utils.RemoveWhiteSpace(vm.Table);
+            vm.Changes = vm.Changes.Where(x =>
+            {
+                if (x.Field.IsNullOrWhiteSpace()) throw new ApiException($"Field name can NOT be empty") { StatusCode = HttpStatusCode.BadRequest };
+                x.Field = Utils.RemoveWhiteSpace(x.Field);
+                x.Value = x.Value?.Replace("'", "''");
+                x.OldVal = x.OldVal?.Replace("'", "''");
+                return !SystemFields.Contains(x.Field);
+            }).ToList();
+            var idField = vm.Id;
+            var valueFields = vm.Changes.Where(x => !SystemFields.Contains(x.Field.ToLower())).ToArray();
+            var now = DateTime.Now.ToString(DateTimeExt.DateFormat);
+            var oldId = idField?.Value;
+            var update = valueFields.Combine(x => x.Value is null ? $"[{x.Field}] = null" : $"[{x.Field}] = N'{x.Value}'");
+            if (update.IsNullOrWhiteSpace()) return null;
+            return @$"update [{vm.Table}] set {update}, 
+                UpdatedBy = '{UserId ?? 1.ToString()}', UpdatedDate = '{now}' where Id = '{oldId}';";
         }
     }
 

@@ -127,6 +127,12 @@ public class UserController(UserService _userSvc, WebSocketService socketSvc, IW
         return _userSvc.GetDictionary();
     }
 
+    [HttpPost("api/userSetting")]
+    public Task<bool> Dictionary([FromBody] UserSetting userSetting)
+    {
+        return _userSvc.PostUserSetting(userSetting);
+    }
+
     [HttpPost("/api/feature/go")]
     public Task<SqlResult> Go([FromBody] SqlViewModel entity)
     {

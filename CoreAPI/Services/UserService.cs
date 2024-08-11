@@ -5,13 +5,12 @@ using Core.Middlewares;
 using Core.Models;
 using Core.ViewModels;
 using CoreAPI.Services.Sql;
-using DocumentFormat.OpenXml.Vml.Office;
-using Elsa.Common.Entities;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Bcpg.Sig;
 using PuppeteerSharp;
 using System.Buffers;
 using System.Data;
@@ -205,6 +204,32 @@ public class UserService
         var query = @$"select * from [Dictionary]";
         var ds = await _sql.ReadDataSet(query, _configuration.GetConnectionString("Default"));
         return ds[0];
+    }
+
+    public async Task<bool> PostUserSetting(UserSetting userSetting)
+    {
+        var query = @$"select * from [UserSetting] where UserId = '{UserId}' and ComponentId = '{userSetting.ComponentId}' and FeatureId = '{userSetting.FeatureId}'";
+        var setting = await _sql.ReadDsAs<UserSetting>(query, _configuration.GetConnectionString("Default"));
+        if (setting != null)
+        {
+            setting.Value = userSetting.Value;
+            setting.UpdatedBy = UserId;
+            setting.UpdatedDate = DateTime.Now;
+        }
+        else
+        {
+            setting = new UserSetting();
+            setting.Id = Uuid7.Guid().ToString();
+            setting.ComponentId = userSetting.ComponentId;
+            setting.FeatureId = userSetting.FeatureId;
+            setting.UserId = UserId;
+            setting.Active = true;
+            setting.InsertedBy = UserId;
+            setting.InsertedDate = DateTime.Now;
+        }
+        var patch = setting.MapToPatch();
+        await UpdatePatch(patch);
+        return true;
     }
 
     public async Task<SqlResult> Go(SqlViewModel sqlViewModel)
@@ -458,6 +483,22 @@ public class UserService
             StatusCode = HttpStatusCode.Unauthorized
         };
         var cmd = _sql.GetCreateOrUpdateCmd(vm);
+        if (cmd.IsNullOrWhiteSpace()) return 0;
+        var result = await _sql.RunSqlCmd(vm.CachedDataConn, cmd);
+        if (result == 0) return result;
+        return result;
+    }
+
+    public async Task<int> UpdatePatch(PatchVM vm)
+    {
+        vm.CachedDataConn ??= await _sql.GetConnStrFromKey(vm.DataConn, vm.TenantCode, vm.Env);
+        vm.CachedMetaConn ??= await _sql.GetConnStrFromKey(vm.MetaConn, vm.TenantCode, vm.Env);
+        var canWrite = await HasWritePermission(vm);
+        if (!canWrite) throw new ApiException($"Unauthorized to write on \"{vm.Table}\"")
+        {
+            StatusCode = HttpStatusCode.Unauthorized
+        };
+        var cmd = _sql.GetUpdateCmd(vm);
         if (cmd.IsNullOrWhiteSpace()) return 0;
         var result = await _sql.RunSqlCmd(vm.CachedDataConn, cmd);
         if (result == 0) return result;
