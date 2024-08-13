@@ -246,7 +246,7 @@ public class UserService
 
     public async Task<Dictionary<string, object>[]> GetMenu()
     {
-        var query = @$"select * from [Feature] where IsMenu = 1";
+        var query = @$"select * from [Feature] f where IsMenu = 1 and (exists (select Id from FeaturePolicy where FeatureId = f.Id and RoleId in ({RoleIds.CombineStrings()}) and CanRead = 1) or '8' in ({RoleIds.CombineStrings()}))";
         var ds = await _sql.ReadDataSet(query, _configuration.GetConnectionString("Default"));
         return ds[0];
     }
@@ -579,7 +579,7 @@ public class UserService
         var maxLevel = approvalConfig.Max(x => x.Level);
         var queryApprovement = @$"SELECT * FROM Approvement where Name = '{name}' and RecordId = '{id}' order by CurrentLevel asc";
         var approvements = await _sql.ReadDsAsArr<Approvement>(queryApprovement);
-        if (approvements.Any(x => x.CurrentLevel == maxLevel))
+        if ((approvements.Nothing() && maxLevel == 1) || approvements.Any(x => x.CurrentLevel == maxLevel))
         {
             var config = approvalConfig.FirstOrDefault(x => x.Level == maxLevel);
             var sqlEndApprovedUser = Utils.FormatEntity(config.SqlSendUser, rs.updatedItem[0]);
