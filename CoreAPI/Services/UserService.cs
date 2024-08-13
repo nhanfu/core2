@@ -206,6 +206,13 @@ public class UserService
         return ds[0];
     }
 
+    public async Task<Dictionary<string, object>[]> WebConfig()
+    {
+        var query = @$"select * from [WebConfig]";
+        var ds = await _sql.ReadDataSet(query, _configuration.GetConnectionString("Default"));
+        return ds[0];
+    }
+
     public async Task<bool> PostUserSetting(UserSetting userSetting)
     {
         var query = @$"select * from [UserSetting] where UserId = '{UserId}' and ComponentId = '{userSetting.ComponentId}' and FeatureId = '{userSetting.FeatureId}'";

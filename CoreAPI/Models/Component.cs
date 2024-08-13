@@ -124,6 +124,7 @@
         public bool DisplayBadge { get; set; }
         public bool IsMultiple { get; set; }
         public string AddRowExp { get; set; }
+        public string GroupTypeId { get; set; }
         public List<Component> Children { get; set; }
         public List<Component> Components { get; set; }
         public Component Parent { get; set; }

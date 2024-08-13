@@ -127,6 +127,13 @@ public class UserController(UserService _userSvc, WebSocketService socketSvc, IW
         return _userSvc.GetDictionary();
     }
 
+    [AllowAnonymous]
+    [HttpGet("/api/webConfig")]
+    public Task<Dictionary<string, object>[]> WebConfig()
+    {
+        return _userSvc.WebConfig();
+    }
+
     [HttpPost("api/userSetting")]
     public Task<bool> Dictionary([FromBody] UserSetting userSetting)
     {
