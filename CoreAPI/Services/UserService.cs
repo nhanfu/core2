@@ -222,6 +222,8 @@ public class UserService
             setting.Value = userSetting.Value;
             setting.UpdatedBy = UserId;
             setting.UpdatedDate = DateTime.Now;
+            var patch = setting.MapToPatch();
+            await UpdatePatch(patch);
         }
         else
         {
@@ -231,11 +233,12 @@ public class UserService
             setting.FeatureId = userSetting.FeatureId;
             setting.UserId = UserId;
             setting.Active = true;
+            setting.Value = userSetting.Value;
             setting.InsertedBy = UserId;
             setting.InsertedDate = DateTime.Now;
+            var patch = setting.MapToPatch();
+            await SavePatch(patch);
         }
-        var patch = setting.MapToPatch();
-        await UpdatePatch(patch);
         return true;
     }
 
