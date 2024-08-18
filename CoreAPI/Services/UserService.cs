@@ -1275,6 +1275,18 @@ public class UserService
         return await RunjsWrap(vm);
     }
 
+    public async Task<Dictionary<string, object>[]> Report(SqlViewModel vm)
+    {
+        var com = await GetComponent(vm) ?? throw new ApiException("Component not found or not public to the current user")
+        {
+            StatusCode = HttpStatusCode.NotFound
+        };
+        Dictionary<string, object> dictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(vm.Params);
+        var query = Utils.FormatEntity(com.Query, dictionary);
+        var ds1 = await _sql.ReadDataSet(query);
+        return ds1[0];
+    }
+
     private static string CalcFinalQuery(SqlViewModel vm)
     {
         var dictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(vm.Params);
