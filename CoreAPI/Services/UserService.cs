@@ -599,6 +599,23 @@ public class UserService
             var userEndApproved = users.Select(x => x).ToList();
             vm.Changes.FirstOrDefault(x => x.Field == "StatusId").Value = "3";
             rs = await SavePatch2(vm);
+            var approval1 = new Approvement
+            {
+                Id = Uuid7.Guid().ToString(),
+                Approved = true,
+                CurrentLevel = 1,
+                NextLevel = 1,
+                Name = name,
+                RecordId = id,
+                StatusId = 3,
+                UserApproveId = UserId,
+                ApprovedBy = UserId,
+                ApprovedDate = now,
+                InsertedBy = UserId,
+                InsertedDate = now
+            };
+            var patchQpproval1 = approval1.MapToPatch();
+            await SavePatch(patchQpproval1);
             var task = userEndApproved.Select(x => new TaskNotification()
             {
                 Id = Uuid7.Guid().ToString(),
@@ -607,7 +624,7 @@ public class UserService
                 Description = "Request is approved",
                 InsertedBy = UserId,
                 RecordId = id,
-                InsertedDate = new DateTime(),
+                InsertedDate = now,
                 AssignedId = x
             }).ToList();
             foreach (var item in task)
@@ -735,8 +752,9 @@ public class UserService
         var approval = new Approvement
         {
             Id = Uuid7.Guid().ToString(),
-            Approved = true,
+            Approved = false,
             CurrentLevel = currentLevel,
+            ReasonOfChange = vm.ReasonOfChange,
             NextLevel = 1,
             Name = name,
             RecordId = id,
