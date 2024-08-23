@@ -5,6 +5,8 @@ using Core.Middlewares;
 using Core.Models;
 using Core.ViewModels;
 using CoreAPI.Services.Sql;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
@@ -15,6 +17,7 @@ using PuppeteerSharp;
 using System.Buffers;
 using System.Data;
 using System.Data.SqlClient;
+using System.Data.SqlTypes;
 using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq.Expressions;
@@ -520,7 +523,8 @@ public class UserService
         var name = vm.Name ?? vm.Table;
         var rs = await SavePatch2(vm);
         var id = vm.Changes.FirstOrDefault(x => x.Field == "Id").Value;
-        var query2 = @$"SELECT * FROM ApprovalConfig where TableName = '{name}' order by Level asc";
+        var voucherTypeId = vm.Changes.FirstOrDefault(x => x.Field == "VoucherTypeId");
+        var query2 = @$"SELECT * FROM ApprovalConfig where VoucherTypeId = '{voucherTypeId.Value}' and ParentId is not null order by Level asc";
         var approvalConfig = await _sql.ReadDsAsArr<ApprovalConfig>(query2);
         if (approvalConfig.Nothing())
         {
@@ -537,18 +541,17 @@ public class UserService
                 status = 500,
             };
         }
-        var sqlUser = matchApprovalConfig.SqlApprovedUser;
-        var user = await _sql.ReadDsAsArr<User>(Utils.FormatEntity(sqlUser, rs.updatedItem[0]));
+        var user = matchApprovalConfig.UserIds.Split(",");
         var task = user.Select(x => new TaskNotification()
         {
             Id = Uuid7.Guid().ToString(),
             EntityId = name,
-            Title = Utils.FormatEntity(matchApprovalConfig.TitleSend ?? "You have request approved", rs.updatedItem[0]),
-            Description = Utils.FormatEntity(matchApprovalConfig.DescriptionSend ?? "You have request approved", rs.updatedItem[0]),
+            Title = "You have request approved",
+            Description = "You have request approved",
             InsertedBy = UserId,
             RecordId = id,
             InsertedDate = new DateTime(),
-            AssignedId = x.Id
+            AssignedId = x
         }).ToList();
         foreach (var item in task)
         {
@@ -569,7 +572,8 @@ public class UserService
         var name = vm.Name ?? vm.Table;
         var rs = await SavePatch2(vm);
         var id = vm.Changes.FirstOrDefault(x => x.Field == "Id").Value;
-        var query2 = @$"SELECT * FROM ApprovalConfig where TableName = '{name}' order by Level asc";
+        var voucherTypeId = vm.Changes.FirstOrDefault(x => x.Field == "VoucherTypeId");
+        var query2 = @$"SELECT * FROM ApprovalConfig where VoucherTypeId = '{voucherTypeId.Value}' and ParentId is not null  order by Level asc";
         var approvalConfig = await _sql.ReadDsAsArr<ApprovalConfig>(query2);
         if (approvalConfig.Nothing())
         {
@@ -591,21 +595,20 @@ public class UserService
         var approvements = await _sql.ReadDsAsArr<Approvement>(queryApprovement);
         if ((approvements.Nothing() && maxLevel == 1) || approvements.Any(x => x.CurrentLevel == maxLevel))
         {
-            var config = approvalConfig.FirstOrDefault(x => x.Level == maxLevel);
-            var sqlEndApprovedUser = Utils.FormatEntity(config.SqlSendUser, rs.updatedItem[0]);
-            var userEndApproved = await _sql.ReadDsAsArr<User>(sqlEndApprovedUser);
+            var users = matchApprovalConfig.UserIds.Split(",");
+            var userEndApproved = users.Select(x => x).ToList();
             vm.Changes.FirstOrDefault(x => x.Field == "StatusId").Value = "3";
             rs = await SavePatch2(vm);
             var task = userEndApproved.Select(x => new TaskNotification()
             {
                 Id = Uuid7.Guid().ToString(),
                 EntityId = vm.Table,
-                Title = Utils.FormatEntity(matchApprovalConfig.TitleApproved ?? "Request is approved", rs.updatedItem[0]),
-                Description = Utils.FormatEntity(matchApprovalConfig.DescriptionApproved ?? "Request is approved", rs.updatedItem[0]),
+                Title = "Request is approved",
+                Description = "Request is approved",
                 InsertedBy = UserId,
                 RecordId = id,
                 InsertedDate = new DateTime(),
-                AssignedId = x.Id
+                AssignedId = x
             }).ToList();
             foreach (var item in task)
             {
@@ -621,9 +624,8 @@ public class UserService
         }
         var currentLevel = approvements.FirstOrDefault()?.CurrentLevel ?? 1;
         var currentConfig = approvalConfig.FirstOrDefault(x => x.Level == currentLevel + 1);
-        var sqlUser = Utils.FormatEntity(matchApprovalConfig.SqlApprovedUser, rs.updatedItem[0]);
-        var user = await _sql.ReadDsAsArr<User>(sqlUser);
-        var ids = user.Select(x => x.Id).ToList();
+        var user = matchApprovalConfig.UserIds.Split(",");
+        var ids = user.Select(x => x).ToList();
         if (!ids.Contains(UserId))
         {
             return new SqlResult()
@@ -649,8 +651,7 @@ public class UserService
         };
         var patchQpproval = approval.MapToPatch();
         await SavePatch(patchQpproval);
-        var sqlSendUser = Utils.FormatEntity(matchApprovalConfig.SqlSendUser, rs.updatedItem[0]);
-        var userApproved = await _sql.ReadDsAsArr<User>(sqlSendUser);
+        var userApproved = matchApprovalConfig.UserIds.Split(",");
         if (approvalConfig.Where(x => x.Level == currentLevel + 1).Nothing())
         {
             vm.Changes.FirstOrDefault(x => x.Field == "StatusId").Value = "3";
@@ -659,12 +660,12 @@ public class UserService
             {
                 Id = Uuid7.Guid().ToString(),
                 EntityId = vm.Table,
-                Title = Utils.FormatEntity(matchApprovalConfig.TitleApproved ?? "Request is approved", rs.updatedItem[0]),
-                Description = Utils.FormatEntity(matchApprovalConfig.DescriptionApproved ?? "Request is approved", rs.updatedItem[0]),
+                Title = "Request is approved",
+                Description = "Request is approved",
                 RecordId = id,
                 InsertedBy = UserId,
                 InsertedDate = new DateTime(),
-                AssignedId = x.Id
+                AssignedId = x
             }).ToList();
             foreach (var item in task)
             {
@@ -679,12 +680,12 @@ public class UserService
             {
                 Id = Uuid7.Guid().ToString(),
                 EntityId = vm.Table,
-                Title = Utils.FormatEntity(matchApprovalConfig.TitleSend ?? "You have request approved", rs.updatedItem[0]),
-                Description = Utils.FormatEntity(matchApprovalConfig.DescriptionSend ?? "You have request approved", rs.updatedItem[0]),
+                Title = "You have request approved",
+                Description = "You have request approved",
                 RecordId = id,
                 InsertedBy = UserId,
                 InsertedDate = new DateTime(),
-                AssignedId = x.Id
+                AssignedId = x
             }).ToList();
             foreach (var item in task)
             {
@@ -707,7 +708,8 @@ public class UserService
         var name = vm.Name ?? vm.Table;
         var rs = await SavePatch2(vm);
         var id = vm.Changes.FirstOrDefault(x => x.Field == "Id").Value;
-        var query2 = @$"SELECT * FROM ApprovalConfig where TableName = '{name}' order by Level asc";
+        var voucherTypeId = vm.Changes.FirstOrDefault(x => x.Field == "VoucherTypeId");
+        var query2 = @$"SELECT * FROM ApprovalConfig where VoucherTypeId = '{voucherTypeId.Value}' and ParentId is not null  order by Level asc";
         var approvalConfig = await _sql.ReadDsAsArr<ApprovalConfig>(query2);
         if (approvalConfig.Nothing())
         {
@@ -747,18 +749,17 @@ public class UserService
         };
         var patchQpproval = approval.MapToPatch();
         await SavePatch(patchQpproval);
-        var sqlSendUser = Utils.FormatEntity(matchApprovalConfig.SqlSendUser, rs.updatedItem[0]);
-        var userSend = await _sql.ReadDsAsArr<User>(sqlSendUser);
+        var userSend = matchApprovalConfig.UserIds.Split(",");
         var task = userSend.Select(x => new TaskNotification()
         {
             Id = Uuid7.Guid().ToString(),
             EntityId = vm.Table,
-            Title = Utils.FormatEntity(matchApprovalConfig.TitleDecline ?? "Request is decline", rs.updatedItem[0]),
-            Description = Utils.FormatEntity(matchApprovalConfig.DescriptionDecline ?? "Request is decline", rs.updatedItem[0]),
+            Title = "Request is decline",
+            Description = "Request is decline",
             InsertedBy = UserId,
             RecordId = id,
             InsertedDate = new DateTime(),
-            AssignedId = x.Id
+            AssignedId = x
         }).ToList();
         foreach (var item in task)
         {
@@ -773,6 +774,63 @@ public class UserService
         };
     }
 
+    private async Task<bool> CheckDuplicate(PatchVM patch, bool Update = false)
+    {
+        var table = await _sql.ReadDsAs<TableName>($"Select * from TableName where [Name] = '{patch.Table}'");
+        if (table is null)
+        {
+            return false;
+        }
+        if (!table.Duplicate.IsNullOrWhiteSpace())
+        {
+            var field = table.Duplicate.Split(",");
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("Default")))
+            {
+                await connection.OpenAsync();
+                try
+                {
+                    using (SqlCommand command = new SqlCommand())
+                    {
+                        command.Connection = connection;
+                        var wheres = field.Select(x => $"[{x}] = @{x.ToLower()}").ToList();
+                        if (Update)
+                        {
+                            wheres.Add($"[Id] != @id");
+                        }
+                        command.CommandText += $"Select * from [{patch.Table}] where {wheres.Combine(" and ")}";
+                        foreach (var item in field)
+                        {
+                            var val = patch.Changes.FirstOrDefault(x => x.Field == item).Value;
+                            command.Parameters.AddWithValue($"@{item.ToLower()}", val is null ? DBNull.Value : val);
+                        }
+                        if (Update)
+                        {
+                            var val = patch.Changes.FirstOrDefault(x => x.Field == "Id").Value;
+                            command.Parameters.AddWithValue($"@id", val is null ? DBNull.Value : val);
+                        }
+                        var reader = await command.ExecuteReaderAsync();
+                        if (reader.HasRows)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return true;
+                }
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     public async Task<SqlResult> SavePatch2(PatchVM vm)
     {
         var id = vm.Changes.FirstOrDefault(x => x.Field == "Id").Value;
@@ -781,6 +839,15 @@ public class UserService
         var selectIds = new List<DetailData>();
         if (id.StartsWith("-"))
         {
+            if (await CheckDuplicate(vm))
+            {
+                return new SqlResult()
+                {
+                    updatedItem = null,
+                    status = 409,
+                    message = "Data already exists"
+                };
+            }
             id = id.Substring(1);
             AddDefaultFields(filteredChanges, new List<PatchDetail>()
             {
@@ -865,7 +932,8 @@ public class UserService
                             }
                         }
                         await command.ExecuteNonQueryAsync();
-                        transaction.Commit();
+                        await transaction.CommitAsync();
+                        await connection.CloseAsync();
                         var childs = new List<string>();
                         var sql = $"SELECT * FROM [{vm.Table}] where Id = '{id}'";
                         foreach (var item in selectIds)
@@ -888,7 +956,7 @@ public class UserService
                 }
                 catch (Exception ex)
                 {
-                    transaction.Rollback();
+                    await transaction.RollbackAsync();
                     var entity = await _sql.ReadDataSet($"SELECT * FROM [{vm.Table}] where Id = '{id}'");
                     return new SqlResult()
                     {
@@ -901,6 +969,15 @@ public class UserService
         }
         else
         {
+            if (await CheckDuplicate(vm, true))
+            {
+                return new SqlResult()
+                {
+                    updatedItem = null,
+                    status = 409,
+                    message = "Data already exists"
+                };
+            }
             AddDefaultFields(filteredChanges, new List<PatchDetail>()
             {
                 new PatchDetail { Field = "UpdatedDate", Value = DateTime.Now.ToISOFormat()},
@@ -990,7 +1067,8 @@ public class UserService
                             }
                         }
                         await command.ExecuteNonQueryAsync();
-                        transaction.Commit();
+                        await transaction.CommitAsync();
+                        await connection.CloseAsync();
                         var sql = $"SELECT * FROM [{vm.Table}] where Id = '{id}'";
                         foreach (var item in selectIds)
                         {

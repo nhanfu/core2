@@ -1,18 +1,18 @@
 ﻿namespace Core.Models
 {
-    public partial class ApprovalConfig
+    public class TableName
     {
         public string Id { get; set; }
-        public int? VoucherTypeId { get; set; }
-        public int? Level { get; set; }
-        public string ParentId { get; set; }
-        public string NameId { get; set; }
-        public string UserIds { get; set; }
-        public string RoleIds { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string TableTrigger { get; set; }
+        public string Duplicate { get; set; }
+        public string TanentId { get; set; }
         public bool Active { get; set; }
         public DateTime? InsertedDate { get; set; }
         public string InsertedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public string UpdatedBy { get; set; }
+
     }
 }
