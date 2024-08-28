@@ -14,6 +14,7 @@ using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using Org.BouncyCastle.Bcpg.Sig;
 using PuppeteerSharp;
+using System;
 using System.Buffers;
 using System.Data;
 using System.Data.SqlClient;
@@ -1381,6 +1382,18 @@ public class UserService
         var query = Utils.FormatEntity(com.Query, dictionary);
         var ds1 = await _sql.ReadDataSet(query);
         return ds1[0];
+    }
+
+    public async Task<Dictionary<string, object>[][]> Sql(SqlViewModel vm)
+    {
+        var com = await GetComponent(vm) ?? throw new ApiException("Component not found or not public to the current user")
+        {
+            StatusCode = HttpStatusCode.NotFound
+        };
+        Dictionary<string, object> dictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(vm.Params);
+        var query = Utils.FormatEntity(com.Query, dictionary);
+        var ds1 = await _sql.ReadDataSet(query);
+        return ds1;
     }
 
     private static string CalcFinalQuery(SqlViewModel vm)

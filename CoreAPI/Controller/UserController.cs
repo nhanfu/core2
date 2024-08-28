@@ -213,6 +213,12 @@ public class UserController(UserService _userSvc, WebSocketService socketSvc, IW
         return _userSvc.Report(entity);
     }
 
+    [HttpPost("/api/feature/sql")]
+    public Task<Dictionary<string, object>[][]> Sql([FromBody] SqlViewModel entity)
+    {
+        return _userSvc.Sql(entity);
+    }
+
     [HttpPost("api/GetUserActive")]
     public IEnumerable<User> GetUserActive()
     {
