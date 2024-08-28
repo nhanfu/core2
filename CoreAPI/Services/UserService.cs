@@ -913,6 +913,14 @@ public class UserService
                                     var filteredDetailChanges = detail.Changes.Where(change => tableDetailColumns.SelectMany(x => x.Values).Contains(change.Field)).ToList();
                                     if (idDetail.StartsWith("-"))
                                     {
+                                        AddDefaultFields(filteredDetailChanges, new List<PatchDetail>()
+                                        {
+                                            new PatchDetail { Field = "InsertedDate", Value = DateTime.Now.ToISOFormat() },
+                                            new PatchDetail { Field = "InsertedBy", Value = UserId },
+                                            new PatchDetail { Field = "UpdatedDate", Value = null },
+                                            new PatchDetail { Field = "UpdatedBy", Value = null },
+                                            new PatchDetail { Field = "Active", Value = "1" }
+                                        });
                                         var updateDetail = filteredDetailChanges.Select(x => $"@{idDetail.Replace("-", "") + x.Field.ToLower()}");
                                         var cellsDetails = filteredDetailChanges.Select(x => x.Field).ToList();
                                         command.CommandText += $";INSERT into [{detail.Table}]([{cellsDetails.Combine("],[")}]) values({updateDetail.Combine()})";
@@ -927,6 +935,11 @@ public class UserService
                                     }
                                     else
                                     {
+                                        AddDefaultFields(filteredDetailChanges, new List<PatchDetail>()
+                                        {
+                                            new PatchDetail { Field = "UpdatedDate", Value = DateTime.Now.ToISOFormat()},
+                                            new PatchDetail { Field = "UpdatedBy", Value = UserId },
+                                        });
                                         filteredDetailChanges = filteredDetailChanges.Where(x => x.Field != "Id").ToList();
                                         var updateDetail = filteredDetailChanges.Select(x => $"[{x.Field}] = @{idDetail.Replace("-", "") + x.Field.ToLower()}");
                                         command.CommandText += $";UPDATE [{detail.Table}] SET {updateDetail.Combine()} WHERE Id = '{idDetail}';";
@@ -1048,6 +1061,14 @@ public class UserService
                                     var filteredDetailChanges = detail.Changes.Where(change => tableDetailColumns.SelectMany(x => x.Values).Contains(change.Field)).ToList();
                                     if (idDetail.StartsWith("-"))
                                     {
+                                        AddDefaultFields(filteredDetailChanges, new List<PatchDetail>()
+                                        {
+                                            new PatchDetail { Field = "InsertedDate", Value = DateTime.Now.ToISOFormat() },
+                                            new PatchDetail { Field = "InsertedBy", Value = UserId },
+                                            new PatchDetail { Field = "UpdatedDate", Value = null },
+                                            new PatchDetail { Field = "UpdatedBy", Value = null },
+                                            new PatchDetail { Field = "Active", Value = "1" }
+                                        });
                                         var updateDetail = filteredDetailChanges.Select(x => $"@{idDetail.Replace("-", "") + x.Field.ToLower()}");
                                         var insertDetail = filteredDetailChanges.Select(x => $"[{x.Field}]").ToList();
                                         command.CommandText += $";INSERT into [{detail.Table}]({insertDetail.Combine()}) values({updateDetail.Combine()})";
@@ -1062,6 +1083,11 @@ public class UserService
                                     }
                                     else
                                     {
+                                        AddDefaultFields(filteredDetailChanges, new List<PatchDetail>()
+                                        {
+                                            new PatchDetail { Field = "UpdatedDate", Value = DateTime.Now.ToISOFormat()},
+                                            new PatchDetail { Field = "UpdatedBy", Value = UserId },
+                                        });
                                         filteredDetailChanges = filteredDetailChanges.Where(x => x.Field != "Id").ToList();
                                         var updateDetail = filteredDetailChanges.Select(x => $"[{x.Field}] = @{idDetail.Replace("-", "") + x.Field.ToLower()}");
                                         command.CommandText += $";UPDATE [{detail.Table}] SET {updateDetail.Combine()} WHERE Id = '{idDetail}';";
