@@ -29,7 +29,7 @@
         public DateTime? LastFailedLogin { get; set; }
         public DateTime? LastLogin { get; set; }
         public string Recover { get; set; }
-        public string JointDate { get; set; }
+        public DateTime? JointDate { get; set; }
         public string RoleIds { get; set; }
         public string RoleIdsText { get; set; }
         public string DepartmentId { get; set; }
