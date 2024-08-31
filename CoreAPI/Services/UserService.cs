@@ -5,20 +5,16 @@ using Core.Middlewares;
 using Core.Models;
 using Core.ViewModels;
 using CoreAPI.Services.Sql;
-using DocumentFormat.OpenXml.Office2010.Excel;
-using DocumentFormat.OpenXml.Spreadsheet;
+using CoreAPI.ViewModels;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
-using Org.BouncyCastle.Bcpg.Sig;
 using PuppeteerSharp;
-using System;
 using System.Buffers;
 using System.Data;
 using System.Data.SqlClient;
-using System.Data.SqlTypes;
 using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq.Expressions;
@@ -184,7 +180,7 @@ public class UserService
                 StatusCode = HttpStatusCode.BadRequest
             };
         }
-        return await GetUserToken(matchedUser, roles, login);
+        return await GetUserToken(matchedUser, login);
     }
 
     private async Task<(User, Role[])> GetUserByLogin(LoginVM login)
@@ -215,6 +211,25 @@ public class UserService
         var query = @$"select * from [WebConfig]";
         var ds = await _sql.ReadDataSet(query, _configuration.GetConnectionString("Default"));
         return ds[0];
+    }
+
+    public async Task<bool> NotificationUser(NotificationVM entity)
+    {
+        var tasks = entity.Rule.Select(item =>
+        {
+            var task = new TaskNotification();
+            task.CopyPropFrom(entity.Entity);
+            task.Id = Uuid7.Guid().ToString();
+            task.AssignedId = item;
+            return task;
+        });
+        foreach (var item in tasks)
+        {
+            var patch = item.MapToPatch();
+            await SavePatch(patch);
+        }
+        await NotifyDevices(tasks, "MessageNotification");
+        return true;
     }
 
     public async Task<bool> PostUserSetting(UserSetting userSetting)
@@ -291,14 +306,14 @@ public class UserService
         return feature;
     }
 
-    protected async Task<Token> GetUserToken(User user, Role[] roles, LoginVM login, string refreshToken = null)
+    protected async Task<Token> GetUserToken(User user, LoginVM login, string refreshToken = null)
     {
         if (user is null)
         {
             return null;
         }
-        var roleIds = roles.Select(x => x.Id).Distinct().ToList();
-        var roleNames = roles.Select(x => x.Name).Distinct().ToList();
+        var roleIds = user.RoleIds.Split(",").ToList();
+        var roleNames = user.RoleIdsText.Split(",").ToList();
         var signinDate = DateTime.Now;
         var jit = Uuid7.Guid().ToString();
         List<Claim> claims =
@@ -321,7 +336,7 @@ public class UserService
         var newLogin = refreshToken is null;
         refreshToken ??= GenerateRandomToken();
         var (token, exp) = AccessToken(claims);
-        var res = JsonToken(user, roles, login.TanentCode, refreshToken, token, exp, signinDate);
+        var res = JsonToken(user, login.TanentCode, roleIds, roleNames, refreshToken, token, exp, signinDate);
         if (!newLogin || !login.AutoSignIn)
         {
             return res;
@@ -355,7 +370,7 @@ public class UserService
         return (token, exp);
     }
 
-    private static Token JsonToken(User user, Role[] roles, string tanent, string refreshToken,
+    private static Token JsonToken(User user, string tanent, List<string> rolesIds, List<string> rolesNames, string refreshToken,
         JwtSecurityToken token, DateTime exp, DateTime signinDate)
     {
         var vendor = new Partner();
@@ -372,8 +387,8 @@ public class UserService
             AccessTokenExp = exp,
             RefreshTokenExp = DateTime.Now.AddYears(1),
             RefreshToken = refreshToken,
-            RoleIds = roles.Select(x => x.Id).ToList(),
-            RoleNames = roles.Select(x => x.Name).ToList(),
+            RoleIds = rolesIds,
+            RoleNames = rolesNames,
             Vendor = vendor,
             TenantCode = tanent,
             SigninDate = signinDate,
@@ -413,7 +428,7 @@ public class UserService
             UserName = userName,
         };
         var (updatedUser, roles) = await GetUserByLogin(login);
-        return await GetUserToken(updatedUser, roles, login, token.RefreshToken);
+        return await GetUserToken(updatedUser, login, token.RefreshToken);
     }
 
     public async Task<SqlQueryResult> RunJs(SqlViewModel vm)
@@ -2377,7 +2392,7 @@ public class UserService
 
     private void EnsureSystemRole()
     {
-        if (!RoleNames.Any(x => x.Equals("System", StringComparison.OrdinalIgnoreCase)))
+        if (!RoleNames.Any(x => x.Equals("ADMIN", StringComparison.OrdinalIgnoreCase)))
             throw new ApiException("Unauthorize access") { StatusCode = Enums.HttpStatusCode.Unauthorized };
     }
 

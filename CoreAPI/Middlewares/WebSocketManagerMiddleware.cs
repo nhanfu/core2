@@ -55,8 +55,8 @@ public class WebSocketManagerMiddleware(RequestDelegate next, WebSocketService w
     private async Task ReceiveFromDevice(HttpContext context, WebSocket socket, string token, IConfiguration configuration)
     {
         var principal = Utils.GetPrincipalFromAccessToken(token, configuration);
-        var userId = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
-        var roleIds = principal.Claims.Where(x => x.Type == ClaimTypes.Role).Select(x => x.Value).ToList();
+        var userId = principal.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
+        var roleIds = principal.Claims.Where(x => x.Type == "RoleIds").Select(x => x.Value).ToList();
         var ip = UserService.GetRemoteIpAddress(context);
         var deviceKey = WebSocketHandler.OnDeviceConnected(socket, userId, roleIds, context.Connection.RemoteIpAddress.ToString());
         await socket.SendAsync(Encoding.ASCII.GetBytes(deviceKey), WebSocketMessageType.Text, true, CancellationToken.None);

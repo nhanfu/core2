@@ -4,6 +4,7 @@ using Core.Middlewares;
 using Core.Models;
 using Core.Services;
 using Core.ViewModels;
+using CoreAPI.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -138,6 +139,12 @@ public class UserController(UserService _userSvc, WebSocketService socketSvc, IW
     public Task<bool> Dictionary([FromBody] UserSetting userSetting)
     {
         return _userSvc.PostUserSetting(userSetting);
+    }
+
+    [HttpPost("/api/feature/notificationuser")]
+    public Task<bool> NotificationUser([FromBody] NotificationVM entity)
+    {
+        return _userSvc.NotificationUser(entity);
     }
 
     [HttpPost("/api/feature/go")]
