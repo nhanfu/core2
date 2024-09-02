@@ -11,7 +11,7 @@ namespace Core.Extensions
 
         public static bool IsNullOrWhiteSpace(this string value)
         {
-            return string.IsNullOrWhiteSpace(value);
+            return string.IsNullOrWhiteSpace(value) || value == "null";
         }
 
         public static bool HasAnyChar(this string value)

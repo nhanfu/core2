@@ -128,6 +128,12 @@ public class UserController(UserService _userSvc, WebSocketService socketSvc, IW
         return _userSvc.GetDictionary();
     }
 
+    [HttpPost("api/feature/mynotification")]
+    public Task<Dictionary<string, object>[]> MyNotification()
+    {
+        return _userSvc.MyNotification();
+    }
+
     [AllowAnonymous]
     [HttpGet("/api/webConfig")]
     public Task<Dictionary<string, object>[]> WebConfig()

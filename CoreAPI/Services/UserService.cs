@@ -41,7 +41,7 @@ public class UserService
     private readonly WebSocketService _taskSocketSvc;
     private readonly IConfiguration _configuration;
     public readonly ISqlProvider _sql;
-
+    public string GroupId { get; set; }
     public string UserId { get; set; }
     public string UserName { get; set; }
     public string ConnKey { get; set; }
@@ -87,6 +87,7 @@ public class UserService
         if (claims is null) return;
         BranchId = claims.FirstOrDefault(x => x.Type == UserServiceHelpers.BranchIdClaim)?.Value;
         UserId = claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
+        GroupId = claims.FirstOrDefault(x => x.Type == "TeamId")?.Value;
         ConnKey = claims.FirstOrDefault(x => x.Type == UserServiceHelpers.ConnKeyClaim)?.Value;
         UserName = claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
         CenterIds = claims.Where(x => x.Type == nameof(CenterIds)).Select(x => x.Value).Where(x => x != null).ToList();
@@ -136,7 +137,7 @@ public class UserService
         {
             login.TanentCode = login.TanentCode.Trim();
         }
-        var (matchedUser, roles) = await GetUserByLogin(login);
+        var matchedUser = await GetUserByLogin(login);
         if (matchedUser is null)
         {
             throw new ApiException($"Sai mật khẩu hoặc tên đăng nhập.<br /> Vui lòng đăng nhập lại!")
@@ -183,25 +184,27 @@ public class UserService
         return await GetUserToken(matchedUser, login);
     }
 
-    private async Task<(User, Role[])> GetUserByLogin(LoginVM login)
+    private async Task<User> GetUserByLogin(LoginVM login)
     {
         var query = @$"
         declare @username varchar(100) = '{login.UserName}';
         select u.* from [User] u 
-        where u.Active = 1 and u.Username = @username;
-        select r.* from [User] u 
-        left join [UserRole] ur on u.Id = ur.UserId
-        left join [Role] r on ur.RoleId = r.Id
-        where u.Active = 1 and u.Username = @username";
+        where u.Active = 1 and u.Username = @username;";
         var ds = await _sql.ReadDataSet(query);
         var userDb = ds.Length > 0 && ds[0].Length > 0 ? ds[0][0].MapTo<User>() : null;
-        var roles = ds.Length > 1 && ds[1].Length > 0 ? ds[1].Select(x => x.MapTo<Role>()).ToArray() : null;
-        return (userDb, roles);
+        return userDb;
     }
 
     public async Task<Dictionary<string, object>[]> GetDictionary()
     {
         var query = @$"select * from [Dictionary]";
+        var ds = await _sql.ReadDataSet(query, _configuration.GetConnectionString("Default"));
+        return ds[0];
+    }
+
+    public async Task<Dictionary<string, object>[]> MyNotification()
+    {
+        var query = @$"select * from [TaskNotification] where AssignedId = '{UserId}' order by InsertedDate desc";
         var ds = await _sql.ReadDataSet(query, _configuration.GetConnectionString("Default"));
         return ds[0];
     }
@@ -221,6 +224,8 @@ public class UserService
             task.CopyPropFrom(entity.Entity);
             task.Id = Uuid7.Guid().ToString();
             task.AssignedId = item;
+            task.InsertedDate = DateTime.Now;
+            task.InsertedBy = UserId;
             return task;
         });
         foreach (var item in tasks)
@@ -280,7 +285,6 @@ public class UserService
         return ds[0];
     }
 
-
     public async Task<Feature> GetFeature(string name)
     {
         var query = @$"select * from [Feature] where Name = N'{name}'";
@@ -318,8 +322,9 @@ public class UserService
         var jit = Uuid7.Guid().ToString();
         List<Claim> claims =
         [
-            new(ClaimTypes.GroupSid, user.PartnerId.ToString()),
-            new ("UserId", user.Id.ToString()),
+            new(ClaimTypes.GroupSid, user.PartnerId is null ? string.Empty : user.PartnerId),
+            new ("UserId", user.Id),
+            new ("TeamId", user.TeamId),
             new (ClaimTypes.Name, user.UserName),
             new (JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
             new (JwtRegisteredClaimNames.Birthdate, user.Dob?.ToString() ?? string.Empty),
@@ -427,7 +432,7 @@ public class UserService
             TanentCode = tenant,
             UserName = userName,
         };
-        var (updatedUser, roles) = await GetUserByLogin(login);
+        var updatedUser = await GetUserByLogin(login);
         return await GetUserToken(updatedUser, login, token.RefreshToken);
     }
 
@@ -992,6 +997,10 @@ public class UserService
                         {
                             x.Data = entity[x.Index];
                         });
+                        if (vm.Table == "ChatEntity")
+                        {
+                            await SendMessageAllUser(entity[0][0]);
+                        }
                         return new SqlResult()
                         {
                             updatedItem = entity[0],
@@ -1419,7 +1428,51 @@ public class UserService
         {
             StatusCode = HttpStatusCode.NotFound
         };
-        Dictionary<string, object> dictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(vm.Params);
+        Dictionary<string, object> dictionary = vm.Params.IsNullOrWhiteSpace() ? new Dictionary<string, object>() : JsonConvert.DeserializeObject<Dictionary<string, object>>(vm.Params);
+        if (dictionary.GetValueOrDefault("TokenUserId") != null)
+        {
+            dictionary["TokenUserId"] = UserId;
+        }
+        else
+        {
+            dictionary.Add("TokenUserId", UserId);
+        }
+        if (dictionary.GetValueOrDefault("TokenRoleNames") != null)
+        {
+            dictionary["TokenRoleNames"] = RoleNames.Combine() ?? string.Empty;
+        }
+        else
+        {
+            dictionary.Add("TokenRoleNames", RoleNames.Combine());
+        }
+        if (dictionary.GetValueOrDefault("TokenPartnerId") != null)
+        {
+            dictionary["TokenPartnerId"] = VendorId?? string.Empty;
+        }
+        else
+        {
+            dictionary.Add("TokenPartnerId", VendorId);
+        }
+        if (dictionary.GetValueOrDefault("TokenUserName") != null)
+        {
+            dictionary["TokenUserName"] = UserName;
+        }
+        else
+        {
+            dictionary.Add("TokenUserName", UserName);
+        }
+        if (dictionary.GetValueOrDefault("TokenGroupId") != null)
+        {
+            dictionary["TokenGroupId"] = GroupId ?? string.Empty;
+        }
+        else
+        {
+            dictionary.Add("TokenGroupId", GroupId);
+        }
+        if (com.Query.Contains("ds.InsertedBy = '{TokenUserId}'") && RoleNames.Contains("BOD"))
+        {
+            com.Query = com.Query.Replace("ds.InsertedBy = '{TokenUserId}'", "ds.InsertedBy = '{TokenUserId}' or '{TokenRoleNames}' like '%BOD%'");
+        }
         var query = Utils.FormatEntity(com.Query, dictionary);
         var ds1 = await _sql.ReadDataSet(query);
         return ds1[0];
@@ -1431,15 +1484,103 @@ public class UserService
         {
             StatusCode = HttpStatusCode.NotFound
         };
-        Dictionary<string, object> dictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(vm.Params);
+        Dictionary<string, object> dictionary = vm.Params.IsNullOrWhiteSpace() ? new Dictionary<string, object>() : JsonConvert.DeserializeObject<Dictionary<string, object>>(vm.Params);
+        if (dictionary.GetValueOrDefault("TokenUserId") != null)
+        {
+            dictionary["TokenUserId"] = UserId;
+        }
+        else
+        {
+            dictionary.Add("TokenUserId", UserId);
+        }
+        if (dictionary.GetValueOrDefault("TokenRoleNames") != null)
+        {
+            dictionary["TokenRoleNames"] = RoleNames.Combine() ?? string.Empty;
+        }
+        else
+        {
+            dictionary.Add("TokenRoleNames", RoleNames.Combine());
+        }
+        if (dictionary.GetValueOrDefault("TokenPartnerId") != null)
+        {
+            dictionary["TokenPartnerId"] = VendorId ?? string.Empty;
+        }
+        else
+        {
+            dictionary.Add("TokenPartnerId", VendorId);
+        }
+        if (dictionary.GetValueOrDefault("TokenGroupId") != null)
+        {
+            dictionary["TokenGroupId"] = GroupId ?? string.Empty;
+        }
+        else
+        {
+            dictionary.Add("TokenGroupId", GroupId);
+        }
+        if (dictionary.GetValueOrDefault("TokenUserName") != null)
+        {
+            dictionary["TokenUserName"] = UserName;
+        }
+        else
+        {
+            dictionary.Add("TokenUserName", UserName);
+        }
+        if (com.Query.Contains("ds.InsertedBy = '{TokenUserId}'") && RoleNames.Contains("BOD"))
+        {
+            com.Query = com.Query.Replace("ds.InsertedBy = '{TokenUserId}'", "ds.InsertedBy = '{TokenUserId}' or '{TokenRoleNames}' like '%BOD%'");
+        }
         var query = Utils.FormatEntity(com.Query, dictionary);
         var ds1 = await _sql.ReadDataSet(query);
         return ds1;
     }
 
-    private static string CalcFinalQuery(SqlViewModel vm)
+    private string CalcFinalQuery(SqlViewModel vm)
     {
-        var dictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(vm.Params);
+        Dictionary<string, object> dictionary = vm.Params.IsNullOrWhiteSpace() ? new Dictionary<string, object>() : JsonConvert.DeserializeObject<Dictionary<string, object>>(vm.Params);
+        if (dictionary.GetValueOrDefault("TokenUserId") != null)
+        {
+            dictionary["TokenUserId"] = UserId;
+        }
+        else
+        {
+            dictionary.Add("TokenUserId", UserId);
+        }
+        if (dictionary.GetValueOrDefault("TokenRoleNames") != null)
+        {
+            dictionary["TokenRoleNames"] = RoleNames.Combine() ?? string.Empty;
+        }
+        else
+        {
+            dictionary.Add("TokenRoleNames", RoleNames.Combine());
+        }
+        if (dictionary.GetValueOrDefault("TokenPartnerId") != null)
+        {
+            dictionary["TokenPartnerId"] = VendorId ?? string.Empty;
+        }
+        else
+        {
+            dictionary.Add("TokenPartnerId", VendorId);
+        }
+        if (dictionary.GetValueOrDefault("TokenUserName") != null)
+        {
+            dictionary["TokenUserName"] = UserName;
+        }
+        else
+        {
+            dictionary.Add("TokenUserName", UserName);
+        }
+        if (dictionary.GetValueOrDefault("TokenGroupId") != null)
+        {
+            dictionary["TokenGroupId"] = GroupId ?? string.Empty;
+        }
+        else
+        {
+            dictionary.Add("TokenGroupId", GroupId);
+        }
+        if (vm.JsScript.Contains("ds.InsertedBy = '{TokenUserId}'") && RoleNames.Contains("BOD"))
+        {
+            vm.JsScript = vm.JsScript.Replace("ds.InsertedBy = '{TokenUserId}'", "ds.InsertedBy = '{TokenUserId}' or '{TokenRoleNames}' like '%BOD%'");
+        }
         var data = JsonConvert.DeserializeObject<SqlQuery>(vm.JsScript);
         data.total = Utils.FormatEntity(data.total, dictionary);
         data.sql = Utils.FormatEntity(data.sql, dictionary);
@@ -2237,6 +2378,17 @@ public class UserService
             },
         };
         await _taskSocketSvc.SendMessageToUsersAsync([task.Message.AssignedId], task.ToJson(), fcm.ToJson());
+    }
+
+    private async Task SendMessageAllUser(Dictionary<string, object> data)
+    {
+        var entity = new MQEvent
+        {
+            QueueName = "UpdateViewEntity" + (data.GetValueOrDefault("RecordId") is null ? data.GetValueOrDefault("Id")?.ToString().Replace("-", "") : data.GetValueOrDefault("RecordId")?.ToString().Replace("-", "")),
+            Id = Uuid7.Guid().ToString(),
+            Message = data
+        };
+        await _taskSocketSvc.SendMessageToAll(entity.ToJson());
     }
 
     public async Task SendMessageSocket(string socket, TaskNotification task, string queueName)

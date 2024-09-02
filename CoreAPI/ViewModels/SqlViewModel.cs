@@ -10,7 +10,7 @@ namespace Core.ViewModels
         public string SvcId { get; set; }
         public string ComId { get; set; }
         public string Action { get; set; }
-        public dynamic Params { get; set; }
+        public string Params { get; set; }
         public string Table { get; set; }
         public string QueueName { get; set; }
         public string[] Id { get; set; }
