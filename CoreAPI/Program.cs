@@ -102,7 +102,7 @@ x => x.StatisticsProcesses(), Cron.Daily(06, 00), new RecurringJobOptions()
     TimeZone = TimeZoneInfo.Local,
 });
 RecurringJob.AddOrUpdate<CustomerFunction>("CoreAPI.BgService.CustomerFunction",
-x => x.StatisticsProcesses(), Cron.Daily(06, 00), new RecurringJobOptions()
+x => x.StatisticsProcesses(), Cron.Daily(00, 00), new RecurringJobOptions()
 {
     TimeZone = TimeZoneInfo.Local,
 });
