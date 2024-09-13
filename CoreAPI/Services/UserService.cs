@@ -4,9 +4,12 @@ using Core.Extensions;
 using Core.Middlewares;
 using Core.Models;
 using Core.ViewModels;
+using CoreAPI.BgService;
 using CoreAPI.Services.Sql;
 using CoreAPI.ViewModels;
+using Hangfire;
 using HtmlAgilityPack;
+using LinqKit;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
@@ -16,6 +19,7 @@ using System.Buffers;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Drawing;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq.Expressions;
 using System.Net.WebSockets;
@@ -233,7 +237,7 @@ public class UserService
             var patch = item.MapToPatch();
             await SavePatch(patch);
         }
-        await NotifyDevices(tasks, "MessageNotification");
+        NotifyDevices(tasks, "MessageNotification");
         return true;
     }
 
@@ -324,7 +328,8 @@ public class UserService
         [
             new(ClaimTypes.GroupSid, user.PartnerId is null ? string.Empty : user.PartnerId),
             new ("UserId", user.Id),
-            new ("TeamId", user.TeamId),
+            new ("Avatar", user.Avatar ?? string.Empty),
+            new ("TeamId", user.TeamId ?? string.Empty),
             new (ClaimTypes.Name, user.UserName),
             new (JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
             new (JwtRegisteredClaimNames.Birthdate, user.Dob?.ToString() ?? string.Empty),
@@ -545,6 +550,60 @@ public class UserService
         var rs = await SavePatch2(vm);
         var id = vm.Changes.FirstOrDefault(x => x.Field == "Id").Value;
         var voucherTypeId = vm.Changes.FirstOrDefault(x => x.Field == "VoucherTypeId");
+        var userReceiverId = vm.Changes.FirstOrDefault(x => x.Field == "UserReceiverId");
+        var groupReceiverId = vm.Changes.FirstOrDefault(x => x.Field == "GroupReceiverId");
+        var titLe = vm.Changes.FirstOrDefault(x => x.Field == "FormatChat");
+        if (userReceiverId != null && !userReceiverId.Value.IsNullOrWhiteSpace() || groupReceiverId != null && !groupReceiverId.Value.IsNullOrWhiteSpace())
+        {
+            if (userReceiverId != null && !userReceiverId.Value.IsNullOrWhiteSpace())
+            {
+                var taskUser = new TaskNotification()
+                {
+                    Id = Uuid7.Guid().ToString(),
+                    EntityId = name,
+                    Title = "You have request approve",
+                    Icon = "fal fa-quote-right",
+                    Description = titLe.Value,
+                    InsertedBy = UserId,
+                    RecordId = id,
+                    InsertedDate = DateTime.Now,
+                    Active = true,
+                    AssignedId = userReceiverId.Value
+                };
+                var patch = taskUser.MapToPatch();
+                await SavePatch(patch);
+                NotifyDevices(new List<TaskNotification>() { taskUser }, "MessageNotification");
+            }
+            if (groupReceiverId != null && !groupReceiverId.Value.IsNullOrWhiteSpace())
+            {
+                var queryUser = @$"SELECT * FROM [User] where TeamId = '{groupReceiverId.Value}'";
+                var users = await _sql.ReadDsAsArr<User>(queryUser);
+                var taskUser = users.Select(x => new TaskNotification()
+                {
+                    Id = Uuid7.Guid().ToString(),
+                    EntityId = name,
+                    Title = "You have request approve",
+                    Icon = "fal fa-quote-right",
+                    Description = titLe.Value,
+                    InsertedBy = UserId,
+                    RecordId = id,
+                    InsertedDate = DateTime.Now,
+                    Active = true,
+                    AssignedId = x.Id
+                });
+                foreach (var item in taskUser)
+                {
+                    var patch = item.MapToPatch();
+                    await SavePatch(patch);
+                }
+                NotifyDevices(taskUser, "MessageNotification");
+            }
+            return new SqlResult()
+            {
+                status = 200,
+                updatedItem = rs.updatedItem
+            };
+        }
         var query2 = @$"SELECT * FROM ApprovalConfig where VoucherTypeId = '{voucherTypeId.Value}' and ParentId is not null order by Level asc";
         var approvalConfig = await _sql.ReadDsAsArr<ApprovalConfig>(query2);
         if (approvalConfig.Nothing())
@@ -567,11 +626,12 @@ public class UserService
         {
             Id = Uuid7.Guid().ToString(),
             EntityId = name,
-            Title = "You have request approved",
-            Description = "You have request approved",
+            Title = "You have request approve",
+            Description = titLe.Value,
             InsertedBy = UserId,
             RecordId = id,
-            InsertedDate = new DateTime(),
+            InsertedDate = DateTime.Now,
+            Active = true,
             AssignedId = x
         }).ToList();
         foreach (var item in task)
@@ -579,7 +639,7 @@ public class UserService
             var patch = item.MapToPatch();
             await SavePatch(patch);
         }
-        await NotifyDevices(task, "RequestApprove");
+        NotifyDevices(task, "RequestApprove");
         return new SqlResult()
         {
             status = 200,
@@ -593,6 +653,101 @@ public class UserService
         var name = vm.Name ?? vm.Table;
         var rs = await SavePatch2(vm);
         var id = vm.Changes.FirstOrDefault(x => x.Field == "Id").Value;
+        var userReceiverId = vm.Changes.FirstOrDefault(x => x.Field == "UserReceiverId");
+        var groupReceiverId = vm.Changes.FirstOrDefault(x => x.Field == "GroupReceiverId");
+        var insertedBy = vm.Changes.FirstOrDefault(x => x.Field == "InsertedBy");
+        var titLe = vm.Changes.FirstOrDefault(x => x.Field == "FormatChat");
+        if (userReceiverId != null && !userReceiverId.Value.IsNullOrWhiteSpace() || groupReceiverId != null && !groupReceiverId.Value.IsNullOrWhiteSpace())
+        {
+            if (userReceiverId != null && !userReceiverId.Value.IsNullOrWhiteSpace() && UserId == userReceiverId.Value)
+            {
+                var approval1 = new Approvement
+                {
+                    Id = Uuid7.Guid().ToString(),
+                    Approved = true,
+                    CurrentLevel = 1,
+                    NextLevel = 1,
+                    Name = name,
+                    RecordId = id,
+                    StatusId = 3,
+                    UserApproveId = UserId,
+                    ApprovedBy = UserId,
+                    ApprovedDate = now,
+                    InsertedBy = UserId,
+                    InsertedDate = now
+                };
+                var patchQpproval1 = approval1.MapToPatch();
+                await SavePatch(patchQpproval1);
+                var taskUser = new TaskNotification()
+                {
+                    Id = Uuid7.Guid().ToString(),
+                    EntityId = name,
+                    Title = "Request is approved",
+                    Icon = "fal fa-smile",
+                    Description = titLe.Value,
+                    InsertedBy = UserId,
+                    RecordId = id,
+                    InsertedDate = DateTime.Now,
+                    Active = true,
+                    AssignedId = insertedBy.Value
+                };
+                var patch = taskUser.MapToPatch();
+                await SavePatch(patch);
+                NotifyDevices(new List<TaskNotification>() { taskUser }, "MessageNotification");
+            }
+            if (groupReceiverId != null && !groupReceiverId.Value.IsNullOrWhiteSpace())
+            {
+                var queryUser = @$"SELECT * FROM [User] where TeamId = '{groupReceiverId.Value}'";
+                var users = await _sql.ReadDsAsArr<User>(queryUser);
+                if (users.Select(x => x.Id).ToList().Contains(UserId))
+                {
+                    var approval1 = new Approvement
+                    {
+                        Id = Uuid7.Guid().ToString(),
+                        Approved = true,
+                        CurrentLevel = 1,
+                        NextLevel = 1,
+                        Name = name,
+                        RecordId = id,
+                        StatusId = 3,
+                        UserApproveId = UserId,
+                        ApprovedBy = UserId,
+                        ApprovedDate = now,
+                        InsertedBy = UserId,
+                        InsertedDate = now
+                    };
+                    var patchQpproval1 = approval1.MapToPatch();
+                    await SavePatch(patchQpproval1);
+                    var taskUser = new TaskNotification()
+                    {
+                        Id = Uuid7.Guid().ToString(),
+                        EntityId = name,
+                        Title = "Request is approved",
+                        Icon = "fal fa-smile",
+                        Description = titLe.Value,
+                        InsertedBy = UserId,
+                        RecordId = id,
+                        InsertedDate = DateTime.Now,
+                        Active = true,
+                        AssignedId = insertedBy.Value
+                    };
+                    NotifyDevices(new List<TaskNotification>() { taskUser }, "MessageNotification");
+                }
+                else
+                {
+                    return new SqlResult()
+                    {
+                        status = 500,
+                        message = "You do not have permission to browse the data"
+                    };
+                }
+            }
+            return new SqlResult()
+            {
+                status = 200,
+                updatedItem = rs.updatedItem
+            };
+        }
         var voucherTypeId = vm.Changes.FirstOrDefault(x => x.Field == "VoucherTypeId");
         var query2 = @$"SELECT * FROM ApprovalConfig where VoucherTypeId = '{voucherTypeId.Value}' and ParentId is not null  order by Level asc";
         var approvalConfig = await _sql.ReadDsAsArr<ApprovalConfig>(query2);
@@ -640,13 +795,15 @@ public class UserService
             var task = userEndApproved.Select(x => new TaskNotification()
             {
                 Id = Uuid7.Guid().ToString(),
-                EntityId = vm.Table,
+                EntityId = name,
                 Title = "Request is approved",
-                Description = "Request is approved",
+                Icon = "fal fa-smile",
+                Description = titLe.Value,
                 InsertedBy = UserId,
                 RecordId = id,
-                InsertedDate = now,
-                AssignedId = x
+                InsertedDate = DateTime.Now,
+                Active = true,
+                AssignedId = insertedBy.Value
             }).ToList();
             foreach (var item in task)
             {
@@ -697,40 +854,44 @@ public class UserService
             var task = userApproved.Select(x => new TaskNotification()
             {
                 Id = Uuid7.Guid().ToString(),
-                EntityId = vm.Table,
+                EntityId = name,
                 Title = "Request is approved",
-                Description = "Request is approved",
-                RecordId = id,
+                Icon = "fal fa-smile",
+                Description = titLe.Value,
                 InsertedBy = UserId,
-                InsertedDate = new DateTime(),
-                AssignedId = x
+                RecordId = id,
+                InsertedDate = DateTime.Now,
+                Active = true,
+                AssignedId = insertedBy.Value
             }).ToList();
             foreach (var item in task)
             {
                 var patch = item.MapToPatch();
                 await SavePatch(patch);
             }
-            await NotifyDevices(task, "Approved");
+            NotifyDevices(task, "Approved");
         }
         else
         {
             var task = user.Select(x => new TaskNotification()
             {
                 Id = Uuid7.Guid().ToString(),
-                EntityId = vm.Table,
-                Title = "You have request approved",
-                Description = "You have request approved",
-                RecordId = id,
+                EntityId = name,
+                Title = "Request is approved",
+                Icon = "fal fa-smile",
+                Description = titLe.Value,
                 InsertedBy = UserId,
-                InsertedDate = new DateTime(),
-                AssignedId = x
+                RecordId = id,
+                InsertedDate = DateTime.Now,
+                Active = true,
+                AssignedId = insertedBy.Value
             }).ToList();
             foreach (var item in task)
             {
                 var patch = item.MapToPatch();
                 await SavePatch(patch);
             }
-            await NotifyDevices(task, "Approved");
+            NotifyDevices(task, "MessageNotification");
         }
         return new SqlResult()
         {
@@ -747,6 +908,101 @@ public class UserService
         var rs = await SavePatch2(vm);
         var id = vm.Changes.FirstOrDefault(x => x.Field == "Id").Value;
         var voucherTypeId = vm.Changes.FirstOrDefault(x => x.Field == "VoucherTypeId");
+        var userReceiverId = vm.Changes.FirstOrDefault(x => x.Field == "UserReceiverId");
+        var groupReceiverId = vm.Changes.FirstOrDefault(x => x.Field == "GroupReceiverId");
+        var insertedBy = vm.Changes.FirstOrDefault(x => x.Field == "InsertedBy");
+        var titLe = vm.Changes.FirstOrDefault(x => x.Field == "FormatChat");
+        if (userReceiverId != null && !userReceiverId.Value.IsNullOrWhiteSpace() || groupReceiverId != null && !groupReceiverId.Value.IsNullOrWhiteSpace())
+        {
+            if (userReceiverId != null && !userReceiverId.Value.IsNullOrWhiteSpace() && UserId == userReceiverId.Value)
+            {
+                var approval1 = new Approvement
+                {
+                    Id = Uuid7.Guid().ToString(),
+                    Approved = true,
+                    CurrentLevel = 1,
+                    NextLevel = 1,
+                    Name = name,
+                    RecordId = id,
+                    StatusId = 3,
+                    UserApproveId = UserId,
+                    ApprovedBy = UserId,
+                    ApprovedDate = now,
+                    InsertedBy = UserId,
+                    InsertedDate = now
+                };
+                var patchQpproval1 = approval1.MapToPatch();
+                await SavePatch(patchQpproval1);
+                var taskUser = new TaskNotification()
+                {
+                    Id = Uuid7.Guid().ToString(),
+                    EntityId = name,
+                    Title = "Request is decline",
+                    Icon = "fal fa-frown",
+                    Description = titLe.Value,
+                    InsertedBy = UserId,
+                    RecordId = id,
+                    InsertedDate = DateTime.Now,
+                    Active = true,
+                    AssignedId = insertedBy.Value
+                };
+                var patch1 = taskUser.MapToPatch();
+                await SavePatch(patch1);
+                NotifyDevices(new List<TaskNotification>() { taskUser }, "MessageNotification");
+            }
+            if (groupReceiverId != null && !groupReceiverId.Value.IsNullOrWhiteSpace())
+            {
+                var queryUser = @$"SELECT * FROM [User] where TeamId = '{groupReceiverId.Value}'";
+                var users = await _sql.ReadDsAsArr<User>(queryUser);
+                if (users.Select(x => x.Id).ToList().Contains(UserId))
+                {
+                    var approval1 = new Approvement
+                    {
+                        Id = Uuid7.Guid().ToString(),
+                        Approved = true,
+                        CurrentLevel = 1,
+                        NextLevel = 1,
+                        Name = name,
+                        RecordId = id,
+                        StatusId = 3,
+                        UserApproveId = UserId,
+                        ApprovedBy = UserId,
+                        ApprovedDate = now,
+                        InsertedBy = UserId,
+                        InsertedDate = now
+                    };
+                    var patchQpproval1 = approval1.MapToPatch();
+                    await SavePatch(patchQpproval1);
+                    var taskUser = new TaskNotification()
+                    {
+                        Id = Uuid7.Guid().ToString(),
+                        EntityId = name,
+                        Title = "Request is decline",
+                        Icon = "fal fa-frown",
+                        Description = titLe.Value,
+                        InsertedBy = UserId,
+                        RecordId = id,
+                        InsertedDate = DateTime.Now,
+                        Active = true,
+                        AssignedId = insertedBy.Value
+                    };
+                    NotifyDevices(new List<TaskNotification>() { taskUser }, "MessageNotification");
+                }
+                else
+                {
+                    return new SqlResult()
+                    {
+                        status = 500,
+                        message = "You do not have permission to browse the data"
+                    };
+                }
+            }
+            return new SqlResult()
+            {
+                status = 200,
+                updatedItem = rs.updatedItem
+            };
+        }
         var query2 = @$"SELECT * FROM ApprovalConfig where VoucherTypeId = '{voucherTypeId.Value}' and ParentId is not null  order by Level asc";
         var approvalConfig = await _sql.ReadDsAsArr<ApprovalConfig>(query2);
         if (approvalConfig.Nothing())
@@ -788,24 +1044,22 @@ public class UserService
         };
         var patchQpproval = approval.MapToPatch();
         await SavePatch(patchQpproval);
-        var userSend = matchApprovalConfig.UserIds.Split(",");
-        var task = userSend.Select(x => new TaskNotification()
+        var task = new TaskNotification()
         {
             Id = Uuid7.Guid().ToString(),
             EntityId = vm.Table,
             Title = "Request is decline",
-            Description = "Request is decline",
+            Icon = "fal fa-frown",
+            Description = titLe.Value,
             InsertedBy = UserId,
             RecordId = id,
-            InsertedDate = new DateTime(),
-            AssignedId = x
-        }).ToList();
-        foreach (var item in task)
-        {
-            var patch = item.MapToPatch();
-            await SavePatch(patch);
-        }
-        await NotifyDevices(task, "Decline");
+            Active = true,
+            InsertedDate = DateTime.Now,
+            AssignedId = insertedBy.Value
+        };
+        var patch = task.MapToPatch();
+        await SavePatch(patch);
+        NotifyDevices(new List<TaskNotification>() { task }, "MessageNotification");
         return new SqlResult()
         {
             status = 200,
@@ -999,7 +1253,7 @@ public class UserService
                         });
                         if (vm.Table == "ChatEntity")
                         {
-                            await SendMessageAllUser(entity[0][0]);
+                            SendMessageAllUser(entity[0][0]);
                         }
                         return new SqlResult()
                         {
@@ -1447,7 +1701,7 @@ public class UserService
         }
         if (dictionary.GetValueOrDefault("TokenPartnerId") != null)
         {
-            dictionary["TokenPartnerId"] = VendorId?? string.Empty;
+            dictionary["TokenPartnerId"] = VendorId ?? string.Empty;
         }
         else
         {
@@ -2344,10 +2598,9 @@ public class UserService
         (string query, string connStr, bool shouldMapToConnStr = false)
         => _sql.ReadDataSet(query, connStr, shouldMapToConnStr);
 
-    public Task NotifyDevices(IEnumerable<TaskNotification> tasks, string queueName)
+    public void NotifyDevices(IEnumerable<TaskNotification> tasks, string queueName)
     {
-        return tasks
-            .Where(x => x.AssignedId.HasAnyChar())
+        tasks.Where(x => x.AssignedId.HasAnyChar())
             .Select(x => new MQEvent
             {
                 QueueName = queueName,
@@ -2355,10 +2608,10 @@ public class UserService
                 Message = x,
                 AssignedId = x.AssignedId
             })
-        .ForEachAsync(SendMessageToUser);
+        .ForEach(SendMessageToUser);
     }
 
-    private async Task SendMessageToUser(MQEvent task)
+    private void SendMessageToUser(MQEvent task)
     {
         var tenantCode = TenantCode;
         var env = Env;
@@ -2377,10 +2630,10 @@ public class UserService
                 ClickAction = "com.softek.tms.push.background.MESSAGING_EVENT"
             },
         };
-        await _taskSocketSvc.SendMessageToUsersAsync([task.Message.AssignedId], task.ToJson(), fcm.ToJson());
+        BackgroundJob.Enqueue<WebSocketService>(x => x.SendMessageToUsersAsync(new List<string>() { task.AssignedId }, task.ToJson(), fcm.ToJson()));
     }
 
-    private async Task SendMessageAllUser(Dictionary<string, object> data)
+    private void SendMessageAllUser(Dictionary<string, object> data)
     {
         var entity = new MQEvent
         {
@@ -2388,7 +2641,7 @@ public class UserService
             Id = Uuid7.Guid().ToString(),
             Message = data
         };
-        await _taskSocketSvc.SendMessageToAll(entity.ToJson());
+        BackgroundJob.Enqueue<WebSocketService>(x => x.SendMessageToAll(entity.ToJson()));
     }
 
     public async Task SendMessageSocket(string socket, TaskNotification task, string queueName)
@@ -2472,7 +2725,7 @@ public class UserService
                 Message = rs1,
                 Id = Uuid7.Guid().ToString(),
             };
-            await SendMessageToUser(chat);
+            SendMessageToUser(chat);
         }
         else
         {
@@ -2482,7 +2735,7 @@ public class UserService
                 Message = entity,
                 Id = Uuid7.Guid().ToString(),
             };
-            await SendMessageToUser(chat);
+            SendMessageToUser(chat);
         }
         return entity;
     }

@@ -29,9 +29,9 @@
         public string ContactPhoneNumber { get; set; }
         public int? DebitDay { get; set; }
         public decimal? DebitAmount { get; set; }
+        public decimal? CreditLimit { get; set; }
         public string DebitAccountId { get; set; }
-        public bool IsInternal { get; set; }
-        public bool IsIndividual { get; set; }
+        public bool IsPublic { get; set; }
         public string Web { get; set; }
         public int? SeqKey { get; set; }
         public string SaleId { get; set; }
@@ -41,5 +41,40 @@
         public string RaitingId { get; set; }
         public DateTime? Dob { get; set; }
         public string PicId { get; set; }
+        public string CustomerTypeId { get; set; }
+        public string CompanyName { get; set; }
+        public string ResidenceTypeId { get; set; }
+        public string Description { get; set; }
+        public string CompanyNameInv { get; set; }
+        public string EmailInv { get; set; }
+        public string AssignmentDebitId { get; set; }
+        public string AssignmentInvId { get; set; }
+        public string AccNumber { get; set; }
+        public string AccName { get; set; }
+        public string BankId { get; set; }
+        public string SwiftCode { get; set; }
+        public string IdCode { get; set; }
+        public string Password { get; set; }
+        public string Industry { get; set; }
+        public string Po { get; set; }
+        public int? RushMonth { get; set; }
+        public string Rating { get; set; }
+        public DateTime? PoDate { get; set; }
+        public decimal? MinProfitMonth { get; set; }
+        public string Warning { get; set; }
+        public int? ActionId { get; set; }
+        public string RegularShippingFrom { get; set; }
+        public string ConditionId { get; set; }
+        public string DistributeInformationIds { get; set; }
+        public string DistributeInformationIdsText { get; set; }
+        public string ZipCode { get; set; }
+        public string TrackingURL { get; set; }
+        public bool IsNoDebt { get; set; }
+        public string PartnerTypeIds { get; set; }
+        public string AdditionTypeIds { get; set; }
+        public string PartnerTypeIdsText { get; set; }
+        public string AdditionTypeIdsText { get; set; }
+        public string FormatChat { get; set; }
+        public string AddressInv { get; set; }
     }
 }

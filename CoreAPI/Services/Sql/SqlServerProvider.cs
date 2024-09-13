@@ -34,31 +34,28 @@ public class SqlServerProvider(IDistributedCache cache, IConfiguration cfg) : IS
         var sideEffect = HasSideEffect(query);
         if (sideEffect) throw new ApiException("Side effect of query is NOT allowed");
         var connStr = shouldMapToConnStr ? await GetConnStrFromKey(connInfo) : connInfo;
-        var con = new SqlConnection(connStr);
-        var sqlCmd = new SqlCommand
-        {
-            CommandType = CommandType.Text,
-            CommandText = query,
-            Connection = con
-        };
-        SqlDataReader reader = null;
         var tables = new List<Dictionary<string, object>[]>();
         try
         {
-            await con.OpenAsync();
-            reader = await sqlCmd.ExecuteReaderAsync();
-            while (true)
+            using (var con = new SqlConnection(connStr))
+            using (var sqlCmd = new SqlCommand(query, con) { CommandType = CommandType.Text })
             {
-                var table = new List<Dictionary<string, object>>();
-                while (await reader.ReadAsync())
+                await con.OpenAsync();
+                using (var reader = await sqlCmd.ExecuteReaderAsync())
                 {
-                    table.Add(ReadSqlRecord(reader));
+                    do
+                    {
+                        var table = new List<Dictionary<string, object>>();
+                        while (await reader.ReadAsync())
+                        {
+                            table.Add(ReadSqlRecord(reader));
+                        }
+                        tables.Add(table.ToArray());
+                    }
+                    while (await reader.NextResultAsync());
                 }
-                tables.Add([.. table]);
-                var next = await reader.NextResultAsync();
-                if (!next) break;
             }
-            return [.. tables];
+            return tables.ToArray();
         }
         catch (Exception e)
         {
@@ -67,12 +64,6 @@ public class SqlServerProvider(IDistributedCache cache, IConfiguration cfg) : IS
             {
                 StatusCode = HttpStatusCode.InternalServerError,
             };
-        }
-        finally
-        {
-            if (reader is not null) await reader.DisposeAsync();
-            await sqlCmd.DisposeAsync();
-            await con.DisposeAsync();
         }
     }
 

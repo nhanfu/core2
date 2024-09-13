@@ -1,12 +1,15 @@
-using Core.Extensions;
+﻿using Core.Extensions;
 using Core.Middlewares;
 using Core.Services;
+using CoreAPI.BgService;
 using CoreAPI.Services.Sql;
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using System.Configuration;
 using System.IO.Compression;
 using System.Text;
 
@@ -32,6 +35,14 @@ services.AddLogging(config =>
     config.AddDebug();
     config.AddEventSourceLogger();
 });
+services.AddHangfire(configuration => configuration
+       .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+       .UseSimpleAssemblyNameTypeSerializer()
+       .UseRecommendedSerializerSettings()
+       .UseSqlServerStorage(conf.GetConnectionString("Default")));
+
+// Add the processing server as IHostedService
+services.AddHangfireServer();
 services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);
 services.AddResponseCompression(options =>
 {
@@ -83,9 +94,18 @@ services.AddScoped<DuckDbProvider>();
 services.AddScoped<ISqlProvider, SqlServerProvider>();
 services.AddScoped<WebSocketService>();
 services.AddScoped<UserService>();
-
 var app = builder.Build();
-
+app.UseHangfireDashboard();
+RecurringJob.AddOrUpdate<DailyFunction>("CoreAPI.BgService.DailyFunction",
+x => x.StatisticsProcesses(), Cron.Daily(06, 00), new RecurringJobOptions()
+{
+    TimeZone = TimeZoneInfo.Local,
+});
+RecurringJob.AddOrUpdate<CustomerFunction>("CoreAPI.BgService.CustomerFunction",
+x => x.StatisticsProcesses(), Cron.Daily(06, 00), new RecurringJobOptions()
+{
+    TimeZone = TimeZoneInfo.Local,
+});
 app.UseCors("MyPolicy");
 app.UseAuthentication();
 app.UseWebSockets();
@@ -96,5 +116,4 @@ app.UseResponseCompression();
 app.UseStaticFiles();
 app.UseMvc();
 app.UseRouting();
-
 app.Run();
