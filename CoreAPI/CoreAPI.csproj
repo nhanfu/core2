@@ -65,7 +65,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="NewFolder\" />
 	  <Folder Include="wwwroot\system\test\lp\js\" />
 	</ItemGroup>
 

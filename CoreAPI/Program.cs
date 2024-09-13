@@ -96,6 +96,7 @@ services.AddScoped<WebSocketService>();
 services.AddScoped<UserService>();
 var app = builder.Build();
 app.UseHangfireDashboard();
+#if !DEBUG
 RecurringJob.AddOrUpdate<DailyFunction>("CoreAPI.BgService.DailyFunction",
 x => x.StatisticsProcesses(), Cron.Daily(06, 00), new RecurringJobOptions()
 {
@@ -106,6 +107,7 @@ x => x.StatisticsProcesses(), Cron.Daily(00, 00), new RecurringJobOptions()
 {
     TimeZone = TimeZoneInfo.Local,
 });
+#endif
 app.UseCors("MyPolicy");
 app.UseAuthentication();
 app.UseWebSockets();

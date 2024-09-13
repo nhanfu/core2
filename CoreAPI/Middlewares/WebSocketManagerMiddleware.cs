@@ -1,7 +1,6 @@
 ﻿using Core.Extensions;
 using Core.Services;
 using System.Net.WebSockets;
-using System.Security.Claims;
 using System.Text;
 
 namespace Core.Middlewares;

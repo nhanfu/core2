@@ -4,7 +4,6 @@ using Core.Extensions;
 using Core.Middlewares;
 using Core.Models;
 using Core.ViewModels;
-using CoreAPI.BgService;
 using CoreAPI.Services.Sql;
 using CoreAPI.ViewModels;
 using Hangfire;
@@ -19,7 +18,6 @@ using System.Buffers;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
-using System.Drawing;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq.Expressions;
 using System.Net.WebSockets;
@@ -293,6 +291,10 @@ public class UserService
     {
         var query = @$"select * from [Feature] where Name = N'{name}'";
         var feature = await _sql.ReadDsAs<Feature>(query, _configuration.GetConnectionString("Default"));
+        if (feature == null)
+        {
+            return null;
+        }
         var query2 = @$"select * from [Component] where FeatureId = '{feature.Id}'
         select * from [FeaturePolicy] where FeatureId = '{feature.Id}'
         select * from [UserSetting] where FeatureId = '{feature.Id}' and UserId = '{UserId}'";
@@ -1937,6 +1939,14 @@ public class UserService
         return await RunjsWrap(vm);
     }
 
+    public async Task<User[]> GetUserActive()
+    {
+        var socket = _taskSocketSvc.GetAll();
+        var users = socket.Select(x => x.Key.Split("/").FirstOrDefault()).Distinct().ToList();
+        return await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] WHERE ID IN ('{users.CombineStrings()}')", _configuration.GetConnectionString("Default"));
+    }
+
+
     private async Task<SqlComResult> RunjsWrap(SqlViewModel vm)
     {
         var actQuery = CalcFinalQuery(vm);
@@ -2738,22 +2748,6 @@ public class UserService
             SendMessageToUser(chat);
         }
         return entity;
-    }
-
-    internal IEnumerable<User> GetUserActive()
-    {
-        var online = _taskSocketSvc.GetAll().Keys;
-        var us = online.Select(x =>
-        {
-            var split = x.Split("/");
-            return new User
-            {
-                Id = split[0],
-                Recover = split[3],
-                Email = x
-            };
-        }).OrderBy(x => x.Id);
-        return us;
     }
 
     private static bool _hasOpenClusterSocket = false;

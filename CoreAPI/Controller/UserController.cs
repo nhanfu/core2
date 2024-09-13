@@ -5,6 +5,7 @@ using Core.Models;
 using Core.Services;
 using Core.ViewModels;
 using CoreAPI.ViewModels;
+using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -233,10 +234,9 @@ public class UserController(UserService _userSvc, WebSocketService socketSvc, IW
     }
 
     [HttpPost("api/GetUserActive")]
-    public IEnumerable<User> GetUserActive()
+    public async Task<User[]> GetUserActive()
     {
-        // Need to summarize info from all clusters
-        return _userSvc.GetUserActive();
+        return await _userSvc.GetUserActive();
     }
 
     [HttpPost("NotifyDevice")]
