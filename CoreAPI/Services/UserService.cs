@@ -326,11 +326,15 @@ public class UserService
         var roleNames = user.RoleIdsText.Split(",").ToList();
         var signinDate = DateTime.Now;
         var jit = Uuid7.Guid().ToString();
+        if (user.Avatar is null)
+        {
+
+        }
         List<Claim> claims =
         [
             new(ClaimTypes.GroupSid, user.PartnerId is null ? string.Empty : user.PartnerId),
             new ("UserId", user.Id),
-            new ("Avatar", user.Avatar ?? string.Empty),
+            new ("Avatar", user.Avatar ?? "/icons/default-avatar.jpg"),
             new ("TeamId", user.TeamId ?? string.Empty),
             new (ClaimTypes.Name, user.UserName),
             new (JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
@@ -1942,8 +1946,22 @@ public class UserService
     public async Task<User[]> GetUserActive()
     {
         var socket = _taskSocketSvc.GetAll();
-        var users = socket.Select(x => x.Key.Split("/").FirstOrDefault()).Distinct().ToList();
-        return await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] WHERE ID IN ('{users.CombineStrings()}')", _configuration.GetConnectionString("Default"));
+        var usersVM = socket.Select(x => new UserActiveVM { UserId = x.Key.Split("/").FirstOrDefault(), Ip = x.Key.Split("/")[2] }).Distinct().ToList();
+        var userIds = usersVM.Select(x => x.UserId).Distinct().ToList();
+        var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] WHERE ID IN ({userIds.CombineStrings()})", _configuration.GetConnectionString("Default"));
+        var newUsers = usersVM.Select(x =>
+        {
+            var usersNew = users.FirstOrDefault(y => y.Id == x.UserId);
+            usersNew.Ip = x.Ip;
+            return usersNew;
+        }).OrderBy(x => x.FullName).ToArray();
+        return newUsers;
+    }
+
+    public class UserActiveVM
+    {
+        public string UserId { get; set; }
+        public string Ip { get; set; }
     }
 
 

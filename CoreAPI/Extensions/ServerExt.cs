@@ -1,5 +1,6 @@
 ﻿using Core.Middlewares;
 using Core.Services;
+using CoreAPI.Services.Sql;
 using Newtonsoft.Json;
 
 namespace Core.Extensions
@@ -10,7 +11,7 @@ namespace Core.Extensions
         {
             var factory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
             var provider = factory.CreateScope().ServiceProvider;
-            app.Map("/task", app => app.UseMiddleware<WebSocketManagerMiddleware>(provider.GetService<WebSocketService>()));
+            app.Map("/task", app => app.UseMiddleware<WebSocketManagerMiddleware>(provider.GetService<WebSocketService>(), provider.GetService<ISqlProvider>()));
             return app;
         }
 

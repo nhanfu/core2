@@ -1,5 +1,7 @@
 ﻿using Core.Extensions;
 using Core.Services;
+using Core.ViewModels;
+using Hangfire;
 using System.Net.WebSockets;
 using System.Text;
 
@@ -58,6 +60,7 @@ public class WebSocketManagerMiddleware(RequestDelegate next, WebSocketService w
         var roleIds = principal.Claims.Where(x => x.Type == "RoleIds").Select(x => x.Value).ToList();
         var ip = UserService.GetRemoteIpAddress(context);
         var deviceKey = WebSocketHandler.OnDeviceConnected(socket, userId, roleIds, context.Connection.RemoteIpAddress.ToString());
+        UserConnect(null);
         await socket.SendAsync(Encoding.ASCII.GetBytes(deviceKey), WebSocketMessageType.Text, true, CancellationToken.None);
         await Receive(socket, deviceKey, async (deviceKey, result, buffer) =>
         {
@@ -69,6 +72,7 @@ public class WebSocketManagerMiddleware(RequestDelegate next, WebSocketService w
             else if (result.MessageType == WebSocketMessageType.Close)
             {
                 await WebSocketHandler.OnDisconnected(socket);
+                UserDisconnect(null);
                 return;
             }
         });
@@ -83,4 +87,27 @@ public class WebSocketManagerMiddleware(RequestDelegate next, WebSocketService w
             handleMessage(deviceKey, result, buffer);
         }
     }
+
+    public void UserConnect(Dictionary<string, object> data)
+    {
+        var entity = new MQEvent
+        {
+            QueueName = "UserConnect",
+            Id = Uuid7.Guid().ToString(),
+            Message = data
+        };
+        BackgroundJob.Enqueue<WebSocketService>(x => x.SendMessageToAll(entity.ToJson()));
+    }
+
+    public void UserDisconnect(Dictionary<string, object> data)
+    {
+        var entity = new MQEvent
+        {
+            QueueName = "UserDisconnect",
+            Id = Uuid7.Guid().ToString(),
+            Message = data
+        };
+        BackgroundJob.Enqueue<WebSocketService>(x => x.SendMessageToAll(entity.ToJson()));
+    }
+
 }

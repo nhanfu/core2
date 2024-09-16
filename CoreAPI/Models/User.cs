@@ -33,5 +33,23 @@
         public string RoleIds { get; set; }
         public string RoleIdsText { get; set; }
         public string DepartmentId { get; set; }
+        public DateTime? IdentityCardDate { get; set; }
+        public string IdentityCard { get; set; }
+        public string PlaceIssue { get; set; }
+        public string NickName { get; set; }
+        public string Knowledge { get; set; }
+        public decimal? TargetLocalCurr { get; set; }
+        public decimal? TargetUSDCurr { get; set; }
+        public string TypeBonusId { get; set; }
+        public decimal? SalaryAmount { get; set; }
+        public decimal? SalaryCoefficient { get; set; }
+        public decimal? InsuranceAmount { get; set; }
+        public string TypeContractId { get; set; }
+        public int? Dependents { get; set; }
+        public string AccNumber { get; set; }
+        public string AccName { get; set; }
+        public string BankId { get; set; }
+        public string PassEmail { get; set; }
+        public string Ip { get; set; }
     }
 }
