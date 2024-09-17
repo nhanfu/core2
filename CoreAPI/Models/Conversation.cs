@@ -3,27 +3,16 @@
     public partial class Conversation
     {
         public string Id { get; set; }
-
-        public string TenantCode { get; set; }
-
-        public string FromName { get; set; }
-
-        public string ToName { get; set; }
-
-        public string FromId { get; set; }
-
-        public string ToId { get; set; }
-
-        public string LastContext { get; set; }
-
+        public string Icon { get; set; }
+        public string RecordId { get; set; }
+        public string EntityId { get; set; }
+        public string UserIds { get; set; }
+        public string Message { get; set; }
+        public string FormatChat { get; set; }
         public bool Active { get; set; }
-
-        public DateTime InsertedDate { get; set; }
-
+        public DateTime? InsertedDate { get; set; }
         public string InsertedBy { get; set; }
-
         public DateTime? UpdatedDate { get; set; }
-
         public string UpdatedBy { get; set; }
     }
 }

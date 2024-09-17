@@ -280,6 +280,28 @@ public class UserService
         };
     }
 
+    public async Task<Conversation> Conversation(Conversation entity)
+    {
+        var query = @$"select * from [Conversation] where RecordId = '{entity.RecordId}' and EntityId = '{entity.EntityId}'";
+        var conversation = await _sql.ReadDsAs<Conversation>(query, _configuration.GetConnectionString("Default"));
+        if (conversation is null)
+        {
+            var patch = entity.MapToPatch();
+            await SavePatch2(patch);
+            conversation = await _sql.ReadDsAs<Conversation>(query, _configuration.GetConnectionString("Default"));
+            return conversation;
+        }
+        else
+        {
+            conversation.FormatChat = entity.FormatChat;
+            conversation.Icon = entity.Icon;
+            var patch = conversation.MapToPatch();
+            await SavePatch2(patch);
+            return conversation;
+        }
+    }
+
+
     public async Task<Dictionary<string, object>[]> GetMenu()
     {
         var query = @$"select * from [Feature] f where IsMenu = 1 and (exists (select Id from FeaturePolicy where FeatureId = f.Id and RoleId in ({RoleIds.CombineStrings()}) and CanRead = 1) or '8' in ({RoleIds.CombineStrings()}))";
@@ -1257,7 +1279,7 @@ public class UserService
                         {
                             x.Data = entity[x.Index];
                         });
-                        if (vm.Table == "ChatEntity")
+                        if (vm.Table == "ConversationDetail")
                         {
                             SendMessageAllUser(entity[0][0]);
                         }
@@ -1946,7 +1968,7 @@ public class UserService
     public async Task<User[]> GetUserActive()
     {
         var socket = _taskSocketSvc.GetAll();
-        var usersVM = socket.Select(x => new UserActiveVM { UserId = x.Key.Split("/").FirstOrDefault(), Ip = x.Key.Split("/")[2] }).Distinct().ToList();
+        var usersVM = socket.Select(x => new UserActiveVM { UserId = x.Key.Split("/").FirstOrDefault(), Ip = x.Key.Split("/")[2] }).DistinctBy(x => new { x.UserId, x.Ip }).ToList();
         var userIds = usersVM.Select(x => x.UserId).Distinct().ToList();
         var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] WHERE ID IN ({userIds.CombineStrings()})", _configuration.GetConnectionString("Default"));
         var newUsers = usersVM.Select(x =>
@@ -2665,7 +2687,7 @@ public class UserService
     {
         var entity = new MQEvent
         {
-            QueueName = "UpdateViewEntity" + (data.GetValueOrDefault("RecordId") is null ? data.GetValueOrDefault("Id")?.ToString().Replace("-", "") : data.GetValueOrDefault("RecordId")?.ToString().Replace("-", "")),
+            QueueName = "UpdateViewEntity" + (data.GetValueOrDefault("ConversationId") is null ? data.GetValueOrDefault("Id")?.ToString().Replace("-", "") : data.GetValueOrDefault("ConversationId")?.ToString().Replace("-", "")),
             Id = Uuid7.Guid().ToString(),
             Message = data
         };

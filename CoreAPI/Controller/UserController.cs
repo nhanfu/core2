@@ -160,6 +160,13 @@ public class UserController(UserService _userSvc, WebSocketService socketSvc, IW
         return _userSvc.Go(entity);
     }
 
+    [HttpPost("/api/Conversation")]
+    public async Task<Conversation> Conversation([FromBody] Conversation entity)
+    {
+        return await _userSvc.Conversation(entity);
+    }
+    
+
     [HttpPatch("/api/feature/run")]
     public Task<SqlResult> Run([FromBody] PatchVM entity)
     {

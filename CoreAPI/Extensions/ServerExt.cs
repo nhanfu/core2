@@ -11,7 +11,7 @@ namespace Core.Extensions
         {
             var factory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
             var provider = factory.CreateScope().ServiceProvider;
-            app.Map("/task", app => app.UseMiddleware<WebSocketManagerMiddleware>(provider.GetService<WebSocketService>(), provider.GetService<ISqlProvider>()));
+            app.Map("/task", app => app.UseMiddleware<WebSocketManagerMiddleware>(provider.GetService<WebSocketService>()));
             return app;
         }
 
