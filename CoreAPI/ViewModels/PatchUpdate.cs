@@ -8,8 +8,8 @@ namespace Core.ViewModels
         public bool ByPassPerm { get; set; } = true;
         public string FeatureId { get; set; }
         public string ComId { get; set; }
+        public string NewId { get; set; }
         public string QueueName { get; set; }
-        public string ReasonOfChange { get; set; }
         public string CacheName { get; set; }
         public string Name { get; set; }
         public string Table { get; set; }
@@ -28,12 +28,20 @@ namespace Core.ViewModels
         public bool Update { get; set; } = false;
         public bool RealTime { get; set; } = false;
         public PatchDetail Id => Changes.FirstOrDefault(x => x.Field == Utils.IdField);
+        public string ReasonOfChange => Changes.FirstOrDefault(x => x.Field == "ReasonOfChange").Value;
+
     }
 
     public class DeleteItem
     {
         public string Table { get; set; }
         public List<string> Ids { get; set; }
+    }
+
+    public class CheckDeleteItem
+    {
+        public List<string> EntityIds { get; set; }
+        public string ComId { get; set; }
     }
 
     public class PatchDetail

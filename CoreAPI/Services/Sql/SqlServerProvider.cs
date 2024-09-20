@@ -111,43 +111,44 @@ public class SqlServerProvider(IDistributedCache cache, IConfiguration cfg) : IS
         if (connStr.IsNullOrWhiteSpace())
         {
             connStr = cfg.GetConnectionString("Default");
-        };
-        SqlConnection connection = new(connStr);
-        await connection.OpenAsync();
-        var transaction = connection.BeginTransaction();
-        var cmd = new SqlCommand
-        {
-            Transaction = transaction,
-            Connection = connection,
-            CommandText = cmdText
-        };
-        var anyComment = HasSqlComment(cmd.CommandText);
-        if (anyComment) throw new ApiException("Comment is NOT allowed");
-        try
-        {
-            var affected = await cmd.ExecuteNonQueryAsync();
-            await transaction.CommitAsync();
-            return affected;
         }
-        catch (Exception e)
+        using (SqlConnection connection = new SqlConnection(connStr))
         {
-            await transaction.RollbackAsync();
-            var message = "Error occurs";
-#if DEBUG
-            message = $"Error occurs at {connStr} {cmdText}";
-#endif
-            throw new ApiException(message, e)
+            await connection.OpenAsync();
+            using (SqlTransaction transaction = connection.BeginTransaction())
             {
-                StatusCode = HttpStatusCode.InternalServerError
-            };
-        }
-        finally
-        {
-            await transaction.DisposeAsync();
-            await cmd.DisposeAsync();
-            await connection.DisposeAsync();
+                using (SqlCommand cmd = new SqlCommand
+                {
+                    Transaction = transaction,
+                    Connection = connection,
+                    CommandText = cmdText
+                })
+                {
+                    var anyComment = HasSqlComment(cmd.CommandText);
+                    if (anyComment) throw new ApiException("Comment is NOT allowed");
+                    try
+                    {
+                        var affected = await cmd.ExecuteNonQueryAsync();
+                        transaction.Commit();
+                        return affected;
+                    }
+                    catch (Exception e)
+                    {
+                        transaction.Rollback();
+                        var message = "Error occurs";
+#if DEBUG
+                        message = $"Error occurs at {connStr} {cmdText}";
+#endif
+                        throw new ApiException(message, e)
+                        {
+                            StatusCode = HttpStatusCode.InternalServerError
+                        };
+                    }
+                }
+            }
         }
     }
+
 
     public string GetCreateOrUpdateCmd(PatchVM vm)
     {

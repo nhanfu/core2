@@ -191,6 +191,12 @@ public class UserController(UserService _userSvc, WebSocketService socketSvc, IW
         return _userSvc.DeclineEntity(entity);
     }
 
+    [HttpPost("/api/CheckDelete")]
+    public async Task<bool> CheckDelete([FromBody] CheckDeleteItem entity)
+    {
+        return await _userSvc.CheckDelete(entity);
+    }
+
     [HttpDelete("/api/feature/delete")]
     public Task<bool> Delete([FromBody] PatchVM entity)
     {

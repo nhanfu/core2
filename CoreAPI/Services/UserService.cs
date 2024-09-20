@@ -15,6 +15,7 @@ using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using PuppeteerSharp;
 using System.Buffers;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
@@ -512,14 +513,53 @@ public class UserService
 
     public async Task<bool> HardDelete(PatchVM vm)
     {
-        var sql = vm.Delete.Select(x => $"delete from [{x.Table}] where Id in ({x.Ids.CombineStrings()})");
-        try
+        if (vm.ComId.IsNullOrWhiteSpace())
         {
-            await _sql.RunSqlCmd(null, sql.Combine(";"));
+            var sql = vm.Delete.Select(x => $"delete from [{x.Table}] where Id in ({x.Ids.CombineStrings()})");
+            try
+            {
+                await _sql.RunSqlCmd(null, sql.Combine(";"));
+            }
+            catch
+            {
+                return false;
+            }
         }
-        catch
+        else
         {
-            return false;
+            var query = @$"select top 1 * from [Component] where Id = '{vm.ComId}'";
+            var com = await _sql.ReadDsAs<Component>(query);
+            var data = JsonConvert.DeserializeObject<SqlQuery>(com.Query);
+            Dictionary<string, object> dictionary = new Dictionary<string, object>
+            {
+                { "EntityIds", vm.Delete.SelectMany(x=>x.Ids).CombineStrings() },
+                { "NewId", vm.NewId }
+            };
+            if (!data.update.IsNullOrWhiteSpace())
+            {
+                var qr = Utils.FormatEntity(data.update, dictionary);
+                var deletequery = qr + ";" + vm.Delete.Select(x => $"delete from [{x.Table}] where Id in ({x.Ids.CombineStrings()})").Combine(";");
+                try
+                {
+                    await _sql.RunSqlCmd(null, deletequery);
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                var sql = vm.Delete.Select(x => $"delete from [{x.Table}] where Id in ({x.Ids.CombineStrings()})");
+                try
+                {
+                    await _sql.RunSqlCmd(null, sql.Combine(";"));
+                }
+                catch
+                {
+                    return false;
+                }
+            }
         }
         return true;
     }
@@ -947,11 +987,12 @@ public class UserService
                 var approval1 = new Approvement
                 {
                     Id = Uuid7.Guid().ToString(),
-                    Approved = true,
+                    Approved = false,
                     CurrentLevel = 1,
                     NextLevel = 1,
                     Name = name,
                     RecordId = id,
+                    ReasonOfChange = vm.ReasonOfChange,
                     StatusId = 3,
                     UserApproveId = UserId,
                     ApprovedBy = UserId,
@@ -987,12 +1028,13 @@ public class UserService
                     var approval1 = new Approvement
                     {
                         Id = Uuid7.Guid().ToString(),
-                        Approved = true,
+                        Approved = false,
                         CurrentLevel = 1,
                         NextLevel = 1,
                         Name = name,
                         RecordId = id,
                         StatusId = 3,
+                        ReasonOfChange = vm.ReasonOfChange,
                         UserApproveId = UserId,
                         ApprovedBy = UserId,
                         ApprovedDate = now,
@@ -1814,6 +1856,20 @@ public class UserService
         var query = Utils.FormatEntity(com.Query, dictionary);
         var ds1 = await _sql.ReadDataSet(query);
         return ds1;
+    }
+
+    public async Task<bool> CheckDelete(CheckDeleteItem item)
+    {
+        var query = @$"select top 1 * from [Component] where Id = '{item.ComId}'";
+        var com = await _sql.ReadDsAs<Component>(query);
+        var data = JsonConvert.DeserializeObject<SqlQuery>(com.Query);
+        Dictionary<string, object> dictionary = new Dictionary<string, object>
+        {
+            { "EntityIds", item.EntityIds.CombineStrings() }
+        };
+        var qr = Utils.FormatEntity(data.delete, dictionary);
+        var exists = await _sql.ReadDataSet(qr);
+        return (exists[0] != null && exists[0].Length > 0) ? false : true;
     }
 
     private string CalcFinalQuery(SqlViewModel vm)
