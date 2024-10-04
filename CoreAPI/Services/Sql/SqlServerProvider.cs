@@ -23,7 +23,7 @@ public class SqlServerProvider(IDistributedCache cache, IConfiguration cfg) : IS
     public string Env { get; set; }
     public string UserId { get; set; }
 
-    public async Task<Dictionary<string, object>[][]> ReadDataSet(string query, string connInfo = null, bool shouldMapToConnStr = false)
+    public async Task<Dictionary<string, object>[][]> ReadDataSet(string query, string connInfo = null, bool shouldMapToConnStr = false, List<WhereParamVM> paramVMs  = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(query);
         if (connInfo is null)
@@ -41,6 +41,13 @@ public class SqlServerProvider(IDistributedCache cache, IConfiguration cfg) : IS
             using (var sqlCmd = new SqlCommand(query, con) { CommandType = CommandType.Text })
             {
                 await con.OpenAsync();
+                if (!paramVMs.Nothing())
+                {
+                    foreach (var item in paramVMs)
+                    {
+                        sqlCmd.Parameters.AddWithValue(item.FieldName, item.Value);
+                    }
+                }
                 using (var reader = await sqlCmd.ExecuteReaderAsync())
                 {
                     do

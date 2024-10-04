@@ -1246,6 +1246,9 @@ public class UserService
                             command.Parameters.AddWithValue($"@{id.Replace("-", "") + item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
                         }
                         int index = 1;
+                        await command.ExecuteNonQueryAsync();
+                        command.Parameters.Clear();
+                        command.CommandText = string.Empty;
                         if (!vm.Detail.Nothing())
                         {
                             foreach (var detailArray in vm.Detail)
@@ -1296,6 +1299,9 @@ public class UserService
                                             command.Parameters.AddWithValue($"@{idDetail.Replace("-", "") + item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
                                         }
                                     }
+                                    await command.ExecuteNonQueryAsync();
+                                    command.Parameters.Clear();
+                                    command.CommandText = string.Empty;
                                 }
                                 selectIds.Add(new DetailData()
                                 {
@@ -1307,7 +1313,6 @@ public class UserService
                                 index++;
                             }
                         }
-                        await command.ExecuteNonQueryAsync();
                         await transaction.CommitAsync();
                         await connection.CloseAsync();
                         var childs = new List<string>();
@@ -1398,10 +1403,14 @@ public class UserService
                             }
                         }
                         int index = 1;
+                        await command.ExecuteNonQueryAsync();
+                        command.Parameters.Clear();
+                        command.CommandText = string.Empty;
                         if (!vm.Detail.Nothing())
                         {
                             foreach (var detailArray in vm.Detail)
                             {
+                                int j = 1;
                                 foreach (var detail in detailArray)
                                 {
                                     var tableDetailColumns = (await GetTableColumns(detail.Table))[0];
@@ -1448,6 +1457,10 @@ public class UserService
                                             command.Parameters.AddWithValue($"@{idDetail.Replace("-", "") + item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
                                         }
                                     }
+                                    j++;
+                                    await command.ExecuteNonQueryAsync();
+                                    command.Parameters.Clear();
+                                    command.CommandText = string.Empty;
                                 }
                                 selectIds.Add(new DetailData()
                                 {
@@ -1459,7 +1472,6 @@ public class UserService
                                 index++;
                             }
                         }
-                        await command.ExecuteNonQueryAsync();
                         await transaction.CommitAsync();
                         await connection.CloseAsync();
                         var sql = $"SELECT * FROM [{vm.Table}] where Id = '{id}'";
@@ -2046,7 +2058,12 @@ public class UserService
     private async Task<SqlComResult> RunjsWrap(SqlViewModel vm)
     {
         var actQuery = CalcFinalQuery(vm);
-        var ds = await _sql.ReadDataSet(actQuery);
+        var dataParam = new List<WhereParamVM>();
+        if (!vm.WhereParams.IsNullOrWhiteSpace())
+        {
+            dataParam = JsonConvert.DeserializeObject<List<WhereParamVM>>(vm.WhereParams);
+        }
+        var ds = await _sql.ReadDataSet(actQuery, null, false, dataParam);
         return new SqlComResult()
         {
             count = ds.Length > 1 && ds[1].Length > 0 ? Convert.ToInt32(ds[1][0]["total"]) : null,

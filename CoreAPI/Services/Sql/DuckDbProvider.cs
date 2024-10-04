@@ -91,7 +91,7 @@ namespace CoreAPI.Services.Sql
             return fragments.ScriptTokenStream.Any(x => finalCmd.Contains(x.TokenType));
         }
 
-        public async Task<Dictionary<string, object>[][]> ReadDataSet(string query, string connInfo, bool shouldMapToConnStr = false)
+        public async Task<Dictionary<string, object>[][]> ReadDataSet(string query, string connInfo, bool shouldMapToConnStr = false, List<WhereParamVM> paramVMs = null)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(query);
             ArgumentException.ThrowIfNullOrWhiteSpace(connInfo);

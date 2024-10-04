@@ -20,6 +20,7 @@ namespace Core.ViewModels
         public string JsScript { get; internal set; }
         public string Select { get; set; } = "*";
         public string Where { get; set; }
+        public string WhereParams { get; set; }
         public string GroupBy { get; set; }
         public string Having { get; set; }
         public string OrderBy { get; set; }
@@ -80,6 +81,12 @@ namespace Core.ViewModels
         public string total { get; set; }
         public string delete { get; set; }
         public string update { get; set; }
+    }
+
+    public class WhereParamVM
+    {
+        public string FieldName { get; set; }
+        public string Value { get; set; }
     }
 
     public class ServiceVM

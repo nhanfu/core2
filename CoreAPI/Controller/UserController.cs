@@ -222,10 +222,10 @@ public class UserController(UserService _userSvc, WebSocketService socketSvc, IW
         return _userSvc.GetMenu();
     }
 
-    [HttpGet("/api/feature/getFeature")]
-    public Task<Feature> GetFeature([FromQuery] string name)
+    [HttpPost("/api/feature/getFeature")]
+    public Task<Feature> GetFeature([FromBody] ServiceVM vm)
     {
-        return _userSvc.GetFeature(name);
+        return _userSvc.GetFeature(vm.Name);
     }
 
     [HttpPost("/api/chat")]
