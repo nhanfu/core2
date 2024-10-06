@@ -25,6 +25,7 @@ namespace CoreAPI.BgService
             await DoWorkWeeklyAsync(connect);
             await DoWorkMonthlyAsync(connect);
             await DoWorkYearlyAsync(connect);
+            await SystemYearlyAsync(connect);
         }
 
         private async Task DoWorkNextTimeAsync(string connect)
@@ -224,6 +225,22 @@ where NextDate >= '{DateTime.Now:yyyy-MM-dd}' and ReminderSettingId = 1", connec
                 item1.LastNotificationDate = DateTime.Now.Date;
                 var patch1 = item1.MapToPatch();
                 await BgExt.SavePatch2(patch1, connect);
+            }
+            await BgExt.NotifyDevices(tasks, "MessageNotification", _socket);
+        }
+
+        private async Task SystemYearlyAsync(string connect)
+        {
+            var startOfYear = new DateTime(DateTime.Now.Year, 1, 1);
+            var endOfYear = new DateTime(DateTime.Now.Year, 12, 31, 23, 59, 59);
+            var emailTemplate = await BgExt.ReadDsAsArr<EmailTemplate>($@"
+            SELECT [EmailTemplate].*
+            FROM [EmailTemplate]
+            WHERE DATEADD(DAY, -isnull(NotificationNumber,0), isnull(LastNotificationDate,LastStartDate)) = '{DateTime.Now:yyyy-MM-dd}'
+            AND ReminderSettingId = 4", connect);
+            if (emailTemplate.Nothing())
+            {
+                return;
             }
             await BgExt.NotifyDevices(tasks, "MessageNotification", _socket);
         }
