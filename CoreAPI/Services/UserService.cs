@@ -4,6 +4,8 @@ using Core.Extensions;
 using Core.Middlewares;
 using Core.Models;
 using Core.ViewModels;
+using CoreAPI.Models;
+using CoreAPI.Services;
 using CoreAPI.Services.Sql;
 using CoreAPI.ViewModels;
 using Hangfire;
@@ -15,7 +17,6 @@ using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using PuppeteerSharp;
 using System.Buffers;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
@@ -2541,17 +2542,13 @@ public class UserService
 
     public async Task SendMail(EmailVM email, string connStr = null, string webRoot = null)
     {
-        var query = $"select * from [MasterData] m join [MasterData] p on m.ParentId = p.Id where p.Name = 'ConfigEmail'";
-        var config = await _sql.ReadDsAsArr<MasterData>(query, connStr);
-        var fromName = config.FirstOrDefault(x => x.Name == "FromName")?.Description;
-        var fromAddress = email.FromAddress ?? config.FirstOrDefault(x => x.Name == "FromAddress")?.Description;
-        var password = config.FirstOrDefault(x => x.Name == "Password")?.Description ?? throw new ApiException("Email server is not authorzied") { StatusCode = HttpStatusCode.InternalServerError };
-        var server = config.FirstOrDefault(x => x.Name == "Server").Description ?? throw new ApiException("Email server is not authorzied") { StatusCode = HttpStatusCode.InternalServerError };
-        var strPort = config.FirstOrDefault(x => x.Name == "Port")?.Description;
-        var strSSL = config.FirstOrDefault(x => x.Name == "SSL")?.Description;
-        var port = strPort.TryParseInt();
-        var ssl = strSSL.TryParseBool();
-        await email.SendMailAsync(fromName, fromAddress, password, server, port ?? 587, ssl ?? false, webRoot);
+        var query = $"select top 1 * from [User] m where Id = '{UserId}'";
+        var user = await _sql.ReadDsAs<User>(query, connStr);
+        var fromName = user.FullName;
+        var fromAddress = user.Email;
+        var password = user.PassEmail;
+        var server = "smtp.gmail.com";
+        await email.SendMailAsync(fromName, fromAddress, password, server, 587, false, webRoot);
     }
 
     public ValueTask<bool> DeleteFile(string path)
@@ -2586,6 +2583,53 @@ public class UserService
                 new PatchDetail { Field = nameof(UserLogin.AccessTokenExp), Value = DateTime.Now.ToISOFormat() },
             ]
         });
+        return true;
+    }
+
+    public async Task<bool> StartSchedule(PlanEmail plan)
+    {
+        plan.DailyDate = plan.DailyDate ?? DateTime.Now;
+        var hour = plan.DailyDate.Value.Hour;
+        var minute = plan.DailyDate.Value.Minute;
+        var status = new PlanEmailDetail()
+        {
+            PlanEmailId = plan.Id,
+            StatusId = 2,
+            FromDate = DateTime.Now,
+            InsertedDate = DateTime.Now,
+            InsertedBy = UserId,
+        };
+        switch (plan.ReminderSettingId)
+        {
+            case 1:
+                var templates = await plan.ReadTemplate(_configuration.GetConnectionString("Default"));
+                foreach (var item in templates)
+                {
+                    var email = new EmailVM
+                    {
+                        ToAddresses = new List<string>() { item.Item1 },
+                        Subject = plan.SubjectMail.IsNullOrWhiteSpace() ? plan.Name : plan.SubjectMail,
+                        Body = item.Item2
+                    }; 
+                    var query = $"select top 1 * from [User] m where Id = '{plan.UserId}'";
+                    var user = await _sql.ReadDsAs<User>(query, _configuration.GetConnectionString("Default"));
+                    var server = "smtp.gmail.com";
+                    await email.SendMailAsync(plan.FromName ?? user.FullName, plan.FromEmail ?? user.Email, plan.PassEmail ?? user.PassEmail, server, 587, false, _host.WebRootPath);
+                    status.ToDate = DateTime.Now;
+                    status.Id = Uuid7.Guid().ToString();
+                    var patch = status.MapToPatch();
+                    await SavePatch(patch);
+                }
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            default:
+                break;
+        }
         return true;
     }
 

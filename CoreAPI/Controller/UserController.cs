@@ -4,6 +4,7 @@ using Core.Middlewares;
 using Core.Models;
 using Core.Services;
 using Core.ViewModels;
+using CoreAPI.Models;
 using CoreAPI.ViewModels;
 using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using Microsoft.AspNetCore.Authorization;
@@ -30,6 +31,12 @@ public class UserController(UserService _userSvc, WebSocketService socketSvc, IW
     public Task<bool> SignOutAsync([FromBody] Token token)
     {
         return _userSvc.SignOutAsync(token);
+    }
+
+    [HttpPost("api/StartSchedule")]
+    public Task<bool> StartSchedule([FromBody] PlanEmail token)
+    {
+        return _userSvc.StartSchedule(token);
     }
 
     [AllowAnonymous]
