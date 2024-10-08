@@ -24,6 +24,7 @@ using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq.Expressions;
 using System.Net.WebSockets;
+using System.Numerics;
 using System.Reflection;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -2591,6 +2592,7 @@ public class UserService
 
     public async Task<PlanEmail> StartSchedule(PlanEmail plan)
     {
+        var conn = _configuration.GetConnectionString("Default");
         plan.DailyDate = plan.DailyDate ?? DateTime.Now;
         var hour = plan.DailyDate.Value.Hour;
         var minute = plan.DailyDate.Value.Minute;
@@ -2601,56 +2603,108 @@ public class UserService
         plan.IsStart = true;
         plan.IsPause = false;
         plan.StartDate = nextStartDate;
+        if (!plan.ToEmail.IsNullOrWhiteSpace())
+        {
+            var dailyDate = plan.DailyDate;
+            hour = plan.DailyDate.Value.Hour;
+            minute = plan.DailyDate.Value.Minute;
+            dayOfWeekNumber = (int)dailyDate.Value.DayOfWeek;
+            dayOfMonth = dailyDate.Value.Day; // Get the day of the month
+            month = dailyDate.Value.Month; // Get the month
+            nextStartDate = DateTime.Now; // Default to now
+            RecurringJob.RemoveIfExists(plan.Id);
+            RecurringJob.AddOrUpdate(
+                plan.Id.ToString(),
+            () => _sendMailService.ActionSendMail(_configuration.GetConnectionString("Default"), _host.WebRootPath, plan),
+                $"0 {minute} {hour} {dayOfMonth} {month} *",
+                new RecurringJobOptions() { TimeZone = TimeZoneInfo.Local }
+            );
+        }
+        else
+        {
+            var query2 = $"select top 1 * from [{nameof(Component)}] where Id = '{plan.ComponentId}'";
+            var query3 = $"select top 1 * from [{nameof(Feature)}] where Id = '{plan.FeatureId}'";
+            plan.Component = (await BgExt.ReadDsAsArr<Component>(query2, _configuration.GetConnectionString("Default"))).FirstOrDefault();
+            plan.Feature = (await BgExt.ReadDsAsArr<Feature>(query3, _configuration.GetConnectionString("Default"))).FirstOrDefault();
+            var templates = await _sendMailService.ReadTemplate(plan, _configuration.GetConnectionString("Default"));
+            foreach (var item in templates)
+            {
+                var dailyDate = item.Item3;
+                hour = plan.DailyDate.Value.Hour;
+                minute = plan.DailyDate.Value.Minute;
+                dayOfWeekNumber = (int)item.Item3.DayOfWeek;
+                dayOfMonth = item.Item3.Day; // Get the day of the month
+                month = item.Item3.Month; // Get the month
+                nextStartDate = DateTime.Now; // Default to now
+                switch (item.Item4)
+                {
+                    case 1:
+                        plan.NextStartDate = DateTime.Today.AddHours(hour).AddMinutes(minute);
+                        if (plan.NextStartDate < DateTime.Now)
+                            plan.NextStartDate = plan.NextStartDate.Value.AddDays(1); // Schedule for next day if time has passed today
+                        RecurringJob.RemoveIfExists($"Daily-{plan.Id}-{item.Item5}");
+                        RecurringJob.AddOrUpdate(
+                            $"Daily-{plan.Id}-{item.Item5}",
+                            () => _sendMailService.ActionSendMail(conn, _host.WebRootPath, plan, item),
+                            Cron.Daily(hour, minute),
+                            new RecurringJobOptions() { TimeZone = TimeZoneInfo.Local }
+                        );
+                        break;
+                    case 2:
+                        plan.NextStartDate = DateTime.Today.AddDays((dayOfWeekNumber + 7 - (int)DateTime.Now.DayOfWeek) % 7).AddHours(hour).AddMinutes(minute);
+                        if (plan.NextStartDate < DateTime.Now)
+                            plan.NextStartDate = plan.NextStartDate.Value.AddDays(7);
+                        RecurringJob.RemoveIfExists($"Week-{plan.Id}-{item.Item5}");
+                        RecurringJob.AddOrUpdate(
+                            $"Week-{plan.Id}-{item.Item5}",
+                            () => _sendMailService.ActionSendMail(conn, _host.WebRootPath, plan, item),
+                            $"0 {minute} {hour} * * {dayOfWeekNumber}",
+                            new RecurringJobOptions() { TimeZone = TimeZoneInfo.Local }
+                        );
+                        break;
+                    case 3:
+                        plan.NextStartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, dayOfMonth, hour, minute, 0);
+                        if (plan.NextStartDate < DateTime.Now)
+                            plan.NextStartDate = plan.NextStartDate.Value.AddMonths(1); // Schedule for next month if time has passed this month
+                        RecurringJob.RemoveIfExists($"Month-{plan.Id}-{item.Item5}");
+                        RecurringJob.AddOrUpdate(
+                            $"Month-{plan.Id}-{item.Item5}",
+                            () => _sendMailService.ExecuteEmailPlan(plan.Id, _configuration.GetConnectionString("Default"), _host.WebRootPath),
+                            $"0 {minute} {hour} {dayOfMonth} *", // At specified hour and minute on the day of the month
+                            new RecurringJobOptions() { TimeZone = TimeZoneInfo.Local }
+                        );
+                        break;
+                    case 4://yearly
+                        plan.NextStartDate = new DateTime(DateTime.Now.Year, month, dayOfMonth, hour, minute, 0);
+                        if (plan.NextStartDate < DateTime.Now)
+                            plan.NextStartDate = plan.NextStartDate.Value.AddYears(1); // Schedule for next year if time has passed this year
+                        RecurringJob.RemoveIfExists($"Year-{plan.Id}-{item.Item5}");
+                        RecurringJob.AddOrUpdate(
+                            $"Year-{plan.Id}-{item.Item5}",
+                            () => _sendMailService.ActionSendMail(conn, _host.WebRootPath, plan, item),
+                            $"0 {minute} {hour} {dayOfMonth} {month} *",
+                            new RecurringJobOptions() { TimeZone = TimeZoneInfo.Local }
+                        );
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        plan.LastStartDate = DateTime.Now;
         switch (plan.ReminderSettingId)
         {
             case 1: // Daily
-                plan.NextStartDate = DateTime.Today.AddHours(hour).AddMinutes(minute);
-                if (plan.NextStartDate < DateTime.Now)
-                    plan.NextStartDate = plan.NextStartDate.Value.AddDays(1); // Schedule for next day if time has passed today
-                RecurringJob.RemoveIfExists(plan.Id.ToString());
-                RecurringJob.AddOrUpdate(
-                    plan.Id.ToString(),
-                    () => _sendMailService.ExecuteEmailPlan(plan.Id, _configuration.GetConnectionString("Default"), _host.WebRootPath),
-                    Cron.Daily(hour, minute),
-                    new RecurringJobOptions() { TimeZone = TimeZoneInfo.Local }
-                );
+                plan.NextStartDate = plan.NextStartDate.Value.AddDays(1);
                 break;
             case 2: // Weekly
-                plan.NextStartDate = DateTime.Today.AddDays((dayOfWeekNumber + 7 - (int)DateTime.Now.DayOfWeek) % 7).AddHours(hour).AddMinutes(minute);
-                if (plan.NextStartDate < DateTime.Now)
-                    plan.NextStartDate = plan.NextStartDate.Value.AddDays(7); // Schedule for next week if time has passed today
-                RecurringJob.RemoveIfExists(plan.Id.ToString());
-                RecurringJob.AddOrUpdate(
-                    plan.Id.ToString(),
-                    () => _sendMailService.ExecuteEmailPlan(plan.Id, _configuration.GetConnectionString("Default"), _host.WebRootPath),
-                    $"0 {minute} {hour} * * {dayOfWeekNumber}",
-                    new RecurringJobOptions() { TimeZone = TimeZoneInfo.Local }
-                );
+                plan.NextStartDate = plan.NextStartDate.Value.AddDays(7);
                 break;
             case 3: // Monthly
-                plan.NextStartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, dayOfMonth, hour, minute, 0);
-                if (plan.NextStartDate < DateTime.Now)
-                    plan.NextStartDate = plan.NextStartDate.Value.AddMonths(1); // Schedule for next month if time has passed this month
-                RecurringJob.RemoveIfExists(plan.Id.ToString());
-                RecurringJob.AddOrUpdate(
-                    plan.Id.ToString(),
-                    () => _sendMailService.ExecuteEmailPlan(plan.Id, _configuration.GetConnectionString("Default"), _host.WebRootPath),
-                    $"0 {minute} {hour} {dayOfMonth} *", // At specified hour and minute on the day of the month
-                    new RecurringJobOptions() { TimeZone = TimeZoneInfo.Local }
-                );
+                plan.NextStartDate = plan.NextStartDate.Value.AddMonths(1);
                 break;
-
             case 4: // Yearly
-                plan.NextStartDate = new DateTime(DateTime.Now.Year, month, dayOfMonth, hour, minute, 0);
-                if (plan.NextStartDate < DateTime.Now)
-                    plan.NextStartDate = plan.NextStartDate.Value.AddYears(1); // Schedule for next year if time has passed this year
-                RecurringJob.RemoveIfExists(plan.Id.ToString());
-                RecurringJob.AddOrUpdate(
-                    plan.Id.ToString(),
-                    () => _sendMailService.ExecuteEmailPlan(plan.Id, _configuration.GetConnectionString("Default"), _host.WebRootPath),
-                    $"0 {minute} {hour} {dayOfMonth} {month} *", // At specified hour and minute on the specified day and month
-                    new RecurringJobOptions() { TimeZone = TimeZoneInfo.Local }
-                );
+                plan.NextStartDate = plan.NextStartDate.Value.AddYears(1);
                 break;
             default:
                 break;
@@ -2665,9 +2719,42 @@ public class UserService
         plan.DailyDate = plan.DailyDate ?? DateTime.Now;
         plan.IsStart = false;
         plan.IsPause = true;
+        var conn = _configuration.GetConnectionString("Default");
+        if (!plan.ToEmail.IsNullOrWhiteSpace())
+        {
+            RecurringJob.RemoveIfExists(plan.Id);
+        }
+        else
+        {
+            var query2 = $"select top 1 * from [{nameof(Component)}] where Id = '{plan.ComponentId}'";
+            var query3 = $"select top 1 * from [{nameof(Feature)}] where Id = '{plan.FeatureId}'";
+            plan.Component = (await BgExt.ReadDsAsArr<Component>(query2, conn)).FirstOrDefault();
+            plan.Feature = (await BgExt.ReadDsAsArr<Feature>(query3, conn)).FirstOrDefault();
+            var templates = await _sendMailService.ReadTemplate(plan, conn);
+            foreach (var item in templates)
+            {
+                switch (item.Item4)
+                {
+                    case 1:
+                        RecurringJob.RemoveIfExists($"Daily-{plan.Id}-{item.Item5}");
+                        break;
+                    case 2:
+                        RecurringJob.RemoveIfExists($"Week-{plan.Id}-{item.Item5}");
+                        break;
+                    case 3:
+                        RecurringJob.RemoveIfExists($"Month-{plan.Id}-{item.Item5}");
+                        break;
+                    case 4:
+                        RecurringJob.RemoveIfExists($"Year-{plan.Id}-{item.Item5}");
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        plan.NextStartDate = null;
         var patch = plan.MapToPatch();
         await BgExt.SavePatch2(patch, _configuration.GetConnectionString("Default"));
-        RecurringJob.RemoveIfExists(plan.Id.ToString());
         return plan;
     }
 
