@@ -2600,6 +2600,7 @@ public class UserService
         var nextStartDate = DateTime.Now; // Default to now
         plan.IsStart = true;
         plan.IsPause = false;
+        plan.StartDate = nextStartDate;
         switch (plan.ReminderSettingId)
         {
             case 1: // Daily
@@ -2666,6 +2667,7 @@ public class UserService
         plan.IsPause = true;
         var patch = plan.MapToPatch();
         await BgExt.SavePatch2(patch, _configuration.GetConnectionString("Default"));
+        RecurringJob.RemoveIfExists(plan.Id.ToString());
         return plan;
     }
 

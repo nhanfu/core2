@@ -16,20 +16,10 @@ namespace CoreAPI.Services
             var html = planEmail.Template;
             var sql = string.Empty;
             var now = DateTime.Now;
-            switch (planEmail.ReminderSettingId)
+            if (!planEmail.FeatureId.IsNullOrWhiteSpace() && planEmail.ComponentId.IsNullOrWhiteSpace())
             {
-                case 1:
-                    sql += $"SELECT * FROM [{planEmail.Feature.EntityId}] WHERE [{planEmail.Component.FieldName}] IS NOT NULL " +
-                           $"SELECT * FROM COMPONENT WHERE FEATUREID = '{planEmail.FeatureId}' AND ComponentGroupId IS NOT NULL";
-                    break;
-                case 2:
-                    break;
-                case 3:
-                    break;
-                case 4:
-                    break;
-                default:
-                    break;
+                sql += $"SELECT * FROM [{planEmail.Feature.EntityId}] WHERE [{planEmail.Component.FieldName}] IS NOT NULL " +
+                       $"SELECT * FROM COMPONENT WHERE FEATUREID = '{planEmail.FeatureId}' AND ComponentGroupId IS NOT NULL";
             }
             var datas = await BgExt.ReadDataSet(sql, conn);
             var components = datas.Length > 0 && datas[1].Length > 0 ? datas[1].Select(x => x.MapTo<Component>()).ToList() : null;
