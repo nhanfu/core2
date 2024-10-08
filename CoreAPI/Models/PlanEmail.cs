@@ -26,6 +26,9 @@ namespace CoreAPI.Models
         public DateTime? InsertedDate { get; set; }
         public string UpdatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? LastStartDate { get; set; }
+        public DateTime? NextStartDate { get; set; }
         public Feature Feature { get; set; }
         public Component Component { get; set; }
     }

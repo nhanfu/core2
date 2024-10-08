@@ -2,14 +2,13 @@
 using Core.Middlewares;
 using Core.Services;
 using CoreAPI.BgService;
+using CoreAPI.Services;
 using CoreAPI.Services.Sql;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using System.Configuration;
 using System.IO.Compression;
 using System.Text;
 
@@ -94,6 +93,7 @@ services.AddScoped<DuckDbProvider>();
 services.AddScoped<ISqlProvider, SqlServerProvider>();
 services.AddScoped<WebSocketService>();
 services.AddScoped<UserService>();
+services.AddScoped<SendMailService>();
 var app = builder.Build();
 app.UseHangfireDashboard();
 #if !DEBUG

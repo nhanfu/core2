@@ -34,9 +34,15 @@ public class UserController(UserService _userSvc, WebSocketService socketSvc, IW
     }
 
     [HttpPost("api/StartSchedule")]
-    public Task<bool> StartSchedule([FromBody] PlanEmail token)
+    public async Task<PlanEmail> StartSchedule([FromBody] PlanEmail token)
     {
-        return _userSvc.StartSchedule(token);
+        return await _userSvc.StartSchedule(token);
+    }
+
+    [HttpPost("api/PauseSchedule")]
+    public async Task<PlanEmail> PauseSchedule([FromBody] PlanEmail token)
+    {
+        return await _userSvc.PauseSchedule(token);
     }
 
     [AllowAnonymous]

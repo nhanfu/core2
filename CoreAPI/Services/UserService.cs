@@ -4,6 +4,7 @@ using Core.Extensions;
 using Core.Middlewares;
 using Core.Models;
 using Core.ViewModels;
+using CoreAPI.BgService;
 using CoreAPI.Models;
 using CoreAPI.Services;
 using CoreAPI.Services.Sql;
@@ -43,6 +44,7 @@ public class UserService
     private readonly IWebHostEnvironment _host;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly WebSocketService _taskSocketSvc;
+    private readonly SendMailService _sendMailService;
     private readonly IConfiguration _configuration;
     public readonly ISqlProvider _sql;
     public string GroupId { get; set; }
@@ -58,7 +60,7 @@ public class UserService
     public List<string> RoleNames { get; set; }
 
     public UserService(IHttpContextAccessor ctx, IConfiguration conf, IDistributedCache cache, IWebHostEnvironment host,
-        IHttpClientFactory httpClientFactory, WebSocketService taskSocket, ISqlProvider sql, IConfiguration configuration)
+        IHttpClientFactory httpClientFactory, WebSocketService taskSocket, ISqlProvider sql, IConfiguration configuration, SendMailService sendMailService)
     {
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         _cfg = conf ?? throw new ArgumentNullException(nameof(conf));
@@ -68,6 +70,7 @@ public class UserService
         _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         _taskSocketSvc = taskSocket ?? throw new ArgumentNullException(nameof(taskSocket));
         _request = _ctx.HttpContext.Request;
+        _sendMailService = sendMailService;
         ExtractMeta();
         _sql = sql;
         SetMetaToSqlProvider(_sql);
@@ -2586,51 +2589,84 @@ public class UserService
         return true;
     }
 
-    public async Task<bool> StartSchedule(PlanEmail plan)
+    public async Task<PlanEmail> StartSchedule(PlanEmail plan)
     {
         plan.DailyDate = plan.DailyDate ?? DateTime.Now;
         var hour = plan.DailyDate.Value.Hour;
         var minute = plan.DailyDate.Value.Minute;
-        var status = new PlanEmailDetail()
-        {
-            PlanEmailId = plan.Id,
-            StatusId = 2,
-            FromDate = DateTime.Now,
-            InsertedDate = DateTime.Now,
-            InsertedBy = UserId,
-        };
+        var dayOfWeekNumber = (int)plan.DailyDate.Value.DayOfWeek;
+        var dayOfMonth = plan.DailyDate.Value.Day; // Get the day of the month
+        var month = plan.DailyDate.Value.Month; // Get the month
+        var nextStartDate = DateTime.Now; // Default to now
+        plan.IsStart = true;
+        plan.IsPause = false;
         switch (plan.ReminderSettingId)
         {
-            case 1:
-                var templates = await plan.ReadTemplate(_configuration.GetConnectionString("Default"));
-                foreach (var item in templates)
-                {
-                    var email = new EmailVM
-                    {
-                        ToAddresses = new List<string>() { item.Item1 },
-                        Subject = plan.SubjectMail.IsNullOrWhiteSpace() ? plan.Name : plan.SubjectMail,
-                        Body = item.Item2
-                    }; 
-                    var query = $"select top 1 * from [User] m where Id = '{plan.UserId}'";
-                    var user = await _sql.ReadDsAs<User>(query, _configuration.GetConnectionString("Default"));
-                    var server = "smtp.gmail.com";
-                    await email.SendMailAsync(plan.FromName ?? user.FullName, plan.FromEmail ?? user.Email, plan.PassEmail ?? user.PassEmail, server, 587, false, _host.WebRootPath);
-                    status.ToDate = DateTime.Now;
-                    status.Id = Uuid7.Guid().ToString();
-                    var patch = status.MapToPatch();
-                    await SavePatch(patch);
-                }
+            case 1: // Daily
+                plan.NextStartDate = DateTime.Today.AddHours(hour).AddMinutes(minute);
+                if (plan.NextStartDate < DateTime.Now)
+                    plan.NextStartDate = plan.NextStartDate.Value.AddDays(1); // Schedule for next day if time has passed today
+                RecurringJob.RemoveIfExists(plan.Id.ToString());
+                RecurringJob.AddOrUpdate(
+                    plan.Id.ToString(),
+                    () => _sendMailService.ExecuteEmailPlan(plan.Id, _configuration.GetConnectionString("Default"), _host.WebRootPath),
+                    Cron.Daily(hour, minute),
+                    new RecurringJobOptions() { TimeZone = TimeZoneInfo.Local }
+                );
                 break;
-            case 2:
+            case 2: // Weekly
+                plan.NextStartDate = DateTime.Today.AddDays((dayOfWeekNumber + 7 - (int)DateTime.Now.DayOfWeek) % 7).AddHours(hour).AddMinutes(minute);
+                if (plan.NextStartDate < DateTime.Now)
+                    plan.NextStartDate = plan.NextStartDate.Value.AddDays(7); // Schedule for next week if time has passed today
+                RecurringJob.RemoveIfExists(plan.Id.ToString());
+                RecurringJob.AddOrUpdate(
+                    plan.Id.ToString(),
+                    () => _sendMailService.ExecuteEmailPlan(plan.Id, _configuration.GetConnectionString("Default"), _host.WebRootPath),
+                    $"0 {minute} {hour} * * {dayOfWeekNumber}",
+                    new RecurringJobOptions() { TimeZone = TimeZoneInfo.Local }
+                );
                 break;
-            case 3:
+            case 3: // Monthly
+                plan.NextStartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, dayOfMonth, hour, minute, 0);
+                if (plan.NextStartDate < DateTime.Now)
+                    plan.NextStartDate = plan.NextStartDate.Value.AddMonths(1); // Schedule for next month if time has passed this month
+                RecurringJob.RemoveIfExists(plan.Id.ToString());
+                RecurringJob.AddOrUpdate(
+                    plan.Id.ToString(),
+                    () => _sendMailService.ExecuteEmailPlan(plan.Id, _configuration.GetConnectionString("Default"), _host.WebRootPath),
+                    $"0 {minute} {hour} {dayOfMonth} *", // At specified hour and minute on the day of the month
+                    new RecurringJobOptions() { TimeZone = TimeZoneInfo.Local }
+                );
                 break;
-            case 4:
+
+            case 4: // Yearly
+                plan.NextStartDate = new DateTime(DateTime.Now.Year, month, dayOfMonth, hour, minute, 0);
+                if (plan.NextStartDate < DateTime.Now)
+                    plan.NextStartDate = plan.NextStartDate.Value.AddYears(1); // Schedule for next year if time has passed this year
+                RecurringJob.RemoveIfExists(plan.Id.ToString());
+                RecurringJob.AddOrUpdate(
+                    plan.Id.ToString(),
+                    () => _sendMailService.ExecuteEmailPlan(plan.Id, _configuration.GetConnectionString("Default"), _host.WebRootPath),
+                    $"0 {minute} {hour} {dayOfMonth} {month} *", // At specified hour and minute on the specified day and month
+                    new RecurringJobOptions() { TimeZone = TimeZoneInfo.Local }
+                );
                 break;
             default:
                 break;
         }
-        return true;
+        var patch = plan.MapToPatch();
+        await BgExt.SavePatch2(patch, _configuration.GetConnectionString("Default"));
+        return plan;
+    }
+
+    public async Task<PlanEmail> PauseSchedule(PlanEmail plan)
+    {
+        plan.DailyDate = plan.DailyDate ?? DateTime.Now;
+        plan.IsStart = false;
+        plan.IsPause = true;
+        var patch = plan.MapToPatch();
+        await BgExt.SavePatch2(patch, _configuration.GetConnectionString("Default"));
+        return plan;
     }
 
     public async Task<bool> ForgotPassword(LoginVM login)
