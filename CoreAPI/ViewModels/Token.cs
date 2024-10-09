@@ -37,4 +37,10 @@ namespace Core.ViewModels
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
     }
+
+    public class CreateHtmlVM
+    {
+        public string ComId { get; set; }
+        public Dictionary<string, object> Data { get; set; }
+    }
 }

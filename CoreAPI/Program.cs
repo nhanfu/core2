@@ -94,6 +94,7 @@ services.AddScoped<ISqlProvider, SqlServerProvider>();
 services.AddScoped<WebSocketService>();
 services.AddScoped<UserService>();
 services.AddScoped<SendMailService>();
+services.AddScoped<PdfService>();
 var app = builder.Build();
 app.UseHangfireDashboard();
 #if !DEBUG

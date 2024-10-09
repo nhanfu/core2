@@ -5,15 +5,15 @@ using Core.Models;
 using Core.Services;
 using Core.ViewModels;
 using CoreAPI.Models;
+using CoreAPI.Services;
 using CoreAPI.ViewModels;
-using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Core.Controllers;
 
 [Authorize]
-public class UserController(UserService _userSvc, WebSocketService socketSvc, IWebHostEnvironment env) : ControllerBase
+public class UserController(UserService _userSvc, PdfService _pdfService, WebSocketService socketSvc, IWebHostEnvironment env) : ControllerBase
 {
     [AllowAnonymous]
     [HttpPost("/api/auth/login")]
@@ -43,6 +43,12 @@ public class UserController(UserService _userSvc, WebSocketService socketSvc, IW
     public async Task<PlanEmail> PauseSchedule([FromBody] PlanEmail token)
     {
         return await _userSvc.PauseSchedule(token);
+    }
+
+    [HttpPost("api/CreateHtml")]
+    public async Task<string> CreateHtml([FromBody] CreateHtmlVM token, [FromServices] IConfiguration configuration)
+    {
+        return await _pdfService.CreateHtml(token, configuration.GetConnectionString("Default"));
     }
 
     [AllowAnonymous]
