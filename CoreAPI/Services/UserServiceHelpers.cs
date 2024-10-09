@@ -1,7 +1,4 @@
 ﻿using Core.Extensions;
-using Core.Models;
-using System.Buffers;
-using System.Data;
 using System.Text.RegularExpressions;
 
 internal static class UserServiceHelpers

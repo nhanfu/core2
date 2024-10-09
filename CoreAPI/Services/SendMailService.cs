@@ -3,7 +3,6 @@ using Core.Models;
 using Core.ViewModels;
 using CoreAPI.BgService;
 using CoreAPI.Models;
-using Hangfire;
 using HtmlAgilityPack;
 using System.Text.RegularExpressions;
 

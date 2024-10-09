@@ -345,5 +345,12 @@ namespace CoreAPI.BgService
             };
             await _socket.SendMessageToUsersAsync([task.Message.AssignedId], task.ToJson(), fcm.ToJson());
         }
+
+        public static async Task<T> ReadDsAs<T>(string query, string connInfo = null) where T : class
+        {
+            var ds = await ReadDataSet(query, connInfo);
+            if (ds.Length == 0 || ds[0].Length == 0) return null;
+            return ds[0][0].MapTo<T>();
+        }
     }
 }
