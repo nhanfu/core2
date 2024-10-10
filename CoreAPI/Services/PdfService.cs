@@ -4,6 +4,7 @@ using Core.ViewModels;
 using CoreAPI.BgService;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
+using System.Collections;
 using System.Text.RegularExpressions;
 
 namespace CoreAPI.Services
@@ -137,6 +138,46 @@ namespace CoreAPI.Services
             return node;
         }
 
+        private void ProcessPlaceholders(HtmlNode node, Regex regex, Dictionary<string, object> data)
+        {
+            var matches = regex.Matches(node.InnerHtml);
+            foreach (Match match in matches)
+            {
+                var placeholder = match.Groups[1].Value;
+                var mapField = placeholder.Split(".")[1];
+                if (data.TryGetValue(mapField, out var value))
+                {
+                    node.InnerHtml = node.InnerHtml.Replace($"#{{c{placeholder}}}", value?.ToString() ?? string.Empty);
+                }
+            }
+        }
+
+        private void ProcessPlaceholders2(HtmlNode node, Regex regex, Dictionary<string, object> data)
+        {
+            var matches = regex.Matches(node.InnerHtml);
+            foreach (Match match in matches)
+            {
+                var placeholder = match.Groups[1].Value;
+                var mapField = placeholder.Split(".")[1];
+                if (data.TryGetValue(mapField, out var value))
+                {
+                    node.InnerHtml = node.InnerHtml.Replace($"{{c{placeholder}}}", value?.ToString() ?? string.Empty);
+                }
+            }
+        }
+
+        private void RemoveOldChildren(HtmlNode currentbody, List<HtmlNode> childs, List<HtmlNode> childGroups)
+        {
+            foreach (var item in childs)
+            {
+                currentbody.RemoveChild(item);
+            }
+            foreach (var item in childGroups)
+            {
+                currentbody.RemoveChild(item);
+            }
+        }
+
         private void ReplaceCTableNode(CreateHtmlVM createHtmlVM, HtmlNode htmlNode, Dictionary<string, Component> dirCom)
         {
             if (htmlNode.Name == "tbody")
@@ -172,7 +213,48 @@ namespace CoreAPI.Services
                 {
                     return curlyBraceRegex.Match(x.InnerHtml).Length > 0;
                 }).ToList();
-                if (childGroups.Count > 0)
+                if (childGroups.Count == 2)
+                {
+                    var groupByLevel1 = currentbody.Attributes["data-group"]?.Value.Split("|").Select(g => g.Trim()).ToArray();
+                    if (groupByLevel1.Length == 2)
+                    {
+                        var groupByLevel21 = groupByLevel1[0];
+                        var dataGroupsLevel1 = mainObject.GroupBy(x =>
+                        {
+                            return x[groupByLevel21];
+                        });
+                        foreach (var groupLevel1 in dataGroupsLevel1)
+                        {
+                            var firstLevelItem = groupLevel1.FirstOrDefault();
+                            var newGroupLevel1 = childGroups[0].CloneNode(true);
+                            ProcessPlaceholders(newGroupLevel1, curlyBraceRegex, firstLevelItem);
+                            currentbody.InsertBefore(newGroupLevel1, lastTr.LastChild);
+                            var groupByLevel22 = groupByLevel1[1];
+                            var dataGroupsLevel2 = groupLevel1.GroupBy(x =>
+                            {
+                                return x[groupByLevel22];
+                            });
+                            foreach (var groupLevel2 in dataGroupsLevel2)
+                            {
+                                var secondLevelItem = groupLevel2.FirstOrDefault();
+                                var newGroupLevel2 = childGroups[1].CloneNode(true);
+                                ProcessPlaceholders(newGroupLevel2, curlyBraceRegex, secondLevelItem);
+                                currentbody.InsertBefore(newGroupLevel2, lastTr.LastChild);
+                                foreach (var field in groupLevel2)
+                                {
+                                    var newRows = childs.Select(x => x.CloneNode(true)).ToList();
+                                    foreach (var row in newRows)
+                                    {
+                                        ProcessPlaceholders2(row, dollarCurlyBraceRegex, field);
+                                        currentbody.InsertBefore(row, lastTr.LastChild);
+                                    }
+                                }
+                            }
+                        }
+                        RemoveOldChildren(currentbody, childs, childGroups);
+                    }
+                }
+                else if (childGroups.Count == 1)
                 {
                     var groupBy = currentbody.Attributes["data-group"]?.Value.Split(",").Select(g => g.Trim()).ToArray();
                     var dataGroups = mainObject.GroupBy(x =>
