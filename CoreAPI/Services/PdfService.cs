@@ -2,9 +2,9 @@
 using Core.Models;
 using Core.ViewModels;
 using CoreAPI.BgService;
+using Elsa.Extensions;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
-using System.Collections;
 using System.Text.RegularExpressions;
 
 namespace CoreAPI.Services
@@ -58,7 +58,7 @@ namespace CoreAPI.Services
                     var htmlDoc = new HtmlDocument();
                     htmlDoc.LoadHtml(valueWithinCurlyBraces);
                     string plainText = htmlDoc.DocumentNode.InnerText;
-                    html = html.Replace($"{{{valueWithinCurlyBraces}}}", data.GetValueOrDefault(plainText)?.ToString());
+                    html = html.Replace($"{{{valueWithinCurlyBraces}}}", data[plainText]?.ToString());
                 }
             }
             return html;
@@ -99,7 +99,7 @@ namespace CoreAPI.Services
                                 {
                                     displayField = displayField + "MasterData";
                                 }
-                                currentData = FormatString(curentComponent.FormatData, JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(createHtmlVM.Data.GetValueOrDefault(displayField))));
+                                currentData = FormatString(curentComponent.FormatData, JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(createHtmlVM.Data[displayField])));
                                 break;
                             default:
                                 break;
@@ -144,10 +144,13 @@ namespace CoreAPI.Services
             foreach (Match match in matches)
             {
                 var placeholder = match.Groups[1].Value;
-                var mapField = placeholder.Split(".")[1];
-                if (data.TryGetValue(mapField, out var value))
+                if (data[placeholder] != null)
                 {
-                    node.InnerHtml = node.InnerHtml.Replace($"#{{c{placeholder}}}", value?.ToString() ?? string.Empty);
+                    node.InnerHtml = node.InnerHtml.Replace($"#{{{placeholder}}}", data[placeholder]?.ToString() ?? string.Empty);
+                }
+                else
+                {
+                    node.InnerHtml = node.InnerHtml.Replace($"#{{{placeholder}}}", string.Empty);
                 }
             }
         }
@@ -158,10 +161,13 @@ namespace CoreAPI.Services
             foreach (Match match in matches)
             {
                 var placeholder = match.Groups[1].Value;
-                var mapField = placeholder.Split(".")[1];
-                if (data.TryGetValue(mapField, out var value))
+                if (data[placeholder] != null)
                 {
-                    node.InnerHtml = node.InnerHtml.Replace($"{{c{placeholder}}}", value?.ToString() ?? string.Empty);
+                    node.InnerHtml = node.InnerHtml.Replace($"{{{placeholder}}}", data[placeholder]?.ToString() ?? string.Empty);
+                }
+                else
+                {
+                    node.InnerHtml = node.InnerHtml.Replace($"{{{placeholder}}}", string.Empty);
                 }
             }
         }
@@ -180,30 +186,25 @@ namespace CoreAPI.Services
 
         private void ReplaceCTableNode(CreateHtmlVM createHtmlVM, HtmlNode htmlNode, Dictionary<string, Component> dirCom)
         {
-            if (htmlNode.Name == "tbody")
+            if (htmlNode.Name == "tbody" && htmlNode.Attributes["data-table"] != null)
             {
-                var dollarCurlyBraceRegex = new Regex(@"\{c(.+?)\}");
-                var curlyBraceRegex = new Regex(@"\#{c(.+?)\}");
+                var tableName = htmlNode.Attributes["data-table"].Value?.ToString();
+                var dollarCurlyBraceRegex = new Regex(@"\{(.+?)\}");
+                var curlyBraceRegex = new Regex(@"\#{(.+?)\}");
                 var match = dollarCurlyBraceRegex.Match(htmlNode.InnerHtml);
                 HtmlNode lastTr = null;
                 if (!match.Success)
                 {
                     return;
                 }
-                var currentbody = FindClosest(htmlNode, "tbody");
+                var currentbody = htmlNode;
                 if (lastTr == currentbody)
                 {
                     return;
                 }
                 lastTr = currentbody;
                 var valueWithinCurlyBraces = match.Groups[1].Value;
-                string[] fields = valueWithinCurlyBraces.Split(".");
-                if (fields.Length < 2)
-                {
-                    return;
-                }
-                // Check if there is corresponding data in the view model
-                if (!createHtmlVM.Data.TryGetValue("c" + fields[0], out var mainData))
+                if (!createHtmlVM.Data.TryGetValue(tableName, out var mainData))
                 {
                     return;
                 }
@@ -277,16 +278,13 @@ namespace CoreAPI.Services
                             {
                                 if (!cellMatch.Success) continue;
                                 var placeholder = cellMatch.Groups[1].Value;
-                                var placeholderFields = placeholder.Split(".");
-                                if (placeholderFields.Length < 2) continue;
-
                                 try
                                 {
                                     var htmlDoc = new HtmlDocument();
-                                    htmlDoc.LoadHtml(placeholderFields[1]);
+                                    htmlDoc.LoadHtml(placeholder);
                                     string plainText = htmlDoc.DocumentNode.InnerText;
                                     var currentData = first[plainText];
-                                    cell.InnerHtml = cell.InnerHtml.Replace($"#{{c{placeholder}}}", currentData?.ToString() ?? string.Empty);
+                                    cell.InnerHtml = cell.InnerHtml.Replace($"#{{{placeholder}}}", currentData?.ToString() ?? string.Empty);
                                 }
                                 catch (Exception e)
                                 {
@@ -317,7 +315,7 @@ namespace CoreAPI.Services
                                         htmlDoc.LoadHtml(placeholderFields[1]);
                                         string plainText = htmlDoc.DocumentNode.InnerText;
                                         var currentData = field[plainText];
-                                        cell.InnerHtml = cell.InnerHtml.Replace($"{{c{placeholder}}}", currentData?.ToString() ?? string.Empty);
+                                        cell.InnerHtml = cell.InnerHtml.Replace($"{{{placeholder}}}", currentData?.ToString() ?? string.Empty);
                                     }
                                     catch (Exception e)
                                     {
@@ -352,21 +350,19 @@ namespace CoreAPI.Services
                             {
                                 if (!cellMatch.Success) continue;
                                 var placeholder = cellMatch.Groups[1].Value;
-                                var placeholderFields = placeholder.Split(".");
-                                if (placeholderFields.Length < 2) continue;
                                 try
                                 {
                                     var htmlDoc = new HtmlDocument();
-                                    htmlDoc.LoadHtml(placeholderFields[1]);
+                                    htmlDoc.LoadHtml(placeholder);
                                     string plainText = htmlDoc.DocumentNode.InnerText;
                                     var currentData = field[plainText];
                                     if (currentData == null)
                                     {
-                                        cell.InnerHtml = cell.InnerHtml.Replace($"{{c{placeholder}}}", string.Empty);
+                                        cell.InnerHtml = cell.InnerHtml.Replace($"{{{placeholder}}}", string.Empty);
                                     }
                                     else
                                     {
-                                        cell.InnerHtml = cell.InnerHtml.Replace($"{{c{placeholder}}}", currentData?.ToString() ?? string.Empty);
+                                        cell.InnerHtml = cell.InnerHtml.Replace($"{{{placeholder}}}", currentData?.ToString() ?? string.Empty);
                                     }
                                 }
                                 catch (Exception e)
@@ -397,7 +393,7 @@ namespace CoreAPI.Services
 
         private void ReplaceTableNode(CreateHtmlVM createHtmlVM, HtmlNode htmlNode, Dictionary<string, Component> dirCom)
         {
-            if (htmlNode.Name == "tr")
+            if (htmlNode.Name == "tbody")
             {
                 var dollarCurlyBraceRegex = new Regex(@"\{t(.+?)\}");
                 var match = dollarCurlyBraceRegex.Match(htmlNode.InnerHtml);
@@ -406,12 +402,11 @@ namespace CoreAPI.Services
                 {
                     return;
                 }
-                var currentTr = FindClosest(htmlNode, "tr");
-                if (lastTr == currentTr)
+                var currentbody = htmlNode;
+                if (lastTr == currentbody)
                 {
                     return;
                 }
-                lastTr = currentTr;
                 var valueWithinCurlyBraces = match.Groups[1].Value;
                 string[] fields = valueWithinCurlyBraces.Split(".");
                 if (fields.Length < 2)
@@ -424,12 +419,12 @@ namespace CoreAPI.Services
                     return;
                 }
                 var mainObject = JsonConvert.DeserializeObject<Dictionary<string, object>[]>(JsonConvert.SerializeObject(mainData));
-                var headers = JsonConvert.DeserializeObject<List<Component>>(JsonConvert.SerializeObject(createHtmlVM.Data.GetValueOrDefault("t" + fields[0] + "h")));
+                var headers = JsonConvert.DeserializeObject<List<Component>>(JsonConvert.SerializeObject(createHtmlVM.Data["t" + fields[0] + "h"]));
+                var childs = currentbody.ChildNodes.Where(x => x.Name != "#text").Where(x => dollarCurlyBraceRegex.Match(x.InnerHtml).Length > 0).ToList();
                 foreach (var field in mainObject)
                 {
-                    var newRow = currentTr.CloneNode(true);
-
-                    foreach (var cell in newRow.ChildNodes.ToList())
+                    var newRows = childs.Select(x => x.CloneNode(true)).ToList();
+                    foreach (var cell in newRows.SelectMany(x => x.ChildNodes).Where(x => x.Name != "#text").ToList())
                     {
                         var cellMatches = dollarCurlyBraceRegex.Matches(cell.InnerText);
                         foreach (Match cellMatch in cellMatches)
@@ -448,7 +443,7 @@ namespace CoreAPI.Services
                                 var currentData = field[curentComponent.FieldName];
                                 if (currentData == null)
                                 {
-                                    cell.InnerHtml = cell.InnerHtml.Replace($"{{{placeholder}}}", string.Empty);
+                                    cell.InnerHtml = cell.InnerHtml.Replace($"{{t{placeholder}}}", string.Empty);
                                 }
                                 else
                                 {
@@ -464,7 +459,7 @@ namespace CoreAPI.Services
                                             var displayField = curentComponent.FieldName;
                                             var containId = curentComponent.FieldName.EndsWith("Id");
                                             displayField = containId ? displayField.Substring(0, displayField.Length - 2) : displayField + "MasterData";
-                                            currentData = FormatString(curentComponent.FormatData, JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(field.GetValueOrDefault(displayField))));
+                                            currentData = FormatString(curentComponent.FormatData, JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(field[displayField])));
                                             break;
                                         default:
                                             break;
@@ -478,12 +473,16 @@ namespace CoreAPI.Services
                             }
                         }
                     }
-
-                    var currentTbody = FindClosest(htmlNode, "tbody");
-                    newRow.InnerHtml = FormatString(newRow.InnerHtml, field);
-                    currentTbody.InsertBefore(newRow, lastTr);
+                    foreach (var item in newRows)
+                    {
+                        item.InnerHtml = FormatString(item.InnerHtml, field);
+                        currentbody.InsertBefore(item, currentbody.LastChild);
+                    }
+                    foreach (var item in childs)
+                    {
+                        currentbody.RemoveChild(item);
+                    }
                 }
-                currentTr.ParentNode.RemoveChild(currentTr);
             }
             try
             {
