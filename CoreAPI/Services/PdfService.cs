@@ -1,5 +1,6 @@
 ﻿using Core.Extensions;
 using Core.Models;
+using Core.Services;
 using Core.ViewModels;
 using CoreAPI.BgService;
 using Elsa.Extensions;
@@ -11,6 +12,12 @@ namespace CoreAPI.Services
 {
     public class PdfService
     {
+        private readonly UserService _userService;
+        public PdfService(UserService userService)
+        {
+            _userService = userService;
+        }
+
         public async Task<string> CreateHtml(CreateHtmlVM createHtmlVM, string conn)
         {
             var component = await BgExt.ReadDsAs<Component>($"SELECT * FROM [Component] where Id = '{createHtmlVM.ComId}'", conn);
@@ -18,12 +25,63 @@ namespace CoreAPI.Services
             var gridPolicys = await BgExt.ReadDsAsArr<Component>($"SELECT * FROM [Component] where Label is not null and Label != '' and FeatureId = '{component.FeatureId}' and EntityId is not null and ComponentType not in ('Button','Section','GridView')", conn);
             var dirCom = components.DistinctBy(x => x.Label).ToDictionary(x => x.Label);
             var sql = component.Query;
+            if (createHtmlVM.Data.GetValueOrNull("TokenUserId") != null)
+            {
+                createHtmlVM.Data["TokenUserId"] = _userService.UserId;
+            }
+            else
+            {
+                createHtmlVM.Data.Add("TokenUserId", _userService.UserId);
+            }
+            if (createHtmlVM.Data.GetValueOrNull("TokenRoleNames") != null)
+            {
+                createHtmlVM.Data["TokenRoleNames"] = _userService.RoleNames.Combine() ?? string.Empty;
+            }
+            else
+            {
+                createHtmlVM.Data.Add("TokenRoleNames", _userService.RoleNames.Combine());
+            }
+            if (createHtmlVM.Data.GetValueOrNull("TokenPartnerId") != null)
+            {
+                createHtmlVM.Data["TokenPartnerId"] = _userService.VendorId ?? string.Empty;
+            }
+            else
+            {
+                createHtmlVM.Data.Add("TokenPartnerId", _userService.VendorId);
+            }
+            if (createHtmlVM.Data.GetValueOrNull("TokenUserName") != null)
+            {
+                createHtmlVM.Data["TokenUserName"] = _userService.UserName;
+            }
+            else
+            {
+                createHtmlVM.Data.Add("TokenUserName", _userService.UserName);
+            }
+            if (createHtmlVM.Data.GetValueOrNull("TokenGroupId") != null)
+            {
+                createHtmlVM.Data["TokenGroupId"] = _userService.GroupId ?? string.Empty;
+            }
+            else
+            {
+                createHtmlVM.Data.Add("TokenGroupId", _userService.GroupId);
+            }
             if (!sql.IsNullOrWhiteSpace())
             {
                 var sqlQuery = FormatString(sql, createHtmlVM.Data);
                 var customData = await BgExt.ReadDataSet(sqlQuery, conn);
+                foreach (var item in customData[0][0])
+                {
+                    if (createHtmlVM.Data.GetValueOrNull(item.Key) != null)
+                    {
+                        createHtmlVM.Data[item.Key] = item.Value;
+                    }
+                    else
+                    {
+                        createHtmlVM.Data.Add(item.Key, item.Value);
+                    }
+                }
                 int i = 0;
-                foreach (var row in customData)
+                foreach (var row in customData.Skip(1).ToList())
                 {
                     createHtmlVM.Data.Add("c" + i, row);
                     i++;
@@ -283,8 +341,15 @@ namespace CoreAPI.Services
                                     var htmlDoc = new HtmlDocument();
                                     htmlDoc.LoadHtml(placeholder);
                                     string plainText = htmlDoc.DocumentNode.InnerText;
-                                    var currentData = first[plainText];
-                                    cell.InnerHtml = cell.InnerHtml.Replace($"#{{{placeholder}}}", currentData?.ToString() ?? string.Empty);
+                                    var currentData = first.GetValueOrNull(plainText);
+                                    if (currentData != null)
+                                    {
+                                        cell.InnerHtml = cell.InnerHtml.Replace($"{{{placeholder}}}", currentData?.ToString() ?? string.Empty);
+                                    }
+                                    else
+                                    {
+                                        cell.InnerHtml = cell.InnerHtml.Replace($"{{{placeholder}}}", string.Empty);
+                                    }
                                 }
                                 catch (Exception e)
                                 {
@@ -314,8 +379,15 @@ namespace CoreAPI.Services
                                         var htmlDoc = new HtmlDocument();
                                         htmlDoc.LoadHtml(placeholderFields[1]);
                                         string plainText = htmlDoc.DocumentNode.InnerText;
-                                        var currentData = field[plainText];
-                                        cell.InnerHtml = cell.InnerHtml.Replace($"{{{placeholder}}}", currentData?.ToString() ?? string.Empty);
+                                        var currentData = field.GetValueOrNull(plainText);
+                                        if (currentData != null)
+                                        {
+                                            cell.InnerHtml = cell.InnerHtml.Replace($"{{{placeholder}}}", currentData?.ToString() ?? string.Empty);
+                                        }
+                                        else
+                                        {
+                                            cell.InnerHtml = cell.InnerHtml.Replace($"{{{placeholder}}}", string.Empty);
+                                        }
                                     }
                                     catch (Exception e)
                                     {
@@ -355,7 +427,7 @@ namespace CoreAPI.Services
                                     var htmlDoc = new HtmlDocument();
                                     htmlDoc.LoadHtml(placeholder);
                                     string plainText = htmlDoc.DocumentNode.InnerText;
-                                    var currentData = field[plainText];
+                                    var currentData = field.GetValueOrNull(plainText);
                                     if (currentData == null)
                                     {
                                         cell.InnerHtml = cell.InnerHtml.Replace($"{{{placeholder}}}", string.Empty);
@@ -393,9 +465,10 @@ namespace CoreAPI.Services
 
         private void ReplaceTableNode(CreateHtmlVM createHtmlVM, HtmlNode htmlNode, Dictionary<string, Component> dirCom)
         {
-            if (htmlNode.Name == "tbody")
+            if (htmlNode.Name == "tbody" && htmlNode.Attributes["data-table"] != null)
             {
-                var dollarCurlyBraceRegex = new Regex(@"\{t(.+?)\}");
+                var dollarCurlyBraceRegex = new Regex(@"\{(.+?)\}");
+                var tableName = htmlNode.Attributes["data-table"].Value?.ToString();
                 var match = dollarCurlyBraceRegex.Match(htmlNode.InnerHtml);
                 HtmlNode lastTr = null;
                 if (!match.Success)
@@ -408,18 +481,12 @@ namespace CoreAPI.Services
                     return;
                 }
                 var valueWithinCurlyBraces = match.Groups[1].Value;
-                string[] fields = valueWithinCurlyBraces.Split(".");
-                if (fields.Length < 2)
-                {
-                    return;
-                }
-                // Check if there is corresponding data in the view model
-                if (!createHtmlVM.Data.TryGetValue("t" + fields[0], out var mainData))
+                if (!createHtmlVM.Data.TryGetValue(tableName, out var mainData))
                 {
                     return;
                 }
                 var mainObject = JsonConvert.DeserializeObject<Dictionary<string, object>[]>(JsonConvert.SerializeObject(mainData));
-                var headers = JsonConvert.DeserializeObject<List<Component>>(JsonConvert.SerializeObject(createHtmlVM.Data["t" + fields[0] + "h"]));
+                var headers = JsonConvert.DeserializeObject<List<Component>>(JsonConvert.SerializeObject(createHtmlVM.Data[tableName + "h"]));
                 var childs = currentbody.ChildNodes.Where(x => x.Name != "#text").Where(x => dollarCurlyBraceRegex.Match(x.InnerHtml).Length > 0).ToList();
                 foreach (var field in mainObject)
                 {
@@ -430,46 +497,55 @@ namespace CoreAPI.Services
                         foreach (Match cellMatch in cellMatches)
                         {
                             if (!cellMatch.Success) continue;
-
                             var placeholder = cellMatch.Groups[1].Value;
-                            var placeholderFields = placeholder.Split(".");
-                            if (placeholderFields.Length < 2) continue;
-
-                            var curentComponent = headers.FirstOrDefault(x => x.Label == placeholderFields[1]);
-                            if (curentComponent == null) continue;
-
-                            try
+                            var curentComponent = headers.FirstOrDefault(x => x.Label == placeholder);
+                            if (curentComponent == null)
                             {
-                                var currentData = field[curentComponent.FieldName];
+                                var currentData = field.GetValueOrNull(placeholder);
                                 if (currentData == null)
                                 {
-                                    cell.InnerHtml = cell.InnerHtml.Replace($"{{t{placeholder}}}", string.Empty);
+                                    cell.InnerHtml = cell.InnerHtml.Replace($"{{{placeholder}}}", string.Empty);
                                 }
                                 else
                                 {
-                                    switch (curentComponent.ComponentType)
-                                    {
-                                        case "Datepicker":
-                                            currentData = currentData is null ? "" : Convert.ToDateTime(currentData).ToString("dd/MM/yyyy");
-                                            break;
-                                        case "Number":
-                                            currentData = currentData is null ? "" : Convert.ToDecimal(currentData).ToString(curentComponent.FormatData ?? "N0");
-                                            break;
-                                        case "Dropdown":
-                                            var displayField = curentComponent.FieldName;
-                                            var containId = curentComponent.FieldName.EndsWith("Id");
-                                            displayField = containId ? displayField.Substring(0, displayField.Length - 2) : displayField + "MasterData";
-                                            currentData = FormatString(curentComponent.FormatData, JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(field[displayField])));
-                                            break;
-                                        default:
-                                            break;
-                                    }
-                                    cell.InnerHtml = cell.InnerHtml.Replace($"{{t{placeholder}}}", currentData?.ToString() ?? string.Empty);
+                                    cell.InnerHtml = cell.InnerHtml.Replace($"{{{placeholder}}}", currentData?.ToString() ?? string.Empty);
                                 }
                             }
-                            catch (Exception e)
+                            else
                             {
-                                throw new Exception($"Error processing field {curentComponent.FieldName}: {e.Message}", e);
+                                try
+                                {
+                                    var currentData = field.GetValueOrNull(curentComponent.FieldName);
+                                    if (currentData == null)
+                                    {
+                                        cell.InnerHtml = cell.InnerHtml.Replace($"{{{placeholder}}}", string.Empty);
+                                    }
+                                    else
+                                    {
+                                        switch (curentComponent.ComponentType)
+                                        {
+                                            case "Datepicker":
+                                                currentData = currentData is null ? "" : Convert.ToDateTime(currentData).ToString("dd/MM/yyyy");
+                                                break;
+                                            case "Number":
+                                                currentData = currentData is null ? "" : Convert.ToDecimal(currentData).ToString(curentComponent.FormatData ?? "N0");
+                                                break;
+                                            case "Dropdown":
+                                                var displayField = curentComponent.FieldName;
+                                                var containId = curentComponent.FieldName.EndsWith("Id");
+                                                displayField = containId ? displayField.Substring(0, displayField.Length - 2) : displayField + "MasterData";
+                                                currentData = FormatString(curentComponent.FormatData, JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(field[displayField])));
+                                                break;
+                                            default:
+                                                break;
+                                        }
+                                        cell.InnerHtml = cell.InnerHtml.Replace($"{{{placeholder}}}", currentData?.ToString() ?? string.Empty);
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+                                    throw new Exception($"Error processing field {curentComponent.FieldName}: {e.Message}", e);
+                                }
                             }
                         }
                     }

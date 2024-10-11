@@ -18,6 +18,11 @@ namespace CoreAPI.BgService
             return ds[0].Select(x => x.MapTo<T>()).ToArray();
         }
 
+        public static object GetValueOrNull(this Dictionary<string, object> dict, string key)
+        {
+            return dict.TryGetValue(key, out object value) ? value : null;
+        }
+
         public static async Task<Dictionary<string, object>[][]> ReadDataSet(string query, string connStr)
         {
             var tables = new List<Dictionary<string, object>[]>();
