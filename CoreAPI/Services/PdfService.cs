@@ -3,10 +3,7 @@ using Core.Models;
 using Core.Services;
 using Core.ViewModels;
 using CoreAPI.BgService;
-using Elsa.Extensions;
 using HtmlAgilityPack;
-using Newtonsoft.Json;
-using System.Text.RegularExpressions;
 
 namespace CoreAPI.Services
 {

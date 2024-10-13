@@ -95,6 +95,7 @@ services.AddScoped<WebSocketService>();
 services.AddScoped<UserService>();
 services.AddScoped<SendMailService>();
 services.AddScoped<PdfService>();
+services.AddScoped<OpenAIHttpClientService>();
 var app = builder.Build();
 app.UseHangfireDashboard();
 #if !DEBUG

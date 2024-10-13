@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Core.Controllers;
 
 [Authorize]
-public class UserController(UserService _userSvc, PdfService _pdfService, WebSocketService socketSvc, IWebHostEnvironment env) : ControllerBase
+public class UserController(UserService _userSvc, PdfService _pdfService, WebSocketService socketSvc, OpenAIHttpClientService _openAIHttpClientService) : ControllerBase
 {
     [AllowAnonymous]
     [HttpPost("/api/auth/login")]
@@ -49,6 +49,13 @@ public class UserController(UserService _userSvc, PdfService _pdfService, WebSoc
     public async Task<string> CreateHtml([FromBody] CreateHtmlVM token, [FromServices] IConfiguration configuration)
     {
         return await _pdfService.CreateHtml(token, configuration.GetConnectionString("Default"));
+    }
+
+    [HttpPost("api/OpenAI")]
+    public async Task<string> OpenAI([FromBody] string prompt)
+    {
+        var response = await _openAIHttpClientService.GetChatGPTResponse(prompt);
+        return response;
     }
 
     [AllowAnonymous]
@@ -121,18 +128,6 @@ public class UserController(UserService _userSvc, PdfService _pdfService, WebSoc
         [FromQuery] string name = "Captured", [FromQuery] bool reup = false)
     {
         return _userSvc.PostImageAsync(host, name, reup);
-    }
-
-    [HttpPost("api/[Controller]/EmailAttached")]
-    public Task<bool> EmailAttached([FromBody] EmailVM email, [FromServices] IWebHostEnvironment host)
-    {
-        return _userSvc.EmailAttached(email, host);
-    }
-
-    [HttpPost("api/[Controller]/GeneratePdf")]
-    public Task<IEnumerable<string>> GeneratePdf([FromBody] EmailVM email, [FromServices] IWebHostEnvironment host, bool absolute = false)
-    {
-        return _userSvc.GeneratePdf(email, host, absolute);
     }
 
     [HttpPost("api/fileUpload/deleteFile")]

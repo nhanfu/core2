@@ -2513,36 +2513,6 @@ public class UserService
         return res;
     }
 
-    public async Task<IEnumerable<string>> GeneratePdf(EmailVM email, IWebHostEnvironment host, bool absolute)
-    {
-        if (email.PdfText.Nothing())
-        {
-            return Enumerable.Empty<string>();
-        }
-        List<string> paths = [];
-        using var browserFetcher = new BrowserFetcher() { Browser = SupportedBrowser.Chrome };
-        await browserFetcher.DownloadAsync();
-        var browser = await Puppeteer.LaunchAsync(new LaunchOptions { Headless = true });
-        var page = await browser.NewPageAsync();
-        await email.PdfText.ForEachAsync(async pdf =>
-        {
-            await page.SetContentAsync(pdf);
-            var path = Path.Combine(host.WebRootPath, "download", UserId, Uuid7.Guid().ToString() + ".pdf");
-            EnsureDirectoryExist(path);
-            await page.PdfAsync(path);
-            paths.Add(path);
-        });
-        return absolute ? paths : paths.Select(path => path.Replace(host.WebRootPath, string.Empty));
-    }
-
-    public async Task<bool> EmailAttached(EmailVM email, IWebHostEnvironment host)
-    {
-        var connStr = await _sql.GetConnStrFromKey(email.ConnKey);
-        var paths = await GeneratePdf(email, host, absolute: true);
-        paths.SelectForEach(email.ServerAttachements.Add);
-        await SendMail(email, connStr, host.WebRootPath);
-        return true;
-    }
 
     public async Task SendMail(EmailVM email, string connStr = null, string webRoot = null)
     {
@@ -2885,8 +2855,7 @@ public class UserService
                 Id = Uuid7.Guid().ToString(),
                 Message = x,
                 AssignedId = x.AssignedId
-            })
-        .ForEach(SendMessageToUser);
+            }).ForEach(SendMessageToUser);
     }
 
     private void SendMessageToUser(MQEvent task)
