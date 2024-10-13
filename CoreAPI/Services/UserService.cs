@@ -2593,7 +2593,6 @@ public class UserService
     public async Task<PlanEmail> CreateSchedule(PlanEmail plan)
     {
         var conn = _configuration.GetConnectionString("Default");
-        plan.DailyDate = plan.DailyDate ?? DateTime.Now;
         var hour = plan.DailyDate.Value.Hour;
         var minute = plan.DailyDate.Value.Minute;
         var dayOfWeekNumber = (int)plan.DailyDate.Value.DayOfWeek;
@@ -2623,9 +2622,10 @@ public class UserService
             dayOfMonth = item.Item3.Day;
             month = item.Item3.Month;
             nextStartDate = DateTime.Now;
+            var id = Uuid7.Guid().ToString();
             var planDetail = new PlanEmailDetail()
             {
-                Id = "-" + Uuid7.Guid().ToString(),
+                Id = "-" + id,
                 PlanEmailId = plan.Id,
                 Email = item.Item1,
                 Template = item.Item2,
@@ -2647,7 +2647,7 @@ public class UserService
                     RecurringJob.RemoveIfExists($"Daily-{item.Item5}");
                     RecurringJob.AddOrUpdate(
                         $"Daily-{item.Item5}",
-                        () => _sendMailService.ActionSendMail(conn, _host.WebRootPath, plan, item),
+                        () => _sendMailService.ActionSendMail(conn, _host.WebRootPath, plan, planDetail, item),
                         Cron.Daily(hour, minute),
                         new RecurringJobOptions() { TimeZone = TimeZoneInfo.Local }
                     );
@@ -2661,7 +2661,7 @@ public class UserService
                     RecurringJob.RemoveIfExists($"Week-{item.Item5}");
                     RecurringJob.AddOrUpdate(
                         $"Week-{item.Item5}",
-                        () => _sendMailService.ActionSendMail(conn, _host.WebRootPath, plan, item),
+                        () => _sendMailService.ActionSendMail(conn, _host.WebRootPath, plan, planDetail, item),
                         $"0 {minute} {hour} * * {dayOfWeekNumber}",
                         new RecurringJobOptions() { TimeZone = TimeZoneInfo.Local }
                     );
@@ -2675,7 +2675,7 @@ public class UserService
                     RecurringJob.RemoveIfExists($"Month-{item.Item5}");
                     RecurringJob.AddOrUpdate(
                         $"Month-{item.Item5}",
-                        () => _sendMailService.ActionSendMail(conn, _host.WebRootPath, plan, item),
+                        () => _sendMailService.ActionSendMail(conn, _host.WebRootPath, plan, planDetail, item),
                         $"0 {minute} {hour} {dayOfMonth} *", // At specified hour and minute on the day of the month
                         new RecurringJobOptions() { TimeZone = TimeZoneInfo.Local }
                     );
@@ -2689,7 +2689,7 @@ public class UserService
                     RecurringJob.RemoveIfExists($"Year-{item.Item5}");
                     RecurringJob.AddOrUpdate(
                         $"Year-{item.Item5}",
-                        () => _sendMailService.ActionSendMail(conn, _host.WebRootPath, plan, item),
+                        () => _sendMailService.ActionSendMail(conn, _host.WebRootPath, plan, planDetail, item),
                         $"0 {minute} {hour} {dayOfMonth} {month} *",
                         new RecurringJobOptions() { TimeZone = TimeZoneInfo.Local }
                     );
@@ -2705,7 +2705,6 @@ public class UserService
 
     public async Task<PlanEmail> PauseSchedule(PlanEmail plan)
     {
-        plan.DailyDate = plan.DailyDate ?? DateTime.Now;
         plan.IsStart = false;
         plan.IsPause = true;
         var conn = _configuration.GetConnectionString("Default");

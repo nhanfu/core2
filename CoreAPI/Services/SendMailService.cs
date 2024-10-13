@@ -3,6 +3,7 @@ using Core.Models;
 using Core.ViewModels;
 using CoreAPI.BgService;
 using CoreAPI.Models;
+using Hangfire;
 using HtmlAgilityPack;
 using System.Text.RegularExpressions;
 
@@ -89,7 +90,7 @@ namespace CoreAPI.Services
             return await Task.WhenAll(tasks);
         }
 
-        public async Task ActionSendMail(string conn, string webRootPath, PlanEmail plan, (string, string, DateTime, int?, string) item)
+        public async Task ActionSendMail(string conn, string webRootPath, PlanEmail plan, PlanEmailDetail planDetail, (string, string, DateTime, int?, string) item)
         {
             var email = new EmailVM
             {
@@ -101,6 +102,26 @@ namespace CoreAPI.Services
             var user = (await BgExt.ReadDsAsArr<User>(query, conn)).FirstOrDefault();
             var server = "smtp.gmail.com";
             await email.SendMailAsync(plan.FromName ?? user.FullName, plan.FromEmail ?? user.Email, plan.PassEmail ?? user.PassEmail, server, 587, false, webRootPath);
+            switch (plan.ReminderSettingId)
+            {
+                case 1:
+                    planDetail.NextStartDate = planDetail.NextStartDate.Value.AddDays(1);
+                    break;
+                case 2:
+                    planDetail.NextStartDate = planDetail.NextStartDate.Value.AddDays(7);
+                    break;
+                case 3:
+                    planDetail.NextStartDate = planDetail.NextStartDate.Value.AddMonths(1);
+                    break;
+                case 4:
+                    planDetail.NextStartDate = planDetail.NextStartDate.Value.AddYears(1);
+                    break;
+                default:
+                    break;
+            }
+            planDetail.Id = planDetail.Id.Substring(1);
+            var patch2 = planDetail.MapToPatch();
+            await BgExt.SavePatch2(patch2, conn);
         }
 
         public async Task ActionSendMail(string conn, string webRootPath, PlanEmail plan)
