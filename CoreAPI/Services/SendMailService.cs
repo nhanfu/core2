@@ -15,9 +15,13 @@ namespace CoreAPI.Services
             var html = planEmail.Template;
             var sql = string.Empty;
             var now = DateTime.Now;
-            if (!planEmail.FeatureId.IsNullOrWhiteSpace() && !planEmail.ComponentId.IsNullOrWhiteSpace())
+            if (!planEmail.FeatureId.IsNullOrWhiteSpace())
             {
-                sql += $"SELECT * FROM [{planEmail.Feature.EntityId}] WHERE [{planEmail.Component.FieldName}] IS NOT NULL and Email is not null; SELECT * FROM COMPONENT WHERE FEATUREID = '{planEmail.FeatureId}' AND ComponentGroupId IS NOT NULL";
+                sql = $"SELECT * FROM [{planEmail.Feature.EntityId}] WHERE Email is not null; SELECT * FROM COMPONENT WHERE FEATUREID = '{planEmail.FeatureId}' AND ComponentGroupId IS NOT NULL";
+            }
+            if (!planEmail.ComponentId.IsNullOrWhiteSpace())
+            {
+                sql = $"SELECT * FROM [{planEmail.Feature.EntityId}] WHERE [{planEmail.Component.FieldName}] IS NOT NULL and Email is not null; SELECT * FROM COMPONENT WHERE FEATUREID = '{planEmail.FeatureId}' AND ComponentGroupId IS NOT NULL";
             }
             var datas = await BgExt.ReadDataSet(sql, conn);
             if (datas[0].Length == 0)
@@ -60,7 +64,7 @@ namespace CoreAPI.Services
                 {
                     Data = data
                 };
-                var selectedData = Convert.ToDateTime(data[planEmail.Component.FieldName]);
+                var selectedData = Convert.ToDateTime(planEmail.ComponentId.IsNullOrWhiteSpace() ? planEmail.DailyDate : data[planEmail.Component.FieldName]);
                 var email = data["Email"]?.ToString();
                 var id = $"{planEmail.Id}{data["Id"]?.ToString()}";
                 var modifiedHtml = html;
@@ -80,7 +84,7 @@ namespace CoreAPI.Services
                     BindingDataExt.ReplaceCTableNode(createHtmlVM, item, dirCom);
                 }
                 var newHtml = document.DocumentNode.InnerHtml;
-                return (email, modifiedHtml, selectedData, planEmail.ReminderSettingId, id);
+                return (email, newHtml, selectedData, planEmail.ReminderSettingId, id);
             }).ToArray();
             return await Task.WhenAll(tasks);
         }

@@ -2603,15 +2603,11 @@ public class UserService
         plan.IsStart = true;
         plan.IsPause = false;
         plan.StartDate = nextStartDate;
-        if (plan.ComponentId != null)
+        if (!plan.ComponentId.IsNullOrWhiteSpace() && plan.Component.ComponentGroupId.IsNullOrWhiteSpace())
         {
-            var query2 = $"select top 1 * from [{nameof(Component)}] where Id = '{plan.ComponentId}'";
-            plan.Component = (await BgExt.ReadDsAsArr<Component>(query2, _configuration.GetConnectionString("Default"))).FirstOrDefault();
-        }
-        if (plan.FeatureId != null)
-        {
-            var query3 = $"select top 1 * from [{nameof(Feature)}] where Id = '{plan.FeatureId}'";
-            plan.Feature = (await BgExt.ReadDsAsArr<Feature>(query3, _configuration.GetConnectionString("Default"))).FirstOrDefault();
+            var query2 = $"select top 1 * from [{nameof(Component)}] where EntityId = '{plan.Component.EntityId}' and FeatureId  = '{plan.FeatureId}'";
+            plan.Component = await BgExt.ReadDsAs<Component>(query2, _configuration.GetConnectionString("Default"));
+            plan.Feature.EntityId = plan.Component.RefName;
         }
         var templates = await _sendMailService.ReadTemplate(plan, _configuration.GetConnectionString("Default"));
         if (templates is null)
@@ -2744,6 +2740,8 @@ public class UserService
         }
         var query3 = $"DELETE [{nameof(PlanEmailDetail)}] where PlanEmailId = '{plan.Id}'";
         await _sql.RunSqlCmd(conn, query3);
+        var patch = plan.MapToPatch();
+        await BgExt.SavePatch2(patch, _configuration.GetConnectionString("Default"));
         return plan;
     }
 
