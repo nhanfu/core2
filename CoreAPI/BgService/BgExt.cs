@@ -4,6 +4,7 @@ using Core.Extensions;
 using Core.Models;
 using Core.Services;
 using Core.ViewModels;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -25,6 +26,9 @@ namespace CoreAPI.BgService
 
         public static async Task<Dictionary<string, object>[][]> ReadDataSet(string query, string connStr)
         {
+            ArgumentException.ThrowIfNullOrWhiteSpace(connStr);
+            var sideEffect = HasSideEffect(query);
+            if (sideEffect) throw new ApiException("Side effect of query is NOT allowed");
             var tables = new List<Dictionary<string, object>[]>();
             try
             {
@@ -56,6 +60,20 @@ namespace CoreAPI.BgService
                     StatusCode = HttpStatusCode.InternalServerError,
                 };
             }
+        }
+
+        static readonly TSqlTokenType[] SideEffectCmd = [
+        TSqlTokenType.Insert, TSqlTokenType.Update, TSqlTokenType.Delete,
+            TSqlTokenType.Create, TSqlTokenType.Drop, TSqlTokenType.Alter,
+            TSqlTokenType.Truncate, TSqlTokenType.MultilineComment, TSqlTokenType.SingleLineComment
+        ];
+
+        public static bool HasSideEffect(string sql, params TSqlTokenType[] allowCmds)
+        {
+            var finalCmd = SideEffectCmd.Except(allowCmds).ToArray();
+            TSql110Parser parser = new(true);
+            var fragments = parser.Parse(new StringReader(sql), out var errors);
+            return fragments.ScriptTokenStream.Any(x => finalCmd.Contains(x.TokenType));
         }
 
         private static Dictionary<string, object> ReadSqlRecord(IDataRecord reader)
