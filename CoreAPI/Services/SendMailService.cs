@@ -17,56 +17,72 @@ namespace CoreAPI.Services
             var now = DateTime.Now;
             if (!planEmail.FeatureId.IsNullOrWhiteSpace() && !planEmail.ComponentId.IsNullOrWhiteSpace())
             {
-                sql += $"SELECT * FROM [{planEmail.Feature.EntityId}] WHERE [{planEmail.Component.FieldName}] IS NOT NULL " +
-                       $"SELECT * FROM COMPONENT WHERE FEATUREID = '{planEmail.FeatureId}' AND ComponentGroupId IS NOT NULL";
+                sql += $"SELECT * FROM [{planEmail.Feature.EntityId}] WHERE [{planEmail.Component.FieldName}] IS NOT NULL and Email is not null; SELECT * FROM COMPONENT WHERE FEATUREID = '{planEmail.FeatureId}' AND ComponentGroupId IS NOT NULL";
             }
             var datas = await BgExt.ReadDataSet(sql, conn);
+            if (datas[0].Length == 0)
+            {
+                return null;
+            }
             var components = datas.Length > 0 && datas[1].Length > 0 ? datas[1].Select(x => x.MapTo<Component>()).ToList() : null;
             var curlyBraceRegex = new Regex(@"\{(.+?)\}");
             var dollarCurlyBraceRegex = new Regex(@"\${(.+?)\}");
             var dirCom = components.DistinctBy(x => x.Label).ToDictionary(x => x.Label);
-            var rs = datas[0].Select((data) =>
+            var tasks = datas[0].Select(async (data) =>
             {
-                var selectedData = Convert.ToDateTime(data[planEmail.Component.FieldName]);
-                var email = data["Email"]?.ToString();
-                var id = data["Id"]?.ToString();
-                var modifiedHtml = html;
-                var matches = curlyBraceRegex.Matches(modifiedHtml);
-                foreach (Match match in matches)
+                var sqlChild = planEmail.Sql;
+                if (!sqlChild.IsNullOrWhiteSpace())
                 {
-                    if (match.Success)
+                    var sqlQuery = BindingDataExt.FormatString(sqlChild, data);
+                    var customData = await BgExt.ReadDataSet(sqlQuery, conn);
+                    foreach (var item in customData[0][0])
                     {
-                        var valueWithinCurlyBraces = match.Groups[1].Value;
-                        var htmlDoc = new HtmlDocument();
-                        htmlDoc.LoadHtml(valueWithinCurlyBraces);
-                        string plainText = htmlDoc.DocumentNode.InnerText;
-                        var curentComponent = dirCom.GetValueOrDefault(plainText);
-                        if (curentComponent != null)
+                        if (data.GetValueOrNull(item.Key) != null)
                         {
-                            var currentData = data[curentComponent.FieldName];
-                            switch (curentComponent.ComponentType)
-                            {
-                                case "Datepicker":
-                                    currentData = currentData is null ? "" : Convert.ToDateTime(currentData).ToString("dd/MM/yyyy");
-                                    break;
-                                case "Number":
-                                    currentData = currentData is null ? "" : Convert.ToDecimal(currentData).ToString(curentComponent.FormatData ?? "N0");
-                                    break;
-                                default:
-                                    break;
-                            }
-                            modifiedHtml = modifiedHtml.Replace($"{{{valueWithinCurlyBraces}}}", currentData?.ToString() ?? string.Empty);
+                            data[item.Key] = item.Value;
+                        }
+                        else
+                        {
+                            data.Add(item.Key, item.Value);
+                        }
+                    }
+                    if (customData.Length > 1)
+                    {
+                        int i = 0;
+                        foreach (var row in customData.Skip(1).ToList())
+                        {
+                            data.Add("c" + i, row);
+                            i++;
                         }
                     }
                 }
+                var createHtmlVM = new CreateHtmlVM()
+                {
+                    Data = data
+                };
+                var selectedData = Convert.ToDateTime(data[planEmail.Component.FieldName]);
+                var email = data["Email"]?.ToString();
+                var id = $"{planEmail.Id}{data["Id"]?.ToString()}";
+                var modifiedHtml = html;
+                var matches = curlyBraceRegex.Matches(modifiedHtml);
+                HtmlDocument document = new HtmlDocument();
+                document.LoadHtml(planEmail.Template);
+                foreach (var item in document.DocumentNode.ChildNodes)
+                {
+                    BindingDataExt.ReplaceNode(createHtmlVM, item, dirCom);
+                }
+                foreach (var item in document.DocumentNode.ChildNodes)
+                {
+                    BindingDataExt.ReplaceTableNode(createHtmlVM, item, dirCom);
+                }
+                foreach (var item in document.DocumentNode.ChildNodes)
+                {
+                    BindingDataExt.ReplaceCTableNode(createHtmlVM, item, dirCom);
+                }
+                var newHtml = document.DocumentNode.InnerHtml;
                 return (email, modifiedHtml, selectedData, planEmail.ReminderSettingId, id);
             }).ToArray();
-            return rs;
-        }
-
-        public async Task ExecuteEmailPlan(string planId, string conn, string webRootPath)
-        {
-
+            return await Task.WhenAll(tasks);
         }
 
         public async Task ActionSendMail(string conn, string webRootPath, PlanEmail plan, (string, string, DateTime, int?, string) item)

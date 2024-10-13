@@ -36,7 +36,7 @@ public class UserController(UserService _userSvc, PdfService _pdfService, WebSoc
     [HttpPost("api/StartSchedule")]
     public async Task<PlanEmail> StartSchedule([FromBody] PlanEmail token)
     {
-        return await _userSvc.StartSchedule(token);
+        return await _userSvc.CreateSchedule(token);
     }
 
     [HttpPost("api/PauseSchedule")]

@@ -18,6 +18,7 @@ namespace CoreAPI.Models
         public string UserId { get; set; }
         public string Name { get; set; }
         public string Template { get; set; }
+        public string Sql { get; set; }
         public DateTime? LastNotificationDate { get; set; }
         public bool IsPause { get; set; }
         public bool IsStart { get; set; }
