@@ -18,11 +18,19 @@ namespace CoreAPI.Services
         public async Task<string> CreateHtml(CreateHtmlVM createHtmlVM, string conn)
         {
             var component = await BgExt.ReadDsAs<Component>($"SELECT * FROM [Component] where Id = '{createHtmlVM.ComId}'", conn);
+            var webConfigs = await BgExt.ReadDataSet($"SELECT * FROM [WebConfig]", conn);
             var components = await BgExt.ReadDsAsArr<Component>($"SELECT * FROM [Component] where Label is not null and Label != '' and FeatureId = '{component.FeatureId}' and ComponentGroupId is not null and ComponentType not in ('Button','Section','GridView')", conn);
             var gridPolicys = await BgExt.ReadDsAsArr<Component>($"SELECT * FROM [Component] where Label is not null and Label != '' and FeatureId = '{component.FeatureId}' and EntityId is not null and ComponentType not in ('Button','Section','GridView')", conn);
             var dirCom = components.DistinctBy(x => x.Label).ToDictionary(x => x.Label);
             var sql = component.Query;
             BindingDataExt.SetDefaultToken(createHtmlVM, _userService);
+            if (webConfigs[0].Length > 0)
+            {
+                foreach (var item in webConfigs[0])
+                {
+                    createHtmlVM.Data.Add("C" + item["Key"], item["Value"]);
+                }
+            }
             if (!sql.IsNullOrWhiteSpace())
             {
                 var sqlQuery = BindingDataExt.FormatString(sql, createHtmlVM.Data);
