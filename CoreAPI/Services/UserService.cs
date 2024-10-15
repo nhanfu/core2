@@ -323,7 +323,10 @@ public class UserService
         {
             return null;
         }
-        var query2 = @$"select * from [Component] where FeatureId = '{feature.Id}'
+        var query2 = @$"select [Component] .*,isnull(def.Value,DefaultVal) as DefaultVal,def.Id as ComponentDefaultValueId
+        from [Component] 
+        outer apply (select top 1 Value,Id from ComponentDefaultValue where UserId = {UserId} and ComponentId = Component.Id) as def 
+        where FeatureId = '{feature.Id}'
         select * from [FeaturePolicy] where FeatureId = '{feature.Id}'
         select * from [UserSetting] where FeatureId = '{feature.Id}' and UserId = '{UserId}'";
         var childs = await _sql.ReadDataSet(query2, _configuration.GetConnectionString("Default"));
