@@ -207,11 +207,11 @@ public class UserService
         select u.* from [User] u 
         where u.Active = 1 and u.Username = @username;
         select top 1 p.* from [Partner] p 
-        left join [User] u on p.Id = [User].CompanyId
+        left join [User] u on p.Id = u.CompanyId
         where u.Active = 1 and u.Username = @username;";
         var ds = await _sql.ReadDataSet(query);
         var userDb = ds.Length > 0 && ds[0].Length > 0 ? ds[0][0].MapTo<User>() : null;
-        userDb.Company = ds.Length > 0 && ds[1].Length > 0 ? ds[1][1].MapTo<Partner>() : null;
+        userDb.Company = ds.Length > 1 && ds[1].Length > 0 ? ds[1][0].MapTo<Partner>() : null;
         return userDb;
     }
 
@@ -380,11 +380,11 @@ public class UserService
             new ("Avatar", user.Avatar ?? "/icons/default-avatar.jpg"),
             new ("TeamId", user.TeamId ?? string.Empty),
             new (ClaimTypes.Name, user.UserName),
-            new ("CName", user.Company.CompanyName),
-            new ("CLogo", user.Company.Logo),
-            new ("CAddress", user.Company.Address),
-            new ("CPhoneNumber", user.Company.PhoneNumber),
-            new ("CEmail",user.Company.Email),
+            new ("CName", user.Company.CompanyName ?? string.Empty),
+            new ("CLogo", user.Company.Logo ?? string.Empty),
+            new ("CAddress", user.Company.Address ?? string.Empty),
+            new ("CPhoneNumber", user.Company.PhoneNumber ?? string.Empty),
+            new ("CEmail",user.Company.Email ?? string.Empty),
             new (JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
             new (JwtRegisteredClaimNames.Birthdate, user.Dob?.ToString() ?? string.Empty),
         ];
@@ -911,8 +911,8 @@ public class UserService
         }
         var currentLevel = approvements.FirstOrDefault()?.CurrentLevel ?? 1;
         var currentConfig = approvalConfig.FirstOrDefault(x => x.Level == currentLevel + 1);
-        var user = matchApprovalConfig.UserIds.Split(",");
-        var ids = user.Select(x => x).ToList();
+        var userApproved = currentConfig.UserIds.Split(",");
+        var ids = userApproved.Select(x => x).ToList();
         if (!ids.Contains(UserId))
         {
             return new SqlResult()
@@ -938,7 +938,6 @@ public class UserService
         };
         var patchQpproval = approval.MapToPatch();
         await SavePatch(patchQpproval);
-        var userApproved = matchApprovalConfig.UserIds.Split(",");
         if (approvalConfig.Where(x => x.Level == currentLevel + 1).Nothing())
         {
             vm.Changes.FirstOrDefault(x => x.Field == "StatusId").Value = "3";
@@ -961,22 +960,24 @@ public class UserService
                 var patch = item.MapToPatch();
                 await SavePatch(patch);
             }
-            NotifyDevices(task, "Approved");
+            NotifyDevices(task, "MessageNotification");
         }
         else
         {
-            var task = user.Select(x => new TaskNotification()
+            var nextLevel = approvalConfig.FirstOrDefault(x => x.Level == currentLevel + 1);
+            userApproved = currentConfig.UserIds.Split(",");
+            ids = userApproved.Select(x => x).ToList();
+            var task = userApproved.Select(x => new TaskNotification()
             {
                 Id = Uuid7.Guid().ToString(),
                 EntityId = name,
-                Title = "Request is approved",
-                Icon = "fal fa-smile",
+                Title = "You have request approve",
                 Description = titLe.Value,
                 InsertedBy = UserId,
                 RecordId = id,
                 InsertedDate = DateTime.Now,
                 Active = true,
-                AssignedId = insertedBy.Value
+                AssignedId = x
             }).ToList();
             foreach (var item in task)
             {
