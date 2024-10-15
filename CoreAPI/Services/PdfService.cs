@@ -19,6 +19,7 @@ namespace CoreAPI.Services
         {
             var component = await BgExt.ReadDsAs<Component>($"SELECT * FROM [Component] where Id = '{createHtmlVM.ComId}'", conn);
             var webConfigs = await BgExt.ReadDataSet($"SELECT * FROM [WebConfig]", conn);
+            var myCompany = await BgExt.ReadDsAs<Partner>($"SELECT TOP 1 * FROM [Partner] where ServiceId = 4", conn);
             var components = await BgExt.ReadDsAsArr<Component>($"SELECT * FROM [Component] where Label is not null and Label != '' and FeatureId = '{component.FeatureId}' and ComponentGroupId is not null and ComponentType not in ('Button','Section','GridView')", conn);
             var gridPolicys = await BgExt.ReadDsAsArr<Component>($"SELECT * FROM [Component] where Label is not null and Label != '' and FeatureId = '{component.FeatureId}' and EntityId is not null and ComponentType not in ('Button','Section','GridView')", conn);
             var dirCom = components.DistinctBy(x => x.Label).ToDictionary(x => x.Label);
@@ -29,6 +30,49 @@ namespace CoreAPI.Services
                 foreach (var item in webConfigs[0])
                 {
                     createHtmlVM.Data.Add("C" + item["Key"], item["Value"]);
+                }
+            }
+            if (myCompany != null)
+            {
+                if (createHtmlVM.Data.GetValueOrNull("CEmail") != null)
+                {
+                    createHtmlVM.Data["CEmail"] = myCompany.Email ?? string.Empty;
+                }
+                else
+                {
+                    createHtmlVM.Data.Add("CEmail", myCompany.Email);
+                }
+                if (createHtmlVM.Data.GetValueOrNull("CCompanyName") != null)
+                {
+                    createHtmlVM.Data["CCompanyName"] = myCompany.CompanyName ?? string.Empty;
+                }
+                else
+                {
+                    createHtmlVM.Data.Add("CCompanyName", myCompany.CompanyName);
+                }
+                if (createHtmlVM.Data.GetValueOrNull("CAddress") != null)
+                {
+                    createHtmlVM.Data["CAddress"] = myCompany.Address ?? string.Empty;
+                }
+                else
+                {
+                    createHtmlVM.Data.Add("CAddress", myCompany.Address);
+                }
+                if (createHtmlVM.Data.GetValueOrNull("CPhoneNumber") != null)
+                {
+                    createHtmlVM.Data["CPhoneNumber"] = myCompany.PhoneNumber ?? string.Empty;
+                }
+                else
+                {
+                    createHtmlVM.Data.Add("CPhoneNumber", myCompany.PhoneNumber);
+                }
+                if (createHtmlVM.Data.GetValueOrNull("CLogo") != null)
+                {
+                    createHtmlVM.Data["CLogo"] = $"<img src=\"{myCompany.Logo ?? string.Empty}\" alt=\"\" width=\"100\" height=\"38\">";
+                }
+                else
+                {
+                    createHtmlVM.Data.Add("CLogo", $"<img src=\"{myCompany.Logo ?? string.Empty}\" alt=\"\" width=\"100\" height=\"38\">");
                 }
             }
             if (!sql.IsNullOrWhiteSpace())

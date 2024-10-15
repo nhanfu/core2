@@ -76,5 +76,9 @@
         public string AdditionTypeIdsText { get; set; }
         public string FormatChat { get; set; }
         public string AddressInv { get; set; }
+        public string AssignId { get; set; }
+        public string History { get; set; }
+        public DateTime? Birthday { get; set; }
+        public string Logo { get; set; }
     }
 }

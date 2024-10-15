@@ -51,5 +51,6 @@
         public string BankId { get; set; }
         public string PassEmail { get; set; }
         public string Ip { get; set; }
+        public Partner Company { get; set; }
     }
 }

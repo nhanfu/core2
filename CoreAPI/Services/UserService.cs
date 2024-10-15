@@ -16,7 +16,6 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
-using PuppeteerSharp;
 using System.Buffers;
 using System.Data;
 using System.Data.SqlClient;
@@ -24,7 +23,6 @@ using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq.Expressions;
 using System.Net.WebSockets;
-using System.Numerics;
 using System.Reflection;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -51,6 +49,11 @@ public class UserService
     public string GroupId { get; set; }
     public string UserId { get; set; }
     public string UserName { get; set; }
+    public string CLogo { get; set; }
+    public string CCompanyName { get; set; }
+    public string CAddress { get; set; }
+    public string CPhoneNumber { get; set; }
+    public string CEmail { get; set; }
     public string ConnKey { get; set; }
     public string BranchId { get; set; }
     public List<string> CenterIds { get; set; }
@@ -104,6 +107,11 @@ public class UserService
         VendorId = claims.FirstOrDefault(x => x.Type == ClaimTypes.GroupSid)?.Value;
         TenantCode = claims.FirstOrDefault(x => x.Type == UserServiceHelpers.TenantClaim)?.Value.ToUpper();
         Env = claims.FirstOrDefault(x => x.Type == UserServiceHelpers.EnvClaim)?.Value.ToUpper();
+        CLogo = claims.FirstOrDefault(x => x.Type == "CLogo")?.Value;
+        CCompanyName = claims.FirstOrDefault(x => x.Type == "CCompanyName")?.Value;
+        CAddress = claims.FirstOrDefault(x => x.Type == "CAddress")?.Value;
+        CPhoneNumber = claims.FirstOrDefault(x => x.Type == "CPhoneNumber")?.Value;
+        CEmail = claims.FirstOrDefault(x => x.Type == "CEmail")?.Value;
     }
 
     public string GenerateRandomToken(int? maxLength = 32)
@@ -197,9 +205,13 @@ public class UserService
         var query = @$"
         declare @username varchar(100) = '{login.UserName}';
         select u.* from [User] u 
+        where u.Active = 1 and u.Username = @username;
+        select top 1 p.* from [Partner] p 
+        left join [User] u on p.Id = [User].CompanyId
         where u.Active = 1 and u.Username = @username;";
         var ds = await _sql.ReadDataSet(query);
         var userDb = ds.Length > 0 && ds[0].Length > 0 ? ds[0][0].MapTo<User>() : null;
+        userDb.Company = ds.Length > 0 && ds[1].Length > 0 ? ds[1][1].MapTo<Partner>() : null;
         return userDb;
     }
 
@@ -368,6 +380,11 @@ public class UserService
             new ("Avatar", user.Avatar ?? "/icons/default-avatar.jpg"),
             new ("TeamId", user.TeamId ?? string.Empty),
             new (ClaimTypes.Name, user.UserName),
+            new ("CName", user.Company.CompanyName),
+            new ("CLogo", user.Company.Logo),
+            new ("CAddress", user.Company.Address),
+            new ("CPhoneNumber", user.Company.PhoneNumber),
+            new ("CEmail",user.Company.Email),
             new (JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
             new (JwtRegisteredClaimNames.Birthdate, user.Dob?.ToString() ?? string.Empty),
         ];
@@ -420,7 +437,6 @@ public class UserService
     private static Token JsonToken(User user, string tanent, List<string> rolesIds, List<string> rolesNames, string refreshToken,
         JwtSecurityToken token, DateTime exp, DateTime signinDate)
     {
-        var vendor = new Partner();
         return new Token
         {
             UserId = user.Id,
@@ -436,7 +452,7 @@ public class UserService
             RefreshToken = refreshToken,
             RoleIds = rolesIds,
             RoleNames = rolesNames,
-            Vendor = vendor,
+            Vendor = user.Company,
             TenantCode = tanent,
             SigninDate = signinDate,
         };
