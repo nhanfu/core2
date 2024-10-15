@@ -325,7 +325,7 @@ public class UserService
         }
         var query2 = @$"select [Component] .*,isnull(def.Value,DefaultVal) as DefaultVal,def.Id as ComponentDefaultValueId
         from [Component] 
-        outer apply (select top 1 Value,Id from ComponentDefaultValue where UserId = {UserId} and ComponentId = Component.Id) as def 
+        outer apply (select top 1 Value,Id from ComponentDefaultValue where UserId = '{UserId}' and ComponentId = Component.Id) as def 
         where FeatureId = '{feature.Id}'
         select * from [FeaturePolicy] where FeatureId = '{feature.Id}'
         select * from [UserSetting] where FeatureId = '{feature.Id}' and UserId = '{UserId}'";
