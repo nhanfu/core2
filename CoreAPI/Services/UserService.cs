@@ -236,6 +236,13 @@ public class UserService
         return ds[0];
     }
 
+    public async Task<Dictionary<string, object>[]> SalesFunction()
+    {
+        var query = @$"select * from [SaleFunction]";
+        var ds = await _sql.ReadDataSet(query, _configuration.GetConnectionString("Default"));
+        return ds[0];
+    }
+
     public async Task<bool> NotificationUser(NotificationVM entity)
     {
         var tasks = entity.Rule.Select(item =>
@@ -639,7 +646,6 @@ public class UserService
     public async Task<SqlResult> SendEntity(PatchVM vm)
     {
         var name = vm.Name ?? vm.Table;
-        var rs = await SavePatch2(vm);
         var id = vm.Changes.FirstOrDefault(x => x.Field == "Id").Value;
         var voucherTypeId = vm.Changes.FirstOrDefault(x => x.Field == "VoucherTypeId");
         var userReceiverId = vm.Changes.FirstOrDefault(x => x.Field == "UserReceiverId");
@@ -647,6 +653,7 @@ public class UserService
         var titLe = vm.Changes.FirstOrDefault(x => x.Field == "FormatChat");
         if (userReceiverId != null && !userReceiverId.Value.IsNullOrWhiteSpace() || groupReceiverId != null && !groupReceiverId.Value.IsNullOrWhiteSpace())
         {
+            var rs = await SavePatch2(vm);
             if (userReceiverId != null && !userReceiverId.Value.IsNullOrWhiteSpace())
             {
                 var taskUser = new TaskNotification()
@@ -726,16 +733,29 @@ public class UserService
             Active = true,
             AssignedId = x
         }).ToList();
+        var useIds = vm.Changes.FirstOrDefault(x => x.Field == "UserApprovedIds");
+        if (useIds != null)
+        {
+            useIds.Value = user.Combine();
+        }
+        else
+        {
+            vm.Changes.Add(new PatchDetail()
+            {
+                Field = "UserApprovedIds",
+                Value = user.Combine()
+            });
+        }
+        var rs2 = await SavePatch2(vm);
         foreach (var item in task)
         {
             var patch = item.MapToPatch();
             await SavePatch(patch);
         }
-        NotifyDevices(task, "RequestApprove");
         return new SqlResult()
         {
             status = 200,
-            updatedItem = rs.updatedItem
+            updatedItem = rs2.updatedItem
         };
     }
 
@@ -743,7 +763,6 @@ public class UserService
     {
         var now = DateTime.Now;
         var name = vm.Name ?? vm.Table;
-        var rs = await SavePatch2(vm);
         var id = vm.Changes.FirstOrDefault(x => x.Field == "Id").Value;
         var userReceiverId = vm.Changes.FirstOrDefault(x => x.Field == "UserReceiverId");
         var groupReceiverId = vm.Changes.FirstOrDefault(x => x.Field == "GroupReceiverId");
@@ -751,6 +770,7 @@ public class UserService
         var titLe = vm.Changes.FirstOrDefault(x => x.Field == "FormatChat");
         if (userReceiverId != null && !userReceiverId.Value.IsNullOrWhiteSpace() || groupReceiverId != null && !groupReceiverId.Value.IsNullOrWhiteSpace())
         {
+            var rs = await SavePatch2(vm);
             if (userReceiverId != null && !userReceiverId.Value.IsNullOrWhiteSpace() && UserId == userReceiverId.Value)
             {
                 var approval1 = new Approvement
@@ -847,7 +867,8 @@ public class UserService
         {
             return new SqlResult()
             {
-                status = 500
+                status = 500,
+                message = "Please config approved"
             };
         }
         var matchApprovalConfig = approvalConfig.FirstOrDefault(x => x.Level == 1);
@@ -855,7 +876,8 @@ public class UserService
         {
             return new SqlResult()
             {
-                status = 500
+                status = 500,
+                message = "Please config approved"
             };
         }
         var maxLevel = approvalConfig.Max(x => x.Level);
@@ -866,12 +888,13 @@ public class UserService
             var users = matchApprovalConfig.UserIds.Split(",");
             var userEndApproved = users.Select(x => x).ToList();
             vm.Changes.FirstOrDefault(x => x.Field == "StatusId").Value = "3";
-            rs = await SavePatch2(vm);
+            var rs1 = await SavePatch2(vm);
             var approval1 = new Approvement
             {
                 Id = Uuid7.Guid().ToString(),
                 Approved = true,
                 CurrentLevel = 1,
+                ReasonOfChange = vm.ReasonOfChange,
                 NextLevel = 1,
                 Name = name,
                 RecordId = id,
@@ -906,11 +929,11 @@ public class UserService
             {
                 status = 200,
                 message = "Your data has been approved.",
-                updatedItem = rs.updatedItem
+                updatedItem = rs1.updatedItem
             };
         }
-        var currentLevel = approvements.FirstOrDefault()?.CurrentLevel ?? 1;
-        var currentConfig = approvalConfig.FirstOrDefault(x => x.Level == currentLevel + 1);
+        var currentLevel = approvements.Nothing() ? 1 : approvements.FirstOrDefault()?.CurrentLevel ?? 1;
+        var currentConfig = approvalConfig.FirstOrDefault(x => x.Level == currentLevel);
         var userApproved = currentConfig.UserIds.Split(",");
         var ids = userApproved.Select(x => x).ToList();
         if (!ids.Contains(UserId))
@@ -926,6 +949,7 @@ public class UserService
             Id = Uuid7.Guid().ToString(),
             Approved = true,
             CurrentLevel = currentConfig.Level,
+            ReasonOfChange = vm.ReasonOfChange,
             NextLevel = currentConfig.Level + 1,
             Name = name,
             RecordId = id,
@@ -938,10 +962,11 @@ public class UserService
         };
         var patchQpproval = approval.MapToPatch();
         await SavePatch(patchQpproval);
-        if (approvalConfig.Where(x => x.Level == currentLevel + 1).Nothing())
+        var nextLevel = approvalConfig.FirstOrDefault(x => x.Level == approval.CurrentLevel + 1);
+        if (nextLevel is null)
         {
             vm.Changes.FirstOrDefault(x => x.Field == "StatusId").Value = "3";
-            rs = await SavePatch2(vm);
+            var rs2 = await SavePatch2(vm);
             var task = userApproved.Select(x => new TaskNotification()
             {
                 Id = Uuid7.Guid().ToString(),
@@ -961,12 +986,26 @@ public class UserService
                 await SavePatch(patch);
             }
             NotifyDevices(task, "MessageNotification");
+            return new SqlResult()
+            {
+                status = 200,
+                updatedItem = rs2.updatedItem
+            };
         }
         else
         {
-            var nextLevel = approvalConfig.FirstOrDefault(x => x.Level == currentLevel + 1);
-            userApproved = currentConfig.UserIds.Split(",");
+            userApproved = nextLevel.UserIds.Split(",");
             ids = userApproved.Select(x => x).ToList();
+            var useViewIds = vm.Changes.FirstOrDefault(x => x.Field == "UserViewIds");
+            var useIds = vm.Changes.FirstOrDefault(x => x.Field == "UserApprovedIds");
+            if (useViewIds != null)
+            {
+                useViewIds.Value = useViewIds.Value is null ? useIds.Value : (useViewIds.Value + "," + useIds.Value);
+            }
+            if (useIds != null)
+            {
+                useIds.Value = userApproved.Combine();
+            }
             var task = userApproved.Select(x => new TaskNotification()
             {
                 Id = Uuid7.Guid().ToString(),
@@ -984,13 +1023,15 @@ public class UserService
                 var patch = item.MapToPatch();
                 await SavePatch(patch);
             }
+            var rs2 = await SavePatch2(vm);
             NotifyDevices(task, "MessageNotification");
+            return new SqlResult()
+            {
+                status = 200,
+                updatedItem = rs2.updatedItem
+            };
         }
-        return new SqlResult()
-        {
-            status = 200,
-            updatedItem = rs.updatedItem
-        };
+
     }
 
     public async Task<SqlResult> DeclineEntity(PatchVM vm)
@@ -998,7 +1039,6 @@ public class UserService
         vm.Changes.FirstOrDefault(x => x.Field == "StatusId").Value = "4";
         var now = DateTime.Now;
         var name = vm.Name ?? vm.Table;
-        var rs = await SavePatch2(vm);
         var id = vm.Changes.FirstOrDefault(x => x.Field == "Id").Value;
         var voucherTypeId = vm.Changes.FirstOrDefault(x => x.Field == "VoucherTypeId");
         var userReceiverId = vm.Changes.FirstOrDefault(x => x.Field == "UserReceiverId");
@@ -1007,6 +1047,7 @@ public class UserService
         var titLe = vm.Changes.FirstOrDefault(x => x.Field == "FormatChat");
         if (userReceiverId != null && !userReceiverId.Value.IsNullOrWhiteSpace() || groupReceiverId != null && !groupReceiverId.Value.IsNullOrWhiteSpace())
         {
+            var rs = await SavePatch2(vm);
             if (userReceiverId != null && !userReceiverId.Value.IsNullOrWhiteSpace() && UserId == userReceiverId.Value)
             {
                 var approval1 = new Approvement
@@ -1154,11 +1195,30 @@ public class UserService
         };
         var patch = task.MapToPatch();
         await SavePatch(patch);
+        var useIds = vm.Changes.FirstOrDefault(x => x.Field == "UserApprovedIds");
+        if (useIds != null)
+        {
+            useIds.Value = null;
+        }
+        else
+        {
+            var useViewIds = vm.Changes.FirstOrDefault(x => x.Field == "UserViewIds");
+            var useApproveIds = vm.Changes.FirstOrDefault(x => x.Field == "UserApprovedIds");
+            if (useViewIds != null)
+            {
+                useViewIds.Value = null;
+            }
+            if (useIds != null)
+            {
+                useApproveIds.Value = null;
+            }
+        }
+        var rs1 = await SavePatch2(vm);
         NotifyDevices(new List<TaskNotification>() { task }, "MessageNotification");
         return new SqlResult()
         {
             status = 200,
-            updatedItem = rs.updatedItem
+            updatedItem = rs1.updatedItem
         };
     }
 

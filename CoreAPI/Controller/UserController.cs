@@ -156,6 +156,13 @@ public class UserController(UserService _userSvc, PdfService _pdfService, WebSoc
         return _userSvc.WebConfig();
     }
 
+    [AllowAnonymous]
+    [HttpGet("/api/salesFunction")]
+    public Task<Dictionary<string, object>[]> SalesFunction()
+    {
+        return _userSvc.SalesFunction();
+    }
+
     [HttpPost("api/userSetting")]
     public Task<bool> Dictionary([FromBody] UserSetting userSetting)
     {
