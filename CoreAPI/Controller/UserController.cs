@@ -206,6 +206,12 @@ public class UserController(UserService _userSvc, PdfService _pdfService, WebSoc
         return _userSvc.ApprovedEntity(entity);
     }
 
+    [HttpPost("/api/feature/ForwardEntity")]
+    public Task<SqlResult> ForwardEntity([FromBody] PatchVM entity)
+    {
+        return _userSvc.ForwardEntity(entity);
+    }
+
     [HttpPost("/api/feature/DeclineEntity")]
     public Task<SqlResult> DeclineEntity([FromBody] PatchVM entity)
     {

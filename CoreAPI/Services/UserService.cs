@@ -662,7 +662,7 @@ public class UserService
                     EntityId = name,
                     Title = "You have request approve",
                     Icon = "fal fa-quote-right",
-                    Description = titLe.Value,
+                    Description = titLe.Value ?? "",
                     InsertedBy = UserId,
                     RecordId = id,
                     InsertedDate = DateTime.Now,
@@ -683,7 +683,7 @@ public class UserService
                     EntityId = name,
                     Title = "You have request approve",
                     Icon = "fal fa-quote-right",
-                    Description = titLe.Value,
+                    Description = titLe.Value ?? "",
                     InsertedBy = UserId,
                     RecordId = id,
                     InsertedDate = DateTime.Now,
@@ -726,7 +726,7 @@ public class UserService
             Id = Uuid7.Guid().ToString(),
             EntityId = name,
             Title = "You have request approve",
-            Description = titLe.Value,
+            Description = titLe.Value ?? "",
             InsertedBy = UserId,
             RecordId = id,
             InsertedDate = DateTime.Now,
@@ -746,6 +746,7 @@ public class UserService
                 Value = user.Combine()
             });
         }
+        NotifyDevices(task, "MessageNotification");
         var rs2 = await SavePatch2(vm);
         foreach (var item in task)
         {
@@ -796,7 +797,7 @@ public class UserService
                     EntityId = name,
                     Title = "Request is approved",
                     Icon = "fal fa-smile",
-                    Description = titLe.Value,
+                    Description = titLe.Value ?? "",
                     InsertedBy = UserId,
                     RecordId = id,
                     InsertedDate = DateTime.Now,
@@ -836,7 +837,7 @@ public class UserService
                         EntityId = name,
                         Title = "Request is approved",
                         Icon = "fal fa-smile",
-                        Description = titLe.Value,
+                        Description = titLe.Value ?? "",
                         InsertedBy = UserId,
                         RecordId = id,
                         InsertedDate = DateTime.Now,
@@ -881,7 +882,7 @@ public class UserService
             };
         }
         var maxLevel = approvalConfig.Max(x => x.Level);
-        var queryApprovement = @$"SELECT * FROM Approvement where Name = '{name}' and RecordId = '{id}' order by CurrentLevel asc";
+        var queryApprovement = @$"SELECT * FROM Approvement where Name = '{name}' and RecordId = '{id}' and Approved = 1 and IsEnd = 0 order by CurrentLevel desc";
         var approvements = await _sql.ReadDsAsArr<Approvement>(queryApprovement);
         if ((approvements.Nothing() && maxLevel == 1) || approvements.Any(x => x.CurrentLevel == maxLevel))
         {
@@ -913,7 +914,7 @@ public class UserService
                 EntityId = name,
                 Title = "Request is approved",
                 Icon = "fal fa-smile",
-                Description = titLe.Value,
+                Description = titLe.Value ?? "",
                 InsertedBy = UserId,
                 RecordId = id,
                 InsertedDate = DateTime.Now,
@@ -932,9 +933,9 @@ public class UserService
                 updatedItem = rs1.updatedItem
             };
         }
-        var currentLevel = approvements.Nothing() ? 1 : approvements.FirstOrDefault()?.CurrentLevel ?? 1;
-        var currentConfig = approvalConfig.FirstOrDefault(x => x.Level == currentLevel);
-        var userApproved = currentConfig.UserIds.Split(",");
+        var nextLevel = approvements.Nothing() ? 1 : approvements.FirstOrDefault().NextLevel;
+        var nextConfig = approvalConfig.FirstOrDefault(x => x.Level == nextLevel);
+        var userApproved = nextConfig.UserIds.Split(",");
         var ids = userApproved.Select(x => x).ToList();
         if (!ids.Contains(UserId))
         {
@@ -948,9 +949,9 @@ public class UserService
         {
             Id = Uuid7.Guid().ToString(),
             Approved = true,
-            CurrentLevel = currentConfig.Level,
+            CurrentLevel = nextLevel,
             ReasonOfChange = vm.ReasonOfChange,
-            NextLevel = currentConfig.Level + 1,
+            NextLevel = nextLevel + 1,
             Name = name,
             RecordId = id,
             StatusId = 3,
@@ -962,8 +963,8 @@ public class UserService
         };
         var patchQpproval = approval.MapToPatch();
         await SavePatch(patchQpproval);
-        var nextLevel = approvalConfig.FirstOrDefault(x => x.Level == approval.CurrentLevel + 1);
-        if (nextLevel is null)
+        var nextLevelConfig = approvalConfig.FirstOrDefault(x => x.Level == approval.NextLevel);
+        if (nextLevelConfig is null)
         {
             vm.Changes.FirstOrDefault(x => x.Field == "StatusId").Value = "3";
             var rs2 = await SavePatch2(vm);
@@ -973,7 +974,7 @@ public class UserService
                 EntityId = name,
                 Title = "Request is approved",
                 Icon = "fal fa-smile",
-                Description = titLe.Value,
+                Description = titLe.Value ?? "",
                 InsertedBy = UserId,
                 RecordId = id,
                 InsertedDate = DateTime.Now,
@@ -994,13 +995,13 @@ public class UserService
         }
         else
         {
-            userApproved = nextLevel.UserIds.Split(",");
+            userApproved = nextLevelConfig.UserIds.Split(",");
             ids = userApproved.Select(x => x).ToList();
             var useViewIds = vm.Changes.FirstOrDefault(x => x.Field == "UserViewIds");
             var useIds = vm.Changes.FirstOrDefault(x => x.Field == "UserApprovedIds");
             if (useViewIds != null)
             {
-                useViewIds.Value = useViewIds.Value is null ? useIds.Value : (useViewIds.Value + "," + useIds.Value);
+                useViewIds.Value = useViewIds.Value.IsNullOrWhiteSpace() ? useIds.Value : (useViewIds.Value + "," + useIds.Value);
             }
             if (useIds != null)
             {
@@ -1011,7 +1012,7 @@ public class UserService
                 Id = Uuid7.Guid().ToString(),
                 EntityId = name,
                 Title = "You have request approve",
-                Description = titLe.Value,
+                Description = titLe.Value ?? "",
                 InsertedBy = UserId,
                 RecordId = id,
                 InsertedDate = DateTime.Now,
@@ -1032,6 +1033,37 @@ public class UserService
             };
         }
 
+    }
+
+    public async Task<SqlResult> ForwardEntity(PatchVM vm)
+    {
+        var now = DateTime.Now;
+        var name = vm.Name ?? vm.Table;
+        var id = vm.Changes.FirstOrDefault(x => x.Field == "Id").Value;
+        var insertedBy = vm.Changes.FirstOrDefault(x => x.Field == "InsertedBy");
+        var forwardId = vm.Changes.FirstOrDefault(x => x.Field == "ForwardId");
+        var titLe = vm.Changes.FirstOrDefault(x => x.Field == "FormatChat");
+        var rs = await SavePatch2(vm);
+        var task = new TaskNotification()
+        {
+            Id = Uuid7.Guid().ToString(),
+            EntityId = vm.Table,
+            Title = "You have request forward",
+            Description = titLe.Value ?? "",
+            InsertedBy = UserId,
+            RecordId = id,
+            Active = true,
+            InsertedDate = DateTime.Now,
+            AssignedId = forwardId.Value
+        };
+        var patch = task.MapToPatch();
+        await SavePatch(patch);
+        NotifyDevices(new List<TaskNotification>() { task }, "MessageNotification");
+        return new SqlResult()
+        {
+            status = 200,
+            updatedItem = rs.updatedItem
+        };
     }
 
     public async Task<SqlResult> DeclineEntity(PatchVM vm)
@@ -1074,7 +1106,7 @@ public class UserService
                     EntityId = name,
                     Title = "Request is decline",
                     Icon = "fal fa-frown",
-                    Description = titLe.Value,
+                    Description = titLe.Value ?? "",
                     InsertedBy = UserId,
                     RecordId = id,
                     InsertedDate = DateTime.Now,
@@ -1115,7 +1147,7 @@ public class UserService
                         EntityId = name,
                         Title = "Request is decline",
                         Icon = "fal fa-frown",
-                        Description = titLe.Value,
+                        Description = titLe.Value ?? "",
                         InsertedBy = UserId,
                         RecordId = id,
                         InsertedDate = DateTime.Now,
@@ -1159,16 +1191,27 @@ public class UserService
             };
         }
         var maxLevel = approvalConfig.Max(x => x.Level);
-        var queryApprovement = @$"SELECT * FROM Approvement where Name = '{name}' and RecordId = '{id}' order by CurrentLevel asc";
+        var queryApprovement = @$"SELECT * FROM Approvement where Name = '{name}' and RecordId = '{id}' and IsEnd = 0 order by CurrentLevel desc";
         var approvements = await _sql.ReadDsAsArr<Approvement>(queryApprovement);
-        var currentLevel = approvements.FirstOrDefault()?.CurrentLevel ?? 1;
+        var nextLevel = approvements.Nothing() ? 1 : approvements.FirstOrDefault().NextLevel;
+        var nextConfig = approvalConfig.FirstOrDefault(x => x.Level == nextLevel);
+        var userApproved = nextConfig.UserIds.Split(",");
+        var ids = userApproved.Select(x => x).ToList();
+        if (!ids.Contains(UserId))
+        {
+            return new SqlResult()
+            {
+                status = 500,
+                message = "You do not have permission to browse the data"
+            };
+        }
         var approval = new Approvement
         {
             Id = Uuid7.Guid().ToString(),
             Approved = false,
-            CurrentLevel = currentLevel,
+            CurrentLevel = nextLevel,
             ReasonOfChange = vm.ReasonOfChange,
-            NextLevel = 1,
+            NextLevel = nextLevel + 1,
             Name = name,
             RecordId = id,
             StatusId = 4,
@@ -1186,7 +1229,7 @@ public class UserService
             EntityId = vm.Table,
             Title = "Request is decline",
             Icon = "fal fa-frown",
-            Description = titLe.Value,
+            Description = titLe.Value ?? "",
             InsertedBy = UserId,
             RecordId = id,
             Active = true,
@@ -1214,6 +1257,8 @@ public class UserService
             }
         }
         var rs1 = await SavePatch2(vm);
+        var update = $"Update Approvement set IsEnd = 1 where Name = '{name}' and RecordId = '{id}'";
+        await _sql.RunSqlCmd(null, update);
         NotifyDevices(new List<TaskNotification>() { task }, "MessageNotification");
         return new SqlResult()
         {

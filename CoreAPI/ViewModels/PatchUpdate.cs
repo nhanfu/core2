@@ -28,7 +28,7 @@ namespace Core.ViewModels
         public bool Update { get; set; } = false;
         public bool RealTime { get; set; } = false;
         public PatchDetail Id => Changes.FirstOrDefault(x => x.Field == Utils.IdField);
-        public string ReasonOfChange => Changes.FirstOrDefault(x => x.Field == "ReasonOfChange").Value;
+        public string ReasonOfChange { get; set; }
 
     }
 
