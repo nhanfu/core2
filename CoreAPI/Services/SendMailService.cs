@@ -5,6 +5,7 @@ using CoreAPI.BgService;
 using CoreAPI.Models;
 using Hangfire;
 using HtmlAgilityPack;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace CoreAPI.Services
@@ -16,13 +17,15 @@ namespace CoreAPI.Services
             var html = planEmail.Template;
             var sql = string.Empty;
             var now = DateTime.Now;
+            var emailField = $"SELECT * FROM COMPONENT WHERE ID = '{planEmail.EmailFieldId}'";
+            var emailCom = await BgExt.ReadDsAs<Component>(emailField, conn);
             if (!planEmail.FeatureId.IsNullOrWhiteSpace())
             {
-                sql = $"SELECT * FROM [{planEmail.Feature.EntityId}] WHERE Email is not null; SELECT * FROM COMPONENT WHERE FEATUREID = '{planEmail.FeatureId}' AND ComponentGroupId IS NOT NULL";
+                sql = $"SELECT * FROM [{planEmail.Feature.EntityId}] WHERE {emailCom.FieldName} is not null; SELECT * FROM COMPONENT WHERE FEATUREID = '{planEmail.FeatureId}' AND ComponentGroupId IS NOT NULL";
             }
             if (!planEmail.ComponentId.IsNullOrWhiteSpace())
             {
-                sql = $"SELECT * FROM [{planEmail.Feature.EntityId}] WHERE [{planEmail.Component.FieldName}] IS NOT NULL and Email is not null; SELECT * FROM COMPONENT WHERE FEATUREID = '{planEmail.FeatureId}' AND ComponentGroupId IS NOT NULL";
+                sql = $"SELECT * FROM [{planEmail.Feature.EntityId}] WHERE [{planEmail.Component.FieldName}] IS NOT NULL and {emailCom.FieldName} is not null; SELECT * FROM COMPONENT WHERE FEATUREID = '{planEmail.FeatureId}' AND ComponentGroupId IS NOT NULL";
             }
             var datas = await BgExt.ReadDataSet(sql, conn);
             if (datas[0].Length == 0)
@@ -66,7 +69,7 @@ namespace CoreAPI.Services
                     Data = data
                 };
                 var selectedData = Convert.ToDateTime(planEmail.ComponentId.IsNullOrWhiteSpace() ? planEmail.DailyDate : data[planEmail.Component.FieldName]);
-                var email = data["Email"]?.ToString();
+                var email = data[emailCom.FieldName]?.ToString();
                 var id = $"{planEmail.Id}{data["Id"]?.ToString()}";
                 var modifiedHtml = html;
                 var matches = curlyBraceRegex.Matches(modifiedHtml);

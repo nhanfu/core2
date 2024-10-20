@@ -52,5 +52,7 @@
         public string PassEmail { get; set; }
         public string Ip { get; set; }
         public Partner Company { get; set; }
+        public bool IsDepartment { get; set; }
+        public bool IsTeam { get; set; }
     }
 }

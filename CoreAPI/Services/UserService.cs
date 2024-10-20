@@ -47,6 +47,7 @@ public class UserService
     private readonly IConfiguration _configuration;
     public readonly ISqlProvider _sql;
     public string GroupId { get; set; }
+    public string DepartmentId { get; set; }
     public string UserId { get; set; }
     public string UserName { get; set; }
     public string CLogo { get; set; }
@@ -99,6 +100,7 @@ public class UserService
         BranchId = claims.FirstOrDefault(x => x.Type == UserServiceHelpers.BranchIdClaim)?.Value;
         UserId = claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
         GroupId = claims.FirstOrDefault(x => x.Type == "TeamId")?.Value;
+        DepartmentId = claims.FirstOrDefault(x => x.Type == "DepartmentId")?.Value;
         ConnKey = claims.FirstOrDefault(x => x.Type == UserServiceHelpers.ConnKeyClaim)?.Value;
         UserName = claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
         CenterIds = claims.Where(x => x.Type == nameof(CenterIds)).Select(x => x.Value).Where(x => x != null).ToList();
@@ -386,6 +388,7 @@ public class UserService
             new ("UserId", user.Id),
             new ("Avatar", user.Avatar ?? "/icons/default-avatar.jpg"),
             new ("TeamId", user.TeamId ?? string.Empty),
+            new ("DepartmentId", user.DepartmentId ?? string.Empty),
             new (ClaimTypes.Name, user.UserName),
             new ("CName", user.Company.CompanyName ?? string.Empty),
             new ("CLogo", user.Company.Logo ?? string.Empty),
@@ -720,7 +723,17 @@ public class UserService
                 status = 500,
             };
         }
-        var user = matchApprovalConfig.UserIds.Split(",");
+        var user = matchApprovalConfig.UserIds.IsNullOrWhiteSpace() ? Array.Empty<string>() : matchApprovalConfig.UserIds.Split(",");
+        if (matchApprovalConfig.IsTeam)
+        {
+            var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] where [{nameof(User.TeamId)}] = '{GroupId}' and IsTeam = 1");
+            user = users.Select(x => x.Id).ToArray();
+        }
+        if (matchApprovalConfig.IsDepartment)
+        {
+            var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] where [{nameof(User.DepartmentId)}] = '{DepartmentId}' and IsDepartment = 1");
+            user = users.Select(x => x.Id).ToArray();
+        }
         var task = user.Select(x => new TaskNotification()
         {
             Id = Uuid7.Guid().ToString(),
@@ -935,9 +948,18 @@ public class UserService
         }
         var nextLevel = approvements.Nothing() ? 1 : approvements.FirstOrDefault().NextLevel;
         var nextConfig = approvalConfig.FirstOrDefault(x => x.Level == nextLevel);
-        var userApproved = nextConfig.UserIds.Split(",");
-        var ids = userApproved.Select(x => x).ToList();
-        if (!ids.Contains(UserId))
+        var userApproved = nextConfig.UserIds.IsNullOrWhiteSpace() ? Array.Empty<string>() : nextConfig.UserIds.Split(",");
+        if (nextConfig.IsTeam)
+        {
+            var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] where [{nameof(User.TeamId)}] = '{GroupId}' and IsTeam");
+            userApproved = users.Select(x => x.Id).ToArray();
+        }
+        if (nextConfig.IsDepartment)
+        {
+            var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] where [{nameof(User.DepartmentId)}] = '{DepartmentId}' and IsDepartment");
+            userApproved = users.Select(x => x.Id).ToArray();
+        }
+        if (!userApproved.Contains(UserId))
         {
             return new SqlResult()
             {
@@ -995,8 +1017,17 @@ public class UserService
         }
         else
         {
-            userApproved = nextLevelConfig.UserIds.Split(",");
-            ids = userApproved.Select(x => x).ToList();
+            userApproved = nextLevelConfig.UserIds.IsNullOrWhiteSpace() ? Array.Empty<string>() : nextLevelConfig.UserIds.Split(",");
+            if (nextLevelConfig.IsTeam)
+            {
+                var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] where [{nameof(User.TeamId)}] = '{GroupId}' and IsTeam");
+                userApproved = users.Select(x => x.Id).ToArray();
+            }
+            if (nextLevelConfig.IsDepartment)
+            {
+                var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] where [{nameof(User.DepartmentId)}] = '{DepartmentId}' and IsDepartment");
+                userApproved = users.Select(x => x.Id).ToArray();
+            }
             var useViewIds = vm.Changes.FirstOrDefault(x => x.Field == "UserViewIds");
             var useIds = vm.Changes.FirstOrDefault(x => x.Field == "UserApprovedIds");
             if (useViewIds != null)
@@ -1195,9 +1226,18 @@ public class UserService
         var approvements = await _sql.ReadDsAsArr<Approvement>(queryApprovement);
         var nextLevel = approvements.Nothing() ? 1 : approvements.FirstOrDefault().NextLevel;
         var nextConfig = approvalConfig.FirstOrDefault(x => x.Level == nextLevel);
-        var userApproved = nextConfig.UserIds.Split(",");
-        var ids = userApproved.Select(x => x).ToList();
-        if (!ids.Contains(UserId))
+        var userApproved = nextConfig.UserIds.IsNullOrWhiteSpace() ? Array.Empty<string>() : nextConfig.UserIds.Split(",");
+        if (nextConfig.IsTeam)
+        {
+            var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] where [{nameof(User.TeamId)}] = '{GroupId}' and IsTeam");
+            userApproved = users.Select(x => x.Id).ToArray();
+        }
+        if (matchApprovalConfig.IsDepartment)
+        {
+            var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] where [{nameof(User.DepartmentId)}] = '{DepartmentId}' and IsDepartment");
+            userApproved = users.Select(x => x.Id).ToArray();
+        }
+        if (!userApproved.Contains(UserId))
         {
             return new SqlResult()
             {

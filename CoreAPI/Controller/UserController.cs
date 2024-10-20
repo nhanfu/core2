@@ -76,6 +76,12 @@ public class UserController(UserService _userSvc, PdfService _pdfService, WebSoc
         return _userSvc.ForgotPassword(login);
     }
 
+    [HttpPost("/api/GenPdf")]
+    public async Task<string> HtmlToPdf([FromBody] PdfVM vm)
+    {
+        return await _pdfService.HtmlToPdf(vm.Html, vm.Type);
+    }
+
     [HttpGet("api/User/ReSendUser/")]
     public Task<string> ReSendUser(SqlViewModel vm)
     {
@@ -186,7 +192,7 @@ public class UserController(UserService _userSvc, PdfService _pdfService, WebSoc
     {
         return await _userSvc.Conversation(entity);
     }
-    
+
 
     [HttpPatch("/api/feature/run")]
     public Task<SqlResult> Run([FromBody] PatchVM entity)

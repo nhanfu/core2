@@ -16,6 +16,7 @@ namespace CoreAPI.Models
         public int? ReminderSettingId { get; set; }
         public int? NotificationNumber { get; set; }
         public string UserId { get; set; }
+        public string EmailFieldId { get; set; }
         public string Name { get; set; }
         public string Template { get; set; }
         public string Sql { get; set; }

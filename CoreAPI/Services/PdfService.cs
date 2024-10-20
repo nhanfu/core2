@@ -3,16 +3,23 @@ using Core.Models;
 using Core.Services;
 using Core.ViewModels;
 using CoreAPI.BgService;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using HtmlAgilityPack;
+using PuppeteerSharp;
+using PuppeteerSharp.Media;
 
 namespace CoreAPI.Services
 {
     public class PdfService
     {
         private readonly UserService _userService;
-        public PdfService(UserService userService)
+        private readonly IWebHostEnvironment _host;
+        private readonly IHttpContextAccessor _context;
+        public PdfService(UserService userService, IWebHostEnvironment webHostEnvironment, IHttpContextAccessor httpContextAccessor)
         {
             _userService = userService;
+            _host = webHostEnvironment;
+            _context = httpContextAccessor;
         }
 
         public async Task<string> CreateHtml(CreateHtmlVM createHtmlVM, string conn)
@@ -68,11 +75,11 @@ namespace CoreAPI.Services
                 }
                 if (createHtmlVM.Data.GetValueOrNull("CLogo") != null)
                 {
-                    createHtmlVM.Data["CLogo"] = $"<img src=\"{myCompany.Logo ?? string.Empty}\" alt=\"\" width=\"100\" height=\"38\">";
+                    createHtmlVM.Data["CLogo"] = $"<img class=\"logo\" src=\"{myCompany.Logo ?? string.Empty}\" alt=\"\" width=\"100\" height=\"38\">";
                 }
                 else
                 {
-                    createHtmlVM.Data.Add("CLogo", $"<img src=\"{myCompany.Logo ?? string.Empty}\" alt=\"\" width=\"100\" height=\"38\">");
+                    createHtmlVM.Data.Add("CLogo", $"<img class=\"logo\" src=\"{myCompany.Logo ?? string.Empty}\" alt=\"\" width=\"100\" height=\"38\">");
                 }
             }
             if (!sql.IsNullOrWhiteSpace())
@@ -115,6 +122,61 @@ namespace CoreAPI.Services
                 BindingDataExt.ReplaceCTableNode(createHtmlVM, item, dirCom);
             }
             return document.DocumentNode.InnerHtml;
+        }
+
+        public async Task<string> HtmlToPdf(string html, string type)
+        {
+            var name = DateTime.Now.ToString("ddMMyyyyHHmm") + Guid.NewGuid() + ".pdf";
+            var path = GetPdfPath(name, _host.WebRootPath, _userService.TenantCode, _userService.UserId);
+            EnsureDirectoryExist(path);
+            var browserFetcher = new BrowserFetcher();
+            await browserFetcher.DownloadAsync();
+            // Using statement with grouped declarations
+            await using (var browser = await Puppeteer.LaunchAsync(new LaunchOptions { Headless = true }))
+            {
+                await using (var page = await browser.NewPageAsync())
+                {
+                    try
+                    {
+                        await page.SetContentAsync(html);
+                        await page.EvaluateExpressionHandleAsync("document.fonts.ready");
+                        await page.EmulateMediaTypeAsync(MediaType.Screen);
+                        var pdfOptions = new PdfOptions
+                        {
+                            PrintBackground = true,
+                            Format = type == "A5" ? PaperFormat.A5 : PaperFormat.A4,
+                            MarginOptions = new MarginOptions
+                            {
+                                Bottom = "10px",
+                                Left = "20px",
+                                Right = "20px",
+                                Top = "10px",
+                            }
+                        };
+                        await page.PdfAsync(path, pdfOptions);
+                        var requestUrl = $"{_context.HttpContext.Request.Scheme}://{_context.HttpContext.Request.Host}";
+                        return path.Replace(_host.WebRootPath, requestUrl).Replace("\\", "/");
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception("Error generating PDF: " + ex.Message, ex);
+                    }
+                }
+            }
+        }
+
+        private string GetPdfPath(string fileName, string webRootPath, string tanentcode, string userid)
+        {
+            return Path.Combine(webRootPath, "pdf", tanentcode, DateTime.Now.ToString("MMyyyy"), $"U{userid:00000000}", fileName);
+        }
+
+        private void EnsureDirectoryExist(string path)
+        {
+            var dir = Path.GetDirectoryName(path);
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
         }
     }
 }

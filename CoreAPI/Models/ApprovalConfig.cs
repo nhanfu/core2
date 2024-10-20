@@ -10,6 +10,8 @@
         public string UserIds { get; set; }
         public string RoleIds { get; set; }
         public bool Active { get; set; }
+        public bool IsDepartment { get; set; }
+        public bool IsTeam { get; set; }
         public DateTime? InsertedDate { get; set; }
         public string InsertedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }

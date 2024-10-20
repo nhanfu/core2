@@ -60,6 +60,12 @@ namespace Core.ViewModels
         public Dictionary<string, object>[] data { get; set; }
     }
 
+    public class PdfVM
+    {
+        public string Html { get; set; }
+        public string Type { get; set; }
+    }
+
     public class SqlComResult
     {
         public int? count { get; set; }

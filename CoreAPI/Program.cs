@@ -86,7 +86,6 @@ services.AddAuthentication(x =>
 });
 services.AddDistributedMemoryCache();
 services.AddHttpContextAccessor();
-
 // the instance created for each request
 services.AddScoped<SqlServerProvider>();
 services.AddScoped<DuckDbProvider>();
