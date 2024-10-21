@@ -734,6 +734,14 @@ public class UserService
             var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] where [{nameof(User.DepartmentId)}] = '{DepartmentId}' and IsDepartment = 1");
             user = users.Select(x => x.Id).ToArray();
         }
+        if (user.Nothing())
+        {
+            return new SqlResult()
+            {
+                status = 500,
+                message = "Please config user approved"
+            };
+        }
         var task = user.Select(x => new TaskNotification()
         {
             Id = Uuid7.Guid().ToString(),
@@ -959,6 +967,14 @@ public class UserService
             var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] where [{nameof(User.DepartmentId)}] = '{DepartmentId}' and IsDepartment");
             userApproved = users.Select(x => x.Id).ToArray();
         }
+        if (userApproved.Nothing())
+        {
+            return new SqlResult()
+            {
+                status = 500,
+                message = "Please config user approved"
+            };
+        }
         if (!userApproved.Contains(UserId))
         {
             return new SqlResult()
@@ -1027,6 +1043,14 @@ public class UserService
             {
                 var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] where [{nameof(User.DepartmentId)}] = '{DepartmentId}' and IsDepartment");
                 userApproved = users.Select(x => x.Id).ToArray();
+            }
+            if (userApproved.Nothing())
+            {
+                return new SqlResult()
+                {
+                    status = 500,
+                    message = "Please config user approved"
+                };
             }
             var useViewIds = vm.Changes.FirstOrDefault(x => x.Field == "UserViewIds");
             var useIds = vm.Changes.FirstOrDefault(x => x.Field == "UserApprovedIds");
