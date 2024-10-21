@@ -5,6 +5,7 @@ using CoreAPI.BgService;
 using CoreAPI.Models;
 using Hangfire;
 using HtmlAgilityPack;
+using Microsoft.IdentityModel.Tokens;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -19,13 +20,57 @@ namespace CoreAPI.Services
             var now = DateTime.Now;
             var emailField = $"SELECT * FROM COMPONENT WHERE ID = '{planEmail.EmailFieldId}'";
             var emailCom = await BgExt.ReadDsAs<Component>(emailField, conn);
-            if (!planEmail.FeatureId.IsNullOrWhiteSpace())
+            var wheres = new List<string>();
+            if (!planEmail.Field1Id.IsNullOrWhiteSpace())
             {
-                sql = $"SELECT * FROM [{planEmail.Feature.EntityId}] WHERE {emailCom.FieldName} is not null; SELECT * FROM COMPONENT WHERE FEATUREID = '{planEmail.FeatureId}' AND ComponentGroupId IS NOT NULL";
+                var com = await BgExt.ReadDsAs<Component>($"SELECT * FROM [Component] WHERE Id = '{planEmail.Field1Id}'", conn);
+                if (com.ComponentType == "Input")
+                {
+                    wheres.Add($"{com.FieldName} = '{planEmail.Value1}'");
+                }
+                else
+                {
+                    var ids = await BgExt.ReadDataSet($"SELECT Id FROM [{com.RefName}] WHERE {com.FormatData.Replace("{", "").Replace("}", "")} = '{planEmail.Value1}'", conn);
+                    wheres.Add($"{com.FieldName} in ({ids[0].Select(x => x["Id"].ToString()).ToArray().CombineStrings()})");
+                }
+            }
+            if (!planEmail.Field2Id.IsNullOrWhiteSpace())
+            {
+                var com = await BgExt.ReadDsAs<Component>($"SELECT * FROM [Component] WHERE Id = '{planEmail.Field2Id}')", conn);
+                if (com.ComponentType == "Input")
+                {
+                    wheres.Add($"{com.FieldName} = '{planEmail.Value2}'");
+                }
+                else
+                {
+                    var ids = await BgExt.ReadDataSet($"SELECT Id FROM [{com.RefName}] WHERE {com.FormatData.Replace("{", "").Replace("}", "")} = '{planEmail.Value2}'", conn);
+                    wheres.Add($"{com.FieldName} in ({ids[0].Select(x => x["Id"].ToString()).ToArray().CombineStrings()})");
+                }
+            }
+            if (!planEmail.Field3Id.IsNullOrWhiteSpace())
+            {
+                var com = await BgExt.ReadDsAs<Component>($"SELECT * FROM [Component] WHERE Id = '{planEmail.Field3Id}')", conn);
+                if (com.ComponentType == "Input")
+                {
+                    wheres.Add($"{com.FieldName} = '{planEmail.Value3}'");
+                }
+                else
+                {
+                    var ids = await BgExt.ReadDataSet($"SELECT Id FROM [{com.RefName}] WHERE {com.FormatData.Replace("{", "").Replace("}", "")} = '{planEmail.Value3}'", conn);
+                    wheres.Add($"{com.FieldName} in ({ids[0].Select(x => x["Id"].ToString()).ToArray().CombineStrings()})");
+                }
             }
             if (!planEmail.ComponentId.IsNullOrWhiteSpace())
             {
-                sql = $"SELECT * FROM [{planEmail.Feature.EntityId}] WHERE [{planEmail.Component.FieldName}] IS NOT NULL and {emailCom.FieldName} is not null; SELECT * FROM COMPONENT WHERE FEATUREID = '{planEmail.FeatureId}' AND ComponentGroupId IS NOT NULL";
+                sql = $"SELECT * FROM [{planEmail.Feature.EntityId}] WHERE [{planEmail.Component.FieldName}] IS NOT NULL and {emailCom.FieldName} is not null {(wheres.Nothing() ? "" : $" and {wheres.Combine(" and ")}")}; SELECT * FROM COMPONENT WHERE FEATUREID = '{planEmail.FeatureId}' AND ComponentGroupId IS NOT NULL";
+            }
+            if (!planEmail.FeatureId.IsNullOrWhiteSpace())
+            {
+                sql = $"SELECT * FROM [{planEmail.Feature.EntityId}] WHERE {emailCom.FieldName} is not null {(wheres.Nothing() ? "" : $" and {wheres.Combine(" and ")}")}; SELECT * FROM COMPONENT WHERE FEATUREID = '{planEmail.FeatureId}' AND ComponentGroupId IS NOT NULL";
+            }
+            if (!planEmail.ComponentId.IsNullOrWhiteSpace())
+            {
+                sql = $"SELECT * FROM [{planEmail.Feature.EntityId}] WHERE [{planEmail.Component.FieldName}] IS NOT NULL and {emailCom.FieldName} is not null {(wheres.Nothing() ? "" : $" and {wheres.Combine(" and ")}")}; SELECT * FROM COMPONENT WHERE FEATUREID = '{planEmail.FeatureId}' AND ComponentGroupId IS NOT NULL";
             }
             var datas = await BgExt.ReadDataSet(sql, conn);
             if (datas[0].Length == 0)

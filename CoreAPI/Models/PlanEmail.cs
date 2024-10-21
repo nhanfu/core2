@@ -25,6 +25,12 @@ namespace CoreAPI.Models
         public bool IsStart { get; set; }
         public bool Active { get; set; }
         public string InsertedBy { get; set; }
+        public string Field1Id { get; set; }
+        public string Value1 { get; set; }
+        public string Field2Id { get; set; }
+        public string Value2 { get; set; }
+        public string Field3Id { get; set; }
+        public string Value3 { get; set; }
         public DateTime? InsertedDate { get; set; }
         public string UpdatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
