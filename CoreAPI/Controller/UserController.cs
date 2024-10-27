@@ -268,7 +268,7 @@ public class UserController(UserService _userSvc, PdfService _pdfService, WebSoc
     }
 
     [HttpPost("/api/feature/report")]
-    public Task<Dictionary<string, object>[]> Report([FromBody] SqlViewModel entity)
+    public Task<Dictionary<string, object>[][]> Report([FromBody] SqlViewModel entity)
     {
         return _userSvc.Report(entity);
     }

@@ -10,6 +10,7 @@
         public string FormatData { get; set; }
         public string PlainText { get; set; }
         public int? Column { get; set; }
+        public int? RowSpan { get; set; }
         public int? Offset { get; set; }
         public int? Row { get; set; }
         public bool CanSearch { get; set; }
@@ -125,6 +126,7 @@
         public bool IsMultiple { get; set; }
         public string AddRowExp { get; set; }
         public string GroupTypeId { get; set; }
+        public string EntityName { get; set; }
         public string ComponentDefaultValueId { get; set; }
         public bool VirtualScroll { get; set; }
         public List<Component> Children { get; set; }

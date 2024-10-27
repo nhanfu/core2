@@ -1328,24 +1328,6 @@ public class UserService
         };
         var patch = task.MapToPatch();
         await SavePatch(patch);
-        var useIds = vm.Changes.FirstOrDefault(x => x.Field == "UserApprovedIds");
-        if (useIds != null)
-        {
-            useIds.Value = null;
-        }
-        else
-        {
-            var useViewIds = vm.Changes.FirstOrDefault(x => x.Field == "UserViewIds");
-            var useApproveIds = vm.Changes.FirstOrDefault(x => x.Field == "UserApprovedIds");
-            if (useViewIds != null)
-            {
-                useViewIds.Value = null;
-            }
-            if (useIds != null)
-            {
-                useApproveIds.Value = null;
-            }
-        }
         var rs1 = await SavePatch2(vm);
         var update = $"Update Approvement set IsEnd = 1 where Name = '{name}' and RecordId = '{id}'";
         await _sql.RunSqlCmd(null, update);
@@ -1978,7 +1960,7 @@ public class UserService
         return await RunjsWrap(vm);
     }
 
-    public async Task<Dictionary<string, object>[]> Report(SqlViewModel vm)
+    public async Task<Dictionary<string, object>[][]> Report(SqlViewModel vm)
     {
         var com = await GetComponent(vm) ?? throw new ApiException("Component not found or not public to the current user")
         {
@@ -2031,7 +2013,7 @@ public class UserService
         }
         var query = Utils.FormatEntity(com.Query, dictionary);
         var ds1 = await _sql.ReadDataSet(query);
-        return ds1[0];
+        return ds1;
     }
 
     public async Task<Dictionary<string, object>[][]> Sql(SqlViewModel vm)
