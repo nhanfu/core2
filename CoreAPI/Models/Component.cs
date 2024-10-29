@@ -132,5 +132,6 @@
         public List<Component> Children { get; set; }
         public List<Component> Components { get; set; }
         public Component Parent { get; set; }
+        public int? Index { get; set; }
     }
 }
