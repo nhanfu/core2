@@ -127,6 +127,7 @@
         public string AddRowExp { get; set; }
         public string GroupTypeId { get; set; }
         public string EntityName { get; set; }
+        public string TableName { get; set; }
         public string ComponentDefaultValueId { get; set; }
         public bool VirtualScroll { get; set; }
         public List<Component> Children { get; set; }
