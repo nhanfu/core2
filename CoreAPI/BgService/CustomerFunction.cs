@@ -23,11 +23,11 @@ namespace CoreAPI.BgService
 
         private async Task LockDeleteAsync(string connect)
         {
-            var lockProspect = await BgExt.ReadDsAsArr<MasterData>(
-                $@"SELECT * FROM MASTERDATA WHERE CODE = N'Lock Prospect'", connect);
-            var loclLeads = await BgExt.ReadDsAsArr<MasterData>(
-                $@"SELECT * FROM MASTERDATA WHERE CODE = N'Lock Leads'", connect);
-            if (lockProspect != null && lockProspect[0] != null && lockProspect[0].Enum != null && lockProspect[0].Enum > 0)
+            var lockProspect = await BgExt.ReadDsAsArr<SaleFunction>(
+                $@"SELECT * FROM MASTERDATA WHERE CODE = N'DAY_LOCK_PROSPECT'", connect);
+            var loclLeads = await BgExt.ReadDsAsArr<SaleFunction>(
+                $@"SELECT * FROM MASTERDATA WHERE CODE = N'DAY_LOCK_LEADS'", connect);
+            if (lockProspect != null && lockProspect[0] != null && lockProspect[0].Value != null && int.Parse(lockProspect[0].Value) > 0)
             {
                 var partnerCare = await BgExt.ReadDsAsArr<Partner>(
                 $@"SELECT 
@@ -44,7 +44,7 @@ namespace CoreAPI.BgService
                     ServiceId = 1
                     AND TypeId = 2
                     AND Partner.ActionId = 1
-                    AND DATEDIFF(DAY, ISNULL(ISNULL(care.UpdatedDate, care.InsertedDate), Partner.InsertedDate), GETDATE()) > {lockProspect[0].Enum};", connect);
+                    AND DATEDIFF(DAY, ISNULL(ISNULL(care.UpdatedDate, care.InsertedDate), Partner.InsertedDate), GETDATE()) > {lockProspect[0].Value};", connect);
                 if (partnerCare != null && partnerCare.Length > 0)
                 {
                     foreach (var item in partnerCare)
@@ -55,7 +55,7 @@ namespace CoreAPI.BgService
                     }
                 }
             }
-            if (loclLeads != null && loclLeads[0] != null && loclLeads[0].Enum != null && loclLeads[0].Enum > 0)
+            if (loclLeads != null && loclLeads[0] != null && loclLeads[0].Value != null && int.Parse(lockProspect[0].Value) > 0)
             {
                 var partnerCare = await BgExt.ReadDsAsArr<Partner>(
                 $@"SELECT 
@@ -66,7 +66,7 @@ namespace CoreAPI.BgService
                     ServiceId = 1
                     AND TypeId = 1
                     AND Partner.ActionId = 1
-                    AND DATEDIFF(DAY, Partner.InsertedDate, GETDATE()) > {loclLeads[0].Enum};", connect);
+                    AND DATEDIFF(DAY, Partner.InsertedDate, GETDATE()) > {loclLeads[0].Value};", connect);
                 if (partnerCare != null && partnerCare.Length > 0)
                 {
                     foreach (var item in partnerCare)

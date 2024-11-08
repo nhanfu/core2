@@ -9,6 +9,7 @@ using CoreAPI.Models;
 using CoreAPI.Services;
 using CoreAPI.Services.Sql;
 using CoreAPI.ViewModels;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Hangfire;
 using HtmlAgilityPack;
 using LinqKit;
@@ -653,7 +654,60 @@ public class UserService
         var voucherTypeId = vm.Changes.FirstOrDefault(x => x.Field == "VoucherTypeId");
         var userReceiverId = vm.Changes.FirstOrDefault(x => x.Field == "UserReceiverId");
         var groupReceiverId = vm.Changes.FirstOrDefault(x => x.Field == "GroupReceiverId");
+        var receiverIds = vm.Changes.FirstOrDefault(x => x.Field == "ReceiverIds");
         var titLe = vm.Changes.FirstOrDefault(x => x.Field == "FormatChat");
+        var noApproved = vm.Changes.FirstOrDefault(x => x.Field == "NoApproved");
+        if (noApproved != null && noApproved.Value == "1")
+        {
+            vm.Changes.FirstOrDefault(x => x.Field == "StatusId").Value = "3";
+            var rs1 = await SavePatch2(vm);
+            var approval1 = new Approvement
+            {
+                Id = Uuid7.Guid().ToString(),
+                Approved = true,
+                CurrentLevel = 1,
+                ReasonOfChange = vm.ReasonOfChange,
+                NextLevel = 1,
+                Name = name,
+                RecordId = id,
+                StatusId = 3,
+                UserApproveId = UserId,
+                ApprovedBy = UserId,
+                ApprovedDate = DateTime.Now,
+                InsertedBy = UserId,
+                InsertedDate = DateTime.Now
+            };
+            var patchQpproval1 = approval1.MapToPatch();
+            await SavePatch(patchQpproval1);
+            if (receiverIds != null && !receiverIds.Value.IsNullOrWhiteSpace())
+            {
+                var userString = receiverIds.Value.Split(",");
+                var tasks = userString.Select(x => new TaskNotification()
+                {
+                    Id = Uuid7.Guid().ToString(),
+                    EntityId = name,
+                    Title = "You have received request ",
+                    Icon = "fal fa-smile",
+                    Description = titLe.Value ?? "",
+                    InsertedBy = UserId,
+                    RecordId = id,
+                    InsertedDate = DateTime.Now,
+                    Active = true,
+                    AssignedId = x
+                }).ToList();
+                foreach (var item in tasks)
+                {
+                    var patch = item.MapToPatch();
+                    await SavePatch(patch);
+                }
+                return new SqlResult()
+                {
+                    status = 200,
+                    message = "Your data has been approved.",
+                    updatedItem = rs1.updatedItem
+                };
+            }
+        }
         if (userReceiverId != null && !userReceiverId.Value.IsNullOrWhiteSpace() || groupReceiverId != null && !groupReceiverId.Value.IsNullOrWhiteSpace())
         {
             var rs = await SavePatch2(vm);
