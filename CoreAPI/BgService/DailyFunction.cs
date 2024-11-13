@@ -61,9 +61,9 @@ namespace CoreAPI.BgService
         private async Task DoWorkDailyAsync(string connect)
         {
             var partnerCare = await BgExt.ReadDsAsArr<PartnerCare>($@"select [PartnerCare].*,Partner.Name as CustomerName 
-from [PartnerCare] 
-left join Partner on PartnerCare.PartnerId = Partner.Id 
-where NextDate >= '{DateTime.Now:yyyy-MM-dd}' and ReminderSettingId = 1", connect);
+            from [PartnerCare] 
+            left join Partner on PartnerCare.PartnerId = Partner.Id 
+            where NextDate >= '{DateTime.Now:yyyy-MM-dd}' and Deadline <= '{DateTime.Now:yyyy-MM-dd}' and ReminderSettingId = 1", connect);
             if (partnerCare.Nothing())
             {
                 return;
