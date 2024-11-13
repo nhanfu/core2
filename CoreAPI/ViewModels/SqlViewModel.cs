@@ -66,6 +66,12 @@ namespace Core.ViewModels
         public string Type { get; set; }
     }
 
+    public class MoveHBLVM
+    {
+        public string ShipmentId { get; set; }
+        public List<string> ShipmentDetailId { get; set; }
+    }
+
     public class SqlComResult
     {
         public int? count { get; set; }

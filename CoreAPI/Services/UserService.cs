@@ -308,6 +308,13 @@ public class UserService
         };
     }
 
+    public async Task<bool> MoveHBL(MoveHBLVM entity)
+    {
+        var update = $"UPDATE [Shipment] set ParentId = '{entity.ShipmentId}' where Id in ({entity.ShipmentDetailId.CombineStrings()})";
+        await _sql.RunSqlCmd(null, update);
+        return true;
+    }
+
     public async Task<Conversation> Conversation(Conversation entity)
     {
         var query = @$"select * from [Conversation] where RecordId = '{entity.RecordId}' and EntityId = '{entity.EntityId}'";

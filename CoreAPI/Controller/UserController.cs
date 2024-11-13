@@ -193,6 +193,11 @@ public class UserController(UserService _userSvc, PdfService _pdfService, WebSoc
         return await _userSvc.Conversation(entity);
     }
 
+    [HttpPost("/api/MoveHBL")]
+    public async Task<bool> MoveHBL([FromBody] MoveHBLVM entity)
+    {
+        return await _userSvc.MoveHBL(entity);
+    }
 
     [HttpPatch("/api/feature/run")]
     public Task<SqlResult> Run([FromBody] PatchVM entity)
