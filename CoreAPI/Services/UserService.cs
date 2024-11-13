@@ -2187,6 +2187,7 @@ public class UserService
         {
             vm.JsScript = vm.JsScript.Replace("ds.InsertedBy = '{TokenUserId}'", "ds.InsertedBy = '{TokenUserId}' or '{TokenRoleNames}' like '%BOD%'");
         }
+        vm.OrderBy = Utils.FormatEntity(vm.OrderBy, dictionary);
         var data = JsonConvert.DeserializeObject<SqlQuery>(vm.JsScript);
         data.total = Utils.FormatEntity(data.total, dictionary);
         data.sql = Utils.FormatEntity(data.sql, dictionary);
