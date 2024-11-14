@@ -459,6 +459,8 @@ public class UserService
         {
             UserId = user.Id,
             FullName = user.FullName,
+            DepartmentId = user.DepartmentId,
+            TeamId = user.TeamId,
             UserName = user.UserName,
             Address = user.Address,
             Avatar = user.Avatar,
