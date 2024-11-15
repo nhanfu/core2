@@ -9,7 +9,6 @@ using CoreAPI.Models;
 using CoreAPI.Services;
 using CoreAPI.Services.Sql;
 using CoreAPI.ViewModels;
-using DocumentFormat.OpenXml.Wordprocessing;
 using Hangfire;
 using HtmlAgilityPack;
 using LinqKit;
@@ -18,6 +17,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using System.Buffers;
+using System.CodeDom;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
@@ -1402,12 +1402,12 @@ public class UserService
         };
     }
 
-    private async Task<bool> CheckDuplicate(PatchVM patch, bool Update = false)
+    private async Task<(bool, string)> CheckDuplicate(PatchVM patch, bool Update = false)
     {
         var table = await _sql.ReadDsAs<TableName>($"Select * from TableName where [Name] = '{patch.Table}'");
         if (table is null)
         {
-            return false;
+            return (false, null);
         }
         if (!table.Duplicate.IsNullOrWhiteSpace())
         {
@@ -1420,7 +1420,7 @@ public class UserService
                     using (SqlCommand command = new SqlCommand())
                     {
                         command.Connection = connection;
-                        var wheres = field.Select(x => $"[{x}] = @{x.ToLower()}").ToList();
+                        var wheres = field.Select(x => $"[{x}] = @{x.ToLower()} and [{x}] is not null and @{x.ToLower()} is not null").ToList();
                         if (Update)
                         {
                             wheres.Add($"[Id] != @id");
@@ -1428,34 +1428,44 @@ public class UserService
                         command.CommandText += $"Select * from [{patch.Table}] where {wheres.Combine(" and ")}";
                         foreach (var item in field)
                         {
-                            var val = patch.Changes.FirstOrDefault(x => x.Field == item).Value;
-                            command.Parameters.AddWithValue($"@{item.ToLower()}", val is null ? DBNull.Value : val);
+                            var val = patch.Changes.FirstOrDefault(x => x.Field == item);
+                            if (val is not null)
+                            {
+                                command.Parameters.AddWithValue($"@{item.ToLower()}", val.Value is null ? DBNull.Value : val.Value);
+                            }
+                            else
+                            {
+                                command.Parameters.AddWithValue($"@{item.ToLower()}", DBNull.Value);
+                            }
                         }
                         if (Update)
                         {
-                            var val = patch.Changes.FirstOrDefault(x => x.Field == "Id").Value;
-                            command.Parameters.AddWithValue($"@id", val is null ? DBNull.Value : val);
+                            var val = patch.Changes.FirstOrDefault(x => x.Field == "Id");
+                            if (val is not null)
+                            {
+                                command.Parameters.AddWithValue($"@id", val.Value is null ? DBNull.Value : val.Value);
+                            }
                         }
                         var reader = await command.ExecuteReaderAsync();
                         if (reader.HasRows)
                         {
-                            return true;
+                            return (true, table.Description);
                         }
                         else
                         {
-                            return false;
+                            return (false, table.Description);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    return true;
+                    return (true, table.Description);
                 }
             }
         }
         else
         {
-            return false;
+            return (false, null);
         }
     }
 
@@ -1467,13 +1477,19 @@ public class UserService
         var selectIds = new List<DetailData>();
         if (id.StartsWith("-"))
         {
-            if (await CheckDuplicate(vm))
+            var (dup, mess) = await CheckDuplicate(vm);
+            if (dup)
             {
+                var entity = new Dictionary<string, object>();
+                filteredChanges.ForEach(x =>
+                {
+                    entity.Add(x.Field, x.Value);
+                });
                 return new SqlResult()
                 {
                     updatedItem = null,
                     status = 409,
-                    message = "Data already exists"
+                    message = Utils.FormatEntity(mess, entity)
                 };
             }
             id = id.Substring(1);
@@ -1619,13 +1635,16 @@ public class UserService
         }
         else
         {
-            if (await CheckDuplicate(vm, true))
+            var (dup, mess) = await CheckDuplicate(vm, true);
+            if (dup)
             {
+                var sql = $"SELECT * FROM [{vm.Table}] where Id = '{id}'";
+                var entity = await _sql.ReadDataSet(sql);
                 return new SqlResult()
                 {
                     updatedItem = null,
                     status = 409,
-                    message = "Data already exists"
+                    message = Utils.FormatEntity(mess, entity[0][0])
                 };
             }
             AddDefaultFields(filteredChanges, new List<PatchDetail>()
