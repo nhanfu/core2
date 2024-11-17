@@ -199,6 +199,18 @@ public class UserController(UserService _userSvc, PdfService _pdfService, WebSoc
         return await _userSvc.MoveHBL(entity);
     }
 
+    [HttpPost("/api/SplitFee")]
+    public async Task<bool> SplitFee([FromBody] FeeVM entity)
+    {
+        return await _userSvc.SplitFee(entity);
+    }
+
+    [HttpPost("/api/AddFee")]
+    public async Task<bool> AddFee([FromBody] FeeVM entity)
+    {
+        return await _userSvc.AddFee(entity);
+    }
+
     [HttpPatch("/api/feature/run")]
     public Task<SqlResult> Run([FromBody] PatchVM entity)
     {

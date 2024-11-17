@@ -315,6 +315,112 @@ public class UserService
         return true;
     }
 
+    public async Task<bool> AddFee(FeeVM entity)
+    {
+        var update = $@"
+            INSERT INTO [dbo].[ShipmentInvoiceDetail]
+           ([Id]
+           ,[TypeId]
+           ,[ShipmentInvoiceId]
+           ,[ShipmentId]
+           ,[VendorId]
+           ,[DescriptionId]
+           ,[TotalAmountTax]
+           ,[TotalAmount]
+           ,[AmountTax]
+           ,[Amount]
+           ,[Quantity]
+           ,[UnitId]
+           ,[Vat]
+           ,[CurrencyId]
+           ,[Tax]
+           ,[Notes]
+           ,[Docs]
+           ,[IsObh]
+           ,[ObhId]
+           ,[IsNoDocs]
+           ,[ExchangeRateVND]
+           ,[ExchangeRateUSD]
+           ,[ExchangeRateINV]
+           ,[IsContainer]
+           ,[IsCBM]
+           ,[IsFreight]
+           ,[IsLogistics]
+           ,[IsTrucking]
+           ,[IsKGS]
+           ,[IsGW]
+           ,[Order]
+           ,[ExchangeRate]
+           ,[SettelementNo]
+           ,[Active]
+           ,[InsertedDate]
+           ,[InsertedBy]
+           ,[UpdatedDate]
+           ,[UpdatedBy]
+           ,[BasedId]
+           ,[PmTypeId]
+           ,[ShipmentFeeId]
+           ,[IsLock]
+           ,[Payable]
+           ,[Receivable])
+            select NEWID()
+           ,ds.[TypeId]
+           ,'{entity.ShipmentInvoiceId}'
+           ,ds.[ShipmentId]
+           ,ds.[VendorId]
+           ,ds.[DescriptionId]
+           ,ds.[TotalAmountTax]
+           ,ds.[TotalAmount]
+           ,ds.[AmountTax]
+           ,ds.[Amount]
+           ,ds.[Quantity]
+           ,ds.[UnitId]
+           ,ds.[Vat]
+           ,ds.[CurrencyId]
+           ,ds.[Tax]
+           ,ds.[Notes]
+           ,ds.[Docs]
+           ,ds.[IsObh]
+           ,ds.[ObhId]
+           ,ds.[IsNoDocs]
+           ,ds.[ExchangeRateVND]
+           ,ds.[ExchangeRateUSD]
+           ,case when ds.ExchangeRateVND = 1 then 1 else ShipmentInvoice.ExchangeRateUSD end
+           ,ds.[IsContainer]
+           ,ds.[IsCBM]
+           ,ds.[IsFreight]
+           ,ds.[IsLogistics]
+           ,ds.[IsTrucking]
+           ,ds.[IsKGS]
+           ,ds.[IsGW]
+           ,ds.[Order]
+           ,ds.[ExchangeRate]
+           ,ds.[SettelementNo]
+           ,ds.[Active]
+           , GETDATE()
+           ,'{UserId}'
+           ,ds.[UpdatedDate]
+           ,ds.[UpdatedBy]
+           ,ds.[BasedId]
+           ,ds.[PmTypeId]
+           ,ds.Id
+           ,ds.[IsLock],
+		   case when ds.TypeId = 1 then case when ds.ExchangeRateVND = 1 then TotalAmountTax else ShipmentInvoice.ExchangeRateUSD*TotalAmountTax end else null end as Payable,
+		   case when ds.TypeId = 2 then case when ds.ExchangeRateVND = 1 then TotalAmountTax else ShipmentInvoice.ExchangeRateUSD*TotalAmountTax end else null end as Receivable
+        from ShipmentFee as ds 
+        left join ShipmentInvoice on ShipmentInvoice.Id = '{entity.ShipmentInvoiceId}'
+        where ds.Id in ({entity.ShipmentInvoiceDetailId.CombineStrings()})";
+        await _sql.RunSqlCmd(null, update);
+        return true;
+    }
+
+    public async Task<bool> SplitFee(FeeVM entity)
+    {
+        var update = $"DELETE [ShipmentInvoiceDetail] where Id in ({entity.ShipmentInvoiceDetailId.CombineStrings()})";
+        await _sql.RunSqlCmd(null, update);
+        return true;
+    }
+
     public async Task<Conversation> Conversation(Conversation entity)
     {
         var query = @$"select * from [Conversation] where RecordId = '{entity.RecordId}' and EntityId = '{entity.EntityId}'";

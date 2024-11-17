@@ -72,6 +72,12 @@ namespace Core.ViewModels
         public List<string> ShipmentDetailId { get; set; }
     }
 
+    public class FeeVM
+    {
+        public string ShipmentInvoiceId { get; set; }
+        public List<string> ShipmentInvoiceDetailId { get; set; }
+    }
+
     public class SqlComResult
     {
         public int? count { get; set; }
