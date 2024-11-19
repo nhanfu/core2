@@ -78,6 +78,11 @@ namespace Core.ViewModels
         public List<string> ShipmentInvoiceDetailId { get; set; }
     }
 
+    public class EntityVM
+    {
+        public string EntityId { get; set; }
+    }
+
     public class SqlComResult
     {
         public int? count { get; set; }

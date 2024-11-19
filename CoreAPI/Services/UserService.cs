@@ -315,6 +315,16 @@ public class UserService
         return true;
     }
 
+    public async Task<bool> LoadShipmentContainer(EntityVM entity)
+    {
+        return true;
+    }
+
+    public async Task<bool> LoadShipmentDetailContainer(EntityVM entity)
+    {
+        return true;
+    }
+
     public async Task<bool> AddFee(FeeVM entity)
     {
         var update = $@"
@@ -815,6 +825,15 @@ public class UserService
                     var patch = item.MapToPatch();
                     await SavePatch(patch);
                 }
+                return new SqlResult()
+                {
+                    status = 200,
+                    message = "Your data has been approved.",
+                    updatedItem = rs1.updatedItem
+                };
+            }
+            else
+            {
                 return new SqlResult()
                 {
                     status = 200,
@@ -1748,7 +1767,7 @@ public class UserService
                 var entity = await _sql.ReadDataSet(sql);
                 return new SqlResult()
                 {
-                    updatedItem = null,
+                    updatedItem = entity[0],
                     status = 409,
                     message = Utils.FormatEntity(mess, entity[0][0])
                 };

@@ -211,6 +211,18 @@ public class UserController(UserService _userSvc, PdfService _pdfService, WebSoc
         return await _userSvc.AddFee(entity);
     }
 
+    [HttpPost("/api/LoadShipmentContainer")]
+    public async Task<bool> LoadShipmentContainer([FromBody] EntityVM entity)
+    {
+        return await _userSvc.LoadShipmentContainer(entity);
+    }
+
+    [HttpPost("/api/LoadShipmentDetailContainer")]
+    public async Task<bool> LoadShipmentDetailContainer([FromBody] EntityVM entity)
+    {
+        return await _userSvc.LoadShipmentDetailContainer(entity);
+    }
+
     [HttpPatch("/api/feature/run")]
     public Task<SqlResult> Run([FromBody] PatchVM entity)
     {
