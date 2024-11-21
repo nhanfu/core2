@@ -399,6 +399,10 @@ namespace CoreAPI.Services
                             currentbody.InsertBefore(item, lastTr.LastChild);
                         }
                     }
+                    foreach (var item in childs)
+                    {
+                        currentbody.RemoveChild(item);
+                    }
                 }
             }
             try

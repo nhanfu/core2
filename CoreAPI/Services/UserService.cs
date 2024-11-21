@@ -1605,16 +1605,12 @@ public class UserService
             var (dup, mess) = await CheckDuplicate(vm);
             if (dup)
             {
-                var entity = new Dictionary<string, object>();
-                filteredChanges.ForEach(x =>
-                {
-                    entity.Add(x.Field, x.Value);
-                });
+                var currentEntity = vm.Changes.ToDictionary(x => x.Field, x => (object)x.Value);
                 return new SqlResult()
                 {
                     updatedItem = null,
                     status = 409,
-                    message = Utils.FormatEntity(mess, entity)
+                    message = Utils.FormatEntity(mess, currentEntity)
                 };
             }
             id = id.Substring(1);
