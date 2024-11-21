@@ -1759,13 +1759,14 @@ public class UserService
             var (dup, mess) = await CheckDuplicate(vm, true);
             if (dup)
             {
+                var currentEntity = vm.Changes.ToDictionary(x => x.Field, x => (object)x.Value);
                 var sql = $"SELECT * FROM [{vm.Table}] where Id = '{id}'";
                 var entity = await _sql.ReadDataSet(sql);
                 return new SqlResult()
                 {
                     updatedItem = entity[0],
                     status = 409,
-                    message = Utils.FormatEntity(mess, entity[0][0])
+                    message = Utils.FormatEntity(mess, currentEntity)
                 };
             }
             AddDefaultFields(filteredChanges, new List<PatchDetail>()
