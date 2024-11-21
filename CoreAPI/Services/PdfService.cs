@@ -36,51 +36,16 @@ namespace CoreAPI.Services
             {
                 foreach (var item in webConfigs[0])
                 {
-                    createHtmlVM.Data.Add("C" + item["Key"], item["Value"]);
+                    createHtmlVM.Data["C" + item["Key"]] = item["Value"] ?? string.Empty;
                 }
             }
             if (myCompany != null)
             {
-                if (createHtmlVM.Data.GetValueOrNull("CEmail") != null)
-                {
-                    createHtmlVM.Data["CEmail"] = myCompany.Email ?? string.Empty;
-                }
-                else
-                {
-                    createHtmlVM.Data.Add("CEmail", myCompany.Email);
-                }
-                if (createHtmlVM.Data.GetValueOrNull("CCompanyName") != null)
-                {
-                    createHtmlVM.Data["CCompanyName"] = myCompany.CompanyName ?? string.Empty;
-                }
-                else
-                {
-                    createHtmlVM.Data.Add("CCompanyName", myCompany.CompanyName);
-                }
-                if (createHtmlVM.Data.GetValueOrNull("CAddress") != null)
-                {
-                    createHtmlVM.Data["CAddress"] = myCompany.Address ?? string.Empty;
-                }
-                else
-                {
-                    createHtmlVM.Data.Add("CAddress", myCompany.Address);
-                }
-                if (createHtmlVM.Data.GetValueOrNull("CPhoneNumber") != null)
-                {
-                    createHtmlVM.Data["CPhoneNumber"] = myCompany.PhoneNumber ?? string.Empty;
-                }
-                else
-                {
-                    createHtmlVM.Data.Add("CPhoneNumber", myCompany.PhoneNumber);
-                }
-                if (createHtmlVM.Data.GetValueOrNull("CLogo") != null)
-                {
-                    createHtmlVM.Data["CLogo"] = $"<img class=\"logo\" src=\"{myCompany.Logo ?? string.Empty}\" alt=\"\" width=\"100\" height=\"38\">";
-                }
-                else
-                {
-                    createHtmlVM.Data.Add("CLogo", $"<img class=\"logo\" src=\"{myCompany.Logo ?? string.Empty}\" alt=\"\" width=\"100\" height=\"38\">");
-                }
+                createHtmlVM.Data["CEmail"] = myCompany.Email ?? string.Empty;
+                createHtmlVM.Data["CCompanyName"] = myCompany.CompanyName ?? string.Empty;
+                createHtmlVM.Data["CAddress"] = myCompany.Address ?? string.Empty;
+                createHtmlVM.Data["CPhoneNumber"] = myCompany.PhoneNumber ?? string.Empty;
+                createHtmlVM.Data["CLogo"] = $"<img class=\"logo\" src=\"{myCompany.Logo ?? string.Empty}\" alt=\"\" width=\"100\" height=\"38\">";
             }
             if (!sql.IsNullOrWhiteSpace())
             {
@@ -88,21 +53,14 @@ namespace CoreAPI.Services
                 var customData = await BgExt.ReadDataSet(sqlQuery, conn);
                 foreach (var item in customData[0][0])
                 {
-                    if (createHtmlVM.Data.GetValueOrNull(item.Key) != null)
-                    {
-                        createHtmlVM.Data[item.Key] = item.Value;
-                    }
-                    else
-                    {
-                        createHtmlVM.Data.Add(item.Key, item.Value);
-                    }
+                    createHtmlVM.Data[item.Key] = item.Value ?? string.Empty;
                 }
                 if (customData.Length > 1)
                 {
                     int i = 0;
                     foreach (var row in customData.Skip(1).ToList())
                     {
-                        createHtmlVM.Data.Add("c" + i, row);
+                        createHtmlVM.Data["c" + i] = row;
                         i++;
                     }
                 }
