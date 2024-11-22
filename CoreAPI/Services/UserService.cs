@@ -1527,12 +1527,12 @@ public class UserService
         };
     }
 
-    private async Task<(bool, string)> CheckDuplicate(PatchVM patch, bool Update = false)
+    private async Task<(bool, string, Dictionary<string, object>)> CheckDuplicate(PatchVM patch, bool Update = false)
     {
         var table = await _sql.ReadDsAs<TableName>($"Select * from TableName where [Name] = '{patch.Table}'");
         if (table is null)
         {
-            return (false, null);
+            return (false, null, null);
         }
         if (!table.Duplicate.IsNullOrWhiteSpace())
         {
@@ -1550,7 +1550,7 @@ public class UserService
                         {
                             wheres.Add($"[Id] != @id");
                         }
-                        command.CommandText += $"Select * from [{patch.Table}] where {wheres.Combine(" and ")}";
+                        command.CommandText += $"Select Top 1 * from [{patch.Table}] where {wheres.Combine(" and ")}";
                         foreach (var item in field)
                         {
                             var val = patch.Changes.FirstOrDefault(x => x.Field == item);
@@ -1572,25 +1572,34 @@ public class UserService
                             }
                         }
                         var reader = await command.ExecuteReaderAsync();
+                        Dictionary<string, object> lastRow = null;
                         if (reader.HasRows)
                         {
-                            return (true, table.Description);
+                            while (await reader.ReadAsync())
+                            {
+                                lastRow = new Dictionary<string, object>();
+                                for (int i = 0; i < reader.FieldCount; i++)
+                                {
+                                    lastRow[reader.GetName(i)] = reader.IsDBNull(i) ? null : reader.GetValue(i);
+                                }
+                            }
+                            return (true, table.Description, lastRow);
                         }
                         else
                         {
-                            return (false, table.Description);
+                            return (false, table.Description, null);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    return (true, table.Description);
+                    return (true, table.Description, null);
                 }
             }
         }
         else
         {
-            return (false, null);
+            return (false, null, null);
         }
     }
 
@@ -1602,10 +1611,9 @@ public class UserService
         var selectIds = new List<DetailData>();
         if (id.StartsWith("-"))
         {
-            var (dup, mess) = await CheckDuplicate(vm);
+            var (dup, mess, currentEntity) = await CheckDuplicate(vm);
             if (dup)
             {
-                var currentEntity = vm.Changes.ToDictionary(x => x.Field, x => (object)x.Value);
                 return new SqlResult()
                 {
                     updatedItem = null,
@@ -1756,10 +1764,9 @@ public class UserService
         }
         else
         {
-            var (dup, mess) = await CheckDuplicate(vm, true);
+            var (dup, mess, currentEntity) = await CheckDuplicate(vm, true);
             if (dup)
             {
-                var currentEntity = vm.Changes.ToDictionary(x => x.Field, x => (object)x.Value);
                 var sql = $"SELECT * FROM [{vm.Table}] where Id = '{id}'";
                 var entity = await _sql.ReadDataSet(sql);
                 return new SqlResult()

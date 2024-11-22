@@ -108,7 +108,14 @@ namespace CoreAPI.Services
                                 {
                                     displayField = displayField + "MasterData";
                                 }
-                                currentData = FormatString(curentComponent.FormatData, JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(createHtmlVM.Data[displayField])));
+                                if (createHtmlVM.Data[displayField] is null)
+                                {
+                                    currentData = string.Empty;
+                                }
+                                else
+                                {
+                                    currentData = FormatString(curentComponent.FormatData, JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(createHtmlVM.Data[displayField])));
+                                }
                                 break;
                             default:
                                 break;
@@ -489,7 +496,14 @@ namespace CoreAPI.Services
                                                 var displayField = curentComponent.FieldName;
                                                 var containId = curentComponent.FieldName.EndsWith("Id");
                                                 displayField = containId ? displayField.Substring(0, displayField.Length - 2) : displayField + "MasterData";
-                                                currentData = FormatString(curentComponent.FormatData, JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(field[displayField])));
+                                                if (field[displayField] is null)
+                                                {
+                                                    currentData = string.Empty;
+                                                }
+                                                else
+                                                {
+                                                    currentData = FormatString(curentComponent.FormatData, JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(field[displayField])));
+                                                }
                                                 break;
                                             default:
                                                 break;
