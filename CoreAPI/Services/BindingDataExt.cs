@@ -523,10 +523,10 @@ namespace CoreAPI.Services
                         item.InnerHtml = FormatString(item.InnerHtml, field);
                         currentbody.InsertBefore(item, currentbody.LastChild);
                     }
-                    foreach (var item in childs)
-                    {
-                        currentbody.RemoveChild(item);
-                    }
+                }
+                foreach (var item in childs)
+                {
+                    currentbody.RemoveChild(item);
                 }
             }
             try

@@ -116,4 +116,11 @@ namespace Core.ViewModels
     {
         public string Name { get; set; }
     }
+
+    public class StreamingRequest
+    {
+        public string Prompt { get; set; }
+        public int MaxTokens { get; set; }
+        public double Temperature { get; set; }
+    }
 }
