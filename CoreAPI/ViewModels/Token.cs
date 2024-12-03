@@ -41,6 +41,8 @@ namespace Core.ViewModels
     public class CreateHtmlVM
     {
         public string ComId { get; set; }
+        public string FileName { get; set; }
+        public string PathTemplate { get; set; }
         public Dictionary<string, object> Data { get; set; }
     }
 }

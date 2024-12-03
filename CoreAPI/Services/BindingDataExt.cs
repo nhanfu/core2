@@ -29,6 +29,24 @@ namespace CoreAPI.Services
             return html;
         }
 
+        public static string FormatString2(string html, Dictionary<string, object> data)
+        {
+            var dollarCurlyBraceRegex = new Regex(@"\${(.+?)\}");
+            var matches = dollarCurlyBraceRegex.Matches(html);
+            foreach (Match match in matches)
+            {
+                if (match.Success)
+                {
+                    var valueWithinCurlyBraces = match.Groups[1].Value;
+                    var htmlDoc = new HtmlDocument();
+                    htmlDoc.LoadHtml(valueWithinCurlyBraces);
+                    string plainText = htmlDoc.DocumentNode.InnerText;
+                    html = html.Replace($"${{{valueWithinCurlyBraces}}}", data[plainText]?.ToString());
+                }
+            }
+            return html;
+        }
+
         public static void SetDefaultToken(CreateHtmlVM createHtmlVM, UserService _userService)
         {
             if (createHtmlVM.Data.GetValueOrNull("TokenUserId") != null)

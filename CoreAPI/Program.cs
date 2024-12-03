@@ -94,6 +94,7 @@ services.AddScoped<WebSocketService>();
 services.AddScoped<UserService>();
 services.AddScoped<SendMailService>();
 services.AddScoped<PdfService>();
+services.AddScoped<ExcelService>();
 services.AddScoped<OpenAIHttpClientService>();
 var app = builder.Build();
 app.UseHangfireDashboard();

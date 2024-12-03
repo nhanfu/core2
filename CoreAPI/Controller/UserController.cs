@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Core.Controllers;
 
 [Authorize]
-public class UserController(UserService _userSvc, PdfService _pdfService, WebSocketService socketSvc, OpenAIHttpClientService _openAIHttpClientService) : ControllerBase
+public class UserController(UserService _userSvc, PdfService _pdfService, ExcelService _excelService, WebSocketService socketSvc, OpenAIHttpClientService _openAIHttpClientService) : ControllerBase
 {
     [AllowAnonymous]
     [HttpPost("/api/auth/login")]
@@ -49,6 +49,12 @@ public class UserController(UserService _userSvc, PdfService _pdfService, WebSoc
     public async Task<string> CreateHtml([FromBody] CreateHtmlVM token, [FromServices] IConfiguration configuration)
     {
         return await _pdfService.CreateHtml(token, configuration.GetConnectionString("Default"));
+    }
+
+    [HttpPost("api/CreateExcel")]
+    public async Task<string> CreateExcel([FromBody] CreateHtmlVM token, [FromServices] IConfiguration configuration)
+    {
+        return await _excelService.CreateExcelFile(token, configuration.GetConnectionString("Default"));
     }
 
     [HttpPost("api/OpenAI")]
