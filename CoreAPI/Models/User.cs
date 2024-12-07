@@ -54,5 +54,6 @@
         public Partner Company { get; set; }
         public bool IsDepartment { get; set; }
         public bool IsTeam { get; set; }
+        public string PositionId { get; set; }
     }
 }

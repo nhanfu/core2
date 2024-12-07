@@ -576,6 +576,8 @@ public class UserService
             UserId = user.Id,
             FullName = user.FullName,
             DepartmentId = user.DepartmentId,
+            Code = user.Code,
+            PositionId = user.PositionId,
             TeamId = user.TeamId,
             UserName = user.UserName,
             Address = user.Address,
