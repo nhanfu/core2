@@ -60,6 +60,12 @@ namespace Core.ViewModels
         public Dictionary<string, object>[] data { get; set; }
     }
 
+    public class CheckDeleteResult
+    {
+        public string message { get; set; }
+        public int status { get; set; }
+    }
+
     public class PdfVM
     {
         public string Html { get; set; }

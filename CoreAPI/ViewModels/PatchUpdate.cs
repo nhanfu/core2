@@ -40,6 +40,7 @@ namespace Core.ViewModels
 
     public class CheckDeleteItem
     {
+        public string Params { get; set; }
         public List<string> EntityIds { get; set; }
         public string ComId { get; set; }
     }

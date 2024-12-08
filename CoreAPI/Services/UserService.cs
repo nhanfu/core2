@@ -328,6 +328,10 @@ public class UserService
     public async Task<bool> AddFee(FeeVM entity)
     {
         var update = $@"
+            UPDATE ShipmentInvoice set RevisedDate = GETDATE() 
+            from ShipmentInvoice 
+            join ShipmentInvoiceDetail on ShipmentInvoice.Id = ShipmentInvoiceDetail.ShipmentInvoiceId 
+            where ShipmentInvoiceDetail.Id = '{entity.ShipmentInvoiceDetailId}';
             INSERT INTO [dbo].[ShipmentInvoiceDetail]
            ([Id]
            ,[TypeId]
@@ -426,7 +430,12 @@ public class UserService
 
     public async Task<bool> SplitFee(FeeVM entity)
     {
-        var update = $"DELETE [ShipmentInvoiceDetail] where Id in ({entity.ShipmentInvoiceDetailId.CombineStrings()})";
+        var update = $"" +
+            $"UPDATE ShipmentInvoice set RevisedDate = GETDATE() " +
+            $"from ShipmentInvoice " +
+            $"join ShipmentInvoiceDetail on ShipmentInvoice.Id = ShipmentInvoiceDetail.ShipmentInvoiceId " +
+            $"where ShipmentInvoiceDetail.Id = '{entity.ShipmentInvoiceDetailId}';" +
+            $" DELETE [ShipmentInvoiceDetail] where Id in ({entity.ShipmentInvoiceDetailId.CombineStrings()})";
         await _sql.RunSqlCmd(null, update);
         return true;
     }
@@ -2285,18 +2294,20 @@ public class UserService
         return ds1;
     }
 
-    public async Task<bool> CheckDelete(CheckDeleteItem item)
+    public async Task<CheckDeleteResult> CheckDelete(CheckDeleteItem item)
     {
         var query = @$"select top 1 * from [Component] where Id = '{item.ComId}'";
         var com = await _sql.ReadDsAs<Component>(query);
         var data = JsonConvert.DeserializeObject<SqlQuery>(com.Query);
-        Dictionary<string, object> dictionary = new Dictionary<string, object>
-        {
-            { "EntityIds", item.EntityIds.CombineStrings() }
-        };
+        Dictionary<string, object> dictionary = item.Params.IsNullOrWhiteSpace() ? new Dictionary<string, object>() : JsonConvert.DeserializeObject<Dictionary<string, object>>(item.Params);
+        dictionary["EntityIds"] = item.EntityIds.CombineStrings();
         var qr = Utils.FormatEntity(data.delete, dictionary);
         var exists = await _sql.ReadDataSet(qr);
-        return (exists[0] != null && exists[0].Length > 0) ? false : true;
+        return new CheckDeleteResult()
+        {
+            status = (exists[0] != null && exists[0].Length > 0) ? 500 : 200,
+            message = dictionary["Message"] != null ? dictionary["Message"]?.ToString() : null
+        };
     }
 
     private string CalcFinalQuery(SqlViewModel vm)

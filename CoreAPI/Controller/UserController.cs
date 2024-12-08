@@ -260,7 +260,7 @@ public class UserController(UserService _userSvc, PdfService _pdfService, ExcelS
     }
 
     [HttpPost("/api/CheckDelete")]
-    public async Task<bool> CheckDelete([FromBody] CheckDeleteItem entity)
+    public async Task<CheckDeleteResult> CheckDelete([FromBody] CheckDeleteItem entity)
     {
         return await _userSvc.CheckDelete(entity);
     }
