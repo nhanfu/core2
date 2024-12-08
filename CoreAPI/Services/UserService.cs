@@ -415,8 +415,8 @@ public class UserService
            ,ds.[PmTypeId]
            ,ds.Id
            ,ds.[IsLock],
-		   case when ds.TypeId = 1 then case when ds.ExchangeRateVND = 1 then TotalAmountTax else ShipmentInvoice.ExchangeRateUSD*TotalAmountTax end else null end as Payable,
-		   case when ds.TypeId = 2 then case when ds.ExchangeRateVND = 1 then TotalAmountTax else ShipmentInvoice.ExchangeRateUSD*TotalAmountTax end else null end as Receivable
+		   case when ds.TypeId = 2 then case when ds.ExchangeRateVND = 1 then TotalAmountTax else ShipmentInvoice.ExchangeRateUSD*TotalAmountTax end else null end as Payable,
+		   case when ds.TypeId = 1 then case when ds.ExchangeRateVND = 1 then TotalAmountTax else ShipmentInvoice.ExchangeRateUSD*TotalAmountTax end else null end as Receivable
         from ShipmentFee as ds 
         left join ShipmentInvoice on ShipmentInvoice.Id = '{entity.ShipmentInvoiceId}'
         where ds.Id in ({entity.ShipmentInvoiceDetailId.CombineStrings()})";
