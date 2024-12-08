@@ -41,7 +41,7 @@ namespace CoreAPI.Services
                     var htmlDoc = new HtmlDocument();
                     htmlDoc.LoadHtml(valueWithinCurlyBraces);
                     string plainText = htmlDoc.DocumentNode.InnerText;
-                    html = html.Replace($"${{{valueWithinCurlyBraces}}}", data[plainText]?.ToString());
+                    html = html.Replace($"${{{valueWithinCurlyBraces}}}", data[plainText] is null ? "" : data[plainText]?.ToString());
                 }
             }
             return html;

@@ -3,6 +3,8 @@ using Core.Extensions;
 using Core.Models;
 using Core.ViewModels;
 using CoreAPI.BgService;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 using Newtonsoft.Json;
 using Org.BouncyCastle.Asn1.Pkcs;
 using System.Text.RegularExpressions;
@@ -48,8 +50,6 @@ namespace CoreAPI.Services
             {
                 FileIO.Delete(path);
             }
-
-            // Handle template download
             var templatePath = component.ExcelUrl;
             if (Uri.TryCreate(templatePath, UriKind.Absolute, out var templateUri) && templateUri.Scheme == Uri.UriSchemeHttps)
             {
@@ -75,7 +75,6 @@ namespace CoreAPI.Services
             {
                 throw new FileNotFoundException($"Template file not found at {templatePath}");
             }
-
             var curlyBraceRegex = new Regex(@"\{(.+?)\}");
             var dollarCurlyBraceRegex = new Regex(@"\${(.+?)\}");
             using (var workbook = new XLWorkbook(path))
@@ -105,21 +104,60 @@ namespace CoreAPI.Services
                                 var cellValue = cell.GetString();
                                 var newValue = BindingDataExt.FormatString2(cellValue, item);
                                 newRow.Cell(cell.Address.ColumnNumber).SetValue(newValue);
+                                if (cell.HasFormula)
+                                {
+                                    newRow.Cell(cell.Address.ColumnNumber).FormulaA1 = cell.FormulaA1;
+                                    newRow.Cell(cell.Address.ColumnNumber).FormulaReference = cell.FormulaReference;
+                                    newRow.Cell(cell.Address.ColumnNumber).FormulaR1C1 = cell.FormulaR1C1;
+                                }
+                                newRow.Cell(cell.Address.ColumnNumber).Style = cell.Style;
+                                newRow.Cell(cell.Address.ColumnNumber).Style.NumberFormat.Format = cell.Style.NumberFormat.Format;
+                                if (cell.IsMerged())
+                                {
+                                    var mergedRange = cell.MergedRange();
+                                    var firstAddress = mergedRange.FirstCell().Address;
+                                    var lastAddress = mergedRange.LastCell().Address;
+                                    worksheet.Range(firstAddress, lastAddress).Merge();
+                                }
                             }
                         }
                         lastDataIndex++;
                         worksheet.Row(row.RowNumber()).Delete(); // Delete the original row after processing
                     }
                 }
-                foreach (var cell in worksheet.CellsUsed())
+                foreach (var row in worksheet.RowsUsed())
                 {
-                    var cellValue = cell.GetString();
-                    var newValue = BindingDataExt.FormatString(cell.GetString(), createHtmlVM.Data);
-                    cell.SetValue(newValue);
+                    var hasConfig = false;
+                    double maxRowHeight = 0;
+                    foreach (var cell in row.CellsUsed())
+                    {
+                        var cellValue = cell.GetString();
+                        var newValue = BindingDataExt.FormatString(cellValue, createHtmlVM.Data);
+                        row.Cell(cell.Address.ColumnNumber).SetValue(newValue);
+                        var text = cell.GetString();
+                        var columnWidth = cell.WorksheetColumn().Width;
+                        var fontSize = cell.Style.Font.FontSize;
+                        double maxCharsPerLine = columnWidth * 1.2;
+                        int textLength = text.Length;
+                        double lines = Math.Ceiling(textLength / maxCharsPerLine);
+                        double lineHeight = fontSize * 2.1; // Hệ số 1.5 để điều chỉnh độ cao dòng
+                        double rowHeight = lines * lineHeight;
+                        if (rowHeight > maxRowHeight)
+                        {
+                            maxRowHeight = rowHeight;
+                        }
+                        if (!hasConfig)
+                        {
+                            hasConfig = cellValue != newValue;
+                        }
+                    }
+                    if (hasConfig)
+                    {
+                        row.Height = maxRowHeight;
+                    }
                 }
                 workbook.SaveAs(path);
             }
-
             var requestUrl = $"{_context.HttpContext.Request.Scheme}://{_context.HttpContext.Request.Host}";
             return path.Replace(_host.WebRootPath, requestUrl).Replace("\\", "/");
         }

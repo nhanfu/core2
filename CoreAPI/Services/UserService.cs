@@ -330,8 +330,7 @@ public class UserService
         var update = $@"
             UPDATE ShipmentInvoice set RevisedDate = GETDATE() 
             from ShipmentInvoice 
-            join ShipmentInvoiceDetail on ShipmentInvoice.Id = ShipmentInvoiceDetail.ShipmentInvoiceId 
-            where ShipmentInvoiceDetail.Id = '{entity.ShipmentInvoiceDetailId}';
+            where Id = '{entity.ShipmentInvoiceId}';
             INSERT INTO [dbo].[ShipmentInvoiceDetail]
            ([Id]
            ,[TypeId]
@@ -433,8 +432,7 @@ public class UserService
         var update = $"" +
             $"UPDATE ShipmentInvoice set RevisedDate = GETDATE() " +
             $"from ShipmentInvoice " +
-            $"join ShipmentInvoiceDetail on ShipmentInvoice.Id = ShipmentInvoiceDetail.ShipmentInvoiceId " +
-            $"where ShipmentInvoiceDetail.Id = '{entity.ShipmentInvoiceDetailId}';" +
+            $"where Id = '{entity.ShipmentInvoiceId}';" +
             $" DELETE [ShipmentInvoiceDetail] where Id in ({entity.ShipmentInvoiceDetailId.CombineStrings()})";
         await _sql.RunSqlCmd(null, update);
         return true;
