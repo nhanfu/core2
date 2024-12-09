@@ -175,7 +175,7 @@ namespace Core.Extensions
             }
             return source.Select(x => $"'{x}'").Combine(combinator);
         }
-        
+
         public static string Combine<T>(this IEnumerable<T> source, string combinator = ",")
         {
             if (combinator is null || source is null)

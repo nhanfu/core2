@@ -308,6 +308,24 @@ public class UserService
         };
     }
 
+    public async Task<SqlResult> GoByName(SqlViewModel sqlViewModel)
+    {
+        var param = sqlViewModel.Id
+        .Select((x, index) => new WhereParamVM()
+        {
+            FieldName = "@id" + (index + 1),
+            Value = x
+        }).ToList();
+        var query = @$"select * from [{sqlViewModel.Table}] where [{sqlViewModel.Format.Replace("{", "").Replace("}", "")}] in ({param.Select(x => x.FieldName).ToList().Combine()})";
+        var ds = await _sql.ReadDataSet(query, _configuration.GetConnectionString("Default"), false, param);
+        return new SqlResult()
+        {
+            data = ds[0],
+            status = 200,
+            message = "Select successful"
+        };
+    }
+
     public async Task<bool> MoveHBL(MoveHBLVM entity)
     {
         var update = $"UPDATE [Shipment] set ParentId = '{entity.ShipmentId}' where Id in ({entity.ShipmentDetailId.CombineStrings()})";

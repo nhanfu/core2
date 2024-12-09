@@ -37,6 +37,7 @@ namespace Core.ViewModels
         public string CachedDataConn { get; internal set; }
         [JsonIgnore]
         public string CachedMetaConn { get; internal set; }
+        public string Format { get; set; }
     }
 
     public class SqlQueryResult

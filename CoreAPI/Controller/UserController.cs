@@ -193,6 +193,12 @@ public class UserController(UserService _userSvc, PdfService _pdfService, ExcelS
         return _userSvc.Go(entity);
     }
 
+    [HttpPost("/api/feature/gobyname")]
+    public Task<SqlResult> GoByName([FromBody] SqlViewModel entity)
+    {
+        return _userSvc.GoByName(entity);
+    }
+
     [HttpPost("/api/Conversation")]
     public async Task<Conversation> Conversation([FromBody] Conversation entity)
     {
