@@ -157,6 +157,23 @@ namespace CoreAPI.Services
                     }
                 }
             }
+            var titleAttribute = htmlNode.Attributes["title"];
+            if (titleAttribute != null && !titleAttribute.Value.IsNullOrWhiteSpace())
+            {
+                var lastChild = htmlNode.ChildNodes.FirstOrDefault(x => x.NodeType != HtmlNodeType.Text);
+                var currentData = createHtmlVM.Data[titleAttribute.Value];
+                if (lastChild != null)
+                {
+                    lastChild.InnerHtml = currentData is null ? "" : currentData?.ToString();
+                }
+                else
+                {
+                    htmlNode.InnerHtml = "";
+                    var spanElement = htmlNode.OwnerDocument.CreateElement("span");
+                    spanElement.InnerHtml = currentData is null ? "" : currentData.ToString();
+                    htmlNode.AppendChild(spanElement);
+                }
+            }
             foreach (var item in htmlNode.ChildNodes)
             {
                 ReplaceNode(createHtmlVM, item, dirCom);

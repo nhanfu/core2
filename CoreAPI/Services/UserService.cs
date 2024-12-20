@@ -1674,6 +1674,8 @@ public class UserService
                             command.CommandText += vm.Delete.Select(x => $"delete from [{x.Table}] where Id in ({x.Ids.CombineStrings()})").Combine(";");
                         }
                         command.CommandText += $"INSERT into [{vm.Table}]([{cells.Combine("],[")}]) values({update.Combine()})";
+                        command.Parameters.Clear();
+                        command.CommandText = string.Empty;
                         foreach (var item in filteredChanges)
                         {
                             if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
@@ -1684,8 +1686,6 @@ public class UserService
                         }
                         int index = 1;
                         await command.ExecuteNonQueryAsync();
-                        command.Parameters.Clear();
-                        command.CommandText = string.Empty;
                         if (!vm.Detail.Nothing())
                         {
                             foreach (var detailArray in vm.Detail)
@@ -1695,6 +1695,8 @@ public class UserService
                                     var tableDetailColumns = (await GetTableColumns(detail.Table))[0];
                                     var idDetail = detail.Changes.FirstOrDefault(x => x.Field == "Id").Value;
                                     var filteredDetailChanges = detail.Changes.Where(change => tableDetailColumns.SelectMany(x => x.Values).Contains(change.Field)).ToList();
+                                    command.Parameters.Clear();
+                                    command.CommandText = string.Empty;
                                     if (idDetail.StartsWith("-"))
                                     {
                                         AddDefaultFields(filteredDetailChanges, new List<PatchDetail>()
@@ -1737,8 +1739,6 @@ public class UserService
                                         }
                                     }
                                     await command.ExecuteNonQueryAsync();
-                                    command.Parameters.Clear();
-                                    command.CommandText = string.Empty;
                                 }
                                 selectIds.Add(new DetailData()
                                 {
