@@ -1205,7 +1205,7 @@ public class UserService
         }
         if (nextConfig.IsDepartment)
         {
-            var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] where [{nameof(User.DepartmentId)}] = '{DepartmentId}' and IsDepartment and IsTeam = 1");
+            var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] where [{nameof(User.DepartmentId)}] = '{DepartmentId}' and IsDepartment = 1");
             userApproved = users.Select(x => x.Id).ToArray();
         }
         if (userApproved.Nothing())
