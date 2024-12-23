@@ -812,6 +812,10 @@ public class UserService
         if (noApproved != null && noApproved.Value == "1")
         {
             vm.Changes.FirstOrDefault(x => x.Field == "StatusId").Value = "3";
+            if (vm.Changes.FirstOrDefault(x => x.Field == "ProgressId") != null)
+            {
+                vm.Changes.FirstOrDefault(x => x.Field == "ProgressId").Value = "3";
+            }
             var rs1 = await SavePatch2(vm);
             var approval1 = new Approvement
             {
@@ -868,6 +872,10 @@ public class UserService
                     updatedItem = rs1.updatedItem
                 };
             }
+        }
+        if (vm.Changes.FirstOrDefault(x => x.Field == "ProgressId") != null)
+        {
+            vm.Changes.FirstOrDefault(x => x.Field == "ProgressId").Value = "2";
         }
         if (userReceiverId != null && !userReceiverId.Value.IsNullOrWhiteSpace() || groupReceiverId != null && !groupReceiverId.Value.IsNullOrWhiteSpace())
         {
@@ -1007,6 +1015,10 @@ public class UserService
         var titLe = vm.Changes.FirstOrDefault(x => x.Field == "FormatChat");
         if (userReceiverId != null && !userReceiverId.Value.IsNullOrWhiteSpace() || groupReceiverId != null && !groupReceiverId.Value.IsNullOrWhiteSpace())
         {
+            if (vm.Changes.FirstOrDefault(x => x.Field == "ProgressId") != null)
+            {
+                vm.Changes.FirstOrDefault(x => x.Field == "ProgressId").Value = "3";
+            }
             var rs = await SavePatch2(vm);
             if (userReceiverId != null && !userReceiverId.Value.IsNullOrWhiteSpace() && UserId == userReceiverId.Value)
             {
@@ -1151,6 +1163,10 @@ public class UserService
                 };
             }
             vm.Changes.FirstOrDefault(x => x.Field == "StatusId").Value = "3";
+            if (vm.Changes.FirstOrDefault(x => x.Field == "ProgressId") != null)
+            {
+                vm.Changes.FirstOrDefault(x => x.Field == "ProgressId").Value = "3";
+            }
             var rs1 = await SavePatch2(vm);
             var approval1 = new Approvement
             {
@@ -1246,6 +1262,10 @@ public class UserService
         if (nextLevelConfig is null)
         {
             vm.Changes.FirstOrDefault(x => x.Field == "StatusId").Value = "3";
+            if (vm.Changes.FirstOrDefault(x => x.Field == "ProgressId") != null)
+            {
+                vm.Changes.FirstOrDefault(x => x.Field == "ProgressId").Value = "3";
+            }
             var rs2 = await SavePatch2(vm);
             var task = userApproved.Select(x => new TaskNotification()
             {
@@ -1365,6 +1385,10 @@ public class UserService
     public async Task<SqlResult> DeclineEntity(PatchVM vm)
     {
         vm.Changes.FirstOrDefault(x => x.Field == "StatusId").Value = "4";
+        if (vm.Changes.FirstOrDefault(x => x.Field == "ProgressId") != null)
+        {
+            vm.Changes.FirstOrDefault(x => x.Field == "ProgressId").Value = "4";
+        }
         var now = DateTime.Now;
         var name = vm.Name ?? vm.Table;
         var id = vm.Changes.FirstOrDefault(x => x.Field == "Id").Value;
