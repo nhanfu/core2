@@ -812,9 +812,9 @@ public class UserService
         if (noApproved != null && noApproved.Value == "1")
         {
             vm.Changes.FirstOrDefault(x => x.Field == "StatusId").Value = "3";
-            if (vm.Changes.FirstOrDefault(x => x.Field == "ProgressId") != null)
+            if (vm.Changes.FirstOrDefault(x => x.Field == "AutoProgressId") != null)
             {
-                vm.Changes.FirstOrDefault(x => x.Field == "ProgressId").Value = "3";
+                vm.Changes.FirstOrDefault(x => x.Field == "AutoProgressId").Value = "3";
             }
             var rs1 = await SavePatch2(vm);
             var approval1 = new Approvement
@@ -841,6 +841,7 @@ public class UserService
                 var tasks = userString.Select(x => new TaskNotification()
                 {
                     Id = Uuid7.Guid().ToString(),
+                    VoucherTypeId = int.Parse(voucherTypeId.Value),
                     EntityId = name,
                     Title = "You have received request ",
                     Icon = "fal fa-smile",
@@ -873,9 +874,9 @@ public class UserService
                 };
             }
         }
-        if (vm.Changes.FirstOrDefault(x => x.Field == "ProgressId") != null)
+        if (vm.Changes.FirstOrDefault(x => x.Field == "AutoProgressId") != null)
         {
-            vm.Changes.FirstOrDefault(x => x.Field == "ProgressId").Value = "2";
+            vm.Changes.FirstOrDefault(x => x.Field == "AutoProgressId").Value = "2";
         }
         if (userReceiverId != null && !userReceiverId.Value.IsNullOrWhiteSpace() || groupReceiverId != null && !groupReceiverId.Value.IsNullOrWhiteSpace())
         {
@@ -886,6 +887,7 @@ public class UserService
                 {
                     Id = Uuid7.Guid().ToString(),
                     EntityId = name,
+                    VoucherTypeId = int.Parse(voucherTypeId.Value),
                     Title = "You have request approve",
                     Icon = "fal fa-quote-right",
                     Description = titLe.Value ?? "",
@@ -906,6 +908,7 @@ public class UserService
                 var taskUser = users.Select(x => new TaskNotification()
                 {
                     Id = Uuid7.Guid().ToString(),
+                    VoucherTypeId = int.Parse(voucherTypeId.Value),
                     EntityId = name,
                     Title = "You have request approve",
                     Icon = "fal fa-quote-right",
@@ -968,6 +971,7 @@ public class UserService
         var task = user.Select(x => new TaskNotification()
         {
             Id = Uuid7.Guid().ToString(),
+            VoucherTypeId = int.Parse(voucherTypeId.Value),
             EntityId = name,
             Title = "You have request approve",
             Description = titLe.Value ?? "",
@@ -1012,12 +1016,13 @@ public class UserService
         var userReceiverId = vm.Changes.FirstOrDefault(x => x.Field == "UserReceiverId");
         var groupReceiverId = vm.Changes.FirstOrDefault(x => x.Field == "GroupReceiverId");
         var insertedBy = vm.Changes.FirstOrDefault(x => x.Field == "InsertedBy");
+        var voucherTypeId = vm.Changes.FirstOrDefault(x => x.Field == "VoucherTypeId");
         var titLe = vm.Changes.FirstOrDefault(x => x.Field == "FormatChat");
         if (userReceiverId != null && !userReceiverId.Value.IsNullOrWhiteSpace() || groupReceiverId != null && !groupReceiverId.Value.IsNullOrWhiteSpace())
         {
-            if (vm.Changes.FirstOrDefault(x => x.Field == "ProgressId") != null)
+            if (vm.Changes.FirstOrDefault(x => x.Field == "AutoProgressId") != null)
             {
-                vm.Changes.FirstOrDefault(x => x.Field == "ProgressId").Value = "3";
+                vm.Changes.FirstOrDefault(x => x.Field == "AutoProgressId").Value = "3";
             }
             var rs = await SavePatch2(vm);
             if (userReceiverId != null && !userReceiverId.Value.IsNullOrWhiteSpace() && UserId == userReceiverId.Value)
@@ -1042,6 +1047,7 @@ public class UserService
                 var taskUser = new TaskNotification()
                 {
                     Id = Uuid7.Guid().ToString(),
+                    VoucherTypeId = int.Parse(voucherTypeId.Value),
                     EntityId = name,
                     Title = "Request is approved",
                     Icon = "fal fa-smile",
@@ -1082,6 +1088,7 @@ public class UserService
                     var taskUser = new TaskNotification()
                     {
                         Id = Uuid7.Guid().ToString(),
+                        VoucherTypeId = int.Parse(voucherTypeId.Value),
                         EntityId = name,
                         Title = "Request is approved",
                         Icon = "fal fa-smile",
@@ -1109,7 +1116,6 @@ public class UserService
                 updatedItem = rs.updatedItem
             };
         }
-        var voucherTypeId = vm.Changes.FirstOrDefault(x => x.Field == "VoucherTypeId");
         var query2 = @$"SELECT * FROM ApprovalConfig where VoucherTypeId = '{voucherTypeId.Value}' and ParentId is not null  order by Level asc";
         var approvalConfig = await _sql.ReadDsAsArr<ApprovalConfig>(query2);
         if (approvalConfig.Nothing())
@@ -1163,9 +1169,9 @@ public class UserService
                 };
             }
             vm.Changes.FirstOrDefault(x => x.Field == "StatusId").Value = "3";
-            if (vm.Changes.FirstOrDefault(x => x.Field == "ProgressId") != null)
+            if (vm.Changes.FirstOrDefault(x => x.Field == "AutoProgressId") != null)
             {
-                vm.Changes.FirstOrDefault(x => x.Field == "ProgressId").Value = "3";
+                vm.Changes.FirstOrDefault(x => x.Field == "AutoProgressId").Value = "3";
             }
             var rs1 = await SavePatch2(vm);
             var approval1 = new Approvement
@@ -1189,6 +1195,7 @@ public class UserService
             var task = userEndApproved.Select(x => new TaskNotification()
             {
                 Id = Uuid7.Guid().ToString(),
+                VoucherTypeId = int.Parse(voucherTypeId.Value),
                 EntityId = name,
                 Title = "Request is approved",
                 Icon = "fal fa-smile",
@@ -1262,9 +1269,9 @@ public class UserService
         if (nextLevelConfig is null)
         {
             vm.Changes.FirstOrDefault(x => x.Field == "StatusId").Value = "3";
-            if (vm.Changes.FirstOrDefault(x => x.Field == "ProgressId") != null)
+            if (vm.Changes.FirstOrDefault(x => x.Field == "AutoProgressId") != null)
             {
-                vm.Changes.FirstOrDefault(x => x.Field == "ProgressId").Value = "3";
+                vm.Changes.FirstOrDefault(x => x.Field == "AutoProgressId").Value = "3";
             }
             var rs2 = await SavePatch2(vm);
             var task = userApproved.Select(x => new TaskNotification()
@@ -1327,6 +1334,7 @@ public class UserService
             {
                 Id = Uuid7.Guid().ToString(),
                 EntityId = name,
+                VoucherTypeId = int.Parse(voucherTypeId.Value),
                 Title = "You have request approve",
                 Description = titLe.Value ?? "",
                 InsertedBy = UserId,
@@ -1359,10 +1367,12 @@ public class UserService
         var insertedBy = vm.Changes.FirstOrDefault(x => x.Field == "InsertedBy");
         var forwardId = vm.Changes.FirstOrDefault(x => x.Field == "ForwardId");
         var titLe = vm.Changes.FirstOrDefault(x => x.Field == "FormatChat");
+        var voucherTypeId = vm.Changes.FirstOrDefault(x => x.Field == "VoucherTypeId");
         var rs = await SavePatch2(vm);
         var task = new TaskNotification()
         {
             Id = Uuid7.Guid().ToString(),
+            VoucherTypeId = int.Parse(voucherTypeId.Value),
             EntityId = vm.Table,
             Title = "You have request forward",
             Description = titLe.Value ?? "",
@@ -1385,9 +1395,9 @@ public class UserService
     public async Task<SqlResult> DeclineEntity(PatchVM vm)
     {
         vm.Changes.FirstOrDefault(x => x.Field == "StatusId").Value = "4";
-        if (vm.Changes.FirstOrDefault(x => x.Field == "ProgressId") != null)
+        if (vm.Changes.FirstOrDefault(x => x.Field == "AutoProgressId") != null)
         {
-            vm.Changes.FirstOrDefault(x => x.Field == "ProgressId").Value = "4";
+            vm.Changes.FirstOrDefault(x => x.Field == "AutoProgressId").Value = "4";
         }
         var now = DateTime.Now;
         var name = vm.Name ?? vm.Table;
@@ -1423,6 +1433,7 @@ public class UserService
                 var taskUser = new TaskNotification()
                 {
                     Id = Uuid7.Guid().ToString(),
+                    VoucherTypeId = int.Parse(voucherTypeId.Value),
                     EntityId = name,
                     Title = "Request is decline",
                     Icon = "fal fa-frown",
@@ -1464,6 +1475,7 @@ public class UserService
                     var taskUser = new TaskNotification()
                     {
                         Id = Uuid7.Guid().ToString(),
+                        VoucherTypeId = int.Parse(voucherTypeId.Value),
                         EntityId = name,
                         Title = "Request is decline",
                         Icon = "fal fa-frown",
@@ -1555,6 +1567,7 @@ public class UserService
         var task = new TaskNotification()
         {
             Id = Uuid7.Guid().ToString(),
+            VoucherTypeId = int.Parse(voucherTypeId.Value),
             EntityId = vm.Table,
             Title = "Request is decline",
             Icon = "fal fa-frown",

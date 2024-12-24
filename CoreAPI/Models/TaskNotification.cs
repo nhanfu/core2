@@ -14,5 +14,6 @@
         public string InsertedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public string UpdatedBy { get; set; }
+        public int VoucherTypeId { get; set; }
     }
 }
