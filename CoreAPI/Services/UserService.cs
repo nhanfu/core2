@@ -17,7 +17,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using System.Buffers;
-using System.CodeDom;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
@@ -1126,6 +1125,8 @@ public class UserService
                 message = "Please config approved"
             };
         }
+        var queryApprovement = @$"SELECT * FROM Approvement where Name = '{name}' and RecordId = '{id}' and Approved = 1 and IsEnd = 0 order by CurrentLevel desc";
+        var approvements = await _sql.ReadDsAsArr<Approvement>(queryApprovement);
         var matchApprovalConfig = approvalConfig.FirstOrDefault(x => x.Level == 1);
         if (matchApprovalConfig is null)
         {
@@ -1136,8 +1137,6 @@ public class UserService
             };
         }
         var maxLevel = approvalConfig.Max(x => x.Level);
-        var queryApprovement = @$"SELECT * FROM Approvement where Name = '{name}' and RecordId = '{id}' and Approved = 1 and IsEnd = 0 order by CurrentLevel desc";
-        var approvements = await _sql.ReadDsAsArr<Approvement>(queryApprovement);
         if ((approvements.Nothing() && maxLevel == 1) || approvements.Any(x => x.CurrentLevel == maxLevel))
         {
             var nextConfig1 = approvalConfig.FirstOrDefault(x => x.Level == maxLevel);
@@ -1533,7 +1532,7 @@ public class UserService
             var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] where [{nameof(User.TeamId)}] = '{GroupId}' and IsTeam = 1");
             userApproved = users.Select(x => x.Id).ToArray();
         }
-        if (matchApprovalConfig.IsDepartment)
+        if (nextConfig.IsDepartment)
         {
             var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] where [{nameof(User.DepartmentId)}] = '{DepartmentId}' and IsDepartment = 1");
             userApproved = users.Select(x => x.Id).ToArray();
