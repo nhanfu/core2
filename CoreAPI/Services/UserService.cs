@@ -1009,6 +1009,8 @@ public class UserService
 
     public async Task<SqlResult> ApprovedEntity(PatchVM vm)
     {
+        vm.Detail = new List<List<PatchVM>>();
+        vm.Delete = new List<DeleteItem>();
         var now = DateTime.Now;
         var name = vm.Name ?? vm.Table;
         var id = vm.Changes.FirstOrDefault(x => x.Field == "Id").Value;
@@ -1360,6 +1362,8 @@ public class UserService
 
     public async Task<SqlResult> ForwardEntity(PatchVM vm)
     {
+        vm.Detail = new List<List<PatchVM>>();
+        vm.Delete = new List<DeleteItem>();
         var now = DateTime.Now;
         var name = vm.Name ?? vm.Table;
         var id = vm.Changes.FirstOrDefault(x => x.Field == "Id").Value;
@@ -1393,6 +1397,8 @@ public class UserService
 
     public async Task<SqlResult> DeclineEntity(PatchVM vm)
     {
+        vm.Detail = new List<List<PatchVM>>();
+        vm.Delete = new List<DeleteItem>();
         vm.Changes.FirstOrDefault(x => x.Field == "StatusId").Value = "4";
         if (vm.Changes.FirstOrDefault(x => x.Field == "AutoProgressId") != null)
         {
