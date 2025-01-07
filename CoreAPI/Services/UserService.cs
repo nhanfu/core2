@@ -224,6 +224,13 @@ public class UserService
         return ds[0];
     }
 
+    public async Task<Dictionary<string, object>[]> GetExchangeRate()
+    {
+        var query = @$"select * from [ExchangeRate] where (FromDate <= GETDATE() or FromDate is null) and (GETDATE() <= ToDate or ToDate is null)";
+        var ds = await _sql.ReadDataSet(query, _configuration.GetConnectionString("Default"));
+        return ds[0];
+    }
+
     public async Task<Dictionary<string, object>[]> MyNotification()
     {
         var query = @$"select * from [TaskNotification] where AssignedId = '{UserId}' order by InsertedDate desc";
@@ -371,6 +378,10 @@ public class UserService
            ,[IsNoDocs]
            ,[ExchangeRateVND]
            ,[ExchangeRateUSD]
+           ,[ExSaleUSD]
+           ,[ExSaleVND]
+           ,[ExProfitUSD]
+           ,[ExProfitVND]
            ,[ExchangeRateINV]
            ,[IsContainer]
            ,[IsCBM]
@@ -381,7 +392,7 @@ public class UserService
            ,[IsGW]
            ,[Order]
            ,[ExchangeRate]
-           ,[SettelementNo]
+           ,[SettlementNo]
            ,[Active]
            ,[InsertedDate]
            ,[InsertedBy]
@@ -415,6 +426,10 @@ public class UserService
            ,ds.[IsNoDocs]
            ,ds.[ExchangeRateVND]
            ,ds.[ExchangeRateUSD]
+           ,ds.[ExSaleUSD]
+           ,ds.[ExSaleVND]
+           ,ds.[ExProfitUSD]
+           ,ds.[ExProfitVND]
            ,case when ds.ExchangeRateVND = 1 then 1 else ShipmentInvoice.ExchangeRateUSD end
            ,ds.[IsContainer]
            ,ds.[IsCBM]
@@ -425,7 +440,7 @@ public class UserService
            ,ds.[IsGW]
            ,ds.[Order]
            ,ds.[ExchangeRate]
-           ,ds.[SettelementNo]
+           ,ds.[SettlementNo]
            ,ds.[Active]
            , GETDATE()
            ,'{UserId}'
@@ -1409,10 +1424,11 @@ public class UserService
         var id = vm.Changes.FirstOrDefault(x => x.Field == "Id").Value;
         var voucherTypeId = vm.Changes.FirstOrDefault(x => x.Field == "VoucherTypeId");
         var userReceiverId = vm.Changes.FirstOrDefault(x => x.Field == "UserReceiverId");
+        var receiverIds = vm.Changes.FirstOrDefault(x => x.Field == "ReceiverIds");
         var groupReceiverId = vm.Changes.FirstOrDefault(x => x.Field == "GroupReceiverId");
         var insertedBy = vm.Changes.FirstOrDefault(x => x.Field == "InsertedBy");
         var titLe = vm.Changes.FirstOrDefault(x => x.Field == "FormatChat");
-        if (userReceiverId != null && !userReceiverId.Value.IsNullOrWhiteSpace() || groupReceiverId != null && !groupReceiverId.Value.IsNullOrWhiteSpace())
+        if (userReceiverId != null && !userReceiverId.Value.IsNullOrWhiteSpace() || groupReceiverId != null && !groupReceiverId.Value.IsNullOrWhiteSpace() || receiverIds != null && !receiverIds.Value.IsNullOrWhiteSpace())
         {
             var rs = await SavePatch2(vm);
             if (userReceiverId != null && !userReceiverId.Value.IsNullOrWhiteSpace() && UserId == userReceiverId.Value)
@@ -1456,6 +1472,56 @@ public class UserService
             if (groupReceiverId != null && !groupReceiverId.Value.IsNullOrWhiteSpace())
             {
                 var queryUser = @$"SELECT * FROM [User] where TeamId = '{groupReceiverId.Value}'";
+                var users = await _sql.ReadDsAsArr<User>(queryUser);
+                if (users.Select(x => x.Id).ToList().Contains(UserId))
+                {
+                    var approval1 = new Approvement
+                    {
+                        Id = Uuid7.Guid().ToString(),
+                        Approved = false,
+                        CurrentLevel = 1,
+                        NextLevel = 1,
+                        Name = name,
+                        RecordId = id,
+                        StatusId = 3,
+                        ReasonOfChange = vm.ReasonOfChange,
+                        UserApproveId = UserId,
+                        ApprovedBy = UserId,
+                        ApprovedDate = now,
+                        InsertedBy = UserId,
+                        InsertedDate = now
+                    };
+                    var patchQpproval1 = approval1.MapToPatch();
+                    await SavePatch(patchQpproval1);
+                    var taskUser = new TaskNotification()
+                    {
+                        Id = Uuid7.Guid().ToString(),
+                        VoucherTypeId = int.Parse(voucherTypeId.Value),
+                        EntityId = name,
+                        Title = "Request is decline",
+                        Icon = "fal fa-frown",
+                        Description = titLe.Value ?? "",
+                        InsertedBy = UserId,
+                        RecordId = id,
+                        InsertedDate = DateTime.Now,
+                        Active = true,
+                        AssignedId = insertedBy.Value
+                    };
+                    NotifyDevices(new List<TaskNotification>() { taskUser }, "MessageNotification");
+                }
+                else
+                {
+                    return new SqlResult()
+                    {
+                        status = 500,
+                        message = "You do not have permission to browse the data"
+                    };
+                }
+            }
+            if (receiverIds != null && !receiverIds.Value.IsNullOrWhiteSpace())
+            {
+                var userString = receiverIds.Value.Split(",");
+                var queryUser = @$"SELECT * FROM [User] where Id in ({userString.CombineStrings()})";
                 var users = await _sql.ReadDsAsArr<User>(queryUser);
                 if (users.Select(x => x.Id).ToList().Contains(UserId))
                 {

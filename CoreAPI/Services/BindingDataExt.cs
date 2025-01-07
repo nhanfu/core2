@@ -5,6 +5,7 @@ using Core.ViewModels;
 using CoreAPI.BgService;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace CoreAPI.Services
@@ -308,15 +309,10 @@ namespace CoreAPI.Services
                 }
                 else if (childGroups.Count == 1)
                 {
-                    var groupBy = currentbody.Attributes["data-group"]?.Value.Split(",").Select(g => g.Trim()).ToArray();
+                    var groupBy = currentbody.Attributes["data-group"].Value?.ToString();
                     var dataGroups = mainObject.GroupBy(x =>
                     {
-                        var groupKey = new List<object>();
-                        foreach (var key in groupBy)
-                        {
-                            if (x.ContainsKey(key)) groupKey.Add(x[key]);
-                        }
-                        return groupKey;
+                        return x[groupBy];
                     });
                     foreach (var group in dataGroups)
                     {
