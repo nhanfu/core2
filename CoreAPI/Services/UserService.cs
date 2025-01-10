@@ -430,7 +430,8 @@ public class UserService
            ,ds.[ExSaleVND]
            ,ds.[ExProfitUSD]
            ,ds.[ExProfitVND]
-           ,case when ds.ExchangeRateVND = 1 then 1 else ShipmentInvoice.ExchangeRateUSD end
+           ,(case when ShipmentInvoice.CurrencyId = ds.CurrencyId then 1
+            else ShipmentInvoice.ExchangeRateINV end)
            ,ds.[IsContainer]
            ,ds.[IsCBM]
            ,ds.[IsFreight]
@@ -450,8 +451,12 @@ public class UserService
            ,ds.[PmTypeId]
            ,ds.Id
            ,ds.[IsLock],
-		   case when ds.TypeId = 2 then case when ds.ExchangeRateVND = 1 then TotalAmountTax else ShipmentInvoice.ExchangeRateUSD*TotalAmountTax end else null end as Payable,
-		   case when ds.TypeId = 1 then case when ds.ExchangeRateVND = 1 then TotalAmountTax else ShipmentInvoice.ExchangeRateUSD*TotalAmountTax end else null end as Receivable
+		   CASE WHEN ds.TypeId in (2,3,4) THEN 
+            (case when ShipmentInvoice.CurrencyId = ds.CurrencyId then 1
+            else ShipmentInvoice.ExchangeRateINV end) * ds.TotalAmountTax ELSE  NULL END AS Payable,
+		   CASE WHEN ds.TypeId in (1) THEN 
+            (case when ShipmentInvoice.CurrencyId = ds.CurrencyId then 1
+            else ShipmentInvoice.ExchangeRateINV end) * ds.TotalAmountTax ELSE  NULL END AS Receivable
         from ShipmentFee as ds 
         left join ShipmentInvoice on ShipmentInvoice.Id = '{entity.ShipmentInvoiceId}'
         where ds.Id in ({entity.ShipmentInvoiceDetailId.CombineStrings()})";
