@@ -1,6 +1,7 @@
 ﻿using Core.Extensions;
 using Core.Middlewares;
 using Core.Services;
+using CoreAPI.BgService;
 using CoreAPI.Services;
 using CoreAPI.Services.Sql;
 using Hangfire;
