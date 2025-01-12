@@ -1,7 +1,6 @@
 ﻿using Core.Extensions;
 using Core.Middlewares;
 using Core.Services;
-using CoreAPI.BgService;
 using CoreAPI.Services;
 using CoreAPI.Services.Sql;
 using Hangfire;
@@ -117,6 +116,7 @@ app.UseMiddleware<GlobalMiddleware>();
 app.UseMiddleware<LoadBalaceMiddleware>();
 app.UseTaskSocket();
 app.UseResponseCompression();
+app.UseDefaultFiles();
 app.UseStaticFiles();
 app.UseMvc();
 app.UseRouting();

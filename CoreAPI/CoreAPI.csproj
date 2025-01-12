@@ -40,38 +40,4 @@
 		<PackageReference Include="Topaz" Version="1.4.0" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<None Include="wwwroot\css\fonts\fa-light-300.woff2" />
-		<None Include="wwwroot\css\fonts\fa-regular-400.woff2" />
-		<None Include="wwwroot\css\fonts\fa-solid-900.woff2" />
-		<None Include="wwwroot\css\fonts\LineIcons.svg" />
-		<None Include="wwwroot\css\webfonts\fa-brands-400.svg" />
-		<None Include="wwwroot\css\webfonts\fa-brands-400.woff2" />
-		<None Include="wwwroot\css\webfonts\fa-light-300.svg" />
-		<None Include="wwwroot\css\webfonts\fa-light-300.woff2" />
-		<None Include="wwwroot\css\webfonts\fa-regular-400.svg" />
-		<None Include="wwwroot\css\webfonts\fa-regular-400.woff2" />
-		<None Include="wwwroot\css\webfonts\fa-solid-900.svg" />
-		<None Include="wwwroot\css\webfonts\fa-solid-900.woff2" />
-		<None Include="wwwroot\icons\book.svg" />
-		<None Include="wwwroot\icons\CostAllocation.svg" />
-		<None Include="wwwroot\icons\share.svg" />
-		<None Include="wwwroot\image\invoice.svg" />
-		<None Include="wwwroot\image\truck.webp" />
-		<None Include="wwwroot\js\bootstrap.bundle.min.js" />
-		<None Include="wwwroot\js\fix.js" />
-		<None Include="wwwroot\js\jquery-3.5.1.min.js" />
-		<None Include="wwwroot\js\nhanh.min.js" />
-		<None Include="wwwroot\js\pace.min.js" />
-		<None Include="wwwroot\js\pnotify.min.js" />
-		<None Include="wwwroot\js\select2.min.js" />
-		<None Include="wwwroot\js\sweetalert2.js" />
-		<None Include="wwwroot\js\theme1.js" />
-		<None Include="wwwroot\js\tms.newtonsoft.json.js" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="wwwroot\system\test\lp\js\" />
-	</ItemGroup>
-
 </Project>
