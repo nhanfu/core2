@@ -352,8 +352,8 @@ public class UserService
     public async Task<bool> AddFee(FeeVM entity)
     {
         var update = $@"
-            UPDATE ShipmentInvoice set RevisedDate = GETDATE() 
-            from ShipmentInvoice 
+            UPDATE ShipmentInvoice set RevisedDate = GETDATE()
+            from ShipmentInvoice
             where Id = '{entity.ShipmentInvoiceId}';
             INSERT INTO [dbo].[ShipmentInvoiceDetail]
            ([Id]
