@@ -67,5 +67,5 @@ public partial class Feature
 
     public bool IsLock { get; set; }
 
-    public string created_by { get; set; }
+    public bool IsFlow { get; set; }
 }

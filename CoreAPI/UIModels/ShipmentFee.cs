@@ -103,6 +103,12 @@ public partial class ShipmentFee
 
     public string ShipmentInvoiceId { get; set; }
 
+    public string ShipmentInvoiceCode { get; set; }
+
+    public DateTime? ShipmentInvoiceDate { get; set; }
+
+    public DateTime? DebitDate { get; set; }
+
     public string ParentId { get; set; }
 
     public bool NoSubmit { get; set; }
@@ -131,6 +137,10 @@ public partial class ShipmentFee
 
     public string PaymentRequestDetailId { get; set; }
 
+    public DateTime? PaymentDate { get; set; }
+
+    public string PaymentCode { get; set; }
+
     public bool IsPayment { get; set; }
 
     public int? ServiceId { get; set; }
@@ -146,4 +156,18 @@ public partial class ShipmentFee
     public string InvoiceId { get; set; }
 
     public string InvoiceDetailId { get; set; }
+
+    public DateTime? InvoiceDate { get; set; }
+
+    public string InvoiceCode { get; set; }
+
+    public string HblNo { get; set; }
+
+    public decimal? ExTotalAmountTax { get; set; }
+
+    public decimal? ExTotalAmount { get; set; }
+
+    public decimal? ExAmountTax { get; set; }
+
+    public decimal? ExAmount { get; set; }
 }

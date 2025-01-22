@@ -13,6 +13,8 @@ public partial class ShipmentInvoice
 
     public string VendorIds { get; set; }
 
+    public string VendorIdsText { get; set; }
+
     public string Code { get; set; }
 
     public string OtherCode { get; set; }
@@ -63,7 +65,7 @@ public partial class ShipmentInvoice
 
     public string RequestTypeId { get; set; }
 
-    public string UserReceiverIds { get; set; }
+    public string ReceiverIds { get; set; }
 
     public int? SeqKey { get; set; }
 
@@ -152,4 +154,30 @@ public partial class ShipmentInvoice
     public DateTime? PaidDate { get; set; }
 
     public bool IsReceiptPayment { get; set; }
+
+    public bool IsSend { get; set; }
+
+    public bool NoApproved { get; set; }
+
+    public int? ShipmentStatusId { get; set; }
+
+    public decimal? TotalAmountTax { get; set; }
+
+    public decimal? TotalAmount { get; set; }
+
+    public decimal? AmountTax { get; set; }
+
+    public decimal? VatInv { get; set; }
+
+    public string EinvoiceLink { get; set; }
+
+    public string EinvoiceCode { get; set; }
+
+    public string AmountText { get; set; }
+
+    public string InvoiceConfigId { get; set; }
+
+    public bool IsMultiple { get; set; }
+
+    public int? DebitTypeId { get; set; }
 }

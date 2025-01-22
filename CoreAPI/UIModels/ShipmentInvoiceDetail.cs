@@ -106,4 +106,70 @@ public partial class ShipmentInvoiceDetail
     public decimal? Payable { get; set; }
 
     public decimal? Receivable { get; set; }
+
+    public string VoucherId { get; set; }
+
+    public string FileId { get; set; }
+
+    public bool IsManual { get; set; }
+
+    public bool IsGrossWeight { get; set; }
+
+    public string ShipmentInvoiceDetailId { get; set; }
+
+    public string ShipmentInvoiceCode { get; set; }
+
+    public DateTime? ShipmentInvoiceDate { get; set; }
+
+    public DateTime? DebitDate { get; set; }
+
+    public string ParentId { get; set; }
+
+    public bool NoSubmit { get; set; }
+
+    public string SaleId { get; set; }
+
+    public DateTime? DeadlineDate { get; set; }
+
+    public string BookingId { get; set; }
+
+    public bool IsAdv { get; set; }
+
+    public bool IsAdvCustomer { get; set; }
+
+    public bool IsAdvProvider { get; set; }
+
+    public string AssignId { get; set; }
+
+    public string PaymentRequestDetailId { get; set; }
+
+    public DateTime? PaymentDate { get; set; }
+
+    public string PaymentCode { get; set; }
+
+    public int? ServiceId { get; set; }
+
+    public DateTime? ShipmentDate { get; set; }
+
+    public DateTime? EtdDate { get; set; }
+
+    public DateTime? EtaDate { get; set; }
+
+    public bool IsInvoice { get; set; }
+
+    public string InvoiceId { get; set; }
+
+    public string InvoiceDetailId { get; set; }
+
+    public DateTime? InvoiceDate { get; set; }
+
+    public string InvoiceCode { get; set; }
+
+    public decimal? ExTotalAmountTax { get; set; }
+
+    public decimal? ExTotalAmount { get; set; }
+
+    public decimal? ExAmountTax { get; set; }
+
+    public decimal? ExAmount { get; set; }
 }

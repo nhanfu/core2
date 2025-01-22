@@ -390,4 +390,6 @@ public partial class Shipment
     public string BookingLocalId { get; set; }
 
     public string QuotationCode { get; set; }
+
+    public DateTime? ReleaseDate { get; set; }
 }

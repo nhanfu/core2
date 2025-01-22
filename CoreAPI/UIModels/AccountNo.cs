@@ -17,7 +17,13 @@ public partial class AccountNo
 
     public string NameEnglish { get; set; }
 
-    public string TypeId { get; set; }
+    public int? TypeId { get; set; }
+
+    public string CurrencyId { get; set; }
+
+    public string OgCurrencyId { get; set; }
+
+    public string CurrencyCode { get; set; }
 
     public string Reason { get; set; }
 
