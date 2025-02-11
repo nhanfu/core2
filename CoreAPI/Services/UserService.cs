@@ -533,6 +533,7 @@ public class UserService
         feature.ComponentGroup = filteredComponentGroups;
         feature.FeaturePolicies = policys;
         feature.GridPolicies = feature.Components.Where(component => component.ComponentGroupId == null && component.EntityId != null).ToList();
+        feature.Components = feature.Components.Where(x => x.ComponentType == "Button").ToList();
         return feature;
     }
 
