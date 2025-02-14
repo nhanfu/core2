@@ -519,9 +519,9 @@ public class UserService
         select * from [FeaturePolicy] where FeatureId = '{feature.Id}'
         select * from [UserSetting] where FeatureId = '{feature.Id}' and UserId = '{UserId}'";
         var childs = await _sql.ReadDataSet(query2, _configuration.GetConnectionString("Default"));
-        var components = childs.Length > 0 && childs[0].Length > 0 ? childs[0].Select(x => x.MapTo<Component>()).ToList() : null;
-        var policys = childs.Length > 1 && childs[1].Length > 0 ? childs[1].Select(x => x.MapTo<FeaturePolicy>()).ToList() : null;
-        feature.UserSettings = childs.Length > 2 && childs[2].Length > 0 ? childs[2].Select(x => x.MapTo<UserSetting>()).ToList() : null;
+        var components = childs.Length > 0 && childs[0].Length > 0 ? childs[0].Select(x => x.MapTo<Component>()).ToList() : new List<Component>();
+        var policys = childs.Length > 1 && childs[1].Length > 0 ? childs[1].Select(x => x.MapTo<FeaturePolicy>()).ToList() : new List<FeaturePolicy>();
+        feature.UserSettings = childs.Length > 2 && childs[2].Length > 0 ? childs[2].Select(x => x.MapTo<UserSetting>()).ToList() : new List<UserSetting>();
         feature.Components = components;
         var filteredComponentGroups = feature.Components
             .Where(component => component.ComponentType == "Section")
@@ -533,7 +533,8 @@ public class UserService
         feature.ComponentGroup = filteredComponentGroups;
         feature.FeaturePolicies = policys;
         feature.GridPolicies = feature.Components.Where(component => component.ComponentGroupId == null && component.EntityId != null).ToList();
-        feature.Components = feature.Components.Where(x => x.ComponentType == "Button").ToList();
+        var coms = feature.Components.Where(x => x.ComponentType == "Button").ToList();
+        feature.Components = coms.Nothing() ? new List<Component>() : coms;
         return feature;
     }
 
@@ -1750,6 +1751,8 @@ public class UserService
         var tableColumns = (await GetTableColumns(vm.Table))[0];
         var filteredChanges = vm.Changes.Where(change => tableColumns.SelectMany(x => x.Values).Contains(change.Field)).ToList();
         var selectIds = new List<DetailData>();
+        var isSend = filteredChanges.Find(x => x.Field == "IsSend");
+        var receiverIds = filteredChanges.Find(x => x.Field == "ReceiverIds");
         if (id.StartsWith("-"))
         {
             var (dup, mess, currentEntity) = await CheckDuplicate(vm);
@@ -1763,6 +1766,7 @@ public class UserService
                 };
             }
             id = id.Substring(1);
+            await Notification(vm, id, filteredChanges, isSend, receiverIds);
             AddDefaultFields(filteredChanges, new List<PatchDetail>()
             {
                 new PatchDetail { Field = "InsertedDate", Value = DateTime.Now.ToISOFormat() },
@@ -1905,6 +1909,7 @@ public class UserService
         }
         else
         {
+            await Notification(vm, id, filteredChanges, isSend, receiverIds);
             var (dup, mess, currentEntity) = await CheckDuplicate(vm, true);
             if (dup)
             {
@@ -2059,6 +2064,36 @@ public class UserService
                     };
                 }
             }
+        }
+    }
+
+    private async Task Notification(PatchVM vm, string id, List<PatchDetail> filteredChanges, PatchDetail isSend, PatchDetail receiverIds)
+    {
+        if (isSend != null && isSend.Value == "0" && receiverIds != null && receiverIds.Value != null)
+        {
+            var userString = receiverIds.Value.Split(",");
+            var queryUser = @$"SELECT * FROM [User] where Id in ({userString.CombineStrings()})";
+            var users = await _sql.ReadDsAsArr<User>(queryUser);
+            var task = users.Select(x => new TaskNotification()
+            {
+                Id = Uuid7.Guid().ToString(),
+                EntityId = vm.Table,
+                Title = "You have received a new request",
+                Description = filteredChanges.FirstOrDefault(x => x.Field == "FormatChat").Value ?? "",
+                InsertedBy = UserId,
+                RecordId = id,
+                InsertedDate = DateTime.Now,
+                VoucherTypeId = int.Parse(filteredChanges.FirstOrDefault(x => x.Field == "VoucherTypeId").Value),
+                Active = true,
+                AssignedId = x.Id
+            }).ToList();
+            foreach (var item in task)
+            {
+                var patch = item.MapToPatch();
+                await SavePatch(patch);
+            }
+            NotifyDevices(task, "MessageNotification");
+            isSend.Value = "1";
         }
     }
 
