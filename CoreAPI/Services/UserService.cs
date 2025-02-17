@@ -835,7 +835,7 @@ public class UserService
             vm.Changes.FirstOrDefault(x => x.Field == "StatusId").Value = "3";
             if (vm.Changes.FirstOrDefault(x => x.Field == "AutoProgressId") != null)
             {
-                vm.Changes.FirstOrDefault(x => x.Field == "AutoProgressId").Value = "3";
+                vm.Changes.FirstOrDefault(x => x.Field == "AutoProgressId").Value = "2";
             }
             var rs1 = await SavePatch2(vm);
             var approval1 = new Approvement
@@ -1045,7 +1045,7 @@ public class UserService
         {
             if (vm.Changes.FirstOrDefault(x => x.Field == "AutoProgressId") != null)
             {
-                vm.Changes.FirstOrDefault(x => x.Field == "AutoProgressId").Value = "3";
+                vm.Changes.FirstOrDefault(x => x.Field == "AutoProgressId").Value = "2";
             }
             var rs = await SavePatch2(vm);
             if (userReceiverId != null && !userReceiverId.Value.IsNullOrWhiteSpace() && UserId == userReceiverId.Value)
@@ -1194,7 +1194,7 @@ public class UserService
             vm.Changes.FirstOrDefault(x => x.Field == "StatusId").Value = "3";
             if (vm.Changes.FirstOrDefault(x => x.Field == "AutoProgressId") != null)
             {
-                vm.Changes.FirstOrDefault(x => x.Field == "AutoProgressId").Value = "3";
+                vm.Changes.FirstOrDefault(x => x.Field == "AutoProgressId").Value = "2";
             }
             var rs1 = await SavePatch2(vm);
             var approval1 = new Approvement
@@ -1294,7 +1294,7 @@ public class UserService
             vm.Changes.FirstOrDefault(x => x.Field == "StatusId").Value = "3";
             if (vm.Changes.FirstOrDefault(x => x.Field == "AutoProgressId") != null)
             {
-                vm.Changes.FirstOrDefault(x => x.Field == "AutoProgressId").Value = "3";
+                vm.Changes.FirstOrDefault(x => x.Field == "AutoProgressId").Value = "2";
             }
             var rs2 = await SavePatch2(vm);
             var task = userApproved.Select(x => new TaskNotification()
