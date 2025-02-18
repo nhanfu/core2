@@ -26,6 +26,12 @@ public class UserController(UserService _userSvc, PdfService _pdfService, ExcelS
         return await _userSvc.SignInAsync(login);
     }
 
+    [HttpPost("/api/CreateUser")]
+    public async Task<Partner> CreateUser([FromBody] Partner entity)
+    {
+        return await _userSvc.CreateUser(entity);
+    }
+
     [AllowAnonymous]
     [HttpPost("api/[Controller]/SignOut")]
     public Task<bool> SignOutAsync([FromBody] Token token)

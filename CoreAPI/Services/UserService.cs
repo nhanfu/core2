@@ -202,6 +202,46 @@ public class UserService
         return await GetUserToken(matchedUser, login);
     }
 
+    public async Task<Partner> CreateUser(Partner entity)
+    {
+        var ramdomPass = GenerateRandomToken(8);
+        var randomSalt = GenerateRandomToken(8);
+        var old = $"select * from [User] where Id = '{entity.Id}'";
+        var oldUser = await _sql.ReadDsAs<User>(old);
+        var id = "-" + entity.Id;
+        if (oldUser != null)
+        {
+            id = entity.Id;
+        }
+        var user = new User()
+        {
+            Id = id,
+            UserName = entity.Email,
+            FullName = entity.CompanyName,
+            Email = entity.Email,
+            Password = GetHash(Utils.SHA256, ramdomPass + randomSalt),
+            Salt = randomSalt,
+            Active = true,
+            InsertedBy = entity.InsertedBy,
+            InsertedDate = DateTime.Now,
+            RoleIds = "CUSTOMER",
+            RoleIdsText = "CUSTOMER",
+            CompanyId = entity.Id,
+            TypeId = 2,
+            Avatar = "https://api.nguyenduyphong.id.vn/icons/default.jpg"
+        };
+        var save = user.MapToPatch();
+        await SavePatch2(save);
+        var email = new EmailVM
+        {
+            ToAddresses = [user.Email],
+            Subject = "Email recovery",
+            Body = $"<p>Dear {user.FullName},</p><p>Your account has been created successfully. Please use the following information to login:</p><p>Username: {user.UserName}</p><p>Password: {ramdomPass}</p><p>Thank you!</p>"
+        };
+        await SendMail(email);
+        return entity;
+    }
+
     private async Task<User> GetUserByLogin(LoginVM login)
     {
         var query = @$"

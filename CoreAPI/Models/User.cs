@@ -6,6 +6,7 @@
         public string Code { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
+        public string CompanyId { get; set; }
         public string Salt { get; set; }
         public string UserName { get; set; }
         public string FullName { get; set; }
@@ -25,6 +26,7 @@
         public DateTime? SsnDate { get; set; }
         public string TaxCode { get; set; }
         public int? SeqKey { get; set; }
+        public int? TypeId { get; set; }
         public int? LoginFailedCount { get; set; }
         public DateTime? LastFailedLogin { get; set; }
         public DateTime? LastLogin { get; set; }
