@@ -1079,6 +1079,7 @@ public class UserService
         var userReceiverId = vm.Changes.FirstOrDefault(x => x.Field == "UserReceiverId");
         var groupReceiverId = vm.Changes.FirstOrDefault(x => x.Field == "GroupReceiverId");
         var insertedBy = vm.Changes.FirstOrDefault(x => x.Field == "InsertedBy");
+        var userCreateId = vm.Changes.FirstOrDefault(x => x.Field == "UserCreateId");
         var voucherTypeId = vm.Changes.FirstOrDefault(x => x.Field == "VoucherTypeId");
         var titLe = vm.Changes.FirstOrDefault(x => x.Field == "FormatChat");
         if (userReceiverId != null && !userReceiverId.Value.IsNullOrWhiteSpace() || groupReceiverId != null && !groupReceiverId.Value.IsNullOrWhiteSpace())
@@ -1119,7 +1120,7 @@ public class UserService
                     RecordId = id,
                     InsertedDate = DateTime.Now,
                     Active = true,
-                    AssignedId = insertedBy.Value
+                    AssignedId = userCreateId != null ? userCreateId.Value : insertedBy.Value
                 };
                 var patch = taskUser.MapToPatch();
                 await SavePatch(patch);
@@ -1472,6 +1473,7 @@ public class UserService
         var voucherTypeId = vm.Changes.FirstOrDefault(x => x.Field == "VoucherTypeId");
         var userReceiverId = vm.Changes.FirstOrDefault(x => x.Field == "UserReceiverId");
         var receiverIds = vm.Changes.FirstOrDefault(x => x.Field == "ReceiverIds");
+        var userCreateId = vm.Changes.FirstOrDefault(x => x.Field == "UserCreateId");
         var groupReceiverId = vm.Changes.FirstOrDefault(x => x.Field == "GroupReceiverId");
         var insertedBy = vm.Changes.FirstOrDefault(x => x.Field == "InsertedBy");
         var titLe = vm.Changes.FirstOrDefault(x => x.Field == "FormatChat");
@@ -1510,7 +1512,7 @@ public class UserService
                     RecordId = id,
                     InsertedDate = DateTime.Now,
                     Active = true,
-                    AssignedId = insertedBy.Value
+                    AssignedId = userCreateId != null ? userCreateId.Value : insertedBy.Value
                 };
                 var patch1 = taskUser.MapToPatch();
                 await SavePatch(patch1);
@@ -2670,14 +2672,29 @@ public class UserService
         var socket = _taskSocketSvc.GetAll();
         var usersVM = socket.Select(x => new UserActiveVM { UserId = x.Key.Split("/").FirstOrDefault(), Ip = x.Key.Split("/")[2] }).DistinctBy(x => new { x.UserId, x.Ip }).ToList();
         var userIds = usersVM.Select(x => x.UserId).Distinct().ToList();
-        var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] WHERE ID IN ({userIds.CombineStrings()})", _configuration.GetConnectionString("Default"));
-        var newUsers = usersVM.Select(x =>
+        if (RoleNames.Contains("CUSTOMER"))
         {
-            var usersNew = users.FirstOrDefault(y => y.Id == x.UserId);
-            usersNew.Ip = x.Ip;
-            return usersNew;
-        }).OrderBy(x => x.FullName).ToArray();
-        return newUsers;
+            var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] WHERE ID IN ({UserId})", _configuration.GetConnectionString("Default"));
+            usersVM = usersVM.Where(x => x.UserId == users[0].Id).ToList();
+            var newUsers = usersVM.Select(x =>
+            {
+                var usersNew = users.FirstOrDefault(y => y.Id == x.UserId);
+                usersNew.Ip = x.Ip;
+                return usersNew;
+            }).OrderBy(x => x.FullName).ToArray();
+            return newUsers;
+        }
+        else
+        {
+            var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] WHERE ID IN ({userIds.CombineStrings()})", _configuration.GetConnectionString("Default"));
+            var newUsers = usersVM.Select(x =>
+            {
+                var usersNew = users.FirstOrDefault(y => y.Id == x.UserId);
+                usersNew.Ip = x.Ip;
+                return usersNew;
+            }).OrderBy(x => x.FullName).ToArray();
+            return newUsers;
+        }
     }
 
     public class UserActiveVM
