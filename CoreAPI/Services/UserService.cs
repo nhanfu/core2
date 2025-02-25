@@ -2675,13 +2675,18 @@ public class UserService
         if (RoleNames.Contains("CUSTOMER"))
         {
             var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] WHERE ID IN ({UserId})", _configuration.GetConnectionString("Default"));
-            usersVM = usersVM.Where(x => x.UserId == users[0].Id).ToList();
             var newUsers = usersVM.Select(x =>
             {
-                var usersNew = users.FirstOrDefault(y => y.Id == x.UserId);
-                usersNew.Ip = x.Ip;
-                return usersNew;
-            }).OrderBy(x => x.FullName).ToArray();
+                var userNew = users.FirstOrDefault(y => y.Id == x.UserId);
+                if (userNew != null)
+                {
+                    userNew.Ip = x.Ip;
+                }
+                return userNew;
+            }).Where(x => x != null) // Loại bỏ null
+            .OrderBy(x => x.FullName)
+            .DistinctBy(x => (x.Id, x.Ip)) // Loại bỏ trùng theo cả Id và Ip
+            .ToArray();
             return newUsers;
         }
         else
@@ -2689,10 +2694,16 @@ public class UserService
             var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] WHERE ID IN ({userIds.CombineStrings()})", _configuration.GetConnectionString("Default"));
             var newUsers = usersVM.Select(x =>
             {
-                var usersNew = users.FirstOrDefault(y => y.Id == x.UserId);
-                usersNew.Ip = x.Ip;
-                return usersNew;
-            }).OrderBy(x => x.FullName).ToArray();
+                var userNew = users.FirstOrDefault(y => y.Id == x.UserId);
+                if (userNew != null)
+                {
+                    userNew.Ip = x.Ip;
+                }
+                return userNew;
+            }).Where(x => x != null) // Loại bỏ null
+            .OrderBy(x => x.FullName)
+            .DistinctBy(x => (x.Id, x.Ip)) // Loại bỏ trùng theo cả Id và Ip
+            .ToArray();
             return newUsers;
         }
     }
