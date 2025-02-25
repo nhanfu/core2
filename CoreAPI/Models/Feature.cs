@@ -33,7 +33,7 @@
         public bool CustomNextCell { get; set; }
         public bool LoadEntity { get; set; }
         public bool IsLock { get; set; }
-        public string IsFlow { get; set; }
+        public bool IsFlow { get; set; }
         public string CodeId { get; set; }
         public List<Component> ComponentGroup { get; set; }
         public List<Component> GridPolicies { get; set; }

@@ -26,7 +26,7 @@ namespace CoreAPI.Services
         {
             var component = await BgExt.ReadDsAs<Component>($"SELECT * FROM [Component] where Id = '{createHtmlVM.ComId}'", conn);
             var webConfigs = await BgExt.ReadDataSet($"SELECT * FROM [WebConfig]", conn);
-            var myCompany = await BgExt.ReadDsAs<Partner>($"SELECT TOP 1 * FROM [Partner] where ServiceId = 4", conn);
+            var myCompany = await BgExt.ReadDsAs<Partner>($"SELECT TOP 1 * FROM [Partner] where ServiceId = 5", conn);
             var components = await BgExt.ReadDsAsArr<Component>($"SELECT * FROM [Component] where Label is not null and Label != '' and FeatureId = '{component.FeatureId}' and ComponentGroupId is not null and ComponentType not in ('Button','Section','GridView')", conn);
             var gridPolicys = await BgExt.ReadDsAsArr<Component>($"SELECT * FROM [Component] where Label is not null and Label != '' and FeatureId = '{component.FeatureId}' and EntityId is not null and ComponentType not in ('Button','Section','GridView')", conn);
             var dirCom = components.DistinctBy(x => x.Label).ToDictionary(x => x.Label);
