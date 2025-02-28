@@ -48,4 +48,12 @@ public partial class FeeType
     public bool IsAdvCustomer { get; set; }
 
     public bool IsAdvProvider { get; set; }
+
+    public string RevenueAccId { get; set; }
+
+    public string CostAccId { get; set; }
+
+    public string DebitAccId { get; set; }
+
+    public string CreditAccId { get; set; }
 }

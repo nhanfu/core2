@@ -68,4 +68,6 @@ public partial class Feature
     public bool IsLock { get; set; }
 
     public bool IsFlow { get; set; }
+
+    public string CodeId { get; set; }
 }

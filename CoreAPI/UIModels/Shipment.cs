@@ -392,4 +392,28 @@ public partial class Shipment
     public string QuotationCode { get; set; }
 
     public DateTime? ReleaseDate { get; set; }
+
+    public bool IsLockHblNo { get; set; }
+
+    public string SubmitSIId { get; set; }
+
+    public decimal? ActualCostLocal { get; set; }
+
+    public decimal? ActualRevenueLocal { get; set; }
+
+    public decimal? ActualProfitLocal { get; set; }
+
+    public decimal? ActualCostUSD { get; set; }
+
+    public decimal? ActualRevenueUSD { get; set; }
+
+    public decimal? ActualProfitUSD { get; set; }
+
+    public bool IsComplete { get; set; }
+
+    public DateTime? PriorityDate { get; set; }
+
+    public string ShipmentDetailId { get; set; }
+
+    public DateTime? CompleteDate { get; set; }
 }

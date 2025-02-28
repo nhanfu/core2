@@ -176,4 +176,6 @@ public partial class Partner
     public string ReceivesBankId { get; set; }
 
     public string ReceivesSwiftCode { get; set; }
+
+    public string CustomerTypeIdText { get; set; }
 }

@@ -108,4 +108,10 @@ public partial class User
     public bool IsTeam { get; set; }
 
     public string PositionId { get; set; }
+
+    public int? TypeId { get; set; }
+
+    public string MailServer { get; set; }
+
+    public string PortServer { get; set; }
 }

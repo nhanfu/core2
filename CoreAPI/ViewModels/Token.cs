@@ -1,5 +1,6 @@
 ﻿using Core.Extensions;
 using Core.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace Core.ViewModels
 {
@@ -38,6 +39,12 @@ namespace Core.ViewModels
     {
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
+    }
+
+    public class UpdatePasswordVM
+    {
+        public string NewPassword { get; set; }
+        public string Password { get; set; }
     }
 
     public class CreateHtmlVM

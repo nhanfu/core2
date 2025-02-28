@@ -19,6 +19,8 @@ public partial class VoucherDetail
 
     public string DescriptionId { get; set; }
 
+    public string DescriptionIdText { get; set; }
+
     public decimal? TotalAmountTax { get; set; }
 
     public decimal? TotalAmount { get; set; }
@@ -79,6 +81,8 @@ public partial class VoucherDetail
 
     public bool IsGrossWeight { get; set; }
 
+    public bool IsAbs { get; set; }
+
     public int? Order { get; set; }
 
     public decimal? ExchangeRate { get; set; }
@@ -100,6 +104,12 @@ public partial class VoucherDetail
     public string PmTypeId { get; set; }
 
     public string ShipmentInvoiceDetailId { get; set; }
+
+    public string ShipmentInvoiceId { get; set; }
+
+    public string ShipmentInvoiceCode { get; set; }
+
+    public DateTime? ShipmentInvoiceDate { get; set; }
 
     public string InvoiceNo { get; set; }
 
@@ -124,4 +134,54 @@ public partial class VoucherDetail
     public string SeriNo { get; set; }
 
     public string InvoiceId { get; set; }
+
+    public string ShipmentFeeId { get; set; }
+
+    public string DebitAccId { get; set; }
+
+    public string CreditAccId { get; set; }
+
+    public decimal? ExAmount { get; set; }
+
+    public decimal? ExAmountTax { get; set; }
+
+    public string VatAccId { get; set; }
+
+    public decimal? AmountDifference { get; set; }
+
+    public string DifferenceAccId { get; set; }
+
+    public string OBHAccId { get; set; }
+
+    public string InvoiceConfigId { get; set; }
+
+    public string EinvoiceLink { get; set; }
+
+    public string EinvoiceCode { get; set; }
+
+    public string FileNo { get; set; }
+
+    public string HblNo { get; set; }
+
+    public string Form { get; set; }
+
+    public decimal? ExTotalAmount { get; set; }
+
+    public string PaymentRequestId { get; set; }
+
+    public string PaymentRequestDetailId { get; set; }
+
+    public DateTime? PaymentDate { get; set; }
+
+    public string PaymentCode { get; set; }
+
+    public bool IsPayment { get; set; }
+
+    public bool IsInvoice { get; set; }
+
+    public string InvoiceDetailId { get; set; }
+
+    public string InvoiceCode { get; set; }
+
+    public int? ServiceId { get; set; }
 }

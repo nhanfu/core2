@@ -36,4 +36,6 @@ public partial class AccountNo
     public DateTime? UpdatedDate { get; set; }
 
     public string UpdatedBy { get; set; }
+
+    public bool IsLast { get; set; }
 }

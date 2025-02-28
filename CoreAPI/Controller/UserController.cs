@@ -88,6 +88,12 @@ public class UserController(UserService _userSvc, PdfService _pdfService, ExcelS
         return _userSvc.ForgotPassword(login);
     }
 
+    [HttpPost("api/[Controller]/UpdatePassword")]
+    public Task<bool> UpdatePassword([FromBody] UpdatePasswordVM login)
+    {
+        return _userSvc.UpdatePassword(login);
+    }
+
     [HttpPost("/api/GenPdf")]
     public async Task<string> HtmlToPdf([FromBody] PdfVM vm)
     {

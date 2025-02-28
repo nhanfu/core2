@@ -67,7 +67,7 @@ public partial class ShipmentSI
 
     public string Notes { get; set; }
 
-    public string ShippingMarks { get; set; }
+    public string ShippingMark { get; set; }
 
     public string DetailsGoods { get; set; }
 
@@ -94,4 +94,34 @@ public partial class ShipmentSI
     public string UpdatedBy { get; set; }
 
     public string Package { get; set; }
+
+    public int? ProgressId { get; set; }
+
+    public int? SITypeId { get; set; }
+
+    public string CustomerId { get; set; }
+
+    public int? StatusId { get; set; }
+
+    public string FormatChat { get; set; }
+
+    public int? VoucherTypeId { get; set; }
+
+    public bool IsSend { get; set; }
+
+    public string HblTypeId { get; set; }
+
+    public decimal? Quantity { get; set; }
+
+    public string Remark { get; set; }
+
+    public string UserReceiverId { get; set; }
+
+    public string UserApprovedIds { get; set; }
+
+    public int? ServiceId { get; set; }
+
+    public string UserCreateId { get; set; }
+
+    public string UnitId { get; set; }
 }

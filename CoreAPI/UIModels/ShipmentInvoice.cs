@@ -180,4 +180,18 @@ public partial class ShipmentInvoice
     public bool IsMultiple { get; set; }
 
     public int? DebitTypeId { get; set; }
+
+    public DateTime? ReleaseDate { get; set; }
+
+    public int? DocsTypeId { get; set; }
+
+    public bool IsSendToPartner { get; set; }
+
+    public string ShipmentInvoiceId { get; set; }
+
+    public string PaymentAccId { get; set; }
+
+    public string DebtAccId { get; set; }
+
+    public string InvoiceIds { get; set; }
 }

@@ -81,6 +81,8 @@ public partial class ShipmentFee
 
     public bool IsGrossWeight { get; set; }
 
+    public bool IsAbs { get; set; }
+
     public int? Order { get; set; }
 
     public decimal? ExchangeRate { get; set; }
@@ -170,4 +172,32 @@ public partial class ShipmentFee
     public decimal? ExAmountTax { get; set; }
 
     public decimal? ExAmount { get; set; }
+
+    public string DebtId { get; set; }
+
+    public bool IsDebtAcc { get; set; }
+
+    public bool IsPaid { get; set; }
+
+    public string DebtCode { get; set; }
+
+    public DateTime? DebtDate { get; set; }
+
+    public string PaymentAccId { get; set; }
+
+    public string PaymentAccCode { get; set; }
+
+    public DateTime? PaymentAccDate { get; set; }
+
+    public bool IsPaymentAcc { get; set; }
+
+    public DateTime? PaidDate { get; set; }
+
+    public bool LockHblNo { get; set; }
+
+    public bool IsComplete { get; set; }
+
+    public DateTime? CompleteDate { get; set; }
+
+    public string MblNo { get; set; }
 }

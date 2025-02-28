@@ -172,4 +172,8 @@ public partial class ShipmentInvoiceDetail
     public decimal? ExAmountTax { get; set; }
 
     public decimal? ExAmount { get; set; }
+
+    public string FileNo { get; set; }
+
+    public string HblNo { get; set; }
 }

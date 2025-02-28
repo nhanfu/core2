@@ -17,9 +17,11 @@ public partial class Terminal
 
     public string CountryId { get; set; }
 
-    public bool Active { get; set; }
+    public string ZoneId { get; set; }
 
-    public string ServiceText { get; set; }
+    public string ServiceIds { get; set; }
+
+    public bool Active { get; set; }
 
     public string InsertedBy { get; set; }
 

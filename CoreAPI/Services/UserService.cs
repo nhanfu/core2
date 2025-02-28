@@ -702,7 +702,7 @@ public class UserService
         var query =
             @$"select * from UserLogin 
             where UserId = '{userId}' and RefreshToken = '{token.RefreshToken}'
-            and RefreshTokenExp > '{DateTime.Now}' order by InsertedDate desc";
+            and RefreshTokenExp > '{DateTime.Now}' and Active = 1 order by InsertedDate desc";
         var userLogin = await _sql.ReadDsAs<UserLogin>(query);
 
         if (userLogin == null)
@@ -3393,6 +3393,32 @@ public class UserService
             Subject = "Email recovery",
         };
         await SendMail(email);
+        return true;
+    }
+
+    public async Task<bool> UpdatePassword(UpdatePasswordVM vm)
+    {
+        var user = await _sql.ReadDsAs<User>($"select * from [User] where Id in ('{UserId}')");
+        var hashedPassword = GetHash(Utils.SHA256, vm.Password + user.Salt);
+        var matchPassword = user.Password == hashedPassword;
+        if (!matchPassword)
+        {
+            return false;
+        }
+        user.Salt = GenerateRandomToken();
+        user.Password = GetHash(Utils.SHA256, vm.NewPassword + user.Salt);
+        List<PatchDetail> changes =
+        [
+            new PatchDetail { Field = nameof(User.Id), OldVal = user.Id },
+            new PatchDetail { Field = nameof(User.Salt), Value = user.Salt },
+            new PatchDetail { Field = nameof(User.Password), Value = user.Password },
+        ];
+        await SavePatch(new PatchVM
+        {
+            Table = nameof(User),
+            Changes = changes,
+        });
+        await _sql.RunSqlCmd(null, $"update [UserLogin] set Active = 0 where UserId in ('{UserId}')");
         return true;
     }
 

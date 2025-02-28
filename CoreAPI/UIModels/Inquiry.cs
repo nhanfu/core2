@@ -196,4 +196,6 @@ public partial class Inquiry
     public string ForwardId { get; set; }
 
     public bool NoApproved { get; set; }
+
+    public string BookingLocalId { get; set; }
 }
