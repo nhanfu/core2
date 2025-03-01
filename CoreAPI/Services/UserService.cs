@@ -633,6 +633,7 @@ public class UserService
             RefreshToken = refreshToken,
             RefreshTokenExp = res.RefreshTokenExp,
             InsertedDate = signinDate,
+            Active = true
         };
         var patch = userLogin.MapToPatch();
         patch.TenantCode = login.TanentCode;
@@ -2566,6 +2567,8 @@ public class UserService
         }
         vm.OrderBy = Utils.FormatEntity(vm.OrderBy, dictionary);
         var data = JsonConvert.DeserializeObject<SqlQuery>(vm.JsScript);
+        dictionary["Skip"] = vm.Skip;
+        dictionary["Top"] = vm.Top;
         data.total = Utils.FormatEntity(data.total, dictionary);
         data.sql = Utils.FormatEntity(data.sql, dictionary);
         var sqlSelect = data.sql;
@@ -2583,15 +2586,15 @@ public class UserService
                 sqlTotal += $" WHERE {vm.Where}";
             }
         }
-        if (!vm.OrderBy.IsNullOrWhiteSpace())
+        if (!vm.OrderBy.IsNullOrWhiteSpace() && !data.sql.Contains("order by"))
         {
             sqlSelect += $" ORDER BY {vm.OrderBy}";
         }
-        if (vm.Skip != null)
+        if (vm.Skip != null && !data.sql.Contains("OFFSET"))
         {
             sqlSelect += $" OFFSET {vm.Skip} ROWS";
         }
-        if (vm.Top != null)
+        if (vm.Top != null && !data.sql.Contains("FETCH NEXT"))
         {
             sqlSelect += $" FETCH NEXT {vm.Top} ROWS ONLY";
         }
