@@ -315,6 +315,13 @@ public class UserController(UserService _userSvc, PdfService _pdfService, ExcelS
         return _userSvc.GetMenu();
     }
 
+    [AllowAnonymous]
+    [HttpGet("/api/feature/PublishAllFeature")]
+    public Task<bool> PublishAllFeature()
+    {
+        return _userSvc.PublishAllFeature();
+    }
+
     [HttpPost("/api/feature/getFeature")]
     public Task<Feature> GetFeature([FromBody] ServiceVM vm)
     {

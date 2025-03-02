@@ -27,6 +27,7 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using Tenray.Topaz;
 using Tenray.Topaz.API;
@@ -576,6 +577,52 @@ public class UserService
         var coms = feature.Components.Where(x => x.ComponentType == "Button").ToList();
         feature.Components = coms.Nothing() ? new List<Component>() : coms;
         return feature;
+    }
+
+    public async Task<bool> PublishAllFeature()
+    {
+        var query = @$"select * from [Feature]";
+        var features = await _sql.ReadDsAsArr<Feature>(query, _configuration.GetConnectionString("Default"));
+        foreach (var feature in features)
+        {
+            var query2 = @$"select [Component] .*,isnull(def.Value,DefaultVal) as DefaultVal,def.Id as ComponentDefaultValueId
+        from [Component] 
+        outer apply (select top 1 Value,Id from ComponentDefaultValue where ComponentId = Component.Id) as def 
+        where FeatureId = '{feature.Id}'
+        select * from [FeaturePolicy] where FeatureId = '{feature.Id}'
+        select * from [UserSetting] where FeatureId = '{feature.Id}'";
+            var childs = await _sql.ReadDataSet(query2, _configuration.GetConnectionString("Default"));
+            var components = childs.Length > 0 && childs[0].Length > 0 ? childs[0].Select(x => x.MapTo<Component>()).ToList() : new List<Component>();
+            var policys = childs.Length > 1 && childs[1].Length > 0 ? childs[1].Select(x => x.MapTo<FeaturePolicy>()).ToList() : new List<FeaturePolicy>();
+            feature.UserSettings = childs.Length > 2 && childs[2].Length > 0 ? childs[2].Select(x => x.MapTo<UserSetting>()).ToList() : new List<UserSetting>();
+            feature.Components = components;
+            var filteredComponentGroups = feature.Components
+                .Where(component => component.ComponentType == "Section")
+                .ToList();
+            filteredComponentGroups.ForEach(group =>
+            {
+                group.Components = feature.Components.Where(c => c.ComponentGroupId == group.Id).ToList();
+            });
+            feature.ComponentGroup = filteredComponentGroups;
+            feature.FeaturePolicies = policys;
+            feature.GridPolicies = feature.Components.Where(component => component.ComponentGroupId == null && component.EntityId != null).ToList();
+            var coms = feature.Components.Where(x => x.ComponentType == "Button").ToList();
+            feature.Components = coms.Nothing() ? new List<Component>() : coms;
+            await SaveFeatureToJson(feature);
+        }
+        return true;
+    }
+
+    private async Task SaveFeatureToJson(Feature feature)
+    {
+        string directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "features");
+        if (!Directory.Exists(directoryPath))
+        {
+            Directory.CreateDirectory(directoryPath);
+        }
+        string filePath = Path.Combine(directoryPath, feature.Name + ".json");
+        string json = JsonConvert.SerializeObject(feature);
+        await File.WriteAllTextAsync(filePath, json);
     }
 
     protected async Task<Token> GetUserToken(User user, LoginVM login, string refreshToken = null)
