@@ -256,6 +256,8 @@
 
         public string TableName { get; set; }
 
+        public string ReportTypeId { get; set; }
+
         public int? Index { get; set; }
 
         public string ExcelUrl { get; set; }
