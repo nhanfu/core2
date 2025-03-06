@@ -27,7 +27,6 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.Json;
 using System.Text.RegularExpressions;
 using Tenray.Topaz;
 using Tenray.Topaz.API;
@@ -539,13 +538,35 @@ public class UserService
 
     public async Task<Feature> GetFeature(string name)
     {
+        var feature = await GetFeatureFromJson(name);
+        if (feature != null)
+        {
+            var query1 = @$"
+            select Value as DefaultVal,Id as ComponentDefaultValueId from ComponentDefaultValue where UserId = '{UserId}'
+            select * from [UserSetting] where FeatureId = '{feature.Id}' and UserId = '{UserId}'";
+            var child2s = await _sql.ReadDataSet(query1, _configuration.GetConnectionString("Default"));
+            feature.UserSettings = child2s.Length > 1 && child2s[1].Length > 0 ? child2s[1].Select(x => x.MapTo<UserSetting>()).ToList() : new List<UserSetting>();
+            var componentDefaultValue = child2s.Length > 0 && child2s[0].Length > 0 ? child2s[0].Select(x => x.MapTo<CoreAPI.UIModels.ComponentDefaultValue>()).ToList() : new List<CoreAPI.UIModels.ComponentDefaultValue>();
+            feature.Components = feature.Components.Select(x =>
+            {
+                var com = x;
+                var def = componentDefaultValue.FirstOrDefault(c => c.ComponentId == x.Id);
+                if (def != null)
+                {
+                    com.DefaultVal = def.Value;
+                    com.ComponentDefaultValueId = def.Id;
+                }
+                return com;
+            }).ToList();
+            return feature;
+        }
         var query = @$"select * from [Feature] where Name = N'{name}'";
-        var feature = await _sql.ReadDsAs<Feature>(query, _configuration.GetConnectionString("Default"));
+        feature = await _sql.ReadDsAs<Feature>(query, _configuration.GetConnectionString("Default"));
         if (feature == null)
         {
             return null;
         }
-        var query2 = @$"select [Component] .*,isnull(def.Value,DefaultVal) as DefaultVal,def.Id as ComponentDefaultValueId
+        var query2 = @$"select [Component].*,isnull(def.Value,DefaultVal) as DefaultVal,def.Id as ComponentDefaultValueId
         from [Component] 
         outer apply (select top 1 Value,Id from ComponentDefaultValue where UserId = '{UserId}' and ComponentId = Component.Id) as def 
         where FeatureId = '{feature.Id}'
@@ -615,6 +636,19 @@ public class UserService
         string filePath = Path.Combine(directoryPath, feature.Name + ".json");
         string json = JsonConvert.SerializeObject(feature);
         await File.WriteAllTextAsync(filePath, json);
+    }
+
+    private async Task<Feature> GetFeatureFromJson(string featureName)
+    {
+        string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "features", featureName + ".json");
+
+        if (!File.Exists(filePath))
+        {
+            return null;
+        }
+
+        string json = await File.ReadAllTextAsync(filePath);
+        return JsonConvert.DeserializeObject<Feature>(json);
     }
 
     protected async Task<Token> GetUserToken(User user, LoginVM login, string refreshToken = null)

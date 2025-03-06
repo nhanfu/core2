@@ -254,6 +254,8 @@
 
         public string EntityName { get; set; }
 
+        public string ComponentDefaultValueId { get; set; }
+
         public string TableName { get; set; }
 
         public int? ReportTypeId { get; set; }
