@@ -419,10 +419,6 @@ public class UserService
            ,[IsNoDocs]
            ,[ExchangeRateVND]
            ,[ExchangeRateUSD]
-           ,[ExSaleUSD]
-           ,[ExSaleVND]
-           ,[ExProfitUSD]
-           ,[ExProfitVND]
            ,[ExchangeRateINV]
            ,[IsContainer]
            ,[IsCBM]
@@ -467,10 +463,6 @@ public class UserService
            ,ds.[IsNoDocs]
            ,ds.[ExchangeRateVND]
            ,ds.[ExchangeRateUSD]
-           ,ds.[ExSaleUSD]
-           ,ds.[ExSaleVND]
-           ,ds.[ExProfitUSD]
-           ,ds.[ExProfitVND]
            ,(case when ShipmentInvoice.CurrencyId = ds.CurrencyId then 1
             else ShipmentInvoice.ExchangeRateINV end)
            ,ds.[IsContainer]
