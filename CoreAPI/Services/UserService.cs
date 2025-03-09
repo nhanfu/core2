@@ -464,7 +464,7 @@ public class UserService
            ,ds.[ExchangeRateVND]
            ,ds.[ExchangeRateUSD]
            ,(case when ShipmentInvoice.CurrencyId = ds.CurrencyId then 1
-            else ShipmentInvoice.ExchangeRateINV end),
+            else ShipmentInvoice.ExchangeRateINV end)
            ,ds.[ExchangeRateUSD]
            ,ds.[IsContainer]
            ,ds.[IsCBM]
