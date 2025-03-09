@@ -899,6 +899,16 @@ public class UserService
                 try
                 {
                     await _sql.RunSqlCmd(null, deletequery);
+                    if (vm.Table == "Component")
+                    {
+                        var feature = await _sql.ReadDsAs<Feature>($"SELECT * FROM Feature where Id = '{com.FeatureId}'");
+                        await PublishFeatureByName(feature.Name);
+                    }
+                    else if (vm.Table == "FeaturePolicy")
+                    {
+                        var feature = await _sql.ReadDsAs<Feature>($"SELECT * FROM Feature where Id = '{com.FeatureId}'");
+                        await PublishFeatureByName(feature.Name);
+                    }
                 }
                 catch
                 {
@@ -911,6 +921,16 @@ public class UserService
                 try
                 {
                     await _sql.RunSqlCmd(null, sql.Combine(";"));
+                    if (vm.Table == "Component")
+                    {
+                        var feature = await _sql.ReadDsAs<Feature>($"SELECT * FROM Feature where Id = '{com.FeatureId}'");
+                        await PublishFeatureByName(feature.Name);
+                    }
+                    else if (vm.Table == "FeaturePolicy")
+                    {
+                        var feature = await _sql.ReadDsAs<Feature>($"SELECT * FROM Feature where Id = '{com.FeatureId}'");
+                        await PublishFeatureByName(feature.Name);
+                    }
                 }
                 catch
                 {
