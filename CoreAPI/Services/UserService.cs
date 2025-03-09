@@ -419,6 +419,7 @@ public class UserService
            ,[ExchangeRateVND]
            ,[ExchangeRateUSD]
            ,[ExchangeRateINV]
+           ,[ExchangeRateINV2]
            ,[IsContainer]
            ,[IsCBM]
            ,[IsFreight]
@@ -547,17 +548,16 @@ public class UserService
             var child2s = await _sql.ReadDataSet(query1, _configuration.GetConnectionString("Default"));
             feature.UserSettings = child2s.Length > 1 && child2s[1].Length > 0 ? child2s[1].Select(x => x.MapTo<UserSetting>()).ToList() : new List<UserSetting>();
             var componentDefaultValue = child2s.Length > 0 && child2s[0].Length > 0 ? child2s[0].Select(x => x.MapTo<CoreAPI.UIModels.ComponentDefaultValue>()).ToList() : new List<CoreAPI.UIModels.ComponentDefaultValue>();
-            feature.Components = feature.Components.Select(x =>
+            var com2s = feature.ComponentGroup.SelectMany(x => x.Components);
+            componentDefaultValue.ForEach(item =>
             {
-                var com = x;
-                var def = componentDefaultValue.FirstOrDefault(c => c.ComponentId == x.Id);
+                var def = com2s.FirstOrDefault(c => c.ComponentId == item.Id);
                 if (def != null)
                 {
-                    com.DefaultVal = def.Value;
-                    com.ComponentDefaultValueId = def.Id;
+                    def.DefaultVal = item.Value;
+                    def.ComponentDefaultValueId = item.Id;
                 }
-                return com;
-            }).ToList();
+            });
             return feature;
         }
         var query = @$"select * from [Feature] where Name = N'{name}'";
@@ -595,6 +595,40 @@ public class UserService
     public async Task<bool> PublishAllFeature()
     {
         var query = @$"select * from [Feature]";
+        var features = await _sql.ReadDsAsArr<Feature>(query, _configuration.GetConnectionString("Default"));
+        foreach (var feature in features)
+        {
+            var query2 = @$"select [Component] .*,isnull(def.Value,DefaultVal) as DefaultVal,def.Id as ComponentDefaultValueId
+        from [Component] 
+        outer apply (select top 1 Value,Id from ComponentDefaultValue where ComponentId = Component.Id) as def 
+        where FeatureId = '{feature.Id}'
+        select * from [FeaturePolicy] where FeatureId = '{feature.Id}'
+        select * from [UserSetting] where FeatureId = '{feature.Id}'";
+            var childs = await _sql.ReadDataSet(query2, _configuration.GetConnectionString("Default"));
+            var components = childs.Length > 0 && childs[0].Length > 0 ? childs[0].Select(x => x.MapTo<Component>()).ToList() : new List<Component>();
+            var policys = childs.Length > 1 && childs[1].Length > 0 ? childs[1].Select(x => x.MapTo<FeaturePolicy>()).ToList() : new List<FeaturePolicy>();
+            feature.UserSettings = childs.Length > 2 && childs[2].Length > 0 ? childs[2].Select(x => x.MapTo<UserSetting>()).ToList() : new List<UserSetting>();
+            feature.Components = components;
+            var filteredComponentGroups = feature.Components
+                .Where(component => component.ComponentType == "Section")
+                .ToList();
+            filteredComponentGroups.ForEach(group =>
+            {
+                group.Components = feature.Components.Where(c => c.ComponentGroupId == group.Id).ToList();
+            });
+            feature.ComponentGroup = filteredComponentGroups;
+            feature.FeaturePolicies = policys;
+            feature.GridPolicies = feature.Components.Where(component => component.ComponentGroupId == null && component.EntityId != null).ToList();
+            var coms = feature.Components.Where(x => x.ComponentType == "Button").ToList();
+            feature.Components = coms.Nothing() ? new List<Component>() : coms;
+            await SaveFeatureToJson(feature);
+        }
+        return true;
+    }
+
+    public async Task<bool> PublishFeatureByName(string Name)
+    {
+        var query = @$"select * from [Feature] where Name = '{Name}'";
         var features = await _sql.ReadDsAsArr<Feature>(query, _configuration.GetConnectionString("Default"));
         foreach (var feature in features)
         {
@@ -2159,6 +2193,23 @@ public class UserService
                         {
                             x.Data = entity[x.Index];
                         });
+                        if (vm.Table == "Feature")
+                        {
+                            var name = filteredChanges.FirstOrDefault(x => x.Field == "Name").Value;
+                            await PublishFeatureByName(name);
+                        }
+                        else if (vm.Table == "Component")
+                        {
+                            var featureId = filteredChanges.FirstOrDefault(x => x.Field == "FeatureId").Value;
+                            var feature = await _sql.ReadDsAs<Feature>($"SELECT * FROM Feature where Id = '{featureId}'");
+                            await PublishFeatureByName(feature.Name);
+                        }
+                        else if (vm.Table == "FeaturePolicy")
+                        {
+                            var featureId = filteredChanges.FirstOrDefault(x => x.Field == "FeatureId").Value;
+                            var feature = await _sql.ReadDsAs<Feature>($"SELECT * FROM Feature where Id = '{featureId}'");
+                            await PublishFeatureByName(feature.Name);
+                        }
                         return new SqlResult()
                         {
                             updatedItem = entity[0],
