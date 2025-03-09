@@ -2231,6 +2231,10 @@ public class UserService
                             var feature = await _sql.ReadDsAs<Feature>($"SELECT * FROM Feature where Id = '{featureId}'");
                             await PublishFeatureByName(feature.Name);
                         }
+                        if (vm.Table == "ConversationDetail")
+                        {
+                            SendMessageAllUser(entity[0][0]);
+                        }
                         return new SqlResult()
                         {
                             updatedItem = entity[0],

@@ -14,5 +14,7 @@
         public string InsertedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public string UpdatedBy { get; set; }
+        public string FeatureName { get; set; }
+        public string Label { get; set; }
     }
 }
