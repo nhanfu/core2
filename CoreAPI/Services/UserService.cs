@@ -2259,6 +2259,180 @@ public class UserService
         }
     }
 
+    public async Task<SqlResult> SavePatchs2(List<PatchVM> vms)
+    {
+        var selectIds = new List<DetailData>();
+        using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("Default")))
+        {
+            await connection.OpenAsync();
+            SqlTransaction transaction = connection.BeginTransaction();
+            try
+            {
+                using (SqlCommand command = new SqlCommand())
+                {
+                    command.Transaction = transaction;
+                    command.Connection = connection;
+                    foreach (var vm in vms)
+                    {
+                        var id = vm.Changes.FirstOrDefault(x => x.Field == "Id").Value;
+                        var tableColumns = (await GetTableColumns(vm.Table))[0];
+                        var filteredChanges = vm.Changes.Where(change => tableColumns.SelectMany(x => x.Values).Contains(change.Field)).ToList();
+                        var isSend = filteredChanges.Find(x => x.Field == "IsSend");
+                        var receiverIds = filteredChanges.Find(x => x.Field == "ReceiverIds");
+                        if (id.StartsWith("-"))
+                        {
+                            id = id.Substring(1);
+                            AddDefaultFields(filteredChanges, new List<PatchDetail>()
+                            {
+                                new PatchDetail { Field = "InsertedDate", Value = DateTime.Now.ToISOFormat() },
+                                new PatchDetail { Field = "InsertedBy", Value = UserId },
+                                new PatchDetail { Field = "UpdatedDate", Value = null },
+                                new PatchDetail { Field = "UpdatedBy", Value = null },
+                                new PatchDetail { Field = "Active", Value = "1" }
+                            });
+                            var update = filteredChanges.Select(x => $"@{id.Replace("-", "") + x.Field.ToLower()}");
+                            var cells = filteredChanges.Select(x => x.Field).ToList();
+                            if (!vm.Delete.Nothing())
+                            {
+                                command.CommandText += vm.Delete.Select(x => $"delete from [{x.Table}] where Id in ({x.Ids.CombineStrings()})").Combine(";");
+                            }
+                            command.CommandText += $"INSERT into [{vm.Table}]([{cells.Combine("],[")}]) values({update.Combine()})";
+                            foreach (var item in filteredChanges)
+                            {
+                                if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
+                                {
+                                    item.Value = item.Value.Substring(1);
+                                }
+                                command.Parameters.AddWithValue($"@{id.Replace("-", "") + item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
+                            }
+                        }
+                        else
+                        {
+                            AddDefaultFields(filteredChanges, new List<PatchDetail>()
+                            {
+                                new PatchDetail { Field = "UpdatedDate", Value = DateTime.Now.ToISOFormat()},
+                                new PatchDetail { Field = "UpdatedBy", Value = UserId },
+                            });
+                            var updates = filteredChanges.Where(x => x.Field != "Id").ToList();
+                            var update = updates.Select(x => $"[{x.Field}] = @{id.Replace("-", "") + x.Field.ToLower()}");
+                            if (!vm.Delete.Nothing())
+                            {
+                                command.CommandText += vm.Delete.Select(x => $"delete from [{x.Table}] where Id in ({x.Ids.CombineStrings()})").Combine(";");
+                            }
+                            command.CommandText += $" UPDATE [{vm.Table}] SET {update.Combine()} WHERE Id = '{id}';";
+                            foreach (var item in updates)
+                            {
+                                if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
+                                {
+                                    item.Value = item.Value.Substring(1);
+                                }
+                                command.Parameters.AddWithValue($"@{id.Replace("-", "") + item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
+                            }
+                        }
+                        int index = 1;
+                        await command.ExecuteNonQueryAsync();
+                        command.Parameters.Clear();
+                        command.CommandText = string.Empty;
+                        if (!vm.Detail.Nothing())
+                        {
+                            foreach (var detailArray in vm.Detail)
+                            {
+                                foreach (var detail in detailArray)
+                                {
+                                    var tableDetailColumns = (await GetTableColumns(detail.Table))[0];
+                                    var idDetail = detail.Changes.FirstOrDefault(x => x.Field == "Id").Value;
+                                    var filteredDetailChanges = detail.Changes.Where(change => tableDetailColumns.SelectMany(x => x.Values).Contains(change.Field)).ToList();
+                                    if (idDetail.StartsWith("-"))
+                                    {
+                                        AddDefaultFields(filteredDetailChanges, new List<PatchDetail>()
+                                        {
+                                            new PatchDetail { Field = "InsertedDate", Value = DateTime.Now.ToISOFormat() },
+                                            new PatchDetail { Field = "InsertedBy", Value = UserId },
+                                            new PatchDetail { Field = "UpdatedDate", Value = null },
+                                            new PatchDetail { Field = "UpdatedBy", Value = null },
+                                            new PatchDetail { Field = "Active", Value = "1" }
+                                        });
+                                        var updateDetail = filteredDetailChanges.Select(x => $"@{idDetail.Replace("-", "") + x.Field.ToLower()}");
+                                        var cellsDetails = filteredDetailChanges.Select(x => x.Field).ToList();
+                                        command.CommandText += $";INSERT into [{detail.Table}]([{cellsDetails.Combine("],[")}]) values({updateDetail.Combine()})";
+                                        foreach (var item in filteredDetailChanges)
+                                        {
+                                            if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
+                                            {
+                                                item.Value = item.Value.Substring(1);
+                                            }
+                                            command.Parameters.AddWithValue($"@{idDetail.Replace("-", "") + item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        AddDefaultFields(filteredDetailChanges, new List<PatchDetail>()
+                                        {
+                                            new PatchDetail { Field = "UpdatedDate", Value = DateTime.Now.ToISOFormat()},
+                                            new PatchDetail { Field = "UpdatedBy", Value = UserId },
+                                        });
+                                        filteredDetailChanges = filteredDetailChanges.Where(x => x.Field != "Id").ToList();
+                                        var updateDetail = filteredDetailChanges.Select(x => $"[{x.Field}] = @{idDetail.Replace("-", "") + x.Field.ToLower()}");
+                                        command.CommandText += $";UPDATE [{detail.Table}] SET {updateDetail.Combine()} WHERE Id = '{idDetail}';";
+                                        foreach (var item in filteredDetailChanges)
+                                        {
+                                            if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
+                                            {
+                                                item.Value = item.Value.Substring(1);
+                                            }
+                                            command.Parameters.AddWithValue($"@{idDetail.Replace("-", "") + item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
+                                        }
+                                    }
+                                    await command.ExecuteNonQueryAsync();
+                                    command.Parameters.Clear();
+                                    command.CommandText = string.Empty;
+                                }
+                                selectIds.Add(new DetailData()
+                                {
+                                    Index = index,
+                                    Table = detailArray[0].Table,
+                                    ComId = detailArray[0].ComId,
+                                    Ids = detailArray.SelectMany(x => x.Changes).Where(x => x.Field == "Id").Select(x => { return x.Value.StartsWith("-") ? x.Value.Substring(1) : x.Value; }).ToList(),
+                                });
+                                index++;
+                            }
+                        }
+                    }
+                    await transaction.CommitAsync();
+                    await connection.CloseAsync();
+                    var sql = $"SELECT * FROM [{vms[0].Table}] where Id = '{vms[0].Changes.FirstOrDefault(x => x.Field == "Id").Value}'";
+                    foreach (var item in selectIds)
+                    {
+                        sql += $";SELECT * FROM [{item.Table}] where Id in ({item.Ids.CombineStrings()})";
+                    }
+                    var entity = await _sql.ReadDataSet(sql);
+                    selectIds.ForEach(x =>
+                    {
+                        x.Data = entity[x.Index];
+                    });
+                    return new SqlResult()
+                    {
+                        updatedItem = entity[0],
+                        Detail = selectIds,
+                        status = 200,
+                        message = "All patches processed successfully"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                var entity = await _sql.ReadDataSet($"SELECT * FROM [{vms[0].Table}] where Id = '{vms[0].Changes.FirstOrDefault(x => x.Field == "Id").Value}'");
+                return new SqlResult()
+                {
+                    updatedItem = entity[0],
+                    status = 500,
+                    message = ex.Message
+                };
+            }
+        }
+    }
+
     private async Task Notification(PatchVM vm, string id, List<PatchDetail> filteredChanges, PatchDetail isSend, PatchDetail receiverIds)
     {
         if (isSend != null && isSend.Value == "0" && receiverIds != null && receiverIds.Value != null)

@@ -260,6 +260,12 @@ public class UserController(UserService _userSvc, PdfService _pdfService, ExcelS
         return _userSvc.SavePatch2(entity);
     }
 
+    [HttpPatch("/api/feature/runs")]
+    public Task<SqlResult> Runs([FromBody] List<PatchVM> entitys)
+    {
+        return _userSvc.SavePatchs2(entitys);
+    }
+
     [HttpPost("/api/feature/SendEntity")]
     public Task<SqlResult> SendEntity([FromBody] PatchVM entity)
     {
