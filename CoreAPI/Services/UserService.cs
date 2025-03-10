@@ -2410,6 +2410,12 @@ public class UserService
                     {
                         x.Data = entity[x.Index];
                     });
+                    if (vms[0].Table == "Component")
+                    {
+                        var featureId = vms[0].Changes.FirstOrDefault(x => x.Field == "FeatureId").Value;
+                        var feature = await _sql.ReadDsAs<Feature>($"SELECT * FROM Feature where Id = '{featureId}'");
+                        await PublishFeatureByName(feature.Name);
+                    }
                     return new SqlResult()
                     {
                         updatedItem = entity[0],
