@@ -3,6 +3,7 @@ using Core.Exceptions;
 using Core.Extensions;
 using Core.Models;
 using Core.ViewModels;
+using CoreAPI.BgService;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using System.Data;
@@ -10,7 +11,7 @@ using System.Data.SqlClient;
 
 namespace CoreAPI.Services.Sql;
 
-public class SqlServerProvider(IDistributedCache cache, IConfiguration cfg) : ISqlProvider
+public class SqlServerProvider(IDistributedCache cache, IConfiguration cfg, IServiceProvider iServiceProvider) : ISqlProvider
 {
     public List<string> SystemFields { get; set; }
     static readonly TSqlTokenType[] SideEffectCmd = [
@@ -28,7 +29,7 @@ public class SqlServerProvider(IDistributedCache cache, IConfiguration cfg) : IS
         ArgumentException.ThrowIfNullOrWhiteSpace(query);
         if (connInfo is null)
         {
-            connInfo = cfg.GetConnectionString("Default");
+            connInfo = BgExt.GetConnectionString(iServiceProvider, cfg, "logistics");
         }
         ArgumentException.ThrowIfNullOrWhiteSpace(connInfo);
         var sideEffect = HasSideEffect(query);
@@ -95,7 +96,7 @@ public class SqlServerProvider(IDistributedCache cache, IConfiguration cfg) : IS
 
     public async Task<string> GetConnStrFromKey(string connKey, string tenantCode = null, string env = null)
     {
-        return cfg.GetConnectionString("Default");
+        return BgExt.GetConnectionString(iServiceProvider, cfg, "logistics");
     }
 
     public async Task<T> ReadDsAs<T>(string query, string connInfo = null) where T : class
@@ -117,7 +118,7 @@ public class SqlServerProvider(IDistributedCache cache, IConfiguration cfg) : IS
         if (cmdText.IsNullOrWhiteSpace()) return 0;
         if (connStr.IsNullOrWhiteSpace())
         {
-            connStr = cfg.GetConnectionString("Default");
+            connStr = BgExt.GetConnectionString(iServiceProvider, cfg, "logistics");
         }
         using (SqlConnection connection = new SqlConnection(connStr))
         {

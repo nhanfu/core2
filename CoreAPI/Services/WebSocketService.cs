@@ -38,9 +38,9 @@ namespace Core.Services
         private readonly string FCM_API_KEY = configuration["FCM_API_KEY"];
         private readonly string FCM_SENDER_ID = configuration["FCM_SENDER_ID"];
 
-        public virtual string OnDeviceConnected(WebSocket socket, string userId, List<string> roleIds, string ip)
+        public virtual string OnDeviceConnected(WebSocket socket, string userId, List<string> roleIds, string ip, string companyName)
         {
-            return connManager.AddDeviceSocket(socket, userId, roleIds, ip);
+            return connManager.AddDeviceSocket(socket, userId, roleIds, ip, companyName);
         }
 
         public virtual async Task OnDisconnected(WebSocket socket, bool cluster = false)
@@ -86,9 +86,9 @@ namespace Core.Services
             await res.Content.ReadAsStringAsync();
         }
 
-        public async Task SendMessageToAll(string message)
+        public async Task SendMessageToAll(string message, string TenantCode)
         {
-            var users = connManager.GetDeviceSockets();
+            var users = connManager.GetDeviceSockets(TenantCode);
             foreach (var pair in users)
             {
                 if (pair.Value.State == WebSocketState.Open)
@@ -110,21 +110,21 @@ namespace Core.Services
             }
         }
 
-        public ConcurrentDictionary<string, WebSocket> GetAll()
+        public ConcurrentDictionary<string, WebSocket> GetAll(string TenantCode)
         {
-            return connManager.GetDeviceSockets();
+            return connManager.GetDeviceSockets(TenantCode);
         }
 
-        public Task SendMessageToUsersAsync(List<string> userIds, string message, string fcm = null)
+        public Task SendMessageToUsersAsync(List<string> userIds, string message, string fcm, string TenantCode)
         {
-            var userGroup = connManager.GetDeviceSockets()
+            var userGroup = connManager.GetDeviceSockets(TenantCode)
                 .Where(x => userIds.Contains(x.Key.Split("/").FirstOrDefault()));
             return NotifyUserGroup(message, userGroup, fcm);
         }
 
-        public async Task SendMessageToSocketAsync(string token, string message, string fcm = null)
+        public async Task SendMessageToSocketAsync(string token, string message, string fcm, string TenantCode)
         {
-            var pair = connManager.GetDeviceSockets()
+            var pair = connManager.GetDeviceSockets(TenantCode)
                 .FirstOrDefault(x => x.Key == token);
             var fcmTask = SendFCMNotfication(fcm);
             if (pair.Value.State != WebSocketState.Open)

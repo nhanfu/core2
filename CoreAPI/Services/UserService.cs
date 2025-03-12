@@ -16,6 +16,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
+using System;
 using System.Buffers;
 using System.Data;
 using System.Data.SqlClient;
@@ -42,6 +43,7 @@ public class UserService
     private readonly IDistributedCache _cache;
     private readonly IWebHostEnvironment _host;
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IServiceProvider iServiceProvider;
     private readonly WebSocketService _taskSocketSvc;
     private readonly SendMailService _sendMailService;
     private readonly IConfiguration _configuration;
@@ -65,7 +67,7 @@ public class UserService
     public List<string> RoleNames { get; set; }
 
     public UserService(IHttpContextAccessor ctx, IConfiguration conf, IDistributedCache cache, IWebHostEnvironment host,
-        IHttpClientFactory httpClientFactory, WebSocketService taskSocket, ISqlProvider sql, IConfiguration configuration, SendMailService sendMailService)
+        IHttpClientFactory httpClientFactory, WebSocketService taskSocket, ISqlProvider sql, IConfiguration configuration, SendMailService sendMailService, IServiceProvider serviceProvider)
     {
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         _cfg = conf ?? throw new ArgumentNullException(nameof(conf));
@@ -76,6 +78,7 @@ public class UserService
         _taskSocketSvc = taskSocket ?? throw new ArgumentNullException(nameof(taskSocket));
         _request = _ctx.HttpContext.Request;
         _sendMailService = sendMailService;
+        iServiceProvider = serviceProvider;
         ExtractMeta();
         _sql = sql;
         SetMetaToSqlProvider(_sql);
@@ -260,35 +263,35 @@ public class UserService
     public async Task<Dictionary<string, object>[]> GetDictionary()
     {
         var query = @$"select * from [Dictionary]";
-        var ds = await _sql.ReadDataSet(query, _configuration.GetConnectionString("Default"));
+        var ds = await _sql.ReadDataSet(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         return ds[0];
     }
 
     public async Task<Dictionary<string, object>[]> GetExchangeRate()
     {
         var query = @$"select * from [ExchangeRate] where (FromDate <= GETDATE() or FromDate is null) and (GETDATE() <= ToDate or ToDate is null)";
-        var ds = await _sql.ReadDataSet(query, _configuration.GetConnectionString("Default"));
+        var ds = await _sql.ReadDataSet(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         return ds[0];
     }
 
     public async Task<Dictionary<string, object>[]> MyNotification()
     {
         var query = @$"select * from [TaskNotification] where AssignedId = '{UserId}' order by InsertedDate desc";
-        var ds = await _sql.ReadDataSet(query, _configuration.GetConnectionString("Default"));
+        var ds = await _sql.ReadDataSet(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         return ds[0];
     }
 
     public async Task<Dictionary<string, object>[]> WebConfig()
     {
         var query = @$"select * from [WebConfig]";
-        var ds = await _sql.ReadDataSet(query, _configuration.GetConnectionString("Default"));
+        var ds = await _sql.ReadDataSet(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         return ds[0];
     }
 
     public async Task<Dictionary<string, object>[]> SalesFunction()
     {
         var query = @$"select * from [SaleFunction]";
-        var ds = await _sql.ReadDataSet(query, _configuration.GetConnectionString("Default"));
+        var ds = await _sql.ReadDataSet(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         return ds[0];
     }
 
@@ -316,7 +319,7 @@ public class UserService
     public async Task<bool> PostUserSetting(UserSetting userSetting)
     {
         var query = @$"select * from [UserSetting] where UserId = '{UserId}' and ComponentId = '{userSetting.ComponentId}' and FeatureId = '{userSetting.FeatureId}'";
-        var setting = await _sql.ReadDsAs<UserSetting>(query, _configuration.GetConnectionString("Default"));
+        var setting = await _sql.ReadDsAs<UserSetting>(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         if (setting != null)
         {
             setting.Value = userSetting.Value;
@@ -345,7 +348,7 @@ public class UserService
     public async Task<SqlResult> Go(SqlViewModel sqlViewModel)
     {
         var query = @$"select * from [{sqlViewModel.Table}] where Id in ({sqlViewModel.Id.CombineStrings()})";
-        var ds = await _sql.ReadDataSet(query, _configuration.GetConnectionString("Default"));
+        var ds = await _sql.ReadDataSet(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         return new SqlResult()
         {
             data = ds[0],
@@ -363,7 +366,7 @@ public class UserService
             Value = x
         }).ToList();
         var query = @$"select * from [{sqlViewModel.Table}] where [{sqlViewModel.Format.Replace("{", "").Replace("}", "")}] in ({param.Select(x => x.FieldName).ToList().Combine()})";
-        var ds = await _sql.ReadDataSet(query, _configuration.GetConnectionString("Default"), false, param);
+        var ds = await _sql.ReadDataSet(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"), false, param);
         return new SqlResult()
         {
             data = ds[0],
@@ -512,12 +515,12 @@ public class UserService
     public async Task<Conversation> Conversation(Conversation entity)
     {
         var query = @$"select * from [Conversation] where RecordId = '{entity.RecordId}' and EntityId = '{entity.EntityId}'";
-        var conversation = await _sql.ReadDsAs<Conversation>(query, _configuration.GetConnectionString("Default"));
+        var conversation = await _sql.ReadDsAs<Conversation>(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         if (conversation is null)
         {
             var patch = entity.MapToPatch();
             await SavePatch2(patch);
-            conversation = await _sql.ReadDsAs<Conversation>(query, _configuration.GetConnectionString("Default"));
+            conversation = await _sql.ReadDsAs<Conversation>(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
             return conversation;
         }
         else
@@ -534,7 +537,7 @@ public class UserService
     public async Task<Dictionary<string, object>[]> GetMenu()
     {
         var query = @$"select * from [Feature] f where IsMenu = 1 and (exists (select Id from FeaturePolicy where FeatureId = f.Id and RoleId in ({RoleIds.CombineStrings()}) and CanRead = 1) or '8' in ({RoleIds.CombineStrings()}))";
-        var ds = await _sql.ReadDataSet(query, _configuration.GetConnectionString("Default"));
+        var ds = await _sql.ReadDataSet(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         return ds[0];
     }
 
@@ -546,7 +549,7 @@ public class UserService
             var query1 = @$"
             select Value as DefaultVal,Id as ComponentDefaultValueId from ComponentDefaultValue where UserId = '{UserId}'
             select * from [UserSetting] where FeatureId = '{feature.Id}' and UserId = '{UserId}'";
-            var child2s = await _sql.ReadDataSet(query1, _configuration.GetConnectionString("Default"));
+            var child2s = await _sql.ReadDataSet(query1, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
             feature.UserSettings = child2s.Length > 1 && child2s[1].Length > 0 ? child2s[1].Select(x => x.MapTo<UserSetting>()).ToList() : new List<UserSetting>();
             var componentDefaultValue = child2s.Length > 0 && child2s[0].Length > 0 ? child2s[0].Select(x => x.MapTo<CoreAPI.UIModels.ComponentDefaultValue>()).ToList() : new List<CoreAPI.UIModels.ComponentDefaultValue>();
             var com2s = feature.ComponentGroup.SelectMany(x => x.Components);
@@ -562,7 +565,7 @@ public class UserService
             return feature;
         }
         var query = @$"select * from [Feature] where Name = N'{name}'";
-        feature = await _sql.ReadDsAs<Feature>(query, _configuration.GetConnectionString("Default"));
+        feature = await _sql.ReadDsAs<Feature>(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         if (feature == null)
         {
             return null;
@@ -573,7 +576,7 @@ public class UserService
         where FeatureId = '{feature.Id}'
         select * from [FeaturePolicy] where FeatureId = '{feature.Id}'
         select * from [UserSetting] where FeatureId = '{feature.Id}' and UserId = '{UserId}'";
-        var childs = await _sql.ReadDataSet(query2, _configuration.GetConnectionString("Default"));
+        var childs = await _sql.ReadDataSet(query2, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         var components = childs.Length > 0 && childs[0].Length > 0 ? childs[0].Select(x => x.MapTo<Component>()).ToList() : new List<Component>();
         var policys = childs.Length > 1 && childs[1].Length > 0 ? childs[1].Select(x => x.MapTo<FeaturePolicy>()).ToList() : new List<FeaturePolicy>();
         feature.UserSettings = childs.Length > 2 && childs[2].Length > 0 ? childs[2].Select(x => x.MapTo<UserSetting>()).ToList() : new List<UserSetting>();
@@ -596,7 +599,7 @@ public class UserService
     public async Task<bool> PublishAllFeature()
     {
         var query = @$"select * from [Feature]";
-        var features = await _sql.ReadDsAsArr<Feature>(query, _configuration.GetConnectionString("Default"));
+        var features = await _sql.ReadDsAsArr<Feature>(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         foreach (var feature in features)
         {
             var query2 = @$"select [Component] .*,isnull(def.Value,DefaultVal) as DefaultVal,def.Id as ComponentDefaultValueId
@@ -605,7 +608,7 @@ public class UserService
         where FeatureId = '{feature.Id}'
         select * from [FeaturePolicy] where FeatureId = '{feature.Id}'
         select * from [UserSetting] where FeatureId = '{feature.Id}'";
-            var childs = await _sql.ReadDataSet(query2, _configuration.GetConnectionString("Default"));
+            var childs = await _sql.ReadDataSet(query2, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
             var components = childs.Length > 0 && childs[0].Length > 0 ? childs[0].Select(x => x.MapTo<Component>()).ToList() : new List<Component>();
             var policys = childs.Length > 1 && childs[1].Length > 0 ? childs[1].Select(x => x.MapTo<FeaturePolicy>()).ToList() : new List<FeaturePolicy>();
             feature.UserSettings = childs.Length > 2 && childs[2].Length > 0 ? childs[2].Select(x => x.MapTo<UserSetting>()).ToList() : new List<UserSetting>();
@@ -630,7 +633,7 @@ public class UserService
     public async Task<bool> PublishFeatureByName(string Name)
     {
         var query = @$"select * from [Feature] where Name = '{Name}'";
-        var features = await _sql.ReadDsAsArr<Feature>(query, _configuration.GetConnectionString("Default"));
+        var features = await _sql.ReadDsAsArr<Feature>(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         foreach (var feature in features)
         {
             var query2 = @$"select [Component] .*,isnull(def.Value,DefaultVal) as DefaultVal,def.Id as ComponentDefaultValueId
@@ -639,7 +642,7 @@ public class UserService
         where FeatureId = '{feature.Id}'
         select * from [FeaturePolicy] where FeatureId = '{feature.Id}'
         select * from [UserSetting] where FeatureId = '{feature.Id}'";
-            var childs = await _sql.ReadDataSet(query2, _configuration.GetConnectionString("Default"));
+            var childs = await _sql.ReadDataSet(query2, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
             var components = childs.Length > 0 && childs[0].Length > 0 ? childs[0].Select(x => x.MapTo<Component>()).ToList() : new List<Component>();
             var policys = childs.Length > 1 && childs[1].Length > 0 ? childs[1].Select(x => x.MapTo<FeaturePolicy>()).ToList() : new List<FeaturePolicy>();
             feature.UserSettings = childs.Length > 2 && childs[2].Length > 0 ? childs[2].Select(x => x.MapTo<UserSetting>()).ToList() : new List<UserSetting>();
@@ -1850,7 +1853,7 @@ public class UserService
         if (!table.Duplicate.IsNullOrWhiteSpace())
         {
             var field = table.Duplicate.Split(",");
-            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("Default")))
+            using (SqlConnection connection = new SqlConnection(BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics")))
             {
                 await connection.OpenAsync();
                 try
@@ -1946,7 +1949,7 @@ public class UserService
                 new PatchDetail { Field = "UpdatedBy", Value = null },
                 new PatchDetail { Field = "Active", Value = "1" }
             });
-            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("Default")))
+            using (SqlConnection connection = new SqlConnection(BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics")))
             {
                 await connection.OpenAsync();
                 SqlTransaction transaction = connection.BeginTransaction();
@@ -2098,7 +2101,7 @@ public class UserService
                 new PatchDetail { Field = "UpdatedDate", Value = DateTime.Now.ToISOFormat()},
                 new PatchDetail { Field = "UpdatedBy", Value = UserId },
             });
-            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("Default")))
+            using (SqlConnection connection = new SqlConnection(BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics")))
             {
                 await connection.OpenAsync();
                 SqlTransaction transaction = connection.BeginTransaction();
@@ -2262,7 +2265,7 @@ public class UserService
     public async Task<SqlResult> SavePatchs2(List<PatchVM> vms)
     {
         var selectIds = new List<DetailData>();
-        using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("Default")))
+        using (SqlConnection connection = new SqlConnection(BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics")))
         {
             await connection.OpenAsync();
             SqlTransaction transaction = connection.BeginTransaction();
@@ -3001,12 +3004,12 @@ public class UserService
 
     public async Task<User[]> GetUserActive()
     {
-        var socket = _taskSocketSvc.GetAll();
-        var usersVM = socket.Select(x => new UserActiveVM { UserId = x.Key.Split("/").FirstOrDefault(), Ip = x.Key.Split("/")[2] }).DistinctBy(x => new { x.UserId, x.Ip }).ToList();
+        var socket = _taskSocketSvc.GetAll(TenantCode);
+        var usersVM = socket.Select(x => new UserActiveVM { UserId = x.Key.Split("/")[1], Ip = x.Key.Split("/")[3] }).DistinctBy(x => new { x.UserId, x.Ip }).ToList();
         var userIds = usersVM.Select(x => x.UserId).Distinct().ToList();
         if (RoleNames.Contains("CUSTOMER"))
         {
-            var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] WHERE ID IN ({UserId})", _configuration.GetConnectionString("Default"));
+            var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] WHERE ID IN ({UserId})", BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
             var newUsers = usersVM.Select(x =>
             {
                 var userNew = users.FirstOrDefault(y => y.Id == x.UserId);
@@ -3023,7 +3026,7 @@ public class UserService
         }
         else
         {
-            var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] WHERE ID IN ({userIds.CombineStrings()})", _configuration.GetConnectionString("Default"));
+            var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] WHERE ID IN ({userIds.CombineStrings()})", BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
             var newUsers = usersVM.Select(x =>
             {
                 var userNew = users.FirstOrDefault(y => y.Id == x.UserId);
@@ -3351,7 +3354,7 @@ public class UserService
             ComId = comId,
             DataConn = connKey
         });
-        var connStr = await _sql.GetConnStrFromKey(_configuration.GetConnectionString("Default"));
+        var connStr = await _sql.GetConnStrFromKey(BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         var tableRights = await GetEntityPerm(table, recordId: null, connStr);
         if (!tableRights.Any(x => x.CanWriteAll))
             throw new UnauthorizedAccessException("Cannot import data due to lack of permission");
@@ -3549,7 +3552,7 @@ public class UserService
 
     public async Task<PlanEmail> CreateSchedule(PlanEmail plan)
     {
-        var conn = _configuration.GetConnectionString("Default");
+        var conn = BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics");
         var hour = plan.DailyDate.Value.Hour;
         var minute = plan.DailyDate.Value.Minute;
         var dayOfWeekNumber = (int)plan.DailyDate.Value.DayOfWeek;
@@ -3562,10 +3565,10 @@ public class UserService
         if (!plan.ComponentId.IsNullOrWhiteSpace() && plan.Component.ComponentGroupId.IsNullOrWhiteSpace())
         {
             var query2 = $"select top 1 * from [{nameof(Component)}] where EntityId = '{plan.Component.EntityId}' and FeatureId  = '{plan.FeatureId}'";
-            plan.Component = await BgExt.ReadDsAs<Component>(query2, _configuration.GetConnectionString("Default"));
+            plan.Component = await BgExt.ReadDsAs<Component>(query2, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
             plan.Feature.EntityId = plan.Component.RefName;
         }
-        var templates = await _sendMailService.ReadTemplate(plan, _configuration.GetConnectionString("Default"));
+        var templates = await _sendMailService.ReadTemplate(plan, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         if (templates is null)
         {
             return plan;
@@ -3600,7 +3603,7 @@ public class UserService
                     if (planDetail.NextStartDate < DateTime.Now)
                         planDetail.NextStartDate = plan.NextStartDate.Value.AddDays(1);
                     var patch2 = planDetail.MapToPatch();
-                    await BgExt.SavePatch2(patch2, _configuration.GetConnectionString("Default"));
+                    await BgExt.SavePatch2(patch2, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
                     RecurringJob.RemoveIfExists($"Daily-{item.Item5}");
                     RecurringJob.AddOrUpdate(
                         $"Daily-{item.Item5}",
@@ -3614,7 +3617,7 @@ public class UserService
                     if (planDetail.NextStartDate < DateTime.Now)
                         planDetail.NextStartDate = planDetail.NextStartDate.Value.AddDays(7);
                     patch2 = planDetail.MapToPatch();
-                    await BgExt.SavePatch2(patch2, _configuration.GetConnectionString("Default"));
+                    await BgExt.SavePatch2(patch2, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
                     RecurringJob.RemoveIfExists($"Week-{item.Item5}");
                     RecurringJob.AddOrUpdate(
                         $"Week-{item.Item5}",
@@ -3628,7 +3631,7 @@ public class UserService
                     if (planDetail.NextStartDate < DateTime.Now)
                         planDetail.NextStartDate = planDetail.NextStartDate.Value.AddMonths(1); // Schedule for next month if time has passed this month
                     patch2 = planDetail.MapToPatch();
-                    await BgExt.SavePatch2(patch2, _configuration.GetConnectionString("Default"));
+                    await BgExt.SavePatch2(patch2, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
                     RecurringJob.RemoveIfExists($"Month-{item.Item5}");
                     RecurringJob.AddOrUpdate(
                         $"Month-{item.Item5}",
@@ -3642,7 +3645,7 @@ public class UserService
                     if (planDetail.NextStartDate < DateTime.Now)
                         planDetail.NextStartDate = planDetail.NextStartDate.Value.AddYears(1); // Schedule for next year if time has passed this year
                     patch2 = planDetail.MapToPatch();
-                    await BgExt.SavePatch2(patch2, _configuration.GetConnectionString("Default"));
+                    await BgExt.SavePatch2(patch2, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
                     RecurringJob.RemoveIfExists($"Year-{item.Item5}");
                     RecurringJob.AddOrUpdate(
                         $"Year-{item.Item5}",
@@ -3656,7 +3659,7 @@ public class UserService
             }
         }
         var patch = plan.MapToPatch();
-        await BgExt.SavePatch2(patch, _configuration.GetConnectionString("Default"));
+        await BgExt.SavePatch2(patch, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         return plan;
     }
 
@@ -3664,7 +3667,7 @@ public class UserService
     {
         plan.IsStart = false;
         plan.IsPause = true;
-        var conn = _configuration.GetConnectionString("Default");
+        var conn = BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics");
         if (!plan.ToEmail.IsNullOrWhiteSpace())
         {
             RecurringJob.RemoveIfExists(plan.Id);
@@ -3697,7 +3700,7 @@ public class UserService
         var query3 = $"DELETE [{nameof(PlanEmailDetail)}] where PlanEmailId = '{plan.Id}'";
         await _sql.RunSqlCmd(conn, query3);
         var patch = plan.MapToPatch();
-        await BgExt.SavePatch2(patch, _configuration.GetConnectionString("Default"));
+        await BgExt.SavePatch2(patch, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         return plan;
     }
 
@@ -3890,7 +3893,7 @@ public class UserService
                 ClickAction = "com.softek.tms.push.background.MESSAGING_EVENT"
             },
         };
-        BackgroundJob.Enqueue<WebSocketService>(x => x.SendMessageToUsersAsync(new List<string>() { task.AssignedId }, task.ToJson(), fcm.ToJson()));
+        BackgroundJob.Enqueue<WebSocketService>(x => x.SendMessageToUsersAsync(new List<string>() { task.AssignedId }, task.ToJson(), fcm.ToJson(), TenantCode));
     }
 
     private void SendMessageAllUser(Dictionary<string, object> data)
@@ -3901,7 +3904,7 @@ public class UserService
             Id = Uuid7.Guid().ToString(),
             Message = data
         };
-        BackgroundJob.Enqueue<WebSocketService>(x => x.SendMessageToAll(entity.ToJson()));
+        BackgroundJob.Enqueue<WebSocketService>(x => x.SendMessageToAll(entity.ToJson(), TenantCode));
     }
 
     public async Task SendMessageSocket(string socket, TaskNotification task, string queueName)
@@ -3912,7 +3915,7 @@ public class UserService
             Id = Uuid7.Guid().ToString(),
             Message = task
         };
-        await _taskSocketSvc.SendMessageToSocketAsync(socket, entity.ToJson());
+        await _taskSocketSvc.SendMessageToSocketAsync(socket, entity.ToJson(), null, TenantCode);
     }
 
     public async Task NotifyDevice(MQEvent e)

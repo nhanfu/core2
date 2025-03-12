@@ -1,23 +1,22 @@
 ﻿using Core.Extensions;
 using Core.Models;
-using Core.Services;
 using CoreAPI.Models;
-using LinqKit;
-using Microsoft.Build.Evaluation;
 
 namespace CoreAPI.BgService
 {
     public class CustomerFunction
     {
         IConfiguration _config;
-        public CustomerFunction(IConfiguration configuration)
+        IServiceProvider _iServiceProvider;
+        public CustomerFunction(IConfiguration configuration, IServiceProvider iServiceProvider)
         {
             _config = configuration;
+            _iServiceProvider = iServiceProvider;
         }
 
         public async Task StatisticsProcesses()
         {
-            var connect = _config.GetConnectionString("Default");
+            var connect = BgExt.GetConnectionString(_iServiceProvider, _config, "logistics");
             await LockDeleteAsync(connect);
         }
 

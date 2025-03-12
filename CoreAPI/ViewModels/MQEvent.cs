@@ -5,6 +5,7 @@ public class MQEvent
     public string QueueName { get; set; }
     public string Action { get; set; }
     public string Id { get; set; }
+    public string TenantCode { get; set; }
     public string PrevId { get; set; }
     public string AssignedId { get; set; }
     public DateTime Time { get; set; } = DateTime.Now;

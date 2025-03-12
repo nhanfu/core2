@@ -27,9 +27,11 @@ namespace Core.Services
             }
         }
 
-        public ConcurrentDictionary<string, WebSocket> GetDeviceSockets()
+        public ConcurrentDictionary<string, WebSocket> GetDeviceSockets(string TenantCode)
         {
-            return _sockets;
+            return new ConcurrentDictionary<string, WebSocket>(
+                _sockets.Where(x => x.Key != null && x.Key.StartsWith(TenantCode.ToLower()))
+            );
         }
 
         public string GetId(WebSocket socket, bool cluster = false)
@@ -43,9 +45,9 @@ namespace Core.Services
             return deviceKey;
         }
 
-        public string AddDeviceSocket(WebSocket socket, string userId, List<string> roleIds, string ip)
+        public string AddDeviceSocket(WebSocket socket, string userId, List<string> roleIds, string ip, string companyName)
         {
-            var deviceKey = $"{userId}/{roleIds.Combine()}/{ip}/{Uuid7.Guid().ToString()}";
+            var deviceKey = $"{companyName.ToLower()}/{userId}/{roleIds.Combine()}/{ip}/{Uuid7.Guid().ToString()}";
             _sockets.TryAdd(deviceKey, socket);
             return deviceKey;
         }

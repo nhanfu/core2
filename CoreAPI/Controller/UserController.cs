@@ -4,11 +4,14 @@ using Core.Middlewares;
 using Core.Models;
 using Core.Services;
 using Core.ViewModels;
+using CoreAPI.BgService;
 using CoreAPI.Models;
 using CoreAPI.Services;
 using CoreAPI.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace Core.Controllers;
 
@@ -52,15 +55,15 @@ public class UserController(UserService _userSvc, PdfService _pdfService, ExcelS
     }
 
     [HttpPost("api/CreateHtml")]
-    public async Task<string> CreateHtml([FromBody] CreateHtmlVM token, [FromServices] IConfiguration configuration)
+    public async Task<string> CreateHtml([FromBody] CreateHtmlVM token, [FromServices] IServiceProvider iServiceProvider, [FromServices] IConfiguration configuration)
     {
-        return await _pdfService.CreateHtml(token, configuration.GetConnectionString("Default"));
+        return await _pdfService.CreateHtml(token, BgExt.GetConnectionString(iServiceProvider, configuration, "logistics"));
     }
 
     [HttpPost("api/CreateExcel")]
-    public async Task<string> CreateExcel([FromBody] CreateHtmlVM token, [FromServices] IConfiguration configuration)
+    public async Task<string> CreateExcel([FromBody] CreateHtmlVM token, [FromServices] IServiceProvider iServiceProvider, [FromServices] IConfiguration configuration)
     {
-        return await _excelService.CreateExcelFile(token, configuration.GetConnectionString("Default"));
+        return await _excelService.CreateExcelFile(token, BgExt.GetConnectionString(iServiceProvider, configuration, "logistics"));
     }
 
     [HttpPost("api/OpenAI")]

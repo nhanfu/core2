@@ -19,7 +19,7 @@ namespace CoreAPI.BgService
 
         public async Task StatisticsProcesses()
         {
-            var connect = _config.GetConnectionString("Default");
+            var connect = _config.GetConnectionString("logistics");
             await DoWorkNextTimeAsync(connect);
             await DoWorkDailyAsync(connect);
             await DoWorkWeeklyAsync(connect);
@@ -55,7 +55,7 @@ namespace CoreAPI.BgService
                 var patch = item.MapToPatch();
                 await BgExt.SavePatch2(patch, connect);
             }
-            await BgExt.NotifyDevices(tasks, "MessageNotification", _socket);
+            await BgExt.NotifyDevices(tasks, "MessageNotification", _socket, "dev");
         }
 
         private async Task DoWorkDailyAsync(string connect)
@@ -93,7 +93,7 @@ namespace CoreAPI.BgService
                 var patch1 = item1.MapToPatch();
                 await BgExt.SavePatch2(patch1, connect);
             }
-            await BgExt.NotifyDevices(tasks, "MessageNotification", _socket);
+            await BgExt.NotifyDevices(tasks, "MessageNotification", _socket, "dev");
         }
 
         private async Task DoWorkWeeklyAsync(string connect)
@@ -137,7 +137,7 @@ namespace CoreAPI.BgService
                 var patch1 = item1.MapToPatch();
                 await BgExt.SavePatch2(patch1, connect);
             }
-            await BgExt.NotifyDevices(tasks, "MessageNotification", _socket);
+            await BgExt.NotifyDevices(tasks, "MessageNotification", _socket, "dev");
         }
 
         private async Task DoWorkMonthlyAsync(string connect)
@@ -181,7 +181,7 @@ namespace CoreAPI.BgService
                 var patch1 = item1.MapToPatch();
                 await BgExt.SavePatch2(patch1, connect);
             }
-            await BgExt.NotifyDevices(tasks, "MessageNotification", _socket);
+            await BgExt.NotifyDevices(tasks, "MessageNotification", _socket, "dev");
         }
 
         private async Task DoWorkYearlyAsync(string connect)
@@ -225,7 +225,7 @@ namespace CoreAPI.BgService
                 var patch1 = item1.MapToPatch();
                 await BgExt.SavePatch2(patch1, connect);
             }
-            await BgExt.NotifyDevices(tasks, "MessageNotification", _socket);
+            await BgExt.NotifyDevices(tasks, "MessageNotification", _socket, "dev");
         }
     }
 }

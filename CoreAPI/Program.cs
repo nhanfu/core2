@@ -38,7 +38,7 @@ services.AddHangfire(configuration => configuration
        .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
        .UseSimpleAssemblyNameTypeSerializer()
        .UseRecommendedSerializerSettings()
-       .UseSqlServerStorage(conf.GetConnectionString("Default")));
+       .UseSqlServerStorage(conf.GetConnectionString("logistics")));
 
 // Add the processing server as IHostedService
 services.AddHangfireServer();

@@ -36,11 +36,9 @@ namespace CoreAPI.Services
                 }
                 if (customData.Length > 1)
                 {
-                    int i = 0;
-                    foreach (var row in customData.Skip(1).ToList())
+                    for (int i = 0; i < customData.Length - 1; i++)
                     {
-                        createHtmlVM.Data["c" + i] = row;
-                        i++;
+                        createHtmlVM.Data["c" + i] = customData[i + 1];
                     }
                 }
             }

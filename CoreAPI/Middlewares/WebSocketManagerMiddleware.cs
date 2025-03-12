@@ -57,10 +57,11 @@ public class WebSocketManagerMiddleware(RequestDelegate next, WebSocketService w
     {
         var principal = Utils.GetPrincipalFromAccessToken(token, configuration);
         var userId = principal.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
+        var companyName = principal.Claims.FirstOrDefault(x => x.Type == UserServiceHelpers.TenantClaim)?.Value;
         var roleIds = principal.Claims.Where(x => x.Type == "RoleIds").Select(x => x.Value).ToList();
         var ip = UserService.GetRemoteIpAddress(context);
-        var deviceKey = WebSocketHandler.OnDeviceConnected(socket, userId, roleIds, context.Connection.RemoteIpAddress.ToString());
-        UserConnect(null);
+        var deviceKey = WebSocketHandler.OnDeviceConnected(socket, userId, roleIds, context.Connection.RemoteIpAddress.ToString(), companyName);
+        UserConnect(null, companyName);
         await socket.SendAsync(Encoding.ASCII.GetBytes(deviceKey), WebSocketMessageType.Text, true, CancellationToken.None);
         await Receive(socket, deviceKey, async (deviceKey, result, buffer) =>
         {
@@ -72,7 +73,7 @@ public class WebSocketManagerMiddleware(RequestDelegate next, WebSocketService w
             else if (result.MessageType == WebSocketMessageType.Close)
             {
                 await WebSocketHandler.OnDisconnected(socket);
-                UserDisconnect(null);
+                UserDisconnect(null, companyName);
                 return;
             }
         });
@@ -88,7 +89,7 @@ public class WebSocketManagerMiddleware(RequestDelegate next, WebSocketService w
         }
     }
 
-    public void UserConnect(Dictionary<string, object> data)
+    public void UserConnect(Dictionary<string, object> data, string tenantCode)
     {
         var entity = new MQEvent
         {
@@ -96,10 +97,10 @@ public class WebSocketManagerMiddleware(RequestDelegate next, WebSocketService w
             Id = Uuid7.Guid().ToString(),
             Message = data
         };
-        BackgroundJob.Enqueue<WebSocketService>(x => x.SendMessageToAll(entity.ToJson()));
+        BackgroundJob.Enqueue<WebSocketService>(x => x.SendMessageToAll(entity.ToJson(), tenantCode));
     }
 
-    public void UserDisconnect(Dictionary<string, object> data)
+    public void UserDisconnect(Dictionary<string, object> data, string tenantCode)
     {
         var entity = new MQEvent
         {
@@ -107,7 +108,7 @@ public class WebSocketManagerMiddleware(RequestDelegate next, WebSocketService w
             Id = Uuid7.Guid().ToString(),
             Message = data
         };
-        BackgroundJob.Enqueue<WebSocketService>(x => x.SendMessageToAll(entity.ToJson()));
+        BackgroundJob.Enqueue<WebSocketService>(x => x.SendMessageToAll(entity.ToJson(), tenantCode));
     }
 
 }

@@ -7,6 +7,7 @@ using Core.ViewModels;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using System.Data;
 using System.Data.SqlClient;
+using System.Security.Claims;
 
 namespace CoreAPI.BgService
 {
@@ -17,6 +18,45 @@ namespace CoreAPI.BgService
             var ds = await ReadDataSet(query, connInfo);
             if (ds.Length == 0 || ds[0].Length == 0) return [];
             return ds[0].Select(x => x.MapTo<T>()).ToArray();
+        }
+
+        public static string GetConnectionString(IServiceProvider serviceProvider, IConfiguration _configuration, string system)
+        {
+            string tenantCode = GetTanentCode(serviceProvider);
+            var connectionStr = string.Empty;
+            if (!tenantCode.IsNullOrWhiteSpace())
+            {
+                connectionStr = _configuration.GetConnectionString(tenantCode);
+                if (connectionStr != null)
+                {
+                    return connectionStr;
+                }
+            }
+            connectionStr = _configuration.GetConnectionString(system);
+            if (!tenantCode.IsNullOrWhiteSpace())
+            {
+                connectionStr = connectionStr.Replace($"logistics_dev", $"logistics_{tenantCode}");
+            }
+            return connectionStr;
+        }
+
+        private static string GetTanentCode(IServiceProvider serviceProvider)
+        {
+            var httpContext = serviceProvider.GetService<IHttpContextAccessor>();
+            string tenantCode = null;
+            if (httpContext?.HttpContext is not null)
+            {
+                var claim = httpContext.HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.PrimaryGroupSid);
+                if (claim is not null)
+                {
+                    tenantCode = claim.Value.ToUpper();
+                }
+                if (tenantCode.IsNullOrWhiteSpace())
+                {
+                    tenantCode = httpContext.HttpContext.Request.Query["t"].ToString();
+                }
+            }
+            return tenantCode;
         }
 
         public static object GetValueOrNull(this Dictionary<string, object> dict, string key)
@@ -333,7 +373,7 @@ namespace CoreAPI.BgService
             }
         }
 
-        public static Task NotifyDevices(IEnumerable<TaskNotification> tasks, string queueName, WebSocketService _socket)
+        public static Task NotifyDevices(IEnumerable<TaskNotification> tasks, string queueName, WebSocketService _socket, string tenantCode)
         {
             return tasks
                 .Where(x => x.AssignedId.HasAnyChar())
@@ -344,12 +384,11 @@ namespace CoreAPI.BgService
                     Message = x,
                     AssignedId = x.AssignedId
                 })
-            .ForEachAsync(x => SendMessageToUser(x, _socket));
+            .ForEachAsync(x => SendMessageToUser(x, _socket, tenantCode));
         }
 
-        private static async Task SendMessageToUser(MQEvent task, WebSocketService _socket)
+        private static async Task SendMessageToUser(MQEvent task, WebSocketService _socket, string tenantCode)
         {
-            var tenantCode = "dev";
             var env = "dev";
             var fcm = new FCMWrapper
             {
@@ -366,7 +405,7 @@ namespace CoreAPI.BgService
                     ClickAction = "com.softek.tms.push.background.MESSAGING_EVENT"
                 },
             };
-            await _socket.SendMessageToUsersAsync([task.Message.AssignedId], task.ToJson(), fcm.ToJson());
+            await _socket.SendMessageToUsersAsync([task.Message.AssignedId], task.ToJson(), fcm.ToJson(), tenantCode);
         }
 
         public static async Task<T> ReadDsAs<T>(string query, string connInfo = null) where T : class
