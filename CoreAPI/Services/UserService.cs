@@ -2474,9 +2474,17 @@ public class UserService
 
     public async Task<Dictionary<string, object>[][]> GetTableColumns(string tableName)
     {
-        string query = $"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{tableName}'";
+        string query = $@"
+        SELECT c.COLUMN_NAME 
+        FROM INFORMATION_SCHEMA.COLUMNS c
+        JOIN sys.columns sc ON c.COLUMN_NAME = sc.name 
+        AND OBJECT_ID(c.TABLE_SCHEMA + '.' + c.TABLE_NAME) = sc.object_id
+        WHERE c.TABLE_NAME = '{tableName}' 
+        AND sc.is_computed = 0";
+
         return await _sql.ReadDataSet(query);
     }
+
 
     private async Task AfterActionSvc(PatchVM vm, string action)
     {
