@@ -51,7 +51,9 @@ public class UserService
     public string GroupId { get; set; }
     public string DepartmentId { get; set; }
     public string UserId { get; set; }
+    public string FullName { get; set; }
     public string UserName { get; set; }
+    public string Avatar { get; set; }
     public string CLogo { get; set; }
     public string CCompanyName { get; set; }
     public string CAddress { get; set; }
@@ -89,6 +91,7 @@ public class UserService
         _sql.TenantCode = TenantCode;
         _sql.Env = Env;
         _sql.UserId = UserId;
+        _sql.UserId = UserId;
         _sql.SystemFields = new List<string>
         {
             UserServiceHelpers.IdField, nameof(User.InsertedBy), nameof(User.InsertedDate), nameof(User.UpdatedBy), nameof(User.UpdatedDate)
@@ -102,6 +105,8 @@ public class UserService
         if (claims is null) return;
         BranchId = claims.FirstOrDefault(x => x.Type == UserServiceHelpers.BranchIdClaim)?.Value;
         UserId = claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
+        FullName = claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.FamilyName)?.Value;
+        Avatar = claims.FirstOrDefault(x => x.Type == "Avatar")?.Value;
         GroupId = claims.FirstOrDefault(x => x.Type == "TeamId")?.Value;
         DepartmentId = claims.FirstOrDefault(x => x.Type == "DepartmentId")?.Value;
         ConnKey = claims.FirstOrDefault(x => x.Type == UserServiceHelpers.ConnKeyClaim)?.Value;
@@ -699,10 +704,6 @@ public class UserService
         var roleNames = user.RoleIdsText.Split(",").ToList();
         var signinDate = DateTime.Now;
         var jit = Uuid7.Guid().ToString();
-        if (user.Avatar is null)
-        {
-
-        }
         List<Claim> claims =
         [
             new(ClaimTypes.GroupSid, user.PartnerId is null ? string.Empty : user.PartnerId),
@@ -1000,6 +1001,7 @@ public class UserService
         var userReceiverId = vm.Changes.FirstOrDefault(x => x.Field == "UserReceiverId");
         var groupReceiverId = vm.Changes.FirstOrDefault(x => x.Field == "GroupReceiverId");
         var receiverIds = vm.Changes.FirstOrDefault(x => x.Field == "ReceiverIds");
+        var featureName = vm.Changes.FirstOrDefault(x => x.Field == "FeatureName");
         var titLe = vm.Changes.FirstOrDefault(x => x.Field == "FormatChat");
         var noApproved = vm.Changes.FirstOrDefault(x => x.Field == "NoApproved");
         if (noApproved != null && noApproved.Value == "1")
@@ -1036,7 +1038,10 @@ public class UserService
                     Id = Uuid7.Guid().ToString(),
                     VoucherTypeId = int.Parse(voucherTypeId.Value),
                     EntityId = name,
-                    Title = "You have received request ",
+                    Avatar = Avatar,
+                    FeatureName = featureName is null ? null : featureName.Value,
+                    Title = titLe.Value ?? "",
+                    Title2 = FullName + " has sent you an approval request.",
                     Icon = "fal fa-smile",
                     Description = titLe.Value ?? "",
                     InsertedBy = UserId,
@@ -1079,10 +1084,13 @@ public class UserService
                 var taskUser = new TaskNotification()
                 {
                     Id = Uuid7.Guid().ToString(),
-                    EntityId = name,
                     VoucherTypeId = int.Parse(voucherTypeId.Value),
-                    Title = "You have request approve",
-                    Icon = "fal fa-quote-right",
+                    EntityId = name,
+                    Avatar = Avatar,
+                    FeatureName = featureName is null ? null : featureName.Value,
+                    Title = titLe.Value ?? "",
+                    Title2 = FullName + " has sent you an approval request.",
+                    Icon = "fal fa-smile",
                     Description = titLe.Value ?? "",
                     InsertedBy = UserId,
                     RecordId = id,
@@ -1103,8 +1111,11 @@ public class UserService
                     Id = Uuid7.Guid().ToString(),
                     VoucherTypeId = int.Parse(voucherTypeId.Value),
                     EntityId = name,
-                    Title = "You have request approve",
-                    Icon = "fal fa-quote-right",
+                    Avatar = Avatar,
+                    FeatureName = featureName is null ? null : featureName.Value,
+                    Title = titLe.Value ?? "",
+                    Title2 = FullName + " has sent you an approval request.",
+                    Icon = "fal fa-smile",
                     Description = titLe.Value ?? "",
                     InsertedBy = UserId,
                     RecordId = id,
@@ -1166,7 +1177,11 @@ public class UserService
             Id = Uuid7.Guid().ToString(),
             VoucherTypeId = int.Parse(voucherTypeId.Value),
             EntityId = name,
-            Title = "You have request approve",
+            Avatar = Avatar,
+            FeatureName = featureName is null ? null : featureName.Value,
+            Title = titLe.Value ?? "",
+            Title2 = FullName + " has sent you an approval request.",
+            Icon = "fal fa-smile",
             Description = titLe.Value ?? "",
             InsertedBy = UserId,
             RecordId = id,
@@ -1214,6 +1229,7 @@ public class UserService
         var userCreateId = vm.Changes.FirstOrDefault(x => x.Field == "UserCreateId");
         var voucherTypeId = vm.Changes.FirstOrDefault(x => x.Field == "VoucherTypeId");
         var titLe = vm.Changes.FirstOrDefault(x => x.Field == "FormatChat");
+        var featureName = vm.Changes.FirstOrDefault(x => x.Field == "FeatureName");
         if (userReceiverId != null && !userReceiverId.Value.IsNullOrWhiteSpace() || groupReceiverId != null && !groupReceiverId.Value.IsNullOrWhiteSpace())
         {
             if (vm.Changes.FirstOrDefault(x => x.Field == "AutoProgressId") != null)
@@ -1245,7 +1261,10 @@ public class UserService
                     Id = Uuid7.Guid().ToString(),
                     VoucherTypeId = int.Parse(voucherTypeId.Value),
                     EntityId = name,
-                    Title = "Request is approved",
+                    Avatar = Avatar,
+                    FeatureName = featureName is null ? null : featureName.Value,
+                    Title = titLe.Value ?? "",
+                    Title2 = FullName + " has approved your request.",
                     Icon = "fal fa-smile",
                     Description = titLe.Value ?? "",
                     InsertedBy = UserId,
@@ -1286,14 +1305,17 @@ public class UserService
                         Id = Uuid7.Guid().ToString(),
                         VoucherTypeId = int.Parse(voucherTypeId.Value),
                         EntityId = name,
-                        Title = "Request is approved",
+                        Avatar = Avatar,
+                        FeatureName = featureName is null ? null : featureName.Value,
+                        Title = titLe.Value ?? "",
+                        Title2 = FullName + " has approved your request.",
                         Icon = "fal fa-smile",
                         Description = titLe.Value ?? "",
                         InsertedBy = UserId,
                         RecordId = id,
                         InsertedDate = DateTime.Now,
                         Active = true,
-                        AssignedId = insertedBy.Value
+                        AssignedId = userCreateId != null ? userCreateId.Value : insertedBy.Value
                     };
                     NotifyDevices(new List<TaskNotification>() { taskUser }, "MessageNotification");
                 }
@@ -1393,14 +1415,17 @@ public class UserService
                 Id = Uuid7.Guid().ToString(),
                 VoucherTypeId = int.Parse(voucherTypeId.Value),
                 EntityId = name,
-                Title = "Request is approved",
+                Avatar = Avatar,
+                FeatureName = featureName is null ? null : featureName.Value,
+                Title = titLe.Value ?? "",
+                Title2 = FullName + " has approved your request.",
                 Icon = "fal fa-smile",
                 Description = titLe.Value ?? "",
                 InsertedBy = UserId,
                 RecordId = id,
                 InsertedDate = DateTime.Now,
                 Active = true,
-                AssignedId = insertedBy.Value
+                AssignedId = userCreateId != null ? userCreateId.Value : insertedBy.Value
             }).ToList();
             foreach (var item in task)
             {
@@ -1473,15 +1498,19 @@ public class UserService
             var task = userApproved.Select(x => new TaskNotification()
             {
                 Id = Uuid7.Guid().ToString(),
+                VoucherTypeId = int.Parse(voucherTypeId.Value),
                 EntityId = name,
-                Title = "Request is approved",
+                Avatar = Avatar,
+                FeatureName = featureName is null ? null : featureName.Value,
+                Title = titLe.Value ?? "",
+                Title2 = FullName + " has approved your request.",
                 Icon = "fal fa-smile",
                 Description = titLe.Value ?? "",
                 InsertedBy = UserId,
                 RecordId = id,
                 InsertedDate = DateTime.Now,
                 Active = true,
-                AssignedId = insertedBy.Value
+                AssignedId = userCreateId != null ? userCreateId.Value : insertedBy.Value
             }).ToList();
             foreach (var item in task)
             {
@@ -1529,9 +1558,13 @@ public class UserService
             var task = userApproved.Select(x => new TaskNotification()
             {
                 Id = Uuid7.Guid().ToString(),
-                EntityId = name,
                 VoucherTypeId = int.Parse(voucherTypeId.Value),
-                Title = "You have request approve",
+                EntityId = name,
+                Avatar = Avatar,
+                FeatureName = featureName is null ? null : featureName.Value,
+                Title = titLe.Value ?? "",
+                Title2 = FullName + " has sent you an approval request.",
+                Icon = "fal fa-smile",
                 Description = titLe.Value ?? "",
                 InsertedBy = UserId,
                 RecordId = id,
@@ -1566,18 +1599,24 @@ public class UserService
         var forwardId = vm.Changes.FirstOrDefault(x => x.Field == "ForwardId");
         var titLe = vm.Changes.FirstOrDefault(x => x.Field == "FormatChat");
         var voucherTypeId = vm.Changes.FirstOrDefault(x => x.Field == "VoucherTypeId");
+        var featureName = vm.Changes.FirstOrDefault(x => x.Field == "FeatureName");
+
         var rs = await SavePatch2(vm);
         var task = new TaskNotification()
         {
             Id = Uuid7.Guid().ToString(),
             VoucherTypeId = int.Parse(voucherTypeId.Value),
-            EntityId = vm.Table,
-            Title = "You have request forward",
+            EntityId = name,
+            Avatar = Avatar,
+            FeatureName = featureName is null ? null : featureName.Value,
+            Title = titLe.Value ?? "",
+            Title2 = FullName + " has forward you an approval request.",
+            Icon = "fal fa-smile",
             Description = titLe.Value ?? "",
             InsertedBy = UserId,
             RecordId = id,
-            Active = true,
             InsertedDate = DateTime.Now,
+            Active = true,
             AssignedId = forwardId.Value
         };
         var patch = task.MapToPatch();
@@ -1609,6 +1648,8 @@ public class UserService
         var groupReceiverId = vm.Changes.FirstOrDefault(x => x.Field == "GroupReceiverId");
         var insertedBy = vm.Changes.FirstOrDefault(x => x.Field == "InsertedBy");
         var titLe = vm.Changes.FirstOrDefault(x => x.Field == "FormatChat");
+        var featureName = vm.Changes.FirstOrDefault(x => x.Field == "FeatureName");
+
         if (userReceiverId != null && !userReceiverId.Value.IsNullOrWhiteSpace() || groupReceiverId != null && !groupReceiverId.Value.IsNullOrWhiteSpace() || receiverIds != null && !receiverIds.Value.IsNullOrWhiteSpace())
         {
             var rs = await SavePatch2(vm);
@@ -1637,8 +1678,11 @@ public class UserService
                     Id = Uuid7.Guid().ToString(),
                     VoucherTypeId = int.Parse(voucherTypeId.Value),
                     EntityId = name,
-                    Title = "Request is decline",
-                    Icon = "fal fa-frown",
+                    Avatar = Avatar,
+                    FeatureName = featureName is null ? null : featureName.Value,
+                    Title = titLe.Value ?? "",
+                    Title2 = FullName + " has rejected your request.",
+                    Icon = "fal fa-smile",
                     Description = titLe.Value ?? "",
                     InsertedBy = UserId,
                     RecordId = id,
@@ -1679,14 +1723,17 @@ public class UserService
                         Id = Uuid7.Guid().ToString(),
                         VoucherTypeId = int.Parse(voucherTypeId.Value),
                         EntityId = name,
-                        Title = "Request is decline",
-                        Icon = "fal fa-frown",
+                        Avatar = Avatar,
+                        FeatureName = featureName is null ? null : featureName.Value,
+                        Title = titLe.Value ?? "",
+                        Title2 = FullName + " has rejected your request.",
+                        Icon = "fal fa-smile",
                         Description = titLe.Value ?? "",
                         InsertedBy = UserId,
                         RecordId = id,
                         InsertedDate = DateTime.Now,
                         Active = true,
-                        AssignedId = insertedBy.Value
+                        AssignedId = userCreateId != null ? userCreateId.Value : insertedBy.Value
                     };
                     NotifyDevices(new List<TaskNotification>() { taskUser }, "MessageNotification");
                 }
@@ -1729,14 +1776,17 @@ public class UserService
                         Id = Uuid7.Guid().ToString(),
                         VoucherTypeId = int.Parse(voucherTypeId.Value),
                         EntityId = name,
-                        Title = "Request is decline",
-                        Icon = "fal fa-frown",
+                        Avatar = Avatar,
+                        FeatureName = featureName is null ? null : featureName.Value,
+                        Title = titLe.Value ?? "",
+                        Title2 = FullName + " has rejected your request.",
+                        Icon = "fal fa-smile",
                         Description = titLe.Value ?? "",
                         InsertedBy = UserId,
                         RecordId = id,
                         InsertedDate = DateTime.Now,
                         Active = true,
-                        AssignedId = insertedBy.Value
+                        AssignedId = userCreateId != null ? userCreateId.Value : insertedBy.Value
                     };
                     NotifyDevices(new List<TaskNotification>() { taskUser }, "MessageNotification");
                 }
@@ -1820,15 +1870,18 @@ public class UserService
         {
             Id = Uuid7.Guid().ToString(),
             VoucherTypeId = int.Parse(voucherTypeId.Value),
-            EntityId = vm.Table,
-            Title = "Request is decline",
-            Icon = "fal fa-frown",
+            EntityId = name,
+            Avatar = Avatar,
+            FeatureName = featureName is null ? null : featureName.Value,
+            Title = titLe.Value ?? "",
+            Title2 = FullName + " has rejected your request.",
+            Icon = "fal fa-smile",
             Description = titLe.Value ?? "",
             InsertedBy = UserId,
             RecordId = id,
-            Active = true,
             InsertedDate = DateTime.Now,
-            AssignedId = insertedBy.Value
+            Active = true,
+            AssignedId = userCreateId != null ? userCreateId.Value : insertedBy.Value
         };
         var patch = task.MapToPatch();
         await SavePatch(patch);
@@ -2444,6 +2497,9 @@ public class UserService
 
     private async Task Notification(PatchVM vm, string id, List<PatchDetail> filteredChanges, PatchDetail isSend, PatchDetail receiverIds)
     {
+        var featureName = vm.Changes.FirstOrDefault(x => x.Field == "FeatureName");
+        var voucherTypeId = vm.Changes.FirstOrDefault(x => x.Field == "VoucherTypeId");
+        var titLe = vm.Changes.FirstOrDefault(x => x.Field == "FormatChat");
         if (isSend != null && isSend.Value == "0" && receiverIds != null && receiverIds.Value != null)
         {
             var userString = receiverIds.Value.Split(",");
@@ -2452,13 +2508,17 @@ public class UserService
             var task = users.Select(x => new TaskNotification()
             {
                 Id = Uuid7.Guid().ToString(),
+                VoucherTypeId = int.Parse(voucherTypeId.Value),
                 EntityId = vm.Table,
-                Title = "You have received a new request",
-                Description = filteredChanges.FirstOrDefault(x => x.Field == "FormatChat").Value ?? "",
+                Avatar = Avatar,
+                FeatureName = featureName is null ? null : featureName.Value,
+                Title = titLe.Value ?? "",
+                Title2 = FullName + " has sent you an approval request.",
+                Icon = "fal fa-smile",
+                Description = titLe.Value ?? "",
                 InsertedBy = UserId,
                 RecordId = id,
                 InsertedDate = DateTime.Now,
-                VoucherTypeId = int.Parse(filteredChanges.FirstOrDefault(x => x.Field == "VoucherTypeId").Value),
                 Active = true,
                 AssignedId = x.Id
             }).ToList();
