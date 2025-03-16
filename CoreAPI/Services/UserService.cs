@@ -105,7 +105,7 @@ public class UserService
         if (claims is null) return;
         BranchId = claims.FirstOrDefault(x => x.Type == UserServiceHelpers.BranchIdClaim)?.Value;
         UserId = claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
-        FullName = claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.FamilyName)?.Value;
+        FullName = claims.FirstOrDefault(x => x.Type == "FullName")?.Value;
         Avatar = claims.FirstOrDefault(x => x.Type == "Avatar")?.Value;
         GroupId = claims.FirstOrDefault(x => x.Type == "TeamId")?.Value;
         DepartmentId = claims.FirstOrDefault(x => x.Type == "DepartmentId")?.Value;
@@ -712,6 +712,7 @@ public class UserService
             new ("TeamId", user.TeamId ?? string.Empty),
             new ("DepartmentId", user.DepartmentId ?? string.Empty),
             new (ClaimTypes.Name, user.UserName),
+            new ("FullName", user.FullName),
             new ("CName", user.Company.CompanyName ?? string.Empty),
             new ("CLogo", user.Company.Logo ?? string.Empty),
             new ("CAddress", user.Company.Address ?? string.Empty),
@@ -721,7 +722,6 @@ public class UserService
             new (JwtRegisteredClaimNames.Birthdate, user.Dob?.ToString() ?? string.Empty),
         ];
         List<Claim> claim2 = [
-            new (JwtRegisteredClaimNames.FamilyName, user.FullName?? string.Empty),
             new (JwtRegisteredClaimNames.Iat, signinDate.ToString()),
             new (JwtRegisteredClaimNames.Jti, jit),
             new (UserServiceHelpers.TenantClaim, login.TanentCode),
@@ -1002,6 +1002,8 @@ public class UserService
         var groupReceiverId = vm.Changes.FirstOrDefault(x => x.Field == "GroupReceiverId");
         var receiverIds = vm.Changes.FirstOrDefault(x => x.Field == "ReceiverIds");
         var featureName = vm.Changes.FirstOrDefault(x => x.Field == "FeatureName");
+        var featureName2 = vm.Changes.FirstOrDefault(x => x.Field == "FeatureName2");
+        var featureName3 = vm.Changes.FirstOrDefault(x => x.Field == "FeatureName3");
         var titLe = vm.Changes.FirstOrDefault(x => x.Field == "FormatChat");
         var noApproved = vm.Changes.FirstOrDefault(x => x.Field == "NoApproved");
         if (noApproved != null && noApproved.Value == "1")
@@ -1040,6 +1042,8 @@ public class UserService
                     EntityId = name,
                     Avatar = Avatar,
                     FeatureName = featureName is null ? null : featureName.Value,
+                    FeatureName2 = featureName2 is null ? null : featureName2.Value,
+                    FeatureName3 = featureName3 is null ? null : featureName3.Value,
                     Title = titLe.Value ?? "",
                     Title2 = FullName + " has sent you an approval request.",
                     Icon = "fal fa-smile",
@@ -1088,6 +1092,8 @@ public class UserService
                     EntityId = name,
                     Avatar = Avatar,
                     FeatureName = featureName is null ? null : featureName.Value,
+                    FeatureName2 = featureName2 is null ? null : featureName2.Value,
+                    FeatureName3 = featureName3 is null ? null : featureName3.Value,
                     Title = titLe.Value ?? "",
                     Title2 = FullName + " has sent you an approval request.",
                     Icon = "fal fa-smile",
@@ -1113,6 +1119,8 @@ public class UserService
                     EntityId = name,
                     Avatar = Avatar,
                     FeatureName = featureName is null ? null : featureName.Value,
+                    FeatureName2 = featureName2 is null ? null : featureName2.Value,
+                    FeatureName3 = featureName3 is null ? null : featureName3.Value,
                     Title = titLe.Value ?? "",
                     Title2 = FullName + " has sent you an approval request.",
                     Icon = "fal fa-smile",
@@ -1179,6 +1187,8 @@ public class UserService
             EntityId = name,
             Avatar = Avatar,
             FeatureName = featureName is null ? null : featureName.Value,
+            FeatureName2 = featureName2 is null ? null : featureName2.Value,
+            FeatureName3 = featureName3 is null ? null : featureName3.Value,
             Title = titLe.Value ?? "",
             Title2 = FullName + " has sent you an approval request.",
             Icon = "fal fa-smile",
@@ -1600,7 +1610,8 @@ public class UserService
         var titLe = vm.Changes.FirstOrDefault(x => x.Field == "FormatChat");
         var voucherTypeId = vm.Changes.FirstOrDefault(x => x.Field == "VoucherTypeId");
         var featureName = vm.Changes.FirstOrDefault(x => x.Field == "FeatureName");
-
+        var featureName2 = vm.Changes.FirstOrDefault(x => x.Field == "FeatureName2");
+        var featureName3 = vm.Changes.FirstOrDefault(x => x.Field == "FeatureName3");
         var rs = await SavePatch2(vm);
         var task = new TaskNotification()
         {
@@ -1609,6 +1620,8 @@ public class UserService
             EntityId = name,
             Avatar = Avatar,
             FeatureName = featureName is null ? null : featureName.Value,
+            FeatureName2 = featureName2 is null ? null : featureName2.Value,
+            FeatureName3 = featureName3 is null ? null : featureName3.Value,
             Title = titLe.Value ?? "",
             Title2 = FullName + " has forward you an approval request.",
             Icon = "fal fa-smile",
@@ -1649,7 +1662,8 @@ public class UserService
         var insertedBy = vm.Changes.FirstOrDefault(x => x.Field == "InsertedBy");
         var titLe = vm.Changes.FirstOrDefault(x => x.Field == "FormatChat");
         var featureName = vm.Changes.FirstOrDefault(x => x.Field == "FeatureName");
-
+        var featureName2 = vm.Changes.FirstOrDefault(x => x.Field == "FeatureName2");
+        var featureName3 = vm.Changes.FirstOrDefault(x => x.Field == "FeatureName3");
         if (userReceiverId != null && !userReceiverId.Value.IsNullOrWhiteSpace() || groupReceiverId != null && !groupReceiverId.Value.IsNullOrWhiteSpace() || receiverIds != null && !receiverIds.Value.IsNullOrWhiteSpace())
         {
             var rs = await SavePatch2(vm);
@@ -1680,6 +1694,8 @@ public class UserService
                     EntityId = name,
                     Avatar = Avatar,
                     FeatureName = featureName is null ? null : featureName.Value,
+                    FeatureName2 = featureName2 is null ? null : featureName2.Value,
+                    FeatureName3 = featureName3 is null ? null : featureName3.Value,
                     Title = titLe.Value ?? "",
                     Title2 = FullName + " has rejected your request.",
                     Icon = "fal fa-smile",
@@ -1725,6 +1741,8 @@ public class UserService
                         EntityId = name,
                         Avatar = Avatar,
                         FeatureName = featureName is null ? null : featureName.Value,
+                        FeatureName2 = featureName2 is null ? null : featureName2.Value,
+                        FeatureName3 = featureName3 is null ? null : featureName3.Value,
                         Title = titLe.Value ?? "",
                         Title2 = FullName + " has rejected your request.",
                         Icon = "fal fa-smile",
@@ -1778,6 +1796,8 @@ public class UserService
                         EntityId = name,
                         Avatar = Avatar,
                         FeatureName = featureName is null ? null : featureName.Value,
+                        FeatureName2 = featureName2 is null ? null : featureName2.Value,
+                        FeatureName3 = featureName3 is null ? null : featureName3.Value,
                         Title = titLe.Value ?? "",
                         Title2 = FullName + " has rejected your request.",
                         Icon = "fal fa-smile",
@@ -1873,6 +1893,8 @@ public class UserService
             EntityId = name,
             Avatar = Avatar,
             FeatureName = featureName is null ? null : featureName.Value,
+            FeatureName2 = featureName2 is null ? null : featureName2.Value,
+            FeatureName3 = featureName3 is null ? null : featureName3.Value,
             Title = titLe.Value ?? "",
             Title2 = FullName + " has rejected your request.",
             Icon = "fal fa-smile",
@@ -2500,6 +2522,8 @@ public class UserService
         var featureName = vm.Changes.FirstOrDefault(x => x.Field == "FeatureName");
         var voucherTypeId = vm.Changes.FirstOrDefault(x => x.Field == "VoucherTypeId");
         var titLe = vm.Changes.FirstOrDefault(x => x.Field == "FormatChat");
+        var featureName2 = vm.Changes.FirstOrDefault(x => x.Field == "FeatureName2");
+        var featureName3 = vm.Changes.FirstOrDefault(x => x.Field == "FeatureName3");
         if (isSend != null && isSend.Value == "0" && receiverIds != null && receiverIds.Value != null)
         {
             var userString = receiverIds.Value.Split(",");
@@ -2512,6 +2536,8 @@ public class UserService
                 EntityId = vm.Table,
                 Avatar = Avatar,
                 FeatureName = featureName is null ? null : featureName.Value,
+                FeatureName2 = featureName2 is null ? null : featureName2.Value,
+                FeatureName3 = featureName3 is null ? null : featureName3.Value,
                 Title = titLe.Value ?? "",
                 Title2 = FullName + " has sent you an approval request.",
                 Icon = "fal fa-smile",

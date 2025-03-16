@@ -9,6 +9,8 @@
         public string Avatar { get; set; }
         public string FromName { get; set; }
         public string FeatureName { get; set; }
+        public string FeatureName2 { get; set; }
+        public string FeatureName3 { get; set; }
         public string Description { get; set; }
         public string Description2 { get; set; }
         public string EntityId { get; set; }
