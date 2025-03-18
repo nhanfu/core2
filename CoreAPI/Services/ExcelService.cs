@@ -3,10 +3,8 @@ using Core.Extensions;
 using Core.Models;
 using Core.ViewModels;
 using CoreAPI.BgService;
-using DocumentFormat.OpenXml.Spreadsheet;
-using Microsoft.SqlServer.TransactSql.ScriptDom;
 using Newtonsoft.Json;
-using Org.BouncyCastle.Asn1.Pkcs;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using FileIO = System.IO.File;
 
@@ -107,17 +105,17 @@ namespace CoreAPI.Services
                                 var cellValue = cell.GetString();
                                 var newValue = BindingDataExt.FormatString2(cellValue, item);
                                 var newCell = clonedRow.Cell(cell.Address.ColumnNumber);
-                                decimal numericValue;
-                                if (newValue.StartsWith("0"))
+                                if (newValue.StartsWith("$"))
                                 {
-                                    newCell.Style.NumberFormat.SetNumberFormatId(49);
-                                    newCell.SetValue(newValue);
-                                }
-                                else if (decimal.TryParse(newValue, out numericValue))
-                                {
-                                    newCell.SetValue(numericValue);
-                                    cell.Style.NumberFormat.NumberFormatId = 0;
-                                    cell.Style.NumberFormat.Format = "#,##";
+                                    if (decimal.TryParse(newValue.Replace("$", ""), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal number))
+                                    {
+                                        newCell.Value = number; // Gán dưới dạng số
+                                        newCell.Style.NumberFormat.Format = number % 1 == 0 ? "#,##0" : "#,##0.00";
+                                    }
+                                    else
+                                    {
+                                        newCell.SetValue(string.Empty);
+                                    }
                                 }
                                 else
                                 {
@@ -137,21 +135,21 @@ namespace CoreAPI.Services
                     {
                         var cellValue = cell.GetString();
                         var newValue = BindingDataExt.FormatString(cellValue, createHtmlVM.Data);
-                        decimal numericValue;
-                        if (newValue.StartsWith("0"))
+                        if (newValue.StartsWith("{"))
                         {
-                            row.Cell(cell.Address.ColumnNumber).Style.NumberFormat.SetNumberFormatId(49);
-                            row.Cell(cell.Address.ColumnNumber).SetValue(newValue);
-                        }
-                        else if (decimal.TryParse(newValue, out numericValue))
-                        {
-                            row.Cell(cell.Address.ColumnNumber).SetValue(numericValue);
-                            cell.Style.NumberFormat.NumberFormatId = 0;
-                            cell.Style.NumberFormat.Format = "#,##";
+                            if (decimal.TryParse(newValue.Replace("{", ""), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal number))
+                            {
+                                cell.Value = number; // Gán dưới dạng số
+                                cell.Style.NumberFormat.Format = number % 1 == 0 ? "#,##0" : "#,##0.00";
+                            }
+                            else
+                            {
+                                cell.SetValue(string.Empty);
+                            }
                         }
                         else
                         {
-                            row.Cell(cell.Address.ColumnNumber).SetValue(newValue);
+                            cell.SetValue(newValue);
                         }
                         var text = cell.GetString();
                         var columnWidth = cell.WorksheetColumn().Width;
@@ -159,7 +157,7 @@ namespace CoreAPI.Services
                         double maxCharsPerLine = columnWidth * 1.2;
                         int textLength = text.Length;
                         double lines = Math.Ceiling(textLength / maxCharsPerLine);
-                        double lineHeight = fontSize * 2.1; // Hệ số 1.5 để điều chỉnh độ cao dòng
+                        double lineHeight = fontSize * 2.1;
                         double rowHeight = lines * lineHeight;
                         if (rowHeight > maxRowHeight)
                         {

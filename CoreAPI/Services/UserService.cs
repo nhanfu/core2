@@ -361,6 +361,13 @@ public class UserService
         };
     }
 
+    public async Task<Dictionary<string, object>[][]> Gos(List<Gos> gos)
+    {
+        var query = gos.Select(x => @$"select * from [{x.TableName}] where Id in ({x.Ids.CombineStrings()})").Combine(";");
+        var ds = await _sql.ReadDataSet(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
+        return ds;
+    }
+
     public async Task<SqlResult> GoByName(SqlViewModel sqlViewModel)
     {
         var param = sqlViewModel.Id

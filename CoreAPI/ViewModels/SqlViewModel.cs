@@ -40,6 +40,12 @@ namespace Core.ViewModels
         public string Format { get; set; }
     }
 
+    public class Gos
+    {
+        public string TableName { get; set; }
+        public List<string> Ids { get; set; }
+    }
+
     public class SqlQueryResult
     {
         public object Result { get; set; }
