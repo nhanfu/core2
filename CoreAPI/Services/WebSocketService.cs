@@ -118,7 +118,7 @@ namespace Core.Services
         public Task SendMessageToUsersAsync(List<string> userIds, string message, string fcm, string TenantCode)
         {
             var userGroup = connManager.GetDeviceSockets(TenantCode)
-                .Where(x => userIds.Contains(x.Key.Split("/").FirstOrDefault()));
+                .Where(x => userIds.Contains(x.Key.Split("/")[1]));
             return NotifyUserGroup(message, userGroup, fcm);
         }
 

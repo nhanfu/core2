@@ -16,7 +16,6 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
-using System;
 using System.Buffers;
 using System.Data;
 using System.Data.SqlClient;
@@ -448,6 +447,10 @@ public class UserService
            ,[ShipmentFeeId]
            ,[IsLock]
            ,[Payable]
+           ,[ExAmount]
+           ,[ExAmountTax]
+           ,[ExTotalAmount]
+           ,[ExTotalAmountTax]
            ,[Receivable])
             select NEWID()
            ,ds.[TypeId]
@@ -471,8 +474,7 @@ public class UserService
            ,ds.[IsNoDocs]
            ,ds.[ExchangeRateVND]
            ,ds.[ExchangeRateUSD]
-           ,(case when ShipmentInvoice.CurrencyId = ds.CurrencyId then 1
-            else ShipmentInvoice.ExchangeRateINV end)
+           ,ds.ExchangeRateINV
            ,ds.[ExchangeRateUSD]
            ,ds.[IsContainer]
            ,ds.[IsCBM]
@@ -492,13 +494,13 @@ public class UserService
            ,ds.[BasedId]
            ,ds.[PmTypeId]
            ,ds.Id
-           ,ds.[IsLock],
-		   CASE WHEN ds.TypeId in (2,3,4) THEN 
-            (case when ShipmentInvoice.CurrencyId = ds.CurrencyId then 1
-            else ShipmentInvoice.ExchangeRateINV end) * ds.TotalAmountTax ELSE  NULL END AS Payable,
-		   CASE WHEN ds.TypeId in (1) THEN 
-            (case when ShipmentInvoice.CurrencyId = ds.CurrencyId then 1
-            else ShipmentInvoice.ExchangeRateINV end) * ds.TotalAmountTax ELSE  NULL END AS Receivable
+           ,ds.[IsLock]
+           ,case when ds.TypeId = 2 then ds.[ExTotalAmountTax] else null end
+		   ,ds.[ExAmount]
+           ,ds.[ExAmountTax]
+           ,ds.[ExTotalAmount]
+           ,ds.[ExTotalAmountTax]
+           ,case when ds.TypeId != 2 then ds.[ExTotalAmountTax] else null end
         from ShipmentFee as ds 
         left join ShipmentInvoice on ShipmentInvoice.Id = '{entity.ShipmentInvoiceId}'
         where ds.Id in ({entity.ShipmentInvoiceDetailId.CombineStrings()})";
@@ -2015,7 +2017,6 @@ public class UserService
                 };
             }
             id = id.Substring(1);
-            await Notification(vm, id, filteredChanges, isSend, receiverIds);
             AddDefaultFields(filteredChanges, new List<PatchDetail>()
             {
                 new PatchDetail { Field = "InsertedDate", Value = DateTime.Now.ToISOFormat() },
@@ -2134,6 +2135,7 @@ public class UserService
                         {
                             SendMessageAllUser(entity[0][0]);
                         }
+                        await Notification(vm, id, filteredChanges, isSend, receiverIds);
                         return new SqlResult()
                         {
                             updatedItem = entity[0],
@@ -2158,7 +2160,6 @@ public class UserService
         }
         else
         {
-            await Notification(vm, id, filteredChanges, isSend, receiverIds);
             var (dup, mess, currentEntity) = await CheckDuplicate(vm, true);
             if (dup)
             {
@@ -2313,6 +2314,7 @@ public class UserService
                         {
                             SendMessageAllUser(entity[0][0]);
                         }
+                        await Notification(vm, id, filteredChanges, isSend, receiverIds);
                         return new SqlResult()
                         {
                             updatedItem = entity[0],
@@ -2529,6 +2531,11 @@ public class UserService
             var userString = receiverIds.Value.Split(",");
             var queryUser = @$"SELECT * FROM [User] where Id in ({userString.CombineStrings()})";
             var users = await _sql.ReadDsAsArr<User>(queryUser);
+            var templateMessage = " has sent you an approval request.";
+            if (vm.Table == "Conversation")
+            {
+                templateMessage = " has invited you to join the conversation.";
+            }
             var task = users.Select(x => new TaskNotification()
             {
                 Id = Uuid7.Guid().ToString(),
@@ -2539,7 +2546,7 @@ public class UserService
                 FeatureName2 = featureName2 is null ? null : featureName2.Value,
                 FeatureName3 = featureName3 is null ? null : featureName3.Value,
                 Title = titLe.Value ?? "",
-                Title2 = FullName + " has sent you an approval request.",
+                Title2 = FullName + templateMessage,
                 Icon = "fal fa-smile",
                 Description = titLe.Value ?? "",
                 InsertedBy = UserId,
@@ -3135,6 +3142,12 @@ public class UserService
             .ToArray();
             return newUsers;
         }
+    }
+
+    public async Task<Dictionary<string, object>> GetMessageActive()
+    {
+        var users = await _sql.ReadDataSet($"SELECT COUNT(Id) as Total FROM [ConversationRead] WHERE UserId = '{UserId}' and [Read] = 0", BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
+        return users[0][0];
     }
 
     public class UserActiveVM

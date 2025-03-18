@@ -361,6 +361,12 @@ public class UserController(UserService _userSvc, PdfService _pdfService, ExcelS
         return await _userSvc.GetUserActive();
     }
 
+    [HttpPost("api/GetMessageActive")]
+    public async Task<Dictionary<string, object>> GetMessageActive()
+    {
+        return await _userSvc.GetMessageActive();
+    }
+
     [HttpPost("NotifyDevice")]
     public Task<bool> NotifyDevice([FromBody] MQEvent e)
     {
