@@ -78,6 +78,8 @@ namespace CoreAPI.Services
             using (var workbook = new XLWorkbook(path))
             {
                 var worksheet = workbook.Worksheet(1);
+                var newSheetnamevalue = BindingDataExt.FormatString2(worksheet.Name, createHtmlVM.Data);
+                worksheet.Name = newSheetnamevalue.ToString();
                 var lastDataIndex = 0;
                 foreach (var row in worksheet.RowsUsed())
                 {
@@ -94,33 +96,37 @@ namespace CoreAPI.Services
                     if (currentRow == row.RowNumber())
                     {
                         var mainJson = JsonConvert.DeserializeObject<Dictionary<string, object>[]>(JsonConvert.SerializeObject(createHtmlVM.Data["c" + lastDataIndex]));
+                        var templateRow = worksheet.Row(currentRow);
                         foreach (var item in mainJson)
                         {
-                            var newRow = worksheet.Row(currentRow).InsertRowsBelow(1).First();
-                            foreach (var cell in row.CellsUsed())
+                            worksheet.Row(currentRow + 1 + lastDataIndex).InsertRowsAbove(1);
+                            var clonedRow = worksheet.Row(currentRow + 1 + lastDataIndex);
+                            templateRow.CopyTo(clonedRow);
+                            foreach (var cell in templateRow.CellsUsed())
                             {
                                 var cellValue = cell.GetString();
                                 var newValue = BindingDataExt.FormatString2(cellValue, item);
-                                newRow.Cell(cell.Address.ColumnNumber).SetValue(newValue);
-                                if (cell.HasFormula)
+                                var newCell = clonedRow.Cell(cell.Address.ColumnNumber);
+                                decimal numericValue;
+                                if (newValue.StartsWith("0"))
                                 {
-                                    newRow.Cell(cell.Address.ColumnNumber).FormulaA1 = cell.FormulaA1;
-                                    newRow.Cell(cell.Address.ColumnNumber).FormulaReference = cell.FormulaReference;
-                                    newRow.Cell(cell.Address.ColumnNumber).FormulaR1C1 = cell.FormulaR1C1;
+                                    newCell.Style.NumberFormat.SetNumberFormatId(49);
+                                    newCell.SetValue(newValue);
                                 }
-                                newRow.Cell(cell.Address.ColumnNumber).Style = cell.Style;
-                                newRow.Cell(cell.Address.ColumnNumber).Style.NumberFormat.Format = cell.Style.NumberFormat.Format;
-                                if (cell.IsMerged())
+                                else if (decimal.TryParse(newValue, out numericValue))
                                 {
-                                    var mergedRange = cell.MergedRange();
-                                    var firstAddress = mergedRange.FirstCell().Address;
-                                    var lastAddress = mergedRange.LastCell().Address;
-                                    worksheet.Range(firstAddress, lastAddress).Merge();
+                                    newCell.SetValue(numericValue);
+                                    cell.Style.NumberFormat.NumberFormatId = 0;
+                                    cell.Style.NumberFormat.Format = "#,##";
+                                }
+                                else
+                                {
+                                    newCell.SetValue(newValue);
                                 }
                             }
+                            lastDataIndex++;
                         }
-                        lastDataIndex++;
-                        worksheet.Row(row.RowNumber()).Delete(); // Delete the original row after processing
+                        templateRow.Delete();
                     }
                 }
                 foreach (var row in worksheet.RowsUsed())
@@ -131,7 +137,22 @@ namespace CoreAPI.Services
                     {
                         var cellValue = cell.GetString();
                         var newValue = BindingDataExt.FormatString(cellValue, createHtmlVM.Data);
-                        row.Cell(cell.Address.ColumnNumber).SetValue(newValue);
+                        decimal numericValue;
+                        if (newValue.StartsWith("0"))
+                        {
+                            row.Cell(cell.Address.ColumnNumber).Style.NumberFormat.SetNumberFormatId(49);
+                            row.Cell(cell.Address.ColumnNumber).SetValue(newValue);
+                        }
+                        else if (decimal.TryParse(newValue, out numericValue))
+                        {
+                            row.Cell(cell.Address.ColumnNumber).SetValue(numericValue);
+                            cell.Style.NumberFormat.NumberFormatId = 0;
+                            cell.Style.NumberFormat.Format = "#,##";
+                        }
+                        else
+                        {
+                            row.Cell(cell.Address.ColumnNumber).SetValue(newValue);
+                        }
                         var text = cell.GetString();
                         var columnWidth = cell.WorksheetColumn().Width;
                         var fontSize = cell.Style.Font.FontSize;
