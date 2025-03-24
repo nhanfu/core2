@@ -40,7 +40,7 @@ namespace CoreAPI.Services
                     }
                 }
             }
-            var path = Path.Combine(_host.WebRootPath, "excel", component.PlainText ?? "template" + ".xlsx");
+            var path = Path.Combine(_host.WebRootPath, "excel", component.PlainText ?? "template" + Uuid7.Guid() + ".xlsx");
             EnsureDirectoryExist(path);
             if (FileIO.Exists(path))
             {

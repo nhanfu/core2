@@ -3438,7 +3438,7 @@ public class UserService
 
     public async Task<string> PostFileAsync(IFormFile file, bool reup = false)
     {
-        var fileName = $"{Path.GetFileNameWithoutExtension(file.FileName)}-{Uuid7.Guid()}{Path.GetExtension(file.FileName)}";
+        var fileName = $"{Path.GetFileNameWithoutExtension(file.FileName)}{Uuid7.Guid()}{Path.GetExtension(file.FileName)}";
         var path = GetUploadPath(fileName, _host.WebRootPath);
         EnsureDirectoryExist(path);
         path = reup ? IncreaseFileName(path) : path;
