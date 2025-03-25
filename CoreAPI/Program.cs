@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using System.IdentityModel.Tokens.Jwt;
 using System.IO.Compression;
 using System.Text;
 
@@ -39,8 +40,6 @@ services.AddHangfire(configuration => configuration
        .UseSimpleAssemblyNameTypeSerializer()
        .UseRecommendedSerializerSettings()
        .UseSqlServerStorage(conf.GetConnectionString("logistics")));
-
-// Add the processing server as IHostedService
 services.AddHangfireServer();
 services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);
 services.AddResponseCompression(options =>
@@ -57,36 +56,38 @@ services.AddMvc(options =>
     options.SerializerSettings.ContractResolver = new IgnoreNullOrEmptyEnumResolver();
     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
     options.SerializerSettings.NullValueHandling = NullValueHandling.Include;
-
     options.SerializerSettings.Converters.Add(new DateParser());
     options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
     options.SerializerSettings.DateParseHandling = DateParseHandling.DateTime;
     options.SerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
 });
+
 var tokenOptions = new TokenValidationParameters()
 {
+    ValidateIssuer = true,
+    ValidateAudience = true,
+    ValidateLifetime = true,
+    ValidateIssuerSigningKey = true,
     ValidIssuer = conf["Tokens:Issuer"],
     ValidAudience = conf["Tokens:Issuer"],
     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(conf["Tokens:Key"])),
     ClockSkew = TimeSpan.Zero
 };
 services.AddSingleton(tokenOptions);
-services.AddAuthentication(x =>
+services.AddAuthentication(options =>
 {
-    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
-.AddJwtBearer(cfg =>
+.AddJwtBearer(options =>
 {
-    cfg.RequireHttpsMetadata = false;
-    cfg.SaveToken = true;
-    cfg.TokenValidationParameters = tokenOptions;
-
+    options.Authority = conf["Tokens:Issuer"];
+    options.Audience = conf["Tokens:Issuer"];
+    options.RequireHttpsMetadata = false;
+    options.TokenValidationParameters = tokenOptions;
 });
 services.AddDistributedMemoryCache();
 services.AddHttpContextAccessor();
-// the instance created for each request
 services.AddScoped<SqlServerProvider>();
 services.AddScoped<DuckDbProvider>();
 services.AddScoped<ISqlProvider, SqlServerProvider>();
@@ -119,6 +120,7 @@ app.UseTaskSocket();
 app.UseResponseCompression();
 app.UseDefaultFiles();
 app.UseStaticFiles();
-app.UseMvc();
 app.UseRouting();
+app.UseAuthorization();
+app.UseMvc();
 app.Run();

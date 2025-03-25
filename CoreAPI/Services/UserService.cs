@@ -108,14 +108,12 @@ public class UserService
         Avatar = claims.FirstOrDefault(x => x.Type == "Avatar")?.Value;
         GroupId = claims.FirstOrDefault(x => x.Type == "TeamId")?.Value;
         DepartmentId = claims.FirstOrDefault(x => x.Type == "DepartmentId")?.Value;
-        ConnKey = claims.FirstOrDefault(x => x.Type == UserServiceHelpers.ConnKeyClaim)?.Value;
-        UserName = claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
+        UserName = claims.FirstOrDefault(x => x.Type == "UserName")?.Value;
         CenterIds = claims.Where(x => x.Type == nameof(CenterIds)).Select(x => x.Value).Where(x => x != null).ToList();
         RoleIds = claims.Where(x => x.Type == "RoleIds").Select(x => x.Value).Where(x => x != null).ToList();
         RoleNames = claims.Where(x => x.Type == UserServiceHelpers.RoleNameClaim).Select(x => x.Value).Where(x => x != null).ToList();
-        VendorId = claims.FirstOrDefault(x => x.Type == ClaimTypes.GroupSid)?.Value;
+        VendorId = claims.FirstOrDefault(x => x.Type == "PartnerId")?.Value;
         TenantCode = claims.FirstOrDefault(x => x.Type == UserServiceHelpers.TenantClaim)?.Value.ToUpper();
-        Env = claims.FirstOrDefault(x => x.Type == UserServiceHelpers.EnvClaim)?.Value.ToUpper();
         CLogo = claims.FirstOrDefault(x => x.Type == "CLogo")?.Value;
         CCompanyName = claims.FirstOrDefault(x => x.Type == "CCompanyName")?.Value;
         CAddress = claims.FirstOrDefault(x => x.Type == "CAddress")?.Value;
@@ -715,27 +713,22 @@ public class UserService
         var jit = Uuid7.Guid().ToString();
         List<Claim> claims =
         [
-            new(ClaimTypes.GroupSid, user.PartnerId is null ? string.Empty : user.PartnerId),
+            new("PartnerId", user.PartnerId is null ? string.Empty : user.PartnerId),
             new ("UserId", user.Id),
             new ("Avatar", user.Avatar ?? "/icons/default-avatar.jpg"),
             new ("TeamId", user.TeamId ?? string.Empty),
             new ("DepartmentId", user.DepartmentId ?? string.Empty),
-            new (ClaimTypes.Name, user.UserName),
+            new ("UserName", user.UserName),
             new ("FullName", user.FullName),
             new ("CName", user.Company.CompanyName ?? string.Empty),
             new ("CLogo", user.Company.Logo ?? string.Empty),
             new ("CAddress", user.Company.Address ?? string.Empty),
             new ("CPhoneNumber", user.Company.PhoneNumber ?? string.Empty),
             new ("CEmail",user.Company.Email ?? string.Empty),
-            new (JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
-            new (JwtRegisteredClaimNames.Birthdate, user.Dob?.ToString() ?? string.Empty),
+            new (UserServiceHelpers.TenantClaim,login.TanentCode),
+            new ("Email", user.Email ?? string.Empty),
+            new ("Dob", user.Dob?.ToString() ?? string.Empty),
         ];
-        List<Claim> claim2 = [
-            new (JwtRegisteredClaimNames.Iat, signinDate.ToString()),
-            new (JwtRegisteredClaimNames.Jti, jit),
-            new (UserServiceHelpers.TenantClaim, login.TanentCode),
-        ];
-        claims.AddRange(claim2);
         claims.AddRange(roleIds.Select(x => new Claim("RoleIds", x.ToString())));
         claims.AddRange(roleNames.Select(x => new Claim(UserServiceHelpers.RoleNameClaim, x.ToString())));
         var newLogin = refreshToken is null;
@@ -818,7 +811,7 @@ public class UserService
     {
         var principal = Utils.GetPrincipalFromAccessToken(token.AccessToken, _cfg);
         var userId = principal.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
-        var userName = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
+        var userName = principal.Claims.FirstOrDefault(x => x.Type == "UserName")?.Value;
         var tenant = principal.Claims.FirstOrDefault(x => x.Type == UserServiceHelpers.TenantClaim)?.Value;
         EnsureTokenParam(userId, userName, tenant);
         var query =

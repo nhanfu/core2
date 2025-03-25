@@ -46,7 +46,7 @@ namespace CoreAPI.BgService
             string tenantCode = null;
             if (httpContext?.HttpContext is not null)
             {
-                var claim = httpContext.HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.PrimaryGroupSid);
+                var claim = httpContext.HttpContext.User.Claims.FirstOrDefault(x => x.Type == UserServiceHelpers.TenantClaim);
                 if (claim is not null)
                 {
                     tenantCode = claim.Value.ToUpper();
