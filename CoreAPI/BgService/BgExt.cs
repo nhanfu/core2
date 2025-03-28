@@ -34,7 +34,7 @@ namespace CoreAPI.BgService
             connectionStr = _configuration.GetConnectionString(system);
             if (!tenantCode.IsNullOrWhiteSpace())
             {
-                connectionStr = connectionStr.Replace($"logistics_dev", $"logistics_{tenantCode}");
+                connectionStr = connectionStr.Replace($"logistics_forwardx", $"logistics_{tenantCode}");
             }
             return connectionStr;
         }
