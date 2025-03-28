@@ -4,10 +4,9 @@ using Core.Extensions;
 using Core.Models;
 using Core.Services;
 using Core.ViewModels;
+using Microsoft.Data.SqlClient;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using System.Data;
-using System.Data.SqlClient;
-using System.Security.Claims;
 
 namespace CoreAPI.BgService
 {

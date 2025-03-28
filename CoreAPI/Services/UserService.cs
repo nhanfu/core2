@@ -12,13 +12,13 @@ using CoreAPI.ViewModels;
 using Hangfire;
 using HtmlAgilityPack;
 using LinqKit;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using System.Buffers;
 using System.Data;
-using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq.Expressions;
@@ -1005,6 +1005,7 @@ public class UserService
         var receiverIds = vm.Changes.FirstOrDefault(x => x.Field == "ReceiverIds");
         var featureName = vm.Changes.FirstOrDefault(x => x.Field == "FeatureName");
         var featureName2 = vm.Changes.FirstOrDefault(x => x.Field == "FeatureName2");
+        var shipmentFeature = vm.Changes.FirstOrDefault(x => x.Field == "ShipmentFeature");
         var featureName3 = vm.Changes.FirstOrDefault(x => x.Field == "FeatureName3");
         var titLe = vm.Changes.FirstOrDefault(x => x.Field == "FormatChat");
         var noApproved = vm.Changes.FirstOrDefault(x => x.Field == "NoApproved");
@@ -1087,28 +1088,56 @@ public class UserService
             var rs = await SavePatch2(vm);
             if (userReceiverId != null && !userReceiverId.Value.IsNullOrWhiteSpace())
             {
-                var taskUser = new TaskNotification()
+                if (vm.Table == "ShipmentSI")
                 {
-                    Id = Uuid7.Guid().ToString(),
-                    VoucherTypeId = int.Parse(voucherTypeId.Value),
-                    EntityId = name,
-                    Avatar = Avatar,
-                    FeatureName = featureName is null ? null : featureName.Value,
-                    FeatureName2 = featureName2 is null ? null : featureName2.Value,
-                    FeatureName3 = featureName3 is null ? null : featureName3.Value,
-                    Title = titLe.Value ?? "",
-                    Title2 = FullName + " has sent you an approval request.",
-                    Icon = "fal fa-smile",
-                    Description = titLe.Value ?? "",
-                    InsertedBy = UserId,
-                    RecordId = id,
-                    InsertedDate = DateTime.Now,
-                    Active = true,
-                    AssignedId = userReceiverId.Value
-                };
-                var patch = taskUser.MapToPatch();
-                await SavePatch(patch);
-                NotifyDevices(new List<TaskNotification>() { taskUser }, "MessageNotification");
+                    var taskUser = new TaskNotification()
+                    {
+                        Id = Uuid7.Guid().ToString(),
+                        VoucherTypeId = int.Parse(voucherTypeId.Value),
+                        EntityId = name,
+                        Avatar = Avatar,
+                        FeatureName = featureName is null ? null : featureName.Value,
+                        FeatureName2 = shipmentFeature is null ? null : shipmentFeature.Value,
+                        FeatureName3 = shipmentFeature is null ? null : shipmentFeature.Value.Replace("-editor", ""),
+                        Title = titLe.Value ?? "",
+                        Title2 = FullName + " has sent you an approval SI.",
+                        Icon = "fal fa-smile",
+                        Description = titLe.Value ?? "",
+                        InsertedBy = UserId,
+                        RecordId = id,
+                        InsertedDate = DateTime.Now,
+                        Active = true,
+                        AssignedId = userReceiverId.Value
+                    };
+                    var patch = taskUser.MapToPatch();
+                    await SavePatch(patch);
+                    NotifyDevices(new List<TaskNotification>() { taskUser }, "MessageNotification");
+                }
+                else
+                {
+                    var taskUser = new TaskNotification()
+                    {
+                        Id = Uuid7.Guid().ToString(),
+                        VoucherTypeId = int.Parse(voucherTypeId.Value),
+                        EntityId = name,
+                        Avatar = Avatar,
+                        FeatureName = featureName is null ? null : featureName.Value,
+                        FeatureName2 = featureName2 is null ? null : featureName2.Value,
+                        FeatureName3 = featureName3 is null ? null : featureName3.Value,
+                        Title = titLe.Value ?? "",
+                        Title2 = FullName + " has sent you an approval request.",
+                        Icon = "fal fa-smile",
+                        Description = titLe.Value ?? "",
+                        InsertedBy = UserId,
+                        RecordId = id,
+                        InsertedDate = DateTime.Now,
+                        Active = true,
+                        AssignedId = userReceiverId.Value
+                    };
+                    var patch = taskUser.MapToPatch();
+                    await SavePatch(patch);
+                    NotifyDevices(new List<TaskNotification>() { taskUser }, "MessageNotification");
+                }
             }
             if (groupReceiverId != null && !groupReceiverId.Value.IsNullOrWhiteSpace())
             {
@@ -2532,9 +2561,13 @@ public class UserService
             var queryUser = @$"SELECT * FROM [User] where Id in ({userString.CombineStrings()})";
             var users = await _sql.ReadDsAsArr<User>(queryUser);
             var templateMessage = " has sent you an approval request.";
+            var f2 = featureName2 is null ? null : featureName2.Value;
+            var f3 = featureName3 is null ? null : featureName3.Value;
             if (vm.Table == "Conversation")
             {
                 templateMessage = " has invited you to join the conversation.";
+                f2 = "chat-editor";
+                f3 = "chat-editor";
             }
             var task = users.Select(x => new TaskNotification()
             {
@@ -2543,8 +2576,8 @@ public class UserService
                 EntityId = vm.Table,
                 Avatar = Avatar,
                 FeatureName = featureName is null ? null : featureName.Value,
-                FeatureName2 = featureName2 is null ? null : featureName2.Value,
-                FeatureName3 = featureName3 is null ? null : featureName3.Value,
+                FeatureName2 = f2,
+                FeatureName3 = f3,
                 Title = titLe.Value ?? "",
                 Title2 = FullName + templateMessage,
                 Icon = "fal fa-smile",

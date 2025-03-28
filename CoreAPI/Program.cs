@@ -5,6 +5,7 @@ using CoreAPI.BgService;
 using CoreAPI.Services;
 using CoreAPI.Services.Sql;
 using Hangfire;
+using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Tokens;
@@ -39,7 +40,11 @@ services.AddHangfire(configuration => configuration
        .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
        .UseSimpleAssemblyNameTypeSerializer()
        .UseRecommendedSerializerSettings()
-       .UseSqlServerStorage(conf.GetConnectionString("logistics")));
+       .UseSqlServerStorage(conf.GetConnectionString("logistics"), new SqlServerStorageOptions
+       {
+           QueuePollInterval = TimeSpan.FromSeconds(15), // Kiểm tra job mới mỗi 15s
+           JobExpirationCheckInterval = TimeSpan.FromHours(1)
+       }));
 services.AddHangfireServer();
 services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);
 services.AddResponseCompression(options =>

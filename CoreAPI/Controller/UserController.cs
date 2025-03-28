@@ -10,8 +10,6 @@ using CoreAPI.Services;
 using CoreAPI.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-using System;
 
 namespace Core.Controllers;
 
