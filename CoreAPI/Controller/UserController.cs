@@ -329,10 +329,10 @@ public class UserController(UserService _userSvc, PdfService _pdfService, ExcelS
     }
 
     [AllowAnonymous]
-    [HttpGet("/api/feature/PublishAllFeature")]
-    public Task<bool> PublishAllFeature()
+    [HttpGet("/api/feature/PublishAllFeature/{t}")]
+    public Task<bool> PublishAllFeature([FromRoute] string t)
     {
-        return _userSvc.PublishAllFeature();
+        return _userSvc.PublishAllFeature(t);
     }
 
     [HttpPost("/api/feature/getFeature")]

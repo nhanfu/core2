@@ -67,6 +67,14 @@ namespace CoreAPI.Services
             }
             HtmlDocument document = new HtmlDocument();
             document.LoadHtml(component.Template);
+            var headerHtml = $"<header class='header'>{myCompany.Header}</div>";
+            var footerHtml = $"<footer class='footer'>{myCompany.Footer}</div>";
+            var headerNode = HtmlNode.CreateNode(headerHtml);
+            var footerNode = HtmlNode.CreateNode(footerHtml);
+            if (component.ShowHotKey)
+            {
+                document.DocumentNode.PrependChild(headerNode);
+            }
             foreach (var item in document.DocumentNode.ChildNodes)
             {
                 BindingDataExt.ReplaceNode(createHtmlVM, item, dirCom);
@@ -78,6 +86,10 @@ namespace CoreAPI.Services
             foreach (var item in document.DocumentNode.ChildNodes)
             {
                 BindingDataExt.ReplaceCTableNode(createHtmlVM, item, dirCom);
+            }
+            if (component.ShowHotKey)
+            {
+                document.DocumentNode.AppendChild(footerNode);
             }
             return document.DocumentNode.InnerHtml;
         }

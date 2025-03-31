@@ -80,5 +80,7 @@
         public string History { get; set; }
         public DateTime? Birthday { get; set; }
         public string Logo { get; set; }
+        public string Header { get; set; }
+        public string Footer { get; set; }
     }
 }

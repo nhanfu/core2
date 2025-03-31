@@ -19,9 +19,9 @@ namespace CoreAPI.BgService
             return ds[0].Select(x => x.MapTo<T>()).ToArray();
         }
 
-        public static string GetConnectionString(IServiceProvider serviceProvider, IConfiguration _configuration, string system)
+        public static string GetConnectionString(IServiceProvider serviceProvider, IConfiguration _configuration, string system, string tenantCode2 = null)
         {
-            string tenantCode = GetTanentCode(serviceProvider);
+            string tenantCode = tenantCode2 ?? GetTanentCode(serviceProvider);
             var connectionStr = string.Empty;
             if (!tenantCode.IsNullOrWhiteSpace())
             {

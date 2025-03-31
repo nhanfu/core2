@@ -555,7 +555,7 @@ public class UserService
 
     public async Task<Feature> GetFeature(string name)
     {
-        var feature = await GetFeatureFromJson(name);
+        var feature = await GetFeatureFromJson(name, TenantCode);
         if (feature != null)
         {
             var query1 = @$"
@@ -608,10 +608,10 @@ public class UserService
         return feature;
     }
 
-    public async Task<bool> PublishAllFeature()
+    public async Task<bool> PublishAllFeature(string t)
     {
         var query = @$"select * from [Feature]";
-        var features = await _sql.ReadDsAsArr<Feature>(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
+        var features = await _sql.ReadDsAsArr<Feature>(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics", t));
         foreach (var feature in features)
         {
             var query2 = @$"select [Component] .*,isnull(def.Value,DefaultVal) as DefaultVal,def.Id as ComponentDefaultValueId
@@ -637,7 +637,7 @@ public class UserService
             feature.GridPolicies = feature.Components.Where(component => component.ComponentGroupId == null && component.EntityId != null).ToList();
             var coms = feature.Components.Where(x => x.ComponentType == "Button").ToList();
             feature.Components = coms.Nothing() ? new List<Component>() : coms;
-            await SaveFeatureToJson(feature);
+            await SaveFeatureToJson(feature, t);
         }
         return true;
     }
@@ -671,14 +671,14 @@ public class UserService
             feature.GridPolicies = feature.Components.Where(component => component.ComponentGroupId == null && component.EntityId != null).ToList();
             var coms = feature.Components.Where(x => x.ComponentType == "Button").ToList();
             feature.Components = coms.Nothing() ? new List<Component>() : coms;
-            await SaveFeatureToJson(feature);
+            await SaveFeatureToJson(feature, TenantCode);
         }
         return true;
     }
 
-    private async Task SaveFeatureToJson(Feature feature)
+    private async Task SaveFeatureToJson(Feature feature, string t)
     {
-        string directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "features");
+        string directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "features", t);
         if (!Directory.Exists(directoryPath))
         {
             Directory.CreateDirectory(directoryPath);
@@ -688,9 +688,9 @@ public class UserService
         await File.WriteAllTextAsync(filePath, json);
     }
 
-    private async Task<Feature> GetFeatureFromJson(string featureName)
+    private async Task<Feature> GetFeatureFromJson(string featureName, string t)
     {
-        string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "features", featureName + ".json");
+        string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "features", t, featureName + ".json");
 
         if (!File.Exists(filePath))
         {

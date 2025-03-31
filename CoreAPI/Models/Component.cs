@@ -262,6 +262,8 @@
 
         public int? Index { get; set; }
 
+        public string CodeId { get; set; }
+
         public string ExcelUrl { get; set; }
         public List<Component> Children { get; set; }
         public List<Component> Components { get; set; }
