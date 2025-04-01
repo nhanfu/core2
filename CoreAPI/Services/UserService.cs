@@ -722,6 +722,7 @@ public class UserService
             new ("FullName", user.FullName),
             new ("CName", user.Company.CompanyName ?? string.Empty),
             new ("CLogo", user.Company.Logo ?? string.Empty),
+            new ("CIcon", user.Company.Icon ?? string.Empty),
             new ("CAddress", user.Company.Address ?? string.Empty),
             new ("CPhoneNumber", user.Company.PhoneNumber ?? string.Empty),
             new ("CEmail",user.Company.Email ?? string.Empty),
