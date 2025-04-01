@@ -157,6 +157,57 @@ public class SqlServerProvider(IDistributedCache cache, IConfiguration cfg, ISer
         }
     }
 
+    public async Task<int> RunSqlCmd(string connStr, string cmdText,Dictionary<string,object> ps)
+    {
+        if (cmdText.IsNullOrWhiteSpace()) return 0;
+        if (connStr.IsNullOrWhiteSpace())
+        {
+            connStr = BgExt.GetConnectionString(iServiceProvider, cfg, "logistics");
+        }
+        using (SqlConnection connection = new SqlConnection(connStr))
+        {
+            await connection.OpenAsync();
+            using (SqlTransaction transaction = connection.BeginTransaction())
+            {
+                using (SqlCommand cmd = new SqlCommand
+                {
+                    Transaction = transaction,
+                    Connection = connection,
+                    CommandText = cmdText
+                })
+                {
+                    var anyComment = HasSqlComment(cmd.CommandText);
+                    if (ps != null)
+                    {
+                        foreach (var param in ps)
+                        {
+                            cmd.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
+                        }
+                    }
+                    if (anyComment) throw new ApiException("Comment is NOT allowed");
+                    try
+                    {
+                        var affected = await cmd.ExecuteNonQueryAsync();
+                        transaction.Commit();
+                        return affected;
+                    }
+                    catch (Exception e)
+                    {
+                        transaction.Rollback();
+                        var message = "Error occurs";
+#if DEBUG
+                        message = $"Error occurs at {connStr} {cmdText}";
+#endif
+                        throw new ApiException(message, e)
+                        {
+                            StatusCode = HttpStatusCode.InternalServerError
+                        };
+                    }
+                }
+            }
+        }
+    }
+
 
     public string GetCreateOrUpdateCmd(PatchVM vm)
     {

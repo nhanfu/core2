@@ -642,10 +642,10 @@ public class UserService
         return true;
     }
 
-    public async Task<bool> PublishFeatureByName(string Name)
+    public async Task<bool> PublishFeatureByName(string Name, string t = null)
     {
         var query = @$"select * from [Feature] where Name = '{Name}'";
-        var features = await _sql.ReadDsAsArr<Feature>(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
+        var features = await _sql.ReadDsAsArr<Feature>(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics", t));
         foreach (var feature in features)
         {
             var query2 = @$"select [Component] .*,isnull(def.Value,DefaultVal) as DefaultVal,def.Id as ComponentDefaultValueId
@@ -678,7 +678,7 @@ public class UserService
 
     private async Task SaveFeatureToJson(Feature feature, string t)
     {
-        string directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "features", t);
+        string directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "upload", t, "features");
         if (!Directory.Exists(directoryPath))
         {
             Directory.CreateDirectory(directoryPath);
@@ -690,7 +690,7 @@ public class UserService
 
     private async Task<Feature> GetFeatureFromJson(string featureName, string t)
     {
-        string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "features", t, featureName + ".json");
+        string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "upload", t, "features", featureName + ".json");
 
         if (!File.Exists(filePath))
         {
@@ -3560,7 +3560,7 @@ public class UserService
 
     public string GetUploadPath(string fileName, string webRootPath)
     {
-        return Path.Combine(webRootPath, "upload", TenantCode, $"U{UserId}", fileName);
+        return Path.Combine(webRootPath, "upload", TenantCode, "file", $"U{UserId}", fileName);
     }
 
     public static string IncreaseFileName(string path)
@@ -3619,6 +3619,87 @@ public class UserService
             lineCount++;
         }
         return patches;
+    }
+
+    public async Task<bool> AsyncTo(string t, string featureName)
+    {
+        var query = @$"select * from [Feature] where Name = '{featureName}'";
+        var currentCon = BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics", TenantCode);
+        var targetCon = BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics", t);
+        var features = await _sql.ReadDsAsArr<Feature>(query, currentCon);
+        var feature = features.FirstOrDefault();
+        var query2 = @$"select * from [Component] where FeatureId = '{feature.Id}'";
+        var childs = await _sql.ReadDataSet(query2, currentCon);
+        var components = childs.Length > 0 && childs[0].Length > 0 ? childs[0].Select(x => x.MapTo<Component>()).ToList() : new List<Component>();
+        // Get the table columns once
+        var featureColumns = await GetTableColumns("Feature");
+        var componentColumns = await GetTableColumns("Component");
+
+        using (SqlConnection connection = new SqlConnection(targetCon))
+        {
+            await connection.OpenAsync();
+            SqlTransaction transaction = connection.BeginTransaction();
+            try
+            {
+                using (SqlCommand command = new SqlCommand())
+                {
+                    command.Transaction = transaction;
+                    command.Connection = connection;
+                    var properties = featureColumns[0].SelectMany(x => x.Values).Select(x => $"[{x}]".ToString()).ToList();
+                    var columns = properties.Combine();
+                    var values = featureColumns[0].SelectMany(x => x.Values).Select(x => x.ToString()).Select(p => $"@{p}").Combine();
+                    var updateSet = featureColumns[0].SelectMany(x => x.Values).Select(x => x.ToString()).Select(p => $"[{p}] = @{p}").Combine();
+                    var mergeQuery = $@"
+                        DELETE FROM [Feature] WHERE Id = @Id;
+                        DELETE FROM [Component] WHERE FeatureId = @Id;
+                        INSERT INTO [Feature] ({columns}) VALUES ({values});";
+                    command.CommandText = mergeQuery;
+                    foreach (var item in featureColumns[0].SelectMany(x => x.Values).Select(x => x.ToString()))
+                    {
+                        command.Parameters.AddWithValue($"@{item.ToString()}", feature.GetPropValue(item.ToString()) ?? DBNull.Value);
+                    }
+                    await command.ExecuteNonQueryAsync();
+                    command.Parameters.Clear();
+                    command.CommandText = string.Empty;
+                    foreach (var component in components)
+                    {
+                        properties = componentColumns[0].SelectMany(x => x.Values).Select(x => $"[{x}]".ToString()).ToList();
+                        columns = properties.Combine();
+                        values = componentColumns[0].SelectMany(x => x.Values).Select(x => x.ToString()).Select(p => $"@{(component.Id.Replace("-", "") + p)}").Combine();
+                        updateSet = componentColumns[0].SelectMany(x => x.Values).Select(x => x.ToString()).Select(p => $"[{p}] = @{(component.Id.Replace("-", "") + p)}").Combine();
+                        mergeQuery = $@"INSERT INTO [Component] ({columns}) VALUES ({values});";
+                        command.CommandText += mergeQuery;
+                        foreach (var item in componentColumns[0].SelectMany(x => x.Values).Select(x => x.ToString()))
+                        {
+                            command.Parameters.AddWithValue($"@{(component.Id.Replace("-", "") + item.ToString())}", component.GetPropValue(item.ToString()) ?? DBNull.Value);
+                        }
+                        if (command.Parameters.Count > 1700)
+                        {
+                            await command.ExecuteNonQueryAsync();
+                            command.Parameters.Clear();
+                            command.CommandText = string.Empty;
+                        }
+                    }
+                    await command.ExecuteNonQueryAsync();
+                    await transaction.CommitAsync();
+                    await connection.CloseAsync();
+                    await PublishFeatureByName(featureName, t);
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    await transaction.RollbackAsync();
+                }
+                catch
+                {
+                }
+
+                throw new Exception("Transaction failed", ex);
+            }
+        }
     }
 
     private static List<PatchDetail> ParseCsvLine(string currentLine, int lineCount, string[] headers = null)

@@ -66,14 +66,19 @@ namespace CoreAPI.Services
                 }
             }
             HtmlDocument document = new HtmlDocument();
-            document.LoadHtml(component.Template);
             var headerHtml = $"<header class='header'>{myCompany.Header}</div>";
             var footerHtml = $"<footer class='footer'>{myCompany.Footer}</div>";
+            var contentWrapper = HtmlNode.CreateNode($"<div class='content'>{component.Template}</div>");
+            document.DocumentNode.InnerHtml = contentWrapper.OuterHtml;
             var headerNode = HtmlNode.CreateNode(headerHtml);
             var footerNode = HtmlNode.CreateNode(footerHtml);
             if (component.ShowHotKey)
             {
                 document.DocumentNode.PrependChild(headerNode);
+            }
+            if (component.ShowHotKey)
+            {
+                document.DocumentNode.AppendChild(footerNode);
             }
             foreach (var item in document.DocumentNode.ChildNodes)
             {
@@ -87,41 +92,60 @@ namespace CoreAPI.Services
             {
                 BindingDataExt.ReplaceCTableNode(createHtmlVM, item, dirCom);
             }
-            if (component.ShowHotKey)
-            {
-                document.DocumentNode.AppendChild(footerNode);
-            }
             return document.DocumentNode.InnerHtml;
         }
 
-        public async Task<string> HtmlToPdf(string html, string type)
+        public async Task<string> HtmlToPdf(PdfVM vm)
         {
-            var name = DateTime.Now.ToString("ddMMyyyyHHmm") + Guid.NewGuid() + ".pdf";
+            var name = vm.FileName + Guid.NewGuid() + ".pdf";
             var path = GetPdfPath(name, _host.WebRootPath, _userService.TenantCode, _userService.UserId);
             EnsureDirectoryExist(path);
-            var browserFetcher = new BrowserFetcher();
-            await browserFetcher.DownloadAsync();
-            // Using statement with grouped declarations
-            await using (var browser = await Puppeteer.LaunchAsync(new LaunchOptions { Headless = true }))
+            string chromiumPath = @"C:\chrome-win\chrome.exe";
+            await using (var browser = await Puppeteer.LaunchAsync(new LaunchOptions
+            {
+                Headless = true,
+                ExecutablePath = chromiumPath,
+                Args = new[]
+                {
+                    "--no-sandbox",
+                    "--disable-gpu",
+                    "--disable-background-networking",
+                    "--disable-background-timer-throttling",
+                    "--disable-backgrounding-occluded-windows",
+                    "--disable-breakpad",
+                    "--disable-client-side-phishing-detection",
+                    "--disable-default-apps",
+                    "--disable-dev-shm-usage",
+                    "--disable-extensions",
+                    "--disable-hang-monitor",
+                    "--disable-popup-blocking",
+                    "--disable-prompt-on-repost",
+                    "--disable-sync",
+                    "--disable-translate",
+                    "--metrics-recording-only",
+                    "--no-first-run",
+                    "--safebrowsing-disable-auto-update"
+                }
+            }))
             {
                 await using (var page = await browser.NewPageAsync())
                 {
                     try
                     {
-                        await page.SetContentAsync(html);
+                        await page.SetViewportAsync(new ViewPortOptions
+                        {
+                            Width = 794,
+                            Height = 1400
+                        });
+                        await page.SetContentAsync(vm.Html);
                         await page.EvaluateExpressionHandleAsync("document.fonts.ready");
                         await page.EmulateMediaTypeAsync(MediaType.Screen);
                         var pdfOptions = new PdfOptions
                         {
                             PrintBackground = true,
-                            Format = type == "A5" ? PaperFormat.A5 : PaperFormat.A4,
-                            MarginOptions = new MarginOptions
-                            {
-                                Bottom = "10px",
-                                Left = "20px",
-                                Right = "20px",
-                                Top = "10px",
-                            }
+                            Format = vm.Type != "A5" ? PaperFormat.A5 : PaperFormat.A4,
+                            Scale = 1,
+                            PreferCSSPageSize = true
                         };
                         await page.PdfAsync(path, pdfOptions);
                         var requestUrl = $"{_context.HttpContext.Request.Scheme}://{_context.HttpContext.Request.Host}";
@@ -137,7 +161,7 @@ namespace CoreAPI.Services
 
         private string GetPdfPath(string fileName, string webRootPath, string tanentcode, string userid)
         {
-            return Path.Combine(webRootPath, "pdf", tanentcode, DateTime.Now.ToString("MMyyyy"), $"U{userid:00000000}", fileName);
+            return Path.Combine(webRootPath, "upload", tanentcode, "pdf", $"U{userid}", fileName);
         }
 
         private void EnsureDirectoryExist(string path)

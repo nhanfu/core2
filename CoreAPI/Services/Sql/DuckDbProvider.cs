@@ -202,6 +202,11 @@ namespace CoreAPI.Services.Sql
             return @$"update [{vm.Table}] set {update}, 
                 UpdatedBy = '{UserId ?? 1.ToString()}', UpdatedDate = '{now}' where Id = '{oldId}';";
         }
+
+        public Task<int> RunSqlCmd(string connStr, string cmdText, Dictionary<string, object> ps)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     internal class TableSchema

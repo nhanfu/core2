@@ -18,5 +18,6 @@ namespace CoreAPI.Services.Sql
         Task<T> ReadDsAs<T>(string query, string connInfo = null) where T : class;
         Task<T[]> ReadDsAsArr<T>(string query, string connInfo = null) where T : class;
         public Task<int> RunSqlCmd(string connStr, string cmdText);
+        public Task<int> RunSqlCmd(string connStr, string cmdText, Dictionary<string, object> ps);
     }
 }

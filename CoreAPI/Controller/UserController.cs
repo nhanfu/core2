@@ -98,7 +98,7 @@ public class UserController(UserService _userSvc, PdfService _pdfService, ExcelS
     [HttpPost("/api/GenPdf")]
     public async Task<string> HtmlToPdf([FromBody] PdfVM vm)
     {
-        return await _pdfService.HtmlToPdf(vm.Html, vm.Type);
+        return await _pdfService.HtmlToPdf(vm);
     }
 
     [HttpGet("api/User/ReSendUser/")]
@@ -265,6 +265,12 @@ public class UserController(UserService _userSvc, PdfService _pdfService, ExcelS
     public Task<SqlResult> Run([FromBody] PatchVM entity)
     {
         return _userSvc.SavePatch2(entity);
+    }
+
+    [HttpPost("/api/feature/AsyncTo/{t}/{featureName}")]
+    public async Task<bool> AsyncTo([FromRoute] string t, [FromRoute] string featureName)
+    {
+        return await _userSvc.AsyncTo(t, featureName);
     }
 
     [HttpPatch("/api/feature/runs")]

@@ -1,6 +1,7 @@
 ﻿using ClosedXML.Excel;
 using Core.Extensions;
 using Core.Models;
+using Core.Services;
 using Core.ViewModels;
 using CoreAPI.BgService;
 using Newtonsoft.Json;
@@ -14,10 +15,12 @@ namespace CoreAPI.Services
     {
         private readonly IWebHostEnvironment _host;
         private readonly IHttpContextAccessor _context;
-        public ExcelService(IWebHostEnvironment webHostEnvironment, IHttpContextAccessor httpContextAccessor)
+        private readonly UserService uservice;
+        public ExcelService(IWebHostEnvironment webHostEnvironment, IHttpContextAccessor httpContextAccessor, UserService _service)
         {
             _host = webHostEnvironment;
             _context = httpContextAccessor;
+            uservice = _service;
         }
 
         public async Task<string> CreateExcelFile(CreateHtmlVM createHtmlVM, string connStr)
@@ -40,7 +43,7 @@ namespace CoreAPI.Services
                     }
                 }
             }
-            var path = Path.Combine(_host.WebRootPath, "excel", component.PlainText ?? "template" + Uuid7.Guid() + ".xlsx");
+            var path = Path.Combine(_host.WebRootPath, "upload", uservice.TenantCode, "excel", $"U{uservice.UserId}", component.PlainText ?? "template" + Uuid7.Guid() + ".xlsx");
             EnsureDirectoryExist(path);
             if (FileIO.Exists(path))
             {
