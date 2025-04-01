@@ -1003,6 +1003,7 @@ public class UserService
         var userReceiverId = vm.Changes.FirstOrDefault(x => x.Field == "UserReceiverId");
         var groupReceiverId = vm.Changes.FirstOrDefault(x => x.Field == "GroupReceiverId");
         var receiverIds = vm.Changes.FirstOrDefault(x => x.Field == "ReceiverIds");
+        var insertedBy = vm.Changes.FirstOrDefault(x => x.Field == "InsertedBy");
         var featureName = vm.Changes.FirstOrDefault(x => x.Field == "FeatureName");
         var featureName2 = vm.Changes.FirstOrDefault(x => x.Field == "FeatureName2");
         var shipmentFeature = vm.Changes.FirstOrDefault(x => x.Field == "ShipmentFeature");
@@ -1103,7 +1104,7 @@ public class UserService
                         Title2 = FullName + " has sent you an approval SI.",
                         Icon = "fal fa-smile",
                         Description = titLe.Value ?? "",
-                        InsertedBy = UserId,
+                        InsertedBy = insertedBy.Value,
                         RecordId = id,
                         InsertedDate = DateTime.Now,
                         Active = true,
@@ -2032,7 +2033,12 @@ public class UserService
         var filteredChanges = vm.Changes.Where(change => tableColumns.SelectMany(x => x.Values).Contains(change.Field)).ToList();
         var selectIds = new List<DetailData>();
         var isSend = filteredChanges.Find(x => x.Field == "IsSend");
+        var oldIsSend = isSend != null ? isSend.Value : "1";
         var receiverIds = filteredChanges.Find(x => x.Field == "ReceiverIds");
+        if (isSend != null)
+        {
+            isSend.Value = "1";
+        }
         if (id.StartsWith("-"))
         {
             var (dup, mess, currentEntity) = await CheckDuplicate(vm);
@@ -2164,7 +2170,7 @@ public class UserService
                         {
                             SendMessageAllUser(entity[0][0]);
                         }
-                        await Notification(vm, id, filteredChanges, isSend, receiverIds);
+                        await Notification(vm, id, filteredChanges, oldIsSend, receiverIds);
                         return new SqlResult()
                         {
                             updatedItem = entity[0],
@@ -2343,7 +2349,7 @@ public class UserService
                         {
                             SendMessageAllUser(entity[0][0]);
                         }
-                        await Notification(vm, id, filteredChanges, isSend, receiverIds);
+                        await Notification(vm, id, filteredChanges, oldIsSend, receiverIds);
                         return new SqlResult()
                         {
                             updatedItem = entity[0],
@@ -2548,14 +2554,15 @@ public class UserService
         }
     }
 
-    private async Task Notification(PatchVM vm, string id, List<PatchDetail> filteredChanges, PatchDetail isSend, PatchDetail receiverIds)
+    private async Task Notification(PatchVM vm, string id, List<PatchDetail> filteredChanges, string isSend, PatchDetail receiverIds)
     {
         var featureName = vm.Changes.FirstOrDefault(x => x.Field == "FeatureName");
         var voucherTypeId = vm.Changes.FirstOrDefault(x => x.Field == "VoucherTypeId");
         var titLe = vm.Changes.FirstOrDefault(x => x.Field == "FormatChat");
+        var recordId = vm.Changes.FirstOrDefault(x => x.Field == "RecordId");
         var featureName2 = vm.Changes.FirstOrDefault(x => x.Field == "FeatureName2");
         var featureName3 = vm.Changes.FirstOrDefault(x => x.Field == "FeatureName3");
-        if (isSend != null && isSend.Value == "0" && receiverIds != null && receiverIds.Value != null)
+        if (isSend == "0" && receiverIds != null && receiverIds.Value != null)
         {
             var userString = receiverIds.Value.Split(",");
             var queryUser = @$"SELECT * FROM [User] where Id in ({userString.CombineStrings()})";
@@ -2583,7 +2590,7 @@ public class UserService
                 Icon = "fal fa-smile",
                 Description = titLe.Value ?? "",
                 InsertedBy = UserId,
-                RecordId = id,
+                RecordId = recordId is null ? id : recordId.Value,
                 InsertedDate = DateTime.Now,
                 Active = true,
                 AssignedId = x.Id
@@ -2594,7 +2601,6 @@ public class UserService
                 await SavePatch(patch);
             }
             NotifyDevices(task, "MessageNotification");
-            isSend.Value = "1";
         }
     }
 
