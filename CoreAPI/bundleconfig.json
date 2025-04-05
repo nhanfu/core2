@@ -1,6 +1,6 @@
 [
   {
-    "outputFileName": "wwwRoot/css/all.min.css",
+    "outputFileName": "wwwroot/css/all.min.css",
     "inputFiles": [
       "wwwroot/css/font-awesome.css",
       "wwwroot/css/metro-all.css",
@@ -9,7 +9,7 @@
     ]
   },
   {
-    "outputFileName": "wwwRoot/js/all.js",
+    "outputFileName": "wwwroot/js/all.js",
     "inputFiles": [
       "wwwroot/js/tms.bridge.js",
       "wwwroot/js/newtonsoft.json.js",

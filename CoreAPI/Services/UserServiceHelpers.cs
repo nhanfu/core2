@@ -5,7 +5,7 @@ internal static class UserServiceHelpers
 {
 
     public const string IdField = "Id";
-    public const string NotFoundFile = "wwwRoot/404.html";
+    public const string NotFoundFile = "wwwroot/404.html";
     public const string Href = "href";
     public const string Src = "src";
     public const int MAX_LOGIN = 5;

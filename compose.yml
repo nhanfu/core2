@@ -1,0 +1,15 @@
+services:
+  coreapi:
+    image: mcr.microsoft.com/dotnet/sdk:8.0
+    volumes:
+      - .:/app
+    working_dir: /app
+    ports:
+      - "8080:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+    command: >
+      bash -c "cd CoreAPI &&
+               dotnet restore &&
+               dotnet watch run --urls=http://+:80"

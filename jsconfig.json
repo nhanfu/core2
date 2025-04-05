@@ -8,12 +8,12 @@
         "allowSyntheticDefaultImports": true,  // Allow default imports from modules with no default export
         "baseUrl": ".",  // Set base directory to resolve non-relative module names
         "paths": {  // Specify paths for module names
-            "*": ["node_modules/*", "CoreAPI/wwwRoot/js/core/*"]
+            "*": ["node_modules/*", "CoreAPI/wwwroot/js/core/*"]
         },
         "experimentalDecorators": true,  // Enables experimental support for decorators
     },
     "include": [
-        "CoreAPI/wwwRoot/js/core/**/*"  // Include all files in the src directory
+        "CoreAPI/wwwroot/js/core/**/*"  // Include all files in the src directory
     ],
     "exclude": [
         "node_modules",  // Exclude the node_modules directory
