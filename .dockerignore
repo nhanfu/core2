@@ -1,0 +1,58 @@
+# Các file hệ thống
+.DS_Store
+Thumbs.db
+
+# Thư mục node_modules
+**/node_modules/
+
+# Các file log
+**/*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Các thư mục build và cache
+**/dist/
+**/build/
+**/.cache/
+**/.temp/
+**/.vite/
+
+# Các file môi trường và cấu hình cục bộ
+**/.env
+**/.env.local
+**/.env.development.local
+**/.env.test.local
+**/.env.production.local
+
+# Git
+.git
+.gitignore
+
+# Các file Visual Studio và VS Code
+**/.vs/
+**/.vscode/
+**/*.csproj.user
+**/bin/
+**/obj/
+**/.idea/
+
+# File Docker
+Dockerfile
+docker-compose.yml
+docker-compose.*.yml
+
+# Các file tài liệu và không cần thiết cho build
+**/*.md
+LICENSE
+**/README.md
+**/CHANGELOG.md
+
+# File test
+**/__tests__/
+**/test/
+**/tests/
+
+# File backup
+**/*~
+**/*.bak
