@@ -1,30 +1,26 @@
 services:
   coreapi:
-    image: mcr.microsoft.com/dotnet/sdk:9.0
+    build:
+      context: ./CoreAPI
+      dockerfile: Dockerfile
     volumes:
-      - .:/app
-    working_dir: /app
+      - ./CoreAPI:/app
     ports:
       - "8080:80"
+      - "2222:2222"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
-    command: >
-      bash -c "cd CoreAPI &&
-               dotnet restore &&
-               dotnet watch run --urls=http://+:80"
   
   frontend:
-    image: node:18-alpine
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     volumes:
-      - ./fe:/app
-    working_dir: /app
+      - ./frontend:/app
     ports:
       - "5173:5173"
     environment:
       - NODE_ENV=development
-    command: >
-      sh -c "npm install &&
-             npm run dev -- --host"
     depends_on:
       - coreapi

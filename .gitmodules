@@ -4,3 +4,6 @@
 [submodule "fe"]
 	path = fe
 	url = git@github.com:nguyentrantin98/example-htmljs-code.git
+[submodule "frontend"]
+	path = frontend
+	url = git@github.com:nguyentrantin98/htmljs-design.git

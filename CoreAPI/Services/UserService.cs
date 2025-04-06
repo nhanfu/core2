@@ -47,6 +47,7 @@ public class UserService
     private readonly SendMailService _sendMailService;
     private readonly IConfiguration _configuration;
     public readonly ISqlProvider _sql;
+    public readonly ILogger<UserService> _logger;
     public string GroupId { get; set; }
     public string DepartmentId { get; set; }
     public string UserId { get; set; }
@@ -68,7 +69,8 @@ public class UserService
     public List<string> RoleNames { get; set; }
 
     public UserService(IHttpContextAccessor ctx, IConfiguration conf, IDistributedCache cache, IWebHostEnvironment host,
-        IHttpClientFactory httpClientFactory, WebSocketService taskSocket, ISqlProvider sql, IConfiguration configuration, SendMailService sendMailService, IServiceProvider serviceProvider)
+        IHttpClientFactory httpClientFactory, WebSocketService taskSocket, ISqlProvider sql, IConfiguration configuration, 
+        SendMailService sendMailService, IServiceProvider serviceProvider, ILogger<UserService> logger)
     {
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         _cfg = conf ?? throw new ArgumentNullException(nameof(conf));
@@ -80,6 +82,7 @@ public class UserService
         _request = _ctx.HttpContext.Request;
         _sendMailService = sendMailService;
         iServiceProvider = serviceProvider;
+        _logger = logger;
         ExtractMeta();
         _sql = sql;
         SetMetaToSqlProvider(_sql);
@@ -249,6 +252,7 @@ public class UserService
 
     private async Task<User> GetUserByLogin(LoginVM login)
     {
+        _logger.LogDebug("Begin query user");
         var query = @$"
         declare @username varchar(100) = '{login.UserName}';
         select u.* from [User] u 
