@@ -548,7 +548,7 @@ public class UserService
 
     public async Task<Dictionary<string, object>[]> GetMenu()
     {
-        var query = @$"select * from [Feature] f where IsMenu = 1 and (exists (select Id from FeaturePolicy where FeatureId = f.Id and RoleId in ({RoleIds.CombineStrings()}) and CanRead = 1) or '8' in ({RoleIds.CombineStrings()}))";
+        var query = @$"select f.* from [Feature] f left join [Feature] f2 on f.ParentId = f2.Id where (f2.Id is null or (f2.Id is not null and f2.IsMenu = 1)) and f.IsMenu = 1 and (exists (select Id from FeaturePolicy where FeatureId = f.Id and RoleId in ({RoleIds.CombineStrings()}) and CanRead = 1) or '8' in ({RoleIds.CombineStrings()}))";
         var ds = await _sql.ReadDataSet(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         return ds[0];
     }
@@ -1010,6 +1010,7 @@ public class UserService
         var shipmentFeature = vm.Changes.FirstOrDefault(x => x.Field == "ShipmentFeature");
         var featureName3 = vm.Changes.FirstOrDefault(x => x.Field == "FeatureName3");
         var titLe = vm.Changes.FirstOrDefault(x => x.Field == "FormatChat");
+        var recordId = vm.Changes.FirstOrDefault(x => x.Field == "RecordId");
         var noApproved = vm.Changes.FirstOrDefault(x => x.Field == "NoApproved");
         if (noApproved != null && noApproved.Value == "1")
         {
@@ -1096,7 +1097,7 @@ public class UserService
                     {
                         Id = Uuid7.Guid().ToString(),
                         VoucherTypeId = int.Parse(voucherTypeId.Value),
-                        EntityId = name,
+                        EntityId = "Shipment",
                         Avatar = Avatar,
                         FeatureName = featureName is null ? null : featureName.Value,
                         FeatureName2 = shipmentFeature is null ? null : shipmentFeature.Value,
@@ -1106,7 +1107,7 @@ public class UserService
                         Icon = "fal fa-smile",
                         Description = titLe.Value ?? "",
                         InsertedBy = insertedBy.Value,
-                        RecordId = id,
+                        RecordId = recordId != null ? recordId.Value : id,
                         InsertedDate = DateTime.Now,
                         Active = true,
                         AssignedId = userReceiverId.Value
@@ -2560,7 +2561,6 @@ public class UserService
         var featureName = vm.Changes.FirstOrDefault(x => x.Field == "FeatureName");
         var voucherTypeId = vm.Changes.FirstOrDefault(x => x.Field == "VoucherTypeId");
         var titLe = vm.Changes.FirstOrDefault(x => x.Field == "FormatChat");
-        var recordId = vm.Changes.FirstOrDefault(x => x.Field == "RecordId");
         var featureName2 = vm.Changes.FirstOrDefault(x => x.Field == "FeatureName2");
         var featureName3 = vm.Changes.FirstOrDefault(x => x.Field == "FeatureName3");
         if (isSend == "0" && receiverIds != null && receiverIds.Value != null)
@@ -2591,7 +2591,7 @@ public class UserService
                 Icon = "fal fa-smile",
                 Description = titLe.Value ?? "",
                 InsertedBy = UserId,
-                RecordId = recordId is null ? id : recordId.Value,
+                RecordId = id,
                 InsertedDate = DateTime.Now,
                 Active = true,
                 AssignedId = x.Id

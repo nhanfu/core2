@@ -132,18 +132,13 @@ namespace CoreAPI.Services
                 {
                     try
                     {
-                        await page.SetViewportAsync(new ViewPortOptions
-                        {
-                            Width = 794,
-                            Height = 1400
-                        });
                         await page.SetContentAsync(vm.Html);
                         await page.EvaluateExpressionHandleAsync("document.fonts.ready");
                         await page.EmulateMediaTypeAsync(MediaType.Screen);
                         var pdfOptions = new PdfOptions
                         {
                             PrintBackground = true,
-                            Format = vm.Type != "A5" ? PaperFormat.A5 : PaperFormat.A4,
+                            Format = vm.Type == "A5" ? PaperFormat.A5 : PaperFormat.A4,
                             Scale = 1,
                             PreferCSSPageSize = true
                         };

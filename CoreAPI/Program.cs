@@ -93,6 +93,7 @@ services.AddAuthentication(options =>
 });
 services.AddDistributedMemoryCache();
 services.AddHttpContextAccessor();
+builder.Services.AddScoped<IDeepSeekService, DeepSeekService>();
 services.AddScoped<SqlServerProvider>();
 services.AddScoped<DuckDbProvider>();
 services.AddScoped<ISqlProvider, SqlServerProvider>();
