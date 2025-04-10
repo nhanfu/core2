@@ -1,5 +1,8 @@
-﻿using System.Text;
+﻿using OpenAI.Chat;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 public class OpenAIHttpClientService
 {
@@ -12,35 +15,93 @@ public class OpenAIHttpClientService
         _apiKey = configuration["OpenAI:ApiKey"];
     }
 
-    public async Task<string> GetChatGPTResponse(string prompt)
+    public async IAsyncEnumerable<string> GetChatGPTResponseStreamWithHistoryAsync(List<ChatMessage> messages)
     {
-        var requestUri = "https://api.openai.com/v1/chat/completions";
-        var request = new HttpRequestMessage(HttpMethod.Post, requestUri);
-        request.Headers.Add("Authorization", $"Bearer {_apiKey}");
+        var formattedMessages = new List<object>();
+
+        foreach (var msg in messages)
+        {
+            if (!string.IsNullOrWhiteSpace(msg.Images))
+            {
+                formattedMessages.Add(new
+                {
+                    role = msg.Role,
+                    content = new object[]
+                    {
+                    new { type = "text", text = msg.Content },
+                    new { type = "image_url", image_url = new { url = msg.Images } }
+                    }
+                });
+            }
+            else
+            {
+                formattedMessages.Add(new
+                {
+                    role = msg.Role,
+                    content = msg.Content
+                });
+            }
+        }
 
         var requestBody = new
         {
-            model = "gpt-3.5-turbo",
-            messages = new[]
-            {
-                new { role = "system", content = "You are a helpful assistant." },
-                new { role = "user", content = prompt }
-            },
-            max_tokens = 150
+            model = "gpt-4o", // dùng model đúng
+            messages = formattedMessages,
+            stream = true,
+            temperature = 0.7,
+            max_tokens = 10000
         };
 
+        var request = new HttpRequestMessage(HttpMethod.Post, "https://api.openai.com/v1/chat/completions");
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
         request.Content = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
 
-        var response = await _httpClient.SendAsync(request);
+        var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
 
         if (!response.IsSuccessStatusCode)
+            throw new HttpRequestException($"OpenAI API stream failed: {response.StatusCode}");
+
+        using var stream = await response.Content.ReadAsStreamAsync();
+        using var reader = new StreamReader(stream);
+
+        while (!reader.EndOfStream)
         {
-            throw new HttpRequestException($"OpenAI API request failed with status code {response.StatusCode}");
+            var line = await reader.ReadLineAsync();
+
+            if (string.IsNullOrWhiteSpace(line))
+                continue;
+
+            // Streamed lines begin with "data: "
+            if (line.StartsWith("data: "))
+            {
+                line = line.Substring("data: ".Length);
+
+                if (line == "[DONE]")
+                    break;
+
+                yield return line;
+            }
         }
+    }
 
-        var responseContent = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<JsonElement>(responseContent);
+    public class ChatSessionViewModel
+    {
+        [JsonPropertyName("messages")]
+        public List<ChatMessage> Messages { get; set; } = new();
 
-        return result.GetProperty("choices")[0].GetProperty("message").GetProperty("content").GetString();
+        [JsonPropertyName("image_base64")]
+        public string ImageBase64 { get; set; }
+    }
+
+    public class ChatMessage
+    {
+        [JsonPropertyName("role")]
+        public string Role { get; set; } = "user";
+
+        [JsonPropertyName("content")]
+        public string Content { get; set; } = "";
+
+        [JsonPropertyName("images")]
+        public string Images { get; set; } // base64 string (nếu có)
     }
 }

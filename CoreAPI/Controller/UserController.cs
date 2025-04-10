@@ -10,6 +10,8 @@ using CoreAPI.Services;
 using CoreAPI.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static OpenAIHttpClientService;
+using System.Text;
 
 namespace Core.Controllers;
 
@@ -62,13 +64,6 @@ public class UserController(UserService _userSvc, PdfService _pdfService, ExcelS
     public async Task<string> CreateExcel([FromBody] CreateHtmlVM token, [FromServices] IServiceProvider iServiceProvider, [FromServices] IConfiguration configuration)
     {
         return await _excelService.CreateExcelFile(token, BgExt.GetConnectionString(iServiceProvider, configuration, "logistics"));
-    }
-
-    [HttpPost("api/OpenAI")]
-    public async Task<string> OpenAI([FromBody] string prompt)
-    {
-        var response = await _openAIHttpClientService.GetChatGPTResponse(prompt);
-        return response;
     }
 
     [AllowAnonymous]
