@@ -18,7 +18,11 @@ public class OpenAIHttpClientService
     public async IAsyncEnumerable<string> GetChatGPTResponseStreamWithHistoryAsync(List<ChatMessage> messages)
     {
         var formattedMessages = new List<object>();
-
+        formattedMessages.Add(new
+        {
+            role = "system",
+            content = "Imagine you are a logistics expert working for me. My company is called ForwardX, and our website is forwardx.vn. We provide international import-export management software. I want you to act as my assistant and respond to customers in Vietnamese. You are a professional in this field."
+        });
         foreach (var msg in messages)
         {
             if (!string.IsNullOrWhiteSpace(msg.Images))
@@ -29,7 +33,11 @@ public class OpenAIHttpClientService
                     content = new object[]
                     {
                     new { type = "text", text = msg.Content },
-                    new { type = "image_url", image_url = new { url = msg.Images } }
+                    new
+                    {
+                        type = "image_url",
+                        image_url = new { url = msg.Images }
+                    }
                     }
                 });
             }
@@ -45,11 +53,11 @@ public class OpenAIHttpClientService
 
         var requestBody = new
         {
-            model = "gpt-4o", // dùng model đúng
+            model = "gpt-4o",
             messages = formattedMessages,
             stream = true,
             temperature = 0.7,
-            max_tokens = 10000
+            max_tokens = 1000
         };
 
         var request = new HttpRequestMessage(HttpMethod.Post, "https://api.openai.com/v1/chat/completions");
@@ -57,9 +65,8 @@ public class OpenAIHttpClientService
         request.Content = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
 
         var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-
         if (!response.IsSuccessStatusCode)
-            throw new HttpRequestException($"OpenAI API stream failed: {response.StatusCode}");
+            throw new HttpRequestException($"OpenAI API failed: {response.StatusCode}");
 
         using var stream = await response.Content.ReadAsStreamAsync();
         using var reader = new StreamReader(stream);
@@ -67,19 +74,14 @@ public class OpenAIHttpClientService
         while (!reader.EndOfStream)
         {
             var line = await reader.ReadLineAsync();
+            if (string.IsNullOrWhiteSpace(line)) continue;
 
-            if (string.IsNullOrWhiteSpace(line))
-                continue;
-
-            // Streamed lines begin with "data: "
             if (line.StartsWith("data: "))
             {
-                line = line.Substring("data: ".Length);
+                var payload = line.Substring("data: ".Length);
+                if (payload == "[DONE]") break;
 
-                if (line == "[DONE]")
-                    break;
-
-                yield return line;
+                yield return payload;
             }
         }
     }
