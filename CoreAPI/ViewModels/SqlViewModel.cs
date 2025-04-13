@@ -78,6 +78,7 @@ namespace Core.ViewModels
         public string Html { get; set; }
         public string Type { get; set; }
         public string FileName { get; set; }
+        public bool Landscape { get; set; }
     }
 
     public class MoveHBLVM

@@ -3,10 +3,9 @@ using Core.Models;
 using Core.Services;
 using Core.ViewModels;
 using CoreAPI.BgService;
-using DocumentFormat.OpenXml.Drawing.Charts;
 using HtmlAgilityPack;
-using PuppeteerSharp;
-using PuppeteerSharp.Media;
+using System.Text;
+using System.Text.Json;
 
 namespace CoreAPI.Services
 {
@@ -95,77 +94,45 @@ namespace CoreAPI.Services
             return document.DocumentNode.InnerHtml;
         }
 
+        public class PdfVM2
+        {
+            public string Html { get; set; }
+            public string MarginTop { get; set; }
+            public string MarginRight { get; set; }
+            public string MarginLeft { get; set; }
+            public string MarginBottom { get; set; }
+            public bool Landscape { get; set; }
+            public string Format { get; set; }
+        }
+
         public async Task<string> HtmlToPdf(PdfVM vm)
         {
             var name = vm.FileName + Guid.NewGuid() + ".pdf";
             var path = GetPdfPath(name, _host.WebRootPath, _userService.TenantCode, _userService.UserId);
-            EnsureDirectoryExist(path);
-            string chromiumPath = @"C:\chrome-win\chrome.exe";
-            await using (var browser = await Puppeteer.LaunchAsync(new LaunchOptions
+            var _httpClient = new HttpClient();
+            var requestBody = new PdfVM2()
             {
-                Headless = true,
-                ExecutablePath = chromiumPath,
-                Args = new[]
-                {
-                    "--no-sandbox",
-                    "--disable-gpu",
-                    "--disable-background-networking",
-                    "--disable-background-timer-throttling",
-                    "--disable-backgrounding-occluded-windows",
-                    "--disable-breakpad",
-                    "--disable-client-side-phishing-detection",
-                    "--disable-default-apps",
-                    "--disable-dev-shm-usage",
-                    "--disable-extensions",
-                    "--disable-hang-monitor",
-                    "--disable-popup-blocking",
-                    "--disable-prompt-on-repost",
-                    "--disable-sync",
-                    "--disable-translate",
-                    "--metrics-recording-only",
-                    "--no-first-run",
-                    "--safebrowsing-disable-auto-update"
-                }
-            }))
-            {
-                await using (var page = await browser.NewPageAsync())
-                {
-                    try
-                    {
-                        await page.SetContentAsync(vm.Html);
-                        await page.EvaluateExpressionHandleAsync("document.fonts.ready");
-                        await page.EmulateMediaTypeAsync(MediaType.Screen);
-                        var pdfOptions = new PdfOptions
-                        {
-                            PrintBackground = true,
-                            Format = vm.Type == "A5" ? PaperFormat.A5 : PaperFormat.A4,
-                            Scale = 1,
-                            PreferCSSPageSize = true
-                        };
-                        await page.PdfAsync(path, pdfOptions);
-                        var requestUrl = $"{_context.HttpContext.Request.Scheme}://{_context.HttpContext.Request.Host}";
-                        return path.Replace(_host.WebRootPath, requestUrl).Replace("\\", "/");
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new Exception("Error generating PDF: " + ex.Message, ex);
-                    }
-                }
-            }
+                Html = vm.Html,
+                Format = vm.Type ?? "A4",
+                MarginBottom = "0px",
+                MarginLeft = "0px",
+                MarginRight = "0px",
+                MarginTop = "0px",
+                Landscape = vm.Landscape,
+            };
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://cdn-tms.softek.com.vn/api/FileUpload/HtmlToPdf2");
+            request.Content = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
+            var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            var fileUrl = await response.Content.ReadAsStringAsync();
+            var pdfBytes = await _httpClient.GetByteArrayAsync(fileUrl);
+            await File.WriteAllBytesAsync(path, pdfBytes);
+            var requestUrl = $"{_context.HttpContext.Request.Scheme}://{_context.HttpContext.Request.Host}";
+            return path.Replace(_host.WebRootPath, requestUrl).Replace("\\", "/");
         }
 
         private string GetPdfPath(string fileName, string webRootPath, string tanentcode, string userid)
         {
             return Path.Combine(webRootPath, "upload", tanentcode, "pdf", $"U{userid}", fileName);
-        }
-
-        private void EnsureDirectoryExist(string path)
-        {
-            var dir = Path.GetDirectoryName(path);
-            if (!Directory.Exists(dir))
-            {
-                Directory.CreateDirectory(dir);
-            }
         }
     }
 }
