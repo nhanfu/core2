@@ -120,7 +120,7 @@ namespace CoreAPI.Services
                 MarginTop = "0px",
                 Landscape = vm.Landscape,
             };
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://cdn-tms.softek.com.vn/api/FileUpload/HtmlToPdf2");
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://inichi.com/api/FileUpload/HtmlToPdf2");
             request.Content = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
             var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
             var fileUrl = await response.Content.ReadAsStringAsync();
