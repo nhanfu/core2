@@ -548,7 +548,8 @@ public class UserService
 
     public async Task<Dictionary<string, object>[]> GetMenu()
     {
-        var query = @$"select f.* from [Feature] f left join [Feature] f2 on f.ParentId = f2.Id where (f2.Id is null or (f2.Id is not null and f2.IsMenu = 1)) and f.IsMenu = 1 and (exists (select Id from FeaturePolicy where FeatureId = f.Id and RoleId in ({RoleIds.CombineStrings()}) and CanRead = 1) or '8' in ({RoleIds.CombineStrings()}))";
+        var isAdmin = RoleIds.Contains("8") ? 1 : 0;
+        var query = @$"select f.* from [Feature] f left join [Feature] f2 on f.ParentId = f2.Id where (f2.Id is null or (f2.Id is not null and f2.IsMenu = 1)) and f.IsMenu = 1 and (exists (select Id from FeaturePolicy where FeatureId = f.Id and RoleId in ({RoleIds.CombineStrings()}) and CanRead = 1) or 1 = {isAdmin})";
         var ds = await _sql.ReadDataSet(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         return ds[0];
     }
@@ -2037,6 +2038,7 @@ public class UserService
         var isSend = filteredChanges.Find(x => x.Field == "IsSend");
         var oldIsSend = isSend != null ? isSend.Value : "1";
         var receiverIds = filteredChanges.Find(x => x.Field == "ReceiverIds");
+        var titLe = vm.Changes.FirstOrDefault(x => x.Field == "FormatChat");
         if (isSend != null)
         {
             isSend.Value = "1";
@@ -2171,6 +2173,22 @@ public class UserService
                         if (vm.Table == "ConversationDetail")
                         {
                             SendMessageAllUser(entity[0][0]);
+                        }
+                        if (entity[0][0] != null)
+                        {
+                            var formatChat = vm.Changes.FirstOrDefault(x => x.Field == "FormatChat");
+                            if (formatChat != null)
+                            {
+                                formatChat.Value = entity[0][0].GetValueOrDefault("FormatChat") is null ? "" : entity[0][0]["FormatChat"].ToString();
+                            }
+                            else
+                            {
+                                vm.Changes.Add(new PatchDetail()
+                                {
+                                    Field = "FormatChat",
+                                    Value = entity[0][0].GetValueOrDefault("FormatChat") is null ? "" : entity[0][0]["FormatChat"].ToString()
+                                });
+                            }
                         }
                         await Notification(vm, id, filteredChanges, oldIsSend, receiverIds);
                         return new SqlResult()
@@ -2912,7 +2930,8 @@ public class UserService
         }
         if (com.Query.Contains("ds.InsertedBy = '{TokenUserId}'") && RoleNames.Contains("BOD"))
         {
-            com.Query = com.Query.Replace("ds.InsertedBy = '{TokenUserId}'", "ds.InsertedBy = '{TokenUserId}' or '{TokenRoleNames}' like '%BOD%'");
+            var isBOD = RoleNames.Combine().Contains("BOD") ? 1 : 0;
+            com.Query = com.Query.Replace($"ds.InsertedBy = '{{TokenUserId}}'", $"ds.InsertedBy = '{{TokenUserId}}' or {isBOD} = 1");
         }
         var query = Utils.FormatEntity(com.Query, dictionary);
         var ds1 = await _sql.ReadDataSet(query);

@@ -108,7 +108,12 @@ namespace CoreAPI.Services
         public async Task<string> HtmlToPdf(PdfVM vm)
         {
             var name = vm.FileName + Guid.NewGuid() + ".pdf";
-            var path = GetPdfPath(name, _host.WebRootPath, _userService.TenantCode, _userService.UserId);
+            string directoryPath = Path.Combine(_host.WebRootPath, "upload", _userService.TenantCode, "pdf", $"U{_userService.UserId}");
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+            var path = Path.Combine(directoryPath, name);
             var _httpClient = new HttpClient();
             var requestBody = new PdfVM2()
             {
@@ -120,7 +125,7 @@ namespace CoreAPI.Services
                 MarginTop = "0px",
                 Landscape = vm.Landscape,
             };
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://inichi.com/api/FileUpload/HtmlToPdf2");
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://cdn-tms.softek.com.vn/api/FileUpload/HtmlToPdf2");
             request.Content = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
             var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
             var fileUrl = await response.Content.ReadAsStringAsync();
@@ -128,11 +133,6 @@ namespace CoreAPI.Services
             await File.WriteAllBytesAsync(path, pdfBytes);
             var requestUrl = $"{_context.HttpContext.Request.Scheme}://{_context.HttpContext.Request.Host}";
             return path.Replace(_host.WebRootPath, requestUrl).Replace("\\", "/");
-        }
-
-        private string GetPdfPath(string fileName, string webRootPath, string tanentcode, string userid)
-        {
-            return Path.Combine(webRootPath, "upload", tanentcode, "pdf", $"U{userid}", fileName);
         }
     }
 }
