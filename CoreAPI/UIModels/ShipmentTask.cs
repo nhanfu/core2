@@ -34,4 +34,6 @@ public partial class ShipmentTask
     public string UpdatedBy { get; set; }
 
     public bool IsTracing { get; set; }
+
+    public virtual Shipment Shipment { get; set; }
 }

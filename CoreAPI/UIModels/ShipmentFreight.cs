@@ -32,4 +32,6 @@ public partial class ShipmentFreight
     public DateTime? UpdatedDate { get; set; }
 
     public string UpdatedBy { get; set; }
+
+    public virtual Shipment Shipment { get; set; }
 }

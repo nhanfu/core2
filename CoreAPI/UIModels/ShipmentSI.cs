@@ -132,4 +132,6 @@ public partial class ShipmentSI
     public string ShipmentFeature { get; set; }
 
     public string RecordId { get; set; }
+
+    public virtual Shipment Shipment { get; set; }
 }

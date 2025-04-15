@@ -463,9 +463,15 @@ public partial class Shipment
 
     public virtual ICollection<ShipmentFee> ShipmentFee { get; set; } = new List<ShipmentFee>();
 
+    public virtual ICollection<ShipmentFreight> ShipmentFreight { get; set; } = new List<ShipmentFreight>();
+
     public virtual ICollection<ShipmentInvoiceDetail> ShipmentInvoiceDetailFile { get; set; } = new List<ShipmentInvoiceDetail>();
 
     public virtual ICollection<ShipmentInvoiceDetail> ShipmentInvoiceDetailShipment { get; set; } = new List<ShipmentInvoiceDetail>();
+
+    public virtual ICollection<ShipmentSI> ShipmentSI { get; set; } = new List<ShipmentSI>();
+
+    public virtual ICollection<ShipmentTask> ShipmentTask { get; set; } = new List<ShipmentTask>();
 
     public virtual ICollection<VoucherDetail> VoucherDetailFile { get; set; } = new List<VoucherDetail>();
 

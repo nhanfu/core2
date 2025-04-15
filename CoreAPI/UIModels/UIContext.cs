@@ -3004,6 +3004,11 @@ public partial class UIContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.ValuationCharge).HasColumnType("money");
             entity.Property(e => e.WeightCharge).HasColumnType("money");
+
+            entity.HasOne(d => d.Shipment).WithMany(p => p.ShipmentFreight)
+                .HasForeignKey(d => d.ShipmentId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_ShipmentFreight_Shipment");
         });
 
         modelBuilder.Entity<ShipmentInvoice>(entity =>
@@ -3424,6 +3429,11 @@ public partial class UIContext : DbContext
             entity.Property(e => e.VesselVoy)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+
+            entity.HasOne(d => d.Shipment).WithMany(p => p.ShipmentSI)
+                .HasForeignKey(d => d.ShipmentId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_ShipmentSI_Shipment");
         });
 
         modelBuilder.Entity<ShipmentTask>(entity =>
@@ -3445,6 +3455,11 @@ public partial class UIContext : DbContext
             entity.Property(e => e.UserId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+
+            entity.HasOne(d => d.Shipment).WithMany(p => p.ShipmentTask)
+                .HasForeignKey(d => d.ShipmentId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_ShipmentTask_Shipment");
         });
 
         modelBuilder.Entity<State>(entity =>
