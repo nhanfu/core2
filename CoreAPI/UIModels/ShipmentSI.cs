@@ -124,4 +124,12 @@ public partial class ShipmentSI
     public string UserCreateId { get; set; }
 
     public string UnitId { get; set; }
+
+    public string FeatureName { get; set; }
+
+    public string ReceiverIds { get; set; }
+
+    public string ShipmentFeature { get; set; }
+
+    public string RecordId { get; set; }
 }

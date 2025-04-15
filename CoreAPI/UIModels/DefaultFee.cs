@@ -25,6 +25,8 @@ public partial class DefaultFee
 
     public string CurrencyId { get; set; }
 
+    public string CurrencyCode { get; set; }
+
     public decimal? Vat { get; set; }
 
     public decimal? Tax { get; set; }

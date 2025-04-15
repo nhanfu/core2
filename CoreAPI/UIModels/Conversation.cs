@@ -13,6 +13,10 @@ public partial class Conversation
 
     public string EntityId { get; set; }
 
+    public bool IsSend { get; set; }
+
+    public string ReceiverIds { get; set; }
+
     public string UserIds { get; set; }
 
     public string Message { get; set; }
@@ -28,4 +32,12 @@ public partial class Conversation
     public DateTime? UpdatedDate { get; set; }
 
     public string UpdatedBy { get; set; }
+
+    public string FeatureName { get; set; }
+
+    public string FeatureName2 { get; set; }
+
+    public string FeatureName3 { get; set; }
+
+    public string Label { get; set; }
 }

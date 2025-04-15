@@ -147,11 +147,7 @@ public partial class Partner
 
     public string PartnerTypeIds { get; set; }
 
-    public string AdditionTypeIds { get; set; }
-
     public string PartnerTypeIdsText { get; set; }
-
-    public string AdditionTypeIdsText { get; set; }
 
     public string FormatChat { get; set; }
 
@@ -178,4 +174,12 @@ public partial class Partner
     public string ReceivesSwiftCode { get; set; }
 
     public string CustomerTypeIdText { get; set; }
+
+    public string FeatureName { get; set; }
+
+    public string Header { get; set; }
+
+    public string Footer { get; set; }
+
+    public string Icon { get; set; }
 }

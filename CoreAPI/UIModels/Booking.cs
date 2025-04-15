@@ -47,6 +47,8 @@ public partial class Booking
 
     public int? ServiceId { get; set; }
 
+    public int? Service2Id { get; set; }
+
     public string HblNo { get; set; }
 
     public string HblTypeId { get; set; }
@@ -63,9 +65,9 @@ public partial class Booking
 
     public decimal? CBM { get; set; }
 
-    public string ShipperText { get; set; }
+    public string ShipperDes { get; set; }
 
-    public string ConsigneeText { get; set; }
+    public string ConsigneeDes { get; set; }
 
     public string PortTransitId { get; set; }
 
@@ -244,4 +246,6 @@ public partial class Booking
     public string QuotationId { get; set; }
 
     public string QuotationCode { get; set; }
+
+    public string FeatureName { get; set; }
 }

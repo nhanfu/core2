@@ -43,6 +43,8 @@ public partial class UIContext : DbContext
 
     public virtual DbSet<ConversationDetail> ConversationDetail { get; set; }
 
+    public virtual DbSet<ConversationRead> ConversationRead { get; set; }
+
     public virtual DbSet<Counter> Counter { get; set; }
 
     public virtual DbSet<DefaultFee> DefaultFee { get; set; }
@@ -64,6 +66,10 @@ public partial class UIContext : DbContext
     public virtual DbSet<Enum> Enum { get; set; }
 
     public virtual DbSet<ExchangeRate> ExchangeRate { get; set; }
+
+    public virtual DbSet<ExchangeRateHistory> ExchangeRateHistory { get; set; }
+
+    public virtual DbSet<ExchangeRateHistoryDetail> ExchangeRateHistoryDetail { get; set; }
 
     public virtual DbSet<Feature> Feature { get; set; }
 
@@ -136,6 +142,10 @@ public partial class UIContext : DbContext
     public virtual DbSet<ShipmentInvoice> ShipmentInvoice { get; set; }
 
     public virtual DbSet<ShipmentInvoiceDetail> ShipmentInvoiceDetail { get; set; }
+
+    public virtual DbSet<ShipmentProcess> ShipmentProcess { get; set; }
+
+    public virtual DbSet<ShipmentProcessDetail> ShipmentProcessDetail { get; set; }
 
     public virtual DbSet<ShipmentSI> ShipmentSI { get; set; }
 
@@ -352,6 +362,7 @@ public partial class UIContext : DbContext
         {
             entity.ToTable(tb =>
                 {
+                    tb.HasTrigger("Booking_Delete");
                     tb.HasTrigger("Booking_Seq");
                     tb.HasTrigger("Booking_Update");
                 });
@@ -386,10 +397,10 @@ public partial class UIContext : DbContext
             entity.Property(e => e.CommodityId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.ConsigneeDes).HasMaxLength(500);
             entity.Property(e => e.ConsigneeId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.ConsigneeText).HasMaxLength(500);
             entity.Property(e => e.ContPickupAtId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -416,6 +427,7 @@ public partial class UIContext : DbContext
             entity.Property(e => e.DropOffId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.FeatureName).HasMaxLength(500);
             entity.Property(e => e.FileNo)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -519,10 +531,10 @@ public partial class UIContext : DbContext
             entity.Property(e => e.ShipmentId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.ShipperDes).HasMaxLength(500);
             entity.Property(e => e.ShipperId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.ShipperText).HasMaxLength(500);
             entity.Property(e => e.SpecialRequest).HasMaxLength(500);
             entity.Property(e => e.TruckingTypeId)
                 .HasMaxLength(50)
@@ -668,6 +680,12 @@ public partial class UIContext : DbContext
                 .HasMaxLength(200)
                 .IsUnicode(false);
             entity.Property(e => e.ClassName)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.CodeId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.ComponentDefaultValueId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.ComponentGroupId)
@@ -847,16 +865,23 @@ public partial class UIContext : DbContext
 
         modelBuilder.Entity<Conversation>(entity =>
         {
+            entity.ToTable(tb => tb.HasTrigger("tr_Conversation"));
+
             entity.Property(e => e.Id)
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.EntityId).HasMaxLength(150);
+            entity.Property(e => e.FeatureName).HasMaxLength(1500);
+            entity.Property(e => e.FeatureName2).HasMaxLength(1500);
+            entity.Property(e => e.FeatureName3).HasMaxLength(1500);
             entity.Property(e => e.FormatChat).HasMaxLength(2500);
             entity.Property(e => e.Icon).HasMaxLength(250);
             entity.Property(e => e.InsertedBy)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.Label).HasMaxLength(1500);
             entity.Property(e => e.Message).HasMaxLength(2500);
+            entity.Property(e => e.ReceiverIds).HasMaxLength(1500);
             entity.Property(e => e.RecordId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -890,6 +915,25 @@ public partial class UIContext : DbContext
                 .IsUnicode(false);
         });
 
+        modelBuilder.Entity<ConversationRead>(entity =>
+        {
+            entity.Property(e => e.Id)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.ConversationId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.InsertedBy)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.UpdatedBy)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.UserId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+        });
+
         modelBuilder.Entity<Counter>(entity =>
         {
             entity.HasKey(e => new { e.Key, e.Id }).HasName("PK_HangFire_Counter");
@@ -912,6 +956,9 @@ public partial class UIContext : DbContext
             entity.Property(e => e.AmountTax).HasColumnType("money");
             entity.Property(e => e.CmId)
                 .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.CurrencyCode)
+                .HasMaxLength(10)
                 .IsUnicode(false);
             entity.Property(e => e.CurrencyId)
                 .HasMaxLength(50)
@@ -996,6 +1043,8 @@ public partial class UIContext : DbContext
         modelBuilder.Entity<EntityContainer>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_BookingContainer");
+
+            entity.ToTable(tb => tb.HasTrigger("EntityContainer_UPDATE"));
 
             entity.Property(e => e.Id)
                 .HasMaxLength(50)
@@ -1160,6 +1209,53 @@ public partial class UIContext : DbContext
                 .IsUnicode(false);
         });
 
+        modelBuilder.Entity<ExchangeRateHistory>(entity =>
+        {
+            entity.Property(e => e.Id)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Code)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.CompanyId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.InsertedBy)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.RateUSD).HasColumnType("decimal(30, 24)");
+            entity.Property(e => e.RateVND).HasColumnType("decimal(30, 24)");
+            entity.Property(e => e.UpdatedBy)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<ExchangeRateHistoryDetail>(entity =>
+        {
+            entity.ToTable(tb => tb.HasTrigger("ExchangeRateHistoryDetail_Create"));
+
+            entity.Property(e => e.Id)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.CurrencyCode)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.CurrencyId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.HistoryId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.InsertedBy)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.RateUSD).HasColumnType("decimal(30, 24)");
+            entity.Property(e => e.RateVND).HasColumnType("decimal(30, 24)");
+            entity.Property(e => e.UpdatedBy)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+        });
+
         modelBuilder.Entity<Feature>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Feature__3214EC071D5C24E1");
@@ -1167,6 +1263,9 @@ public partial class UIContext : DbContext
             entity.ToTable(tb => tb.HasTrigger("Feature_FeaturePolicy"));
 
             entity.Property(e => e.Id).HasMaxLength(50);
+            entity.Property(e => e.AppId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.ClassName).HasMaxLength(50);
             entity.Property(e => e.CodeId).HasMaxLength(50);
             entity.Property(e => e.Description).HasMaxLength(500);
@@ -1317,6 +1416,7 @@ public partial class UIContext : DbContext
             entity.ToTable(tb =>
                 {
                     tb.HasTrigger("IQ_Update");
+                    tb.HasTrigger("Inquiry_Delete");
                     tb.HasTrigger("Inquiry_Seq");
                 });
 
@@ -1393,6 +1493,7 @@ public partial class UIContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.ExchangeRateUSD).HasColumnType("money");
             entity.Property(e => e.ExchangeRateVND).HasColumnType("money");
+            entity.Property(e => e.FeatureName).HasMaxLength(500);
             entity.Property(e => e.FormatChat).HasMaxLength(500);
             entity.Property(e => e.ForwardId)
                 .HasMaxLength(50)
@@ -1492,8 +1593,12 @@ public partial class UIContext : DbContext
             entity.Property(e => e.DescriptionId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.EmptyReturnId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.ExchangeRateUSD).HasColumnType("decimal(30, 24)");
             entity.Property(e => e.ExchangeRateVND).HasColumnType("decimal(30, 24)");
+            entity.Property(e => e.FeatureName).HasMaxLength(500);
             entity.Property(e => e.FinalDestinationId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -1726,10 +1831,6 @@ public partial class UIContext : DbContext
             entity.Property(e => e.AccountNumber)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.AdditionTypeIds)
-                .HasMaxLength(255)
-                .IsUnicode(false);
-            entity.Property(e => e.AdditionTypeIdsText).HasMaxLength(255);
             entity.Property(e => e.Address).HasMaxLength(500);
             entity.Property(e => e.AddressInv).HasMaxLength(250);
             entity.Property(e => e.AssignId)
@@ -1778,6 +1879,8 @@ public partial class UIContext : DbContext
             entity.Property(e => e.Fax)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.FeatureName).HasMaxLength(500);
+            entity.Property(e => e.Footer).HasMaxLength(4000);
             entity.Property(e => e.FormatChat).HasMaxLength(250);
             entity.Property(e => e.FullName).HasMaxLength(500);
             entity.Property(e => e.GenderContactId)
@@ -1789,7 +1892,9 @@ public partial class UIContext : DbContext
             entity.Property(e => e.GroupId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.Header).HasMaxLength(4000);
             entity.Property(e => e.History).HasMaxLength(500);
+            entity.Property(e => e.Icon).HasMaxLength(500);
             entity.Property(e => e.IdCode)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -1833,9 +1938,7 @@ public partial class UIContext : DbContext
             entity.Property(e => e.ResidenceTypeId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.ResidenceTypeIdText)
-                .HasMaxLength(10)
-                .IsFixedLength();
+            entity.Property(e => e.ResidenceTypeIdText).HasMaxLength(500);
             entity.Property(e => e.SaleId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -2036,6 +2139,12 @@ public partial class UIContext : DbContext
 
         modelBuilder.Entity<Pricing>(entity =>
         {
+            entity.ToTable(tb =>
+                {
+                    tb.HasTrigger("Pricing_Delete");
+                    tb.HasTrigger("Pricing_Seq");
+                });
+
             entity.Property(e => e.Id)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -2045,6 +2154,9 @@ public partial class UIContext : DbContext
             entity.Property(e => e.AmountText).HasMaxLength(250);
             entity.Property(e => e.AttachedFile).HasMaxLength(500);
             entity.Property(e => e.CarrierId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Code)
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.CommodityId)
@@ -2060,6 +2172,7 @@ public partial class UIContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.ExchangeRate).HasColumnType("money");
+            entity.Property(e => e.FeatureName).HasMaxLength(500);
             entity.Property(e => e.FormatChat).HasMaxLength(2500);
             entity.Property(e => e.FreeTime).HasColumnType("money");
             entity.Property(e => e.Fsc).HasColumnType("money");
@@ -2114,6 +2227,7 @@ public partial class UIContext : DbContext
             entity.Property(e => e.Id)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.CurrencyCode).HasMaxLength(10);
             entity.Property(e => e.CurrencyId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -2263,7 +2377,6 @@ public partial class UIContext : DbContext
                     tb.HasTrigger("Shipment_Delete");
                     tb.HasTrigger("Shipment_Seq");
                     tb.HasTrigger("Shipment_Seq_HBL");
-                    tb.HasTrigger("Shipment_TotalParent");
                     tb.HasTrigger("Shipment_UPDATE_FEE");
                 });
 
@@ -2272,12 +2385,15 @@ public partial class UIContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.AccountNo).HasMaxLength(250);
             entity.Property(e => e.AccountingInformation).HasMaxLength(250);
+            entity.Property(e => e.ActualComLocal).HasColumnType("money");
+            entity.Property(e => e.ActualComUSD).HasColumnType("money");
             entity.Property(e => e.ActualCostLocal).HasColumnType("money");
             entity.Property(e => e.ActualCostUSD).HasColumnType("money");
             entity.Property(e => e.ActualProfitLocal).HasColumnType("money");
             entity.Property(e => e.ActualProfitUSD).HasColumnType("money");
             entity.Property(e => e.ActualRevenueLocal).HasColumnType("money");
             entity.Property(e => e.ActualRevenueUSD).HasColumnType("money");
+            entity.Property(e => e.AdditionTypeIds).HasMaxLength(255);
             entity.Property(e => e.AgentCode).HasMaxLength(250);
             entity.Property(e => e.AgentId)
                 .HasMaxLength(50)
@@ -2287,6 +2403,9 @@ public partial class UIContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.AmountInsurance).HasMaxLength(250);
+            entity.Property(e => e.ArrivaNo).HasMaxLength(250);
+            entity.Property(e => e.ArrivalNoticeNotes).HasMaxLength(500);
+            entity.Property(e => e.ArrivalNoticeTo).HasMaxLength(100);
             entity.Property(e => e.BookingLocalId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -2356,6 +2475,7 @@ public partial class UIContext : DbContext
             entity.Property(e => e.CyId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.DONo).HasMaxLength(250);
             entity.Property(e => e.DeclaredCarriage).HasMaxLength(250);
             entity.Property(e => e.DeclaredCustoms).HasMaxLength(250);
             entity.Property(e => e.DeliveryAddress).HasMaxLength(250);
@@ -2363,25 +2483,35 @@ public partial class UIContext : DbContext
             entity.Property(e => e.DeliveryId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.DeliveryOrderNotes).HasMaxLength(500);
+            entity.Property(e => e.DeliveryOrderTo).HasMaxLength(100);
             entity.Property(e => e.DeliveryTermId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.DemFree).HasColumnType("money");
+            entity.Property(e => e.DepartmentId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.DetFree).HasColumnType("money");
             entity.Property(e => e.DetailsGoods).HasMaxLength(1000);
             entity.Property(e => e.DocsNo)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.DocumentNo).HasMaxLength(250);
             entity.Property(e => e.Driver).HasMaxLength(50);
             entity.Property(e => e.EmtyPickupId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.ExportReferences).HasMaxLength(100);
+            entity.Property(e => e.FeatureName).HasMaxLength(500);
             entity.Property(e => e.FinalDestinationId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.ForDeliveryGoodsDes).HasMaxLength(250);
             entity.Property(e => e.ForDeliveryGoodsId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.FormatChat)
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.ForwardId)
@@ -2435,6 +2565,9 @@ public partial class UIContext : DbContext
             entity.Property(e => e.NatureQuantityGoods).HasMaxLength(250);
             entity.Property(e => e.NoPieces).HasColumnType("money");
             entity.Property(e => e.NominationParty).HasMaxLength(250);
+            entity.Property(e => e.NominationPartyId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.Notes).HasMaxLength(500);
             entity.Property(e => e.NotifyPartyDes).HasMaxLength(500);
             entity.Property(e => e.NotifyPartyId)
@@ -2462,6 +2595,7 @@ public partial class UIContext : DbContext
             entity.Property(e => e.ParentId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.PartnerTypeIds).HasMaxLength(255);
             entity.Property(e => e.PartyContact).HasMaxLength(250);
             entity.Property(e => e.PaymentTermId)
                 .HasMaxLength(50)
@@ -2520,6 +2654,7 @@ public partial class UIContext : DbContext
                 .HasMaxLength(250)
                 .IsUnicode(false);
             entity.Property(e => e.ReferenceNumber).HasMaxLength(250);
+            entity.Property(e => e.ResidenceTypeId).HasMaxLength(255);
             entity.Property(e => e.SCI).HasMaxLength(250);
             entity.Property(e => e.SaleId)
                 .HasMaxLength(50)
@@ -2527,6 +2662,7 @@ public partial class UIContext : DbContext
             entity.Property(e => e.SaleIds)
                 .HasMaxLength(500)
                 .IsUnicode(false);
+            entity.Property(e => e.Sercure).HasMaxLength(250);
             entity.Property(e => e.SeriBillNo).HasMaxLength(100);
             entity.Property(e => e.Service).HasMaxLength(250);
             entity.Property(e => e.ServiceId)
@@ -2606,6 +2742,10 @@ public partial class UIContext : DbContext
             entity.Property(e => e.WarehouseId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+
+            entity.HasOne(d => d.Parent).WithMany(p => p.InverseParent)
+                .HasForeignKey(d => d.ParentId)
+                .HasConstraintName("FK_Shipment_Shipment1");
         });
 
         modelBuilder.Entity<ShipmentDO>(entity =>
@@ -2701,19 +2841,23 @@ public partial class UIContext : DbContext
             entity.Property(e => e.DebtId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.DepartmentId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.DescriptionId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.Docs).HasMaxLength(250);
             entity.Property(e => e.ExAmount).HasColumnType("money");
             entity.Property(e => e.ExAmountTax).HasColumnType("money");
-            entity.Property(e => e.ExProfitUSD).HasColumnType("decimal(30, 24)");
-            entity.Property(e => e.ExProfitVND).HasColumnType("decimal(30, 24)");
-            entity.Property(e => e.ExSaleUSD).HasColumnType("decimal(30, 24)");
-            entity.Property(e => e.ExSaleVND).HasColumnType("decimal(30, 24)");
             entity.Property(e => e.ExTotalAmount).HasColumnType("money");
             entity.Property(e => e.ExTotalAmountTax).HasColumnType("money");
+            entity.Property(e => e.ExTotalPaid).HasColumnType("money");
+            entity.Property(e => e.ExTotalRemain)
+                .HasComputedColumnSql("(isnull([TotalAmountTax],(0))*isnull([ExchangeRateINV],[ExchangeRateVND])-isnull([ExTotalPaid],(0)))", true)
+                .HasColumnType("decimal(38, 16)");
             entity.Property(e => e.ExchangeRate).HasColumnType("money");
+            entity.Property(e => e.ExchangeRateDebt).HasColumnType("money");
             entity.Property(e => e.ExchangeRateINV).HasColumnType("decimal(30, 24)");
             entity.Property(e => e.ExchangeRateUSD).HasColumnType("decimal(30, 24)");
             entity.Property(e => e.ExchangeRateVND).HasColumnType("decimal(30, 24)");
@@ -2788,6 +2932,10 @@ public partial class UIContext : DbContext
             entity.Property(e => e.Tax).HasColumnType("money");
             entity.Property(e => e.TotalAmount).HasColumnType("money");
             entity.Property(e => e.TotalAmountTax).HasColumnType("money");
+            entity.Property(e => e.TotalPaid).HasColumnType("money");
+            entity.Property(e => e.TotalRemain)
+                .HasComputedColumnSql("(isnull([TotalAmount],(0))-isnull([TotalPaid],(0)))", true)
+                .HasColumnType("money");
             entity.Property(e => e.UnitId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -2880,6 +3028,9 @@ public partial class UIContext : DbContext
             entity.Property(e => e.ExchangeRateINV2).HasColumnType("decimal(30, 24)");
             entity.Property(e => e.ExchangeRateUSD).HasColumnType("decimal(30, 24)");
             entity.Property(e => e.ExchangeRateVND).HasColumnType("decimal(30, 24)");
+            entity.Property(e => e.FeeTypeId)
+                .HasMaxLength(250)
+                .IsUnicode(false);
             entity.Property(e => e.FileIds).IsUnicode(false);
             entity.Property(e => e.FileNo)
                 .HasMaxLength(500)
@@ -2900,6 +3051,9 @@ public partial class UIContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.InvoiceIds).HasMaxLength(500);
             entity.Property(e => e.InvoiceNo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.IssueInvoiceId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.MblNos)
@@ -2942,6 +3096,9 @@ public partial class UIContext : DbContext
             entity.Property(e => e.UserApprovedIds).HasMaxLength(500);
             entity.Property(e => e.UserViewIds).HasMaxLength(500);
             entity.Property(e => e.VatInv).HasColumnType("money");
+            entity.Property(e => e.VatInvoiceId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.VendorIds)
                 .HasMaxLength(500)
                 .IsUnicode(false);
@@ -2984,14 +3141,11 @@ public partial class UIContext : DbContext
             entity.Property(e => e.Docs).HasMaxLength(250);
             entity.Property(e => e.ExAmount).HasColumnType("money");
             entity.Property(e => e.ExAmountTax).HasColumnType("money");
-            entity.Property(e => e.ExProfitUSD).HasColumnType("decimal(30, 24)");
-            entity.Property(e => e.ExProfitVND).HasColumnType("decimal(30, 24)");
-            entity.Property(e => e.ExSaleUSD).HasColumnType("decimal(30, 24)");
-            entity.Property(e => e.ExSaleVND).HasColumnType("decimal(30, 24)");
             entity.Property(e => e.ExTotalAmount).HasColumnType("money");
             entity.Property(e => e.ExTotalAmountTax).HasColumnType("money");
             entity.Property(e => e.ExchangeRate).HasColumnType("money");
             entity.Property(e => e.ExchangeRateINV).HasColumnType("decimal(30, 24)");
+            entity.Property(e => e.ExchangeRateINV2).HasColumnType("decimal(30, 24)");
             entity.Property(e => e.ExchangeRateUSD).HasColumnType("decimal(30, 24)");
             entity.Property(e => e.ExchangeRateVND).HasColumnType("decimal(30, 24)");
             entity.Property(e => e.FileId)
@@ -3072,6 +3226,48 @@ public partial class UIContext : DbContext
             entity.Property(e => e.VoucherId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+
+            entity.HasOne(d => d.File).WithMany(p => p.ShipmentInvoiceDetailFile)
+                .HasForeignKey(d => d.FileId)
+                .HasConstraintName("FK_ShipmentInvoiceDetail_Shipment1");
+
+            entity.HasOne(d => d.Shipment).WithMany(p => p.ShipmentInvoiceDetailShipment)
+                .HasForeignKey(d => d.ShipmentId)
+                .HasConstraintName("FK_ShipmentInvoiceDetail_Shipment");
+        });
+
+        modelBuilder.Entity<ShipmentProcess>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_ShipmentProcessId");
+
+            entity.Property(e => e.Id)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.InsertedBy)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.UpdatedBy)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<ShipmentProcessDetail>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_ShipmentProcess");
+
+            entity.Property(e => e.Id)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.InsertedBy)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.JobName).HasMaxLength(3000);
+            entity.Property(e => e.ProcessId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.UpdatedBy)
+                .HasMaxLength(50)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<ShipmentSI>(entity =>
@@ -3108,6 +3304,7 @@ public partial class UIContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.DetailsGoods).HasMaxLength(500);
+            entity.Property(e => e.FeatureName).HasMaxLength(500);
             entity.Property(e => e.FinalDestinationId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -3153,7 +3350,14 @@ public partial class UIContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.RealShipperIdText).HasMaxLength(500);
+            entity.Property(e => e.ReceiverIds)
+                .HasMaxLength(250)
+                .IsUnicode(false);
+            entity.Property(e => e.RecordId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.Remark).HasMaxLength(500);
+            entity.Property(e => e.ShipmentFeature).HasMaxLength(250);
             entity.Property(e => e.ShipmentId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -3271,8 +3475,14 @@ public partial class UIContext : DbContext
             entity.Property(e => e.AssignedId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.Avatar).HasMaxLength(2500);
             entity.Property(e => e.Description).HasMaxLength(2500);
+            entity.Property(e => e.Description2).HasMaxLength(2500);
             entity.Property(e => e.EntityId).HasMaxLength(250);
+            entity.Property(e => e.FeatureName).HasMaxLength(500);
+            entity.Property(e => e.FeatureName2).HasMaxLength(500);
+            entity.Property(e => e.FeatureName3).HasMaxLength(500);
+            entity.Property(e => e.FromName).HasMaxLength(2500);
             entity.Property(e => e.Icon)
                 .HasMaxLength(150)
                 .IsUnicode(false);
@@ -3283,6 +3493,7 @@ public partial class UIContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.Title).HasMaxLength(2500);
+            entity.Property(e => e.Title2).HasMaxLength(2500);
             entity.Property(e => e.UpdatedBy)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -3503,6 +3714,9 @@ public partial class UIContext : DbContext
             entity.Property(e => e.CompanyId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.CurrencyCode)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.CurrencyId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -3524,6 +3738,8 @@ public partial class UIContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.EinvoiceLink).HasMaxLength(500);
             entity.Property(e => e.ExchangeRateINV).HasColumnType("money");
+            entity.Property(e => e.ExchangeRateINV2).HasColumnType("money");
+            entity.Property(e => e.FeatureName).HasMaxLength(500);
             entity.Property(e => e.FeeTypeId)
                 .HasMaxLength(250)
                 .IsUnicode(false);
@@ -3670,13 +3886,11 @@ public partial class UIContext : DbContext
             entity.Property(e => e.EinvoiceLink).HasMaxLength(500);
             entity.Property(e => e.ExAmount).HasColumnType("money");
             entity.Property(e => e.ExAmountTax).HasColumnType("money");
-            entity.Property(e => e.ExProfitUSD).HasColumnType("decimal(30, 24)");
-            entity.Property(e => e.ExProfitVND).HasColumnType("decimal(30, 24)");
-            entity.Property(e => e.ExSaleUSD).HasColumnType("decimal(30, 24)");
-            entity.Property(e => e.ExSaleVND).HasColumnType("decimal(30, 24)");
             entity.Property(e => e.ExTotalAmount).HasColumnType("money");
+            entity.Property(e => e.ExTotalAmountTax).HasColumnType("money");
             entity.Property(e => e.ExchangeRate).HasColumnType("money");
             entity.Property(e => e.ExchangeRateINV).HasColumnType("decimal(30, 24)");
+            entity.Property(e => e.ExchangeRateINV2).HasColumnType("money");
             entity.Property(e => e.ExchangeRateUSD).HasColumnType("decimal(30, 24)");
             entity.Property(e => e.ExchangeRateVND).HasColumnType("decimal(30, 24)");
             entity.Property(e => e.FileId)
@@ -3779,6 +3993,14 @@ public partial class UIContext : DbContext
             entity.Property(e => e.VoucherId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+
+            entity.HasOne(d => d.File).WithMany(p => p.VoucherDetailFile)
+                .HasForeignKey(d => d.FileId)
+                .HasConstraintName("FK_VoucherDetail_Shipment1");
+
+            entity.HasOne(d => d.Shipment).WithMany(p => p.VoucherDetailShipment)
+                .HasForeignKey(d => d.ShipmentId)
+                .HasConstraintName("FK_VoucherDetail_Shipment");
         });
 
         modelBuilder.Entity<WebConfig>(entity =>

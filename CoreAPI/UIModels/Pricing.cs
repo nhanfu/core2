@@ -7,6 +7,8 @@ public partial class Pricing
 {
     public string Id { get; set; }
 
+    public string Code { get; set; }
+
     public int? TypeId { get; set; }
 
     public string VendorTypeId { get; set; }
@@ -104,4 +106,6 @@ public partial class Pricing
     public string FormatChat { get; set; }
 
     public string EmptyReturnId { get; set; }
+
+    public string FeatureName { get; set; }
 }

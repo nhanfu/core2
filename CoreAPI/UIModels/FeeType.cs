@@ -49,6 +49,8 @@ public partial class FeeType
 
     public bool IsAdvProvider { get; set; }
 
+    public bool IsCom { get; set; }
+
     public string RevenueAccId { get; set; }
 
     public string CostAccId { get; set; }

@@ -160,4 +160,8 @@ public partial class InquiryDetail
     public bool IsTrucking { get; set; }
 
     public string QuotationId { get; set; }
+
+    public string FeatureName { get; set; }
+
+    public string EmptyReturnId { get; set; }
 }

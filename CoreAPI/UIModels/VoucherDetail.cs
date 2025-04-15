@@ -57,14 +57,6 @@ public partial class VoucherDetail
 
     public decimal? ExchangeRateINV { get; set; }
 
-    public decimal? ExSaleUSD { get; set; }
-
-    public decimal? ExSaleVND { get; set; }
-
-    public decimal? ExProfitUSD { get; set; }
-
-    public decimal? ExProfitVND { get; set; }
-
     public bool IsContainer { get; set; }
 
     public bool IsCBM { get; set; }
@@ -167,6 +159,8 @@ public partial class VoucherDetail
 
     public decimal? ExTotalAmount { get; set; }
 
+    public decimal? ExTotalAmountTax { get; set; }
+
     public string PaymentRequestId { get; set; }
 
     public string PaymentRequestDetailId { get; set; }
@@ -184,4 +178,12 @@ public partial class VoucherDetail
     public string InvoiceCode { get; set; }
 
     public int? ServiceId { get; set; }
+
+    public bool IsVat { get; set; }
+
+    public decimal? ExchangeRateINV2 { get; set; }
+
+    public virtual Shipment File { get; set; }
+
+    public virtual Shipment Shipment { get; set; }
 }

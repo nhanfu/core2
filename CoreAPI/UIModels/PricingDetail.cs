@@ -19,6 +19,8 @@ public partial class PricingDetail
 
     public string CurrencyId { get; set; }
 
+    public string CurrencyCode { get; set; }
+
     public decimal? UnitPrice { get; set; }
 
     public decimal? MinUnitPrice { get; set; }

@@ -47,7 +47,7 @@ public partial class ShipmentInvoice
 
     public int? ObhTypeId { get; set; }
 
-    public int? FeeTypeId { get; set; }
+    public string FeeTypeId { get; set; }
 
     public int? IncludeChargeId { get; set; }
 
@@ -194,4 +194,8 @@ public partial class ShipmentInvoice
     public string DebtAccId { get; set; }
 
     public string InvoiceIds { get; set; }
+
+    public string IssueInvoiceId { get; set; }
+
+    public string VatInvoiceId { get; set; }
 }

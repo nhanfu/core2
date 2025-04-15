@@ -97,6 +97,8 @@ public partial class Voucher
 
     public decimal? ExchangeRateINV { get; set; }
 
+    public decimal? ExchangeRateINV2 { get; set; }
+
     public string ReferencesIds { get; set; }
 
     public string ReportCodeId { get; set; }
@@ -188,4 +190,8 @@ public partial class Voucher
     public string ReId { get; set; }
 
     public string InternalRefId { get; set; }
+
+    public string FeatureName { get; set; }
+
+    public string CurrencyCode { get; set; }
 }

@@ -262,4 +262,10 @@ public partial class Component
     public int? Index { get; set; }
 
     public string ExcelUrl { get; set; }
+
+    public int? ReportTypeId { get; set; }
+
+    public string ComponentDefaultValueId { get; set; }
+
+    public string CodeId { get; set; }
 }

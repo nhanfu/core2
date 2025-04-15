@@ -70,4 +70,6 @@ public partial class Feature
     public bool IsFlow { get; set; }
 
     public string CodeId { get; set; }
+
+    public string AppId { get; set; }
 }

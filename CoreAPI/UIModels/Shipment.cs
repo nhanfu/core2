@@ -409,6 +409,10 @@ public partial class Shipment
 
     public decimal? ActualProfitUSD { get; set; }
 
+    public decimal? ActualComLocal { get; set; }
+
+    public decimal? ActualComUSD { get; set; }
+
     public bool IsComplete { get; set; }
 
     public DateTime? PriorityDate { get; set; }
@@ -416,4 +420,52 @@ public partial class Shipment
     public string ShipmentDetailId { get; set; }
 
     public DateTime? CompleteDate { get; set; }
+
+    public string FormatChat { get; set; }
+
+    public int? Teus { get; set; }
+
+    public string ResidenceTypeId { get; set; }
+
+    public string AdditionTypeIds { get; set; }
+
+    public string PartnerTypeIds { get; set; }
+
+    public string ArrivalNoticeNotes { get; set; }
+
+    public string ArrivalNoticeTo { get; set; }
+
+    public string DeliveryOrderNotes { get; set; }
+
+    public string DeliveryOrderTo { get; set; }
+
+    public string FeatureName { get; set; }
+
+    public string DocumentNo { get; set; }
+
+    public string ArrivaNo { get; set; }
+
+    public DateTime? ReleaseNotice { get; set; }
+
+    public string DONo { get; set; }
+
+    public string Sercure { get; set; }
+
+    public DateTime? DODate { get; set; }
+
+    public string NominationPartyId { get; set; }
+
+    public string DepartmentId { get; set; }
+
+    public virtual ICollection<Shipment> InverseParent { get; set; } = new List<Shipment>();
+
+    public virtual Shipment Parent { get; set; }
+
+    public virtual ICollection<ShipmentInvoiceDetail> ShipmentInvoiceDetailFile { get; set; } = new List<ShipmentInvoiceDetail>();
+
+    public virtual ICollection<ShipmentInvoiceDetail> ShipmentInvoiceDetailShipment { get; set; } = new List<ShipmentInvoiceDetail>();
+
+    public virtual ICollection<VoucherDetail> VoucherDetailFile { get; set; } = new List<VoucherDetail>();
+
+    public virtual ICollection<VoucherDetail> VoucherDetailShipment { get; set; } = new List<VoucherDetail>();
 }

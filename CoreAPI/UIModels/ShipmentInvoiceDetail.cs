@@ -55,13 +55,7 @@ public partial class ShipmentInvoiceDetail
 
     public decimal? ExchangeRateINV { get; set; }
 
-    public decimal? ExSaleUSD { get; set; }
-
-    public decimal? ExSaleVND { get; set; }
-
-    public decimal? ExProfitUSD { get; set; }
-
-    public decimal? ExProfitVND { get; set; }
+    public decimal? ExchangeRateINV2 { get; set; }
 
     public bool IsContainer { get; set; }
 
@@ -176,4 +170,8 @@ public partial class ShipmentInvoiceDetail
     public string FileNo { get; set; }
 
     public string HblNo { get; set; }
+
+    public virtual Shipment File { get; set; }
+
+    public virtual Shipment Shipment { get; set; }
 }

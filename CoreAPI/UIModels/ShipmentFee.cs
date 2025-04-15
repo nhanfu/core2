@@ -57,14 +57,6 @@ public partial class ShipmentFee
 
     public decimal? ExchangeRateINV { get; set; }
 
-    public decimal? ExSaleUSD { get; set; }
-
-    public decimal? ExSaleVND { get; set; }
-
-    public decimal? ExProfitUSD { get; set; }
-
-    public decimal? ExProfitVND { get; set; }
-
     public bool IsContainer { get; set; }
 
     public bool IsCBM { get; set; }
@@ -75,6 +67,8 @@ public partial class ShipmentFee
 
     public bool IsTrucking { get; set; }
 
+    public bool IsCom { get; set; }
+
     public bool IsKGS { get; set; }
 
     public bool IsGW { get; set; }
@@ -82,6 +76,8 @@ public partial class ShipmentFee
     public bool IsGrossWeight { get; set; }
 
     public bool IsAbs { get; set; }
+
+    public bool IsAn { get; set; }
 
     public int? Order { get; set; }
 
@@ -200,4 +196,20 @@ public partial class ShipmentFee
     public DateTime? CompleteDate { get; set; }
 
     public string MblNo { get; set; }
+
+    public bool IsLockExchange { get; set; }
+
+    public decimal? TotalPaid { get; set; }
+
+    public decimal? ExTotalPaid { get; set; }
+
+    public decimal? TotalRemain { get; set; }
+
+    public decimal? ExTotalRemain { get; set; }
+
+    public decimal? ExchangeRateDebt { get; set; }
+
+    public int? ShipmentTypeId { get; set; }
+
+    public string DepartmentId { get; set; }
 }

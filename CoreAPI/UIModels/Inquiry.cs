@@ -198,4 +198,6 @@ public partial class Inquiry
     public bool NoApproved { get; set; }
 
     public string BookingLocalId { get; set; }
+
+    public string FeatureName { get; set; }
 }

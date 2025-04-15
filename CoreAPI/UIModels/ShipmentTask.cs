@@ -32,4 +32,6 @@ public partial class ShipmentTask
     public DateTime? UpdatedDate { get; set; }
 
     public string UpdatedBy { get; set; }
+
+    public bool IsTracing { get; set; }
 }
