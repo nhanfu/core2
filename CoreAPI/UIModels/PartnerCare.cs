@@ -44,4 +44,6 @@ public partial class PartnerCare
     public DateTime? UpdatedDate { get; set; }
 
     public DateTime? LastNotificationDate { get; set; }
+
+    public virtual Partner Partner { get; set; }
 }

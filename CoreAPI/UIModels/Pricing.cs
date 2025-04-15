@@ -108,4 +108,6 @@ public partial class Pricing
     public string EmptyReturnId { get; set; }
 
     public string FeatureName { get; set; }
+
+    public virtual ICollection<PricingDetail> PricingDetail { get; set; } = new List<PricingDetail>();
 }

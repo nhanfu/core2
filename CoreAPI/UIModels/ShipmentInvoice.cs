@@ -198,4 +198,8 @@ public partial class ShipmentInvoice
     public string IssueInvoiceId { get; set; }
 
     public string VatInvoiceId { get; set; }
+
+    public virtual ICollection<ShipmentInvoice> InverseShipment { get; set; } = new List<ShipmentInvoice>();
+
+    public virtual ShipmentInvoice Shipment { get; set; }
 }

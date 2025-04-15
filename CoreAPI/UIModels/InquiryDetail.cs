@@ -164,4 +164,8 @@ public partial class InquiryDetail
     public string FeatureName { get; set; }
 
     public string EmptyReturnId { get; set; }
+
+    public virtual ICollection<DefaultFee> DefaultFee { get; set; } = new List<DefaultFee>();
+
+    public virtual Inquiry Inquiry { get; set; }
 }

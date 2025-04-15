@@ -611,6 +611,11 @@ public partial class UIContext : DbContext
             entity.Property(e => e.VendorId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+
+            entity.HasOne(d => d.Booking).WithMany(p => p.BookingDetail)
+                .HasForeignKey(d => d.BookingId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_BookingDetail_Booking");
         });
 
         modelBuilder.Entity<ChatEntity>(entity =>
@@ -1001,6 +1006,11 @@ public partial class UIContext : DbContext
             entity.Property(e => e.VendorId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+
+            entity.HasOne(d => d.InquiryDetail).WithMany(p => p.DefaultFee)
+                .HasForeignKey(d => d.InquiryDetailId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_DefaultFee_InquiryDetail");
         });
 
         modelBuilder.Entity<Dictionary>(entity =>
@@ -1686,6 +1696,11 @@ public partial class UIContext : DbContext
             entity.Property(e => e.ViaId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+
+            entity.HasOne(d => d.Inquiry).WithMany(p => p.InquiryDetail)
+                .HasForeignKey(d => d.InquiryId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_InquiryDetail_Inquiry");
         });
 
         modelBuilder.Entity<InvoiceConfig>(entity =>
@@ -2019,6 +2034,10 @@ public partial class UIContext : DbContext
             entity.Property(e => e.UpdatedBy)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+
+            entity.HasOne(d => d.Partner).WithMany(p => p.PartnerCare)
+                .HasForeignKey(d => d.PartnerId)
+                .HasConstraintName("FK_PartnerCare_Partner");
         });
 
         modelBuilder.Entity<PartnerContact>(entity =>
@@ -2047,6 +2066,10 @@ public partial class UIContext : DbContext
             entity.Property(e => e.UpdatedBy)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+
+            entity.HasOne(d => d.Partner).WithMany(p => p.PartnerContact)
+                .HasForeignKey(d => d.PartnerId)
+                .HasConstraintName("FK_PartnerContact_Partner");
         });
 
         modelBuilder.Entity<PartnerCreditPeriod>(entity =>
@@ -2267,6 +2290,11 @@ public partial class UIContext : DbContext
             entity.Property(e => e.VendorId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+
+            entity.HasOne(d => d.Pricing).WithMany(p => p.PricingDetail)
+                .HasForeignKey(d => d.PricingId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_PricingDetail_Pricing");
         });
 
         modelBuilder.Entity<Role>(entity =>
@@ -2950,12 +2978,9 @@ public partial class UIContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false);
 
-            entity.HasOne(d => d.File).WithMany(p => p.ShipmentFeeFile)
-                .HasForeignKey(d => d.FileId)
-                .HasConstraintName("FK_ShipmentFee_Shipment1");
-
-            entity.HasOne(d => d.Shipment).WithMany(p => p.ShipmentFeeShipment)
+            entity.HasOne(d => d.Shipment).WithMany(p => p.ShipmentFee)
                 .HasForeignKey(d => d.ShipmentId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_ShipmentFee_Shipment");
         });
 
@@ -3111,6 +3136,10 @@ public partial class UIContext : DbContext
                 .HasMaxLength(500)
                 .IsUnicode(false);
             entity.Property(e => e.VendorIdsText).HasMaxLength(500);
+
+            entity.HasOne(d => d.Shipment).WithMany(p => p.InverseShipment)
+                .HasForeignKey(d => d.ShipmentId)
+                .HasConstraintName("FK_ShipmentInvoice_ShipmentInvoice");
         });
 
         modelBuilder.Entity<ShipmentInvoiceDetail>(entity =>

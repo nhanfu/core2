@@ -34,4 +34,6 @@ public partial class PartnerContact
     public string UpdatedBy { get; set; }
 
     public DateTime? UpdatedDate { get; set; }
+
+    public virtual Partner Partner { get; set; }
 }

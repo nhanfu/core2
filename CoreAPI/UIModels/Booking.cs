@@ -248,4 +248,6 @@ public partial class Booking
     public string QuotationCode { get; set; }
 
     public string FeatureName { get; set; }
+
+    public virtual ICollection<BookingDetail> BookingDetail { get; set; } = new List<BookingDetail>();
 }

@@ -82,4 +82,6 @@ public partial class DefaultFee
     public decimal? ExchangeRateVND { get; set; }
 
     public decimal? ExchangeRateUSD { get; set; }
+
+    public virtual InquiryDetail InquiryDetail { get; set; }
 }

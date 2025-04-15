@@ -90,4 +90,6 @@ public partial class BookingDetail
     public bool IsAdvCustomer { get; set; }
 
     public bool IsAdvProvider { get; set; }
+
+    public virtual Booking Booking { get; set; }
 }

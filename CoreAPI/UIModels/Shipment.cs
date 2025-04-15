@@ -461,9 +461,7 @@ public partial class Shipment
 
     public virtual Shipment Parent { get; set; }
 
-    public virtual ICollection<ShipmentFee> ShipmentFeeFile { get; set; } = new List<ShipmentFee>();
-
-    public virtual ICollection<ShipmentFee> ShipmentFeeShipment { get; set; } = new List<ShipmentFee>();
+    public virtual ICollection<ShipmentFee> ShipmentFee { get; set; } = new List<ShipmentFee>();
 
     public virtual ICollection<ShipmentInvoiceDetail> ShipmentInvoiceDetailFile { get; set; } = new List<ShipmentInvoiceDetail>();
 

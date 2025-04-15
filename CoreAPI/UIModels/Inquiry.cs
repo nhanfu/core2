@@ -200,4 +200,6 @@ public partial class Inquiry
     public string BookingLocalId { get; set; }
 
     public string FeatureName { get; set; }
+
+    public virtual ICollection<InquiryDetail> InquiryDetail { get; set; } = new List<InquiryDetail>();
 }

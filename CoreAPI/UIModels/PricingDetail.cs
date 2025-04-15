@@ -72,4 +72,6 @@ public partial class PricingDetail
     public bool IsLogistics { get; set; }
 
     public bool IsTrucking { get; set; }
+
+    public virtual Pricing Pricing { get; set; }
 }
