@@ -2949,6 +2949,14 @@ public partial class UIContext : DbContext
             entity.Property(e => e.VoucherId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+
+            entity.HasOne(d => d.File).WithMany(p => p.ShipmentFeeFile)
+                .HasForeignKey(d => d.FileId)
+                .HasConstraintName("FK_ShipmentFee_Shipment1");
+
+            entity.HasOne(d => d.Shipment).WithMany(p => p.ShipmentFeeShipment)
+                .HasForeignKey(d => d.ShipmentId)
+                .HasConstraintName("FK_ShipmentFee_Shipment");
         });
 
         modelBuilder.Entity<ShipmentFreight>(entity =>

@@ -212,4 +212,8 @@ public partial class ShipmentFee
     public int? ShipmentTypeId { get; set; }
 
     public string DepartmentId { get; set; }
+
+    public virtual Shipment File { get; set; }
+
+    public virtual Shipment Shipment { get; set; }
 }
