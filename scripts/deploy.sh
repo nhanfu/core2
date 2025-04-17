@@ -1,4 +1,3 @@
-# filepath: /home/nhan/projects/corejs/scripts/deploy.sh
 #!/bin/bash
 set -e
 
@@ -8,6 +7,13 @@ echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 echo "Pulling Docker images..."
 sudo docker pull $DOCKER_USERNAME/corejs-coreapi:${IMAGE_TAG}
 sudo docker pull $DOCKER_USERNAME/corejs-frontend:${IMAGE_TAG}
+
+echo "Checking if docker-compose.yml exists..."
+if [ -f docker-compose.yml ]; then
+  echo "docker-compose.yml already exists. Overwriting..."
+else
+  echo "docker-compose.yml does not exist. Creating a new one..."
+fi
 
 echo "Generating docker-compose.yml..."
 cat <<COMPOSE > docker-compose.yml
@@ -29,6 +35,7 @@ services:
 COMPOSE
 
 echo "Starting the application..."
+docker compose down
 docker compose up -d
 
 # Save deployment info to a file
