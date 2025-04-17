@@ -95,10 +95,11 @@ jobs:
             chmod +x $DESTINATION_PATH/env.sh
           "
       
-          # Run the deployment script on the target server and clean up
+          # Run the deployment script in the correct directory and clean up
           sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p $PORT $USERNAME@$SERVER "
-            chmod +x $DESTINATION_PATH/deploy.sh &&
-            source $DESTINATION_PATH/env.sh &&
-            bash $DESTINATION_PATH/deploy.sh &&
-            rm -f $DESTINATION_PATH/deploy.sh $DESTINATION_PATH/env.sh
+            cd $DESTINATION_PATH &&
+            chmod +x deploy.sh &&
+            source env.sh &&
+            bash deploy.sh &&
+            rm -f deploy.sh env.sh
           "
