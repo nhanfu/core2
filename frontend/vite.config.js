@@ -10,6 +10,6 @@ export default defineConfig({
   server: {
     host: true, // Allows the server to be accessed externally
     strictPort: false, // Disables strict host checking,
-    allowedHosts: process.env.ALLOWED_HOSTS ? process.env.ALLOWED_HOSTS.split(',') : []
+    allowedHosts: process.env.ALLOWED_HOSTS ? process.env.ALLOWED_HOSTS.split(',') : ['logistics.digotech.net']
   }
 });
