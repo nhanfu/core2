@@ -103,5 +103,5 @@ jobs:
             chmod +x deploy.sh &&
             source env.sh &&
             bash deploy.sh &&
-            rm -f deploy.sh env.sh
+            rm -f deploy.sh
           "
