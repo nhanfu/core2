@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
@@ -49,7 +51,7 @@ jobs:
           USERNAME: ${{ secrets.USERNAME }}
           SERVER: ${{ secrets.SERVER }}
           PORT: ${{ secrets.PORT }}
-          DESTINATION_PATH: "${{ secrets.DESTINATION_PATH }}"
+          DESTINATION_PATH: "/home/${{ secrets.USERNAME }}/deployments/corejs"
         run: |
           cat <<EOF > deploy.sh
           #!/bin/bash
