@@ -171,13 +171,6 @@ public class UserService
                 StatusCode = HttpStatusCode.BadRequest
             };
         }
-        if (matchedUser.LoginFailedCount >= UserServiceHelpers.MAX_LOGIN && matchedUser.LastFailedLogin < DateTime.Now.AddMinutes(5))
-        {
-            throw new ApiException($"Tài khoản {login.UserName} đã bị khóa trong 5 phút!")
-            {
-                StatusCode = HttpStatusCode.Conflict
-            };
-        }
         var hashedPassword = GetHash(Utils.SHA256, login.Password + matchedUser.Salt);
         var matchPassword = matchedUser.Password == hashedPassword;
         List<PatchDetail> changes = [new PatchDetail { Field = UserServiceHelpers.IdField, OldVal = matchedUser.Id }];

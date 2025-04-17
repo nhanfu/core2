@@ -79,6 +79,7 @@ jobs:
           PORT: ${{ secrets.PORT }}
           DESTINATION_PATH: "/home/${{ secrets.USERNAME }}/deployments/corejs"
           IMAGE_TAG: "${{ steps.meta.outputs.date }}-${{ steps.meta.outputs.sha_short }}"
+          ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
         run: |
           # Install sshpass for password-based authentication
           sudo apt-get update && sudo apt-get install -y sshpass
@@ -92,6 +93,7 @@ jobs:
             echo 'export DOCKER_USERNAME=$DOCKER_USERNAME' >> $DESTINATION_PATH/env.sh &&
             echo 'export DOCKER_PASSWORD=$DOCKER_PASSWORD' >> $DESTINATION_PATH/env.sh &&
             echo 'export IMAGE_TAG=$IMAGE_TAG' >> $DESTINATION_PATH/env.sh &&
+            echo 'export ALLOWED_HOSTS=$ALLOWED_HOSTS' >> $DESTINATION_PATH/env.sh &&
             chmod +x $DESTINATION_PATH/env.sh
           "
       

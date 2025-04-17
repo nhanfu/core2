@@ -34,6 +34,7 @@ services.AddLogging(config =>
     config.ClearProviders();
     config.AddConfiguration(conf.GetSection("Logging"));
     config.AddDebug();
+    config.AddConsole();
     config.AddEventSourceLogger();
 });
 services.AddHangfire(configuration => configuration

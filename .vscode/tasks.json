@@ -3,10 +3,11 @@
     "tasks": [
         {
             "label": "build",
-            "command": "msbuild",
+            "command": "dotnet",
             "type": "process",
             "args": [
-                "${workspaceFolder}/Core/Core.csproj",
+                "build",
+                "${workspaceFolder}/Core.sln",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
