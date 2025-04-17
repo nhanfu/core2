@@ -1,0 +1,258 @@
+import { EditableComponent } from './editableComponent.js';
+import { Html } from "./utils/html.js";
+import { Utils } from "./utils/utils.js";
+import { PositionEnum, KeyCodeEnum, ObservableList, Component, EventType, ValidationRule } from "./models/index.js";
+import { LangSelect } from "./utils/langSelect.js";
+import { ComponentExt } from './utils/componentExt.js';
+import { GridView } from './gridView.js';
+import { Client } from './clients/client.js';
+import SlimSelect from 'slim-select';
+
+export class Select extends EditableComponent {
+    IsSearchEntry = true;
+    IsMultiple = false;
+    /**
+     * @type {SlimSelect}
+     */
+    SS;
+    Data;
+    /**
+     * Create instance of component
+     * @param {Component | null} ui 
+     * @param {HTMLElement | null} ele 
+     */
+    constructor(ui, ele = null) {
+        super(ui);
+        this.DefaultValue = '';
+        this.SEntryClass = "search-entry"
+        this.Meta.ComponentGroup = null;
+        this.Meta.Row = this.Meta.Row ?? 50;
+        this.RowData = new ObservableList();
+        /** @type {HTMLDivElement} */
+        this._input = null;
+        /** @type {HTMLElement} */
+        this._rootResult = null;
+        /** @type {HTMLElement} */
+        this._parentInput = null;
+        /** @type {HTMLElement} */
+        this._backdrop = null;
+        this._waitForInput = null;
+        this._waitForDispose = null;
+        this._contextMenu = false;
+        this.SearchResultEle = null;
+        this._gv = null;
+        let containId = Utils.isNullOrWhiteSpace(this.Meta.TabGroup) ? this.Meta.FieldName.substr(this.Meta.FieldName.length - 2) === this.IdField : this.Meta.TabGroup.substr(this.Meta.TabGroup.length - 2) === this.IdField;
+        if (containId) {
+            this.DisplayField = Utils.isNullOrWhiteSpace(this.Meta.TabGroup) ? this.Meta.FieldName.substr(0, this.Meta.FieldName.length - 2) : this.Meta.TabGroup.substr(0, this.Meta.TabGroup.length - 2);
+        }
+        else {
+            this.DisplayField = this.Meta.FieldName + "MasterData";
+        }
+        if (this.Meta.FieldName == "CurrencyId") {
+            this.IsCurrency = true;
+        }
+    }
+
+    Render() {
+        this.SetDefaultVal();
+        this._value = this.Entity[this.Name];
+        this.RenderInputAndEvents();
+        if (this.Meta.ShowHotKey) {
+            this.RenderIcons();
+        }
+        this.Data = Utils.IsFunction(this.Meta.Query, false, this);
+        this.Data.unshift({
+            Id: null,
+            Name: 'Selected Option',
+            Description: 'Selected Option'
+        });
+        this.SS = new SlimSelect({
+            select: this.Element.firstElementChild,
+            data: this.Data.map(x => ({ text: x.Name, value: x.Id, html: x.Description || x.Name })),
+            settings: {
+                disabled: this.Meta.Disabled,
+                showSearch: this.Data.length >= 5
+            },
+            events: {
+                afterChange: (newVal) => {
+                    var mapEntity = this.Data.find(x => {
+                        const xId = x?.Id != null ? x.Id.toString() : null;
+                        const entityValue = newVal[0].value != null ? newVal[0].value.toString() : null;
+                        return xId === entityValue;
+                    });
+                    if (mapEntity && mapEntity.Id != this.Entity[this.Name]) {
+                        this.EntrySelected(mapEntity);
+                    }
+                }
+            }
+        });
+        this.SS.setSelected(this.Entity[this.Name] || this.Data[0].Id);
+        this.FindMatchText();
+    }
+
+    RenderInputAndEvents() {
+        if (this.Element == null) {
+            this._input = Html.Take(this.ParentElement).TextAlign("left").Div.Position(PositionEnum.relative).TabIndex(-1).ClassName(this.SEntryClass).Select.TabIndex(-1).GetContext();
+            this._parentInput = this._input.parentElement;
+            this.Element = this._input.parentElement;
+        }
+        else {
+            this._input = this.Element.firstElementChild;
+        }
+        if (this.Parent.IsListViewItem) {
+            Html.Take(this.Element.parentElement).Event(EventType.KeyDown, (e) => this.SEKeydownHandler(e));
+        }
+        else {
+            Html.Take(this.Element).Event(EventType.KeyDown, (e) => this.SEKeydownHandler(e));
+        }
+    }
+
+    SEKeydownHandler(e) {
+        if (this.Disabled || e === null) {
+            return;
+        }
+        let code = e.KeyCodeEnum();
+        switch (code) {
+            case KeyCodeEnum.Enter:
+                this.SS.open();
+                break;
+            default:
+                break;
+        }
+    }
+
+    Dispose() {
+        super.Dispose();
+    }
+
+    FindMatchText() {
+        if (this.Entity[this.Meta.FieldName]) {
+            this.Matched = this.Data.find(x => {
+                const xId = x?.Id != null ? x.Id.toString() : null;
+                const entityValue = this.Entity?.[this.Meta.FieldName] != null ? this.Entity[this.Meta.FieldName].toString() : null;
+                return xId === entityValue;
+            });
+            this.Entity[this.DisplayField] = this.Matched;
+        }
+        else {
+            this.Entity[this.Meta.FieldName] = null;
+            this.Entity[this.DisplayField] = null;
+        }
+        this.UpdateValue();
+    }
+
+    /**
+     * Gets the value text from the button component.
+     * @returns {string} The text value of the component.
+     */
+    GetValueText() {
+        const selected = this.SS.getSelected()[0];
+        if (selected) {
+            this.Matched = this.Data.find(x => {
+                const xId = x?.Id != null ? x.Id.toString() : null;
+                const entityValue = selected != null ? selected.toString() : null;
+                return xId === entityValue;
+            });
+            return this.Meta.FormatData ? Utils.FormatEntity(this.Meta.FormatData, this.Matched) : this.Matched[this.IdField];
+        }
+        else {
+            this.Matched = null;
+            return '';
+        }
+    }
+
+    UpdateValue() {
+        if (!this.Dirty && !Utils.isNullOrWhiteSpace(this.Meta.FormatData) && this.Entity[this.DisplayField]) {
+            let res = Utils.FormatEntity(this.Meta.FormatData, this.Entity[this.DisplayField]);
+            this.OriginalText = res;
+            this.DOMContentLoaded?.invoke();
+            this.OldValue = this.Entity[this.Meta.FieldName];
+        }
+    }
+
+    EntrySelected(rowData) {
+        this.EmptyRow = false;
+        if (rowData === null || this.Disabled) {
+            return;
+        }
+        this.Dirty = true;
+        let oldMatch = this.Matched;
+        if (rowData.Id) {
+            this.Matched = rowData;
+            this.Entity[this.DisplayField] = this.Matched;
+        }
+        else {
+            this.Matched = null;
+            this.Entity[this.DisplayField] = null;
+        }
+        let oldValue = this._value;
+        this._value = rowData.Id;
+        this.Entity[this.Name] = this._value;
+        this.Matched = rowData;
+        if (this._gv !== null) {
+            this._gv.Show = false;
+        }
+        this.PopulateFields(this.Matched);
+        this.DispatchEvent(this.Meta.Events, EventType.Change, this, this.Entity, rowData, oldMatch).then(() => {
+            this.UserInput?.Invoke({ NewData: this._value, OldData: oldValue, EvType: EventType.Change });
+        });
+        window.setTimeout(() => {
+            if (this.Parent.IsListViewItem) {
+                this.Element.parentElement.focus()
+            }
+            else {
+                this.Element.focus()
+            }
+        }, 100);
+    }
+
+    UpdateView(force = false, dirty = null, ...componentNames) {
+        this.Data = Utils.IsFunction(this.Meta.Query, false, this);
+        this.Data.unshift({
+            Id: null,
+            Name: 'Selected Option',
+            Description: 'Selected Option'
+        });
+        this.SS.setData(this.Data.map(x => ({ text: x.Name, value: x.Id, html: x.Description || x.Name })));
+        this._value = this.Entity[this.Meta.FieldName];
+        if (this._value === null) {
+            this.Matched = null;
+            this.Entity[this.DisplayField] = null;
+            this.SS.setSelected(this.Data[0].Id);
+            this.FindMatchText();
+            return;
+        }
+        else {
+            this.SS.setSelected(this._value);
+            this.FindMatchText();
+        }
+    }
+
+    async ValidateAsync() {
+        if (this.ValidationRules.length == 0) {
+            return true;
+        }
+        this.ValidationResult = [];
+        this.ValidateRequired(this._value);
+        this.Validate(ValidationRule.Equal, this._value, (value, ruleValue) => value === ruleValue);
+        this.Validate(ValidationRule.NotEqual, this._value, (value, ruleValue) => value !== ruleValue);
+        return this.IsValid;
+    }
+
+    SetDisableUI(value) {
+        if (this.SS !== null) {
+            if (value) {
+                this.SS.disable();
+            }
+            else {
+                this.SS.enable();
+            }
+        }
+    }
+
+    RemoveDOM() {
+        if (this._input !== null && this._input.parentElement !== null) {
+            this._input.parentElement.remove();
+        }
+    }
+}

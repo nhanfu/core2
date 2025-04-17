@@ -1,0 +1,456 @@
+import { SqlViewModel } from "../models/sqlViewModel.js";
+import { BadGatewayQueue } from "../models/badGatewayQueue.js";
+import { Token } from "../models/token.js";
+import { Utils } from "../utils/utils.js";
+import { PatchVM } from "../models/patch.js";
+import { EmailVM } from "../models/emailVM.js";
+import { Toast } from "../toast.js";
+import { Path } from "../utils/path.js";
+import { Entity } from "../models/enum.js";
+import { Action } from "../models/action.js";
+
+export class Client {
+    /** @type {Entity[]} */
+    static Entities = [];
+    static EpsilonNow = new Date(Date.now() + (1 * 60 * 1000));
+    static ErrorMessage = "Hệ thống đang cập nhật vui lòng chờ trong 30s!";
+    static ModelNamespace;
+    static entities;
+    static token;
+    static GuidLength = 36;
+    // @ts-ignore
+    static Host = (document.head.host?.content || window.location.host).toLowerCase();
+    // @ts-ignore
+    static BaseUri = (document.head.baseUri?.content || window.location.origin).toLowerCase();
+    // @ts-ignore
+    static IsPortal = document.head.startup?.content !== "admin";
+    // @ts-ignore
+    static MetaConn = document.head.metaKey?.content || "default";
+    // @ts-ignore
+    static DataConn = document.head.dataConn?.content || "bl";
+    // @ts-ignore
+    static Tenant = document.head.tenant?.content || "System";
+    // @ts-ignore
+    static Env = document.head.env?.content || "test";
+    // @ts-ignore
+    static FileFTP = document.head.file?.content || "/user";
+    // @ts-ignore
+    /** @type {string} */
+    static api = (() => {
+        const metaTag = Array.from(document.head.childNodes).find(x => x.name === "api");
+        return metaTag ? metaTag.content : "http://localhost:8005";
+    })();
+    // @ts-ignore
+    static Config = document.head.config?.content || "";
+    static BadGatewayRequest = new BadGatewayQueue();
+    static UnAuthorizedEventHandler = new Action();
+    static SignOutEventHandler = new Action();
+    // @ts-ignore
+    static get Origin() { return document.head.origin?.content || window.location.origin; }
+    _nameSpace;
+    _config;
+    CustomPrefix = (() => {
+        const prefixElement = Array.from(document.head.children).find(x => x instanceof HTMLMetaElement && x.name === "prefix");
+        return prefixElement?.content;
+    })();
+
+    constructor(entityName, ns = "", config = false) {
+        this._nameSpace = ns;
+        this._config = config;
+        if (this._nameSpace && this._nameSpace.charAt(this._nameSpace.length - 1) !== '.') {
+            this._nameSpace += '.';
+        }
+        this.EntityName = entityName;
+    }
+
+    /** @type {Client} */
+    static _instance;
+    /** @type {Client} */
+    static get Instance() {
+        if (!Client._instance) {
+            Client._instance = new Client();
+        }
+        return Client._instance;
+    }
+    /** @type {Token} */
+    static get Token() {
+        return JSON.parse(localStorage.getItem('UserInfo'));
+    }
+
+    static set Token(value) {
+        localStorage.setItem('UserInfo', JSON.stringify(value));
+    }
+    static get SystemRole() {
+        return Client.Token.RoleNames.some(x => x.toLowerCase() == "admin");
+    }
+    static get BodRole() {
+        return Client.Token.RoleNames.some(x => x.toLowerCase() == "bod");
+    }
+    /**
+     * @param {SqlViewModel} vm
+     */
+    async UserSvc(vm, annonymous = false) {
+        /** @type {XHRWrapper} */
+        // @ts-ignore
+        const data = {
+            Value: JSON.stringify(vm),
+            Url: Utils.UserSvc,
+            IsRawString: true,
+            Method: "POST",
+            AllowAnonymous: annonymous
+        };
+        return this.SubmitAsync(data);
+    }
+
+    async ComQuery(vm) {
+        /** @type {XHRWrapper} */
+        // @ts-ignore
+        const data = {
+            Value: JSON.stringify(vm),
+            Url: Utils.ComQuery,
+            IsRawString: true,
+            Method: "POST"
+        };
+        return this.SubmitAsync(data);
+    }
+    /**
+     * Submits an asynchronous request with authentication token.
+     * @param {XHRWrapper} options Request options.
+     * @returns {Promise<any>} Response data.
+     */
+    async SubmitAsyncWithToken(options) {
+        const isFormData = !!options.FormData;
+        options.Headers = {
+            ...(!options.Headers && !isFormData && { "Content-Type": "application/json" }),
+            ...(options.Headers || {}),
+            ...(!options.AllowAnonymous && { Authorization: `Bearer ${Client.Token?.AccessToken}` }),
+            "User-Agent": "Mozilla/5.0"
+        };
+
+        const url = Client.api + (options.FinalUrl ?? options.Url);
+
+        try {
+            const response = await fetch(url, {
+                method: options.Method,
+                headers: options.Headers,
+                body: isFormData ? options.FormData : options.JsonData
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                return Promise.reject(error);
+            }
+
+            return response.headers.get("content-type")?.includes("application/json")
+                ? response.json()
+                : response.text();
+        } catch (error) {
+            return Promise.reject(error);
+        }
+    }
+    /**
+     * 
+     * @param {XHRWrapper} options 
+     * @returns 
+     */
+    async SubmitAsync(options) {
+        if (!options.AllowAnonymous) {
+            await Client.RefreshToken();
+        }
+        return await this.SubmitAsyncWithToken(options);
+    }
+    /**
+     * @param {[]} arrays
+     */
+    async GetByIdsAsync(arrays) {
+        const data = {
+            JsonData: JSON.stringify(arrays),
+            Url: Utils.ComQuerys,
+            IsRawString: true,
+            Method: "POST"
+        };
+        return this.SubmitAsync(data);
+    }
+    /**
+     * @param {string} table
+     * @param {string} connKey
+     * @param {string[]} ids
+     */
+    async GetByIdAsync(table, ids) {
+        const data = {
+            JsonData: JSON.stringify({ Table: table, Id: ids }),
+            Url: Utils.ComQuery,
+            IsRawString: true,
+            Method: "POST"
+        };
+        return this.SubmitAsync(data);
+    }
+    /**
+     * @param {string} table
+     * @param {string} connKey
+     * @param {string[]} ids
+     */
+    async GetByNameAsync(table, ids, format) {
+        const data = {
+            JsonData: JSON.stringify({ Table: table, Id: ids, Format: format }),
+            Url: Utils.ComQueryByName,
+            IsRawString: true,
+            Method: "POST"
+        };
+        return this.SubmitAsync(data);
+    }
+    async NotificationUser(entity, ...user) {
+        const data = {
+            JsonData: JSON.stringify({ Entity: entity, Rule: user }),
+            Url: "/api/feature/notificationuser",
+            IsRawString: true,
+            Method: "POST"
+        };
+        return this.SubmitAsync(data);
+    }
+    async NotificationRole(entity, ...role) {
+        const data = {
+            JsonData: JSON.stringify({ Entity: entity, Rule: role }),
+            Url: "/api/feature/notificationrole",
+            IsRawString: true,
+            Method: "POST"
+        };
+        return this.SubmitAsync(data);
+    }
+    /**
+     * @param {string} name
+     */
+    async GetService(name) {
+        const data = {
+            JsonData: JSON.stringify({ Name: name }),
+            Url: "/api/feature/getService",
+            Method: "POST"
+        };
+        return this.SubmitAsync(data);
+    }
+
+    async PostAsync(value, subUrl = "", annonymous = false) {
+        /** @type {XHRWrapper} */
+        // @ts-ignore
+        const data = {
+            JsonData: JSON.stringify(value),
+            Url: subUrl,
+            Method: "POST",
+            AllowAnonymous: annonymous,
+        };
+        return this.SubmitAsync(data);
+    }
+
+    /**
+     * 
+     * @param {PatchVM | PatchVM[]} value 
+     * @param {function} errHandler 
+     * @param {boolean} annonymous 
+     * @returns {Promise<any>} Effected rows in the database
+     */
+    async PatchAsync(value, errHandler = null, annonymous = false) {
+        /** @type {XHRWrapper} */
+        // @ts-ignore
+        const data = {
+            JsonData: JSON.stringify(value),
+            IsRawString: true,
+            Url: Utils.PatchSvc,
+            Headers: { "Content-type": "application/json" },
+            Method: "PATCH",
+            AllowAnonymous: annonymous,
+            ErrorHandler: errHandler
+        };
+        return this.SubmitAsync(data);
+    }
+
+    /**
+     * 
+     * @param {PatchVM[]} value 
+     * @param {function} errHandler 
+     * @param {boolean} annonymous 
+     * @returns {Promise<any>} Effected rows in the database
+     */
+    async PatchAsync2(value, errHandler = null, annonymous = false) {
+        /** @type {XHRWrapper} */
+        // @ts-ignore
+        const data = {
+            JsonData: JSON.stringify(value),
+            IsRawString: true,
+            Url: Utils.PatchSvcs,
+            Headers: { "Content-type": "application/json" },
+            Method: "PATCH",
+            AllowAnonymous: annonymous,
+            ErrorHandler: errHandler
+        };
+        return this.SubmitAsync(data);
+    }
+
+    async PostFilesAsync(file, url = "", progressHandler = null) {
+        const formData = new FormData();
+        formData.append("file", file);
+        /** @type {XHRWrapper} */
+        // @ts-ignore
+        const data = {
+            FormData: formData,
+            File: file,
+            ProgressHandler: progressHandler,
+            Method: "POST",
+            Url: url
+        };
+        return await this.SubmitAsync(data);
+    }
+
+    /**
+     * @param {EmailVM} email
+     */
+    async SendMail(email) {
+        // @ts-ignore
+        return this.SubmitAsync({
+            Value: email,
+            Method: "POST",
+            Url: "Email"
+        });
+    }
+
+    /**
+     * @param {string[]} ids
+     * @param {string} table
+     * @param {string} connKey
+     */
+    async DeactivateAsync(ids, table, connKey) {
+        const vm = {
+            Ids: ids,
+            Params: table,
+            MetaConn: Client.MetaConn,
+            DataConn: connKey || Client.DataConn
+        };
+        // @ts-ignore
+        return this.SubmitAsync({
+            Url: Utils.DeactivateSvc,
+            Value: JSON.stringify(vm),
+            Method: "DELETE",
+            IsRawString: true,
+            Headers: {
+                "Content-type": "application/json"
+            }
+        });
+    }
+
+    async HardDeleteAsync(ids, table, newId, comId) {
+        const vm = {
+            Table: table,
+            NewId: newId || null,
+            ComId: comId || null,
+            Delete: [
+                {
+                    Table: table,
+                    Ids: ids
+                }
+            ],
+        };
+        return this.SubmitAsync({
+            Url: Utils.DeleteSvc,
+            JsonData: JSON.stringify(vm),
+            Method: "DELETE",
+            IsRawString: true,
+            Headers: {
+                "Content-type": "application/json"
+            }
+        });
+    }
+
+    async GetConfig(name, scope = 'global') {
+        return Client.Instance.UserSvc({
+            MetaConn: this.MetaConn,
+            DataConn: this.DataConn,
+            ComId: "UserSetting",
+            Action: "GetConfig",
+            Params: JSON.stringify({ name: name, scope: scope })
+        });
+    }
+
+    static async LoadScript(src) {
+        const scriptExists = Array.from(document.body.children).some(x => x instanceof HTMLScriptElement && x.src.split("/").pop() === src.split("/").pop());
+        if (scriptExists) return true;
+        const tcs = new Promise((resolve) => {
+            const script = document.createElement("script");
+            script.src = src;
+            script.addEventListener("load", () => {
+                resolve(true);
+            });
+            script.onerror = () => {
+                resolve(true);
+                return false;
+            };
+            document.body.appendChild(script);
+        });
+        return tcs;
+    }
+
+    static async RefreshToken(success = null) {
+        const oldToken = Client.Token;
+        if (!oldToken || new Date(oldToken.RefreshTokenExp) <= Client.EpsilonNow) return null;
+        if (new Date(oldToken.AccessTokenExp) > Client.EpsilonNow) return oldToken;
+        if (new Date(oldToken.AccessTokenExp) <= Client.EpsilonNow && new Date(oldToken.RefreshTokenExp) > Client.EpsilonNow) {
+            const newToken = await Client.GetToken(oldToken);
+            if (newToken) {
+                Client.Token = newToken;
+                success?.(newToken);
+            }
+            return newToken;
+        }
+    }
+
+    /**
+     * @param {Token} oldToken
+     */
+    static async GetToken(oldToken) {
+        // @ts-ignore
+        const newToken = await Client.Instance.SubmitAsync({
+            NoQueue: true,
+            Url: `/api/auth/refreshToken?t=${Client.Token.TenantCode || Client.Tenant}`,
+            Method: "POST",
+            JsonData: JSON.stringify({ RefreshToken: oldToken.RefreshToken, AccessToken: oldToken.AccessToken }),
+            AllowAnonymous: true,
+            ErrorHandler: (xhr) => {
+                if (xhr.status === 400) {
+                    Client.Token = null;
+                    Toast.Warning("Phiên truy cập đã hết hạn! Vui lòng chờ trong giây lát, hệ thống đang tải lại trang");
+                }
+            },
+        });
+        return newToken;
+    }
+
+    /**
+     * @param {string} path
+     */
+    static RemoveGuid(path) {
+        const url = path;
+        const filename = url.split("/").pop(); // Lấy phần tên file
+        const cleanFilename = filename.replace(/.{36}(?=\.\w+$)/, "");
+        return cleanFilename;
+    }
+    /**
+     * @param {string} path
+     */
+    static async Download(path) {
+        const removePath = this.RemoveGuid(path);
+        const url = path.includes("http") ? path : Path.Combine(Client.Origin, path);
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+            const blob = await response.blob();
+            const objectUrl = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = objectUrl;
+            a.setAttribute("download", removePath);
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(objectUrl);
+        } catch (error) {
+            console.error("Download failed:", error);
+        }
+    }
+}

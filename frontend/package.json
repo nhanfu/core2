@@ -1,0 +1,54 @@
+{
+  "name": "htmljs-code",
+  "version": "67.0.109",
+  "description": "",
+  "main": "lib/index.js",
+  "module": "lib/index.js",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nguyentrantin98/htmljs-design.git"
+  },
+  "homepage": "https://github.com/nguyentrantin98/example-htmljs-code",
+  "files": [
+    "lib",
+    "README.md"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite",
+    "build1": "vite build",
+    "serve": "vite preview"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "@reduxjs/toolkit": "^2.6.1",
+    "dayjs": "^1.11.13",
+    "decimal.js": "^10.5.0",
+    "draggabilly": "^3.0.0",
+    "echarts": "^5.6.0",
+    "emoji-mart": "^5.6.0",
+    "emoji-picker-react": "^4.12.0",
+    "flatpickr": "^4.6.13",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-icons": "^5.5.0",
+    "react-markdown": "^10.1.0",
+    "react-redux": "^9.2.0",
+    "react-toastify": "^11.0.5",
+    "reconnecting-websocket": "^4.4.0",
+    "rehype-highlight": "^7.0.2",
+    "remark-gfm": "^4.0.1",
+    "slim-select": "^2.10.0",
+    "sortablejs": "^1.15.6",
+    "tinymce": "^7.7.1",
+    "uuid": "^11.1.0",
+    "vite": "^6.2.1",
+    "xlsx": "^0.18.5"
+  }
+}

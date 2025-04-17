@@ -1,0 +1,386 @@
+import {
+  Client,
+  EditableComponent,
+  Feature,
+  Html,
+  ComponentExt,
+  ChromeTabs,
+  LangSelect,
+} from "../../lib";
+import EventType from "../../lib/models/eventType.js";
+import { ElementType } from "../../lib/models/elementType.js";
+import Sortable, { Swap } from "sortablejs";
+export class MenuComponent extends EditableComponent {
+  CurrentHref;
+  /**
+   * Creates an instance of the MenuComponent.
+   * @param {Component} meta - The UI component.
+   * @param {HTMLElement} ele - The HTML element.
+   */
+  constructor(meta, ele) {
+    super(meta, ele);
+    this.CurrentHref = window.location.hash;
+    if (this.CurrentHref.startsWith("#/")) {
+      this.CurrentHref = this.GetFeatureNameFromUrl().pathname;
+    }
+  }
+  /** @type {MenuComponent} */
+  static get Instance() {
+    this._instance = new MenuComponent();
+    return this._instance;
+  }
+  /**
+   * @returns {string | null}
+   */
+  GetFeatureNameFromUrl() {
+    let hash = window.location.hash; // Get the full hash (e.g., '#/chat-editor?Id=-00612540-0000-0000-8000-4782e9f44882')
+
+    if (hash.startsWith("#/")) {
+      hash = hash.replace("#/", ""); // Remove the leading '#/'
+    }
+
+    if (!hash.trim() || hash == undefined) {
+      return null; // Return null if the hash is empty or undefined
+    }
+
+    let [pathname, queryString] = hash.split("?"); // Split the hash into pathname and query string
+    let params = new URLSearchParams(queryString); // Parse the query string into a URLSearchParams object
+    if (pathname.includes("/")) {
+      let segments = pathname.split("/");
+      pathname = segments[segments.length - 1] || segments[segments.length - 2];
+    }
+    return {
+      pathname: pathname || null, // Pathname (e.g., 'chat-editor')
+      params: Object.fromEntries(params.entries()), // Query parameters (e.g., { Id: '-00612540-0000-0000-8000-4782e9f44882' })
+    };
+  }
+
+  Render() {
+    new Promise(() => {
+      Client.Instance.SubmitAsync({
+        Url: `/api/feature/getMenu`,
+        IsRawString: true,
+        Method: "GET",
+      }).then((features) => {
+        var cloneFeature = JSON.parse(JSON.stringify(features));
+        Html.Take(".search-content")
+          .Input.Type("search")
+          .Event(EventType.Input, (e) => {
+            var actFeature = JSON.parse(JSON.stringify(features));
+            if (e.target.value) {
+              var newFeatures = JSON.parse(
+                JSON.stringify(
+                  actFeature.filter(
+                    (x) =>
+                      !x.InverseParent &&
+                      LangSelect.Get(x.Label).toLowerCase().includes(
+                        e.target.value.trim().toLowerCase()
+                      )
+                  )
+                )
+              );
+              newFeatures.forEach((x) => {
+                x.ParentId = null;
+                x.InverseParent = null;
+              });
+              this.BuildFeatureTree(newFeatures);
+              this.Features = this.Features.filter(x => !x.ParentId || (x.Parent && t.IsMenu));
+              this.RenderMenu(this.Features);
+            } else {
+              this.BuildFeatureTree(actFeature);
+              this.RenderMenu(this.Features);
+            }
+          })
+          .ClassName("form-control")
+          .PlaceHolder("Search...")
+          .End.Render();
+        this.BuildFeatureTree(cloneFeature);
+        this.RenderMenu(this.Features);
+        if (Client.Token.Vendor.Icon) {
+          var icon = document.querySelector("#iconweb");
+          icon.href = Client.Token.Vendor.Icon;
+        }
+      });
+    });
+  }
+
+  BuildFeatureTree(features) {
+    const dic = features
+      .filter((f) => f.IsMenu)
+      .reduce((acc, f) => {
+        acc[f.Id] = f;
+        return acc;
+      }, {});
+
+    Object.values(dic).forEach((menu) => {
+      if (menu.ParentId !== null && dic.hasOwnProperty(menu.ParentId)) {
+        const parent = dic[menu.ParentId];
+        if (
+          parent.InverseParent === undefined ||
+          parent.InverseParent === null
+        ) {
+          parent.InverseParent = [];
+        }
+        parent.InverseParent.push(menu);
+      }
+    });
+
+    Object.values(dic).forEach((menu) => {
+      if (menu.InverseParent) {
+        menu.InverseParent.sort((a, b) => a.Order - b.Order);
+      }
+    });
+
+    this.Features = features
+      .filter((f) => f.ParentId === null && f.IsMenu)
+      .sort((a, b) => a.Order - b.Order);
+  }
+  /**
+   * Renders the menu using the provided features.
+   * @param {Feature[]} features - The array of Feature objects.
+   */
+  RenderMenu(features) {
+    Html.Take(".sidebar-content").Clear().Ul.Render();
+    if (Client.SystemRole) {
+      new Sortable(Html.Context, {
+        animation: 500, // Animation kéo dài hơn
+        ghostClass: "blue-background-class",
+        handle: "i",
+        swap: false, // Chỉ swap khi thả chuột
+        forceFallback: true, // Dùng clone thay vì native drag
+        delay: 500, // Giữ 300ms trước khi kéo (tránh nhấp nhầm)
+        delayOnTouchOnly: true, // Chỉ áp dụng delay trên cảm ứng
+        easing: "cubic-bezier(0.2, 0.8, 0.2, 1)", // 
+        onStart: function (evt) {
+          let parentGroup = evt.from;
+          parentGroup.children.forEach(item => {
+            item.classList.add("same-group");
+          });
+          evt.item.classList.add("dragging");
+        },
+        onEnd: async function (evt) {
+          let parentGroup = evt.from;
+          parentGroup.children.forEach(item => {
+            item.classList.remove("same-group");
+          });
+          evt.item.classList.remove("dragging");
+          var items = [];
+          evt.from.children.forEach((x, index) => {
+            var id = x.getAttribute("data-id");
+            var mapItem = features.find(x => x.Id == id);
+            mapItem.Order = index;
+            const dirtyPatch = [
+              { Field: "Id", Value: id },
+              { Field: "Order", Value: mapItem.Order }
+            ];
+            items.push({
+              Changes: dirtyPatch,
+              NotMessage: true,
+              Table: "Feature",
+            })
+          });
+          Client.Instance.PatchAsync2(items).then();
+        }
+      });
+    }
+    /**
+     * @param {Feature[]} features
+     */
+    Html.Instance.ForEach(
+      features,
+      /**
+       * @param {Feature} item
+       */
+      (item) => {
+        if (item.IsGroup) {
+          Html.Instance.Li.ClassName("menu-category");
+          Html.Instance.Event(EventType.ContextMenu, (e) =>
+            this.MenuItemContextMenu(e, item)
+          );
+          Html.Instance.Span.IText(
+            item.Label,
+            "Menu"
+          ).End.End.Render();
+        } else {
+          var check = item.InverseParent && item.InverseParent.length > 0;
+          Html.Instance.Li.DataAttr("id", item.Id).Render();
+          Html.Instance.Event(EventType.ContextMenu, (e) =>
+            this.MenuItemContextMenu(e, item)
+          );
+          if (item.Name == this.CurrentHref) {
+            Html.Instance.ClassName("active");
+          }
+          if (check) {
+            if (item.InverseParent.some((x) => x.Name == this.CurrentHref)) {
+              Html.Instance.ClassName("open");
+              Html.Instance.ClassName("active");
+            }
+          }
+          Html.Instance.A.DataAttr("page", item.Name).ClassName(
+            check ? "main-menu has-dropdown" : "link"
+          );
+          Html.Instance.Event(EventType.Click, (e) =>
+            this.MenuItemClick(e, item)
+          )
+            .I.ClassName(item.Icon)
+            .End.Span.IText(item.Label, "Menu")
+            .End.Render();
+          Html.Instance.EndOf(ElementType.a);
+          if (check) {
+            this.RenderMenuItems(item.InverseParent);
+          }
+          Html.Instance.End.Render();
+        }
+      }
+    );
+  }
+  /**
+   * @param {Feature[]} menuItems
+   */
+  RenderMenuItems(menuItems) {
+    Html.Instance.Ul.Render();
+    if (Client.SystemRole) {
+      var seft = this;
+      new Sortable(Html.Context, {
+        animation: 500, // Animation kéo dài hơn
+        ghostClass: "blue-background-class",
+        handle: "i",
+        swap: false, // Chỉ swap khi thả chuột
+        forceFallback: true, // Dùng clone thay vì native drag
+        delay: 300, // Giữ 300ms trước khi kéo (tránh nhấp nhầm)
+        delayOnTouchOnly: true, // Chỉ áp dụng delay trên cảm ứng
+        easing: "cubic-bezier(0.2, 0.8, 0.2, 1)",
+        onStart: function (evt) {
+          let parentGroup = evt.from;
+          parentGroup.children.forEach(item => {
+            item.classList.add("same-group");
+          });
+          evt.item.classList.add("dragging");
+        },
+        onEnd: async function (evt) {
+          let parentGroup = evt.from;
+          parentGroup.children.forEach(item => {
+            item.classList.remove("same-group");
+          });
+          evt.item.classList.remove("dragging");
+          var items = [];
+          evt.from.children.forEach((x, index) => {
+            var id = x.getAttribute("data-id");
+            var mapItem = menuItems.find(x => x.Id == id);
+            mapItem.Order = index;
+            const dirtyPatch = [
+              { Field: "Id", Value: id },
+              { Field: "Order", Value: mapItem.Order }
+            ];
+            items.push({
+              Changes: dirtyPatch,
+              NotMessage: true,
+              Table: "Feature",
+            })
+          });
+          Client.Instance.PatchAsync2(items).then();
+        }
+      });
+    }
+    Html.ClassName("sub-menu")
+      .Style(`max-height: ${menuItems.length * 44}px;`)
+      .ForEach(
+        menuItems,
+        /**
+         * @param {Feature} item
+         */
+        (item) => {
+          var check =
+            item.InverseParent != null && item.InverseParent.Count > 0;
+          Html.Instance.Li.DataAttr("id", item.Id).Render();
+          Html.Instance.Event(EventType.ContextMenu, (e) =>
+            this.MenuItemContextMenu(e, item)
+          );
+          if (!check) {
+            if (this.CurrentHref == item.Name) {
+              Html.Instance.ClassName("active");
+            }
+          }
+          if (check) {
+            if (item.InverseParent.some((x) => x.Name == this.CurrentHref)) {
+              Html.Instance.ClassName("open");
+              Html.Instance.ClassName("active");
+            }
+          }
+          Html.Instance.A.DataAttr("page", item.Name).ClassName(
+            check ? "main-menu has-dropdown" : "link"
+          );
+          Html.Instance.Event(EventType.Click, (e) =>
+            this.MenuItemClick(e, item)
+          )
+            .I.ClassName(item.Icon)
+            .End.Span.IText(item.Label, "Menu")
+            .End.Render();
+          Html.Instance.EndOf(ElementType.a);
+          if (check) {
+            this.RenderMenuItems(item.InverseParent);
+          }
+          Html.Instance.End.Render();
+        }
+      );
+    Html.Instance.EndOf(ElementType.ul);
+  }
+  /**
+   * @param {Event} e
+   * @param {Feature} feature
+   */
+  MenuItemClick(e, feature) {
+    /**
+     * @type {HTMLElement}
+     */
+    e.preventDefault();
+    e.stopPropagation();
+    var a = e.target;
+    if (!(a instanceof HTMLAnchorElement)) {
+      a = a.closest("a");
+    }
+    /**
+     * @type {HTMLElement}
+     */
+    var li = a.closest(ElementType.li);
+    this.HideAll(a.closest("ul"), li);
+    li.classList.add("active");
+    if (feature.InverseParent) {
+      li.classList.toggle("open");
+      var nestedUl = li.querySelector("ul");
+      nestedUl.style.maxHeight = 44 * feature.InverseParent.length + "px";
+      return;
+    }
+    var tab = ChromeTabs.tabs.find(
+      (x) => x.content && x.content.Meta.Name == feature.Name
+    );
+    if (tab) {
+      tab.content.Focus();
+      return;
+    }
+    ComponentExt.InitFeatureByName(feature.Name, true).then();
+  }
+  /**
+   * @param {Event} e
+   * @param {Feature} feature
+   */
+  MenuItemContextMenu(e, feature) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  /**
+   * @param {HTMLElement} current
+   */
+  HideAll(current, ele) {
+    if (!current) {
+      current = document.body;
+    }
+    var activea = current.querySelectorAll("li.active");
+    activea.forEach((x) => {
+      if (x != ele) {
+        x.classList.remove("active");
+        x.classList.remove("open");
+      }
+    });
+  }
+}
