@@ -87,21 +87,16 @@ jobs:
           IMAGE_TAG: "${{ steps.meta.outputs.date }}-${{ steps.meta.outputs.sha_short }}"
           ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
         run: |
-          # First create the directory, then copy the deployment script to the target server
+          # Create directory and copy script
           ssh -p $PORT $USERNAME@$SERVER "mkdir -p $DESTINATION_PATH"
           scp -P $PORT scripts/deploy.sh $USERNAME@$SERVER:$DESTINATION_PATH/
           
-          # Export environment variables and run deployment
+          # Run the deployment with environment variables explicitly passed
           ssh -p $PORT $USERNAME@$SERVER "
-            echo 'export DOCKER_USERNAME=$DOCKER_USERNAME' > $DESTINATION_PATH/env.sh &&
-            echo 'export DOCKER_PASSWORD=$DOCKER_PASSWORD' >> $DESTINATION_PATH/env.sh &&
-            echo 'export IMAGE_TAG=$IMAGE_TAG' >> $DESTINATION_PATH/env.sh &&
-            echo 'export ALLOWED_HOSTS=$ALLOWED_HOSTS' >> $DESTINATION_PATH/env.sh &&
-            chmod +x $DESTINATION_PATH/env.sh &&
             cd $DESTINATION_PATH &&
-            chmod +x deploy.sh &&
-            source env.sh &&
-            bash deploy.sh &&
-            rm -f $DESTINATION_PATH/env.sh &&
-            echo 'Environment file deleted for security'
+            DOCKER_USERNAME=\"$DOCKER_USERNAME\" \
+            DOCKER_PASSWORD=\"$DOCKER_PASSWORD\" \
+            IMAGE_TAG=\"$IMAGE_TAG\" \
+            ALLOWED_HOSTS=\"$ALLOWED_HOSTS\" \
+            bash ./deploy.sh
           "
