@@ -70,35 +70,35 @@ jobs:
             NODE_ENV=production
 
       - name: Deploy Application
-      env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
-        USERNAME: ${{ secrets.USERNAME }}
-        SERVER: ${{ secrets.SERVER }}
-        PORT: ${{ secrets.PORT }}
-        DESTINATION_PATH: "/home/${{ secrets.USERNAME }}/deployments/corejs"
-        IMAGE_TAG: "${{ steps.meta.outputs.date }}-${{ steps.meta.outputs.sha_short }}"
-      run: |
-        # Install sshpass for password-based authentication
-        sudo apt-get update && sudo apt-get install -y sshpass
-    
-        # First create the directory, then copy the deployment script to the target server
-        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p $PORT $USERNAME@$SERVER "mkdir -p $DESTINATION_PATH"
-        sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no -P $PORT scripts/deploy.sh $USERNAME@$SERVER:$DESTINATION_PATH/
-    
-        # Export environment variables to a file on the target server
-        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p $PORT $USERNAME@$SERVER "
-          echo 'export DOCKER_USERNAME=$DOCKER_USERNAME' >> $DESTINATION_PATH/env.sh &&
-          echo 'export DOCKER_PASSWORD=$DOCKER_PASSWORD' >> $DESTINATION_PATH/env.sh &&
-          echo 'export IMAGE_TAG=$IMAGE_TAG' >> $DESTINATION_PATH/env.sh &&
-          chmod +x $DESTINATION_PATH/env.sh
-        "
-    
-        # Run the deployment script on the target server and clean up
-        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p $PORT $USERNAME@$SERVER "
-          chmod +x $DESTINATION_PATH/deploy.sh &&
-          source $DESTINATION_PATH/env.sh &&
-          bash $DESTINATION_PATH/deploy.sh &&
-          rm -f $DESTINATION_PATH/deploy.sh $DESTINATION_PATH/env.sh
-        "
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+          USERNAME: ${{ secrets.USERNAME }}
+          SERVER: ${{ secrets.SERVER }}
+          PORT: ${{ secrets.PORT }}
+          DESTINATION_PATH: "/home/${{ secrets.USERNAME }}/deployments/corejs"
+          IMAGE_TAG: "${{ steps.meta.outputs.date }}-${{ steps.meta.outputs.sha_short }}"
+        run: |
+          # Install sshpass for password-based authentication
+          sudo apt-get update && sudo apt-get install -y sshpass
+      
+          # First create the directory, then copy the deployment script to the target server
+          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p $PORT $USERNAME@$SERVER "mkdir -p $DESTINATION_PATH"
+          sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no -P $PORT scripts/deploy.sh $USERNAME@$SERVER:$DESTINATION_PATH/
+      
+          # Export environment variables to a file on the target server
+          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p $PORT $USERNAME@$SERVER "
+            echo 'export DOCKER_USERNAME=$DOCKER_USERNAME' >> $DESTINATION_PATH/env.sh &&
+            echo 'export DOCKER_PASSWORD=$DOCKER_PASSWORD' >> $DESTINATION_PATH/env.sh &&
+            echo 'export IMAGE_TAG=$IMAGE_TAG' >> $DESTINATION_PATH/env.sh &&
+            chmod +x $DESTINATION_PATH/env.sh
+          "
+      
+          # Run the deployment script on the target server and clean up
+          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p $PORT $USERNAME@$SERVER "
+            chmod +x $DESTINATION_PATH/deploy.sh &&
+            source $DESTINATION_PATH/env.sh &&
+            bash $DESTINATION_PATH/deploy.sh &&
+            rm -f $DESTINATION_PATH/deploy.sh $DESTINATION_PATH/env.sh
+          "
