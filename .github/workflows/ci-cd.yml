@@ -1,0 +1,98 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - staging
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+      - name: Install dependencies for frontend
+        run: |
+          cd frontend
+          npm install
+
+      - name: Build Docker images
+        run: |
+          docker-compose -f compose.yml build
+
+      - name: Log in to Docker Hub
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+      - name: Tag and Push Docker Images
+        run: |
+          docker tag corejs_coreapi:latest ${{ secrets.DOCKER_USERNAME }}/corejs-coreapi:latest
+          docker tag corejs_frontend:latest ${{ secrets.DOCKER_USERNAME }}/corejs-frontend:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/corejs-coreapi:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/corejs-frontend:latest
+
+      - name: Generate and Run Deployment Script
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+          USERNAME: ${{ secrets.USERNAME }}
+          SERVER: ${{ secrets.SERVER }}
+          PORT: ${{ secrets.PORT }}
+          DESTINATION_PATH: "${{ secrets.DESTINATION_PATH }}"
+        run: |
+          cat <<EOF > deploy.sh
+          #!/bin/bash
+          set -e
+
+          echo "Logging into Docker Hub..."
+          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+          echo "Pulling Docker images..."
+          docker pull $DOCKER_USERNAME/corejs-coreapi:latest
+          docker pull $DOCKER_USERNAME/corejs-frontend:latest
+
+          echo "Generating docker-compose.yml..."
+          cat <<COMPOSE > docker-compose.yml
+          version: '3.8'
+
+          services:
+            coreapi:
+              image: $DOCKER_USERNAME/corejs-coreapi:latest
+              ports:
+                - "8000:8000"
+
+            frontend:
+              image: $DOCKER_USERNAME/corejs-frontend:latest
+              ports:
+                - "3000:3000"
+          COMPOSE
+
+          echo "Starting the application..."
+          docker compose up -d
+          EOF
+
+          chmod +x deploy.sh
+
+          # Install sshpass for password-based authentication
+          sudo apt-get update && sudo apt-get install -y sshpass
+
+          # Copy the deployment script to the target server
+          sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no -P $PORT deploy.sh $USERNAME@$SERVER:$DESTINATION_PATH/
+
+          # Run the deployment script on the target server and clean up
+          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p $PORT $USERNAME@$SERVER "
+            chmod +x $DESTINATION_PATH/deploy.sh &&
+            bash $DESTINATION_PATH/deploy.sh &&
+            rm -f $DESTINATION_PATH/deploy.sh
+          "
