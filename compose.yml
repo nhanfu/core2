@@ -12,6 +12,17 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
   
+  backend:
+    image: node:20-alpine  # Use an appropriate Node.js image
+    volumes:
+      - ./backend:/app
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    working_dir: /app
+    command: sh -c "npm install && npm run dev"  # Start Fastify server
+
   frontend:
     image: node:20-alpine  # Use an appropriate Node.js image
     volumes:
