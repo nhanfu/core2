@@ -5,18 +5,19 @@ echo "Logging into Docker Hub..."
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
 echo "Pulling Docker images..."
-sudo docker pull $DOCKER_USERNAME/corejs-coreapi:${IMAGE_TAG}
-sudo docker pull $DOCKER_USERNAME/corejs-frontend:${IMAGE_TAG}
+docker pull $DOCKER_USERNAME/corejs-coreapi:${IMAGE_TAG}
+docker pull $DOCKER_USERNAME/corejs-frontend:${IMAGE_TAG}
+
+echo "Pruning unused Docker images not used for 4 hours..."
+docker image prune -f --filter "until=4h"
 
 echo "Checking if docker-compose.yml exists..."
 if [ -f docker-compose.yml ]; then
-  echo "docker-compose.yml already exists. Overwriting..."
+  echo "docker-compose.yml already exists. Skipping generation..."
 else
   echo "docker-compose.yml does not exist. Creating a new one..."
-fi
-
-echo "Generating docker-compose.yml..."
-cat <<COMPOSE > docker-compose.yml
+  echo "Generating docker-compose.yml..."
+  cat <<COMPOSE > docker-compose.yml
 version: '3.8'
 
 services:
@@ -33,6 +34,7 @@ services:
       - "5173:5173"
     restart: unless-stopped
 COMPOSE
+fi
 
 echo "Starting the application..."
 docker compose down
