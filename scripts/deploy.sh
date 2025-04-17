@@ -1,4 +1,9 @@
 #!/bin/bash
+#!/bin/bash
+set -a
+[ -f .env ] && . .env
+set +a
+
 set -e
 
 echo "Logging into Docker Hub..."
