@@ -88,31 +88,17 @@ jobs:
           sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p $PORT $USERNAME@$SERVER "mkdir -p $DESTINATION_PATH"
           sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no -P $PORT scripts/deploy.sh $USERNAME@$SERVER:$DESTINATION_PATH/
       
-          # Create a temporary file with the new environment variables
-          cat > temp_env << EOF
-          DOCKER_USERNAME=${DOCKER_USERNAME}
-          DOCKER_PASSWORD=${DOCKER_PASSWORD}
-          IMAGE_TAG=${IMAGE_TAG}
-          ALLOWED_HOSTS=${ALLOWED_HOSTS}
-          # Keep other existing variables that shouldn't change
-          EOF
-
-          # Securely transfer and replace the .env file
-          sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no -P $PORT temp_env $USERNAME@$SERVER:$DESTINATION_PATH/temp.env
+          # Export environment variables to a .env file on the target server
           sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p $PORT $USERNAME@$SERVER "
-            # If there's an existing .env file, preserve variables not in temp.env
-            if [ -f $DESTINATION_PATH/.env ]; then
-              grep -v '^DOCKER_USERNAME=\|^DOCKER_PASSWORD=\|^IMAGE_TAG=\|^ALLOWED_HOSTS=' $DESTINATION_PATH/.env > $DESTINATION_PATH/preserved_env || true
-              cat $DESTINATION_PATH/preserved_env $DESTINATION_PATH/temp.env > $DESTINATION_PATH/.env
-              rm $DESTINATION_PATH/preserved_env $DESTINATION_PATH/temp.env
-            else
-              mv $DESTINATION_PATH/temp.env $DESTINATION_PATH/.env
-            fi
-            chmod 600 $DESTINATION_PATH/.env  # Restrict permissions to owner only
+            sed -i '/^DOCKER_USERNAME=/d' $DESTINATION_PATH/.env || true &&
+            sed -i '/^DOCKER_PASSWORD=/d' $DESTINATION_PATH/.env || true &&
+            sed -i '/^IMAGE_TAG=/d' $DESTINATION_PATH/.env || true &&
+            sed -i '/^ALLOWED_HOSTS=/d' $DESTINATION_PATH/.env || true &&
+            echo 'DOCKER_USERNAME=$DOCKER_USERNAME' >> $DESTINATION_PATH/.env &&
+            echo 'DOCKER_PASSWORD=$DOCKER_PASSWORD' >> $DESTINATION_PATH/.env &&
+            echo 'IMAGE_TAG=$IMAGE_TAG' >> $DESTINATION_PATH/.env &&
+            echo 'ALLOWED_HOSTS=$ALLOWED_HOSTS' >> $DESTINATION_PATH/.env
           "
-
-          # Remove the local temporary file
-          rm temp_env
           
           # Run the deployment script in the correct directory and clean up
           sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p $PORT $USERNAME@$SERVER "
