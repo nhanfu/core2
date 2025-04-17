@@ -37,23 +37,16 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       
-      - name: Enable BuildKit
-        run: echo "DOCKER_BUILDKIT=1" >> $GITHUB_ENV
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
       - name: Build and Push Docker Images
         uses: docker/build-push-action@v4
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/corejs-coreapi:latest
             ${{ secrets.DOCKER_USERNAME }}/corejs-frontend:latest
           file: compose.yml
-          builder: default
 
       - name: Generate and Run Deployment Script
         env:
