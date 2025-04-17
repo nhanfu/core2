@@ -69,6 +69,11 @@ jobs:
           build-args: |
             NODE_ENV=production
 
+      - name: Install sshpass
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y sshpass
+
       - name: Deploy Application
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -81,9 +86,6 @@ jobs:
           IMAGE_TAG: "${{ steps.meta.outputs.date }}-${{ steps.meta.outputs.sha_short }}"
           ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
         run: |
-          # Install sshpass for password-based authentication
-          sudo apt-get update && sudo apt-get install -y sshpass
-      
           # First create the directory, then copy the deployment script to the target server
           sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p $PORT $USERNAME@$SERVER "mkdir -p $DESTINATION_PATH"
           sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no -P $PORT scripts/deploy.sh $USERNAME@$SERVER:$DESTINATION_PATH/
