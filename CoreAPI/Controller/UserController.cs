@@ -27,6 +27,13 @@ public class UserController(UserService _userSvc, PdfService _pdfService, ExcelS
         return await _userSvc.SignInAsync(login);
     }
 
+    [AllowAnonymous]
+    [HttpGet("/api/health")]
+    public bool Health()
+    {
+        return true;
+    }
+
     [HttpPost("/api/CreateUser")]
     public async Task<Partner> CreateUser([FromBody] Partner entity)
     {

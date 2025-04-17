@@ -18,28 +18,35 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Cache Node.js dependencies
+        uses: actions/cache@v3
+        with:
+          path: frontend/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/frontend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Install dependencies for frontend
         run: |
           cd frontend
-          npm install
-
-      - name: Build Docker images
-        run: |
-          docker-compose -f compose.yml build
-
+          npm ci
+      
       - name: Log in to Docker Hub
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        run: |
-          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-
-      - name: Tag and Push Docker Images
-        run: |
-          docker tag corejs_coreapi:latest ${{ secrets.DOCKER_USERNAME }}/corejs-coreapi:latest
-          docker tag corejs_frontend:latest ${{ secrets.DOCKER_USERNAME }}/corejs-frontend:latest
-          docker push ${{ secrets.DOCKER_USERNAME }}/corejs-coreapi:latest
-          docker push ${{ secrets.DOCKER_USERNAME }}/corejs-frontend:latest
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      
+      - name: Build and Push Docker Images
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/corejs-coreapi:latest
+            ${{ secrets.DOCKER_USERNAME }}/corejs-frontend:latest
+          file: compose.yml
 
       - name: Generate and Run Deployment Script
         env:
@@ -54,6 +61,16 @@ jobs:
           cat <<EOF > deploy.sh
           #!/bin/bash
           set -e
+
+          echo "Checking if Docker Compose is installed..."
+          if ! command -v docker-compose &> /dev/null; then
+            echo "Docker Compose not found. Installing..."
+            sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.2/docker-compose-\$(uname -s)-\$(uname -m)" -o /usr/local/bin/docker-compose
+            sudo chmod +x /usr/local/bin/docker-compose
+            docker-compose --version
+          else
+            echo "Docker Compose is already installed."
+          fi
 
           echo "Logging into Docker Hub..."
           echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
