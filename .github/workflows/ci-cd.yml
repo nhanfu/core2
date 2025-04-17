@@ -69,69 +69,36 @@ jobs:
           build-args: |
             NODE_ENV=production
 
-      - name: Generate and Run Deployment Script
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
-          USERNAME: ${{ secrets.USERNAME }}
-          SERVER: ${{ secrets.SERVER }}
-          PORT: ${{ secrets.PORT }}
-          DESTINATION_PATH: "/home/${{ secrets.USERNAME }}/deployments/corejs"
-          IMAGE_TAG: "${{ steps.meta.outputs.date }}-${{ steps.meta.outputs.sha_short }}"
-        run: |
-          cat <<EOF > deploy.sh
-          #!/bin/bash
-          set -e
-
-          echo "Logging into Docker Hub..."
-          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-
-          echo "Pulling Docker images..."
-          docker pull $DOCKER_USERNAME/corejs-coreapi:${IMAGE_TAG}
-          docker pull $DOCKER_USERNAME/corejs-frontend:${IMAGE_TAG}
-
-          echo "Generating docker-compose.yml..."
-          cat <<COMPOSE > docker-compose.yml
-          version: '3.8'
-
-          services:
-            coreapi:
-              image: $DOCKER_USERNAME/corejs-coreapi:${IMAGE_TAG}
-              ports:
-                - "8000:8000"
-              restart: unless-stopped
-
-            frontend:
-              image: $DOCKER_USERNAME/corejs-frontend:${IMAGE_TAG}
-              ports:
-                - "3000:3000"
-              restart: unless-stopped
-          COMPOSE
-
-          echo "Starting the application..."
-          docker compose up -d
-          
-          # Save deployment info to a file
-          echo "Deployment completed on $(date)" > deployment_info.txt
-          echo "Images:" >> deployment_info.txt
-          echo "CoreAPI: $DOCKER_USERNAME/corejs-coreapi:${IMAGE_TAG}" >> deployment_info.txt
-          echo "Frontend: $DOCKER_USERNAME/corejs-frontend:${IMAGE_TAG}" >> deployment_info.txt
-          EOF
-
-          chmod +x deploy.sh
-
-          # Install sshpass for password-based authentication
-          sudo apt-get update && sudo apt-get install -y sshpass
-
-          # First create the directory, then copy the deployment script to the target server
-          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p $PORT $USERNAME@$SERVER "mkdir -p $DESTINATION_PATH"
-          sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no -P $PORT deploy.sh $USERNAME@$SERVER:$DESTINATION_PATH/
-
-          # Run the deployment script on the target server and clean up
-          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p $PORT $USERNAME@$SERVER "
-            chmod +x $DESTINATION_PATH/deploy.sh &&
-            cd $DESTINATION_PATH &&
-            bash $DESTINATION_PATH/deploy.sh &&
-            rm -f $DESTINATION_PATH/deploy.sh
-          "
+      - name: Deploy Application
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+        USERNAME: ${{ secrets.USERNAME }}
+        SERVER: ${{ secrets.SERVER }}
+        PORT: ${{ secrets.PORT }}
+        DESTINATION_PATH: "/home/${{ secrets.USERNAME }}/deployments/corejs"
+        IMAGE_TAG: "${{ steps.meta.outputs.date }}-${{ steps.meta.outputs.sha_short }}"
+      run: |
+        # Install sshpass for password-based authentication
+        sudo apt-get update && sudo apt-get install -y sshpass
+    
+        # First create the directory, then copy the deployment script to the target server
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p $PORT $USERNAME@$SERVER "mkdir -p $DESTINATION_PATH"
+        sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no -P $PORT scripts/deploy.sh $USERNAME@$SERVER:$DESTINATION_PATH/
+    
+        # Export environment variables to a file on the target server
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p $PORT $USERNAME@$SERVER "
+          echo 'export DOCKER_USERNAME=$DOCKER_USERNAME' >> $DESTINATION_PATH/env.sh &&
+          echo 'export DOCKER_PASSWORD=$DOCKER_PASSWORD' >> $DESTINATION_PATH/env.sh &&
+          echo 'export IMAGE_TAG=$IMAGE_TAG' >> $DESTINATION_PATH/env.sh &&
+          chmod +x $DESTINATION_PATH/env.sh
+        "
+    
+        # Run the deployment script on the target server and clean up
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p $PORT $USERNAME@$SERVER "
+          chmod +x $DESTINATION_PATH/deploy.sh &&
+          source $DESTINATION_PATH/env.sh &&
+          bash $DESTINATION_PATH/deploy.sh &&
+          rm -f $DESTINATION_PATH/deploy.sh $DESTINATION_PATH/env.sh
+        "
