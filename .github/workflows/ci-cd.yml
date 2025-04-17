@@ -37,17 +37,22 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       
-      - name: Build and Push Docker Images
+      - name: Build and Push CoreAPI Docker Image
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: ./CoreAPI
           platforms: linux/amd64
           push: true
-          tags: |
-            ${{ secrets.DOCKER_USERNAME }}/corejs-coreapi:latest
-            ${{ secrets.DOCKER_USERNAME }}/corejs-frontend:latest
-          file: compose.yml
+          tags: ${{ secrets.DOCKER_USERNAME }}/corejs-coreapi:latest
 
+      - name: Build and Push Frontend Docker Image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./frontend
+          platforms: linux/amd64
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/corejs-frontend:latest
+          
       - name: Generate and Run Deployment Script
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
