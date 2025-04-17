@@ -87,23 +87,19 @@ jobs:
           # First create the directory, then copy the deployment script to the target server
           sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p $PORT $USERNAME@$SERVER "mkdir -p $DESTINATION_PATH"
           sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no -P $PORT scripts/deploy.sh $USERNAME@$SERVER:$DESTINATION_PATH/
-      
-          # Export environment variables to a .env file on the target server
-          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p $PORT $USERNAME@$SERVER "
-            sed -i '/^DOCKER_USERNAME=/d' $DESTINATION_PATH/.env || true &&
-            sed -i '/^DOCKER_PASSWORD=/d' $DESTINATION_PATH/.env || true &&
-            sed -i '/^IMAGE_TAG=/d' $DESTINATION_PATH/.env || true &&
-            sed -i '/^ALLOWED_HOSTS=/d' $DESTINATION_PATH/.env || true &&
-            echo 'DOCKER_USERNAME=$DOCKER_USERNAME' >> $DESTINATION_PATH/.env &&
-            echo 'DOCKER_PASSWORD=$DOCKER_PASSWORD' >> $DESTINATION_PATH/.env &&
-            echo 'IMAGE_TAG=$IMAGE_TAG' >> $DESTINATION_PATH/.env &&
-            echo 'ALLOWED_HOSTS=$ALLOWED_HOSTS' >> $DESTINATION_PATH/.env
-          "
           
+          # Export environment variables to a file on the target server
+          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p $PORT $USERNAME@$SERVER "
+            echo 'export DOCKER_USERNAME=$DOCKER_USERNAME' >> $DESTINATION_PATH/env.sh &&
+            echo 'export DOCKER_PASSWORD=$DOCKER_PASSWORD' >> $DESTINATION_PATH/env.sh &&
+            echo 'export IMAGE_TAG=$IMAGE_TAG' >> $DESTINATION_PATH/env.sh &&
+            echo 'export ALLOWED_HOSTS=$ALLOWED_HOSTS' >> $DESTINATION_PATH/env.sh &&
+            chmod +x $DESTINATION_PATH/env.sh
+
           # Run the deployment script in the correct directory and clean up
           sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p $PORT $USERNAME@$SERVER "
             cd $DESTINATION_PATH &&
             chmod +x deploy.sh &&
-            bash deploy.sh &&
-            rm -f deploy.sh
+            source env.sh &&
+            bash deploy.sh
           "

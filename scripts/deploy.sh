@@ -1,7 +1,28 @@
 #!/bin/bash
-#!/bin/bash
 set -a
-[ -f .env ] && . .env
+
+# Create or update the .env file
+echo "Updating .env file..."
+ENV_FILE=".env"
+
+# Define the environment variables to update
+declare -A env_vars=(
+  ["DOCKER_USERNAME"]="$DOCKER_USERNAME"
+  ["DOCKER_PASSWORD"]="$DOCKER_PASSWORD"
+  ["IMAGE_TAG"]="$IMAGE_TAG"
+  ["ALLOWED_HOSTS"]="$ALLOWED_HOSTS"
+)
+
+# Update or add each variable in the .env file
+for key in "${!env_vars[@]}"; do
+  value="${env_vars[$key]}"
+  if grep -q "^$key=" "$ENV_FILE"; then
+    sed -i "s|^$key=.*|$key=$value|" "$ENV_FILE"
+  else
+    echo "$key=$value" >> "$ENV_FILE"
+  fi
+done
+
 set +a
 
 set -e
