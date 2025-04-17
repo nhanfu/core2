@@ -69,16 +69,17 @@ jobs:
           build-args: |
             NODE_ENV=production
 
-      - name: Install sshpass
+      - name: Setup SSH
         run: |
-          sudo apt-get update
-          sudo apt-get install -y sshpass
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -p ${{ secrets.PORT }} ${{ secrets.SERVER }} >> ~/.ssh/known_hosts
 
       - name: Deploy Application
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
           USERNAME: ${{ secrets.USERNAME }}
           SERVER: ${{ secrets.SERVER }}
           PORT: ${{ secrets.PORT }}
@@ -87,21 +88,20 @@ jobs:
           ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
         run: |
           # First create the directory, then copy the deployment script to the target server
-          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p $PORT $USERNAME@$SERVER "mkdir -p $DESTINATION_PATH"
-          sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no -P $PORT scripts/deploy.sh $USERNAME@$SERVER:$DESTINATION_PATH/
+          ssh -p $PORT $USERNAME@$SERVER "mkdir -p $DESTINATION_PATH"
+          scp -P $PORT scripts/deploy.sh $USERNAME@$SERVER:$DESTINATION_PATH/
           
-          # Export environment variables to a file on the target server
-          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p $PORT $USERNAME@$SERVER "
-            echo 'export DOCKER_USERNAME=$DOCKER_USERNAME' >> $DESTINATION_PATH/env.sh &&
+          # Export environment variables and run deployment
+          ssh -p $PORT $USERNAME@$SERVER "
+            echo 'export DOCKER_USERNAME=$DOCKER_USERNAME' > $DESTINATION_PATH/env.sh &&
             echo 'export DOCKER_PASSWORD=$DOCKER_PASSWORD' >> $DESTINATION_PATH/env.sh &&
             echo 'export IMAGE_TAG=$IMAGE_TAG' >> $DESTINATION_PATH/env.sh &&
             echo 'export ALLOWED_HOSTS=$ALLOWED_HOSTS' >> $DESTINATION_PATH/env.sh &&
-            chmod +x $DESTINATION_PATH/env.sh
-
-          # Run the deployment script in the correct directory and clean up
-          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p $PORT $USERNAME@$SERVER "
+            chmod +x $DESTINATION_PATH/env.sh &&
             cd $DESTINATION_PATH &&
             chmod +x deploy.sh &&
             source env.sh &&
-            bash deploy.sh
+            bash deploy.sh &&
+            rm -f $DESTINATION_PATH/env.sh &&
+            echo 'Environment file deleted for security'
           "
