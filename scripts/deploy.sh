@@ -6,8 +6,8 @@ echo "Logging into Docker Hub..."
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
 echo "Pulling Docker images..."
-docker pull $DOCKER_USERNAME/corejs-coreapi:${IMAGE_TAG}
-docker pull $DOCKER_USERNAME/corejs-frontend:${IMAGE_TAG}
+sudo docker pull $DOCKER_USERNAME/corejs-coreapi:${IMAGE_TAG}
+sudo docker pull $DOCKER_USERNAME/corejs-frontend:${IMAGE_TAG}
 
 echo "Generating docker-compose.yml..."
 cat <<COMPOSE > docker-compose.yml
@@ -17,13 +17,14 @@ services:
   coreapi:
     image: $DOCKER_USERNAME/corejs-coreapi:${IMAGE_TAG}
     ports:
-      - "8000:8000"
+      - "8080:80"
+      - "2222:2222"
     restart: unless-stopped
 
   frontend:
     image: $DOCKER_USERNAME/corejs-frontend:${IMAGE_TAG}
     ports:
-      - "3000:3000"
+      - "5173:5173"
     restart: unless-stopped
 COMPOSE
 
