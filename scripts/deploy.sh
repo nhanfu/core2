@@ -43,11 +43,11 @@ echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin ||
 }
 
 echo "Pulling Docker images..."
-docker pull $DOCKER_USERNAME/corejs-coreapi:${IMAGE_TAG} || {
+docker pull $DOCKER_USERNAME/corejs-coreapi:latest || {
   echo "Failed to pull CoreAPI image"
   exit 1
 }
-docker pull $DOCKER_USERNAME/corejs-frontend:${IMAGE_TAG} || {
+docker pull $DOCKER_USERNAME/corejs-frontend:latest || {
   echo "Failed to pull Frontend image"
   exit 1
 }
