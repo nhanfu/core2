@@ -1,43 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    />
-    <meta name="api" content="https://logistics.digotech.net:8080" />
-    <meta name="tenant" content="forwardx" />
-    <meta name="startup" content="admin" />
-    <title>X</title>
-    <base href="/" />
-    <link
-      id="iconweb"
-      rel="shortcut icon"
-      type="image/x-icon"
-      href="https://forwardx.vn/wp-content/uploads/2025/03/cropped-Icon-Logo-180x180.png"
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="/css/fontawesome.min.css" />
-    <link rel="stylesheet" href="/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="/css/themify-icons/themify-icons.css" />
-    <link rel="stylesheet" href="/css/perfect-scrollbar.css" />
-    <link rel="stylesheet" href="/css/bootstrap-override.min.css" />
-    <link rel="stylesheet" id="theme-color" href="/css/dark.min.css" />
-    <link rel="stylesheet" href="/event_304/VNTank.css" />
-    <script defer src="/js/echarts.min.js"></script>
-    <script
-      defer
-      src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.js"
-    ></script>
-    <script defer type="module" src="/src/app.jsx"></script>
-  </head>
-  <body>
-    <div id="app"></div>
-  </body>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="api" content="http://localhost:8080" />
+  <meta name="tenant" content="forwardx" />
+  <meta name="startup" content="admin" />
+  <title>X</title>
+  <base href="/" />
+  <link id="iconweb" rel="shortcut icon" type="image/x-icon"
+    href="https://forwardx.vn/wp-content/uploads/2025/03/cropped-Icon-Logo-180x180.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="/css/fontawesome.min.css" />
+  <link rel="stylesheet" href="/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/css/themify-icons/themify-icons.css" />
+  <link rel="stylesheet" href="/css/perfect-scrollbar.css" />
+  <link rel="stylesheet" href="/css/bootstrap-override.min.css" />
+  <link rel="stylesheet" id="theme-color" href="/css/dark.min.css" />
+  <link rel="stylesheet" href="/event_304/VNTank.css" />
+  <script type="text/javascript">
+    const apiMeta = document.querySelector('meta[name="api"]');
+    if (apiMeta && window.location.hostname != "localhost") {
+      const apiUrl = `${window.location.protocol}//${window.location.hostname}`;
+      apiMeta.setAttribute('content', apiUrl);
+    }
+  </script>
+  <script defer src="/js/echarts.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.js"></script>
+  <script defer type="module" src="/src/app.jsx"></script>
+</head>
+
+<body>
+  <div id="app"></div>
+</body>
+
 </html>
