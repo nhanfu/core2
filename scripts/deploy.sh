@@ -66,14 +66,14 @@ version: '3.8'
 
 services:
   coreapi:
-    image: $DOCKER_USERNAME/corejs-coreapi:${IMAGE_TAG}
+    image: $DOCKER_USERNAME/corejs-coreapi:latest
     ports:
       - "8080:80"
       - "2222:2222"
     restart: unless-stopped
 
   frontend:
-    image: $DOCKER_USERNAME/corejs-frontend:${IMAGE_TAG}
+    image: $DOCKER_USERNAME/corejs-frontend:latest
     ports:
       - "5173:5173"
     restart: unless-stopped
@@ -90,7 +90,7 @@ docker compose up -d || {
 # Save deployment info to a file
 echo "Deployment completed on $(date)" > deployment_info.txt
 echo "Images:" >> deployment_info.txt
-echo "CoreAPI: $DOCKER_USERNAME/corejs-coreapi:${IMAGE_TAG}" >> deployment_info.txt
-echo "Frontend: $DOCKER_USERNAME/corejs-frontend:${IMAGE_TAG}" >> deployment_info.txt
+echo "CoreAPI: $DOCKER_USERNAME/corejs-coreapi:latest" >> deployment_info.txt
+echo "Frontend: $DOCKER_USERNAME/corejs-frontend:latest" >> deployment_info.txt
 
 echo "Deployment completed successfully!"
