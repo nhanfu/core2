@@ -64,7 +64,19 @@ else
   cat <<COMPOSE > docker-compose.yml
 version: '3.8'
 
+
 services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=admin@123
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlvolume:/var/opt/mssql
+    restart: unless-stopped
+
   coreapi:
     image: $DOCKER_USERNAME/corejs-coreapi:latest
     ports:
@@ -77,6 +89,7 @@ services:
     ports:
       - "5173:5173"
     restart: unless-stopped
+    
 COMPOSE
 fi
 
