@@ -57,14 +57,12 @@ docker image prune -f --filter "until=4h"
 
 echo "Checking if docker-compose.yml exists..."
 if [ -f docker-compose.yml ]; then
-  echo "docker-compose.yml already exists. Skipping generation..."
-else
-  echo "docker-compose.yml does not exist. Creating a new one..."
-  echo "Generating docker-compose.yml..."
-  cat <<COMPOSE > docker-compose.yml
-version: '3.8'
+  docker compose down || echo "No existing containers to stop"
+  rm -f docker-compose.yml
+fi
 
-
+echo "Generating docker-compose.yml..."
+cat <<COMPOSE > docker-compose.yml
 services:
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -91,10 +89,8 @@ services:
     restart: unless-stopped
     
 COMPOSE
-fi
 
 echo "Starting the application..."
-docker compose down || echo "No existing containers to stop"
 docker compose up -d || {
   echo "Failed to start containers"
   exit 1

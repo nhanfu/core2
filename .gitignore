@@ -374,3 +374,4 @@ FodyWeavers.xsd
 /CoreAPI/wwwroot/js/Core.js
 /CoreAPI/wwwroot/js/Core.min.js
 /CoreAPI/wwwroot/css/*.css
+/CoreAPI/wwwroot/upload/*/file

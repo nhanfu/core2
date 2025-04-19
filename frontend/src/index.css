@@ -181,9 +181,9 @@ th:focus .th-options {
 .sidebar-header {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
-  margin: 20px 27px;
+  margin: 0 12px;
+  height: 68px;
 }
 
 .menu-category {
@@ -353,7 +353,7 @@ th:focus .th-options {
 }
 
 .sidebar-content li.active > a {
-  color: #fff;
+  color: #ffce38;
   background-color: #142127;
 }
 
@@ -3480,7 +3480,7 @@ thead .sticky-column {
 }
 
 .sidebar-header a img {
-  max-width: 120px;
+  max-width: 68px;
   display: block;
   height: auto;
 }
