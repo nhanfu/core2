@@ -6,6 +6,8 @@
         public string PartnerId { get; set; }
         public string TaskName { get; set; }
         public string CustomerName { get; set; }
+        public int TypeId { get; set; }
+        public int ServiceId { get; set; }
         public string PriorityId { get; set; }
         public string CategoryId { get; set; }
         public DateTime? IssuedDate { get; set; }
