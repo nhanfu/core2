@@ -87,7 +87,8 @@ services:
     ports:
       - "5173:5173"
     restart: unless-stopped
-    
+volumes:
+  sqlvolume:
 COMPOSE
 
 echo "Starting the application..."

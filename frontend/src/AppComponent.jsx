@@ -176,6 +176,7 @@ const AppComponent = ({ editForm }) => {
           <a className="text">
             <img src={Client.Token.Vendor.Logo} />
           </a>
+          <span className="tm">logistics</span>
         </div>
         <div className="search-content p-2"></div>
         <div className="sidebar-content"></div>

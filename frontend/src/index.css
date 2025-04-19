@@ -186,6 +186,10 @@ th:focus .th-options {
   height: 68px;
 }
 
+.sidebar-header .tm {
+  color: #ffce38;
+}
+
 .menu-category {
   display: block;
   margin: 15px 25px;
