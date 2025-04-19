@@ -80,6 +80,8 @@ services:
     ports:
       - "8080:80"
       - "2222:2222"
+    volumes:
+      - uploadvolume:/app/wwwroot/upload
     restart: unless-stopped
 
   frontend:
@@ -89,6 +91,7 @@ services:
     restart: unless-stopped
 volumes:
   sqlvolume:
+  uploadvolume:
 COMPOSE
 
 echo "Starting the application..."
