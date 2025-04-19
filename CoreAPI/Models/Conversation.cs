@@ -7,6 +7,7 @@
         public string RecordId { get; set; }
         public string EntityId { get; set; }
         public string UserIds { get; set; }
+        public string ReceiverIds { get; set; }
         public string Message { get; set; }
         public string FormatChat { get; set; }
         public bool Active { get; set; }
