@@ -24,7 +24,7 @@ public class SqlServerProvider(IDistributedCache cache, IConfiguration cfg, ISer
     public string Env { get; set; }
     public string UserId { get; set; }
 
-    public async Task<Dictionary<string, object>[][]> ReadDataSet(string query, string connInfo = null, bool shouldMapToConnStr = false, List<WhereParamVM> paramVMs  = null)
+    public async Task<Dictionary<string, object>[][]> ReadDataSet(string query, string connInfo = null, bool shouldMapToConnStr = false, List<WhereParamVM> paramVMs = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(query);
         if (connInfo is null)
@@ -106,9 +106,9 @@ public class SqlServerProvider(IDistributedCache cache, IConfiguration cfg, ISer
         return ds[0][0].MapTo<T>();
     }
 
-    public async Task<T[]> ReadDsAsArr<T>(string query, string connInfo = null) where T : class
+    public async Task<T[]> ReadDsAsArr<T>(string query, string connInfo = null, List<WhereParamVM> paramVMs = null) where T : class
     {
-        var ds = await ReadDataSet(query, connInfo);
+        var ds = await ReadDataSet(query, connInfo, false, paramVMs);
         if (ds.Length == 0 || ds[0].Length == 0) return [];
         return ds[0].Select(x => x.MapTo<T>()).ToArray();
     }
@@ -157,7 +157,7 @@ public class SqlServerProvider(IDistributedCache cache, IConfiguration cfg, ISer
         }
     }
 
-    public async Task<int> RunSqlCmd(string connStr, string cmdText,Dictionary<string,object> ps)
+    public async Task<int> RunSqlCmd(string connStr, string cmdText, Dictionary<string, object> ps)
     {
         if (cmdText.IsNullOrWhiteSpace()) return 0;
         if (connStr.IsNullOrWhiteSpace())

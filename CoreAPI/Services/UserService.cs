@@ -349,8 +349,26 @@ public class UserService
 
     public async Task<SqlResult> Go(SqlViewModel sqlViewModel)
     {
-        var query = @$"select * from [{sqlViewModel.Table}] where Id in ({sqlViewModel.Id.CombineStrings()})";
-        var ds = await _sql.ReadDataSet(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
+        var connectionString = BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics");
+        var parameters = new List<WhereParamVM>();
+        var inClauses = new List<string>();
+
+        for (int i = 0; i < sqlViewModel.Id.Count(); i++)
+        {
+            var paramName = $"@id{i}";
+            parameters.Add(new WhereParamVM()
+            {
+                FieldName = paramName,
+                Value = sqlViewModel.Id[i]
+            });
+            inClauses.Add(paramName);
+        }
+
+        var inClauseString = string.Join(", ", inClauses);
+        var query = $"SELECT * FROM [{sqlViewModel.Table}] WHERE Id IN ({inClauseString})";
+
+        var ds = await _sql.ReadDataSet(query, connectionString, false, parameters);
+
         return new SqlResult()
         {
             data = ds[0],
@@ -359,11 +377,35 @@ public class UserService
         };
     }
 
-    public async Task<Dictionary<string, object>[][]> Gos(List<Gos> gos)
+    public async Task<Dictionary<string, object>[][]> Gos(List<Gos> gosList)
     {
-        var query = gos.Select(x => @$"select * from [{x.TableName}] where Id in ({x.Ids.CombineStrings()})").Combine(";");
-        var ds = await _sql.ReadDataSet(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
-        return ds;
+        var connectionString = BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics");
+        var allResults = new List<Dictionary<string, object>[]>();
+
+        foreach (var gos in gosList)
+        {
+            var parameters = new List<WhereParamVM>();
+            var inClauses = new List<string>();
+
+            for (int i = 0; i < gos.Ids.Count; i++)
+            {
+                var paramName = $"@id{i}";
+                parameters.Add(new WhereParamVM
+                {
+                    FieldName = paramName,
+                    Value = gos.Ids[i]
+                });
+                inClauses.Add(paramName);
+            }
+
+            var inClauseString = string.Join(", ", inClauses);
+            var query = $"SELECT * FROM [{gos.TableName}] WHERE Id IN ({inClauseString})";
+
+            var ds = await _sql.ReadDataSet(query, connectionString, false, parameters);
+            allResults.Add(ds[0]);
+        }
+
+        return allResults.ToArray();
     }
 
     public async Task<SqlResult> GoByName(SqlViewModel sqlViewModel)
@@ -388,16 +430,6 @@ public class UserService
     {
         var update = $"UPDATE [Shipment] set ParentId = '{entity.ShipmentId}' where Id in ({entity.ShipmentDetailId.CombineStrings()})";
         await _sql.RunSqlCmd(null, update);
-        return true;
-    }
-
-    public async Task<bool> LoadShipmentContainer(EntityVM entity)
-    {
-        return true;
-    }
-
-    public async Task<bool> LoadShipmentDetailContainer(EntityVM entity)
-    {
         return true;
     }
 
@@ -2987,7 +3019,8 @@ public class UserService
         }
         if (com.Query.Contains("ds.InsertedBy = '{TokenUserId}'") && RoleNames.Contains("BOD"))
         {
-            com.Query = com.Query.Replace("ds.InsertedBy = '{TokenUserId}'", "ds.InsertedBy = '{TokenUserId}' or '{TokenRoleNames}' like '%BOD%'");
+            var isBOD = RoleNames.Combine().Contains("BOD") ? 1 : 0;
+            com.Query = com.Query.Replace($"ds.InsertedBy = '{{TokenUserId}}'", $"ds.InsertedBy = '{{TokenUserId}}' or {isBOD} = 1");
         }
         var query = Utils.FormatEntity(com.Query, dictionary);
         var ds1 = await _sql.ReadDataSet(query);
@@ -3012,88 +3045,83 @@ public class UserService
 
     private string CalcFinalQuery(SqlViewModel vm)
     {
-        Dictionary<string, object> dictionary = vm.Params.IsNullOrWhiteSpace() ? new Dictionary<string, object>() : JsonConvert.DeserializeObject<Dictionary<string, object>>(vm.Params);
-        if (dictionary.GetValueOrDefault("TokenUserId") != null)
+        var dictionary = vm.Params.IsNullOrWhiteSpace()
+        ? new Dictionary<string, object>()
+        : JsonConvert.DeserializeObject<Dictionary<string, object>>(vm.Params);
+
+        void SetOrAdd(string key, object value)
         {
-            dictionary["TokenUserId"] = UserId;
+            if (dictionary.ContainsKey(key))
+                dictionary[key] = value;
+            else
+                dictionary.Add(key, value);
         }
-        else
-        {
-            dictionary.Add("TokenUserId", UserId);
-        }
-        if (dictionary.GetValueOrDefault("TokenRoleNames") != null)
-        {
-            dictionary["TokenRoleNames"] = RoleNames.Combine() ?? string.Empty;
-        }
-        else
-        {
-            dictionary.Add("TokenRoleNames", RoleNames.Combine());
-        }
-        if (dictionary.GetValueOrDefault("TokenPartnerId") != null)
-        {
-            dictionary["TokenPartnerId"] = VendorId ?? string.Empty;
-        }
-        else
-        {
-            dictionary.Add("TokenPartnerId", VendorId);
-        }
-        if (dictionary.GetValueOrDefault("TokenUserName") != null)
-        {
-            dictionary["TokenUserName"] = UserName;
-        }
-        else
-        {
-            dictionary.Add("TokenUserName", UserName);
-        }
-        if (dictionary.GetValueOrDefault("TokenGroupId") != null)
-        {
-            dictionary["TokenGroupId"] = GroupId ?? string.Empty;
-        }
-        else
-        {
-            dictionary.Add("TokenGroupId", GroupId);
-        }
+
+        SetOrAdd("TokenUserId", UserId);
+        SetOrAdd("TokenRoleNames", RoleNames.Combine() ?? string.Empty);
+        SetOrAdd("TokenPartnerId", VendorId ?? string.Empty);
+        SetOrAdd("TokenUserName", UserName);
+        SetOrAdd("TokenGroupId", GroupId ?? string.Empty);
         if (vm.JsScript.Contains("ds.InsertedBy = '{TokenUserId}'") && RoleNames.Contains("BOD"))
         {
-            vm.JsScript = vm.JsScript.Replace("ds.InsertedBy = '{TokenUserId}'", "ds.InsertedBy = '{TokenUserId}' or '{TokenRoleNames}' like '%BOD%'");
+            var isBOD = RoleNames.Combine().Contains("BOD") ? 1 : 0;
+            vm.JsScript = vm.JsScript.Replace($"ds.InsertedBy = '{{TokenUserId}}'", $"ds.InsertedBy = '{{TokenUserId}}' or {isBOD} = 1");
         }
+
+        // Format OrderBy with tokens
         vm.OrderBy = Utils.FormatEntity(vm.OrderBy, dictionary);
+
+        // Deserialize SqlQuery object from JsScript
         var data = JsonConvert.DeserializeObject<SqlQuery>(vm.JsScript);
-        dictionary["Skip"] = vm.Skip;
-        dictionary["Top"] = vm.Top;
-        data.total = Utils.FormatEntity(data.total, dictionary);
+
+        // Add paging info
+        SetOrAdd("Skip", vm.Skip);
+        SetOrAdd("Top", vm.Top);
+
         data.sql = Utils.FormatEntity(data.sql, dictionary);
+        data.total = Utils.FormatEntity(data.total, dictionary);
+
         var sqlSelect = data.sql;
         var sqlTotal = data.total;
+
+        // Append WHERE clause if provided
         if (!vm.Where.IsNullOrWhiteSpace())
         {
-            if (sqlSelect.ToLower().Contains("where"))
+            var clause = $"({vm.Where})";
+            if (sqlSelect.IndexOf("where", StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                sqlSelect += $" AND ({vm.Where})";
-                sqlTotal += $" AND ({vm.Where})";
+                sqlSelect += $" AND {clause}";
+                sqlTotal += $" AND {clause}";
             }
             else
             {
-                sqlSelect += $" WHERE {vm.Where}";
-                sqlTotal += $" WHERE {vm.Where}";
+                sqlSelect += $" WHERE {clause}";
+                sqlTotal += $" WHERE {clause}";
             }
         }
-        if (!vm.OrderBy.IsNullOrWhiteSpace() && !data.sql.Contains("order by"))
+
+        // Append ORDER BY, OFFSET, FETCH
+        if (!vm.OrderBy.IsNullOrWhiteSpace() && !data.sql.Contains("order by", StringComparison.OrdinalIgnoreCase))
         {
             sqlSelect += $" ORDER BY {vm.OrderBy}";
         }
-        if (vm.Skip != null && !data.sql.Contains("OFFSET"))
+
+        if (vm.Skip != null && !data.sql.Contains("OFFSET", StringComparison.OrdinalIgnoreCase))
         {
             sqlSelect += $" OFFSET {vm.Skip} ROWS";
         }
-        if (vm.Top != null && !data.sql.Contains("FETCH NEXT"))
+
+        if (vm.Top != null && !data.sql.Contains("FETCH NEXT", StringComparison.OrdinalIgnoreCase))
         {
             sqlSelect += $" FETCH NEXT {vm.Top} ROWS ONLY";
         }
+
+        // Append total count query if needed
         if (vm.Count)
         {
             sqlSelect += $"; {sqlTotal}";
         }
+
         return sqlSelect;
     }
 
@@ -3165,42 +3193,56 @@ public class UserService
     public async Task<User[]> GetUserActive()
     {
         var socket = _taskSocketSvc.GetAll(TenantCode);
-        var usersVM = socket.Select(x => new UserActiveVM { UserId = x.Key.Split("/")[1], Ip = x.Key.Split("/")[3] }).DistinctBy(x => new { x.UserId, x.Ip }).ToList();
+
+        var usersVM = socket
+            .Select(x =>
+            {
+                var parts = x.Key.Split("/");
+                return new UserActiveVM
+                {
+                    UserId = parts[1],
+                    Ip = parts[3]
+                };
+            })
+            .DistinctBy(x => new { x.UserId, x.Ip })
+            .ToList();
         var userIds = usersVM.Select(x => x.UserId).Distinct().ToList();
+        User[] users = [];
+        var connectString = BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics");
         if (RoleNames.Contains("CUSTOMER"))
         {
-            var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] WHERE ID IN ({UserId})", BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
-            var newUsers = usersVM.Select(x =>
-            {
-                var userNew = users.FirstOrDefault(y => y.Id == x.UserId);
-                if (userNew != null)
-                {
-                    userNew.Ip = x.Ip;
-                }
-                return userNew;
-            }).Where(x => x != null) // Loại bỏ null
-            .OrderBy(x => x.FullName)
-            .DistinctBy(x => (x.Id, x.Ip)) // Loại bỏ trùng theo cả Id và Ip
-            .ToArray();
-            return newUsers;
+            users = await _sql.ReadDsAsArr<User>("SELECT * FROM [USER] WHERE ID = @UserId", connectString, new List<WhereParamVM>() { new WhereParamVM() { FieldName = "UserId", Value = UserId } });
         }
         else
         {
-            var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] WHERE ID IN ({userIds.CombineStrings()})", BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
-            var newUsers = usersVM.Select(x =>
+            var parameters = userIds.Select((id, index) => new WhereParamVM
             {
-                var userNew = users.FirstOrDefault(y => y.Id == x.UserId);
-                if (userNew != null)
-                {
-                    userNew.Ip = x.Ip;
-                }
-                return userNew;
-            }).Where(x => x != null) // Loại bỏ null
-            .OrderBy(x => x.FullName)
-            .DistinctBy(x => (x.Id, x.Ip)) // Loại bỏ trùng theo cả Id và Ip
-            .ToArray();
-            return newUsers;
+                FieldName = $"@id{index}",
+                Value = id
+            }).ToList();
+
+            var paramNames = parameters.Select(p => p.FieldName).ToList();
+            var query = $"SELECT * FROM [USER] WHERE ID IN ({string.Join(", ", paramNames)})";
+
+            users = await _sql.ReadDsAsArr<User>(query, connectString, parameters);
         }
+
+        var result = usersVM
+            .Select(x =>
+            {
+                var user = users.FirstOrDefault(u => u.Id == x.UserId);
+                if (user != null)
+                {
+                    user.Ip = x.Ip;
+                }
+                return user;
+            })
+            .Where(x => x != null)
+            .OrderBy(x => x.FullName)
+            .DistinctBy(x => (x.Id, x.Ip))
+            .ToArray();
+
+        return result;
     }
 
     public async Task<Dictionary<string, object>> GetMessageActive()

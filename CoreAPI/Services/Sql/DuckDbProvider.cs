@@ -126,9 +126,9 @@ namespace CoreAPI.Services.Sql
             return ds[0][0].MapTo<T>();
         }
 
-        public async Task<T[]> ReadDsAsArr<T>(string query, string connInfo) where T : class
+        public async Task<T[]> ReadDsAsArr<T>(string query, string connInfo, List<WhereParamVM> paramVMs = null) where T : class
         {
-            var ds = await ReadDataSet(query, connInfo);
+            var ds = await ReadDataSet(query, connInfo, false, paramVMs);
             if (ds.Length == 0 || ds[0].Length == 0) return [];
             return ds[0].Select(x => x.MapTo<T>()).ToArray();
         }
