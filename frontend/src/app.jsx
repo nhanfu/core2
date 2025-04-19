@@ -1,5 +1,5 @@
 import React from "react";
-import { ToastContainer } from "react-toastify";
+import { createRoot } from 'react-dom/client';
 import {
   Page,
   EditForm,
@@ -121,7 +121,7 @@ export class App {
         return acc;
       }, {});
       localStorage.setItem("SalesFunction", JSON.stringify(mapSaleFunction));
-    } catch {}
+    } catch { }
     localStorage.setItem("Dictionary", JSON.stringify(rs));
     const cul = localStorage.getItem("Culture") || "en";
     const map = rs
@@ -145,8 +145,38 @@ export class App {
         .catch(() => {
           this.removeUser();
         });
-    } else {
+    }
+    const isPublic = window.location.href.includes("page=");
+    if (!isPublic) {
       LoginBL.Instance.Render();
+    } else {
+      // get page name and init page in public folder
+      const urlParams = new URLSearchParams(window.location.search);
+      const pageName = urlParams.get("page");
+
+      if (pageName == null) {
+        console.warn("No page name specified in the URL.");
+        return;
+      }
+      import(`./pages/${pageName}.jsx`)
+        .then((module) => {
+          const PageComponent = module.default;
+          if (PageComponent == null) {
+            console.error(`Page component not found for: ${pageName}`);
+            return;
+          }
+          if (PageComponent.prototype instanceof EditForm) {
+            const instance = new PageComponent();
+            instance.Render();
+          } else {
+            createRoot(this.Meta.ParentElement).render(
+              <PageComponent />
+            );
+          }
+        })
+        .catch((error) => {
+          console.error(`Failed to load page: ${pageName}`, error);
+        });
     }
   }
 

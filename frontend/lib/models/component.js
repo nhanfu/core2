@@ -100,7 +100,7 @@ export class Component {
     IsPrivate = false;
     /** @type {number} */
     MonthCount = 0;
-    /** @type {string} */
+    /** @type {string | any} */
     Query = null;
     /** @type {boolean} */
     IsRealtime = false;
@@ -112,6 +112,10 @@ export class Component {
     IsCollapsible = false;
     /** @type {string} */
     Template = null;
+    /** @type {Function} */
+    RenderHeader = null;
+    /** @type {Function} */
+    RenderContent = null;
     /** @type {string} */
     PreQuery = null;
     /** @type {string} */

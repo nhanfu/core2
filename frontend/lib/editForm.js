@@ -679,7 +679,7 @@ export class EditForm extends EditableComponent {
                 this.Entity = rs.updatedItem[0];
                 this.Dirty = false;
                 if (this.OpenFrom.devTools) {
-                    await this.OpenFrom.devTools.RerenderUI();
+                    this.OpenFrom.devTools.RerenderUI();
                 }
                 if (rs.Detail && rs.Detail.length > 0) {
                     for (const grid of gridItem) {
@@ -738,7 +738,7 @@ export class EditForm extends EditableComponent {
                     }
                     else {
                         for (const element of parent) {
-                            await element.CountBadge();
+                            element.CountBadge();
                             var gridDetail = element.FilterChildren(x => x.IsListView).find(x => x.IsListView && x.Meta.RefName == this.Meta.EntityId);
                             if (gridDetail) {
                                 if (reloadData) {
@@ -937,10 +937,12 @@ export class EditForm extends EditableComponent {
         this.LayoutLoaded(feature, callback, entity);
     }
     Render() {
-        if (!this.Meta.Layout) {
+        if (!this.Meta.Layout && !this.Meta.IsLocal) {
             this.LoadFeatureAndRender();
         }
-        else {
+        else if (this.Meta.IsLocal) {
+            this.LayoutLoaded(this.Meta, null, this.Entity);
+        } else {
             if (!this.Element) {
                 this.Element = this.ParentElement;
             }
@@ -948,37 +950,42 @@ export class EditForm extends EditableComponent {
             Html.Instance.Clear();
             Html.Instance.Div.Render();
             this.Element = Html.Context;
-            let root = createRoot(this.Element);
-            let reactElement = React.createElement(this.Meta.Layout);
-            root.render(reactElement);
-            new Promise(resolve => setTimeout(resolve, 0)).then(() => {
-                if (this.Meta.Javascript && !Utils.isNullOrWhiteSpace(this.Meta.Javascript)) {
-                    try {
-                        let fn = new Function(this.Meta.Javascript);
-                        let obj = fn.call(null, this.EditForm);
-                        for (let prop in obj) {
-                            this[prop] = obj[prop].bind(this);
-                        }
-                        const method = this["Init"];
-                        if (method) {
-                            new Promise((resolve, reject) => {
-                                let task = method.apply(this, this);
-                                if (!task || task.isCompleted == null) {
-                                    resolve(task);
-                                } else {
-                                    task.then(() => resolve(task)).catch(e => reject(e));
-                                }
-                            });
-                        }
-                    } catch (e) {
-                        console.log(e.message);
-                    }
-                }
-            });
+            this.createReact();
             this.Focus();
         }
         this.LastForm = this;
     }
+
+    createReact() {
+        let root = createRoot(this.Element);
+        let reactElement = React.createElement(this.Meta.Layout);
+        root.render(reactElement);
+        new Promise(resolve => setTimeout(resolve, 0)).then(() => {
+            if (this.Meta.Javascript && !Utils.isNullOrWhiteSpace(this.Meta.Javascript)) {
+                try {
+                    let fn = new Function(this.Meta.Javascript);
+                    let obj = fn.call(null, this.EditForm);
+                    for (let prop in obj) {
+                        this[prop] = obj[prop].bind(this);
+                    }
+                    const method = this["Init"];
+                    if (method) {
+                        new Promise((resolve, reject) => {
+                            let task = method.apply(this, this);
+                            if (!task || task.isCompleted == null) {
+                                resolve(task);
+                            } else {
+                                task.then(() => resolve(task)).catch(e => reject(e));
+                            }
+                        });
+                    }
+                } catch (e) {
+                    console.log(e.message);
+                }
+            }
+        });
+    }
+
     /** @type {HTMLElement} */
     PopupFooter;
     /** @type {HTMLElement} */

@@ -81,10 +81,14 @@ export class Client {
         localStorage.setItem('UserInfo', JSON.stringify(value));
     }
     static get SystemRole() {
-        return Client.Token.RoleNames.some(x => x.toLowerCase() == "admin");
+        return Client.Token 
+            ? Client.Token.RoleNames.some(x => x.toLowerCase() == "admin")
+            : false;
     }
     static get BodRole() {
-        return Client.Token.RoleNames.some(x => x.toLowerCase() == "bod");
+        return Client.Token 
+            ? Client.Token.RoleNames.some(x => x.toLowerCase() == "bod")
+            : false;
     }
     /**
      * @param {SqlViewModel} vm

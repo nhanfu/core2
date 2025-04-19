@@ -24,7 +24,7 @@ export default function VNTank() {
             <div className="gate2"></div>
           </div>
           <div className="text-h1 text-center">
-            Cùng Forwardx Chào Mừng 50 Năm Thống Nhất Đất Nước 30/04/1975 -
+            Chào Mừng 50 Năm Thống Nhất Đất Nước 30/04/1975 -
             30/04/2025
           </div>
         </div>

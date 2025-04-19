@@ -78,10 +78,14 @@ export class Feature {
     Components = [];
     /** @type {any} */
     Layout;
-    /** @type {HTMLElement} */
+    /** @type {HTMLElement | String} */
     ParentElement;
     /** @type {Feature[]} */
     InverseParent = [];
     /** @type {UserSetting[]} */
     UserSettings = [];
+    /** @type {Boolean} */
+    IsLocal = false;
+    /** @type {String | Function} */
+    Javascript = null;
 }
