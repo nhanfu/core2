@@ -81,7 +81,7 @@ public class ForwardxController(UserService _userSvc, IServiceProvider servicePr
                     var id = Uuid7.Guid().ToString();
                     item["Id"] = id;
                     item["EntityId"] = idShipment;
-                    item["TableName"] = item["Shipment"];
+                    item["TableName"] = "Shipment";
                     var container = vm.ShipmentDetail.MapToDirPatch("EntityContainer");
                     await _userSvc.SaveEntityTransaction(container, connection, transaction);
                 }
