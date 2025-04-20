@@ -651,6 +651,18 @@ export class HTML {
         ele.style.visibility = visible ? "" : "hidden";
         return this;
     }
+
+    Roles(...roles) {
+        if (roles == null || roles.length == 0) return this;
+        const token = JSON.parse(localStorage.getItem('UserInfo'));
+        if (token == null) return this;
+        const userRoles = token.Roles;
+        const hasRole = roles.some(role => userRoles.includes(role));
+        if (!hasRole) {
+            this.Context.style.display = "none";
+        }
+        return this;
+    }
 }
 
 export const Html = new HTML();

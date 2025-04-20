@@ -1,3 +1,4 @@
+
 import React from "react";
 import { createRoot } from 'react-dom/client';
 import {
@@ -153,12 +154,13 @@ export class App {
       // get page name and init page in public folder
       const urlParams = new URLSearchParams(window.location.search);
       const pageName = urlParams.get("page");
+      const folder = urlParams.get("f");
 
       if (pageName == null) {
         console.warn("No page name specified in the URL.");
         return;
       }
-      import(`./pages/${pageName}.jsx`)
+      import(`./pages/${folder}/${pageName}.js`)
         .then((module) => {
           const PageComponent = module.default;
           if (PageComponent == null) {

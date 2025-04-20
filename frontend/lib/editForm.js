@@ -884,8 +884,6 @@ export class EditForm extends EditableComponent {
     TabGroup = [];
     /** @type {TabComponent[]} */
     TabComponents = [];
-    /** @type {import('./section.js')} */
-    SectionMd;
     Popup = false;
     /**
      * Loads and renders features based on the current entity setup.
@@ -893,7 +891,6 @@ export class EditForm extends EditableComponent {
      */
     async LoadFeatureAndRender(callback = null) {
         Spinner.AppendTo();
-        this.SectionMd = this.SectionMd || await import('./section.js');
         var feature = await ComponentExt.LoadFeature(this.entity);
         if (!feature) {
             return null;
@@ -1061,7 +1058,7 @@ export class EditForm extends EditableComponent {
         this.Element = this.RenderTemplate(null, feature);
         this.SetFeatureStyleSheet(feature.StyleSheet);
         this.Policies = feature.FeaturePolicies;
-        this.RenderTabOrSection(this.GroupTree.filter(x => x.Active), this);
+        this.RenderTabOrSection(this.Meta.IsLocal ? this.GroupTree : this.GroupTree.filter(x => x.Active), this);
         this.InitDOMEvents();
         loadedCallback?.call(null);
         this.DispatchFeatureEvent(feature.Events, EventType.DOMContentLoaded);
@@ -1327,7 +1324,7 @@ export class EditForm extends EditableComponent {
         }
         const meta = this.ResolveMeta(ele);
         const newCom = factory ? factory(ele, meta, parent, entity) : this.BindingCom(ele, meta, parent, entity);
-        parent = newCom instanceof this.SectionMd.Section ? newCom : parent;
+        parent = newCom instanceof Section ? newCom : parent;
         // @ts-ignore
         ele.children.forEach(child => this.BindingTemplate(child, parent, entity, factory, visited));
     }
@@ -1525,9 +1522,9 @@ export class EditForm extends EditableComponent {
         componentGroup.sort((a, b) => a.Order - b.Order).forEach(group => {
             group.Disabled = this.Disabled || group.Disabled;
             if (group.IsTab) {
-                this.SectionMd.Section.RenderTabGroup(editForm ?? this, group);
+                Section.RenderTabGroup(editForm ?? this, group);
             } else {
-                this.SectionMd.Section.RenderSection(editForm ?? this, group);
+                Section.RenderSection(editForm ?? this, group);
             }
         });
     }
@@ -1596,7 +1593,7 @@ export class EditForm extends EditableComponent {
         }
         let child = null;
         if (com.ComponentType === ComponentType.Section) {
-            child = new this.SectionMd.Section(null, ele);
+            child = new Section(null, ele);
             child.Meta = com;
             child.Meta = com;
         } else {
@@ -1786,7 +1783,7 @@ export class EditForm extends EditableComponent {
                 com.CanDeactivateAll = true;
                 com.CanExport = true;
             });
-            return components.filter(x => x.Active);
+            return this.Meta.IsLocal ? components : components.filter(x => x.Active);
         }
         var policyFeature = this.Policies
             .sort((a, b) => {

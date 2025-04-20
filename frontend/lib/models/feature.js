@@ -75,6 +75,8 @@ export class Feature {
     /** @type {string} */
     Html = '';
     /** @type {Component[]} */
+    ComponentGroup = [];
+    /** @type {Component[]} */
     Components = [];
     /** @type {any} */
     Layout;

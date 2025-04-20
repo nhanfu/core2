@@ -34,8 +34,8 @@ export class Section extends EditableComponent {
         if (this.Meta === null) {
             return;
         }
-        if (this.Meta.RenderContent != null) {
-            this.Meta.RenderContent(this);
+        if (this.Meta.RenderItem != null) {
+            this.Meta.RenderItem(this);
             return;
         }
         if (this.Meta.ClassName?.includes("ribbon") || this.Meta.ClassName?.includes("title")) {

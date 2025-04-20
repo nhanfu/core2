@@ -115,7 +115,7 @@ export class Component {
     /** @type {Function} */
     RenderHeader = null;
     /** @type {Function} */
-    RenderContent = null;
+    RenderItem = null;
     /** @type {string} */
     PreQuery = null;
     /** @type {string} */
