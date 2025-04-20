@@ -99,9 +99,9 @@ public class SqlServerProvider(IDistributedCache cache, IConfiguration cfg, ISer
         return BgExt.GetConnectionString(iServiceProvider, cfg, "logistics");
     }
 
-    public async Task<T> ReadDsAs<T>(string query, string connInfo = null) where T : class
+    public async Task<T> ReadDsAs<T>(string query, string connInfo = null, List<WhereParamVM> paramVMs = null) where T : class
     {
-        var ds = await ReadDataSet(query, connInfo);
+        var ds = await ReadDataSet(query, connInfo, false, paramVMs);
         if (ds.Length == 0 || ds[0].Length == 0) return null;
         return ds[0][0].MapTo<T>();
     }

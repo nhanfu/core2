@@ -9,6 +9,7 @@ using CoreAPI.Models;
 using CoreAPI.Services;
 using CoreAPI.Services.Sql;
 using CoreAPI.ViewModels;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Hangfire;
 using HtmlAgilityPack;
 using LinqKit;
@@ -233,7 +234,7 @@ public class UserService
             RoleIdsText = "CUSTOMER",
             CompanyId = entity.Id,
             TypeId = 2,
-            Avatar = "https://api.nguyenduyphong.id.vn/icons/default.jpg"
+            Avatar = "https://api.forwardx.vn/icons/default.jpg"
         };
         var save = user.MapToPatch();
         await SavePatch2(save);
@@ -588,19 +589,20 @@ public class UserService
 
     public async Task<Feature> GetFeature(string name)
     {
+        var connectString = BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics", TenantCode);
         var feature = await GetFeatureFromJson(name, TenantCode);
         if (feature != null)
         {
             var query1 = @$"
-            select Value as DefaultVal,Id as ComponentDefaultValueId from ComponentDefaultValue where UserId = '{UserId}'
-            select * from [UserSetting] where FeatureId = '{feature.Id}' and UserId = '{UserId}'";
-            var child2s = await _sql.ReadDataSet(query1, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
+            select Value as DefaultVal,Id as ComponentDefaultValueId from ComponentDefaultValue where UserId = @UserId
+            select * from [UserSetting] where FeatureId = @FeatureId and UserId = @UserId";
+            var child2s = await _sql.ReadDataSet(query1, connectString, false, new List<WhereParamVM>() { new WhereParamVM() { FieldName = "FeatureId", Value = feature.Id }, new WhereParamVM() { FieldName = "UserId", Value = UserId } });
             feature.UserSettings = child2s.Length > 1 && child2s[1].Length > 0 ? child2s[1].Select(x => x.MapTo<UserSetting>()).ToList() : new List<UserSetting>();
             var componentDefaultValue = child2s.Length > 0 && child2s[0].Length > 0 ? child2s[0].Select(x => x.MapTo<CoreAPI.UIModels.ComponentDefaultValue>()).ToList() : new List<CoreAPI.UIModels.ComponentDefaultValue>();
             var com2s = feature.ComponentGroup.SelectMany(x => x.Components);
             componentDefaultValue.ForEach(item =>
             {
-                var def = com2s.FirstOrDefault(c => c.ComponentId == item.Id);
+                var def = com2s.FirstOrDefault(c => c.Id == item.ComponentId);
                 if (def != null)
                 {
                     def.DefaultVal = item.Value;
@@ -609,19 +611,19 @@ public class UserService
             });
             return feature;
         }
-        var query = @$"select * from [Feature] where Name = N'{name}'";
-        feature = await _sql.ReadDsAs<Feature>(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
+        var query = @$"select * from [Feature] where Name = @Name";
+        feature = await _sql.ReadDsAs<Feature>(query, connectString, new List<WhereParamVM>() { new WhereParamVM() { FieldName = "Name", Value = name } });
         if (feature == null)
         {
             return null;
         }
         var query2 = @$"select [Component].*,isnull(def.Value,DefaultVal) as DefaultVal,def.Id as ComponentDefaultValueId
         from [Component] 
-        outer apply (select top 1 Value,Id from ComponentDefaultValue where UserId = '{UserId}' and ComponentId = Component.Id) as def 
-        where FeatureId = '{feature.Id}'
-        select * from [FeaturePolicy] where FeatureId = '{feature.Id}'
-        select * from [UserSetting] where FeatureId = '{feature.Id}' and UserId = '{UserId}'";
-        var childs = await _sql.ReadDataSet(query2, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
+        outer apply (select top 1 Value,Id from ComponentDefaultValue where UserId = @UserId and ComponentId = Component.Id) as def 
+        where FeatureId = @FeatureId
+        select * from [FeaturePolicy] where FeatureId = @FeatureId
+        select * from [UserSetting] where FeatureId = @FeatureId and UserId = @UserId";
+        var childs = await _sql.ReadDataSet(query2, connectString, false, new List<WhereParamVM>() { new WhereParamVM() { FieldName = "FeatureId", Value = feature.Id }, new WhereParamVM() { FieldName = "UserId", Value = UserId } });
         var components = childs.Length > 0 && childs[0].Length > 0 ? childs[0].Select(x => x.MapTo<Component>()).ToList() : new List<Component>();
         var policys = childs.Length > 1 && childs[1].Length > 0 ? childs[1].Select(x => x.MapTo<FeaturePolicy>()).ToList() : new List<FeaturePolicy>();
         feature.UserSettings = childs.Length > 2 && childs[2].Length > 0 ? childs[2].Select(x => x.MapTo<UserSetting>()).ToList() : new List<UserSetting>();
@@ -643,17 +645,17 @@ public class UserService
 
     public async Task<bool> PublishAllFeature(string t)
     {
+        var connectString = BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics", t);
         var query = @$"select * from [Feature]";
-        var features = await _sql.ReadDsAsArr<Feature>(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics", t));
+        var features = await _sql.ReadDsAsArr<Feature>(query, connectString);
         foreach (var feature in features)
         {
-            var query2 = @$"select [Component] .*,isnull(def.Value,DefaultVal) as DefaultVal,def.Id as ComponentDefaultValueId
-        from [Component] 
-        outer apply (select top 1 Value,Id from ComponentDefaultValue where ComponentId = Component.Id) as def 
-        where FeatureId = '{feature.Id}'
-        select * from [FeaturePolicy] where FeatureId = '{feature.Id}'
-        select * from [UserSetting] where FeatureId = '{feature.Id}'";
-            var childs = await _sql.ReadDataSet(query2, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
+            var query2 = @$"select [Component].*
+            from [Component] 
+            where FeatureId = @FeatureId
+            select * from [FeaturePolicy] where FeatureId = @FeatureId
+            select * from [UserSetting] where FeatureId = @FeatureId";
+            var childs = await _sql.ReadDataSet(query2, connectString, false, new List<WhereParamVM>() { new WhereParamVM() { FieldName = "FeatureId", Value = feature.Id } });
             var components = childs.Length > 0 && childs[0].Length > 0 ? childs[0].Select(x => x.MapTo<Component>()).ToList() : new List<Component>();
             var policys = childs.Length > 1 && childs[1].Length > 0 ? childs[1].Select(x => x.MapTo<FeaturePolicy>()).ToList() : new List<FeaturePolicy>();
             feature.UserSettings = childs.Length > 2 && childs[2].Length > 0 ? childs[2].Select(x => x.MapTo<UserSetting>()).ToList() : new List<UserSetting>();
@@ -675,19 +677,19 @@ public class UserService
         return true;
     }
 
-    public async Task<bool> PublishFeatureByName(string Name, string t = null)
+    public async Task<bool> PublishFeatureByName(string name, string t = null)
     {
-        var query = @$"select * from [Feature] where Name = '{Name}'";
-        var features = await _sql.ReadDsAsArr<Feature>(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics", t));
+        var connectString = BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics", t);
+        var query = $"select * from [Feature] where Name = @Name";
+        var features = await _sql.ReadDsAsArr<Feature>(query, connectString, new List<WhereParamVM>() { new WhereParamVM() { FieldName = "Name", Value = name } });
         foreach (var feature in features)
         {
-            var query2 = @$"select [Component] .*,isnull(def.Value,DefaultVal) as DefaultVal,def.Id as ComponentDefaultValueId
-        from [Component] 
-        outer apply (select top 1 Value,Id from ComponentDefaultValue where ComponentId = Component.Id) as def 
-        where FeatureId = '{feature.Id}'
-        select * from [FeaturePolicy] where FeatureId = '{feature.Id}'
-        select * from [UserSetting] where FeatureId = '{feature.Id}'";
-            var childs = await _sql.ReadDataSet(query2, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
+            var query2 = @$"select [Component].*
+            from [Component] 
+            where FeatureId = @FeatureId
+            select * from [FeaturePolicy] where FeatureId = @FeatureId
+            select * from [UserSetting] where FeatureId = @FeatureId";
+            var childs = await _sql.ReadDataSet(query2, connectString, false, new List<WhereParamVM>() { new WhereParamVM() { FieldName = "FeatureId", Value = feature.Id } });
             var components = childs.Length > 0 && childs[0].Length > 0 ? childs[0].Select(x => x.MapTo<Component>()).ToList() : new List<Component>();
             var policys = childs.Length > 1 && childs[1].Length > 0 ? childs[1].Select(x => x.MapTo<FeaturePolicy>()).ToList() : new List<FeaturePolicy>();
             feature.UserSettings = childs.Length > 2 && childs[2].Length > 0 ? childs[2].Select(x => x.MapTo<UserSetting>()).ToList() : new List<UserSetting>();

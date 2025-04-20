@@ -119,7 +119,7 @@ namespace CoreAPI.Services.Sql
             return [.. tables];
         }
 
-        public async Task<T> ReadDsAs<T>(string query, string connInfo) where T : class
+        public async Task<T> ReadDsAs<T>(string query, string connInfo, List<WhereParamVM> paramVMs = null) where T : class
         {
             var ds = await ReadDataSet(query, connInfo);
             if (ds.Length == 0 || ds[0].Length == 0) return null;
