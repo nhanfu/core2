@@ -183,6 +183,8 @@ public partial class Partner
 
     public string Icon { get; set; }
 
+    public string DepartmentId { get; set; }
+
     public virtual ICollection<PartnerCare> PartnerCare { get; set; } = new List<PartnerCare>();
 
     public virtual ICollection<PartnerContact> PartnerContact { get; set; } = new List<PartnerContact>();

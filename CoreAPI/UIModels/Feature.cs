@@ -72,4 +72,6 @@ public partial class Feature
     public string CodeId { get; set; }
 
     public string AppId { get; set; }
+
+    public virtual ICollection<Component> Component { get; set; } = new List<Component>();
 }

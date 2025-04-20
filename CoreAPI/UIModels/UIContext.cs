@@ -420,6 +420,9 @@ public partial class UIContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.DeliveryTerm).HasMaxLength(250);
             entity.Property(e => e.DemFree).HasColumnType("money");
+            entity.Property(e => e.DepartmentId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.DetFree).HasColumnType("money");
             entity.Property(e => e.DetailsGoods).HasMaxLength(500);
             entity.Property(e => e.Dimension).HasMaxLength(500);
@@ -561,6 +564,11 @@ public partial class UIContext : DbContext
             entity.Property(e => e.WareHouseId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+
+            entity.HasOne(d => d.Quotation).WithMany(p => p.Booking)
+                .HasForeignKey(d => d.QuotationId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_Booking_Inquiry");
         });
 
         modelBuilder.Entity<BookingDetail>(entity =>
@@ -797,6 +805,10 @@ public partial class UIContext : DbContext
                 .HasMaxLength(20)
                 .IsUnicode(false);
             entity.Property(e => e.created_by).HasMaxLength(255);
+
+            entity.HasOne(d => d.Feature).WithMany(p => p.Component)
+                .HasForeignKey(d => d.FeatureId)
+                .HasConstraintName("FK_Component_Feature");
         });
 
         modelBuilder.Entity<ComponentDefaultValue>(entity =>
@@ -1272,7 +1284,9 @@ public partial class UIContext : DbContext
 
             entity.ToTable(tb => tb.HasTrigger("Feature_FeaturePolicy"));
 
-            entity.Property(e => e.Id).HasMaxLength(50);
+            entity.Property(e => e.Id)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.AppId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -1491,6 +1505,9 @@ public partial class UIContext : DbContext
             entity.Property(e => e.DeminsionQuantity).HasColumnType("money");
             entity.Property(e => e.DeminsionText).HasMaxLength(250);
             entity.Property(e => e.DeminsionWidth).HasColumnType("money");
+            entity.Property(e => e.DepartmentId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.DestinationId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -1884,6 +1901,9 @@ public partial class UIContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.DebitAmount).HasColumnType("money");
             entity.Property(e => e.DebitName).HasMaxLength(500);
+            entity.Property(e => e.DepartmentId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.Description).HasMaxLength(500);
             entity.Property(e => e.DistributeInformationIds)
                 .HasMaxLength(255)
@@ -2484,6 +2504,9 @@ public partial class UIContext : DbContext
             entity.Property(e => e.ConsigneeId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.ContReturnId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.ContainerNo)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -2522,6 +2545,7 @@ public partial class UIContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.DetFree).HasColumnType("money");
             entity.Property(e => e.DetailsGoods).HasMaxLength(1000);
+            entity.Property(e => e.Distane).HasColumnType("money");
             entity.Property(e => e.DocsNo)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -2555,13 +2579,14 @@ public partial class UIContext : DbContext
             entity.Property(e => e.FreightPayableId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.Fuel).HasColumnType("money");
             entity.Property(e => e.GW).HasColumnType("money");
             entity.Property(e => e.HSCode).HasMaxLength(100);
+            entity.Property(e => e.HblId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.HblNo)
                 .HasMaxLength(100)
-                .IsUnicode(false);
-            entity.Property(e => e.HblSeaNo)
-                .HasMaxLength(250)
                 .IsUnicode(false);
             entity.Property(e => e.HblTypeId)
                 .HasMaxLength(50)
@@ -2571,6 +2596,9 @@ public partial class UIContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.InsertedBy)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.InvoiceNo)
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.IssuingDes).HasMaxLength(500);
@@ -2690,12 +2718,16 @@ public partial class UIContext : DbContext
             entity.Property(e => e.SaleIds)
                 .HasMaxLength(500)
                 .IsUnicode(false);
+            entity.Property(e => e.SealNo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.Sercure).HasMaxLength(250);
             entity.Property(e => e.SeriBillNo).HasMaxLength(100);
             entity.Property(e => e.Service).HasMaxLength(250);
             entity.Property(e => e.ServiceId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.ServiceTrucking).HasMaxLength(250);
             entity.Property(e => e.ShipmentDOId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -2722,9 +2754,6 @@ public partial class UIContext : DbContext
             entity.Property(e => e.SubscribersIds)
                 .HasMaxLength(250)
                 .IsUnicode(false);
-            entity.Property(e => e.ThreadingCdsId)
-                .HasMaxLength(50)
-                .IsUnicode(false);
             entity.Property(e => e.To1).HasMaxLength(250);
             entity.Property(e => e.To2).HasMaxLength(250);
             entity.Property(e => e.To3).HasMaxLength(250);
@@ -2738,6 +2767,9 @@ public partial class UIContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.TruckNo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.TruckTypeId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.TruckerId)
@@ -2770,6 +2802,11 @@ public partial class UIContext : DbContext
             entity.Property(e => e.WarehouseId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+
+            entity.HasOne(d => d.BookingLocal).WithMany(p => p.Shipment)
+                .HasForeignKey(d => d.BookingLocalId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_Shipment_Booking");
 
             entity.HasOne(d => d.Parent).WithMany(p => p.InverseParent)
                 .HasForeignKey(d => d.ParentId)

@@ -2608,6 +2608,97 @@ public class UserService
         }
     }
 
+    public async Task<bool> SaveEntityTransaction(PatchVM vm, SqlConnection connection, SqlTransaction transaction)
+    {
+        var tableColumnsRaw = await GetTableColumns(vm.Table);
+        var tableColumns = tableColumnsRaw[0]
+            .ToDictionary(row => row["COLUMN_NAME"].ToString(), row => row["DATA_TYPE"].ToString());
+
+        var filteredChanges = vm.Changes
+            .Where(change => tableColumns.ContainsKey(change.Field))
+            .ToList();
+
+        AddDefaultFields(filteredChanges, new List<PatchDetail>()
+        {
+            new PatchDetail { Field = "InsertedDate", Value = DateTime.Now.ToISOFormat() },
+            new PatchDetail { Field = "InsertedBy", Value = UserId },
+            new PatchDetail { Field = "UpdatedDate", Value = null },
+            new PatchDetail { Field = "UpdatedBy", Value = null },
+            new PatchDetail { Field = "Active", Value = "1" }
+        });
+
+        using (SqlCommand command = new SqlCommand())
+        {
+            command.Transaction = transaction;
+            command.Connection = connection;
+
+            var update = filteredChanges.Select(x => $"@{x.Field.ToLower()}");
+            var cells = filteredChanges.Select(x => x.Field).ToList();
+            command.CommandText = $"INSERT INTO [{vm.Table}]([{cells.Combine("],[")}]) VALUES({update.Combine()})";
+
+            foreach (var item in filteredChanges)
+            {
+                var paramName = $"@{item.Field.ToLower()}";
+                var dbType = tableColumns[item.Field];
+                object value = ConvertToSqlType(item.Value, dbType);
+                command.Parameters.AddWithValue(paramName, value ?? DBNull.Value);
+            }
+
+            await command.ExecuteNonQueryAsync();
+            return true;
+        }
+    }
+
+    private object ConvertToSqlType(object value, string sqlType)
+    {
+        if (value == null) return null;
+
+        try
+        {
+            switch (sqlType.ToLower())
+            {
+                case "int": return Convert.ToInt32(value);
+                case "bigint": return Convert.ToInt64(value);
+                case "smallint": return Convert.ToInt16(value);
+                case "tinyint": return Convert.ToByte(value);
+                case "bit": return value.ToString();
+                case "decimal":
+                case "numeric":
+                case "money":
+                case "smallmoney":
+                    try
+                    {
+                        return Convert.ToDecimal(value);
+                    }
+                    catch
+                    {
+                        return Convert.ToDouble(value);
+                    }
+                case "float": return Convert.ToDouble(value);
+                case "real": return Convert.ToSingle(value);
+                case "datetime":
+                case "smalldatetime":
+                case "date":
+                case "time": return Convert.ToDateTime(value.ToString());
+                case "char":
+                case "nchar":
+                case "varchar":
+                case "nvarchar":
+                case "text":
+                case "ntext": return value.ToString();
+                case "uniqueidentifier": return Guid.Parse(value.ToString());
+                case "binary":
+                case "varbinary":
+                case "image": return (byte[])value;
+                default: return value; // fallback
+            }
+        }
+        catch
+        {
+            return value;
+        }
+    }
+
     private async Task Notification(PatchVM vm, string id, List<PatchDetail> filteredChanges, string isSend, PatchDetail receiverIds)
     {
         var featureName = vm.Changes.FirstOrDefault(x => x.Field == "FeatureName");
@@ -2660,16 +2751,15 @@ public class UserService
     public async Task<Dictionary<string, object>[][]> GetTableColumns(string tableName)
     {
         string query = $@"
-        SELECT c.COLUMN_NAME 
+        SELECT c.COLUMN_NAME, c.DATA_TYPE
         FROM INFORMATION_SCHEMA.COLUMNS c
-        JOIN sys.columns sc ON c.COLUMN_NAME = sc.name 
-        AND OBJECT_ID(c.TABLE_SCHEMA + '.' + c.TABLE_NAME) = sc.object_id
+        JOIN sys.columns sc 
+            ON c.COLUMN_NAME = sc.name 
+            AND OBJECT_ID(c.TABLE_SCHEMA + '.' + c.TABLE_NAME) = sc.object_id
         WHERE c.TABLE_NAME = '{tableName}' 
         AND sc.is_computed = 0";
-
         return await _sql.ReadDataSet(query);
     }
-
 
     private async Task AfterActionSvc(PatchVM vm, string action)
     {

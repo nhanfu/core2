@@ -201,5 +201,11 @@ public partial class Inquiry
 
     public string FeatureName { get; set; }
 
+    public bool ApprovePrint { get; set; }
+
+    public string DepartmentId { get; set; }
+
+    public virtual ICollection<Booking> Booking { get; set; } = new List<Booking>();
+
     public virtual ICollection<InquiryDetail> InquiryDetail { get; set; } = new List<InquiryDetail>();
 }

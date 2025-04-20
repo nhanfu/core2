@@ -311,13 +311,13 @@ public partial class Shipment
 
     public string CdsTypeId { get; set; }
 
-    public string ThreadingCdsId { get; set; }
+    public int? ThreadingCdsId { get; set; }
 
     public string CustomsOfficeId { get; set; }
 
     public string CommercialInvoiceNo { get; set; }
 
-    public string HblSeaNo { get; set; }
+    public string HblId { get; set; }
 
     public decimal? CsdEdit { get; set; }
 
@@ -456,6 +456,38 @@ public partial class Shipment
     public string NominationPartyId { get; set; }
 
     public string DepartmentId { get; set; }
+
+    public string InvoiceNo { get; set; }
+
+    public DateTime? CustomsOfficeDate { get; set; }
+
+    public int? BookingTypeId { get; set; }
+
+    public bool IsPhyto { get; set; }
+
+    public int? TransportOtherId { get; set; }
+
+    public int? VehicleId { get; set; }
+
+    public bool IsSubDeclaration { get; set; }
+
+    public string SealNo { get; set; }
+
+    public string TruckTypeId { get; set; }
+
+    public string ContReturnId { get; set; }
+
+    public string ServiceTrucking { get; set; }
+
+    public decimal? Distane { get; set; }
+
+    public decimal? Fuel { get; set; }
+
+    public int? StatusTruckingId { get; set; }
+
+    public int? Service2Id { get; set; }
+
+    public virtual Booking BookingLocal { get; set; }
 
     public virtual ICollection<Shipment> InverseParent { get; set; } = new List<Shipment>();
 

@@ -219,5 +219,34 @@ namespace Core.Extensions
             });
             return patch;
         }
+
+        public static PatchVM MapToDirPatch(this Dictionary<string, object> com, string table = null)
+        {
+            if (com is null) return null;
+
+            var patch = new PatchVM
+            {
+                Table = table,
+            };
+
+            foreach (var prop in com.Where(x => x.Value != null && x.Value.GetType().IsSimple()))
+            {
+                var val = prop.Value;
+                string strVal = val switch
+                {
+                    DateTime dt => dt.ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                    bool b => b ? "1" : "0",
+                    _ => val.ToString()
+                };
+
+                patch.Changes.Add(new PatchDetail
+                {
+                    Field = prop.Key,
+                    Value = strVal,
+                    RawValue = val
+                });
+            }
+            return patch;
+        }
     }
 }

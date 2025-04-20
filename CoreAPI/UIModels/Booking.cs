@@ -249,5 +249,13 @@ public partial class Booking
 
     public string FeatureName { get; set; }
 
+    public string DepartmentId { get; set; }
+
+    public int? BookingTypeId { get; set; }
+
     public virtual ICollection<BookingDetail> BookingDetail { get; set; } = new List<BookingDetail>();
+
+    public virtual Inquiry Quotation { get; set; }
+
+    public virtual ICollection<Shipment> Shipment { get; set; } = new List<Shipment>();
 }

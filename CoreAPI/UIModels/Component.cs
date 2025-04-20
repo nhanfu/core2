@@ -268,4 +268,6 @@ public partial class Component
     public string ComponentDefaultValueId { get; set; }
 
     public string CodeId { get; set; }
+
+    public virtual Feature Feature { get; set; }
 }
