@@ -60,7 +60,7 @@ export class EditForm extends EditableComponent {
     static SpecialEntryPoint = 'entry';
     Portal = true;
     /** @type {Object} */
-    Entity;
+    Entity = {};
     IsLock = false;
     /** @type {Feature} */
     Meta;
@@ -91,8 +91,6 @@ export class EditForm extends EditableComponent {
     }
 
     static Portal = false;
-
-
 
     /**
      * Constructor for EditForm.
@@ -1307,58 +1305,6 @@ export class EditForm extends EditableComponent {
     }
 
     /**
-     * Binds the template with components.
-     * @param {HTMLElement} ele - The HTML element to bind.
-     * @param {EditableComponent} parent - The parent component.
-     * @param {object} entity - The entity object.
-     * @param {Function} [factory] - The factory function to create components.
-     * @param {Set<HTMLElement>} [visited] - The set of visited elements.
-     */
-    BindingTemplate(ele, parent, entity = null, factory = null, visited = new Set()) {
-        if (!ele || visited.has(ele)) {
-            return;
-        }
-        visited.add(ele);
-        if (ele.children.length === 0 && this.RenderCellText(ele, entity) !== null) {
-            return;
-        }
-        const meta = this.ResolveMeta(ele);
-        const newCom = factory ? factory(ele, meta, parent, entity) : this.BindingCom(ele, meta, parent, entity);
-        parent = newCom instanceof Section ? newCom : parent;
-        // @ts-ignore
-        ele.children.forEach(child => this.BindingTemplate(child, parent, entity, factory, visited));
-    }
-
-    /**
-     * Resolves meta information for an HTML element.
-     * @param {HTMLElement} ele - The HTML element.
-     * @returns {Component} - The resolved component.
-     */
-    ResolveMeta(ele) {
-        /** @type {Component} */
-        let component = new Component();
-        const id = ele.dataset[this.IdField.toLowerCase()];
-        if (id) {
-            component = this.AllCom.find(x => x.Id === id);
-        }
-        for (const prop of Object.getOwnPropertyNames(Component.prototype)) {
-            const value = ele.dataset[prop.toLowerCase()];
-            if (!value) {
-                continue;
-            }
-            let propVal = null;
-            try {
-                propVal = typeof component[prop] === 'string' ? value : JSON.parse(value);
-                component = component || new Component();
-                component[prop] = propVal;
-            } catch {
-                continue;
-            }
-        }
-        return component;
-    }
-
-    /**
      * Renders the text content of a cell.
      * @param {HTMLElement} ele - The HTML element.
      * @param {object} entity - The entity object.
@@ -1557,7 +1503,6 @@ export class EditForm extends EditableComponent {
         entryPoint.innerHTML = Str.Empty;
         if (feature.Template) {
             entryPoint.innerHTML = feature.Template;
-            this.BindingTemplate(entryPoint, this);
             const innerEntry = Array.from(entryPoint.querySelectorAll("[id='inner-entry']")).shift();
             this.ResetEntryPoint(innerEntry);
             // @ts-ignore

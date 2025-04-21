@@ -35,7 +35,7 @@ export class Section extends EditableComponent {
             return;
         }
         if (this.Meta.RenderItem != null) {
-            this.Meta.RenderItem(this);
+            this.Meta.RenderItem({section: this});
             return;
         }
         if (this.Meta.ClassName?.includes("ribbon") || this.Meta.ClassName?.includes("title")) {
@@ -704,7 +704,7 @@ export class Section extends EditableComponent {
             const colSpan = inner || 1;
             const rowSpan = ui.RowSpan || 1;
             ui.Label = ui.Label || '';
-            Html.Div.ClassName("layout-item").Style(`grid-column: span ${colSpan};grid-row: span ${rowSpan}`).Visibility(ui.Visibility);
+            Html.Div.ClassName("layout-item").Style(`grid-column: span ${colSpan};grid-row: span ${rowSpan}`);
             if (ui.ShowLabel) {
                 var required = "";
                 if (!Utils.isNullOrWhiteSpace(ui.Validation)) {
@@ -806,7 +806,7 @@ export class Section extends EditableComponent {
             var inner = this.EditForm.GetInnerColumn(ui);
             const colSpan = inner || 1;
             ui.Label = ui.Label || '';
-            Html.TData.ColSpan(colSpan).Visibility(ui.Visibility);
+            Html.TData.ColSpan(colSpan);
             if (ui.ShowLabel) {
                 Html.Instance.Div.ClassName("group-control").Style(ui.ChildStyle).Div.ClassName('header-label').IText(ui.Label, this.EditForm.Meta.Label).End.Render();
             }

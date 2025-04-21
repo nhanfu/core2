@@ -180,6 +180,15 @@ export class LoginBL extends EditForm {
 
   Render() {
     let oldToken = Client.Token;
+    if (oldToken) {
+      Client.GetToken(Client.Token)
+        .then((token) => {
+          Client.Token = token;
+        })
+        .catch(() => {
+          this.removeUser();
+        });
+    }
     if (!oldToken || new Date(oldToken.RefreshTokenExp) <= Client.EpsilonNow) {
       Html.Take("#app");
       this.Element = Html.Context;

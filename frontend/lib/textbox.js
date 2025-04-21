@@ -270,7 +270,6 @@ export class Textbox extends EditableComponent {
             return Promise.resolve(true);
         }
         const params = Utils.IsFunction(this.Meta.PreQuery, false, this);
-        var table = !this.Meta.RefName ? this.Meta.RefName : this.EditForm.Meta.EntityName;
         const submit = {
             ComId: this.Meta.Id,
             Params: params,

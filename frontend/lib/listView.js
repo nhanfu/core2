@@ -1,10 +1,9 @@
 import { EditableComponent } from "./editableComponent.js";
 import {
     ObservableArgs, EventType, SqlViewModel, PatchVM, FeaturePolicy,
-    CustomEventType, Component, Action, ElementType, EntityRef,
-    ComponentType
+    CustomEventType, Component, Action, EntityRef,
 } from "./models/";
-import { ActiveStateEnum, AdvSearchVM, CellSelected, MQEvent, OperatorEnum, OrderBy, Where } from "./models/enum.js";
+import { ActiveStateEnum, AdvSearchVM, CellSelected, OperatorEnum, OrderBy, Where } from "./models/enum.js";
 import { Paginator } from "./paginator.js";
 import { Utils } from "./utils/utils.js";
 import { ObservableList } from './models/observableList.js';
@@ -17,11 +16,7 @@ import { ListViewItem } from "./listViewItem.js";
 import { Toast } from "./toast.js";
 import { Uuid7 } from "./structs/uuidv7.js";
 import { ConfirmDialog } from "./confirmDialog.js";
-import { ComponentExt } from "./index.js";
-import { Datepicker } from "./index.js";
 import * as XLSX from 'xlsx';
-import { Select } from "./select.js";
-import { Label } from "./label.js";
 /**
  * Represents a list view component that allows editable features and other interactions like sorting and pagination.
  * @typedef {import('./searchEntry.js').SearchEntry} SearchEntry
@@ -209,8 +204,8 @@ export class ListView extends EditableComponent {
         }
         pageSize = (pageSize ?? this.Paginator?.Options?.PageSize ?? this.Meta.Row) ?? 20;
         skip = !skip ? (this.Paginator?.Options?.PageIndex * pageSize) : 0;
-        let sql = this.GetSql(skip, pageSize, cacheHeader);
-        return await this.CustomQuery(sql);
+        let searchVM = this.GetSql(skip, pageSize, cacheHeader);
+        return await this.CustomQuery(searchVM);
     }
 
     CalcFilterQuery() {
@@ -392,7 +387,9 @@ export class ListView extends EditableComponent {
                 return index === 0 ? x.Where : `${x.Operator} ${x.Where}`;
             })
             .join(" ");
-        var orderby = this.SearchSection.Children.filter(x => x.IsOrderBy).map(x => "ds." + x.Meta.FieldName + " " + x.OrderMethod).Combine(x => x, ", ");
+        var orderby = this.SearchSection
+            ? this.SearchSection.Children.filter(x => x.IsOrderBy).map(x => "ds." + x.Meta.FieldName + " " + x.OrderMethod).Combine(x => x, ", ")
+            : null;
         /** @type {SqlViewModel} */
         // @ts-ignore
         var res = {
@@ -408,6 +405,12 @@ export class ListView extends EditableComponent {
             MetaConn: this.MetaConn,
             DataConn: this.DataConn,
         };
+        if (this.Meta.Actions) {
+            let action = this.Meta.Actions.find(x => x.Name == "search");
+            if (action) {
+                res = action.Client({ listView: this, form: this.EditForm, sql: res });
+            }
+        }
         return res;
     }
 
@@ -430,27 +433,36 @@ export class ListView extends EditableComponent {
 
 
     async CustomQuery(vm) {
-        const data = await Client.Instance.SubmitAsync({
-            NoQueue: true,
-            Url: `/api/feature/com`,
-            Method: "POST",
-            JsonData: JSON.stringify(vm),
-        });
-        if (!data.value || data.value.length === 0) {
-            this.Paginator.Show = false;
-            this.ClearRowData();
-            this.SetRowData([]);
-            this.DomLoaded();
-            return [];
-        }
-        else {
-            let total = data.count && data.count > 0 ? data.count : data.value.length;
-            let rows = [...data.value];
-            this.ClearRowData();
-            this.UpdatePagination(total, rows.length);
-            await this.LoadMasterData(rows);
-            this.SetRowData(rows);
-            return rows;
+        try {
+            const data = await Client.Instance.SubmitAsync({
+                NoQueue: true,
+                ApiEndpoint: this.Meta.ApiEndpoint,
+                Url: `/api/feature/com`,
+                Method: "POST",
+                JsonData: JSON.stringify(vm),
+            });
+            if (!data.value || data.value.length === 0) {
+                this.Paginator.Show = false;
+                this.ClearRowData();
+                this.SetRowData([]);
+                this.DomLoaded();
+                return [];
+            }
+            else {
+                let total = data.count && data.count > 0 ? data.count : data.value.length;
+                let rows = [...data.value];
+                this.ClearRowData();
+                this.UpdatePagination(total, rows.length);
+                await this.LoadMasterData(rows);
+                this.SetRowData(rows);
+                return rows;
+            }
+        } catch (e) {
+            if (this.Meta.RenderItem && this.Meta.LocalData) {
+                this.ClearRowData();
+                this.UpdatePagination(0, 0);
+                this.SetRowData(this.Meta.LocalData);
+            }
         }
     }
 
@@ -1110,7 +1122,7 @@ export class ListView extends EditableComponent {
                 sysSetting.forEach(x => x.Active = true);
             }
             else {
-                sysSetting = this.EditForm.Meta.GridPolicies.filter(x => x.EntityId == this.Meta.FieldName);
+                sysSetting = this.EditForm.Meta.GridPolicies?.filter(x => x.EntityId == this.Meta.FieldName) ?? sysSetting;
             }
         }
         if (this.EditForm.Meta.UserSettings) {
@@ -2013,5 +2025,10 @@ export class ListView extends EditableComponent {
         else {
             await rowData.PatchUpdateOrCreate();
         }
+    }
+
+    Search(term) {
+        this.ListViewSearch.Com.SearchTerm.Value = term;
+        this.ReloadData();
     }
 }

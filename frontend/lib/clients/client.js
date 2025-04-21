@@ -131,7 +131,7 @@ export class Client {
             "User-Agent": "Mozilla/5.0"
         };
 
-        const url = Client.api + (options.FinalUrl ?? options.Url);
+        const url = (options.ApiEndpoint ?? Client.api) + (options.FinalUrl ?? options.Url);
 
         try {
             const response = await fetch(url, {

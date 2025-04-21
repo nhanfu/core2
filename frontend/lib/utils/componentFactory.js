@@ -21,6 +21,7 @@ import { Select } from "../select.js";
 import { ButtonPdf } from "../buttonPdf.js";
 import { ButtonExcel } from "../buttonExcel.js";
 import { GoogleMap } from "../googleMap.js";
+import { ListView } from "../index.js";
 /**
  * Factory class for creating UI components based on specific configurations.
  */
@@ -52,28 +53,31 @@ export class ComponentFactory {
         switch (fullName) {
             case "Input":
             case "Textarea":
-                child = new Textbox(ui, ele)
+                child = new Textbox(ui, ele);
                 break;
             case "Number":
-                child = new Numbox(ui, ele)
+                child = new Numbox(ui, ele);
                 break;
             case "Label":
-                child = new Label(ui, ele)
+                child = new Label(ui, ele);
                 break;
             case "Select":
-                child = new Select(ui, ele)
+                child = new Select(ui, ele);
                 break;
             case "Datepicker":
-                child = new Datepicker(ui, ele)
+                child = new Datepicker(ui, ele);
                 break;
             case "Checkbox":
-                child = new Checkbox(ui, ele)
+                child = new Checkbox(ui, ele);
                 break;
             case "FileUpload":
-                child = new Image(ui, ele)
+                child = new Image(ui, ele);
                 break;
             case "Button":
-                child = new Button(ui, ele)
+                child = new Button(ui, ele);
+                break;
+            case "ListView":
+                child = new ListView(ui, ele);
                 break;
             case "GridView":
                 if (Utils.isNullOrWhiteSpace(ui.GroupBy)) {
@@ -113,11 +117,11 @@ export class ComponentFactory {
                 child = new ButtonExcel(ui, ele)
                 break;
             case "GoogleMap":
-                    child = new GoogleMap(ui, ele)
-                    break;
+                child = new GoogleMap(ui, ele)
+                break;
             default:
                 if (ui.ComponentType instanceof Function) {
-                    child = ui.ComponentType.call(ui);
+                    child = ui.ComponentType.call(ui, ui, ele);
                 }
                 else {
                     child = new Textbox(ui, ele)

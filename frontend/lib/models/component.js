@@ -274,6 +274,9 @@ export class Component {
     RowSpan;
     /** @type {string} */
     ComponentDefaultValueId;
+    Actions;
+    LocalData;
+    ApiEndpoint;
     /** @type {string} */
     GroupTypeId;
     CanRead = false;

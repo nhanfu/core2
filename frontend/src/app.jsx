@@ -137,16 +137,6 @@ export class App {
     LangSelect._dictionaries = map;
     localStorage.setItem(LangSelect.Culture, JSON.stringify(map));
     Spinner.Init();
-    if (Client.Token) {
-      Client.GetToken(Client.Token)
-        .then((token) => {
-          Client.Token = token;
-          LoginBL.Instance.Render();
-        })
-        .catch(() => {
-          this.removeUser();
-        });
-    }
     const isPublic = window.location.href.includes("page=");
     if (!isPublic) {
       LoginBL.Instance.Render();

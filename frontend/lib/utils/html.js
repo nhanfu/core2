@@ -588,7 +588,7 @@ export class HTML {
     }
 
     Clear() {
-        this.Context.innerHTML = '';
+        if (this.Context != null) this.Context.innerHTML = '';
         return this;
     }
 
@@ -652,11 +652,21 @@ export class HTML {
         return this;
     }
 
+    /** @typedef {import('../models/token.js').Token} Token */
+
+    /** @type {Token} */
+    #_token;
+    get Token() {
+        if (this.#_token == null) {
+            this.#_token = JSON.parse(localStorage.getItem('UserInfo'));
+        }
+        return this.#_token;
+    }
     Roles(...roles) {
         if (roles == null || roles.length == 0) return this;
-        const token = JSON.parse(localStorage.getItem('UserInfo'));
+        const token = this.Token;
         if (token == null) return this;
-        const userRoles = token.Roles;
+        const userRoles = token.RoleNames ?? [];
         const hasRole = roles.some(role => userRoles.includes(role));
         if (!hasRole) {
             this.Context.style.display = "none";
