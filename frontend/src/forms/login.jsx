@@ -311,7 +311,7 @@ export class LoginBL extends EditForm {
     this.InitAppHanlder?.(Client.Token);
     MenuComponent.Instance.Render();
     EditForm.NotificationClient = new WebSocketClient(
-      document.location.origin + "/task"
+      document.location.host + ':2222' + "/task"
     );
   }
 
