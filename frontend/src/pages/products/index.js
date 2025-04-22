@@ -1,5 +1,6 @@
 import meta from "./meta";
-import { Client, Html, EditForm, ListViewItem, ListView } from "../../../lib";
+import { Client, Html, EditForm, ListViewItem, ListView, Utils } from "../../../lib";
+import { HttpMethod, XHRWrapper } from "../../../lib/models";
 
 export default class ProductListPage extends EditForm {
     constructor(entity = null) {
@@ -11,8 +12,8 @@ export default class ProductListPage extends EditForm {
 
     Search(e) {
         /** @type {ListView} */
-        const listView = this.listView;
-        listView.Search(term);
+        const listView = this.FindComponentByName('product-list');
+        listView.Search(this.Entity.Search);
     }
 
     /**
@@ -28,7 +29,7 @@ export default class ProductListPage extends EditForm {
             .P.Text(`Description: ${data.Description}`).End
             .Button.Text('⌫').Roles('BOD')
             .Event('click', async () => {
-                this.DeleteProduct(section);
+                await this.DeleteProduct(section);
             }, section).End.End;
     }
 
@@ -37,13 +38,17 @@ export default class ProductListPage extends EditForm {
      * @param {ListViewItem} section 
      */
     async DeleteProduct(section) {
-        const success = await Client.Instance
-            .SubmitAsync({
-                AllowAnonymous: true,
-                ComId: section.ListView.Meta.Id, Action: 'delete', Id: data.Id
+        /** @type {XHRWrapper} */
+        const x = {
+            AllowAnonymous: true,
+            Url: Utils.ComQuery, Method: HttpMethod.POST,
+            JsonData: JSON.stringify({
+                Action: 'delete', ComId: section.ListView.Meta.Id, Id: section.Entity.Id
             })
+        }
+        const success = await Client.Instance.SubmitAsync(x);
         if (success) {
-            li.Dispose();
+            section.Dispose();
         }
     }
 }

@@ -318,7 +318,11 @@ export class EditableComponent {
     InvokeEvent(events, eventTypeName, ...parameters) {
         let eventObj;
         try {
-            eventObj = JSON.parse(events);
+            if (typeof (events) === "string") {
+                eventObj = JSON.parse(events);
+            } else {
+                eventObj = events;
+            }
         } catch {
             return Promise.resolve(false);
         }
@@ -328,6 +332,7 @@ export class EditableComponent {
         }
         const data = Utils.IsFunction(eventName, false, this);
         if (data) {
+            data.call(this, ...parameters);
             return Promise.resolve(true);
         }
         let form = this.EditForm;
@@ -968,9 +973,7 @@ export class EditableComponent {
             this.Children.splice(index, 0, child);
         }
 
-        if (!child.Parent) {
-            child.Parent = this;
-        }
+        child.Parent = this;
         Html.Take(child.ParentElement);
         // @ts-ignore
         child.Render();

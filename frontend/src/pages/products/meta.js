@@ -29,10 +29,17 @@ function meta(form) {
                     {
                         FieldName: 'Search',
                         ComponentType: 'Input',
-                        Events: { 'change': form.Search },
+                        Events: { 'change': form.Search.bind(form) },
+                    },
+                    {
+                        FieldName: 'btnSearch',
+                        ComponentType: 'Button',
+                        Label: 'Search',
+                        Events: { 'click': form.Search.bind(form) },
                     },
                     {
                         Id: listId,
+                        FieldName: listId,
                         ComponentType: 'ListView',
                         ApiEndpoint: document.location.origin,
                         RefName: 'Product',
@@ -44,7 +51,7 @@ function meta(form) {
                             { Name: 'Herme', Price: 24000, Description: 'def' },
 
                         ], // For the purpose of testing
-                        RenderItem: form.RenderItem
+                        RenderItem: form.RenderItem.bind(form),
                     }
                 ]
             }

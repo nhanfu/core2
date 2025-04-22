@@ -2028,7 +2028,7 @@ export class ListView extends EditableComponent {
     }
 
     Search(term) {
-        this.ListViewSearch.Com.SearchTerm.Value = term;
+        this.ListViewSearch.Entity.SearchTerm = term;
         this.ReloadData();
     }
 }

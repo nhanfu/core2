@@ -64,15 +64,20 @@ export class Button extends EditableComponent {
         this.Disabled = true;
         try {
             Spinner.AppendTo();
-            this.DispatchEvent(this.Meta.Events, "click", this, this.Entity).then(() => {
-                this.Disabled = false;
-                Spinner.Hide();
+            this.DispatchEvent(this.Meta.Events, "click", this, this.Entity)
+            .finally(() => {
+                this.AfterClickEffect();
             });
         } finally {
             window.setTimeout(() => {
-                this.Disabled = false;
+                this.AfterClickEffect();
             }, 2000);
         }
+    }
+
+    AfterClickEffect() {
+        this.Disabled = false;
+        Spinner.Hide();
     }
 
     /**
