@@ -55,39 +55,6 @@ export class App {
     this.MyApp.EditForm.Meta = this.Meta;
   }
 
-  async getExchangeRate() {
-    var rate = await fetch(
-      "https://portal.vietcombank.com.vn/Usercontrols/TVPortal.TyGia/pXML.aspx"
-    );
-    const xmlString = await rate.text();
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(xmlString, "text/xml");
-    const json = this.extractExchangeRates(xmlDoc);
-    json.push({
-      CurrencyCode: "VND",
-      CurrencyName: "VND",
-      Buy: "1",
-      Transfer: "1",
-      Sell: "1",
-    });
-    const ext = json.reduce((acc, cur) => {
-      acc[cur.CurrencyCode] = Decimal(cur.Transfer.replace(/,/g, ""));
-      return acc;
-    }, {});
-    var exUSD = Decimal(
-      json.find((x) => x.CurrencyCode == "USD").Transfer.replace(/,/g, "")
-    );
-    const ext1 = json.reduce((acc, cur) => {
-      const eurToUsdRate = Decimal(cur.Transfer.replace(/,/g, "")).div(exUSD);
-      acc[cur.CurrencyCode] = eurToUsdRate;
-      return acc;
-    }, {});
-    EditableComponent.ExchangeRateVND = ext;
-    localStorage.setItem("ExchangeRateVND", JSON.stringify(ext));
-    EditableComponent.ExchangeRateUSD = ext1;
-    localStorage.setItem("ExchangeRateUSD", JSON.stringify(ext1));
-  }
-
   async Init() {
     var data = await fetch(Client.api + "/api/dictionary?t=forwardx", {
       headers: {
@@ -204,37 +171,6 @@ export class App {
       ChromeTabs.init(el);
     }
     this.LoadByFromUrl();
-    await this.getExchangeRate();
-    var dataExt = await fetch(Client.api + "/api/exchangeRate?t=forwardx");
-    var rsExt = await dataExt.json();
-    const ext2 = rsExt.reduce((acc, cur) => {
-      acc[cur.CurrencyCode] = Decimal(cur.RateSaleVND);
-      return acc;
-    }, {});
-    const ext3 = rsExt.reduce((acc, cur) => {
-      acc[cur.CurrencyCode] = Decimal(cur.RateSaleUSD);
-      return acc;
-    }, {});
-    EditableComponent.ExchangeRateSaleVND = ext2;
-    EditableComponent.ExchangeRateSaleUSD = ext3;
-    localStorage.setItem("ExchangeRateSaleVND", JSON.stringify(ext2));
-    localStorage.setItem("ExchangeRateSaleUSD", JSON.stringify(ext3));
-    //
-    const ext4 = rsExt.reduce((acc, cur) => {
-      acc[cur.CurrencyCode] = Decimal(cur.RateProfitVND);
-      return acc;
-    }, {});
-    const ext5 = rsExt.reduce((acc, cur) => {
-      acc[cur.CurrencyCode] = Decimal(cur.RateProfitUSD);
-      return acc;
-    }, {});
-    EditableComponent.ExchangeRateProfitVND = ext4;
-    EditableComponent.ExchangeRateProfitUSD = ext5;
-    localStorage.setItem("ExchangeRateProfitVND", JSON.stringify(ext4));
-    localStorage.setItem("ExchangeRateProfitUSD", JSON.stringify(ext5));
-    window.setInterval(async () => {
-      await this.getExchangeRate();
-    }, 60 * 60 * 1000);
   }
 
   LoadByFromUrl() {
