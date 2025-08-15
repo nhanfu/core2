@@ -4,7 +4,7 @@ WORKDIR /app
 
 # Copy package files first to leverage Docker cache
 COPY package.json package-lock.json* ./
-RUN npm install
+RUN pnpm install
 
 # Copy source code
 COPY . .
@@ -13,4 +13,4 @@ COPY . .
 EXPOSE 5173
 
 # Command to run Vite with host flag to ensure it listens on all interfaces
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+CMD ["pnpm", "run", "dev", "--", "--host", "0.0.0.0"]
