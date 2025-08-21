@@ -3,6 +3,7 @@ import { Client } from "./clients/client.js";
 import { EditableComponent } from "./editableComponent.js";
 import { Html } from "./utils/html.js";
 import { Utils } from "./utils/utils.js";
+import { LangSelect } from "./utils/langSelect.js";
 
 
 export class Label extends EditableComponent {
@@ -44,9 +45,6 @@ export class Label extends EditableComponent {
         else if (this.Meta.ComponentType == "Checkbox") {
             Html.Instance.Style("justify-content: center;");
         }
-        else {
-            Html.Instance.Style("justify-content: start;");
-        }
         if (!this.Meta.IsMultiple) {
             if (!cellText.includes("<div")) {
                 Html.Instance.Span.ClassName("cell-text").Render();
@@ -65,6 +63,7 @@ export class Label extends EditableComponent {
                     cellText = "";
                 }
                 this.Element.innerHTML = cellText;
+                this.replaceTextInElement(this.Element);
             });
         }
         else {
@@ -73,6 +72,20 @@ export class Label extends EditableComponent {
                 cellText = "";
             }
             this.Element.innerHTML = cellText;
+        }
+    }
+
+    replaceTextInElement(element) {
+        const walker = document.createTreeWalker(
+            element,
+            NodeFilter.SHOW_TEXT,
+            null,
+            false
+        );
+
+        let node;
+        while ((node = walker.nextNode())) {
+            node.textContent = LangSelect.Get(node.textContent || '', this.EditForm.FeatureName);
         }
     }
 

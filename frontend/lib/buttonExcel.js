@@ -47,7 +47,8 @@ export class ButtonExcel extends Button {
             Client.Instance.PostAsync({ ComId: this.Meta.Id, Data: this.Entity }, "/api/CreateExcel").then(res => {
                 resolve(res);
             }).catch(e => {
-                resolve(e);
+                Spinner.Hide();
+                Toast.Warning(e.Message);
             });
         });
         return promise;

@@ -52,7 +52,7 @@ export class SearchEntry extends EditableComponent {
         this.SetDefaultVal();
         this._value = this.Entity[this.Name];
         this.RenderInputAndEvents();
-        if (this.Meta.ShowHotKey) {
+        if (this.Meta.Events && this.Meta.Events.includes('"add"')) {
             this.RenderIcons();
         }
         this.FindMatchText();
@@ -182,6 +182,7 @@ export class SearchEntry extends EditableComponent {
     }
 
     DisposeGv() {
+
         if (this._gv !== null) {
             this._gv.Show = false;
         }
@@ -365,6 +366,8 @@ export class SearchEntry extends EditableComponent {
         let oldValue = this._value;
         let oldMatch = this.Matched;
         this.Matched = null;
+        this.Entity[this.DisplayField] = null;
+        this.Entity[this.Name + "Text"] = null;
         this._value = null;
         this._input.value = '';
         this.Dirty = true;
@@ -372,7 +375,6 @@ export class SearchEntry extends EditableComponent {
             this.Entity[this.Name] = null;
             if (!Utils.isNullOrWhiteSpace(this.Meta.TabGroup)) {
                 this.Entity[this.Meta.TabGroup] = null;
-                this.Entity[this.DisplayField] = null;
             }
             if (this.IsCurrency) {
                 this.Entity.ExchangeRateVND = null;
@@ -396,7 +398,11 @@ export class SearchEntry extends EditableComponent {
                 if (Utils.isNullOrWhiteSpace(this.Meta.RefName)) {
                     window.setTimeout(() => {
                         var data = Utils.IsFunction(this.Meta.Query, false, this);
-                        this.Matched = data.filter(x => x.Id == this.Entity[this.Meta.FieldName])[0];
+                        this.Matched = data.find(x => {
+                            const xId = x?.Id != null ? x.Id.toString() : null;
+                            const entityValue = this.Entity?.[this.Meta.FieldName] != null ? this.Entity[this.Meta.FieldName].toString() : null;
+                            return xId === entityValue;
+                        });
                         this.SetMatchedValue();
                     }, 500);
                 }
@@ -416,7 +422,11 @@ export class SearchEntry extends EditableComponent {
         if (Utils.isNullOrWhiteSpace(this.Meta.RefName)) {
             window.setTimeout(() => {
                 var data = Utils.IsFunction(this.Meta.Query, false, this);
-                this.Matched = data.filter(x => x.Id == this.Entity[this.Meta.FieldName])[0];
+                this.Matched = data.find(x => {
+                    const xId = x?.Id != null ? x.Id.toString() : null;
+                    const entityValue = this.Entity?.[this.Meta.FieldName] != null ? this.Entity[this.Meta.FieldName].toString() : null;
+                    return xId === entityValue;
+                });
                 this.SetMatchedValue();
             }, 500);
         }
@@ -552,21 +562,69 @@ export class SearchEntry extends EditableComponent {
                 }
             }
             else {
-                var index = this.Parent.Children.indexOf(this);
-                if (this.Parent.Children[index + 1]) {
-                    this.Parent.Children[index + 1].Focus();
-                }
-                else {
-                    var groupIndex = this.Parent.Parent.Children.indexOf(this.Parent);
-                    if (this.Parent.Parent.Children[groupIndex + 1] && this.Parent.Parent.Children[groupIndex + 1].Children[0]) {
-                        this.Parent.Parent.Children[groupIndex + 1].Children[0].Focus();
-                    }
+                var rangeCom = this.EditForm.ChildCom.filter(x => !x.IsButton && !x.IsListView);
+                var index = rangeCom.indexOf(this);
+                if (rangeCom[index + 1]) {
+                    rangeCom[index + 1].Focus();
                 }
             }
         }
     }
 
     EntrySelected(rowData) {
+        if (this.Meta.IsPrivate && (rowData["DebitDay"] || rowData["CreditLimit"])) {
+            if (rowData["DebitDay"] && rowData["DebitDate"] && rowData["DebitDay"] > 0) {
+                var checkDate = this.dayjs(rowData["DebitDate"]).add(rowData["DebitDay"], "day");
+                if (checkDate.isBefore(this.dayjs(), "day")) {
+                    window.clearTimeout(this._waitForDispose);
+                    this._waitForDispose = window.setTimeout(() => {
+                        this._input.focus();
+                    }, 200);
+                    if (!this.SalesFunction["ALLOW_SELECT_OVERDUE_OBJECTS"]) {
+                        this.Matched = null;
+                        this.Entity[this.DisplayField] = null;
+                        this._input.value = null;
+                        this.UpdateValue();
+                        this.EditForm.OpenConfig(LangSelect.Get("You cannot select overdue objects"), () => {
+                        }, () => { }, false, [], true);
+                        return;
+                    }
+                    window.clearTimeout(this._waitForDispose);
+                    this._waitForDispose = window.setTimeout(() => {
+                        this._input.focus();
+                    }, 200);
+                    this.EditForm.OpenConfig(LangSelect.Get("You cannot select overdue objects"), () => {
+                        this.ActEntrySelected(rowData);
+                    }, () => { }, false, [], true);
+                    return;
+                }
+            }
+            if (this.Decimal(rowData["DebitAmountVND"] || 0).gt(this.Decimal(rowData["CreditLimit"] || 0))) {
+                if (!this.SalesFunction["ALLOW_SELECT_OVERDUE_OBJECTS"]) {
+                    window.clearTimeout(this._waitForDispose);
+                    this._waitForDispose = window.setTimeout(() => {
+                        this._input.focus();
+                    }, 200);
+                    this.Matched = null;
+                    this.Entity[this.DisplayField] = null;
+                    this._input.value = null;
+                    this.UpdateValue();
+                    this.EditForm.OpenConfig(LangSelect.Get("You cannot select overdue objects"), () => {
+                    }, () => { }, false, [], true);
+                    return;
+                }
+                else {
+                    window.clearTimeout(this._waitForDispose);
+                    this._waitForDispose = window.setTimeout(() => {
+                        this._input.focus();
+                    }, 200);
+                    this.EditForm.OpenConfig(LangSelect.Get("You cannot select overdue objects"), () => {
+                        this.ActEntrySelected(rowData);
+                    }, () => { }, false, [], true);
+                    return;
+                }
+            }
+        }
         if (!Utils.isNullOrWhiteSpace(rowData["ToastWarning"])) {
             this.EditForm.OpenConfig(rowData["ToastWarning"], () => {
                 this.ActEntrySelected(rowData);
@@ -582,6 +640,9 @@ export class SearchEntry extends EditableComponent {
         var newValue = this.Entity[fieldName];
         this._value = this.Entity[fieldName];
         if (newValue === null) {
+            if (!Utils.isNullOrWhiteSpace(this.Meta.TabGroup) && this.Entity[this.Name]) {
+                newValue = this.Entity[this.Name];
+            }
             this.Matched = null;
             this.Entity[this.DisplayField] = null;
             this._input.value = newValue;
@@ -616,6 +677,23 @@ export class SearchEntry extends EditableComponent {
     RemoveDOM() {
         if (this._input !== null && this._input.parentElement !== null) {
             this._input.parentElement.remove();
+        }
+    }
+
+    SetDefaultVal() {
+        if (Utils.isNullOrWhiteSpace(this.Meta.DefaultVal)) {
+            return;
+        }
+        var data = Utils.IsFunction(this.Meta.DefaultVal, true, this);
+        if (!data) {
+            data = this.Meta.DefaultVal;
+        }
+        if (data && this.Entity && this.Entity[this.Name] == null && this.Entity[this.IdField] && this.Entity[this.IdField].startsWith("-")) {
+            this.Entity[this.Name] = data;
+            this.PopulateFields();
+            window.setTimeout(() => {
+                this.PopulateFields();
+            }, 300);
         }
     }
 }

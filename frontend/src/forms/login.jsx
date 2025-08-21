@@ -8,6 +8,10 @@ import { RegisterBL } from "./register.jsx";
 import "../../lib/css/login.css";
 import { App } from "../app.jsx";
 import { WebSocketClient } from "../../lib/clients/index.js";
+import { LangSelect } from "../../lib";
+import { EditableComponent } from "../../lib";
+import Decimal from "decimal.js";
+import { ComponentExt } from "../../lib";
 
 export class LoginBL extends EditForm {
   static _instance;
@@ -40,6 +44,10 @@ export class LoginBL extends EditForm {
         const tanentCode = formData.get("TanentCode");
         const userName = formData.get("UserName");
         const password = formData.get("Password");
+        if (!tanentCode || !userName || !password) {
+          Toast.Warning("UserName or Password is required!");
+          return;
+        }
         const login = {
           TanentCode: tanentCode,
           UserName: userName,
@@ -62,8 +70,8 @@ export class LoginBL extends EditForm {
           this.Dispose();
           window.history.pushState(null, "Home", "");
           App.Instance.RenderLayout()
-            .then(() => {
-              this.InitAppIfEmpty();
+            .then(async () => {
+              await this.InitAppIfEmpty();
             })
             .finally(() => {
               window.setTimeout(() => {
@@ -71,7 +79,7 @@ export class LoginBL extends EditForm {
               }, 200);
             });
         } catch (error) {
-          Toast.Warning(error.message);
+          Toast.Warning(error.Message);
         }
       };
       return (
@@ -180,15 +188,6 @@ export class LoginBL extends EditForm {
 
   Render() {
     let oldToken = Client.Token;
-    if (oldToken) {
-      Client.GetToken(Client.Token)
-        .then((token) => {
-          Client.Token = token;
-        })
-        .catch(() => {
-          this.removeUser();
-        });
-    }
     if (!oldToken || new Date(oldToken.RefreshTokenExp) <= Client.EpsilonNow) {
       Html.Take("#app");
       this.Element = Html.Context;
@@ -198,16 +197,16 @@ export class LoginBL extends EditForm {
       oldToken &&
       new Date(oldToken.AccessTokenExp) > Client.EpsilonNow
     ) {
-      App.Instance.RenderLayout().then(() => {
-        this.InitAppIfEmpty();
+      App.Instance.RenderLayout().then(async () => {
+        await this.InitAppIfEmpty();
       });
     } else if (
       oldToken &&
       new Date(oldToken.RefreshTokenExp) > Client.EpsilonNow
     ) {
       Client.RefreshToken().then((newToken) => {
-        App.Instance.RenderLayout().then(() => {
-          this.InitAppIfEmpty();
+        App.Instance.RenderLayout().then(async () => {
+          await this.InitAppIfEmpty();
         });
       });
     }
@@ -264,8 +263,8 @@ export class LoginBL extends EditForm {
           this.Dispose();
           window.history.pushState(null, "Home", "");
           App.Instance.RenderLayout()
-            .then(() => {
-              this.InitAppIfEmpty();
+            .then(async () => {
+              await this.InitAppIfEmpty();
             })
             .finally(() => {
               window.setTimeout(() => {
@@ -298,9 +297,8 @@ export class LoginBL extends EditForm {
     );
   }
 
-  InitAppIfEmpty() {
+  async InitAppIfEmpty() {
     const systemRoleId = RoleEnum.System;
-    // @ts-ignore
     Client.Instance.SystemRole = Client.Token.RoleIds.includes(
       systemRoleId.toString()
     );
@@ -308,11 +306,226 @@ export class LoginBL extends EditForm {
       return;
     }
     this._initApp = true;
+    const json = {
+      Value: null,
+      Url: "/api/dictionary",
+      IsRawString: true,
+      Method: "GET",
+    };
+    var rs = await Client.Instance.SubmitAsync(json);
+    localStorage.setItem("Dictionary", JSON.stringify(rs));
+    const cul = localStorage.getItem("Culture") || "en";
+    const map = rs
+      .filter((x) => x.LangCode == cul)
+      .reduce((acc, cur) => {
+        acc[cur.Key] = cur.Value;
+        return acc;
+      }, {});
+    if (!LangSelect.Culture) {
+      LangSelect.Culture = cul;
+    }
+    LangSelect._dictionaries = map;
+    localStorage.setItem(LangSelect.Culture, JSON.stringify(map));
+    try {
+      const json2 = {
+        Value: null,
+        Url: "/api/webConfig",
+        IsRawString: true,
+        Method: "GET",
+      };
+      var rsConfig = await Client.Instance.SubmitAsync(json2);
+      const map = rsConfig.reduce((acc, cur) => {
+        acc[cur.Id] = cur.Value;
+        return acc;
+      }, {});
+      LangSelect._webConfig = map;
+      const map2 = rsConfig.reduce((acc, cur) => {
+        acc[cur.Key] = parseInt(cur.Value);
+        return acc;
+      }, {});
+      localStorage.setItem("DP", JSON.stringify(map2));
+    } catch {
+      localStorage.setItem("ConfigNumber", 3);
+    }
+    try {
+      const json3 = {
+        Value: null,
+        Url: "/api/salesFunction",
+        IsRawString: true,
+        Method: "GET",
+      };
+      var rsSaleFunction = await Client.Instance.SubmitAsync(json3);
+      const mapSaleFunction = rsSaleFunction.reduce((acc, cur) => {
+        acc[cur.Code] = cur.IsYes;
+        return acc;
+      }, {});
+      localStorage.setItem("SalesFunction", JSON.stringify(mapSaleFunction));
+    } catch {}
+    this.LoadByFromUrl();
+
+    await this.getExchangeRate();
+    const json3 = {
+      Value: null,
+      Url: "/api/exchangeRate",
+      IsRawString: true,
+      Method: "GET",
+    };
+    var rsExt = await Client.Instance.SubmitAsync(json3);
+    const ext2 = rsExt.reduce((acc, cur) => {
+      acc[cur.CurrencyCode] = Decimal(cur.RateSaleVND || 0);
+      return acc;
+    }, {});
+    const ext3 = rsExt.reduce((acc, cur) => {
+      acc[cur.CurrencyCode] = Decimal(cur.RateSaleUSD || 0);
+      return acc;
+    }, {});
+    EditableComponent.ExchangeRateSaleVND = ext2;
+    EditableComponent.ExchangeRateSaleUSD = ext3;
+    localStorage.setItem("ExchangeRateSaleVND", JSON.stringify(ext2));
+    localStorage.setItem("ExchangeRateSaleUSD", JSON.stringify(ext3));
+    //
+    const ext4 = rsExt.reduce((acc, cur) => {
+      acc[cur.CurrencyCode] = Decimal(cur.RateProfitVND || 0);
+      return acc;
+    }, {});
+    const ext5 = rsExt.reduce((acc, cur) => {
+      acc[cur.CurrencyCode] = Decimal(cur.RateProfitUSD || 0);
+      return acc;
+    }, {});
+    EditableComponent.ExchangeRateProfitVND = ext4;
+    EditableComponent.ExchangeRateProfitUSD = ext5;
+    localStorage.setItem("ExchangeRateProfitVND", JSON.stringify(ext4));
+    localStorage.setItem("ExchangeRateProfitUSD", JSON.stringify(ext5));
+    window.setInterval(async () => {
+      await this.getExchangeRate();
+    }, 60 * 60 * 1000);
     this.InitAppHanlder?.(Client.Token);
     MenuComponent.Instance.Render();
-    EditForm.NotificationClient = new WebSocketClient(
-      document.location.host + ':2222' + "/task"
-    );
+    EditForm.NotificationClient = new WebSocketClient("apiv2.forwardx.vn/task");
+  }
+
+  async getExchangeRate() {
+    try {
+      const json3 = {
+        Value: null,
+        Url: "/api/VCBExchangeRate",
+        IsRawString: true,
+        Method: "GET",
+      };
+      var xmlString = await Client.Instance.SubmitAsync(json3);
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(xmlString, "text/xml");
+      const json = this.extractExchangeRates(xmlDoc);
+      json.push({
+        CurrencyCode: "VND",
+        CurrencyName: "VND",
+        Buy: "1",
+        Transfer: "1",
+        Sell: "1",
+      });
+      const ext = json.reduce((acc, cur) => {
+        acc[cur.CurrencyCode] = Decimal(cur.Transfer.replace(/,/g, ""));
+        return acc;
+      }, {});
+      var exUSD = Decimal(
+        json.find((x) => x.CurrencyCode == "USD").Transfer.replace(/,/g, "")
+      );
+      const ext1 = json.reduce((acc, cur) => {
+        const eurToUsdRate = Decimal(cur.Transfer.replace(/,/g, "")).div(exUSD);
+        acc[cur.CurrencyCode] = eurToUsdRate;
+        return acc;
+      }, {});
+      EditableComponent.ExchangeRateVND = ext;
+      localStorage.setItem("ExchangeRateVND", JSON.stringify(ext));
+      EditableComponent.ExchangeRateUSD = ext1;
+      localStorage.setItem("ExchangeRateUSD", JSON.stringify(ext1));
+    } catch {}
+  }
+
+  extractExchangeRates(xmlDoc) {
+    const exchangeRates = [];
+    const exrateElements = xmlDoc.getElementsByTagName("Exrate");
+
+    for (let i = 0; i < exrateElements.length; i++) {
+      const exrate = exrateElements[i];
+      const rate = {
+        CurrencyCode: exrate.getAttribute("CurrencyCode"),
+        CurrencyName: exrate.getAttribute("CurrencyName").trim(),
+        Buy: exrate.getAttribute("Buy"),
+        Transfer: exrate.getAttribute("Transfer"),
+        Sell: exrate.getAttribute("Sell"),
+      };
+      exchangeRates.push(rate);
+    }
+
+    return exchangeRates;
+  }
+
+  LoadByFromUrl() {
+    var fName = this.GetFeatureNameFromUrl() || { pathname: "", params: null };
+    if (fName.pathname == "") {
+      return;
+    }
+    ComponentExt.InitFeatureByName(fName.pathname, true).then((tab) => {
+      window.setTimeout(() => {
+        if (fName.params.id) {
+          Client.Instance.GetByIdAsync(tab.Meta.EntityId, [
+            fName.params.id,
+          ]).then((data) => {
+            if (data && data.data && data.data[0]) {
+              tab.OpenPopup(fName.params.popup, data.data[0]);
+              window.setTimeout(() => {
+                if (fName.params.popup2) {
+                  var popup = tab.Children.find((x) => x.Popup);
+                  Client.Instance.SubmitAsync({
+                    Url: `/api/feature/getFeature`,
+                    Method: "POST",
+                    JsonData: JSON.stringify({
+                      Name: fName.params.popup2,
+                    }),
+                  }).then((item) => {
+                    Client.Instance.GetByIdAsync(item.EntityId, [
+                      fName.params.id2,
+                    ]).then((data2) => {
+                      if (data2.data[0]) {
+                        popup.OpenPopup(fName.params.popup2, data2.data[0]);
+                      }
+                    });
+                  });
+                }
+              }, 500);
+            }
+          });
+        }
+      }, 700);
+    });
+    return fName;
+  }
+
+  /**
+   * @returns {string | null}
+   */
+  GetFeatureNameFromUrl() {
+    let hash = window.location.hash; // Get the full hash (e.g., '#/chat-editor?Id=-00612540-0000-0000-8000-4782e9f44882')
+
+    if (hash.startsWith("#/")) {
+      hash = hash.replace("#/", ""); // Remove the leading '#/'
+    }
+
+    if (!hash.trim() || hash == undefined) {
+      return null; // Return null if the hash is empty or undefined
+    }
+
+    let [pathname, queryString] = hash.split("?"); // Split the hash into pathname and query string
+    let params = new URLSearchParams(queryString); // Parse the query string into a URLSearchParams object
+    if (pathname.includes("/")) {
+      let segments = pathname.split("/");
+      pathname = segments[segments.length - 1] || segments[segments.length - 2];
+    }
+    return {
+      pathname: pathname || null, // Pathname (e.g., 'chat-editor')
+      params: Object.fromEntries(params.entries()), // Query parameters (e.g., { Id: '-00612540-0000-0000-8000-4782e9f44882' })
+    };
   }
 
   ToastOki() {

@@ -22,7 +22,7 @@ const NotificationDropdown = () => {
   const dispatch = useDispatch();
   const taskNotification = useSelector(
     (state) => state.generic[NOTIFICATION_KEY] || []
-  ); // Adjusted to use the slice state
+  );
 
   useEffect(() => {
     // Fetch notifications data on component mount
@@ -327,7 +327,7 @@ const NotificationDropdown = () => {
             }}
           >
             <div className="text-info">
-              <img className="img-notifi" src={item.Avatar} />
+              <img className="img-notifi" src={item.Avatar || "https://forwardx.vn/wp-content/uploads/2025/03/cropped-Icon-Logo-180x180.png" } />
             </div>
             <div className={`message-content ${item.Read ? "read" : ""}`}>
               <div className="header2">{LangSelect.Get(item.FeatureName)}</div>

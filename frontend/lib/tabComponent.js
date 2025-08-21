@@ -99,50 +99,38 @@ export class TabComponent extends EditableComponent {
         if (!this.Meta.DisplayBadge || !this.Meta.Components) {
             return;
         }
+
         window.setTimeout(async () => {
-            var gridView = this.Children.flatMap(x => x.Children).filter(x => x.Meta.ComponentType == "GridView")[0];
-            if (!gridView) {
-                var gridView2 = this.Meta.Components.filter(x => x.ComponentType == "GridView")[0];
-                if (!gridView2) {
-                    return;
-                }
-                let submitEntity = Utils.IsFunction(gridView2.PreQuery, true, gridView);
+            const updateBadge = async (meta, grid) => {
+                let submitEntity = Utils.IsFunction(meta.PreQuery, true, grid || this);
                 const vm = {
-                    ComId: gridView2.Id,
+                    ComId: meta.Id,
                     Params: submitEntity ? JSON.stringify(submitEntity) : null,
-                    OrderBy: (!gridView2.OrderBy ? "ds.InsertedDate desc" : gridView2.OrderBy),
-                    Count: true,
-                    Skip: 0,
-                    Top: 1,
+                    OrderBy: (!meta.OrderBy ? "ds.InsertedDate desc" : meta.OrderBy),
                 };
+
                 const data = await Client.Instance.SubmitAsync({
                     NoQueue: true,
-                    Url: `/api/feature/com`,
+                    Url: `/api/feature/CountBadge`,
                     Method: "POST",
                     JsonData: JSON.stringify(vm, this.getCircularReplacer(), 2),
                 });
-                this.Badge = data.count?.toString();
-                return;
-            }
-            let submitEntity = Utils.IsFunction(gridView.Meta.PreQuery, true, gridView);
-            const vm = {
-                ComId: gridView.Meta.Id,
-                Params: submitEntity ? JSON.stringify(submitEntity) : null,
-                OrderBy: (!gridView.Meta.OrderBy ? "ds.InsertedDate desc" : gridView.Meta.OrderBy),
-                Count: true,
-                Skip: 0,
-                Top: 1,
-            };
-            const data = await Client.Instance.SubmitAsync({
-                NoQueue: true,
-                Url: `/api/feature/com`,
-                Method: "POST",
-                JsonData: JSON.stringify(vm, this.getCircularReplacer(), 2),
-            });
-            this.Badge = data.count?.toString();
-        }, 1000);
 
+                this.Badge = data.count?.toString();
+            };
+
+            let gridView = this.Children.flatMap(x => x.Children).filter(x => x.Meta.ComponentType == "GridView")[0];
+            if (gridView) {
+                await updateBadge(gridView.Meta, gridView);  // Call sequentially when a GridView is found
+            } else {
+                let gridView2 = this.Meta.Components.filter(x => x.ComponentType == "GridView")[0];
+                if (gridView2) {
+                    await updateBadge(gridView2);  // Call sequentially when another GridView is found
+                }
+            }
+        }, 500);
     }
+
 
     UpdateViewMeta() {
         Html.Take(this.TextElement).IHtml(this.Meta.Label ?? this.Meta.Name, this.EditForm.Meta.Label);

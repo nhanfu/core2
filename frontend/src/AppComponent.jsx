@@ -9,8 +9,10 @@ import { Provider } from "react-redux";
 import UserActive from "./components/userActive.jsx";
 import ChatBot from "./components/ChatBot.jsx";
 import ExchangeRate from "./components/ExchangeRate.jsx";
+import { EditForm } from "../lib";
 const AppComponent = ({ editForm }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
+  const [badgeCount, setBadgeCount] = useState(0);
   useEffect(() => {
     const checkIsMobile = () => {
       const matches = window.matchMedia(
@@ -25,6 +27,16 @@ const AppComponent = ({ editForm }) => {
       }
     };
     checkIsMobile();
+    setTimeout(() => {
+      updateBadge();
+      EditForm.NotificationClient.AddListener(
+        "ChatBadge",
+        updateBadge.bind(this)
+      );
+      return () => {
+        EditForm.NotificationClient.RemoveListener("ChatBadge");
+      };
+    }, 5000);
     window.addEventListener("resize", checkIsMobile);
     return () => window.removeEventListener("resize", checkIsMobile);
   }, []);
@@ -52,6 +64,13 @@ const AppComponent = ({ editForm }) => {
       return;
     }
     actionToggle(e);
+  };
+
+  const updateBadge = async () => {
+    const response = await Client.Instance.PostAsync(null, "/api/ChatBadge");
+    if (response) {
+      setBadgeCount(response);
+    }
   };
 
   const updateView = () => {
@@ -87,6 +106,11 @@ const AppComponent = ({ editForm }) => {
             <div className="notification dropdown">
               <a
                 data-bs-toggle="dropdown"
+                style={{
+                  display: "flex",
+                  position: "relative",
+                  alignItems: "center",
+                }}
                 aria-expanded="false"
                 onClick={async () => {
                   var tab = ChromeTabs.tabs.find((x) => x.content.Show);
@@ -101,6 +125,11 @@ const AppComponent = ({ editForm }) => {
                           Id: editForm.Uuid7.NewGuid(),
                           RecordId: popup2Detail.Entity.Id,
                           FeatureName: popup2Detail.Meta.Label,
+                          ReceiverIds:
+                            popup2Detail.Entity.InsertedBy !=
+                            Client.Token.UserId
+                              ? popup2Detail.Entity.InsertedBy
+                              : "",
                           FeatureName2: popup2Detail.Meta.Name,
                           FeatureName3: popup2Detail.Meta.Name.includes(
                             "editor"
@@ -132,6 +161,10 @@ const AppComponent = ({ editForm }) => {
                           Id: editForm.Uuid7.NewGuid(),
                           RecordId: popupDetail.Entity.Id,
                           FeatureName: popupDetail.Meta.Label,
+                          ReceiverIds:
+                            popupDetail.Entity.InsertedBy != Client.Token.UserId
+                              ? popupDetail.Entity.InsertedBy
+                              : "",
                           FeatureName2: popupDetail.Meta.Name,
                           FeatureName3: popupDetail.Meta.Name.includes("editor")
                             ? popupDetail.Meta.Name.replace("-editor", "")
@@ -164,6 +197,9 @@ const AppComponent = ({ editForm }) => {
                 }}
               >
                 <i className="far fa-envelope"></i>
+                <span className="badge" id="badgeMessage">
+                  {badgeCount == 0 ? "" : badgeCount}
+                </span>
               </a>
             </div>
             <NotificationDropdown />
@@ -176,7 +212,6 @@ const AppComponent = ({ editForm }) => {
           <a className="text">
             <img src={Client.Token.Vendor.Logo} />
           </a>
-          <span className="tm">logistics</span>
         </div>
         <div className="search-content p-2"></div>
         <div className="sidebar-content"></div>

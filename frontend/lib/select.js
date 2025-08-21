@@ -162,12 +162,15 @@ export class Select extends EditableComponent {
     }
 
     UpdateValue() {
+        if (!this.Dirty) {
+            this.DOMContentLoaded?.invoke();
+        }
         if (!this.Dirty && !Utils.isNullOrWhiteSpace(this.Meta.FormatData) && this.Entity[this.DisplayField]) {
             let res = Utils.FormatEntity(this.Meta.FormatData, this.Entity[this.DisplayField]);
             this.OriginalText = res;
-            this.DOMContentLoaded?.invoke();
             this.OldValue = this.Entity[this.Meta.FieldName];
         }
+
     }
 
     EntrySelected(rowData) {

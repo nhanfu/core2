@@ -200,16 +200,23 @@ export class Image extends EditableComponent {
 
     RemoveGuid(path) {
         let fileName = path.replace(/^.*[\\\/]/, '');
-        const parts = fileName.split('-');
-        let descriptivePart = '';
-        for (let i = 0; i < parts.length; i++) {
-            if (parts[i].length === 8 && /^[0-9a-fA-F]{8}$/.test(parts[i])) {
-                descriptivePart = parts.slice(0, i).join('-');
-                break;
-            }
+        let extension = '';
+        let nameWithoutExt = fileName;
+
+        // Tách đuôi file
+        const lastDotIndex = fileName.lastIndexOf('.');
+        if (lastDotIndex !== -1) {
+            extension = fileName.substring(lastDotIndex + 1);
+            nameWithoutExt = fileName.substring(0, lastDotIndex);
         }
-        const extension = fileName.split('.').pop();
-        return `${descriptivePart}.${extension}`;
+
+        // Regex tìm chuỗi UUID dạng 8-4-4-4-12
+        const uuidRegex = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/g;
+
+        // Xóa các UUID khỏi tên file
+        const cleanedName = nameWithoutExt.replace(uuidRegex, '').replace(/\s+/g, ' ').trim();
+
+        return `${cleanedName}.${extension}`;
     }
 
     SetCanDeleteImage(canDelete) {

@@ -158,7 +158,9 @@ export class MultipleSearchEntry extends SearchEntry {
         this.SetEntityValue();
         this.Dirty = true;
         this.FindMatchText();
-        this._input.focus();
+        this._gv.AllListViewItem.forEach(item => {
+            item.SetChooseCell();
+        });
         if (this.UserInput != null) {
             this.UserInput?.Invoke({ NewData: this._value, OldData: oldMatch, EvType: EventType.Change });
         }

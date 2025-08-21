@@ -1,6 +1,5 @@
-
 import React from "react";
-import { createRoot } from 'react-dom/client';
+import { ToastContainer } from "react-toastify";
 import {
   Page,
   EditForm,
@@ -40,7 +39,6 @@ export class App {
       return (
         <>
           <AppComponent editForm={this.MyApp.EditForm} />
-          <VNTank />
         </>
       );
     };
@@ -56,106 +54,19 @@ export class App {
   }
 
   async Init() {
-    var data = await fetch(Client.api + "/api/dictionary?t=forwardx", {
-      headers: {
-        Accept: "application/json",
-        "User-Agent": "Mozilla/5.0",
-      },
-    });
-    var rs = await data.json();
-    try {
-      var config = await fetch(Client.api + "/api/webConfig?t=forwardx");
-      var rsConfig = await config.json();
-      const map = rsConfig.reduce((acc, cur) => {
-        acc[cur.Id] = cur.Value;
-        return acc;
-      }, {});
-      LangSelect._webConfig = map;
-      const map2 = rsConfig.reduce((acc, cur) => {
-        acc[cur.Key] = parseInt(cur.Value);
-        return acc;
-      }, {});
-      localStorage.setItem("DP", JSON.stringify(map2));
-    } catch {
-      localStorage.setItem("ConfigNumber", 3);
-    }
-    try {
-      var saleFunction = await fetch(
-        Client.api + "/api/salesFunction?t=forwardx"
-      );
-      var rsSaleFunction = await saleFunction.json();
-      const mapSaleFunction = rsSaleFunction.reduce((acc, cur) => {
-        acc[cur.Code] = cur.IsYes;
-        return acc;
-      }, {});
-      localStorage.setItem("SalesFunction", JSON.stringify(mapSaleFunction));
-    } catch { }
-    localStorage.setItem("Dictionary", JSON.stringify(rs));
-    const cul = localStorage.getItem("Culture") || "en";
-    const map = rs
-      .filter((x) => x.LangCode == cul)
-      .reduce((acc, cur) => {
-        acc[cur.Key] = cur.Value;
-        return acc;
-      }, {});
-    if (!LangSelect.Culture) {
-      LangSelect.Culture = cul;
-    }
-    LangSelect._dictionaries = map;
-    localStorage.setItem(LangSelect.Culture, JSON.stringify(map));
     Spinner.Init();
-    const isPublic = window.location.href.includes("page=");
-    if (!isPublic) {
-      LoginBL.Instance.Render();
-    } else {
-      // get page name and init page in public folder
-      const urlParams = new URLSearchParams(window.location.search);
-      const pageName = urlParams.get("page");
-      const folder = urlParams.get("f");
-
-      if (pageName == null) {
-        console.warn("No page name specified in the URL.");
-        return;
-      }
-      import(`./pages/${folder}/${pageName}.js`)
-        .then((module) => {
-          const PageComponent = module.default;
-          if (PageComponent == null) {
-            console.error(`Page component not found for: ${pageName}`);
-            return;
-          }
-          if (PageComponent.prototype instanceof EditForm) {
-            const instance = new PageComponent();
-            instance.Render();
-          } else {
-            createRoot(this.Meta.ParentElement).render(
-              <PageComponent />
-            );
-          }
+    if (Client.Token) {
+      Client.GetToken(Client.Token)
+        .then((token) => {
+          Client.Token = token;
+          LoginBL.Instance.Render();
         })
-        .catch((error) => {
-          console.error(`Failed to load page: ${pageName}`, error);
+        .catch(() => {
+          this.removeUser();
         });
+    } else {
+      LoginBL.Instance.Render();
     }
-  }
-
-  extractExchangeRates(xmlDoc) {
-    const exchangeRates = [];
-    const exrateElements = xmlDoc.getElementsByTagName("Exrate");
-
-    for (let i = 0; i < exrateElements.length; i++) {
-      const exrate = exrateElements[i];
-      const rate = {
-        CurrencyCode: exrate.getAttribute("CurrencyCode"),
-        CurrencyName: exrate.getAttribute("CurrencyName").trim(),
-        Buy: exrate.getAttribute("Buy"),
-        Transfer: exrate.getAttribute("Transfer"),
-        Sell: exrate.getAttribute("Sell"),
-      };
-      exchangeRates.push(rate);
-    }
-
-    return exchangeRates;
   }
 
   removeUser() {
@@ -170,74 +81,6 @@ export class App {
     if (el != null) {
       ChromeTabs.init(el);
     }
-    this.LoadByFromUrl();
-  }
-
-  LoadByFromUrl() {
-    var fName = this.GetFeatureNameFromUrl() || { pathname: "", params: null };
-    if (fName.pathname == "") {
-      return;
-    }
-    ComponentExt.InitFeatureByName(fName.pathname, true).then((tab) => {
-      window.setTimeout(() => {
-        if (fName.params.id) {
-          Client.Instance.GetByIdAsync(tab.Meta.EntityId, [
-            fName.params.id,
-          ]).then((data) => {
-            if (data && data.data && data.data[0]) {
-              tab.OpenPopup(fName.params.popup, data.data[0]);
-              window.setTimeout(() => {
-                if (fName.params.popup2) {
-                  var popup = tab.Children.find((x) => x.Popup);
-                  Client.Instance.SubmitAsync({
-                    Url: `/api/feature/getFeature`,
-                    Method: "POST",
-                    JsonData: JSON.stringify({
-                      Name: fName.params.popup2,
-                    }),
-                  }).then((item) => {
-                    Client.Instance.GetByIdAsync(item.EntityId, [
-                      fName.params.id2,
-                    ]).then((data2) => {
-                      if (data2.data[0]) {
-                        popup.OpenPopup(fName.params.popup2, data2.data[0]);
-                      }
-                    });
-                  });
-                }
-              }, 500);
-            }
-          });
-        }
-      }, 700);
-    });
-    return fName;
-  }
-
-  /**
-   * @returns {string | null}
-   */
-  GetFeatureNameFromUrl() {
-    let hash = window.location.hash; // Get the full hash (e.g., '#/chat-editor?Id=-00612540-0000-0000-8000-4782e9f44882')
-
-    if (hash.startsWith("#/")) {
-      hash = hash.replace("#/", ""); // Remove the leading '#/'
-    }
-
-    if (!hash.trim() || hash == undefined) {
-      return null; // Return null if the hash is empty or undefined
-    }
-
-    let [pathname, queryString] = hash.split("?"); // Split the hash into pathname and query string
-    let params = new URLSearchParams(queryString); // Parse the query string into a URLSearchParams object
-    if (pathname.includes("/")) {
-      let segments = pathname.split("/");
-      pathname = segments[segments.length - 1] || segments[segments.length - 2];
-    }
-    return {
-      pathname: pathname || null, // Pathname (e.g., 'chat-editor')
-      params: Object.fromEntries(params.entries()), // Query parameters (e.g., { Id: '-00612540-0000-0000-8000-4782e9f44882' })
-    };
   }
 }
 App.Instance.Init();

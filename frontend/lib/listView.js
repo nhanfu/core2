@@ -1,9 +1,10 @@
 import { EditableComponent } from "./editableComponent.js";
 import {
     ObservableArgs, EventType, SqlViewModel, PatchVM, FeaturePolicy,
-    CustomEventType, Component, Action, EntityRef,
+    CustomEventType, Component, Action, ElementType, EntityRef,
+    ComponentType
 } from "./models/";
-import { ActiveStateEnum, AdvSearchVM, CellSelected, OperatorEnum, OrderBy, Where } from "./models/enum.js";
+import { ActiveStateEnum, AdvSearchVM, CellSelected, MQEvent, OperatorEnum, OrderBy, Where } from "./models/enum.js";
 import { Paginator } from "./paginator.js";
 import { Utils } from "./utils/utils.js";
 import { ObservableList } from './models/observableList.js';
@@ -16,7 +17,11 @@ import { ListViewItem } from "./listViewItem.js";
 import { Toast } from "./toast.js";
 import { Uuid7 } from "./structs/uuidv7.js";
 import { ConfirmDialog } from "./confirmDialog.js";
+import { ComponentExt } from "./index.js";
+import { Datepicker } from "./index.js";
 import * as XLSX from 'xlsx';
+import { Select } from "./select.js";
+import { Label } from "./label.js";
 /**
  * Represents a list view component that allows editable features and other interactions like sorting and pagination.
  * @typedef {import('./searchEntry.js').SearchEntry} SearchEntry
@@ -204,12 +209,85 @@ export class ListView extends EditableComponent {
         }
         pageSize = (pageSize ?? this.Paginator?.Options?.PageSize ?? this.Meta.Row) ?? 20;
         skip = !skip ? (this.Paginator?.Options?.PageIndex * pageSize) : 0;
-        let searchVM = this.GetSql(skip, pageSize, cacheHeader);
-        return await this.CustomQuery(searchVM);
+        let sql = this.GetSql(skip, pageSize, cacheHeader);
+        return await this.CustomQuery(sql);
     }
 
     CalcFilterQuery() {
         return this.ListViewSearch.CalcFilterQuery();
+    }
+
+    async ExportExcel() {
+        const htmlWithInline = await this.inlineAllStyles(this.Element.outerHTML);
+        const response = await Client.Instance.SubmitAsync({
+            NoQueue: true,
+            Url: `/api/HtmlToExcel/export`,
+            Method: "POST",
+            JsonData: JSON.stringify({
+                HtmlTable: htmlWithInline,
+                FileName: this.Meta.PlainText
+            }),
+        });
+
+        let filename = this.Meta.PlainText || "Export.xlsx";
+        const url = window.URL.createObjectURL(response);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+    }
+
+    inlineAllStyles(html) {
+        return new Promise((resolve) => {
+            const iframe = document.createElement("iframe");
+            iframe.style.display = "none";
+            document.body.appendChild(iframe);
+
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+            // Gán trực tiếp vào <html> thay vì dùng .write()
+            iframe.onload = () => {
+                iframeDoc.documentElement.innerHTML = html;
+
+                const styles = [];
+
+                for (const sheet of iframeDoc.styleSheets) {
+                    try {
+                        for (const rule of sheet.cssRules) {
+                            styles.push(rule);
+                        }
+                    } catch (e) {
+                        console.warn("Không thể truy cập stylesheet:", e);
+                    }
+                }
+
+                styles.forEach(rule => {
+                    if (!rule.selectorText || !rule.style) return;
+
+                    const elements = iframeDoc.querySelectorAll(rule.selectorText);
+                    elements.forEach(el => {
+                        for (const prop of rule.style) {
+                            const value = rule.style.getPropertyValue(prop);
+                            const priority = rule.style.getPropertyPriority(prop);
+                            el.style.setProperty(prop, value, priority);
+                        }
+                    });
+                });
+
+                const allElements = iframeDoc.querySelectorAll('*');
+                allElements.forEach(el => el.removeAttribute('class'));
+
+                const resultHtml = iframeDoc.documentElement.outerHTML;
+                document.body.removeChild(iframe);
+                resolve(resultHtml);
+            };
+
+            // Gán srcdoc để trigger iframe.onload
+            iframe.srcdoc = html;
+        });
     }
 
     /**
@@ -227,23 +305,34 @@ export class ListView extends EditableComponent {
                 const ws_master_data = [];
                 var headers_master = JSON.parse(headers[index].Template);
                 ws_master_data.push(headers_master.map(x => x.Label));
-                const data = await Client.Instance.SubmitAsync({
-                    NoQueue: true,
-                    Url: `/api/feature/com`,
-                    Method: "POST",
-                    JsonData: JSON.stringify({
-                        ComId: headers[index].Id,
-                        Count: false,
-                        Top: 100000,
-                        Skip: 0,
-                        OrderBy: "ds.InsertedDate asc",
-                    }),
-                });
-                data.value.forEach(item => {
-                    ws_master_data.push(headers_master.map(x => item[x.FieldName] || ""));
-                })
-                const ws_master = XLSX.utils.aoa_to_sheet(ws_master_data);
-                XLSX.utils.book_append_sheet(wb, ws_master, headers[index].Label);
+                if (!headers[index].RefName) {
+                    const data = JSON.parse(headers[index].Query);
+                    data.forEach(item => {
+                        ws_master_data.push(headers_master.map(x => item[x.FieldName] || ""));
+                    })
+                    const ws_master = XLSX.utils.aoa_to_sheet(ws_master_data);
+                    XLSX.utils.book_append_sheet(wb, ws_master, headers[index].Label);
+                }
+                else {
+                    const data = await Client.Instance.SubmitAsync({
+                        NoQueue: true,
+                        Url: `/api/feature/com`,
+                        Method: "POST",
+                        JsonData: JSON.stringify({
+                            ComId: headers[index].Id,
+                            Count: false,
+                            Top: 100000,
+                            Skip: 0,
+                            OrderBy: "ds.InsertedDate asc",
+                        }),
+                    });
+                    data.value.forEach(item => {
+                        ws_master_data.push(headers_master.map(x => item[x.FieldName] || ""));
+                    })
+                    const ws_master = XLSX.utils.aoa_to_sheet(ws_master_data);
+                    XLSX.utils.book_append_sheet(wb, ws_master, headers[index].Label);
+                }
+
             }
         }
         XLSX.writeFile(wb, 'TemplateImport' + this.Meta.Label + '.xlsx');
@@ -387,9 +476,7 @@ export class ListView extends EditableComponent {
                 return index === 0 ? x.Where : `${x.Operator} ${x.Where}`;
             })
             .join(" ");
-        var orderby = this.SearchSection
-            ? this.SearchSection.Children.filter(x => x.IsOrderBy).map(x => "ds." + x.Meta.FieldName + " " + x.OrderMethod).Combine(x => x, ", ")
-            : null;
+        var orderby = this.SearchSection.Children.filter(x => x.IsOrderBy).map(x => "ds." + x.Meta.FieldName + " " + x.OrderMethod).Combine(x => x, ", ");
         /** @type {SqlViewModel} */
         // @ts-ignore
         var res = {
@@ -405,12 +492,6 @@ export class ListView extends EditableComponent {
             MetaConn: this.MetaConn,
             DataConn: this.DataConn,
         };
-        if (this.Meta.Actions) {
-            let action = this.Meta.Actions.find(x => x.Name == "search");
-            if (action) {
-                res = action.Client({ listView: this, form: this.EditForm, sql: res });
-            }
-        }
         return res;
     }
 
@@ -433,36 +514,27 @@ export class ListView extends EditableComponent {
 
 
     async CustomQuery(vm) {
-        try {
-            const data = await Client.Instance.SubmitAsync({
-                NoQueue: true,
-                ApiEndpoint: this.Meta.ApiEndpoint,
-                Url: `/api/feature/com`,
-                Method: "POST",
-                JsonData: JSON.stringify(vm),
-            });
-            if (!data.value || data.value.length === 0) {
-                this.Paginator.Show = false;
-                this.ClearRowData();
-                this.SetRowData([]);
-                this.DomLoaded();
-                return [];
-            }
-            else {
-                let total = data.count && data.count > 0 ? data.count : data.value.length;
-                let rows = [...data.value];
-                this.ClearRowData();
-                this.UpdatePagination(total, rows.length);
-                await this.LoadMasterData(rows);
-                this.SetRowData(rows);
-                return rows;
-            }
-        } catch (e) {
-            if (this.Meta.RenderItem && this.Meta.LocalData) {
-                this.ClearRowData();
-                this.UpdatePagination(0, 0);
-                this.SetRowData(this.Meta.LocalData);
-            }
+        const data = await Client.Instance.SubmitAsync({
+            NoQueue: true,
+            Url: `/api/feature/com`,
+            Method: "POST",
+            JsonData: JSON.stringify(vm),
+        });
+        if (!data.value || data.value.length === 0) {
+            this.Paginator.Show = false;
+            this.ClearRowData();
+            this.SetRowData([]);
+            this.DomLoaded();
+            return [];
+        }
+        else {
+            let total = data.count && data.count > 0 ? data.count : data.value.length;
+            let rows = [...data.value];
+            this.ClearRowData();
+            this.UpdatePagination(total, rows.length);
+            await this.LoadMasterData(rows);
+            this.SetRowData(rows);
+            return rows;
         }
     }
 
@@ -593,9 +665,11 @@ export class ListView extends EditableComponent {
             }
             rows.forEach(row => {
                 var data = Utils.IsFunction(header.Query, false, this);
-                let found = data.find(source => source[this.IdField] === row[header.FieldName]);
-                if (found) {
-                    row[objField] = found;
+                if (data) {
+                    let found = data.find(source => source[this.IdField] === row[header.FieldName]);
+                    if (found) {
+                        row[objField] = found;
+                    }
                 }
             });
         }
@@ -928,7 +1002,7 @@ export class ListView extends EditableComponent {
         e.preventDefault();
         e.stopPropagation();
         ContextMenu.Instance.MenuItems.Clear();
-        var some = this.AllListViewItem.some(x => x.Selected && (x.Entity["AssignId"] == this.Token.UserId || x.Entity["InsertedBy"] == this.Token.UserId));
+        var some = this.AllListViewItem.some(x => x.Selected && (x.Entity["AssignId"] == this.Token.UserId || x.Entity["InsertedBy"] == this.Token.UserId)) || (this.Meta.Editable && this.EditForm.EntityId && this.EditForm.EntityId.startsWith("-"));
         if ((this.Disabled || (!this.Meta.CanWrite && !some)) || (this.Meta.CanWrite && !this.Meta.CanWriteAll && !some)) {
             return;
         }
@@ -1122,7 +1196,7 @@ export class ListView extends EditableComponent {
                 sysSetting.forEach(x => x.Active = true);
             }
             else {
-                sysSetting = this.EditForm.Meta.GridPolicies?.filter(x => x.EntityId == this.Meta.FieldName) ?? sysSetting;
+                sysSetting = this.EditForm.Meta.GridPolicies.filter(x => x.EntityId == this.Meta.FieldName);
             }
         }
         if (this.EditForm.Meta.UserSettings) {
@@ -1218,8 +1292,16 @@ export class ListView extends EditableComponent {
             if (res["NoSubmit"] != undefined || res["NoSubmit"] != null) {
                 this.setPropValue(res, "ParentId", null);
             }
+            this.setPropValue(res, "TariffChargeId", null);
+            this.setPropValue(res, "HblNo", null);
+            this.setPropValue(res, "Code", null);
+            this.setPropValue(res, "AllocationId", null);
             this.setPropValue(res, "NoSubmit", false);
+            this.setPropValue(res, "EntityContainerId", null);
+            this.setPropValue(res, "IsAllocation", false);
+            this.setPropValue(res, "AllocationId", null);
             this.setPropValue(res, "IsLock", false);
+            this.setPropValue(res, "ShipmentRequestId", null);
             this.setPropValue(res, "IsLockExchange", false);
             this.setPropValue(res, "ShipmentInvoiceDetailId", null);
             this.setPropValue(res, "ShipmentInvoiceId", null);
@@ -1513,7 +1595,8 @@ export class ListView extends EditableComponent {
         confirmDialog.EditForm = this.EditForm;
         confirmDialog.Render();
         confirmDialog.YesConfirmed.add(() => {
-            var jsonQuery = JSON.parse(this.Meta.Query);
+            const cleaned = this.Meta.Query.replace(/[\u0000-\u001F]+/g, '')
+            var jsonQuery = JSON.parse(cleaned);
             if (jsonQuery && jsonQuery.delete) {
                 const ids = deletedItems.map(x => x[this.IdField]).filter(x => !x.startsWith('-'));
                 if (ids && ids.length > 0) {
@@ -1524,9 +1607,11 @@ export class ListView extends EditableComponent {
                         ComId: this.Meta.Id
                     }, "/api/CheckDelete").then((rs) => {
                         if (rs.status == 200) {
-                            this.HardDeleteConfirmed(deletedItems).then(async () => {
-                                await this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterDeleted, this, deletedItems);
-                                await this.DispatchCustomEvent(this.Meta.Events, EventType.Change, this);
+                            this.HardDeleteConfirmed(deletedItems).then(async (rs) => {
+                                if (rs) {
+                                    await this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterDeleted, this, deletedItems);
+                                    await this.DispatchCustomEvent(this.Meta.Events, EventType.Change, this);
+                                }
                             });
                         }
                         else {
@@ -1543,13 +1628,13 @@ export class ListView extends EditableComponent {
                                 searchEntry.CanSearch = false;
                                 searchEntry.FieldName = "NewEntityId";
                                 this.EditForm.OpenConfig("Please select a replacement data.", () => {
-                                    this.HardDeleteConfirmed(deletedItems, this.EditForm.Entity.NewEntityId).then(async deletedIds => {
-                                        if (deletedIds) {
+                                    this.HardDeleteConfirmed(deletedItems, this.EditForm.Entity.NewEntityId).then(async rs => {
+                                        if (rs) {
                                             this.EditForm.Entity.NewEntityId = null;
+                                            await this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterDeleted, this, deletedItems);
+                                            await this.DispatchCustomEvent(this.Meta.Events, EventType.Change, this);
+                                            this.ActionFilter();
                                         }
-                                        await this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterDeleted, this, deletedItems);
-                                        await this.DispatchCustomEvent(this.Meta.Events, EventType.Change, this);
-                                        this.ActionFilter();
                                     });
                                 }, () => { }, true, [searchEntry])
                             }
@@ -1557,16 +1642,20 @@ export class ListView extends EditableComponent {
                     });
                 }
                 else {
-                    this.HardDeleteConfirmed(deletedItems).then(async deletedIds => {
-                        await this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterDeleted, this, deletedItems);
-                        await this.DispatchCustomEvent(this.Meta.Events, EventType.Change, this);
+                    this.HardDeleteConfirmed(deletedItems).then(async rs => {
+                        if (rs) {
+                            await this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterDeleted, this, deletedItems);
+                            await this.DispatchCustomEvent(this.Meta.Events, EventType.Change, this);
+                        }
                     });
                 }
             }
             else {
-                this.HardDeleteConfirmed(deletedItems).then(async deletedIds => {
-                    await this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterDeleted, this, deletedItems);
-                    await this.DispatchCustomEvent(this.Meta.Events, EventType.Change, this);
+                this.HardDeleteConfirmed(deletedItems).then(async rs => {
+                    if (rs) {
+                        await this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterDeleted, this, deletedItems);
+                        await this.DispatchCustomEvent(this.Meta.Events, EventType.Change, this);
+                    }
                 });
             }
         });
@@ -1598,6 +1687,7 @@ export class ListView extends EditableComponent {
             this.ClearSelected();
             this.Dirty = true;
             Toast.Success("Deleted successfully");
+            return true;
         }
         else {
             const result = await Client.Instance.HardDeleteAsync(ids, this.Meta.RefName, newId, this.Meta.Id);
@@ -1608,11 +1698,13 @@ export class ListView extends EditableComponent {
                     this.Dirty = false;
                 }
                 Toast.Success("Deleted successfully");
+                return true;
             } else {
-                Toast.Warning("No rows were deleted");
+                this.EditForm.OpenConfig("The selected data cannot be deleted. Please check the data.", () => {
+                }, () => { }, false, [], true);
+                return false;
             }
         }
-        return deletedItems;
     }
 
     /**
@@ -2025,10 +2117,5 @@ export class ListView extends EditableComponent {
         else {
             await rowData.PatchUpdateOrCreate();
         }
-    }
-
-    Search(term) {
-        this.ListViewSearch.Entity.SearchTerm = term;
-        this.ReloadData();
     }
 }

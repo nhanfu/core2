@@ -2,11 +2,13 @@ import { Spinner } from "./spinner.js";
 import { EditableComponent } from "./editableComponent.js";
 import { Component } from "./models/component.js";
 import { Html } from "./utils/html.js";
+import { Client } from "./clients/index.js";
+import { Toast } from "./toast.js";
 
 /**
  * Represents a button component that can be rendered and managed on a web page.
  */
-export class Button extends EditableComponent {
+export class ButtonImportExcel extends EditableComponent {
     IsButton = true;
     /**
      * Create instance of component
@@ -63,10 +65,8 @@ export class Button extends EditableComponent {
         }
         this.Disabled = true;
         try {
-            Spinner.AppendTo();
-            this.DispatchEvent(this.Meta.Events, "click", this, this.Entity).then(() => {
+            this.ImportExcelTemplate().then(() => {
                 this.Disabled = false;
-                Spinner.Hide();
             });
         } finally {
             window.setTimeout(() => {
@@ -76,13 +76,34 @@ export class Button extends EditableComponent {
     }
 
     /**
-     * Gets the value text from the button component.
-     * @returns {string} The text value of the component.
+     * @param {Event} e
      */
-    GetValueText() {
-        if (!this.Entity || !this.Name) {
-            return this._textEle.textContent;
+    async ImportExcelTemplate(e) {
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = '.xlsx, .xls';
+        fileInput.addEventListener('change', (event) => {
+            if (event.target.files.length > 0) {
+                this.ActImportExcelTemplate(event);
+            }
+        });
+        fileInput.click();
+    }
+
+    /**
+    * @param {Event} e
+    */
+    async ActImportExcelTemplate(e) {
+        const file = e.target.files[0];
+        if (!file) {
+            alert("No file selected.");
+            return;
         }
-        return this.FieldVal?.toString();
+        Spinner.AppendTo();
+        await Client.Instance.PostFilesAsync(file, this.Meta.FormatData);
+        Spinner.Hide();
+        var grid = this.EditForm.ChildCom.find(c => c.Meta.ComponentType === "GridView");
+        Toast.Success("Excel file imported successfully.", 5000);
+        await grid.ActionFilter();
     }
 }

@@ -51,8 +51,6 @@ export class Checkbox extends EditableComponent {
         if (!this.Entity[this.Name]) {
             this.Entity[this.Name] = false;
         }
-
-        this.Element.closest('td')?.addEventListener('keydown', this.UserKeyDown.bind(this));
         this.DOMContentLoaded?.invoke();
     }
 
@@ -75,16 +73,6 @@ export class Checkbox extends EditableComponent {
         }
         const check = this._input.checked;
         this.DataChanged(check);
-    }
-
-    UserKeyDown(e) {
-        let code = e.KeyCodeEnum();
-        if (code == KeyCodeEnum.Space) {
-            e.preventDefault();
-            this.Value = !this.Value;
-            const check = this._input.checked;
-            this.DataChanged(check);
-        }
     }
 
     /**

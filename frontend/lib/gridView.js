@@ -91,12 +91,13 @@ export class GridView extends ListView {
         Html.Instance.Div.Style("grid-area: span 1 / span 2;").ClassName("button-toolbar").Render();
         this.MenuGridView = Html.Context;
         Html.Instance.End.Render();
-        var child = (this.EditForm.Meta.Components || []).filter(x => x.ComponentGroupId == this.Meta.Id && x.ComponentType == "Button");
+        var child = (this.EditForm.Meta.Components || []).filter(x => x.ComponentGroupId == this.Meta.Id && (x.ComponentType == "Button" || x.ComponentType == "ImportExcel"));
         child.forEach(ui => {
             const com = ComponentFactory.GetComponent(ui, this.EditForm);
             if (com == null) return;
             com.ParentElement = this.MenuGridView;
             this.Parent.AddChild(com);
+            this.EditForm.ChildCom.push(com);
             com.Disabled = ui.Disabled || this.EditForm.Disabled || com.Disabled;
             if (ui.Focus) {
                 com.Focus();
@@ -351,12 +352,16 @@ export class GridView extends ListView {
                 this.HardDeleteSelected();
                 break;
             case KeyCodeEnum.U:
-                if (e.ctrlKey) {
+                if (e.ctrlKey && this.Meta.CanAdd) {
+                    e.preventDefault();
+                    e.stopPropagation();
                     this.DuplicateSelected();
                 }
                 break;
             case KeyCodeEnum.R:
                 if (e.ctrlKey) {
+                    e.preventDefault();
+                    e.stopPropagation();
                     this.ActionFilter();
                 }
                 break;
@@ -391,13 +396,6 @@ export class GridView extends ListView {
                     const maxCol = Math.max(...cols);
 
                     let result = '';
-                    const headers = this.GetHeaderMatrix(this.Element);
-                    let headerRow = [];
-                    for (let j = minCol; j <= maxCol; j++) {
-                        headerRow.push(headers[j] || '');
-                    }
-                    result += headerRow.join('\t') + '\n';
-
                     for (let i = minRow; i <= maxRow; i++) {
                         let row = [];
                         for (let j = minCol; j <= maxCol; j++) {
@@ -419,7 +417,7 @@ export class GridView extends ListView {
     }
 
     GetHeaderMatrix(tableElement) {
-        const theadRows = tableElement.querySelectorAll('thead tr');
+        const theadRows = tableElement.querySelectorAll('.tb-header tr');
         const matrix = [];
         let maxCols = 0;
 
@@ -852,6 +850,7 @@ export class GridView extends ListView {
         return rowSection;
     }
     intWaitingSticky = 0;
+    intWaitingSticky = 0;
     UpdateStickyColumns() {
         const stickyColumns = this.Header
             .map((item, index) => item.Frozen ? index : -1)
@@ -860,6 +859,8 @@ export class GridView extends ListView {
         this.DataTable.querySelectorAll("th, td").forEach((cell) => {
             cell.classList.remove("sticky-column");
             cell.style.left = "";
+            cell.classList.remove("sticky-column-right"); // reset phải
+            cell.style.right = "";
         });
         let leftOffset = 0;
         stickyColumns.forEach((index) => {
@@ -897,6 +898,31 @@ export class GridView extends ListView {
                 `tr:first-child th:nth-child(${index + 1})`
             )?.offsetWidth || 0;
         });
+
+        // --- Thêm xử lý FrozenRight ---
+        const stickyRightColumns = this.Header
+            .map((item, index) => item.FrozenRight ? index : -1)
+            .filter(index => index !== -1)
+            .sort((a, b) => b - a); // xử lý từ phải qua trái
+
+        let rightOffset = 0;
+        stickyRightColumns.forEach((index) => {
+            const cellWidth = this.HeaderSection.Element.querySelector(
+                `tr:first-child th:nth-child(${index + 1})`
+            )?.offsetWidth || 0;
+
+            [this.HeaderSection, this.SearchSection, this.MainSection, this.EmptySection, this.FooterSection]
+                .forEach(section => {
+                    section.Element.querySelectorAll(
+                        `tr td:nth-child(${index + 1}), tr th:nth-child(${index + 1})`
+                    ).forEach((cell) => {
+                        cell.classList.add("sticky-column-right");
+                        cell.style.right = `${rightOffset}px`;
+                    });
+                });
+
+            rightOffset += cellWidth;
+        });
     }
 
     UpdateStickySummary() {
@@ -907,6 +933,8 @@ export class GridView extends ListView {
         this.FooterSection.Element.querySelectorAll("th, td").forEach((cell) => {
             cell.classList.remove("sticky-column");
             cell.style.left = "";
+            cell.classList.remove("sticky-column-right");
+            cell.style.right = "";
         });
 
         let leftOffset = 0;
@@ -921,7 +949,30 @@ export class GridView extends ListView {
                 `tr:first-child th:nth-child(${index + 1})`
             )?.offsetWidth || 0;
         });
+
+        // --- Thêm xử lý FrozenRight ---
+        const stickyRightColumns = this.Header
+            .map((item, index) => item.FrozenRight ? index : -1)
+            .filter(index => index !== -1)
+            .sort((a, b) => b - a);
+
+        let rightOffset = 0;
+        stickyRightColumns.forEach((index) => {
+            const cellWidth = this.HeaderSection.Element.querySelector(
+                `tr:first-child th:nth-child(${index + 1})`
+            )?.offsetWidth || 0;
+
+            this.FooterSection.Element.querySelectorAll(
+                `td:nth-child(${index + 1})`
+            ).forEach((cell) => {
+                cell.classList.add("sticky-column-right");
+                cell.style.right = `${rightOffset}px`;
+            });
+
+            rightOffset += cellWidth;
+        });
     }
+
     intChangeSummary = 0;
     AddSummaries() {
         window.clearTimeout(this.intChangeSummary);
@@ -1029,18 +1080,33 @@ export class GridView extends ListView {
         if (header.IsTotal) {
             const sum = this.TotalHeaders.reduce((a, b) => a.plus(b), new Decimal(0));
             var pre = header.GroupTypeId ? parseInt(LangSelect._webConfig[header.GroupTypeId]) : header.Precision;
-            cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toFixed(pre || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+            if (this.Meta.Frozen) {
+                cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toDP(0).toFixed(pre || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+            }
+            else {
+                cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toFixed(pre || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+            }
         }
         else {
             if (this.Meta.IsMultiple) {
                 const sum = this.GetSelectedRows().reduce((a, b) => a.plus(new Decimal(b[header.FieldName] || 0)), new Decimal(0))
                 var pre = header.GroupTypeId ? parseInt(LangSelect._webConfig[header.GroupTypeId]) : header.Precision;
-                cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toFixed(pre || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                if (this.Meta.Frozen) {
+                    cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toDP(0).toFixed(pre || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                }
+                else {
+                    cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toFixed(pre || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                }
             }
             else {
                 const sum = this.AllListViewItem.filter(x => !x.GroupRow).map(x => x.Entity).reduce((a, b) => a.plus(new Decimal(b[header.FieldName] || 0)), new Decimal(0))
                 var pre = header.GroupTypeId ? parseInt(LangSelect._webConfig[header.GroupTypeId]) : header.Precision;
-                cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toFixed(pre || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                if (this.Meta.Frozen) {
+                    cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toDP(0).toFixed(pre || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                }
+                else {
+                    cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toFixed(pre || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                }
             }
         }
     }
@@ -1088,13 +1154,13 @@ export class GridView extends ListView {
             let rs;
             if (this.Meta.IsRealtime) {
                 rs = await rowSection.PatchUpdateOrCreate();
-                rowSection.Entity = rs;
+                Object.assign(rowSection.Entity, rs);
                 if (this.Meta.ComponentType == "VirtualGrid") {
                     this.CacheData.push(rs);
                 }
                 this.Dirty = false;
             } else {
-                rs = rowSection.Entity;
+                Object.assign(rowSection.Entity, rs);
                 this.Dirty = true;
             }
             await this.LoadMasterData([rowSection.Entity]);
@@ -1348,7 +1414,7 @@ export class GridView extends ListView {
                 if (header !== headers.find(x => x.GroupName === header.GroupName)) {
                     return;
                 }
-                Html.Th.ColSpan(headers.filter(x => x.GroupName === header.GroupName).length);
+                Html.Th.Attr("component", header.ComponentType || "Number").ColSpan(headers.filter(x => x.GroupName === header.GroupName).length);
                 this.ThGroup.push({
                     GroupName: header.GroupName,
                     Element: Html.Context
@@ -1366,11 +1432,11 @@ export class GridView extends ListView {
                     Html.EndOf("th");
                 }
                 else {
-                    Html.IHtml(header.GroupName).End.Render();
+                    Html.IHtml(header.GroupName, this.EditForm.Meta.Label).End.Render();
                 }
                 return;
             }
-            Html.Th
+            Html.Th.Attr("component", header.ComponentType || "Number")
                 .TabIndex(-1).Width(header.AutoFit ? "auto" : header.Width)
                 .Style(`${header.Style};min-width: ${header.MinWidth}; max-width: ${header.MaxWidth}`)
                 .TextAlign('center')
@@ -1404,7 +1470,7 @@ export class GridView extends ListView {
                         }
                     });
                 }
-                Html.Instance.IHtml(header.Label).Render();
+                Html.Instance.IHtml(header.Label, this.EditForm.Meta.Label).Render();
             }
             if (header.ComponentType === "Number") {
                 Html.Instance.Div.End.Render();
@@ -1423,13 +1489,12 @@ export class GridView extends ListView {
         if (anyGroup) {
             Html.Instance.TRow.ForEach(headers, (header, index) => {
                 if (anyGroup && !Utils.isNullOrWhiteSpace(header.GroupName)) {
-                    Html.Instance.Th.Style(`min-width: ${header.MinWidth}; max-width: ${header.MaxWidth}`)
+                    Html.Instance.Th.Attr("component", header.ComponentType || "Number").Style(`min-width: ${header.MinWidth}; max-width: ${header.MaxWidth}`)
                         .TextAlign(header.TextAlignEnum)
                         .Event(EventType.ContextMenu, this.HeaderContextMenu.bind(this), header)
-                        .InnerHTML(header.Label);
+                        .IHtml(header.Label, this.EditForm.Meta.Label);
                     var sec = new Section(null, Html.Context);
                     sec.Meta = header;
-                    // @ts-ignore
                     this.HeaderSection.AddChild(sec);
                     Html.Instance.EndOf(ElementType.th);
                 }
@@ -1463,7 +1528,7 @@ export class GridView extends ListView {
                                 PlainText: 'Input search...',
                                 ShowLabel: false
                             });
-                            txtSearch.SearchIcon = "fas fa-sort-amount-up";
+                            txtSearch.SearchIcon = "fal fa-search";
                             txtSearch.SearchMethod = SearchMethodEnum.Contain;
                             txtSearch.OrderMethod = "asc";
                             txtSearch.IsOrderBy = false;
@@ -1478,11 +1543,7 @@ export class GridView extends ListView {
                                 }
                             });
                             Html.End.Div.ClassName("btn-group").Button.TabIndex(-1).Event("click", (e) => {
-                                this.SearchSection.Children.forEach(x => x.IsOrderBy = false);
-                                txtSearch.OrderMethod = txtSearch.OrderMethod == "asc" ? "desc" : "asc";
-                                txtSearch.SearchIconElement.className = txtSearch.OrderMethod == "asc" ? "fas fa-sort-amount-up" : "fas fa-sort-amount-down";
-                                txtSearch.IsOrderBy = true;
-                                this.ApplyFilter();
+                                this.SearchTypeMenu(e, header, txtSearch);
                             }).Span.ClassName(txtSearch.SearchIcon);
                             txtSearch.SearchIconElement = Html.Context;
                             break;
@@ -1494,8 +1555,9 @@ export class GridView extends ListView {
                                 Precision: 2,
                                 ShowHotKey: true
                             });
+                            txtSearch.SearchMethod = SearchMethodEnum.Range;
                             txtSearch.OrderMethod = "asc";
-                            txtSearch.SearchIcon = "fas fa-sort-amount-up";
+                            txtSearch.SearchIcon = "fal fa-arrows-alt-h";
                             this.SearchSection.AddChild(txtSearch);
                             txtSearch.Element.addEventListener("keydown", (e) => {
                                 let code = e.KeyCodeEnum();
@@ -1506,11 +1568,7 @@ export class GridView extends ListView {
                                 }
                             });
                             Html.End.Div.ClassName("btn-group").Button.TabIndex(-1).Event("click", (e) => {
-                                this.SearchSection.Children.forEach(x => x.IsOrderBy = false);
-                                txtSearch.OrderMethod = txtSearch.OrderMethod == "asc" ? "desc" : "asc";
-                                txtSearch.SearchIconElement.className = txtSearch.OrderMethod == "asc" ? "fas fa-sort-amount-up" : "fas fa-sort-amount-down";
-                                txtSearch.IsOrderBy = true;
-                                this.ApplyFilter();
+                                this.SearchTypeMenu(e, header, txtSearch);
                             }).Span.ClassName(txtSearch.SearchIcon);
                             txtSearch.SearchIconElement = Html.Context;
                             break;
@@ -1554,6 +1612,120 @@ export class GridView extends ListView {
                 Html.EndOf(ElementType.td);
             }).EndOf(ElementType.tr).Render();
         }
+    }
+
+    SearchTypeMenu(e, header, txtSearch) {
+        const ele = e.target;
+        var buttonRect = ele.getBoundingClientRect();
+        var ctxMenu = ContextMenu.Instance;
+        ctxMenu.Top = buttonRect.bottom;
+        ctxMenu.Left = buttonRect.left;
+        ctxMenu.MenuItems = [];
+        if (header.ComponentType == "Input" || header.ComponentType == "Dropdown") {
+            var className = txtSearch.OrderMethod == "asc" ? "fas fa-sort-amount-up" : "fas fa-sort-amount-down";
+            ctxMenu.MenuItems.push({
+                Icon: className,
+                Text: "Order By",
+                Click: () => this.ActionSearch(header, "OrderBy", txtSearch, className)
+            });
+            ctxMenu.MenuItems.push({
+                Icon: "fal fa-search",
+                Text: "Contains",
+                Click: () => this.ActionSearch(header, SearchMethodEnum.Contain, txtSearch, "fal fa-search")
+            });
+            ctxMenu.MenuItems.push({
+                Icon: "fal fa-search-minus",
+                Text: "No Contains",
+                Click: () => this.ActionSearch(this.Meta, SearchMethodEnum.NotContain, txtSearch, "fal fa-search-minus")
+            });
+            ctxMenu.MenuItems.push({
+                Icon: "fal fa-arrow-right",
+                Text: "Starts With",
+                Click: () => this.ActionSearch(header, SearchMethodEnum.StartWith, txtSearch, "fal fa-arrow-right")
+            });
+            ctxMenu.MenuItems.push({
+                Icon: "fal fa-arrow-left",
+                Text: "Ends With",
+                Click: () => this.ActionSearch(header, SearchMethodEnum.EndWith, "fal fa-arrow-left")
+            });
+            ctxMenu.MenuItems.push({
+                Icon: "fal fa-minus-circle",
+                Text: "Empty",
+                Click: () => this.ActionSearch(header, SearchMethodEnum.Empty, txtSearch, "fal fa-minus-circle")
+            });
+            ctxMenu.MenuItems.push({
+                Icon: "fal fa-check-circle",
+                Text: "Not Empty",
+                Click: () => this.ActionSearch(header, SearchMethodEnum.Filled, txtSearch, "fal fa-check-circle")
+            });
+        }
+        else if (header.ComponentType == "Datepicker" || header.ComponentType == "Number") {
+            var className = txtSearch.OrderMethod == "asc" ? "fas fa-sort-amount-up" : "fas fa-sort-amount-down";
+            ctxMenu.MenuItems.push({
+                Icon: className,
+                Text: "Order By",
+                Click: () => this.ActionSearch(header, "OrderBy", txtSearch, className)
+            });
+            ctxMenu.MenuItems.push({
+                Icon: "fal fa-arrows-alt-h",
+                Text: "Between",
+                Click: () => this.ActionSearch(header, SearchMethodEnum.Range, txtSearch, "fal fa-arrows-alt-h")
+            });
+            ctxMenu.MenuItems.push({
+                Icon: "fal fa-equals",
+                Text: "Equals",
+                Click: () => this.ActionSearch(header, SearchMethodEnum.Equal, txtSearch, "fal fa-equals")
+            });
+            ctxMenu.MenuItems.push({
+                Icon: "fal fa-not-equal",
+                Text: "Not Equals",
+                Click: () => this.ActionSearch(header, SearchMethodEnum.NotEqual, txtSearch, "fal fa-not-equal")
+            });
+            ctxMenu.MenuItems.push({
+                Icon: "fal fa-greater-than",
+                Text: "Greater Than",
+                Click: () => this.ActionSearch(header, SearchMethodEnum.Greater, txtSearch, "fal fa-greater-than")
+            });
+            ctxMenu.MenuItems.push({
+                Icon: "fal fa-less-than",
+                Text: "Less Than",
+                Click: () => this.ActionSearch(header, SearchMethodEnum.Smaller, txtSearch, "fal fa-less-than")
+            });
+            ctxMenu.MenuItems.push({
+                Icon: "fal fa-greater-than-equal",
+                Text: "Greater Than or Equal",
+                Click: () => this.ActionSearch(header, SearchMethodEnum.GreaterEqual, txtSearch, "fal fa-greater-than-equal")
+            });
+            ctxMenu.MenuItems.push({
+                Icon: "fal fa-less-than-equal",
+                Text: "Less Than or Equal",
+                Click: () => this.ActionSearch(header, SearchMethodEnum.SmallerEqual, txtSearch, "fal fa-less-than-equal")
+            });
+            ctxMenu.MenuItems.push({
+                Icon: "fal fa-minus-circle",
+                Text: "Empty",
+                Click: () => this.ActionSearch(header, SearchMethodEnum.Empty, txtSearch, "fal fa-minus-circle")
+            });
+            ctxMenu.MenuItems.push({
+                Icon: "fal fa-check-circle",
+                Text: "Not Empty",
+                Click: () => this.ActionSearch(header, SearchMethodEnum.Filled, txtSearch, "fal fa-check-circle")
+            });
+        }
+        ctxMenu.EditForm = this.EditForm;
+        ctxMenu.Render();
+    }
+
+    ActionSearch(header, type, txtSearch, className) {
+        txtSearch.SearchMethod = type;
+        if (type == "OrderBy") {
+            this.SearchSection.Children.forEach(x => x.IsOrderBy = false);
+            txtSearch.OrderMethod = txtSearch.OrderMethod == "asc" ? "desc" : "asc";
+            className = txtSearch.OrderMethod == "asc" ? "fas fa-sort-amount-up" : "fas fa-sort-amount-down";
+            txtSearch.IsOrderBy = true;
+        }
+        txtSearch.SearchIconElement.className = className;
+        this.ApplyFilter();
     }
     /**
      * @param {HTMLElement} col
@@ -1646,6 +1818,7 @@ export class GridView extends ListView {
                             { Field: "Id", Value: header.Meta.Id },
                             { Field: "FeatureId", Value: header.Meta.FeatureId },
                             { Field: "Frozen", Value: header.Meta.Frozen },
+                            { Field: "FrozenRight", Value: header.Meta.FrozenRight },
                             Utils.isNullOrWhiteSpace(header.GroupName) ? { Field: "Width", Value: width } : { Field: "Width", Value: header.Meta.Width },
                             Utils.isNullOrWhiteSpace(header.GroupName) ? { Field: "MaxWidth", Value: width } : { Field: "MaxWidth", Value: header.Meta.MaxWidth },
                             Utils.isNullOrWhiteSpace(header.GroupName) ? { Field: "MinWidth", Value: width } : { Field: "MinWidth", Value: header.Meta.MinWidth },
@@ -1672,6 +1845,7 @@ export class GridView extends ListView {
                             Id: header.Meta.Id,
                             FieldName: header.Meta.FieldName,
                             Frozen: header.Meta.Frozen,
+                            FrozenRight: header.Meta.FrozenRight,
                             Order: header.Order,
                             Width: width,
                         };
@@ -1745,23 +1919,89 @@ export class GridView extends ListView {
         menu.Left = e.clientX;
         menu.MenuItems = [];
         if (Client.SystemRole) {
-            menu.MenuItems.push(
-                { Icon: "fal fa-wrench", Text: "Column Properties", Click: () => this.EditForm.ComponentProperties(header), },
-                { Icon: "fal fa-table", Text: "Table Properties", Click: () => this.EditForm.ComponentProperties(this.Meta), },
-                { Icon: !header.Frozen ? "fas fa-snowflake" : "fas fa-fire", Text: (!header.Frozen ? "Frozen" : "UnFrozen"), Click: () => this.UpdateFrozen(header), }
-            );
+            menu.MenuItems.push({ Icon: "fal fa-wrench", Text: "Column Properties", Click: () => this.EditForm.ComponentProperties(header) });
+            menu.MenuItems.push({ Icon: "fal fa-table", Text: "Table Properties", Click: () => this.EditForm.ComponentProperties(this.Meta) });
         }
-        else {
-            menu.MenuItems.push(
-                { Icon: !header.Frozen ? "fas fa-snowflake" : "fas fa-fire", Text: (!header.Frozen ? "Frozen" : "UnFrozen"), Click: () => this.UpdateFrozen(header), },
-            );
+        if (!header.StatusBar && header.FieldName && !header.GroupName) {
+            if (Client.SystemRole && ["Input", "Dropdown", "Select", "Checkbox", "Textarea"].some(x => x == header.ComponentType)) {
+                menu.MenuItems.push({ Icon: "fal fa-copy", Text: "Set Default Value", Click: this.SetDefaultValue.bind(this), Parameter: header });
+            }
+            menu.MenuItems.push({
+                Icon: "fas fa-thumbtack", Text: "Pin Column", MenuItems: [
+                    {
+                        Icon: header.Frozen ? "fas fa-check" : "fas fa-ellipsis-h",
+                        Text: "Pin Left",
+                        Click: () => this.UpdateFrozen(header, 1)
+                    },
+                    {
+                        Icon: header.FrozenRight ? "fas fa-check" : "fas fa-ellipsis-h",
+                        Text: "Pin Right",
+                        Click: () => this.UpdateFrozen(header, 2)
+                    },
+                    {
+                        Icon: !header.Frozen && !header.FrozenRight ? "fas fa-check" : "fas fa-ellipsis-h",
+                        Text: "No Pin",
+                        Click: () => this.UpdateFrozen(header, 3)
+                    }
+                ]
+            });
         }
+
         menu.EditForm = this.EditForm;
         menu.Render();
     }
 
-    UpdateFrozen(header) {
-        header.Frozen = !header.Frozen;
+    SetDefaultValue(component) {
+        if (component.ComponentType == "GridView") {
+            return;
+        }
+        var com = JSON.parse(JSON.stringify(component));
+        com.FieldName = 'DefaultValue' + com.FieldName;
+        var name = com.EntityName || "Entity";
+        this[name][com.FieldName] = com.DefaultVal;
+        this.EditForm.OpenConfig("Set default value", async () => {
+            let dirtyPatchDetail = [
+                {
+                    Label: "Id",
+                    Field: "Id",
+                    OldVal: null,
+                    Value: com.Id,
+                },
+                {
+                    Label: "FeatureId",
+                    Field: "FeatureId",
+                    OldVal: null,
+                    Value: com.FeatureId,
+                },
+                {
+                    Label: "DefaultVal",
+                    Field: "DefaultVal",
+                    OldVal: null,
+                    Value: this[name][com.FieldName],
+                }
+            ]
+            let patchModelDetail = {
+                Changes: dirtyPatchDetail,
+                Table: "Component",
+                NotMessage: true
+            };
+            component.DefaultVal = this[name][com.FieldName];
+            await Client.Instance.PatchAsync(patchModelDetail);
+            this.Dirty = false;
+        }, () => { }, true, [com], null, null, null, true);
+    }
+
+    UpdateFrozen(header, frozenType) {
+        if (frozenType === 1) {
+            header.Frozen = true;
+        }
+        else if (frozenType === 2) {
+            header.FrozenRight = true;
+        }
+        else {
+            header.Frozen = false;
+            header.FrozenRight = false;
+        }
         this.UpdateHeaders(true);
     }
 

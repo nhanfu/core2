@@ -59,7 +59,7 @@ export class RichTextBox extends EditableComponent {
                 'alignright alignjustify | bullist numlist outdent indent | ' +
                 'removeformat | help',
             font_size_formats: '8pt 9pt 10pt 11pt 12pt 13pt 14pt 15pt 16pt 17pt 18pt 24pt 36pt 48pt',
-            contextmenu: "link image inserttable | table add-background-img gen-table-excel | tablename groupby | classProp titleProp stylesProp | Viewpdf Viewhistory",
+            contextmenu: "margin-page | link image inserttable | table add-background-img gen-table-excel | tablename groupby | classProp titleProp stylesProp | Viewpdf Viewhistory",
             images_upload_handler: self.ImageHandler.bind(self),
             height: this.Meta.Precision || 250,
             setup: function (editor) {
@@ -70,352 +70,433 @@ export class RichTextBox extends EditableComponent {
                     editor.setContent(self.Entity[self.Meta.FieldName] || '');
                 });
                 editor.on('Change', function (e) {
-                    self.Entity[self.Meta.FieldName] = editor.getContent();
+                    self.Entity[self.Meta.FieldName] = editor.getBody().innerHTML;
                     self.Dirty = true;
                 });
-                editor.ui.registry.addMenuItem('tablename', {
-                    text: 'Table Name',
-                    onAction: function () {
-                        var selectedTr = editor.dom.getParent(editor.selection.getStart(), 'tbody');
-                        if (selectedTr) {
-                            var currentCustomData = editor.dom.getAttrib(selectedTr, 'data-table') || '';
-                            editor.windowManager.open({
-                                title: 'Table Name',
-                                body: {
-                                    type: 'panel',
-                                    items: [
-                                        {
-                                            type: 'input',
-                                            name: 'customData',
-                                            label: 'Table Name',
-                                        }
-                                    ]
-                                },
-                                initialData: {
-                                    customData: currentCustomData
-                                },
-                                buttons: [
-                                    {
-                                        type: 'submit',
-                                        text: 'Save'
+                if (self.Token.RoleNames.some(x => x == "BOD" || x == "ADMIN")) {
+                    editor.ui.registry.addMenuItem('tablename', {
+                        text: 'Table Name',
+                        onAction: function () {
+                            var selectedTr = editor.dom.getParent(editor.selection.getStart(), 'tbody');
+                            if (selectedTr) {
+                                var currentCustomData = editor.dom.getAttrib(selectedTr, 'data-table') || '';
+                                editor.windowManager.open({
+                                    title: 'Table Name',
+                                    body: {
+                                        type: 'panel',
+                                        items: [
+                                            {
+                                                type: 'input',
+                                                name: 'customData',
+                                                label: 'Table Name',
+                                            }
+                                        ]
                                     },
-                                    {
-                                        type: 'cancel',
-                                        text: 'Close'
-                                    }
-                                ],
-                                onSubmit: function (dialog) {
-                                    var data = dialog.getData();
-                                    editor.dom.setAttrib(selectedTr, 'data-table', data.customData);
-                                    dialog.close();
-                                }
-                            });
-                        } else {
-                            editor.windowManager.alert('Please select a table row to set properties.');
-                        }
-                    }
-                });
-                editor.ui.registry.addMenuItem('groupby', {
-                    text: 'Group by',
-                    onAction: function () {
-                        var selectedTr = editor.dom.getParent(editor.selection.getStart(), 'tbody');
-                        if (selectedTr) {
-                            var currentCustomData = editor.dom.getAttrib(selectedTr, 'data-group') || '';
-                            editor.windowManager.open({
-                                title: 'Group by',
-                                body: {
-                                    type: 'panel',
-                                    items: [
-                                        {
-                                            type: 'input',
-                                            name: 'customData',
-                                            label: 'Group by',
-                                        }
-                                    ]
-                                },
-                                initialData: {
-                                    customData: currentCustomData // Thiết lập giá trị ban đầu cho input
-                                },
-                                buttons: [
-                                    {
-                                        type: 'submit',
-                                        text: 'Save'
+                                    initialData: {
+                                        customData: currentCustomData
                                     },
-                                    {
-                                        type: 'cancel',
-                                        text: 'Close'
-                                    }
-                                ],
-                                onSubmit: function (dialog) {
-                                    var data = dialog.getData();
-                                    editor.dom.setAttrib(selectedTr, 'data-group', data.customData);
-                                    dialog.close();
-                                }
-                            });
-                        } else {
-                            editor.windowManager.alert('Please select a table row to set properties.');
-                        }
-                    }
-                });
-                editor.ui.registry.addMenuItem('classProp', {
-                    text: 'Class Name Table',
-                    onAction: function () {
-                        var selectedTr = editor.dom.getParent(editor.selection.getStart(), 'table');
-                        if (selectedTr) {
-                            var currentCustomData = editor.dom.getAttrib(selectedTr, 'class') || '';
-                            editor.windowManager.open({
-                                title: 'Class Name',
-                                body: {
-                                    type: 'panel',
-                                    items: [
+                                    buttons: [
                                         {
-                                            type: 'input',
-                                            name: 'customData',
-                                            label: 'Class Name',
-                                        }
-                                    ]
-                                },
-                                initialData: {
-                                    customData: currentCustomData // Thiết lập giá trị ban đầu cho input
-                                },
-                                buttons: [
-                                    {
-                                        type: 'submit',
-                                        text: 'Save'
-                                    },
-                                    {
-                                        type: 'cancel',
-                                        text: 'Close'
-                                    }
-                                ],
-                                onSubmit: function (dialog) {
-                                    var data = dialog.getData();
-                                    var newClass = data.customData.trim();
-
-                                    if (newClass) {
-                                        var currentClassList = currentCustomData.split(' ').filter(Boolean);
-                                        if (!currentClassList.includes(newClass)) {
-                                            currentClassList.push(newClass);
-                                        }
-                                        editor.dom.setAttrib(selectedTr, 'class', currentClassList.join(' '));
-                                    }
-                                    dialog.close();
-                                }
-                            });
-                        } else {
-                            editor.windowManager.alert('Please select a table to set properties.');
-                        }
-                    }
-                });
-                editor.ui.registry.addMenuItem('titleProp', {
-                    text: 'FieldName',
-                    onAction: function () {
-                        var selectedTr = editor.selection.getNode();
-                        if (selectedTr) {
-                            var currentCustomData = editor.dom.getAttrib(selectedTr, 'title') || '';
-                            editor.windowManager.open({
-                                title: 'Field Name',
-                                body: {
-                                    type: 'panel',
-                                    items: [
+                                            type: 'submit',
+                                            text: 'Save'
+                                        },
                                         {
-                                            type: 'input',
-                                            name: 'customData',
-                                            label: 'Field Name',
+                                            type: 'cancel',
+                                            text: 'Close'
                                         }
-                                    ]
-                                },
-                                initialData: {
-                                    customData: currentCustomData
-                                },
-                                buttons: [
-                                    {
-                                        type: 'submit',
-                                        text: 'Save'
-                                    },
-                                    {
-                                        type: 'cancel',
-                                        text: 'Close'
+                                    ],
+                                    onSubmit: function (dialog) {
+                                        var data = dialog.getData();
+                                        editor.dom.setAttrib(selectedTr, 'data-table', data.customData);
+                                        dialog.close();
                                     }
-                                ],
-                                onSubmit: function (dialog) {
-                                    var data = dialog.getData();
-                                    var newClass = data.customData.trim();
-                                    editor.dom.setAttrib(selectedTr, 'title', newClass);
-                                    dialog.close();
-                                }
-                            });
-                        } else {
-                            editor.windowManager.alert('Please select a element to set properties.');
-                        }
-                    }
-                });
-                editor.ui.registry.addMenuItem('stylesProp', {
-                    text: 'Styles',
-                    onAction: function () {
-                        var selectedTr = editor.selection.getNode();
-                        if (selectedTr) {
-                            var currentCustomData = editor.dom.getAttrib(selectedTr, 'style') || '';
-                            editor.windowManager.open({
-                                title: 'Styles',
-                                body: {
-                                    type: 'panel',
-                                    items: [
-                                        {
-                                            type: 'textarea',
-                                            name: 'customData',
-                                            label: 'CSS Styles',
-                                            placeholder: 'e.g., color: red; background-color: yellow;'
-                                        }
-                                    ]
-                                },
-                                initialData: {
-                                    customData: currentCustomData // Thiết lập giá trị ban đầu cho input
-                                },
-                                buttons: [
-                                    {
-                                        type: 'submit',
-                                        text: 'Save'
-                                    },
-                                    {
-                                        type: 'cancel',
-                                        text: 'Close'
-                                    }
-                                ],
-                                onSubmit: function (dialog) {
-                                    var data = dialog.getData();
-                                    editor.dom.setAttrib(selectedTr, 'style', data.customData);
-                                    dialog.close();
-                                }
-                            });
-                        } else {
-                            editor.windowManager.alert('Please select a table to set properties.');
-                        }
-                    }
-                });
-                editor.on('ExecCommand', function (e) {
-                    if (e.command === 'mceTableMergeCells') {
-                        // Lấy các ô được chọn để merge
-                        const selectedCells = editor.dom.select('td.mce-selected, th.mce-selected');
-                        let mergedContent = '';
-
-                        // Xử lý nội dung các ô, loại bỏ ký tự xuống dòng
-                        selectedCells.forEach((cell) => {
-                            const content = cell.innerHTML
-                                .replace(/(\r\n|\n|\r|<br\s*\/?>)/g, ' ') // Loại bỏ xuống dòng
-                                .trim(); // Xóa khoảng trắng thừa
-                            mergedContent += content ? content + ' ' : '';
-                        });
-
-                        // Gán nội dung đã xử lý vào ô đầu tiên
-                        if (selectedCells.length) {
-                            selectedCells[0].innerHTML = mergedContent.trim();
-                            // Xóa nội dung các ô còn lại
-                            for (let i = 1; i < selectedCells.length; i++) {
-                                selectedCells[i].innerHTML = '';
+                                });
+                            } else {
+                                editor.windowManager.alert('Please select a table row to set properties.');
                             }
                         }
-                    }
-                });
-                editor.ui.registry.addMenuItem('add-background-img', {
-                    text: 'Background Image',
-                    onAction: function () {
-                        editor.windowManager.open({
-                            title: 'Upload and Set Background Image',
-                            body: {
-                                type: 'panel',
-                                items: [
-                                    {
-                                        type: 'htmlpanel',
-                                        html: `
+                    });
+                    editor.ui.registry.addMenuItem('groupby', {
+                        text: 'Group by',
+                        onAction: function () {
+                            var selectedTr = editor.dom.getParent(editor.selection.getStart(), 'tbody');
+                            if (selectedTr) {
+                                var currentCustomData = editor.dom.getAttrib(selectedTr, 'data-group') || '';
+                                editor.windowManager.open({
+                                    title: 'Group by',
+                                    body: {
+                                        type: 'panel',
+                                        items: [
+                                            {
+                                                type: 'input',
+                                                name: 'customData',
+                                                label: 'Group by',
+                                            }
+                                        ]
+                                    },
+                                    initialData: {
+                                        customData: currentCustomData // Thiết lập giá trị ban đầu cho input
+                                    },
+                                    buttons: [
+                                        {
+                                            type: 'submit',
+                                            text: 'Save'
+                                        },
+                                        {
+                                            type: 'cancel',
+                                            text: 'Close'
+                                        }
+                                    ],
+                                    onSubmit: function (dialog) {
+                                        var data = dialog.getData();
+                                        editor.dom.setAttrib(selectedTr, 'data-group', data.customData);
+                                        dialog.close();
+                                    }
+                                });
+                            } else {
+                                editor.windowManager.alert('Please select a table row to set properties.');
+                            }
+                        }
+                    });
+                    editor.ui.registry.addMenuItem('classProp', {
+                        text: 'Class Name Table',
+                        onAction: function () {
+                            var selectedTr = editor.dom.getParent(editor.selection.getStart(), 'table');
+                            if (selectedTr) {
+                                var currentCustomData = editor.dom.getAttrib(selectedTr, 'class') || '';
+                                editor.windowManager.open({
+                                    title: 'Class Table Name',
+                                    body: {
+                                        type: 'panel',
+                                        items: [
+                                            {
+                                                type: 'input',
+                                                name: 'customData',
+                                                label: 'Class Name',
+                                            }
+                                        ]
+                                    },
+                                    initialData: {
+                                        customData: currentCustomData // Thiết lập giá trị ban đầu cho input
+                                    },
+                                    buttons: [
+                                        {
+                                            type: 'submit',
+                                            text: 'Save'
+                                        },
+                                        {
+                                            type: 'cancel',
+                                            text: 'Close'
+                                        }
+                                    ],
+                                    onSubmit: function (dialog) {
+                                        var data = dialog.getData();
+                                        var newClass = data.customData.trim();
+
+                                        if (newClass) {
+                                            var currentClassList = currentCustomData.split(' ').filter(Boolean);
+                                            if (!currentClassList.includes(newClass)) {
+                                                currentClassList.push(newClass);
+                                            }
+                                            editor.dom.setAttrib(selectedTr, 'class', currentClassList.join(' '));
+                                        }
+                                        else {
+                                            editor.dom.setAttrib(selectedTr, 'class', '');
+                                        }
+                                        dialog.close();
+                                    }
+                                });
+                            } else {
+                                editor.windowManager.alert('Please select a table to set properties.');
+                            }
+                        }
+                    });
+                    editor.ui.registry.addMenuItem('margin-page', {
+                        text: 'Margin',
+                        onAction: function () {
+                            const root = editor.getBody();
+                            let marginWrapper = root.querySelector('div.m-class');
+
+                            let currentMargin = marginWrapper ? {
+                                top: marginWrapper.style.marginTop || '',
+                                right: marginWrapper.style.marginRight || '',
+                                bottom: marginWrapper.style.marginBottom || '',
+                                left: marginWrapper.style.marginLeft || ''
+                            } : {
+                                top: '0', right: '0', bottom: '0', left: '0'
+                            };
+
+                            editor.windowManager.open({
+                                title: 'Page Margin Settings',
+                                body: {
+                                    type: 'panel',
+                                    items: [
+                                        {
+                                            type: 'grid',
+                                            columns: 2,
+                                            items: [
+                                                { type: 'input', name: 'marginTop', label: 'Margin Top (px)', inputMode: 'numeric' },
+                                                { type: 'input', name: 'marginBottom', label: 'Margin Bottom (px)', inputMode: 'numeric' },
+                                                { type: 'input', name: 'marginLeft', label: 'Margin Left (px)', inputMode: 'numeric' },
+                                                { type: 'input', name: 'marginRight', label: 'Margin Right (px)', inputMode: 'numeric' }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                initialData: {
+                                    marginTop: currentMargin.top.replace('px', ''),
+                                    marginBottom: currentMargin.bottom.replace('px', ''),
+                                    marginLeft: currentMargin.left.replace('px', ''),
+                                    marginRight: currentMargin.right.replace('px', '')
+                                },
+                                buttons: [
+                                    { type: 'submit', text: 'Save' },
+                                    { type: 'cancel', text: 'Close' }
+                                ],
+                                onSubmit: function (dialog) {
+                                    const data = dialog.getData();
+                                    const mt = data.marginTop.trim() || '0';
+                                    const mb = data.marginBottom.trim() || '0';
+                                    const ml = data.marginLeft.trim() || '0';
+                                    const mr = data.marginRight.trim() || '0';
+
+                                    if (marginWrapper) {
+                                        marginWrapper.style.marginTop = `${mt}px`;
+                                        marginWrapper.style.marginBottom = `${mb}px`;
+                                        marginWrapper.style.marginLeft = `${ml}px`;
+                                        marginWrapper.style.marginRight = `${mr}px`;
+                                    } else {
+                                        marginWrapper = editor.dom.create('div', {
+                                            class: 'm-class'
+                                        });
+
+                                        marginWrapper.style.marginTop = `${mt}px`;
+                                        marginWrapper.style.marginBottom = `${mb}px`;
+                                        marginWrapper.style.marginLeft = `${ml}px`;
+                                        marginWrapper.style.marginRight = `${mr}px`;
+
+                                        while (root.firstChild) {
+                                            marginWrapper.appendChild(root.firstChild);
+                                        }
+
+                                        root.appendChild(marginWrapper);
+                                    }
+
+                                    dialog.close();
+                                }
+                            });
+                        }
+                    });
+                    editor.ui.registry.addMenuItem('titleProp', {
+                        text: 'FieldName',
+                        onAction: function () {
+                            var selectedTr = editor.selection.getNode();
+                            if (selectedTr) {
+                                var currentCustomData = editor.dom.getAttrib(selectedTr, 'title') || '';
+                                editor.windowManager.open({
+                                    title: 'Field Name',
+                                    body: {
+                                        type: 'panel',
+                                        items: [
+                                            {
+                                                type: 'input',
+                                                name: 'customData',
+                                                label: 'Field Name',
+                                            }
+                                        ]
+                                    },
+                                    initialData: {
+                                        customData: currentCustomData
+                                    },
+                                    buttons: [
+                                        {
+                                            type: 'submit',
+                                            text: 'Save'
+                                        },
+                                        {
+                                            type: 'cancel',
+                                            text: 'Close'
+                                        }
+                                    ],
+                                    onSubmit: function (dialog) {
+                                        var data = dialog.getData();
+                                        var newClass = data.customData.trim();
+                                        editor.dom.setAttrib(selectedTr, 'title', newClass);
+                                        dialog.close();
+                                    }
+                                });
+                            } else {
+                                editor.windowManager.alert('Please select a element to set properties.');
+                            }
+                        }
+                    });
+                    editor.ui.registry.addMenuItem('stylesProp', {
+                        text: 'Styles',
+                        onAction: function () {
+                            var selectedTr = editor.selection.getNode();
+                            if (selectedTr) {
+                                var currentCustomData = editor.dom.getAttrib(selectedTr, 'style') || '';
+                                editor.windowManager.open({
+                                    title: 'Styles',
+                                    body: {
+                                        type: 'panel',
+                                        items: [
+                                            {
+                                                type: 'textarea',
+                                                name: 'customData',
+                                                label: 'CSS Styles',
+                                                placeholder: 'e.g., color: red; background-color: yellow;'
+                                            }
+                                        ]
+                                    },
+                                    initialData: {
+                                        customData: currentCustomData // Thiết lập giá trị ban đầu cho input
+                                    },
+                                    buttons: [
+                                        {
+                                            type: 'submit',
+                                            text: 'Save'
+                                        },
+                                        {
+                                            type: 'cancel',
+                                            text: 'Close'
+                                        }
+                                    ],
+                                    onSubmit: function (dialog) {
+                                        var data = dialog.getData();
+                                        editor.dom.setAttrib(selectedTr, 'style', data.customData);
+                                        dialog.close();
+                                    }
+                                });
+                            } else {
+                                editor.windowManager.alert('Please select a table to set properties.');
+                            }
+                        }
+                    });
+                    editor.on('ExecCommand', function (e) {
+                        if (e.command === 'mceTableMergeCells') {
+                            // Lấy các ô được chọn để merge
+                            const selectedCells = editor.dom.select('td.mce-selected, th.mce-selected');
+                            let mergedContent = '';
+
+                            // Xử lý nội dung các ô, loại bỏ ký tự xuống dòng
+                            selectedCells.forEach((cell) => {
+                                const content = cell.innerHTML
+                                    .replace(/(\r\n|\n|\r|<br\s*\/?>)/g, ' ') // Loại bỏ xuống dòng
+                                    .trim(); // Xóa khoảng trắng thừa
+                                mergedContent += content ? content + ' ' : '';
+                            });
+
+                            // Gán nội dung đã xử lý vào ô đầu tiên
+                            if (selectedCells.length) {
+                                selectedCells[0].innerHTML = mergedContent.trim();
+                                // Xóa nội dung các ô còn lại
+                                for (let i = 1; i < selectedCells.length; i++) {
+                                    selectedCells[i].innerHTML = '';
+                                }
+                            }
+                        }
+                    });
+                    editor.ui.registry.addMenuItem('add-background-img', {
+                        text: 'Background Image',
+                        onAction: function () {
+                            editor.windowManager.open({
+                                title: 'Upload and Set Background Image',
+                                body: {
+                                    type: 'panel',
+                                    items: [
+                                        {
+                                            type: 'htmlpanel',
+                                            html: `
                                             <input type="file" id="background-img-upload" accept="image/*" style="margin-top: 10px;" />
                                         `
-                                    }
-                                ]
-                            },
-                            buttons: [
-                                {
-                                    type: 'submit',
-                                    text: 'Apply'
-                                },
-                                {
-                                    type: 'cancel',
-                                    text: 'Cancel'
-                                }
-                            ],
-                            onSubmit: function (dialog) {
-                                const fileInput = document.getElementById('background-img-upload');
-                                const file = fileInput.files[0];
-                                if (file) {
-                                    const blobInfo = {
-                                        blob: () => file
-                                    };
-
-                                    self.ImageHandler(
-                                        blobInfo,
-                                        function success(path) {
-                                            const tableNode = editor.dom.getParent(editor.selection.getStart(), 'table');
-                                            let wrapperDiv = tableNode.parentNode;
-                                            if (wrapperDiv.tagName.toLowerCase() !== 'div') {
-                                                wrapperDiv = document.createElement('div');
-                                                tableNode.parentNode.insertBefore(wrapperDiv, tableNode);
-                                                wrapperDiv.appendChild(tableNode);
-                                            }
-                                            wrapperDiv.classList.add('a4');
-                                            wrapperDiv.style.height = '1122px';
-                                            wrapperDiv.style.backgroundImage = `url(${path})`;
-                                            wrapperDiv.style.backgroundSize = 'cover';
-                                            wrapperDiv.style.backgroundRepeat = 'no-repeat';
-                                            wrapperDiv.style.backgroundPosition = 'center';
-                                            wrapperDiv.style.display = "flex";
-                                            dialog.close();
-                                        },
-                                        function failure(error) {
-                                            console.error('Upload failed:', error);
-                                            editor.windowManager.alert('Failed to upload image. Please try again.');
                                         }
-                                    );
-                                } else {
-                                    editor.windowManager.alert('No file selected. Please choose an image to upload.');
+                                    ]
+                                },
+                                buttons: [
+                                    {
+                                        type: 'submit',
+                                        text: 'Apply'
+                                    },
+                                    {
+                                        type: 'cancel',
+                                        text: 'Cancel'
+                                    }
+                                ],
+                                onSubmit: function (dialog) {
+                                    const fileInput = document.getElementById('background-img-upload');
+                                    const file = fileInput.files[0];
+                                    if (file) {
+                                        const blobInfo = {
+                                            blob: () => file
+                                        };
+
+                                        self.ImageHandler(
+                                            blobInfo,
+                                            function success(path) {
+                                                const tableNode = editor.dom.getParent(editor.selection.getStart(), 'table');
+                                                let wrapperDiv = tableNode.parentNode;
+                                                if (wrapperDiv.tagName.toLowerCase() !== 'div') {
+                                                    wrapperDiv = document.createElement('div');
+                                                    tableNode.parentNode.insertBefore(wrapperDiv, tableNode);
+                                                    wrapperDiv.appendChild(tableNode);
+                                                }
+                                                wrapperDiv.classList.add('a4');
+                                                wrapperDiv.style.height = '1122px';
+                                                wrapperDiv.style.backgroundImage = `url(${path})`;
+                                                wrapperDiv.style.backgroundSize = 'cover';
+                                                wrapperDiv.style.backgroundRepeat = 'no-repeat';
+                                                wrapperDiv.style.backgroundPosition = 'center';
+                                                wrapperDiv.style.display = "flex";
+                                                dialog.close();
+                                            },
+                                            function failure(error) {
+                                                console.error('Upload failed:', error);
+                                                editor.windowManager.alert('Failed to upload image. Please try again.');
+                                            }
+                                        );
+                                    } else {
+                                        editor.windowManager.alert('No file selected. Please choose an image to upload.');
+                                    }
                                 }
-                            }
-                        });
-                    }
-                });
-                editor.ui.registry.addMenuItem('gen-table-excel', {
-                    text: 'Gen table excel',
-                    onAction: function () {
-                        const a4WidthPx = 793.7;
-                        const a4HeightPx = 1088;
-                        const columnWidthPx = 80;
-                        const rowHeightPx = 17;
-                        const columns = Math.floor(a4WidthPx / columnWidthPx);
-                        const rows = Math.floor(a4HeightPx / rowHeightPx);
-                        let tableHtml = `<table border="0" style="width:100%; border-collapse:collapse;height:${a4HeightPx}px;max-height:${a4HeightPx}px">`;
-                        for (let r = 0; r < rows; r++) {
-                            tableHtml += '<tr>';
-                            for (let c = 0; c < columns; c++) {
-                                tableHtml += '<td style="width:' + columnWidthPx + 'px; height:' + rowHeightPx + 'px;"><span>&nbsp;</span></td>';
-                            }
-                            tableHtml += '</tr>';
+                            });
                         }
-                        tableHtml += '</table>';
-                        editor.insertContent(tableHtml);
-                    }
-                });
-                editor.ui.registry.addMenuItem('Viewpdf', {
-                    text: 'View PDF',
-                    onAction: function () {
-                        var btn = self.EditForm.OpenFrom.ChildCom.find(x => x.Meta.Id == self.Entity.Id);
-                        btn.Element.click();
-                    }
-                });
-                editor.ui.registry.addMenuItem('Viewhistory', {
-                    text: 'View History',
-                    onAction: function () {
-                        self.RenderPopup();
-                    }
-                });
+                    });
+                    editor.ui.registry.addMenuItem('gen-table-excel', {
+                        text: 'Gen table excel',
+                        onAction: function () {
+                            const a4WidthPx = 793.7;
+                            const a4HeightPx = 1088;
+                            const columnWidthPx = 80;
+                            const rowHeightPx = 17;
+                            const columns = Math.floor(a4WidthPx / columnWidthPx);
+                            const rows = Math.floor(a4HeightPx / rowHeightPx);
+                            let tableHtml = `<table border="0" style="width:100%; border-collapse:collapse;height:${a4HeightPx}px;max-height:${a4HeightPx}px">`;
+                            for (let r = 0; r < rows; r++) {
+                                tableHtml += '<tr>';
+                                for (let c = 0; c < columns; c++) {
+                                    tableHtml += '<td style="width:' + columnWidthPx + 'px; height:' + rowHeightPx + 'px;"><span>&nbsp;</span></td>';
+                                }
+                                tableHtml += '</tr>';
+                            }
+                            tableHtml += '</table>';
+                            editor.insertContent(tableHtml);
+                        }
+                    });
+                    editor.ui.registry.addMenuItem('Viewpdf', {
+                        text: 'View PDF',
+                        onAction: function () {
+                            var btn = self.EditForm.OpenFrom.ChildCom.find(x => x.Meta.Id == self.Entity.Id);
+                            btn.Element.click();
+                        }
+                    });
+                    editor.ui.registry.addMenuItem('Viewhistory', {
+                        text: 'View History',
+                        onAction: function () {
+                            self.RenderPopup();
+                        }
+                    });
+                }
             }
         }))[0];
     }
@@ -520,7 +601,7 @@ export class RichTextBox extends EditableComponent {
 
     UpdateView(force = false, dirty = null, ...componentNames) {
         this.Value = this.Entity[this.Meta.FieldName] || '';
-        if(this.quill){
+        if (this.quill) {
             this.quill.setContent(this.Value || '');
         }
         if (!this.Dirty) {

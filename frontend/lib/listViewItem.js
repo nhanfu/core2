@@ -206,6 +206,19 @@ export class ListViewItem extends Section {
             });
         }
     }
+
+    SetChooseCell() {
+        var entity = this.ListView.Entity;
+        if (this.ListView.Meta.IsMultiple) {
+            if (entity[this.ListView.Meta.FieldName].toString().includes(this.Entity[this.IdField].toString())) {
+                this.Element.classList.add('cell-choose');
+            }
+            else{
+                this.Element.classList.remove('cell-choose');
+            }
+        }
+    }
+
     /**@type {Checkbox} */
     Checkbox;
     masterDataComponent = ["Dropdown", "Select2", "MultipleSearchEntry", "SearchEntry"];
@@ -276,20 +289,6 @@ export class ListViewItem extends Section {
             || rowData["IsPaid"]
             || this.ListView.Disabled)) {
             com.SetDisabled(true);
-            if (this.ListView.Meta.Editable) {
-                if (rowData["IsLock"]) {
-                    cellWrapper.parentElement.parentElement.classList.add('cell-lock')
-                }
-                if (rowData["IsPayment"]) {
-                    cellWrapper.parentElement.parentElement.classList.add('cell-payment')
-                }
-                if (rowData["IsInvoice"]) {
-                    cellWrapper.parentElement.parentElement.classList.add('cell-invoice')
-                }
-                if (rowData["NoSubmit"]) {
-                    cellWrapper.parentElement.parentElement.classList.add('cell-nosubmit')
-                }
-            }
         }
         if (rowData["IsAbs"]) {
             cellWrapper.parentElement.parentElement.classList.add('cell-abs')
@@ -409,6 +408,9 @@ export class ListViewItem extends Section {
             }
             this.DispatchCustomEvent(this.Meta.Events, CustomEventType.BeforePatchUpdate, this.Entity, patchModel, this)
                 .then(() => {
+                    this.Element.classList.add("loading");
+                    this.Element.classList.remove("focus");
+                    this.Element.classList.remove("__selected__");
                     this.ShowMessage = showMessage;
                     this.ValidateAsync().then(isValid => {
                         if (!isValid) return;
@@ -471,9 +473,6 @@ export class ListViewItem extends Section {
 
     PatchUpdateCb(data) {
         if (data && data.status == 200) {
-            if (this.ShowMessage) {
-                Toast.Success("Save data success");
-            }
             this.EntityId = data.updatedItem[0][this.IdField];
             this.Dirty = false;
             this.EmptyRow = false;
@@ -483,10 +482,13 @@ export class ListViewItem extends Section {
         }
         var dataEntity = data.updatedItem[0];
         this.ListView.LoadMasterData([dataEntity]).then(() => {
-            this.Entity = dataEntity;
+            Object.assign(this.Entity, dataEntity);
             this.UpdateView(true);
             this.AfterSaved?.invoke(dataEntity);
             this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterPatchUpdate, this.Entity, this).then();
+            this.Element.classList.remove("loading");
+            this.Element.classList.add("focus");
+            this.Element.classList.add("__selected__");
         });
     }
 

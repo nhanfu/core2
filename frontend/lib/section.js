@@ -34,10 +34,6 @@ export class Section extends EditableComponent {
         if (this.Meta === null) {
             return;
         }
-        if (this.Meta.RenderItem != null) {
-            this.Meta.RenderItem({section: this});
-            return;
-        }
         if (this.Meta.ClassName?.includes("ribbon") || this.Meta.ClassName?.includes("title")) {
             this.RenderComponent2(this.Meta);
         }
@@ -170,7 +166,7 @@ export class Section extends EditableComponent {
         const ParentColumn = form ? form.GetInnerColumn(groupInfo.Parent) : 12;
         const HasOuterColumn = OuterColumn > 0 && ParentColumn > 0;
         if (HasOuterColumn) {
-            const Per = (OuterColumn / ParentColumn * 100).toFixed(2);
+            const Per = (OuterColumn / ParentColumn * 99.9).toFixed(2);
             if (!groupInfo.ItemInRow) {
                 groupInfo.ItemInRow = 2;
             }
@@ -202,7 +198,7 @@ export class Section extends EditableComponent {
             Html.Take(parent.Element);
         }
         if (groupInfo.IsDropDown) {
-            Html.Instance.Details.Summary.IText(groupInfo.Label, form.Meta.Id).End.Render();
+            Html.Instance.Details.Summary.IText(groupInfo.Label, form.Meta.Label).End.Render();
         }
         else {
             Html.Instance.Div.Render();
@@ -211,7 +207,7 @@ export class Section extends EditableComponent {
             Html.Instance.Event(EventType.ContextMenu, (e) => form.SysConfigMenu(e, null, groupInfo, null)).ClassName("section-item card").Width(width).Div.ClassName(groupInfo.ClassName ?? "");
         }
         if (groupInfo.Label && !groupInfo.IsDropDown && !groupInfo.IsTab) {
-            Html.Instance.Label.ClassName("header").IText(groupInfo.Label, form.Meta.Id).End.Render();
+            Html.Instance.Label.ClassName("header").IText(groupInfo.Label, form.Meta.Label).End.Render();
         }
         if (!groupInfo.ClassName?.includes("ribbon") && !groupInfo.IsSimple) {
             Html.Instance.ClassName("panel").ClassName("group");
@@ -244,7 +240,7 @@ export class Section extends EditableComponent {
             Html.Instance.Event(EventType.ContextMenu, (e) => form.SysConfigMenu(e, null, groupInfo, null)).ClassName("section-item card").Div.ClassName(groupInfo.ClassName ?? "");
         }
         if (groupInfo.Label && !groupInfo.IsDropDown && !groupInfo.IsTab) {
-            Html.Instance.Label.ClassName("header").IText(groupInfo.Label, form.Meta.Id).End.Render();
+            Html.Instance.Label.ClassName("header").IText(groupInfo.Label, form.Meta.Label).End.Render();
         }
         if (!groupInfo.ClassName?.includes("ribbon") && !groupInfo.IsSimple) {
             Html.Instance.ClassName("panel").ClassName("group");
@@ -704,7 +700,7 @@ export class Section extends EditableComponent {
             const colSpan = inner || 1;
             const rowSpan = ui.RowSpan || 1;
             ui.Label = ui.Label || '';
-            Html.Div.ClassName("layout-item").Style(`grid-column: span ${colSpan};grid-row: span ${rowSpan}`);
+            Html.Div.ClassName("layout-item").Style(`grid-column: span ${colSpan};grid-row: span ${rowSpan}`).Visibility(ui.Visibility);
             if (ui.ShowLabel) {
                 var required = "";
                 if (!Utils.isNullOrWhiteSpace(ui.Validation)) {
@@ -806,7 +802,7 @@ export class Section extends EditableComponent {
             var inner = this.EditForm.GetInnerColumn(ui);
             const colSpan = inner || 1;
             ui.Label = ui.Label || '';
-            Html.TData.ColSpan(colSpan);
+            Html.TData.ColSpan(colSpan).Visibility(ui.Visibility);
             if (ui.ShowLabel) {
                 Html.Instance.Div.ClassName("group-control").Style(ui.ChildStyle).Div.ClassName('header-label').IText(ui.Label, this.EditForm.Meta.Label).End.Render();
             }
@@ -816,7 +812,7 @@ export class Section extends EditableComponent {
             if (ui.Width) {
                 Html.Width(ui.Width);
             }
-            if (!Utils.isNullOrWhiteSpace(ui.GroupFormat) && ["Button", "Pdf", "Excel"].some(x => x == ui.ComponentType)) {
+            if (!Utils.isNullOrWhiteSpace(ui.GroupFormat) && ["Button", "Pdf", "Excel", "Email"].some(x => x == ui.ComponentType)) {
                 if (!lastElementButtonGroup.find(x => x.Com.GroupFormat == ui.GroupFormat)) {
                     Html.Instance.Div.ClassName("dropdown-btn")
                         .Button.ClassName(ui.ClassName).Icon("mr-1 " + ui.Icon).End.IText(ui.GroupFormat, this.EditForm.Meta.Label)
@@ -826,7 +822,7 @@ export class Section extends EditableComponent {
                 }
             }
             const childCom = ComponentFactory.GetComponent(ui, this.EditForm);
-            if (!Utils.isNullOrWhiteSpace(ui.GroupFormat) && ["Button", "Pdf", "Excel"].some(x => x == ui.ComponentType)) {
+            if (!Utils.isNullOrWhiteSpace(ui.GroupFormat) && ["Button", "Pdf", "Excel", "Email"].some(x => x == ui.ComponentType)) {
                 childCom.ParentElement = lastElementButtonGroup.find(x => x.Com.GroupFormat == ui.GroupFormat).Ele;
             }
             if (childCom === null) return;

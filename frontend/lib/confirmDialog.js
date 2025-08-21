@@ -38,6 +38,9 @@ export class ConfirmDialog extends EditableComponent {
     /** @type {Action} */
     NoConfirmed = new Action();;
     Render() {
+        if (this.Component) {
+            this.Component = JSON.parse(JSON.stringify(this.Component));
+        }
         Html.Take(this.PElement || document.body);
         Html.Div.ClassName((this.ComponentGroup ? "backdrop2" : "backdrop")).Style((this.ComponentGroup ? "" : "align-items: center;"));
         this.Element = Html.Context;
@@ -68,10 +71,15 @@ export class ConfirmDialog extends EditableComponent {
                 if (this.Component && this.Component.length > 0) {
                     this.Component.forEach(x => {
                         if (!this.ComponentGroup) {
-                            x.Column = x.Column || 12;
+                            x.Column = this.HasDispose ? 12 : x.Column || 12;
                             x.Style = null;
+                            x.DisabledExp = null;
                             x.Active = true;
+                            x.CanRead = true;
+                            x.CanReadAll = true;
                             x.Visibility = true;
+                            x.CanWrite = true;
+                            x.CanWriteAll = true;
                             x.ShowLabel = true;
                             x.FocusSearch = false;
                             x.Width = null;
@@ -88,6 +96,7 @@ export class ConfirmDialog extends EditableComponent {
                     com.CanReadAll = true;
                     com.CanWrite = true;
                     com.CanWriteAll = true;
+                    com.Visibility = true;
                     com.ShowLabel = false;
                     com.ComponentType = "Textarea";
                     com.FieldName = "ReasonOfChange";
@@ -151,7 +160,7 @@ export class ConfirmDialog extends EditableComponent {
     }
 
     Dispose() {
-        if (this.Component || this.ComponentGroup) {
+        if ((this.Component || this.ComponentGroup) && !this.HasDispose) {
             var componentIds = this.Component.map(element => element.Id || element.FieldName);
             if (componentIds.length == 0 && this.ComponentGroup && this.ComponentGroup.Components) {
                 componentIds = this.ComponentGroup.Components.map(element => element.Id || element.FieldName);
@@ -160,7 +169,7 @@ export class ConfirmDialog extends EditableComponent {
                 componentIds = this.ComponentGroup.Children.flatMap(x => x.Components).map(element => element.Id || element.FieldName);
             }
             if (componentIds && componentIds.length > 0) {
-                var realComs = this.EditForm.ChildCom.filter(child => componentIds.includes(child.Meta.Id || child.Meta.FieldName))
+                var realComs = this.EditForm.ChildCom.filter(child => componentIds.includes(child.Meta.Id || child.Meta.FieldName) && child.Parent.Meta.IsSimple)
                 realComs.forEach(x => x.Dispose());
             }
         }
@@ -171,7 +180,7 @@ export class ConfirmDialog extends EditableComponent {
         if (this.Canceled) {
             this.Canceled();
         }
-        if (this.Component || this.ComponentGroup) {
+        if ((this.Component || this.ComponentGroup) && !this.HasDispose) {
             var componentIds = this.Component.map(element => element.Id || element.FieldName);
             if (componentIds.length == 0 && this.ComponentGroup && this.ComponentGroup.Components) {
                 componentIds = this.ComponentGroup.Components.map(element => element.Id || element.FieldName);
@@ -180,7 +189,7 @@ export class ConfirmDialog extends EditableComponent {
                 componentIds = this.ComponentGroup.Children.flatMap(x => x.Components).map(element => element.Id || element.FieldName);
             }
             if (componentIds && componentIds.length > 0) {
-                var realComs = this.EditForm.ChildCom.filter(child => componentIds.includes(child.Meta.Id || child.Meta.FieldName))
+                var realComs = this.EditForm.ChildCom.filter(child => componentIds.includes(child.Meta.Id || child.Meta.FieldName) && child.Parent.Meta.IsSimple)
                 realComs.forEach(x => x.Dispose());
             }
         }

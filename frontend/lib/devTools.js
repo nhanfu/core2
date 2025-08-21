@@ -587,6 +587,7 @@ export class DevTools extends EditableComponent {
                             { Field: "Id", Value: header.Meta.Id },
                             { Field: "FeatureId", Value: header.Meta.FeatureId },
                             { Field: "Frozen", Value: header.Meta.Frozen },
+                            { Field: "FrozenRight", Value: header.Meta.Frozen },
                             Utils.isNullOrWhiteSpace(header.GroupName) ? { Field: "Width", Value: width } : { Field: "Width", Value: header.Meta.Width },
                             Utils.isNullOrWhiteSpace(header.GroupName) ? { Field: "MaxWidth", Value: width } : { Field: "MaxWidth", Value: header.Meta.MaxWidth },
                             Utils.isNullOrWhiteSpace(header.GroupName) ? { Field: "MinWidth", Value: width } : { Field: "MinWidth", Value: header.Meta.MinWidth },

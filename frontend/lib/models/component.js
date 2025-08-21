@@ -100,7 +100,7 @@ export class Component {
     IsPrivate = false;
     /** @type {number} */
     MonthCount = 0;
-    /** @type {string | any} */
+    /** @type {string} */
     Query = null;
     /** @type {boolean} */
     IsRealtime = false;
@@ -112,10 +112,6 @@ export class Component {
     IsCollapsible = false;
     /** @type {string} */
     Template = null;
-    /** @type {Function} */
-    RenderHeader = null;
-    /** @type {Function} */
-    RenderItem = null;
     /** @type {string} */
     PreQuery = null;
     /** @type {string} */
@@ -190,6 +186,8 @@ export class Component {
     HasFilter = false;
     /** @type {boolean} */
     Frozen = false;
+    /** @type {boolean} */
+    FrozenRight = false;
     /** @type {string} */
     FilterTemplate = null;
     /** @type {boolean} */
@@ -274,9 +272,6 @@ export class Component {
     RowSpan;
     /** @type {string} */
     ComponentDefaultValueId;
-    Actions;
-    LocalData;
-    ApiEndpoint;
     /** @type {string} */
     GroupTypeId;
     CanRead = false;

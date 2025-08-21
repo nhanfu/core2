@@ -35,7 +35,7 @@ export class GridViewItem extends ListViewItem {
         if (header && header.ComponentType == "Number") {
             header.TextAlign = "right";
         }
-        Html.Take(this.Element).TData.TabIndex(-1).DataAttr("field", header.FieldName || "NonField").TextAlign(header.TextAlign || 'left').Event("focusin", (e) => this.FocusCell(e, header));;
+        Html.Take(this.Element).TData.Attr("component", header.ComponentType || "Number").TabIndex(-1).DataAttr("field", header.FieldName || "NonField").TextAlign(header.TextAlign || 'left').Event("focusin", (e) => this.FocusCell(e, header));;
         if (header.StatusBar && this.Meta.ShowHotKey) {
             Html.Instance.ClassName("status-bar");
         }
@@ -79,7 +79,7 @@ export class GridViewItem extends ListViewItem {
         if (header.ComponentType == "Checkbox") {
             Html.Instance.Style("justify-content: center;");
         }
-        header.FocusSearch = true;
+        header.FocusSearch = !header.IsMultiple;
         super.RenderTableCell(rowData, header, cellWrapper ?? Html.Context);
         Html.Instance.EndOf(ElementType.td);
     }

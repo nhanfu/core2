@@ -67,6 +67,9 @@ export class Chat extends EditableComponent {
             this.UpdateData().then(() => {
                 this.RenderBodyDiscussions();
             });
+            window.setTimeout(() => {
+                this.updateBadge();
+            }, 500);
             return;
         }
         const message = data.Message;
@@ -89,6 +92,9 @@ export class Chat extends EditableComponent {
         this.UpdateData().then(() => {
             this.RenderBodyDiscussions();
         });
+        window.setTimeout(() => {
+            this.updateBadge();
+        }, 500);
     }
 
     AddMessageToDOM(item) {
@@ -128,6 +134,7 @@ export class Chat extends EditableComponent {
         this.RunQuerys().then(data => {
             this.ChatData = data[0];
             this.Conversation = data[1];
+            this.Users = data[2];
             this.RenderDiscussions();
             this.RenderChat();
         })
@@ -213,7 +220,7 @@ export class Chat extends EditableComponent {
         this.HtmlHeaderChat = Html.Context;
         Html.Instance.Div.ClassName("name2").Style("width: 100%; display: flex ; align-items: center; gap: 10px;").Span.IText(this.Entity.Label)
         this.FeatureText = Html.Context;
-        Html.Instance.End.Span.Text(" : ").End.A.Style("color:#fff").ClassName("mr-1").Event(EventType.Click, this.OpenPopup.bind(this)).Text(this.Entity.FormatChat);
+        Html.Instance.End.Span.Text(" : ").End.A.Style("color:#fff").ClassName("mr-1").Event(EventType.Click, this.OpenPopup.bind(this)).Text(this.Entity.FormatChat ? this.Entity.FormatChat.replaceAll("<br>", "") : "");
         this.TitleText = Html.Context;
         Html.Instance.End.Span.ClassName("d-flex").Render();
         this.UserElement = Html.Context;
@@ -452,6 +459,11 @@ export class Chat extends EditableComponent {
         Spinner.Hide();
     }
 
+    async updateBadge() {
+        const response = await Client.Instance.PostAsync(null, "/api/ChatBadge");
+        document.querySelector("#badgeMessage").textContent = response > 0 ? response.toString() : "";
+    };
+
     /**
      * @param {File} file
      */
@@ -483,11 +495,11 @@ export class Chat extends EditableComponent {
 
     UpdateView(force = false, dirty = null, ...componentNames) {
         this.UpdateData().then(() => {
-            this.Title = this.Entity.FormatChat;
+            this.Title = this.Entity.FormatChat ? this.Entity.FormatChat.replaceAll("<br>", "") : "";
             this.RenderBodyDiscussions();
             if (force) {
                 this.RenderBodyChat();
-                Html.Take(this.TitleText).Clear().Text(this.Entity.FormatChat);
+                Html.Take(this.TitleText).Clear().Text(this.Entity.FormatChat ? this.Entity.FormatChat.replaceAll("<br>", "") : "");
                 Html.Take(this.FeatureText).Clear().IText(this.Entity.Label);
                 this.RenderUsers();
             }
@@ -501,7 +513,7 @@ export class Chat extends EditableComponent {
                 .Div.ClassName("photo").Style("background-image: url(" + item.Icon + ");").End
                 .Div.ClassName("desc-contact")
                 .Span.ClassName("name").IText(item.Label).End
-                .Span.ClassName("description").Text(item.FormatChat).End
+                .Span.ClassName("description").Text(item.FormatChat ? item.FormatChat.replaceAll("<br>", "") : "").End
                 .P.ClassName("message").InnerHTML(item.Message).End
                 .P.ClassName("message").InnerHTML(item.Time).End.End
                 .End.Render();
@@ -524,7 +536,7 @@ export class Chat extends EditableComponent {
                 Field: "Read",
                 Value: "1",
             }];
-            Client.Instance.PatchAsync(patch).then(() => {
+            Client.Instance.PatchAsync(patch).then(async () => {
                 this.Element.querySelectorAll(".discussion").forEach(x => x.classList.remove("message-active"));
                 e.target.closest(".discussion").classList.add("message-active");
                 this.Entity = item;
@@ -532,6 +544,7 @@ export class Chat extends EditableComponent {
                 this.UpdateView(true);
                 var evt = "UpdateViewEntity" + this.Entity.Id.replaceAll("-", "");
                 EditForm.NotificationClient.AddListener(evt, this.HandleMessage.bind(this));
+                await this.updateBadge();
             });
         }
         else {
@@ -542,6 +555,7 @@ export class Chat extends EditableComponent {
             this.UpdateView(true);
             var evt = "UpdateViewEntity" + this.Entity.Id.replaceAll("-", "");
             EditForm.NotificationClient.AddListener(evt, this.HandleMessage.bind(this));
+            this.updateBadge();
         }
     }
 
@@ -594,6 +608,9 @@ export class Chat extends EditableComponent {
             Value: this.Entity.EntityId,
         }];
         Client.Instance.PatchAsync(patch).then();
+        window.setTimeout(() => {
+            this.updateBadge();
+        }, 500);
     }
 
     async HandlePaste(event) {

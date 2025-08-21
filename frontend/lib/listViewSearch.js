@@ -17,6 +17,7 @@ import { SearchEntry } from './searchEntry.js';
 import { SearchMethodEnum, Where } from './models/enum.js';
 import { Checkbox } from './checkbox.js';
 import { Select } from "./select.js";
+import { Spinner } from './spinner.js';
 /**
  * @typedef {import('./models/component.js').Component} Component
  * @typedef {import('./listView.js').ListView} ListView
@@ -112,6 +113,18 @@ export class ListViewSearch extends EditableComponent {
 
     Render() {
         if (!this.Meta.CanSearch) {
+            var coms = this.EditForm.Meta.ComponentOptions && this.EditForm.Meta.ComponentOptions.filter(x => x.ComponentId == this.Meta.Id);
+            if (coms && coms.length > 0) {
+                Html.Take(this.Parent.Element.firstChild.firstChild).TabIndex(-1).Event(EventType.KeyPress, this.EnterSearch.bind(this));
+                this.Element = Html.Context;
+                Html.Take(this.Element).Div.ClassName('searching-block')
+                    .Button.ClassName("btn btn-light btn-sm mr-1").Event(EventType.Click, (e) => {
+                        this.ExcelOptions(e, 1);
+                    }).Icon('fal fa-file-excel mr-1').End.End
+                    .Button.ClassName("btn btn-light btn-sm").Event(EventType.Click, (e) => {
+                        this.ExcelOptions(e, 2);
+                    }).Icon('fal fal fa-print mr-1').End.End.Render();
+            }
             return;
         }
         // @ts-ignore
@@ -171,47 +184,15 @@ export class ListViewSearch extends EditableComponent {
             .End.End
             .Button.ClassName("btn btn-light btn-sm mr-1").Event(EventType.Click, this.RefreshListView.bind(this)).Icon('fal fa-undo').End.End
             .Render();
-        this.BasicSearch = this.Parent.EditForm.Meta.GridPolicies.filter(x => x.EntityId == this.Parent.Meta.FieldName).filter(x => x.Active && x.BasicSearch).sort((a, b) => b.Order - a.Order);
-        if (this.BasicSearch.length === 0) {
-            return;
+        var coms = this.EditForm.Meta.ComponentOptions && this.EditForm.Meta.ComponentOptions.filter(x => x.ComponentId == this.Meta.Id);
+        if (coms && coms.length > 0) {
+            Html.Button.ClassName("btn btn-light btn-sm mr-1").Event(EventType.Click, (e) => {
+                this.ExcelOptions(e, 1);
+            }).Icon('fal fa-file-excel mr-1').End.End
+                .Button.ClassName("btn btn-light btn-sm").Event(EventType.Click, (e) => {
+                    this.ExcelOptions(e, 2);
+                }).Icon('fal fal fa-print mr-1').End.End.Render();
         }
-        Html.Take(this.Element);
-        var components = this.BasicSearch.map(header => {
-            this.Parent.AdvSearchVM.Conditions.push({
-                FieldId: header.FieldName,
-                CompareOperatorId: OperatorEnum.In,
-                LogicOperatorId: LogicOperation.And,
-                Field: header
-            });
-            return {
-                ShowLabel: false,
-                Id: header.Id,
-                FieldName: header.FieldName,
-                ComponentType: header.ComponentType,
-                FormatData: header.FormatData,
-                Query: header.Query,
-                PreQuery: header.PreQuery,
-                PlainText: header.Label,
-                Visibility: true,
-                Template: header.Template,
-                BasicSearch: true,
-                Column: 1
-            };
-        });
-        var sectionInfo = {
-            Components: components,
-            Column: components.length,
-            IsSimple: true,
-            ClassName: 'wrapper'
-        };
-        var _basicSearchGroup = Section.RenderSection(this, sectionInfo);
-        _basicSearchGroup.Children.forEach(child => {
-            child.UserInput.add(changes => {
-                var condition = this.Parent.AdvSearchVM.Conditions.find(x => x.Field.FieldName === child.Meta.FieldName);
-                condition.Value = child.FieldVal?.toString();
-            });
-        });
-        this.Element.insertBefore(_basicSearchGroup.Element, this.Element.firstChild);
     }
 
     RefreshListView() {
@@ -223,13 +204,45 @@ export class ListViewSearch extends EditableComponent {
         if (!(this.Parent)) {
             return;
         }
-
         const listView = this.Parent;
         listView.ClearSelected();
         listView.CellSelected = [];
         listView.AdvSearchVM.Conditions = [];
         listView.AdvSearchVM.AdvSearchConditions = [];
         listView.Wheres = [];
+        let newVM = { ...this.EntityVM };
+        Object.keys(newVM).forEach(key => {
+            newVM[key] = null;
+        });
+        this.Entity = newVM;
+        this.Parent.SearchSection.Children.forEach(x => x.IsOrderBy = false);
+        this.Parent.SearchSection.Children.forEach(txtSearch => {
+            txtSearch.Entity = this.Entity;
+            switch (txtSearch.Meta.ComponentType) {
+                case "Dropdown":
+                case "Input":
+                    txtSearch.SearchIcon = "fal fa-search";
+                    txtSearch.SearchMethod = SearchMethodEnum.Contain;
+                    txtSearch.OrderMethod = "asc";
+                    txtSearch.IsOrderBy = false;
+                    txtSearch.Entity = this.ListViewSearch.EntityVM;
+                    break;
+                case "Datepicker":
+                    txtSearch.SearchMethod = SearchMethodEnum.Range;
+                    txtSearch.OrderMethod = "asc";
+                    txtSearch.SearchIcon = "fal fa-arrows-alt-h";
+                    txtSearch.Entity = this.ListViewSearch.EntityVM;
+                    break;
+                case "Checkbox":
+                    txtSearch.SearchMethod = SearchMethodEnum.Contain;
+                    break;
+                default:
+                    txtSearch.SearchMethod = SearchMethodEnum.Contain;
+                    break;
+            }
+            txtSearch.SearchIconElement.className = txtSearch.SearchIcon || txtSearch.SearchIconElement.className;
+            txtSearch.UpdateView();
+        });
         listView.ApplyFilter();
     }
 
@@ -320,6 +333,397 @@ export class ListViewSearch extends EditableComponent {
             Toast.Warning(error.Message);
             this._uploader.value = '';
         });
+    }
+
+    /**
+     * @param {Event} e
+     */
+    ExcelOptions(e, type) {
+        /** @type {HTMLElement} */
+        const ele = e.target;
+        var buttonRect = ele.getBoundingClientRect();
+        var ctxMenu = ContextMenu.Instance;
+        ctxMenu.Top = buttonRect.bottom;
+        ctxMenu.Left = buttonRect.left;
+        ctxMenu.EditForm = this.EditForm;
+        var coms = this.EditForm.Meta.ComponentOptions.filter(x => x.ComponentId == this.Meta.Id && x.TypeId == type);
+        if (coms) {
+            ctxMenu.MenuItems = coms.map(x => ({
+                Icon: 'fa fa-download mr-1',
+                Text: x.Title || 'Dowload',
+                Click: this.DispatchClickAsync.bind(this, x)
+            }));
+        }
+        ctxMenu.Render();
+    }
+    MetaData;
+    DispatchClickAsync(meta) {
+        this.MetaData = meta;
+        Spinner.AppendTo();
+        this.LoadData(meta).then(response => {
+            Spinner.Hide();
+            if (Utils.IsPath(response)) {
+                const pdfUrl = response;
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = pdfUrl;
+                a.download = this.Meta.PlainText || 'output.xlsx';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }
+            else {
+                const handlerClose = this.ClosePreview.bind(this);
+                const handlerPrint = this.PrintPdf.bind(this);
+                const handlerPdf = this.ExportPdf.bind(this);
+                const handlerSendMail = this.SendMail.bind(this);
+                Html.Take(this.TabEditor?.Element ?? document.body).Div.ClassName("backdrop").Style("align-items: center;");
+                this.Preview = Html.Context;
+                Html.Instance.Div.Escape(handlerClose).ClassName("popup-content");
+                this.PopupContent = Html.Context;
+                Html.Instance.Div.ClassName("popup-title").Span.IText(this.Meta.PlainText || "Report PDF", this.EditForm.Meta.Label);
+                this.TitleElement = Html.Context;
+                Html.Instance.End.Div.ClassName("title-center");
+                this.TitleCenterElement = Html.Context;
+                Html.Instance.End.Div.ClassName("icon-box d-flex").Style("display: flex; gap: 20px; align-items: center;")
+                    .Span.ClassName("fal fa-at").Event("click", handlerSendMail).End
+                    .Span.ClassName("fal fa-file-pdf").Event("click", handlerPdf).End
+                    .Span.ClassName("fal fa-print").Event("click", handlerPrint).End
+                    .Span.ClassName("fa fa-times").Event("click", handlerClose).End.End.End.Div.ClassName("popup-body scroll-content").Style("padding-bottom: 1rem;max-height:calc(100vh - 10rem) !important;display: flex; align-items: center;background-color:#525659");
+                var width = "794px";
+                switch (this.Meta.ReportTypeId) {
+                    case 1: // A4 Portrait
+                        width = "794px";
+                        break;
+                    case 2: // A4 Landscape
+                        width = "1123px";
+                        break;
+                    case 3: // A5 Portrait
+                        width = "559px";
+                        break;
+                    case 4: // A5 Landscape
+                        width = "794px";
+                        break;
+                    default:
+                        width = "794px"; // fallback
+                }
+                Html.Instance.Iframe.ClassName("container-rpt").Style("margin:auto;background:#fff;overflow: auto;min-height:calc(-13rem + 100vh);").Width(width);
+                this.IFrameElement = Html.Context;
+                var css = document.createElement('style');
+                css.textContent = `body {
+                                        font-family: 'Montserrat';
+                                        font-size: 10pt;
+                                    }
+    
+                                    * {
+                                        margin: 0;
+                                        padding: 0;
+                                        box-sizing: border-box;
+                                    }
+    
+                                    table {
+                                        font-size: unset;
+                                    }
+    
+                                    table > tr > td {
+                                        vertical-align: top;
+                                    }
+    
+                                    td>span,
+                                    td>p,
+                                    td>div,
+                                    td>strong {
+                                        padding-left: 2px;
+                                        vertical-align: top;
+                                        white-space: pre-wrap;
+                                    }
+    
+                                    .logo {
+                                        width: 100%;
+                                        height: 100%;
+                                    }
+    
+                                    .dashed tbody tr:not(:last-child) td {
+                                        border-bottom: 0.01px dashed rgb(126, 140, 141) !important;
+                                    }
+                                        
+                                    .a4 {
+                                        display: flex;
+                                        justify-content: center;
+                                        width:206mm;
+                                    }
+                                    .header, .footer {
+                                        width: 100%;
+                                        background: white;
+                                        text-align: center;
+                                    }
+                                    .header { top: 0; left: 0; }
+                                    .footer { position: fixed;bottom: 0; left: 0; }`;
+                var link = document.createElement('link');
+                link.rel = "stylesheet";
+                link.href = "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap";
+                if (this.IFrameElement.onload) {
+                    this.IFrameElement.onload = () => {
+                        this.IFrameElement.contentWindow.document.head.appendChild(link);
+                        this.IFrameElement.contentWindow.document.head.appendChild(css);
+                        const iframeDoc = this.IFrameElement.contentWindow.document;
+                        iframeDoc.body.innerHTML = response;
+                    };
+                }
+                else {
+                    this.IFrameElement.contentWindow.document.head.appendChild(link);
+                    this.IFrameElement.contentWindow.document.head.appendChild(css);
+                    this.IFrameElement.contentWindow.document.body.innerHTML = response;
+                }
+            }
+
+        });
+    }
+
+    /**
+    @type {HTMLIFrameElement}
+    */
+    IFrameElement
+    /**
+     * Closes the preview.
+     */
+    ClosePreview() {
+        this.Preview.remove();
+    }
+
+    PrintPdf() {
+        this.IFrameElement.contentWindow.print();
+    }
+
+    ExportPdf() {
+        Spinner.AppendTo();
+        Client.Instance.PostAsync({ Html: this.IFrameElement.contentWindow.document.documentElement.outerHTML, FileName: this.MetaData.FileName }, "/api/GenPdf").then(response => {
+            Spinner.Hide();
+            Client.Download(response);
+        });
+    }
+
+    async SendMail() {
+        var planEmail = await Client.Instance.GetService("Get PlanEmail");
+        var partner = await Client.Instance.GetService("Get Partner");
+        var com1 = planEmail[0][0];
+        com1.ComponentType = "Dropdown";
+        com1.ShowLabel = true;
+        com1.FieldName = "PdfPlanEmailId";
+        com1.Label = "Template mail";
+        com1.Template = `[
+                {
+                    "FieldName": "Name",
+                    "Label": "Name",
+                    "ComponentType": "Input"
+                }
+            ]`;
+        com1.Column = 6;
+        com1.Events = `{"change":"UpdateEmailTemplate"}`;
+        var com2 = partner[0][0];
+        com2.ComponentType = "Dropdown";
+        com2.ShowLabel = true;
+        com2.Column = 6;
+        com2.Label = "Partner";
+        com2.FieldName = "PdfPartnerId";
+        com2.Events = `{"change":"UpdateEmailTo"}`;
+        com2.Template = `[
+                    {
+                        "FieldName": "Name",
+                        "Label": "Name",
+                        "ComponentType": "Input",
+                        "MaxWidth": "300px",
+                        "MinWidth": "300px",
+                        "Width": "300px"
+                    },
+                    {
+                        "FieldName": "TaxCode",
+                        "Label": "TaxCode",
+                        "ComponentType": "Input"
+                    },
+                    {
+                        "FieldName": "Email",
+                        "Label": "Email",
+                        "ComponentType": "Input"
+                    }
+                ]`;
+        this.EditForm.OpenConfig("Choose mail template!", async () => {
+            await this.createEMLFromFileUrl();
+        }, () => { }, true, [com2, com1, { FieldName: "PdfToEmail", Label: "Send To", ComponentType: "Input", Column: 6 }, { FieldName: "PdfToName", Label: "To Name", ComponentType: "Input", Column: 6 }, { FieldName: "PdfSubjectMail", Label: "Subject", ComponentType: "Input", Column: 12 }, { FieldName: "PdfTemplate", Label: "Template", ComponentType: "Word", Precision: 400 }], null, null, "824px");
+    }
+
+    inlineAllStyles(html) {
+        return new Promise((resolve) => {
+            const iframe = document.createElement("iframe");
+            iframe.style.display = "none";
+            document.body.appendChild(iframe);
+
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+            // Gán trực tiếp vào <html> thay vì dùng .write()
+            iframe.onload = () => {
+                iframeDoc.documentElement.innerHTML = html;
+
+                const styles = [];
+
+                for (const sheet of iframeDoc.styleSheets) {
+                    try {
+                        for (const rule of sheet.cssRules) {
+                            styles.push(rule);
+                        }
+                    } catch (e) {
+                        console.warn("Không thể truy cập stylesheet:", e);
+                    }
+                }
+
+                styles.forEach(rule => {
+                    if (!rule.selectorText || !rule.style) return;
+
+                    const elements = iframeDoc.querySelectorAll(rule.selectorText);
+                    elements.forEach(el => {
+                        for (const prop of rule.style) {
+                            const value = rule.style.getPropertyValue(prop);
+                            const priority = rule.style.getPropertyPriority(prop);
+                            el.style.setProperty(prop, value, priority);
+                        }
+                    });
+                });
+
+                const allElements = iframeDoc.querySelectorAll('*');
+                allElements.forEach(el => el.removeAttribute('class'));
+
+                const resultHtml = iframeDoc.documentElement.outerHTML;
+                document.body.removeChild(iframe);
+                resolve(resultHtml);
+            };
+
+            // Gán srcdoc để trigger iframe.onload
+            iframe.srcdoc = html;
+        });
+    }
+
+    async createEMLFromFileUrl() {
+        Spinner.AppendTo();
+        Client.Instance.PostAsync({ Html: this.IFrameElement.contentWindow.document.documentElement.outerHTML, FileName: this.Entity.FormatChat || this.Entity.Code || this.Entity.Id }, "/api/GenPdf").then(async (response2) => {
+            Spinner.Hide();
+            const removePath = Client.RemoveGuid(response2);
+            const fileUrl = response2;
+            const fileName = removePath;
+            const subject = this.EditForm.Entity.PdfSubjectMail || '';
+            const htmlBody = this.EditForm.Entity.PdfTemplate || '';
+            const toEmail = this.EditForm.Entity.PdfToEmail || '';
+            const toName = this.EditForm.Entity.PdfToName || this.EditForm.Entity.PdfPartnerIdText;
+            var styledHtml = `
+            <html>
+            <head>
+                <meta charset="utf-8" />
+                <style>
+                    body { font-size: 10pt; padding: 0 5px; max-width: 816px; }
+                    * { margin: 0; padding: 0; box-sizing: border-box; }
+                    table { border-collapse: collapse; }
+                    table > tr > td { vertical-align: top; }
+                    td>span, td>p, td>div, td>strong {
+                        padding-left: 2px;
+                        vertical-align: top;
+                        white-space: pre-wrap;
+                    }
+                    .logo { width: 100%; height: 100%; }
+                    .dashed tbody tr:not(:last-child) td {
+                                        border-bottom: 0.01px dashed rgb(126, 140, 141) !important;
+                                    }
+                    .a4 { display: flex; justify-content: center; width:206mm;}
+                    .header, .footer { width: 100%; background: white; text-align: center; }
+                    .header { top: 0; left: 0; }
+                    .footer { position: fixed; bottom: 0; left: 0; }
+                </style>
+            </head>
+            <body>${htmlBody}</body>
+            </html>`;
+            if (!htmlBody) {
+                styledHtml = this.IFrameElement.contentWindow.document.documentElement.outerHTML;
+            }
+            const htmlWithInline = await this.inlineAllStyles(styledHtml);
+            try {
+                if (htmlBody) {
+                    const response = await fetch(fileUrl);
+                    const blob = await response.blob();
+                    const base64Content = await this.blobToBase64(blob);
+                    const base64Split = base64Content.match(/.{1,76}/g).join("\r\n");
+                    const eml = `To: ${toName} <${toEmail}>
+    Subject: ${subject}
+    X-Unsent: 1
+    Content-Type: multipart/mixed; boundary=--boundary_text_string
+    
+    ----boundary_text_string
+    Content-Type: text/html; charset=UTF-8
+    
+    ${htmlWithInline}
+    
+    ----boundary_text_string
+    Content-Type: application/octet-stream; name=${fileName}
+    Content-Transfer-Encoding: base64
+    Content-Disposition: attachment
+    
+    ${base64Split}
+    
+    ----boundary_text_string--`;
+
+                    const emlBlob = new Blob([eml], { type: "message/rfc822" });
+                    const a = document.createElement("a");
+                    a.href = URL.createObjectURL(emlBlob);
+                    a.download = removePath.replaceAll("pdf", "eml");
+                    a.click();
+                }
+                else {
+                    const eml = `To: ${toName} <${toEmail}>
+    Subject: ${subject}
+    X-Unsent: 1
+    Content-Type: multipart/mixed; boundary=--boundary_text_string
+    
+    ----boundary_text_string
+    Content-Type: text/html; charset=UTF-8
+    
+    ${htmlWithInline}
+    
+    ----boundary_text_string--`;
+
+                    const emlBlob = new Blob([eml], { type: "message/rfc822" });
+                    const a = document.createElement("a");
+                    a.href = URL.createObjectURL(emlBlob);
+                    a.download = removePath.replaceAll("pdf", "eml");
+                    a.click();
+                }
+
+            } catch (err) {
+                console.error("Lỗi khi tạo EML:", err);
+            }
+        });
+    }
+
+    blobToBase64(blob) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64 = reader.result.split(',')[1];
+                resolve(base64);
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
+    }
+
+    LoadData(meta) {
+        let submitEntity = Utils.IsFunction(this.Meta.PreQuery, true, this);
+        var params = submitEntity ? JSON.stringify(submitEntity) : null;
+        let promise = new Promise((resolve, reject) => {
+            Client.Instance.PostAsync({ ComId: this.Meta.Id, PathTemplate: meta.TypeId == 1 ? meta.ExcelUrl : meta.Template, FileName: meta.FileName, Params: params, Report: true }, meta.TypeId == 1 ? "/api/CreateExcel" : "/api/CreateHtml").then(res => {
+                resolve(res);
+            }).catch(e => {
+                Spinner.Hide();
+                Toast.Warning(e.Message);
+            });
+        });
+        return promise;
     }
 
     /**

@@ -6,6 +6,7 @@ import { Html } from './utils/html.js';
 import { Component } from './models/component.js';
 import Decimal from 'decimal.js';
 import { LangSelect } from './utils/langSelect.js';
+import { KeyCodeEnum } from './models/enum.js';
 
 export class Numbox extends EditableComponent {
     /**
@@ -98,6 +99,9 @@ export class Numbox extends EditableComponent {
         if (this._input.value == "-") {
             return;
         }
+        if (this._input.value.startsWith("=")) {
+            return;
+        }
         if (Utils.isNullOrWhiteSpace(this._input.value)) {
             this.Value = null;
             this.DispatchEvent(this.Meta.Events, EventType.Input, this, this.Entity, this._value, oldVal).then();
@@ -147,6 +151,50 @@ export class Numbox extends EditableComponent {
         this.Value = this._value;
         window.setTimeout(() => Utils.IsFunction(this.Meta.Renderer), 100);
         this.DOMContentLoaded?.invoke();
+    }
+
+    KeydownHandler(e) {
+        let code = e.KeyCodeEnum();
+        switch (code) {
+            case KeyCodeEnum.Enter:
+                e.preventDefault();
+                if (this._input.value.startsWith("=")) {
+                    this._input.value = Utils.IsFunction("return " + this._input.value.substring(1), false, this);
+                    this.SetValue();
+                }
+                else {
+                    if (!this.Parent.IsListViewItem) {
+                        if (!Utils.isNullOrWhiteSpace(this.Meta.GroupBy)) {
+                            var groups = this.EditForm.ChildCom.filter(x => x.Meta.GroupBy == this.Meta.GroupBy);
+                            var index = groups.indexOf(this);
+                            if (groups[index + 1]) {
+                                groups[index + 1].Focus();
+                            }
+                            else {
+                                var groupIndex = this.Parent.Parent.Children.indexOf(this.Parent);
+                                if (this.Parent.Parent.Children[groupIndex + 1] && this.Parent.Parent.Children[groupIndex + 1].Children[0]) {
+                                    this.Parent.Parent.Children[groupIndex + 1].Children[0].Focus();
+                                }
+                            }
+                        }
+                        else {
+                            var index = this.Parent.Children.indexOf(this);
+                            if (this.Parent.Children[index + 1]) {
+                                this.Parent.Children[index + 1].Focus();
+                            }
+                            else {
+                                var groupIndex = this.Parent.Parent.Children.indexOf(this.Parent);
+                                if (this.Parent.Parent.Children[groupIndex + 1] && this.Parent.Parent.Children[groupIndex + 1].Children[0]) {
+                                    this.Parent.Parent.Children[groupIndex + 1].Children[0].Focus();
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     IsNullable() {

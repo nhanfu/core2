@@ -431,7 +431,7 @@ export class Utils {
 
     // Helper functions
     static isNullOrWhiteSpace(str) {
-        return !str || str.trim() === '' || str.trim() === null;
+        return !str || str?.toString().trim() === '' || str?.toString().trim() === null;
     }
 
     static getFunction(str) {
@@ -564,6 +564,11 @@ export class Utils {
 
     static IsImage(path) {
         const imgExt = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp'];
+        return imgExt.some(x => path.toLowerCase().includes(x));
+    }
+
+    static IsPath(path) {
+        const imgExt = ['http'];
         return imgExt.some(x => path.toLowerCase().includes(x));
     }
 

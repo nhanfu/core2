@@ -81,14 +81,10 @@ export class Client {
         localStorage.setItem('UserInfo', JSON.stringify(value));
     }
     static get SystemRole() {
-        return Client.Token 
-            ? Client.Token.RoleNames.some(x => x.toLowerCase() == "admin")
-            : false;
+        return Client.Token.RoleNames.some(x => x.toLowerCase() == "admin");
     }
     static get BodRole() {
-        return Client.Token 
-            ? Client.Token.RoleNames.some(x => x.toLowerCase() == "bod")
-            : false;
+        return Client.Token.RoleNames.some(x => x.toLowerCase() == "bod");
     }
     /**
      * @param {SqlViewModel} vm
@@ -131,7 +127,7 @@ export class Client {
             "User-Agent": "Mozilla/5.0"
         };
 
-        const url = (options.ApiEndpoint ?? Client.api) + (options.FinalUrl ?? options.Url ?? '');
+        const url = Client.api + (options.FinalUrl ?? options.Url);
 
         try {
             const response = await fetch(url, {
@@ -144,10 +140,16 @@ export class Client {
                 const error = await response.json();
                 return Promise.reject(error);
             }
-
-            return response.headers.get("content-type")?.includes("application/json")
-                ? response.json()
-                : response.text();
+            const contentType = response.headers.get("Content-Type") || "";
+            const disposition = response.headers.get("Content-Disposition") || "";
+            if (contentType.includes("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
+                const blob = await response.blob();
+                return blob;
+            } else {
+                return response.headers.get("content-type")?.includes("application/json")
+                    ? response.json()
+                    : response.text();
+            }
         } catch (error) {
             return Promise.reject(error);
         }

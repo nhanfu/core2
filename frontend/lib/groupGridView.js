@@ -109,7 +109,7 @@ export class GroupGridView extends GridView {
             Html.Instance.InnerHTML(groupText);
             Html.Instance.EndOf(ElementType.td);
             this.Header.slice(2).forEach(item => {
-                Html.Instance.TData.ClassName("data-summary").Style("font-weight:600");
+                Html.Instance.TData.Attr("component", "Number").ClassName("data-summary").Style("font-weight:600");
                 var sec = new Section(null, Html.Context);
                 sec.Meta = item;
                 groupSection.AddChild(sec);
@@ -167,7 +167,7 @@ export class GroupGridView extends GridView {
             Html.Instance.InnerHTML(groupText);
             Html.Instance.EndOf(ElementType.td);
             this.Header.slice(2).forEach(item => {
-                Html.Instance.TData.ClassName("data-summary").Style("font-weight:600");
+                Html.Instance.TData.Attr("component", "Number").ClassName("data-summary").Style("font-weight:600");
                 var sec = new Section(null, Html.Context);
                 sec.Meta = item;
                 groupSection.AddChild(sec);
@@ -222,7 +222,7 @@ export class GroupGridView extends GridView {
             Html.Instance.Event(EventType.Click, () => groupSection.ShowChildren = !groupSection.ShowChildren)
             Html.Instance.EndOf(ElementType.td);
             this.Header.slice(2).forEach(item => {
-                Html.Instance.TData.DataAttr("field", item.FieldName).TabIndex(-1).Event(EventType.Click, () => groupSection.ShowChildren = !groupSection.ShowChildren).ClassName("data-summary").Style("font-weight:600");
+                Html.Instance.TData.Attr("component", "Number").DataAttr("field", item.FieldName).TabIndex(-1).Event(EventType.Click, () => groupSection.ShowChildren = !groupSection.ShowChildren).ClassName("data-summary").Style("font-weight:600");
                 var sec = new Section(null, Html.Context);
                 sec.Meta = item;
                 groupSection.AddChild(sec);
@@ -234,7 +234,7 @@ export class GroupGridView extends GridView {
             groupSection.Chevron = Html.Context;
             Html.Instance.End.EndOf(ElementType.td)
             this.Header.slice(1).forEach(item => {
-                Html.Instance.TData.TabIndex(-1).Event(EventType.Click, () => groupSection.ShowChildren = !groupSection.ShowChildren).ClassName("data-group");
+                Html.Instance.TData.Attr("component", "Number").TabIndex(-1).Event(EventType.Click, () => groupSection.ShowChildren = !groupSection.ShowChildren).ClassName("data-group");
                 groupSection.RenderTableCell(groupSection.Entity, item);
                 Html.Instance.EndOf(ElementType.td);
             });

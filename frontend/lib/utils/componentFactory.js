@@ -21,7 +21,10 @@ import { Select } from "../select.js";
 import { ButtonPdf } from "../buttonPdf.js";
 import { ButtonExcel } from "../buttonExcel.js";
 import { GoogleMap } from "../googleMap.js";
-import { ListView } from "../index.js";
+import { ButtonEmail } from "../buttonEmail.js";
+import { ButtonImportExcel } from "../buttonImportExcel.js";
+import { Kanban } from "../kanban.js";
+import { ActionButton } from "../actionButton.js";
 /**
  * Factory class for creating UI components based on specific configurations.
  */
@@ -53,31 +56,37 @@ export class ComponentFactory {
         switch (fullName) {
             case "Input":
             case "Textarea":
-                child = new Textbox(ui, ele);
+                child = new Textbox(ui, ele)
+                break;
+            case "Action":
+                child = new ActionButton(ui, ele)
                 break;
             case "Number":
-                child = new Numbox(ui, ele);
+                child = new Numbox(ui, ele)
                 break;
             case "Label":
-                child = new Label(ui, ele);
+                child = new Label(ui, ele)
                 break;
             case "Select":
-                child = new Select(ui, ele);
+                child = new Select(ui, ele)
                 break;
             case "Datepicker":
-                child = new Datepicker(ui, ele);
+                child = new Datepicker(ui, ele)
                 break;
             case "Checkbox":
-                child = new Checkbox(ui, ele);
+                child = new Checkbox(ui, ele)
                 break;
             case "FileUpload":
-                child = new Image(ui, ele);
+                child = new Image(ui, ele)
                 break;
             case "Button":
-                child = new Button(ui, ele);
+                child = new Button(ui, ele)
                 break;
-            case "ListView":
-                child = new ListView(ui, ele);
+            case "ImportExcel":
+                child = new ButtonImportExcel(ui, ele)
+                break;
+            case "Email":
+                child = new ButtonEmail(ui, ele)
                 break;
             case "GridView":
                 if (Utils.isNullOrWhiteSpace(ui.GroupBy)) {
@@ -104,6 +113,9 @@ export class ComponentFactory {
             case "Chart":
                 child = new Chart(ui, ele)
                 break;
+            case "Kanban":
+                child = new Kanban(ui, ele)
+                break;
             case "HtmlCode":
                 child = new HtmlCode(ui, ele)
                 break;
@@ -121,7 +133,7 @@ export class ComponentFactory {
                 break;
             default:
                 if (ui.ComponentType instanceof Function) {
-                    child = ui.ComponentType.call(ui, ui, ele);
+                    child = ui.ComponentType.call(ui);
                 }
                 else {
                     child = new Textbox(ui, ele)

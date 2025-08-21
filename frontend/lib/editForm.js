@@ -60,7 +60,7 @@ export class EditForm extends EditableComponent {
     static SpecialEntryPoint = 'entry';
     Portal = true;
     /** @type {Object} */
-    Entity = {};
+    Entity;
     IsLock = false;
     /** @type {Feature} */
     Meta;
@@ -91,6 +91,8 @@ export class EditForm extends EditableComponent {
     }
 
     static Portal = false;
+
+
 
     /**
      * Constructor for EditForm.
@@ -229,6 +231,9 @@ export class EditForm extends EditableComponent {
         var entity = this[entityForm];
         entity.FeatureName = this.Meta.Label;
         entity.FeatureName2 = this.Meta.Name;
+        if (entity.Id.startsWith("-")) {
+            entity.DepartmentId = Client.Token.DepartmentId;
+        }
         entity.FeatureName3 = this.Meta.Name.includes("editor") ? this.Meta.Name.replace("-editor", "") : (this.OpenFrom ? this.TabEditor.Meta.Name : "");
         var gridItem = this.ChildCom.filter(x => x.IsListView && x.Meta.Editable && !x.Meta.IsRealtime && x.Meta.EntityName == entityForm);
         let dirtyPatch = [];
@@ -266,6 +271,9 @@ export class EditForm extends EditableComponent {
                     Ids: item.DeleteTempIds
                 });
             }
+            item.AllListViewItem.filter(x => !x.GroupRow).forEach((it, index) => {
+                it.Entity.Order = index + 1;
+            });
             var allItem = item.AllListViewItem.filter(x => !x.GroupRow && !x.Entity.NoSubmit && !x.Entity.IsLock);
             if (allItem && allItem.length > 0) {
                 allItem.forEach(it => {
@@ -282,6 +290,9 @@ export class EditForm extends EditableComponent {
                  */
                 var itemEntity = rowData.map((rowItem) => {
                     var row = rowItem.Entity;
+                    if (row.Id.startsWith("-")) {
+                        row.DepartmentId = Client.Token.DepartmentId;
+                    }
                     let dirtyPatchDetail = [];
                     Object.getOwnPropertyNames(row).forEach(cell => {
                         if (row[cell] instanceof Array || (row[cell] instanceof Object && !(row[cell] instanceof Decimal) && !(row[cell] instanceof Date)) || cell == this._groupKey) {
@@ -358,6 +369,9 @@ export class EditForm extends EditableComponent {
     GetPatchVM() {
         var gridItem = this.ChildCom.filter(x => x.IsListView && x.Meta.Editable && !x.Meta.IsRealtime && Utils.isNullOrWhiteSpace(x.Meta.EntityName));
         let dirtyPatch = [];
+        if (this.EntityId && this.EntityId.startsWith("-")) {
+            this.Entity.DepartmentId = Client.Token.DepartmentId;
+        }
         Object.getOwnPropertyNames(this.Entity).forEach(cell => {
             if (this.Entity[cell] instanceof Array || (this.Entity[cell] instanceof Object && !(this.Entity[cell] instanceof Decimal)) || cell == this._groupKey) {
                 return;
@@ -395,6 +409,9 @@ export class EditForm extends EditableComponent {
                     Ids: item.DeleteTempIds
                 });
             }
+            item.AllListViewItem.filter(x => !x.GroupRow).forEach((it, index) => {
+                it.Entity.Order = index + 1;
+            });
             var allItem = item.AllListViewItem.filter(x => !x.GroupRow && !x.Entity.NoSubmit && !x.Entity.IsLock);
             if (allItem && allItem.length > 0) {
                 allItem.forEach(it => {
@@ -405,9 +422,12 @@ export class EditForm extends EditableComponent {
                         })
                     }
                 })
-                var itemEntity = allItem.map((rowItem) => {
+                var itemEntity = allItem.map((rowItem, index) => {
                     var row = rowItem.Entity;
                     let dirtyPatchDetail = [];
+                    if (row.Id.startsWith("-")) {
+                        row.DepartmentId = Client.Token.DepartmentId;
+                    }
                     Object.getOwnPropertyNames(row).forEach(cell => {
                         if (row[cell] instanceof Array || (row[cell] instanceof Object && !(row[cell] instanceof Decimal) && !(row[cell] instanceof Date)) || cell == this._groupKey) {
                             return;
@@ -433,7 +453,12 @@ export class EditForm extends EditableComponent {
                                 patchDetail.HistoryValue = `${component.Meta.Label}: ${oldText} => ${actText}`;
                             }
                             if (component.IsInput) {
-                                patchDetail.Value = patchDetail.Value ? patchDetail.Value?.toString().trim() : patchDetail.Value;
+                                if (patchDetail.Value instanceof String) {
+                                    patchDetail.Value = patchDetail.Value ? patchDetail.Value.toString().trim() : patchDetail.Value;
+                                }
+                                else {
+                                    patchDetail.Value = patchDetail.Value;
+                                }
                             }
                         }
                         dirtyPatchDetail.push(patchDetail);
@@ -461,6 +486,9 @@ export class EditForm extends EditableComponent {
     GetPatchSelectVM() {
         var gridItem = this.ChildCom.filter(x => x.IsListView && x.Meta.Editable && !x.Meta.IsRealtime && Utils.isNullOrWhiteSpace(x.Meta.EntityName));
         let dirtyPatch = [];
+        if (this.EntityId && this.EntityId.startsWith("-")) {
+            this.Entity.DepartmentId = Client.Token.DepartmentId;
+        }
         Object.getOwnPropertyNames(this.Entity).forEach(cell => {
             if (this.Entity[cell] instanceof Array || (this.Entity[cell] instanceof Object && !(this.Entity[cell] instanceof Decimal)) || cell == this._groupKey) {
                 return;
@@ -495,6 +523,9 @@ export class EditForm extends EditableComponent {
                     Ids: item.DeleteTempIds
                 });
             }
+            item.AllListViewItem.filter(x => !x.GroupRow).forEach((it, index) => {
+                it.Entity.Order = index + 1;
+            });
             var allItem = item.AllListViewItem.filter(x => !x.GroupRow && !x.Entity.NoSubmit && !x.Entity.IsLock && x.Selected);
             if (allItem && allItem.length > 0) {
                 allItem.forEach(it => {
@@ -507,6 +538,9 @@ export class EditForm extends EditableComponent {
                 })
                 var itemEntity = allItem.map((rowItem) => {
                     var row = rowItem.Entity;
+                    if (row.Id.startsWith("-")) {
+                        row.DepartmentId = Client.Token.DepartmentId;
+                    }
                     let dirtyPatchDetail = [];
                     Object.getOwnPropertyNames(row).forEach(cell => {
                         if (row[cell] instanceof Array || (row[cell] instanceof Object && !(row[cell] instanceof Decimal) && !(row[cell] instanceof Date)) || cell == this._groupKey) {
@@ -586,7 +620,7 @@ export class EditForm extends EditableComponent {
     }
 
     _groupKey = "__groupkey__";
-    async SavePatch(element, entity, dirty, reloadData) {
+    async SavePatch(element, entity, dirty, reloadData, message = true) {
         if (this.OpenFrom && this.OpenFrom.IsTab) {
             this.Entity.Url = `${Client.BaseUri}/#/${(!this.Token ? "app" : this.Token.TenantCode)}/${this.OpenFrom.FeatureName}?popup=${this.FeatureName}&id=${(this.Entity.Id.startsWith("-") ? "" : "")}`;
         }
@@ -629,6 +663,7 @@ export class EditForm extends EditableComponent {
             var patchModel = this.GetPatchVM();
             const rs = await Client.Instance.PatchAsync(patchModel);
             var childEntity = this.ChildCom.find(x => !Utils.isNullOrWhiteSpace(x.Meta.EntityName) && !Utils.isNullOrWhiteSpace(x.Meta.TableName));
+            Spinner.Hide();
             if (rs.status == 200) {
                 var codeEditor = this.ChildCom.filter(x => (x.Meta.ComponentType == "CodeEditor" || x.Meta.ComponentType == "Word") && !Utils.isNullOrWhiteSpace(x.Meta.RefName) && Utils.isNullOrWhiteSpace(x.Meta.EntityName));
                 codeEditor.forEach(async item => {
@@ -676,8 +711,8 @@ export class EditForm extends EditableComponent {
                 })
                 this.Entity = rs.updatedItem[0];
                 this.Dirty = false;
-                if (this.OpenFrom.devTools) {
-                    this.OpenFrom.devTools.RerenderUI();
+                if (this.OpenFrom && this.OpenFrom.devTools) {
+                    await this.OpenFrom.devTools.RerenderUI();
                 }
                 if (rs.Detail && rs.Detail.length > 0) {
                     for (const grid of gridItem) {
@@ -702,14 +737,17 @@ export class EditForm extends EditableComponent {
                         }
                     }
                 }
-                Spinner.Hide();
                 if (childEntity) {
                     if (!this.DirtyEntity(childEntity.Meta.EntityName)) {
-                        Toast.Success("Update success");
+                        if (message) {
+                            Toast.Success("Update success");
+                        }
                     }
                 }
                 else {
-                    Toast.Success("Update success");
+                    if (message) {
+                        Toast.Success("Update success");
+                    }
                 }
                 await this.DispatchCustomEvent(this.Meta.Events, "saved", this, this.OpenFrom);
                 this.UpdateView(true);
@@ -736,7 +774,7 @@ export class EditForm extends EditableComponent {
                     }
                     else {
                         for (const element of parent) {
-                            element.CountBadge();
+                            await element.CountBadge();
                             var gridDetail = element.FilterChildren(x => x.IsListView).find(x => x.IsListView && x.Meta.RefName == this.Meta.EntityId);
                             if (gridDetail) {
                                 if (reloadData) {
@@ -761,12 +799,12 @@ export class EditForm extends EditableComponent {
                 return true;
             }
             else {
-                this.EditForm.OpenConfig(rs.message || "Update fail", () => {
+                this.EditForm.OpenConfig(rs.message || "You do not have permission to perform this action. Please contact the administrator", () => {
                 }, () => { }, false, [], true)
             }
             return false;
         } catch (error) {
-            this.EditForm.OpenConfig(error.message || "Update fail", () => {
+            this.EditForm.OpenConfig(error.message || "You do not have permission to perform this action. Please contact the administrator", () => {
             }, () => { }, false, [], true)
             Spinner.Hide();
             return false;
@@ -798,7 +836,7 @@ export class EditForm extends EditableComponent {
                 return true;
             }
             else {
-                Toast.Warning(rs.message || "Update fail");
+                Toast.Warning(rs.message || "You do not have permission to perform this action. Please contact the administrator");
             }
             return false;
         } catch (error) {
@@ -882,6 +920,8 @@ export class EditForm extends EditableComponent {
     TabGroup = [];
     /** @type {TabComponent[]} */
     TabComponents = [];
+    /** @type {import('./section.js')} */
+    SectionMd;
     Popup = false;
     /**
      * Loads and renders features based on the current entity setup.
@@ -889,6 +929,7 @@ export class EditForm extends EditableComponent {
      */
     async LoadFeatureAndRender(callback = null) {
         Spinner.AppendTo();
+        this.SectionMd = this.SectionMd || await import('./section.js');
         var feature = await ComponentExt.LoadFeature(this.entity);
         if (!feature) {
             return null;
@@ -902,6 +943,14 @@ export class EditForm extends EditableComponent {
             ComponentExt.AssignMethods(feature, this);
         }
         var entity = await this.LoadEntity();
+        if (this.EntityId && this.EntityId.startsWith("-")) {
+            if (!feature.FeaturePolicies.some(x => Client.Token.RoleIds.includes(x.RoleId) && (x.CanWrite || x.CanWriteAll))) {
+                Spinner.Hide();
+                this.OpenConfig("Access denied", () => {
+                }, () => { }, false, [], true)
+                return;
+            }
+        }
         if (this.Popup) {
             const handler = this.DirtyCheckAndCancel.bind(this);
             if (!this.IsChild) {
@@ -932,12 +981,10 @@ export class EditForm extends EditableComponent {
         this.LayoutLoaded(feature, callback, entity);
     }
     Render() {
-        if (!this.Meta.Layout && !this.Meta.IsLocal) {
+        if (!this.Meta.Layout) {
             this.LoadFeatureAndRender();
         }
-        else if (this.Meta.IsLocal) {
-            this.LayoutLoaded(this.Meta, null, this.Entity);
-        } else {
+        else {
             if (!this.Element) {
                 this.Element = this.ParentElement;
             }
@@ -945,42 +992,37 @@ export class EditForm extends EditableComponent {
             Html.Instance.Clear();
             Html.Instance.Div.Render();
             this.Element = Html.Context;
-            this.createReact();
+            let root = createRoot(this.Element);
+            let reactElement = React.createElement(this.Meta.Layout);
+            root.render(reactElement);
+            new Promise(resolve => setTimeout(resolve, 0)).then(() => {
+                if (this.Meta.Javascript && !Utils.isNullOrWhiteSpace(this.Meta.Javascript)) {
+                    try {
+                        let fn = new Function(this.Meta.Javascript);
+                        let obj = fn.call(null, this.EditForm);
+                        for (let prop in obj) {
+                            this[prop] = obj[prop].bind(this);
+                        }
+                        const method = this["Init"];
+                        if (method) {
+                            new Promise((resolve, reject) => {
+                                let task = method.apply(this, this);
+                                if (!task || task.isCompleted == null) {
+                                    resolve(task);
+                                } else {
+                                    task.then(() => resolve(task)).catch(e => reject(e));
+                                }
+                            });
+                        }
+                    } catch (e) {
+                        console.log(e.message);
+                    }
+                }
+            });
             this.Focus();
         }
         this.LastForm = this;
     }
-
-    createReact() {
-        let root = createRoot(this.Element);
-        let reactElement = React.createElement(this.Meta.Layout);
-        root.render(reactElement);
-        new Promise(resolve => setTimeout(resolve, 0)).then(() => {
-            if (this.Meta.Javascript && !Utils.isNullOrWhiteSpace(this.Meta.Javascript)) {
-                try {
-                    let fn = new Function(this.Meta.Javascript);
-                    let obj = fn.call(null, this.EditForm);
-                    for (let prop in obj) {
-                        this[prop] = obj[prop].bind(this);
-                    }
-                    const method = this["Init"];
-                    if (method) {
-                        new Promise((resolve, reject) => {
-                            let task = method.apply(this, this);
-                            if (!task || task.isCompleted == null) {
-                                resolve(task);
-                            } else {
-                                task.then(() => resolve(task)).catch(e => reject(e));
-                            }
-                        });
-                    }
-                } catch (e) {
-                    console.log(e.message);
-                }
-            }
-        });
-    }
-
     /** @type {HTMLElement} */
     PopupFooter;
     /** @type {HTMLElement} */
@@ -1056,7 +1098,7 @@ export class EditForm extends EditableComponent {
         this.Element = this.RenderTemplate(null, feature);
         this.SetFeatureStyleSheet(feature.StyleSheet);
         this.Policies = feature.FeaturePolicies;
-        this.RenderTabOrSection(this.Meta.IsLocal ? this.GroupTree : this.GroupTree.filter(x => x.Active), this);
+        this.RenderTabOrSection(this.GroupTree.filter(x => x.Active), this);
         this.InitDOMEvents();
         loadedCallback?.call(null);
         this.DispatchFeatureEvent(feature.Events, EventType.DOMContentLoaded);
@@ -1287,11 +1329,9 @@ export class EditForm extends EditableComponent {
      */
     GetOuterColumn(group) {
         if (!group) return 0;
-
         const screenWidth = this.Element.clientWidth;
         let res;
-
-        if (screenWidth < EditableComponent.ExSmallScreen && group.XsOuterColumn > 0) {
+        if (screenWidth < EditableComponent.ExSmallScreen && group.SmOuterColumn > 0) {
             res = group.SmOuterColumn;
         } else if (screenWidth < EditableComponent.SmallScreen && group.SmOuterColumn > 0) {
             res = group.SmOuterColumn;
@@ -1302,6 +1342,58 @@ export class EditForm extends EditableComponent {
         }
 
         return res || 0;
+    }
+
+    /**
+     * Binds the template with components.
+     * @param {HTMLElement} ele - The HTML element to bind.
+     * @param {EditableComponent} parent - The parent component.
+     * @param {object} entity - The entity object.
+     * @param {Function} [factory] - The factory function to create components.
+     * @param {Set<HTMLElement>} [visited] - The set of visited elements.
+     */
+    BindingTemplate(ele, parent, entity = null, factory = null, visited = new Set()) {
+        if (!ele || visited.has(ele)) {
+            return;
+        }
+        visited.add(ele);
+        if (ele.children.length === 0 && this.RenderCellText(ele, entity) !== null) {
+            return;
+        }
+        const meta = this.ResolveMeta(ele);
+        const newCom = factory ? factory(ele, meta, parent, entity) : this.BindingCom(ele, meta, parent, entity);
+        parent = newCom instanceof this.SectionMd.Section ? newCom : parent;
+        // @ts-ignore
+        ele.children.forEach(child => this.BindingTemplate(child, parent, entity, factory, visited));
+    }
+
+    /**
+     * Resolves meta information for an HTML element.
+     * @param {HTMLElement} ele - The HTML element.
+     * @returns {Component} - The resolved component.
+     */
+    ResolveMeta(ele) {
+        /** @type {Component} */
+        let component = new Component();
+        const id = ele.dataset[this.IdField.toLowerCase()];
+        if (id) {
+            component = this.AllCom.find(x => x.Id === id);
+        }
+        for (const prop of Object.getOwnPropertyNames(Component.prototype)) {
+            const value = ele.dataset[prop.toLowerCase()];
+            if (!value) {
+                continue;
+            }
+            let propVal = null;
+            try {
+                propVal = typeof component[prop] === 'string' ? value : JSON.parse(value);
+                component = component || new Component();
+                component[prop] = propVal;
+            } catch {
+                continue;
+            }
+        }
+        return component;
     }
 
     /**
@@ -1468,9 +1560,9 @@ export class EditForm extends EditableComponent {
         componentGroup.sort((a, b) => a.Order - b.Order).forEach(group => {
             group.Disabled = this.Disabled || group.Disabled;
             if (group.IsTab) {
-                Section.RenderTabGroup(editForm ?? this, group);
+                this.SectionMd.Section.RenderTabGroup(editForm ?? this, group);
             } else {
-                Section.RenderSection(editForm ?? this, group);
+                this.SectionMd.Section.RenderSection(editForm ?? this, group);
             }
         });
     }
@@ -1503,6 +1595,7 @@ export class EditForm extends EditableComponent {
         entryPoint.innerHTML = Str.Empty;
         if (feature.Template) {
             entryPoint.innerHTML = feature.Template;
+            this.BindingTemplate(entryPoint, this);
             const innerEntry = Array.from(entryPoint.querySelectorAll("[id='inner-entry']")).shift();
             this.ResetEntryPoint(innerEntry);
             // @ts-ignore
@@ -1538,7 +1631,7 @@ export class EditForm extends EditableComponent {
         }
         let child = null;
         if (com.ComponentType === ComponentType.Section) {
-            child = new Section(null, ele);
+            child = new this.SectionMd.Section(null, ele);
             child.Meta = com;
             child.Meta = com;
         } else {
@@ -1718,6 +1811,10 @@ export class EditForm extends EditableComponent {
     GetComPolicies(components) {
         if (this.Meta.IsPublic || components.every(x => x.IsPublic)) {
             components.forEach(com => {
+                var defaultVal = (this.Meta.ComponentDefaultValue || []).find(x => x.ComponentId == com.Id);
+                if (defaultVal) {
+                    com.DefaultVal = defaultVal.Value;
+                }
                 com.CanWrite = true;
                 com.CanWriteAll = true;
                 com.CanRead = true;
@@ -1728,28 +1825,41 @@ export class EditForm extends EditableComponent {
                 com.CanDeactivateAll = true;
                 com.CanExport = true;
             });
-            return this.Meta.IsLocal ? components : components.filter(x => x.Active);
+            return components.filter(x => x.Active);
         }
-        var policyFeature = this.Policies
-            .sort((a, b) => {
-                if (b.CanWriteAll !== a.CanWriteAll) {
-                    return b.CanWriteAll - a.CanWriteAll;
-                }
-                if (b.CanReadAll !== a.CanReadAll) {
-                    return b.CanReadAll - a.CanReadAll;
-                }
-                if (b.CanWrite !== a.CanWrite) {
-                    return b.CanWrite - a.CanWrite;
-                }
-                if (b.CanRead !== a.CanRead) {
-                    return b.CanRead - a.CanRead;
-                }
-                return 0;
-            })
-            .find(x => !x.RecordId && (Client.Token.RoleIds.includes(x.RoleId) || Client.Token.UserId == x.UserId));
+        var policyFeature = this.Policies.map(x => {
+            if (x.CanReadAll) {
+                x.CanRead = x.CanReadAll;
+            }
+            if (x.CanWriteAll) {
+                x.CanWrite = x.CanWriteAll;
+                x.CanRead = x.CanWriteAll;
+                x.CanReadAll = x.CanWriteAll;
+            }
+            return x;
+        }).sort((a, b) => {
+            if (b.CanWriteAll !== a.CanWriteAll) {
+                return b.CanWriteAll - a.CanWriteAll;
+            }
+            if (b.CanWrite !== a.CanWrite) {
+                return b.CanWrite - a.CanWrite;
+            }
+            if (b.CanReadAll !== a.CanReadAll) {
+                return b.CanReadAll - a.CanReadAll;
+            }
+            if (b.CanRead !== a.CanRead) {
+                return b.CanRead - a.CanRead;
+            }
+            return 0;
+        }).find(x => !x.RecordId && (Client.Token.RoleIds.includes(x.RoleId) || Client.Token.UserId == x.UserId));
+
 
         var newComponents = components.map(com => {
-            var check2 = this.Policies.sort((a, b) => b.CanRead - a.CanRead).find(x => x.RecordId && x.RecordId == com.Id && (Client.Token.RoleIds.some(k == x.RoleId) || Client.Token.UserId == x.UserId));
+            var defaultVal = (this.Meta.ComponentDefaultValue || []).find(x => x.ComponentId == com.Id);
+            if (defaultVal) {
+                com.DefaultVal = defaultVal.Value;
+            }
+            var check2 = this.Policies.sort((a, b) => b.CanRead - a.CanRead).find(x => x.RecordId && x.RecordId == com.Id && (Client.Token.RoleIds.includes(k == x.RoleId) || Client.Token.UserId == x.UserId));
             if (check2 && check2.CanRead) {
                 com.CanWrite = check2.CanWrite;
                 com.CanWriteAll = check2.CanWriteAll;
@@ -1827,7 +1937,6 @@ export class EditForm extends EditableComponent {
                     ctxMenu.MenuItems = [];
                     ctxMenu.EditForm = this;
                     if (component !== null) {
-                        ctxMenu.MenuItems.push({ Icon: "fal fa-copy", Text: "Set Default Value", Click: this.SetDefaultValue.bind(this), Parameter: component });
                         ctxMenu.MenuItems.push({ Icon: "fal fa-cog", Text: "Pdf Properties", Click: this.ComponentProperties.bind(this), Parameter: component });
                     }
                     ctxMenu.Render();
@@ -1839,7 +1948,9 @@ export class EditForm extends EditableComponent {
                         ctxMenu.Left = e.Left();
                         ctxMenu.MenuItems = [];
                         ctxMenu.EditForm = this;
-                        ctxMenu.MenuItems.push({ Icon: "fal fa-copy", Text: "Set Default Value", Click: this.SetDefaultValue.bind(this), Parameter: component });
+                        if (["Input", "Dropdown", "Select", "Checkbox", "Textarea", "Word"].some(x => x == component.ComponentType)) {
+                            ctxMenu.MenuItems.push({ Icon: "fal fa-copy", Text: "Set Default Value", Click: this.SetDefaultValue.bind(this), Parameter: component });
+                        }
                         ctxMenu.Render();
                     }
                 }
@@ -1851,7 +1962,9 @@ export class EditForm extends EditableComponent {
                     ctxMenu.Left = e.Left();
                     ctxMenu.MenuItems = [];
                     ctxMenu.EditForm = this;
-                    ctxMenu.MenuItems.push({ Icon: "fal fa-copy", Text: "Set Default Value", Click: this.SetDefaultValue.bind(this), Parameter: component });
+                    if (["Input", "Dropdown", "Select", "Checkbox", "Textarea", "Word"].some(x => x == component.ComponentType)) {
+                        ctxMenu.MenuItems.push({ Icon: "fal fa-copy", Text: "Set Default Value", Click: this.SetDefaultValue.bind(this), Parameter: component });
+                    }
                     ctxMenu.Render();
                 }
             }
@@ -1933,6 +2046,12 @@ export class EditForm extends EditableComponent {
                         Value: com.Id,
                     },
                     {
+                        Label: "FeatureId",
+                        Field: "FeatureId",
+                        OldVal: null,
+                        Value: com.FeatureId,
+                    },
+                    {
                         Label: "DefaultVal",
                         Field: "DefaultVal",
                         OldVal: null,
@@ -1984,7 +2103,7 @@ export class EditForm extends EditableComponent {
                 component.DefaultVal = this[name][com.FieldName];
                 this.Dirty = false;
             }
-        }, () => { }, true, [com]);
+        }, () => { }, true, [com], null, null, null, true);
     }
 
     async ActCloneFeature() {
@@ -2291,43 +2410,83 @@ export class EditForm extends EditableComponent {
             }
         });
     }
-
+    timeoutUpdateView2 = 0;
     UpdateView2(force = false, dirty = null, entityName = null, ...componentNames) {
         if (componentNames && componentNames.length > 0) {
-            this.ChildCom.filter(x => x.Meta.EntityName == entityName && componentNames.includes(x.Meta.FieldName)).forEach(child => {
+            if (componentNames && componentNames.length > 0) {
+                this.ChildCom.filter(x => x.Meta.EntityName == entityName && componentNames.includes(x.Meta.FieldName)).forEach(child => {
+                    child.Entity = this[entityName];
+                    child.PrepareUpdateView(force, dirty);
+                    child.UpdateView(force, dirty);
+                });
+                return;
+            }
+            this.FilterChildren().filter(x => x.Meta && x.Meta.EntityName == entityName && x.IsSection && !x.IsListViewItem).forEach(child => {
                 child.Entity = this[entityName];
                 child.PrepareUpdateView(force, dirty);
-                child.UpdateView(force, dirty);
             });
-            return;
-        }
-        this.FilterChildren().filter(x => x.Meta && x.Meta.EntityName == entityName && x.IsSection && !x.IsListViewItem).forEach(child => {
-            child.Entity = this[entityName];
-            child.PrepareUpdateView(force, dirty);
-        });
-        this.ChildCom.filter(x => x.Meta.EntityName == entityName && !x.IsListView).forEach(child => {
-            child.Entity = this[entityName];
-            child.PrepareUpdateView(force, dirty);
-            child.UpdateView(force, dirty, ...componentNames);
-        });
-        this.ChildCom.filter(x => x.Meta.EntityName == entityName && x.IsListView).forEach(/**@param {GridView} child **/ child => {
-            child.Entity = this[entityName];
-            child.PrepareUpdateView(force, dirty);
-            if (child.Meta.CanCache) {
-                if (Utils.isNullOrWhiteSpace(child.Meta.RefName)) {
-                    window.setTimeout(() => {
-                        child.ApplyFilter();
-                    }, 500);
-                }
-                else {
-                    child.ReloadData();
-                    if (child.Parent && child.Parent.Parent && child.Parent.Parent.Meta.DisplayBadge) {
-                        child.Parent.Parent.CountBadge();
+            for (const child of this.ChildCom.filter(x => x.Meta.EntityName == entityName && !x.IsListView)) {
+                child.Entity = this[entityName];
+                child.PrepareUpdateView(force, dirty);
+                child.UpdateView(force, dirty, ...componentNames);
+            }
+            for (const child of this.ChildCom.filter(x => x.Meta.EntityName == entityName && x.IsListView)) {
+                child.Entity = this[entityName];
+                child.PrepareUpdateView(force, dirty);
+                if (child.Meta.CanCache) {
+                    if (Utils.isNullOrWhiteSpace(child.Meta.RefName)) {
+                        window.setTimeout(async () => {
+                            await child.ApplyFilter();
+                        });
+                    }
+                    else {
+                        child.ReloadData();
+                        if (child.Parent && child.Parent.Parent && child.Parent.Parent.Meta.DisplayBadge) {
+                            child.Parent.Parent.CountBadge();
+                        }
                     }
                 }
-
             }
-        });
+        }
+        else {
+            window.clearTimeout(this.timeoutUpdateView2);
+            this.timeoutUpdateView2 = window.setTimeout(() => {
+                if (componentNames && componentNames.length > 0) {
+                    this.ChildCom.filter(x => x.Meta.EntityName == entityName && componentNames.includes(x.Meta.FieldName)).forEach(child => {
+                        child.Entity = this[entityName];
+                        child.PrepareUpdateView(force, dirty);
+                        child.UpdateView(force, dirty);
+                    });
+                    return;
+                }
+                this.FilterChildren().filter(x => x.Meta && x.Meta.EntityName == entityName && x.IsSection && !x.IsListViewItem).forEach(child => {
+                    child.Entity = this[entityName];
+                    child.PrepareUpdateView(force, dirty);
+                });
+                for (const child of this.ChildCom.filter(x => x.Meta.EntityName == entityName && !x.IsListView)) {
+                    child.Entity = this[entityName];
+                    child.PrepareUpdateView(force, dirty);
+                    child.UpdateView(force, dirty, ...componentNames);
+                }
+                for (const child of this.ChildCom.filter(x => x.Meta.EntityName == entityName && x.IsListView)) {
+                    child.Entity = this[entityName];
+                    child.PrepareUpdateView(force, dirty);
+                    if (child.Meta.CanCache) {
+                        if (Utils.isNullOrWhiteSpace(child.Meta.RefName)) {
+                            window.setTimeout(async () => {
+                                await child.ApplyFilter();
+                            });
+                        }
+                        else {
+                            child.ReloadData();
+                            if (child.Parent && child.Parent.Parent && child.Parent.Parent.Meta.DisplayBadge) {
+                                child.Parent.Parent.CountBadge();
+                            }
+                        }
+                    }
+                }
+            }, 100);
+        }
     }
 
     SendEntity() {
@@ -2349,13 +2508,14 @@ export class EditForm extends EditableComponent {
         confirm.Render();
     }
 
-    OpenConfig(title, yesConfirmed, noConfirmed, needAnswer, com, ignoreNoButton, componentGroup, width) {
+    OpenConfig(title, yesConfirmed, noConfirmed, needAnswer, com, ignoreNoButton, componentGroup, width, hasDispose) {
         if (!this.Entity) {
             this.Entity = {};
         }
         const confirmDialog = new ConfirmDialog();
         confirmDialog.Title = title;
         confirmDialog.NeedAnswer = needAnswer;
+        confirmDialog.HasDispose = hasDispose;
         confirmDialog.IgnoreNoButton = ignoreNoButton;
         confirmDialog.Component = com;
         confirmDialog.ComponentGroup = componentGroup;
@@ -2384,35 +2544,64 @@ export class EditForm extends EditableComponent {
         confirm.Render();
     }
 
-    UpdateEmailTemplate(com) {
-        const matches = [...(com.Matched.SubjectMail || '').matchAll(/{(.*?)}/g)].map(m => m[1]);
-        const matches2 = [...(com.Matched.Template || '').matchAll(/{(.*?)}/g)].map(m => m[1]);
-        var subject = com.Matched.SubjectMail || '';
-        for (let index = 0; index < matches.length; index++) {
-            const element = matches[index];
-            var mapComponent = this.ChildCom.find(x => LangSelect.Get(x.Meta.Label, this.Meta.Name) == element);
-            if (mapComponent) {
-                var text = mapComponent.GetValueText();
-                subject = subject.replaceAll(`{${element}}`, text);
-            }
+    async LoadData() {
+        var gridViews = this.EditForm.ChildCom.filter(x => x.IsListView);
+        var entity = JSON.parse(JSON.stringify(this.Entity));
+        gridViews.forEach((grid, index) => {
+            entity["t" + index] = grid.AllListViewItem.filter(x => !x.GroupRow).map(x => x.Entity);
+            entity["t" + index + "h"] = grid.Header;
+        })
+        try {
+            var res = await Client.Instance.PostAsync({ ComId: this.Entity.PdfPlanEmailId, Data: entity }, "/api/CreateHtml2");
+            return res;
+        } catch (error) {
+            return error.Message;
         }
-        var template = com.Matched.Template || '';
-        for (let index = 0; index < matches2.length; index++) {
-            const element = matches2[index];
-            var mapComponent = this.ChildCom.find(x => LangSelect.Get(x.Meta.Label, this.Meta.Name) == element);
-            if (mapComponent) {
-                var text = mapComponent.GetValueText();
-                template = template.replaceAll(`{${element}}`, text);
-            }
-        }
-        this.Entity.ButtonPdfTemplate = template;
-        this.Entity.ButtonPdfSubjectMail = subject;
-        this.UpdateView(false, false, "ButtonPdfTemplate", "ButtonPdfSubjectMail");
     }
 
-    UpdateEmailTo(com) {
-        this.Entity.ButtonPdfToEmail = com.Matched.Email;
-        this.UpdateView(false, false, "ButtonPdfToEmail");
+    UpdateEmailTemplate() {
+        if (!this.Entity.PdfPlanEmail) {
+            this.Entity.PdfTemplate = null;
+            this.Entity.PdfSubjectMail = null;
+            this.UpdateView(false, false, "PdfTemplate", "PdfSubjectMail");
+        }
+        else {
+            const matches = [...(this.Entity.PdfPlanEmail.SubjectMail || '').matchAll(/{(.*?)}/g)].map(m => m[1]);
+            var subject = this.Entity.PdfPlanEmail.SubjectMail || '';
+            this.LoadData().then(template => {
+                for (let index = 0; index < matches.length; index++) {
+                    const element = matches[index];
+                    var mapComponent = this.ChildCom.find(x => LangSelect.Get(x.Meta.Label, this.Meta.Name) == element);
+                    if (mapComponent) {
+                        var text = mapComponent.GetValueText();
+                        subject = subject.replaceAll(`{${element}}`, text);
+                    }
+                }
+                this.Entity.PdfTemplate = template;
+                this.Entity.PdfSubjectMail = subject;
+                this.UpdateView(false, false, "PdfTemplate", "PdfSubjectMail");
+            });
+        }
+    }
+
+    UpdateEmailTemplate2() {
+        this.LoadData().then(template => {
+            this.Entity.PdfTemplate = template;
+            this.UpdateView(false, false, "PdfTemplate");
+        });
+    }
+
+    UpdateEmailTo() {
+        if (this.Entity.PdfPartner) {
+            this.Entity.PdfToEmail = this.Entity.PdfPartner.Email;
+            this.Entity.PdfToName = this.Entity.PdfPartner.ContactName;
+        }
+        else {
+            this.Entity.PdfToEmail = null;
+            this.Entity.PdfToName = null;
+        }
+        this.UpdateView(false, false, "PdfToEmail", "PdfToName");
+
     }
 
     DeclineEntity() {
@@ -2443,6 +2632,9 @@ export class EditForm extends EditableComponent {
     }
 
     async ActSendEntity() {
+        this.Entity.FeatureName = this.Meta.Label;
+        this.Entity.FeatureName2 = this.Meta.Name;
+        this.Entity.FeatureName3 = this.Meta.Name.includes("editor") ? this.Meta.Name.replace("-editor", "") : (this.OpenFrom ? this.TabEditor.Meta.Name : "");
         await this.DispatchCustomEvent(this.Meta.Events, "onsend", this);
         await this.DispatchCustomEvent(this.Meta.Events, "onsave", this);
         this.Entity.StatusId = 2;
@@ -2480,6 +2672,9 @@ export class EditForm extends EditableComponent {
     }
 
     async ActForwordEntity() {
+        this.Entity.FeatureName = this.Meta.Label;
+        this.Entity.FeatureName2 = this.Meta.Name;
+        this.Entity.FeatureName3 = this.Meta.Name.includes("editor") ? this.Meta.Name.replace("-editor", "") : (this.OpenFrom ? this.TabEditor.Meta.Name : "");
         var code = this.Entity.Code;
         if (!Utils.isNullOrWhiteSpace(code) && this.Entity.FormatChat && !this.Entity.FormatChat.includes(code)) {
             this.Entity.FormatChat = this.Entity.FormatChat + " " + code;
@@ -2515,6 +2710,9 @@ export class EditForm extends EditableComponent {
     }
 
     async ActApprovedEntity(change) {
+        this.Entity.FeatureName = this.Meta.Label;
+        this.Entity.FeatureName2 = this.Meta.Name;
+        this.Entity.FeatureName3 = this.Meta.Name.includes("editor") ? this.Meta.Name.replace("-editor", "") : (this.OpenFrom ? this.TabEditor.Meta.Name : "");
         var code = this.Entity.Code;
         if (!Utils.isNullOrWhiteSpace(code) && this.Entity.FormatChat && !this.Entity.FormatChat.includes(code)) {
             this.Entity.FormatChat = this.Entity.FormatChat + " " + code;
@@ -2556,8 +2754,12 @@ export class EditForm extends EditableComponent {
         if (!Utils.isNullOrWhiteSpace(code) && this.Entity.FormatChat && !this.Entity.FormatChat.includes(code)) {
             this.Entity.FormatChat = this.Entity.FormatChat + " " + code;
         }
+        this.Entity.FeatureName = this.Meta.Label;
+        this.Entity.FeatureName2 = this.Meta.Name;
+        this.Entity.FeatureName3 = this.Meta.Name.includes("editor") ? this.Meta.Name.replace("-editor", "") : (this.OpenFrom ? this.TabEditor.Meta.Name : "");
         await this.DispatchCustomEvent(this.Meta.Events, "ondecline", this);
         this.Entity.StatusId = 4;
+        this.Entity.IsSend = false;
         var patchModel = this.GetPatchVM();
         patchModel.ReasonOfChange = change;
         var res = await Client.Instance.PostAsync(patchModel, "/api/feature/DeclineEntity");

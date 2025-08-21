@@ -5,6 +5,7 @@ import { Client } from "./clients/client.js";
 import { Component } from "./models/component.js";
 import * as echarts from 'echarts';
 import EventType from "./models/eventType.js";
+import { LangSelect } from "./utils/langSelect.js";
 /**
  * Represents a Chart component that can be rendered and updated.
  */
@@ -216,128 +217,127 @@ export class Chart extends EditableComponent {
             .ClassName("apexcharts-menu");
         this.SearchElement = Html.Context;
         const formatDate = (date) => this.dayjs(date).format("YYYY-MM-DD");
-    
+
         Html.Instance
-            // Tuần này
             .Div.ClassName("apexcharts-menu-item").TabIndex(-1).Event(EventType.Click, (e) => {
                 e.preventDefault();
-                this.Title = "Week";
-    
+                this.Title = LangSelect.Get("Week", this.EditForm.FeatureName);
+
                 let today = this.dayjs();
                 let firstDayOfWeek = today.startOf("week");
                 let lastDayOfWeek = firstDayOfWeek.add(6, "day").add(1, "day");
-    
+
                 this.FromDate = formatDate(firstDayOfWeek);
                 this.ToDate = formatDate(lastDayOfWeek);
                 this.RenderChart().then();
                 this.CloseSearch();
             }).IText("Week", this.EditForm.Meta.Label).End
-    
+
             // Tuần trước
             .Div.ClassName("apexcharts-menu-item").TabIndex(-1).Event(EventType.Click, (e) => {
                 e.preventDefault();
-                this.Title = "Last Week";
-    
+                this.Title = LangSelect.Get("Last Week", this.EditForm.FeatureName);
+
                 let today = this.dayjs();
                 let firstDayOfLastWeek = today.startOf("week").subtract(7, "day");
                 let lastDayOfLastWeek = firstDayOfLastWeek.add(6, "day").add(1, "day");
-    
+
                 this.FromDate = formatDate(firstDayOfLastWeek);
                 this.ToDate = formatDate(lastDayOfLastWeek);
                 this.RenderChart().then();
                 this.CloseSearch();
             }).IText("Last Week", this.EditForm.Meta.Label).End
-    
+
             // Tháng này
             .Div.TabIndex(-1).ClassName("apexcharts-menu-item").Event(EventType.Click, (e) => {
                 e.preventDefault();
-                this.Title = "Month";
-    
+                this.Title = LangSelect.Get("Month", this.EditForm.FeatureName);
+
                 let today = this.dayjs();
                 let firstDayOfMonth = today.startOf("month");
                 let lastDayOfMonth = today.endOf("month").add(1, "day");
-    
+
                 this.FromDate = formatDate(firstDayOfMonth);
                 this.ToDate = formatDate(lastDayOfMonth);
                 this.RenderChart().then();
                 this.CloseSearch();
             }).IText("Month", this.EditForm.Meta.Label).End
-    
+
             // Tháng trước
             .Div.TabIndex(-1).ClassName("apexcharts-menu-item").Event(EventType.Click, (e) => {
                 e.preventDefault();
-                this.Title = "Last Month";
-    
+                this.Title = LangSelect.Get("Last Month", this.EditForm.FeatureName);
+
                 let today = this.dayjs();
                 let firstDayOfLastMonth = today.subtract(1, "month").startOf("month");
                 let lastDayOfLastMonth = firstDayOfLastMonth.endOf("month").add(1, "day");
-    
+
                 this.FromDate = formatDate(firstDayOfLastMonth);
                 this.ToDate = formatDate(lastDayOfLastMonth);
                 this.RenderChart().then();
                 this.CloseSearch();
             }).IText("Last Month", this.EditForm.Meta.Label).End
-    
+
             // Quý này
             .Div.TabIndex(-1).ClassName("apexcharts-menu-item").Event(EventType.Click, () => {
-                this.Title = "Quarter";
-    
+                this.Title = LangSelect.Get("Quarter", this.EditForm.FeatureName);
+
                 let today = this.dayjs();
                 let firstDayOfQuarter = today.startOf("quarter");
                 let lastDayOfQuarter = today.endOf("quarter").add(1, "day");
-    
+
                 this.FromDate = formatDate(firstDayOfQuarter);
                 this.ToDate = formatDate(lastDayOfQuarter);
                 this.RenderChart().then();
                 this.CloseSearch();
             }).IText("Quarter", this.EditForm.Meta.Label).End
-    
+
             // Quý trước
             .Div.TabIndex(-1).ClassName("apexcharts-menu-item").Event(EventType.Click, () => {
-                this.Title = "Last Quarter";
-    
+                this.Title = LangSelect.Get("Last Quarter", this.EditForm.FeatureName);
+
                 let today = this.dayjs();
                 let firstDayOfLastQuarter = today.subtract(1, "quarter").startOf("quarter");
                 let lastDayOfLastQuarter = firstDayOfLastQuarter.endOf("quarter").add(1, "day");
-    
+
                 this.FromDate = formatDate(firstDayOfLastQuarter);
                 this.ToDate = formatDate(lastDayOfLastQuarter);
                 this.RenderChart().then();
                 this.CloseSearch();
             }).IText("Last Quarter", this.EditForm.Meta.Label).End
-    
+
             // Năm này
             .Div.TabIndex(-1).ClassName("apexcharts-menu-item").Event(EventType.Click, () => {
-                this.Title = "Year";
-    
+                this.Title = LangSelect.Get("Year", this.EditForm.FeatureName);
+
                 let today = this.dayjs();
                 let firstDayOfYear = today.startOf("year");
                 let lastDayOfYear = today.endOf("year").add(1, "day");
-    
+
                 this.FromDate = formatDate(firstDayOfYear);
                 this.ToDate = formatDate(lastDayOfYear);
                 this.RenderChart().then();
                 this.CloseSearch();
             }).IText("Year", this.EditForm.Meta.Label).End
-    
+
             // Năm trước
             .Div.TabIndex(-1).ClassName("apexcharts-menu-item").Event(EventType.Click, () => {
-                this.Title = "Last Year";
-    
+                this.Title = LangSelect.Get("Last Year", this.EditForm.FeatureName);
+
                 let today = this.dayjs();
                 let firstDayOfLastYear = today.subtract(1, "year").startOf("year");
                 let lastDayOfLastYear = firstDayOfLastYear.endOf("year").add(1, "day");
-    
+
                 this.FromDate = formatDate(firstDayOfLastYear);
                 this.ToDate = formatDate(lastDayOfLastYear);
                 this.RenderChart().then();
                 this.CloseSearch();
             }).IText("Last Year", this.EditForm.Meta.Label).End
-    
+
             .End.Render();
         this.SearchElement.firstElementChild.focus();
     }
-    
+
     /**
      * Updates the view by potentially clearing existing data and re-rendering the chart.
      * @param {boolean} Force - Forces a data refresh.

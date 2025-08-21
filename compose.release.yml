@@ -24,7 +24,7 @@ services:
     environment:
       - NODE_ENV=development
     command: >
-      sh -c "npm install &&
-             npm run dev -- --host"
+      sh -c "pnpm install &&
+             pnpm run dev -- --host"
     depends_on:
       - coreapi

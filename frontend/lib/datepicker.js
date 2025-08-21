@@ -351,15 +351,10 @@ export class Datepicker extends EditableComponent {
                     }
                 }
                 else {
-                    var index = this.Parent.Children.indexOf(this);
-                    if (this.Parent.Children[index + 1]) {
-                        this.Parent.Children[index + 1].Focus();
-                    }
-                    else {
-                        var groupIndex = this.Parent.Parent.Children.indexOf(this.Parent);
-                        if (this.Parent.Parent.Children[groupIndex + 1] && this.Parent.Parent.Children[groupIndex + 1].Children[0]) {
-                            this.Parent.Parent.Children[groupIndex + 1].Children[0].Focus();
-                        }
+                    var rangeCom = this.EditForm.ChildCom.filter(x => !x.IsButton && !x.IsListView);
+                    var index = rangeCom.indexOf(this);
+                    if (rangeCom[index + 1]) {
+                        rangeCom[index + 1].Focus();
                     }
                 }
             });
@@ -387,15 +382,10 @@ export class Datepicker extends EditableComponent {
                     this.Input.focus();
                 }
                 else {
-                    var index = this.Parent.Children.indexOf(this);
-                    if (this.Parent.Children[index + 1]) {
-                        this.Parent.Children[index + 1].Focus();
-                    }
-                    else {
-                        var groupIndex = this.Parent.Parent.Children.indexOf(this.Parent);
-                        if (this.Parent.Parent.Children[groupIndex + 1] && this.Parent.Parent.Children[groupIndex + 1].Children[0]) {
-                            this.Parent.Parent.Children[groupIndex + 1].Children[0].Focus();
-                        }
+                    var rangeCom = this.EditForm.ChildCom.filter(x => !x.IsButton && !x.IsListView);
+                    var index = rangeCom.indexOf(this);
+                    if (rangeCom[index + 1]) {
+                        rangeCom[index + 1].Focus();
                     }
                 }
             });

@@ -28,38 +28,27 @@ export class PdfReport extends EditableComponent {
     }
 
     Render() {
-        if (this.Element === null) {
-            this.Element = Html.Take(this.ParentElement).Div.GetContext();
-        }
-        this.AddSections();
-        this.RenderInternal();
-    }
-
-    AddSections() {
-        Html.Take(this.Element);
+        Html.Take(this.ParentElement);
         this._rptContent = Html.GetContext();
+        this.Element = Html.GetContext();
+        this.RenderInternal();
     }
 
     RenderInternal() {
         this.DisposeChildren();
-        let template = this.Meta.Template;
-        this.TemplateLoaded(template);
+        this.TemplateLoaded().then();
     }
 
-    TemplateLoaded(template) {
-        if (!template) {
-            throw new Error(PdfReport.TemplateNotFound);
-        }
-        this.LoadData().then(html => {
-            this.Element.innerHTML = html;
-            window.setTimeout(() => {
-                this.Element.querySelectorAll("tbody[data-table]").forEach(ele => {
-                    if (ele.children.length == 0) {
-                        ele.parentElement.remove();
-                    }
-                });
-            }, 10);
-        });
+    async TemplateLoaded() {
+        var html = await this.LoadData();
+        this.ParentElement.innerHTML = html;
+        window.setTimeout(() => {
+            this.Element.querySelectorAll("tbody[data-table]").forEach(ele => {
+                if (ele.children.length == 0) {
+                    ele.parentElement.remove();
+                }
+            });
+        }, 100);
     }
 
     CloneRow(templateRow) {
@@ -70,21 +59,19 @@ export class PdfReport extends EditableComponent {
         return res;
     }
 
-    LoadData() {
-        let promise = new Promise((resolve, reject) => {
-            var gridViews = this.EditForm.ChildCom.filter(x => x.IsListView);
-            var entity = JSON.parse(JSON.stringify(this.Entity));
-            gridViews.forEach((grid, index) => {
-                entity["t" + index] = grid.AllListViewItem.filter(x => !x.GroupRow).map(x => x.Entity);
-                entity["t" + index + "h"] = grid.Header;
-            })
-            Client.Instance.PostAsync({ ComId: this.Meta.Id, Data: entity }, "/api/CreateHtml").then(res => {
-                resolve(res);
-            }).catch(e => {
-                resolve(e.Message);
-            });
-        });
-        return promise;
+    async LoadData() {
+        var gridViews = this.EditForm.ChildCom.filter(x => x.IsListView);
+        var entity = JSON.parse(JSON.stringify(this.Entity));
+        gridViews.forEach((grid, index) => {
+            entity["t" + index] = grid.AllListViewItem.filter(x => !x.GroupRow).map(x => x.Entity);
+            entity["t" + index + "h"] = grid.Header;
+        })
+        try {
+            var res = await Client.Instance.PostAsync({ ComId: this.Meta.Id, Data: entity }, "/api/CreateHtml");
+            return res;
+        } catch (error) {
+            return error.Message;
+        }
     }
 
     UpdateView(force = false, dirty = null, ...componentNames) {

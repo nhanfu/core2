@@ -519,12 +519,12 @@ export class HTML {
      * @param {...any} parameters - Parameters for formatting the translation.
      * @returns {Html} Returns this for chaining.
      */
-    IHtml(langKey, ...parameters) {
+    IHtml(langKey, featureId, ...parameters) {
         if (!langKey) {
             return this;
         }
         const ctx = this.Context;
-        const translated = LangSelect.Get(langKey);
+        const translated = LangSelect.Get(langKey, featureId);
         this.MarkLangProp(ctx, langKey, 'innerHTML', parameters);
         ctx.innerHTML = translated;
         return this;
@@ -588,7 +588,7 @@ export class HTML {
     }
 
     Clear() {
-        if (this.Context != null) this.Context.innerHTML = '';
+        this.Context.innerHTML = '';
         return this;
     }
 
@@ -649,28 +649,6 @@ export class HTML {
     Visibility(visible) {
         var ele = this.Context;
         ele.style.visibility = visible ? "" : "hidden";
-        return this;
-    }
-
-    /** @typedef {import('../models/token.js').Token} Token */
-
-    /** @type {Token} */
-    #_token;
-    get Token() {
-        if (this.#_token == null) {
-            this.#_token = JSON.parse(localStorage.getItem('UserInfo'));
-        }
-        return this.#_token;
-    }
-    Roles(...roles) {
-        if (roles == null || roles.length == 0) return this;
-        const token = this.Token;
-        if (token == null) return this;
-        const userRoles = token.RoleNames ?? [];
-        const hasRole = roles.some(role => userRoles.includes(role));
-        if (!hasRole) {
-            this.Context.style.display = "none";
-        }
         return this;
     }
 }
