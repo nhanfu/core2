@@ -7,10 +7,6 @@
     "IsPublic": true,
     "EntityId": "Booking",
     "Active": true,
-    "InsertedDate": "2024-08-13T19:16:44.6828162",
-    "InsertedBy": "1",
-    "UpdatedDate": "2025-03-31T21:40:16.8094426",
-    "UpdatedBy": "1",
     "IgnoreEncode": true,
     "FeaturePolicies": [
         {
@@ -18,45 +14,35 @@
             "FeatureId": "003b1404-0000-0000-8000-b490ad0d1f26",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "2AECA460-F984-435B-A44D-EC11D08574DE",
             "FeatureId": "003b1404-0000-0000-8000-b490ad0d1f26",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "2EEED39D-FE9E-4181-96C8-ECFE248BD509",
             "FeatureId": "003b1404-0000-0000-8000-b490ad0d1f26",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "3442704F-7E9F-4C38-8BC8-32B470C493CC",
             "FeatureId": "003b1404-0000-0000-8000-b490ad0d1f26",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "41489922-D142-4FCB-844D-1CA1CD568A2F",
             "FeatureId": "003b1404-0000-0000-8000-b490ad0d1f26",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "438D338B-0225-4353-A982-F15CEFFDE3F5",
@@ -66,20 +52,14 @@
             "CanWrite": true,
             "CanDelete": true,
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1",
-            "UpdatedDate": "2024-11-08T17:38:24.1736513",
-            "UpdatedBy": "00781eb8-0000-0000-8000-52bf71dcaef7"
+            "Active": true
         },
         {
             "Id": "4BE47808-3937-494D-8C55-E1CCAD9902BC",
             "FeatureId": "003b1404-0000-0000-8000-b490ad0d1f26",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-18T14:36:06.32",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "720397CD-66B8-4267-83BA-0320C349D0D2",
@@ -89,11 +69,7 @@
             "CanWrite": true,
             "CanDelete": true,
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1",
-            "UpdatedDate": "2024-11-12T10:41:53.4343713",
-            "UpdatedBy": "00781eb8-0000-0000-8000-52bf71dcaef7"
+            "Active": true
         },
         {
             "Id": "92689D10-2FCF-4C27-95E3-2A9BE2655809",
@@ -106,9 +82,7 @@
             "CanDelete": true,
             "CanDeleteAll": true,
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "E5BA8E18-857B-445A-B70F-E4DAF63F2ABE",
@@ -117,11 +91,7 @@
             "CanRead": true,
             "CanWrite": true,
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1",
-            "UpdatedDate": "2024-11-08T17:41:29.282643",
-            "UpdatedBy": "00781eb8-0000-0000-8000-52bf71dcaef7"
+            "Active": true
         }
     ]
 }

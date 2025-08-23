@@ -6,10 +6,6 @@
     "Script": "return {\r\n    Add: function () {\r\n        var cus = {\r\n            ServiceId: 2\r\n        }\r\n        this.OpenPopup(\"partner-editor\", cus);\r\n    },\r\n    Edit: function (btn, entity) {\r\n        debugger;\r\n        this.OpenPopup(\"partner-editor\", entity);\r\n    }\r\n}",
     "Icon": "far fa-users-crown",
     "Active": true,
-    "InsertedDate": "2024-08-22T12:20:26.2212761",
-    "InsertedBy": "1",
-    "UpdatedDate": "2025-03-31T21:44:04.309626",
-    "UpdatedBy": "1",
     "FeaturePolicies": [
         {
             "Id": "3423BCC6-A649-4785-B37D-6D812BB24262",
@@ -18,20 +14,14 @@
             "CanRead": true,
             "CanWrite": true,
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1",
-            "UpdatedDate": "2024-11-08T17:42:22.5474744",
-            "UpdatedBy": "00781eb8-0000-0000-8000-52bf71dcaef7"
+            "Active": true
         },
         {
             "Id": "43D0197A-3CF5-4B3D-8873-C0DFA81E89D3",
             "FeatureId": "006b1850-0000-0000-8000-1fdb95f8d1dc",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-18T14:36:06.32",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "59E0DB89-AEAA-4388-9CC8-7C0FF443A359",
@@ -44,9 +34,7 @@
             "CanDelete": true,
             "CanDeleteAll": true,
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "6F056A64-8EA4-4950-992F-EC3D17E0DAFA",
@@ -55,29 +43,21 @@
             "CanRead": true,
             "CanReadAll": true,
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1",
-            "UpdatedDate": "2024-11-08T17:39:40.1414932",
-            "UpdatedBy": "00781eb8-0000-0000-8000-52bf71dcaef7"
+            "Active": true
         },
         {
             "Id": "90E83336-D4C1-463D-A24F-98324E37C66F",
             "FeatureId": "006b1850-0000-0000-8000-1fdb95f8d1dc",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "92950868-4DD1-4CF4-94C1-B20F1D552196",
             "FeatureId": "006b1850-0000-0000-8000-1fdb95f8d1dc",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "9A75FA89-6B14-4D64-BB53-0E470CFEC3F4",
@@ -89,38 +69,28 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1",
-            "UpdatedDate": "2024-11-12T10:42:55.4225198",
-            "UpdatedBy": "00781eb8-0000-0000-8000-52bf71dcaef7"
+            "Active": true
         },
         {
             "Id": "BB7FF59F-DB9F-4C09-83D8-DAE4231950D0",
             "FeatureId": "006b1850-0000-0000-8000-1fdb95f8d1dc",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "D3265DB6-889F-4A41-84A2-A59994256202",
             "FeatureId": "006b1850-0000-0000-8000-1fdb95f8d1dc",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "DDB38AA8-4220-4E21-AC25-6797FF0E1D74",
             "FeatureId": "006b1850-0000-0000-8000-1fdb95f8d1dc",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         }
     ]
 }

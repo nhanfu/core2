@@ -8,10 +8,6 @@
     "IsMenu": true,
     "EntityId": "AccountTransferSetup",
     "Active": true,
-    "InsertedDate": "2025-01-12T19:44:50.2107436",
-    "InsertedBy": "1",
-    "UpdatedDate": "2025-01-12T20:01:29.1747088",
-    "UpdatedBy": "1",
     "IgnoreEncode": true,
     "ComponentGroup": [
         {
@@ -23,8 +19,6 @@
             "Visibility": true,
             "XxlCol": 12,
             "Active": true,
-            "InsertedDate": "2025-01-12T19:44:50.2767233",
-            "InsertedBy": "1",
             "FeatureId": "01945a8b-ac86-70ad-8a34-c909da8d763b",
             "ReportTypeId": 1,
             "Components": [
@@ -37,16 +31,10 @@
                     "Column": 12,
                     "Row": 50,
                     "CanSearch": true,
-                    "Label": "",
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Visibility": true,
-                    "DefaultVal": "",
                     "Active": true,
-                    "InsertedDate": "2025-01-12T19:44:50.3505298",
-                    "InsertedBy": "1",
-                    "UpdatedDate": "2025-01-12T20:01:04.1545136",
-                    "UpdatedBy": "1",
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from AccountTransferSetup as ds\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds\"\r\n}",
                     "IsRealtime": true,
@@ -68,10 +56,6 @@
             "Visibility": true,
             "Width": "305px",
             "Active": true,
-            "InsertedDate": "2025-01-12T19:44:50.4104439",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-01-12T19:58:32.2552294",
-            "UpdatedBy": "1",
             "FocusSearch": true,
             "FeatureId": "01945a8b-ac86-70ad-8a34-c909da8d763b",
             "Editable": true,
@@ -89,10 +73,6 @@
             "Visibility": true,
             "Width": "102px",
             "Active": true,
-            "InsertedDate": "2025-01-12T19:44:50.4742855",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-01-12T19:58:32.1619768",
-            "UpdatedBy": "1",
             "FocusSearch": true,
             "FeatureId": "01945a8b-ac86-70ad-8a34-c909da8d763b",
             "Editable": true,
@@ -110,10 +90,6 @@
             "Visibility": true,
             "Width": "131px",
             "Active": true,
-            "InsertedDate": "2025-01-12T19:44:50.5270735",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-01-12T19:58:32.1779596",
-            "UpdatedBy": "1",
             "FocusSearch": true,
             "FeatureId": "01945a8b-ac86-70ad-8a34-c909da8d763b",
             "Editable": true,
@@ -134,10 +110,6 @@
             "Visibility": true,
             "Width": "142px",
             "Active": true,
-            "InsertedDate": "2025-01-12T15:14:36.7206721",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-01-12T19:58:32.1840716",
-            "UpdatedBy": "1",
             "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds\"\r\n}",
             "RefName": "AccountNo",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -160,10 +132,6 @@
             "Visibility": true,
             "Width": "142px",
             "Active": true,
-            "InsertedDate": "2025-01-12T15:14:36.7206721",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-01-12T19:58:32.1918295",
-            "UpdatedBy": "1",
             "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds\"\r\n}",
             "RefName": "AccountNo",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -183,10 +151,6 @@
             "Visibility": true,
             "Width": "131px",
             "Active": true,
-            "InsertedDate": "2025-01-12T19:44:50.5270735",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-01-12T19:59:51.8275312",
-            "UpdatedBy": "1",
             "FocusSearch": true,
             "FeatureId": "01945a8b-ac86-70ad-8a34-c909da8d763b",
             "Editable": true,
@@ -204,14 +168,9 @@
             "PlainText": "Select data",
             "Row": 100,
             "Label": "Transfer Side",
-            "Events": "",
             "Visibility": true,
             "Width": "149px",
             "Active": true,
-            "InsertedDate": "2025-01-12T14:22:00.8900465",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-01-12T19:59:10.5134531",
-            "UpdatedBy": "1",
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Debit\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"Credit\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Both sides\"\r\n    }\r\n]",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
             "FocusSearch": true,
@@ -236,10 +195,6 @@
             "Visibility": true,
             "Width": "118px",
             "Active": true,
-            "InsertedDate": "2024-09-16T12:31:10.1023452",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-01-12T20:00:39.2528171",
-            "UpdatedBy": "1",
             "Query": "{\r\n    \"sql\": \"select * from Partner as ds where ServiceId in (5)\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where ServiceId in (5)\"\r\n}",
             "RefName": "Partner",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
@@ -259,9 +214,7 @@
             "FeatureId": "01945a8b-ac86-70ad-8a34-c909da8d763b",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-01-12T19:44:50.2266667",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "1FB776AF-3925-4EE0-8EC2-43DF0B645485",
@@ -274,20 +227,14 @@
             "CanDelete": true,
             "CanDeleteAll": true,
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-01-12T19:44:50.2266667",
-            "InsertedBy": "-1",
-            "UpdatedDate": "2025-01-12T19:51:21.6663831",
-            "UpdatedBy": "1"
+            "Active": true
         },
         {
             "Id": "579B086B-42B7-4096-9290-B6124728BE66",
             "FeatureId": "01945a8b-ac86-70ad-8a34-c909da8d763b",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-01-12T19:44:50.2266667",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "6F478FF0-F1D3-460D-A6F0-2B003A4C7D8C",
@@ -300,65 +247,49 @@
             "CanDelete": true,
             "CanDeleteAll": true,
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-01-12T19:44:50.2266667",
-            "InsertedBy": "-1",
-            "UpdatedDate": "2025-01-12T19:51:13.2082204",
-            "UpdatedBy": "1"
+            "Active": true
         },
         {
             "Id": "795B8B71-82F7-4C91-889D-000554CF9923",
             "FeatureId": "01945a8b-ac86-70ad-8a34-c909da8d763b",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-01-12T19:44:50.2266667",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "A3EA0D87-386B-4C0C-BB2A-D06FC9F91BFB",
             "FeatureId": "01945a8b-ac86-70ad-8a34-c909da8d763b",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-01-12T19:44:50.2266667",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "AF5EEFD5-2A40-4F0B-8DDB-0EA9AEC38B20",
             "FeatureId": "01945a8b-ac86-70ad-8a34-c909da8d763b",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-01-12T19:44:50.2266667",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "BFCC1529-CBE2-4E75-A6B5-E345959796D6",
             "FeatureId": "01945a8b-ac86-70ad-8a34-c909da8d763b",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-01-12T19:44:50.2266667",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "F5663AAE-5C47-4D8C-A62D-885060630606",
             "FeatureId": "01945a8b-ac86-70ad-8a34-c909da8d763b",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-18T14:36:06.32",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "F8160492-29A4-4AC2-A8C7-A8171B680D87",
             "FeatureId": "01945a8b-ac86-70ad-8a34-c909da8d763b",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-01-12T19:44:50.2266667",
-            "InsertedBy": "-1"
+            "Active": true
         }
     ]
 }

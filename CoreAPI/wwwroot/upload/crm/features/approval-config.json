@@ -9,10 +9,6 @@
     "IsMenu": true,
     "EntityId": "ApprovalConfig",
     "Active": true,
-    "InsertedDate": "2024-07-22T22:16:43.8009967",
-    "InsertedBy": "1",
-    "UpdatedDate": "2025-03-31T21:59:07.784878",
-    "UpdatedBy": "1",
     "ComponentGroup": [
         {
             "Id": "003f0868-0000-0000-8000-0e89bc655d0a",
@@ -22,8 +18,6 @@
             "Visibility": true,
             "XxlCol": 12,
             "Active": true,
-            "InsertedDate": "2024-07-22T22:16:43.8985318",
-            "InsertedBy": "1",
             "FeatureId": "003e0814-0000-0000-8000-863f10025afc",
             "ReportTypeId": 1,
             "Components": [
@@ -36,16 +30,10 @@
                     "Column": 12,
                     "Row": 50,
                     "CanSearch": true,
-                    "Label": "",
-                    "Style": "",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
                     "Visibility": true,
                     "Active": true,
-                    "InsertedDate": "2024-07-22T22:16:44.0527873",
-                    "InsertedBy": "1",
-                    "UpdatedDate": "2024-12-28T09:55:37.138793",
-                    "UpdatedBy": "1",
                     "Query": "{\r\n    \"sql\": \"select * from ApprovalConfig as ds where ParentId is null\",\r\n    \"total\": \"select count(ds.Id) as total from ApprovalConfig as ds where ParentId is null\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "ApprovalConfig",
@@ -70,10 +58,6 @@
             "Visibility": true,
             "Width": "149px",
             "Active": true,
-            "InsertedDate": "2024-07-23T11:59:58.1776951",
-            "InsertedBy": "1",
-            "UpdatedDate": "2024-08-21T21:47:41.2051689",
-            "UpdatedBy": "1",
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Voucher Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Voucher Type'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -95,10 +79,6 @@
             "Visibility": true,
             "Width": "52px",
             "Active": true,
-            "InsertedDate": "2024-08-21T21:25:29.917025",
-            "InsertedBy": "1",
-            "UpdatedDate": "2024-12-28T09:55:30.4320761",
-            "UpdatedBy": "1",
             "FocusSearch": true,
             "FeatureId": "003e0814-0000-0000-8000-863f10025afc",
             "MinWidth": "52px",
@@ -119,10 +99,6 @@
             "Visibility": true,
             "Width": "52px",
             "Active": true,
-            "InsertedDate": "2024-08-21T21:25:29.917025",
-            "InsertedBy": "1",
-            "UpdatedDate": "2024-12-28T09:55:30.4320761",
-            "UpdatedBy": "1",
             "FocusSearch": true,
             "FeatureId": "003e0814-0000-0000-8000-863f10025afc",
             "MinWidth": "52px",
@@ -143,8 +119,6 @@
             "Events": "{\"click\":\"Add\"}",
             "Visibility": true,
             "Active": true,
-            "InsertedDate": "2024-08-21T21:27:25.6959887",
-            "InsertedBy": "1",
             "FeatureId": "003e0814-0000-0000-8000-863f10025afc",
             "ReportTypeId": 1
         }
@@ -155,9 +129,7 @@
             "FeatureId": "003e0814-0000-0000-8000-863f10025afc",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "2BBA39E0-5269-4227-9AF7-92B1BC7DCA2A",
@@ -168,83 +140,63 @@
             "CanWrite": true,
             "CanWriteAll": true,
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1",
-            "UpdatedDate": "2025-01-13T20:19:36.3361672",
-            "UpdatedBy": "1"
+            "Active": true
         },
         {
             "Id": "70BABFC6-31D1-4E83-B279-C0DC956B8B5A",
             "FeatureId": "003e0814-0000-0000-8000-863f10025afc",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-18T14:36:06.32",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "71E89335-690D-4047-B390-F347913F8BFD",
             "FeatureId": "003e0814-0000-0000-8000-863f10025afc",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "741C2561-D2F0-46F3-A51B-B413A803A9F4",
             "FeatureId": "003e0814-0000-0000-8000-863f10025afc",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "9245CB4C-31E0-4AB8-B16C-26475809D022",
             "FeatureId": "003e0814-0000-0000-8000-863f10025afc",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "A85EE7E2-2D09-436C-B9DC-A10D8010B7FE",
             "FeatureId": "003e0814-0000-0000-8000-863f10025afc",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "B4B9EFDA-F5C7-4EDE-B19B-3B1BC47ADD08",
             "FeatureId": "003e0814-0000-0000-8000-863f10025afc",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "D3B6AE99-4EC9-4027-9AFC-3C00304EF086",
             "FeatureId": "003e0814-0000-0000-8000-863f10025afc",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "F4DF28F0-99B0-40D8-8496-DAD1C6FE880A",
             "FeatureId": "003e0814-0000-0000-8000-863f10025afc",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         }
     ]
 }

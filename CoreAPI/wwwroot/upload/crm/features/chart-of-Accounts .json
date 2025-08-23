@@ -4,19 +4,8 @@
     "Label": "Chart of Accounts ",
     "ParentId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
     "Order": 0,
-    "ClassName": "",
-    "Style": "",
-    "StyleSheet": "",
-    "Script": "",
-    "Events": "",
     "Icon": "fal fa-code",
-    "ViewClass": "",
-    "EntityId": "",
-    "Description": "",
     "Active": true,
-    "InsertedDate": "2024-07-06T16:00:55.168",
-    "InsertedBy": "",
-    "UpdatedBy": "",
     "ComponentGroup": [
         {
             "Id": "00b3ffd8-0000-0000-8000-2c9d9cfd3929",
@@ -25,10 +14,6 @@
             "ComponentType": "Section",
             "Visibility": true,
             "Active": true,
-            "InsertedDate": "2024-07-06T16:07:00.83",
-            "InsertedBy": "1",
-            "UpdatedDate": "2024-07-06T16:07:06.662",
-            "UpdatedBy": "1",
             "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
             "ReportTypeId": 1,
             "Components": [
@@ -41,16 +26,10 @@
                     "Column": 12,
                     "Row": 50,
                     "CanSearch": true,
-                    "Label": "",
                     "ClassName": "sticky",
-                    "Style": "",
                     "ChildStyle": "height: calc(100vh - 11rem)",
                     "Visibility": true,
                     "Active": true,
-                    "InsertedDate": "2024-07-06T16:08:00.754",
-                    "InsertedBy": "1",
-                    "UpdatedDate": "2024-07-06T16:08:21.514",
-                    "UpdatedBy": "1",
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds\"\r\n}",
                     "IsRealtime": true,
@@ -71,11 +50,6 @@
             "Label": "No",
             "Visibility": true,
             "Active": true,
-            "InsertedDate": "2024-07-06T16:09:20.15",
-            "InsertedBy": "1",
-            "UpdatedDate": "2024-07-06T16:13:02.06",
-            "UpdatedBy": "1",
-            "Query": "",
             "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
             "Editable": true,
             "EntityId": "AccountNo",
@@ -90,10 +64,6 @@
             "Label": "Code",
             "Visibility": true,
             "Active": true,
-            "InsertedDate": "2024-07-06T16:09:21.602",
-            "InsertedBy": "1",
-            "UpdatedDate": "2024-07-06T16:13:03.519",
-            "UpdatedBy": "1",
             "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
             "Editable": true,
             "EntityId": "AccountNo",
@@ -107,10 +77,6 @@
             "Label": "Name",
             "Visibility": true,
             "Active": true,
-            "InsertedDate": "2024-07-06T16:09:22.661",
-            "InsertedBy": "1",
-            "UpdatedDate": "2024-07-06T16:13:04.71",
-            "UpdatedBy": "1",
             "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
             "Editable": true,
             "EntityId": "AccountNo",
@@ -124,10 +90,6 @@
             "Label": "NameEnglish",
             "Visibility": true,
             "Active": true,
-            "InsertedDate": "2024-07-06T16:09:23.778",
-            "InsertedBy": "1",
-            "UpdatedDate": "2024-07-06T16:13:06.944",
-            "UpdatedBy": "1",
             "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
             "Editable": true,
             "EntityId": "AccountNo",
@@ -144,10 +106,6 @@
             "Label": "Type",
             "Visibility": true,
             "Active": true,
-            "InsertedDate": "2024-07-06T16:09:23.778",
-            "InsertedBy": "1",
-            "UpdatedDate": "2024-07-06T16:13:08.741",
-            "UpdatedBy": "1",
             "Query": "{\r\n    \"sql\": \"select * from MasterData as ds where ParentId = '00f4ff84-0000-0000-8000-23de57f90690'\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds where ParentId = '00f4ff84-0000-0000-8000-23de57f90690'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -164,10 +122,6 @@
             "Label": "Reason",
             "Visibility": true,
             "Active": true,
-            "InsertedDate": "2024-07-06T16:09:23.778",
-            "InsertedBy": "1",
-            "UpdatedDate": "2024-07-06T16:13:10.57",
-            "UpdatedBy": "1",
             "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
             "Editable": true,
             "EntityId": "AccountNo",
@@ -180,83 +134,63 @@
             "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "147F9C62-C896-4212-A4BF-2F7826CB94C6",
             "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "17CD428E-0CF0-46BC-92B8-F753798E8922",
             "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-18T14:36:06.32",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "21919908-A2C7-4A54-ABC6-D2678CF0BF54",
             "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "5C7C97B7-80FD-47FC-AF3D-BD18C24EC0EB",
             "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "82BE449C-4C90-450F-9233-458A896ED7A1",
             "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "84577B91-69E0-467F-A07D-F204464BE555",
             "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "B6ADDBD2-F6C0-45AB-90E5-EE2FA7B15074",
             "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "DCDF2C67-6BC5-44B2-A77F-B22695B23307",
             "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1",
-            "UpdatedDate": "2025-03-09T17:13:38.6543178",
-            "UpdatedBy": "1"
+            "Active": true
         },
         {
             "Id": "FEB8A73E-C83D-4DE9-A946-4E4F9DD26256",
@@ -269,9 +203,7 @@
             "CanDelete": true,
             "CanDeleteAll": true,
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         }
     ]
 }

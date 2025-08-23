@@ -2,37 +2,20 @@
     "Id": "003d0184-0000-0000-8000-be56c12ca6ae",
     "Name": "terminal-editor",
     "Label": "Terminal Editor",
-    "ParentId": "",
     "Order": 0,
-    "ClassName": "",
     "Style": "width:500px",
-    "StyleSheet": "",
-    "Script": "",
-    "Events": "",
-    "Icon": "",
-    "ViewClass": "",
     "EntityId": "Terminal",
-    "Description": "",
     "Active": true,
-    "InsertedDate": "2024-07-10T20:41:39.252",
-    "InsertedBy": "",
-    "UpdatedDate": "2024-07-20T12:00:19.0283544",
-    "UpdatedBy": "1",
     "ComponentGroup": [
         {
             "Id": "00350168-0000-0000-8000-b5ad4f4a56d5",
             "FieldName": "Left",
             "Order": 1,
             "ComponentType": "Section",
-            "Label": "",
             "ClassName": "card-body",
             "Visibility": true,
             "XxlCol": 12,
             "Active": true,
-            "InsertedDate": "2024-07-10T21:02:12.901",
-            "InsertedBy": "1",
-            "UpdatedDate": "2024-07-20T12:00:44.1110141",
-            "UpdatedBy": "1",
             "FeatureId": "003d0184-0000-0000-8000-be56c12ca6ae",
             "ParentId": "006101bc-0000-0000-8000-56fd91893632",
             "XxlOuterColumn": 12,
@@ -49,10 +32,6 @@
                     "ShowLabel": true,
                     "Visibility": true,
                     "Active": true,
-                    "InsertedDate": "2024-07-10T21:04:09.031",
-                    "InsertedBy": "1",
-                    "UpdatedDate": "2024-07-10T21:20:13.089",
-                    "UpdatedBy": "1",
                     "FeatureId": "003d0184-0000-0000-8000-be56c12ca6ae",
                     "ReportTypeId": 1
                 },
@@ -67,10 +46,6 @@
                     "ShowLabel": true,
                     "Visibility": true,
                     "Active": true,
-                    "InsertedDate": "2024-07-10T21:04:12.162",
-                    "InsertedBy": "1",
-                    "UpdatedDate": "2024-07-10T21:20:13.438",
-                    "UpdatedBy": "1",
                     "FeatureId": "003d0184-0000-0000-8000-be56c12ca6ae",
                     "ReportTypeId": 1
                 },
@@ -86,10 +61,6 @@
                     "ShowLabel": true,
                     "Visibility": true,
                     "Active": true,
-                    "InsertedDate": "2024-07-10T21:04:17.746",
-                    "InsertedBy": "1",
-                    "UpdatedDate": "2024-07-10T21:20:13.852",
-                    "UpdatedBy": "1",
                     "FeatureId": "003d0184-0000-0000-8000-be56c12ca6ae",
                     "ReportTypeId": 1
                 },
@@ -106,18 +77,11 @@
                     "Label": "Country",
                     "ShowLabel": true,
                     "Visibility": true,
-                    "Width": "",
                     "Active": true,
-                    "InsertedDate": "2025-02-14T10:23:33.4584688",
-                    "InsertedBy": "1",
-                    "UpdatedDate": "2025-02-14T10:24:12.8248444",
-                    "UpdatedBy": "1",
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Country Manage'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Country Manage'\"\r\n}",
                     "RefName": "MasterData",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
                     "FeatureId": "003d0184-0000-0000-8000-be56c12ca6ae",
-                    "MinWidth": "",
-                    "MaxWidth": "",
                     "EntityId": "Terminal",
                     "ReportTypeId": 1
                 },
@@ -134,18 +98,11 @@
                     "Label": "Zone",
                     "ShowLabel": true,
                     "Visibility": true,
-                    "Width": "",
                     "Active": true,
-                    "InsertedDate": "2025-02-14T10:23:33.9377907",
-                    "InsertedBy": "1",
-                    "UpdatedDate": "2025-02-14T10:24:16.2231188",
-                    "UpdatedBy": "1",
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Country Manage'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Country Manage'\"\r\n}",
                     "RefName": "MasterData",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
                     "FeatureId": "003d0184-0000-0000-8000-be56c12ca6ae",
-                    "MinWidth": "",
-                    "MaxWidth": "",
                     "EntityId": "Terminal",
                     "ReportTypeId": 1
                 },
@@ -162,18 +119,11 @@
                     "Label": "Service",
                     "ShowLabel": true,
                     "Visibility": true,
-                    "Width": "",
                     "Active": true,
-                    "InsertedDate": "2025-02-14T10:23:34.508069",
-                    "InsertedBy": "1",
-                    "UpdatedDate": "2025-02-14T10:24:19.2310397",
-                    "UpdatedBy": "1",
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Terminal Service'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Terminal Service'\"\r\n}",
                     "RefName": "MasterData",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
                     "FeatureId": "003d0184-0000-0000-8000-be56c12ca6ae",
-                    "MinWidth": "",
-                    "MaxWidth": "",
                     "EntityId": "Terminal",
                     "IsMultiple": true,
                     "ReportTypeId": 1
@@ -189,10 +139,6 @@
             "Visibility": true,
             "XxlCol": 12,
             "Active": true,
-            "InsertedDate": "2024-07-10T21:02:15.383",
-            "InsertedBy": "1",
-            "UpdatedDate": "2024-07-10T21:05:29.808",
-            "UpdatedBy": "1",
             "FeatureId": "003d0184-0000-0000-8000-be56c12ca6ae",
             "ReportTypeId": 1,
             "Components": [
@@ -210,10 +156,6 @@
                     "Events": "{ \"click\" : \"SavePatch\" }",
                     "Visibility": true,
                     "Active": true,
-                    "InsertedDate": "2024-07-10T21:25:56.584",
-                    "InsertedBy": "1",
-                    "UpdatedDate": "2024-07-10T21:26:46.224",
-                    "UpdatedBy": "1",
                     "FeatureId": "003d0184-0000-0000-8000-be56c12ca6ae",
                     "ReportTypeId": 1
                 }
@@ -224,15 +166,9 @@
             "FieldName": "Container",
             "Order": 1,
             "ComponentType": "Section",
-            "Label": "",
-            "ClassName": "",
             "Visibility": true,
             "XxlCol": 12,
             "Active": true,
-            "InsertedDate": "2024-07-10T21:02:12.901",
-            "InsertedBy": "1",
-            "UpdatedDate": "2024-07-10T21:14:27.245",
-            "UpdatedBy": "1",
             "FeatureId": "003d0184-0000-0000-8000-be56c12ca6ae",
             "XxlOuterColumn": 0,
             "ReportTypeId": 1
@@ -251,10 +187,6 @@
             "Visibility": true,
             "Width": "357px",
             "Active": true,
-            "InsertedDate": "2024-07-10T21:23:03.886",
-            "InsertedBy": "1",
-            "UpdatedDate": "2024-08-21T21:30:00.0030923",
-            "UpdatedBy": "1",
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Terminal Service'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Terminal Service'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -281,10 +213,6 @@
             "Events": "{ \"click\" : \"SavePatch\" }",
             "Visibility": true,
             "Active": true,
-            "InsertedDate": "2024-07-10T21:25:56.584",
-            "InsertedBy": "1",
-            "UpdatedDate": "2024-07-10T21:26:46.224",
-            "UpdatedBy": "1",
             "FeatureId": "003d0184-0000-0000-8000-be56c12ca6ae",
             "ReportTypeId": 1
         }
@@ -295,54 +223,42 @@
             "FeatureId": "003d0184-0000-0000-8000-be56c12ca6ae",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "33BFD039-60CA-4D23-B1FB-7EF31CDEAA8B",
             "FeatureId": "003d0184-0000-0000-8000-be56c12ca6ae",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "4E77DD0D-3B26-4F6C-97A6-CF905EFD642B",
             "FeatureId": "003d0184-0000-0000-8000-be56c12ca6ae",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "4F0C6C74-EC1B-44AA-8213-530CBD72A81A",
             "FeatureId": "003d0184-0000-0000-8000-be56c12ca6ae",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-18T14:36:06.32",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "5D2EA1FE-B6D5-4832-BEFC-ED9A1709DFF8",
             "FeatureId": "003d0184-0000-0000-8000-be56c12ca6ae",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "62A72BAE-98D2-45EE-8A6F-B1BDF520440F",
             "FeatureId": "003d0184-0000-0000-8000-be56c12ca6ae",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "84800ACE-AA5E-457D-8AD0-A79014FB7939",
@@ -355,36 +271,28 @@
             "CanDelete": true,
             "CanDeleteAll": true,
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "948F9EE5-D384-40A1-9A73-F33B4D181363",
             "FeatureId": "003d0184-0000-0000-8000-be56c12ca6ae",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "A6B43D19-CE63-4840-BDB7-27607AFD748F",
             "FeatureId": "003d0184-0000-0000-8000-be56c12ca6ae",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "CCE12994-4E78-41D7-A0C5-8C54A47EE226",
             "FeatureId": "003d0184-0000-0000-8000-be56c12ca6ae",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         }
     ]
 }

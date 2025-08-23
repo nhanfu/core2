@@ -9,24 +9,15 @@
     "IsMenu": true,
     "EntityId": "MarkupPricing",
     "Active": true,
-    "InsertedDate": "2024-08-16T20:57:45.4929222",
-    "InsertedBy": "1",
-    "UpdatedDate": "2025-03-31T09:18:33.4908053",
-    "UpdatedBy": "1",
     "ComponentGroup": [
         {
             "Id": "00aa15f8-0000-0000-8000-8df06ba28b87",
             "Order": 1,
             "ComponentType": "Section",
-            "Label": "",
             "ClassName": "scroll-content",
             "Visibility": true,
             "XxlCol": 12,
             "Active": true,
-            "InsertedDate": "2024-08-16T20:57:45.629507",
-            "InsertedBy": "1",
-            "UpdatedDate": "2024-08-16T20:58:46.2947003",
-            "UpdatedBy": "1",
             "FeatureId": "00aa1560-0000-0000-8000-737cc8b290a1",
             "DisplayBadge": true,
             "ReportTypeId": 1,
@@ -42,19 +33,12 @@
                     "CanSearch": true,
                     "Label": "MarkupPricing",
                     "ClassName": "sticky",
-                    "Style": "",
-                    "Events": "",
                     "Visibility": true,
                     "Active": true,
-                    "InsertedDate": "2024-08-16T20:57:45.6852323",
-                    "InsertedBy": "1",
-                    "UpdatedDate": "2024-09-18T17:55:41.6233104",
-                    "UpdatedBy": "1",
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from MarkupPricing as ds\",\r\n    \"total\": \"select count(ds.Id) as total from MarkupPricing as ds\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "MarkupPricing",
-                    "PreQuery": "",
                     "FeatureId": "00aa1560-0000-0000-8000-737cc8b290a1",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
@@ -75,10 +59,6 @@
             "Visibility": true,
             "Width": "85px",
             "Active": true,
-            "InsertedDate": "2024-09-14T12:43:54.1078859",
-            "InsertedBy": "1",
-            "UpdatedDate": "2024-09-14T12:43:58.7688789",
-            "UpdatedBy": "1",
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
@@ -101,10 +81,6 @@
             "Visibility": true,
             "Width": "240px",
             "Active": true,
-            "InsertedDate": "2024-08-16T20:57:46.4444929",
-            "InsertedBy": "1",
-            "UpdatedDate": "2024-08-16T21:10:33.4141535",
-            "UpdatedBy": "1",
             "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\"\r\n}",
             "RefName": "Partner",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
@@ -129,10 +105,6 @@
             "Visibility": true,
             "Width": "116px",
             "Active": true,
-            "InsertedDate": "2024-08-16T20:57:46.4931041",
-            "InsertedBy": "1",
-            "UpdatedDate": "2024-08-16T21:10:33.416789",
-            "UpdatedBy": "1",
             "Query": "{ \"sql\": \"select * from [Terminal] as ds\", \"total\": \"select count(ds.Id) as total from [Terminal] as ds\" }",
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
@@ -156,10 +128,6 @@
             "Visibility": true,
             "Width": "132px",
             "Active": true,
-            "InsertedDate": "2024-08-16T20:57:46.6068753",
-            "InsertedBy": "1",
-            "UpdatedDate": "2024-08-16T21:10:33.41944",
-            "UpdatedBy": "1",
             "Query": "{ \"sql\": \"select * from [Terminal] as ds\", \"total\": \"select count(ds.Id) as total from [Terminal] as ds\" }",
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
@@ -183,10 +151,6 @@
             "Visibility": true,
             "Width": "102px",
             "Active": true,
-            "InsertedDate": "2024-08-16T21:09:00.8908319",
-            "InsertedBy": "1",
-            "UpdatedDate": "2024-08-16T21:10:33.4220151",
-            "UpdatedBy": "1",
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Pricing Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Pricing Type'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -207,10 +171,6 @@
             "Visibility": true,
             "Width": "136px",
             "Active": true,
-            "InsertedDate": "2024-08-16T21:00:02.1996544",
-            "InsertedBy": "1",
-            "UpdatedDate": "2024-08-16T21:10:33.4062864",
-            "UpdatedBy": "1",
             "FocusSearch": true,
             "FeatureId": "00aa1560-0000-0000-8000-737cc8b290a1",
             "Editable": true,
@@ -231,10 +191,6 @@
             "Visibility": true,
             "Width": "123px",
             "Active": true,
-            "InsertedDate": "2024-08-16T21:00:23.8049754",
-            "InsertedBy": "1",
-            "UpdatedDate": "2024-08-16T21:10:33.4111527",
-            "UpdatedBy": "1",
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"FCL\",\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"LCL\",\r\n    }, {\r\n        \"Id\": 3,\r\n        \"Name\": \"Consol\",\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Trucking\",\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"Logistics\",\r\n    },\r\n    {\r\n        \"Id\": 6,\r\n        \"Name\": \"Air Export\",\r\n    },\r\n    {\r\n        \"Id\": 7,\r\n        \"Name\": \"Air Import\",\r\n    }\r\n]",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
@@ -257,10 +213,6 @@
             "Visibility": true,
             "Width": "102px",
             "Active": true,
-            "InsertedDate": "2024-08-16T21:00:53.3629316",
-            "InsertedBy": "1",
-            "UpdatedDate": "2024-08-16T21:10:33.3923997",
-            "UpdatedBy": "1",
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Markup Pricing Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Markup Pricing Type'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -281,10 +233,6 @@
             "Visibility": true,
             "Width": "136px",
             "Active": true,
-            "InsertedDate": "2024-08-16T21:01:11.5732114",
-            "InsertedBy": "1",
-            "UpdatedDate": "2024-08-16T21:10:33.4277203",
-            "UpdatedBy": "1",
             "FocusSearch": true,
             "FeatureId": "00aa1560-0000-0000-8000-737cc8b290a1",
             "Editable": true,
@@ -300,18 +248,14 @@
             "FeatureId": "00aa1560-0000-0000-8000-737cc8b290a1",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "62B54387-9B0F-4800-AC77-B64A3CB8F1B3",
             "FeatureId": "00aa1560-0000-0000-8000-737cc8b290a1",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-18T14:36:06.32",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "744555CF-8671-4176-B66B-0D99938652F9",
@@ -321,20 +265,14 @@
             "CanWrite": true,
             "CanDelete": true,
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1",
-            "UpdatedDate": "2024-11-12T12:38:59.9302274",
-            "UpdatedBy": "00781eb8-0000-0000-8000-52bf71dcaef7"
+            "Active": true
         },
         {
             "Id": "961F40CD-20F4-46EE-AAD7-E28F83011449",
             "FeatureId": "00aa1560-0000-0000-8000-737cc8b290a1",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "9650F45D-8FEA-487A-82C4-B68E71440213",
@@ -343,29 +281,21 @@
             "CanRead": true,
             "CanReadAll": true,
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1",
-            "UpdatedDate": "2024-11-08T17:32:11.7296889",
-            "UpdatedBy": "00781eb8-0000-0000-8000-52bf71dcaef7"
+            "Active": true
         },
         {
             "Id": "9AB428B7-DC32-4D03-A2EF-3F9E77100C50",
             "FeatureId": "00aa1560-0000-0000-8000-737cc8b290a1",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "C3BCA685-B782-4A4D-A5E8-F709EFD9D5AB",
             "FeatureId": "00aa1560-0000-0000-8000-737cc8b290a1",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "DF559AED-A2F8-4023-A953-50AD94BC3280",
@@ -378,27 +308,21 @@
             "CanDelete": true,
             "CanDeleteAll": true,
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "E5A30EC1-F714-4A0D-9643-822428B3C8B1",
             "FeatureId": "00aa1560-0000-0000-8000-737cc8b290a1",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "FCB9E359-5CFE-4976-ACEF-4B0B6A7ED994",
             "FeatureId": "00aa1560-0000-0000-8000-737cc8b290a1",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         }
     ]
 }

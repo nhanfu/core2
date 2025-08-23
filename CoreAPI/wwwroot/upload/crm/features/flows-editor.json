@@ -9,10 +9,6 @@
     "Events": "{\r\n    \"onsave\": \"OnSave\",\r\n    \"onsaveadd\": \"OnSaveAdd\"\r\n}",
     "EntityId": "Feature",
     "Active": true,
-    "InsertedDate": "2025-02-09T08:49:54.5034424",
-    "InsertedBy": "1",
-    "UpdatedDate": "2025-02-09T09:24:43.6882606",
-    "UpdatedBy": "1",
     "ComponentGroup": [
         {
             "Id": "0194e866-16ce-7493-8598-6649808d0985",
@@ -24,8 +20,6 @@
             "XsCol": 6,
             "XxlCol": 12,
             "Active": true,
-            "InsertedDate": "2025-02-09T08:49:54.5678861",
-            "InsertedBy": "1",
             "DisabledExp": "this.Entity.ActionId == 2",
             "FeatureId": "0194e865-fe96-7689-a7d3-9dcfe792bef3",
             "ReportTypeId": 1
@@ -39,8 +33,6 @@
             "Visibility": true,
             "XxlCol": 12,
             "Active": true,
-            "InsertedDate": "2025-02-09T08:49:54.624696",
-            "InsertedBy": "1",
             "FeatureId": "0194e865-fe96-7689-a7d3-9dcfe792bef3",
             "ParentId": "0194e866-16ce-7493-8598-6649808d0985",
             "XxlOuterColumn": 12,
@@ -59,10 +51,6 @@
                     "Events": "{\"change\":\"GetInfo\"}",
                     "Visibility": true,
                     "Active": true,
-                    "InsertedDate": "2025-02-09T08:49:54.681725",
-                    "InsertedBy": "1",
-                    "UpdatedDate": "2025-02-09T09:24:58.0104648",
-                    "UpdatedBy": "1",
                     "FeatureId": "0194e865-fe96-7689-a7d3-9dcfe792bef3",
                     "ReportTypeId": 1
                 },
@@ -77,10 +65,6 @@
                     "ShowLabel": true,
                     "Visibility": true,
                     "Active": true,
-                    "InsertedDate": "2025-02-09T08:49:54.7539524",
-                    "InsertedBy": "1",
-                    "UpdatedDate": "2025-02-09T09:24:58.5406987",
-                    "UpdatedBy": "1",
                     "FeatureId": "0194e865-fe96-7689-a7d3-9dcfe792bef3",
                     "ReportTypeId": 1
                 }
@@ -95,10 +79,6 @@
             "Visibility": true,
             "XxlCol": 12,
             "Active": true,
-            "InsertedDate": "2025-02-09T08:49:55.6467083",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-02-09T09:05:20.5314202",
-            "UpdatedBy": "1",
             "FeatureId": "0194e865-fe96-7689-a7d3-9dcfe792bef3",
             "ParentId": "0194e866-16ce-7493-8598-6649808d0985",
             "IsTab": true,
@@ -118,10 +98,6 @@
                     "Visibility": true,
                     "DefaultVal": "{\r\n    \"FeatureId\": this.EditForm.Entity.Id\r\n}",
                     "Active": true,
-                    "InsertedDate": "2025-02-09T08:49:55.7124502",
-                    "InsertedBy": "1",
-                    "UpdatedDate": "2025-02-09T09:30:45.4532159",
-                    "UpdatedBy": "1",
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from Component as ds where FeatureId = '{FeatureId}' and ComponentType = 'Section'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where FeatureId = '{FeatureId}' and ComponentType = 'Section'\"\r\n}",
                     "RefName": "Component",
@@ -142,8 +118,6 @@
             "Visibility": true,
             "XxlCol": 12,
             "Active": true,
-            "InsertedDate": "2025-02-09T08:49:55.7932477",
-            "InsertedBy": "1",
             "DisabledExp": "this.Entity.ActionId == 2",
             "FeatureId": "0194e865-fe96-7689-a7d3-9dcfe792bef3",
             "ReportTypeId": 1
@@ -157,8 +131,6 @@
             "Visibility": true,
             "XxlCol": 12,
             "Active": true,
-            "InsertedDate": "2025-02-09T08:49:56.0651473",
-            "InsertedBy": "1",
             "FeatureId": "0194e865-fe96-7689-a7d3-9dcfe792bef3",
             "XxlOuterColumn": 12,
             "ReportTypeId": 1,
@@ -177,8 +149,6 @@
                     "Events": "{ \"click\" : \"SaveAs\" }",
                     "Visibility": true,
                     "Active": true,
-                    "InsertedDate": "2025-02-09T08:49:56.1213951",
-                    "InsertedBy": "1",
                     "FeatureId": "0194e865-fe96-7689-a7d3-9dcfe792bef3",
                     "ReportTypeId": 1
                 },
@@ -194,8 +164,6 @@
                     "Events": "{ \"click\" : \"Prospect\" }",
                     "Visibility": true,
                     "Active": true,
-                    "InsertedDate": "2025-02-09T08:49:56.1798526",
-                    "InsertedBy": "1",
                     "FeatureId": "0194e865-fe96-7689-a7d3-9dcfe792bef3",
                     "ShowExp": "this.Entity.ActionId == 1",
                     "ReportTypeId": 1
@@ -213,8 +181,6 @@
                     "Events": "{ \"click\" : \"SaveAdd\" }",
                     "Visibility": true,
                     "Active": true,
-                    "InsertedDate": "2025-02-09T08:49:56.2390615",
-                    "InsertedBy": "1",
                     "FeatureId": "0194e865-fe96-7689-a7d3-9dcfe792bef3",
                     "ReportTypeId": 1
                 },
@@ -231,8 +197,6 @@
                     "Events": "{ \"click\" : \"SavePatch\" }",
                     "Visibility": true,
                     "Active": true,
-                    "InsertedDate": "2025-02-09T08:49:56.2876895",
-                    "InsertedBy": "1",
                     "FeatureId": "0194e865-fe96-7689-a7d3-9dcfe792bef3",
                     "ReportTypeId": 1
                 }
@@ -249,10 +213,6 @@
             "Visibility": true,
             "Width": "51px",
             "Active": true,
-            "InsertedDate": "2025-02-09T08:49:56.3484238",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-02-09T09:28:40.4959473",
-            "UpdatedBy": "1",
             "FocusSearch": true,
             "FeatureId": "0194e865-fe96-7689-a7d3-9dcfe792bef3",
             "Editable": true,
@@ -270,10 +230,6 @@
             "Visibility": true,
             "Width": "230px",
             "Active": true,
-            "InsertedDate": "2025-02-09T08:49:56.6594373",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-02-09T09:28:41.41165",
-            "UpdatedBy": "1",
             "FocusSearch": true,
             "FeatureId": "0194e865-fe96-7689-a7d3-9dcfe792bef3",
             "Editable": true,
@@ -291,10 +247,6 @@
             "Visibility": true,
             "Width": "158px",
             "Active": true,
-            "InsertedDate": "2025-02-09T08:49:56.7061418",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-02-09T09:28:37.5889951",
-            "UpdatedBy": "1",
             "FocusSearch": true,
             "FeatureId": "0194e865-fe96-7689-a7d3-9dcfe792bef3",
             "Editable": true,
@@ -312,10 +264,6 @@
             "Visibility": true,
             "Width": "188px",
             "Active": true,
-            "InsertedDate": "2025-02-09T08:49:56.8180128",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-02-09T09:28:38.6252897",
-            "UpdatedBy": "1",
             "FocusSearch": true,
             "FeatureId": "0194e865-fe96-7689-a7d3-9dcfe792bef3",
             "Editable": true,
@@ -333,10 +281,6 @@
             "Visibility": true,
             "Width": "146px",
             "Active": true,
-            "InsertedDate": "2025-02-09T08:49:56.9137218",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-02-09T09:35:43.2126048",
-            "UpdatedBy": "1",
             "FocusSearch": true,
             "FeatureId": "0194e865-fe96-7689-a7d3-9dcfe792bef3",
             "Editable": true,
@@ -354,10 +298,6 @@
             "Visibility": true,
             "Width": "180px",
             "Active": true,
-            "InsertedDate": "2025-02-09T08:49:57.0915084",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-02-09T09:28:39.9296962",
-            "UpdatedBy": "1",
             "FocusSearch": true,
             "FeatureId": "0194e865-fe96-7689-a7d3-9dcfe792bef3",
             "Editable": true,
@@ -375,10 +315,6 @@
             "Visibility": true,
             "Width": "175px",
             "Active": true,
-            "InsertedDate": "2025-02-09T08:49:57.2516174",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-02-09T09:28:39.2006767",
-            "UpdatedBy": "1",
             "FocusSearch": true,
             "FeatureId": "0194e865-fe96-7689-a7d3-9dcfe792bef3",
             "Editable": true,
@@ -403,8 +339,6 @@
             "Events": "{ \"click\" : \"SaveAs\" }",
             "Visibility": true,
             "Active": true,
-            "InsertedDate": "2025-02-09T08:49:56.1213951",
-            "InsertedBy": "1",
             "FeatureId": "0194e865-fe96-7689-a7d3-9dcfe792bef3",
             "ReportTypeId": 1
         },
@@ -420,8 +354,6 @@
             "Events": "{ \"click\" : \"Prospect\" }",
             "Visibility": true,
             "Active": true,
-            "InsertedDate": "2025-02-09T08:49:56.1798526",
-            "InsertedBy": "1",
             "FeatureId": "0194e865-fe96-7689-a7d3-9dcfe792bef3",
             "ShowExp": "this.Entity.ActionId == 1",
             "ReportTypeId": 1
@@ -439,8 +371,6 @@
             "Events": "{ \"click\" : \"SaveAdd\" }",
             "Visibility": true,
             "Active": true,
-            "InsertedDate": "2025-02-09T08:49:56.2390615",
-            "InsertedBy": "1",
             "FeatureId": "0194e865-fe96-7689-a7d3-9dcfe792bef3",
             "ReportTypeId": 1
         },
@@ -457,8 +387,6 @@
             "Events": "{ \"click\" : \"SavePatch\" }",
             "Visibility": true,
             "Active": true,
-            "InsertedDate": "2025-02-09T08:49:56.2876895",
-            "InsertedBy": "1",
             "FeatureId": "0194e865-fe96-7689-a7d3-9dcfe792bef3",
             "ReportTypeId": 1
         }
@@ -469,18 +397,14 @@
             "FeatureId": "0194e865-fe96-7689-a7d3-9dcfe792bef3",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-09T08:49:54.5133333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "14A04D89-B8A9-4B55-8964-8C24D5DB2ADF",
             "FeatureId": "0194e865-fe96-7689-a7d3-9dcfe792bef3",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-09T08:49:54.5133333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "381EC7EB-A9E0-46A8-AFB2-CA3BD9CEC7A6",
@@ -493,47 +417,35 @@
             "CanDelete": true,
             "CanDeleteAll": true,
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-09T08:49:54.5133333",
-            "InsertedBy": "-1",
-            "UpdatedDate": "2025-02-09T08:58:02.0935355",
-            "UpdatedBy": "1"
+            "Active": true
         },
         {
             "Id": "3AE6CCE6-8675-47F1-952F-49E1849461EB",
             "FeatureId": "0194e865-fe96-7689-a7d3-9dcfe792bef3",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-09T08:49:54.5133333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "4E9E152B-A210-45F3-9EAD-D67DC90B2BF6",
             "FeatureId": "0194e865-fe96-7689-a7d3-9dcfe792bef3",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-09T08:49:54.5133333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "5C034FEA-B9E9-4AC0-A91E-7F553F655B69",
             "FeatureId": "0194e865-fe96-7689-a7d3-9dcfe792bef3",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-09T08:49:54.5133333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "688EF4EC-8182-4B98-8FA0-74A00EF3772F",
             "FeatureId": "0194e865-fe96-7689-a7d3-9dcfe792bef3",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-09T08:49:54.5133333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "834341F9-3828-4398-B072-0178979555F6",
@@ -546,29 +458,21 @@
             "CanDelete": true,
             "CanDeleteAll": true,
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-09T08:49:54.5133333",
-            "InsertedBy": "-1",
-            "UpdatedDate": "2025-02-09T08:58:09.4214674",
-            "UpdatedBy": "1"
+            "Active": true
         },
         {
             "Id": "DE35C855-CCC4-484A-8C6F-ED95703153F8",
             "FeatureId": "0194e865-fe96-7689-a7d3-9dcfe792bef3",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-09T08:49:54.5133333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "F7E77F97-E23D-4898-A572-81404018EBB4",
             "FeatureId": "0194e865-fe96-7689-a7d3-9dcfe792bef3",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-18T14:36:06.32",
-            "InsertedBy": "-1"
+            "Active": true
         }
     ]
 }

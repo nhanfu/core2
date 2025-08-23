@@ -7,10 +7,6 @@
     "IsPublic": true,
     "EntityId": "Shipment",
     "Active": true,
-    "InsertedDate": "2024-08-04T20:01:04.6379511",
-    "InsertedBy": "1",
-    "UpdatedDate": "2025-03-31T21:40:16.8620169",
-    "UpdatedBy": "1",
     "IgnoreEncode": true,
     "FeaturePolicies": [
         {
@@ -18,18 +14,14 @@
             "FeatureId": "009b3b78-0000-0000-8000-38a9f8f617fc",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "264C2E84-F036-481F-A416-E113B96F1AA1",
             "FeatureId": "009b3b78-0000-0000-8000-38a9f8f617fc",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "33A0B006-BC4A-433A-BEA2-87609903A28E",
@@ -38,47 +30,35 @@
             "CanRead": true,
             "CanWrite": true,
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1",
-            "UpdatedDate": "2024-11-08T17:42:09.5574355",
-            "UpdatedBy": "00781eb8-0000-0000-8000-52bf71dcaef7"
+            "Active": true
         },
         {
             "Id": "37FCD0AC-2FA3-46E9-B5B5-31E8059C2F1B",
             "FeatureId": "009b3b78-0000-0000-8000-38a9f8f617fc",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-18T14:36:06.32",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "38BA4CB8-3DBF-4BC7-94B9-DCD46BB3C9E2",
             "FeatureId": "009b3b78-0000-0000-8000-38a9f8f617fc",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "3FA6FD34-114F-4D3B-86B6-B911A81F385B",
             "FeatureId": "009b3b78-0000-0000-8000-38a9f8f617fc",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "53742B14-BC8C-48CE-BF45-237CF327B513",
             "FeatureId": "009b3b78-0000-0000-8000-38a9f8f617fc",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "95E69D38-0ED9-4B6A-8B33-3CB98C16AD99",
@@ -86,20 +66,14 @@
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "CanRead": true,
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1",
-            "UpdatedDate": "2024-11-08T17:39:00.2270631",
-            "UpdatedBy": "00781eb8-0000-0000-8000-52bf71dcaef7"
+            "Active": true
         },
         {
             "Id": "9786F0FC-8FFA-4EB2-98AF-DE74F2EF639B",
             "FeatureId": "009b3b78-0000-0000-8000-38a9f8f617fc",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "9A6644BE-2D30-486B-AD7E-22B2B59E18E8",
@@ -112,9 +86,7 @@
             "CanDelete": true,
             "CanDeleteAll": true,
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         }
     ]
 }

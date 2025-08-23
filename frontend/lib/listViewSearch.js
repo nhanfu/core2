@@ -240,7 +240,9 @@ export class ListViewSearch extends EditableComponent {
                     txtSearch.SearchMethod = SearchMethodEnum.Contain;
                     break;
             }
-            txtSearch.SearchIconElement.className = txtSearch.SearchIcon || txtSearch.SearchIconElement.className;
+            if (txtSearch.SearchIconElement && txtSearch.SearchIcon) {
+                txtSearch.SearchIconElement.className = txtSearch.SearchIcon;
+            }
             txtSearch.UpdateView();
         });
         listView.ApplyFilter();

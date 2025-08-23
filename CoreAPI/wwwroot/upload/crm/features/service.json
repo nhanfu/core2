@@ -8,10 +8,6 @@
     "IsMenu": true,
     "EntityId": "Config",
     "Active": true,
-    "InsertedDate": "2024-07-21T18:51:13.5700147",
-    "InsertedBy": "1",
-    "UpdatedDate": "2025-03-31T21:59:07.8790886",
-    "UpdatedBy": "1",
     "ComponentGroup": [
         {
             "Id": "004607cc-0000-0000-8000-f92ae49e0dbc",
@@ -22,8 +18,6 @@
             "Visibility": true,
             "XxlCol": 12,
             "Active": true,
-            "InsertedDate": "2024-07-21T18:51:13.7510434",
-            "InsertedBy": "1",
             "FeatureId": "00460708-0000-0000-8000-25d02b86a07d",
             "ReportTypeId": 1,
             "Components": [
@@ -36,22 +30,15 @@
                     "Column": 12,
                     "Row": 50,
                     "CanSearch": true,
-                    "Label": "",
                     "ClassName": "sticky",
-                    "Style": "",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Visibility": true,
                     "DefaultVal": "{ \"ComponentType\": \"Service\" }",
                     "Active": true,
-                    "InsertedDate": "2024-07-21T18:51:13.8768789",
-                    "InsertedBy": "1",
-                    "UpdatedDate": "2024-07-21T19:49:01.110832",
-                    "UpdatedBy": "1",
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from Component as ds where ds.ComponentType = 'Service'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ds.ComponentType = 'Service'\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "Component",
-                    "PreQuery": "",
                     "FeatureId": "00460708-0000-0000-8000-25d02b86a07d",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
@@ -69,10 +56,6 @@
             "Visibility": true,
             "Width": "94px",
             "Active": true,
-            "InsertedDate": "2024-07-22T18:57:14.7933183",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-04-05T19:49:08.4598908",
-            "UpdatedBy": "1",
             "FeatureId": "00460708-0000-0000-8000-25d02b86a07d",
             "Editable": true,
             "MinWidth": "94px",
@@ -89,10 +72,6 @@
             "Visibility": true,
             "Width": "76px",
             "Active": true,
-            "InsertedDate": "2024-07-21T18:51:14.3531415",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-04-05T19:49:08.4314715",
-            "UpdatedBy": "1",
             "FeatureId": "00460708-0000-0000-8000-25d02b86a07d",
             "Editable": true,
             "MinWidth": "76px",
@@ -109,10 +88,6 @@
             "Visibility": true,
             "Width": "615px",
             "Active": true,
-            "InsertedDate": "2024-07-21T18:51:13.9456208",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-04-05T19:49:08.4469891",
-            "UpdatedBy": "1",
             "FeatureId": "00460708-0000-0000-8000-25d02b86a07d",
             "Editable": true,
             "MinWidth": "615px",
@@ -129,10 +104,6 @@
             "Visibility": true,
             "Width": "119px",
             "Active": true,
-            "InsertedDate": "2024-07-21T18:51:14.2412948",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-04-05T19:49:08.4211387",
-            "UpdatedBy": "1",
             "FeatureId": "00460708-0000-0000-8000-25d02b86a07d",
             "Editable": true,
             "MinWidth": "119px",
@@ -149,10 +120,6 @@
             "Visibility": true,
             "Width": "155px",
             "Active": true,
-            "InsertedDate": "2024-07-21T18:51:13.9910899",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-04-05T19:49:08.4716398",
-            "UpdatedBy": "1",
             "FeatureId": "00460708-0000-0000-8000-25d02b86a07d",
             "Editable": true,
             "MinWidth": "155px",
@@ -169,10 +136,6 @@
             "Visibility": true,
             "Width": "399px",
             "Active": true,
-            "InsertedDate": "2025-04-05T19:48:24.0672795",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-04-05T19:49:08.4830473",
-            "UpdatedBy": "1",
             "FeatureId": "00460708-0000-0000-8000-25d02b86a07d",
             "Editable": true,
             "MinWidth": "399px",
@@ -189,10 +152,6 @@
             "Visibility": true,
             "Width": "110px",
             "Active": true,
-            "InsertedDate": "2025-04-05T19:48:31.2259091",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-04-05T19:49:08.4977258",
-            "UpdatedBy": "1",
             "FeatureId": "00460708-0000-0000-8000-25d02b86a07d",
             "Editable": true,
             "MinWidth": "110px",
@@ -207,72 +166,56 @@
             "FeatureId": "00460708-0000-0000-8000-25d02b86a07d",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "3657064F-99DC-4585-A89C-36387E7817F5",
             "FeatureId": "00460708-0000-0000-8000-25d02b86a07d",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "49174CC7-42FD-46C2-B7D8-5850E776EC9B",
             "FeatureId": "00460708-0000-0000-8000-25d02b86a07d",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "50E0D9AC-8FE6-48E3-9D5B-12B5CC136186",
             "FeatureId": "00460708-0000-0000-8000-25d02b86a07d",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-18T14:36:06.32",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "7899A7DD-629E-486E-9234-0CC097A3B7FA",
             "FeatureId": "00460708-0000-0000-8000-25d02b86a07d",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "7F0EE462-7DE3-46FF-9D81-34A3FB6C1015",
             "FeatureId": "00460708-0000-0000-8000-25d02b86a07d",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "97001605-0E11-46B5-B6E8-6463E039AEF0",
             "FeatureId": "00460708-0000-0000-8000-25d02b86a07d",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "AD3EA0DC-7A72-4753-B368-43B3FF62DF61",
             "FeatureId": "00460708-0000-0000-8000-25d02b86a07d",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "BD093261-364C-495E-BE52-711F1795B757",
@@ -285,18 +228,14 @@
             "CanDelete": true,
             "CanDeleteAll": true,
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "E629321F-4659-4A53-BE54-3DBFE9899ECD",
             "FeatureId": "00460708-0000-0000-8000-25d02b86a07d",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         }
     ]
 }

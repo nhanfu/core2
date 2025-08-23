@@ -7,10 +7,6 @@
     "IsMenu": true,
     "IsPublic": true,
     "Active": true,
-    "InsertedDate": "2024-07-17T09:36:16.623",
-    "InsertedBy": "1",
-    "UpdatedDate": "2025-03-31T21:58:21.1060901",
-    "UpdatedBy": "1",
     "IgnoreEncode": true,
     "ComponentGroup": [
         {
@@ -21,8 +17,6 @@
             "Visibility": true,
             "XxlCol": 12,
             "Active": true,
-            "InsertedDate": "2024-07-17T09:36:16.863",
-            "InsertedBy": "1",
             "FeatureId": "000a0514-0000-0000-8000-1f67beb1bcef",
             "ReportTypeId": 1,
             "Components": [
@@ -33,14 +27,10 @@
                     "ComponentType": "HtmlCode",
                     "ComponentGroupId": "000a0504-0000-0000-8000-1d0ed2d820e3",
                     "Column": 12,
-                    "Label": "",
                     "Visibility": true,
                     "Active": true,
-                    "InsertedDate": "2024-07-17T09:36:17.029",
-                    "InsertedBy": "1",
                     "Query": "select * from Partner as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.PicId = '{TokenUserId}')",
                     "RefName": "Partner",
-                    "Template": "",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
                     "FeatureId": "000a0514-0000-0000-8000-1f67beb1bcef",
                     "ReportTypeId": 1
@@ -54,72 +44,56 @@
             "FeatureId": "000a0514-0000-0000-8000-1f67beb1bcef",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "41831CCC-A3D2-4BBB-8C9A-DCB802386DB8",
             "FeatureId": "000a0514-0000-0000-8000-1f67beb1bcef",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "5BB00530-0C52-431A-819F-DBB48A2A2CAF",
             "FeatureId": "000a0514-0000-0000-8000-1f67beb1bcef",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "62BB3D62-D3B8-411D-AE07-E102C842D9D5",
             "FeatureId": "000a0514-0000-0000-8000-1f67beb1bcef",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "6BD277AE-726D-44C0-A7D4-E17B12D34629",
             "FeatureId": "000a0514-0000-0000-8000-1f67beb1bcef",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-18T14:36:06.32",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "752E325C-B952-4EEB-8D5E-8277F6AE1B10",
             "FeatureId": "000a0514-0000-0000-8000-1f67beb1bcef",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "84ED8A3B-C32B-4FD3-A4D3-EFF5D65EA725",
             "FeatureId": "000a0514-0000-0000-8000-1f67beb1bcef",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "8BC667CF-2586-4463-B0E2-D6EC311E9D55",
             "FeatureId": "000a0514-0000-0000-8000-1f67beb1bcef",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "CF14358D-21B3-4602-BB7D-D256B93CECC2",
@@ -132,18 +106,14 @@
             "CanDelete": true,
             "CanDeleteAll": true,
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "D7BC74A5-D322-48EE-A799-DDDB1F26C449",
             "FeatureId": "000a0514-0000-0000-8000-1f67beb1bcef",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         }
     ]
 }

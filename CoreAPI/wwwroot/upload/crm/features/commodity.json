@@ -7,10 +7,6 @@
     "Icon": "fal fa-box-open",
     "IsMenu": true,
     "Active": true,
-    "InsertedDate": "2024-07-16T22:26:12.312",
-    "InsertedBy": "1",
-    "UpdatedDate": "2025-03-31T21:42:45.7179925",
-    "UpdatedBy": "1",
     "IgnoreEncode": true,
     "ComponentGroup": [
         {
@@ -22,8 +18,6 @@
             "Visibility": true,
             "XxlCol": 12,
             "Active": true,
-            "InsertedDate": "2024-07-16T22:26:12.47",
-            "InsertedBy": "1",
             "FeatureId": "00b605d0-0000-0000-8000-2d616cb81c86",
             "ReportTypeId": 1,
             "Components": [
@@ -36,17 +30,11 @@
                     "Column": 12,
                     "Row": 50,
                     "CanSearch": true,
-                    "Label": "",
                     "ClassName": "sticky",
-                    "Style": "",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Visibility": true,
                     "DefaultVal": "{\r\n    \"ParentId\":\"003301c4-0000-0000-8000-a437e2be564e\"\r\n}",
                     "Active": true,
-                    "InsertedDate": "2024-07-16T22:26:12.577",
-                    "InsertedBy": "1",
-                    "UpdatedDate": "2024-07-16T22:31:37.893",
-                    "UpdatedBy": "1",
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from MasterData as ds where ds.ParentId = '003301c4-0000-0000-8000-a437e2be564e'\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds where ds.ParentId = '003301c4-0000-0000-8000-a437e2be564e'\"\r\n}",
                     "IsRealtime": true,
@@ -69,10 +57,6 @@
             "Visibility": true,
             "Width": "238px",
             "Active": true,
-            "InsertedDate": "2024-07-16T22:26:12.828",
-            "InsertedBy": "1",
-            "UpdatedDate": "2024-08-07T21:53:33.5202635",
-            "UpdatedBy": "1",
             "FeatureId": "00b605d0-0000-0000-8000-2d616cb81c86",
             "Editable": true,
             "MinWidth": "238px",
@@ -89,10 +73,6 @@
             "Visibility": true,
             "Width": "227px",
             "Active": true,
-            "InsertedDate": "2024-07-16T22:26:12.722",
-            "InsertedBy": "1",
-            "UpdatedDate": "2024-08-07T21:53:33.5249322",
-            "UpdatedBy": "1",
             "FeatureId": "00b605d0-0000-0000-8000-2d616cb81c86",
             "Editable": true,
             "MinWidth": "227px",
@@ -109,10 +89,6 @@
             "Visibility": true,
             "Width": "229px",
             "Active": true,
-            "InsertedDate": "2024-07-16T22:26:12.946",
-            "InsertedBy": "1",
-            "UpdatedDate": "2024-08-07T21:53:33.5272682",
-            "UpdatedBy": "1",
             "FeatureId": "00b605d0-0000-0000-8000-2d616cb81c86",
             "Editable": true,
             "MinWidth": "229px",
@@ -127,9 +103,7 @@
             "FeatureId": "00b605d0-0000-0000-8000-2d616cb81c86",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "08916CA7-13C9-473C-A963-DE465DEADFD9",
@@ -142,81 +116,63 @@
             "CanDelete": true,
             "CanDeleteAll": true,
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "1A40C1EC-520E-4F4D-B51A-97F778B53C7F",
             "FeatureId": "00b605d0-0000-0000-8000-2d616cb81c86",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "651B396D-8FAE-4C8B-9EC4-005D87178202",
             "FeatureId": "00b605d0-0000-0000-8000-2d616cb81c86",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-18T14:36:06.32",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "731270AF-16C5-42F5-A517-C7E2EC00799A",
             "FeatureId": "00b605d0-0000-0000-8000-2d616cb81c86",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "7D0D35E7-2ED2-42BB-82DC-723B946EE9C3",
             "FeatureId": "00b605d0-0000-0000-8000-2d616cb81c86",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "9A4925BD-7C62-4F23-B565-D7FE5B5B9401",
             "FeatureId": "00b605d0-0000-0000-8000-2d616cb81c86",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "B0B33854-C600-4F2C-84E4-20BFFAF90C19",
             "FeatureId": "00b605d0-0000-0000-8000-2d616cb81c86",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "CC982573-0867-4D5F-AE81-FB2CAB6AB5E1",
             "FeatureId": "00b605d0-0000-0000-8000-2d616cb81c86",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "D4B93C98-9047-47CB-987B-8F6AFDD27083",
             "FeatureId": "00b605d0-0000-0000-8000-2d616cb81c86",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         }
     ]
 }

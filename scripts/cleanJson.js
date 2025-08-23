@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 function clean(obj) {
+    const excludeKeys = new Set(["UpdatedDate", "InsertedBy", "UpdatedBy", "InsertedDate"]);
     if (Array.isArray(obj)) {
         return obj
             .map(clean)
@@ -9,11 +10,13 @@ function clean(obj) {
     } else if (obj && typeof obj === 'object') {
         const result = {};
         for (const [key, value] of Object.entries(obj)) {
+            if (excludeKeys.has(key)) continue;
             const cleaned = clean(value);
             if (
                 cleaned !== null &&
                 cleaned !== false &&
                 cleaned !== undefined &&
+                cleaned !== "" &&
                 !(Array.isArray(cleaned) && cleaned.length === 0)
             ) {
                 result[key] = cleaned;

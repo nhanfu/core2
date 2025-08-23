@@ -8,10 +8,6 @@
     "Icon": "fal fa-ellipsis-h-alt",
     "IsMenu": true,
     "Active": true,
-    "InsertedDate": "2024-08-11T19:23:39.8759584",
-    "InsertedBy": "1",
-    "UpdatedDate": "2025-03-31T21:59:07.9194921",
-    "UpdatedBy": "1",
     "IgnoreEncode": true,
     "ComponentGroup": [
         {
@@ -23,8 +19,6 @@
             "Visibility": true,
             "XxlCol": 12,
             "Active": true,
-            "InsertedDate": "2024-08-11T19:23:40.0128086",
-            "InsertedBy": "1",
             "FeatureId": "006e1360-0000-0000-8000-3505aa406146",
             "ReportTypeId": 1,
             "Components": [
@@ -37,17 +31,11 @@
                     "Column": 12,
                     "Row": 50,
                     "CanSearch": true,
-                    "Label": "",
                     "ClassName": "sticky",
-                    "Style": "",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
                     "Visibility": true,
                     "Active": true,
-                    "InsertedDate": "2024-08-11T19:23:40.0939679",
-                    "InsertedBy": "1",
-                    "UpdatedDate": "2025-03-08T08:56:52.4068312",
-                    "UpdatedBy": "1",
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from Feature as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Feature as ds\"\r\n}",
                     "IsRealtime": true,
@@ -69,10 +57,6 @@
             "Visibility": true,
             "Width": "59px",
             "Active": true,
-            "InsertedDate": "2024-08-11T20:54:14.4458623",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-01-12T15:14:05.0632321",
-            "UpdatedBy": "1",
             "FocusSearch": true,
             "FeatureId": "006e1360-0000-0000-8000-3505aa406146",
             "Editable": true,
@@ -90,10 +74,6 @@
             "Visibility": true,
             "Width": "95px",
             "Active": true,
-            "InsertedDate": "2024-08-11T19:31:02.8823612",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-01-12T15:14:05.0676026",
-            "UpdatedBy": "1",
             "FocusSearch": true,
             "FeatureId": "006e1360-0000-0000-8000-3505aa406146",
             "Editable": true,
@@ -111,10 +91,6 @@
             "Visibility": true,
             "Width": "129px",
             "Active": true,
-            "InsertedDate": "2024-09-18T20:11:56.9969186",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-01-12T15:14:05.0643063",
-            "UpdatedBy": "1",
             "FocusSearch": true,
             "FeatureId": "006e1360-0000-0000-8000-3505aa406146",
             "Editable": true,
@@ -132,10 +108,6 @@
             "Visibility": true,
             "Width": "88px",
             "Active": true,
-            "InsertedDate": "2024-08-11T19:23:40.320524",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-01-12T15:14:05.0619868",
-            "UpdatedBy": "1",
             "FocusSearch": true,
             "FeatureId": "006e1360-0000-0000-8000-3505aa406146",
             "Editable": true,
@@ -153,10 +125,6 @@
             "Visibility": true,
             "Width": "168px",
             "Active": true,
-            "InsertedDate": "2024-08-11T19:23:40.2564651",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-01-12T15:14:05.0661627",
-            "UpdatedBy": "1",
             "FocusSearch": true,
             "FeatureId": "006e1360-0000-0000-8000-3505aa406146",
             "Editable": true,
@@ -177,10 +145,6 @@
             "Visibility": true,
             "Width": "85px",
             "Active": true,
-            "InsertedDate": "2024-08-11T19:23:40.3878194",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-01-12T15:14:05.0670598",
-            "UpdatedBy": "1",
             "Query": "{\r\n    \"sql\": \"select * from Feature as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Feature as ds\"\r\n}",
             "RefName": "Feature",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -201,10 +165,6 @@
             "Visibility": true,
             "Width": "290px",
             "Active": true,
-            "InsertedDate": "2024-08-11T19:23:40.1433775",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-01-12T15:14:05.0651727",
-            "UpdatedBy": "1",
             "FocusSearch": true,
             "FeatureId": "006e1360-0000-0000-8000-3505aa406146",
             "Editable": true,
@@ -222,10 +182,6 @@
             "Visibility": true,
             "Width": "266px",
             "Active": true,
-            "InsertedDate": "2024-08-11T19:23:40.4586857",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-01-12T15:14:05.0678166",
-            "UpdatedBy": "1",
             "FocusSearch": true,
             "FeatureId": "006e1360-0000-0000-8000-3505aa406146",
             "MinWidth": "266px",
@@ -242,10 +198,6 @@
             "Visibility": true,
             "Width": "290px",
             "Active": true,
-            "InsertedDate": "2024-08-11T19:27:55.4991706",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-01-12T15:14:05.0634213",
-            "UpdatedBy": "1",
             "FocusSearch": true,
             "FeatureId": "006e1360-0000-0000-8000-3505aa406146",
             "Editable": true,
@@ -263,10 +215,6 @@
             "Visibility": true,
             "Width": "88px",
             "Active": true,
-            "InsertedDate": "2025-02-17T21:40:36.4171512",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-02-17T21:40:38.834777",
-            "UpdatedBy": "1",
             "FocusSearch": true,
             "FeatureId": "006e1360-0000-0000-8000-3505aa406146",
             "Editable": true,
@@ -282,9 +230,7 @@
             "FeatureId": "006e1360-0000-0000-8000-3505aa406146",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "21A95728-824B-4633-ABB9-B71E33BF068A",
@@ -297,81 +243,63 @@
             "CanDelete": true,
             "CanDeleteAll": true,
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "37787095-3573-4B45-B964-74230A359DC9",
             "FeatureId": "006e1360-0000-0000-8000-3505aa406146",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "3CDB467E-238D-4EAE-9B99-09B9FD1DEC7A",
             "FeatureId": "006e1360-0000-0000-8000-3505aa406146",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "6ACD3867-0A90-4F7C-95D0-6761E25E04F9",
             "FeatureId": "006e1360-0000-0000-8000-3505aa406146",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "7B7CCF91-7E17-4525-B23F-8A013C0B3B7D",
             "FeatureId": "006e1360-0000-0000-8000-3505aa406146",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "8BBB843C-6E1B-4639-B079-828E82F641A9",
             "FeatureId": "006e1360-0000-0000-8000-3505aa406146",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "B20E4C96-60B4-4EF9-B6EC-39574DA654DC",
             "FeatureId": "006e1360-0000-0000-8000-3505aa406146",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-18T14:36:06.32",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "C671C75A-5EA5-413A-B9FE-79954D955F18",
             "FeatureId": "006e1360-0000-0000-8000-3505aa406146",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "FF62338C-F8EE-4693-A57C-FE87403D63B6",
             "FeatureId": "006e1360-0000-0000-8000-3505aa406146",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         }
     ]
 }

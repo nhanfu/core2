@@ -8,10 +8,6 @@
     "Script": "return {\r\n    SaveAs: function (btn) {\r\n        var newEntity = JSON.parse(JSON.stringify(this.Entity));\r\n        this.Entity = newEntity;\r\n        this.Entity.Id = this.Uuid7.NewGuid();\r\n        this.Entity.FromDate = null;\r\n        this.Entity.ToDate = null;\r\n        this.Entity.PostDate = this.dayjs();\r\n        var detailGrid = this.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"ExchangeRateHistoryDetail\");\r\n        if (detailGrid && detailGrid.AllListViewItem.length > 0) {\r\n            detailGrid.AllListViewItem.forEach(row => {\r\n                row.Entity.Id = this.Uuid7.NewGuid();\r\n                row.Entity.HistoryId = this.Entity.Id;\r\n                row.Children.forEach(cell => {\r\n                    cell.Entity = row.Entity;\r\n                });\r\n                row.UpdateView(true);\r\n            });\r\n        }\r\n        this.UpdateView(true);\r\n        this.Dirty = true;\r\n        this.Toast.Success(\"Save as success\");\r\n    },\r\n    CalcRateUSD: function (btn, entity) {\r\n        var exUSD = this.Decimal(this.Entity.RateVND);\r\n        var exVND = this.Decimal(1);\r\n        entity.RateUSD = this.Decimal(1).div(entity.RateVND);\r\n        var detailGrid = this.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"ExchangeRateHistoryDetail\");\r\n        detailGrid.Item.forEach(item => {\r\n            item.Entity.RateVND = this.Decimal(item.Entity.RateVND);\r\n            item.Entity.RateUSD = item.Entity.RateVND.div(exUSD);\r\n            item.UpdateView(false, false, \"RateUSD\");\r\n        });\r\n    },\r\n    UpdateExchangeRate: function (btn, entity) {\r\n        var exUSD = this.Decimal(this.EditForm.Entity.RateVND);\r\n        var exVND = this.Decimal(1);\r\n        entity.RateVND = this.Decimal(entity.RateVND);\r\n        entity.RateUSD = entity.RateVND.div(exUSD);\r\n        btn.Parent.UpdateView(false, false, \"RateUSD\");\r\n    },\r\n    UpdateExchangeRate2: function (btn, entity) {\r\n        debugger;\r\n        var exUSD = this.Decimal(this.EditForm.Entity.RateVND);\r\n        var exVND = this.Decimal(1);\r\n        entity.RateVND = this.Decimal(JSON.parse(localStorage.getItem(\"ExchangeRateVND\"))[entity.CurrencyCode]);\r\n        entity.RateUSD = entity.RateVND.div(exUSD);\r\n        btn.Parent.UpdateView(false, false, \"RateUSD\");\r\n    }\r\n}",
     "EntityId": "ExchangeRateHistory",
     "Active": true,
-    "InsertedDate": "2025-03-11T15:57:00.4386794",
-    "InsertedBy": "1",
-    "UpdatedDate": "2025-03-13T19:33:45.4089102",
-    "UpdatedBy": "1",
     "ComponentGroup": [
         {
             "Id": "0195846b-ef45-707d-b065-ef6ad49aa6e0",
@@ -22,8 +18,6 @@
             "Visibility": true,
             "XxlCol": 12,
             "Active": true,
-            "InsertedDate": "2025-03-11T15:57:00.5308487",
-            "InsertedBy": "1",
             "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
             "ReportTypeId": 1,
             "Components": [
@@ -41,8 +35,6 @@
                     "Events": "{ \"click\" : \"SavePatch\" }",
                     "Visibility": true,
                     "Active": true,
-                    "InsertedDate": "2025-03-11T15:57:00.5928614",
-                    "InsertedBy": "1",
                     "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
                     "ReportTypeId": 1
                 },
@@ -53,17 +45,12 @@
                     "ComponentType": "Button",
                     "ComponentGroupId": "0195846b-ef45-707d-b065-ef6ad49aa6e0",
                     "Column": 1,
-                    "GroupFormat": "",
                     "Label": "Save As",
                     "Icon": "fas fa-sliders-h-square",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{\r\n    \"click\": \"SaveAs\"\r\n}",
                     "Visibility": true,
                     "Active": true,
-                    "InsertedDate": "2025-03-11T19:53:54.4289235",
-                    "InsertedBy": "1",
-                    "UpdatedDate": "2025-03-11T19:54:46.5329029",
-                    "UpdatedBy": "1",
                     "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
                     "ReportTypeId": 1
                 }
@@ -77,8 +64,6 @@
             "Visibility": true,
             "XxlCol": 12,
             "Active": true,
-            "InsertedDate": "2025-03-11T15:57:00.6569655",
-            "InsertedBy": "1",
             "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
             "ReportTypeId": 1
         },
@@ -91,10 +76,6 @@
             "Visibility": true,
             "XxlCol": 12,
             "Active": true,
-            "InsertedDate": "2025-03-11T15:57:00.7233494",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-03-11T19:28:06.7704686",
-            "UpdatedBy": "1",
             "DisabledExp": "!this.Entity.Id.startsWith('-')",
             "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
             "ParentId": "0195846b-efc6-754c-a5c8-a7c50c2c320d",
@@ -115,10 +96,6 @@
                     "Visibility": true,
                     "DefaultVal": "{\r\n    \"HistoryId\": this.EditForm.Entity.Id\r\n}",
                     "Active": true,
-                    "InsertedDate": "2025-03-11T15:57:00.828746",
-                    "InsertedBy": "1",
-                    "UpdatedDate": "2025-03-12T21:00:19.5670309",
-                    "UpdatedBy": "1",
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from ExchangeRateHistoryDetail as ds where HistoryId = '{HistoryId}'\",\r\n    \"total\": \"select count(ds.Id) as total from ExchangeRateHistoryDetail as ds where HistoryId = '{HistoryId}'\"\r\n}",
                     "RefName": "ExchangeRateHistoryDetail",
@@ -142,10 +119,6 @@
                     "Visibility": true,
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
                     "Active": true,
-                    "InsertedDate": "2025-03-11T16:01:31.0545776",
-                    "InsertedBy": "1",
-                    "UpdatedDate": "2025-03-11T18:42:12.5160437",
-                    "UpdatedBy": "1",
                     "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
                     "ReportTypeId": 1
                 },
@@ -163,10 +136,6 @@
                     "Disabled": true,
                     "Visibility": true,
                     "Active": true,
-                    "InsertedDate": "2025-03-11T16:01:31.3267951",
-                    "InsertedBy": "1",
-                    "UpdatedDate": "2025-03-11T16:47:30.5108749",
-                    "UpdatedBy": "1",
                     "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
                     "ReportTypeId": 1
                 },
@@ -184,10 +153,6 @@
                     "Visibility": true,
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
                     "Active": true,
-                    "InsertedDate": "2025-03-11T16:02:17.5717659",
-                    "InsertedBy": "1",
-                    "UpdatedDate": "2025-03-11T18:42:16.715028",
-                    "UpdatedBy": "1",
                     "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
                     "ReportTypeId": 1
                 },
@@ -205,10 +170,6 @@
                     "Disabled": true,
                     "Visibility": true,
                     "Active": true,
-                    "InsertedDate": "2025-03-11T16:01:47.4296087",
-                    "InsertedBy": "1",
-                    "UpdatedDate": "2025-03-11T16:47:09.2691587",
-                    "UpdatedBy": "1",
                     "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
                     "ReportTypeId": 1
                 },
@@ -227,17 +188,11 @@
                     "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
                     "Visibility": true,
                     "Active": true,
-                    "InsertedDate": "2025-03-11T20:01:31.9261277",
-                    "InsertedBy": "1",
-                    "UpdatedDate": "2025-03-12T21:00:33.293267",
-                    "UpdatedBy": "1",
                     "Query": "{\r\n    \"sql\": \"select * from Shipment ds where ParentId is null\",\r\n    \"total\": \"select count(ds.Id) as total from Shipment ds where ParentId is null\"\r\n}",
                     "RefName": "Shipment",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Code\",\r\n        \"Label\": \"Code\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
                     "PreQuery": "{\r\n    \"VendorIds\": this.Entity.VendorIds \r\n}",
-                    "DisabledExp": "",
                     "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
-                    "OrderBy": "",
                     "IsMultiple": true,
                     "ReportTypeId": 1
                 },
@@ -253,12 +208,7 @@
                     "ShowLabel": true,
                     "Events": "{\r\n    \"input\": \"CalcRateUSD\"\r\n}",
                     "Visibility": true,
-                    "PopulateField": "",
                     "Active": true,
-                    "InsertedDate": "2025-03-12T20:59:48.2381017",
-                    "InsertedBy": "1",
-                    "UpdatedDate": "2025-03-12T21:03:19.2419267",
-                    "UpdatedBy": "1",
                     "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
                     "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
                     "ReportTypeId": 1
@@ -280,10 +230,6 @@
             "Visibility": true,
             "Width": "158px",
             "Active": true,
-            "InsertedDate": "2025-03-11T16:04:22.0583473",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-03-12T21:59:42.9890943",
-            "UpdatedBy": "1",
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where (ds1.Name = N'Currency' and ds.Code not in ('USD','VND'))\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where (ds1.Name = N'Currency' and ds.Code not in ('USD','VND'))\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
@@ -307,10 +253,6 @@
             "Visibility": true,
             "Width": "186px",
             "Active": true,
-            "InsertedDate": "2025-03-11T16:04:22.8932185",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-03-12T21:55:57.3385815",
-            "UpdatedBy": "1",
             "FocusSearch": true,
             "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
             "Editable": true,
@@ -330,10 +272,6 @@
             "Visibility": true,
             "Width": "200px",
             "Active": true,
-            "InsertedDate": "2025-03-11T16:04:23.9216911",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-03-12T21:56:03.1272376",
-            "UpdatedBy": "1",
             "FocusSearch": true,
             "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
             "Editable": true,
@@ -358,8 +296,6 @@
             "Events": "{ \"click\" : \"SavePatch\" }",
             "Visibility": true,
             "Active": true,
-            "InsertedDate": "2025-03-11T15:57:00.5928614",
-            "InsertedBy": "1",
             "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
             "ReportTypeId": 1
         },
@@ -370,17 +306,12 @@
             "ComponentType": "Button",
             "ComponentGroupId": "0195846b-ef45-707d-b065-ef6ad49aa6e0",
             "Column": 1,
-            "GroupFormat": "",
             "Label": "Save As",
             "Icon": "fas fa-sliders-h-square",
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{\r\n    \"click\": \"SaveAs\"\r\n}",
             "Visibility": true,
             "Active": true,
-            "InsertedDate": "2025-03-11T19:53:54.4289235",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-03-11T19:54:46.5329029",
-            "UpdatedBy": "1",
             "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
             "ReportTypeId": 1
         }
@@ -391,9 +322,7 @@
             "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-03-11T15:57:00.47",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "148311D9-5A22-450B-ACDC-710AF52C2355",
@@ -406,56 +335,42 @@
             "CanDelete": true,
             "CanDeleteAll": true,
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-03-11T15:57:00.47",
-            "InsertedBy": "-1",
-            "UpdatedDate": "2025-03-11T15:58:42.5406874",
-            "UpdatedBy": "1"
+            "Active": true
         },
         {
             "Id": "1754032C-A1B5-4D5F-95F3-1DD61937081A",
             "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-03-11T15:57:00.47",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "1DE61D7A-B97E-4480-A67F-C5951652219B",
             "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-03-11T15:57:00.47",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "34205D19-55CE-4503-97A6-1C86910B6C12",
             "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-03-11T15:57:00.47",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "7551AFEE-F212-47EF-AEB0-DEC404B95A5C",
             "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-03-11T15:57:00.47",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "8D79756E-3D0B-41F1-800C-3AC9683EB733",
             "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-03-11T15:57:00.47",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "8FFC3DA3-C99F-4C72-8EE9-411936B394D8",
@@ -468,11 +383,7 @@
             "CanDelete": true,
             "CanDeleteAll": true,
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-03-11T15:57:00.47",
-            "InsertedBy": "-1",
-            "UpdatedDate": "2025-03-11T15:58:39.5223817",
-            "UpdatedBy": "1"
+            "Active": true
         },
         {
             "Id": "A2B34B6B-5490-4947-8B11-9D63879FDC71",
@@ -484,20 +395,14 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-03-11T15:57:00.47",
-            "InsertedBy": "-1",
-            "UpdatedDate": "2025-03-11T15:58:51.4883092",
-            "UpdatedBy": "1"
+            "Active": true
         },
         {
             "Id": "FAF14471-CB3E-482B-B7C7-7CC46502E773",
             "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-03-11T15:57:00.47",
-            "InsertedBy": "-1"
+            "Active": true
         }
     ]
 }

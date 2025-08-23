@@ -7,10 +7,6 @@
     "Icon": "fal fa-function",
     "IsMenu": true,
     "Active": true,
-    "InsertedDate": "2024-09-14T11:35:06.0982717",
-    "InsertedBy": "1",
-    "UpdatedDate": "2025-03-31T21:43:06.5762359",
-    "UpdatedBy": "1",
     "IgnoreEncode": true,
     "ComponentGroup": [
         {
@@ -22,8 +18,6 @@
             "Visibility": true,
             "XxlCol": 12,
             "Active": true,
-            "InsertedDate": "2024-09-14T11:35:06.6529392",
-            "InsertedBy": "1",
             "FeatureId": "009a2594-0000-0000-8000-744ae4f34401",
             "ReportTypeId": 1,
             "Components": [
@@ -38,17 +32,10 @@
                     "CanSearch": true,
                     "GroupBy": "GroupName",
                     "GroupFormat": "this.Entity.GroupName",
-                    "Label": "",
                     "ClassName": "sticky",
-                    "Style": "",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Visibility": true,
-                    "DefaultVal": "",
                     "Active": true,
-                    "InsertedDate": "2024-09-14T11:35:06.6953964",
-                    "InsertedBy": "1",
-                    "UpdatedDate": "2024-11-16T11:40:20.3990177",
-                    "UpdatedBy": "1",
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from SaleFunction as ds\",\r\n    \"total\": \"select count(ds.Id) as total from SaleFunction as ds\"\r\n}",
                     "IsRealtime": true,
@@ -71,10 +58,6 @@
             "Visibility": true,
             "Width": "671px",
             "Active": true,
-            "InsertedDate": "2024-09-14T11:35:06.7420554",
-            "InsertedBy": "1",
-            "UpdatedDate": "2024-10-17T20:56:32.669115",
-            "UpdatedBy": "1",
             "FocusSearch": true,
             "FeatureId": "009a2594-0000-0000-8000-744ae4f34401",
             "Editable": true,
@@ -92,10 +75,6 @@
             "Visibility": true,
             "Width": "166px",
             "Active": true,
-            "InsertedDate": "2024-09-14T11:35:06.7420554",
-            "InsertedBy": "1",
-            "UpdatedDate": "2024-10-17T20:56:32.6837484",
-            "UpdatedBy": "1",
             "FocusSearch": true,
             "FeatureId": "009a2594-0000-0000-8000-744ae4f34401",
             "Editable": true,
@@ -113,10 +92,6 @@
             "Visibility": true,
             "Width": "285px",
             "Active": true,
-            "InsertedDate": "2024-09-14T11:35:06.8411047",
-            "InsertedBy": "1",
-            "UpdatedDate": "2025-01-15T20:04:15.048338",
-            "UpdatedBy": "1",
             "FocusSearch": true,
             "FeatureId": "009a2594-0000-0000-8000-744ae4f34401",
             "Editable": true,
@@ -134,10 +109,6 @@
             "Visibility": true,
             "Width": "80px",
             "Active": true,
-            "InsertedDate": "2024-09-14T11:35:06.7420554",
-            "InsertedBy": "1",
-            "UpdatedDate": "2024-10-17T20:56:32.6745215",
-            "UpdatedBy": "1",
             "FocusSearch": true,
             "FeatureId": "009a2594-0000-0000-8000-744ae4f34401",
             "Editable": true,
@@ -153,12 +124,7 @@
             "ComponentType": "Input",
             "Label": "Group Name",
             "Visibility": true,
-            "Width": "",
             "Active": true,
-            "InsertedDate": "2024-09-14T11:35:06.7420554",
-            "InsertedBy": "1",
-            "UpdatedDate": "2024-11-19T08:18:55.35703",
-            "UpdatedBy": "1",
             "FocusSearch": true,
             "FeatureId": "009a2594-0000-0000-8000-744ae4f34401",
             "Editable": true,
@@ -174,45 +140,35 @@
             "FeatureId": "009a2594-0000-0000-8000-744ae4f34401",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "32FBAACE-8145-407D-BBDF-C2397D277B6B",
             "FeatureId": "009a2594-0000-0000-8000-744ae4f34401",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-18T14:36:06.32",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "3FB79E3E-230A-46F2-9CF0-49DF8E7357FF",
             "FeatureId": "009a2594-0000-0000-8000-744ae4f34401",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "57E8C02F-59A7-4979-84EE-B7D2BE28688C",
             "FeatureId": "009a2594-0000-0000-8000-744ae4f34401",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "96FE2482-5D24-4DE5-8444-5212BEA35E36",
             "FeatureId": "009a2594-0000-0000-8000-744ae4f34401",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "AED63E48-715D-4840-A443-40AF100E537D",
@@ -225,45 +181,35 @@
             "CanDelete": true,
             "CanDeleteAll": true,
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "BE58C99C-A902-446E-8555-E1B3FD801055",
             "FeatureId": "009a2594-0000-0000-8000-744ae4f34401",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "C51B56FA-E786-4A44-95EC-87286F57C595",
             "FeatureId": "009a2594-0000-0000-8000-744ae4f34401",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "C921AAF9-2551-44BB-83A8-D2A355F7E3DF",
             "FeatureId": "009a2594-0000-0000-8000-744ae4f34401",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "F3AEF7AA-624F-4188-ACF4-ADBF983D4490",
             "FeatureId": "009a2594-0000-0000-8000-744ae4f34401",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2024-11-08T17:12:12.3333333",
-            "InsertedBy": "-1"
+            "Active": true
         }
     ]
 }

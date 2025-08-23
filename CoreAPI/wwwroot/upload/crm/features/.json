@@ -5,8 +5,6 @@
     "Order": -999,
     "IsMenu": true,
     "Active": true,
-    "InsertedDate": "2025-02-09T09:45:35.1534666",
-    "InsertedBy": "1",
     "IsFlow": true,
     "FeaturePolicies": [
         {
@@ -14,92 +12,70 @@
             "FeatureId": "0194e898-f640-756e-b0a0-39e78f825b42",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-09T09:45:35.16",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "3DDFC057-D5EA-4291-81CD-3A480A40BE87",
             "FeatureId": "0194e898-f640-756e-b0a0-39e78f825b42",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-09T09:45:35.16",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "449AE1B3-15F2-4E22-AFB9-2689A1B6D67D",
             "FeatureId": "0194e898-f640-756e-b0a0-39e78f825b42",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-09T09:45:35.16",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "52EE65B7-11E2-4BDA-89A4-0CC848ECF2B7",
             "FeatureId": "0194e898-f640-756e-b0a0-39e78f825b42",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-09T09:45:35.16",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "680F3CBB-3480-4E08-8C7D-8A567ED85BB4",
             "FeatureId": "0194e898-f640-756e-b0a0-39e78f825b42",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-09T09:45:35.16",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "83616FFF-E1C9-49A3-AA90-D915DBA63A8C",
             "FeatureId": "0194e898-f640-756e-b0a0-39e78f825b42",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-09T09:45:35.16",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "9D02869D-4D0D-4063-8316-A159886998E7",
             "FeatureId": "0194e898-f640-756e-b0a0-39e78f825b42",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-09T09:45:35.16",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "9E1A7344-EA88-4AC9-8CD2-433AAD2C3A2C",
             "FeatureId": "0194e898-f640-756e-b0a0-39e78f825b42",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-18T14:36:06.32",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "E2A640B3-A9E9-4116-BBED-3ACC4110E16D",
             "FeatureId": "0194e898-f640-756e-b0a0-39e78f825b42",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-09T09:45:35.16",
-            "InsertedBy": "-1"
+            "Active": true
         },
         {
             "Id": "F8D648E7-515E-4091-AB39-8F5A82E0ECEC",
             "FeatureId": "0194e898-f640-756e-b0a0-39e78f825b42",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "TableName": "Feature",
-            "Active": true,
-            "InsertedDate": "2025-02-09T09:45:35.16",
-            "InsertedBy": "-1",
-            "UpdatedDate": "2025-03-15T14:40:24.8555561",
-            "UpdatedBy": "1"
+            "Active": true
         }
     ]
 }
