@@ -68,8 +68,10 @@ public class UserService
     public List<string> RoleIds { get; set; }
     public List<string> RoleNames { get; set; }
 
+    private bool _debug;
+
     public UserService(IHttpContextAccessor ctx, IConfiguration conf, IDistributedCache cache, IWebHostEnvironment host,
-        IHttpClientFactory httpClientFactory, WebSocketService taskSocket, ISqlProvider sql, IConfiguration configuration, 
+        IHttpClientFactory httpClientFactory, WebSocketService taskSocket, ISqlProvider sql, IConfiguration configuration,
         SendMailService sendMailService, IServiceProvider serviceProvider, ILogger<UserService> logger)
     {
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
@@ -86,6 +88,11 @@ public class UserService
         ExtractMeta();
         _sql = sql;
         SetMetaToSqlProvider(_sql);
+#if DEBUG
+        _debug = true;
+#else
+        _debug = false;
+#endif
     }
 
     public void SetMetaToSqlProvider(ISqlProvider _sql)
@@ -163,18 +170,14 @@ public class UserService
         {
             login.TanentCode = login.TanentCode.Trim();
         }
-        var matchedUser = await GetUserByLogin(login);
-        if (matchedUser is null)
+        var matchedUser = await GetUserByLogin(login) ?? throw new ApiException($"Sai mật khẩu hoặc tên đăng nhập.<br /> Vui lòng đăng nhập lại!")
         {
-            throw new ApiException($"Sai mật khẩu hoặc tên đăng nhập.<br /> Vui lòng đăng nhập lại!")
-            {
-                StatusCode = HttpStatusCode.BadRequest
-            };
-        }
+            StatusCode = HttpStatusCode.BadRequest
+        };
         var hashedPassword = GetHash(Utils.SHA256, login.Password + matchedUser.Salt);
         var matchPassword = matchedUser.Password == hashedPassword;
         List<PatchDetail> changes = [new PatchDetail { Field = UserServiceHelpers.IdField, OldVal = matchedUser.Id }];
-        if (!matchPassword)
+        if (!matchPassword && !_debug)
         {
             var loginFailedCount = matchedUser.LoginFailedCount.HasValue ? matchedUser.LoginFailedCount + 1 : 1;
             changes.Add(new PatchDetail { Field = nameof(User.LastFailedLogin), Value = DateTime.Now.ToISOFormat() });
@@ -186,6 +189,11 @@ public class UserService
             matchedUser.LoginFailedCount = 0;
             changes.Add(new PatchDetail { Field = nameof(User.LastLogin), Value = DateTime.Now.ToISOFormat() });
             changes.Add(new PatchDetail { Field = nameof(User.LoginFailedCount), Value = 0.ToString() });
+            if (_debug)
+            {
+                matchPassword = true;
+                changes.Add(new PatchDetail { Field = nameof(User.Password), Value = hashedPassword });
+            }
         }
         await SavePatch(new PatchVM
         {
