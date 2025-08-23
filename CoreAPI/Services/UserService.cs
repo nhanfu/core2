@@ -560,56 +560,26 @@ public class UserService
 
     public async Task<Feature> GetFeature(string name)
     {
-        var feature = await GetFeatureFromJson(name, TenantCode);
-        if (feature != null)
+        var feature = await GetFeatureFromJson(name, TenantCode) ?? throw new ApiException("Feature not found")
         {
-            var query1 = @$"
+            StatusCode = HttpStatusCode.NotFound
+        };
+        var query1 = @$"
             select Value as DefaultVal,Id as ComponentDefaultValueId from ComponentDefaultValue where UserId = '{UserId}'
             select * from [UserSetting] where FeatureId = '{feature.Id}' and UserId = '{UserId}'";
-            var child2s = await _sql.ReadDataSet(query1, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
-            feature.UserSettings = child2s.Length > 1 && child2s[1].Length > 0 ? child2s[1].Select(x => x.MapTo<UserSetting>()).ToList() : new List<UserSetting>();
-            var componentDefaultValue = child2s.Length > 0 && child2s[0].Length > 0 ? child2s[0].Select(x => x.MapTo<CoreAPI.UIModels.ComponentDefaultValue>()).ToList() : new List<CoreAPI.UIModels.ComponentDefaultValue>();
-            var com2s = feature.ComponentGroup.SelectMany(x => x.Components);
-            componentDefaultValue.ForEach(item =>
+        var child2s = await _sql.ReadDataSet(query1, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
+        feature.UserSettings = child2s.Length > 1 && child2s[1].Length > 0 ? child2s[1].Select(x => x.MapTo<UserSetting>()).ToList() : new List<UserSetting>();
+        var componentDefaultValue = child2s.Length > 0 && child2s[0].Length > 0 ? child2s[0].Select(x => x.MapTo<CoreAPI.UIModels.ComponentDefaultValue>()).ToList() : new List<CoreAPI.UIModels.ComponentDefaultValue>();
+        var com2s = feature.ComponentGroup.SelectMany(x => x.Components);
+        componentDefaultValue.ForEach(item =>
+        {
+            var def = com2s.FirstOrDefault(c => c.ComponentId == item.Id);
+            if (def != null)
             {
-                var def = com2s.FirstOrDefault(c => c.ComponentId == item.Id);
-                if (def != null)
-                {
-                    def.DefaultVal = item.Value;
-                    def.ComponentDefaultValueId = item.Id;
-                }
-            });
-            return feature;
-        }
-        var query = @$"select * from [Feature] where Name = N'{name}'";
-        feature = await _sql.ReadDsAs<Feature>(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
-        if (feature == null)
-        {
-            return null;
-        }
-        var query2 = @$"select [Component].*,isnull(def.Value,DefaultVal) as DefaultVal,def.Id as ComponentDefaultValueId
-        from [Component] 
-        outer apply (select top 1 Value,Id from ComponentDefaultValue where UserId = '{UserId}' and ComponentId = Component.Id) as def 
-        where FeatureId = '{feature.Id}'
-        select * from [FeaturePolicy] where FeatureId = '{feature.Id}'
-        select * from [UserSetting] where FeatureId = '{feature.Id}' and UserId = '{UserId}'";
-        var childs = await _sql.ReadDataSet(query2, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
-        var components = childs.Length > 0 && childs[0].Length > 0 ? childs[0].Select(x => x.MapTo<Component>()).ToList() : new List<Component>();
-        var policys = childs.Length > 1 && childs[1].Length > 0 ? childs[1].Select(x => x.MapTo<FeaturePolicy>()).ToList() : new List<FeaturePolicy>();
-        feature.UserSettings = childs.Length > 2 && childs[2].Length > 0 ? childs[2].Select(x => x.MapTo<UserSetting>()).ToList() : new List<UserSetting>();
-        feature.Components = components;
-        var filteredComponentGroups = feature.Components
-            .Where(component => component.ComponentType == "Section")
-            .ToList();
-        filteredComponentGroups.ForEach(group =>
-        {
-            group.Components = feature.Components.Where(c => c.ComponentGroupId == group.Id).ToList();
+                def.DefaultVal = item.Value;
+                def.ComponentDefaultValueId = item.Id;
+            }
         });
-        feature.ComponentGroup = filteredComponentGroups;
-        feature.FeaturePolicies = policys;
-        feature.GridPolicies = feature.Components.Where(component => component.ComponentGroupId == null && component.EntityId != null).ToList();
-        var coms = feature.Components.Where(x => x.ComponentType == "Button").ToList();
-        feature.Components = coms.Nothing() ? new List<Component>() : coms;
         return feature;
     }
 
@@ -683,17 +653,22 @@ public class UserService
 
     private async Task SaveFeatureToJson(Feature feature, string t)
     {
+        _logger.LogInformation("Begin save feature");
         string directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "upload", t, "features");
         if (!Directory.Exists(directoryPath))
         {
             Directory.CreateDirectory(directoryPath);
         }
         string filePath = Path.Combine(directoryPath, feature.Name + ".json");
-        string json = JsonConvert.SerializeObject(feature);
+        string json = JsonConvert.SerializeObject(feature, Formatting.Indented, new JsonSerializerSettings
+        {
+            DefaultValueHandling = DefaultValueHandling.Ignore,
+            NullValueHandling = NullValueHandling.Ignore
+        });
         await File.WriteAllTextAsync(filePath, json);
     }
 
-    private async Task<Feature> GetFeatureFromJson(string featureName, string t)
+    private static async Task<Feature> GetFeatureFromJson(string featureName, string t)
     {
         string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "upload", t, "features", featureName + ".json");
 

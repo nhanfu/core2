@@ -1,1 +1,108 @@
-{"Id":"6e63c20d-2788-4176-3332-4cfe2c982can1","Name":"Inventory","Label":"Inventory","ParentId":null,"Order":7,"ClassName":null,"Style":null,"StyleSheet":null,"Script":null,"Events":null,"Icon":"fal fa-inventory","IsDevider":false,"IsGroup":false,"IsMenu":false,"IsPublic":true,"StartUp":false,"ViewClass":null,"EntityId":null,"Description":null,"Active":true,"InsertedDate":null,"InsertedBy":null,"UpdatedDate":null,"UpdatedBy":null,"IsSystem":false,"IgnoreEncode":true,"InheritParentFeature":false,"DeleteTemp":false,"CustomNextCell":false,"LoadEntity":false,"IsLock":false,"IsFlow":false,"CodeId":null,"ComponentGroup":[],"GridPolicies":[],"Components":[],"FeaturePolicies":[{"Id":"0F63386E-1CDA-4201-B11C-C9AF11F36D9E","FeatureId":"6e63c20d-2788-4176-3332-4cfe2c982can1","RoleId":"0001fd80-0000-0000-8000-e3a7c7a43ba7","CanRead":false,"CanReadAll":false,"CanWrite":false,"CanWriteAll":false,"CanDelete":false,"CanDeleteAll":false,"CanCopy":false,"CanCopyAll":false,"CanDeactivate":false,"CanDeactivateAll":false,"RecordId":null,"UserId":null,"TableName":"Feature","Active":true,"InsertedDate":"2024-11-08T17:12:12.3333333","InsertedBy":"-1","UpdatedDate":null,"UpdatedBy":null},{"Id":"6830F289-765F-4C73-98F6-2DACC1432732","FeatureId":"6e63c20d-2788-4176-3332-4cfe2c982can1","RoleId":"00012180-0000-0000-8000-13a7c7a23b11","CanRead":false,"CanReadAll":false,"CanWrite":false,"CanWriteAll":false,"CanDelete":false,"CanDeleteAll":false,"CanCopy":false,"CanCopyAll":false,"CanDeactivate":false,"CanDeactivateAll":false,"RecordId":null,"UserId":null,"TableName":"Feature","Active":true,"InsertedDate":"2024-11-08T17:12:12.3333333","InsertedBy":"-1","UpdatedDate":null,"UpdatedBy":null},{"Id":"8A66B303-6761-4316-AE32-3F298A74A788","FeatureId":"6e63c20d-2788-4176-3332-4cfe2c982can1","RoleId":"0001fd80-0000-0000-8000-e3a7c7a43ba1","CanRead":false,"CanReadAll":false,"CanWrite":false,"CanWriteAll":false,"CanDelete":false,"CanDeleteAll":false,"CanCopy":false,"CanCopyAll":false,"CanDeactivate":false,"CanDeactivateAll":false,"RecordId":null,"UserId":null,"TableName":"Feature","Active":true,"InsertedDate":"2024-11-08T17:12:12.3333333","InsertedBy":"-1","UpdatedDate":null,"UpdatedBy":null},{"Id":"A69F88DC-98A5-49EF-9CD6-F6D45950D6B2","FeatureId":"6e63c20d-2788-4176-3332-4cfe2c982can1","RoleId":"0001f180-0000-0000-8000-13a7c7a43b11","CanRead":false,"CanReadAll":false,"CanWrite":false,"CanWriteAll":false,"CanDelete":false,"CanDeleteAll":false,"CanCopy":false,"CanCopyAll":false,"CanDeactivate":false,"CanDeactivateAll":false,"RecordId":null,"UserId":null,"TableName":"Feature","Active":true,"InsertedDate":"2024-11-08T17:12:12.3333333","InsertedBy":"-1","UpdatedDate":null,"UpdatedBy":null},{"Id":"BB536D17-558D-4ECE-818C-C06CD16BA2F2","FeatureId":"6e63c20d-2788-4176-3332-4cfe2c982can1","RoleId":"0001fd80-0000-0000-8000-13a7c7a43b11","CanRead":false,"CanReadAll":false,"CanWrite":false,"CanWriteAll":false,"CanDelete":false,"CanDeleteAll":false,"CanCopy":false,"CanCopyAll":false,"CanDeactivate":false,"CanDeactivateAll":false,"RecordId":null,"UserId":null,"TableName":"Feature","Active":true,"InsertedDate":"2024-11-08T17:12:12.3333333","InsertedBy":"-1","UpdatedDate":null,"UpdatedBy":null},{"Id":"C4E95719-76B9-4A09-9119-2FCA7D972889","FeatureId":"6e63c20d-2788-4176-3332-4cfe2c982can1","RoleId":"CUSTOMER","CanRead":false,"CanReadAll":false,"CanWrite":false,"CanWriteAll":false,"CanDelete":false,"CanDeleteAll":false,"CanCopy":false,"CanCopyAll":false,"CanDeactivate":false,"CanDeactivateAll":false,"RecordId":null,"UserId":null,"TableName":"Feature","Active":true,"InsertedDate":"2025-02-18T14:36:06.32","InsertedBy":"-1","UpdatedDate":null,"UpdatedBy":null},{"Id":"C87F08CE-2A11-4A18-A820-E522CA0C4779","FeatureId":"6e63c20d-2788-4176-3332-4cfe2c982can1","RoleId":"00012180-0000-0000-8000-13a7a7a23b11","CanRead":true,"CanReadAll":true,"CanWrite":true,"CanWriteAll":true,"CanDelete":true,"CanDeleteAll":true,"CanCopy":false,"CanCopyAll":false,"CanDeactivate":false,"CanDeactivateAll":false,"RecordId":null,"UserId":null,"TableName":"Feature","Active":true,"InsertedDate":"2024-11-08T17:12:12.3333333","InsertedBy":"-1","UpdatedDate":null,"UpdatedBy":null},{"Id":"CBDCB9DE-1770-4E85-874F-86148ADDA398","FeatureId":"6e63c20d-2788-4176-3332-4cfe2c982can1","RoleId":"0001fd80-0000-0000-8000-23a7c7a43ba7","CanRead":false,"CanReadAll":false,"CanWrite":false,"CanWriteAll":false,"CanDelete":false,"CanDeleteAll":false,"CanCopy":false,"CanCopyAll":false,"CanDeactivate":false,"CanDeactivateAll":false,"RecordId":null,"UserId":null,"TableName":"Feature","Active":true,"InsertedDate":"2024-11-08T17:12:12.3333333","InsertedBy":"-1","UpdatedDate":null,"UpdatedBy":null},{"Id":"DAF9A3A3-3F70-4307-B660-2065F1F12E4E","FeatureId":"6e63c20d-2788-4176-3332-4cfe2c982can1","RoleId":"0001f180-0000-0000-8000-13a7c7a23b11","CanRead":false,"CanReadAll":false,"CanWrite":false,"CanWriteAll":false,"CanDelete":false,"CanDeleteAll":false,"CanCopy":false,"CanCopyAll":false,"CanDeactivate":false,"CanDeactivateAll":false,"RecordId":null,"UserId":null,"TableName":"Feature","Active":true,"InsertedDate":"2024-11-08T17:12:12.3333333","InsertedBy":"-1","UpdatedDate":null,"UpdatedBy":null},{"Id":"FF7AA89B-76F1-4631-AFE4-74C639D4E05E","FeatureId":"6e63c20d-2788-4176-3332-4cfe2c982can1","RoleId":"0001fd80-0000-0000-8000-e3a7c7a43ba2","CanRead":false,"CanReadAll":false,"CanWrite":false,"CanWriteAll":false,"CanDelete":false,"CanDeleteAll":false,"CanCopy":false,"CanCopyAll":false,"CanDeactivate":false,"CanDeactivateAll":false,"RecordId":null,"UserId":null,"TableName":"Feature","Active":true,"InsertedDate":"2024-11-08T17:12:12.3333333","InsertedBy":"-1","UpdatedDate":null,"UpdatedBy":null}],"UserSettings":[]}
+{
+    "Id": "6e63c20d-2788-4176-3332-4cfe2c982can1",
+    "Name": "Inventory",
+    "Label": "Inventory",
+    "Order": 7,
+    "Icon": "fal fa-inventory",
+    "IsPublic": true,
+    "Active": true,
+    "IgnoreEncode": true,
+    "FeaturePolicies": [
+        {
+            "Id": "0F63386E-1CDA-4201-B11C-C9AF11F36D9E",
+            "FeatureId": "6e63c20d-2788-4176-3332-4cfe2c982can1",
+            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
+            "TableName": "Feature",
+            "Active": true,
+            "InsertedDate": "2024-11-08T17:12:12.3333333",
+            "InsertedBy": "-1"
+        },
+        {
+            "Id": "6830F289-765F-4C73-98F6-2DACC1432732",
+            "FeatureId": "6e63c20d-2788-4176-3332-4cfe2c982can1",
+            "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
+            "TableName": "Feature",
+            "Active": true,
+            "InsertedDate": "2024-11-08T17:12:12.3333333",
+            "InsertedBy": "-1"
+        },
+        {
+            "Id": "8A66B303-6761-4316-AE32-3F298A74A788",
+            "FeatureId": "6e63c20d-2788-4176-3332-4cfe2c982can1",
+            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
+            "TableName": "Feature",
+            "Active": true,
+            "InsertedDate": "2024-11-08T17:12:12.3333333",
+            "InsertedBy": "-1"
+        },
+        {
+            "Id": "A69F88DC-98A5-49EF-9CD6-F6D45950D6B2",
+            "FeatureId": "6e63c20d-2788-4176-3332-4cfe2c982can1",
+            "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
+            "TableName": "Feature",
+            "Active": true,
+            "InsertedDate": "2024-11-08T17:12:12.3333333",
+            "InsertedBy": "-1"
+        },
+        {
+            "Id": "BB536D17-558D-4ECE-818C-C06CD16BA2F2",
+            "FeatureId": "6e63c20d-2788-4176-3332-4cfe2c982can1",
+            "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
+            "TableName": "Feature",
+            "Active": true,
+            "InsertedDate": "2024-11-08T17:12:12.3333333",
+            "InsertedBy": "-1"
+        },
+        {
+            "Id": "C4E95719-76B9-4A09-9119-2FCA7D972889",
+            "FeatureId": "6e63c20d-2788-4176-3332-4cfe2c982can1",
+            "RoleId": "CUSTOMER",
+            "TableName": "Feature",
+            "Active": true,
+            "InsertedDate": "2025-02-18T14:36:06.32",
+            "InsertedBy": "-1"
+        },
+        {
+            "Id": "C87F08CE-2A11-4A18-A820-E522CA0C4779",
+            "FeatureId": "6e63c20d-2788-4176-3332-4cfe2c982can1",
+            "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
+            "CanRead": true,
+            "CanReadAll": true,
+            "CanWrite": true,
+            "CanWriteAll": true,
+            "CanDelete": true,
+            "CanDeleteAll": true,
+            "TableName": "Feature",
+            "Active": true,
+            "InsertedDate": "2024-11-08T17:12:12.3333333",
+            "InsertedBy": "-1"
+        },
+        {
+            "Id": "CBDCB9DE-1770-4E85-874F-86148ADDA398",
+            "FeatureId": "6e63c20d-2788-4176-3332-4cfe2c982can1",
+            "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
+            "TableName": "Feature",
+            "Active": true,
+            "InsertedDate": "2024-11-08T17:12:12.3333333",
+            "InsertedBy": "-1"
+        },
+        {
+            "Id": "DAF9A3A3-3F70-4307-B660-2065F1F12E4E",
+            "FeatureId": "6e63c20d-2788-4176-3332-4cfe2c982can1",
+            "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
+            "TableName": "Feature",
+            "Active": true,
+            "InsertedDate": "2024-11-08T17:12:12.3333333",
+            "InsertedBy": "-1"
+        },
+        {
+            "Id": "FF7AA89B-76F1-4631-AFE4-74C639D4E05E",
+            "FeatureId": "6e63c20d-2788-4176-3332-4cfe2c982can1",
+            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
+            "TableName": "Feature",
+            "Active": true,
+            "InsertedDate": "2024-11-08T17:12:12.3333333",
+            "InsertedBy": "-1"
+        }
+    ]
+}

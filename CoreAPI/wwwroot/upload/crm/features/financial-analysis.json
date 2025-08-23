@@ -1,1 +1,108 @@
-{"Id":"6e63c11d-2782-4124-3132-4c112c921can1","Name":"financial-analysis","Label":"Financial analysis","ParentId":null,"Order":17,"ClassName":null,"Style":null,"StyleSheet":null,"Script":null,"Events":null,"Icon":"fal fa-analytics","IsDevider":false,"IsGroup":false,"IsMenu":false,"IsPublic":true,"StartUp":false,"ViewClass":null,"EntityId":null,"Description":null,"Active":true,"InsertedDate":null,"InsertedBy":null,"UpdatedDate":null,"UpdatedBy":null,"IsSystem":false,"IgnoreEncode":true,"InheritParentFeature":false,"DeleteTemp":false,"CustomNextCell":false,"LoadEntity":false,"IsLock":false,"IsFlow":false,"CodeId":null,"ComponentGroup":[],"GridPolicies":[],"Components":[],"FeaturePolicies":[{"Id":"314FEFAC-E058-4DD0-9591-AB51741E22CF","FeatureId":"6e63c11d-2782-4124-3132-4c112c921can1","RoleId":"00012180-0000-0000-8000-13a7c7a23b11","CanRead":false,"CanReadAll":false,"CanWrite":false,"CanWriteAll":false,"CanDelete":false,"CanDeleteAll":false,"CanCopy":false,"CanCopyAll":false,"CanDeactivate":false,"CanDeactivateAll":false,"RecordId":null,"UserId":null,"TableName":"Feature","Active":true,"InsertedDate":"2024-11-08T17:12:12.3333333","InsertedBy":"-1","UpdatedDate":null,"UpdatedBy":null},{"Id":"3988C24B-27F3-4AF5-B0A7-3702F2E2E850","FeatureId":"6e63c11d-2782-4124-3132-4c112c921can1","RoleId":"CUSTOMER","CanRead":false,"CanReadAll":false,"CanWrite":false,"CanWriteAll":false,"CanDelete":false,"CanDeleteAll":false,"CanCopy":false,"CanCopyAll":false,"CanDeactivate":false,"CanDeactivateAll":false,"RecordId":null,"UserId":null,"TableName":"Feature","Active":true,"InsertedDate":"2025-02-18T14:36:06.32","InsertedBy":"-1","UpdatedDate":null,"UpdatedBy":null},{"Id":"3F1DD4B8-B525-49F4-910C-7483563E2E1C","FeatureId":"6e63c11d-2782-4124-3132-4c112c921can1","RoleId":"00012180-0000-0000-8000-13a7a7a23b11","CanRead":true,"CanReadAll":true,"CanWrite":true,"CanWriteAll":true,"CanDelete":true,"CanDeleteAll":true,"CanCopy":false,"CanCopyAll":false,"CanDeactivate":false,"CanDeactivateAll":false,"RecordId":null,"UserId":null,"TableName":"Feature","Active":true,"InsertedDate":"2024-11-08T17:12:12.3333333","InsertedBy":"-1","UpdatedDate":null,"UpdatedBy":null},{"Id":"5B48B17D-A92B-46B8-8506-CFB4C8C73C46","FeatureId":"6e63c11d-2782-4124-3132-4c112c921can1","RoleId":"0001fd80-0000-0000-8000-13a7c7a43b11","CanRead":false,"CanReadAll":false,"CanWrite":false,"CanWriteAll":false,"CanDelete":false,"CanDeleteAll":false,"CanCopy":false,"CanCopyAll":false,"CanDeactivate":false,"CanDeactivateAll":false,"RecordId":null,"UserId":null,"TableName":"Feature","Active":true,"InsertedDate":"2024-11-08T17:12:12.3333333","InsertedBy":"-1","UpdatedDate":null,"UpdatedBy":null},{"Id":"62A8369B-2EEB-4CCE-85FD-7B4F425EE868","FeatureId":"6e63c11d-2782-4124-3132-4c112c921can1","RoleId":"0001fd80-0000-0000-8000-e3a7c7a43ba2","CanRead":false,"CanReadAll":false,"CanWrite":false,"CanWriteAll":false,"CanDelete":false,"CanDeleteAll":false,"CanCopy":false,"CanCopyAll":false,"CanDeactivate":false,"CanDeactivateAll":false,"RecordId":null,"UserId":null,"TableName":"Feature","Active":true,"InsertedDate":"2024-11-08T17:12:12.3333333","InsertedBy":"-1","UpdatedDate":null,"UpdatedBy":null},{"Id":"9FA4948D-F5C7-4756-9D86-D12EB3320744","FeatureId":"6e63c11d-2782-4124-3132-4c112c921can1","RoleId":"0001fd80-0000-0000-8000-e3a7c7a43ba1","CanRead":false,"CanReadAll":false,"CanWrite":false,"CanWriteAll":false,"CanDelete":false,"CanDeleteAll":false,"CanCopy":false,"CanCopyAll":false,"CanDeactivate":false,"CanDeactivateAll":false,"RecordId":null,"UserId":null,"TableName":"Feature","Active":true,"InsertedDate":"2024-11-08T17:12:12.3333333","InsertedBy":"-1","UpdatedDate":null,"UpdatedBy":null},{"Id":"A79A8DF8-1F2B-4590-823A-7DCCD5C773A8","FeatureId":"6e63c11d-2782-4124-3132-4c112c921can1","RoleId":"0001f180-0000-0000-8000-13a7c7a43b11","CanRead":false,"CanReadAll":false,"CanWrite":false,"CanWriteAll":false,"CanDelete":false,"CanDeleteAll":false,"CanCopy":false,"CanCopyAll":false,"CanDeactivate":false,"CanDeactivateAll":false,"RecordId":null,"UserId":null,"TableName":"Feature","Active":true,"InsertedDate":"2024-11-08T17:12:12.3333333","InsertedBy":"-1","UpdatedDate":null,"UpdatedBy":null},{"Id":"A9BB907A-0A32-4890-9198-54A130864455","FeatureId":"6e63c11d-2782-4124-3132-4c112c921can1","RoleId":"0001fd80-0000-0000-8000-23a7c7a43ba7","CanRead":false,"CanReadAll":false,"CanWrite":false,"CanWriteAll":false,"CanDelete":false,"CanDeleteAll":false,"CanCopy":false,"CanCopyAll":false,"CanDeactivate":false,"CanDeactivateAll":false,"RecordId":null,"UserId":null,"TableName":"Feature","Active":true,"InsertedDate":"2024-11-08T17:12:12.3333333","InsertedBy":"-1","UpdatedDate":null,"UpdatedBy":null},{"Id":"D1140582-0180-4FB4-B8B3-350FA3FF1530","FeatureId":"6e63c11d-2782-4124-3132-4c112c921can1","RoleId":"0001fd80-0000-0000-8000-e3a7c7a43ba7","CanRead":false,"CanReadAll":false,"CanWrite":false,"CanWriteAll":false,"CanDelete":false,"CanDeleteAll":false,"CanCopy":false,"CanCopyAll":false,"CanDeactivate":false,"CanDeactivateAll":false,"RecordId":null,"UserId":null,"TableName":"Feature","Active":true,"InsertedDate":"2024-11-08T17:12:12.3333333","InsertedBy":"-1","UpdatedDate":null,"UpdatedBy":null},{"Id":"E42E16B9-BEC9-4F90-A012-E9A5DA18AE66","FeatureId":"6e63c11d-2782-4124-3132-4c112c921can1","RoleId":"0001f180-0000-0000-8000-13a7c7a23b11","CanRead":false,"CanReadAll":false,"CanWrite":false,"CanWriteAll":false,"CanDelete":false,"CanDeleteAll":false,"CanCopy":false,"CanCopyAll":false,"CanDeactivate":false,"CanDeactivateAll":false,"RecordId":null,"UserId":null,"TableName":"Feature","Active":true,"InsertedDate":"2024-11-08T17:12:12.3333333","InsertedBy":"-1","UpdatedDate":null,"UpdatedBy":null}],"UserSettings":[]}
+{
+    "Id": "6e63c11d-2782-4124-3132-4c112c921can1",
+    "Name": "financial-analysis",
+    "Label": "Financial analysis",
+    "Order": 17,
+    "Icon": "fal fa-analytics",
+    "IsPublic": true,
+    "Active": true,
+    "IgnoreEncode": true,
+    "FeaturePolicies": [
+        {
+            "Id": "314FEFAC-E058-4DD0-9591-AB51741E22CF",
+            "FeatureId": "6e63c11d-2782-4124-3132-4c112c921can1",
+            "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
+            "TableName": "Feature",
+            "Active": true,
+            "InsertedDate": "2024-11-08T17:12:12.3333333",
+            "InsertedBy": "-1"
+        },
+        {
+            "Id": "3988C24B-27F3-4AF5-B0A7-3702F2E2E850",
+            "FeatureId": "6e63c11d-2782-4124-3132-4c112c921can1",
+            "RoleId": "CUSTOMER",
+            "TableName": "Feature",
+            "Active": true,
+            "InsertedDate": "2025-02-18T14:36:06.32",
+            "InsertedBy": "-1"
+        },
+        {
+            "Id": "3F1DD4B8-B525-49F4-910C-7483563E2E1C",
+            "FeatureId": "6e63c11d-2782-4124-3132-4c112c921can1",
+            "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
+            "CanRead": true,
+            "CanReadAll": true,
+            "CanWrite": true,
+            "CanWriteAll": true,
+            "CanDelete": true,
+            "CanDeleteAll": true,
+            "TableName": "Feature",
+            "Active": true,
+            "InsertedDate": "2024-11-08T17:12:12.3333333",
+            "InsertedBy": "-1"
+        },
+        {
+            "Id": "5B48B17D-A92B-46B8-8506-CFB4C8C73C46",
+            "FeatureId": "6e63c11d-2782-4124-3132-4c112c921can1",
+            "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
+            "TableName": "Feature",
+            "Active": true,
+            "InsertedDate": "2024-11-08T17:12:12.3333333",
+            "InsertedBy": "-1"
+        },
+        {
+            "Id": "62A8369B-2EEB-4CCE-85FD-7B4F425EE868",
+            "FeatureId": "6e63c11d-2782-4124-3132-4c112c921can1",
+            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
+            "TableName": "Feature",
+            "Active": true,
+            "InsertedDate": "2024-11-08T17:12:12.3333333",
+            "InsertedBy": "-1"
+        },
+        {
+            "Id": "9FA4948D-F5C7-4756-9D86-D12EB3320744",
+            "FeatureId": "6e63c11d-2782-4124-3132-4c112c921can1",
+            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
+            "TableName": "Feature",
+            "Active": true,
+            "InsertedDate": "2024-11-08T17:12:12.3333333",
+            "InsertedBy": "-1"
+        },
+        {
+            "Id": "A79A8DF8-1F2B-4590-823A-7DCCD5C773A8",
+            "FeatureId": "6e63c11d-2782-4124-3132-4c112c921can1",
+            "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
+            "TableName": "Feature",
+            "Active": true,
+            "InsertedDate": "2024-11-08T17:12:12.3333333",
+            "InsertedBy": "-1"
+        },
+        {
+            "Id": "A9BB907A-0A32-4890-9198-54A130864455",
+            "FeatureId": "6e63c11d-2782-4124-3132-4c112c921can1",
+            "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
+            "TableName": "Feature",
+            "Active": true,
+            "InsertedDate": "2024-11-08T17:12:12.3333333",
+            "InsertedBy": "-1"
+        },
+        {
+            "Id": "D1140582-0180-4FB4-B8B3-350FA3FF1530",
+            "FeatureId": "6e63c11d-2782-4124-3132-4c112c921can1",
+            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
+            "TableName": "Feature",
+            "Active": true,
+            "InsertedDate": "2024-11-08T17:12:12.3333333",
+            "InsertedBy": "-1"
+        },
+        {
+            "Id": "E42E16B9-BEC9-4F90-A012-E9A5DA18AE66",
+            "FeatureId": "6e63c11d-2782-4124-3132-4c112c921can1",
+            "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
+            "TableName": "Feature",
+            "Active": true,
+            "InsertedDate": "2024-11-08T17:12:12.3333333",
+            "InsertedBy": "-1"
+        }
+    ]
+}

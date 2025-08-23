@@ -1,1 +1,114 @@
-{"Id":"01947703-9cf6-75f5-84cf-c23fadbfb38b","Name":"flows","Label":"Flows","ParentId":null,"Order":-1,"ClassName":null,"Style":null,"StyleSheet":null,"Script":null,"Events":null,"Icon":"fal fa-network-wired","IsDevider":false,"IsGroup":false,"IsMenu":false,"IsPublic":true,"StartUp":false,"ViewClass":null,"EntityId":null,"Description":null,"Active":true,"InsertedDate":"2024-07-17T09:36:16.623","InsertedBy":"1","UpdatedDate":"2025-02-23T08:54:13.2982329","UpdatedBy":"1","IsSystem":false,"IgnoreEncode":true,"InheritParentFeature":false,"DeleteTemp":false,"CustomNextCell":false,"LoadEntity":false,"IsLock":false,"IsFlow":false,"CodeId":null,"ComponentGroup":[],"GridPolicies":[],"Components":[],"FeaturePolicies":[{"Id":"05880302-FE2C-4FB3-890D-52CF5C31E418","FeatureId":"01947703-9cf6-75f5-84cf-c23fadbfb38b","RoleId":"0001fd80-0000-0000-8000-13a7c7a43b11","CanRead":false,"CanReadAll":false,"CanWrite":false,"CanWriteAll":false,"CanDelete":false,"CanDeleteAll":false,"CanCopy":false,"CanCopyAll":false,"CanDeactivate":false,"CanDeactivateAll":false,"RecordId":null,"UserId":null,"TableName":"Feature","Active":true,"InsertedDate":"2025-01-18T08:25:18.1633333","InsertedBy":"-1","UpdatedDate":null,"UpdatedBy":null},{"Id":"12CA6CBC-45A0-4ECE-B4CD-F9CF6553CB6B","FeatureId":"01947703-9cf6-75f5-84cf-c23fadbfb38b","RoleId":"00012180-0000-0000-8000-13a7c7a23b11","CanRead":false,"CanReadAll":false,"CanWrite":false,"CanWriteAll":false,"CanDelete":false,"CanDeleteAll":false,"CanCopy":false,"CanCopyAll":false,"CanDeactivate":false,"CanDeactivateAll":false,"RecordId":null,"UserId":null,"TableName":"Feature","Active":true,"InsertedDate":"2025-01-18T08:25:18.1633333","InsertedBy":"-1","UpdatedDate":null,"UpdatedBy":null},{"Id":"3C0E4E5A-DF62-4FDA-BEBE-DDE0F548FA5F","FeatureId":"01947703-9cf6-75f5-84cf-c23fadbfb38b","RoleId":"0001fd80-0000-0000-8000-e3a7c7a43ba1","CanRead":false,"CanReadAll":false,"CanWrite":false,"CanWriteAll":false,"CanDelete":false,"CanDeleteAll":false,"CanCopy":false,"CanCopyAll":false,"CanDeactivate":false,"CanDeactivateAll":false,"RecordId":null,"UserId":null,"TableName":"Feature","Active":true,"InsertedDate":"2025-01-18T08:25:18.1633333","InsertedBy":"-1","UpdatedDate":null,"UpdatedBy":null},{"Id":"6B86AFE7-18D7-4E41-91CD-6C87333F05E1","FeatureId":"01947703-9cf6-75f5-84cf-c23fadbfb38b","RoleId":"0001f180-0000-0000-8000-13a7c7a43b11","CanRead":false,"CanReadAll":false,"CanWrite":false,"CanWriteAll":false,"CanDelete":false,"CanDeleteAll":false,"CanCopy":false,"CanCopyAll":false,"CanDeactivate":false,"CanDeactivateAll":false,"RecordId":null,"UserId":null,"TableName":"Feature","Active":true,"InsertedDate":"2025-01-18T08:25:18.1633333","InsertedBy":"-1","UpdatedDate":null,"UpdatedBy":null},{"Id":"B25EB954-1E82-4F8A-A6E9-5524AA951EC0","FeatureId":"01947703-9cf6-75f5-84cf-c23fadbfb38b","RoleId":"0001fd80-0000-0000-8000-e3a7c7a43ba2","CanRead":false,"CanReadAll":false,"CanWrite":false,"CanWriteAll":false,"CanDelete":false,"CanDeleteAll":false,"CanCopy":false,"CanCopyAll":false,"CanDeactivate":false,"CanDeactivateAll":false,"RecordId":null,"UserId":null,"TableName":"Feature","Active":true,"InsertedDate":"2025-01-18T08:25:18.1633333","InsertedBy":"-1","UpdatedDate":null,"UpdatedBy":null},{"Id":"B2A5D832-34AF-4D80-AF24-A8752C1EA17E","FeatureId":"01947703-9cf6-75f5-84cf-c23fadbfb38b","RoleId":"00012180-0000-0000-8000-13a7a7a23b11","CanRead":true,"CanReadAll":true,"CanWrite":false,"CanWriteAll":false,"CanDelete":false,"CanDeleteAll":false,"CanCopy":false,"CanCopyAll":false,"CanDeactivate":false,"CanDeactivateAll":false,"RecordId":null,"UserId":null,"TableName":"Feature","Active":true,"InsertedDate":"2025-01-18T08:25:18.1633333","InsertedBy":"-1","UpdatedDate":"2025-01-18T08:27:18.8879606","UpdatedBy":"1"},{"Id":"BD5B5AC4-2F1F-4846-A6A1-40C5F453C962","FeatureId":"01947703-9cf6-75f5-84cf-c23fadbfb38b","RoleId":"0001fd80-0000-0000-8000-23a7c7a43ba7","CanRead":true,"CanReadAll":true,"CanWrite":false,"CanWriteAll":false,"CanDelete":false,"CanDeleteAll":false,"CanCopy":false,"CanCopyAll":false,"CanDeactivate":false,"CanDeactivateAll":false,"RecordId":null,"UserId":null,"TableName":"Feature","Active":true,"InsertedDate":"2025-01-18T08:25:18.1633333","InsertedBy":"-1","UpdatedDate":"2025-01-18T08:27:24.8239087","UpdatedBy":"1"},{"Id":"D108D8DE-D98A-421E-9933-FA27DCE804EB","FeatureId":"01947703-9cf6-75f5-84cf-c23fadbfb38b","RoleId":"0001fd80-0000-0000-8000-e3a7c7a43ba7","CanRead":false,"CanReadAll":false,"CanWrite":false,"CanWriteAll":false,"CanDelete":false,"CanDeleteAll":false,"CanCopy":false,"CanCopyAll":false,"CanDeactivate":false,"CanDeactivateAll":false,"RecordId":null,"UserId":null,"TableName":"Feature","Active":true,"InsertedDate":"2025-01-18T08:25:18.1633333","InsertedBy":"-1","UpdatedDate":null,"UpdatedBy":null},{"Id":"DD1F2840-48C8-4C6A-A210-533A4334722F","FeatureId":"01947703-9cf6-75f5-84cf-c23fadbfb38b","RoleId":"0001f180-0000-0000-8000-13a7c7a23b11","CanRead":false,"CanReadAll":false,"CanWrite":false,"CanWriteAll":false,"CanDelete":false,"CanDeleteAll":false,"CanCopy":false,"CanCopyAll":false,"CanDeactivate":false,"CanDeactivateAll":false,"RecordId":null,"UserId":null,"TableName":"Feature","Active":true,"InsertedDate":"2025-01-18T08:25:18.1633333","InsertedBy":"-1","UpdatedDate":null,"UpdatedBy":null},{"Id":"F2144802-716C-47C6-B832-A11D4F17C0BB","FeatureId":"01947703-9cf6-75f5-84cf-c23fadbfb38b","RoleId":"CUSTOMER","CanRead":false,"CanReadAll":false,"CanWrite":false,"CanWriteAll":false,"CanDelete":false,"CanDeleteAll":false,"CanCopy":false,"CanCopyAll":false,"CanDeactivate":false,"CanDeactivateAll":false,"RecordId":null,"UserId":null,"TableName":"Feature","Active":true,"InsertedDate":"2025-02-18T14:36:06.32","InsertedBy":"-1","UpdatedDate":null,"UpdatedBy":null}],"UserSettings":[]}
+{
+    "Id": "01947703-9cf6-75f5-84cf-c23fadbfb38b",
+    "Name": "flows",
+    "Label": "Flows",
+    "Order": -1,
+    "Icon": "fal fa-network-wired",
+    "IsPublic": true,
+    "Active": true,
+    "InsertedDate": "2024-07-17T09:36:16.623",
+    "InsertedBy": "1",
+    "UpdatedDate": "2025-02-23T08:54:13.2982329",
+    "UpdatedBy": "1",
+    "IgnoreEncode": true,
+    "FeaturePolicies": [
+        {
+            "Id": "05880302-FE2C-4FB3-890D-52CF5C31E418",
+            "FeatureId": "01947703-9cf6-75f5-84cf-c23fadbfb38b",
+            "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
+            "TableName": "Feature",
+            "Active": true,
+            "InsertedDate": "2025-01-18T08:25:18.1633333",
+            "InsertedBy": "-1"
+        },
+        {
+            "Id": "12CA6CBC-45A0-4ECE-B4CD-F9CF6553CB6B",
+            "FeatureId": "01947703-9cf6-75f5-84cf-c23fadbfb38b",
+            "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
+            "TableName": "Feature",
+            "Active": true,
+            "InsertedDate": "2025-01-18T08:25:18.1633333",
+            "InsertedBy": "-1"
+        },
+        {
+            "Id": "3C0E4E5A-DF62-4FDA-BEBE-DDE0F548FA5F",
+            "FeatureId": "01947703-9cf6-75f5-84cf-c23fadbfb38b",
+            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
+            "TableName": "Feature",
+            "Active": true,
+            "InsertedDate": "2025-01-18T08:25:18.1633333",
+            "InsertedBy": "-1"
+        },
+        {
+            "Id": "6B86AFE7-18D7-4E41-91CD-6C87333F05E1",
+            "FeatureId": "01947703-9cf6-75f5-84cf-c23fadbfb38b",
+            "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
+            "TableName": "Feature",
+            "Active": true,
+            "InsertedDate": "2025-01-18T08:25:18.1633333",
+            "InsertedBy": "-1"
+        },
+        {
+            "Id": "B25EB954-1E82-4F8A-A6E9-5524AA951EC0",
+            "FeatureId": "01947703-9cf6-75f5-84cf-c23fadbfb38b",
+            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
+            "TableName": "Feature",
+            "Active": true,
+            "InsertedDate": "2025-01-18T08:25:18.1633333",
+            "InsertedBy": "-1"
+        },
+        {
+            "Id": "B2A5D832-34AF-4D80-AF24-A8752C1EA17E",
+            "FeatureId": "01947703-9cf6-75f5-84cf-c23fadbfb38b",
+            "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
+            "CanRead": true,
+            "CanReadAll": true,
+            "TableName": "Feature",
+            "Active": true,
+            "InsertedDate": "2025-01-18T08:25:18.1633333",
+            "InsertedBy": "-1",
+            "UpdatedDate": "2025-01-18T08:27:18.8879606",
+            "UpdatedBy": "1"
+        },
+        {
+            "Id": "BD5B5AC4-2F1F-4846-A6A1-40C5F453C962",
+            "FeatureId": "01947703-9cf6-75f5-84cf-c23fadbfb38b",
+            "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
+            "CanRead": true,
+            "CanReadAll": true,
+            "TableName": "Feature",
+            "Active": true,
+            "InsertedDate": "2025-01-18T08:25:18.1633333",
+            "InsertedBy": "-1",
+            "UpdatedDate": "2025-01-18T08:27:24.8239087",
+            "UpdatedBy": "1"
+        },
+        {
+            "Id": "D108D8DE-D98A-421E-9933-FA27DCE804EB",
+            "FeatureId": "01947703-9cf6-75f5-84cf-c23fadbfb38b",
+            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
+            "TableName": "Feature",
+            "Active": true,
+            "InsertedDate": "2025-01-18T08:25:18.1633333",
+            "InsertedBy": "-1"
+        },
+        {
+            "Id": "DD1F2840-48C8-4C6A-A210-533A4334722F",
+            "FeatureId": "01947703-9cf6-75f5-84cf-c23fadbfb38b",
+            "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
+            "TableName": "Feature",
+            "Active": true,
+            "InsertedDate": "2025-01-18T08:25:18.1633333",
+            "InsertedBy": "-1"
+        },
+        {
+            "Id": "F2144802-716C-47C6-B832-A11D4F17C0BB",
+            "FeatureId": "01947703-9cf6-75f5-84cf-c23fadbfb38b",
+            "RoleId": "CUSTOMER",
+            "TableName": "Feature",
+            "Active": true,
+            "InsertedDate": "2025-02-18T14:36:06.32",
+            "InsertedBy": "-1"
+        }
+    ]
+}
