@@ -6,7 +6,6 @@
     "Icon": "fal fa-envelope",
     "IsPublic": true,
     "EntityId": "Conversation",
-    "Active": true,
     "IgnoreEncode": true,
     "ComponentGroup": [
         {
@@ -15,7 +14,6 @@
             "Order": 1,
             "ComponentType": "Section",
             "XxlCol": 1,
-            "Active": true,
             "Components": [
                 {
                     "Id": "00d91a40-0000-0000-8000-50658af9c6e8",
@@ -27,7 +25,6 @@
                     "Row": 200,
                     "CanSearch": true,
                     "ClassName": "sticky",
-                    "Active": true,
                     "CanAdd": true,
                     "Query": "select ds.* ,FORMAT(ds.InsertedDate,'dd/MM HH:mm') as Time\r\nfrom  ConversationDetail as ds\r\nwhere ds.ConversationId = '{RecordId}' and '{TokenRoleNames}' != 'CUSTOMER'\r\norder by ds.InsertedDate asc\r\n\r\nselect ds.*,FORMAT(ds1.UpdatedDate,'dd/MM HH:mm') as Time,ds1.[Read] as [Read],ds1.Id as ConversationReadId\r\nfrom ConversationRead as ds1\r\njoin [Conversation] ds on ds1.ConversationId = ds.Id and ds1.UserId = '{TokenUserId}'\r\nwhere ds1.UserId = '{TokenUserId}'\r\norder by ds.UpdatedDate desc\r\n\r\nselect [User].Id as UserId,[User].Avatar as Avatar\r\nfrom ConversationRead\r\njoin [User] on [User].Id = ConversationRead.UserId\r\nwhere ConversationRead.ConversationId = '{RecordId}'\r\norder by ConversationRead.InsertedDate asc",
                     "IsRealtime": true,
@@ -48,7 +45,6 @@
             "Column": 12,
             "Row": 100,
             "Label": "Users",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [User] as ds where (ds.TypeId = 1 and ds.Id != '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (ds.TypeId = 1 and ds.Id != '{TokenUserId}')\"\r\n}",
             "RefName": "User",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"FullName\",\r\n        \"Label\": \"Full Name\",\r\n        \"ComponentType\": \"FullName\"\r\n    },\r\n    {\r\n        \"FieldName\": \"NickName\",\r\n        \"Label\": \"NickName\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"DepartmentId\",\r\n        \"Label\": \"Department\",\r\n        \"ComponentType\": \"Dropdown\",\r\n        \"RefName\": \"MasterData\",\r\n        \"FormatData\": \"{Name}\"\r\n    }\r\n]",
@@ -63,7 +59,6 @@
             "ComponentType": "Input",
             "Label": "Name",
             "Width": "290px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "290px",
@@ -77,7 +72,6 @@
             "ComponentType": "Checkbox",
             "Label": "Menu",
             "Width": "88px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "88px",
@@ -91,7 +85,6 @@
             "ComponentType": "Input",
             "Label": "Icon",
             "Width": "168px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "168px",
@@ -105,7 +98,6 @@
             "ComponentType": "Input",
             "Label": "Label",
             "Width": "290px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "290px",
@@ -122,7 +114,6 @@
             "Row": 100,
             "Label": "Parent",
             "Width": "306px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from Feature as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Feature as ds\"\r\n}",
             "RefName": "Feature",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -140,7 +131,6 @@
             "Precision": 2,
             "Label": "Order",
             "Width": "96px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "96px",
@@ -155,7 +145,6 @@
             "ComponentType": "Checkbox",
             "Label": "Active",
             "Width": "95px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "95px",
@@ -169,7 +158,6 @@
             "ComponentType": "Input",
             "Label": "Id",
             "Width": "266px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "266px",
             "MaxWidth": "266px",
@@ -186,62 +174,52 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "5AEFDC71-4051-44C6-9235-B8D6813A1598",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "6FCB49CC-18FF-47D3-9E77-5106EE939020",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "7708163F-4663-4CDD-898C-0EDE1B4FAEC4",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "899FE359-CECC-45A3-9909-AF0831A810AF",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "9BB82AB3-5194-41F9-BCCC-D56CC9A6AA42",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "AEE97E17-F848-4165-85DB-1619CE9B98E5",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "C0773315-991F-49E5-A05C-78CE1CC2BD62",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "CB3CCFE5-6580-436C-879D-F5A4556A0A57",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "D13A35EF-F4F2-4571-93C2-F334F3E62AC5",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

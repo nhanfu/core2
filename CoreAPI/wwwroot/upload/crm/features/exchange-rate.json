@@ -7,7 +7,6 @@
     "Script": "return {\r\n    Add: function () {\r\n        var entity = {\r\n            PostDate: this.dayjs(),\r\n            RateVND: this.Decimal(JSON.parse(localStorage.getItem(\"ExchangeRateVND\")).USD),\r\n            RateUSD: this.Decimal(JSON.parse(localStorage.getItem(\"ExchangeRateUSD\")).VND)\r\n        }\r\n        this.OpenPopup(\"update-exchangerate-editor\", entity);\r\n    },\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"update-exchangerate-editor\", entity);\r\n    }\r\n}",
     "Icon": "fal fa-exchange-alt",
     "IsMenu": true,
-    "Active": true,
     "IgnoreEncode": true,
     "ComponentGroup": [
         {
@@ -18,7 +17,6 @@
             "Label": "Exchange Rate",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -33,7 +31,6 @@
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "DefaultVal": "{\r\n    \"ParentId\":\"00ff0174-0000-0000-8000-117c2b1fb653\"\r\n}",
-                    "Active": true,
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from ExchangeRate as ds\",\r\n    \"total\": \"select count(ds.Id) as total from ExchangeRate as ds\"\r\n}",
                     "IsRealtime": true,
@@ -63,8 +60,7 @@
                     "Label": "From Date",
                     "ShowLabel": true,
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
-                    "SmCol": 5,
-                    "Active": true
+                    "SmCol": 5
                 },
                 {
                     "Id": "01956b3e-e2fb-7188-b684-3212a1093211",
@@ -76,8 +72,7 @@
                     "Label": "To Date",
                     "ShowLabel": true,
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
-                    "SmCol": 5,
-                    "Active": true
+                    "SmCol": 5
                 },
                 {
                     "Id": "01956b3e-e2fb-7188-b684-367a366774d5",
@@ -93,7 +88,6 @@
                     "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
                     "SmCol": 5,
                     "DefaultVal": "ShipmentDate",
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": \"ShipmentDate\",\r\n        \"Name\": \"Shipment\"\r\n    },\r\n    {\r\n        \"Id\": \"EtdDate\",\r\n        \"Name\": \"ETD\"\r\n    },\r\n    {\r\n        \"Id\": \"EtaDate\",\r\n        \"Name\": \"ETA\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
@@ -107,8 +101,7 @@
                     "Label": "Exchange Rate",
                     "ShowLabel": true,
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
-                    "SmCol": 5,
-                    "Active": true
+                    "SmCol": 5
                 }
             ]
         },
@@ -119,7 +112,6 @@
             "Label": "Update Profit Ext",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -134,7 +126,6 @@
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "DefaultVal": "{\r\n    \"ParentId\":\"00ff0174-0000-0000-8000-117c2b1fb653\"\r\n}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from ExchangeRateHistory as ds\",\r\n    \"total\": \"select count(ds.Id) as total from ExchangeRateHistory as ds\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "ExchangeRateHistory",
@@ -152,7 +143,6 @@
             "ComponentType": "Datepicker",
             "Label": "To Date",
             "Width": "166px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "166px",
@@ -166,7 +156,6 @@
             "ComponentType": "Datepicker",
             "Label": "From Date",
             "Width": "186px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "186px",
@@ -183,7 +172,6 @@
             "Row": 100,
             "Label": "Currency",
             "Width": "119px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Currency'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Currency'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
@@ -202,7 +190,6 @@
             "Precision": 24,
             "Label": "Rate Sale USD",
             "Width": "201px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "201px",
@@ -218,7 +205,6 @@
             "Precision": 24,
             "Label": "Rate Sale VND",
             "Width": "155px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "155px",
@@ -233,7 +219,6 @@
             "ComponentType": "Datepicker",
             "Label": "From Date",
             "Width": "186px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "186px",
             "MaxWidth": "186px",
@@ -246,7 +231,6 @@
             "ComponentType": "Datepicker",
             "Label": "To Date",
             "Width": "166px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "166px",
             "MaxWidth": "166px",
@@ -259,7 +243,6 @@
             "ComponentType": "Input",
             "Label": "Code",
             "Width": "259px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "259px",
             "MaxWidth": "259px",
@@ -275,7 +258,6 @@
             "Row": 100,
             "Label": "Branch",
             "Width": "211px",
-            "Active": true,
             "RefName": "Partner",
             "ShowHotKey": true,
             "MinWidth": "211px",
@@ -289,7 +271,6 @@
             "ComponentType": "Datepicker",
             "Label": "Post Date",
             "Width": "166px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "166px",
             "MaxWidth": "166px",
@@ -304,7 +285,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Edit\"}",
             "Width": "59px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "59px",
             "MaxWidth": "59px",
@@ -321,8 +301,7 @@
             "Label": "Add",
             "Icon": "fal fa-plus",
             "ClassName": "btn",
-            "Events": "{\r\n    \"click\": \"Add\"\r\n}",
-            "Active": true
+            "Events": "{\r\n    \"click\": \"Add\"\r\n}"
         },
         {
             "Id": "01958504-be65-764c-9805-ea9e59368ac5",
@@ -333,7 +312,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Edit\"}",
             "Width": "59px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "59px",
             "MaxWidth": "59px",
@@ -344,14 +322,12 @@
         {
             "Id": "07F37363-23F2-4A0F-A28A-D8EF6BB7F97B",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "0DE094C0-ABEF-445D-A0DE-58E1071F0EA3",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "2CF1E0A8-C08F-4846-9B46-698B4BD68BEE",
@@ -362,50 +338,42 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "3A753F56-0204-41BD-90AD-7F25AF70324C",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "854358E5-3E82-4531-ACF8-1C1445241D54",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "B228B105-D7A7-46F3-BED1-F503B6D49AC7",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "C46781ED-8EBE-4054-9A0D-2342E96AF508",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "C796375F-C0D2-419B-AFE7-72BE16352441",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "DB5D2430-E209-496B-9702-45B518176B03",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "FD231EB0-47FA-4700-AB58-2DC301FBEEED",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ],
     "UserSettings": [
@@ -413,8 +381,7 @@
             "Id": "06777dc6-f176-7ba7-8000-c2c4039713c0",
             "ComponentId": "00fe0f70-0000-0000-8000-3dea7c925e0d",
             "UserId": "00781eb8-0000-0000-8000-52bf71dcaef7",
-            "Value": "[{\"Id\":\"00fe0f28-0000-0000-8000-f5487f07a3e9\",\"FieldName\":\"FromDate\",\"Order\":0,\"Width\":\"186px\"},{\"Id\":\"00b90f90-0000-0000-8000-fcd9d7534b72\",\"FieldName\":\"ToDate\",\"Order\":1,\"Width\":\"166px\"},{\"Id\":\"00fe0f30-0000-0000-8000-c80a42c96007\",\"FieldName\":\"CurrencyId\",\"Order\":2,\"Width\":\"119px\"},{\"Id\":\"01942c1d-98ec-7275-a39c-75bd6f695259\",\"FieldName\":\"RateVND\",\"Order\":3,\"Width\":\"183px\"},{\"Id\":\"01942c1d-98ed-7438-adfa-7a06920c86e3\",\"FieldName\":\"RateSaleVND\",\"Order\":4,\"Width\":\"132px\"},{\"Id\":\"00fe0f5c-0000-0000-8000-994396fdcd3a\",\"FieldName\":\"RateUSD\",\"Order\":5,\"Width\":\"129px\"},{\"Id\":\"01942b84-6e82-707c-8c2e-0a46d1fd4f48\",\"FieldName\":\"RateSaleUSD\",\"Order\":6,\"Width\":\"109px\"}]",
-            "Active": true
+            "Value": "[{\"Id\":\"00fe0f28-0000-0000-8000-f5487f07a3e9\",\"FieldName\":\"FromDate\",\"Order\":0,\"Width\":\"186px\"},{\"Id\":\"00b90f90-0000-0000-8000-fcd9d7534b72\",\"FieldName\":\"ToDate\",\"Order\":1,\"Width\":\"166px\"},{\"Id\":\"00fe0f30-0000-0000-8000-c80a42c96007\",\"FieldName\":\"CurrencyId\",\"Order\":2,\"Width\":\"119px\"},{\"Id\":\"01942c1d-98ec-7275-a39c-75bd6f695259\",\"FieldName\":\"RateVND\",\"Order\":3,\"Width\":\"183px\"},{\"Id\":\"01942c1d-98ed-7438-adfa-7a06920c86e3\",\"FieldName\":\"RateSaleVND\",\"Order\":4,\"Width\":\"132px\"},{\"Id\":\"00fe0f5c-0000-0000-8000-994396fdcd3a\",\"FieldName\":\"RateUSD\",\"Order\":5,\"Width\":\"129px\"},{\"Id\":\"01942b84-6e82-707c-8c2e-0a46d1fd4f48\",\"FieldName\":\"RateSaleUSD\",\"Order\":6,\"Width\":\"109px\"}]"
         }
     ]
 }

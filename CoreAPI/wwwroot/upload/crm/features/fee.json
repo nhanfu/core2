@@ -5,7 +5,6 @@
     "ParentId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
     "Order": 0,
     "Icon": "fal fa-file-invoice-dollar",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "005c0214-0000-0000-8000-8b66e6e5fee1",
@@ -13,7 +12,6 @@
             "Order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "00bf0268-0000-0000-8000-e6b136f588a5",
@@ -24,7 +22,6 @@
                     "Row": 50,
                     "CanSearch": true,
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "Active": true,
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from FeeType as ds\",\r\n    \"total\": \"select count(ds.Id) as total from FeeType as ds\"\r\n}",
                     "IsRealtime": true,
@@ -45,7 +42,6 @@
             "Row": 50,
             "Label": "Trucking",
             "Width": "68px",
-            "Active": true,
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Description\", \"Label\" : \"Description\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
             "Editable": true,
@@ -62,7 +58,6 @@
             "Row": 50,
             "Label": "Logistics",
             "Width": "73px",
-            "Active": true,
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Description\", \"Label\" : \"Description\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
             "Editable": true,
@@ -77,7 +72,6 @@
             "ComponentType": "Input",
             "Label": "Name",
             "Width": "152px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "152px",
             "MaxWidth": "152px",
@@ -90,7 +84,6 @@
             "ComponentType": "Input",
             "Label": "Description",
             "Width": "151px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "151px",
             "MaxWidth": "151px",
@@ -106,7 +99,6 @@
             "Row": 100,
             "Label": "Group",
             "Width": "115px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Fee Group'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Fee Group'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -126,7 +118,6 @@
             "Label": "Currency",
             "Events": "{\"change\":\"CheckCurrency\"}",
             "Width": "67px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Currency'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Currency'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
@@ -147,7 +138,6 @@
             "Row": 100,
             "Label": "Unit",
             "Width": "109px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name in (N'Unit Type','LTL Type')\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name in (N'Unit Type','LTL Type')\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -165,7 +155,6 @@
             "Row": 50,
             "Label": "OBH",
             "Width": "60px",
-            "Active": true,
             "RefName": "Terminal",
             "FocusSearch": true,
             "Editable": true,
@@ -182,7 +171,6 @@
             "Row": 50,
             "Label": "Freight",
             "Width": "69px",
-            "Active": true,
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Description\", \"Label\" : \"Description\", \"ComponentType\" : \"Input\" }]",
             "Editable": true,
             "MinWidth": "69px",
@@ -196,7 +184,6 @@
             "ComponentType": "Input",
             "Label": "Code",
             "Width": "129px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "129px",
             "MaxWidth": "129px",
@@ -210,7 +197,6 @@
             "Row": 50,
             "Label": "ADV",
             "Width": "60px",
-            "Active": true,
             "RefName": "Terminal",
             "FocusSearch": true,
             "Editable": true,
@@ -226,7 +212,6 @@
             "Row": 50,
             "Label": "COM",
             "Width": "97px",
-            "Active": true,
             "RefName": "Terminal",
             "FocusSearch": true,
             "Editable": true,
@@ -245,7 +230,6 @@
             "Label": "Cost",
             "Validation": "(this.Entity.ExAmountTax\r\n    || this.Entity.AmountDifference\r\n    || this.Entity.ExAmount) ? [\r\n        {\r\n            \"Rule\": \"required\",\r\n            \"Message\": \"{0} is required\"\r\n        }\r\n    ] : [{}]",
             "Width": "79px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds where IsLast = 1\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds where IsLast = 1\"\r\n}",
             "RefName": "AccountNo",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Code\",\r\n        \"Label\": \"Code\",\r\n        \"ComponentType\": \"Input\",\r\n        \"HotKey\": true\r\n    },\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
@@ -267,7 +251,6 @@
             "Label": "Debit",
             "Validation": "(this.Entity.ExAmountTax\r\n    || this.Entity.AmountDifference\r\n    || this.Entity.ExAmount) ? [\r\n        {\r\n            \"Rule\": \"required\",\r\n            \"Message\": \"{0} is required\"\r\n        }\r\n    ] : [{}]",
             "Width": "85px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds where IsLast = 1\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds where IsLast = 1\"\r\n}",
             "RefName": "AccountNo",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Code\",\r\n        \"Label\": \"Code\",\r\n        \"ComponentType\": \"Input\",\r\n        \"HotKey\": true\r\n    },\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
@@ -289,7 +272,6 @@
             "Label": "Credit",
             "Validation": "(this.Entity.ExAmountTax\r\n    || this.Entity.AmountDifference\r\n    || this.Entity.ExAmount) ? [\r\n        {\r\n            \"Rule\": \"required\",\r\n            \"Message\": \"{0} is required\"\r\n        }\r\n    ] : [{}]",
             "Width": "78px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds where IsLast = 1\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds where IsLast = 1\"\r\n}",
             "RefName": "AccountNo",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Code\",\r\n        \"Label\": \"Code\",\r\n        \"ComponentType\": \"Input\",\r\n        \"HotKey\": true\r\n    },\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
@@ -311,7 +293,6 @@
             "Label": "Revenue",
             "Validation": "(this.Entity.ExAmountTax\r\n    || this.Entity.AmountDifference\r\n    || this.Entity.ExAmount) ? [\r\n        {\r\n            \"Rule\": \"required\",\r\n            \"Message\": \"{0} is required\"\r\n        }\r\n    ] : [{}]",
             "Width": "76px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds where IsLast = 1\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds where IsLast = 1\"\r\n}",
             "RefName": "AccountNo",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Code\",\r\n        \"Label\": \"Code\",\r\n        \"ComponentType\": \"Input\",\r\n        \"HotKey\": true\r\n    },\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
@@ -333,62 +314,52 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "289072AA-B15C-4585-8F32-274F8E4A4202",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "2F078153-F89B-44A4-B94D-66BFDD70409D",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "4C83CD7F-5710-4CE5-BA19-ECDF29BEB591",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "620629F7-FFD0-412A-B7D1-1E96DFAF2826",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "629A1D2A-6486-4D05-9B61-2F9817367E80",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "8000DD5A-5A89-4AE7-9334-7DCEF9A2CC17",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "977CD0E2-E79D-43CD-8B4F-5A2B97206C27",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "B4863B26-AAC4-48BF-A372-95B46EDFA541",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "FEB7BFC9-D02F-460E-B560-CEE8C548BB2F",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

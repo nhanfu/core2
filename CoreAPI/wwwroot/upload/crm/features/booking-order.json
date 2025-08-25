@@ -6,7 +6,6 @@
     "Icon": "fal fa-file-spreadsheet",
     "IsPublic": true,
     "EntityId": "Booking",
-    "Active": true,
     "IgnoreEncode": true,
     "ComponentGroup": [
         {
@@ -15,7 +14,6 @@
             "Order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "00570f84-0000-0000-8000-6257490370f8",
@@ -23,7 +21,6 @@
                     "Order": 1,
                     "ComponentType": "HtmlCode",
                     "Column": 12,
-                    "Active": true,
                     "Query": "select * from Partner as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.PicId = '{TokenUserId}')",
                     "RefName": "Partner",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }"
@@ -38,27 +35,23 @@
             "CanRead": true,
             "CanWrite": true,
             "CanDelete": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "2BF907CD-C6EF-4568-A5D2-DF1E5A59B6CA",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "2D2CF638-EE89-4AED-882B-795DC940A9DC",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "CanRead": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "43D042AB-8B83-4CF3-8C1C-7CACA025F112",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "98E9C1B9-1B0A-4BC9-A4CB-3070B30A47F2",
@@ -69,38 +62,32 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "B618AE6F-6B78-425F-B62E-32AE1AE76265",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "C0B5C5F6-0690-4749-BE7A-2D768ACB3567",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "C5D936DA-73A1-4388-A959-3D6BC69BCEF6",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "E0B4F835-D46E-42AB-8BD5-5898C89AA622",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "EE4CB595-12D8-4BC2-9876-7FCFA6FE5153",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

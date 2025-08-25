@@ -6,7 +6,6 @@
     "Style": "width:99%;",
     "Events": "{\r\n    \"onsave\": \"OnSave\",\r\n    \"onsaveadd\": \"OnSaveAdd\",\r\n    \"saved\": \"UpdateParent\"\r\n}",
     "EntityId": "Booking",
-    "Active": true,
     "CodeId": "00770f40-0000-0000-8000-4f8bbf3e44b5",
     "ComponentGroup": [
         {
@@ -16,7 +15,6 @@
             "ComponentType": "Section",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "00c71398-0000-0000-8000-0668f63574c2",
             "XxlOuterColumn": 4,
             "Components": [
@@ -32,7 +30,6 @@
                     "Label": "Shipment type",
                     "ShowLabel": true,
                     "Events": "{\"change\":\"ShowHideDetail\"}",
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 0,\r\n        \"Name\": \"FREE-HAND\"\r\n    },\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"NOMINATE\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
@@ -43,8 +40,7 @@
                     "ComponentType": "Input",
                     "Column": 6,
                     "Label": "Service",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00c713ac-0000-0000-8000-d9e83b41800c",
@@ -57,7 +53,6 @@
                     "Row": 100,
                     "Label": "Sale man",
                     "ShowLabel": true,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [User] as ds where (TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 1)\"\r\n}",
                     "RefName": "User",
                     "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]"
@@ -69,8 +64,7 @@
                     "ComponentType": "Input",
                     "Column": 12,
                     "Label": "Contract No",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00c713e8-0000-0000-8000-f8e011c310ca",
@@ -83,7 +77,6 @@
                     "Row": 100,
                     "Label": "Commodity",
                     "ShowLabel": true,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Commodity Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Commodity Type'\"\r\n}",
                     "RefName": "MasterData",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
@@ -97,7 +90,6 @@
             "ComponentType": "Section",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "00c71398-0000-0000-8000-0668f63574c2",
             "XxlOuterColumn": 4,
             "Components": [
@@ -109,7 +101,6 @@
                     "Column": 6,
                     "Label": "CBM",
                     "ShowLabel": true,
-                    "Active": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
@@ -120,7 +111,6 @@
                     "Column": 6,
                     "Label": "GW",
                     "ShowLabel": true,
-                    "Active": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
@@ -134,7 +124,6 @@
                     "Row": 100,
                     "Label": "Unit",
                     "ShowLabel": true,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where ds1.Name in (N'Unit Type','LTL Type','Container Type')\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where ds1.Name in (N'Unit Type','LTL Type','Container Type')\"\r\n}",
                     "RefName": "MasterData",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]"
@@ -148,7 +137,6 @@
                     "Label": "Quantity",
                     "ShowLabel": true,
                     "Style": " height: 30px;",
-                    "Active": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 }
             ]
@@ -160,7 +148,6 @@
             "ComponentType": "Section",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "00c71398-0000-0000-8000-0668f63574c2",
             "XxlOuterColumn": 4,
             "Components": [
@@ -178,7 +165,6 @@
                     "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('customer-editor',{ ServiceId : 1, TypeId : 3, ActionId : 1, SaleId: this.Token.UserId })\",\r\n    \"edit\": \"this.EditForm.OpenPopup('customer-editor',this.Matched)\"\r\n}",
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
                     "PopulateField": "this.EditForm.Entity.PhoneNumber = this.Matched.ContactPhoneNumber\r\nthis.EditForm.Entity.Pic = this.Matched.ContactName;\r\nthis.EditForm.Entity.Sale = null;\r\nthis.EditForm.Entity.SaleId = this.Matched.SaleId;\r\nlet customer = this.Matched;\r\nlet customerText = `${(customer.CompanyName || '')}\\n`;\r\ncustomerText += `${(customer.Address || '')}\\n`;\r\ncustomerText += `Tell: ${(customer.PhoneNumber || '')} Fax: ${(customer.Fax || '')}\\n`;\r\ncustomerText += `Contact person:${(customer.ContactName || '')}`;\r\nif (this.EditForm.Entity.Service.Name.includes('Import')) {\r\n    this.EditForm.Entity.ConsigneeId = this.Matched.Id;\r\n    this.EditForm.Entity.ConsigneeIdText = this.Matched.Name;\r\n    this.EditForm.Entity.ConsigneeDes = customerText;\r\n}\r\nelse if (this.EditForm.Entity.Service.Name.includes('Export')) {\r\n    this.EditForm.Entity.ShipperId = this.Matched.Id;\r\n    this.EditForm.Entity.ShipperIdText = this.Matched.Name;\r\n    this.EditForm.Entity.ShipperDes = customerText;\r\n}\r\nthis.EditForm.UpdateView(false, false, \"Pic\", \"SaleId\", \"PhoneNumber\", \"ConsigneeId\", \"ConsigneeIdText\", \"ShipperId\", \"ShipperIdText\", \"ConsigneeDes\", \"ShipperDes\");\r\nreturn null;",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 1 and TypeId in (2,3) and (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.DistributeInformationIds like N'%{TokenUserId}%'))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 1 and TypeId in (2,3) and (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.DistributeInformationIds like N'%{TokenUserId}%'))\"\r\n}",
                     "RefName": "Partner",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
@@ -192,8 +178,7 @@
                     "ComponentType": "Input",
                     "Column": 6,
                     "Label": "Delivery term",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00c71350-0000-0000-8000-a0d475df3ae0",
@@ -202,8 +187,7 @@
                     "ComponentType": "Datepicker",
                     "Column": 6,
                     "Label": "Booking Date",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00c71354-0000-0000-8000-f483fcf51cf0",
@@ -213,8 +197,7 @@
                     "Column": 6,
                     "Row": 50,
                     "Label": "PIC",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00c71378-0000-0000-8000-fcf6893ad1cc",
@@ -227,7 +210,6 @@
                     "Row": 100,
                     "Label": "Incoterm",
                     "ShowLabel": true,
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"DDP\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"CIP\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"CPT\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"CFR\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"FAS\"\r\n    },\r\n    {\r\n        \"Id\": 6,\r\n        \"Name\": \"FCA\"\r\n    },\r\n    {\r\n        \"Id\": 7,\r\n        \"Name\": \"EXW\"\r\n    },\r\n    {\r\n        \"Id\": 8,\r\n        \"Name\": \"CIF\"\r\n    },\r\n    {\r\n        \"Id\": 9,\r\n        \"Name\": \"DPU\"\r\n    },\r\n    {\r\n        \"Id\": 10,\r\n        \"Name\": \"DAP\"\r\n    },\r\n    {\r\n        \"Id\": 11,\r\n        \"Name\": \"FOB\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
@@ -238,8 +220,7 @@
                     "ComponentType": "Input",
                     "Column": 6,
                     "Label": "Booking No",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 }
             ]
         },
@@ -251,7 +232,6 @@
             "ClassName": "ribbon-group",
             "Style": "margin-bottom: 0px;padding: 0;",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "00c71320-0000-0000-8000-6303fec02ba5",
@@ -263,7 +243,6 @@
                     "Icon": "fal fa-comment-alt-slash",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"DeclineEntity\" }",
-                    "Active": true,
                     "ShowExp": "this.Entity.StatusId == 2"
                 },
                 {
@@ -276,7 +255,6 @@
                     "Icon": "fal fa-check-circle",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"ApprovedEntity\" }",
-                    "Active": true,
                     "ShowExp": "this.Entity.StatusId == 2"
                 },
                 {
@@ -289,8 +267,7 @@
                     "Label": "Save As",
                     "Icon": "fas fa-sliders-h-square",
                     "ClassName": "btn detail-button secondary-outline",
-                    "Events": "{ \"click\" : \"SaveAs\" }",
-                    "Active": true
+                    "Events": "{ \"click\" : \"SaveAs\" }"
                 },
                 {
                     "Id": "00c7138c-0000-0000-8000-38344e155269",
@@ -302,8 +279,7 @@
                     "Label": "Save & Add",
                     "Icon": "fas fa-sliders-h-square",
                     "ClassName": "btn detail-button secondary-outline",
-                    "Events": "{ \"click\" : \"SaveAdd\" }",
-                    "Active": true
+                    "Events": "{ \"click\" : \"SaveAdd\" }"
                 },
                 {
                     "Id": "00c71394-0000-0000-8000-1096a23cb8bd",
@@ -315,8 +291,7 @@
                     "Icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
-                    "Events": "{ \"click\" : \"SavePatch\" }",
-                    "Active": true
+                    "Events": "{ \"click\" : \"SavePatch\" }"
                 },
                 {
                     "Id": "00c713b0-0000-0000-8000-7e6ee59724a7",
@@ -328,7 +303,6 @@
                     "Icon": "far fa-share-all",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"SendEntity\" }",
-                    "Active": true,
                     "ShowExp": "this.Entity.StatusId == 1 || this.Entity.StatusId == 4"
                 }
             ]
@@ -341,7 +315,6 @@
             "Label": "Shipment details",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "00c71398-0000-0000-8000-0668f63574c2",
             "XxlOuterColumn": 4,
             "Components": [
@@ -357,7 +330,6 @@
                     "Label": "Provider",
                     "ShowLabel": true,
                     "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('provider-editor',{ ServiceId: 3, ActionId: 1})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('provider-editor',this.Matched)\"\r\n}",
-                    "Active": true,
                     "Query": "{     \"sql\": \"select * from Partner as ds where ServiceId = 3 and ActionId = 1 and IsNoDebt = 0\",     \"total\": \"select count(ds.Id) as total from Partner as ds  where ServiceId = 3 and ActionId = 1 and IsNoDebt = 0\" }",
                     "RefName": "Partner",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
@@ -372,7 +344,6 @@
                     "Row": 3,
                     "Label": "Details of goods",
                     "ShowLabel": true,
-                    "Active": true,
                     "RefName": "Terminal"
                 },
                 {
@@ -386,7 +357,6 @@
                     "Row": 100,
                     "Label": "Warehouse",
                     "ShowLabel": true,
-                    "Active": true,
                     "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                     "RefName": "Terminal",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
@@ -400,7 +370,6 @@
                     "Row": 3,
                     "Label": "Note",
                     "ShowLabel": true,
-                    "Active": true,
                     "RefName": "Terminal"
                 },
                 {
@@ -410,8 +379,7 @@
                     "ComponentType": "Datepicker",
                     "Column": 6,
                     "Label": "ETD",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00c713b8-0000-0000-8000-88080efc3532",
@@ -420,8 +388,7 @@
                     "ComponentType": "Datepicker",
                     "Column": 6,
                     "Label": "ETA",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00c713f0-0000-0000-8000-651078f5d2d4",
@@ -434,7 +401,6 @@
                     "Row": 100,
                     "Label": "Pick up at",
                     "ShowLabel": true,
-                    "Active": true,
                     "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                     "RefName": "Terminal",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
@@ -450,7 +416,6 @@
                     "Row": 100,
                     "Label": "Drop off at",
                     "ShowLabel": true,
-                    "Active": true,
                     "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                     "RefName": "Terminal",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
@@ -463,8 +428,7 @@
             "Order": 2,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
-            "XxlCol": 8,
-            "Active": true
+            "XxlCol": 8
         },
         {
             "Id": "00c81374-0000-0000-8000-d781ed6a0846",
@@ -474,7 +438,6 @@
             "ClassName": "title-option",
             "Style": "margin-bottom: 0px;padding: 0;",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "00c81398-0000-0000-8000-7445a4efa56b",
@@ -490,7 +453,6 @@
                     "Style": "display: flex;align-items: center;gap: 1rem;",
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
                     "PopulateField": "this.EditForm.ShowHideDetail();\r\nreturn null;",
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 8,\r\n        \"Name\": \"Other\",\r\n    },\r\n    {\r\n        \"Id\": 9,\r\n        \"Name\": \"Logistics\",\r\n    },\r\n    {\r\n        \"Id\": 10,\r\n        \"Name\": \"Trucking\",\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 }
@@ -508,7 +470,6 @@
             "Row": 100,
             "Label": "From",
             "Width": "126px",
-            "Active": true,
             "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
@@ -525,7 +486,6 @@
             "ComponentType": "Input",
             "Label": "Flight",
             "Width": "124px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "124px",
@@ -542,7 +502,6 @@
             "Row": 100,
             "Label": "To",
             "Width": "131px",
-            "Active": true,
             "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
@@ -562,7 +521,6 @@
             "Row": 100,
             "Label": "Container Type",
             "Width": "200px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Container Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Container Type'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -579,7 +537,6 @@
             "ComponentType": "Datepicker",
             "Label": "ETD",
             "Width": "151px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "151px",
@@ -593,7 +550,6 @@
             "ComponentType": "Datepicker",
             "Label": "ETA",
             "Width": "184px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "184px",
@@ -607,7 +563,6 @@
             "ComponentType": "Number",
             "Label": "Quantity",
             "Width": "192px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "192px",
@@ -627,7 +582,6 @@
             "Icon": "fal fa-comment-alt-slash",
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"DeclineEntity\" }",
-            "Active": true,
             "ShowExp": "this.Entity.StatusId == 2"
         },
         {
@@ -640,7 +594,6 @@
             "Icon": "fal fa-check-circle",
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"ApprovedEntity\" }",
-            "Active": true,
             "ShowExp": "this.Entity.StatusId == 2"
         },
         {
@@ -653,8 +606,7 @@
             "Label": "Save As",
             "Icon": "fas fa-sliders-h-square",
             "ClassName": "btn detail-button secondary-outline",
-            "Events": "{ \"click\" : \"SaveAs\" }",
-            "Active": true
+            "Events": "{ \"click\" : \"SaveAs\" }"
         },
         {
             "Id": "00c7138c-0000-0000-8000-38344e155269",
@@ -666,8 +618,7 @@
             "Label": "Save & Add",
             "Icon": "fas fa-sliders-h-square",
             "ClassName": "btn detail-button secondary-outline",
-            "Events": "{ \"click\" : \"SaveAdd\" }",
-            "Active": true
+            "Events": "{ \"click\" : \"SaveAdd\" }"
         },
         {
             "Id": "00c71394-0000-0000-8000-1096a23cb8bd",
@@ -679,8 +630,7 @@
             "Icon": "fal fa-save",
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
-            "Events": "{ \"click\" : \"SavePatch\" }",
-            "Active": true
+            "Events": "{ \"click\" : \"SavePatch\" }"
         },
         {
             "Id": "00c713b0-0000-0000-8000-7e6ee59724a7",
@@ -692,7 +642,6 @@
             "Icon": "far fa-share-all",
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"SendEntity\" }",
-            "Active": true,
             "ShowExp": "this.Entity.StatusId == 1 || this.Entity.StatusId == 4"
         }
     ],
@@ -700,26 +649,22 @@
         {
             "Id": "081BF8E4-B4CF-4F9E-917E-F582D3DE2985",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "3820C2A3-AE97-4866-AC0C-A1E7CCDB8C3B",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "4BB042D2-4C6D-4357-9912-196F02D270B3",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "637F7569-8C45-4FCF-8D34-0F0EFB2DD83C",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "93A6BE2C-4229-4983-BAD1-76808E0D08E2",
@@ -730,34 +675,29 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "9D0CCB76-267A-4D0D-B66C-C56218D897DC",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A0476109-A8F7-42B5-9D4F-DEBA9DE48112",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "C112402F-A472-4AC9-83A9-C1A1E215612D",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "E91AAF61-1FAE-42DC-88ED-409D4D2A047F",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "CanRead": true,
             "CanWrite": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "F902F6F7-4A4B-4B9B-85EF-D42453AE6B4D",
@@ -765,8 +705,7 @@
             "CanRead": true,
             "CanWrite": true,
             "CanDelete": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

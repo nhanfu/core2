@@ -7,7 +7,6 @@
     "Icon": "fal fa-cog",
     "IsMenu": true,
     "EntityId": "Config",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "00b40064-0000-0000-8000-a45d926c75bf",
@@ -16,7 +15,6 @@
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "00c20024-0000-0000-8000-20b5fce098ee",
@@ -29,7 +27,6 @@
                     "GroupBy": "TableName",
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "Active": true,
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from Config as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Config as ds\"\r\n}",
                     "IsRealtime": true,
@@ -47,7 +44,6 @@
             "ComponentType": "Input",
             "Label": "P1",
             "Width": "111px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "111px",
             "MaxWidth": "111px",
@@ -60,7 +56,6 @@
             "ComponentType": "Input",
             "Label": "P2",
             "Width": "115px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "115px",
             "MaxWidth": "115px",
@@ -73,7 +68,6 @@
             "ComponentType": "Input",
             "Label": "P3",
             "Width": "123px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "123px",
             "MaxWidth": "123px",
@@ -86,7 +80,6 @@
             "ComponentType": "Input",
             "Label": "P4",
             "Width": "143px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "143px",
             "MaxWidth": "143px",
@@ -99,7 +92,6 @@
             "ComponentType": "Number",
             "Label": "Increment",
             "Width": "80px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "80px",
@@ -113,7 +105,6 @@
             "ComponentType": "Input",
             "Label": "P5",
             "Width": "170px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "170px",
             "MaxWidth": "170px",
@@ -127,7 +118,6 @@
             "Label": "Record",
             "Disabled": true,
             "Width": "109px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "109px",
@@ -141,7 +131,6 @@
             "ComponentType": "Input",
             "Label": "Reset Type",
             "Width": "168px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "168px",
             "MaxWidth": "168px",
@@ -154,7 +143,6 @@
             "ComponentType": "Input",
             "Label": "Table Name",
             "Width": "138px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "138px",
             "MaxWidth": "138px",
@@ -171,7 +159,6 @@
             "Label": "Enum",
             "Width": "347px",
             "PopulateField": "this.Entity.RecordId = this.Matched ? this.Matched.Enum : null;\r\nreturn null;",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from [Enum] as ds where TableName = '{TableName}'\",\r\n    \"total\": \"select count(Id) as total from Enum as ds where TableName = '{TableName}'\"\r\n}",
             "RefName": "Enum",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TableName\",\r\n        \"Label\": \"TableName\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Enum\",\r\n        \"Label\": \"Enum\",\r\n        \"ComponentType\": \"Number\"\r\n    }\r\n]",
@@ -192,62 +179,52 @@
             "CanReadAll": true,
             "CanWrite": true,
             "CanWriteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "5531CC40-A2F5-4827-A62F-C5DF02E44BAF",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "5C1BF080-0975-41C3-9016-ECE845B9594F",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "6B6137B2-1B07-4893-9F3B-5962E3A24FD2",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "787F6AC6-8639-401E-BBEB-A7331E0644E8",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "8A9013FB-29AB-4914-8E63-B3F60E8AA479",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "8BFB615A-27C0-47F6-B1F8-81608958CEB7",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "ADA64304-9BBF-4EC2-8073-2D2497076B36",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "CB985E68-95FC-4554-9105-AD86AC5C7C5C",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "DDD2A7F5-B7B4-4643-9392-75E5075BEF8C",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

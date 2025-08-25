@@ -35,7 +35,7 @@ export class AdvancedSearch extends EditableComponent {
 
     LocalRender() {
         this._headers = this.Parent.Header
-            .filter(x => x.Id != null && x.Label && x.Active && !x.Hidden);
+            .filter(x => x.Id != null && x.Label && !x.Hidden);
         const fp = new FeaturePolicy();
         fp.CanRead = true;
         fp.CanWrite = true;
@@ -79,7 +79,6 @@ export class AdvancedSearch extends EditableComponent {
         section.Meta = {
             Column: 4,
             Label: "Filter",
-            Active: true,
             ClassName: "scroll-content"
         };
         this.AddChild(section);
@@ -239,7 +238,7 @@ export class AdvancedSearch extends EditableComponent {
 
     HeaderForAdvSearch() {
         return this.Parent.Header
-            .filter(x => x.Id != null && x.Label && x.Active && !x.Hidden);
+            .filter(x => x.Id != null && x.Label && !x.Hidden);
     }
 
     /**

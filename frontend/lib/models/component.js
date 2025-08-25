@@ -83,16 +83,6 @@ export class Component {
     /** @type {string} */
     DateTimeField = null;
     /** @type {boolean} */
-    Active = false;
-    /** @type {Date} */
-    InsertedDate = new Date();
-    /** @type {string} */
-    InsertedBy = null;
-    /** @type {Date} */
-    UpdatedDate = new Date();
-    /** @type {string} */
-    UpdatedBy = null;
-    /** @type {boolean} */
     CanAdd = false;
     /** @type {boolean} */
     IsPrivate = false;

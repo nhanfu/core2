@@ -6,7 +6,6 @@
     "Order": 11,
     "Icon": "fal fa-square",
     "EntityId": "Invoice Config",
-    "Active": true,
     "IgnoreEncode": true,
     "ComponentGroup": [
         {
@@ -16,7 +15,6 @@
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "01943bef-3b41-70c9-8147-06ddbce2a662",
@@ -28,7 +26,6 @@
                     "CanSearch": true,
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "Active": true,
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from InvoiceConfig as ds\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds\"\r\n}",
                     "IsRealtime": true,
@@ -47,7 +44,6 @@
             "ComponentType": "Number",
             "Label": "Start",
             "Width": "153px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "153px",
@@ -61,7 +57,6 @@
             "ComponentType": "Input",
             "Label": "Description",
             "Width": "273px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "273px",
@@ -75,7 +70,6 @@
             "ComponentType": "Input",
             "Label": "Form",
             "Width": "209px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "209px",
@@ -89,7 +83,6 @@
             "ComponentType": "Number",
             "Label": "End",
             "Width": "124px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "124px",
@@ -103,7 +96,6 @@
             "ComponentType": "Input",
             "Label": "SeriNo",
             "Width": "94px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "94px",
@@ -117,7 +109,6 @@
             "ComponentType": "Checkbox",
             "Label": "Multiple",
             "Width": "111px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "111px",
@@ -134,7 +125,6 @@
             "Row": 100,
             "Label": "Company",
             "Width": "214px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from Partner as ds where ServiceId = 5\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds where ServiceId = 5\"\r\n}",
             "RefName": "Partner",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
@@ -150,8 +140,7 @@
         {
             "Id": "3146B685-FF84-4D21-B222-4289068740CD",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "52058327-F206-4CE8-A6D0-AD041A8DBDA2",
@@ -162,56 +151,47 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "952F2677-D328-4AEF-BF6E-684D25160386",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A31CEA21-EBAE-48A0-8410-1692200995D6",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "B5DAF988-8858-4215-B554-945712B38CB1",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "C873A99B-A324-4828-BB28-C43912B43029",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "EA68EF2C-6A09-408F-BF26-4069E5EC0D9A",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "F37E6584-F102-4CAC-B45E-C313C04703C4",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "FA0E9FF2-35F9-4F7E-B992-C3D5BA0A8D43",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "FEA1975F-5484-4CB8-B64F-31FD1D4C0574",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

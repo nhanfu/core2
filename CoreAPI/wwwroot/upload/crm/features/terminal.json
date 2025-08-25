@@ -7,7 +7,6 @@
     "Script": "return {\r\n    Add: function () {\r\n        var entity = {}\r\n        this.OpenPopup(\"terminal-editor\", entity);\r\n    },\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"terminal-editor\", entity);\r\n    }\r\n}",
     "Icon": "fal fa-location",
     "EntityId": "Terminal",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "009401f8-0000-0000-8000-02eda2fb138d",
@@ -15,7 +14,6 @@
             "ComponentType": "Section",
             "Label": "All",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -30,7 +28,6 @@
                     "Label": "TerminalAll",
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Terminal as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Terminal as ds\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "Terminal",
@@ -44,7 +41,6 @@
             "ComponentType": "Section",
             "Label": "Port",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true
         },
@@ -54,7 +50,6 @@
             "ComponentType": "Section",
             "Label": "Warehouse",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true
         }
@@ -70,7 +65,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Edit\"}",
             "Width": "35px",
-            "Active": true,
             "MinWidth": "35px",
             "MaxWidth": "35px",
             "EntityId": "Terminal"
@@ -85,7 +79,6 @@
             "Row": 100,
             "Label": "Country",
             "Width": "149px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Country Manage'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Country Manage'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -101,7 +94,6 @@
             "ComponentType": "Input",
             "Label": "Code",
             "Width": "158px",
-            "Active": true,
             "MinWidth": "158px",
             "MaxWidth": "158px",
             "EntityId": "Terminal"
@@ -113,7 +105,6 @@
             "ComponentType": "Input",
             "Label": "Name",
             "Width": "256px",
-            "Active": true,
             "MinWidth": "256px",
             "MaxWidth": "256px",
             "EntityId": "Terminal"
@@ -125,7 +116,6 @@
             "ComponentType": "Checkbox",
             "Label": "Active",
             "Width": "84px",
-            "Active": true,
             "MinWidth": "84px",
             "MaxWidth": "84px",
             "EntityId": "Terminal"
@@ -137,7 +127,6 @@
             "ComponentType": "Input",
             "Label": "Address",
             "Width": "178px",
-            "Active": true,
             "MinWidth": "178px",
             "MaxWidth": "178px",
             "EntityId": "Terminal"
@@ -151,7 +140,6 @@
             "Row": 100,
             "Label": "Inserted By",
             "Width": "74px",
-            "Active": true,
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "MinWidth": "74px",
@@ -165,7 +153,6 @@
             "ComponentType": "Datepicker",
             "Label": "Inserted Date",
             "Width": "148px",
-            "Active": true,
             "MinWidth": "148px",
             "MaxWidth": "148px",
             "EntityId": "Terminal"
@@ -179,7 +166,6 @@
             "Row": 100,
             "Label": "UpdatedBy",
             "Width": "157px",
-            "Active": true,
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "MinWidth": "157px",
@@ -193,7 +179,6 @@
             "ComponentType": "Datepicker",
             "Label": "Updated Date",
             "Width": "167px",
-            "Active": true,
             "MinWidth": "167px",
             "MaxWidth": "167px",
             "EntityId": "Terminal"
@@ -208,7 +193,6 @@
             "Row": 100,
             "Label": "Zone",
             "Width": "149px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Country Manage'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Country Manage'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -227,7 +211,6 @@
             "Row": 100,
             "Label": "Service",
             "Width": "225px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Terminal Service'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Terminal Service'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -249,7 +232,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Edit\"}",
             "Width": "35px",
-            "Active": true,
             "MinWidth": "35px",
             "MaxWidth": "35px",
             "EntityId": "Terminal"
@@ -263,46 +245,39 @@
             "Label": "Add",
             "Icon": "fal fa-plus",
             "ClassName": "btn",
-            "Events": "{\"click\":\"Add\"}",
-            "Active": true
+            "Events": "{\"click\":\"Add\"}"
         }
     ],
     "FeaturePolicies": [
         {
             "Id": "03595B73-1A7D-4D24-9684-B55829C01020",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "060799B4-3000-4B3D-B5C0-F4AA28C423A8",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "59FEB4D9-59C5-4958-91F2-A435F267F981",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "5E5CEF10-CCC7-4A82-B72C-C19D1D9BDB80",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "8412CD1F-C8F3-4D9B-9C34-AF12A1C39653",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "86A41300-146A-442D-8C92-951CDA1CD333",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "8FF5087A-6268-4499-B37E-9E577AAFBF96",
@@ -313,26 +288,22 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A05E40C2-E726-4D67-803F-46FFBA49D3BC",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A4FB9587-1EC6-4C88-9752-6EDCE9DB0B41",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "F35723E0-BBE4-4656-8CF1-41B5200C53EA",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

@@ -8,7 +8,6 @@
     "Icon": "fal fa-table",
     "IsMenu": true,
     "EntityId": "ShipmentFee",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "01946a26-801e-73da-90b0-ac67ce771164",
@@ -17,7 +16,6 @@
             "Icon": "fal fa-border-all mr-1",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "DisplayBadge": true,
             "Components": [
                 {
@@ -30,7 +28,6 @@
                     "CanSearch": true,
                     "Label": "ShipmentFee",
                     "ClassName": "sticky",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentFee as ds where (ds.Active = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentFee as ds where (ds.Active = 1)\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "ShipmentFee",
@@ -58,8 +55,7 @@
                     "Label": "From Date",
                     "ShowLabel": true,
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
-                    "SmCol": 5,
-                    "Active": true
+                    "SmCol": 5
                 },
                 {
                     "Id": "01956b35-5cda-710e-98c3-a8761e8c2099",
@@ -71,8 +67,7 @@
                     "Label": "Exchange Rate",
                     "ShowLabel": true,
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
-                    "SmCol": 5,
-                    "Active": true
+                    "SmCol": 5
                 },
                 {
                     "Id": "01956b35-5cdb-7035-85a3-8def208c4423",
@@ -88,7 +83,6 @@
                     "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
                     "SmCol": 5,
                     "DefaultVal": "ShipmentDate",
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": \"ShipmentDate\",\r\n        \"Name\": \"Shipment\"\r\n    },\r\n    {\r\n        \"Id\": \"EtdDate\",\r\n        \"Name\": \"ETD\"\r\n    },\r\n    {\r\n        \"Id\": \"EtaDate\",\r\n        \"Name\": \"ETA\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
@@ -102,8 +96,7 @@
                     "Label": "To Date",
                     "ShowLabel": true,
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
-                    "SmCol": 5,
-                    "Active": true
+                    "SmCol": 5
                 }
             ]
         }
@@ -119,7 +112,6 @@
             "Row": 100,
             "Label": "Partner",
             "Width": "128px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select *,CASE WHEN ds.Id IN ('{PartnerIds}') THEN 0 ELSE 1 END AS priority from Partner as ds where ServiceId in (1,2,3) and (TypeId not in (1,2) or TypeId is null) and ActionId = 1 and IsNoDebt = 0\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where ServiceId in (1,2,3) and (TypeId not in (1,2) or TypeId is null) and ActionId = 1 and IsNoDebt = 0\"\r\n}",
             "RefName": "Partner",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
@@ -142,7 +134,6 @@
             "Label": "Description",
             "Events": "{\r\n    \"change\": \"UpdateGroupFee\"\r\n}",
             "Width": "165px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from FeeType as ds\",\r\n    \"total\": \"select count(ds.Id) as total from FeeType as ds\"\r\n}",
             "RefName": "FeeType",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Description\", \"Label\" : \"Description\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"GroupId\", \"Label\" : \"Group\", \"ComponentType\" : \"Dropdown\", \"RefName\" : \"MasterData\", \"FormatData\" : \"{Name}\" }]",
@@ -161,7 +152,6 @@
             "Label": "Quantity",
             "Events": "{\r\n    \"input\": \"CalcPrice\"\r\n}",
             "Width": "60px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "60px",
             "MaxWidth": "60px",
@@ -180,7 +170,6 @@
             "Label": "Unit",
             "Events": "{\r\n    \"change\": \"SetDefaultQuantity\"\r\n}",
             "Width": "90px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name in (N'Unit Type','Container Type','LTL Type')\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name in (N'Unit Type','Container Type','LTL Type')\"\r\n}",
             "RefName": "MasterData",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
@@ -199,7 +188,6 @@
             "Label": "Unit Price",
             "Events": "{\r\n    \"input\": \"CalcPrice\"\r\n}",
             "Width": "115px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "115px",
             "MaxWidth": "115px",
@@ -216,7 +204,6 @@
             "Label": "Vat",
             "Events": "{\r\n    \"change\": \"CalcPrice\"\r\n}",
             "Width": "43px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "43px",
             "MaxWidth": "43px",
@@ -234,7 +221,6 @@
             "Label": "Currency",
             "Events": "{\"change\":\"CheckCurrency\"}",
             "Width": "124px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Currency'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Currency'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
@@ -253,7 +239,6 @@
             "Label": "Total",
             "Events": "{\r\n    \"input\": \"CalcUnitPrice\"\r\n}",
             "Width": "95px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "95px",
             "MaxWidth": "95px",
@@ -270,7 +255,6 @@
             "Row": 100,
             "Label": "OBH",
             "Width": "118px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select *,CASE WHEN ds.Id IN ('{PartnerIds}') THEN 0 ELSE 1 END AS priority from Partner as ds where ServiceId in (1,2,3) and (TypeId not in (1,2) or TypeId is null) and ActionId = 1 and IsNoDebt = 0\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where ServiceId in (1,2,3) and (TypeId not in (1,2) or TypeId is null) and ActionId = 1 and IsNoDebt = 0\"\r\n}",
             "RefName": "Partner",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
@@ -291,7 +275,6 @@
             "Row": 100,
             "Label": "INV",
             "Width": "110px",
-            "Active": true,
             "RefName": "ShipmentInvoice",
             "FocusSearch": true,
             "MinWidth": "110px",
@@ -307,7 +290,6 @@
             "Row": 100,
             "Label": "Payment Request",
             "Width": "98px",
-            "Active": true,
             "RefName": "ShipmentInvoice",
             "FocusSearch": true,
             "MinWidth": "98px",
@@ -322,7 +304,6 @@
             "Row": 50,
             "Label": "VAT INV",
             "Width": "108px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "108px",
             "MaxWidth": "108px",
@@ -338,7 +319,6 @@
             "Label": "File No",
             "Events": "{\r\n    \"input\": \"CalcPrice\"\r\n}",
             "Width": "118px",
-            "Active": true,
             "RefName": "Shipment",
             "FocusSearch": true,
             "MinWidth": "118px",
@@ -356,7 +336,6 @@
             "Label": "HBL",
             "Events": "{\r\n    \"input\": \"CalcPrice\"\r\n}",
             "Width": "139px",
-            "Active": true,
             "RefName": "Shipment",
             "FocusSearch": true,
             "MinWidth": "139px",
@@ -371,7 +350,6 @@
             "ComponentType": "Datepicker",
             "Label": "ETA",
             "Width": "80px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "80px",
             "MaxWidth": "80px",
@@ -385,7 +363,6 @@
             "ComponentType": "Datepicker",
             "Label": "ETD",
             "Width": "78px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "78px",
             "MaxWidth": "78px",
@@ -400,7 +377,6 @@
             "Label": "Paid",
             "Disabled": true,
             "Width": "49px",
-            "Active": true,
             "DisabledExp": "!this.Entity.PaymentAccId",
             "FocusSearch": true,
             "Frozen": true,
@@ -417,7 +393,6 @@
             "ComponentType": "Input",
             "Label": "Debt Code",
             "Width": "115px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "115px",
             "MaxWidth": "115px",
@@ -431,7 +406,6 @@
             "ComponentType": "Input",
             "Label": "RE Code",
             "Width": "115px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "115px",
             "MaxWidth": "115px",
@@ -445,7 +419,6 @@
             "ComponentType": "Input",
             "Label": "Payment Code",
             "Width": "115px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "115px",
             "MaxWidth": "115px",
@@ -459,7 +432,6 @@
             "ComponentType": "Datepicker",
             "Label": "Payment Date",
             "Width": "92px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "92px",
             "MaxWidth": "92px",
@@ -475,7 +447,6 @@
             "Label": "Exchange Invoice",
             "Events": "{\r\n    \"change\": \"CalcPrice\"\r\n}",
             "Width": "105px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "105px",
             "MaxWidth": "105px",
@@ -491,7 +462,6 @@
             "Label": "Exchange Sales",
             "Events": "{\r\n    \"change\": \"CalcPrice\"\r\n}",
             "Width": "88px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "88px",
             "MaxWidth": "88px",
@@ -505,7 +475,6 @@
             "ComponentType": "Datepicker",
             "Label": "Paid Date",
             "Width": "104px",
-            "Active": true,
             "DisabledExp": "debugger;\r\nreturn this.Entity.PaymentAccId;",
             "FocusSearch": true,
             "Frozen": true,
@@ -523,7 +492,6 @@
             "Precision": 2,
             "Label": "Total Paid",
             "Width": "104px",
-            "Active": true,
             "FocusSearch": true,
             "Frozen": true,
             "MinWidth": "104px",
@@ -539,7 +507,6 @@
             "Precision": 2,
             "Label": "Total Remain",
             "Width": "104px",
-            "Active": true,
             "Frozen": true,
             "MinWidth": "104px",
             "MaxWidth": "104px",
@@ -551,68 +518,58 @@
         {
             "Id": "2B89B60F-815B-4F0D-85C6-A51E54F3A623",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "34C72ABF-5D48-41AA-8D49-34241884BD0B",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "CanRead": true,
             "CanReadAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "41EDF2B5-A848-48AC-9799-414E4A44196B",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A2C513A2-E1E8-4A69-A5C7-C50D0BBF71F8",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A9DFD5D5-FD28-4A67-B6D7-B03628DEB234",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "AA25F9EB-BD05-4E5C-BFFB-1B7D70612A6F",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "DAEE91D1-AAA5-4E21-8BD1-149B8E252AEE",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "CanRead": true,
             "CanReadAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "E0C41287-563E-43DE-9841-660DC60E4465",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "ED6379AD-3D14-4CF2-86BD-FC5DB943D64D",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "F67511E0-A088-407A-B010-3520557D2431",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
             "CanRead": true,
             "CanReadAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ],
     "UserSettings": [
@@ -620,8 +577,7 @@
             "Id": "0678b63d-c382-7215-8000-efee1ec59044",
             "ComponentId": "01946a26-8096-707e-b156-f7a1cf70e31f",
             "UserId": "00781eb8-0000-0000-8000-52bf71dcaef7",
-            "Value": "[{\"Id\":\"01946a2a-a6b1-7094-b60e-1e03b1ac9433\",\"FieldName\":\"VendorId\",\"Order\":0,\"Width\":\"118px\"},{\"Id\":\"01946a2b-8e9d-7358-a7db-30d7233dcad6\",\"FieldName\":\"FileId\",\"Order\":1,\"Width\":\"102px\"},{\"Id\":\"01946a2f-e536-7419-b7a6-3dc96810e8ff\",\"FieldName\":\"EtaDate\",\"Order\":2,\"Width\":\"132px\"},{\"Id\":\"01946a2f-edcc-709a-8db3-5c2600e66cf7\",\"FieldName\":\"EtdDate\",\"Order\":3,\"Width\":\"102px\"},{\"Id\":\"01946a2f-6081-74c8-bac0-340ef268e3f2\",\"FieldName\":\"ShipmentId\",\"Order\":4,\"Width\":\"102px\"},{\"Id\":\"01946a2a-a6b1-7094-b60e-22c6726333c9\",\"FieldName\":\"DescriptionId\",\"Order\":5,\"Width\":\"165px\"},{\"Id\":\"01946a2a-a6b1-7094-b60e-240184a79720\",\"FieldName\":\"Quantity\",\"Order\":6,\"Width\":\"102px\"},{\"Id\":\"01946a2a-a6b2-75c0-8362-d7ac2b73f162\",\"FieldName\":\"UnitId\",\"Order\":7,\"Width\":\"90px\"},{\"Id\":\"01946a2a-a6b2-75c0-8362-d9297d49cc1d\",\"FieldName\":\"Amount\",\"Order\":8,\"Width\":\"93px\"},{\"Id\":\"01946a2a-a6b2-75c0-8362-dfd794a85076\",\"FieldName\":\"Vat\",\"Order\":9,\"Width\":\"74px\"},{\"Id\":\"01946a2a-a6b2-75c0-8362-e17ee8c33e28\",\"FieldName\":\"CurrencyId\",\"Order\":10,\"Width\":\"124px\"},{\"Id\":\"01946a2a-a6b3-7208-930e-8efbedc0c2a4\",\"FieldName\":\"TotalAmountTax\",\"Order\":11,\"Width\":\"95px\"},{\"Id\":\"01946a2a-a6b3-7208-930e-929637c4c186\",\"FieldName\":\"ObhId\",\"Order\":12,\"Width\":\"98px\"},{\"Id\":\"01946a2a-a6b3-7208-930e-9630f32066e7\",\"FieldName\":\"ShipmentInvoiceId\",\"Order\":13,\"Width\":\"109px\"},{\"Id\":\"01946a2a-a6b4-72bc-8fd7-46e2b3cbd9d9\",\"FieldName\":\"PaymentRequestId\",\"Order\":14,\"Width\":\"114px\"},{\"Id\":\"01946a2a-a6b4-72bc-8fd7-4a026cc3cb56\",\"FieldName\":\"InvoiceId\",\"Order\":15,\"Width\":\"86px\"}]",
-            "Active": true
+            "Value": "[{\"Id\":\"01946a2a-a6b1-7094-b60e-1e03b1ac9433\",\"FieldName\":\"VendorId\",\"Order\":0,\"Width\":\"118px\"},{\"Id\":\"01946a2b-8e9d-7358-a7db-30d7233dcad6\",\"FieldName\":\"FileId\",\"Order\":1,\"Width\":\"102px\"},{\"Id\":\"01946a2f-e536-7419-b7a6-3dc96810e8ff\",\"FieldName\":\"EtaDate\",\"Order\":2,\"Width\":\"132px\"},{\"Id\":\"01946a2f-edcc-709a-8db3-5c2600e66cf7\",\"FieldName\":\"EtdDate\",\"Order\":3,\"Width\":\"102px\"},{\"Id\":\"01946a2f-6081-74c8-bac0-340ef268e3f2\",\"FieldName\":\"ShipmentId\",\"Order\":4,\"Width\":\"102px\"},{\"Id\":\"01946a2a-a6b1-7094-b60e-22c6726333c9\",\"FieldName\":\"DescriptionId\",\"Order\":5,\"Width\":\"165px\"},{\"Id\":\"01946a2a-a6b1-7094-b60e-240184a79720\",\"FieldName\":\"Quantity\",\"Order\":6,\"Width\":\"102px\"},{\"Id\":\"01946a2a-a6b2-75c0-8362-d7ac2b73f162\",\"FieldName\":\"UnitId\",\"Order\":7,\"Width\":\"90px\"},{\"Id\":\"01946a2a-a6b2-75c0-8362-d9297d49cc1d\",\"FieldName\":\"Amount\",\"Order\":8,\"Width\":\"93px\"},{\"Id\":\"01946a2a-a6b2-75c0-8362-dfd794a85076\",\"FieldName\":\"Vat\",\"Order\":9,\"Width\":\"74px\"},{\"Id\":\"01946a2a-a6b2-75c0-8362-e17ee8c33e28\",\"FieldName\":\"CurrencyId\",\"Order\":10,\"Width\":\"124px\"},{\"Id\":\"01946a2a-a6b3-7208-930e-8efbedc0c2a4\",\"FieldName\":\"TotalAmountTax\",\"Order\":11,\"Width\":\"95px\"},{\"Id\":\"01946a2a-a6b3-7208-930e-929637c4c186\",\"FieldName\":\"ObhId\",\"Order\":12,\"Width\":\"98px\"},{\"Id\":\"01946a2a-a6b3-7208-930e-9630f32066e7\",\"FieldName\":\"ShipmentInvoiceId\",\"Order\":13,\"Width\":\"109px\"},{\"Id\":\"01946a2a-a6b4-72bc-8fd7-46e2b3cbd9d9\",\"FieldName\":\"PaymentRequestId\",\"Order\":14,\"Width\":\"114px\"},{\"Id\":\"01946a2a-a6b4-72bc-8fd7-4a026cc3cb56\",\"FieldName\":\"InvoiceId\",\"Order\":15,\"Width\":\"86px\"}]"
         }
     ]
 }

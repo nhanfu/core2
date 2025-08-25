@@ -8,7 +8,6 @@
     "Script": "return {\r\n    OnSave: function (form, gridview) {\r\n        var todoId = 1;\r\n        var detail = this.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"InquiryDetail\");\r\n        if (!detail || (detail && detail.AllListViewItem.length == 0)) {\r\n            return;\r\n        }\r\n        this.Entity.ServiceText = detail.AllListViewItem.flatMap(x => x.Entity).flatMap(x => x.Service.Name).filter(x => x).join(\", \");\r\n        var entitys = detail.AllListViewItem.map(x => x.Entity);\r\n        this.Entity.UserReceiverIds = entitys.filter(x => x.UserReceiverId).map(x => x.UserReceiverId).join(',');\r\n        this.Entity.UserReceiverIdsText = entitys.filter(x => x.UserReceiverId).map(x => x.UserReceiver.FullName).join(',');\r\n        this.Entity.GroupReceiverIds = entitys.filter(x => x.UserReceiverId).map(x => x.GroupReceiverId).join(',');\r\n        this.Entity.GroupReceiverIdsText = entitys.filter(x => x.GroupReceiverId).map(x => x.GroupReceiver.Name).join(',');\r\n        this.Entity.StatusIdsText = entitys.filter(x => x.Status).map(x => x.Status.Name).join(',');\r\n        this.Entity.StatusId = entitys.reduce((max, current) => {\r\n            return current.StatusId > max.StatusId ? current : max;\r\n        }, detail.AllListViewItem.flatMap(x => x.Entity)[0]).StatusId;\r\n        var check = entitys.every(x => x.ProgressId == todoId);\r\n        if (check) {\r\n            this.Entity.ProgressId = todoId;\r\n        }\r\n        detail.AllListViewItem.forEach(row => {\r\n            row.Entity.FormatChat = \"Service: \" + row.Entity.Service.Name + \"<br>POL: \" + row.Entity.Pol.Name + \"<br>POD: \" + row.Entity.Pod.Name\r\n            row.Entity.FeatureName = \"Inquiry Detail Editor\";\r\n            if ((!row.Entity.UserReceiverId && !row.Entity.GroupReceiverId)) {\r\n                row.Entity.StatusId = 1;\r\n                row.Entity.IsSend = false;\r\n            }\r\n            if (row.Entity.StatusId == 1 && (row.Entity.UserReceiverId != null || row.Entity.GroupReceiverId != null)) {\r\n                row.Entity.StatusId = 2;\r\n                row.Entity.ProgressId = todoId;\r\n            }\r\n            if ([3, 2].some(y => y === row.Entity.ProgressId)) {\r\n                this.Entity.ProgressId = row.Entity.ProgressId;\r\n            }\r\n        });\r\n    },\r\n    SendNotification: function (form, gridview) {\r\n        var detail = this.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"InquiryDetail\");\r\n        if (!detail || (detail && detail.AllListViewItem.length == 0)) {\r\n            return;\r\n        }\r\n        detail.AllListViewItem.forEach(row => {\r\n            if (!row.Entity.IsSend && (row.Entity.UserReceiverId != null || row.Entity.GroupReceiverId != null)) {\r\n                row.Entity.IsSend = true;\r\n                row.Entity.FormatChat = \"Service: \" + row.Entity.Service.Name + \"<br>POL: \" + row.Entity.Pol.Name + \"<br>POD: \" + row.Entity.Pod.Name\r\n                row.Entity.FeatureName = \"Inquiry Detail Editor\";\r\n                var patchVM = row.GetPatchVM();\r\n                row.SendEntity().then();\r\n            };\r\n        });\r\n    },\r\n    OnSaveAdd: function (form, gridview) {\r\n        this.Entity = {\r\n            Id: this.Uuid7.NewGuid(),\r\n            StatusId: 1,\r\n            VoucherTypeId: 1,\r\n            ProgressId: null,\r\n            TypeId: 1,\r\n            SaleId: this.Token.UserId\r\n        }\r\n    },\r\n    OnSend: async function (btn) {\r\n        var detail = this.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"InquiryDetail\");\r\n        if (!detail || (detail && detail.AllListViewItem.length == 0)) {\r\n            return;\r\n        }\r\n        var listViewItem = detail.AllListViewItem.filter(x => x.Entity.UserReceiverId == this.Token.UserId);\r\n        for (let item of listViewItem) {\r\n            item.Entity.IsDecline = false, item.Entity.IsApproved = false, item.Entity.UserDeclineId = null, item.Entity.UserApprovedId = null, item.Entity.StatusId = 2\r\n        }\r\n    },\r\n    OnDecline: async function (btn, form) {\r\n        var detail = this.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"InquiryDetail\");\r\n        if (!detail || (detail && detail.AllListViewItem.length == 0)) {\r\n            return;\r\n        }\r\n        var listViewItem = detail.AllListViewItem.filter(x => x.Entity.UserReceiverId == this.Token.UserId);\r\n        for (let item of listViewItem) {\r\n            item.Entity.IsApproved = false,\r\n                item.Entity.IsDecline = true,\r\n                item.Entity.UserDeclineId = this.Token.UserId,\r\n                item.Entity.UserApprovedId = null, item.Entity.StatusId = 4\r\n        }\r\n    },\r\n    OnApproved: async function () {\r\n        var detail = this.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"InquiryDetail\");\r\n        if (!detail || (detail && detail.AllListViewItem.length == 0)) {\r\n            return;\r\n        }\r\n        var listViewItem = detail.AllListViewItem.filter(x => x.Entity.UserReceiverId == this.Token.UserId);\r\n        for (let item of listViewItem) {\r\n            item.Entity.IsDecline = false, item.Entity.IsApproved = true; item.Entity.UserDeclineId = null, item.Entity.UserApprovedId = this.Token.UserId, item.Entity.StatusId = 3\r\n        }\r\n    },\r\n    Edit: function (btn, entity) {\r\n        if (!entity.UserReceiverId && !entity.GroupReceiverId) {\r\n            this.Toast.Warning(\"Please select user or group receiver\");\r\n            return;\r\n        }\r\n        entity.EtaDate = entity.EtaDate || this.Entity.EtaDate;\r\n        entity.EtdDate = entity.EtdDate || this.Entity.EtdDate;\r\n        entity.PolId = entity.PolId || this.Entity.PolId;\r\n        entity.PodId = entity.PodId || this.Entity.PodId;\r\n        entity.StatusId = entity.StatusId || 2;\r\n        entity.DefaultFee = null;\r\n        entity.Pricing = null;\r\n        if (this.EditForm.Dirty) {\r\n            this.EditForm.SavePatch().then(() => {\r\n                this.OpenPopup(\"inquiry-detail-editor\", entity);\r\n            })\r\n        }\r\n        else {\r\n            this.OpenPopup(\"inquiry-detail-editor\", entity);\r\n        }\r\n    },\r\n    SaveAs: async function (btn) {\r\n        var newEntity = JSON.parse(JSON.stringify(this.Entity));\r\n        this.Entity = newEntity;\r\n        this.Entity.Id = this.Uuid7.NewGuid();\r\n        this.Entity.Code = null;\r\n        this.Entity.StatusId = 1;\r\n        this.Entity.UserReceiverId = null;\r\n        this.Entity.GroupReceiverId = null;\r\n        this.Entity.InsertedBy = this.Token.UserId;\r\n        this.Entity.ProgressId = null;\r\n        var detail = this.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"InquiryDetail\");\r\n        if (detail && detail.AllListViewItem.length > 0) {\r\n            detail.Entity = this.Entity;\r\n            detail.AllListViewItem.forEach(row => {\r\n                row.Entity.Id = this.Uuid7.NewGuid();\r\n                row.Entity.InquiryId = this.Entity.Id;\r\n                row.Entity.PricingId = null;\r\n                row.Entity.QuotationId = null;\r\n                row.Entity.ProgressId = 1;\r\n                row.Entity.TotalAmount = null;\r\n                row.Entity.StatusId = 1;\r\n                row.Entity.IsSend = false;\r\n                row.Entity.UserReceiverId = null;\r\n                row.Entity.GroupReceiverId = null;\r\n                row.Entity.UserDeclineId = null;\r\n                row.Entity.UserApprovedId = null;\r\n                row.Entity.IsDecline = false;\r\n                row.Entity.InsertedBy = this.Token.UserId;\r\n                row.Entity.DefaultFee = null;\r\n                detail.LoadMasterData([row.Entity]).then(() => {\r\n                    row.Children.forEach(cell => {\r\n                        cell.Entity = row.Entity;\r\n                    });\r\n                    row.UpdateView(true);\r\n                })\r\n            });\r\n            detail.UpdateView(true);\r\n        }\r\n        var detailContainer = this.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"EntityContainer\");\r\n        if (detailContainer && detailContainer.AllListViewItem.length > 0) {\r\n            detailContainer.Entity = this.Entity;\r\n            detailContainer.AllListViewItem.forEach(row => {\r\n                row.Entity.Id = this.Uuid7.NewGuid();\r\n                row.Entity.InquiryId = this.Entity.Id;\r\n                row.Entity.InsertedBy = this.Token.UserId;\r\n                row.Entity.StatusId = 1;\r\n                detailContainer.LoadMasterData([row.Entity]).then(() => {\r\n                    row.Children.forEach(cell => {\r\n                        cell.Entity = row.Entity;\r\n                    });\r\n                    row.UpdateView(true);\r\n                })\r\n            });\r\n            detailContainer.UpdateView(true);\r\n        }\r\n        this.UpdateView(true, false);\r\n        this.Dirty = true;\r\n        this.Toast.Success(\"Save as success\");\r\n    },\r\n    CreateQuote: async function (com) {\r\n        var datas = await com.RunQuerys();\r\n        var selecteds = datas[0];\r\n        var newFees = JSON.parse(JSON.stringify(selecteds));\r\n        var typeId = 2;\r\n        var name = \"sea-quote-editor\";\r\n        var notFreight = true;\r\n        var detail = this.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"InquiryDetail\");\r\n        if (!detail || (detail && detail.AllListViewItem.length == 0)) {\r\n            return;\r\n        }\r\n        var mostEntity = detail.AllListViewItem.find(x => x.Entity.Service.Name.toUpperCase().includes('AIR') || x.Entity.Service.Name.toUpperCase().includes('SEA'));\r\n        if (!mostEntity) {\r\n            notFreight = false;\r\n            mostEntity = detail.AllListViewItem[0];\r\n        }\r\n        if (mostEntity.Entity.Service.Name.toUpperCase().includes('AIR')) {\r\n            typeId = 3;\r\n            name = \"air-quote-editor\";\r\n        }\r\n        else if (mostEntity.Entity.Service.Name.toUpperCase().includes('SEA')) {\r\n            typeId = 2;\r\n            name = \"sea-quote-editor\";\r\n        }\r\n        else if (mostEntity.Entity.Service.Name.toUpperCase().includes('TRUCKING')) {\r\n            var log = detail.AllListViewItem.find(x => x.Entity.Service.Name.toUpperCase().includes('LOGISTICS'));\r\n            if (log) {\r\n                mostEntity = log;\r\n                typeId = 5;\r\n                name = \"logistics-quote-editor\";\r\n            }\r\n            else {\r\n                typeId = 4;\r\n                name = \"trucking-quote-editor\";\r\n            }\r\n        }\r\n        else {\r\n            typeId = 5;\r\n            name = \"logistics-quote-editor\";\r\n        }\r\n        debugger;\r\n        var pricing = datas[1].find(x => x.Id == mostEntity.Entity.PricingId)\r\n        var quote = {\r\n            Id: this.Uuid7.NewGuid(),\r\n            VoucherTypeId: 2,\r\n            PricingId: mostEntity.Entity.PricingId,\r\n            InquiryDetailId: mostEntity.Entity.Id,\r\n            StatusId: this.SalesFunction[\"APPROVE_QUOTATION\"] ? 3 : 1,\r\n            NoApproved: this.SalesFunction[\"APPROVE_QUOTATION\"] ? true : false,\r\n            ShipmentTypeId: 1,\r\n            TypeId: typeId,\r\n            FromDate: this.EditForm.Entity.FromDate,\r\n            ToDate: this.EditForm.Entity.ToDate,\r\n            ServiceDate: this.dayjs().format('YYYY-MM-DD'),\r\n            AgentId: pricing.PartnerTypeIdsText && pricing.PartnerTypeIdsText.includes('Agent')\r\n                && pricing.ResidenceTypeIdText && pricing.ResidenceTypeIdText.toUpperCase().includes('OVERSEA') ? pricing.VendorId : null,\r\n            CustomerId: this.EditForm.Entity.CustomerId,\r\n            CommodityId: this.EditForm.Entity.CommodityId,\r\n            IncotermId: this.EditForm.Entity.IncotermId,\r\n            EtdDate: this.EditForm.Entity.EtdDate,\r\n            EtaDate: this.EditForm.Entity.EtaDate,\r\n            DeliveryTerm: this.EditForm.Entity.DeliveryTerm,\r\n            Pickup: this.EditForm.Entity.Pickup,\r\n            Delivery: this.EditForm.Entity.Delivery,\r\n            Quantity: this.EditForm.Entity.Quantity,\r\n            Note: mostEntity.Entity.Note,\r\n            UnitId: this.EditForm.Entity.UnitId,\r\n            DeminsionText: this.EditForm.Entity.DeminsionText,\r\n            CW: this.EditForm.Entity.CW,\r\n            GW: this.EditForm.Entity.GW,\r\n            CBM: this.EditForm.Entity.CBM,\r\n            Note: this.EditForm.Entity.Note,\r\n            ServiceId: mostEntity.Entity.ServiceId,\r\n            PolId: mostEntity.Entity.PolId,\r\n            PodId: mostEntity.Entity.PodId,\r\n            IsSimple: false\r\n        };\r\n        var config = JSON.parse(localStorage.getItem(\"SalesFunction\"));\r\n        var quoD = {\r\n            Id: this.Uuid7.NewGuid(),\r\n            InquiryId: quote.Id,\r\n            OtherFee: false,\r\n            PolId: mostEntity.Entity.PolId,\r\n            Pol: mostEntity.Entity.Pol,\r\n            PodId: mostEntity.Entity.PodId,\r\n            Pod: mostEntity.Entity.Pod,\r\n            FinalDestinationId: mostEntity.Entity.PodId,\r\n            PlaceDeliveryId: mostEntity.Entity.PodId,\r\n            PlaceDeliveryId: mostEntity.Entity.PodId,\r\n            ScheduleIds: pricing ? pricing.ScheduleIds : null,\r\n            TransitTime: pricing ? pricing.TransitTime : null,\r\n            ViaId: pricing ? pricing.ViaId : null,\r\n            VendorId: pricing ? pricing.VendorId : null,\r\n            CarrierId: pricing ? pricing.CarrierId : null,\r\n            PlaceReceiptId: mostEntity.Entity.PolId,\r\n            LinkId: mostEntity.Entity.Id,\r\n            DisableRow: true,\r\n        };\r\n        quote.InquiryDetail = [quoD];\r\n        var containerGrid = this.EditForm.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"EntityContainer\");\r\n        var containers = containerGrid.AllListViewItem.map(x => x.Entity).filter(x => x.ContainerTypeId) || [];\r\n        containers.forEach(x => {\r\n            x.Id = this.Uuid7.NewGuid();\r\n            x.Quantity = x.Quantity;\r\n            x.ContainerTypeId = x.ContainerTypeId;\r\n            x.InquiryId = quote.Id;\r\n        });\r\n        quote.EntityContainer = containers || [];\r\n        newFees.forEach(item => {\r\n            var actCont = containers.find(x => x.ContainerTypeId == item.UnitId);\r\n            item.Id = this.Uuid7.NewGuid();\r\n            item.DescriptionId = item.DescriptionId;\r\n            item.InquiryId = quote.Id;\r\n            item.RouteId = `${(quoD.Pol.Code || '')} => ${(quoD.Pod.Code || '')}`;\r\n            item.Route = {\r\n                Name: item.RouteId,\r\n                Id: item.RouteId,\r\n            };\r\n            item.Cost = item.Amount;\r\n            item.MinLCLCost = item.MinUnitPrice;\r\n            item.MinQuantityCost = item.MinUnitPrice;\r\n            if (item.IsObh) {\r\n                item.MinLCLRate = item.MinLCLCost;\r\n                item.Rate = item.Cost;\r\n                item.MinQuantityRate = item.MinQuantityCost;\r\n            }\r\n            item.PolId = quoD.PolId;\r\n            item.PodId = quoD.PodId;\r\n            item.FinalDestinationId = quoD.PodId;\r\n            item.PlaceDeliveryId = quoD.PodId;\r\n            item.PlaceReceiptId = quoD.PolId;\r\n            item.PayeeId = item.VendorId != quoD.VendorId ? item.VendorId : null;\r\n            item.DisableRow = true;\r\n            item.OtherFee = true;\r\n            item.IsGrossWeight = item.IsGrossWeight;\r\n            item.GroupFee = item.GroupFee;\r\n            if (this.EditForm.Entity.UnitId == item.OtherUnitId) {\r\n                item.Quantity = this.EditForm.Entity.Quantity;\r\n            }\r\n            else {\r\n                if (actCont && item.IsContainer) {\r\n                    item.Quantity = actCont.Quantity;\r\n                }\r\n            }\r\n            if (item.IsCBM) {\r\n                item.Quantity = this.EditForm.Entity.CBM;\r\n            }\r\n            if (item.IsKGS) {\r\n                item.Quantity = this.EditForm.Entity.CW;\r\n            }\r\n            if (item.IsGrossWeight) {\r\n                item.Quantity = this.EditForm.Entity.GW;\r\n            }\r\n        });\r\n        quote.DefaultFee = newFees;\r\n        this.OpenPopup(name, quote);\r\n    },\r\n    SendMail: function () {\r\n        var entity = {\r\n            To: this.Entity.Email,\r\n            Text: \"\",\r\n            Subject: \"\"\r\n        }\r\n        this.OpenPopup(\"sendmail-editor\", entity);\r\n    }\r\n}",
     "Events": "{\r\n    \"onsave\": \"OnSave\",\r\n    \"onsend\": \"OnSend\",\r\n    \"ondecline\": \"OnDecline\",\r\n    \"onapproved\": \"OnApproved\",\r\n    \"onsaveadd\": \"OnSaveAdd\",\r\n    \"saved\": \"SendNotification\"\r\n}",
     "EntityId": "Inquiry",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "003605a8-0000-0000-8000-957235e4be5c",
@@ -17,7 +16,6 @@
             "ComponentType": "Section",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "003904f4-0000-0000-8000-5b8073d14aa9",
             "XxlOuterColumn": 6,
             "Components": [
@@ -32,7 +30,6 @@
                     "Row": 100,
                     "Label": "Incoterm",
                     "ShowLabel": true,
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"DDP\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"CIP\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"CPT\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"CFR\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"FAS\"\r\n    },\r\n    {\r\n        \"Id\": 6,\r\n        \"Name\": \"FCA\"\r\n    },\r\n    {\r\n        \"Id\": 7,\r\n        \"Name\": \"EXW\"\r\n    },\r\n    {\r\n        \"Id\": 8,\r\n        \"Name\": \"CIF\"\r\n    },\r\n    {\r\n        \"Id\": 9,\r\n        \"Name\": \"DPU\"\r\n    },\r\n    {\r\n        \"Id\": 10,\r\n        \"Name\": \"DAP\"\r\n    },\r\n    {\r\n        \"Id\": 11,\r\n        \"Name\": \"FOB\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
@@ -49,7 +46,6 @@
                     "ShowLabel": true,
                     "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('customer-editor',{ ServiceId : 1, TypeId : 3, ActionId : 1, SaleId: this.Token.UserId })\",\r\n    \"edit\": \"this.EditForm.OpenPopup('customer-editor',this.Matched)\"\r\n}",
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 1 and TypeId in (2,3) and (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.DistributeInformationIds like N'%{TokenUserId}%'))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 1 and TypeId in (2,3) and (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.DistributeInformationIds like N'%{TokenUserId}%'))\"\r\n}",
                     "RefName": "Partner",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
@@ -68,7 +64,6 @@
                     "Label": "POD",
                     "ShowLabel": true,
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from [Terminal] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"\r\n}",
                     "RefName": "Terminal",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
@@ -85,7 +80,6 @@
                     "Label": "POL",
                     "ShowLabel": true,
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "Active": true,
                     "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                     "RefName": "Terminal",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
@@ -101,7 +95,6 @@
                     "Row": 100,
                     "Label": "Destination",
                     "ShowLabel": true,
-                    "Active": true,
                     "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                     "RefName": "Terminal",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
@@ -117,7 +110,6 @@
                     "Row": 100,
                     "Label": "Commodity",
                     "ShowLabel": true,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Commodity Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Commodity Type'\"\r\n}",
                     "RefName": "MasterData",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
@@ -130,8 +122,7 @@
                     "Column": 6,
                     "Label": "ETD",
                     "ShowLabel": true,
-                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "Active": true
+                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                 },
                 {
                     "Id": "00fb0190-0000-0000-8000-f51e6aacb143",
@@ -141,8 +132,7 @@
                     "Column": 6,
                     "Label": "ETA",
                     "ShowLabel": true,
-                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "Active": true
+                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                 },
                 {
                     "Id": "00fb175c-0000-0000-8000-97a5781866d4",
@@ -151,8 +141,7 @@
                     "ComponentType": "Datepicker",
                     "Column": 6,
                     "Label": "Cargo Ready Date",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 }
             ]
         },
@@ -163,7 +152,6 @@
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "DisabledExp": "(this.Entity.InsertedBy && this.Entity.InsertedBy != this.Token.UserId) || [3, 2].some(y => y === this.Entity.ProgressId)"
         },
         {
@@ -173,7 +161,6 @@
             "ComponentType": "Section",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "DisabledExp": "(this.Entity.InsertedBy && this.Entity.InsertedBy != this.Token.UserId) || [3, 2].some(y => y === this.Entity.ProgressId)",
             "ParentId": "003904f4-0000-0000-8000-5b8073d14aa9",
             "XxlOuterColumn": 8,
@@ -186,7 +173,6 @@
                     "Column": 6,
                     "Label": "Attachment",
                     "ShowLabel": true,
-                    "Active": true,
                     "RefName": "Inquiry",
                     "IsMultiple": true
                 },
@@ -199,7 +185,6 @@
                     "Row": 4,
                     "Label": "Note",
                     "ShowLabel": true,
-                    "Active": true,
                     "RefName": "Inquiry",
                     "IsMultiple": true
                 }
@@ -212,7 +197,6 @@
             "ComponentType": "Section",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "DisabledExp": "(this.Entity.InsertedBy && this.Entity.InsertedBy != this.Token.UserId) || [3, 2].some(y => y === this.Entity.ProgressId)",
             "ParentId": "003904f4-0000-0000-8000-5b8073d14aa9",
             "XxlOuterColumn": 4,
@@ -226,7 +210,6 @@
                     "Row": 200,
                     "ClassName": "sticky",
                     "DefaultVal": "{\r\n    \"EntityId\": this.EditForm.Entity.Id,\r\n    \"TableName\": \"Inquiry\"\r\n}",
-                    "Active": true,
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from EntityContainer as ds where EntityId = '{EntityId}'\",\r\n    \"total\": \"select count(ds.Id) as total from EntityContainer as ds where EntityId = '{EntityId}'\"\r\n}",
                     "RefName": "EntityContainer",
@@ -242,7 +225,6 @@
             "ComponentType": "Section",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "003904f4-0000-0000-8000-5b8073d14aa9",
             "XxlOuterColumn": 12,
             "Components": [
@@ -257,7 +239,6 @@
                     "ClassName": "sticky",
                     "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
                     "DefaultVal": "{\r\n    \"InquiryId\": this.EditForm.Entity.Id,\r\n    \"PolId\": this.EditForm.Entity.PolId,\r\n    \"PodId\": this.EditForm.Entity.PodId,\r\n    \"EtaDate\": this.EditForm.Entity.EtaDate,\r\n    \"EtdDate\": this.EditForm.Entity.EtdDate,\r\n    \"CW\": this.EditForm.Entity.CW,\r\n    \"GW\": this.EditForm.Entity.GW,\r\n    \"CBM\": this.EditForm.Entity.CBM,\r\n    \"StatusId\": 1,\r\n    \"VoucherTypeId\": 1\r\n}",
-                    "Active": true,
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from InquiryDetail as ds where ds.InquiryId = '{InquiryId}' and (ds.InsertedBy = '{TokenUserId}' or (ds.IsSend = 1 and (ds.UserReceiverId = '{TokenUserId}' or ds.GroupReceiverId = '{TokenGroupId}')))\",\r\n    \"total\": \"select count(ds.Id) as total from InquiryDetail as ds where ds.InquiryId = '{InquiryId}' and (ds.InsertedBy = '{TokenUserId}' or (ds.IsSend = 1 and (ds.UserReceiverId = '{TokenUserId}' or ds.GroupReceiverId = '{TokenGroupId}')))\"\r\n}",
                     "RefName": "InquiryDetail",
@@ -274,7 +255,6 @@
             "ComponentType": "Section",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "003904f4-0000-0000-8000-5b8073d14aa9",
             "XxlOuterColumn": 6,
             "Components": [
@@ -286,7 +266,6 @@
                     "Column": 4,
                     "Label": "CW",
                     "ShowLabel": true,
-                    "Active": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
@@ -297,7 +276,6 @@
                     "Column": 4,
                     "Label": "GW",
                     "ShowLabel": true,
-                    "Active": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
@@ -308,7 +286,6 @@
                     "Column": 4,
                     "Label": "CBM",
                     "ShowLabel": true,
-                    "Active": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
@@ -319,8 +296,7 @@
                     "Column": 12,
                     "Row": 50,
                     "Label": "Pickup Address",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "000a01ac-0000-0000-8000-eecc28082d5d",
@@ -330,8 +306,7 @@
                     "Column": 12,
                     "Row": 50,
                     "Label": "Delivery Address",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00f70178-0000-0000-8000-e8499b81de9d",
@@ -342,7 +317,6 @@
                     "Precision": 2,
                     "Label": "Quantity",
                     "ShowLabel": true,
-                    "Active": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
@@ -352,8 +326,7 @@
                     "ComponentType": "Input",
                     "Column": 6,
                     "Label": "Delivery Term",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00fd0104-0000-0000-8000-1650e1683a07",
@@ -366,7 +339,6 @@
                     "Row": 100,
                     "Label": "Unit",
                     "ShowLabel": true,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where ds1.Name in (N'Unit Type','LTL Type','Container Type')\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where ds1.Name in (N'Unit Type','LTL Type','Container Type')\"\r\n}",
                     "RefName": "MasterData",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]"
@@ -378,8 +350,7 @@
                     "ComponentType": "Input",
                     "Column": 6,
                     "Label": "Dimension",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 }
             ]
         },
@@ -390,7 +361,6 @@
             "ComponentType": "Section",
             "ClassName": "ribbon-group",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "0013021c-0000-0000-8000-da6b6a6f7e96",
@@ -402,8 +372,7 @@
                     "Label": "Save & Add",
                     "Icon": "fas fa-sliders-h-square",
                     "ClassName": "btn detail-button secondary-outline",
-                    "Events": "{ \"click\" : \"SaveAdd\" }",
-                    "Active": true
+                    "Events": "{ \"click\" : \"SaveAdd\" }"
                 },
                 {
                     "Id": "001d01cc-0000-0000-8000-29abb34dd5eb",
@@ -415,8 +384,7 @@
                     "Icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
-                    "Events": "{ \"click\" : \"SavePatch\" }",
-                    "Active": true
+                    "Events": "{ \"click\" : \"SavePatch\" }"
                 },
                 {
                     "Id": "0050039c-0000-0000-8000-8495f98f5c32",
@@ -428,8 +396,7 @@
                     "Label": "Save As",
                     "Icon": "fas fa-sliders-h-square",
                     "ClassName": "btn detail-button secondary-outline",
-                    "Events": "{ \"click\" : \"SaveAs\" }",
-                    "Active": true
+                    "Events": "{ \"click\" : \"SaveAs\" }"
                 },
                 {
                     "Id": "0076231c-0000-0000-8000-550ebb85bcdc",
@@ -442,7 +409,6 @@
                     "Icon": "fas fa-sliders-h-square",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{\r\n    \"click\": \"CreateQuote\"\r\n}",
-                    "Active": true,
                     "Query": "select DefaultFee.*,FeeType.Description as FeeType,FeeType.IsFreight,FeeType.GroupName as GroupFee,MasterData.Name as UnitName\r\nfrom DefaultFee\r\nleft join FeeType on DefaultFee.DescriptionId = FeeType.Id\r\nleft join MasterData on DefaultFee.UnitId = MasterData.Id\r\nwhere InquiryDetailId in ('{InquiryDetailIds}')\r\norder by DefaultFee.UnitId asc\r\n\r\nselect Pricing.*,p.PartnerTypeIdsText,p.ResidenceTypeIdText\r\nfrom InquiryDetail\r\nleft join Pricing on InquiryDetail.PricingId = Pricing.Id\r\nleft join [Partner] p on pricing.VendorId = p.Id\r\nwhere InquiryDetail.Id in ('{InquiryDetailIds}')",
                     "PreQuery": "var detail = this.EditForm.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"InquiryDetail\");\r\nvar ids = detail.AllListViewItem.map(x=> x.Entity.Id).join(\"','\");\r\nreturn {\r\n    \"InquiryDetailIds\": ids\r\n}",
                     "ShowExp": "this.Entity.InsertedBy == this.Token.UserId"
@@ -457,7 +423,6 @@
             "ClassName": "title-group",
             "Style": "margin-bottom: 0px;padding: 0;",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "00e9016c-0000-0000-8000-f5d2c0d67405",
@@ -468,8 +433,7 @@
                     "Label": "Code",
                     "ShowLabel": true,
                     "Style": "display: flex;align-items: center;gap: 1rem;",
-                    "Disabled": true,
-                    "Active": true
+                    "Disabled": true
                 }
             ]
         }
@@ -485,7 +449,6 @@
             "Row": 100,
             "Label": "Container Type",
             "Width": "137px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Container Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Container Type'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -502,7 +465,6 @@
             "Row": 50,
             "Label": "Quantity",
             "Width": "121px",
-            "Active": true,
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "Editable": true,
             "MinWidth": "121px",
@@ -520,7 +482,6 @@
             "Row": 50,
             "Label": "Service",
             "Width": "171px",
-            "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Air Export\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-plane-departure mr-1'></i>Air Export</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"Air Import\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-plane-arrival mr-1'></i>Air Import</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Sea Export FCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fas fa-ship mr-1'></i>Sea Export FCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Sea Import FCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fas fa-ship mr-1'></i>Sea Import FCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"Sea Export LCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #17a2b8;'><i class='fas fa-ship mr-1'></i>Sea Export LCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 6,\r\n        \"Name\": \"Sea Import LCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #6f42c1;'><i class='fas fa-ship mr-1'></i>Sea Import LCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 9,\r\n        \"Name\": \"Logistics\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-box mr-1'></i>Logistics</span>\"\r\n    },\r\n    {\r\n        \"Id\": 15,\r\n        \"Name\": \"FCL TRUCKING\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fas fa-truck mr-1'></i>FCL TRUCKING</span>\"\r\n    },\r\n    {\r\n        \"Id\": 10,\r\n        \"Name\": \"FTL TRUCKING\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #17a2b8;'><i class='fas fa-truck mr-1'></i>FTL TRUCKING</span>\"\r\n    },\r\n    {\r\n        \"Id\": 12,\r\n        \"Name\": \"LTL TRUCKING\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fas fa-truck mr-1'></i>LTL TRUCKING</span>\"\r\n    },\r\n    {\r\n        \"Id\": 14,\r\n        \"Name\": \"Other Logistics\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-cogs mr-1'></i>Other Logistics</span>\"\r\n    }\r\n]\r\n",
             "Template": "[{ \"FieldName\" : \"Description\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "DisabledExp": "this.Entity.StatusId == 3 || this.Entity.StatusId == 4 || (this.Entity.InsertedBy && this.Entity.InsertedBy != this.Token.UserId)  || (this.Entity.IsSend && (this.Entity.ProgressId != 5 && this.Entity.ProgressId != 1))",
@@ -540,7 +501,6 @@
             "Row": 100,
             "Label": "POD",
             "Width": "175px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from [Terminal] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"\r\n}",
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
@@ -561,7 +521,6 @@
             "Row": 100,
             "Label": "POL",
             "Width": "149px",
-            "Active": true,
             "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
@@ -582,7 +541,6 @@
             "Row": 100,
             "Label": "User",
             "Width": "130px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [User] as ds where (RoleIdsText like N'%PRICING%' or RoleIdsText like N'%DOCS%')\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (RoleIdsText like N'%PRICING%' or RoleIdsText like N'%DOCS%')\"\r\n}",
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
@@ -603,7 +561,6 @@
             "Row": 100,
             "Label": "Group",
             "Width": "125px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Team Group'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Team Group'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -625,7 +582,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Edit\"}",
             "Width": "32px",
-            "Active": true,
             "MinWidth": "32px",
             "MaxWidth": "32px",
             "EntityId": "InquiryDetail"
@@ -641,7 +597,6 @@
             "Label": "Progress",
             "Width": "151px",
             "DefaultVal": "1",
-            "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"To Do\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #95a5a6; display: inline-block;'> <i class='fal fa-clipboard-list mr-1'></i> To Do</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"In Progress\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #3498db; display: inline-block;'><i class='fal fa-spinner fa-spin mr-1'></i> In Progress</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Complete\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #28a745; display: inline-block;'><i class='fal fa-check-circle mr-1'></i> Complete</span>\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Pending\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #f39c12; display: inline-block;'><i class='fal fa-hourglass-half mr-1'></i> Pending</span>\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"Cancel\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #e74c3c; display: inline-block;'><i class='fal fa-times-circle mr-1'></i> Cancel</span>\"\r\n    }\r\n]",
             "Template": "[{ \"FieldName\" : \"Description\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "DisabledExp": "var rs = !((this.Entity.UserReceiverId == this.Token.UserId || (this.Token.TeamId && this.Entity.GroupReceiverId == this.Token.TeamId)) && this.Entity.ProgressId != 3);\r\nreturn rs;",
@@ -661,7 +616,6 @@
             "Label": "Deadline",
             "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
             "Width": "199px",
-            "Active": true,
             "DisabledExp": "this.Entity.StatusId == 3 || this.Entity.StatusId == 4 || (this.Entity.InsertedBy && this.Entity.InsertedBy != this.Token.UserId)  || (this.Entity.IsSend && (this.Entity.ProgressId != 5 && this.Entity.ProgressId != 1))",
             "FocusSearch": true,
             "Editable": true,
@@ -678,7 +632,6 @@
             "Row": 100,
             "Label": "Status",
             "Width": "111px",
-            "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fal fa-plus mr-1'></i>New</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: #333; background-color: #ffc107;'><i class='fal fa-ellipsis-h mr-1'></i>Approving</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fal fa-smile mr-1'></i>Approved</span>\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fal fa-frown mr-1'></i>Decline</span>\"\r\n    }\r\n]",
             "FocusSearch": true,
             "MinWidth": "111px",
@@ -692,7 +645,6 @@
             "ComponentType": "Input",
             "Label": "Note",
             "Width": "156px",
-            "Active": true,
             "DisabledExp": "this.Entity.StatusId == 3 || this.Entity.StatusId == 4 || (this.Entity.InsertedBy && this.Entity.InsertedBy != this.Token.UserId)  || (this.Entity.IsSend && (this.Entity.ProgressId != 5 && this.Entity.ProgressId != 1))",
             "FocusSearch": true,
             "Editable": true,
@@ -712,8 +664,7 @@
             "Label": "Save & Add",
             "Icon": "fas fa-sliders-h-square",
             "ClassName": "btn detail-button secondary-outline",
-            "Events": "{ \"click\" : \"SaveAdd\" }",
-            "Active": true
+            "Events": "{ \"click\" : \"SaveAdd\" }"
         },
         {
             "Id": "001d01cc-0000-0000-8000-29abb34dd5eb",
@@ -725,8 +676,7 @@
             "Icon": "fal fa-save",
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
-            "Events": "{ \"click\" : \"SavePatch\" }",
-            "Active": true
+            "Events": "{ \"click\" : \"SavePatch\" }"
         },
         {
             "Id": "0050039c-0000-0000-8000-8495f98f5c32",
@@ -738,8 +688,7 @@
             "Label": "Save As",
             "Icon": "fas fa-sliders-h-square",
             "ClassName": "btn detail-button secondary-outline",
-            "Events": "{ \"click\" : \"SaveAs\" }",
-            "Active": true
+            "Events": "{ \"click\" : \"SaveAs\" }"
         },
         {
             "Id": "0076231c-0000-0000-8000-550ebb85bcdc",
@@ -752,7 +701,6 @@
             "Icon": "fas fa-sliders-h-square",
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{\r\n    \"click\": \"CreateQuote\"\r\n}",
-            "Active": true,
             "Query": "select DefaultFee.*,FeeType.Description as FeeType,FeeType.IsFreight,FeeType.GroupName as GroupFee,MasterData.Name as UnitName\r\nfrom DefaultFee\r\nleft join FeeType on DefaultFee.DescriptionId = FeeType.Id\r\nleft join MasterData on DefaultFee.UnitId = MasterData.Id\r\nwhere InquiryDetailId in ('{InquiryDetailIds}')\r\norder by DefaultFee.UnitId asc\r\n\r\nselect Pricing.*,p.PartnerTypeIdsText,p.ResidenceTypeIdText\r\nfrom InquiryDetail\r\nleft join Pricing on InquiryDetail.PricingId = Pricing.Id\r\nleft join [Partner] p on pricing.VendorId = p.Id\r\nwhere InquiryDetail.Id in ('{InquiryDetailIds}')",
             "PreQuery": "var detail = this.EditForm.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"InquiryDetail\");\r\nvar ids = detail.AllListViewItem.map(x=> x.Entity.Id).join(\"','\");\r\nreturn {\r\n    \"InquiryDetailIds\": ids\r\n}",
             "ShowExp": "this.Entity.InsertedBy == this.Token.UserId"
@@ -767,7 +715,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Edit\"}",
             "Width": "32px",
-            "Active": true,
             "MinWidth": "32px",
             "MaxWidth": "32px",
             "EntityId": "InquiryDetail"
@@ -777,8 +724,7 @@
         {
             "Id": "13062749-9E1A-4A04-82D6-35C3251C3EA2",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "21B4EA84-8F2E-4E82-A6C4-72CEC180A2BD",
@@ -789,8 +735,7 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "360AED20-FE89-4010-998C-E598B98EC0D5",
@@ -798,32 +743,27 @@
             "CanRead": true,
             "CanWrite": true,
             "CanWriteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "5EA234BB-71FE-4ABB-BFC4-7F2B87107F2A",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "71CF6051-0F53-4923-972F-FCF47760845C",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "8AE23930-92A9-4F1C-BCBB-EFB06D63CF5C",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "8BAE5818-F3C9-4F2B-B61D-6567DCE8C506",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "B4CC9B29-8223-4B99-8CAC-34BC40783C6C",
@@ -831,20 +771,17 @@
             "CanRead": true,
             "CanWrite": true,
             "CanDelete": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "E2053713-8A4C-4ADE-A294-9B204DC1F2C7",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "ED76F935-444F-490D-86E8-B8A761C87603",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

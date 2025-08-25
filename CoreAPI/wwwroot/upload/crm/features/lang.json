@@ -6,7 +6,6 @@
     "Order": 5,
     "Icon": "fal fa-globe-americas",
     "IsMenu": true,
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "00d403b0-0000-0000-8000-c2fb94a5cc41",
@@ -14,7 +13,6 @@
             "Order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "00d5039c-0000-0000-8000-861979a5e56e",
@@ -25,7 +23,6 @@
                     "Row": 50,
                     "CanSearch": true,
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "Active": true,
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from Dictionary as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Dictionary as ds\"\r\n}",
                     "IsRealtime": true,
@@ -44,7 +41,6 @@
             "ComponentType": "Input",
             "Label": "Lang Code",
             "Width": "84px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "84px",
             "MaxWidth": "84px",
@@ -57,7 +53,6 @@
             "ComponentType": "Input",
             "Label": "Key",
             "Width": "417px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "417px",
             "MaxWidth": "417px",
@@ -70,7 +65,6 @@
             "ComponentType": "Input",
             "Label": "Value",
             "Width": "197px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "197px",
             "MaxWidth": "197px",
@@ -81,44 +75,37 @@
         {
             "Id": "2106173A-4CE1-46CB-B15E-3E17614FDA87",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "257E8AC8-1F3B-4D20-981E-6F81D6FD8519",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "2C8CA094-7B86-4A34-B1B5-91E4C5090F53",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "3E01A6B1-BB38-440D-8634-740E24F4E4B5",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "79E5C1D7-5E62-4342-BAD7-AC0EDFB78C5F",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "8DF41D28-2AA3-47DD-B70D-C1963240AAE4",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "ADC5285D-5A54-482D-B1B4-444A8A294788",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "DECB2734-DF97-419E-8687-1486276582BE",
@@ -129,20 +116,17 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "EAE0B524-9F99-4768-BDA2-21102744BDBA",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "F00C6A47-C45A-4FD2-B98E-D1360C1F6AD0",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

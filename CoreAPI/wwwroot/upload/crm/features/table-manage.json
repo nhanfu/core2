@@ -4,7 +4,6 @@
     "Label": "Table Manage",
     "Order": 111,
     "Script": "return {\r\n    EditTable: (entity) => {\r\n        this.OpenPopup(\"table-editor\", entity);\r\n    }\r\n}",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "008ef864-0000-0000-8000-459845c14aa7",
@@ -12,7 +11,6 @@
             "Order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "0022f784-0000-0000-8000-f877b189f411",
@@ -24,7 +22,6 @@
                     "CanSearch": true,
                     "ClassName": "sticky",
                     "DefaultVal": "{\r\n    \"TanentId\": this.EditForm.Entity.Id,\r\n}",
-                    "Active": true,
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from TableName as ds\",\r\n    \"total\": \"select count(ds.Id) as total from TableName as ds\"\r\n}",
                     "IsRealtime": true,
@@ -42,7 +39,6 @@
             "Order": 1,
             "ComponentType": "Input",
             "Label": "TableName",
-            "Active": true,
             "Editable": true,
             "created_by": "TableName",
             "EntityId": "TableName"
@@ -53,7 +49,6 @@
             "Order": 2,
             "ComponentType": "Input",
             "Label": "Description",
-            "Active": true,
             "Editable": true,
             "created_by": "TableName",
             "EntityId": "TableName"
@@ -64,7 +59,6 @@
             "Order": 3,
             "ComponentType": "Input",
             "Label": "Trigger",
-            "Active": true,
             "Editable": true,
             "created_by": "TableName",
             "EntityId": "TableName"
@@ -75,7 +69,6 @@
             "Order": 4,
             "ComponentType": "Datepicker",
             "Label": "Inserted Date",
-            "Active": true,
             "created_by": "TableName",
             "EntityId": "TableName"
         },
@@ -88,7 +81,6 @@
             "PlainText": "Select data",
             "Row": 100,
             "Label": "Inserted By",
-            "Active": true,
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "created_by": "TableName",
@@ -102,7 +94,6 @@
             "Icon": "fal fa-expand-alt",
             "ClassName": "btn",
             "Events": "{\"click\":\"EditTable\"}",
-            "Active": true,
             "Editable": true,
             "created_by": "TableName",
             "EntityId": "TableName"
@@ -117,7 +108,6 @@
             "Icon": "fal fa-expand-alt",
             "ClassName": "btn",
             "Events": "{\"click\":\"EditTable\"}",
-            "Active": true,
             "Editable": true,
             "created_by": "TableName",
             "EntityId": "TableName"
@@ -127,56 +117,47 @@
         {
             "Id": "01199B3D-5AE1-4711-B2D1-C00D95BFC2B7",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "239436C1-CEBB-45D4-A8D7-DADBD0FB5B23",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "618C991D-4539-47D8-8D6E-1D400FEE61DE",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "9B3FA319-9712-4804-B9F7-9041F397C152",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "9F75612B-A839-4CFE-AFA3-67387B0D1538",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A2E7D6C9-99E6-47AD-82C7-442769262C42",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "BBD2FBA7-5E0C-411B-A259-7A5A4B041858",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "BD032F5C-4B54-4320-9F7C-2B416D16DBA7",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "DAB73399-FA57-4911-94D7-612D2ED8E935",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "FB30D7EA-47EC-4669-9454-B4E5FAD3F227",
@@ -187,8 +168,7 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

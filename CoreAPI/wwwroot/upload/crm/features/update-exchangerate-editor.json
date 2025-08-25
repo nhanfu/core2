@@ -7,7 +7,6 @@
     "Style": "width:700px;",
     "Script": "return {\r\n    SaveAs: function (btn) {\r\n        var newEntity = JSON.parse(JSON.stringify(this.Entity));\r\n        this.Entity = newEntity;\r\n        this.Entity.Id = this.Uuid7.NewGuid();\r\n        this.Entity.FromDate = null;\r\n        this.Entity.ToDate = null;\r\n        this.Entity.PostDate = this.dayjs();\r\n        var detailGrid = this.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"ExchangeRateHistoryDetail\");\r\n        if (detailGrid && detailGrid.AllListViewItem.length > 0) {\r\n            detailGrid.AllListViewItem.forEach(row => {\r\n                row.Entity.Id = this.Uuid7.NewGuid();\r\n                row.Entity.HistoryId = this.Entity.Id;\r\n                row.Children.forEach(cell => {\r\n                    cell.Entity = row.Entity;\r\n                });\r\n                row.UpdateView(true);\r\n            });\r\n        }\r\n        this.UpdateView(true);\r\n        this.Dirty = true;\r\n        this.Toast.Success(\"Save as success\");\r\n    },\r\n    CalcRateUSD: function (btn, entity) {\r\n        var exUSD = this.Decimal(this.Entity.RateVND);\r\n        var exVND = this.Decimal(1);\r\n        entity.RateUSD = this.Decimal(1).div(entity.RateVND);\r\n        var detailGrid = this.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"ExchangeRateHistoryDetail\");\r\n        detailGrid.Item.forEach(item => {\r\n            item.Entity.RateVND = this.Decimal(item.Entity.RateVND);\r\n            item.Entity.RateUSD = item.Entity.RateVND.div(exUSD);\r\n            item.UpdateView(false, false, \"RateUSD\");\r\n        });\r\n    },\r\n    UpdateExchangeRate: function (btn, entity) {\r\n        var exUSD = this.Decimal(this.EditForm.Entity.RateVND);\r\n        var exVND = this.Decimal(1);\r\n        entity.RateVND = this.Decimal(entity.RateVND);\r\n        entity.RateUSD = entity.RateVND.div(exUSD);\r\n        btn.Parent.UpdateView(false, false, \"RateUSD\");\r\n    },\r\n    UpdateExchangeRate2: function (btn, entity) {\r\n        debugger;\r\n        var exUSD = this.Decimal(this.EditForm.Entity.RateVND);\r\n        var exVND = this.Decimal(1);\r\n        entity.RateVND = this.Decimal(JSON.parse(localStorage.getItem(\"ExchangeRateVND\"))[entity.CurrencyCode]);\r\n        entity.RateUSD = entity.RateVND.div(exUSD);\r\n        btn.Parent.UpdateView(false, false, \"RateUSD\");\r\n    }\r\n}",
     "EntityId": "ExchangeRateHistory",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "0195846b-ef45-707d-b065-ef6ad49aa6e0",
@@ -16,7 +15,6 @@
             "ComponentType": "Section",
             "ClassName": "ribbon-group",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "0195846b-ef86-72f4-a39e-5fced3f589b4",
@@ -28,8 +26,7 @@
                     "Icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
-                    "Events": "{ \"click\" : \"SavePatch\" }",
-                    "Active": true
+                    "Events": "{ \"click\" : \"SavePatch\" }"
                 },
                 {
                     "Id": "01958544-97b6-7506-a5c2-b88c0d38adc7",
@@ -40,8 +37,7 @@
                     "Label": "Save As",
                     "Icon": "fas fa-sliders-h-square",
                     "ClassName": "btn detail-button secondary-outline",
-                    "Events": "{\r\n    \"click\": \"SaveAs\"\r\n}",
-                    "Active": true
+                    "Events": "{\r\n    \"click\": \"SaveAs\"\r\n}"
                 }
             ]
         },
@@ -50,8 +46,7 @@
             "FieldName": "Container ",
             "Order": 2,
             "ComponentType": "Section",
-            "XxlCol": 12,
-            "Active": true
+            "XxlCol": 12
         },
         {
             "Id": "0195846b-f00b-76e0-8e91-67205446602e",
@@ -60,7 +55,6 @@
             "ComponentType": "Section",
             "ClassName": "card-body profile",
             "XxlCol": 12,
-            "Active": true,
             "DisabledExp": "!this.Entity.Id.startsWith('-')",
             "ParentId": "0195846b-efc6-754c-a5c8-a7c50c2c320d",
             "XxlOuterColumn": 12,
@@ -76,7 +70,6 @@
                     "Label": "ExchangeRateHistoryDetail",
                     "Events": "{\r\n    \"AfterCreated\": \"UpdateExchangeRate2\"\r\n}",
                     "DefaultVal": "{\r\n    \"HistoryId\": this.EditForm.Entity.Id\r\n}",
-                    "Active": true,
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from ExchangeRateHistoryDetail as ds where HistoryId = '{HistoryId}'\",\r\n    \"total\": \"select count(ds.Id) as total from ExchangeRateHistoryDetail as ds where HistoryId = '{HistoryId}'\"\r\n}",
                     "RefName": "ExchangeRateHistoryDetail",
@@ -94,8 +87,7 @@
                     "Label": "From Date",
                     "ShowLabel": true,
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
-                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "Active": true
+                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                 },
                 {
                     "Id": "0195846f-ec87-747d-9f56-a51f8d1d5cc6",
@@ -107,8 +99,7 @@
                     "Label": "Post Date",
                     "ShowLabel": true,
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
-                    "Disabled": true,
-                    "Active": true
+                    "Disabled": true
                 },
                 {
                     "Id": "01958470-318a-75b1-824a-c45fd5a0bb57",
@@ -120,8 +111,7 @@
                     "Label": "To Date",
                     "ShowLabel": true,
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
-                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "Active": true
+                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                 },
                 {
                     "Id": "01958470-3bec-731e-9cba-564aa28d0c7c",
@@ -133,8 +123,7 @@
                     "Label": "Ref No",
                     "ShowLabel": true,
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
-                    "Disabled": true,
-                    "Active": true
+                    "Disabled": true
                 },
                 {
                     "Id": "0195854b-722d-7788-b422-0e6c05cf1a77",
@@ -148,7 +137,6 @@
                     "Label": "File No",
                     "ShowLabel": true,
                     "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Shipment ds where ParentId is null\",\r\n    \"total\": \"select count(ds.Id) as total from Shipment ds where ParentId is null\"\r\n}",
                     "RefName": "Shipment",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Code\",\r\n        \"Label\": \"Code\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
@@ -165,7 +153,6 @@
                     "Label": "USD => VND",
                     "ShowLabel": true,
                     "Events": "{\r\n    \"input\": \"CalcRateUSD\"\r\n}",
-                    "Active": true,
                     "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
                 }
             ]
@@ -183,7 +170,6 @@
             "Label": "Currency",
             "Events": "{\r\n    \"change\":\"UpdateExchangeRate2\"\r\n}",
             "Width": "158px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where (ds1.Name = N'Currency' and ds.Code not in ('USD','VND'))\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where (ds1.Name = N'Currency' and ds.Code not in ('USD','VND'))\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
@@ -203,7 +189,6 @@
             "Label": "Rate VND",
             "Events": "{\r\n    \"input\":\"UpdateExchangeRate\"\r\n}",
             "Width": "186px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "186px",
@@ -219,7 +204,6 @@
             "Precision": 24,
             "Label": "Rate USD",
             "Width": "200px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "200px",
@@ -238,8 +222,7 @@
             "Icon": "fal fa-save",
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
-            "Events": "{ \"click\" : \"SavePatch\" }",
-            "Active": true
+            "Events": "{ \"click\" : \"SavePatch\" }"
         },
         {
             "Id": "01958544-97b6-7506-a5c2-b88c0d38adc7",
@@ -250,16 +233,14 @@
             "Label": "Save As",
             "Icon": "fas fa-sliders-h-square",
             "ClassName": "btn detail-button secondary-outline",
-            "Events": "{\r\n    \"click\": \"SaveAs\"\r\n}",
-            "Active": true
+            "Events": "{\r\n    \"click\": \"SaveAs\"\r\n}"
         }
     ],
     "FeaturePolicies": [
         {
             "Id": "0F4F40BF-672C-4A31-B902-0B19396FFB4A",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "148311D9-5A22-450B-ACDC-710AF52C2355",
@@ -270,38 +251,32 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "1754032C-A1B5-4D5F-95F3-1DD61937081A",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "1DE61D7A-B97E-4480-A67F-C5951652219B",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "34205D19-55CE-4503-97A6-1C86910B6C12",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "7551AFEE-F212-47EF-AEB0-DEC404B95A5C",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "8D79756E-3D0B-41F1-800C-3AC9683EB733",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "8FFC3DA3-C99F-4C72-8EE9-411936B394D8",
@@ -312,8 +287,7 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A2B34B6B-5490-4947-8B11-9D63879FDC71",
@@ -323,14 +297,12 @@
             "CanWrite": true,
             "CanWriteAll": true,
             "CanDelete": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "FAF14471-CB3E-482B-B7C7-7CC46502E773",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

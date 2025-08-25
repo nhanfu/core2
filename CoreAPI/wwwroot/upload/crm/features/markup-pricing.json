@@ -8,7 +8,6 @@
     "Icon": "fal fa-wrench",
     "IsMenu": true,
     "EntityId": "MarkupPricing",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "00aa15f8-0000-0000-8000-8df06ba28b87",
@@ -16,7 +15,6 @@
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "DisplayBadge": true,
             "Components": [
                 {
@@ -29,7 +27,6 @@
                     "CanSearch": true,
                     "Label": "MarkupPricing",
                     "ClassName": "sticky",
-                    "Active": true,
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from MarkupPricing as ds\",\r\n    \"total\": \"select count(ds.Id) as total from MarkupPricing as ds\"\r\n}",
                     "IsRealtime": true,
@@ -50,7 +47,6 @@
             "Row": 100,
             "Label": "Created on",
             "Width": "85px",
-            "Active": true,
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
@@ -69,7 +65,6 @@
             "Label": "Partner",
             "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('provider-editor',{ ServiceId: 3, ActionId: 1})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('provider-editor',this.Matched)\"\r\n}",
             "Width": "240px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\"\r\n}",
             "RefName": "Partner",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
@@ -90,7 +85,6 @@
             "Row": 100,
             "Label": "POL",
             "Width": "116px",
-            "Active": true,
             "Query": "{ \"sql\": \"select * from [Terminal] as ds\", \"total\": \"select count(ds.Id) as total from [Terminal] as ds\" }",
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
@@ -110,7 +104,6 @@
             "Row": 100,
             "Label": "POD",
             "Width": "132px",
-            "Active": true,
             "Query": "{ \"sql\": \"select * from [Terminal] as ds\", \"total\": \"select count(ds.Id) as total from [Terminal] as ds\" }",
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
@@ -130,7 +123,6 @@
             "Row": 100,
             "Label": "Price Type",
             "Width": "102px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Pricing Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Pricing Type'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -147,7 +139,6 @@
             "ComponentType": "Input",
             "Label": "Description",
             "Width": "136px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "136px",
@@ -164,7 +155,6 @@
             "Row": 100,
             "Label": "Service mode",
             "Width": "123px",
-            "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"FCL\",\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"LCL\",\r\n    }, {\r\n        \"Id\": 3,\r\n        \"Name\": \"Consol\",\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Trucking\",\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"Logistics\",\r\n    },\r\n    {\r\n        \"Id\": 6,\r\n        \"Name\": \"Air Export\",\r\n    },\r\n    {\r\n        \"Id\": 7,\r\n        \"Name\": \"Air Import\",\r\n    }\r\n]",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
@@ -183,7 +173,6 @@
             "Row": 100,
             "Label": "Type",
             "Width": "102px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Markup Pricing Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Markup Pricing Type'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -200,7 +189,6 @@
             "ComponentType": "Number",
             "Label": "Markup Level (%)",
             "Width": "136px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "136px",
@@ -212,14 +200,12 @@
         {
             "Id": "3549E113-5996-4F57-972A-E377F77884C4",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "62B54387-9B0F-4800-AC77-B64A3CB8F1B3",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "744555CF-8671-4176-B66B-0D99938652F9",
@@ -227,34 +213,29 @@
             "CanRead": true,
             "CanWrite": true,
             "CanDelete": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "961F40CD-20F4-46EE-AAD7-E28F83011449",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "9650F45D-8FEA-487A-82C4-B68E71440213",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "CanRead": true,
             "CanReadAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "9AB428B7-DC32-4D03-A2EF-3F9E77100C50",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "C3BCA685-B782-4A4D-A5E8-F709EFD9D5AB",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "DF559AED-A2F8-4023-A953-50AD94BC3280",
@@ -265,20 +246,17 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "E5A30EC1-F714-4A0D-9643-822428B3C8B1",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "FCB9E359-5CFE-4976-ACEF-4B0B6A7ED994",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

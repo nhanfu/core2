@@ -5,7 +5,6 @@
     "ParentId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
     "Order": 1,
     "Icon": "fal fa-square",
-    "Active": true,
     "IgnoreEncode": true,
     "ComponentGroup": [
         {
@@ -15,7 +14,6 @@
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "000705a4-0000-0000-8000-bfd5b3a16a17",
@@ -28,7 +26,6 @@
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "DefaultVal": "{\r\n    \"ParentId\":\"00ff0174-0000-0000-8000-117c2b1fb653\"\r\n}",
-                    "Active": true,
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from MasterData as ds where (ds.ParentId in ('00ff0174-0000-0000-8000-117c2b1fb653','006f1b9c-0000-0000-8000-55553171db6a'))\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds where (ds.ParentId in ('00ff0174-0000-0000-8000-117c2b1fb653','006f1b9c-0000-0000-8000-55553171db6a'))\"\r\n}",
                     "IsRealtime": true,
@@ -47,7 +44,6 @@
             "ComponentType": "Input",
             "Label": "Description",
             "Width": "305px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "305px",
             "MaxWidth": "305px",
@@ -60,7 +56,6 @@
             "ComponentType": "Input",
             "Label": "Code",
             "Width": "102px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "102px",
             "MaxWidth": "102px",
@@ -73,7 +68,6 @@
             "ComponentType": "Input",
             "Label": "Name",
             "Width": "131px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "131px",
             "MaxWidth": "131px",
@@ -86,7 +80,6 @@
             "ComponentType": "Checkbox",
             "Label": "KGS",
             "Width": "124px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "124px",
             "MaxWidth": "124px",
@@ -99,7 +92,6 @@
             "ComponentType": "Checkbox",
             "Label": "Container",
             "Width": "94px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "94px",
             "MaxWidth": "94px",
@@ -112,7 +104,6 @@
             "ComponentType": "Checkbox",
             "Label": "CBM",
             "Width": "95px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "95px",
             "MaxWidth": "95px",
@@ -123,8 +114,7 @@
         {
             "Id": "238D194C-8D34-4490-AD3A-788198F52900",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "46C84D9B-4394-42FA-94A5-8473AB7799E0",
@@ -135,56 +125,47 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "575EF7AE-E8D3-4FF8-B9E3-4D8207C883BF",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "6863A17E-532E-44D0-8BD6-A8E662204C22",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "68E82D81-3E65-4223-B38D-2C6532FA08CF",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "69D9945A-121D-4B43-AC94-01DBB0C3C918",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "96DC7929-5A75-4845-A184-F303151FC9BC",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "9CFF19EC-631E-43EA-B8B9-5F3BB3B46785",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "D5F536FB-BBF5-4B36-9C80-AE9726BE0E71",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "F2A53685-C34B-4B86-838E-80E20AF5AFDC",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

@@ -7,7 +7,6 @@
     "Script": "return {\r\n    OpenComponent: function (btn, entity) {\r\n        this.OpenPopup(\"Component-Editor\", entity)\r\n    }\r\n}",
     "Icon": "fal fa-user",
     "EntityId": "Component",
-    "Active": true,
     "IgnoreEncode": true,
     "ComponentGroup": [
         {
@@ -16,8 +15,7 @@
             "Order": 1,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
-            "XxlCol": 12,
-            "Active": true
+            "XxlCol": 12
         },
         {
             "Id": "0038f0d4-0000-0000-8000-43c611dc07f9",
@@ -25,7 +23,6 @@
             "ComponentType": "Section",
             "ClassName": "ribbon-group",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "0020f034-0000-0000-8000-2ce431f614f1",
@@ -37,8 +34,7 @@
                     "Icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
-                    "Events": "{ \"click\" : \"SavePatch\" }",
-                    "Active": true
+                    "Events": "{ \"click\" : \"SavePatch\" }"
                 },
                 {
                     "Id": "005bf0d0-0000-0000-8000-f72d89c217a3",
@@ -49,8 +45,7 @@
                     "Label": "Cancel",
                     "Icon": "fal fa-window-close",
                     "ClassName": "btn detail-button secondary-outline",
-                    "Events": "{ \"click\" : \"Cancel\" }",
-                    "Active": true
+                    "Events": "{ \"click\" : \"Cancel\" }"
                 }
             ]
         },
@@ -61,7 +56,6 @@
             "ComponentType": "Section",
             "Label": "Html",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "000e0488-0000-0000-8000-1e43224733f6",
             "IsTab": true,
             "Components": [
@@ -73,7 +67,6 @@
                     "Column": 12,
                     "Label": "Html",
                     "Style": "height:600px",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                     "RefName": "History",
                     "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
@@ -88,7 +81,6 @@
             "ComponentType": "Section",
             "Label": "Javascript",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "000e0488-0000-0000-8000-1e43224733f6",
             "IsTab": true
         },
@@ -99,7 +91,6 @@
             "ComponentType": "Section",
             "Label": "Infomation",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "000e0488-0000-0000-8000-1e43224733f6",
             "IsTab": true
         },
@@ -110,7 +101,6 @@
             "ComponentType": "Section",
             "ClassName": "grid-view",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "00abf074-0000-0000-8000-4ab0cdf22d93"
         },
         {
@@ -121,7 +111,6 @@
             "Label": "Common",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "00abf074-0000-0000-8000-4ab0cdf22d93",
             "XxlOuterColumn": 4,
             "Components": [
@@ -132,8 +121,7 @@
                     "ComponentType": "Checkbox",
                     "Column": 3,
                     "Label": "Disabled",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "000706f4-0000-0000-8000-ccedf50eded8",
@@ -143,7 +131,6 @@
                     "Column": 12,
                     "Label": "Style",
                     "ShowLabel": true,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                     "RefName": "History",
                     "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
@@ -156,8 +143,7 @@
                     "ComponentType": "Checkbox",
                     "Column": 3,
                     "Label": "Active",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "0028f968-0000-0000-8000-33dc41fed9b0",
@@ -166,8 +152,7 @@
                     "ComponentType": "Input",
                     "Column": 12,
                     "Label": "Description",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "003ff028-0000-0000-8000-69b6e74c9074",
@@ -176,8 +161,7 @@
                     "ComponentType": "Input",
                     "Column": 6,
                     "Label": "FieldName",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "004e0a44-0000-0000-8000-f2c561150253",
@@ -186,8 +170,7 @@
                     "ComponentType": "Checkbox",
                     "Column": 3,
                     "Label": "DropDown",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "0060f0c8-0000-0000-8000-933e53f23680",
@@ -196,8 +179,7 @@
                     "ComponentType": "Number",
                     "Column": 6,
                     "Label": "Order",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "0069f0cc-0000-0000-8000-e7d32a5ab34a",
@@ -206,8 +188,7 @@
                     "ComponentType": "Input",
                     "Column": 6,
                     "Label": "ClassName",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "007df0c4-0000-0000-8000-daa28128e047",
@@ -216,8 +197,7 @@
                     "ComponentType": "Checkbox",
                     "Column": 3,
                     "Label": "Tab",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00f2f03c-0000-0000-8000-1ccdbcad9bf8",
@@ -226,8 +206,7 @@
                     "ComponentType": "Input",
                     "Column": 6,
                     "Label": "Label",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 }
             ]
         },
@@ -239,7 +218,6 @@
             "Label": "Outer",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "00abf074-0000-0000-8000-4ab0cdf22d93",
             "XxlOuterColumn": 4,
             "Components": [
@@ -251,8 +229,7 @@
                     "Column": 6,
                     "Precision": 0,
                     "Label": "Mobile",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "0020f14c-0000-0000-8004-b5612b8b1c8b",
@@ -261,8 +238,7 @@
                     "ComponentType": "Number",
                     "Column": 6,
                     "Label": "Desktop",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00650204-0000-0000-8000-488cbefc5d96",
@@ -272,7 +248,6 @@
                     "Column": 12,
                     "Label": "DisabledExp",
                     "ShowLabel": true,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                     "RefName": "History",
                     "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
@@ -286,8 +261,7 @@
                     "Column": 6,
                     "Label": "Icon",
                     "ShowLabel": true,
-                    "Disabled": true,
-                    "Active": true
+                    "Disabled": true
                 },
                 {
                     "Id": "00fb0714-0000-0000-8000-22e23552611f",
@@ -296,8 +270,7 @@
                     "ComponentType": "Input",
                     "Column": 6,
                     "Label": "TabGroup",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 }
             ]
         },
@@ -307,7 +280,6 @@
             "Order": 5,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "00adf014-0000-0000-8000-ce29d83661e5",
             "XxlOuterColumn": 12,
             "Components": [
@@ -322,7 +294,6 @@
                     "ChildStyle": "height: calc(100vh - 20rem)",
                     "Events": "{\r\n    \"dblclick\": \"OpenComponent\"\r\n}",
                     "DefaultVal": "{\r\n    \"FeatureId\": this.EditForm.Entity.FeatureId,\r\n    \"ComponentGroupId\": this.EditForm.Entity.Id,\r\n    \"Visibility\": true\r\n}",
-                    "Active": true,
                     "CanAdd": true,
                     "Query": "{ \"sql\" : \"select * from Component as ds where ComponentGroupId is not null and (ComponentType is null or ComponentType != 'Section') and ComponentGroupId = '{ComponentGroupId}'\"\r\n, \"total\" : \"select count(ds.Id) as total from Component as ds   where ComponentGroupId is not null  and (ComponentType is null or ComponentType != 'Section')  and ComponentGroupId = '{ComponentGroupId}'\" \r\n}",
                     "IsRealtime": true,
@@ -341,7 +312,6 @@
             "Label": "Inner",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "00abf074-0000-0000-8000-4ab0cdf22d93",
             "XxlOuterColumn": 4,
             "Components": [
@@ -352,8 +322,7 @@
                     "ComponentType": "Checkbox",
                     "Column": 3,
                     "Label": "Editable",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "0086f1f4-0000-0000-8000-f96eb74a0d3a",
@@ -363,7 +332,6 @@
                     "Column": 3,
                     "Label": "Mobile",
                     "ShowLabel": true,
-                    "Active": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
@@ -373,8 +341,7 @@
                     "ComponentType": "Checkbox",
                     "Column": 3,
                     "Label": "Badge",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00c2f1ec-0000-0000-8000-09f3e32eac8e",
@@ -383,8 +350,7 @@
                     "ComponentType": "Number",
                     "Column": 3,
                     "Label": "Desktop",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00f228cc-0000-0000-8000-3f0bd0c968f0",
@@ -394,7 +360,6 @@
                     "Column": 12,
                     "Label": "Javascript",
                     "ShowLabel": true,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                     "RefName": "History",
                     "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
@@ -412,7 +377,6 @@
             "Label": "GroupFormat",
             "ShowLabel": true,
             "Width": "99px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "99px",
             "MaxWidth": "99px",
@@ -427,7 +391,6 @@
             "Label": "Query",
             "ShowLabel": true,
             "Width": "271px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "271px",
             "MaxWidth": "271px",
@@ -442,7 +405,6 @@
             "Label": "Id",
             "ShowLabel": true,
             "Width": "1px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "1px",
             "MaxWidth": "1px",
@@ -457,7 +419,6 @@
             "Label": "ClassName",
             "ShowLabel": true,
             "Width": "190px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "190px",
             "MaxWidth": "190px",
@@ -472,7 +433,6 @@
             "Label": "Child Style",
             "ShowLabel": true,
             "Width": "174px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "174px",
             "MaxWidth": "174px",
@@ -487,7 +447,6 @@
             "Label": "Style",
             "ShowLabel": true,
             "Width": "97px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "97px",
             "MaxWidth": "97px",
@@ -502,7 +461,6 @@
             "Label": "Label",
             "ShowLabel": true,
             "Width": "276px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "276px",
             "MaxWidth": "276px",
@@ -518,7 +476,6 @@
             "Label": "Desktop",
             "ShowLabel": true,
             "Width": "55px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "55px",
@@ -534,7 +491,6 @@
             "Label": "Icon",
             "ShowLabel": true,
             "Width": "360px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "360px",
             "MaxWidth": "360px",
@@ -549,7 +505,6 @@
             "Label": "Events",
             "ShowLabel": true,
             "Width": "197px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "197px",
             "MaxWidth": "197px",
@@ -564,7 +519,6 @@
             "Label": "Entity",
             "ShowLabel": true,
             "Width": "170px",
-            "Active": true,
             "Query": "{ \"sql\" : \"select * from Component as ds  where ComponentGroupId is null  and ComponentType = 'Section'\" , \"total\" : \"select count(ds.Id) as total from Component as ds   where ComponentGroupId is null  and ComponentType = 'Section'\" }",
             "RefName": "Component",
             "Editable": true,
@@ -581,7 +535,6 @@
             "Label": "DefaultVal",
             "ShowLabel": true,
             "Width": "197px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "197px",
             "MaxWidth": "197px",
@@ -599,7 +552,6 @@
             "Label": "Feature",
             "ShowLabel": true,
             "Width": "173px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from Feature as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Feature as ds\"\r\n}",
             "RefName": "Feature",
             "Template": "[{ \"FieldName\" : \"Id\", \"Label\" : \"Id\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Label\", \"Label\" : \"Label\", \"ComponentType\"\r\n: \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -617,7 +569,6 @@
             "Label": "ShowExp",
             "ShowLabel": true,
             "Width": "991px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "991px",
             "MaxWidth": "991px",
@@ -632,7 +583,6 @@
             "Label": "RefName",
             "ShowLabel": true,
             "Width": "198px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "198px",
             "MaxWidth": "198px",
@@ -647,7 +597,6 @@
             "Label": "Param",
             "ShowLabel": true,
             "Width": "212px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "212px",
             "MaxWidth": "212px",
@@ -662,7 +611,6 @@
             "Label": "Validation",
             "ShowLabel": true,
             "Width": "380px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "380px",
             "MaxWidth": "380px",
@@ -677,7 +625,6 @@
             "Label": "Show Label",
             "ShowLabel": true,
             "Width": "78px",
-            "Active": true,
             "TextAlign": "center",
             "Editable": true,
             "MinWidth": "78px",
@@ -693,7 +640,6 @@
             "Label": "FieldName",
             "ShowLabel": true,
             "Width": "217px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "217px",
             "MaxWidth": "217px",
@@ -708,7 +654,6 @@
             "Label": "Component Type",
             "ShowLabel": true,
             "Width": "181px",
-            "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": \"Input\",\r\n        \"Name\": \"Input\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fal fa-keyboard mr-1'></i>Input</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Select\",\r\n        \"Name\": \"Select\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fal fa-list mr-1'></i>Select</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Button\",\r\n        \"Name\": \"Button\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fal fa-hand-pointer mr-1'></i>Button</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Textarea\",\r\n        \"Name\": \"Textarea\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fal fa-align-left mr-1'></i>Textarea</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Number\",\r\n        \"Name\": \"Number\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #17a2b8;'><i class='fal fa-hashtag mr-1'></i>Number</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Checkbox\",\r\n        \"Name\": \"Checkbox\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #6f42c1;'><i class='fal fa-check-square mr-1'></i>Checkbox</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Dropdown\",\r\n        \"Name\": \"Dropdown\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fal fa-caret-down mr-1'></i>Dropdown</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Datepicker\",\r\n        \"Name\": \"Datepicker\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #fd7e14;'><i class='fal fa-calendar-alt mr-1'></i>Datepicker</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"FileUpload\",\r\n        \"Name\": \"FileUpload\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fal fa-upload mr-1'></i>FileUpload</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"GridView\",\r\n        \"Name\": \"GridView\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fal fa-th-large mr-1'></i>GridView</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Word\",\r\n        \"Name\": \"Word\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #6c757d;'><i class='fal fa-file-word mr-1'></i>Word</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"CodeEditor\",\r\n        \"Name\": \"CodeEditor\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #17a2b8;'><i class='fal fa-code mr-1'></i>CodeEditor</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Label\",\r\n        \"Name\": \"Label\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #343a40;'><i class='fal fa-tag mr-1'></i>Label</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Pdf\",\r\n        \"Name\": \"Pdf\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #0b98a7;'><i class='fal fa-file-pdf mr-1'></i>Pdf</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Chart\",\r\n        \"Name\": \"Chart\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #0b98a7;'><i class='fal fa-file-pdf mr-1'></i>Chart</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Excel\",\r\n        \"Name\": \"Excel\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #0b98a9;'><i class='fal fa-file-excel mr-1'></i>Excel</span>\"\r\n    }\r\n]",
             "Editable": true,
             "MinWidth": "181px",
@@ -724,7 +669,6 @@
             "Label": "Order",
             "ShowLabel": true,
             "Width": "70px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "70px",
@@ -740,7 +684,6 @@
             "Label": "Disabled",
             "ShowLabel": true,
             "Width": "57px",
-            "Active": true,
             "TextAlign": "center",
             "Editable": true,
             "MinWidth": "57px",
@@ -756,7 +699,6 @@
             "Label": "TableName",
             "ShowLabel": true,
             "Width": "143px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "143px",
             "MaxWidth": "143px",
@@ -771,7 +713,6 @@
             "Label": "EntityName",
             "ShowLabel": true,
             "Width": "106px",
-            "Active": true,
             "Editable": true,
             "MinWidth": "106px",
             "MaxWidth": "106px",
@@ -787,7 +728,6 @@
             "Label": "RowSpan",
             "ShowLabel": true,
             "Width": "65px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "65px",
@@ -803,7 +743,6 @@
             "Label": "DisabledExp",
             "ShowLabel": true,
             "Width": "226px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "226px",
@@ -820,7 +759,6 @@
             "Label": "Mobile",
             "ShowLabel": true,
             "Width": "55px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "55px",
@@ -840,8 +778,7 @@
             "Icon": "fal fa-save",
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
-            "Events": "{ \"click\" : \"SavePatch\" }",
-            "Active": true
+            "Events": "{ \"click\" : \"SavePatch\" }"
         },
         {
             "Id": "005bf0d0-0000-0000-8000-f72d89c217a3",
@@ -852,40 +789,34 @@
             "Label": "Cancel",
             "Icon": "fal fa-window-close",
             "ClassName": "btn detail-button secondary-outline",
-            "Events": "{ \"click\" : \"Cancel\" }",
-            "Active": true
+            "Events": "{ \"click\" : \"Cancel\" }"
         }
     ],
     "FeaturePolicies": [
         {
             "Id": "0D4E2E84-73E6-4652-A27D-96DA196AFEC3",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "1A8E14BE-ADA7-40AB-A124-39DCF1F61F1D",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "255BD479-C29A-4BD1-B65B-CDFB5CA1E162",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "3BDC0577-9574-476C-961E-871BBBD79194",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "4C6200CD-5D2D-4199-B563-840D86709176",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "52056F13-1364-430E-8911-E42FC9C6F6E4",
@@ -896,32 +827,27 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "8B742CCF-B8EF-4E9A-BD49-B57AA91A522A",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "ADB79739-76DC-46F8-9E89-DE27D29F921D",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "CEB1E47E-D248-4B1D-8DEB-6B4D36DA4B2F",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "F2EC1071-EF5A-4A4A-9FB3-B797AFE8D550",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

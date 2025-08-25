@@ -8,7 +8,6 @@
     "Icon": "fal fa-ship",
     "IsMenu": true,
     "EntityId": "Pricing",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "00df1520-0000-0000-8000-f19fbd28c97c",
@@ -16,7 +15,6 @@
             "ComponentType": "Section",
             "Label": "Private",
             "ClassName": "scroll-content",
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -30,7 +28,6 @@
                     "CanSearch": true,
                     "ClassName": "sticky",
                     "Events": "{\"dblclick\":\"Edit\"}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Pricing as ds where IsPublic = 0 and TypeId = 1\",\r\n    \"total\": \"select count(ds.Id) as total from Pricing as ds where IsPublic = 0 and TypeId = 1\"\r\n}",
                     "RefName": "Pricing",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
@@ -44,7 +41,6 @@
             "ComponentType": "Section",
             "Label": "Public",
             "ClassName": "scroll-content",
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -59,7 +55,6 @@
                     "Label": "BookingNew",
                     "ClassName": "sticky",
                     "Events": "{\"dblclick\":\"Edit\"}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Pricing as ds where IsPublic = 1 and TypeId = 1\",\r\n    \"total\": \"select count(ds.Id) as total from Pricing as ds where IsPublic = 1 and TypeId = 1\"\r\n}",
                     "RefName": "Pricing",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
@@ -75,7 +70,6 @@
             "Icon": "fal fa-border-all mr-1",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -90,7 +84,6 @@
                     "Label": "BookingALL",
                     "ClassName": "sticky",
                     "Events": "{\"dblclick\":\"Edit\"}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Pricing as ds where TypeId = 1\",\r\n    \"total\": \"select count(ds.Id) as total from Pricing as ds where TypeId = 1\"\r\n}",
                     "RefName": "Pricing",
                     "OrderBy": "ds.InsertedDate desc"
@@ -107,7 +100,6 @@
             "FormatData": "return (this.dayjs(this.Entity.FromDate) < this.dayjs() && (!this.Entity.ToDate || (this.Entity.ToDate &&  this.dayjs(this.Entity.ToDate ) > this.dayjs()))) ? \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'>Valid</span>\" : \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'>InValid</span>\";",
             "Label": "Status",
             "Width": "69px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "69px",
             "MaxWidth": "69px",
@@ -121,7 +113,6 @@
             "Row": 50,
             "Label": "<i class=\"fal fa-calendar-alt\"></i> Schedule",
             "Width": "259px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "259px",
             "MaxWidth": "259px",
@@ -136,7 +127,6 @@
             "Row": 50,
             "Label": "Valid From",
             "Width": "85px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "85px",
             "MaxWidth": "85px",
@@ -150,7 +140,6 @@
             "Row": 50,
             "Label": "Valid Until",
             "Width": "85px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "85px",
             "MaxWidth": "85px",
@@ -166,7 +155,6 @@
             "Row": 100,
             "Label": "Created on",
             "Width": "85px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [User] as ds where (TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 1)\"\r\n}",
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
@@ -185,7 +173,6 @@
             "Row": 100,
             "Label": "<i class=\"fas fa-map-marker-alt\"></i> VIA",
             "Width": "97px",
-            "Active": true,
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
@@ -203,7 +190,6 @@
             "Row": 100,
             "Label": "<i class=\"fas fa-map-marker-alt\"></i> PK Empty CTNR",
             "Width": "120px",
-            "Active": true,
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
@@ -222,7 +208,6 @@
             "Row": 100,
             "Label": "Carrier",
             "Width": "177px",
-            "Active": true,
             "RefName": "Partner",
             "FocusSearch": true,
             "MinWidth": "177px",
@@ -237,7 +222,6 @@
             "GroupFormat": ";",
             "Label": "20",
             "Width": "155px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "155px",
             "MaxWidth": "155px",
@@ -254,7 +238,6 @@
             "Row": 100,
             "Label": "Provider | Agent",
             "Width": "167px",
-            "Active": true,
             "RefName": "Partner",
             "FocusSearch": true,
             "MinWidth": "167px",
@@ -271,7 +254,6 @@
             "Row": 100,
             "Label": "<i class=\"fas fa-map-marker-alt\"></i> POL",
             "Width": "123px",
-            "Active": true,
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
@@ -288,7 +270,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Edit\"}",
             "Width": "34px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
@@ -304,7 +285,6 @@
             "Row": 100,
             "Label": "<i class=\"fas fa-map-marker-alt\"></i> Returns CTNR",
             "Width": "124px",
-            "Active": true,
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
@@ -322,7 +302,6 @@
             "Row": 100,
             "Label": "<i class=\"fas fa-map-marker-alt\"></i> POD",
             "Width": "103px",
-            "Active": true,
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
@@ -338,7 +317,6 @@
             "GroupFormat": ";",
             "Label": "40",
             "Width": "274px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "274px",
             "MaxWidth": "274px",
@@ -353,7 +331,6 @@
             "GroupFormat": ";",
             "Label": "Other",
             "Width": "192px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "192px",
             "MaxWidth": "192px",
@@ -371,8 +348,7 @@
             "Label": "Add",
             "Icon": "fal fa-plus",
             "ClassName": "btn",
-            "Events": "{\"click\":\"Add\"}",
-            "Active": true
+            "Events": "{\"click\":\"Add\"}"
         },
         {
             "Id": "005f1510-0000-0000-8001-fc8d3eec5f8a",
@@ -383,8 +359,7 @@
             "Label": "Add",
             "Icon": "fal fa-plus",
             "ClassName": "btn",
-            "Events": "{\"click\":\"Add\"}",
-            "Active": true
+            "Events": "{\"click\":\"Add\"}"
         },
         {
             "Id": "00e015b4-0000-0000-8000-e45fb37f32cf",
@@ -395,7 +370,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Edit\"}",
             "Width": "34px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
@@ -406,22 +380,19 @@
         {
             "Id": "10F1541B-4926-426A-AA9D-C90C06FF51FE",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "33468AF0-CE36-482D-B3B9-1F484E24C753",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "CanRead": true,
             "CanReadAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "65338E9A-AAB7-4002-B00E-D575BA842B0E",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "8BD70960-B587-4023-9D97-1434A79D0B16",
@@ -429,38 +400,32 @@
             "CanRead": true,
             "CanWrite": true,
             "CanDelete": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "961F4A1F-F686-4B8C-AB8C-877F33C3B604",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "B33666DE-7CF6-400D-A2F3-9CEAB93119F4",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "B86E9DC3-AB67-4CC3-A18C-853385AE1246",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "D847FF3B-C5CB-45CB-B7E3-5DDF9DC9B4A8",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "F65BAFE5-B984-4AE1-847B-7B3400F6D0DB",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "F6C5A195-D9F5-4FAD-99E0-58A1A373EC06",
@@ -471,8 +436,7 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

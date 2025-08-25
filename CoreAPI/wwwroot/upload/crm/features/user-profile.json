@@ -6,7 +6,6 @@
     "Icon": "fal fa-user",
     "IsPublic": true,
     "EntityId": "User",
-    "Active": true,
     "IgnoreEncode": true,
     "ComponentGroup": [
         {
@@ -14,46 +13,39 @@
             "FieldName": "Main",
             "Order": 1,
             "ComponentType": "Section",
-            "ClassName": "scroll-content",
-            "Active": true
+            "ClassName": "scroll-content"
         }
     ],
     "FeaturePolicies": [
         {
             "Id": "243F6399-4A96-4483-8C51-3652B33328E8",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "6753ED02-6CF2-45BB-96A1-7FED42C05DF6",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A3AE2195-1C59-49F7-8B39-B62A4633A9EE",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A7F83820-5068-49C0-BC6E-6BA92CDDC8B6",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "BF9373E0-AFA5-4703-9E84-A5BE30494AC4",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "C1E45BA4-4099-4713-9883-D93FEB8DF0DC",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "D6A6BA88-80D9-4904-AFC3-8F78C754C5C0",
@@ -64,26 +56,22 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "DCB0BD2D-C444-433C-82B8-010E939B5C2A",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "EC6006F0-5C57-41B6-B898-AC996C940A61",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "F01A4B5C-4839-48EF-9B07-65DCAF9AB0ED",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

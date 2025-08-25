@@ -5,72 +5,61 @@
     "Order": -1,
     "Icon": "fal fa-network-wired",
     "IsPublic": true,
-    "Active": true,
     "IgnoreEncode": true,
     "FeaturePolicies": [
         {
             "Id": "05880302-FE2C-4FB3-890D-52CF5C31E418",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "12CA6CBC-45A0-4ECE-B4CD-F9CF6553CB6B",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "3C0E4E5A-DF62-4FDA-BEBE-DDE0F548FA5F",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "6B86AFE7-18D7-4E41-91CD-6C87333F05E1",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "B25EB954-1E82-4F8A-A6E9-5524AA951EC0",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "B2A5D832-34AF-4D80-AF24-A8752C1EA17E",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
             "CanRead": true,
             "CanReadAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "BD5B5AC4-2F1F-4846-A6A1-40C5F453C962",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "CanRead": true,
             "CanReadAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "D108D8DE-D98A-421E-9933-FA27DCE804EB",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "DD1F2840-48C8-4C6A-A210-533A4334722F",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "F2144802-716C-47C6-B832-A11D4F17C0BB",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

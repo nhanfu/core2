@@ -6,7 +6,6 @@
     "Order": 7,
     "Icon": "fal fa-solar-system",
     "IsMenu": true,
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "00c0142c-0000-0000-8000-4cc126f6efc6",
@@ -14,7 +13,6 @@
             "Order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "00c01458-0000-0000-8000-2cce6e0b741c",
@@ -25,7 +23,6 @@
                     "Row": 50,
                     "CanSearch": true,
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "Active": true,
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from WebConfig as ds\",\r\n    \"total\": \"select count(ds.Id) as total from WebConfig as ds\"\r\n}",
                     "IsRealtime": true,
@@ -43,7 +40,6 @@
             "Order": 1,
             "ComponentType": "Input",
             "Width": "829px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "829px",
@@ -57,7 +53,6 @@
             "ComponentType": "Input",
             "Label": "Key",
             "Width": "165px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "165px",
             "MaxWidth": "165px",
@@ -68,50 +63,42 @@
         {
             "Id": "0162BBE3-1D09-406F-8E34-D3C7E5F57095",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "04AAC48B-6D7A-4A20-ABD4-0E7D92918606",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "314F8E3F-7D35-4D55-8928-52D8EC94FE84",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "413A1FBA-B2B2-4503-9C86-B697F2C03653",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "547A21D5-2E57-482C-8D0B-BB4F6A4AB5FB",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "9A4D8227-F878-46E5-B7E7-FEFB6FFFEDEE",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A3C4F41D-E1B1-4F34-A0F0-A2EDA23D9FA4",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "AC85087F-2459-4717-9538-8570D86C24D8",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "CF1C93D7-C12F-451D-80DE-A1CFCF3CDE95",
@@ -120,14 +107,12 @@
             "CanReadAll": true,
             "CanWrite": true,
             "CanWriteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "E222228A-E2DC-4E5C-AAA1-966A6B4DBAEA",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

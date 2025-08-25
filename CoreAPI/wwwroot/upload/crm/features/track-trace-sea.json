@@ -6,15 +6,13 @@
     "Style": "width: 1200px;",
     "Icon": "fal fa-file-search",
     "EntityId": "Shipment",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "01952760-fbd7-73a4-917e-725e4b23c00f",
             "Order": 1,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
-            "XxlCol": 12,
-            "Active": true
+            "XxlCol": 12
         },
         {
             "Id": "01952760-fd23-70c9-a76e-0276b5498d71",
@@ -22,7 +20,6 @@
             "Order": 2,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "01952760-fbd7-73a4-917e-725e4b23c00f"
         },
         {
@@ -33,7 +30,6 @@
             "Label": "Shipment Detail",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "01952760-fd23-70c9-a76e-0276b5498d71",
             "Components": [
                 {
@@ -47,7 +43,6 @@
                     "Label": "POL",
                     "ShowLabel": true,
                     "Icon": "fal fa-anchor",
-                    "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
@@ -60,7 +55,6 @@
                     "Row": 50,
                     "Label": "Port of Transit",
                     "ShowLabel": true,
-                    "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
@@ -75,7 +69,6 @@
                     "ShowLabel": true,
                     "Icon": "far fa-anchor",
                     "Width": "50",
-                    "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
                     "MinWidth": "50"
                 },
@@ -89,7 +82,6 @@
                     "Row": 50,
                     "Label": "ETD",
                     "ShowLabel": true,
-                    "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
@@ -102,7 +94,6 @@
                     "Row": 50,
                     "Label": "ETA/ETD",
                     "ShowLabel": true,
-                    "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
@@ -115,7 +106,6 @@
                     "Row": 50,
                     "Label": "ETA",
                     "ShowLabel": true,
-                    "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
@@ -128,7 +118,6 @@
                     "Row": 50,
                     "Label": "Pick up place/ Place of receipt",
                     "ShowLabel": true,
-                    "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
@@ -139,7 +128,6 @@
                     "Column": 4,
                     "Row": 50,
                     "ShowLabel": true,
-                    "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
@@ -152,7 +140,6 @@
                     "Row": 50,
                     "Label": "Final destination/ Place of delivery",
                     "ShowLabel": true,
-                    "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
@@ -165,7 +152,6 @@
                     "Row": 50,
                     "Label": "Term Of Delivery",
                     "ShowLabel": true,
-                    "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
@@ -178,7 +164,6 @@
                     "Row": 50,
                     "Label": "Number of pieces",
                     "ShowLabel": true,
-                    "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
@@ -191,7 +176,6 @@
                     "Row": 50,
                     "Label": "Measuament",
                     "ShowLabel": true,
-                    "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
@@ -202,7 +186,6 @@
                     "Column": 4,
                     "Row": 50,
                     "ShowLabel": true,
-                    "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
@@ -215,7 +198,6 @@
                     "Row": 50,
                     "Label": "Commodity",
                     "ShowLabel": true,
-                    "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
@@ -228,7 +210,6 @@
                     "Row": 50,
                     "Label": "Total Weight",
                     "ShowLabel": true,
-                    "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 }
             ]
@@ -241,7 +222,6 @@
             "Label": "Vessel",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "01952760-fd23-70c9-a76e-0276b5498d71",
             "Components": [
                 {
@@ -254,7 +234,6 @@
                     "Row": 50,
                     "Label": "Name",
                     "ShowLabel": true,
-                    "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
@@ -267,7 +246,6 @@
                     "Row": 50,
                     "Label": "Voyage",
                     "ShowLabel": true,
-                    "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
@@ -280,7 +258,6 @@
                     "Row": 50,
                     "Label": "Port of Load",
                     "ShowLabel": true,
-                    "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
@@ -293,7 +270,6 @@
                     "Row": 50,
                     "Label": "Port of Discharge",
                     "ShowLabel": true,
-                    "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 }
             ]
@@ -306,7 +282,6 @@
             "Label": "Container/Seal",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "01952760-fd23-70c9-a76e-0276b5498d71",
             "Components": [
                 {
@@ -318,7 +293,6 @@
                     "Label": "Quantiy of Container",
                     "ShowLabel": true,
                     "Disabled": true,
-                    "Active": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
@@ -332,7 +306,6 @@
                     "Label": "Container List",
                     "ClassName": "sticky",
                     "ChildStyle": "height: 200px;",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from EntityContainer as ds where EntityId = '{EntityId}'\",\r\n    \"total\": \"select count(ds.Id) as total from EntityContainer as ds where EntityId = '{EntityId}'\"\r\n}",
                     "RefName": "EntityContainer",
                     "PreQuery": "{\r\n    \"EntityId\": this.EditForm.Entity.Id\r\n}"
@@ -347,7 +320,6 @@
             "Label": "Shipment Status History",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "01952760-fd23-70c9-a76e-0276b5498d71",
             "Components": [
                 {
@@ -359,7 +331,6 @@
                     "Row": 200,
                     "CanCache": true,
                     "Label": "Shipment Status History",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentTask as ds where ShipmentId = '{ShipmentId}' and IsFinish = 1 and IsTracing = 1\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentTask as ds where ShipmentId = '{ShipmentId}' and IsFinish = 1 and IsTracing = 1\"\r\n}",
                     "RefName": "ShipmentTask",
                     "PreQuery": "{\r\n    \"ShipmentId\": this.EditForm.Entity.Id\r\n}"
@@ -374,7 +345,6 @@
             "Label": "Contact Information",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "01952760-fd23-70c9-a76e-0276b5498d71",
             "Components": [
                 {
@@ -387,7 +357,6 @@
                     "Row": 50,
                     "Label": "Department",
                     "ShowLabel": true,
-                    "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
@@ -400,7 +369,6 @@
                     "Row": 50,
                     "Label": "Tel",
                     "ShowLabel": true,
-                    "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
@@ -414,7 +382,6 @@
                     "Row": 50,
                     "Label": "Name",
                     "ShowLabel": true,
-                    "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
@@ -427,7 +394,6 @@
                     "Row": 50,
                     "Label": "Email",
                     "ShowLabel": true,
-                    "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 }
             ]
@@ -443,7 +409,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Edit\"}",
             "Width": "56px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "56px",
             "MaxWidth": "56px",
@@ -459,7 +424,6 @@
             "Row": 100,
             "Label": "Customer",
             "Width": "245px",
-            "Active": true,
             "RefName": "Partner",
             "FocusSearch": true,
             "ShowHotKey": true,
@@ -477,7 +441,6 @@
             "Row": 100,
             "Label": "Progress",
             "Width": "175px",
-            "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"To Do\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #95a5a6; display: inline-block;'> <i class='fal fa-clipboard-list mr-1'></i> To Do</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"In Progress\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #3498db; display: inline-block;'><i class='fal fa-spinner fa-spin mr-1'></i> In Progress</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Complete\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #28a745; display: inline-block;'><i class='fal fa-check-circle mr-1'></i> Complete</span>\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Decline\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #e74c3c; display: inline-block;'><i class='fal fa-times-circle mr-1'></i> Cancel</span>\"\r\n    }\r\n]",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
@@ -496,7 +459,6 @@
             "Row": 100,
             "Label": "<i class=\"fas fa-map-marker-alt\"></i> POL",
             "Width": "176px",
-            "Active": true,
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
@@ -514,7 +476,6 @@
             "Row": 100,
             "Label": "<i class=\"fas fa-map-marker-alt\"></i> POD",
             "Width": "243px",
-            "Active": true,
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
@@ -529,7 +490,6 @@
             "ComponentType": "Input",
             "Label": "ID Booking Note",
             "Width": "162px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "162px",
             "MaxWidth": "162px",
@@ -544,7 +504,6 @@
             "Label": "Q'ty",
             "Width": "49px",
             "DefaultVal": "1",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "49px",
             "MaxWidth": "49px",
@@ -561,7 +520,6 @@
             "Row": 100,
             "Label": "Size",
             "Width": "103px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Container Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Container Type'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -579,7 +537,6 @@
             "Label": "Container No",
             "Validation": "[\r\n    {\r\n        \"Rule\": \"regEx\",\r\n        \"Value1\": \"^[A-Z]{3}[JUZ][0-9]{7}$\"\r\n    }\r\n]",
             "Width": "105px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "105px",
             "MaxWidth": "105px",
@@ -594,7 +551,6 @@
             "Precision": 3,
             "Label": "Seal No",
             "Width": "84px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "84px",
             "MaxWidth": "84px",
@@ -609,7 +565,6 @@
             "Precision": 3,
             "Label": "PKG",
             "Width": "54px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "54px",
             "MaxWidth": "54px",
@@ -626,7 +581,6 @@
             "Row": 100,
             "Label": "Unit",
             "Width": "102px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Unit Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Unit Type'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
@@ -642,7 +596,6 @@
             "Precision": 3,
             "Label": "Weight",
             "Width": "80px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "80px",
             "MaxWidth": "80px",
@@ -657,7 +610,6 @@
             "Precision": 2,
             "Label": "Measurement",
             "Width": "87px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "87px",
             "MaxWidth": "87px",
@@ -672,7 +624,6 @@
             "Precision": 3,
             "Label": "Tare",
             "Width": "67px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "67px",
             "MaxWidth": "67px",
@@ -687,7 +638,6 @@
             "Precision": 3,
             "Label": "Description",
             "Width": "318px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "318px",
             "MaxWidth": "318px",
@@ -702,7 +652,6 @@
             "Precision": 3,
             "Label": "Event",
             "Width": "119px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "119px",
             "MaxWidth": "119px",
@@ -717,7 +666,6 @@
             "Precision": 2,
             "Label": "Date",
             "Width": "136px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "136px",
             "MaxWidth": "136px",
@@ -731,7 +679,6 @@
             "Precision": 3,
             "Label": "Comment",
             "Width": "384px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "384px",
             "MaxWidth": "384px",
@@ -745,7 +692,6 @@
             "ComponentType": "Input",
             "Label": "HBL No",
             "Width": "123px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "123px",
             "MaxWidth": "123px",
@@ -763,7 +709,6 @@
             "ShowLabel": true,
             "Events": "{\r\n    \"change\": \"CalcTotalParent\"\r\n}",
             "Width": "78px",
-            "Active": true,
             "MinWidth": "78px",
             "MaxWidth": "78px",
             "EntityId": "Shipment1",
@@ -783,7 +728,6 @@
             "ShowLabel": true,
             "Events": "{\r\n    \"change\": \"CalcTotalParent\"\r\n}",
             "Width": "88px",
-            "Active": true,
             "MinWidth": "88px",
             "MaxWidth": "88px",
             "EntityId": "Shipment1",
@@ -803,7 +747,6 @@
             "ShowLabel": true,
             "Events": "{\r\n    \"change\": \"CalcTotalParent\"\r\n}",
             "Width": "101px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "101px",
             "MaxWidth": "101px",
@@ -822,7 +765,6 @@
             "Label": "Quantiy of Container",
             "ShowLabel": true,
             "Width": "159px",
-            "Active": true,
             "MinWidth": "159px",
             "MaxWidth": "159px",
             "EntityId": "Shipment1",
@@ -838,7 +780,6 @@
             "Label": "Booking No",
             "ShowLabel": true,
             "Width": "120px",
-            "Active": true,
             "MinWidth": "120px",
             "MaxWidth": "120px",
             "EntityId": "Shipment1",
@@ -854,7 +795,6 @@
             "Label": "ETD",
             "ShowLabel": true,
             "Width": "101px",
-            "Active": true,
             "MinWidth": "101px",
             "MaxWidth": "101px",
             "EntityId": "Shipment1",
@@ -871,7 +811,6 @@
             "Row": 100,
             "Label": "P/AOL",
             "Width": "173px",
-            "Active": true,
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
@@ -886,7 +825,6 @@
             "ComponentType": "Datepicker",
             "Label": "ETD",
             "Width": "108px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "108px",
             "MaxWidth": "108px",
@@ -902,7 +840,6 @@
             "Row": 100,
             "Label": "P/AOD",
             "Width": "193px",
-            "Active": true,
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
@@ -919,7 +856,6 @@
             "Row": 100,
             "Label": "Service",
             "Width": "154px",
-            "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Air Export\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-plane-departure mr-1'></i>Air Export</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"Air Import\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-plane-arrival mr-1'></i>Air Import</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Sea Export FCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-ship mr-1'></i>Sea Export FCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Sea Import FCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-shipping-fast mr-1'></i>Sea Import FCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"Sea Export LCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fas fa-boxes mr-1'></i>Sea Export LCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 6,\r\n        \"Name\": \"Sea Import LCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fas fa-dolly mr-1'></i>Sea Import LCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 16,\r\n        \"Name\": \"Import Consol\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #17a2b8;'><i class='fas fa-warehouse mr-1'></i>Import Consol</span>\"\r\n    },\r\n    {\r\n        \"Id\": 17,\r\n        \"Name\": \"Export Consol\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #343a40;'><i class='fas fa-plane-departure mr-1'></i>Export Consol</span>\"\r\n    }\r\n]\r\n",
             "FocusSearch": true,
             "MinWidth": "154px",
@@ -935,7 +871,6 @@
             "ClassName": "btn",
             "Events": "{\r\n    \"click\": \"EditHbl\"\r\n}",
             "Width": "34px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
@@ -953,7 +888,6 @@
             "Label": "Search",
             "ClassName": "btn btn-sm primary",
             "Events": "{\r\n    \"click\": \"Search\"\r\n}",
-            "Active": true,
             "Query": "select Shipment.Id as Id,\r\npol.Name as polName,\r\npod.Name as podName,\r\npt.Name as ptName,\r\n(select top 1 concat(format(EtaTsDate,'yyyy-MM-dd'),'/',format(EtdTsDate,'yyyy-MM-dd')) from EntityTransit where EntityId = Shipment.ParentId and PortTransitId = Shipment.PortTransitId) as etaTsDate\r\nfrom Shipment\r\nleft join Terminal pol on Shipment.POLId = pol.Id\r\nleft join Terminal pod on Shipment.PODId = pod.Id\r\nleft join Terminal pt on Shipment.PortTransitId = pt.Id\r\nwhere (Shipment.HblNo = '{SearchNo}' or Shipment.BookingNo = '{SearchNo}') and Shipment.CustomerId = '{TokenUserId}'",
             "PreQuery": "{\r\n    \"SearchNo\" : this.Entity.SearchNo\r\n}",
             "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
@@ -967,7 +901,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Edit\"}",
             "Width": "56px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "56px",
             "MaxWidth": "56px",
@@ -982,7 +915,6 @@
             "ClassName": "btn",
             "Events": "{\r\n    \"click\": \"EditHbl\"\r\n}",
             "Width": "34px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
@@ -993,68 +925,58 @@
         {
             "Id": "12319FEE-5A41-4FAC-8056-7746E11BA0A0",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "2199BC39-1BCE-4DFA-B11F-5E327D1F6187",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "30E74670-FAB0-4CDD-A8BA-229401DFD00F",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "38A9EECE-CBA5-4797-860D-BFD321D164BB",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "CanRead": true,
             "CanReadAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "4BFD7F77-CA05-4B52-8EE8-A769AC9C6974",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "620BFCD1-92EA-458A-B4A1-C7DBFF078254",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "916FF829-8AAA-4CB1-8C46-39EFF57A354A",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
             "CanRead": true,
             "CanReadAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "B0378DFA-409D-4B23-BFE2-E4870731E790",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "C3FFE877-9ECF-41BF-9B8F-49649BB18327",
             "RoleId": "CUSTOMER",
             "CanRead": true,
             "CanReadAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "E03B6655-AD18-4AC3-B0DA-3113746F0282",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

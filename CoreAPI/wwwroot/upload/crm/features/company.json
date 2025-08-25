@@ -8,7 +8,6 @@
     "Icon": "fal fa-building",
     "IsMenu": true,
     "EntityId": "User",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "007b3614-0000-0000-8000-a0ce7dabbc84",
@@ -16,7 +15,6 @@
             "Order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "007b3620-0000-0000-8000-141120505fec",
@@ -28,7 +26,6 @@
                     "CanSearch": true,
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Events": "{\r\n    \"dblclick\": \"EditCompany\"\r\n}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from [Partner] as ds where ServiceId = 5\",\r\n    \"total\": \"select count(ds.Id) as total from [Partner] as ds where ServiceId = 5\"\r\n}",
                     "RefName": "Partner",
                     "OrderBy": "ds.InsertedDate desc"
@@ -44,7 +41,6 @@
             "ComponentType": "Input",
             "Label": "Abbreviation",
             "Width": "356px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "356px",
             "MaxWidth": "356px",
@@ -59,7 +55,6 @@
             "ClassName": "btn",
             "Events": "{\r\n    \"click\": \"EditCompany\"\r\n}",
             "Width": "65px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "65px",
             "MaxWidth": "65px",
@@ -72,7 +67,6 @@
             "ComponentType": "Input",
             "Label": "Address",
             "Width": "620px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "620px",
             "MaxWidth": "620px",
@@ -85,7 +79,6 @@
             "ComponentType": "Input",
             "Label": "Company Name",
             "Width": "328px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "328px",
             "MaxWidth": "328px",
@@ -98,7 +91,6 @@
             "ComponentType": "Input",
             "Label": "Phone Number",
             "Width": "153px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "153px",
             "MaxWidth": "153px",
@@ -115,7 +107,6 @@
             "ClassName": "btn",
             "Events": "{\r\n    \"click\": \"EditCompany\"\r\n}",
             "Width": "65px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "65px",
             "MaxWidth": "65px",
@@ -126,50 +117,42 @@
         {
             "Id": "0104B182-5E4D-469A-833D-EB943C9216F4",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "0F0D870F-B668-45E8-B0B5-E1346DF19C5B",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "4BB18886-7772-4167-99FE-5E408A9D07DB",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "6BB649F5-E5E1-49F0-9E58-27FE825E3B92",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "6E21F307-D717-4047-923B-AD368330B6E0",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "9045247E-FDA6-476F-BFD0-3D033942AA6E",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "9EDDF30B-A8C0-402B-98C5-887B5F0D4BE0",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "B5C51697-B5FC-4659-9DC7-ADC88ED152B4",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "BB1D01C7-3D89-4E33-AA47-E9844AD5FA5A",
@@ -178,14 +161,12 @@
             "CanReadAll": true,
             "CanWrite": true,
             "CanWriteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "E0486557-DE14-40D2-91D8-C0BF4CEE4321",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

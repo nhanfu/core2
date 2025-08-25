@@ -7,7 +7,6 @@
     "Script": "return {\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"table-editor\", entity);\r\n    }\r\n}",
     "Icon": "fal fa-table",
     "IsMenu": true,
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "00b31914-0000-0000-8000-40990ace143f",
@@ -16,7 +15,6 @@
             "ComponentType": "Section",
             "Label": "WebConfig",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "Components": [
                 {
@@ -28,7 +26,6 @@
                     "Row": 50,
                     "CanSearch": true,
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "Active": true,
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from TableName as ds\",\r\n    \"total\": \"select count(ds.Id) as total from TableName as ds\"\r\n}",
                     "IsRealtime": true,
@@ -45,7 +42,6 @@
             "ComponentType": "Section",
             "Label": "Table",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "Components": [
                 {
@@ -58,7 +54,6 @@
                     "CanSearch": true,
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"SELECT * FROM INFORMATION_SCHEMA.TABLES as ds WHERE TABLE_TYPE = 'BASE TABLE'\",\r\n    \"total\": \"SELECT count(*) as total FROM INFORMATION_SCHEMA.TABLES as ds WHERE TABLE_TYPE = 'BASE TABLE'\"\r\n}",
                     "RefName": "TABLES",
                     "TopEmpty": true,
@@ -75,7 +70,6 @@
             "ComponentType": "Input",
             "Label": "Duplicate",
             "Width": "180px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "180px",
@@ -89,7 +83,6 @@
             "ComponentType": "Input",
             "Label": "Name",
             "Width": "165px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "165px",
@@ -103,7 +96,6 @@
             "ComponentType": "Input",
             "Label": "Message",
             "Width": "774px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "774px",
@@ -117,7 +109,6 @@
             "ComponentType": "Input",
             "Label": "Table Trigger",
             "Width": "651px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "651px",
@@ -131,7 +122,6 @@
             "ComponentType": "Input",
             "Label": "TABLE_NAME",
             "Width": "165px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "165px",
             "MaxWidth": "165px",
@@ -144,7 +134,6 @@
             "ComponentType": "Input",
             "Label": "TABLE_SCHEMA",
             "Width": "165px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "165px",
             "MaxWidth": "165px",
@@ -159,20 +148,17 @@
             "CanReadAll": true,
             "CanWrite": true,
             "CanWriteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "3B93C078-AB4B-49EF-9682-5891DBBD1CA8",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "53C7DAFE-EC22-463D-A3B6-3F7B42054629",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "5ED7D06D-6E59-44A2-8C98-FD390D7BB7F5",
@@ -181,44 +167,37 @@
             "CanReadAll": true,
             "CanWrite": true,
             "CanWriteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "7A430A96-2A48-4238-A4C6-0AED1E232CA9",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "85CD9524-53A2-48C4-8DB1-1C038B923EA3",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A23B3D13-62B8-419B-822F-6BDC5176F1AC",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "CB4DA3D1-7DAB-4A47-A207-3FC9598BF422",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "FD63230D-C80F-42F5-81CC-867113F40220",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "FDB067EE-7D45-4598-AE67-BF93D220F6EC",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

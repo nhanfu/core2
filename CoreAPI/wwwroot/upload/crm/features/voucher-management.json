@@ -8,7 +8,6 @@
     "Icon": "fas fa-receipt",
     "IsMenu": true,
     "EntityId": "Voucher",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "0194a015-89a9-70eb-95e4-d863aaad2aa0",
@@ -19,7 +18,6 @@
             "Icon": "fal fa-border-all mr-1",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "TabGroup": "A",
             "DisplayBadge": true,
@@ -35,7 +33,6 @@
                     "Label": "Voucher",
                     "ClassName": "sticky",
                     "Events": "{\r\n    \"dblclick\": \"EditVoucher3\"\r\n}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where (ds.TypeId in (3,4))\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where (ds.TypeId in (3,4))\"\r\n}",
                     "RefName": "Voucher",
                     "OrderBy": "ds.InsertedDate desc"
@@ -50,7 +47,6 @@
             "Icon": "fal fa-border-all mr-1",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "TabGroup": "A",
             "DisplayBadge": true,
@@ -66,7 +62,6 @@
                     "Label": "Voucher",
                     "ClassName": "sticky",
                     "Events": "{\r\n    \"dblclick\": \"EditVoucher4\"\r\n}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where (ds.TypeId in (5,6))\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where (ds.TypeId in (5,6))\"\r\n}",
                     "RefName": "Voucher",
                     "OrderBy": "ds.InsertedDate desc"
@@ -96,7 +91,6 @@
                     "Label": "Voucher",
                     "ClassName": "sticky",
                     "Events": "{\r\n    \"dblclick\": \"EditSOA\"\r\n}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where (ds.TypeId = 7)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where (ds.TypeId = 7)\"\r\n}",
                     "RefName": "Voucher",
                     "OrderBy": "ds.InsertedDate desc"
@@ -115,7 +109,6 @@
             "Row": 100,
             "Label": "Create On",
             "Width": "92px",
-            "Active": true,
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
@@ -131,7 +124,6 @@
             "ComponentType": "Datepicker",
             "Label": "Voucher Date",
             "Width": "108px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "108px",
             "MaxWidth": "108px",
@@ -147,7 +139,6 @@
             "Row": 100,
             "Label": "Status",
             "Width": "99px",
-            "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fas fa-check-circle mr-1'></i>Active</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-ban mr-1'></i>Void</span>\"\r\n    }\r\n]",
             "FocusSearch": true,
             "MinWidth": "99px",
@@ -161,7 +152,6 @@
             "ComponentType": "Input",
             "Label": "Voucher No.",
             "Width": "130px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "130px",
             "MaxWidth": "130px",
@@ -177,7 +167,6 @@
             "Row": 100,
             "Label": "Company Name",
             "Width": "144px",
-            "Active": true,
             "RefName": "Partner",
             "FocusSearch": true,
             "MinWidth": "144px",
@@ -193,7 +182,6 @@
             "ClassName": "btn",
             "Events": "{\r\n    \"click\": \"EditVoucher3\"\r\n}",
             "Width": "38px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "38px",
             "MaxWidth": "38px",
@@ -209,7 +197,6 @@
             "Label": "Post Date",
             "ShowLabel": true,
             "Width": "95px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "95px",
             "MaxWidth": "95px",
@@ -223,7 +210,6 @@
             "Row": 50,
             "Label": "Paid",
             "Width": "111px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "111px",
             "MaxWidth": "111px",
@@ -239,7 +225,6 @@
             "Precision": 7,
             "Label": "Voucher Type",
             "Width": "124px",
-            "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Revenue Entry\",\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Cost Entry\",\r\n    }\r\n]\r\n",
             "FocusSearch": true,
             "MinWidth": "124px",
@@ -254,7 +239,6 @@
             "ComponentType": "Number",
             "Label": "Amount",
             "Width": "130px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "130px",
             "MaxWidth": "130px",
@@ -268,7 +252,6 @@
             "Row": 50,
             "Label": "Invoice Date",
             "Width": "124px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "124px",
             "MaxWidth": "124px",
@@ -283,7 +266,6 @@
             "ClassName": "btn",
             "Events": "{\r\n    \"click\": \"EditVoucher4\"\r\n}",
             "Width": "34px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
@@ -296,7 +278,6 @@
             "ComponentType": "Input",
             "Label": "Voucher No.",
             "Width": "130px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "130px",
             "MaxWidth": "130px",
@@ -312,7 +293,6 @@
             "Precision": 7,
             "Label": "Voucher Type",
             "Width": "124px",
-            "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Revenue Entry\",\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Cost Entry\",\r\n    }\r\n]\r\n",
             "FocusSearch": true,
             "MinWidth": "124px",
@@ -330,7 +310,6 @@
             "Row": 100,
             "Label": "Company Name",
             "Width": "261px",
-            "Active": true,
             "RefName": "Partner",
             "FocusSearch": true,
             "MinWidth": "261px",
@@ -347,7 +326,6 @@
             "Label": "Post Date",
             "ShowLabel": true,
             "Width": "95px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "95px",
             "MaxWidth": "95px",
@@ -361,7 +339,6 @@
             "Row": 50,
             "Label": "Invoice Date",
             "Width": "124px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "124px",
             "MaxWidth": "124px",
@@ -374,7 +351,6 @@
             "ComponentType": "Datepicker",
             "Label": "Voucher Date",
             "Width": "108px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "108px",
             "MaxWidth": "108px",
@@ -387,7 +363,6 @@
             "ComponentType": "Number",
             "Label": "Amount",
             "Width": "130px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "130px",
             "MaxWidth": "130px",
@@ -403,7 +378,6 @@
             "Row": 100,
             "Label": "Status",
             "Width": "113px",
-            "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fas fa-check-circle mr-1'></i>Active</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-ban mr-1'></i>Void</span>\"\r\n    }\r\n]",
             "FocusSearch": true,
             "MinWidth": "113px",
@@ -420,7 +394,6 @@
             "Row": 100,
             "Label": "Create On",
             "Width": "159px",
-            "Active": true,
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
@@ -438,7 +411,6 @@
             "ClassName": "btn",
             "Events": "{\r\n    \"click\": \"EditVoucher3\"\r\n}",
             "Width": "34px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
@@ -451,7 +423,6 @@
             "ComponentType": "Input",
             "Label": "Voucher No.",
             "Width": "130px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "130px",
             "MaxWidth": "130px",
@@ -467,7 +438,6 @@
             "Precision": 7,
             "Label": "Voucher Type",
             "Width": "124px",
-            "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Revenue Entry\",\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Cost Entry\",\r\n    }\r\n]\r\n",
             "FocusSearch": true,
             "MinWidth": "124px",
@@ -485,7 +455,6 @@
             "Row": 100,
             "Label": "Company Name",
             "Width": "144px",
-            "Active": true,
             "RefName": "Partner",
             "FocusSearch": true,
             "MinWidth": "144px",
@@ -502,7 +471,6 @@
             "Label": "Post Date",
             "ShowLabel": true,
             "Width": "95px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "95px",
             "MaxWidth": "95px",
@@ -516,7 +484,6 @@
             "Row": 50,
             "Label": "Paid",
             "Width": "124px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "124px",
             "MaxWidth": "124px",
@@ -530,7 +497,6 @@
             "Row": 50,
             "Label": "Invoice Date",
             "Width": "124px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "124px",
             "MaxWidth": "124px",
@@ -543,7 +509,6 @@
             "ComponentType": "Datepicker",
             "Label": "Voucher Date",
             "Width": "108px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "108px",
             "MaxWidth": "108px",
@@ -556,7 +521,6 @@
             "ComponentType": "Number",
             "Label": "Amount",
             "Width": "130px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "130px",
             "MaxWidth": "130px",
@@ -572,7 +536,6 @@
             "Row": 100,
             "Label": "Status",
             "Width": "113px",
-            "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fas fa-check-circle mr-1'></i>Active</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-ban mr-1'></i>Void</span>\"\r\n    }\r\n]",
             "FocusSearch": true,
             "MinWidth": "113px",
@@ -589,7 +552,6 @@
             "Row": 100,
             "Label": "Create On",
             "Width": "159px",
-            "Active": true,
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
@@ -609,7 +571,6 @@
             "ClassName": "btn",
             "Events": "{\r\n    \"click\": \"EditVoucher3\"\r\n}",
             "Width": "38px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "38px",
             "MaxWidth": "38px",
@@ -624,8 +585,7 @@
             "Label": "Add",
             "Icon": "fal fa-plus",
             "ClassName": "btn",
-            "Events": "{\r\n    \"click\": \"AddVoucher3\"\r\n}",
-            "Active": true
+            "Events": "{\r\n    \"click\": \"AddVoucher3\"\r\n}"
         },
         {
             "Id": "0194a028-a1db-7308-80d8-7ef66421406c",
@@ -636,8 +596,7 @@
             "Label": "Add",
             "Icon": "fal fa-plus",
             "ClassName": "btn",
-            "Events": "{\r\n    \"click\": \"AddVoucher4\"\r\n}",
-            "Active": true
+            "Events": "{\r\n    \"click\": \"AddVoucher4\"\r\n}"
         },
         {
             "Id": "0194a028-b18c-7583-8d11-1ea2128d8482",
@@ -648,8 +607,7 @@
             "Label": "Add",
             "Icon": "fal fa-plus",
             "ClassName": "btn",
-            "Events": "{\r\n    \"click\": \"AddSOA\"\r\n}",
-            "Active": true
+            "Events": "{\r\n    \"click\": \"AddSOA\"\r\n}"
         },
         {
             "Id": "0194ea3f-ab5c-75a8-9d92-eacafd414eae",
@@ -660,7 +618,6 @@
             "ClassName": "btn",
             "Events": "{\r\n    \"click\": \"EditVoucher4\"\r\n}",
             "Width": "34px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
@@ -675,7 +632,6 @@
             "ClassName": "btn",
             "Events": "{\r\n    \"click\": \"EditVoucher3\"\r\n}",
             "Width": "34px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
@@ -686,26 +642,22 @@
         {
             "Id": "12381421-4D46-4EE4-899D-B009DA0AC722",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "3DDD31C3-4DCB-4D32-A6E7-A749EE89EED7",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "46202EF8-E66A-4D4C-9CD3-29639F739BAA",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "7B73F95B-0F07-40C2-A0AF-18B9E4E858C8",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "9549BB22-9D5E-42D6-93AB-D1003D8EF5E1",
@@ -715,28 +667,24 @@
             "CanWrite": true,
             "CanWriteAll": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "9F6F1F47-66FB-4287-AA2D-4CB59E635ED1",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A115767C-731F-4740-B77C-03E153B29636",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A4BAF99B-EB5E-4AEE-907E-2BA3B7BE7069",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "CanRead": true,
             "CanWrite": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "B2A70E45-3344-4C98-B93F-9745AC6347F3",
@@ -745,14 +693,12 @@
             "CanReadAll": true,
             "CanWrite": true,
             "CanWriteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "D7FA86AF-FE21-46EA-B8B6-BE1493FAF8B8",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

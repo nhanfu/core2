@@ -8,7 +8,6 @@
     "Icon": "fal fa-shipping-fast",
     "IsMenu": true,
     "EntityId": "Booking",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "00ed153c-0000-0000-8000-803d5edb2375",
@@ -18,7 +17,6 @@
             "Icon": "fal fa-border-all mr-1",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -33,7 +31,6 @@
                     "Label": "BookingALL",
                     "ClassName": "sticky",
                     "Events": "{\"dblclick\":\"Edit\"}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Booking as ds where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ReceiverIds like '%{TokenUserId}%' and ds.StatusId = 3) or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and TypeId = 9)\",\r\n    \"total\": \"select count(ds.Id) as total from Booking as ds  where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ReceiverIds like '%{TokenUserId}%' and ds.StatusId = 3) or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and TypeId = 9)\"\r\n}",
                     "RefName": "Booking",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
@@ -48,7 +45,6 @@
             "Label": "Approving",
             "Icon": "fal fa-ellipsis-h mr-1",
             "ClassName": "scroll-content",
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -62,7 +58,6 @@
                     "CanSearch": true,
                     "ClassName": "sticky",
                     "Events": "{\"dblclick\":\"Edit\"}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Booking as ds where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ReceiverIds like '%{TokenUserId}%' and ds.StatusId = 3) or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 2  and TypeId = 9)\",\r\n    \"total\": \"select count(ds.Id) as total from Booking as ds  where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ReceiverIds like '%{TokenUserId}%' and ds.StatusId = 3) or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 2  and TypeId = 9)\"\r\n}",
                     "RefName": "Booking",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
@@ -77,7 +72,6 @@
             "Label": "Approved",
             "Icon": "fal fa-smile mr-1",
             "ClassName": "scroll-content",
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -91,7 +85,6 @@
                     "CanSearch": true,
                     "ClassName": "sticky",
                     "Events": "{\"dblclick\":\"Edit\"}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Booking as ds where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ReceiverIds like '%{TokenUserId}%' and ds.StatusId = 3) or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 3  and TypeId = 9)\",\r\n    \"total\": \"select count(ds.Id) as total from Booking as ds  where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ReceiverIds like '%{TokenUserId}%' and ds.StatusId = 3) or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 3  and TypeId = 9)\"\r\n}",
                     "RefName": "Booking",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
@@ -106,7 +99,6 @@
             "Label": "New",
             "Icon": "fal fa-plus mr-1",
             "ClassName": "scroll-content",
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -121,7 +113,6 @@
                     "Label": "BookingNew",
                     "ClassName": "sticky",
                     "Events": "{\"dblclick\":\"Edit\"}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Booking as ds where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ReceiverIds like '%{TokenUserId}%' and ds.StatusId = 3) or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 1  and TypeId = 9)\",\r\n    \"total\": \"select count(ds.Id) as total from Booking as ds  where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ReceiverIds like '%{TokenUserId}%' and ds.StatusId = 3) or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 1  and TypeId = 9)\"\r\n}",
                     "RefName": "Booking",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
@@ -136,7 +127,6 @@
             "Label": "Decline",
             "Icon": "fal fa-frown mr-1",
             "ClassName": "scroll-content",
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -150,7 +140,6 @@
                     "CanSearch": true,
                     "ClassName": "sticky",
                     "Events": "{\"dblclick\":\"Edit\"}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Booking as ds where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ReceiverIds like '%{TokenUserId}%' and ds.StatusId = 3) or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 4  and TypeId = 9)\",\r\n    \"total\": \"select count(ds.Id) as total from Booking as ds  where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ReceiverIds like '%{TokenUserId}%' and ds.StatusId = 3) or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 4  and TypeId = 9)\"\r\n}",
                     "RefName": "Booking",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
@@ -170,7 +159,6 @@
             "Row": 100,
             "Label": "Create On",
             "Width": "72px",
-            "Active": true,
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
@@ -189,7 +177,6 @@
             "Row": 100,
             "Label": "Service",
             "Width": "123px",
-            "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 9,\r\n        \"Name\": \"Logistics\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-box mr-1'></i>Logistics</span>\"\r\n    },\r\n    {\r\n        \"Id\": 14,\r\n        \"Name\": \"Other Logistics\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fas fa-cogs mr-1'></i>Other Logistics</span>\"\r\n    }\r\n]",
             "FocusSearch": true,
             "MinWidth": "123px",
@@ -203,7 +190,6 @@
             "ComponentType": "Input",
             "Label": "Ref No",
             "Width": "130px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "130px",
             "MaxWidth": "130px",
@@ -219,7 +205,6 @@
             "Row": 100,
             "Label": "POD",
             "Width": "90px",
-            "Active": true,
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
@@ -234,7 +219,6 @@
             "ComponentType": "Datepicker",
             "Label": "Booking Date",
             "Width": "108px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "108px",
             "MaxWidth": "108px",
@@ -247,7 +231,6 @@
             "ComponentType": "Number",
             "Label": "Quantity",
             "Width": "98px",
-            "Active": true,
             "FocusSearch": true,
             "HasFilter": true,
             "MinWidth": "98px",
@@ -261,7 +244,6 @@
             "ComponentType": "Datepicker",
             "Label": "<i class=\"far fa-calendar-alt\"></i> Date Create",
             "Width": "108px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "108px",
             "MaxWidth": "108px",
@@ -277,7 +259,6 @@
             "Row": 100,
             "Label": "Vendor",
             "Width": "144px",
-            "Active": true,
             "RefName": "Partner",
             "FocusSearch": true,
             "MinWidth": "144px",
@@ -294,7 +275,6 @@
             "Row": 100,
             "Label": "Voy",
             "Width": "132px",
-            "Active": true,
             "RefName": "Partner",
             "FocusSearch": true,
             "MinWidth": "132px",
@@ -310,7 +290,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Edit\"}",
             "Width": "34px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
@@ -326,7 +305,6 @@
             "Row": 100,
             "Label": "Vessel",
             "Width": "116px",
-            "Active": true,
             "RefName": "Partner",
             "FocusSearch": true,
             "MinWidth": "116px",
@@ -343,7 +321,6 @@
             "Row": 100,
             "Label": "POL",
             "Width": "150px",
-            "Active": true,
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
@@ -361,7 +338,6 @@
             "Row": 100,
             "Label": "Status",
             "Width": "85px",
-            "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fal fa-plus mr-1'></i>New</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: #333; background-color: #ffc107;'><i class='fal fa-ellipsis-h mr-1'></i>Approving</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fal fa-smile mr-1'></i>Approved</span>\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fal fa-frown mr-1'></i>Decline</span>\"\r\n    }\r\n]",
             "FocusSearch": true,
             "MinWidth": "85px",
@@ -378,7 +354,6 @@
             "Row": 100,
             "Label": "Customers",
             "Width": "175px",
-            "Active": true,
             "RefName": "Partner",
             "FocusSearch": true,
             "ShowHotKey": true,
@@ -397,8 +372,7 @@
             "Label": "Add",
             "Icon": "fal fa-plus",
             "ClassName": "btn",
-            "Events": "{\"click\":\"Add\"}",
-            "Active": true
+            "Events": "{\"click\":\"Add\"}"
         },
         {
             "Id": "0074158c-0000-0000-8001-7542fcc20113",
@@ -409,8 +383,7 @@
             "Label": "Add",
             "Icon": "fal fa-plus",
             "ClassName": "btn",
-            "Events": "{\"click\":\"Add\"}",
-            "Active": true
+            "Events": "{\"click\":\"Add\"}"
         },
         {
             "Id": "00ed15f0-0000-0000-8000-09f832696de1",
@@ -421,7 +394,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Edit\"}",
             "Width": "34px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
@@ -432,14 +404,12 @@
         {
             "Id": "00B3721B-AB95-40FC-93E6-79E15E63D346",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "20D77153-6078-49B5-80F6-8E36647245D8",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "2303053C-E103-485D-95D5-DE1072B40EA3",
@@ -447,34 +417,29 @@
             "CanRead": true,
             "CanWrite": true,
             "CanDelete": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "69C23301-9CB9-4FF3-961F-43DED18CBD54",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "CanRead": true,
             "CanWrite": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "6C4987D7-9D4C-40D8-A174-E5A6D7D1008C",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "8C5C8793-1250-4C97-BDC7-F8B50117C150",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A2B9B4C2-FFF7-4200-9591-8130AE9CB7DB",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A8C0CD35-E651-4DD8-9FEF-272A05BB772B",
@@ -485,20 +450,17 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "D9B5BFEE-BB1E-4A80-BB87-CB330F584E5F",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "E8601DEC-8539-4129-8193-8C492E4F0D23",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

@@ -8,7 +8,6 @@
     "Script": "return {\r\n    GetInfo: async function (component, entity) {\r\n        if (this.Entity.TaxCode == null || this.Entity.TaxCode == \"\") {\r\n            this.Toast.Warning(\"Not find taxcode\");\r\n            return;\r\n        }\r\n        this.Toast.Warning(\"Waiting search infomation by taxcode\");\r\n        const response = await fetch('https://api.vietqr.io/v2/business/' + this.Entity.TaxCode);\r\n        const data = await response.json();\r\n        if (data.data == null) {\r\n            this.Toast.Warning(\"Not find taxcode\");\r\n            return;\r\n        }\r\n        this.Entity.Name = data.data.shortName || data.data.internationalName;\r\n        this.Entity.CompanyName = data.data.internationalName;\r\n        this.Entity.CompanyNameInv = data.data.name;\r\n        this.Entity.Address = data.data.address;\r\n        this.Entity.AddressInv = data.data.address;\r\n        this.UpdateView(false, false, \"Name\", \"CompanyName\", \"CompanyNameInv\", \"Address\", \"AddressInv\");\r\n        this.Toast.Success(\"Update taxcode success\");\r\n    },\r\n    ToastInfo: function (component) {\r\n        this.Toast.Success(\"Input search tax code\")\r\n    },\r\n    SendMail: function () {\r\n        if (!this.Entity.Email || this.Entity.Email == \"\") {\r\n            this.Toast.Warning(\"Email is requied\");\r\n            return;\r\n        }\r\n        var entity = {\r\n            To: this.Entity.Email,\r\n            Text: \"\",\r\n            Subject: \"\"\r\n        }\r\n        this.OpenPopup(\"sendmail-editor\", entity);\r\n    },\r\n    OnSave: function (form, gridview) {\r\n        var detail = gridview.find(x => x.IsListView && x.Meta.FieldName == \"PartnerContact\");\r\n        if ((detail && detail.AllListViewItem.length > 0)) {\r\n            var mainRow = detail.AllListViewItem.find(item => item.Entity.IsMain) || detail.AllListViewItem[0];\r\n            if (mainRow) {\r\n                this.Entity.ContactName = mainRow.Entity.ContactName;\r\n                this.Entity.ContactPhoneNumber = mainRow.Entity.ContactPhoneNumber;\r\n                this.Entity.ContactEmail = mainRow.Entity.ContactEmail;\r\n            }\r\n        }\r\n    },\r\n    Prospect: function (form, gridview) {\r\n        this.EditForm.OpenConfig(\"Move to prospect customer!\", () => {\r\n            this.EditForm.Entity.TypeId = 2;\r\n            this.EditForm.Entity.SaleId = this.Token.UserId;\r\n            this.EditForm.Dirty = true;\r\n            this.EditForm.SavePatch(true).then(() => {\r\n                this.EditForm.Dispose();\r\n                this.OpenFrom.OpenPopup(\"prospect-editor\", this.EditForm.Entity);\r\n            });\r\n        });\r\n    },\r\n    SaveAs: async function (btn) {\r\n        var newEntity = JSON.parse(JSON.stringify(this.Entity));\r\n        this.Entity = newEntity;\r\n        this.Entity.Id = this.Uuid7.NewGuid();\r\n        this.Entity.Code = null;\r\n        this.Entity.TypeId = 1;\r\n        this.Entity.ServiceId = 1;\r\n        this.Entity.SaleId = this.Token.UserId;\r\n        this.UpdateView(true);\r\n        this.Dirty = true;\r\n        this.Toast.Success(\"Save as success\");\r\n    },\r\n    OnSaveAdd: function (form, gridview) {\r\n        this.Entity = {\r\n            Id: this.Uuid7.NewGuid(),\r\n            Code: null,\r\n            ServiceId: 1,\r\n            TypeId: 1,\r\n            ActionId: 1,\r\n            SaleId: this.Token.UserId\r\n        }\r\n    }\r\n}",
     "Events": "{\r\n    \"onsave\": \"OnSave\",\r\n    \"onsaveadd\": \"OnSaveAdd\"\r\n}",
     "EntityId": "Feature",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "0194e866-16ce-7493-8598-6649808d0985",
@@ -18,7 +17,6 @@
             "ClassName": "scroll-content",
             "XsCol": 6,
             "XxlCol": 12,
-            "Active": true,
             "DisabledExp": "this.Entity.ActionId == 2"
         },
         {
@@ -28,7 +26,6 @@
             "ComponentType": "Section",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "0194e866-16ce-7493-8598-6649808d0985",
             "XxlOuterColumn": 12,
             "Components": [
@@ -41,8 +38,7 @@
                     "Row": 50,
                     "Label": "Label",
                     "ShowLabel": true,
-                    "Events": "{\"change\":\"GetInfo\"}",
-                    "Active": true
+                    "Events": "{\"change\":\"GetInfo\"}"
                 },
                 {
                     "Id": "0194e866-1782-7078-9f84-2e4be790ae57",
@@ -51,8 +47,7 @@
                     "ComponentType": "Input",
                     "Column": 12,
                     "Label": "Group Name",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 }
             ]
         },
@@ -63,7 +58,6 @@
             "Label": "Steps",
             "Icon": "fal fa-sticky-note mr-1",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "0194e866-16ce-7493-8598-6649808d0985",
             "IsTab": true,
             "XxlOuterColumn": 12,
@@ -78,7 +72,6 @@
                     "Row": 200,
                     "Label": "Contact details",
                     "DefaultVal": "{\r\n    \"FeatureId\": this.EditForm.Entity.Id\r\n}",
-                    "Active": true,
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from Component as ds where FeatureId = '{FeatureId}' and ComponentType = 'Section'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where FeatureId = '{FeatureId}' and ComponentType = 'Section'\"\r\n}",
                     "RefName": "Component",
@@ -95,7 +88,6 @@
             "ClassName": "title-group",
             "Style": "margin-bottom: 0px;padding: 0;",
             "XxlCol": 12,
-            "Active": true,
             "DisabledExp": "this.Entity.ActionId == 2"
         },
         {
@@ -105,7 +97,6 @@
             "ComponentType": "Section",
             "ClassName": "ribbon-group",
             "XxlCol": 12,
-            "Active": true,
             "XxlOuterColumn": 12,
             "Components": [
                 {
@@ -118,8 +109,7 @@
                     "Label": "Save As",
                     "Icon": "fas fa-sliders-h-square",
                     "ClassName": "btn detail-button secondary-outline",
-                    "Events": "{ \"click\" : \"SaveAs\" }",
-                    "Active": true
+                    "Events": "{ \"click\" : \"SaveAs\" }"
                 },
                 {
                     "Id": "0194e866-1d16-70cb-b7b1-6e74a4477996",
@@ -130,7 +120,6 @@
                     "Icon": "fal fa-exchange-alt",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"Prospect\" }",
-                    "Active": true,
                     "ShowExp": "this.Entity.ActionId == 1"
                 },
                 {
@@ -142,8 +131,7 @@
                     "Label": "Save & Add",
                     "Icon": "fas fa-sliders-h-square",
                     "ClassName": "btn detail-button secondary-outline",
-                    "Events": "{ \"click\" : \"SaveAdd\" }",
-                    "Active": true
+                    "Events": "{ \"click\" : \"SaveAdd\" }"
                 },
                 {
                     "Id": "0194e866-1d84-7676-9cfb-85e0452d1d10",
@@ -154,8 +142,7 @@
                     "Icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
-                    "Events": "{ \"click\" : \"SavePatch\" }",
-                    "Active": true
+                    "Events": "{ \"click\" : \"SavePatch\" }"
                 }
             ]
         }
@@ -168,7 +155,6 @@
             "ComponentType": "Checkbox",
             "Label": "Main",
             "Width": "51px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "51px",
@@ -182,7 +168,6 @@
             "ComponentType": "Input",
             "Label": "Note",
             "Width": "230px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "230px",
@@ -196,7 +181,6 @@
             "ComponentType": "Input",
             "Label": "Email",
             "Width": "158px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "158px",
@@ -210,7 +194,6 @@
             "ComponentType": "Datepicker",
             "Label": "Birthday",
             "Width": "188px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "188px",
@@ -224,7 +207,6 @@
             "ComponentType": "Input",
             "Label": "Label",
             "Width": "146px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "146px",
@@ -238,7 +220,6 @@
             "ComponentType": "Input",
             "Label": "Job Titles",
             "Width": "180px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "180px",
@@ -252,7 +233,6 @@
             "ComponentType": "Input",
             "Label": "Phone",
             "Width": "175px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "175px",
@@ -271,8 +251,7 @@
             "Label": "Save As",
             "Icon": "fas fa-sliders-h-square",
             "ClassName": "btn detail-button secondary-outline",
-            "Events": "{ \"click\" : \"SaveAs\" }",
-            "Active": true
+            "Events": "{ \"click\" : \"SaveAs\" }"
         },
         {
             "Id": "0194e866-1d16-70cb-b7b1-6e74a4477996",
@@ -283,7 +262,6 @@
             "Icon": "fal fa-exchange-alt",
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"Prospect\" }",
-            "Active": true,
             "ShowExp": "this.Entity.ActionId == 1"
         },
         {
@@ -295,8 +273,7 @@
             "Label": "Save & Add",
             "Icon": "fas fa-sliders-h-square",
             "ClassName": "btn detail-button secondary-outline",
-            "Events": "{ \"click\" : \"SaveAdd\" }",
-            "Active": true
+            "Events": "{ \"click\" : \"SaveAdd\" }"
         },
         {
             "Id": "0194e866-1d84-7676-9cfb-85e0452d1d10",
@@ -307,22 +284,19 @@
             "Icon": "fal fa-save",
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
-            "Events": "{ \"click\" : \"SavePatch\" }",
-            "Active": true
+            "Events": "{ \"click\" : \"SavePatch\" }"
         }
     ],
     "FeaturePolicies": [
         {
             "Id": "0A94BDCC-E1EC-42B0-9618-B639525F3816",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "14A04D89-B8A9-4B55-8964-8C24D5DB2ADF",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "381EC7EB-A9E0-46A8-AFB2-CA3BD9CEC7A6",
@@ -333,32 +307,27 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "3AE6CCE6-8675-47F1-952F-49E1849461EB",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "4E9E152B-A210-45F3-9EAD-D67DC90B2BF6",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "5C034FEA-B9E9-4AC0-A91E-7F553F655B69",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "688EF4EC-8182-4B98-8FA0-74A00EF3772F",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "834341F9-3828-4398-B072-0178979555F6",
@@ -369,20 +338,17 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "DE35C855-CCC4-484A-8C6F-ED95703153F8",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "F7E77F97-E23D-4898-A572-81404018EBB4",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

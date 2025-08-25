@@ -8,7 +8,6 @@
     "Icon": "fal fa-plane-arrival",
     "IsMenu": true,
     "EntityId": "Shipment",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "01953863-0c9c-779f-9fba-04d5465e8276",
@@ -18,7 +17,6 @@
             "Icon": "fal fa-border-all mr-1",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -33,7 +31,6 @@
                     "Label": "BookingALL",
                     "ClassName": "sticky",
                     "Events": "{\"dblclick\":\"Edit\"}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Shipment as ds where ((ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or (ds.SaleIds like '%{TokenUserId}%' and ds.ShipmentTypeId = 0) or ds.UserViewIds like '%{TokenUserId}%' or (ds.ReceiverIds like '%{TokenUserId}%' and ds.StatusId = 3) or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and TypeId = 2 and ParentId is null)\",\r\n    \"total\": \"select count(ds.Id) as total from Shipment as ds where ((ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or (ds.SaleIds like '%{TokenUserId}%' and ds.ShipmentTypeId = 0) or ds.UserViewIds like '%{TokenUserId}%' or (ds.ReceiverIds like '%{TokenUserId}%' and ds.StatusId = 3) or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and TypeId = 2 and ParentId is null)\",\r\n    \"search\": [\r\n        {\r\n            \"Label\": \"HBL No\",\r\n            \"FieldName\": \"HBLNoSearch\",\r\n            \"Where\": \"exists (select s1.Id from Shipment s1 where s1.ParentId = ds.Id and charindex(@hblnosearch, s1.HblNo) >= 1)\"\r\n        }\r\n    ]\r\n}",
                     "RefName": "Shipment",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
@@ -48,7 +45,6 @@
             "Label": "HAWB List",
             "Icon": "fal fa-plus mr-1",
             "ClassName": "scroll-content",
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -63,7 +59,6 @@
                     "Label": "ShipmentNew",
                     "ClassName": "sticky",
                     "Events": "{\r\n    \"dblclick\": \"EditHbl\"\r\n}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Shipment as ds where ((ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or (ds.SaleId = '{TokenUserId}' and ds.ShipmentTypeId = 0) or ds.UserViewIds like '%{TokenUserId}%' or (ds.ReceiverIds like '%{TokenUserId}%') or (ds.ForwardId = '{TokenUserId}')) and TypeId = 2 and ParentId is not null)\",\r\n    \"total\": \"select count(ds.Id) as total from Shipment as ds where ((ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or (ds.SaleId = '{TokenUserId}' and ds.ShipmentTypeId = 0) or ds.UserViewIds like '%{TokenUserId}%' or (ds.ReceiverIds like '%{TokenUserId}%') or (ds.ForwardId = '{TokenUserId}')) and TypeId = 2 and ParentId is not null)\",\r\n    \"search\": [\r\n        {\r\n            \"Label\": \"HBL No\",\r\n            \"FieldName\": \"HBLNoSearch\",\r\n            \"Where\": \"exists (select s1.Id from Shipment s1 where s1.ParentId = ds.Id and charindex(@hblnosearch, s1.HblNo) >= 1)\"\r\n        }\r\n    ]\r\n}",
                     "RefName": "Shipment",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
@@ -80,7 +75,6 @@
             "ComponentType": "Input",
             "Label": "File No",
             "Width": "130px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "130px",
             "MaxWidth": "130px",
@@ -95,7 +89,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Edit\"}",
             "Width": "34px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
@@ -108,7 +101,6 @@
             "ComponentType": "Datepicker",
             "Label": "<i class=\"far fa-calendar-alt\"></i> Date Create",
             "Width": "108px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "108px",
             "MaxWidth": "108px",
@@ -121,7 +113,6 @@
             "ComponentType": "Input",
             "Label": "Voy",
             "Width": "132px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "132px",
             "MaxWidth": "132px",
@@ -137,7 +128,6 @@
             "Row": 100,
             "Label": "POD",
             "Width": "124px",
-            "Active": true,
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
@@ -155,7 +145,6 @@
             "Row": 100,
             "Label": "POL",
             "Width": "130px",
-            "Active": true,
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
@@ -170,7 +159,6 @@
             "ComponentType": "Datepicker",
             "Label": "ETD",
             "Width": "108px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "108px",
             "MaxWidth": "108px",
@@ -183,7 +171,6 @@
             "ComponentType": "Datepicker",
             "Label": "ETD",
             "Width": "108px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "108px",
             "MaxWidth": "108px",
@@ -199,7 +186,6 @@
             "Row": 100,
             "Label": "Provider",
             "Width": "201px",
-            "Active": true,
             "RefName": "Partner",
             "FocusSearch": true,
             "MinWidth": "201px",
@@ -213,7 +199,6 @@
             "ComponentType": "Input",
             "Label": "Vessel",
             "Width": "116px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "116px",
             "MaxWidth": "116px",
@@ -229,7 +214,6 @@
             "Row": 100,
             "Label": "Create On",
             "Width": "220px",
-            "Active": true,
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
@@ -247,7 +231,6 @@
             "ClassName": "btn",
             "Events": "{\r\n    \"click\": \"EditHbl\"\r\n}",
             "Width": "34px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
@@ -260,7 +243,6 @@
             "ComponentType": "Input",
             "Label": "HBL No",
             "Width": "130px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "130px",
             "MaxWidth": "130px",
@@ -273,7 +255,6 @@
             "ComponentType": "Datepicker",
             "Label": "<i class=\"far fa-calendar-alt\"></i> Date Create",
             "Width": "108px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "108px",
             "MaxWidth": "108px",
@@ -289,7 +270,6 @@
             "Row": 100,
             "Label": "Customer",
             "Width": "201px",
-            "Active": true,
             "RefName": "Partner",
             "FocusSearch": true,
             "MinWidth": "201px",
@@ -303,7 +283,6 @@
             "ComponentType": "Input",
             "Label": "Vessel",
             "Width": "116px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "116px",
             "MaxWidth": "116px",
@@ -316,7 +295,6 @@
             "ComponentType": "Input",
             "Label": "Voy",
             "Width": "132px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "132px",
             "MaxWidth": "132px",
@@ -332,7 +310,6 @@
             "Row": 100,
             "Label": "POD",
             "Width": "124px",
-            "Active": true,
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
@@ -347,7 +324,6 @@
             "ComponentType": "Datepicker",
             "Label": "ETD",
             "Width": "108px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "108px",
             "MaxWidth": "108px",
@@ -363,7 +339,6 @@
             "Row": 100,
             "Label": "POL",
             "Width": "130px",
-            "Active": true,
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
@@ -378,7 +353,6 @@
             "ComponentType": "Datepicker",
             "Label": "ETD",
             "Width": "108px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "108px",
             "MaxWidth": "108px",
@@ -394,7 +368,6 @@
             "Row": 100,
             "Label": "Create On",
             "Width": "72px",
-            "Active": true,
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
@@ -414,7 +387,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Edit\"}",
             "Width": "34px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
@@ -429,7 +401,6 @@
             "ClassName": "btn",
             "Events": "{\r\n    \"click\": \"EditHbl\"\r\n}",
             "Width": "34px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
@@ -444,8 +415,7 @@
             "Label": "Add",
             "Icon": "fal fa-plus",
             "ClassName": "btn",
-            "Events": "{\"click\":\"Add\"}",
-            "Active": true
+            "Events": "{\"click\":\"Add\"}"
         },
         {
             "Id": "0195386a-2bfa-772f-a324-49ad40562637",
@@ -456,8 +426,7 @@
             "Label": "Add",
             "Icon": "fal fa-plus",
             "ClassName": "btn",
-            "Events": "{\"click\":\"Add\"}",
-            "Active": true
+            "Events": "{\"click\":\"Add\"}"
         }
     ],
     "FeaturePolicies": [
@@ -465,8 +434,7 @@
             "Id": "060E5227-5F00-489F-971F-D6EBD1866C7E",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "CanRead": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "349B6A4D-FB86-47DE-BC68-00B07136407D",
@@ -477,14 +445,12 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "5E528111-09E5-45E8-AF7E-ACA8C18E18CE",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "6225BC5A-E5E6-4EE9-BD24-58B701A47170",
@@ -495,46 +461,39 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "6BEF9306-D6C8-4676-BBF8-7B3E7A5C70C3",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "CanRead": true,
             "CanWrite": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "85E1F939-D952-4AB5-AC8E-187CD35630BA",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "8BD4BDA7-DD4C-4396-83D2-2CA87973D18D",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A5F86BB4-44CD-4D13-A0AF-7C63088BC5A7",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A786760A-C5FF-4043-8C0F-311F46CDE348",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "DF54F0A9-AD6C-49D2-B632-2BF1BA8943F2",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

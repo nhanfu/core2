@@ -8,7 +8,6 @@
     "Icon": "fal fa-users-medical",
     "IsMenu": true,
     "EntityId": "Partner",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "00fe16ac-0000-0000-8000-44689efaab5d",
@@ -18,7 +17,6 @@
             "Icon": "fal fa-rss mr-1",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -33,7 +31,6 @@
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Events": "{\"dblclick\":\"Edit\"}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where TypeId = 1 and ServiceId = 1 and ActionId = 3 and  (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.PicId = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds where TypeId = 1 and ServiceId = 1 and ActionId = 3 and  (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.PicId = '{TokenUserId}')\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "Partner",
@@ -50,7 +47,6 @@
             "Icon": "fal fa-lock mr-1",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -65,7 +61,6 @@
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Events": "{\"dblclick\":\"Edit\"}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where TypeId = 1 and ServiceId = 1 and ActionId = 2 and  (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.AssignId = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds where TypeId = 1 and ServiceId = 1 and ActionId = 2 and  (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.AssignId = '{TokenUserId}')\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "Partner",
@@ -82,7 +77,6 @@
             "Icon": "fal fa-heart mr-1",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -97,7 +91,6 @@
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Events": "{\"dblclick\":\"Edit\"}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where TypeId = 1 and ServiceId = 1 and ActionId = 1 and  (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.AssignId = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds where TypeId = 1 and ServiceId = 1 and ActionId = 1 and  (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.AssignId = '{TokenUserId}')\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "Partner",
@@ -114,7 +107,6 @@
             "Icon": "fal fa-border-all mr-1",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -129,7 +121,6 @@
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.AssignId = '{TokenUserId}' or ds.GroupId = '{TokenGroupId}') and ServiceId = 1 and TypeId = 1\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.AssignId = '{TokenUserId}' or ds.GroupId = '{TokenGroupId}') and TypeId = 1\",\r\n    \"delete\": \"select top 1 CustomerId from Inquiry where CustomerId in ({EntityIds}) union select top 1 VendorId from DefaultFee where VendorId in ({EntityIds}) union select top 1 PayerId from InquiryDetail where PayerId in ({EntityIds}) union select top 1 PayerId from InquiryDetail where PayeeId in ({EntityIds}) union select top 1 CustomerId from Booking where CustomerId in ({EntityIds})\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "Partner",
@@ -151,7 +142,6 @@
             "Row": 100,
             "Label": "Create On",
             "Width": "81px",
-            "Active": true,
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
@@ -167,7 +157,6 @@
             "ComponentType": "Input",
             "Label": "Tax Code",
             "Width": "118px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "118px",
             "MaxWidth": "118px",
@@ -182,7 +171,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Edit\"}",
             "Width": "59px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "59px",
             "MaxWidth": "59px",
@@ -198,7 +186,6 @@
             "Row": 100,
             "Label": "Sourse",
             "Width": "138px",
-            "Active": true,
             "RefName": "MasterData",
             "FocusSearch": true,
             "MinWidth": "138px",
@@ -215,7 +202,6 @@
             "Row": 100,
             "Label": "Status",
             "Width": "138px",
-            "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fal fa-heart mr-1'></i>Active</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fal fa-lock mr-1'></i>Lock</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fal fa-rss mr-1'></i>Awaiting</span>\"\r\n    }\r\n]",
             "FocusSearch": true,
             "MinWidth": "138px",
@@ -232,7 +218,6 @@
             "Row": 100,
             "Label": "Type",
             "Width": "138px",
-            "Active": true,
             "RefName": "MasterData",
             "FocusSearch": true,
             "MinWidth": "138px",
@@ -246,7 +231,6 @@
             "ComponentType": "Input",
             "Label": "Company Name",
             "Width": "280px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "280px",
             "MaxWidth": "280px",
@@ -259,7 +243,6 @@
             "ComponentType": "Input",
             "Label": "Code",
             "Width": "82px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "82px",
             "MaxWidth": "82px",
@@ -272,7 +255,6 @@
             "ComponentType": "Input",
             "Label": "Email",
             "Width": "134px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "134px",
             "MaxWidth": "134px",
@@ -285,7 +267,6 @@
             "ComponentType": "Input",
             "Label": "Works Phone",
             "Width": "177px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "177px",
             "MaxWidth": "177px",
@@ -302,8 +283,7 @@
             "Label": "Add",
             "Icon": "fal fa-plus",
             "ClassName": "btn",
-            "Events": "{\r\n    \"click\": \"Add\"\r\n}",
-            "Active": true
+            "Events": "{\r\n    \"click\": \"Add\"\r\n}"
         },
         {
             "Id": "00ff1658-0000-0000-8000-f5900136dc49",
@@ -314,7 +294,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Edit\"}",
             "Width": "59px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "59px",
             "MaxWidth": "59px",
@@ -325,20 +304,17 @@
         {
             "Id": "1912C5DA-AF55-4F62-87A3-6683DCA534DA",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "40F0841D-C86C-4148-893A-5BD92B75F1EF",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "503D44D2-318F-416C-866B-18FF2A6812EC",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "7FF403F0-3C25-49AF-BBEF-0410296F758F",
@@ -346,38 +322,32 @@
             "CanRead": true,
             "CanWrite": true,
             "CanDelete": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "9DC88ADB-F1D3-4B8C-8312-8060D04267B3",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A7F7B683-E26D-4AF8-8D6E-F16BEC3C8A95",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "D0D869B8-4398-4348-8EC0-90693F2F5CEF",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "D480CD1D-B8E7-414D-9E3E-8FB0023CC309",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "D80CDDE7-6214-4EC6-A047-11ECE13FC655",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "DFAEED4D-8450-4CF0-A68C-0FDDCF9B4068",
@@ -388,8 +358,7 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

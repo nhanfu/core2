@@ -8,7 +8,6 @@
     "Icon": "fal fa-users",
     "IsMenu": true,
     "EntityId": "Partner",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "001ef878-0000-0000-8000-ab82ed02b926",
@@ -18,7 +17,6 @@
             "Icon": "fal fa-lock mr-1",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -34,7 +32,6 @@
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Events": "{\"dblclick\":\"Edit\"}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where TypeId = 3 and ServiceId = 1 and ActionId = 2 and  (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.DistributeInformationIds like N'%{TokenUserId}%')\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds where TypeId = 3 and ServiceId = 1 and ActionId = 2 and  (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.DistributeInformationIds like N'%{TokenUserId}%')\",\r\n    \"delete\": \"select top 1 CustomerId from Inquiry where CustomerId in ({EntityIds}) union select top 1 VendorId from DefaultFee where VendorId in ({EntityIds}) union select top 1 PayerId from InquiryDetail where PayerId in ({EntityIds}) union select top 1 PayerId from InquiryDetail where PayeeId in ({EntityIds}) union select top 1 CustomerId from Booking where CustomerId in ({EntityIds})\",\r\n    \"update\" : \"update Inquiry set CustomerId = '{NewId}' where CustomerId in ({EntityIds}); update DefaultFee set VendorId = '{NewId}' where VendorId in ({EntityIds}); update InquiryDetail set PayerId = '{NewId}' where PayerId in ({EntityIds}); update InquiryDetail set PayerId = '{NewId}' where PayeeId in ({EntityIds}); update Booking set  CustomerId = '{NewId}' where CustomerId in ({EntityIds});UPDATE p1 SET p1.History = CONCAT(ISNULL(p1.History, ''), '', N'The partner ', ISNULL(agg.PartnerNames, N''), N' was deleted by user {TokenUserName} on ', GETDATE() ) FROM [Partner] p1 CROSS APPLY ( SELECT STRING_AGG(CONCAT(p2.Name, N' (', p2.Id, ')'), N', ') AS PartnerNames FROM [Partner] p2 WHERE p2.Id IN ({EntityIds}) ) agg WHERE p1.Id = '{NewId}';\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "Partner",
@@ -52,7 +49,6 @@
             "Icon": "fal fa-heart mr-1",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -68,7 +64,6 @@
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Events": "{\"dblclick\":\"Edit\"}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where TypeId = 3 and ServiceId = 1 and ActionId = 1 and  (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.DistributeInformationIds like N'%{TokenUserId}%')\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds where TypeId = 3 and ServiceId = 1 and ActionId = 1 and  (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.DistributeInformationIds like N'%{TokenUserId}%')\",\r\n    \"delete\": \"select top 1 CustomerId from Inquiry where CustomerId in ({EntityIds}) union select top 1 VendorId from DefaultFee where VendorId in ({EntityIds}) union select top 1 PayerId from InquiryDetail where PayerId in ({EntityIds}) union select top 1 PayerId from InquiryDetail where PayeeId in ({EntityIds}) union select top 1 CustomerId from Booking where CustomerId in ({EntityIds})\",\r\n    \"update\" : \"update Inquiry set CustomerId = '{NewId}' where CustomerId in ({EntityIds}); update DefaultFee set VendorId = '{NewId}' where VendorId in ({EntityIds}); update InquiryDetail set PayerId = '{NewId}' where PayerId in ({EntityIds}); update InquiryDetail set PayerId = '{NewId}' where PayeeId in ({EntityIds}); update Booking set  CustomerId = '{NewId}' where CustomerId in ({EntityIds});UPDATE p1 SET p1.History = CONCAT(ISNULL(p1.History, ''), '', N'The partner ', ISNULL(agg.PartnerNames, N''), N' was deleted by user {TokenUserName} on ', GETDATE() ) FROM [Partner] p1 CROSS APPLY ( SELECT STRING_AGG(CONCAT(p2.Name, N' (', p2.Id, ')'), N', ') AS PartnerNames FROM [Partner] p2 WHERE p2.Id IN ({EntityIds}) ) agg WHERE p1.Id = '{NewId}';\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "Partner",
@@ -86,7 +81,6 @@
             "Icon": "fal fa-border-all mr-1",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -102,7 +96,6 @@
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Events": "{\"dblclick\":\"Edit\"}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.DistributeInformationIds like N'%{TokenUserId}%') and ServiceId = 1 and TypeId = 3\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.DistributeInformationIds like N'%{TokenUserId}%') and ServiceId = 1 and TypeId = 3\",\r\n    \"delete\": \"select top 1 CustomerId from Inquiry where CustomerId in ({EntityIds}) union select top 1 VendorId from DefaultFee where VendorId in ({EntityIds}) union select top 1 PayerId from InquiryDetail where PayerId in ({EntityIds}) union select top 1 PayerId from InquiryDetail where PayeeId in ({EntityIds}) union select top 1 CustomerId from Booking where CustomerId in ({EntityIds})\",\r\n    \"update\" : \"update Inquiry set CustomerId = '{NewId}' where CustomerId in ({EntityIds}); update DefaultFee set VendorId = '{NewId}' where VendorId in ({EntityIds}); update InquiryDetail set PayerId = '{NewId}' where PayerId in ({EntityIds}); update InquiryDetail set PayerId = '{NewId}' where PayeeId in ({EntityIds}); update Booking set  CustomerId = '{NewId}' where CustomerId in ({EntityIds});UPDATE p1 SET p1.History = CONCAT(ISNULL(p1.History, ''), '', N'The partner ', ISNULL(agg.PartnerNames, N''), N' was deleted by user {TokenUserName} on ', GETDATE() ) FROM [Partner] p1 CROSS APPLY ( SELECT STRING_AGG(CONCAT(p2.Name, N' (', p2.Id, ')'), N', ') AS PartnerNames FROM [Partner] p2 WHERE p2.Id IN ({EntityIds}) ) agg WHERE p1.Id = '{NewId}';\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "Partner",
@@ -120,7 +113,6 @@
             "Icon": "fal fa-rss mr-1",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -136,7 +128,6 @@
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Events": "{\"dblclick\":\"Edit\"}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where TypeId = 3 and ServiceId = 1 and ActionId = 3 and  (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.DistributeInformationIds like N'%{TokenUserId}%')\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds where TypeId = 3 and ServiceId = 1 and ActionId = 3 and  (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.DistributeInformationIds like N'%{TokenUserId}%')\",\r\n    \"delete\": \"select top 1 CustomerId from Inquiry where CustomerId in ({EntityIds}) union select top 1 VendorId from DefaultFee where VendorId in ({EntityIds}) union select top 1 PayerId from InquiryDetail where PayerId in ({EntityIds}) union select top 1 PayerId from InquiryDetail where PayeeId in ({EntityIds}) union select top 1 CustomerId from Booking where CustomerId in ({EntityIds})\",\r\n    \"update\" : \"update Inquiry set CustomerId = '{NewId}' where CustomerId in ({EntityIds}); update DefaultFee set VendorId = '{NewId}' where VendorId in ({EntityIds}); update InquiryDetail set PayerId = '{NewId}' where PayerId in ({EntityIds}); update InquiryDetail set PayerId = '{NewId}' where PayeeId in ({EntityIds}); update Booking set  CustomerId = '{NewId}' where CustomerId in ({EntityIds});UPDATE p1 SET p1.History = CONCAT(ISNULL(p1.History, ''), '', N'The partner ', ISNULL(agg.PartnerNames, N''), N' was deleted by user {TokenUserName} on ', GETDATE() ) FROM [Partner] p1 CROSS APPLY ( SELECT STRING_AGG(CONCAT(p2.Name, N' (', p2.Id, ')'), N', ') AS PartnerNames FROM [Partner] p2 WHERE p2.Id IN ({EntityIds}) ) agg WHERE p1.Id = '{NewId}';\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "Partner",
@@ -155,7 +146,6 @@
             "ComponentType": "Input",
             "Label": "Works Phone",
             "Width": "177px",
-            "Active": true,
             "Frozen": true,
             "MinWidth": "177px",
             "MaxWidth": "177px",
@@ -169,7 +159,6 @@
             "ComponentType": "Input",
             "Label": "Abbreviation",
             "Width": "374px",
-            "Active": true,
             "MinWidth": "374px",
             "MaxWidth": "374px",
             "created_by": "Customer",
@@ -182,7 +171,6 @@
             "ComponentType": "Input",
             "Label": "Code",
             "Width": "82px",
-            "Active": true,
             "MinWidth": "82px",
             "MaxWidth": "82px",
             "created_by": "Customer",
@@ -195,7 +183,6 @@
             "ComponentType": "Input",
             "Label": "Tax Code",
             "Width": "118px",
-            "Active": true,
             "MinWidth": "118px",
             "MaxWidth": "118px",
             "created_by": "Customer",
@@ -210,7 +197,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Edit\"}",
             "Width": "56px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "56px",
             "MaxWidth": "56px",
@@ -227,7 +213,6 @@
             "Row": 100,
             "Label": "Create On",
             "Width": "84px",
-            "Active": true,
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
@@ -246,7 +231,6 @@
             "Row": 100,
             "Label": "Status",
             "Width": "95px",
-            "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fal fa-heart mr-1'></i>Active</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fal fa-lock mr-1'></i>Lock</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fal fa-rss mr-1'></i>Awaiting</span>\"\r\n    }\r\n]",
             "FocusSearch": true,
             "MinWidth": "95px",
@@ -261,7 +245,6 @@
             "ComponentType": "Input",
             "Label": "Email",
             "Width": "118px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "118px",
             "MaxWidth": "118px",
@@ -278,7 +261,6 @@
             "Row": 100,
             "Label": "Sourse",
             "Width": "138px",
-            "Active": true,
             "RefName": "MasterData",
             "FocusSearch": true,
             "MinWidth": "138px",
@@ -296,7 +278,6 @@
             "Row": 100,
             "Label": "Type",
             "Width": "138px",
-            "Active": true,
             "RefName": "MasterData",
             "FocusSearch": true,
             "MinWidth": "138px",
@@ -315,7 +296,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Edit\"}",
             "Width": "56px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "56px",
             "MaxWidth": "56px",
@@ -331,8 +311,7 @@
             "Label": "Add",
             "Icon": "fal fa-plus",
             "ClassName": "btn",
-            "Events": "{\"click\":\"Add\"}",
-            "Active": true
+            "Events": "{\"click\":\"Add\"}"
         },
         {
             "Id": "00bc0078-0000-0000-8000-eeac9fd5eb34",
@@ -343,8 +322,7 @@
             "Label": "Add",
             "Icon": "fal fa-plus",
             "ClassName": "btn",
-            "Events": "{\"click\":\"Add\"}",
-            "Active": true
+            "Events": "{\"click\":\"Add\"}"
         },
         {
             "Id": "00bd00e4-0000-0000-8000-c9b59da8c95b",
@@ -355,8 +333,7 @@
             "Label": "Add",
             "Icon": "fal fa-plus",
             "ClassName": "btn",
-            "Events": "{\"click\":\"Add\"}",
-            "Active": true
+            "Events": "{\"click\":\"Add\"}"
         },
         {
             "Id": "00d1f8f8-0000-0000-8000-f6654453a423",
@@ -367,8 +344,7 @@
             "Label": "Add",
             "Icon": "fal fa-plus",
             "ClassName": "btn",
-            "Events": "{\"click\":\"Add\"}",
-            "Active": true
+            "Events": "{\"click\":\"Add\"}"
         }
     ],
     "FeaturePolicies": [
@@ -378,14 +354,12 @@
             "CanRead": true,
             "CanWrite": true,
             "CanDelete": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "15AD2C55-AEB6-4883-821D-06CB2014BE09",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "4A6D9299-0BA3-4DFA-806A-D3CA3DA680ED",
@@ -396,20 +370,17 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "5E5C83B0-28E9-4290-9BD1-8EE2CE856426",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "874AF859-968B-4EE9-8B8F-B88E98341E90",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "8DA79124-2E4C-4B88-99FE-DF6CD5C34C8F",
@@ -417,32 +388,27 @@
             "CanRead": true,
             "CanReadAll": true,
             "CanWrite": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "966BED4D-A224-48FF-8011-1C41664BAD5C",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "C5F278DD-BCC8-4D50-BC92-010753E62BAD",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "E0593FC0-22F3-4089-BE87-3130F993BD3C",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "F00B58C0-6C3B-4EDF-BD38-8FE3390310F3",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

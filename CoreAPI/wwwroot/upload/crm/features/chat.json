@@ -3,7 +3,6 @@
     "Name": "chat",
     "Label": "Chat",
     "EntityId": "Terminal",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "00bc19b0-0000-0000-8000-c7817636af49",
@@ -11,7 +10,6 @@
             "Order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Active": true,
             "XxlOuterColumn": 0
         },
         {
@@ -21,7 +19,6 @@
             "ComponentType": "Section",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "00bc19b0-0000-0000-8000-c7817636af49",
             "XxlOuterColumn": 12
         },
@@ -32,7 +29,6 @@
             "ComponentType": "Section",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "00bc19b0-0000-0000-8000-c7817636af49",
             "XxlOuterColumn": 12
         }
@@ -48,7 +44,6 @@
             "Row": 100,
             "Label": "Service",
             "Width": "357px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Terminal Service'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Terminal Service'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -63,38 +58,32 @@
         {
             "Id": "2BBBC2C2-A5B5-4A2E-A07F-4F4A44E6F4BF",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "48A8B95A-A172-4637-9203-28428F2E8B00",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "4FF4EE40-073E-423A-B3EF-7521ED04E19D",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "64FBAF23-6EDD-4EB7-AEB3-CC73570E844E",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "67B0F011-0802-4F51-B23E-84D015AEDC2D",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "7E6A294E-6B70-4987-A0C8-2476177C843A",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "7E846852-3CAF-4A9C-9B04-DC909F7A80F4",
@@ -105,26 +94,22 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "8BCF85D6-2DF4-4102-90E7-466B785B6D15",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "9C2D6DB5-8B23-446E-B5B7-7C32E64E60C0",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "9E9A474A-9A59-4DAC-ABEC-39133E1F28EE",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

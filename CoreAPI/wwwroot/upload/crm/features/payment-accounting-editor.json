@@ -8,7 +8,6 @@
     "Script": "return {\r\n    AddDetail: function () {\r\n        var newItem = JSON.parse(JSON.stringify(this.EditForm.Meta.GridPolicies.filter(x => x.EntityId == \"AddCharge\")));\r\n        this.EditForm.Entity.SearchData = null;\r\n        this.EditForm.Entity.VendorIds = this.EditForm.Entity.VendorIds || this.EditForm.Entity.CompanyId;\r\n        if (!this.EditForm.Entity.TypeId) {\r\n            this.Toast.Warning(\"Please choose voucher type!\");\r\n            return;\r\n        }\r\n        var form = this.EditForm.OpenConfig(\"Please select fee!\", async () => {\r\n            var grid = this.GET(\"SearchData\");\r\n            var gridParent = this.GET(\"VoucherDetail\");\r\n            var feeIds = gridParent.Item.map(x => x.Entity.ShipmentFeeId);\r\n            var datas = grid.AllListViewItem\r\n                .filter(x => x.Selected && !feeIds.includes(x.Entity.Id))\r\n                .map(x => x.Entity);\r\n            var exUSD = this.Decimal(this.EditForm.Entity.ExchangeRateINV);\r\n            form.DisposeAfterYes = true;\r\n            if (!datas || datas.length == 0) {\r\n                this.Toast.Warning(\"Please select fee VAT Invoice\");\r\n                form.DisposeAfterYes = false;\r\n                return;\r\n            }\r\n            if (!this.EditForm.Entity.IsMultiple) {\r\n                const vats = new Set(datas.map(x => x.Vat));\r\n                if (vats.size > 1) {\r\n                    this.Toast.Warning(\"There are multiple VAT types. Please select only one VAT type.\");\r\n                    form.DisposeAfterYes = false;\r\n                    return;\r\n                }\r\n                this.EditForm.Entity.VatInv = datas[0].Vat;\r\n            }\r\n            const exchangeRateINVs = new Set(\r\n                datas.filter(x => x.CurrencyCode == \"USD\").map(x => x.ExchangeRateINV).filter(x => x && Number(x) !== 1)\r\n            );\r\n            if (exchangeRateINVs.size > 1) {\r\n                this.EditForm.OpenConfig(\"There are multiple ExchangeRate types. Please select only one ExchangeRate.\", () => {\r\n                }, () => { }, false, [], true);\r\n            }\r\n            const firstExchangeRateINV = Array.from(exchangeRateINVs)[0] || null;\r\n            this.EditForm.Entity.ExchangeRateINV = firstExchangeRateINV || this.Decimal(1).div(this.Decimal(JSON.parse(localStorage.getItem(\"ExchangeRateUSD\"))[\"VND\"]));\r\n            this.EditForm.UpdateView(false, false, \"VatInv\", \"ExchangeRateINV\");\r\n            datas.forEach(item => {\r\n                item.ShipmentFeeId = item.Id;\r\n                item.Id = this.Uuid7.NewGuid();\r\n                item.VoucherId = this.EditForm.Entity.Id;\r\n                item.IsManual = true;\r\n                item.IsLock = false;\r\n                item.NoSubmit = false;\r\n                item.IsInvoice = false;\r\n                item.IsPayment = false;\r\n                item.IsInvoice = false;\r\n                item.IsPaymentAcc = false;\r\n                item.IsDebtAcc = false;\r\n                item.IsPaid = false;\r\n                item.FileNo = item.File.Code;\r\n                item.HblNo = item.Shipment.HblNo;\r\n                item.DescriptionIdText = item.Description ? item.Description.Name : null;\r\n                if (item.CurrencyId == this.EditForm.Entity.CurrencyId) {\r\n                    item.ExchangeRateINV = this.Decimal(1);\r\n                }\r\n                else {\r\n                    item.ExchangeRateINV = this.Decimal(item.ExchangeRateINV || this.Decimal(JSON.parse(localStorage.getItem(\"ExchangeRateVND\"))[item.CurrencyCode])) || this.EditForm.Entity.ExchangeRateINV;\r\n                }\r\n                item.ExchangeRateINV2 = item.ExchangeRateINV.div(exUSD);\r\n                var vat = this.Decimal(item.Vat || 0);\r\n                item.ExTotalPaid = this.Decimal(item.ExTotalPaid || 0);\r\n                if (item.TotalPaid > 0) {\r\n                    item.ExTotalAmount = this.Decimal(item.ExTotalRemain).toDP(0);\r\n                    item.ExTotalAmountTax = this.Decimal(item.ExTotalRemain).toDP(0);\r\n                    item.Quantity = this.Decimal(1);\r\n                    item.Vat = null;\r\n                    item.TotalAmount = item.ExTotalAmount.div(item.ExchangeRateINV);\r\n                    item.Amount = item.TotalAmount.div(item.Quantity);\r\n                    item.ExAmount = item.Amount.times(item.ExchangeRateINV).toDP(0);\r\n                    item.ExAmountTax = this.Decimal(0);\r\n                    item.AmountTax = this.Decimal(0);\r\n                    item.TotalAmountTax = item.TotalAmount;\r\n                }\r\n                else {\r\n                    item.Quantity = this.Decimal(item.Quantity);\r\n                    item.ExAmount = this.Decimal(item.Amount).times(item.ExchangeRateINV).toDP(0);\r\n                    item.ExTotalAmount = this.Decimal(item.ExAmount).times(item.Quantity).toDP(0);\r\n                    if (vat.isNegative()) {\r\n                        if (item.ExAmount.isNegative()) {\r\n                            item.ExAmountTax = vat.times(item.ExchangeRateINV).toDP(0);\r\n                        }\r\n                        else {\r\n                            item.ExAmountTax = vat.abs().times(item.ExchangeRateINV).toDP(0);\r\n                        }\r\n                    } else {\r\n                        item.ExAmountTax = this.Decimal(item.ExTotalAmount).times(vat.div(this.Decimal(100))).toDP(0);\r\n                    }\r\n                }\r\n                item.ExTotalAmountTax = this.Decimal(item.ExTotalAmount).plus(item.ExAmountTax).toDP(0);\r\n                item.InvoiceNo = item.InvoiceCode || item.InvoiceNo || item.ShipmentInvoiceCode || this.EditForm.Entity.InvoiceNo;\r\n                item.InvoiceCode = item.InvoiceCode || this.EditForm.Entity.InvoiceNo;\r\n                item.InvoiceDate = this.EditForm.Entity.InvoiceDate;\r\n                item.SeriNo = this.EditForm.Entity.SeriNo;\r\n                item.Form = this.EditForm.Entity.Form;\r\n                item.PartnerId = this.EditForm.Entity.PartnerId;\r\n                item.EinvoiceLink = this.EditForm.Entity.EinvoiceLink;\r\n                item.EinvoiceCode = this.EditForm.Entity.EinvoiceCode;\r\n            });\r\n            gridParent.LoadMasterData(datas).then(() => {\r\n                gridParent.ClearSelected();\r\n                gridParent.AddRows(datas).then(() => {\r\n                    this.EditForm.Dirty = true;\r\n                    if (!this.EditForm.Entity.IsMultiple) {\r\n                        this.EditForm.UpdateOneVat();\r\n                    }\r\n                    else {\r\n                        this.EditForm.ShowSimple();\r\n                    }\r\n                });\r\n            });\r\n        }, () => { }, true, newItem, false, { Column: 24 });\r\n    }\r\n}",
     "Events": "{\r\n    \"saved\": \"UpdateParent\"\r\n}",
     "EntityId": "Voucher",
-    "Active": true,
     "CodeId": "0194a02d-538c-74d9-afd2-ef0ab33b32f1",
     "ComponentGroup": [
         {
@@ -18,7 +17,6 @@
             "ComponentType": "Section",
             "ClassName": "ribbon-group",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "0194ea4c-80ff-730f-9ff6-2bc646de105a",
@@ -31,7 +29,6 @@
                     "Icon": "fal fa-print",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{\r\n    \"click\": \"PrintPdf\"\r\n}",
-                    "Active": true,
                     "Query": "select MasterData.Name as CustomerType,de.Name as Department,Partner.Address AS addresscus,sales.PhoneNumber AS telsales,sales.Email AS email,sales.NickName AS nickname,de.Name as Department,ct.JobTitles AS JobTitles ,ct.ContactName AS ContactName ,ct.ContactPhoneNumber AS telcus, (SELECT STRING_AGG(CONCAT(cont.Name, ' x ', Round(InquiryContainer.Quantity,0)), ' & ') as ContainerText\r\nFROM InquiryContainer\r\nLEFT JOIN MasterData cont ON InquiryContainer.ContainerTypeId = cont.Id\r\nWHERE InquiryId = '{Id}') as ContainerText\r\nfrom Inquiry\r\nleft join Partner on Inquiry.CustomerId = Partner.Id\r\nleft join MasterData on Partner.CustomerTypeId = MasterData.Id\r\nLEFT JOIN PartnerContact ct ON ct.PartnerId = Partner.Id\r\nLEFT JOIN [USER] sales on dbo.Partner.SaleId = sales.Id \r\nleft join [User] u on u.Id = '{TokenUserId}'\r\nleft join MasterData de on de.Id = u.DepartmentId\r\nwhere Inquiry.Id = '{Id}'\r\n\r\nselect concat(pol.Name,pod.Name) as Level1,detail.GroupFee, pol.Name as Pol,pod.Name as Pod,fee.Name as Description,otherUnit.Name as Unit,curr.Code as Curr,\r\n(select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%LCL%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId)+ \r\nisnull((select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%ALL%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId),0) as LCL,\r\nRound((select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%20%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId)+ \r\nisnull((select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%ALL%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId),0),{CTotalPrice}) as Cont20,\r\n(select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%40%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId)\r\n+ \r\nisnull((select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%ALL%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId),0)+ \r\nisnull((select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%ALL%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId),0) as Cont40,\r\n(select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%45%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId)\r\n+ \r\nisnull((select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%ALL%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId),0) as Cont45\r\nfrom InquiryDetail detail\r\nleft join Terminal pol on detail.PolId = pol.Id\r\nleft join Terminal pod on detail.PodId = pod.Id\r\nleft join MasterData curr on detail.CurrencyId = curr.Id\r\nleft join FeeType fee on detail.DescriptionId = fee.Id\r\nleft join MasterData unit on detail.UnitId = unit.Id\r\nleft join MasterData groupFee on fee.GroupId = groupFee.Id\r\nleft join MasterData otherUnit on detail.OtherUnitId = otherUnit.Id\r\nwhere OtherFee = 1 and InquiryId = '{Id}'\r\ngroup by pol.Name,detail.PolId,pod.Name,detail.PodId,detail.CurrencyId,curr.Code,detail.DescriptionId,fee.Name,otherUnit.Name,detail.GroupFee,groupFee.Enum\r\nORDER BY concat(pol.Name,pod.Name),groupFee.Enum ASC",
                     "Template": "<table style=\"width: 100.054%; border-collapse: collapse; height: 383.68px;\" border=\"0\"><colgroup><col style=\"width: 16.5486%;\"><col style=\"width: 1.31338%;\"><col style=\"width: 45.9684%;\"><col style=\"width: 1.31338%;\"><col style=\"width: 10.3757%;\"><col style=\"width: 10.9011%;\"><col style=\"width: 1.31338%;\"><col style=\"width: 12.2145%;\"></colgroup>\n<tbody>\n<tr>\n<td rowspan=\"3\"><span style=\"font-size: 10pt;\">&nbsp;${CLogo}</span></td>\n<td rowspan=\"3\"><span style=\"font-size: 10pt;\">&nbsp;</span></td>\n<td style=\"text-align: center;\" colspan=\"6\" rowspan=\"3\"><span style=\"font-size: 10pt;\"><strong>${CCompanyName}</strong><br>Address: ${CAddress}<br>Hotline:<a href=\"tel:19003133\">1900 3133<br></a>Email:&nbsp;</span></td>\n</tr>\n<tr></tr>\n<tr></tr>\n<tr>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td style=\"text-align: center;\" colspan=\"3\" rowspan=\"3\">\n<div style=\"font-size: 28pt; min-width: 400px; display: inline-block; border-radius: 29px; border: 1px solid rgb(0, 0, 0); text-align: center; font-weight: 600;\">Quotation</div>\n</td>\n<td><span style=\"font-size: 9pt;\">Quote No</span></td>\n<td><span style=\"font-size: 9pt;\">:</span></td>\n<td><span style=\"font-size: 9pt; color: #e03e2d;\">${Quo No}</span></td>\n</tr>\n<tr>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td><span style=\"font-size: 9pt;\">Created At</span></td>\n<td><span style=\"font-size: 9pt;\">:</span></td>\n<td><span style=\"font-size: 9pt;\">${Quo Date}</span></td>\n</tr>\n<tr>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td><span style=\"font-size: 9pt;\">Valid Until</span></td>\n<td><span style=\"font-size: 9pt;\">:</span></td>\n<td><span style=\"font-size: 9pt;\">${Validity}</span></td>\n</tr>\n<tr>\n<td class=\"xl67\" style=\"width: 65px; text-align: left; vertical-align: top;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Company Name</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>:</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">${Customer}</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>From</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\">${nickname}</td>\n</tr>\n<tr>\n<td class=\"xl67\" style=\"width: 65px; text-align: left; vertical-align: top;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Address</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>:</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">${addresscus}</span></td>\n<td style=\"width: 30.5px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td class=\"xl67\" style=\"width: 15.25px; text-align: left; vertical-align: top;\" width=\"61\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Dept</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\"><span style=\"font-size: 10pt;\">${Department}</span></td>\n</tr>\n<tr>\n<td class=\"xl67\" style=\"width: 65px; text-align: left; vertical-align: top;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>To</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>:</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">${ContactName}</span></td>\n<td style=\"width: 30.5px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td class=\"xl67\" style=\"width: 15.25px; text-align: left; vertical-align: top;\" width=\"61\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Tel</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\"><span style=\"font-size: 10pt;\">${telsales}</span></td>\n</tr>\n<tr>\n<td class=\"xl67\" style=\"width: 65px; text-align: left; vertical-align: top;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Title</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>:</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">${JobTitles}</span></td>\n<td style=\"width: 30.5px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td class=\"xl67\" style=\"width: 15.25px; text-align: left; vertical-align: top;\" width=\"61\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Email</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\"><span style=\"font-size: 10pt;\">${email}</span></td>\n</tr>\n<tr>\n<td class=\"xl67\" style=\"width: 65px; text-align: left; vertical-align: top;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Tel</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>:</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">${telcus}</span></td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n</tr>\n<tr>\n<td class=\"xl67\" colspan=\"8\" width=\"817\" height=\"91\"><span style=\"font-size: 10pt;\">Dear ${PIC}</span><br><span style=\"font-size: 10pt;\">Thank you for your continued interest in our services. </span><br><span style=\"font-size: 10pt;\">We're excited to present a customized sea freight quote tailored to your specific needs. Our competitive rates and comprehensive solutions will ensure a seamless shipping experience.</span></td>\n</tr>\n</tbody>\n</table>\n<table class=\"dashed\" style=\"border-collapse: collapse; width: 100%; height: 38.0208px; margin-left: 0px; border: 0.01px solid rgb(126, 140, 141); margin-right: auto;\" border=\"1\"><colgroup><col style=\"width: 12.2363%;\"><col style=\"width: 13.5532%;\"><col style=\"width: 37.7632%;\"><col style=\"width: 11.3158%;\"><col style=\"width: 9.21053%;\"><col style=\"width: 15.9211%;\"></colgroup>\n<tbody data-table=\"t1\">\n<tr>\n<td style=\"border: 0.01px solid rgb(126, 140, 141); text-align: center;\" scope=\"rowgroup\"><span style=\"font-size: 10pt;\">POL</span></td>\n<td style=\"border: 0.01px solid rgb(126, 140, 141); text-align: center;\" scope=\"rowgroup\"><span style=\"font-size: 10pt;\">POD</span></td>\n<td style=\"border: 0.01px solid rgb(126, 140, 141); text-align: center;\" scope=\"rowgroup\"><span style=\"font-size: 10pt;\">Carrier</span></td>\n<td style=\"border: 0.01px solid rgb(126, 140, 141); text-align: center;\" scope=\"rowgroup\"><span style=\"font-size: 10pt;\">VIA</span></td>\n<td style=\"border: 0.01px solid rgb(126, 140, 141); text-align: center;\" scope=\"rowgroup\"><span style=\"font-size: 10pt;\">TT</span></td>\n<td style=\"border: 0.01px solid rgb(126, 140, 141); text-align: center;\" scope=\"rowgroup\"><span style=\"font-size: 10pt;\">FREQ</span></td>\n</tr>\n<tr>\n<td style=\"border-image: initial; border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{POL}</span></td>\n<td style=\"border-image: initial; border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{POD}</span></td>\n<td style=\"border-image: initial; border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{Carrier}</span></td>\n<td style=\"border-image: initial; border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{VIA}</span></td>\n<td style=\"border-image: initial; border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{Tran}</span></td>\n<td style=\"border-image: initial; border-color: #7e8c8d; text-align: center;\">\n<p>{ScheduleIdsText}</p>\n</td>\n</tr>\n</tbody>\n</table>\n<p>&nbsp;</p>\n<table class=\"dashed\" style=\"border-collapse: collapse; width: 100%; height: 179.333px; border: 1px solid rgb(126, 140, 141);\" border=\"1\"><colgroup><col style=\"width: 20.2632%;\"><col style=\"width: 11.7105%;\"><col style=\"width: 11.3158%;\"><col style=\"width: 11.4474%;\"><col style=\"width: 9.73684%;\"><col style=\"width: 9.21053%;\"><col style=\"width: 10.1316%;\"><col style=\"width: 5.65789%;\"><col style=\"width: 10.5263%;\"></colgroup>\n<thead>\n<tr>\n<td style=\"text-align: center; border-color: #7e8c8d;\" rowspan=\"2\"><span style=\"font-size: 10pt;\">Description</span></td>\n<td style=\"text-align: center; border-color: #7e8c8d;\" rowspan=\"2\"><span style=\"font-size: 10pt;\">Curr</span></td>\n<td style=\"text-align: center; border-color: #7e8c8d;\" rowspan=\"2\"><span style=\"font-size: 10pt;\">Unit</span></td>\n<td style=\"text-align: center; border-color: #7e8c8d;\" colspan=\"4\"><span style=\"font-size: 10pt;\">Price</span></td>\n<td style=\"text-align: center; border-color: #7e8c8d;\" rowspan=\"2\"><span style=\"font-size: 10pt;\">VAT</span></td>\n<td style=\"text-align: center; border-color: #7e8c8d;\" rowspan=\"2\"><span style=\"font-size: 10pt;\">Remark</span></td>\n</tr>\n<tr>\n<td style=\"text-align: center; border-color: #7e8c8d;\"><span style=\"font-size: 10pt;\">LCL</span></td>\n<td class=\"xl67\" style=\"text-align: center; border-color: #7e8c8d;\" width=\"74\" height=\"24\"><span style=\"font-size: 10pt;\">20</span></td>\n<td class=\"xl67\" style=\"text-align: center; border-color: #7e8c8d;\" width=\"61\" height=\"24\"><span style=\"font-size: 10pt;\">40</span></td>\n<td class=\"xl67\" style=\"text-align: center; border-color: #7e8c8d;\" width=\"77\" height=\"24\"><span style=\"font-size: 10pt;\">45</span></td>\n</tr>\n</thead>\n<tbody data-group=\"Level1|GroupFee\" data-table=\"c0\">\n<tr>\n<td style=\"background-color: #ced4d9; text-align: left;\" colspan=\"9\"><span style=\"font-size: 10pt;\">ROUTE: #{Pol} - #{Pod}</span></td>\n</tr>\n<tr>\n<td style=\"background-color: #ecf0f1;\" colspan=\"9\"><span style=\"font-size: 10pt;\">#{GroupFee}</span></td>\n</tr>\n<tr>\n<td style=\"border-color: #7e8c8d;\"><span style=\"font-size: 10pt;\">{Description}</span></td>\n<td style=\"border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{Curr}</span></td>\n<td style=\"border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{Unit}</span></td>\n<td style=\"border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{LCL}</span></td>\n<td style=\"border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{Cont20}</span></td>\n<td style=\"border-color: #7e8c8d; text-align: center;\">{Cont40}</td>\n<td style=\"border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{Cont45}</span></td>\n<td style=\"border-color: #7e8c8d; text-align: center;\">&nbsp;</td>\n<td style=\"border-color: #7e8c8d; text-align: center;\">&nbsp;</td>\n</tr>\n</tbody>\n<tfoot>\n<tr>\n<td style=\"vertical-align: top; border-color: #7e8c8d;\" colspan=\"9\"><span style=\"font-size: 10pt;\"><br></span><span style=\"font-size: 10pt;\"><br></span></td>\n</tr>\n</tfoot>\n</table>\n<p>&nbsp;</p>\n<p><span style=\"font-size: 10pt;\">${Remark}</span></p>",
                     "ShowExp": "!this.EditForm.Entity.Id.startsWith(\"-\")"
@@ -47,7 +44,6 @@
                     "Icon": "fal fa-print",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{\r\n    \"click\": \"PrintPdf\"\r\n}",
-                    "Active": true,
                     "Query": "\r\nSELECT cus.CompanyName AS  Partnerv, \r\nISNULL(cus.Address,'') AS addv,\r\nISNULL(cus.PhoneNumber,'') AS Tel,\r\nISNULL(cus.Fax,'') AS Fax,\r\nISNULL(sminv.Code,'DRAFT') AS Invno,\r\nISNULL(FORMAT(sminv.InvoiceDate,'dd MMM, yyyy'),'') AS Dateinv,\r\nsm.MblNo AS MBLNo,\r\npol.Name AS POLName,\r\nPOD.Name AS PODName,\r\nISNULL(FORMAT(sm.EtdDate,'dd MMM, yyyy'),'') AS ETD,\r\nISNULL(FORMAT(sm.EtaDate,'dd MMM, yyyy'),'') AS ETA,\r\nISNULL(sm.Quantity,'') AS Volume,\r\ndt.Quantity,\r\n(ISNULL(sm.Vessel,'') + ' ' + ISNULL(sm.VesselVoy,'')) AS vessal ,\r\n\r\nCASE WHEN sminv.RevisedDate IS NOT NULL THEN '<Strong>Revised Date: </Strong>' +  ISNULL(FORMAT(sminv.RevisedDate,'dd MMM, yyy'),'') ELSE '' end AS Reviseddate,\r\nCASE \r\n\tWHEN sminv.VoucherTypeId = 1 AND sminv.DebitAmount<0 THEN 'CREDIT NOTE'\r\n\tWHEN sminv.VoucherTypeId = 1 AND sminv.DebitAmount>=0 THEN 'DEBIT NOTE'\r\nELSE\r\n\t'INVOICE'\r\nEND\r\nAS Titles,\r\nCASE WHEN sminv.CurrencyId IS NULL THEN 'Original Curr' ELSE curr.Name END AS Currinv,\r\nFORMAT(CASE WHEN sminv.CurrencyId IS NULL THEN 1 ELSE sminv.ExchangeRateINV2 END,'#,##.00') AS EXT,\r\nCASE WHEN sminv.DebitAmount>= 0 AND dt.TypeId=2 THEN \r\n\t(CASE \r\n\tWHEN sminv.CurrencyId IS NULL THEN  dt.Quantity * dt.Amount \r\n\tWHEN curr.Code = 'VND'  THEN ROUND(dt.Quantity * ROUND(dt.Amount*dt.ExchangeRateINV,0),0)\r\n\tELSE dt.Quantity * dt.Amount END) * (-1)\r\n\r\nWHEN sminv.DebitAmount>= 0 AND dt.TypeId=1 THEN (\r\n\t(CASE \r\n\tWHEN sminv.CurrencyId IS NULL THEN  dt.Quantity * dt.Amount \r\n\tWHEN curr.Code = 'VND'  THEN ROUND(dt.Quantity * ROUND(dt.Amount*dt.ExchangeRateINV,0),0)\r\n\tELSE dt.Quantity * dt.Amount END))\r\n\r\nWHEN sminv.DebitAmount< 0 AND dt.TypeId=1 THEN (CASE \r\n\tWHEN sminv.CurrencyId IS NULL THEN  dt.Quantity * dt.Amount \r\n\tWHEN curr.Code = 'VND'  THEN ROUND(dt.Quantity * ROUND(dt.Amount*dt.ExchangeRateINV,0),0)\r\n\tELSE dt.Quantity * dt.Amount END) * (-1)\r\nELSE \t(CASE \r\n\tWHEN sminv.CurrencyId IS NULL THEN  dt.Quantity * dt.Amount \r\n\tWHEN curr.Code = 'VND'  THEN ROUND(dt.Quantity * ROUND(dt.Amount*dt.ExchangeRateINV,0),0)\r\n\tELSE dt.Quantity * dt.Amount END)\r\nEND AS AmountINV\r\n,CASE \r\n\tWHEN sminv.CurrencyId IS NULL THEN  dt.Quantity * dt.Amount \r\n\tWHEN curr.Code = 'VND'  THEN ROUND(dt.Quantity * ROUND(dt.Amount*dt.ExchangeRateINV,0),0)\r\nELSE dt.Quantity * dt.Amount END\r\nAS Amountvnd,\r\ncurr.Code,\r\ncurdt.Code\r\nFROM dbo.ShipmentInvoice sminv LEFT JOIN dbo.Partner cus ON cus.Id=sminv.VendorId\r\nLEFT JOIN dbo.ShipmentInvoiceDetail dt ON dt.ShipmentInvoiceId = sminv.Id \r\nLEFT JOIN dbo.Shipment sm ON sm.Id = sminv.ShipmentId\r\nLEFT JOIN dbo.MasterData curr ON curr.Id = sminv.CurrencyId\r\nLEFT JOIN  dbo.MasterData curdt ON curdt.Id=dt.CurrencyId\r\nLEFT JOIN dbo.Terminal pol ON pol.Id = sm.PolId \r\nLEFT JOIN dbo.Terminal POD ON POD.Id = sm.PodId\r\n WHERE sminv.Id='{Id}'\r\n \r\n \r\n SELECT\r\nCASE WHEN sminv.DebitAmount>= 0 AND dt.TypeId=2 THEN \r\n\t(CASE \r\n\tWHEN sminv.CurrencyId IS NULL THEN  dt.Quantity * dt.Amount \r\n\tWHEN curr.Code = 'VND'  THEN ROUND(dt.Quantity * ROUND(dt.Amount*dt.ExchangeRateINV,0),0)\r\n\tELSE dt.Quantity * dt.Amount END) * (-1)\r\n\r\nWHEN sminv.DebitAmount>= 0 AND dt.TypeId=1 THEN (\r\n\t(CASE \r\n\tWHEN sminv.CurrencyId IS NULL THEN  dt.Quantity * dt.Amount \r\n\tWHEN curr.Code = 'VND'  THEN ROUND(dt.Quantity * ROUND(dt.Amount*dt.ExchangeRateINV,0),0)\r\n\tELSE dt.Quantity * dt.Amount END))\r\n\r\nWHEN sminv.DebitAmount< 0 AND dt.TypeId=1 THEN (CASE \r\n\tWHEN sminv.CurrencyId IS NULL THEN  dt.Quantity * dt.Amount \r\n\tWHEN curr.Code = 'VND'  THEN ROUND(dt.Quantity * ROUND(dt.Amount*dt.ExchangeRateINV,0),0)\r\n\tELSE dt.Quantity * dt.Amount END) * (-1)\r\nELSE \t(CASE \r\n\tWHEN sminv.CurrencyId IS NULL THEN  dt.Quantity * dt.Amount \r\n\tWHEN curr.Code = 'VND'  THEN ROUND(dt.Quantity * ROUND(dt.Amount*dt.ExchangeRateINV,0),0)\r\n\tELSE dt.Quantity * dt.Amount END)\r\nEND AS AmountINV\r\n,CASE \r\n\tWHEN sminv.CurrencyId IS NULL THEN  dt.Quantity * dt.Amount \r\n\tWHEN curr.Code = 'VND'  THEN ROUND(dt.Quantity * ROUND(dt.Amount*dt.ExchangeRateINV,0),0)\r\nELSE dt.Quantity * dt.Amount END\r\nAS Amountvnd,\r\n\r\nfee.Name AS namefee,\r\nunit.Name AS unit, \r\ndt.Quantity AS Qty, \r\ndt.Amount AS amountOG,\r\ncurdt.Code AS curdt,\r\ndt.Vat AS VAT,\r\nROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS Sott\r\n\r\nFROM dbo.ShipmentInvoice sminv LEFT JOIN dbo.Partner cus ON cus.Id=sminv.VendorId\r\nLEFT JOIN dbo.ShipmentInvoiceDetail dt ON dt.ShipmentInvoiceId = sminv.Id \r\nLEFT JOIN dbo.Shipment sm ON sm.Id = sminv.ShipmentId\r\nLEFT JOIN dbo.MasterData curr ON curr.Id = sminv.CurrencyId\r\nLEFT JOIN dbo.FeeType fee ON fee.Id=dt.DescriptionId\r\nLEFT JOIN  dbo.MasterData curdt ON curdt.Id=dt.CurrencyId\r\nLEFT JOIN dbo.MasterData unit ON unit.Id=dt.UnitId\r\nLEFT JOIN dbo.Terminal pol ON pol.Id = sm.PolId \r\nLEFT JOIN dbo.Terminal POD ON POD.Id = sm.PodId\r\n WHERE sminv.Id='{Id}'\r\n  ORDER BY dt.[Order] ASC",
                     "Template": "<table style=\"border-collapse: collapse; width: 99.4538%; height: 49px;\" border=\"1\"><colgroup><col style=\"width: 22.0955%;\"><col style=\"width: 77.8623%;\"></colgroup>\n<tbody>\n<tr style=\"height: 48px;\">\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n</tr>\n</tbody>\n</table>\n<p>&nbsp;</p>\n<table style=\"border-collapse: collapse; width: 99.8319%; height: 247.479px; border-style: hidden;\" border=\"0\"><colgroup><col style=\"width: 15.0254%;\"><col style=\"width: 11.3638%;\"><col style=\"width: 24.4953%;\"><col style=\"width: 12.3739%;\"><col style=\"width: 2.14649%;\"><col style=\"width: 34.5964%;\"></colgroup>\n<tbody>\n<tr style=\"height: 19px;\">\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td style=\"vertical-align: middle; text-align: center;\" colspan=\"3\" rowspan=\"3\">\n<div style=\"font-size: 28pt; min-width: 350px; display: inline-block; border-radius: 29px; border: 1px solid rgb(0, 0, 0); text-align: center; font-weight: 600;\">${Titles}</div>\n</td>\n</tr>\n<tr style=\"height: 17.75px;\">\n<td><strong>BILL TO</strong></td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n</tr>\n<tr style=\"height: 17.75px;\">\n<td colspan=\"3\"><strong>${Partnerv}</strong></td>\n</tr>\n<tr style=\"height: 27.125px;\">\n<td colspan=\"3\">&nbsp;${addv}</td>\n<td style=\"text-align: center;\" colspan=\"3\" rowspan=\"2\">\n<div><strong>Number:</strong> ${Invno}</div>\n<p><strong>Date:</strong> ${Dateinv}</p>\n<p>${Reviseddate}</p>\n</td>\n</tr>\n<tr style=\"height: 24.0417px;\">\n<td colspan=\"3\">&nbsp;TELL: ${Tel} ${Fax}</td>\n</tr>\n<tr style=\"height: 17.75px;\">\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n</tr>\n<tr style=\"height: 22.125px;\">\n<td><strong>MBL/MAWB</strong></td>\n<td colspan=\"2\">${MBLNo}</td>\n<td><strong>Volume</strong></td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n</tr>\n<tr style=\"height: 21.0625px;\">\n<td><strong>HBL/HAWB</strong></td>\n<td colspan=\"2\">&nbsp;</td>\n<td><strong>Q'ty</strong></td>\n<td>&nbsp;</td>\n<td>${Volume}</td>\n</tr>\n<tr style=\"height: 22.9375px;\">\n<td><strong>POL/AOL</strong></td>\n<td colspan=\"2\">${POLName}</td>\n<td><strong>ETD / ETA</strong></td>\n<td>&nbsp;</td>\n<td>${ETD}/${ETA}</td>\n</tr>\n<tr style=\"height: 22.9375px;\">\n<td><strong>POD/AOD</strong></td>\n<td colspan=\"2\">${PODName}</td>\n<td><strong>VSL./ FLT.</strong></td>\n<td>&nbsp;</td>\n<td>${vessal}</td>\n</tr>\n<tr style=\"height: 15.6667px;\">\n<td><strong>Currency:</strong></td>\n<td colspan=\"2\">${Currinv}</td>\n<td><strong>&nbsp;</strong></td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n</tr>\n<tr style=\"height: 19.3333px;\">\n<td><strong>Exchange rate</strong></td>\n<td colspan=\"2\">${EXT}</td>\n<td><strong>&nbsp;</strong></td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n</tr>\n</tbody>\n</table>\n<p>&nbsp;</p>\n<table class=\"dashaze dashez dashez dazhed dashed dashaze dashez dashez dazhed dashed\" style=\"border-collapse: collapse; width: 100.21%; height: 44.0625px; border-style: solid; border-width: 1px;\" border=\"1\"><colgroup><col style=\"width: 4.90984%;\"><col style=\"width: 23.5421%;\"><col style=\"width: 11.9599%;\"><col style=\"width: 11.4563%;\"><col style=\"width: 13.9742%;\"><col style=\"width: 11.3304%;\"><col style=\"width: 7.30182%;\"><col style=\"width: 15.6108%;\"></colgroup>\n<thead>\n<tr style=\"height: 22.625px;\">\n<td style=\"vertical-align: middle; text-align: center; border: 1px solid #000000;\"><strong>No</strong></td>\n<td style=\"vertical-align: middle; text-align: center; border: 1px solid #000000;\"><strong>Description</strong></td>\n<td style=\"vertical-align: middle; text-align: center; border: 1px solid #000000;\"><strong>Quantity</strong></td>\n<td style=\"vertical-align: middle; text-align: center; border: 1px solid #000000;\"><strong>Unit</strong></td>\n<td style=\"vertical-align: middle; text-align: center; border: 1px solid #000000;\"><strong>Price</strong></td>\n<td style=\"vertical-align: middle; text-align: center; border: 1px solid #000000;\"><strong>VAT %</strong></td>\n<td style=\"vertical-align: middle; text-align: center; border: 1px solid #000000;\"><strong>Curr.</strong></td>\n<td style=\"vertical-align: middle; text-align: center; border: 1px solid #000000;\"><strong>Amount</strong></td>\n</tr>\n</thead>\n<tbody data-table=\"c0\">\n<tr style=\"height: 21.4375px;\">\n<td style=\"text-align: center; vertical-align: middle; border: 1px solid #000000;\">\n<p>{Sott}</p>\n</td>\n<td style=\"text-align: left; vertical-align: middle; border: 1px solid #000000;\">\n<p>{namefee}</p>\n</td>\n<td style=\"text-align: center; vertical-align: middle; border: 1px solid #000000;\">\n<p>{Qty}</p>\n</td>\n<td style=\"text-align: center; vertical-align: middle; border: 1px solid #000000;\">\n<p>{unit}</p>\n</td>\n<td style=\"text-align: center; vertical-align: middle; border: 1px solid #000000;\">\n<p>{amountOG}</p>\n</td>\n<td style=\"text-align: center; vertical-align: middle; border: 1px solid #000000;\">\n<p>{VAT}</p>\n</td>\n<td style=\"text-align: center; vertical-align: middle; border: 1px solid #000000;\">\n<p>{curdt}</p>\n</td>\n<td style=\"text-align: center; vertical-align: middle; border: 1px solid #000000;\">\n<p>{AmountINV}</p>\n</td>\n</tr>\n</tbody>\n</table>",
                     "ShowExp": "!this.EditForm.Entity.Id.startsWith(\"-\")"
@@ -62,8 +58,7 @@
                     "Icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
-                    "Events": "{\r\n    \"click\": \"SavePatch\"\r\n}",
-                    "Active": true
+                    "Events": "{\r\n    \"click\": \"SavePatch\"\r\n}"
                 }
             ]
         },
@@ -75,7 +70,6 @@
             "ClassName": "title-option",
             "Style": "margin-bottom: 0px;padding: 0;",
             "XxlCol": 12,
-            "Active": true,
             "DisabledExp": "this.EditForm.Entity.InsertedBy != this.Token.UserId || this.EditForm.Entity.StatusId == 2 || (this.EditForm.Entity.StatusId == 3 && this.EditForm.Entity.UserApprovedIds) || [2, 3].includes(this.EditForm.Entity.ProgressId) || this.EditForm.Entity.IsLock || this.EditForm.Entity.ActionId == 3",
             "Components": [
                 {
@@ -92,7 +86,6 @@
                     "Style": "display: flex;align-items: center;gap: 1rem;",
                     "Events": "{\r\n    \"change\": \"ChangeAcc\"\r\n}",
                     "Validation": "[{ \"Rule\": \"required\", \"Message\": \"{0} is required\" }]",
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"Receipt Voucher\"\r\n    },\r\n    {\r\n        \"Id\": 6,\r\n        \"Name\": \"Payment Voucher\"\r\n    }\r\n]",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]"
                 },
@@ -107,8 +100,7 @@
                     "ShowLabel": true,
                     "Style": "display: flex;align-items: center;gap: 1rem;height: 33px;",
                     "PopulateField": "this.EditForm.ShowSimple();",
-                    "DefaultVal": "true",
-                    "Active": true
+                    "DefaultVal": "true"
                 }
             ]
         },
@@ -118,8 +110,7 @@
             "Order": 3,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
-            "XxlCol": 12,
-            "Active": true
+            "XxlCol": 12
         },
         {
             "Id": "0194ea4c-8381-731a-ae6e-741b20a0c932",
@@ -127,7 +118,6 @@
             "ComponentType": "Section",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "DisabledExp": "this.EditForm.Entity.InsertedBy != this.Token.UserId || this.EditForm.Entity.StatusId == 2 || (this.EditForm.Entity.StatusId == 3 && this.EditForm.Entity.UserApprovedIds) || [2, 3].includes(this.EditForm.Entity.ProgressId) || this.EditForm.Entity.IsLock || this.EditForm.Entity.ActionId == 3",
             "ParentId": "0194ea4c-8341-71fe-8105-8761bc775402",
             "XxlOuterColumn": 8,
@@ -145,7 +135,6 @@
                     "ShowLabel": true,
                     "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('customer-editor',{ ServiceId : 1, TypeId : 3, ActionId : 1, SaleId: this.Token.UserId })\",\r\n    \"edit\": \"this.EditForm.OpenPopup('customer-editor',this.Matched)\"\r\n}",
                     "PopulateField": "this.EditForm.Entity.CompanyName = this.Matched.CompanyNameInv;\r\nthis.EditForm.Entity.CompanyId = this.Matched.Id;\r\nthis.EditForm.Entity.PartnerId = this.Matched.Id;\r\nthis.EditForm.Entity.CompanyAddress = this.Matched.AddressInv;\r\nthis.EditForm.Entity.TaxCode = this.Matched.TaxCode;\r\nthis.EditForm.UpdateView(false, false, \"CompanyName\", \"PartnerId\", \"CompanyId\", \"CompanyAddress\", \"TaxCode\");\r\nreturn null;",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and ((ServiceId = 1 and TypeId in (2,3)) or ServiceId in (2,3,5)))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and ((ServiceId = 1 and TypeId in (2,3)) or ServiceId in (2,3,5)))\"\r\n}",
                     "RefName": "Partner",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
@@ -160,8 +149,7 @@
                     "RowSpan": 2,
                     "Row": 4,
                     "Label": "Description",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "0194ea4c-842c-769f-9a22-87eec38c06b3",
@@ -171,8 +159,7 @@
                     "Column": 8,
                     "Row": 2,
                     "Label": "Address",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "0194ea4c-845c-75ec-8eae-7f1b6ff740ea",
@@ -182,8 +169,7 @@
                     "Column": 8,
                     "Row": 2,
                     "Label": "Person",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "0194ea4c-8497-709e-89fa-0473edf5e940",
@@ -194,8 +180,7 @@
                     "RowSpan": 2,
                     "Row": 4,
                     "Label": "Notes",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "0194ea4c-84d4-71db-b70f-d53c83f89b6c",
@@ -210,7 +195,6 @@
                     "ShowLabel": true,
                     "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('customer-editor',{ ServiceId : 1, TypeId : 3, ActionId : 1, SaleId: this.Token.UserId })\",\r\n    \"edit\": \"this.EditForm.OpenPopup('customer-editor',this.Matched)\"\r\n}",
                     "PopulateField": "this.EditForm.Entity.VendorName = this.Matched.Name;\r\nthis.EditForm.Entity.CompanyId = this.Matched.Id;\r\nthis.EditForm.Entity.CompanyAddress = this.Matched.AddressInv;\r\nthis.EditForm.UpdateView(false, false, \"VendorName\", \"CompanyId\", \"CompanyAddress\");\r\nreturn null;",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and ((ServiceId = 1 and TypeId in (2,3)) or ServiceId in (2,3,5)))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and ((ServiceId = 1 and TypeId in (2,3)) or ServiceId in (2,3,5)))\"\r\n}",
                     "RefName": "Partner",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
@@ -224,8 +208,7 @@
                     "Column": 4,
                     "Row": 2,
                     "Label": "Partner",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "0194ea4c-85b1-717e-92e3-2f2e39224643",
@@ -236,7 +219,6 @@
                     "Row": 50,
                     "Label": "References",
                     "ShowLabel": true,
-                    "Active": true,
                     "ShowHotKey": true
                 },
                 {
@@ -250,7 +232,6 @@
                     "Label": "Internal Ref",
                     "ShowLabel": true,
                     "Disabled": true,
-                    "Active": true,
                     "RefName": "Voucher",
                     "ShowHotKey": true
                 }
@@ -262,7 +243,6 @@
             "ComponentType": "Section",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "DisabledExp": "this.EditForm.Entity.InsertedBy != this.Token.UserId || this.EditForm.Entity.StatusId == 2 || (this.EditForm.Entity.StatusId == 3 && this.EditForm.Entity.UserApprovedIds) || [2, 3].includes(this.EditForm.Entity.ProgressId) || this.EditForm.Entity.IsLock || this.EditForm.Entity.ActionId == 3",
             "ParentId": "0194ea4c-8341-71fe-8105-8761bc775402",
             "XxlOuterColumn": 4,
@@ -274,8 +254,7 @@
                     "ComponentType": "Input",
                     "Column": 4,
                     "Label": "Voucher No.",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "0194ea4c-8650-747d-bda9-5a68b258c5e7",
@@ -284,8 +263,7 @@
                     "ComponentType": "Datepicker",
                     "Column": 4,
                     "Label": "Voucher Date",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "0194ea4c-868d-70d0-9c9c-8e1d2825089d",
@@ -299,7 +277,6 @@
                     "Label": "Status",
                     "ShowLabel": true,
                     "DefaultVal": "2",
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fas fa-check-circle mr-1'></i>Active</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-ban mr-1'></i>Void</span>\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
@@ -310,8 +287,7 @@
                     "ComponentType": "Datepicker",
                     "Column": 4,
                     "Label": "Post Date",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "0194ea4c-86f9-7079-a0fd-f675a7e47a9e",
@@ -321,8 +297,7 @@
                     "Column": 4,
                     "Row": 50,
                     "Label": "G/L",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "0194ea4c-8744-7185-936c-5c9d16ce54ec",
@@ -335,7 +310,6 @@
                     "Row": 100,
                     "Label": "Report Code",
                     "ShowLabel": true,
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"COPY\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"ORIGINAL\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"SURRENDERED\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
@@ -351,7 +325,6 @@
                     "Label": "Method",
                     "ShowLabel": true,
                     "DefaultVal": "1",
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Bank\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"Cash\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
@@ -363,8 +336,7 @@
                     "Column": 4,
                     "Row": 50,
                     "Label": "Pay within days",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "0194ea4c-8804-775c-9b4b-bd79a1c19907",
@@ -374,8 +346,7 @@
                     "Column": 4,
                     "Row": 50,
                     "Label": "Due Date",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "0194ea4c-896a-76bf-b9f0-85f12c21430b",
@@ -385,8 +356,7 @@
                     "Column": 2,
                     "Row": 50,
                     "Label": "Invoice",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "0194ea57-26bc-70da-9c98-ac256eb3c848",
@@ -398,7 +368,6 @@
                     "Label": "Bank",
                     "ShowLabel": true,
                     "ClassName": "sticky",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from PartnerBankAccount as ds where PartnerId = '{VendorId}'\",\r\n    \"total\": \"select count(ds.Id) as total from PartnerBankAccount as ds where PartnerId = '{VendorId}'\"\r\n}",
                     "RefName": "PartnerBankAccount",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"BankId\",\r\n        \"Label\": \"Bank\",\r\n        \"ComponentType\": \"Dropdown\",\r\n        \"RefName\": \"MasterData\",\r\n        \"FormatData\":\"{Name}\"\r\n    },\r\n    {\r\n        \"FieldName\": \"AccountNumber\",\r\n        \"Label\": \"Account Number\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"AccountName\",\r\n        \"Label\": \"Account Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"SwiftCode\",\r\n        \"Label\": \"Swift Code\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
@@ -414,7 +383,6 @@
             "Label": "Voucher Detail",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "DisabledExp": "this.EditForm.Entity.InsertedBy != this.Token.UserId || this.EditForm.Entity.StatusId == 2 || (this.EditForm.Entity.StatusId == 3 && this.EditForm.Entity.UserApprovedIds) || [2, 3].includes(this.EditForm.Entity.ProgressId) || this.EditForm.Entity.IsLock || this.EditForm.Entity.ActionId == 3",
             "ParentId": "0194ea4c-8341-71fe-8105-8761bc775402",
             "XxlOuterColumn": 12,
@@ -431,7 +399,6 @@
                     "ChildStyle": "max-height:430px;",
                     "Events": "{\r\n    \"change\": \"CalcTotal\",\r\n    \"FirstLoad\": \"FirstShowSimple\",\r\n    \"AfterCreated\": \"ShowSimple\"\r\n}",
                     "DefaultVal": "{\r\n    \"VoucherId\": this.Entity.Id\r\n}",
-                    "Active": true,
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from VoucherDetail as ds where ds.VoucherId = '{VoucherId}'\",\r\n    \"total\": \"select count(ds.Id) as total from VoucherDetail as ds where ds.VoucherId = '{VoucherId}'\"\r\n}",
                     "RefName": "VoucherDetail",
@@ -449,8 +416,7 @@
                     "Row": 50,
                     "Label": "Invoice No",
                     "ShowLabel": true,
-                    "Events": "{\r\n    \"change\": \"UpdateINV\"\r\n}",
-                    "Active": true
+                    "Events": "{\r\n    \"change\": \"UpdateINV\"\r\n}"
                 },
                 {
                     "Id": "0194ea4c-8a53-744b-b8e6-b331a6dee3ee",
@@ -461,8 +427,7 @@
                     "Row": 50,
                     "Label": "INV Date",
                     "ShowLabel": true,
-                    "Events": "{\r\n    \"change\": \"UpdateINV\"\r\n}",
-                    "Active": true
+                    "Events": "{\r\n    \"change\": \"UpdateINV\"\r\n}"
                 },
                 {
                     "Id": "0194ea4c-8a8d-739b-bb1b-5b010dd9684d",
@@ -473,8 +438,7 @@
                     "Row": 50,
                     "Label": "Serial No",
                     "ShowLabel": true,
-                    "Events": "{\r\n    \"change\": \"UpdateINV\"\r\n}",
-                    "Active": true
+                    "Events": "{\r\n    \"change\": \"UpdateINV\"\r\n}"
                 },
                 {
                     "Id": "0194ea4c-8add-76e8-8491-5b6d792e2a58",
@@ -486,8 +450,7 @@
                     "Row": 50,
                     "Label": "Form",
                     "ShowLabel": true,
-                    "Events": "{\r\n    \"change\": \"UpdateINV\"\r\n}",
-                    "Active": true
+                    "Events": "{\r\n    \"change\": \"UpdateINV\"\r\n}"
                 },
                 {
                     "Id": "0194ea4c-8b15-751f-b8cd-0a006c88d7ee",
@@ -498,8 +461,7 @@
                     "Row": 50,
                     "Label": "Multiple",
                     "ShowLabel": true,
-                    "Events": "{\r\n    \"change\": \"UpdateOneVat\"\r\n}",
-                    "Active": true
+                    "Events": "{\r\n    \"change\": \"UpdateOneVat\"\r\n}"
                 },
                 {
                     "Id": "0194ea4c-8b45-71b2-b198-7971b3bf999d",
@@ -510,8 +472,7 @@
                     "Row": 50,
                     "Precision": 0,
                     "Label": "Sub Total",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "0194ea4c-8b7b-7658-a8a4-fed9e68825ce",
@@ -522,8 +483,7 @@
                     "Row": 50,
                     "Label": "Code EInvoice",
                     "ShowLabel": true,
-                    "Events": "{\r\n    \"change\": \"UpdateINV\"\r\n}",
-                    "Active": true
+                    "Events": "{\r\n    \"change\": \"UpdateINV\"\r\n}"
                 },
                 {
                     "Id": "0194ea4c-8bb8-71fd-be85-91df3b693247",
@@ -535,8 +495,7 @@
                     "Row": 50,
                     "Label": "Link EInvoice",
                     "ShowLabel": true,
-                    "Events": "{\r\n    \"change\": \"UpdateINV\"\r\n}",
-                    "Active": true
+                    "Events": "{\r\n    \"change\": \"UpdateINV\"\r\n}"
                 },
                 {
                     "Id": "0194ea4c-8be4-763c-af65-13ded635f24f",
@@ -549,7 +508,6 @@
                     "Label": "Vat",
                     "ShowLabel": true,
                     "Events": "{\r\n    \"change\": \"CalcTotal\"\r\n}",
-                    "Active": true,
                     "ShowExp": "!this.EditForm.Entity.IsMultiple",
                     "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
                 },
@@ -562,8 +520,7 @@
                     "Row": 50,
                     "Precision": 0,
                     "Label": "TAX Amount",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "0194ea4c-8c93-73a6-8db6-50c65f6c82b5",
@@ -577,7 +534,6 @@
                     "Label": "Partner",
                     "ShowLabel": true,
                     "Events": "{\r\n    \"change\": \"UpdateINV\"\r\n}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and ((ServiceId = 1 and TypeId in (2,3)) or ServiceId in (2,3,5)))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and ((ServiceId = 1 and TypeId in (2,3)) or ServiceId in (2,3,5)))\"\r\n}",
                     "RefName": "Partner",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
@@ -592,8 +548,7 @@
                     "Offset": 6,
                     "Row": 50,
                     "Label": "Notes",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "0194ea4c-8d81-7108-ab49-17a20b2a04cb",
@@ -605,8 +560,7 @@
                     "Precision": 0,
                     "Label": "Total Amount",
                     "ShowLabel": true,
-                    "Events": "{\r\n    \"change\": \"UpdateTotalAmout\"\r\n}",
-                    "Active": true
+                    "Events": "{\r\n    \"change\": \"UpdateTotalAmout\"\r\n}"
                 }
             ]
         }
@@ -621,7 +575,6 @@
             "Label": "Tax Amount (Og)",
             "Events": "{\r\n    \"input\": \"CalcUnitPrice\"\r\n}",
             "Width": "106px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "106px",
@@ -640,7 +593,6 @@
             "Label": "Currency (Og)",
             "Events": "{\r\n    \"change\": \"CheckCurrency\"\r\n}",
             "Width": "106px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Currency'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Currency'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
@@ -660,7 +612,6 @@
             "Label": "Exchange Rate",
             "Events": "{\r\n    \"change\": \"ChangeExchangeRate2\"\r\n}",
             "Width": "95px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "95px",
@@ -678,7 +629,6 @@
             "Label": "Description",
             "Events": "{\r\n    \"change\": \"UpdateGroupFee\"\r\n}",
             "Width": "266px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from FeeType as ds\",\r\n    \"total\": \"select count(ds.Id) as total from FeeType as ds\"\r\n}",
             "RefName": "FeeType",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Description\", \"Label\" : \"Description\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"GroupId\", \"Label\" : \"Group\", \"ComponentType\" : \"Dropdown\", \"RefName\" : \"MasterData\", \"FormatData\" : \"{Name}\" }]",
@@ -699,7 +649,6 @@
             "Label": "Quantity",
             "Events": "{\r\n    \"input\": \"CalcPrice\"\r\n}",
             "Width": "77px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "77px",
@@ -717,7 +666,6 @@
             "Row": 100,
             "Label": "Unit",
             "Width": "90px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name in (N'Unit Type','LTL Type')\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name in (N'Unit Type','LTL Type')\"\r\n}",
             "RefName": "MasterData",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
@@ -736,7 +684,6 @@
             "Label": "VAT",
             "Events": "{\r\n    \"input\": \"CalcPrice\"\r\n}",
             "Width": "97px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "97px",
@@ -755,7 +702,6 @@
             "Row": 100,
             "Label": "Invoice",
             "ShowLabel": true,
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from ShipmentInvoice as ds where ActionId = 2 and VendorIds like '%{VendorIds}%' and TypeId = 2\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentInvoice as ds where ActionId = 2 and VendorIds like '%{VendorIds}%' and TypeId = 2\"\r\n}",
             "RefName": "ShipmentInvoice",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Code\",\r\n        \"Label\": \"Code\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"PostDate\",\r\n        \"Label\": \"Post Date\",\r\n        \"ComponentType\": \"Datepicker\"\r\n    }\r\n]",
@@ -770,7 +716,6 @@
             "ComponentType": "Checkbox",
             "Label": "Approved",
             "Width": "133px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "133px",
             "MaxWidth": "133px",
@@ -783,7 +728,6 @@
             "ComponentType": "Input",
             "Label": "Reason Change",
             "Width": "374px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "374px",
             "MaxWidth": "374px",
@@ -797,7 +741,6 @@
             "FormatData": "DD/MM/YYYY HH:mm",
             "Label": "Action Date",
             "Width": "144px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "144px",
             "MaxWidth": "144px",
@@ -813,7 +756,6 @@
             "Row": 100,
             "Label": "Action by",
             "Width": "116px",
-            "Active": true,
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
@@ -834,7 +776,6 @@
             "ShowLabel": true,
             "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('provider-editor',{ ServiceId: 3, ActionId: 1})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('provider-editor',this.Matched)\",\r\n    \"change\": \"ChangeDataFee\"\r\n}",
             "PopulateField": "var company = this.Matched;\r\nif (company.AssignmentInvId) {\r\n    company = company.AssignmentInv;\r\n}\r\nthis.EditForm.Entity.CompanyId = company.Id;\r\nthis.EditForm.Entity.VendorId = company.Id;\r\nthis.EditForm.Entity.VendorName = company.Name;\r\nthis.EditForm.Entity.CustomerId = company.Id;\r\nthis.EditForm.Entity.CompanyIdText = company.CompanyNameInv;\r\nthis.EditForm.Entity.CompanyAddress = company.AddressInv;\r\nthis.EditForm.Entity.TaxCode = company.TaxCode;\r\nthis.EditForm.UpdateView(false, false, \"VendorId\", \"VendorName\", \"CompanyId\", \"CustomerId\", \"CompanyAddress\", \"TaxCode\");\r\nreturn null;",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (Id in (select distinct VendorId from ShipmentFee) and ('{HblIds}' = '' or '{HblIds}' != '' and ds.Id in (select distinct VendorId from ShipmentFee where ShipmentId in (SELECT value FROM STRING_SPLIT('{HblIds}', ',')))))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (Id in (select distinct VendorId from ShipmentFee) and ('{HblIds}' = '' or '{HblIds}' != '' and ds.Id in (select distinct VendorId from ShipmentFee where ShipmentId in (SELECT value FROM STRING_SPLIT('{HblIds}', ',')))))\"\r\n}",
             "RefName": "Partner",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"Input\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"AssignmentInvId\",\r\n        \"Label\": \"Assignment Inv\",\r\n        \"ComponentType\": \"Dropdown\",\r\n        \"RefName\": \"Partner\",\r\n        \"FormatData\": \"{Name}\"\r\n    }\r\n]",
@@ -852,7 +793,6 @@
             "Label": "From Date",
             "ShowLabel": true,
             "Events": "{    \"change\": \"ChangeDataFee\"}",
-            "Active": true,
             "EntityId": "AddCharge"
         },
         {
@@ -865,7 +805,6 @@
             "Label": "To Date",
             "ShowLabel": true,
             "Events": "{    \"change\": \"ChangeDataFee\"}",
-            "Active": true,
             "EntityId": "AddCharge"
         },
         {
@@ -880,7 +819,6 @@
             "Label": "Date mode",
             "ShowLabel": true,
             "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
-            "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": \"ShipmentDate\",\r\n        \"Name\": \"Shipment\"\r\n    },\r\n    {\r\n        \"Id\": \"EtdDate\",\r\n        \"Name\": \"ETD\"\r\n    },\r\n    {\r\n        \"Id\": \"EtaDate\",\r\n        \"Name\": \"ETA\"\r\n    }\r\n]",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "EntityId": "AddCharge"
@@ -897,7 +835,6 @@
             "Label": "Debit No",
             "ShowLabel": true,
             "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from ShipmentInvoice ds where (TypeId = 1 and VendorIds = '{VendorIds}' and ds.ActionId = 2)\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentInvoice ds where (TypeId = 1 and VendorIds = '{VendorIds}' and ds.ActionId = 2)\"\r\n}",
             "RefName": "ShipmentInvoice",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Code\",\r\n        \"Label\": \"Code\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
@@ -917,7 +854,6 @@
             "Label": "MBL No",
             "ShowLabel": true,
             "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from Shipment ds where exists (select sf.Id from ShipmentFee sf left join Shipment s on sf.ShipmentId = s.Id where sf.VendorId in (SELECT value FROM STRING_SPLIT('{VendorIds}', ',')) and s.ParentId = ds.Id) and ds.ParentId is null\",\r\n    \"total\": \"select count(ds.Id) as total from Shipment ds where exists (select sf.Id from ShipmentFee sf left join Shipment s on sf.ShipmentId = s.Id where sf.VendorId in (SELECT value FROM STRING_SPLIT('{VendorIds}', ',')) and s.ParentId = ds.Id) and ds.ParentId is null\"\r\n}",
             "RefName": "Shipment",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"MblNo\",\r\n        \"Label\": \"MblNo\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
@@ -937,7 +873,6 @@
             "Label": "Service",
             "ShowLabel": true,
             "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
-            "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": \"1\",\r\n        \"Name\": \"Air Export\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-plane-departure mr-1'></i>Air Export</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"2\",\r\n        \"Name\": \"Air Import\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-plane-arrival mr-1'></i>Air Import</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"3\",\r\n        \"Name\": \"Sea Export\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-ship mr-1'></i>Sea Export FCL</span>\"\r\n    }\r\n]\r\n",
             "Template": "[{ \"FieldName\" : \"Description\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "EntityId": "AddCharge",
@@ -955,7 +890,6 @@
             "Label": "Description",
             "ShowLabel": true,
             "Events": "{    \"change\": \"ChangeDataFee\"}",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from FeeType as ds\",\r\n    \"total\": \"select count(ds.Id) as total from FeeType as ds\"\r\n}",
             "RefName": "FeeType",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
@@ -974,7 +908,6 @@
             "Label": "File No",
             "ShowLabel": true,
             "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from Shipment ds where exists (select sf.Id from ShipmentFee sf left join Shipment s on sf.ShipmentId = s.Id where sf.VendorId in (SELECT value FROM STRING_SPLIT('{VendorIds}', ',')) and s.ParentId = ds.Id) and ds.ParentId is null\",\r\n    \"total\": \"select count(ds.Id) as total from Shipment ds where exists (select sf.Id from ShipmentFee sf left join Shipment s on sf.ShipmentId = s.Id where sf.VendorId in (SELECT value FROM STRING_SPLIT('{VendorIds}', ',')) and s.ParentId = ds.Id) and ds.ParentId is null\"\r\n}",
             "RefName": "Shipment",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Code\",\r\n        \"Label\": \"Code\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
@@ -992,7 +925,6 @@
             "Label": "Vat",
             "ShowLabel": true,
             "Events": "{    \"change\": \"ChangeDataFee\"}",
-            "Active": true,
             "DisabledExp": "!this.EditForm.Entity.IsMultiple",
             "EntityId": "AddCharge"
         },
@@ -1008,7 +940,6 @@
             "Label": "Shipment Status",
             "ShowLabel": true,
             "DefaultVal": "1",
-            "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"ALL\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"Issue\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"UnIssue\"\r\n    }\r\n]",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "EntityId": "AddCharge"
@@ -1026,7 +957,6 @@
             "ShowLabel": true,
             "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
             "DefaultVal": "1",
-            "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"ALL\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"Invoiced\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"UnInvoiced\"\r\n    }\r\n]",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "EntityId": "AddCharge"
@@ -1044,7 +974,6 @@
             "ShowLabel": true,
             "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
             "DefaultVal": "1",
-            "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"ALL\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"Paid\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"UnPaid\"\r\n    }\r\n]",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "EntityId": "AddCharge"
@@ -1061,7 +990,6 @@
             "ChildStyle": "max-height:430px;",
             "Events": "{\r\n    \"FirstLoad\": \"FirstLoadGrid\",\r\n    \"domcontentloaded\":\"UpdateTable\"\r\n}",
             "DefaultVal": "{\r\n    \"ShipmentInvoiceId\": this.Entity.Id\r\n}",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"SELECT ds.*,\r\n     case when (ds.TypeId = 2 or (ds.TypeId in (3,4) and ds.IsAdvCustomer = 0)) then 1 else 0 end as IsPayable,\r\n     ds.ExchangeRateINV AS ExchangeRateINV \r\n     FROM ShipmentFee AS ds \r\n     left join MasterData cr on ds.CurrencyId = cr.Id \r\n     WHERE (((ds.ShipmentId IN (SELECT value FROM STRING_SPLIT('{HblIds}', ',')) and '{HblIds}' != '') or ('{HblIds}' = '')) \r\n     AND ((ds.FileId IN (SELECT value FROM STRING_SPLIT('{MblIds}', ',')) and '{MblIds}' != '') or ('{MblIds}' = '')) \r\n     AND ((ds.ShipmentInvoiceId IN (SELECT value FROM STRING_SPLIT('{InvoiceIds}', ',')) \r\n     AND '{InvoiceIds}' != '') or ('{InvoiceIds}' = '')) \r\n     AND ('{VendorIds}' != '' and ds.VendorId in (SELECT value FROM STRING_SPLIT('{VendorIds}', ','))) \r\n     AND ('{DescriptionIds}' = '' or ds.DescriptionId in (SELECT value FROM STRING_SPLIT('{DescriptionIds}', ','))) \r\n     AND ('1' = '{TaxInvoiceId}' OR ( '2' = '{TaxInvoiceId}' and ( ds.InvoiceDetailId is not null) OR ( '3' = '{TaxInvoiceId}' AND ds.InvoiceDetailId is null))) \r\n     AND ('1' = '{DebitTypeId}' OR ( '2' = '{DebitTypeId}' and ( ds.ShipmentInvoiceDetailId is not null) OR ( '3' = '{DebitTypeId}' AND ds.ShipmentInvoiceDetailId is null))) \r\n     AND ('1' = '{ChargePaidId}' OR ( '2' = '{ChargePaidId}' and ( ds.IsInvoice = 1) OR ( '3' = '{ChargePaidId}' AND ds.IsInvoice = 0))) \r\n     AND ((-2 = {Vat} OR (-2 != {Vat} AND ds.Vat = {Vat})) OR (-1 = {Vat} AND ds.Vat IS NULL)) \r\n     AND ('{DateFieldId}' = 'InsertedDate' or ('{DateFieldId}' != 'InsertedDate' and ds.{DateFieldId} >= '{FromDate}' and ds.{DateFieldId} <= '{ToDate}')) \r\n     AND (('{ServiceIds}' = '' or ds.ServiceId in (SELECT value FROM STRING_SPLIT('{ServiceIds}', ',')))) \r\n     AND ds.IsNoDocs = 0 and ({FeeTypeId}) and (ds.TotalRemain > 0 or ds.Id IN (SELECT value FROM STRING_SPLIT('{FeeIds}', ','))))\",\r\n    \"total\": \"select count(ds.Id) as total \r\n    from ShipmentFee as ds \r\n    WHERE (((ds.ShipmentId IN (SELECT value FROM STRING_SPLIT('{HblIds}', ',')) and '{HblIds}' != '') or ('{HblIds}' = '')) \r\n     AND ((ds.FileId IN (SELECT value FROM STRING_SPLIT('{MblIds}', ',')) and '{MblIds}' != '') or ('{MblIds}' = '')) \r\n     AND ((ds.ShipmentInvoiceId IN (SELECT value FROM STRING_SPLIT('{InvoiceIds}', ',')) \r\n     AND '{InvoiceIds}' != '') or ('{InvoiceIds}' = '')) \r\n     AND ('{VendorIds}' != '' and ds.VendorId in (SELECT value FROM STRING_SPLIT('{VendorIds}', ','))) \r\n     AND ('{DescriptionIds}' = '' or ds.DescriptionId in (SELECT value FROM STRING_SPLIT('{DescriptionIds}', ','))) \r\n     AND ('1' = '{TaxInvoiceId}' OR ( '2' = '{TaxInvoiceId}' and ( ds.InvoiceDetailId is not null) OR ( '3' = '{TaxInvoiceId}' AND ds.InvoiceDetailId is null))) \r\n     AND ('1' = '{DebitTypeId}' OR ( '2' = '{DebitTypeId}' and ( ds.ShipmentInvoiceDetailId is not null) OR ( '3' = '{DebitTypeId}' AND ds.ShipmentInvoiceDetailId is null))) \r\n     AND ('1' = '{ChargePaidId}' OR ( '2' = '{ChargePaidId}' and ( ds.IsInvoice = 1) OR ( '3' = '{ChargePaidId}' AND ds.IsInvoice = 0))) \r\n     AND ((-2 = {Vat} OR (-2 != {Vat} AND ds.Vat = {Vat})) OR (-1 = {Vat} AND ds.Vat IS NULL)) \r\n     AND ('{DateFieldId}' = 'InsertedDate' or ('{DateFieldId}' != 'InsertedDate' and ds.{DateFieldId} >= '{FromDate}' and ds.{DateFieldId} <= '{ToDate}')) \r\n     AND (('{ServiceIds}' = '' or ds.ServiceId in (SELECT value FROM STRING_SPLIT('{ServiceIds}', ',')))) \r\n     AND ds.IsNoDocs = 0 and ({FeeTypeId}) and (ds.TotalRemain > 0 or ds.Id IN (SELECT value FROM STRING_SPLIT('{FeeIds}', ','))))\"\r\n}",
             "RefName": "ShipmentFee",
             "PreQuery": "var gridParent = this.EditForm.ChildCom.find(x => x.Meta.FieldName == \"VoucherDetail\");\r\nvar feeIds = new Set(gridParent.Item.map(x => x.Entity.ShipmentFeeId));\r\nreturn {\r\n    \"InvoiceIds\": this.EditForm.Entity.InvoiceIds ? this.EditForm.Entity.InvoiceIds : '',\r\n    \"HblIds\": this.EditForm.Entity.HblIds ? this.EditForm.Entity.HblIds : '',\r\n    \"MblIds\": this.EditForm.Entity.FileIds ? this.EditForm.Entity.FileIds : '',\r\n    \"VendorIds\": this.EditForm.Entity.VendorIds ? this.EditForm.Entity.VendorIds : '',\r\n    \"DescriptionIds\": this.EditForm.Entity.DescriptionIds ? this.EditForm.Entity.DescriptionIds : '',\r\n    \"ShipmentInvoiceId\": this.EditForm.Entity.Id,\r\n    \"ExchangeRateINV\": this.EditForm.Entity.ExchangeRateINV || 1,\r\n    \"ExchangeRateINV2\": this.EditForm.Entity.ExchangeRateINV2 || 1,\r\n    \"DebitTypeId\": this.EditForm.Entity.DebitTypeId || 1,\r\n    \"TaxInvoiceId\": this.EditForm.Entity.TaxInvoiceId || 1,\r\n    \"ChargePaidId\": this.EditForm.Entity.ChargePaidId || 1,\r\n    \"FeeIds\": feeIds.size === 0 ? \"\" : Array.from(feeIds).join(\",\"),\r\n    \"Vat\": this.EditForm.Entity.Vat || -2,\r\n    \"NoDocsId\": this.EditForm.Entity.NoDocsId,\r\n    \"FromDate\": this.EditForm.Entity.FromDate ? this.dayjs(this.EditForm.Entity.FromDate).format('YYYY-MM-DD') : '',\r\n    \"ToDate\": this.EditForm.Entity.ToDate ? this.dayjs(this.EditForm.Entity.ToDate).format('YYYY-MM-DD') : '',\r\n    \"DateFieldId\": this.EditForm.Entity.DateFieldId ? this.EditForm.Entity.DateFieldId : 'InsertedDate',\r\n    \"Currency\": this.EditForm.Entity.Currency ? this.EditForm.Entity.Currency.Code : 'VND',\r\n    \"CurrencyId\": this.EditForm.Entity.CurrencyId,\r\n    \"ServiceIds\": this.EditForm.Entity.ServiceIds ? this.EditForm.Entity.ServiceIds : '',\r\n    \"FeeTypeId\": this.Entity.FeeTypeId || \"ds.Type in (1,2,3,4)\"\r\n}",
@@ -1080,7 +1008,6 @@
             "Row": 100,
             "Label": "HBL",
             "Width": "126px",
-            "Active": true,
             "RefName": "Shipment",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
             "FocusSearch": true,
@@ -1099,7 +1026,6 @@
             "Label": "Description",
             "Events": "{\r\n    \"change\": \"UpdateGroupFee\"\r\n}",
             "Width": "191px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from FeeType as ds\",\r\n    \"total\": \"select count(ds.Id) as total from FeeType as ds\"\r\n}",
             "RefName": "FeeType",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Description\", \"Label\" : \"Description\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"GroupId\", \"Label\" : \"Group\", \"ComponentType\" : \"Dropdown\", \"RefName\" : \"MasterData\", \"FormatData\" : \"{Name}\" }]",
@@ -1118,7 +1044,6 @@
             "Label": "Quantity",
             "Events": "{\r\n    \"change\": \"CalcPrice\"\r\n}",
             "Width": "102px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "102px",
             "MaxWidth": "102px",
@@ -1135,7 +1060,6 @@
             "Row": 100,
             "Label": "Unit",
             "Width": "56px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name in (N'Unit Type','LTL Type')\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name in (N'Unit Type','LTL Type')\"\r\n}",
             "RefName": "MasterData",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
@@ -1153,7 +1077,6 @@
             "Label": "Unit Price",
             "Events": "{\r\n    \"change\": \"CalcPrice\"\r\n}",
             "Width": "93px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "93px",
             "MaxWidth": "93px",
@@ -1171,7 +1094,6 @@
             "Label": "Currency",
             "Events": "{\"change\":\"CheckCurrency\"}",
             "Width": "69px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Currency'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Currency'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
@@ -1190,7 +1112,6 @@
             "Label": "Exchange Rate (Debit)",
             "Events": "{\r\n    \"change\": \"CalcPrice\"\r\n}",
             "Width": "92px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "92px",
             "MaxWidth": "92px",
@@ -1206,7 +1127,6 @@
             "Label": "VAT",
             "Events": "{\r\n    \"change\": \"CalcPrice\"\r\n}",
             "Width": "40px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "40px",
             "MaxWidth": "40px",
@@ -1223,7 +1143,6 @@
             "Events": "{\r\n    \"input\": \"CalcUnitPrice\"\r\n}",
             "Disabled": true,
             "Width": "79px",
-            "Active": true,
             "FocusSearch": true,
             "IsSumary": true,
             "MinWidth": "79px",
@@ -1240,7 +1159,6 @@
             "Events": "{\r\n    \"input\": \"CalcUnitPrice\"\r\n}",
             "Disabled": true,
             "Width": "110px",
-            "Active": true,
             "FocusSearch": true,
             "IsSumary": true,
             "Summary": "Total",
@@ -1261,7 +1179,6 @@
             "Label": "Hbl No",
             "ShowLabel": true,
             "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from Shipment ds where (ds.ParentId in (SELECT value FROM STRING_SPLIT('{FileIds}', ',')) or '{FileIds}' = '') and exists (select sf.Id from ShipmentFee sf where sf.VendorId in (SELECT value FROM STRING_SPLIT('{VendorIds}', ',')) and sf.ShipmentId = ds.Id) and ds.ParentId is not null\",\r\n    \"total\": \"select count(ds.Id) as total from Shipment ds where (ds.ParentId in (SELECT value FROM STRING_SPLIT('{FileIds}', ',')) or '{FileIds}' = '') and exists (select sf.Id from ShipmentFee sf where sf.VendorId in (SELECT value FROM STRING_SPLIT('{VendorIds}', ',')) and sf.ShipmentId = ds.Id) and ds.ParentId is not null\"\r\n}",
             "RefName": "Shipment",
             "Template": "[{ \"FieldName\" : \"HblNo\", \"Label\" : \"Hbl No\", \"ComponentType\" : \"Input\" }]",
@@ -1278,7 +1195,6 @@
             "Label": "Amount (Og)",
             "Events": "{\r\n    \"input\": \"CalcPrice\"\r\n}",
             "Width": "87px",
-            "Active": true,
             "FocusSearch": true,
             "IsSumary": true,
             "Editable": true,
@@ -1296,7 +1212,6 @@
             "Row": 50,
             "Label": "Debit No",
             "Width": "96px",
-            "Active": true,
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
             "FocusSearch": true,
             "MinWidth": "96px",
@@ -1312,7 +1227,6 @@
             "Row": 50,
             "Label": "PR No",
             "Width": "83px",
-            "Active": true,
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
             "FocusSearch": true,
             "MinWidth": "83px",
@@ -1328,7 +1242,6 @@
             "Row": 50,
             "Label": "Invoice No",
             "Width": "91px",
-            "Active": true,
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
             "FocusSearch": true,
             "MinWidth": "91px",
@@ -1344,7 +1257,6 @@
             "Label": "Unit Price",
             "Events": "{\r\n    \"input\": \"CalcPrice\"\r\n}",
             "Width": "86px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "86px",
@@ -1365,7 +1277,6 @@
             "ShowLabel": true,
             "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
             "DefaultVal": "1",
-            "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"ALL\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"Issue\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"UnIssue\"\r\n    }\r\n]",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "EntityId": "AddCharge"
@@ -1381,7 +1292,6 @@
             "Label": "Debit Acc",
             "Validation": "(this.Entity.ExAmountTax\r\n    || this.Entity.AmountDifference\r\n    || this.Entity.ExAmount) ? [\r\n        {\r\n            \"Rule\": \"required\",\r\n            \"Message\": \"{0} is required\"\r\n        }\r\n    ] : []",
             "Width": "63px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds where IsLast = 1\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds where IsLast = 1\"\r\n}",
             "RefName": "AccountNo",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Code\",\r\n        \"Label\": \"Code\",\r\n        \"ComponentType\": \"Input\",\r\n        \"HotKey\": true\r\n    },\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
@@ -1403,7 +1313,6 @@
             "Label": "Credit Acc",
             "Validation": "(this.Entity.ExAmountTax\r\n    || this.Entity.AmountDifference\r\n    || this.Entity.ExAmount) ? [\r\n        {\r\n            \"Rule\": \"required\",\r\n            \"Message\": \"{0} is required\"\r\n        }\r\n    ] : []",
             "Width": "69px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds where IsLast = 1\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds where IsLast = 1\"\r\n}",
             "RefName": "AccountNo",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Code\",\r\n        \"Label\": \"Code\",\r\n        \"ComponentType\": \"Input\",\r\n        \"HotKey\": true\r\n    },\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
@@ -1423,7 +1332,6 @@
             "Label": "Amount (VND)",
             "Events": "{\r\n    \"input\": \"CalcPrice\"\r\n}",
             "Width": "125px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "125px",
@@ -1440,7 +1348,6 @@
             "Label": "Tax Amount (VND)",
             "Events": "{\r\n    \"input\": \"CalcPrice\"\r\n}",
             "Width": "128px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "128px",
@@ -1459,7 +1366,6 @@
             "Label": "VAT Acc",
             "Validation": "this.Entity.ExAmountTax && this.Decimal(this.Entity.ExAmountTax).gt(this.Decimal(0)) ? [\r\n    {\r\n        \"Rule\": \"required\",\r\n        \"Message\": \"{0} is required\"\r\n    }\r\n] : []",
             "Width": "90px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds where IsLast = 1\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds where IsLast = 1\"\r\n}",
             "RefName": "AccountNo",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Code\",\r\n        \"Label\": \"Code\",\r\n        \"ComponentType\": \"Input\",\r\n        \"HotKey\": true\r\n    },\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
@@ -1480,7 +1386,6 @@
             "Row": 100,
             "Label": "Debt Acc",
             "Width": "67px",
-            "Active": true,
             "RefName": "Voucher",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
             "FocusSearch": true,
@@ -1501,7 +1406,6 @@
             "ShowLabel": true,
             "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
             "DefaultVal": "ds.TypeId in (1,2,3,4)",
-            "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": \"ds.TypeId in (1,2,3,4)\",\r\n        \"Name\": \"ALL\"\r\n    },\r\n    {\r\n        \"Id\": \"(ds.TypeId = 1 or (ds.TypeId in (3,4) and ds.IsAdvCustomer = 1))\",\r\n        \"Name\": \"Receivable\"\r\n    },\r\n    {\r\n        \"Id\": \"(ds.TypeId = 2 or (ds.TypeId in (3,4) and ds.IsAdvCustomer = 0))\",\r\n        \"Name\": \"Payable\"\r\n    }\r\n]",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "EntityId": "AddCharge"
@@ -1515,7 +1419,6 @@
             "Label": "Difference Amount",
             "Events": "{\r\n    \"input\": \"CalcPrice\"\r\n}",
             "Width": "93px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "93px",
@@ -1534,7 +1437,6 @@
             "Label": "Difference Acc",
             "Validation": "this.Entity.AmountDifference ? [\r\n    {\r\n        \"Rule\": \"required\",\r\n        \"Message\": \"{0} is required\"\r\n    }\r\n] : []",
             "Width": "90px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds where IsLast = 1\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds where IsLast = 1\"\r\n}",
             "RefName": "AccountNo",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -1554,7 +1456,6 @@
             "Row": 100,
             "Label": "OBH Acc",
             "Width": "90px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds\"\r\n}",
             "RefName": "AccountNo",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -1577,7 +1478,6 @@
             "ShowLabel": true,
             "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('provider-editor',{ ServiceId: 3, ActionId: 1})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('provider-editor',this.Matched)\",\r\n    \"change\": \"ChangeDataFee\"\r\n}",
             "Width": "141px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from Partner as ds where Id in (select distinct VendorId from ShipmentFee where ShipmentId in ('{HblIds}'))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds where Id in (select distinct VendorId from ShipmentFee where ShipmentId in ('{HblIds}'))\"\r\n}",
             "RefName": "Partner",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
@@ -1598,7 +1498,6 @@
             "Label": "Invoice No",
             "Events": "{\r\n    \"change\": \"UpdateInvoice\"\r\n}",
             "Width": "96px",
-            "Active": true,
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
             "FocusSearch": true,
             "Editable": true,
@@ -1614,7 +1513,6 @@
             "Row": 50,
             "Label": "Invoice Date",
             "Width": "96px",
-            "Active": true,
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
             "FocusSearch": true,
             "Editable": true,
@@ -1630,7 +1528,6 @@
             "Row": 50,
             "Label": "Seri No",
             "Width": "96px",
-            "Active": true,
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
             "FocusSearch": true,
             "Editable": true,
@@ -1646,7 +1543,6 @@
             "Row": 50,
             "Label": "Link EInvoice",
             "Width": "96px",
-            "Active": true,
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
             "FocusSearch": true,
             "Editable": true,
@@ -1662,7 +1558,6 @@
             "Row": 50,
             "Label": "File No",
             "Width": "96px",
-            "Active": true,
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
             "FocusSearch": true,
             "Editable": true,
@@ -1678,7 +1573,6 @@
             "Row": 50,
             "Label": "Bill No",
             "Width": "96px",
-            "Active": true,
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
             "FocusSearch": true,
             "Editable": true,
@@ -1697,7 +1591,6 @@
             "Label": "Form",
             "ShowLabel": true,
             "Width": "113px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "113px",
@@ -1713,7 +1606,6 @@
             "Label": "Payable",
             "Disabled": true,
             "Width": "110px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "110px",
@@ -1730,7 +1622,6 @@
             "Row": 100,
             "Label": "File No",
             "Width": "114px",
-            "Active": true,
             "RefName": "Shipment",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
             "FocusSearch": true,
@@ -1746,7 +1637,6 @@
             "Row": 50,
             "Label": "Code EInvoice",
             "Width": "96px",
-            "Active": true,
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
             "FocusSearch": true,
             "Editable": true,
@@ -1764,7 +1654,6 @@
             "Events": "{\r\n    \"input\": \"CalcUnitPrice\"\r\n}",
             "Disabled": true,
             "Width": "110px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "110px",
             "MaxWidth": "110px",
@@ -1783,8 +1672,7 @@
             "Icon": "fal fa-save",
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
-            "Events": "{\r\n    \"click\": \"SavePatch\"\r\n}",
-            "Active": true
+            "Events": "{\r\n    \"click\": \"SavePatch\"\r\n}"
         },
         {
             "Id": "0194f426-9dcf-75ac-b243-18b77d5ece6d",
@@ -1795,7 +1683,6 @@
             "Icon": "fal fa-link",
             "ClassName": "btn btn-sub",
             "Events": "{\r\n    \"click\": \"AddDetail\"\r\n}",
-            "Active": true,
             "DisabledExp": "this.EditForm.Entity.InsertedBy != this.Token.UserId || this.EditForm.Entity.StatusId == 2 || (this.EditForm.Entity.StatusId == 3 && this.EditForm.Entity.UserApprovedIds) || [2, 3].includes(this.EditForm.Entity.ProgressId)"
         }
     ],
@@ -1803,38 +1690,32 @@
         {
             "Id": "0648D15E-9F3D-4AEF-A507-309AB592352F",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "109E9811-690C-4266-9B95-7BBB09252261",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "3224FB0D-9532-486D-8B9A-31E03BC80F97",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "42BC5848-D7B5-4E5E-A817-8863F421FE1E",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "519B17FF-9123-44F1-BB88-F616FCFF985A",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A757C0E5-B491-4EEA-9707-964F0A9FD591",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "B5DEA6CE-7CD2-4A2C-8473-0F7F66A73439",
@@ -1845,8 +1726,7 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "CE254C4F-2CF5-4371-87BC-C6B7A08DE3F6",
@@ -1857,8 +1737,7 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "DFE626FB-B68E-4722-A656-26702A390DB3",
@@ -1866,14 +1745,12 @@
             "CanRead": true,
             "CanWrite": true,
             "CanDelete": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "F4BDB06D-3FF0-40F0-A27A-949C46E04FE4",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

@@ -5,14 +5,12 @@
     "ParentId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
     "Order": 0,
     "Icon": "fal fa-code",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "00b3ffd8-0000-0000-8000-2c9d9cfd3929",
             "FieldName": "Container",
             "Order": 1,
             "ComponentType": "Section",
-            "Active": true,
             "Components": [
                 {
                     "Id": "0001ffbc-0000-0000-8000-65e18bc65d4f",
@@ -24,7 +22,6 @@
                     "CanSearch": true,
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 11rem)",
-                    "Active": true,
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds\"\r\n}",
                     "IsRealtime": true,
@@ -41,7 +38,6 @@
             "Order": 1,
             "ComponentType": "Number",
             "Label": "No",
-            "Active": true,
             "Editable": true,
             "EntityId": "AccountNo",
             "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
@@ -52,7 +48,6 @@
             "Order": 2,
             "ComponentType": "Input",
             "Label": "Code",
-            "Active": true,
             "Editable": true,
             "EntityId": "AccountNo"
         },
@@ -62,7 +57,6 @@
             "Order": 3,
             "ComponentType": "Input",
             "Label": "Name",
-            "Active": true,
             "Editable": true,
             "EntityId": "AccountNo"
         },
@@ -72,7 +66,6 @@
             "Order": 4,
             "ComponentType": "Input",
             "Label": "NameEnglish",
-            "Active": true,
             "Editable": true,
             "EntityId": "AccountNo"
         },
@@ -85,7 +78,6 @@
             "PlainText": "Select data",
             "Row": 100,
             "Label": "Type",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from MasterData as ds where ParentId = '00f4ff84-0000-0000-8000-23de57f90690'\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds where ParentId = '00f4ff84-0000-0000-8000-23de57f90690'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -98,7 +90,6 @@
             "Order": 6,
             "ComponentType": "Input",
             "Label": "Reason",
-            "Active": true,
             "Editable": true,
             "EntityId": "AccountNo"
         }
@@ -107,56 +98,47 @@
         {
             "Id": "0C1A8EAA-08AD-41FC-A8A6-04F2DDBB83B7",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "147F9C62-C896-4212-A4BF-2F7826CB94C6",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "17CD428E-0CF0-46BC-92B8-F753798E8922",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "21919908-A2C7-4A54-ABC6-D2678CF0BF54",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "5C7C97B7-80FD-47FC-AF3D-BD18C24EC0EB",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "82BE449C-4C90-450F-9233-458A896ED7A1",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "84577B91-69E0-467F-A07D-F204464BE555",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "B6ADDBD2-F6C0-45AB-90E5-EE2FA7B15074",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "DCDF2C67-6BC5-44B2-A77F-B22695B23307",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "FEB8A73E-C83D-4DE9-A946-4E4F9DD26256",
@@ -167,8 +149,7 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

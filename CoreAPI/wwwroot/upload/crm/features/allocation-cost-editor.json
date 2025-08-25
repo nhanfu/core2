@@ -6,7 +6,6 @@
     "Order": 0,
     "Style": "width:1200px;",
     "EntityId": "ShipmentAllocation",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "00824444-0000-0000-8000-08290b7a48c8",
@@ -15,7 +14,6 @@
             "Icon": "fal fa-info mr-1",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "00ae44f8-0000-0000-8000-1e36c17d9cb2",
             "XxlOuterColumn": 12
         },
@@ -27,7 +25,6 @@
             "Icon": "fal fa-info mr-1",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "00ae44f8-0000-0000-8000-1e36c17d9cb2",
             "XxlOuterColumn": 12,
             "Components": [
@@ -40,7 +37,6 @@
                     "Row": 2,
                     "Label": "Notes",
                     "ShowLabel": true,
-                    "Active": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
@@ -51,7 +47,6 @@
                     "Column": 1,
                     "Label": "Ref No",
                     "ShowLabel": true,
-                    "Active": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
@@ -62,7 +57,6 @@
                     "Column": 1,
                     "Label": "Cost",
                     "ShowLabel": true,
-                    "Active": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 }
             ]
@@ -75,7 +69,6 @@
             "Icon": "fal fa-info mr-1",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "00ae44f8-0000-0000-8000-1e36c17d9cb2",
             "XxlOuterColumn": 12,
             "Components": [
@@ -93,7 +86,6 @@
                     "ClassName": "sticky",
                     "ChildStyle": "height:350px;",
                     "Events": "{\r\n    \"BeforeCreated\": \"BeforeCreated\"\r\n}",
-                    "Active": true,
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentFee as ds where ShipmentId = '{ShipmentId}' and TypeId = 2\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentFee as ds where ShipmentId = '{ShipmentId}' and TypeId = 2\"\r\n}",
                     "RefName": "ShipmentFee",
@@ -112,7 +104,6 @@
             "ComponentType": "Section",
             "ClassName": "ribbon-group",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "00ae44a8-0000-0000-8000-c4458a2cb325",
@@ -124,8 +115,7 @@
                     "Icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
-                    "Events": "{ \"click\" : \"SavePatch\" }",
-                    "Active": true
+                    "Events": "{ \"click\" : \"SavePatch\" }"
                 }
             ]
         },
@@ -135,8 +125,7 @@
             "Order": 3,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
-            "XxlCol": 12,
-            "Active": true
+            "XxlCol": 12
         }
     ],
     "GridPolicies": [
@@ -150,7 +139,6 @@
             "Row": 100,
             "Label": "Partner",
             "Width": "118px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select *,CASE WHEN ds.Id IN ('{PartnerIds}') THEN 0 ELSE 1 END AS priority from Partner as ds where ServiceId in (1,2,3) and (TypeId not in (1,2) or TypeId is null) and ActionId = 1 and IsNoDebt = 0\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where ServiceId in (1,2,3) and (TypeId not in (1,2) or TypeId is null) and ActionId = 1 and IsNoDebt = 0\"\r\n}",
             "RefName": "Partner",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
@@ -174,7 +162,6 @@
             "Label": "Description",
             "Events": "{\r\n    \"change\": \"UpdateGroupFee\"\r\n}",
             "Width": "165px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from FeeType as ds\",\r\n    \"total\": \"select count(ds.Id) as total from FeeType as ds\"\r\n}",
             "RefName": "FeeType",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Description\", \"Label\" : \"Description\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"GroupId\", \"Label\" : \"Group\", \"ComponentType\" : \"Dropdown\", \"RefName\" : \"MasterData\", \"FormatData\" : \"{Name}\" }]",
@@ -195,7 +182,6 @@
             "Label": "Quantity",
             "Events": "{\r\n    \"input\": \"CalcPrice\"\r\n}",
             "Width": "102px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "102px",
@@ -214,7 +200,6 @@
             "Row": 100,
             "Label": "Unit",
             "Width": "90px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name in (N'Unit Type','LTL Type')\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name in (N'Unit Type','LTL Type')\"\r\n}",
             "RefName": "MasterData",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
@@ -233,7 +218,6 @@
             "Label": "Unit Price",
             "Events": "{\r\n    \"input\": \"CalcPrice\"\r\n}",
             "Width": "93px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "93px",
@@ -251,7 +235,6 @@
             "Label": "Vat",
             "Events": "{\r\n    \"change\": \"CalcPrice\"\r\n}",
             "Width": "74px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "74px",
@@ -270,7 +253,6 @@
             "Label": "Currency",
             "Events": "{\"change\":\"CheckCurrency\"}",
             "Width": "124px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Currency'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Currency'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
@@ -291,7 +273,6 @@
             "Label": "Total",
             "Events": "{\r\n    \"input\": \"CalcUnitPrice\"\r\n}",
             "Width": "95px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "95px",
@@ -308,7 +289,6 @@
             "Row": 50,
             "Label": "No Docs",
             "Width": "76px",
-            "Active": true,
             "RefName": "Terminal",
             "Editable": true,
             "MinWidth": "76px",
@@ -323,7 +303,6 @@
             "Precision": 3,
             "Label": "Notes",
             "Width": "143px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "143px",
@@ -338,7 +317,6 @@
             "Precision": 3,
             "Label": "Docs",
             "Width": "143px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "143px",
@@ -357,70 +335,59 @@
             "Icon": "fal fa-save",
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
-            "Events": "{ \"click\" : \"SavePatch\" }",
-            "Active": true
+            "Events": "{ \"click\" : \"SavePatch\" }"
         }
     ],
     "FeaturePolicies": [
         {
             "Id": "050053AD-4390-4618-B7C2-75A9C4029AF7",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "127797DA-0F11-431C-9632-9BB3C840853A",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "1CCF27C8-89F5-43F5-AAA8-FB7B24F401CF",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "1FE5CD0E-511B-4944-A2B9-D1D88EC46E54",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "41727C38-2E4C-4E88-9CAF-0A2EA5799403",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "4C3D9341-22CF-4DB0-B48C-905AEEA6FCA9",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "72CDE46D-8689-4BD6-98A4-C44DD51691FE",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A1854931-A73A-468C-B17B-DE5633745895",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "B9A32616-128B-42C4-AC59-29B28A9B4B84",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "D3516000-BA59-4FB2-A463-A9A3D21FF0F5",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

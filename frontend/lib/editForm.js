@@ -1098,7 +1098,7 @@ export class EditForm extends EditableComponent {
         this.Element = this.RenderTemplate(null, feature);
         this.SetFeatureStyleSheet(feature.StyleSheet);
         this.Policies = feature.FeaturePolicies;
-        this.RenderTabOrSection(this.GroupTree.filter(x => x.Active), this);
+        this.RenderTabOrSection(this.GroupTree, this);
         this.InitDOMEvents();
         loadedCallback?.call(null);
         this.DispatchFeatureEvent(feature.Events, EventType.DOMContentLoaded);
@@ -1825,7 +1825,7 @@ export class EditForm extends EditableComponent {
                 com.CanDeactivateAll = true;
                 com.CanExport = true;
             });
-            return components.filter(x => x.Active);
+            return components;
         }
         var policyFeature = this.Policies.map(x => {
             if (x.CanReadAll) {
@@ -1888,7 +1888,7 @@ export class EditForm extends EditableComponent {
                 return null;
             }
         });
-        return newComponents.filter(x => x != null && x.Active);
+        return newComponents.filter(x => x != null);
     }
     /**
      * Deletes the entity associated with the form.

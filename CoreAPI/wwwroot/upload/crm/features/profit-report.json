@@ -5,7 +5,6 @@
     "Order": 4,
     "Script": "return {\r\n    Init: function () {\r\n        const formatDate = (date) => this.dayjs(date).format(\"YYYY-MM-DD\");\r\n        let today = this.dayjs();\r\n        let firstDayOfMonth = today.startOf(\"month\");\r\n        let lastDayOfMonth = today.endOf(\"month\").add(1, \"day\");\r\n        this.Entity = {\r\n            InsertedBy: this.Token.UserId,\r\n            Id: this.Uuid7.NewGuid(),\r\n            FromDate: firstDayOfMonth,\r\n            ToDate: lastDayOfMonth\r\n        };\r\n    },\r\n    OpenFilter: function () {\r\n        var newItem = this.EditForm.GroupTree.find(x => x.FieldName == \"SearchForm\");\r\n        var form = this.EditForm.OpenConfig(\"Filter report!\", async () => {\r\n            var component = this.EditForm.ChildCom.find(x => x.Meta.FieldName == \"Shipment\");\r\n            component.Meta.GroupBy = form.Entity.Group ? form.Entity.Group.GroupBy : component.Meta.GroupBy;\r\n            component.Meta.GroupFormat = form.Entity.Group ? form.Entity.Group.GroupFormat : component.Meta.GroupFormat;\r\n            component.ReloadData().then(() => {\r\n                if (component.Meta.GroupBy == \"ParentId\") {\r\n                    component.HideColumn([]);\r\n                }\r\n                else if (component.Meta.GroupBy == \"SaleId\") {\r\n                    component.HideColumn(\"ShipmentTypeId\", \"CustomerId\", \"TypeId\");\r\n                }\r\n                else if (component.Meta.GroupBy == \"CustomerId\") {\r\n                    component.HideColumn(\"ShipmentTypeId\", \"SaleId\", \"TypeId\");\r\n                }\r\n                else if (component.Meta.GroupBy == \"ShipmentTypeId\") {\r\n                    component.HideColumn(\"CustomerId\", \"SaleId\", \"TypeId\");\r\n                }\r\n                else if (component.Meta.GroupBy == \"TypeId\") {\r\n                    component.HideColumn(\"CustomerId\", \"SaleId\", \"ShipmentTypeId\");\r\n                }\r\n            })\r\n        }, () => { }, true, [], false, newItem);\r\n    }\r\n}",
     "Icon": "fal fa-user-chart",
-    "Active": true,
     "IgnoreEncode": true,
     "ComponentGroup": [
         {
@@ -25,7 +24,6 @@
             "Label": "General Infor",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "0195561c-35cf-7739-9cd2-dac80794cf7a",
             "Components": [
                 {
@@ -38,8 +36,7 @@
                     "Label": "From Date",
                     "ShowLabel": true,
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
-                    "SmCol": 5,
-                    "Active": true
+                    "SmCol": 5
                 },
                 {
                     "Id": "0195561c-3695-74af-afd1-7e17e37e94d3",
@@ -51,8 +48,7 @@
                     "Label": "To Date",
                     "ShowLabel": true,
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
-                    "SmCol": 5,
-                    "Active": true
+                    "SmCol": 5
                 },
                 {
                     "Id": "0195561c-36e4-70bc-a4c9-e4771fe8fd37",
@@ -68,7 +64,6 @@
                     "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
                     "SmCol": 5,
                     "DefaultVal": "ShipmentDate",
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": \"ShipmentDate\",\r\n        \"Name\": \"Shipment\"\r\n    },\r\n    {\r\n        \"Id\": \"EtdDate\",\r\n        \"Name\": \"ETD\"\r\n    },\r\n    {\r\n        \"Id\": \"EtaDate\",\r\n        \"Name\": \"ETA\"\r\n    },\r\n    {\r\n        \"Id\": \"CompleteDate\",\r\n        \"Name\": \"Complete\"\r\n    },\r\n    {\r\n        \"Id\": \"DebtDate\",\r\n        \"Name\": \"Debt voucher\"\r\n    },\r\n    {\r\n        \"Id\": \"PaymentDate\",\r\n        \"Name\": \"Payment\"\r\n    },\r\n    {\r\n        \"Id\": \"PaidDate\",\r\n        \"Name\": \"Paid\"\r\n    },\r\n    {\r\n        \"Id\": \"ShipmentInvoiceDate\",\r\n        \"Name\": \"Invoice\"\r\n    },\r\n    {\r\n        \"Id\": \"InvoiceDate\",\r\n        \"Name\": \"VAT Invoice\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
@@ -86,7 +81,6 @@
                     "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
                     "SmCol": 5,
                     "DefaultVal": "\"0,1\"",
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": \"0,1\",\r\n        \"Name\": \"Include\"\r\n    },\r\n    {\r\n        \"Id\": \"1\",\r\n        \"Name\": \"Only\"\r\n    },\r\n    {\r\n        \"Id\": \"0\",\r\n        \"Name\": \"Exclude\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
@@ -101,7 +95,6 @@
                     "Label": "Group",
                     "ShowLabel": true,
                     "SmCol": 5,
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": \"ds.ParentId\",\r\n        \"Name\": \"File No\",\r\n        \"GroupBy\": \"ParentId\",\r\n        \"GroupFormat\": \"this.Entity.Parent.Code\",\r\n        \"OrderBy\": \"ds.TypeId asc,ds.ParentId asc\"\r\n    },\r\n    {\r\n        \"Id\": \"ds.CustomerId\",\r\n        \"Name\": \"Customer\",\r\n        \"GroupBy\": \"CustomerId\",\r\n        \"GroupFormat\": \"this.Entity.Customer.Name\",\r\n        \"OrderBy\": \"ds.CustomerId asc,ds.TypeId asc,ds.ParentId asc\"\r\n    },\r\n    {\r\n        \"Id\": \"ds.SaleId\",\r\n        \"Name\": \"Sale\",\r\n        \"GroupBy\": \"SaleId\",\r\n        \"GroupFormat\": \"this.Entity.Sale.FullName\",\r\n        \"OrderBy\": \"ds.SaleId asc,ds.TypeId asc,ds.ParentId asc\"\r\n    },\r\n    {\r\n        \"Id\": \"ds.ShipmentTypeId\",\r\n        \"Name\": \"Shipment Type\",\r\n        \"GroupBy\": \"ShipmentTypeId\",\r\n        \"GroupFormat\": \"this.Entity.ShipmentType.Name\",\r\n        \"OrderBy\": \"ds.ShipmentTypeId asc,ds.TypeId asc,ds.ParentId asc\"\r\n    },\r\n    {\r\n        \"Id\": \"ds.TypeId\",\r\n        \"Name\": \"Service Mode\",\r\n        \"GroupBy\": \"TypeId\",\r\n        \"GroupFormat\": \"this.Entity.Type.Name\",\r\n        \"OrderBy\": \"ds.TypeId asc,ds.ParentId asc\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
                     "Editable": true,
@@ -119,7 +112,6 @@
                     "ShowLabel": true,
                     "SmCol": 7,
                     "DefaultVal": "\"Local\"",
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": \"USD\",\r\n        \"Name\": \"USD\"\r\n    },\r\n    {\r\n        \"Id\": \"Local\",\r\n        \"Name\": \"VND\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
                     "Editable": true,
@@ -136,7 +128,6 @@
             "Label": "Department & Personnel",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "0195561c-35cf-7739-9cd2-dac80794cf7a",
             "SmOuterColumn": 1,
             "XxlOuterColumn": 1,
@@ -153,7 +144,6 @@
                     "Label": "Department",
                     "ShowLabel": true,
                     "SmCol": 6,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Department Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Department Type'\"\r\n}",
                     "RefName": "MasterData",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
@@ -170,7 +160,6 @@
                     "Label": "Sales man",
                     "ShowLabel": true,
                     "SmCol": 6,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [User] as ds where (TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 1)\"\r\n}",
                     "RefName": "User",
                     "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
@@ -187,8 +176,7 @@
                     "Label": "Main Debtor",
                     "ShowLabel": true,
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
-                    "SmCol": 6,
-                    "Active": true
+                    "SmCol": 6
                 }
             ]
         },
@@ -200,7 +188,6 @@
             "Label": "Parties Involved",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "0195561c-35cf-7739-9cd2-dac80794cf7a",
             "SmOuterColumn": 1,
             "XxlOuterColumn": 1,
@@ -218,7 +205,6 @@
                     "ShowLabel": true,
                     "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('provider-editor',{ ServiceId: 3, ActionId: 1})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('provider-editor',this.Matched)\",\r\n    \"change\": \"ChangeDataFee\"\r\n}",
                     "SmCol": 6,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (Id in (select distinct VendorId from ShipmentFee) and ('{HblIds}' = '' or '{HblIds}' != '' and ds.Id in (select distinct VendorId from ShipmentFee where ShipmentId in (SELECT value FROM STRING_SPLIT('{HblIds}', ',')))))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (Id in (select distinct VendorId from ShipmentFee) and ('{HblIds}' = '' or '{HblIds}' != '' and ds.Id in (select distinct VendorId from ShipmentFee where ShipmentId in (SELECT value FROM STRING_SPLIT('{HblIds}', ',')))))\"\r\n}",
                     "RefName": "Partner",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
@@ -239,7 +225,6 @@
                     "ShowLabel": true,
                     "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('provider-editor',{ ServiceId: 3, ActionId: 1})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('provider-editor',this.Matched)\",\r\n    \"change\": \"ChangeDataFee\"\r\n}",
                     "SmCol": 6,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (Id in (select distinct VendorId from ShipmentFee) and ('{HblIds}' = '' or '{HblIds}' != '' and ds.Id in (select distinct VendorId from ShipmentFee where ShipmentId in (SELECT value FROM STRING_SPLIT('{HblIds}', ',')))))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (Id in (select distinct VendorId from ShipmentFee) and ('{HblIds}' = '' or '{HblIds}' != '' and ds.Id in (select distinct VendorId from ShipmentFee where ShipmentId in (SELECT value FROM STRING_SPLIT('{HblIds}', ',')))))\"\r\n}",
                     "RefName": "Partner",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
@@ -260,7 +245,6 @@
                     "ShowLabel": true,
                     "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('provider-editor',{ ServiceId: 3, ActionId: 1})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('provider-editor',this.Matched)\",\r\n    \"change\": \"ChangeDataFee\"\r\n}",
                     "SmCol": 6,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (Id in (select distinct VendorId from ShipmentFee) and ('{HblIds}' = '' or '{HblIds}' != '' and ds.Id in (select distinct VendorId from ShipmentFee where ShipmentId in (SELECT value FROM STRING_SPLIT('{HblIds}', ',')))))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (Id in (select distinct VendorId from ShipmentFee) and ('{HblIds}' = '' or '{HblIds}' != '' and ds.Id in (select distinct VendorId from ShipmentFee where ShipmentId in (SELECT value FROM STRING_SPLIT('{HblIds}', ',')))))\"\r\n}",
                     "RefName": "Partner",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
@@ -278,7 +262,6 @@
             "Label": "Ports & Services",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "0195561c-35cf-7739-9cd2-dac80794cf7a",
             "SmOuterColumn": 1,
             "XxlOuterColumn": 1,
@@ -297,7 +280,6 @@
                     "Events": "{\r\n    \"change\":\"ShowHideColumn\"\r\n}",
                     "PopulateField": "this.EditForm.ShowHideDetail();\r\nreturn null;",
                     "SmCol": 6,
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Air Export\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-plane-departure mr-1'></i>Air Export</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"Air Import\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-plane-arrival mr-1'></i>Air Import</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Sea Export FCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-ship mr-1'></i>Sea Export FCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Sea Import FCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-shipping-fast mr-1'></i>Sea Import FCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"Sea Export LCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fas fa-boxes mr-1'></i>Sea Export LCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 6,\r\n        \"Name\": \"Sea Import LCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fas fa-dolly mr-1'></i>Sea Import LCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 16,\r\n        \"Name\": \"Import Consol\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #17a2b8;'><i class='fas fa-warehouse mr-1'></i>Import Consol</span>\"\r\n    },\r\n    {\r\n        \"Id\": 17,\r\n        \"Name\": \"Export Consol\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #343a40;'><i class='fas fa-plane-departure mr-1'></i>Export Consol</span>\"\r\n    },\r\n    {\r\n        \"Id\": 13,\r\n        \"Name\": \"TRUCKING\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-truck mr-1'></i>TRUCKING</span>\"\r\n    },\r\n    {\r\n        \"Id\": 9,\r\n        \"Name\": \"Logistics\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-truck mr-1'></i>Logistics</span>\"\r\n    }\r\n]\r\n",
                     "Template": "[{ \"FieldName\" : \"Description\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
                     "IsMultiple": true
@@ -315,7 +297,6 @@
                     "ShowLabel": true,
                     "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
                     "SmCol": 6,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Shipment ds where ParentId is null\",\r\n    \"total\": \"select count(ds.Id) as total from Shipment ds where ParentId is null\"\r\n}",
                     "RefName": "Shipment",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Code\",\r\n        \"Label\": \"Code\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
@@ -335,7 +316,6 @@
                     "ShowLabel": true,
                     "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
                     "SmCol": 6,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Shipment ds where ParentId is not null\",\r\n    \"total\": \"select count(ds.Id) as total from Shipment ds where ParentId is not null\"\r\n}",
                     "RefName": "Shipment",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"HblNo\",\r\n        \"Label\": \"HblNo\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
@@ -354,7 +334,6 @@
                     "Label": "Shipment type",
                     "ShowLabel": true,
                     "SmCol": 6,
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 0,\r\n        \"Name\": \"FREE-HAND\"\r\n    },\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"NOMINATE\"\r\n    }\r\n]",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]"
                 }
@@ -366,7 +345,6 @@
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 1,
-            "Active": true,
             "SmOuterColumn": 20,
             "XxlOuterColumn": 12,
             "Components": [
@@ -381,7 +359,6 @@
                     "GroupFormat": "this.Entity.Parent.Code",
                     "Label": "ShipmentFee",
                     "ClassName": "sticky",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"SELECT ds.*,sm.VendorId as VendorId,sm.AgentId as AgentId,sm.MblNo as MblNo,\r\n    ds.ActualRevenue{Currency} as ActualRevenue,\r\n    ds.ActualCost{Currency} as ActualCost,\r\n    ds.ActualCom{Currency} as ActualCom,\r\n    ds.ActualProfit{Currency} as ActualProfit\r\n    FROM [Shipment] ds \r\n    join [Shipment] sm on sm.Id = ds.ParentId \r\n    where (ds.ParentId is not null\r\n    AND ds.{DateFieldId} >= '{FromDate}' AND ds.{DateFieldId} < '{ToDate}'\r\n    AND sm.IsComplete IN ({Complete})\r\n    AND ('{VendorIds}' = ''\r\n    OR sm.VendorId IN (SELECT value FROM STRING_SPLIT('{VendorIds}', ','))\r\n    OR sm.AgentId IN (SELECT value FROM STRING_SPLIT('{VendorIds}', ','))\r\n    OR ds.CustomerId IN (SELECT value FROM STRING_SPLIT('{VendorIds}', ',')))\r\n    AND ('{ShipperIds}' = '' OR ds.ShipperId IN (SELECT value FROM STRING_SPLIT('{ShipperIds}', ',')))\r\n    AND ('{ConsigneeIds}' = '' OR ds.ConsigneeId IN (SELECT value FROM STRING_SPLIT('{ConsigneeIds}', ',')))\r\n    AND ('{SaleIds}' = '' OR ds.SaleId IN (SELECT value FROM STRING_SPLIT('{SaleIds}', ',')))\r\n    AND (('{FileIds}' = '' or ds.ParentId in (SELECT value FROM STRING_SPLIT('{FileIds}', ','))))\r\n    AND ('{DepartmentId}' = '' or ds.DepartmentId = '{DepartmentId}')\r\n    AND (('{HblIds}' = '' or ds.Id in (SELECT value FROM STRING_SPLIT('{HblIds}', ','))))\r\n    AND ('{TypeIds}' = '' OR ds.TypeId IN (SELECT value FROM STRING_SPLIT('{TypeIds}', ',')))\r\n    AND ('{ShipmentTypeId}' = '' OR ds.ShipmentTypeId IN (SELECT value FROM STRING_SPLIT('{ShipmentTypeId}', ',')))\r\n    )\",\r\n    \"total\": \"select count(ds.Id) as total \r\n    FROM [Shipment] ds \r\n    join [Shipment] sm on sm.Id = ds.ParentId \r\n    where (ds.ParentId is not null\r\n    AND ds.{DateFieldId} >= '{FromDate}' AND ds.{DateFieldId} < '{ToDate}'\r\n    AND sm.IsComplete IN ({Complete})\r\n    AND ('{VendorIds}' = ''\r\n    OR sm.VendorId IN (SELECT value FROM STRING_SPLIT('{VendorIds}', ','))\r\n    OR sm.AgentId IN (SELECT value FROM STRING_SPLIT('{VendorIds}', ','))\r\n    OR ds.CustomerId IN (SELECT value FROM STRING_SPLIT('{VendorIds}', ',')))\r\n    AND ('{ShipperIds}' = '' OR ds.ShipperId IN (SELECT value FROM STRING_SPLIT('{ShipperIds}', ',')))\r\n    AND ('{ConsigneeIds}' = '' OR ds.ConsigneeId IN (SELECT value FROM STRING_SPLIT('{ConsigneeIds}', ',')))\r\n    AND ('{SaleIds}' = '' OR ds.SaleId IN (SELECT value FROM STRING_SPLIT('{SaleIds}', ',')))\r\n    AND (('{FileIds}' = '' or ds.ParentId in (SELECT value FROM STRING_SPLIT('{FileIds}', ','))))\r\n    AND ('{DepartmentId}' = '' or ds.DepartmentId = '{DepartmentId}')\r\n    AND (('{HblIds}' = '' or ds.Id in (SELECT value FROM STRING_SPLIT('{HblIds}', ','))))\r\n    AND ('{TypeIds}' = '' OR ds.TypeId IN (SELECT value FROM STRING_SPLIT('{TypeIds}', ',')))\r\n    AND ('{ShipmentTypeId}' = '' OR ds.ShipmentTypeId IN (SELECT value FROM STRING_SPLIT('{ShipmentTypeId}', ',')))\r\n    )\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "Shipment",
@@ -402,7 +379,6 @@
             "Row": 100,
             "Label": "File No",
             "Width": "134px",
-            "Active": true,
             "RefName": "Shipment",
             "FocusSearch": true,
             "MinWidth": "134px",
@@ -422,7 +398,6 @@
             "ShowLabel": true,
             "Events": "{\r\n    \"change\": \"CalcTotalParent\"\r\n}",
             "Width": "75px",
-            "Active": true,
             "FocusSearch": true,
             "GroupName": "Volume",
             "Summary": "Total",
@@ -443,7 +418,6 @@
             "Label": "CW",
             "ShowLabel": true,
             "Width": "50px",
-            "Active": true,
             "FocusSearch": true,
             "GroupName": "Volume",
             "Summary": "Total",
@@ -463,7 +437,6 @@
             "Row": 100,
             "Label": "Provider",
             "Width": "87px",
-            "Active": true,
             "RefName": "Partner",
             "FocusSearch": true,
             "MinWidth": "87px",
@@ -480,7 +453,6 @@
             "Row": 100,
             "Label": "Agent",
             "Width": "74px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and (PartnerTypeIdsText like N'%Agent%'))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0  and (PartnerTypeIdsText like N'%Agent%'))\"\r\n}",
             "RefName": "Partner",
             "FocusSearch": true,
@@ -498,7 +470,6 @@
             "Label": "Shipment Date",
             "ShowLabel": true,
             "Width": "71px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "71px",
             "MaxWidth": "71px",
@@ -517,7 +488,6 @@
             "ShowLabel": true,
             "Events": "{\r\n    \"change\": \"CalcTotalParent\"\r\n}",
             "Width": "45px",
-            "Active": true,
             "FocusSearch": true,
             "GroupName": "Volume",
             "Summary": "Total",
@@ -538,7 +508,6 @@
             "Label": "40",
             "ShowLabel": true,
             "Width": "50px",
-            "Active": true,
             "FocusSearch": true,
             "GroupName": "Volume",
             "Summary": "Total",
@@ -559,7 +528,6 @@
             "Label": "CBM",
             "ShowLabel": true,
             "Width": "50px",
-            "Active": true,
             "FocusSearch": true,
             "GroupName": "Volume",
             "Summary": "Total",
@@ -579,7 +547,6 @@
             "Row": 100,
             "Label": "POL",
             "Width": "80px",
-            "Active": true,
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
@@ -597,7 +564,6 @@
             "Row": 100,
             "Label": "POD",
             "Width": "54px",
-            "Active": true,
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
@@ -613,7 +579,6 @@
             "GroupFormat": "const vndAmount = this.ChildrenItems.length;\r\nreturn vndAmount;",
             "Label": "Hbl No",
             "Width": "165px",
-            "Active": true,
             "FocusSearch": true,
             "IsSumary": true,
             "MinWidth": "165px",
@@ -629,7 +594,6 @@
             "PlainText": "Select data",
             "Label": "Shipper",
             "Width": "87px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "87px",
             "MaxWidth": "87px",
@@ -643,7 +607,6 @@
             "PlainText": "Select data",
             "Label": "Consignee",
             "Width": "60px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "60px",
             "MaxWidth": "60px",
@@ -656,7 +619,6 @@
             "ComponentType": "Input",
             "Label": "Mbl",
             "Width": "40px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "40px",
             "MaxWidth": "40px",
@@ -673,7 +635,6 @@
             "Row": 100,
             "Label": "Nomination Party",
             "Width": "42px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0)\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where  (ActionId = 1 and IsNoDebt = 0)\"\r\n}",
             "RefName": "Partner",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
@@ -693,7 +654,6 @@
             "Label": "Revenue",
             "ShowLabel": true,
             "Width": "103px",
-            "Active": true,
             "FocusSearch": true,
             "Summary": "Total",
             "SummaryColSpan": 1,
@@ -716,7 +676,6 @@
             "ShowLabel": true,
             "Events": "{\r\n    \"change\": \"CalcTotalParent\"\r\n}",
             "Width": "91px",
-            "Active": true,
             "FocusSearch": true,
             "Summary": "Total",
             "SummaryColSpan": 1,
@@ -738,7 +697,6 @@
             "ShowLabel": true,
             "Events": "{\r\n    \"change\": \"CalcTotalParent\"\r\n}",
             "Width": "85px",
-            "Active": true,
             "FocusSearch": true,
             "Summary": "Total",
             "SummaryColSpan": 1,
@@ -760,7 +718,6 @@
             "ShowLabel": true,
             "Events": "{\r\n    \"change\": \"CalcTotalParent\"\r\n}",
             "Width": "107px",
-            "Active": true,
             "FocusSearch": true,
             "Summary": "Total",
             "SummaryColSpan": 1,
@@ -784,7 +741,6 @@
             "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('customer-editor',{ ServiceId : 1, TypeId : 3, ActionId : 1, SaleId: this.Token.UserId })\",\r\n    \"edit\": \"this.EditForm.OpenPopup('customer-editor',this.Matched)\"\r\n}",
             "Width": "108px",
             "PopulateField": "this.EditForm.ShipmentDetail.Pic = this.Matched.ContactName;\r\nthis.EditForm.ShipmentDetail.SaleId = this.Matched.SaleId;\r\nthis.EditForm.ShipmentDetail.ShipperId = this.Matched.Id;\r\nthis.EditForm.ShipmentDetail.Shipper = this.Matched;\r\nlet shipper = this.EditForm.ShipmentDetail.Shipper;\r\nlet shipperText = `${(shipper.CompanyName || '')}\\n`;\r\nshipperText += `${(shipper.Address || '')}\\n`;\r\nshipperText += `Tell: ${(shipper.PhoneNumber || '')} Fax: ${(shipper.Fax || '')}\\n`;\r\nshipperText += `Contact person:${(shipper.ContactName || '')}`;\r\nthis.EditForm.ShipmentDetail.ShipperDes = shipperText.trim();\r\nthis.EditForm.UpdateView2(false, false, \"ShipmentDetail\", false, \"ShipperId\", \"SaleId\", \"ShipperDes\", \"ShipmentFee\", \"ShipmentFee1\");\r\nreturn null;",
-            "Active": true,
             "RefName": "Partner",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
             "PreQuery": "{\r\n    \"UserId\": this.Token.UserId,\r\n    \"UserName\": this.Token.UserName\r\n}",
@@ -810,7 +766,6 @@
             "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('customer-editor',{ ServiceId : 1, TypeId : 3, ActionId : 1, SaleId: this.Token.UserId })\",\r\n    \"edit\": \"this.EditForm.OpenPopup('customer-editor',this.Matched)\"\r\n}",
             "Width": "51px",
             "PopulateField": "this.EditForm.ShipmentDetail.Pic = this.Matched.ContactName;\r\nthis.EditForm.ShipmentDetail.SaleId = this.Matched.SaleId;\r\nthis.EditForm.ShipmentDetail.ShipperId = this.Matched.Id;\r\nthis.EditForm.ShipmentDetail.Shipper = this.Matched;\r\nlet shipper = this.EditForm.ShipmentDetail.Shipper;\r\nlet shipperText = `${(shipper.CompanyName || '')}\\n`;\r\nshipperText += `${(shipper.Address || '')}\\n`;\r\nshipperText += `Tell: ${(shipper.PhoneNumber || '')} Fax: ${(shipper.Fax || '')}\\n`;\r\nshipperText += `Contact person:${(shipper.ContactName || '')}`;\r\nthis.EditForm.ShipmentDetail.ShipperDes = shipperText.trim();\r\nthis.EditForm.UpdateView2(false, false, \"ShipmentDetail\", false, \"ShipperId\", \"SaleId\", \"ShipperDes\", \"ShipmentFee\", \"ShipmentFee1\");\r\nreturn null;",
-            "Active": true,
             "RefName": "User",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
             "PreQuery": "{\r\n    \"UserId\": this.Token.UserId,\r\n    \"UserName\": this.Token.UserName\r\n}",
@@ -835,7 +790,6 @@
             "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('customer-editor',{ ServiceId : 1, TypeId : 3, ActionId : 1, SaleId: this.Token.UserId })\",\r\n    \"edit\": \"this.EditForm.OpenPopup('customer-editor',this.Matched)\"\r\n}",
             "Width": "82px",
             "PopulateField": "this.EditForm.ShipmentDetail.Pic = this.Matched.ContactName;\r\nthis.EditForm.ShipmentDetail.SaleId = this.Matched.SaleId;\r\nthis.EditForm.ShipmentDetail.ShipperId = this.Matched.Id;\r\nthis.EditForm.ShipmentDetail.Shipper = this.Matched;\r\nlet shipper = this.EditForm.ShipmentDetail.Shipper;\r\nlet shipperText = `${(shipper.CompanyName || '')}\\n`;\r\nshipperText += `${(shipper.Address || '')}\\n`;\r\nshipperText += `Tell: ${(shipper.PhoneNumber || '')} Fax: ${(shipper.Fax || '')}\\n`;\r\nshipperText += `Contact person:${(shipper.ContactName || '')}`;\r\nthis.EditForm.ShipmentDetail.ShipperDes = shipperText.trim();\r\nthis.EditForm.UpdateView2(false, false, \"ShipmentDetail\", false, \"ShipperId\", \"SaleId\", \"ShipperDes\", \"ShipmentFee\", \"ShipmentFee1\");\r\nreturn null;",
-            "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 0,\r\n        \"Name\": \"FREE-HAND\"\r\n    },\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"NOMINATE\"\r\n    }\r\n]",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
             "PreQuery": "{\r\n    \"UserId\": this.Token.UserId,\r\n    \"UserName\": this.Token.UserName\r\n}",
@@ -854,7 +808,6 @@
             "Row": 100,
             "Label": "Service mode",
             "Width": "122px",
-            "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Air Export\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-plane-departure mr-1'></i>Air Export</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"Air Import\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-plane-arrival mr-1'></i>Air Import</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Sea Export FCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-ship mr-1'></i>Sea Export FCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Sea Import FCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-shipping-fast mr-1'></i>Sea Import FCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"Sea Export LCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fas fa-boxes mr-1'></i>Sea Export LCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 6,\r\n        \"Name\": \"Sea Import LCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fas fa-dolly mr-1'></i>Sea Import LCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 16,\r\n        \"Name\": \"Import Consol\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #17a2b8;'><i class='fas fa-warehouse mr-1'></i>Import Consol</span>\"\r\n    },\r\n    {\r\n        \"Id\": 17,\r\n        \"Name\": \"Export Consol\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #343a40;'><i class='fas fa-plane-departure mr-1'></i>Export Consol</span>\"\r\n    },\r\n    {\r\n        \"Id\": 13,\r\n        \"Name\": \"Trucking\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #343a40;'><i class='fas fa-plane-departure mr-1'></i>Trucking</span>\"\r\n    },\r\n    {\r\n        \"Id\": 9,\r\n        \"Name\": \"Logistics\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-box mr-1'></i>Logistics</span>\"\r\n    }\r\n]\r\n",
             "FocusSearch": true,
             "Frozen": true,
@@ -873,7 +826,6 @@
             "Icon": "fal fa-search",
             "ClassName": "btn btn-sub",
             "Events": "{\r\n    \"click\": \"OpenFilter\"\r\n}",
-            "Active": true,
             "DisabledExp": "this.EditForm.Entity.InsertedBy != this.Token.UserId || this.EditForm.Entity.StatusId == 2 || (this.EditForm.Entity.StatusId == 3 && this.EditForm.Entity.UserApprovedIds) || [2, 3].includes(this.EditForm.Entity.ProgressId)"
         }
     ],
@@ -885,26 +837,22 @@
             "CanReadAll": true,
             "CanWrite": true,
             "CanWriteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "17F47E95-2DF8-44A1-9448-D41507687E71",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "215835DF-219B-4443-A35C-5338372F5473",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "27C0048E-1480-4401-9A7A-55233F3742FE",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "C372F749-C45D-4C54-ADFC-872BFFD44EC6",
@@ -913,38 +861,32 @@
             "CanReadAll": true,
             "CanWrite": true,
             "CanWriteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "C57DFF4C-D43A-4F4B-823F-4102DB0015FD",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "C8DBB0A3-D80B-4268-83B3-7CDAD496FCB5",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "CD1BBD8E-2430-417F-AC92-C57956511110",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "DE73FECB-0009-49C6-9D16-61824D855DFA",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "F01E2BDF-60DB-4AB7-9E39-847CCE739F49",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

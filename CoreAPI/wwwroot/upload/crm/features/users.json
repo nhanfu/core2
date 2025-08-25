@@ -8,7 +8,6 @@
     "Icon": "fal fa-users-cog",
     "IsMenu": true,
     "EntityId": "User",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "002c0084-0000-0000-8000-5feb661d536f",
@@ -16,7 +15,6 @@
             "ComponentType": "Section",
             "Label": "System User",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -30,7 +28,6 @@
                     "CanSearch": true,
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Events": "{\"dblclick\":\"EditUser\"}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from [User] as ds where (TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 1)\"\r\n}",
                     "RefName": "User",
                     "OrderBy": "ds.InsertedDate desc"
@@ -43,7 +40,6 @@
             "ComponentType": "Section",
             "Label": "Customer User",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -57,7 +53,6 @@
                     "CanSearch": true,
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Events": "{\"dblclick\":\"EditUser\"}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from [User] as ds where (TypeId = 2)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 2)\"\r\n}",
                     "RefName": "User",
                     "OrderBy": "ds.InsertedDate desc"
@@ -76,7 +71,6 @@
             "Row": 100,
             "Label": "Group",
             "Width": "200px",
-            "Active": true,
             "RefName": "MasterData",
             "MinWidth": "200px",
             "MaxWidth": "200px",
@@ -89,7 +83,6 @@
             "ComponentType": "Input",
             "Label": "Identity Card",
             "Width": "143px",
-            "Active": true,
             "MinWidth": "143px",
             "MaxWidth": "143px",
             "EntityId": "User"
@@ -101,7 +94,6 @@
             "ComponentType": "Input",
             "Label": "Full Name",
             "Width": "206px",
-            "Active": true,
             "MinWidth": "206px",
             "MaxWidth": "206px",
             "EntityId": "User"
@@ -113,7 +105,6 @@
             "ComponentType": "Input",
             "Label": "Address",
             "Width": "127px",
-            "Active": true,
             "MinWidth": "127px",
             "MaxWidth": "127px",
             "EntityId": "User"
@@ -125,7 +116,6 @@
             "ComponentType": "Input",
             "Label": "Phone Number",
             "Width": "142px",
-            "Active": true,
             "MinWidth": "142px",
             "MaxWidth": "142px",
             "EntityId": "User"
@@ -140,7 +130,6 @@
             "Row": 100,
             "Label": "Sex",
             "Width": "118px",
-            "Active": true,
             "RefName": "MasterData",
             "MinWidth": "118px",
             "MaxWidth": "118px",
@@ -153,7 +142,6 @@
             "ComponentType": "Input",
             "Label": "ID",
             "Width": "180px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "180px",
             "MaxWidth": "180px",
@@ -168,7 +156,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"EditUser\"}",
             "Width": "65px",
-            "Active": true,
             "MinWidth": "65px",
             "MaxWidth": "65px",
             "EntityId": "User"
@@ -180,7 +167,6 @@
             "ComponentType": "Input",
             "Label": "Nick Name",
             "Width": "143px",
-            "Active": true,
             "MinWidth": "143px",
             "MaxWidth": "143px",
             "EntityId": "User"
@@ -192,7 +178,6 @@
             "ComponentType": "Input",
             "Label": "Job Position",
             "Width": "208px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "208px",
             "MaxWidth": "208px",
@@ -206,7 +191,6 @@
             "ComponentType": "Input",
             "Label": "Brithday",
             "Width": "143px",
-            "Active": true,
             "MinWidth": "143px",
             "MaxWidth": "143px",
             "EntityId": "User"
@@ -222,8 +206,7 @@
             "Label": "Add",
             "Icon": "fal fa-plus",
             "ClassName": "btn btn-info",
-            "Events": "{\"click\":\"AddUser\"}",
-            "Active": true
+            "Events": "{\"click\":\"AddUser\"}"
         },
         {
             "Id": "0075006c-0000-0000-8000-62568d9506c0",
@@ -234,7 +217,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"EditUser\"}",
             "Width": "65px",
-            "Active": true,
             "MinWidth": "65px",
             "MaxWidth": "65px",
             "EntityId": "User"
@@ -244,8 +226,7 @@
         {
             "Id": "22D3CDF1-F4C2-403A-9267-999650D592FB",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "33C2AC90-85AB-4513-B48C-4B653CF74DB7",
@@ -256,56 +237,47 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "47D0B5A7-09E5-4E6C-BF1E-2164AEBE9AD1",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "77E4A362-9984-4F57-83EE-484A51B92764",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "8AD5A432-6B33-4530-BE9B-C01B4EC36F0F",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "947BFA6D-0D69-44F1-8C40-19F754DCFF73",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A28379E8-426B-4380-B4D3-1C64B471022C",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "AE206E18-C70B-4494-940E-722AE22AAED7",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "DAA154B4-7AAC-4CF3-8063-185266E64888",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "F02D3A05-320D-4B1A-BC2C-35B3106009E3",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

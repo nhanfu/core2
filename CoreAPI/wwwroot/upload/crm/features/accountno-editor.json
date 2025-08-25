@@ -6,7 +6,6 @@
     "Order": 0,
     "Style": "width:800px;",
     "EntityId": "AccountNo",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "01945a5a-b4c4-7477-9052-11b5a592e698",
@@ -15,7 +14,6 @@
             "ComponentType": "Section",
             "ClassName": "ribbon-group",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "01945a5a-b510-7750-83d7-1166f4fd7485",
@@ -27,8 +25,7 @@
                     "Icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
-                    "Events": "{ \"click\" : \"SavePatch\" }",
-                    "Active": true
+                    "Events": "{ \"click\" : \"SavePatch\" }"
                 }
             ]
         },
@@ -37,8 +34,7 @@
             "FieldName": "Container ",
             "Order": 3,
             "ComponentType": "Section",
-            "XxlCol": 12,
-            "Active": true
+            "XxlCol": 12
         },
         {
             "Id": "01945a5a-b659-7219-becd-bbb1f66d030a",
@@ -47,7 +43,6 @@
             "Icon": "fal fa-info mr-1",
             "ClassName": "card-body",
             "XxlCol": 10,
-            "Active": true,
             "ParentId": "01945a5a-b54b-745e-8815-12c32abc8965",
             "XxlOuterColumn": 12,
             "Components": [
@@ -59,7 +54,6 @@
                     "Column": 2,
                     "Label": "Account No",
                     "ShowLabel": true,
-                    "Active": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
@@ -70,7 +64,6 @@
                     "Column": 2,
                     "Label": "Account Name",
                     "ShowLabel": true,
-                    "Active": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
@@ -80,8 +73,7 @@
                     "ComponentType": "Input",
                     "Column": 2,
                     "Label": "Account Name EN",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "01945a5a-b74c-75d3-8e05-8f7e623606e1",
@@ -90,8 +82,7 @@
                     "ComponentType": "Input",
                     "Column": 2,
                     "Label": "Description",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "01945a5a-b77c-718e-b9d5-31bce10ce181",
@@ -101,7 +92,6 @@
                     "Column": 2,
                     "Label": "Active",
                     "ShowLabel": true,
-                    "Active": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
@@ -115,7 +105,6 @@
                     "Row": 100,
                     "Label": "Account Type",
                     "ShowLabel": true,
-                    "Active": true,
                     "Query": "[\r\n        {\r\n        \"Id\": 1,\r\n        \"Name\": \"Debit Balance\"\r\n        },\r\n        {\r\n        \"Id\": 2,\r\n        \"Name\": \"Credit Balance\"\r\n        },\r\n        {\r\n        \"Id\": 3,\r\n        \"Name\": \"Hermaphrodite\"\r\n        },\r\n        {\r\n        \"Id\": 4,\r\n        \"Name\": \"No balance\"\r\n        }\r\n         \r\n    \r\n]",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
                     "EntityId": "AccountNo",
@@ -133,7 +122,6 @@
                     "Label": "Currency",
                     "ShowLabel": true,
                     "Events": "{\"change\":\"CheckCurrency\"}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Currency'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Currency'\"\r\n}",
                     "RefName": "MasterData",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
@@ -152,7 +140,6 @@
                     "Label": "OG Currency",
                     "ShowLabel": true,
                     "Events": "{\"change\":\"CheckCurrency\"}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Currency'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Currency'\"\r\n}",
                     "RefName": "MasterData",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
@@ -170,7 +157,6 @@
                     "Row": 100,
                     "Label": "Primary Account",
                     "ShowLabel": true,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds\"\r\n}",
                     "RefName": "AccountNo",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -190,7 +176,6 @@
             "Row": 100,
             "Label": "Bank",
             "Width": "112px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Bank'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Bank'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -208,7 +193,6 @@
             "Row": 50,
             "Label": "Number",
             "Width": "102px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from Role as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Role as ds\"\r\n}",
             "RefName": "Role",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -226,7 +210,6 @@
             "Row": 50,
             "Label": "Name",
             "Width": "94px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from Role as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Role as ds\"\r\n}",
             "RefName": "Role",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -244,7 +227,6 @@
             "Row": 50,
             "Label": "Swift Code",
             "Width": "127px",
-            "Active": true,
             "RefName": "Role",
             "FocusSearch": true,
             "Editable": true,
@@ -264,8 +246,7 @@
             "Icon": "fal fa-save",
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
-            "Events": "{ \"click\" : \"SavePatch\" }",
-            "Active": true
+            "Events": "{ \"click\" : \"SavePatch\" }"
         }
     ],
     "FeaturePolicies": [
@@ -276,50 +257,42 @@
             "CanReadAll": true,
             "CanWrite": true,
             "CanDelete": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "21699771-F5A2-43C0-B4C3-E9F490BBCBC9",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "27CC6FE7-800E-4C5E-B8AC-C32CCE0E7B9A",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "3D119519-AF18-4F48-B2EE-9F99273405E4",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "545948CB-E4DD-43F8-98A4-0E7FFAC09B88",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "6EA6438E-CA28-41E2-A04F-6C94E0E18636",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "72033854-ECBD-4E5A-AF2C-091769631041",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "8DDC0673-5EFB-4375-A425-2FAB0A4A70E3",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "B85586D7-3FB8-4300-8472-9DA780D41CBE",
@@ -328,8 +301,7 @@
             "CanReadAll": true,
             "CanWrite": true,
             "CanDelete": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "D984B433-9BD8-4ACC-BEAD-A38054689DBA",
@@ -338,8 +310,7 @@
             "CanReadAll": true,
             "CanWrite": true,
             "CanDelete": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

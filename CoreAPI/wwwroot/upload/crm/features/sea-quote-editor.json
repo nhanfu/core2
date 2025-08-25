@@ -7,7 +7,6 @@
     "Script": "return {\r\n    OnSave: function (form, gridview) {\r\n        var detail = this.GET(\"InquiryDetail\");\r\n        if ((detail && detail.AllListViewItem && detail.AllListViewItem.length > 0)) {\r\n            var firstRow = detail.AllListViewItem[0];\r\n            if (firstRow) {\r\n                this.Entity.PolId = firstRow.Entity.PolId;\r\n                this.Entity.PodId = firstRow.Entity.PodId;\r\n                this.Entity.Pol = firstRow.Entity.Pol;\r\n                this.Entity.Pod = firstRow.Entity.Pod;\r\n            }\r\n        }\r\n        var detailFee = this.GET(\"DefaultFee\");\r\n        if (detailFee && detailFee.AllListViewItem && detailFee.AllListViewItem.length > 0) {\r\n            var otherUnitId = \"00b724cc-0000-0000-8000-8cfa2cd2c643\";\r\n            if (this.EditForm.Entity.Service.Name.includes('LCL')) {\r\n                otherUnitId = \"000813c8-0000-0000-8000-0816c3e37729\";\r\n            }\r\n            detailFee.AllListViewItem.filter(x => !x.GroupRow).forEach((item, index) => {\r\n                item.Entity.Order = index;\r\n                item.Entity.OtherUnitId = item.Entity.OtherUnitId || otherUnitId;\r\n            });\r\n        }\r\n    },\r\n    ShowHideColumn2: function () {\r\n        var summary = this.GET(\"Summary\");\r\n        if (!summary) {\r\n            return;\r\n        }\r\n        var bookingDetail = this.GET(\"DefaultFee\");\r\n        var hide = [];\r\n        if (!bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name.includes('20'))) {\r\n            [\"Cont20\"].forEach(x => hide.push(x));\r\n        }\r\n        if (!bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name.includes('LCL'))) {\r\n            [\"LCL\"].forEach(x => hide.push(x));\r\n        }\r\n        if (!bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name.includes(\"40'HC\"))) {\r\n            [\"Cont40HC\"].forEach(x => hide.push(x));\r\n        }\r\n        if (!bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name.includes(\"40\") && !x.Entity.Unit.Name.includes(\"40'HC\"))) {\r\n            [\"Cont40\"].forEach(x => hide.push(x));\r\n        }\r\n        if (!bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name.includes(\"45\"))) {\r\n            [\"Cont45\"].forEach(x => hide.push(x));\r\n        }\r\n        summary.HideColumn(...hide);\r\n    },\r\n    ShowHideColumn: function () {\r\n        var summary = this.GET(\"Summary2\");\r\n        if (!summary) {\r\n            return;\r\n        }\r\n        var bookingDetail = this.GET(\"DefaultFee\");\r\n        var hide = [];\r\n        if (!bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name.includes('20'))) {\r\n            [\"Cost20\", \"Revenue20\", \"Profit20\", \"ProfitRate20\"].forEach(x => hide.push(x));\r\n        }\r\n        if (!bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name.includes('LCL'))) {\r\n            [\"CostLCL\", \"RevenueLCL\", \"ProfitLCL\", \"ProfitRateLCL\"].forEach(x => hide.push(x));\r\n        }\r\n        if (!bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name.includes(\"40'HC\"))) {\r\n            [\"Cost40HC\", \"Revenue40HC\", \"Profit40HC\", \"ProfitRate40HC\"].forEach(x => hide.push(x));\r\n        }\r\n        if (!bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name.includes(\"40\") && !x.Entity.Unit.Name.includes(\"40'HC\"))) {\r\n            [\"Cost40\", \"Revenue40\", \"Profit40\", \"ProfitRate40\"].forEach(x => hide.push(x));\r\n        }\r\n        if (!bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name.includes(\"45\"))) {\r\n            [\"Cost45\", \"Revenue45\", \"Profit45\", \"ProfitRate45\"].forEach(x => hide.push(x));\r\n        }\r\n        summary.HideColumn(...hide);\r\n    },\r\n    SaveAs: function (btn) {\r\n        var newEntity = JSON.parse(JSON.stringify(this.Entity));\r\n        newEntity.Id = this.Uuid7.NewGuid();\r\n        newEntity.Code = null;\r\n        newEntity.BookingLocalId = null;\r\n        newEntity.ServiceDate = this.dayjs();\r\n        this.Entity = newEntity;\r\n        var config = JSON.parse(localStorage.getItem(\"SalesFunction\"));\r\n        this.Entity.StatusId = config[\"APPROVE_QUOTATION\"] ? 3 : 1;\r\n        this.Entity.InsertedBy = this.Token.UserId;\r\n        this.Entity.NoApproved = config[\"APPROVE_QUOTATION\"] ? true : false;\r\n        var inquiryDetail = this.GET(\"InquiryDetail\");\r\n        if (inquiryDetail && inquiryDetail.AllListViewItem && inquiryDetail.AllListViewItem.length > 0) {\r\n            inquiryDetail.AllListViewItem.forEach(row => {\r\n                row.Entity.Id = this.Uuid7.NewGuid();\r\n                row.Entity.InquiryId = newEntity.Id;\r\n                row.Entity.StatusId = this.Entity.StatusId;\r\n                row.Children.forEach(cell => {\r\n                    cell.Entity = row.Entity;\r\n                });\r\n                row.UpdateView(true);\r\n            });\r\n        }\r\n\r\n        var defaultFee = this.GET(\"DefaultFee\");\r\n        if (defaultFee && defaultFee.AllListViewItem.length > 0) {\r\n            defaultFee.AllListViewItem.forEach(row => {\r\n                row.Entity.Id = this.Uuid7.NewGuid();\r\n                row.Entity.InquiryId = newEntity.Id;\r\n                row.Entity.StatusId = this.Entity.StatusId;\r\n                row.Children.forEach(cell => {\r\n                    cell.Entity = row.Entity;\r\n                });\r\n                row.UpdateView(true);\r\n            });\r\n        }\r\n        this.UpdateView(true);\r\n        this.Dirty = true;\r\n        this.Toast.Success(\"Save as success\");\r\n    },\r\n    ReloadSummary: function () {\r\n        window.setTimeout(() => {\r\n            debugger;\r\n            var detail = this.GET(\"Summary\");\r\n            detail.ReloadData().then(() => {\r\n                this.ShowHideColumn2();\r\n            });\r\n            var detail2 = this.GET(\"Summary2\");\r\n            detail2.ReloadData().then(() => {\r\n                this.ShowHideColumn();\r\n            });\r\n        }, 500);\r\n    },\r\n    ReloadSummary1: function () {\r\n        window.setTimeout(() => {\r\n            var detail = this.GET(\"Summary\");\r\n            detail.ReloadData().then(() => {\r\n                this.ShowHideColumn2();\r\n            });\r\n        }, 500);\r\n    },\r\n    ReloadSummary2: function () {\r\n        window.setTimeout(() => {\r\n            var detail2 = this.GET(\"Summary2\");\r\n            detail2.ReloadData().then(() => {\r\n                this.ShowHideColumn();\r\n            });\r\n        }, 500);\r\n    },\r\n    UpdateGroupFee: function (data) {\r\n        var defaultFee = this.GET(\"DefaultFee\");\r\n        data.Parent.Entity.GroupFee = data.Parent.Entity.GroupFee || (data.Entity.Description.Group ? data.Entity.Description.Group.Name : 'Local charge');\r\n        if (data.Matched) {\r\n            data.Parent.Entity.IsFreight = data.Matched.IsFreight;\r\n            data.Parent.Entity.OtherUnitId = data.Matched.OtherUnitId;\r\n            data.Parent.Entity.CurrencyId = data.Matched.CurrencyId;\r\n            data.Parent.Entity.IsObh = data.Matched.IsObh;\r\n        }\r\n        defaultFee.LoadMasterData([data.Parent.Entity]).then(() => {\r\n            data.Parent.UpdateView(false, false, \"GroupFee\", \"OtherUnitId\", \"CurrencyId\", \"IsObh\");\r\n        });\r\n    },\r\n    ShowHideDetail: function () {\r\n        this.ShowHideFreightFee();\r\n        this.ShowHideFee();\r\n        this.ShowHideColumn();\r\n        this.ShowHideColumn2();\r\n    },\r\n    ShowHideFreightFee: function () {\r\n        if (!this.EditForm.Entity.Service) {\r\n            return;\r\n        }\r\n        this.EditForm.SetShow(!this.EditForm.Entity.Service.Name.includes('LCL'), \"Show More Container\");\r\n    },\r\n    ShowHideFee: function () {\r\n        var detail1 = this.GET(\"DefaultFee\");\r\n        if (!detail1) {\r\n            return;\r\n        }\r\n        if (this.EditForm.Entity.Service.Name.includes('FCL')) {\r\n            if (this.EditForm.Entity.IsSimple) {\r\n                detail1.HideColumn(\"Cost\", \"MinLCLCost\", \"MinLCLRate\")\r\n            }\r\n            else {\r\n                detail1.HideColumn(\"MinLCLCost\", \"MinLCLRate\")\r\n            }\r\n        }\r\n        else if (this.EditForm.Entity.Service.Name.includes('LCL')) {\r\n            if (this.EditForm.Entity.IsSimple) {\r\n                detail1.HideColumn(\"Cost\", \"MinLCLCost\");\r\n            }\r\n            else {\r\n                detail1.HideColumn(\"\");\r\n            }\r\n        }\r\n        else {\r\n            if (this.EditForm.Entity.IsSimple) {\r\n                detail1.HideColumn(\"Cost\", \"MinLCLCost\", \"PayeeId\");\r\n            }\r\n            else {\r\n                detail1.HideColumn(\"\");\r\n            }\r\n        }\r\n    },\r\n    ChangeContainer: function (dropdown) {\r\n        this.UpdateView(true, false, \"Cont20Id\", \"Cont40Id\", \"Cont45Id\", \"Cont40HCId\");\r\n    },\r\n    BeforeCreated: function (rowSection, entity) {\r\n        var inquiryDetail = this.GET(\"InquiryDetail\");\r\n        var detail = this.GET(\"DefaultFee\");\r\n        var first = inquiryDetail.AllListViewItem[0];\r\n        if (this.EditForm.Entity.Service.Name.includes(\"LCL\")) {\r\n            entity.UnitId = \"002e15e8-0000-0000-8000-e7f20d394a58\";\r\n        }\r\n        if (first != null) {\r\n            if (!entity.RouteId) {\r\n                entity.RouteId = `${(first.Entity.Pol.Code || '')} => ${(first.Entity.FinalDestination.Code || '')}`;\r\n                entity.Route = {\r\n                    Name: entity.RouteId,\r\n                    Id: entity.RouteId,\r\n                };\r\n                entity.PolId = first.Entity.PolId;\r\n                entity.Pol = first.Entity.Pol;\r\n                entity.PodId = first.Entity.PodId;\r\n                entity.Pod = first.Entity.Pod;\r\n                entity.FinalDestinationId = first.Entity.FinalDestinationId;\r\n                entity.FinalDestination = first.Entity.FinalDestination;\r\n                entity.VendorId = first.Entity.VendorId;\r\n            }\r\n        }\r\n        var lastItem = detail.AllListViewItem[detail.AllListViewItem.length - 1]\r\n        if (lastItem) {\r\n            entity.GroupFee = entity.GroupFee == null ? lastItem.Entity.GroupFee || '' : entity.GroupFee;\r\n            entity.RouteId = entity.RouteId == null ? lastItem.Entity.RouteId || '' : entity.RouteId;\r\n            entity.PolId = entity.PolId == null ? lastItem.Entity.PolId || '' : entity.PolId;\r\n            entity.UnitId = entity.UnitId == null ? lastItem.Entity.UnitId || '' : entity.UnitId;\r\n            entity.Unit = entity.Unit == null ? lastItem.Entity.Unit || '' : entity.Unit;\r\n            entity.Pol = entity.Pol == null ? lastItem.Entity.Pol || '' : entity.Pol;\r\n            entity.PodId = entity.PodId == null ? lastItem.Entity.PodId || '' : entity.PodId;\r\n            entity.Pod = entity.Pod == null ? lastItem.Entity.Pod || '' : entity.Pod;\r\n            entity.FinalDestinationId = entity.FinalDestinationId == null ? lastItem.Entity.FinalDestinationId || '' : entity.FinalDestinationId;\r\n            entity.FinalDestination = entity.FinalDestination == null ? lastItem.Entity.FinalDestination || '' : entity.FinalDestination;\r\n            entity.VendorId = entity.VendorId == null ? lastItem.Entity.VendorId || '' : entity.VendorId;\r\n        }\r\n    },\r\n    CalcPrice: function (com, entity) {\r\n        entity.TotalAmount = this.Decimal(entity.Quantity || 0).times(this.Decimal(entity.Amount || 0));\r\n        entity.AmountTax = (entity.TotalAmount).times(this.Decimal(entity.Vat || 0)).div(100);\r\n        entity.TotalAmountTax = entity.TotalAmount.plus(entity.AmountTax);\r\n        var totalAmount = this.ChildCom.find(x => x.IsListView).AllListViewItem\r\n            .flatMap(x => x.Entity)\r\n            .reduce((a, b) => a.plus(b.TotalAmountTax), this.Decimal(0));\r\n        this.Entity.TotalAmount = this.Decimal(totalAmount || 0);\r\n        this.UpdateView(false, false, \"TotalAmount\");\r\n        com.Parent.UpdateView(false);\r\n    },\r\n    OnSaveAdd: function (form, gridview) {\r\n        var config = JSON.parse(localStorage.getItem(\"SalesFunction\"));\r\n        this.Entity = {\r\n            Id: this.Uuid7.NewGuid(),\r\n            Code: null,\r\n            StatusId: config[\"APPROVE_QUOTATION\"] ? 3 : 1\r\n        }\r\n    },\r\n    AddDuplicateMenu: function (form, gridview) {\r\n        gridview.MenuItems.push({\r\n            Icon: \"fal fa-folders\",\r\n            Text: \"Duplicate\",\r\n            Click: () => this.DuplicateFee(form, gridview)\r\n        });\r\n    },\r\n    DuplicateFee: function (form, gridview) {\r\n        var inquiryDetail = this.GET(\"InquiryDetail\");\r\n        var defaultFee = this.GET(\"DefaultFee\");\r\n        var newItem = JSON.parse(JSON.stringify(defaultFee.Header.filter(x => x.FieldName == \"UnitId\" || x.FieldName == \"RouteId\")));\r\n        newItem.forEach(item => {\r\n            item.FieldName = \"View\" + item.FieldName;\r\n            if (item.FieldName == \"ViewRouteId\") {\r\n                item.Order = 0;\r\n                this.Entity.ViewRouteId = this.Entity.ViewRouteId || (inquiryDetail.AllListViewItem[0] ? `${(inquiryDetail.AllListViewItem[0].Entity.Pol.Code || '')} => ${(inquiryDetail.AllListViewItem[0].Entity.FinalDestination.Code || '')}` : this.Entity.ViewRouteId);\r\n            }\r\n        })\r\n        var form = this.EditForm.OpenConfig(\"Select group unit type!\", () => {\r\n            if (!form.Entity.ViewRouteId) {\r\n                return;\r\n            }\r\n            var selecteds = defaultFee.AllListViewItem.filter(x => !x.GroupRow && x.Selected);\r\n            var otherGroup = inquiryDetail.AllListViewItem.find(x => form.Entity.ViewRouteId == `${(x.Entity.Pol.Code || '')} => ${(x.Entity.FinalDestination.Code || '')}`);\r\n            var newFees = JSON.parse(JSON.stringify(selecteds.map(x => x.Entity)));\r\n            newFees.forEach(item => {\r\n                item.Id = this.Uuid7.NewGuid();\r\n                item.RouteId = (otherGroup.Entity.Pol.Code) + \" - \" + (otherGroup.Entity.FinalDestination.Code || '');\r\n                item.PolId = otherGroup.Entity.PolId;\r\n                item.UnitId = form.Entity.ViewUnitId;\r\n                item.RouteId = form.Entity.ViewRouteId;\r\n                item.Unit = null;\r\n                item.DisableRow = false;\r\n                item.Pol = otherGroup.Entity.Pol;\r\n                item.PodId = otherGroup.Entity.PodId;\r\n                item.Pod = otherGroup.Entity.Pod;\r\n                item.FinalDestinationId = otherGroup.Entity.FinalDestinationId;\r\n                item.FinalDestination = otherGroup.Entity.FinalDestination;\r\n                item.VendorId = otherGroup.Entity.VendorId;\r\n            });\r\n            defaultFee.LoadMasterData(newFees).then(() => {\r\n                defaultFee.ClearSelected();\r\n                defaultFee.AddRows(newFees).then(rows => {\r\n                    rows.forEach(row => {\r\n                        row.Selected = true;\r\n                    });\r\n                    rows[0].Element.focus();\r\n                    this.ReloadSummary();\r\n                });\r\n            });\r\n        }, () => { }, true, newItem.reverse());\r\n    },\r\n    UpdateViewForm: function () {\r\n        var defaultFee = this.GET(\"DefaultFee\");\r\n        var units = [...new Set(defaultFee.AllListViewItem.filter(x => x.Entity.RouteId == this.Entity.ViewRouteId).map(x => x.Entity.Unit).filter(x => x.Name != 'ALL'))];\r\n        this.Entity.UnitIds = units.map(x => x.Id).join(\",\");\r\n        var listFreight = [];\r\n        if (defaultFee.AllListViewItem.some(x => x.Entity.RouteId == this.Entity.ViewRouteId && x.Entity.IsFreight)) {\r\n            listFreight.push(\"1\");\r\n        }\r\n        if (defaultFee.AllListViewItem.some(x => x.Entity.RouteId == this.Entity.ViewRouteId && x.Entity.IsLogistics)) {\r\n            listFreight.push(\"2\");\r\n        }\r\n        if (defaultFee.AllListViewItem.some(x => x.Entity.RouteId == this.Entity.ViewRouteId && x.Entity.IsTrucking)) {\r\n            listFreight.push(\"3\");\r\n        }\r\n        this.Entity.FreightIds = listFreight.join(\",\");\r\n        this.UpdateView(false, false, \"UnitIds\", \"FreightIds\");\r\n    },\r\n    CreateBookingLocal: function (btn) {\r\n        var defaultFee = this.GET(\"DefaultFee\");\r\n        var inquiryDetail = this.GET(\"InquiryDetail\");\r\n        var units = [...new Set(defaultFee.AllListViewItem.map(x => x.Entity.Unit).filter(x => x.Name != 'ALL'))];\r\n        var components = [];\r\n        var routes = inquiryDetail.AllListViewItem.filter(x => !x.GroupRow);\r\n        var route = inquiryDetail.AllListViewItem.find(x => !x.GroupRow);\r\n        if (routes.length > 1) {\r\n            var routeCom = JSON.parse(JSON.stringify(defaultFee.Header.find(x => x.FieldName == \"RouteId\")));\r\n            routeCom.FieldName = \"ViewRouteId\";\r\n            routeCom.Events = `{\"change\":\"UpdateViewForm\"}`;\r\n            components.push(routeCom);\r\n        }\r\n        else {\r\n            this.Entity.ViewRouteId = `${(route.Entity.Pol.Code || '')} => ${(route.Entity.FinalDestination.Code || '')}`;\r\n        }\r\n        var listFreight = [];\r\n        if (defaultFee.AllListViewItem.some(x => x.Entity.IsFreight)) {\r\n            listFreight.push({\r\n                Id: \"1\",\r\n                Name: \"FREGIHT\"\r\n            });\r\n        }\r\n        if (defaultFee.AllListViewItem.some(x => x.Entity.IsLogistics)) {\r\n            listFreight.push({\r\n                Id: \"2\",\r\n                Name: \"LOGISTICS\"\r\n            });\r\n        }\r\n        if (defaultFee.AllListViewItem.some(x => x.Entity.IsTrucking)) {\r\n            listFreight.push({\r\n                Id: \"3\",\r\n                Name: \"TRUCKING\"\r\n            });\r\n        }\r\n        var freightCom = {\r\n            FieldName: \"FreightIds\",\r\n            ComponentType: \"Dropdown\",\r\n            Query: JSON.stringify(listFreight),\r\n            FormatData: \"{Name}\",\r\n            Label: \"Service\",\r\n            IsMultiple: true,\r\n            PlainText: \"Select service\",\r\n            Template: JSON.stringify([{ \"FieldName\": \"Name\", \"Label\": \"Name\", \"ComponentType\": \"Input\" }])\r\n        }\r\n        components.push(freightCom);\r\n        if (this.EditForm.Entity.Service.Name.includes(\"LCL\")) {\r\n            var cbmCom = JSON.parse(JSON.stringify(this.EditForm.ChildCom.find(x => x.Meta.FieldName == \"CBM\").Meta));\r\n            components.push(cbmCom);\r\n        }\r\n        else {\r\n            var unitCom = JSON.parse(JSON.stringify(defaultFee.Header.find(x => x.FieldName == \"UnitId\")));\r\n            unitCom.IsMultiple = true;\r\n            unitCom.FieldName = \"UnitIds\";\r\n            unitCom.RefName = null;\r\n            unitCom.Query = JSON.stringify(units);\r\n            components.push(unitCom);\r\n        }\r\n        this.UpdateViewForm();\r\n        var form = this.EditForm.OpenConfig(\"Please double check async booking local!\", () => {\r\n            if (routes.length > 1) {\r\n                route = inquiryDetail.AllListViewItem.find(x => !x.GroupRow && x.Entity.PolId == this.Entity.ViewRoute.PolId && x.Entity.PodId == this.Entity.ViewRoute.PodId);\r\n            }\r\n            if (!route) {\r\n                return;\r\n            }\r\n            var featureName = \"sea-booking-local-editor\";\r\n            var config = JSON.parse(localStorage.getItem(\"SalesFunction\"));\r\n            var booking = JSON.parse(JSON.stringify(this.EditForm.Entity));\r\n            let consigneText = \"\";\r\n            let consignee = this.EditForm.Entity.Consignee;\r\n            if (consignee) {\r\n                consigneText += `${(consignee.CompanyName || '')}\\n`;\r\n                consigneText += `${(consignee.Address || '')}\\n`;\r\n                consigneText += `Tell: ${(consignee.PhoneNumber || '')} Fax: ${(consignee.Fax || '')}\\n`;\r\n                consigneText += `Contact person: ${(consignee.ContactName || '')}`;\r\n            }\r\n            let customerText = \"\";\r\n            let customer = this.EditForm.Entity.Customer;\r\n            if (customer) {\r\n                customerText += `${(customer.CompanyName || '')}\\n`;\r\n                customerText += `${(customer.Address || '')}\\n`;\r\n                customerText += `Tell: ${(customer.PhoneNumber || '')} Fax: ${(customer.Fax || '')}\\n`;\r\n                customerText += `Contact person: ${(customer.ContactName || '')}`;\r\n            }\r\n            let shipper = this.EditForm.Entity.Shipper;\r\n            let shipperText = \"\";\r\n            if (shipper) {\r\n                shipperText += `${(shipper.CompanyName || '')}\\n`;\r\n                shipperText += `${(shipper.Address || '')}\\n`;\r\n                shipperText += `Tell: ${(shipper.PhoneNumber || '')} Fax: ${(shipper.Fax || '')}\\n`;\r\n                shipperText += `Contact person: ${(shipper.ContactName || '')}`;\r\n            }\r\n            booking.ConsigneeDes = consigneText != \"\" ? consigneText : this.EditForm.Entity.ConsigneeIdText;\r\n            if (booking.Service.Name.includes(\"Import\")) {\r\n                booking.ConsigneeDes = customerText != \"\" ? customerText : customerText;\r\n                booking.ConsigneeId = booking.CustomerId;\r\n            }\r\n            else {\r\n                booking.ConsigneeDes = consigneText != \"\" ? consigneText : this.EditForm.Entity.ConsigneeIdText;\r\n            }\r\n            if (booking.Service.Name.includes(\"Export\")) {\r\n                booking.ShipperDes = shipperText != \"\" ? shipperText : customerText;\r\n                booking.ShipperId = booking.CustomerId;\r\n            }\r\n            else {\r\n                booking.ShipperDes = shipperText != \"\" ? shipperText : this.EditForm.Entity.ShipperIdText;\r\n            }\r\n            booking.Id = this.Uuid7.NewGuid();\r\n            booking.QuotationCode = this.EditForm.Entity.Code;\r\n            booking.QuotationId = this.EditForm.Entity.Id;\r\n            booking.CreatedOn = this.dayjs().format('YYYY-MM-DD');\r\n            booking.SaleId = this.EditForm.Entity.Customer ? this.EditForm.Entity.Customer.SaleId : null;\r\n            booking.PolId = route.Entity.PolId;\r\n            booking.PodId = route.Entity.PodId;\r\n            booking.PickupAddress = route.Entity.Pickup;\r\n            booking.DeliveryAddress = route.Entity.Delivery;\r\n            booking.PortTransitId = route.Entity.ViaId;\r\n            booking.FinalDestinationId = route.Entity.FinalDestinationId;\r\n            booking.PlaceDeliveryId = route.Entity.PlaceDeliveryId;\r\n            booking.SpecialRequest = this.EditForm.Entity.Subject;\r\n            booking.StatusId = config[\"APPROVE_BOOKINGLOCAL\"] ? 3 : 1;\r\n            booking.NoApproved = config[\"APPROVE_BOOKINGLOCAL\"] ? true : false;\r\n            booking.ContPickupAtId = this.EditForm.Entity.PkEmptyId;\r\n            booking.InsertedBy = this.Token.UserId;\r\n            booking.TypeId = 6;\r\n            booking.VoucherTypeId = 3;\r\n            var bookingTransit = [{\r\n                Id: this.Uuid7.NewGuid(),\r\n                BookingId: booking.Id,\r\n                PortTransitId: route.Entity.ViaId\r\n            }]\r\n            booking.BookingTransit = bookingTransit;\r\n            if (route.Entity.Vendor && route.Entity.Vendor.PartnerTypeIdsText && route.Entity.Vendor.PartnerTypeIdsText.toUpperCase().includes('AGENT')\r\n                && route.Entity.Vendor.ResidenceTypeIdText && route.Entity.Vendor.ResidenceTypeIdText.toUpperCase().includes('OVERSEA')) {\r\n                booking.AgentId = route.Entity.VendorId;\r\n                booking.VendorId = route.Entity.CarrierId;\r\n            }\r\n            else {\r\n                booking.AgentId = null;\r\n                booking.VendorId = route.Entity.VendorId;\r\n                booking.CarrierId = route.Entity.CarrierId;\r\n            }\r\n            var inquiryContainer = this.GET(\"EntityContainer\");\r\n            var items = inquiryContainer.AllListViewItem.map(x => x.Entity);\r\n            var newItems = JSON.parse(JSON.stringify(items));\r\n            if (this.EditForm.Entity.Service.Name.includes('General')) {\r\n                var selectUnitIds = this.EditForm.ChildCom.find(x => x.Meta.FieldName == 'UnitIds');\r\n                var check = this.EditForm.Entity.UnitIdsText.includes('LCL');\r\n                if (route.Entity.Pol.IsLocal) {\r\n                    booking.ServiceId = 3;//Sea Export FCL\r\n                    if (check) {\r\n                        booking.ServiceId = 5;//Sea Export LCL\r\n                    }\r\n                }\r\n                else {\r\n                    booking.ServiceId = 4;//Sea Import FCL\r\n                    if (check) {\r\n                        booking.ServiceId = 6;//Sea Import LCL\r\n                    }\r\n                }\r\n            }\r\n            newItems.forEach(item => {\r\n                item.Id = this.Uuid7.NewGuid();\r\n                item.BookingId = booking.Id;\r\n            })\r\n            booking.EntityContainer = newItems;\r\n            var bookingDetail = [];\r\n            var sellingRate = JSON.parse(JSON.stringify(defaultFee.AllListViewItem.filter(x => x.Entity.PolId == route.Entity.PolId && x.Entity.PodId == route.Entity.PodId && !x.GroupRow && x.Entity.Rate && this.Decimal(x.Entity.Rate).greaterThan(0)).map(x => x.Entity)));\r\n            var buyingRate = JSON.parse(JSON.stringify(defaultFee.AllListViewItem.filter(x => x.Entity.PolId == route.Entity.PolId && x.Entity.PodId == route.Entity.PodId && !x.GroupRow && x.Entity.Cost && this.Decimal(x.Entity.Cost).greaterThan(0)).map(x => x.Entity)));\r\n            if (!this.EditForm.Entity.Service.Name.includes(\"LCL\")) {\r\n                sellingRate = sellingRate.filter(x => this.EditForm.Entity.UnitIds.includes(x.UnitId) || x.Unit.Name == 'ALL');\r\n                buyingRate = buyingRate.filter(x => this.EditForm.Entity.UnitIds.includes(x.UnitId) || x.Unit.Name == 'ALL');\r\n            }\r\n            if (!this.EditForm.Entity.FreightIds.includes('1')) {\r\n                sellingRate = sellingRate.filter(x => !x.IsFreight && (!x.IsLogistics || !x.IsTrucking));\r\n                buyingRate = buyingRate.filter(x => !x.IsFreight && (!x.IsLogistics || !x.IsTrucking));\r\n                if (this.EditForm.Entity.FreightIds.includes('2')) {\r\n                    booking.TypeId = 9;\r\n                    if (this.EditForm.Entity.Service.Name.includes('Sea Import')) {\r\n                        booking.ServiceId = 4;\r\n                    }\r\n                    else if (this.EditForm.Entity.Service.Name.includes('Sea Export')) {\r\n                        booking.ServiceId = 3;\r\n                    }\r\n                    else if (this.EditForm.Entity.Service.Name.includes('Air Export')) {\r\n                        booking.ServiceId = 1;\r\n                    }\r\n                    else if (this.EditForm.Entity.Service.Name.includes('Air Import')) {\r\n                        booking.ServiceId = 2;\r\n                    }\r\n                    featureName = \"logistics-booking-local-editor\";\r\n                }\r\n            }\r\n            if (!this.EditForm.Entity.FreightIds.includes('2')) {\r\n                sellingRate = sellingRate.filter(x => !x.IsLogistics);\r\n                buyingRate = buyingRate.filter(x => !x.IsLogistics);\r\n            }\r\n            if (!this.EditForm.Entity.FreightIds.includes('3')) {\r\n                sellingRate = sellingRate.filter(x => !x.IsTrucking);\r\n                buyingRate = buyingRate.filter(x => !x.IsTrucking);\r\n            }\r\n            if (this.EditForm.Entity.FreightIds == '3') {\r\n                booking.ServiceId = 13;\r\n                booking.TypeId = 8;\r\n                featureName = \"trucking-booking-local-editor\";\r\n            }\r\n            buyingRate.forEach(item => {\r\n                item.Id = this.Uuid7.NewGuid();\r\n                item.BookingId = booking.Id;\r\n                if (!item.IsContainer) {\r\n                    item.UnitId = item.OtherUnitId;\r\n                }\r\n                item.Amount = this.Decimal(item.Cost || 0);\r\n                item.VendorId = item.PayeeId || route.Entity.VendorId;\r\n                item.IsBuying = true;\r\n                if (item.IsCBM) {\r\n                    item.Quantity = !item.Quantity ? this.Decimal.max(this.Decimal(this.EditForm.Entity.CBM || 1), this.Decimal(item.MinLCLCost || 1)) : this.Decimal(item.Quantity);\r\n                }\r\n                else {\r\n                    item.Quantity = item.Quantity ? this.Decimal(item.Quantity) : this.Decimal(1)\r\n                }\r\n                item.TotalAmount = (item.Quantity || this.Decimal(0)).times(item.Amount || this.Decimal(0));\r\n                item.AmountTax = (item.TotalAmount).times(this.Decimal(item.Vat || 0)).div(100);\r\n                item.TotalAmountTax = item.TotalAmount.plus(item.AmountTax);\r\n                bookingDetail.push(item);\r\n            });\r\n            sellingRate.forEach(item => {\r\n                item.Id = this.Uuid7.NewGuid();\r\n                item.BookingId = booking.Id;\r\n                if (!item.IsContainer) {\r\n                    item.UnitId = item.OtherUnitId;\r\n                }\r\n                item.Amount = this.Decimal(item.Rate || 0);\r\n                item.VendorId = item.PayerId || this.EditForm.Entity.CustomerId;\r\n                if (item.IsCBM) {\r\n                    item.Quantity = !item.Quantity ? this.Decimal.max(this.Decimal(this.EditForm.Entity.CBM || 1), this.Decimal(item.MinLCLRate || 1)) : this.Decimal(item.Quantity);\r\n                }\r\n                else {\r\n                    item.Quantity = item.Quantity ? this.Decimal(item.Quantity) : this.Decimal(1)\r\n                }\r\n                item.TotalAmount = (item.Quantity || this.Decimal(0)).times(item.Amount || this.Decimal(0));\r\n                item.AmountTax = (item.TotalAmount).times(this.Decimal(item.Vat || 0)).div(100);\r\n                item.TotalAmountTax = item.TotalAmount.plus(item.AmountTax);\r\n                bookingDetail.push(item);\r\n            });\r\n            booking.BookingDetail = bookingDetail.sort((a, b) => {\r\n                const vendorCompare = a.VendorId.localeCompare(b.VendorId);\r\n                if (vendorCompare !== 0) {\r\n                    return vendorCompare;\r\n                }\r\n                return b.Amount - a.Amount;\r\n            });\r\n            this.OpenPopup(featureName, booking);\r\n        }, () => { }, true, components);\r\n    }\r\n}",
     "Events": "{\r\n    \"onsave\": \"OnSave\",\r\n    \"onsaveadd\": \"OnSaveAdd\",\r\n    \"saved\": \"UpdateParent\"\r\n}",
     "EntityId": "Inquiry",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "004a30ec-0000-0000-8000-88008a33ead1",
@@ -17,7 +16,6 @@
             "Label": "Estimate Profit",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "007426dc-0000-0000-8000-9a4afdb97265",
             "XxlOuterColumn": 12,
             "IsDropDown": true,
@@ -32,7 +30,6 @@
                     "Label": "Summary",
                     "ClassName": "sticky",
                     "Events": "{\r\n    \"FirstLoad\": \"ReloadSummary2\"\r\n}",
-                    "Active": true,
                     "Query": "var detail = this.EditForm.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"DefaultFee\");\r\nvar inquiryDetail = this.EditForm.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"InquiryDetail\");\r\nvar listItem = detail.AllListViewItem.filter(x => !x.GroupRow).map(x => x.Entity);\r\nvar sellingRates = listItem.filter(x => x.Rate && !x.IsObh);\r\nvar buyingRates = listItem.filter(x => x.Cost && !x.IsObh);\r\nvar routes = inquiryDetail.AllListViewItem.filter(x => !x.GroupRow).map(x => x.Entity);\r\nvar datas = [];\r\nroutes.forEach(item => {\r\n    var sellingRate = sellingRates.filter(x => x.PolId == item.PolId && x.PodId == item.PodId);\r\n    var buyingRate = buyingRates.filter(x => x.PolId == item.PolId && x.PodId == item.PodId);\r\n    var vnd = {\r\n        PolId: item.PolId,\r\n        Pol: item.Pol,\r\n        PodId: item.PodId,\r\n        Pod: item.Pod,\r\n        CurrencyText: \"VND\",\r\n        RevenueLCL: (sellingRate.filter(x => x.Unit.Name.includes('LCL')).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        CostLCL: (buyingRate.filter(x => x.Unit.Name.includes('LCL')).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        RevenueALL: (sellingRate.filter(x => !x.Unit.IsContainer && !x.Unit.Name.includes('LCL')).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        CostALL: (buyingRate.filter(x => !x.Unit.IsContainer && !x.Unit.Name.includes('LCL')).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Revenue20: (sellingRate.filter(x => x.Unit.Name.includes('20')).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Cost20: (buyingRate.filter(x => x.Unit.Name.includes('20')).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Revenue40: (sellingRate.filter(x => x.Unit.Name.includes('40') && !x.Unit.Name.includes(\"40'HC\")).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Cost40: (buyingRate.filter(x => x.Unit.Name.includes('40') && !x.Unit.Name.includes(\"40'HC\")).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Revenue40HC: (sellingRate.filter(x => x.Unit.Name.includes(\"40'HC\")).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Cost40HC: (buyingRate.filter(x => x.Unit.Name.includes(\"40'HC\")).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Revenue45: (sellingRate.filter(x => x.Unit.Name.includes('45')).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Cost45: (buyingRate.filter(x => x.Unit.Name.includes('45')).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n    }\r\n    vnd.RevenueLCL = vnd.RevenueLCL.plus(vnd.RevenueALL);\r\n    vnd.CostLCL = vnd.CostLCL.plus(vnd.CostALL);\r\n    vnd.ProfitLCL = vnd.RevenueLCL.sub(vnd.CostLCL);\r\n    vnd.ProfitRateLCL = (vnd.ProfitLCL.div(vnd.RevenueLCL || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    vnd.Revenue20 = vnd.Revenue20.plus(vnd.RevenueALL);\r\n    vnd.Cost20 = vnd.Cost20.plus(vnd.CostALL);\r\n    vnd.Profit20 = vnd.Revenue20.sub(vnd.Cost20);\r\n    vnd.ProfitRate20 = (vnd.Profit20.div(vnd.Revenue20 || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    vnd.Revenue40 = vnd.Revenue40.plus(vnd.RevenueALL);\r\n    vnd.Cost40 = vnd.Cost40.plus(vnd.CostALL);\r\n    vnd.Profit40 = vnd.Revenue40.sub(vnd.Cost40);\r\n    vnd.ProfitRate40 = (vnd.Profit40.div(vnd.Revenue40 || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    vnd.Revenue40HC = vnd.Revenue40HC.plus(vnd.RevenueALL);\r\n    vnd.Cost40HC = vnd.Cost40HC.plus(vnd.CostALL);\r\n    vnd.Profit40HC = vnd.Revenue40HC.sub(vnd.Cost40HC);\r\n    vnd.ProfitRate40HC = (vnd.Profit40HC.div(vnd.Revenue40HC || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    vnd.Revenue45 = vnd.Revenue45.plus(vnd.RevenueALL);\r\n    vnd.Cost45 = vnd.Cost45.plus(vnd.CostALL);\r\n    vnd.Profit45 = vnd.Revenue45.sub(vnd.Cost45);\r\n    vnd.ProfitRate45 = (vnd.Profit45.div(vnd.Revenue45 || this.Decimal(1))).times(this.Decimal(100));\r\n    var usd = {\r\n        PolId: item.PolId,\r\n        Pol: item.Pol,\r\n        PodId: item.PodId,\r\n        Pod: item.Pod,\r\n        CurrencyText: \"USD\",\r\n        RevenueLCL: (sellingRate.filter(x => x.Unit.Name.includes('LCL')).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        CostLCL: (buyingRate.filter(x => x.Unit.Name.includes('LCL')).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        RevenueALL: (sellingRate.filter(x => !x.Unit.IsContainer && !x.Unit.Name.includes('LCL')).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        CostALL: (buyingRate.filter(x => !x.Unit.IsContainer && !x.Unit.Name.includes('LCL')).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Revenue20: (sellingRate.filter(x => x.Unit.Name.includes('20')).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Cost20: (buyingRate.filter(x => x.Unit.Name.includes('20')).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Revenue40: (sellingRate.filter(x => x.Unit.Name.includes('40') && !x.Unit.Name.includes(\"40'HC\")).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Cost40: (buyingRate.filter(x => x.Unit.Name.includes('40') && !x.Unit.Name.includes(\"40'HC\")).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Revenue40HC: (sellingRate.filter(x => x.Unit.Name.includes(\"40'HC\")).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Cost40HC: (buyingRate.filter(x => x.Unit.Name.includes(\"40'HC\")).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Revenue45: (sellingRate.filter(x => x.Unit.Name.includes('45')).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Cost45: (buyingRate.filter(x => x.Unit.Name.includes('45')).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n    }\r\n    usd.RevenueLCL = usd.RevenueLCL.plus(usd.RevenueALL);\r\n    usd.CostLCL = usd.CostLCL.plus(usd.CostALL);\r\n    usd.ProfitLCL = usd.RevenueLCL.sub(usd.CostLCL);\r\n    usd.ProfitRateLCL = (usd.ProfitLCL.div(usd.RevenueLCL || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    usd.Revenue20 = usd.Revenue20.plus(usd.RevenueALL);\r\n    usd.Cost20 = usd.Cost20.plus(usd.CostALL);\r\n    usd.Profit20 = usd.Revenue20.sub(usd.Cost20);\r\n    usd.ProfitRate20 = (usd.Profit20.div(usd.Revenue20 || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    usd.Revenue40 = usd.Revenue40.plus(usd.RevenueALL);\r\n    usd.Cost40 = usd.Cost40.plus(usd.CostALL);\r\n    usd.Profit40 = usd.Revenue40.sub(usd.Cost40);\r\n    usd.ProfitRate40 = (usd.Profit40.div(usd.Revenue40 || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    usd.Revenue40HC = usd.Revenue40HC.plus(usd.RevenueALL);\r\n    usd.Cost40HC = usd.Cost40HC.plus(usd.CostALL);\r\n    usd.Profit40HC = usd.Revenue40HC.sub(usd.Cost40HC);\r\n    usd.ProfitRate40HC = (usd.Profit40HC.div(usd.Revenue40HC || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    usd.Revenue45 = usd.Revenue45.plus(usd.RevenueALL);\r\n    usd.Cost45 = usd.Cost45.plus(usd.CostALL);\r\n    usd.Profit45 = usd.Revenue45.sub(usd.Cost45);\r\n    usd.ProfitRate45 = (usd.Profit45.div(usd.Revenue45 || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    var totalRevenueVND = this.Decimal(0);\r\n    var totalCostVND = this.Decimal(0);\r\n\r\n    var totalRevenueUSD = this.Decimal(0);\r\n    var totalCostUSD = this.Decimal(0);\r\n    var bookingDetail = this.EditForm.ChildCom.find(x => x.Meta.FieldName == \"DefaultFee\");\r\n    if (bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name.includes('20'))) {\r\n        totalRevenueVND = totalRevenueVND.plus(vnd.Revenue20);\r\n        totalCostVND = totalCostVND.plus(vnd.Cost20);\r\n\r\n        totalRevenueUSD = totalRevenueUSD.plus(usd.Revenue20);\r\n        totalCostUSD = totalCostUSD.plus(usd.Cost20);\r\n    }\r\n    if (bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name.includes('LCL'))) {\r\n        totalRevenueVND = totalRevenueVND.plus(vnd.RevenueLCL);\r\n        totalCostVND = totalCostVND.plus(vnd.CostLCL);\r\n\r\n        totalRevenueUSD = totalRevenueUSD.plus(usd.RevenueLCL);\r\n        totalCostUSD = totalCostUSD.plus(usd.CostLCL);\r\n    }\r\n    if (bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name.includes(\"40'HC\"))) {\r\n        totalRevenueVND = totalRevenueVND.plus(vnd.Revenue40HC);\r\n        totalCostVND = totalCostVND.plus(vnd.Cost40HC);\r\n\r\n        totalRevenueUSD = totalRevenueUSD.plus(usd.Revenue40HC);\r\n        totalCostUSD = totalCostUSD.plus(usd.Cost40HC);\r\n    }\r\n    if (bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name.includes(\"40\") && !x.Entity.Unit.Name.includes(\"40'HC\"))) {\r\n        totalRevenueVND = totalRevenueVND.plus(vnd.Revenue40);\r\n        totalCostVND = totalCostVND.plus(vnd.Cost40);\r\n\r\n        totalRevenueUSD = totalRevenueUSD.plus(usd.Revenue40);\r\n        totalCostUSD = totalCostUSD.plus(usd.Cost40);\r\n    }\r\n    if (bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name.includes(\"45\"))) {\r\n        totalRevenueVND = totalRevenueVND.plus(vnd.Revenue45);\r\n        totalCostVND = totalCostVND.plus(vnd.Cost45);\r\n\r\n        totalRevenueUSD = totalRevenueUSD.plus(usd.Revenue45);\r\n        totalCostUSD = totalCostUSD.plus(usd.Cost45);\r\n    }\r\n    vnd.RevenueTotal = totalRevenueVND;\r\n    vnd.CostTotal = totalCostVND;\r\n    vnd.ProfitTotal = vnd.RevenueTotal.sub(vnd.CostTotal);\r\n    vnd.ProfitRateTotal = (vnd.ProfitTotal.div(vnd.RevenueTotal || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    usd.RevenueTotal = totalRevenueUSD;\r\n    usd.CostTotal = totalCostUSD;\r\n    usd.ProfitTotal = usd.RevenueTotal.sub(usd.CostTotal);\r\n    usd.ProfitRateTotal = (usd.ProfitTotal.div(usd.RevenueTotal || this.Decimal(1))).times(this.Decimal(100));\r\n    datas.push(vnd);\r\n    datas.push(usd);\r\n})\r\nreturn datas;",
                     "IsSumary": true,
                     "OrderBy": "ds.InsertedDate desc",
@@ -47,7 +44,6 @@
             "ComponentType": "Section",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "007426dc-0000-0000-8000-9a4afdb97265",
             "XxlOuterColumn": 4,
             "Components": [
@@ -58,8 +54,7 @@
                     "ComponentType": "Input",
                     "Column": 6,
                     "Label": "Quo No",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00752650-0000-0000-8000-c94e2ed474cb",
@@ -68,8 +63,7 @@
                     "ComponentType": "Datepicker",
                     "Column": 6,
                     "Label": "Quo Date",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00752684-0000-0000-8000-cd4ee5ece82a",
@@ -78,8 +72,7 @@
                     "ComponentType": "Input",
                     "Column": 12,
                     "Label": "Service",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "007526b0-0000-0000-8000-9544121f26ce",
@@ -95,7 +88,6 @@
                     "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('customer-editor',{ ServiceId : 1, TypeId : 3, ActionId : 1, SaleId: this.Token.UserId })\",\r\n    \"edit\": \"this.EditForm.OpenPopup('customer-editor',this.Matched)\"\r\n}",
                     "Validation": "[\r\n    {\r\n        \"Rule\": \"required\",\r\n        \"Message\": \"{0} is required\"\r\n    }\r\n]",
                     "PopulateField": "this.EditForm.Entity.PhoneNumber = this.Matched.ContactPhoneNumber\r\nthis.EditForm.Entity.Pic = this.Matched.ContactName;\r\nthis.EditForm.Entity.Sale = null;\r\nthis.EditForm.Entity.SaleId = this.Matched.SaleId;\r\nlet customer = this.Matched;\r\nlet customerText = `${(customer.CompanyName || '')}\\n`;\r\ncustomerText += `${(customer.Address || '')}\\n`;\r\ncustomerText += `Tell: ${(customer.PhoneNumber || '')} Fax: ${(customer.Fax || '')}\\n`;\r\ncustomerText += `Contact person:${(customer.ContactName || '')}`;\r\nif (this.EditForm.Entity.Service.Name.includes('Import')) {\r\n    this.EditForm.Entity.ConsigneeId = this.Matched.Id;\r\n    this.EditForm.Entity.ConsigneeIdText = this.Matched.Name;\r\n}\r\nelse if (this.EditForm.Entity.Service.Name.includes('Export')) {\r\n    this.EditForm.Entity.ShipperId = this.Matched.Id;\r\n    this.EditForm.Entity.ShipperIdText = this.Matched.Name;\r\n}\r\nthis.EditForm.UpdateView(false, false, \"Pic\", \"SaleId\", \"PhoneNumber\", \"ConsigneeId\", \"ConsigneeIdText\", \"ShipperId\", \"ShipperIdText\");\r\nreturn null;",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 1 and TypeId in (2,3) and (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.DistributeInformationIds like N'%{TokenUserId}%'))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 1 and TypeId in (2,3) and (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.DistributeInformationIds like N'%{TokenUserId}%'))\"\r\n}",
                     "RefName": "Partner",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
@@ -109,8 +101,7 @@
                     "ComponentType": "Input",
                     "Column": 6,
                     "Label": "Tel/Email",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "007526dc-0000-0000-8000-c3565e8446aa",
@@ -120,8 +111,7 @@
                     "Column": 6,
                     "Row": 50,
                     "Label": "PIC",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 }
             ]
         },
@@ -131,8 +121,7 @@
             "Order": 1,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
-            "XxlCol": 12,
-            "Active": true
+            "XxlCol": 12
         },
         {
             "Id": "0075260c-0000-0000-8000-e8606ea5aee1",
@@ -141,7 +130,6 @@
             "ComponentType": "Section",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "00752638-0000-0000-8000-0a0987c61231",
             "XxlOuterColumn": 3,
             "Components": [
@@ -154,8 +142,7 @@
                     "RowSpan": 3,
                     "Row": 6,
                     "Label": "Subject",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00752650-0000-0000-8000-796ae52ba00b",
@@ -164,8 +151,7 @@
                     "ComponentType": "Input",
                     "Column": 6,
                     "Label": "Delivery Address",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00752658-0000-0000-8000-02b26ae3e9e6",
@@ -175,8 +161,7 @@
                     "Column": 6,
                     "Row": 50,
                     "Label": "Pickup Address",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00752680-0000-0000-8000-72469961a01f",
@@ -185,8 +170,7 @@
                     "ComponentType": "Input",
                     "Column": 6,
                     "Label": "Dimension",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00752694-0000-0000-8000-1bf05782a967",
@@ -199,7 +183,6 @@
                     "Row": 100,
                     "Label": "Incoterm",
                     "ShowLabel": true,
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"DDP\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"CIP\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"CPT\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"CFR\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"FAS\"\r\n    },\r\n    {\r\n        \"Id\": 6,\r\n        \"Name\": \"FCA\"\r\n    },\r\n    {\r\n        \"Id\": 7,\r\n        \"Name\": \"EXW\"\r\n    },\r\n    {\r\n        \"Id\": 8,\r\n        \"Name\": \"CIF\"\r\n    },\r\n    {\r\n        \"Id\": 9,\r\n        \"Name\": \"DPU\"\r\n    },\r\n    {\r\n        \"Id\": 10,\r\n        \"Name\": \"DAP\"\r\n    },\r\n    {\r\n        \"Id\": 11,\r\n        \"Name\": \"FOB\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
@@ -210,8 +193,7 @@
                     "ComponentType": "Input",
                     "Column": 6,
                     "Label": "Delivery term",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "007526e0-0000-0000-8000-80d96ef877d0",
@@ -225,7 +207,6 @@
                     "Label": "Consignee",
                     "ShowLabel": true,
                     "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('partner-editor',{ ServiceId: 2, ActionId: 1, PartnerTypeIds: '00e51814-0000-0000-8000-4128ce0e4c14',PartnerTypeIdsText: 'Consignee'})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('partner-editor',this.Matched)\"\r\n}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 2 and (PartnerTypeIdsText like N'%Consignee%'))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 2 and (PartnerTypeIdsText like N'%Consignee%'))\"\r\n}",
                     "RefName": "Partner",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
@@ -241,7 +222,6 @@
             "ComponentType": "Section",
             "Label": "Show More",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "007426dc-0000-0000-8000-9a4afdb97265",
             "XxlOuterColumn": 12,
             "IsDropDown": true
@@ -253,7 +233,6 @@
             "ComponentType": "Section",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "007426dc-0000-0000-8000-9a4afdb97265",
             "XxlOuterColumn": 4,
             "Components": [
@@ -265,8 +244,7 @@
                     "Column": 6,
                     "Label": "Validity",
                     "ShowLabel": true,
-                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "Active": true
+                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                 },
                 {
                     "Id": "00752660-0000-0000-8000-132ebdc6bde3",
@@ -275,8 +253,7 @@
                     "ComponentType": "Datepicker",
                     "Column": 6,
                     "Label": "ETA",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00752698-0000-0000-8000-a00dfc733a23",
@@ -290,7 +267,6 @@
                     "Label": "Agent",
                     "ShowLabel": true,
                     "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('partner-editor',{ ServiceId: 2, ActionId: 1, PartnerTypeIds: '00da1840-0000-0000-8000-4d715de86733',PartnerTypeIdsText: 'Agent'})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('partner-editor',this.Entity.Matched)\"\r\n}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\"\r\n}",
                     "RefName": "Partner",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
@@ -304,8 +280,7 @@
                     "ComponentType": "Datepicker",
                     "Column": 6,
                     "Label": "ETD",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "007526dc-0000-0000-8000-c5c6ff7ef283",
@@ -315,8 +290,7 @@
                     "Column": 6,
                     "Label": "Effect",
                     "ShowLabel": true,
-                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "Active": true
+                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                 },
                 {
                     "Id": "007526e4-0000-0000-8000-59c1e880f0f1",
@@ -330,7 +304,6 @@
                     "Label": "Shipper",
                     "ShowLabel": true,
                     "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('partner-editor',{ ServiceId: 2, ActionId: 1, PartnerTypeIds: '00e318b8-0000-0000-8000-a7988356b712',PartnerTypeIdsText: 'Shipper'})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('partner-editor',thisMatched)\"\r\n}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 2 and (PartnerTypeIdsText like N'%Shipper%'))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 2 and (PartnerTypeIdsText like N'%Shipper%'))\"\r\n}",
                     "RefName": "Partner",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
@@ -346,7 +319,6 @@
             "ComponentType": "Section",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "00752638-0000-0000-8000-0a0987c61231",
             "XxlOuterColumn": 3,
             "Components": [
@@ -359,7 +331,6 @@
                     "Row": 200,
                     "ClassName": "sticky",
                     "DefaultVal": "{\r\n    \"EntityId\": this.EditForm.Entity.Id,\r\n    \"TableName\": \"Quotation\"\r\n}",
-                    "Active": true,
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from EntityContainer as ds where EntityId = '{EntityId}'\",\r\n    \"total\": \"select count(ds.Id) as total from EntityContainer as ds where EntityId = '{EntityId}'\"\r\n}",
                     "RefName": "EntityContainer",
@@ -375,7 +346,6 @@
             "ComponentType": "Section",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "007426dc-0000-0000-8000-9a4afdb97265",
             "XxlOuterColumn": 4,
             "Components": [
@@ -387,8 +357,7 @@
                     "Column": 6,
                     "Row": 3,
                     "Label": "Note",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00752640-0000-0000-8000-269e26978ffa",
@@ -403,7 +372,6 @@
                     "ShowLabel": true,
                     "Events": "{\r\n    \"change\": \"ShowHideDetail\"\r\n}",
                     "DefaultVal": "0",
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 0,\r\n        \"Name\": \"FREE-HAND\"\r\n    },\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"NOMINATE\"\r\n    }\r\n]",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]"
                 },
@@ -416,7 +384,6 @@
                     "Precision": 2,
                     "Label": "CW",
                     "ShowLabel": true,
-                    "Active": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
@@ -428,7 +395,6 @@
                     "Precision": 2,
                     "Label": "GW",
                     "ShowLabel": true,
-                    "Active": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
@@ -440,7 +406,6 @@
                     "Precision": 2,
                     "Label": "Quantity",
                     "ShowLabel": true,
-                    "Active": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
@@ -454,7 +419,6 @@
                     "Row": 100,
                     "Label": "Unit",
                     "ShowLabel": true,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where ds1.Name in (N'Unit Type','LTL Type','Container Type')\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where ds1.Name in (N'Unit Type','LTL Type','Container Type')\"\r\n}",
                     "RefName": "MasterData",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]"
@@ -470,7 +434,6 @@
                     "Row": 100,
                     "Label": "Commodity",
                     "ShowLabel": true,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Commodity Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Commodity Type'\"\r\n}",
                     "RefName": "MasterData",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
@@ -484,7 +447,6 @@
                     "Precision": 2,
                     "Label": "CBM",
                     "ShowLabel": true,
-                    "Active": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 }
             ]
@@ -496,7 +458,6 @@
             "Label": "Route",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "007426dc-0000-0000-8000-9a4afdb97265",
             "XxlOuterColumn": 12,
             "Components": [
@@ -511,7 +472,6 @@
                     "ClassName": "sticky",
                     "Events": "{\r\n    \"domcontentloaded\": \"ShowHideFreightFee\",\r\n    \"AfterEmptyRowCreated\": \"ShowHideFreightFee\",\r\n    \"change\": \"ReloadSummary\"\r\n}",
                     "DefaultVal": "{\r\n    \"InquiryId\": this.EditForm.Entity.Id,\r\n    \"StatusId\": 1\r\n}",
-                    "Active": true,
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from InquiryDetail as ds where InquiryId = '{InquiryId}' and OtherFee = 0\",\r\n    \"total\": \"select count(ds.Id) as total from InquiryDetail as ds where InquiryId = '{InquiryId}' and OtherFee = 0\"\r\n}",
                     "RefName": "InquiryDetail",
@@ -529,7 +489,6 @@
             "ClassName": "title-option",
             "Style": "margin-bottom: 0px;padding: 0;",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "0076260c-0000-0000-8000-e9533b8a53d6",
@@ -546,7 +505,6 @@
                     "Events": "{\"change\":\"ShowHideDetail\"}",
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
                     "PopulateField": "this.EditForm.ShowHideDetail();\r\nreturn null;",
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Sea Export FCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-ship mr-1'></i>Sea Export FCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Sea Import FCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-shipping-fast mr-1'></i>Sea Import FCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"Sea Export LCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fas fa-boxes mr-1'></i>Sea Export LCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 6,\r\n        \"Name\": \"Sea Import LCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fas fa-dolly mr-1'></i>Sea Import LCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 11,\r\n        \"Name\": \"General\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #6c757d;'><i class='fas fa-globe mr-1'></i>General</span>\"\r\n    }\r\n]\r\n",
                     "Template": "[{ \"FieldName\" : \"Description\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
@@ -560,8 +518,7 @@
                     "Label": "Simple mode",
                     "ShowLabel": true,
                     "Style": "display: flex;align-items: center;gap: 1rem;height: 33px;",
-                    "Events": "{\r\n    \"change\": \"ShowHideDetail\"\r\n}",
-                    "Active": true
+                    "Events": "{\r\n    \"change\": \"ShowHideDetail\"\r\n}"
                 }
             ]
         },
@@ -573,7 +530,6 @@
             "Label": "Price Details",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "007426dc-0000-0000-8000-9a4afdb97265",
             "TabGroup": "Other charges",
             "XxlOuterColumn": 12,
@@ -591,7 +547,6 @@
                     "ClassName": "sticky",
                     "Events": "{\r\n    \"domcontentloaded\": \"ShowHideFee\",\r\n    \"AfterCreated\": \"ShowHideFee\",\r\n    \"BeforeCreated\": \"BeforeCreated\",\r\n    \"change\": \"ReloadSummary\",\r\n    \"contextmenu\": \"AddDuplicateMenu\"\r\n}",
                     "DefaultVal": "{\r\n    \"InquiryId\": this.EditForm.Entity.Id,\r\n    \"StatusId\": 1,\r\n    \"OtherFee\": true\r\n}",
-                    "Active": true,
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from InquiryDetail as ds where InquiryId = '{InquiryId}' and OtherFee = 1\",\r\n    \"total\": \"select count(ds.Id) as total from InquiryDetail as ds where InquiryId = '{InquiryId}' and OtherFee = 1\"\r\n}",
                     "RefName": "InquiryDetail",
@@ -610,7 +565,6 @@
             "ClassName": "ribbon-group",
             "Style": "margin-bottom: 0px;padding: 0;",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "003a35d8-0000-0000-8000-5f2a83e4c27a",
@@ -623,7 +577,6 @@
                     "Icon": "fal fa-print",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{\r\n    \"click\": \"PrintPdf\"\r\n}",
-                    "Active": true,
                     "Query": "\r\nWITH CurrencySums AS (\r\n    SELECT \r\n        SUM(det.Rate*ISNULL(det.Quantity,1)) AS TotalAmount,\r\n        curr.Code AS CurrencyCode,\r\n\t\tcurr.IsLocal AS localcurr\r\n    FROM InquiryDetail det\r\n    LEFT JOIN dbo.MasterData curr ON curr.Id = det.CurrencyId\r\n    WHERE det.InquiryId = '{Id}'\r\n    GROUP BY curr.Code,curr.IsLocal\r\n)\r\nSELECT \r\n    cusType.Name AS CusType, \r\n    dept.Name AS Dept, \r\n    POL.Name AS POL, \r\n    POD.Name AS POD, \r\n\tdetails.ScheduleIdsText AS Schedule,\r\n\tdetails.TransitTime AS transitime,\r\n    cust.Address AS CustAddr, \r\n    cust.CompanyName as CusNameEN,\r\n    sales.PhoneNumber AS SalesTel, \r\n    sales.Email AS SalesEmail, \r\n    sales.NickName AS SalesNick, \r\n    dept.Name AS SalesDept, \r\n    contact.JobTitles AS JobTitle, \r\n    contact.ContactName AS ContactName, \r\n    ISNULL(inco.Name, '') AS Inco, \r\n    ISNULL(Inquiry.DeliveryTerm, '') AS DeliveryT, \r\n    commo.Name AS Commo, \r\n    FORMAT(Inquiry.CargoReadyDate, 'dd MMM, yyyy') AS CargoReady, \r\n    Inquiry.GW AS QGW, \r\n    Inquiry.DeminsionText AS Dimension, \r\n    Inquiry.Quantity AS Qty, \r\n    unit.Name AS DUnit, \r\n    Inquiry.Pickup AS DPickup, \r\n    Inquiry.Delivery AS DDelivery, \r\n    Inquiry.Remark AS DRemark, \r\n    contact.ContactPhoneNumber AS CustTel,\r\n    (SELECT STRING_AGG(CONCAT(cont.Name, ' x ', ROUND(inc.Quantity, 0)), ' & ') AS Containers\r\n     FROM EntityContainer inc\r\n     LEFT JOIN MasterData cont ON inc.ContainerTypeId = cont.Id\r\n     WHERE inc.EntityId = '{Id}') AS Containers,\r\n\r\n    (SELECT STRING_AGG(CONCAT((CASE WHEN CurrencySums.localcurr = 1 \tTHEN  FORMAT(TotalAmount, 'N{CLocalTotalPrice}')\r\n\tELSE FORMAT(TotalAmount,'N{CTotalPrice}') END), ' ', CurrencyCode), '</br>') \r\n     FROM CurrencySums\r\n     WHERE TotalAmount IS NOT NULL) AS AmountText\r\n\r\nFROM Inquiry\r\nLEFT JOIN Partner cust ON Inquiry.CustomerId = cust.Id\r\nLEFT JOIN MasterData cusType ON cust.CustomerTypeId = cusType.Id\r\nLEFT JOIN dbo.Terminal POL ON POL.Id = Inquiry.PolId \r\nLEFT JOIN dbo.Terminal POD ON POD.Id = Inquiry.PodId\r\nLEFT JOIN dbo.MasterData inco ON inco.Id = Inquiry.IncotermId\r\nLEFT JOIN dbo.MasterData commo ON commo.Id = Inquiry.CommodityId\r\nLEFT JOIN dbo.MasterData unit ON unit.Id = Inquiry.UnitId \r\nLEFT JOIN dbo.InquiryDetail details ON details.InquiryId = dbo.Inquiry.Id\r\n\r\nOUTER APPLY (SELECT TOP 1 * FROM PartnerContact WHERE PartnerId = Inquiry.CustomerId) AS contact\r\n\r\nLEFT JOIN [USER] sales ON cust.SaleId = sales.Id \r\nLEFT JOIN [User] [User] ON [User].Id = '{TokenUserId}'\r\nLEFT JOIN MasterData dept ON dept.Id = [User].DepartmentId\r\n\r\nWHERE Inquiry.Id = '{Id}'\r\n\r\n\r\nSELECT \r\nctnr.Code AS CTNR,\r\nCASE WHEN ISNULL(groupfee.Name,'')='' THEN CASE WHEN fee.IsFreight=1 THEN 'Freight' ELSE '' END ELSE groupfee.Name end AS GROUPFEE,\r\npol.Name AS POL, \r\npod.Name AS POD, \r\nfee.Name AS DESCRIPTON, \r\nFORMAT( ISNULL(iq.Quantity,1),'N{CQuantity}') AS QTY,\r\n unit.Name AS UNIT,\r\n curr.Code AS CURR,\r\n CASE WHEN curr.IsLocal=1 THEN \r\n FORMAT(iq.Rate,'N{CLocalUnitPrice}')\r\n ELSE FORMAT(iq.Rate,'N{CUnitPrice}')\r\n   END AS RATE,\r\n\r\n CASE WHEN curr.IsLocal =1 \r\n THEN FORMAT((ISNULL(iq.Quantity,1)*iq.Rate),'N{CLocalTotalPrice}') \r\n ELSE FORMAT((ISNULL(iq.Quantity,1)*iq.Rate),'N{CTotalPrice}') END   AS Amount \r\n ,iq.Note AS notes,\r\n  (select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nLEFT JOIN dbo.MasterData curr ON curr.Id = detail2.CurrencyId\r\nwhere InquiryId = '{Id}' \r\nand curr.Code like N'%USD%'\r\n) AS USDtoal,\r\n (select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nLEFT JOIN dbo.MasterData curr ON curr.Id = detail2.CurrencyId\r\nwhere InquiryId = '{Id}' \r\nand curr.Code like N'%VND%'\r\n) AS VNDTotal\r\n \r\n  FROM \r\ndbo.InquiryDetail iq\r\nLEFT JOIN dbo.MasterData ctnr ON ctnr.Id = iq.UnitId\r\nLEFT JOIN dbo.Terminal pol ON pol.Id = iq.PolId \r\nLEFT JOIN dbo.Terminal pod ON pod.Id = iq.PodId\r\nLEFT JOIN dbo.FeeType fee ON fee.Id=iq.DescriptionId\r\nLEFT JOIN dbo.MasterData groupfee ON groupfee.Id = fee.GroupId\r\nLEFT JOIN dbo.MasterData unit ON unit.Id = iq.OtherUnitId\r\nLEFT JOIN dbo.MasterData curr ON curr.Id=iq.CurrencyId\r\nOUTER APPLY dbo.WebConfig decimalcf\r\nWHERE \r\niq.InquiryId='{Id}' AND iq.OtherFee=1\r\nGROUP BY ctnr.Code,groupfee.Name,fee.Name,pol.Name,pod.Name,curr.IsLocal, iq.Quantity,unit.Name, curr.Code,iq.Rate,iq.Note,groupfee.Enum,fee.IsFreight\r\nORDER BY  ctnr.code ,groupfee.Enum ASC\r\n\r\n",
                     "Template": "<table style=\"width: 100.043%; border-collapse: collapse; height: 299.625px;\" border=\"0\"><colgroup><col style=\"width: 21.6171%;\"><col style=\"width: 1.25681%;\"><col style=\"width: 39.4638%;\"><col style=\"width: 2.26225%;\"><col style=\"width: 10.5572%;\"><col style=\"width: 1.25681%;\"><col style=\"width: 12.0654%;\"><col style=\"width: 1.25681%;\"><col style=\"width: 10.1801%;\"></colgroup>\n<tbody>\n<tr style=\"height: 18.6562px;\">\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td style=\"text-align: center;\" colspan=\"3\" rowspan=\"3\">\n<div style=\"font-size: 28pt; min-width: 350px; display: inline-block; border-radius: 29px; border: 1px solid rgb(0, 0, 0); text-align: center; font-weight: 600;\">Quotation</div>\n</td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 9pt; height: 10px;\">&nbsp;</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 9pt; height: 10px;\">Quote No</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 9pt;\">:</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 9pt; color: #e03e2d;\">${Quo No}</span></td>\n</tr>\n<tr style=\"height: 18.6562px;\">\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 9pt;\">&nbsp;</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 9pt;\">Created At</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 9pt;\">:</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 9pt;\">${Quo Date}</span></td>\n</tr>\n<tr style=\"height: 18.6562px;\">\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 9pt;\">Valid Until</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 9pt;\">:</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 9pt;\">${Validity}</span></td>\n</tr>\n<tr style=\"height: 20.6562px;\">\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">&nbsp;</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">&nbsp;</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\">&nbsp;</td>\n</tr>\n<tr style=\"height: 27px;\">\n<td class=\"xl67\" style=\"width: 65px; text-align: left; vertical-align: top;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Company Name</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">:</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">${CusNameEN}</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>From</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\">:</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\">${SalesNick}</td>\n</tr>\n<tr style=\"height: 27px;\">\n<td class=\"xl67\" style=\"width: 65px; text-align: left; vertical-align: top;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Address</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">:</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">${CustAddr}</span></td>\n<td style=\"width: 30.5px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td class=\"xl67\" style=\"width: 15.25px; text-align: left; vertical-align: top;\" width=\"61\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Dept</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">:</span></td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\"><span style=\"font-size: 10pt;\">${SalesDept}</span></td>\n</tr>\n<tr style=\"height: 27px;\">\n<td class=\"xl67\" style=\"width: 65px; text-align: left; vertical-align: top;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>To</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">:</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">${ContactName}</span></td>\n<td style=\"width: 30.5px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td class=\"xl67\" style=\"width: 15.25px; text-align: left; vertical-align: top;\" width=\"61\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Tel</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">:</span></td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\"><span style=\"font-size: 10pt;\">${SalesTel}</span></td>\n</tr>\n<tr style=\"height: 27px;\">\n<td class=\"xl67\" style=\"width: 65px; text-align: left; vertical-align: top;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Title</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">:</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">${JobTitle}</span></td>\n<td style=\"width: 30.5px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td class=\"xl67\" style=\"width: 15.25px; text-align: left; vertical-align: top;\" width=\"61\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Email</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">:</span></td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\"><span style=\"font-size: 10pt;\">${SalesEmail}</span></td>\n</tr>\n<tr style=\"height: 27px;\">\n<td class=\"xl67\" style=\"width: 65px; text-align: left; vertical-align: top;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Tel</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">:</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">${CustTel}</span></td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n</tr>\n</tbody>\n</table>\n<p>&nbsp;</p>\n<p><em><strong>Shipment Details</strong></em></p>\n<p>&nbsp;</p>\n<table style=\"border-collapse: collapse; width: 100.054%; height: 117.375px;\" border=\"0\"><colgroup><col style=\"width: 16.8724%;\"><col style=\"width: 1.28797%;\"><col style=\"width: 18.6755%;\"><col style=\"width: 13.1373%;\"><col style=\"width: 1.28797%;\"><col style=\"width: 21.1227%;\"><col style=\"width: 7.9854%;\"><col style=\"width: 1.28797%;\"><col style=\"width: 18.2891%;\"></colgroup>\n<tbody>\n<tr style=\"height: 23.4688px;\">\n<td style=\"text-align: left; vertical-align: top;\"><strong>Route</strong></td>\n<td style=\"text-align: left; vertical-align: top;\">:</td>\n<td style=\"text-align: left; vertical-align: top;\">${POL} - ${POD}</td>\n<td style=\"text-align: left; vertical-align: top;\"><strong>Quantity</strong></td>\n<td style=\"text-align: left; vertical-align: top;\">:</td>\n<td style=\"text-align: left; vertical-align: top;\">${Containers}</td>\n<td style=\"text-align: left; vertical-align: top;\"><strong>Pickup</strong></td>\n<td style=\"text-align: left; vertical-align: top;\">:</td>\n<td style=\"text-align: left; vertical-align: top;\" rowspan=\"2\">${DPickup}</td>\n</tr>\n<tr style=\"height: 23.4688px;\">\n<td style=\"text-align: left; vertical-align: top;\"><strong>Incoterm</strong></td>\n<td style=\"text-align: left; vertical-align: top;\">:</td>\n<td style=\"text-align: left; vertical-align: top;\">${Inco}</td>\n<td style=\"text-align: left; vertical-align: top;\"><strong>PCS</strong></td>\n<td style=\"text-align: left; vertical-align: top;\">:</td>\n<td style=\"text-align: left; vertical-align: top;\">${Qty} ${DUnit}</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 23.4688px;\">\n<td style=\"text-align: left; vertical-align: top;\"><strong>Delivery term</strong></td>\n<td style=\"text-align: left; vertical-align: top;\">:</td>\n<td style=\"text-align: left; vertical-align: top;\">${DeliveryT}</td>\n<td style=\"text-align: left; vertical-align: top;\"><strong>DIM (LxWxH)</strong></td>\n<td style=\"text-align: left; vertical-align: top;\">:</td>\n<td style=\"text-align: left; vertical-align: top;\">${DeminsionText}</td>\n<td style=\"text-align: left; vertical-align: top;\"><strong>Delivery</strong></td>\n<td style=\"text-align: left; vertical-align: top;\">:</td>\n<td style=\"text-align: left; vertical-align: top;\" rowspan=\"2\">${DDelivery}</td>\n</tr>\n<tr style=\"height: 23.4688px;\">\n<td style=\"text-align: left; vertical-align: top;\"><strong>Commodity</strong></td>\n<td style=\"text-align: left; vertical-align: top;\">:</td>\n<td style=\"text-align: left; vertical-align: top;\">${Commo}</td>\n<td style=\"text-align: left; vertical-align: top;\"><strong>G.W/CBM</strong></td>\n<td style=\"text-align: left; vertical-align: top;\">:</td>\n<td style=\"text-align: left; vertical-align: top;\">${QGW}/${CBM}</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 23.5px;\">\n<td style=\"text-align: left; vertical-align: top;\"><strong>Cargo Ready Date</strong></td>\n<td style=\"text-align: left; vertical-align: top;\">:</td>\n<td style=\"text-align: left; vertical-align: top;\">${CargoReady}</td>\n<td style=\"text-align: left; vertical-align: top;\"><strong>TT/Freq</strong></td>\n<td style=\"text-align: left; vertical-align: top;\">:</td>\n<td style=\"text-align: left; vertical-align: top;\">${transitime} / ${Schedule}</td>\n<td style=\"text-align: left; vertical-align: top;\"><strong>Remark</strong></td>\n<td style=\"text-align: left; vertical-align: top;\">:</td>\n<td style=\"text-align: left; vertical-align: top;\">${Note}</td>\n</tr>\n</tbody>\n</table>\n<p>&nbsp;</p>\n<p><em><strong>Price Details</strong></em></p>\n<p>&nbsp;</p>\n<table class=\"dashez dazhed dashed\" style=\"border-collapse: collapse; width: 100%; height: 105.083px;\" border=\"1\"><colgroup><col style=\"width: 27.8947%;\"><col style=\"width: 9.86842%;\"><col style=\"width: 8.68421%;\"><col style=\"width: 9.21053%;\"><col style=\"width: 12.2368%;\"><col style=\"width: 13.6842%;\"><col style=\"width: 18.5526%;\"></colgroup>\n<thead>\n<tr style=\"height: 28px;\">\n<td class=\"xl67\" style=\"width: 176pt; text-align: center; vertical-align: middle;\" width=\"234\" height=\"28\"><strong>Description</strong></td>\n<td class=\"xl67\" style=\"width: 60pt; text-align: center; vertical-align: middle;\" width=\"80\"><strong>Quantity</strong></td>\n<td class=\"xl67\" style=\"width: 116pt; text-align: center; vertical-align: middle;\" width=\"155\"><strong>Unit</strong></td>\n<td class=\"xl67\" style=\"width: 78pt; text-align: center; vertical-align: middle;\" width=\"104\"><strong>Curr</strong></td>\n<td class=\"xl67\" style=\"width: 80pt; text-align: center; vertical-align: middle;\" width=\"107\"><strong>Rate</strong></td>\n<td class=\"xl67\" style=\"width: 68pt; text-align: center; vertical-align: middle;\" width=\"90\"><strong>Amount</strong></td>\n<td class=\"xl67\" style=\"width: 141pt; text-align: center; vertical-align: middle;\" width=\"188\"><strong>Remark</strong></td>\n</tr>\n</thead>\n<tbody data-table=\"c0\" data-group=\"CTNR|GROUPFEE\">\n<tr style=\"height: 25.6875px;\">\n<td style=\"background-color: #ced4d9;\" colspan=\"7\">&nbsp;CALCULATED BY: #{CTNR}</td>\n</tr>\n<tr style=\"height: 25.6875px;\">\n<td style=\"background-color: #ecf0f1;\" colspan=\"7\">&nbsp;#{GROUPFEE}</td>\n</tr>\n<tr style=\"height: 25.7083px;\">\n<td style=\"text-align: left;\">&nbsp;{DESCRIPTON}</td>\n<td style=\"text-align: center;\">{QTY}</td>\n<td style=\"text-align: center;\">{UNIT}</td>\n<td style=\"text-align: center;\">{CURR}</td>\n<td style=\"text-align: center;\">{RATE}</td>\n<td style=\"text-align: right;\">{Amount}</td>\n<td>&nbsp;{notes}</td>\n</tr>\n</tbody>\n</table>\n<table style=\"border-collapse: collapse; width: 100.054%; height: 18.9583px;\" border=\"1\"><colgroup><col style=\"width: 14.3344%;\"><col style=\"width: 14.3344%;\"><col style=\"width: 14.3344%;\"><col style=\"width: 14.3344%;\"><col style=\"width: 10.6522%;\"><col style=\"width: 10.5207%;\"><col style=\"width: 21.5674%;\"></colgroup>\n<tbody>\n<tr>\n<td style=\"text-align: right;\" colspan=\"5\"><strong>TOTAL&nbsp;&nbsp;</strong></td>\n<td style=\"text-align: center;\" colspan=\"2\">\n<p><strong>${AmountText}</strong></p>\n</td>\n</tr>\n</tbody>\n</table>\n<p>&nbsp;</p>\n<p><span style=\"font-size: 10pt;\">${Remark}</span></p>",
                     "ShowHotKey": true,
@@ -639,8 +592,7 @@
                     "Label": "Save As",
                     "Icon": "fas fa-sliders-h-square",
                     "ClassName": "btn detail-button secondary-outline",
-                    "Events": "{ \"click\" : \"SaveAs\" }",
-                    "Active": true
+                    "Events": "{ \"click\" : \"SaveAs\" }"
                 },
                 {
                     "Id": "00762610-0000-0000-8000-155376d5906e",
@@ -653,7 +605,6 @@
                     "Icon": "fal fa-print",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{\r\n    \"click\": \"PrintPdf\"\r\n}",
-                    "Active": true,
                     "Query": "select MasterData.Name as CustomerType,de.Name as Department,Partner.Address AS addresscus,sales.PhoneNumber AS telsales,\r\nsales.Email AS email,sales.NickName AS nickname,de.Name as Department,ct.JobTitles AS JobTitles ,\r\nPartner.CompanyName AS CusNameEN,\r\nct.ContactName AS ContactName ,ct.ContactPhoneNumber AS telcus, \r\n(SELECT STRING_AGG(CONCAT(cont.Name, ' x ', Round(EntityContainer.Quantity,0)), ' & ') as ContainerText\r\nFROM EntityContainer\r\nLEFT JOIN MasterData cont ON EntityContainer.ContainerTypeId = cont.Id\r\nWHERE EntityId = '{Id}') as ContainerText\r\nfrom Inquiry\r\nleft join Partner on Inquiry.CustomerId = Partner.Id\r\nleft join MasterData on Partner.CustomerTypeId = MasterData.Id\r\nLEFT JOIN PartnerContact ct ON ct.PartnerId = Partner.Id\r\nLEFT JOIN [USER] sales on dbo.Partner.SaleId = sales.Id \r\nleft join [User] u on u.Id = '{TokenUserId}'\r\nleft join MasterData de on de.Id = u.DepartmentId\r\nwhere Inquiry.Id = '{Id}'\r\n\r\nselect concat(pol.Name,pod.Name) as Level1,detail.GroupFee, pol.Name as Pol,pod.Name as Pod,fee.Name as Description,otherUnit.Name as Unit,curr.Code as Curr,\r\nFormat((select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%LCL%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId)+ \r\nisnull((select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%ALL%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId),0),'N02') as LCL,\r\nFormat(Round((select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%20%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId)+ \r\nisnull((select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%ALL%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId),0),{CTotalPrice}),'N02') as Cont20,\r\nFormat((select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%40%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId)\r\n+ \r\nisnull((select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%ALL%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId),0)+ \r\nisnull((select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%ALL%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId),0),'N02') as Cont40,\r\nFormat((select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%45%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId)\r\n+ \r\nisnull((select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%ALL%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId),0),'N02') as Cont45\r\nfrom InquiryDetail detail\r\nleft join Terminal pol on detail.PolId = pol.Id\r\nleft join Terminal pod on detail.PodId = pod.Id\r\nleft join MasterData curr on detail.CurrencyId = curr.Id\r\nleft join FeeType fee on detail.DescriptionId = fee.Id\r\nleft join MasterData unit on detail.UnitId = unit.Id\r\nleft join MasterData groupFee on fee.GroupId = groupFee.Id\r\nleft join MasterData otherUnit on detail.OtherUnitId = otherUnit.Id\r\nwhere OtherFee = 1 and InquiryId = '{Id}'\r\ngroup by pol.Name,detail.PolId,pod.Name,detail.PodId,detail.CurrencyId,curr.Code,detail.DescriptionId,fee.Name,otherUnit.Name,detail.GroupFee,groupFee.Enum\r\nORDER BY concat(pol.Name,pod.Name),groupFee.Enum ASC",
                     "Template": "<table style=\"width: 100.054%; border-collapse: collapse; height: 269.656px;\" border=\"0\"><colgroup><col style=\"width: 17.5932%;\"><col style=\"width: 1.50799%;\"><col style=\"width: 44.7371%;\"><col style=\"width: 1.25666%;\"><col style=\"width: 10.4303%;\"><col style=\"width: 10.9329%;\"><col style=\"width: 1.25666%;\"><col style=\"width: 12.1896%;\"></colgroup>\n<tbody>\n<tr style=\"height: 16.6667px;\">\n<td rowspan=\"3\"><span style=\"font-size: 10pt;\">&nbsp;${CLogo}</span><br><span style=\"font-size: 10pt;\"><br></span><span style=\"font-size: 10pt;\"><br></span></td>\n<td rowspan=\"3\"><span style=\"font-size: 10pt;\">&nbsp;</span></td>\n<td style=\"text-align: center;\" colspan=\"6\" rowspan=\"3\"><span style=\"font-size: 10pt;\"><strong>${CCompanyName}</strong><br>Address: ${CAddress}<br>Hotline:<a href=\"tel:19003133\">1900 3133<br></a>Email:&nbsp;</span></td>\n</tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 14px;\"></tr>\n<tr style=\"height: 25px;\">\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td style=\"text-align: center;\" colspan=\"3\" rowspan=\"3\">\n<div style=\"font-size: 28pt; min-width: 400px; display: inline-block; border-radius: 29px; border: 1px solid rgb(0, 0, 0); text-align: center; font-weight: 600;\">Quotation</div>\n</td>\n<td><span style=\"font-size: 9pt;\">Quote No</span></td>\n<td><span style=\"font-size: 9pt;\">:</span></td>\n<td><span style=\"font-size: 9pt; color: #e03e2d;\">${Quo No}</span></td>\n</tr>\n<tr style=\"height: 25px;\">\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td><span style=\"font-size: 9pt;\">Created At</span></td>\n<td><span style=\"font-size: 9pt;\">:</span></td>\n<td><span style=\"font-size: 9pt;\">${Quo Date}</span></td>\n</tr>\n<tr style=\"height: 25px;\">\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td><span style=\"font-size: 9pt;\">Valid Until</span></td>\n<td><span style=\"font-size: 9pt;\">:</span></td>\n<td><span style=\"font-size: 9pt;\">${Validity}</span></td>\n</tr>\n<tr style=\"height: 24px;\">\n<td class=\"xl67\" style=\"width: 65px; text-align: left; vertical-align: top;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Company Name</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>:</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">${CusNameEN}</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>From</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\">${nickname}</td>\n</tr>\n<tr style=\"height: 24px;\">\n<td class=\"xl67\" style=\"width: 65px; text-align: left; vertical-align: top;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Address</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>:</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">${addresscus}</span></td>\n<td style=\"width: 30.5px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td class=\"xl67\" style=\"width: 15.25px; text-align: left; vertical-align: top;\" width=\"61\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Dept</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\"><span style=\"font-size: 10pt;\">${Department}</span></td>\n</tr>\n<tr style=\"height: 24px;\">\n<td class=\"xl67\" style=\"width: 65px; text-align: left; vertical-align: top;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>To</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>:</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">${ContactName}</span></td>\n<td style=\"width: 30.5px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td class=\"xl67\" style=\"width: 15.25px; text-align: left; vertical-align: top;\" width=\"61\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Tel</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\"><span style=\"font-size: 10pt;\">${telsales}</span></td>\n</tr>\n<tr style=\"height: 24px;\">\n<td class=\"xl67\" style=\"width: 65px; text-align: left; vertical-align: top;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Title</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>:</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">${JobTitles}</span></td>\n<td style=\"width: 30.5px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td class=\"xl67\" style=\"width: 15.25px; text-align: left; vertical-align: top;\" width=\"61\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Email</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\"><span style=\"font-size: 10pt;\">${email}</span></td>\n</tr>\n<tr style=\"height: 24px;\">\n<td class=\"xl67\" style=\"width: 65px; text-align: left; vertical-align: top;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Tel</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>:</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">${telcus}</span></td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 27.3229px;\">\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n</tr>\n</tbody>\n</table>\n<table class=\"dashed\" style=\"border-collapse: collapse; width: 100%; height: 38.0208px; margin-left: 0px; border: 0.01px solid rgb(126, 140, 141); margin-right: auto;\" border=\"1\"><colgroup><col style=\"width: 12.2363%;\"><col style=\"width: 13.5532%;\"><col style=\"width: 37.7632%;\"><col style=\"width: 11.3158%;\"><col style=\"width: 9.21053%;\"><col style=\"width: 15.9211%;\"></colgroup>\n<tbody data-table=\"t1\">\n<tr>\n<td style=\"border: 0.01px solid rgb(126, 140, 141); text-align: center;\" scope=\"rowgroup\"><span style=\"font-size: 10pt;\">POL</span></td>\n<td style=\"border: 0.01px solid rgb(126, 140, 141); text-align: center;\" scope=\"rowgroup\"><span style=\"font-size: 10pt;\">POD</span></td>\n<td style=\"border: 0.01px solid rgb(126, 140, 141); text-align: center;\" scope=\"rowgroup\"><span style=\"font-size: 10pt;\">Carrier</span></td>\n<td style=\"border: 0.01px solid rgb(126, 140, 141); text-align: center;\" scope=\"rowgroup\"><span style=\"font-size: 10pt;\">VIA</span></td>\n<td style=\"border: 0.01px solid rgb(126, 140, 141); text-align: center;\" scope=\"rowgroup\"><span style=\"font-size: 10pt;\">TT</span></td>\n<td style=\"border: 0.01px solid rgb(126, 140, 141); text-align: center;\" scope=\"rowgroup\"><span style=\"font-size: 10pt;\">FREQ</span></td>\n</tr>\n<tr>\n<td style=\"border-image: initial; border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{POL}</span></td>\n<td style=\"border-image: initial; border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{POD}</span></td>\n<td style=\"border-image: initial; border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{Carrier}</span></td>\n<td style=\"border-image: initial; border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{VIA}</span></td>\n<td style=\"border-image: initial; border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{Tran}</span></td>\n<td style=\"border-image: initial; border-color: #7e8c8d; text-align: center;\">\n<p>{ScheduleIdsText}</p>\n</td>\n</tr>\n</tbody>\n</table>\n<p>&nbsp;</p>\n<table class=\"dashed\" style=\"border-collapse: collapse; width: 100%; height: 179.333px; border: 1px solid rgb(126, 140, 141);\" border=\"1\"><colgroup><col style=\"width: 20.2632%;\"><col style=\"width: 11.7105%;\"><col style=\"width: 11.3158%;\"><col style=\"width: 11.4474%;\"><col style=\"width: 9.73684%;\"><col style=\"width: 9.21053%;\"><col style=\"width: 10.1316%;\"><col style=\"width: 5.65789%;\"><col style=\"width: 10.5263%;\"></colgroup>\n<thead>\n<tr>\n<td style=\"text-align: center; border-color: #7e8c8d;\" rowspan=\"2\"><span style=\"font-size: 10pt;\">Description</span></td>\n<td style=\"text-align: center; border-color: #7e8c8d;\" rowspan=\"2\"><span style=\"font-size: 10pt;\">Curr</span></td>\n<td style=\"text-align: center; border-color: #7e8c8d;\" rowspan=\"2\"><span style=\"font-size: 10pt;\">Unit</span></td>\n<td style=\"text-align: center; border-color: #7e8c8d;\" colspan=\"4\"><span style=\"font-size: 10pt;\">Price</span></td>\n<td style=\"text-align: center; border-color: #7e8c8d;\" rowspan=\"2\"><span style=\"font-size: 10pt;\">VAT</span></td>\n<td style=\"text-align: center; border-color: #7e8c8d;\" rowspan=\"2\"><span style=\"font-size: 10pt;\">Remark</span></td>\n</tr>\n<tr>\n<td style=\"text-align: center; border-color: #7e8c8d;\"><span style=\"font-size: 10pt;\">LCL</span></td>\n<td class=\"xl67\" style=\"text-align: center; border-color: #7e8c8d;\" width=\"74\" height=\"24\"><span style=\"font-size: 10pt;\">20</span></td>\n<td class=\"xl67\" style=\"text-align: center; border-color: #7e8c8d;\" width=\"61\" height=\"24\"><span style=\"font-size: 10pt;\">40</span></td>\n<td class=\"xl67\" style=\"text-align: center; border-color: #7e8c8d;\" width=\"77\" height=\"24\"><span style=\"font-size: 10pt;\">45</span></td>\n</tr>\n</thead>\n<tbody data-group=\"Level1|GroupFee\" data-table=\"c0\">\n<tr>\n<td style=\"background-color: #ced4d9; text-align: left;\" colspan=\"9\"><span style=\"font-size: 10pt;\">ROUTE: #{Pol} - #{Pod}</span></td>\n</tr>\n<tr>\n<td style=\"background-color: #ecf0f1;\" colspan=\"9\"><span style=\"font-size: 10pt;\">#{GroupFee}</span></td>\n</tr>\n<tr>\n<td style=\"border-color: #7e8c8d;\"><span style=\"font-size: 10pt;\">{Description}</span></td>\n<td style=\"border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{Curr}</span></td>\n<td style=\"border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{Unit}</span></td>\n<td style=\"border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{LCL}</span></td>\n<td style=\"border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{Cont20}</span></td>\n<td style=\"border-color: #7e8c8d; text-align: center;\">{Cont40}</td>\n<td style=\"border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{Cont45}</span></td>\n<td style=\"border-color: #7e8c8d; text-align: center;\">&nbsp;</td>\n<td style=\"border-color: #7e8c8d; text-align: center;\">&nbsp;</td>\n</tr>\n</tbody>\n<tfoot>\n<tr>\n<td style=\"vertical-align: top; border-color: #7e8c8d;\" colspan=\"9\"><span style=\"font-size: 10pt;\"><br></span><span style=\"font-size: 10pt;\"><br></span></td>\n</tr>\n</tfoot>\n</table>\n<p>&nbsp;</p>\n<p><span style=\"font-size: 10pt;\">${Remark}</span></p>",
                     "ShowExp": "var config = JSON.parse(localStorage.getItem(\"SalesFunction\"));\r\nif (!config[\"APPROVE_QUOTATION_FILE\"]) {\r\n    return this.Entity.StatusId == 3;\r\n}\r\nelse {\r\n    return !this.Entity.Id.startsWith('-');\r\n}"
@@ -668,8 +619,7 @@
                     "Label": "Save & Add",
                     "Icon": "fas fa-sliders-h-square",
                     "ClassName": "btn detail-button secondary-outline",
-                    "Events": "{ \"click\" : \"SaveAdd\" }",
-                    "Active": true
+                    "Events": "{ \"click\" : \"SaveAdd\" }"
                 },
                 {
                     "Id": "00762674-0000-0000-8000-da91e538f5c1",
@@ -681,7 +631,6 @@
                     "Icon": "fal fa-check-circle",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"ApprovedEntity\" }",
-                    "Active": true,
                     "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserApprovedIds.includes(this.Token.UserId) && !this.Entity.Id.startsWith('-'); "
                 },
                 {
@@ -694,7 +643,6 @@
                     "Icon": "fal fa-comment-alt-slash",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"DeclineEntity\" }",
-                    "Active": true,
                     "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserApprovedIds.includes(this.Token.UserId) && !this.Entity.Id.startsWith('-'); "
                 },
                 {
@@ -708,7 +656,6 @@
                     "Icon": "fas fa-sliders-h-square",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{\r\n    \"click\": \"CreateBookingLocal\"\r\n}",
-                    "Active": true,
                     "ShowExp": "(this.dayjs(this.Entity.FromDate) < this.dayjs() && (!this.Entity.ToDate || (this.Entity.ToDate &&  this.dayjs(this.Entity.ToDate ) > this.dayjs()))) && this.Entity.StatusId == 3"
                 },
                 {
@@ -721,7 +668,6 @@
                     "Icon": "far fa-share-all",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"SendEntity\" }",
-                    "Active": true,
                     "ShowExp": "(this.Entity.StatusId == 1 || this.Entity.StatusId == 4)  && this.Entity.InsertedBy == this.Token.UserId && !this.Entity.Id.startsWith('-')"
                 },
                 {
@@ -734,8 +680,7 @@
                     "Icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
-                    "Events": "{ \"click\" : \"SavePatch\" }",
-                    "Active": true
+                    "Events": "{ \"click\" : \"SavePatch\" }"
                 }
             ]
         },
@@ -747,7 +692,6 @@
             "Label": "Remark",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "00752638-0000-0000-8000-0a0987c61231",
             "XxlOuterColumn": 6,
             "Components": [
@@ -760,8 +704,7 @@
                     "Row": 1,
                     "Label": "Remark",
                     "Style": "max-height: 160px; overflow-y: auto;",
-                    "DefaultVal": "return `Test default value`;",
-                    "Active": true
+                    "DefaultVal": "return `Test default value`;"
                 }
             ]
         },
@@ -773,7 +716,6 @@
             "Label": "Summary",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "007426dc-0000-0000-8000-9a4afdb97265",
             "TabGroup": "Other charges",
             "XxlOuterColumn": 12,
@@ -788,7 +730,6 @@
                     "Label": "Summary",
                     "ClassName": "sticky",
                     "Events": "{\r\n    \"FirstLoad\": \"ReloadSummary1\"\r\n}",
-                    "Active": true,
                     "Query": "var detail = this.EditForm.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"InquiryDetail\");\r\nvar inquiryContainer = this.EditForm.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"EntityContainer\");\r\nvar fee = this.EditForm.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"DefaultFee\");\r\nvar listItem = fee.AllListViewItem.filter(x => !x.GroupRow && !x.Entity.IsObh).map(x => x.Entity);\r\nvar containers = inquiryContainer.AllListViewItem.map(x => x.Entity) || [];\r\nvar groupedItems = {};\r\nlistItem.forEach(item => {\r\n    var key = `${item.PolId}-${item.FinalDestinationId}`;\r\n    var sumDetail = detail.AllListViewItem.map(x => x.Entity).find(x => x.PolId == item.PolId && x.FinalDestinationId == item.FinalDestinationId);\r\n    var allUnitPrice = item.Unit.Name.includes('ALL') ? new this.Decimal(item.Rate || 0) : new this.Decimal(0);\r\n    if (containers.length > 0) {\r\n        var hasContainer = containers.some(x => x.ContainerTypeId == item.UnitId);\r\n        if (!hasContainer) {\r\n            allUnitPrice = new this.Decimal(0);\r\n        }\r\n    }\r\n    var newItem = {\r\n        PolId: sumDetail.PolId,\r\n        Pol: sumDetail.Pol,\r\n        PodId: sumDetail.PodId,\r\n        Pod: sumDetail.Pod,\r\n        VendorId: sumDetail.VendorId,\r\n        Vendor: sumDetail.Vendor,\r\n        PlaceReceiptId: sumDetail.PlaceReceiptId,\r\n        PlaceReceipt: sumDetail.PlaceReceipt,\r\n        PlaceDeliveryId: sumDetail.PlaceDeliveryId,\r\n        PlaceDelivery: sumDetail.PlaceDelivery,\r\n        FinalDestinationId: sumDetail.FinalDestinationId,\r\n        FinalDestination: sumDetail.FinalDestination,\r\n        Cont40: ((item.Unit.Name.includes('40') && !item.Unit.Name.includes(\"40'HC\") ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateVND || 1)).plus(allUnitPrice.times(item.ExchangeRateVND || 1)),\r\n        Cont20: ((item.Unit.Name.includes('20') ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateVND || 1)).plus(allUnitPrice.times(item.ExchangeRateVND || 1)),\r\n        Cont45: ((item.Unit.Name.includes('45') > 0 ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateVND || 1)).plus(allUnitPrice.times(item.ExchangeRateVND || 1)),\r\n        Cont40HC: ((item.Unit.Name.includes(\"40'HC\") ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateVND || 1)).plus(allUnitPrice.times(item.ExchangeRateVND || 1)),\r\n        MinLCL: ((new this.Decimal(item.MinLCLRate || 0)).times(item.ExchangeRateVND || 1)),\r\n        LCL: ((item.Unit.Name.includes(\"LCL\") ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateVND || 1)).plus(allUnitPrice.times(item.ExchangeRateVND || 1)),\r\n\r\n        Cont40USD: ((item.Unit.Name.includes('40') && !item.Unit.Name.includes(\"40'HC\") ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateUSD || 1)).plus(allUnitPrice.times(item.ExchangeRateUSD || 1)),\r\n        Cont20USD: ((item.Unit.Name.includes('20') ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateUSD || 1)).plus(allUnitPrice.times(item.ExchangeRateUSD || 1)),\r\n        Cont45USD: ((item.Unit.Name.includes('45') > 0 ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateUSD || 1)).plus(allUnitPrice.times(item.ExchangeRateUSD || 1)),\r\n        Cont40HCUSD: ((item.Unit.Name.includes(\"40'HC\") ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateUSD || 1)).plus(allUnitPrice.times(item.ExchangeRateUSD || 1)),\r\n        MinLCLUSD: ((new this.Decimal(item.MinLCLRate || 0)).times(item.ExchangeRateUSD || 1)),\r\n        LCLUSD: ((item.Unit.Name.includes(\"LCL\") ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateUSD || 1)).plus(allUnitPrice.times(item.ExchangeRateUSD || 1)),\r\n    }\r\n    if (!groupedItems[key]) {\r\n        groupedItems[key] = newItem;\r\n    }\r\n    else {\r\n        groupedItems[key].Cont40 = groupedItems[key].Cont40.plus(newItem.Cont40);\r\n        groupedItems[key].Cont20 = groupedItems[key].Cont20.plus(newItem.Cont20);\r\n        groupedItems[key].Cont45 = groupedItems[key].Cont45.plus(newItem.Cont45);\r\n        groupedItems[key].Cont40HC = groupedItems[key].Cont40HC.plus(newItem.Cont40HC);\r\n        groupedItems[key].MinLCL = groupedItems[key].MinLCL.plus(newItem.MinLCL);\r\n        groupedItems[key].LCL = groupedItems[key].LCL.plus(newItem.LCL);\r\n        groupedItems[key].Cont40USD = groupedItems[key].Cont40USD.plus(newItem.Cont40USD);\r\n        groupedItems[key].Cont20USD = groupedItems[key].Cont20USD.plus(newItem.Cont20USD);\r\n        groupedItems[key].Cont45USD = groupedItems[key].Cont45USD.plus(newItem.Cont45USD);\r\n        groupedItems[key].Cont40HCUSD = groupedItems[key].Cont40HCUSD.plus(newItem.Cont40HCUSD);\r\n        groupedItems[key].MinLCLUSD = groupedItems[key].MinLCLUSD.plus(newItem.MinLCLUSD);\r\n        groupedItems[key].LCLUSD = groupedItems[key].LCLUSD.plus(newItem.LCLUSD);\r\n    }\r\n\r\n});\r\nvar result = Object.values(groupedItems).map(item => {\r\n    return {\r\n        PolId: item.PolId,\r\n        Pol: item.Pol,\r\n        PodId: item.PodId,\r\n        Pod: item.Pod,\r\n        VendorId: item.VendorId,\r\n        Vendor: item.Vendor,\r\n        Cont40: item.Cont40,\r\n        Cont20: item.Cont20,\r\n        Cont45: item.Cont45,\r\n        Cont40HC: item.Cont40HC,\r\n        LCL: item.LCL,\r\n        MinLCL: item.MinLCL,\r\n        Cont40USD: item.Cont40USD,\r\n        Cont20USD: item.Cont20USD,\r\n        Cont45USD: item.Cont45USD,\r\n        Cont40HCUSD: item.Cont40HCUSD,\r\n        LCLUSD: item.LCLUSD,\r\n        MinLCLUSD: item.MinLCLUSD,\r\n        PlaceReceiptId: item.PlaceReceiptId,\r\n        PlaceReceipt: item.PlaceReceipt,\r\n        PlaceDeliveryId: item.PlaceDeliveryId,\r\n        PlaceDelivery: item.PlaceDelivery,\r\n        FinalDestinationId: item.FinalDestinationId,\r\n        FinalDestination: item.FinalDestination,\r\n    };\r\n});\r\n\r\nreturn result;",
                     "IsSumary": true,
                     "OrderBy": "ds.InsertedDate desc",
@@ -808,7 +749,6 @@
             "Row": 100,
             "Label": "Unit",
             "Width": "75px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name in (N'Unit Type','LTL Type')\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name in (N'Unit Type','LTL Type')\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -830,7 +770,6 @@
             "Label": "POL",
             "Width": "97px",
             "PopulateField": "debugger;\r\nthis.Parent.Entity.PlaceReceiptId = this.Entity.PolId;\r\nthis.Parent.Entity.PlaceReceipt = this.Entity.Pol;\r\nthis.Parent.UpdateView(false, false, \"PlaceReceiptId\");\r\nreturn null;",
-            "Active": true,
             "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
@@ -850,7 +789,6 @@
             "Label": "POD",
             "Width": "84px",
             "PopulateField": "debugger;\r\nthis.Parent.Entity.PlaceDeliveryId = this.Entity.PodId;\r\nthis.Parent.Entity.PlaceDelivery = this.Entity.Pod;\r\nthis.Parent.Entity.FinalDestinationId = this.Entity.PodId;\r\nthis.Parent.Entity.FinalDestination = this.Entity.Pod;\r\nthis.Parent.UpdateView(false, false, \"PlaceDeliveryId\", \"FinalDestinationId\");\r\nreturn null;",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from [Terminal] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"\r\n}",
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
@@ -867,7 +805,6 @@
             "Row": 50,
             "Label": "REV",
             "Width": "100px",
-            "Active": true,
             "FocusSearch": true,
             "GroupName": "Total",
             "MinWidth": "100px",
@@ -883,7 +820,6 @@
             "Row": 50,
             "Label": "COST",
             "Width": "100px",
-            "Active": true,
             "FocusSearch": true,
             "GroupName": "Total",
             "MinWidth": "100px",
@@ -899,7 +835,6 @@
             "Row": 50,
             "Label": "PROFIT",
             "Width": "100px",
-            "Active": true,
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
             "GroupName": "Total",
@@ -916,7 +851,6 @@
             "Row": 50,
             "Label": "Rate",
             "Width": "100px",
-            "Active": true,
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
             "GroupName": "Total",
@@ -933,7 +867,6 @@
             "Row": 50,
             "Label": "PROFIT",
             "Width": "100px",
-            "Active": true,
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
             "GroupName": "Cost45",
@@ -950,7 +883,6 @@
             "Row": 50,
             "Label": "Rate",
             "Width": "100px",
-            "Active": true,
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
             "GroupName": "Cost45",
@@ -967,7 +899,6 @@
             "Row": 50,
             "Label": "COST",
             "Width": "100px",
-            "Active": true,
             "FocusSearch": true,
             "GroupName": "Cost40",
             "MinWidth": "100px",
@@ -983,7 +914,6 @@
             "Row": 50,
             "Label": "Currency",
             "Width": "100px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "100px",
             "MaxWidth": "100px",
@@ -997,7 +927,6 @@
             "Row": 50,
             "Label": "REV",
             "Width": "100px",
-            "Active": true,
             "FocusSearch": true,
             "GroupName": "LCL",
             "MinWidth": "100px",
@@ -1013,7 +942,6 @@
             "Row": 50,
             "Label": "COST",
             "Width": "100px",
-            "Active": true,
             "FocusSearch": true,
             "GroupName": "LCL",
             "MinWidth": "100px",
@@ -1029,7 +957,6 @@
             "Row": 50,
             "Label": "PROFIT",
             "Width": "100px",
-            "Active": true,
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
             "GroupName": "LCL",
@@ -1046,7 +973,6 @@
             "Row": 50,
             "Label": "Rate",
             "Width": "100px",
-            "Active": true,
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
             "GroupName": "LCL",
@@ -1063,7 +989,6 @@
             "Row": 50,
             "Label": "PROFIT",
             "Width": "100px",
-            "Active": true,
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
             "GroupName": "Cost40",
@@ -1080,7 +1005,6 @@
             "Row": 50,
             "Label": "Rate",
             "Width": "100px",
-            "Active": true,
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
             "GroupName": "Cost40",
@@ -1097,7 +1021,6 @@
             "Row": 50,
             "Label": "REV",
             "Width": "100px",
-            "Active": true,
             "FocusSearch": true,
             "GroupName": "Cost40HC",
             "MinWidth": "100px",
@@ -1113,7 +1036,6 @@
             "Row": 50,
             "Label": "COST",
             "Width": "100px",
-            "Active": true,
             "FocusSearch": true,
             "GroupName": "Cost40HC",
             "MinWidth": "100px",
@@ -1129,7 +1051,6 @@
             "Row": 50,
             "Label": "PROFIT",
             "Width": "100px",
-            "Active": true,
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
             "GroupName": "Cost40HC",
@@ -1146,7 +1067,6 @@
             "Row": 50,
             "Label": "Rate",
             "Width": "100px",
-            "Active": true,
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
             "GroupName": "Cost40HC",
@@ -1163,7 +1083,6 @@
             "Row": 50,
             "Label": "REV",
             "Width": "100px",
-            "Active": true,
             "FocusSearch": true,
             "GroupName": "Cost45",
             "MinWidth": "100px",
@@ -1179,7 +1098,6 @@
             "Row": 50,
             "Label": "COST",
             "Width": "100px",
-            "Active": true,
             "FocusSearch": true,
             "GroupName": "Cost45",
             "MinWidth": "100px",
@@ -1195,7 +1113,6 @@
             "Row": 50,
             "Label": "REV",
             "Width": "100px",
-            "Active": true,
             "FocusSearch": true,
             "GroupName": "Cost20",
             "MinWidth": "100px",
@@ -1211,7 +1128,6 @@
             "Row": 50,
             "Label": "COST",
             "Width": "100px",
-            "Active": true,
             "FocusSearch": true,
             "GroupName": "Cost20",
             "MinWidth": "100px",
@@ -1227,7 +1143,6 @@
             "Row": 50,
             "Label": "PROFIT",
             "Width": "100px",
-            "Active": true,
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
             "GroupName": "Cost20",
@@ -1244,7 +1159,6 @@
             "Row": 50,
             "Label": "Rate",
             "Width": "100px",
-            "Active": true,
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
             "GroupName": "Cost20",
@@ -1261,7 +1175,6 @@
             "Row": 50,
             "Label": "REV",
             "Width": "100px",
-            "Active": true,
             "FocusSearch": true,
             "GroupName": "Cost40",
             "MinWidth": "100px",
@@ -1276,7 +1189,6 @@
             "ComponentType": "Input",
             "Label": "Group fee",
             "Width": "115px",
-            "Active": true,
             "DisabledExp": "this.Entity.DisableRow",
             "FocusSearch": true,
             "Editable": true,
@@ -1294,7 +1206,6 @@
             "Label": "Buying",
             "Width": "100px",
             "PopulateField": "if (this.Parent.Entity.IsObh) {\r\n    this.Parent.Entity.Rate = this.Parent.Entity.Cost;\r\n    this.Parent.UpdateView(false, false);\r\n}\r\nreturn null;",
-            "Active": true,
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "DisabledExp": "this.Entity.DisableRow",
             "FocusSearch": true,
@@ -1316,7 +1227,6 @@
             "Label": "Provider",
             "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('provider-editor',{ ServiceId: 3, ActionId: 1})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('provider-editor',this.Matched)\"\r\n}",
             "Width": "176px",
-            "Active": true,
             "Query": "{     \"sql\": \"select * from Partner as ds where ServiceId = 3 and ActionId = 1 and IsNoDebt = 0\",     \"total\": \"select count(ds.Id) as total from Partner as ds  where ServiceId = 3 and ActionId = 1 and IsNoDebt = 0\" }",
             "RefName": "Partner",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
@@ -1336,7 +1246,6 @@
             "Row": 100,
             "Label": "Container Type",
             "Width": "140px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Container Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Container Type'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -1357,7 +1266,6 @@
             "Label": "Provider",
             "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('provider-editor',{ ServiceId: 3, ActionId: 1})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('provider-editor',this.Matched)\"\r\n}",
             "Width": "203px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from Partner as ds where ActionId = 1 and IsNoDebt = 0 and ServiceId = 3\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where ActionId = 1 and IsNoDebt = 0 and ServiceId = 3\"\r\n}",
             "RefName": "Partner",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
@@ -1379,7 +1287,6 @@
             "Label": "Selling",
             "Width": "100px",
             "PopulateField": "if (this.Parent.Entity.IsObh) {\r\n    this.Parent.Entity.Cost = this.Parent.Entity.Rate;\r\n    this.Parent.UpdateView(false, false);\r\n}\r\nreturn null;",
-            "Active": true,
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "DisabledExp": "this.Entity.DisableRow && !this.Entity.DisableRow",
             "FocusSearch": true,
@@ -1401,7 +1308,6 @@
             "Row": 100,
             "Label": "Final Destination",
             "Width": "141px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from [Terminal] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"\r\n}",
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
@@ -1420,7 +1326,6 @@
             "Row": 100,
             "Label": "Place of Delivery",
             "Width": "174px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from [Terminal] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"\r\n}",
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
@@ -1438,7 +1343,6 @@
             "Row": 50,
             "Label": "Cont20",
             "Width": "121px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "121px",
             "MaxWidth": "121px",
@@ -1455,7 +1359,6 @@
             "Row": 100,
             "Label": "Schedule",
             "Width": "512px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Schedule Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Schedule Type'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" }]",
@@ -1478,7 +1381,6 @@
             "Precision": 0,
             "Label": "Cont40",
             "Width": "155px",
-            "Active": true,
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
             "MinWidth": "155px",
@@ -1496,7 +1398,6 @@
             "Label": "Buying",
             "Width": "100px",
             "PopulateField": "if (this.Parent.Entity.IsObh) {\r\n    this.Parent.Entity.MinLCLRate = this.Parent.Entity.MinLCLCost;\r\n    this.Parent.UpdateView(false, false);\r\n}\r\nreturn null;",
-            "Active": true,
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "DisabledExp": "this.EditForm.Entity.PricingId != null",
             "FocusSearch": true,
@@ -1517,7 +1418,6 @@
             "Label": "Selling",
             "Width": "100px",
             "PopulateField": "if (this.Parent.Entity.IsObh) {\r\n    this.Parent.Entity.MinLCLCost = this.Parent.Entity.MinLCLRate;\r\n    this.Parent.UpdateView(false, false);\r\n}\r\nreturn null;",
-            "Active": true,
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "DisabledExp": "this.Entity.DisableRow && !this.Entity.DisableRow",
             "FocusSearch": true,
@@ -1540,7 +1440,6 @@
             "Label": "Route",
             "Width": "120px",
             "PopulateField": "this.Parent.Entity.PolId = this.Matched.PolId;\r\nthis.Parent.Entity.Pol = this.Matched.Pol;\r\nthis.Parent.Entity.PodId = this.Matched.PodId;\r\nthis.Parent.Entity.Pod = this.Matched.Pod;\r\nthis.Parent.Entity.FinalDestinationId = this.Matched.FinalDestinationId;\r\nthis.Parent.Entity.FinalDestination = this.Matched.FinalDestination;\r\nthis.Parent.Entity.Vendor = this.Matched.Vendor;\r\nthis.Parent.Entity.VendorId = this.Matched.VendorId;\r\nthis.Parent.UpdateView(false, false);\r\nreturn null;",
-            "Active": true,
             "Query": "var detail = this.EditForm.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"InquiryDetail\");\r\nif (!detail || (detail && detail.AllListViewItem.length == 0)) {\r\n    return [];\r\n}\r\nvar data = detail.AllListViewItem.map(x => {\r\n    var routeId =`${(x.Entity.Pol.Code||'')} => ${(x.Entity.FinalDestination.Code || '')}`;\r\n    return {\r\n        Id: routeId,\r\n        Name: routeId,\r\n        PolId: x.Entity.PolId,\r\n        Pol: x.Entity.Pol,\r\n        PodId: x.Entity.PodId,\r\n        Pod: x.Entity.Pod,\r\n        FinalDestinationId: x.Entity.FinalDestinationId,\r\n        FinalDestination: x.Entity.FinalDestination,\r\n        VendorId: x.Entity.VendorId,\r\n        Vendor: x.Entity.Vendor,\r\n    }\r\n});\r\nreturn data;",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "DisabledExp": "this.Entity.DisableRow",
@@ -1560,7 +1459,6 @@
             "Row": 100,
             "Label": "Place of Delivery",
             "Width": "132px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from [Terminal] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"\r\n}",
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
@@ -1580,7 +1478,6 @@
             "Row": 50,
             "Label": "Cont45",
             "Width": "114px",
-            "Active": true,
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
             "MinWidth": "114px",
@@ -1599,7 +1496,6 @@
             "Label": "Currency",
             "Events": "{\"change\":\"CheckCurrency\"}",
             "Width": "76px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Currency'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Currency'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
@@ -1621,7 +1517,6 @@
             "Row": 100,
             "Label": "Unit CTNR",
             "Width": "106px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name in (N'All Type',N'Container Type',N'LCL Type')\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name in (N'All Type',N'Container Type',N'LCL Type')\"\r\n}",
             "RefName": "MasterData",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
@@ -1642,7 +1537,6 @@
             "Row": 100,
             "Label": "Place of Receipt",
             "Width": "132px",
-            "Active": true,
             "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
@@ -1664,7 +1558,6 @@
             "Label": "Description",
             "Events": "{\r\n    \"change\": \"UpdateGroupFee\"\r\n}",
             "Width": "128px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from FeeType as ds\",\r\n    \"total\": \"select count(ds.Id) as total from FeeType as ds\"\r\n}",
             "RefName": "FeeType",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"GroupId\",\r\n        \"Label\": \"Group\",\r\n        \"ComponentType\": \"Dropdown\",\r\n        \"RefName\": \"MasterData\",\r\n        \"FormatData\": \"{Name}\"\r\n    }\r\n]",
@@ -1684,7 +1577,6 @@
             "Precision": 2,
             "Label": "Quantity",
             "Width": "60px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "60px",
@@ -1699,7 +1591,6 @@
             "ComponentType": "Input",
             "Label": "Note",
             "Width": "86px",
-            "Active": true,
             "DisabledExp": "this.Entity.DisableRow && !this.Entity.DisableRow",
             "FocusSearch": true,
             "Editable": true,
@@ -1716,7 +1607,6 @@
             "Row": 50,
             "Label": "Cont40HC",
             "Width": "127px",
-            "Active": true,
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
             "MinWidth": "127px",
@@ -1734,7 +1624,6 @@
             "Row": 100,
             "Label": "Final Destination",
             "Width": "130px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from [Terminal] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"\r\n}",
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
@@ -1753,7 +1642,6 @@
             "Precision": 2,
             "Label": "Vat",
             "Width": "54px",
-            "Active": true,
             "DisabledExp": "this.Entity.DisableRow",
             "FocusSearch": true,
             "Editable": true,
@@ -1773,7 +1661,6 @@
             "Label": "POL",
             "Width": "127px",
             "PopulateField": "debugger;\r\nthis.Parent.Entity.PlaceReceiptId = this.Entity.PolId;\r\nthis.Parent.Entity.PlaceReceipt = this.Entity.Pol;\r\nthis.Parent.UpdateView(false, false, \"PlaceReceiptId\");\r\nreturn null;",
-            "Active": true,
             "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
@@ -1795,7 +1682,6 @@
             "Label": "Carrier",
             "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('provider-editor',{ ServiceId: 3, ActionId: 1,PartnerTypeIds: '00671858-0000-0000-8000-d917e69b0ea0',PartnerTypeIdsText: 'Carrier'})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('provider-editor',this.Matched)\"\r\n}",
             "Width": "118px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from Partner as ds where ActionId = 1 and IsNoDebt = 0 and ServiceId = 3\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where ActionId = 1 and IsNoDebt = 0 and ServiceId = 3\"\r\n}",
             "RefName": "Partner",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
@@ -1818,7 +1704,6 @@
             "Label": "POD",
             "Width": "106px",
             "PopulateField": "debugger;\r\nthis.Parent.Entity.PlaceDeliveryId = this.Entity.PodId;\r\nthis.Parent.Entity.PlaceDelivery = this.Entity.Pod;\r\nthis.Parent.Entity.FinalDestinationId = this.Entity.PodId;\r\nthis.Parent.Entity.FinalDestination = this.Entity.Pod;\r\nthis.Parent.UpdateView(false, false, \"PlaceDeliveryId\", \"FinalDestinationId\");\r\nreturn null;",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from [Terminal] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"\r\n}",
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
@@ -1840,7 +1725,6 @@
             "Label": "POD",
             "Width": "92px",
             "PopulateField": "debugger;\r\nthis.Parent.Entity.PlaceDeliveryId = this.Entity.PodId;\r\nthis.Parent.Entity.PlaceDelivery = this.Entity.Pod;\r\nthis.Parent.Entity.FinalDestinationId = this.Entity.PodId;\r\nthis.Parent.Entity.FinalDestination = this.Entity.Pod;\r\nthis.Parent.UpdateView(false, false, \"PlaceDeliveryId\", \"FinalDestinationId\");\r\nreturn null;",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from [Terminal] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"\r\n}",
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
@@ -1856,7 +1740,6 @@
             "ComponentType": "Input",
             "Label": "Transit time",
             "Width": "106px",
-            "Active": true,
             "DisabledExp": "this.Entity.DisableRow",
             "FocusSearch": true,
             "Editable": true,
@@ -1873,7 +1756,6 @@
             "Row": 50,
             "Label": "LCL",
             "Width": "143px",
-            "Active": true,
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
             "MinWidth": "143px",
@@ -1892,7 +1774,6 @@
             "Precision": 7,
             "Label": "VIA",
             "Width": "86px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from [Terminal] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"\r\n}",
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
@@ -1913,7 +1794,6 @@
             "Row": 100,
             "Label": "Place of Receipt",
             "Width": "111px",
-            "Active": true,
             "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
@@ -1931,7 +1811,6 @@
             "Label": "OBH",
             "Width": "60px",
             "PopulateField": "if (this.Parent.Entity.IsObh) {\r\n    this.Parent.Entity.Cost = this.Parent.Entity.Rate;\r\n    this.Parent.Entity.MinLCLCost = this.Parent.Entity.MinLCLRate;\r\n    this.Parent.UpdateView(false, false);\r\n}\r\nreturn null;",
-            "Active": true,
             "RefName": "Terminal",
             "DisabledExp": "this.Entity.DisableRow",
             "FocusSearch": true,
@@ -1950,7 +1829,6 @@
             "Row": 100,
             "Label": "Payee",
             "Width": "118px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from Partner as ds where ServiceId in (1,2,3) and (TypeId not in (1,2) or TypeId is null) and ActionId = 1 and IsNoDebt = 0\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where ServiceId in (1,2,3) and (TypeId not in (1,2) or TypeId is null) and ActionId = 1 and IsNoDebt = 0\"\r\n}",
             "RefName": "Partner",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
@@ -1969,7 +1847,6 @@
             "Precision": 2,
             "Label": "Quantity",
             "Width": "69px",
-            "Active": true,
             "DisabledExp": "this.Entity.DisableRow && !this.Entity.DisableRow",
             "FocusSearch": true,
             "Editable": true,
@@ -1989,7 +1866,6 @@
             "Label": "Payer",
             "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('provider-editor',{ ServiceId: 3, ActionId: 1})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('provider-editor',this.Matched)\"\r\n}",
             "Width": "118px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from Partner as ds where ServiceId in (1,2,3) and (TypeId not in (1,2) or TypeId is null) and ActionId = 1 and IsNoDebt = 0\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where ServiceId in (1,2,3) and (TypeId not in (1,2) or TypeId is null) and ActionId = 1 and IsNoDebt = 0\"\r\n}",
             "RefName": "Partner",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
@@ -2011,7 +1887,6 @@
             "Label": "POL",
             "Width": "97px",
             "PopulateField": "debugger;\r\nthis.Parent.Entity.PlaceReceiptId = this.Entity.PolId;\r\nthis.Parent.Entity.PlaceReceipt = this.Entity.Pol;\r\nthis.Parent.UpdateView(false, false, \"PlaceReceiptId\");\r\nreturn null;",
-            "Active": true,
             "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
@@ -2032,8 +1907,7 @@
             "Label": "Save As",
             "Icon": "fas fa-sliders-h-square",
             "ClassName": "btn detail-button secondary-outline",
-            "Events": "{ \"click\" : \"SaveAs\" }",
-            "Active": true
+            "Events": "{ \"click\" : \"SaveAs\" }"
         },
         {
             "Id": "00762674-0000-0000-8000-c5321d9a9740",
@@ -2045,8 +1919,7 @@
             "Label": "Save & Add",
             "Icon": "fas fa-sliders-h-square",
             "ClassName": "btn detail-button secondary-outline",
-            "Events": "{ \"click\" : \"SaveAdd\" }",
-            "Active": true
+            "Events": "{ \"click\" : \"SaveAdd\" }"
         },
         {
             "Id": "00762674-0000-0000-8000-da91e538f5c1",
@@ -2058,7 +1931,6 @@
             "Icon": "fal fa-check-circle",
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"ApprovedEntity\" }",
-            "Active": true,
             "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserApprovedIds.includes(this.Token.UserId) && !this.Entity.Id.startsWith('-'); "
         },
         {
@@ -2071,7 +1943,6 @@
             "Icon": "fal fa-comment-alt-slash",
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"DeclineEntity\" }",
-            "Active": true,
             "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserApprovedIds.includes(this.Token.UserId) && !this.Entity.Id.startsWith('-'); "
         },
         {
@@ -2085,7 +1956,6 @@
             "Icon": "fas fa-sliders-h-square",
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{\r\n    \"click\": \"CreateBookingLocal\"\r\n}",
-            "Active": true,
             "ShowExp": "(this.dayjs(this.Entity.FromDate) < this.dayjs() && (!this.Entity.ToDate || (this.Entity.ToDate &&  this.dayjs(this.Entity.ToDate ) > this.dayjs()))) && this.Entity.StatusId == 3"
         },
         {
@@ -2098,7 +1968,6 @@
             "Icon": "far fa-share-all",
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"SendEntity\" }",
-            "Active": true,
             "ShowExp": "(this.Entity.StatusId == 1 || this.Entity.StatusId == 4)  && this.Entity.InsertedBy == this.Token.UserId && !this.Entity.Id.startsWith('-')"
         },
         {
@@ -2111,34 +1980,29 @@
             "Icon": "fal fa-save",
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
-            "Events": "{ \"click\" : \"SavePatch\" }",
-            "Active": true
+            "Events": "{ \"click\" : \"SavePatch\" }"
         }
     ],
     "FeaturePolicies": [
         {
             "Id": "0D29F414-BDDB-4D06-A58F-5C94B831AD1D",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "188F6E4C-29C2-442D-BDF3-68FB5190E0E4",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "2F2FC699-B044-4135-8811-8CA7082721D2",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "8CFCA6DA-D3AD-4A2D-BF00-1DCD51C5459F",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A895D2CD-45FF-4544-B995-8D36157158B3",
@@ -2149,20 +2013,17 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "D5F9D08C-EB50-4923-8585-A66E480710E2",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "DB406B70-D397-4A1A-A41A-8A92267C2D25",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "E4192587-0948-470F-83DA-AA92E7056BC1",
@@ -2170,20 +2031,17 @@
             "CanRead": true,
             "CanWrite": true,
             "CanDelete": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "EC2A02F9-615B-48A2-ADD7-30883B7781D4",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "EDAE9C68-6519-4065-83CB-62648EA08AE7",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ],
     "UserSettings": [
@@ -2191,8 +2049,7 @@
             "Id": "06760ede-30c2-799f-8000-e57200efd37a",
             "ComponentId": "007626bc-0000-0000-8000-5a4fdc8c7408",
             "UserId": "00781eb8-0000-0000-8000-52bf71dcaef7",
-            "Value": "[{\"Id\":\"00782624-0000-0000-8000-3b81da79aacf\",\"FieldName\":\"PolId\",\"Order\":0,\"Width\":\"127px\"},{\"Id\":\"00782630-0000-0000-8000-3036df7a0177\",\"FieldName\":\"PodId\",\"Order\":1,\"Width\":\"106px\"},{\"Id\":\"00762678-0000-0000-8000-40b1c5335b29\",\"FieldName\":\"VendorId\",\"Order\":2,\"Width\":\"177px\"},{\"Id\":\"00772624-0000-0000-8000-a7ef31fdc76f\",\"FieldName\":\"ScheduleIds\",\"Order\":3,\"Width\":\"356px\"},{\"Id\":\"00782648-0000-0000-8000-d4601d65bb7e\",\"FieldName\":\"TransitTime\",\"Order\":4,\"Width\":\"106px\"},{\"Id\":\"00782698-0000-0000-8000-c4020f2abd82\",\"FieldName\":\"ViaId\",\"Order\":5,\"Width\":\"86px\"},{\"Id\":\"0078262c-0000-0000-8000-4f5ff9616dda\",\"FieldName\":\"CarrierId\",\"Order\":6,\"Width\":\"118px\"},{\"Id\":\"00772674-0000-0000-8000-afa033862226\",\"FieldName\":\"PlaceReceiptId\",\"Order\":7,\"Width\":\"132px\"},{\"Id\":\"0077263c-0000-0000-8000-59870471d3a3\",\"FieldName\":\"PlaceDeliveryId\",\"Order\":8,\"Width\":\"132px\"},{\"Id\":\"007726fc-0000-0000-8000-43f2ce1bb471\",\"FieldName\":\"FinalDestinationId\",\"Order\":9,\"Width\":\"130px\"}]",
-            "Active": true
+            "Value": "[{\"Id\":\"00782624-0000-0000-8000-3b81da79aacf\",\"FieldName\":\"PolId\",\"Order\":0,\"Width\":\"127px\"},{\"Id\":\"00782630-0000-0000-8000-3036df7a0177\",\"FieldName\":\"PodId\",\"Order\":1,\"Width\":\"106px\"},{\"Id\":\"00762678-0000-0000-8000-40b1c5335b29\",\"FieldName\":\"VendorId\",\"Order\":2,\"Width\":\"177px\"},{\"Id\":\"00772624-0000-0000-8000-a7ef31fdc76f\",\"FieldName\":\"ScheduleIds\",\"Order\":3,\"Width\":\"356px\"},{\"Id\":\"00782648-0000-0000-8000-d4601d65bb7e\",\"FieldName\":\"TransitTime\",\"Order\":4,\"Width\":\"106px\"},{\"Id\":\"00782698-0000-0000-8000-c4020f2abd82\",\"FieldName\":\"ViaId\",\"Order\":5,\"Width\":\"86px\"},{\"Id\":\"0078262c-0000-0000-8000-4f5ff9616dda\",\"FieldName\":\"CarrierId\",\"Order\":6,\"Width\":\"118px\"},{\"Id\":\"00772674-0000-0000-8000-afa033862226\",\"FieldName\":\"PlaceReceiptId\",\"Order\":7,\"Width\":\"132px\"},{\"Id\":\"0077263c-0000-0000-8000-59870471d3a3\",\"FieldName\":\"PlaceDeliveryId\",\"Order\":8,\"Width\":\"132px\"},{\"Id\":\"007726fc-0000-0000-8000-43f2ce1bb471\",\"FieldName\":\"FinalDestinationId\",\"Order\":9,\"Width\":\"130px\"}]"
         }
     ]
 }

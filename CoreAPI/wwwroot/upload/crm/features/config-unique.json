@@ -7,7 +7,6 @@
     "Icon": "fal fa-table",
     "IsMenu": true,
     "EntityId": "ConfigUnique",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "008c1f64-0000-0000-8000-6f3fb6497429",
@@ -15,7 +14,6 @@
             "Order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "008c1fa4-0000-0000-8000-d4179cc23453",
@@ -26,7 +24,6 @@
                     "Row": 50,
                     "CanSearch": true,
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "Active": true,
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from ConfigUnique as ds\",\r\n    \"total\": \"select count(ds.Id) as total from ConfigUnique as ds\"\r\n}",
                     "IsRealtime": true,
@@ -47,7 +44,6 @@
             "Row": 100,
             "Label": "Object",
             "Width": "469px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Object Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Object Type'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -64,7 +60,6 @@
             "ComponentType": "Checkbox",
             "Label": "Save",
             "Width": "165px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "165px",
@@ -79,7 +74,6 @@
             "Row": 100,
             "Label": "Field",
             "Width": "469px",
-            "Active": true,
             "Query": "{    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Object Type'\",    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Object Type'\"}",
             "RefName": "MasterData",
             "FocusSearch": true,
@@ -93,14 +87,12 @@
         {
             "Id": "20AF3948-E942-4701-AB8C-F4D23A2CB4F8",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "21FDF96A-40BD-4ECE-81FC-8F3340808267",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "28544C3D-FBD6-4700-9D76-6CB19CEC47FC",
@@ -111,50 +103,42 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "679891C1-99DD-42A2-B773-15FCA5A80F20",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "75EED31A-7DA3-4C83-A7DA-4E203A15AD04",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "8F78E589-4FB1-4AD6-8864-B77D69704D9A",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "98F99C37-279A-475F-A236-E5276265F328",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A03DC3DF-20DB-40D5-8CD1-84A7AE4E01BD",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A7351B0F-D2CD-4A5C-ACB8-7662A3496A91",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "DCA7BBC4-611C-4811-9543-CEF26BA57CE1",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

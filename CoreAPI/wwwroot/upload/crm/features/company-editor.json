@@ -5,7 +5,6 @@
     "Order": 0,
     "Style": "width:220mm;",
     "EntityId": "Partner",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "00753694-0000-0000-8000-e42e66a912f9",
@@ -13,8 +12,7 @@
             "Order": 3,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
-            "XxlCol": 12,
-            "Active": true
+            "XxlCol": 12
         },
         {
             "Id": "0075369c-0000-0000-8000-d975d35ac0a3",
@@ -24,7 +22,6 @@
             "Icon": "fal fa-info mr-1",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "00753694-0000-0000-8000-e42e66a912f9",
             "XxlOuterColumn": 12,
             "Components": [
@@ -36,7 +33,6 @@
                     "Column": 6,
                     "Label": "Name VN",
                     "ShowLabel": true,
-                    "Active": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
@@ -47,7 +43,6 @@
                     "Column": 6,
                     "Label": "Phone",
                     "ShowLabel": true,
-                    "Active": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
@@ -58,7 +53,6 @@
                     "Column": 6,
                     "Label": "Name EN",
                     "ShowLabel": true,
-                    "Active": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
@@ -68,8 +62,7 @@
                     "ComponentType": "Textarea",
                     "Column": 6,
                     "Label": "Address VN",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "007536f8-0000-0000-8000-d3a6de1b8a52",
@@ -79,7 +72,6 @@
                     "Column": 6,
                     "Label": "Email",
                     "ShowLabel": true,
-                    "Active": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
@@ -90,7 +82,6 @@
                     "Column": 6,
                     "Label": "TaxCode",
                     "ShowLabel": true,
-                    "Active": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
@@ -101,7 +92,6 @@
                     "Column": 6,
                     "Label": "Fax",
                     "ShowLabel": true,
-                    "Active": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
@@ -112,7 +102,6 @@
                     "Column": 6,
                     "Label": "Web",
                     "ShowLabel": true,
-                    "Active": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
@@ -122,8 +111,7 @@
                     "ComponentType": "Textarea",
                     "Column": 6,
                     "Label": "Address EN",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 }
             ]
         },
@@ -134,7 +122,6 @@
             "ComponentType": "Section",
             "ClassName": "ribbon-group",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "00753650-0000-0000-8000-36863ea1e1d5",
@@ -146,8 +133,7 @@
                     "Icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
-                    "Events": "{ \"click\" : \"SavePatch\" }",
-                    "Active": true
+                    "Events": "{ \"click\" : \"SavePatch\" }"
                 }
             ]
         },
@@ -158,7 +144,6 @@
             "ComponentType": "Section",
             "ClassName": "card-body profile",
             "XxlCol": 10,
-            "Active": true,
             "ParentId": "00753694-0000-0000-8000-e42e66a912f9",
             "XxlOuterColumn": 12,
             "Components": [
@@ -171,7 +156,6 @@
                     "Label": "Logo",
                     "ShowLabel": true,
                     "ClassName": "profile",
-                    "Active": true,
                     "VirtualScroll": true
                 },
                 {
@@ -184,7 +168,6 @@
                     "Row": 20,
                     "Label": "PartnerBankAccount",
                     "DefaultVal": "{ PartnerId: this.EditForm.Entity.Id}",
-                    "Active": true,
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from PartnerBankAccount as ds where PartnerId = '{PartnerId}'\",\r\n    \"total\": \"select count(ds.Id) as total from PartnerBankAccount as ds where PartnerId = '{PartnerId}'\"\r\n}",
                     "RefName": "PartnerBankAccount",
@@ -201,7 +184,6 @@
                     "Label": "Icon",
                     "ShowLabel": true,
                     "ClassName": "profile",
-                    "Active": true,
                     "VirtualScroll": true
                 }
             ]
@@ -213,7 +195,6 @@
             "ComponentType": "Section",
             "Label": "Footer",
             "ClassName": "card-body",
-            "Active": true,
             "ParentId": "00753694-0000-0000-8000-e42e66a912f9",
             "Components": [
                 {
@@ -223,7 +204,6 @@
                     "ComponentType": "Word",
                     "Column": 6,
                     "Label": "Footer",
-                    "Active": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 }
             ]
@@ -235,7 +215,6 @@
             "ComponentType": "Section",
             "Label": "Header",
             "ClassName": "card-body",
-            "Active": true,
             "ParentId": "00753694-0000-0000-8000-e42e66a912f9",
             "Components": [
                 {
@@ -245,7 +224,6 @@
                     "ComponentType": "Word",
                     "Column": 6,
                     "Label": "Header",
-                    "Active": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 }
             ]
@@ -262,7 +240,6 @@
             "Row": 100,
             "Label": "Bank",
             "Width": "112px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Bank'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Bank'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -280,7 +257,6 @@
             "Row": 50,
             "Label": "Number",
             "Width": "102px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from Role as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Role as ds\"\r\n}",
             "RefName": "Role",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -298,7 +274,6 @@
             "Row": 50,
             "Label": "Name",
             "Width": "94px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from Role as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Role as ds\"\r\n}",
             "RefName": "Role",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -316,7 +291,6 @@
             "Row": 50,
             "Label": "Swift Code",
             "Width": "127px",
-            "Active": true,
             "RefName": "Role",
             "FocusSearch": true,
             "Editable": true,
@@ -332,7 +306,6 @@
             "Row": 50,
             "Label": "Main",
             "Width": "94px",
-            "Active": true,
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
             "Editable": true,
@@ -348,7 +321,6 @@
             "Row": 50,
             "Label": "Receives",
             "Width": "94px",
-            "Active": true,
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
             "Editable": true,
@@ -368,28 +340,24 @@
             "Icon": "fal fa-save",
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
-            "Events": "{ \"click\" : \"SavePatch\" }",
-            "Active": true
+            "Events": "{ \"click\" : \"SavePatch\" }"
         }
     ],
     "FeaturePolicies": [
         {
             "Id": "02CB8032-27D6-4076-9162-21FB075D53CE",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "07FBCAF3-740A-4E8F-AA06-50D5BD5629D9",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "273A8739-6F46-478A-8252-894D57080513",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "2E680988-6FAA-4DFB-B319-98780C6490BF",
@@ -400,44 +368,37 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "40F154B4-397E-424E-9F02-E8CC668085B0",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "43BFA0F0-9971-4036-8D39-07FD79440725",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "7DC148AD-5F82-427E-922B-0AE9F57785C1",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "B3822652-CA8A-47E1-BDDF-D4168F8ADAB5",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "C5E07977-DD3B-43E6-B60A-5FA4EAB9A356",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "E31DAFB0-772E-4CA3-ACEA-E31F0D2DCF72",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

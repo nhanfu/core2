@@ -7,7 +7,6 @@
     "Icon": "fal fa-square",
     "IsMenu": true,
     "EntityId": "AccountTransferSetup",
-    "Active": true,
     "IgnoreEncode": true,
     "ComponentGroup": [
         {
@@ -17,7 +16,6 @@
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "01945a8b-ad11-748b-831b-b97409b897d7",
@@ -29,7 +27,6 @@
                     "CanSearch": true,
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "Active": true,
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from AccountTransferSetup as ds\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds\"\r\n}",
                     "IsRealtime": true,
@@ -47,7 +44,6 @@
             "ComponentType": "Input",
             "Label": "Description",
             "Width": "305px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "305px",
@@ -61,7 +57,6 @@
             "ComponentType": "Input",
             "Label": "Priority",
             "Width": "102px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "102px",
@@ -75,7 +70,6 @@
             "ComponentType": "Input",
             "Label": "Id",
             "Width": "131px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "131px",
@@ -92,7 +86,6 @@
             "Row": 100,
             "Label": "From AC",
             "Width": "142px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds\"\r\n}",
             "RefName": "AccountNo",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -111,7 +104,6 @@
             "Row": 100,
             "Label": "To AC",
             "Width": "142px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds\"\r\n}",
             "RefName": "AccountNo",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -127,7 +119,6 @@
             "ComponentType": "Checkbox",
             "Label": "Active",
             "Width": "131px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "131px",
@@ -144,7 +135,6 @@
             "Row": 100,
             "Label": "Transfer Side",
             "Width": "149px",
-            "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Debit\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"Credit\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Both sides\"\r\n    }\r\n]",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
             "FocusSearch": true,
@@ -165,7 +155,6 @@
             "Label": "Company",
             "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('provider-editor',{ ServiceId: 3, ActionId: 1})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('provider-editor',this.Matched)\"\r\n}",
             "Width": "118px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from Partner as ds where ServiceId in (5)\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where ServiceId in (5)\"\r\n}",
             "RefName": "Partner",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
@@ -181,8 +170,7 @@
         {
             "Id": "1811A9C6-B572-4C1F-B161-4AED90621932",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "1FB776AF-3925-4EE0-8EC2-43DF0B645485",
@@ -193,14 +181,12 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "579B086B-42B7-4096-9290-B6124728BE66",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "6F478FF0-F1D3-460D-A6F0-2B003A4C7D8C",
@@ -211,44 +197,37 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "795B8B71-82F7-4C91-889D-000554CF9923",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A3EA0D87-386B-4C0C-BB2A-D06FC9F91BFB",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "AF5EEFD5-2A40-4F0B-8DDB-0EA9AEC38B20",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "BFCC1529-CBE2-4E75-A6B5-E345959796D6",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "F5663AAE-5C47-4D8C-A62D-885060630606",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "F8160492-29A4-4AC2-A8C7-A8171B680D87",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

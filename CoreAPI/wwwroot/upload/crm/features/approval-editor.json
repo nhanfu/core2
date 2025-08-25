@@ -5,7 +5,6 @@
     "Order": 0,
     "Style": "width:900px;",
     "EntityId": "ApprovalConfig",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "00fd1800-0000-0000-8000-3d472222e09b",
@@ -14,7 +13,6 @@
             "ComponentType": "Section",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "00fd1868-0000-0000-8000-af05923581ab",
             "XxlOuterColumn": 12,
             "Components": [
@@ -26,7 +24,6 @@
                     "Column": 12,
                     "Row": 200,
                     "DefaultVal": "{\r\n    \"ParentId\": this.EditForm.Entity.Id,\r\n    \"VoucherTypeId\": this.EditForm.Entity.VoucherTypeId\r\n}",
-                    "Active": true,
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from ApprovalConfig as ds where ParentId = '{ParentId}' and ParentId is not null\",\r\n    \"total\": \"select count(ds.Id) as total from ApprovalConfig as ds where ParentId = '{ParentId}' and ParentId is not null\"\r\n}",
                     "RefName": "ApprovalConfig",
@@ -41,7 +38,6 @@
             "Order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Active": true,
             "XxlOuterColumn": 0
         },
         {
@@ -51,7 +47,6 @@
             "ComponentType": "Section",
             "ClassName": "ribbon-group",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "00fd18f8-0000-0000-8000-872b4bb1920b",
@@ -63,8 +58,7 @@
                     "Icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
-                    "Events": "{ \"click\" : \"SavePatch\" }",
-                    "Active": true
+                    "Events": "{ \"click\" : \"SavePatch\" }"
                 }
             ]
         },
@@ -75,7 +69,6 @@
             "ComponentType": "Section",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "00fd1868-0000-0000-8000-af05923581ab",
             "XxlOuterColumn": 12,
             "Components": [
@@ -88,8 +81,7 @@
                     "Precision": 0,
                     "Label": "Type",
                     "ShowLabel": true,
-                    "Disabled": true,
-                    "Active": true
+                    "Disabled": true
                 },
                 {
                     "Id": "00fd18b4-0000-0000-8000-40c22520c611",
@@ -103,7 +95,6 @@
                     "Label": "Name",
                     "ShowLabel": true,
                     "PopulateField": "this.EditForm.Entity.VoucherTypeId = this.Matched.Enum;\r\nthis.EditForm.UpdateView(false, false, \"VoucherTypeId\");\r\nreturn null;",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Voucher Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Voucher Type'\"\r\n}",
                     "RefName": "MasterData",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
@@ -120,7 +111,6 @@
             "Row": 50,
             "Label": "Team Lead",
             "Width": "97px",
-            "Active": true,
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
             "Editable": true,
@@ -137,7 +127,6 @@
             "Row": 50,
             "Label": "Head of Department",
             "Width": "136px",
-            "Active": true,
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
             "Editable": true,
@@ -153,7 +142,6 @@
             "ComponentType": "Number",
             "Label": "Level",
             "Width": "63px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "63px",
@@ -170,7 +158,6 @@
             "Row": 100,
             "Label": "User",
             "Width": "222px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [User] as ds where (TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 1)\"\r\n}",
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
@@ -191,7 +178,6 @@
             "Row": 100,
             "Label": "Role",
             "Width": "245px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [Role] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [Role] as ds\"\r\n}",
             "RefName": "Role",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
@@ -214,52 +200,44 @@
             "Icon": "fal fa-save",
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
-            "Events": "{ \"click\" : \"SavePatch\" }",
-            "Active": true
+            "Events": "{ \"click\" : \"SavePatch\" }"
         }
     ],
     "FeaturePolicies": [
         {
             "Id": "2F63B190-9E2A-4D27-8F13-1086F75EAA2F",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "2FCC1033-F25B-4960-B947-737F49FEB68B",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "3E92569D-A3EF-48F4-B304-F3E5898E4607",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "66B7BB23-7E38-453E-AB5A-BDD077A34AFD",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "775BA7A0-D344-4C9C-BC66-73E9288711DA",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "95E99686-419F-45F5-877B-C447D1B5AC93",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A377431E-192B-43CE-89D4-F55794A8BF39",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "BE0789D6-99D9-4A55-94E0-5812C4A0C2E7",
@@ -270,14 +248,12 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "C8D6BF1F-B566-4EC5-9403-332873AD2DFA",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "E95FBFCA-AF2B-4582-84A7-979BB5506023",
@@ -288,8 +264,7 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

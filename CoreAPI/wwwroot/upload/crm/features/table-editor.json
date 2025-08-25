@@ -6,7 +6,6 @@
     "Style": "width:1200px",
     "Script": "return {\r\n    ExecTable: async () => {\r\n        var rs = await this.Client.PostAsync(this.Entity, \"/api/feature/exec\");\r\n        this.Toast.Success(\"Update table success\");\r\n    }\r\n}",
     "EntityId": "TableName",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "001ff8fc-0000-0000-8000-c9b4daa4c1a1",
@@ -15,7 +14,6 @@
             "ComponentType": "Section",
             "ClassName": "ribbon-group",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "0062f8bc-0000-0000-8000-754793ee6e29",
             "XxlOuterColumn": 12,
             "Components": [
@@ -28,8 +26,7 @@
                     "Label": "Exec",
                     "Icon": "fas fa-play",
                     "ClassName": "btn detail-button secondary-outline",
-                    "Events": "{\r\n    \"click\": \"ExecTable\"\r\n}",
-                    "Active": true
+                    "Events": "{\r\n    \"click\": \"ExecTable\"\r\n}"
                 },
                 {
                     "Id": "00d7f9b8-0000-0000-8000-460225237c38",
@@ -40,8 +37,7 @@
                     "Label": "Save",
                     "Icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
-                    "Events": "{\"click\":\"SavePatch\"}",
-                    "Active": true
+                    "Events": "{\"click\":\"SavePatch\"}"
                 }
             ]
         },
@@ -51,8 +47,7 @@
             "Order": 1,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
-            "XxlCol": 12,
-            "Active": true
+            "XxlCol": 12
         },
         {
             "Id": "00bbf898-0000-0000-8000-ac13aff45f1d",
@@ -61,7 +56,6 @@
             "Label": "Table Column",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "0062f8bc-0000-0000-8000-754793ee6e29",
             "XxlOuterColumn": 12,
             "Components": [
@@ -74,7 +68,6 @@
                     "Row": 200,
                     "ClassName": "sticky",
                     "DefaultVal": "{\r\n    \"TABLE_NAME\": this.EditForm.Entity.TABLE_NAME,\r\n}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"SELECT *, case when IS_NULLABLE = 'YES' then 1 else 0 end as IS_NULLABLE FROM INFORMATION_SCHEMA.COLUMNS as ds WHERE TABLE_NAME = '{TABLE_NAME}'\",\r\n    \"total\": \"select count(*) as total FROM INFORMATION_SCHEMA.COLUMNS as ds WHERE TABLE_NAME = '{TABLE_NAME}'\"\r\n}",
                     "RefName": "COLUMNS",
                     "PreQuery": "{\r\n    \"TABLE_NAME\": this.EditForm.Entity.TABLE_NAME,\r\n}",
@@ -89,7 +82,6 @@
             "ComponentType": "Section",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "0062f8bc-0000-0000-8000-754793ee6e29",
             "XxlOuterColumn": 12,
             "Components": [
@@ -101,8 +93,7 @@
                     "Column": 6,
                     "Label": "TABLE_SCHEMA",
                     "ShowLabel": true,
-                    "Disabled": true,
-                    "Active": true
+                    "Disabled": true
                 },
                 {
                     "Id": "00f6f868-0000-0000-8000-3c041266a1bb",
@@ -112,8 +103,7 @@
                     "Column": 6,
                     "Label": "TABLE_NAME",
                     "ShowLabel": true,
-                    "Disabled": true,
-                    "Active": true
+                    "Disabled": true
                 }
             ]
         }
@@ -126,7 +116,6 @@
             "ComponentType": "Input",
             "Label": "NAME",
             "Width": "246px",
-            "Active": true,
             "MinWidth": "246px",
             "MaxWidth": "246px",
             "created_by": "Column",
@@ -139,7 +128,6 @@
             "ComponentType": "Checkbox",
             "Label": "NULLABLE",
             "Width": "165px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "165px",
             "MaxWidth": "165px",
@@ -153,7 +141,6 @@
             "ComponentType": "Input",
             "Label": "TYPE",
             "Width": "105px",
-            "Active": true,
             "MinWidth": "105px",
             "MaxWidth": "105px",
             "created_by": "Column",
@@ -166,7 +153,6 @@
             "ComponentType": "Number",
             "Label": "LENGTH",
             "Width": "122px",
-            "Active": true,
             "MinWidth": "122px",
             "MaxWidth": "122px",
             "created_by": "Column",
@@ -179,7 +165,6 @@
             "ComponentType": "Number",
             "Label": "PRECISION",
             "Width": "122px",
-            "Active": true,
             "MinWidth": "122px",
             "MaxWidth": "122px",
             "created_by": "Column",
@@ -192,7 +177,6 @@
             "ComponentType": "Number",
             "Label": "SCALE",
             "Width": "122px",
-            "Active": true,
             "MinWidth": "122px",
             "MaxWidth": "122px",
             "created_by": "Column",
@@ -205,7 +189,6 @@
             "ComponentType": "Input",
             "Label": "COLLATION",
             "Width": "200px",
-            "Active": true,
             "MinWidth": "200px",
             "MaxWidth": "200px",
             "created_by": "Column",
@@ -222,8 +205,7 @@
             "Label": "Exec",
             "Icon": "fas fa-play",
             "ClassName": "btn detail-button secondary-outline",
-            "Events": "{\r\n    \"click\": \"ExecTable\"\r\n}",
-            "Active": true
+            "Events": "{\r\n    \"click\": \"ExecTable\"\r\n}"
         },
         {
             "Id": "00d7f9b8-0000-0000-8000-460225237c38",
@@ -234,22 +216,19 @@
             "Label": "Save",
             "Icon": "fal fa-save",
             "ClassName": "btn detail-button primary",
-            "Events": "{\"click\":\"SavePatch\"}",
-            "Active": true
+            "Events": "{\"click\":\"SavePatch\"}"
         }
     ],
     "FeaturePolicies": [
         {
             "Id": "082E77A5-47E0-4F7A-9DCC-6A28C6814697",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "20BCC276-A145-4DEE-BBC2-079F5209DCFC",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "22377DEE-4D73-4D5A-AA3A-8BC0F7F1AE18",
@@ -260,50 +239,42 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "66BCB436-3127-44B5-9242-D21855E9C98A",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "69E08465-34CE-4045-87F9-9C18C495D1DA",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "8DC2FF55-4F55-41A5-BEE7-3BA1458A8B45",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "961C7579-3B1F-4162-856A-F1542213F80D",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "C31E550A-4D9B-4ACE-9E2E-776CC1CE1268",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "F04873BC-CBB7-4D56-9FDA-A7586AC73269",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "FBA2F784-2D57-4DC5-A643-012958397EF0",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

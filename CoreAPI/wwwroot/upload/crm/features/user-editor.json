@@ -5,7 +5,6 @@
     "Order": 0,
     "Style": "width:99%;",
     "EntityId": "User",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "000d0018-0000-0000-8000-bd3469fb1f0c",
@@ -15,7 +14,6 @@
             "Icon": "fal fa-info mr-1",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "00b41d50-0000-0000-8000-8892919b7f6e",
             "XxlOuterColumn": 3,
             "Components": [
@@ -26,8 +24,7 @@
                     "ComponentType": "Input",
                     "Column": 12,
                     "Label": "Address",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "008b1df8-0000-0000-8000-441d09315f16",
@@ -38,7 +35,6 @@
                     "Label": "Email",
                     "ShowLabel": true,
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "Active": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
@@ -49,7 +45,6 @@
                     "Column": 12,
                     "Label": "Phone",
                     "ShowLabel": true,
-                    "Active": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
@@ -61,7 +56,6 @@
                     "Label": "User Name",
                     "ShowLabel": true,
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "Active": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 }
             ]
@@ -74,7 +68,6 @@
             "Icon": "fal fa-university mr-1",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "00b41d50-0000-0000-8000-8892919b7f6e",
             "XxlOuterColumn": 3,
             "Components": [
@@ -85,8 +78,7 @@
                     "ComponentType": "Number",
                     "Column": 6,
                     "Label": "Target Local Curr",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00711ddc-0000-0000-8000-5fb6d65430ad",
@@ -96,8 +88,7 @@
                     "Column": 6,
                     "Precision": 2,
                     "Label": "Target USD Curr",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "007e1d04-0000-0000-8000-74cf25ad2f21",
@@ -106,8 +97,7 @@
                     "ComponentType": "Number",
                     "Column": 6,
                     "Label": "Salary Amount",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "007e1d04-0000-0000-8001-add1c631c3a1",
@@ -116,8 +106,7 @@
                     "ComponentType": "Number",
                     "Column": 6,
                     "Label": "Salary Coefficient",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00821d40-0000-0000-8000-49d6ac05b5ac",
@@ -126,8 +115,7 @@
                     "ComponentType": "Number",
                     "Column": 6,
                     "Label": "Insurance Amount",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00891d70-0000-0000-8000-75503a0f30c2",
@@ -136,8 +124,7 @@
                     "ComponentType": "Input",
                     "Column": 6,
                     "Label": "TaxCode",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "009f1d30-0000-0000-8000-9e4432a8a2fe",
@@ -146,8 +133,7 @@
                     "ComponentType": "Number",
                     "Column": 6,
                     "Label": "Dependents",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00a81d88-0000-0000-8000-705f11d96ba2",
@@ -160,7 +146,6 @@
                     "Row": 100,
                     "Label": "Type Bonus",
                     "ShowLabel": true,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Type Bonus'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Type Bonus'\"\r\n}",
                     "RefName": "MasterData",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
@@ -176,7 +161,6 @@
                     "Row": 100,
                     "Label": "Type Contract",
                     "ShowLabel": true,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Type Contract'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Type Contract'\"\r\n}",
                     "RefName": "MasterData",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
@@ -191,7 +175,6 @@
             "Icon": "fal fa-users-cog mr-1",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "00b41d50-0000-0000-8000-8892919b7f6e",
             "XxlOuterColumn": 3,
             "DisplayBadge": true,
@@ -203,8 +186,7 @@
                     "ComponentType": "Input",
                     "Column": 12,
                     "Label": "Acc Number",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00001dc0-0000-0000-8001-9c0866daa1ad",
@@ -213,8 +195,7 @@
                     "ComponentType": "Input",
                     "Column": 12,
                     "Label": "Acc Name",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00001dc0-0000-0000-8002-504da59d0899",
@@ -227,7 +208,6 @@
                     "Row": 100,
                     "Label": "Bank Name",
                     "ShowLabel": true,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Bank'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Bank'\"\r\n}",
                     "RefName": "MasterData",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
@@ -241,7 +221,6 @@
             "ComponentType": "Section",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "00b41d50-0000-0000-8000-8892919b7f6e",
             "XxlOuterColumn": 6,
             "Components": [
@@ -252,8 +231,7 @@
                     "ComponentType": "Datepicker",
                     "Column": 4,
                     "Label": "Joint Date",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00161de4-0000-0000-8000-75992840e3b8",
@@ -267,7 +245,6 @@
                     "Label": "Group",
                     "ShowLabel": true,
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Team Group'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Team Group'\"\r\n}",
                     "RefName": "MasterData",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
@@ -284,7 +261,6 @@
                     "Label": "Department",
                     "ShowLabel": true,
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Department Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Department Type'\"\r\n}",
                     "RefName": "MasterData",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
@@ -297,8 +273,7 @@
                     "Column": 4,
                     "Row": 50,
                     "Label": "Knowledge",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00551d50-0000-0000-8000-fa2b05c0a08c",
@@ -311,7 +286,6 @@
                     "Row": 100,
                     "Label": "Role",
                     "ShowLabel": true,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [Role] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [Role] as ds\"\r\n}",
                     "RefName": "Role",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -325,8 +299,7 @@
                     "Column": 2,
                     "Row": 50,
                     "Label": "Department",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "005f3850-0000-0000-8000-2c120dcfbf69",
@@ -336,8 +309,7 @@
                     "Column": 2,
                     "Row": 50,
                     "Label": "LeadTeam",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00d53514-0000-0000-8000-d6bcd2b448f8",
@@ -351,7 +323,6 @@
                     "Label": "Company",
                     "ShowLabel": true,
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from [Partner] as ds where ServiceId = 5\",\r\n    \"total\": \"select count(ds.Id) as total from [Partner] as ds where ServiceId = 5\"\r\n}",
                     "RefName": "Partner",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
@@ -368,7 +339,6 @@
                     "Label": "Position",
                     "ShowLabel": true,
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Position Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Position Type'\"\r\n}",
                     "RefName": "MasterData",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
@@ -383,7 +353,6 @@
             "Icon": "fal fa-users-cog mr-1",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "00b41d50-0000-0000-8000-8892919b7f6e",
             "XxlOuterColumn": 3,
             "DisplayBadge": true,
@@ -395,8 +364,7 @@
                     "ComponentType": "Number",
                     "Column": 12,
                     "Label": "Login Failed",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00f21dbc-0000-0000-8000-35c879cb2037",
@@ -405,8 +373,7 @@
                     "ComponentType": "Input",
                     "Column": 12,
                     "Label": "Email key",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "0195181e-f2fc-70c7-b1b6-be38f819fa01",
@@ -415,8 +382,7 @@
                     "ComponentType": "Input",
                     "Column": 12,
                     "Label": "Mail Server",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "0195181f-3997-728b-8632-0739ab40d91f",
@@ -425,8 +391,7 @@
                     "ComponentType": "Input",
                     "Column": 12,
                     "Label": "Port Server",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 }
             ]
         },
@@ -437,7 +402,6 @@
             "ComponentType": "Section",
             "ClassName": "ribbon-group",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "00d400dc-0000-0000-8000-7d5605c5bbfc",
@@ -449,8 +413,7 @@
                     "Icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
-                    "Events": "{ \"click\" : \"SavePatch\" }",
-                    "Active": true
+                    "Events": "{ \"click\" : \"SavePatch\" }"
                 }
             ]
         },
@@ -461,7 +424,6 @@
             "ComponentType": "Section",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "00b41d50-0000-0000-8000-8892919b7f6e",
             "XxlOuterColumn": 2,
             "Components": [
@@ -471,7 +433,6 @@
                     "Order": 1,
                     "ComponentType": "FileUpload",
                     "Column": 12,
-                    "Active": true,
                     "VirtualScroll": true
                 }
             ]
@@ -483,7 +444,6 @@
             "ComponentType": "Section",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "00b41d50-0000-0000-8000-8892919b7f6e",
             "XxlOuterColumn": 4,
             "Components": [
@@ -494,8 +454,7 @@
                     "ComponentType": "Datepicker",
                     "Column": 6,
                     "Label": "Brithday",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "003b0008-0000-0000-8000-5cbd37e77122",
@@ -504,8 +463,7 @@
                     "ComponentType": "Input",
                     "Column": 6,
                     "Label": "Nick Name",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "004400d4-0000-0000-8000-015d647927ff",
@@ -515,8 +473,7 @@
                     "Column": 6,
                     "Label": "Full Name",
                     "ShowLabel": true,
-                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "Active": true
+                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                 },
                 {
                     "Id": "004600a0-0000-0000-8000-04ecd891eafd",
@@ -527,7 +484,6 @@
                     "Row": 50,
                     "Label": "Identity Card",
                     "ShowLabel": true,
-                    "Active": true,
                     "RefName": "Partner",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]"
                 },
@@ -542,7 +498,6 @@
                     "Row": 100,
                     "Label": "Sex",
                     "ShowLabel": true,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Gender'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Gender'\"\r\n}",
                     "RefName": "MasterData",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
@@ -555,8 +510,7 @@
                     "Column": 4,
                     "Row": 50,
                     "Label": "Date ",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00780060-0000-0000-8000-cc98465e09fc",
@@ -565,8 +519,7 @@
                     "ComponentType": "Datepicker",
                     "Column": 4,
                     "Label": "Place of Issue",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 }
             ]
         },
@@ -575,8 +528,7 @@
             "FieldName": "Container ",
             "Order": 3,
             "ComponentType": "Section",
-            "XxlCol": 12,
-            "Active": true
+            "XxlCol": 12
         }
     ],
     "GridPolicies": [
@@ -590,7 +542,6 @@
             "Row": 100,
             "Label": "Role",
             "Width": "536px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from Role as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Role as ds\"\r\n}",
             "RefName": "Role",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -611,58 +562,49 @@
             "Icon": "fal fa-save",
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
-            "Events": "{ \"click\" : \"SavePatch\" }",
-            "Active": true
+            "Events": "{ \"click\" : \"SavePatch\" }"
         }
     ],
     "FeaturePolicies": [
         {
             "Id": "48C94C17-66EC-4EA2-9C62-AD630352E081",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "52748CA9-72EB-4B49-BD6A-4596811778DE",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "6DCFBB46-57CF-49EA-8FEA-0BF01087D5A3",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A82C2B90-7824-4731-BD38-358D9DC53236",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "AFED6C3F-DAAC-4FDB-8C85-D8E99837D774",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "B5FAFDAD-1790-486B-B610-C09019440337",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "C0351BD8-FB60-486A-B9D9-A060ECFE8223",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "C1CDA762-5137-4317-8426-13F4568CD690",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "E93D2D94-0F25-4CB0-A5D7-DF62FBAFCF8A",
@@ -673,14 +615,12 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "F5F6C34C-8E79-4C6D-8ED2-7801F894124B",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

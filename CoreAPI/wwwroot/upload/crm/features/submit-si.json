@@ -6,7 +6,6 @@
     "Script": "return {\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"submit-si-editor\", entity);\r\n    }\r\n}",
     "Icon": "fas fa-file-import",
     "EntityId": "ShipmentSI",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "0195145e-8156-7115-9f2e-26689fcfc0df",
@@ -16,7 +15,6 @@
             "Icon": "fal fa-border-all mr-1",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -31,7 +29,6 @@
                     "Label": "ShipmentSI",
                     "ClassName": "sticky",
                     "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentSI as ds where (TypeId = 2 and CustomerId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentSI as ds where (TypeId = 2 and CustomerId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}')\"\r\n}",
                     "RefName": "Inquiry",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
@@ -46,7 +43,6 @@
             "Label": "New",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -61,7 +57,6 @@
                     "Label": "QuoteALL",
                     "ClassName": "sticky",
                     "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentSI as ds where (TypeId = 2 and ProgressId = 1 and CustomerId = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentSI as ds where (TypeId = 2 and ProgressId = 1 and CustomerId = '{TokenUserId}')\"\r\n}",
                     "RefName": "ShipmentSI",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
@@ -76,7 +71,6 @@
             "Label": "Approving",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -91,7 +85,6 @@
                     "Label": "QuoteALL",
                     "ClassName": "sticky",
                     "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentSI as ds where (TypeId = 2 and ProgressId = 1 and IsSend = 1 and CustomerId = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentSI as ds where (TypeId = 2 and ProgressId = 1 and IsSend = 1 and CustomerId = '{TokenUserId}')\"\r\n}",
                     "RefName": "ShipmentSI",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
@@ -106,7 +99,6 @@
             "Label": "Confirm",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -121,7 +113,6 @@
                     "Label": "QuoteALL",
                     "ClassName": "sticky",
                     "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentSI as ds where (TypeId = 2 and ProgressId = 2 and CustomerId = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentSI as ds where (TypeId = 2 and ProgressId = 2 and CustomerId = '{TokenUserId}')\"\r\n}",
                     "RefName": "ShipmentSI",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
@@ -136,7 +127,6 @@
             "Label": "Approved 1",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -151,7 +141,6 @@
                     "Label": "QuoteALL",
                     "ClassName": "sticky",
                     "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentSI as ds where (TypeId = 2 and ProgressId = 3 and CustomerId = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentSI as ds where (TypeId = 2 and ProgressId = 3 and CustomerId = '{TokenUserId}')\"\r\n}",
                     "RefName": "ShipmentSI",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
@@ -166,7 +155,6 @@
             "Label": "Decline",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -181,7 +169,6 @@
                     "Label": "QuoteALL",
                     "ClassName": "sticky",
                     "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentSI as ds where (TypeId = 2 and ProgressId = 4 and CustomerId = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentSI as ds where (TypeId = 2 and ProgressId = 4 and CustomerId = '{TokenUserId}')\"\r\n}",
                     "RefName": "ShipmentSI",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
@@ -200,7 +187,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Edit\"}",
             "Width": "56px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "56px",
             "MaxWidth": "56px",
@@ -217,7 +203,6 @@
             "Row": 100,
             "Label": "Customer",
             "Width": "245px",
-            "Active": true,
             "RefName": "Partner",
             "FocusSearch": true,
             "ShowHotKey": true,
@@ -235,7 +220,6 @@
             "Row": 100,
             "Label": "Progress",
             "Width": "175px",
-            "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"To Do\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #95a5a6; display: inline-block;'> <i class='fal fa-clipboard-list mr-1'></i> To Do</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"In Progress\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #3498db; display: inline-block;'><i class='fal fa-spinner fa-spin mr-1'></i> In Progress</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Complete\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #28a745; display: inline-block;'><i class='fal fa-check-circle mr-1'></i> Complete</span>\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Decline\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #e74c3c; display: inline-block;'><i class='fal fa-times-circle mr-1'></i> Cancel</span>\"\r\n    }\r\n]",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
@@ -254,7 +238,6 @@
             "Row": 100,
             "Label": "<i class=\"fas fa-map-marker-alt\"></i> POL",
             "Width": "176px",
-            "Active": true,
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
@@ -272,7 +255,6 @@
             "Row": 100,
             "Label": "<i class=\"fas fa-map-marker-alt\"></i> POD",
             "Width": "243px",
-            "Active": true,
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
@@ -287,7 +269,6 @@
             "ComponentType": "Input",
             "Label": "ID Booking Note",
             "Width": "162px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "162px",
             "MaxWidth": "162px",
@@ -305,7 +286,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Edit\"}",
             "Width": "56px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "56px",
             "MaxWidth": "56px",
@@ -317,32 +297,27 @@
         {
             "Id": "12A5A25B-A39E-4150-B4A4-DAB38A258FC6",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "14EE1FB5-47B8-4F9E-BACB-57BD14C934D4",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "14F5AF8B-9344-4DCE-B350-8F8E621F7914",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "20324A31-3719-4DC4-B3DB-41DAE9B1E16A",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "400BAA31-A709-4B0B-B0F0-40E714D448F4",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "6B724FB9-C267-41F1-8272-0D04675C18A2",
@@ -351,8 +326,7 @@
             "CanReadAll": true,
             "CanWrite": true,
             "CanDelete": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "8B3437D7-2045-452C-B651-F77AF3DBDD70",
@@ -361,20 +335,17 @@
             "CanReadAll": true,
             "CanWrite": true,
             "CanDelete": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "B21B0B2B-E757-4B4C-96B6-E391CE33100A",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "D74519B8-8960-4A93-855D-FB08B8253983",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "D9AE14D9-8B0F-43A3-8D83-EAC052EC9EFB",
@@ -382,8 +353,7 @@
             "CanRead": true,
             "CanWrite": true,
             "CanDelete": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

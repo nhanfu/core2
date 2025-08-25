@@ -8,7 +8,6 @@
     "Icon": "fal fa-user-tag",
     "IsMenu": true,
     "EntityId": "Partner",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "0042167c-0000-0000-8000-947d511be9dc",
@@ -18,7 +17,6 @@
             "Icon": "fal fa-lock mr-1",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -33,7 +31,6 @@
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Events": "{\"dblclick\":\"Edit\"}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where TypeId = 2 and ServiceId = 1 and ActionId = 2 and  (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.PicId = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds where TypeId = 2 and ServiceId = 1 and ActionId = 2 and  (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.PicId = '{TokenUserId}')\",\r\n    \"delete\": \"select top 1 CustomerId from Inquiry where CustomerId in ({EntityIds}) union select top 1 VendorId from DefaultFee where VendorId in ({EntityIds}) union select top 1 PayerId from InquiryDetail where PayerId in ({EntityIds}) union select top 1 PayerId from InquiryDetail where PayeeId in ({EntityIds}) union select top 1 CustomerId from Booking where CustomerId in ({EntityIds})\",\r\n    \"update\" : \"update Inquiry set CustomerId = '{NewId}' where CustomerId in ({EntityIds}); update DefaultFee set VendorId = '{NewId}' where VendorId in ({EntityIds}); update InquiryDetail set PayerId = '{NewId}' where PayerId in ({EntityIds}); update InquiryDetail set PayerId = '{NewId}' where PayeeId in ({EntityIds}); update Booking set  CustomerId = '{NewId}' where CustomerId in ({EntityIds});UPDATE p1 SET p1.History = CONCAT(ISNULL(p1.History, ''), '', N'The partner ', ISNULL(agg.PartnerNames, N''), N' was deleted by user {TokenUserName} on ', GETDATE() ) FROM [Partner] p1 CROSS APPLY ( SELECT STRING_AGG(CONCAT(p2.Name, N' (', p2.Id, ')'), N', ') AS PartnerNames FROM [Partner] p2 WHERE p2.Id IN ({EntityIds}) ) agg WHERE p1.Id = '{NewId}';\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "Partner",
@@ -50,7 +47,6 @@
             "Icon": "fal fa-heart mr-1",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -66,7 +62,6 @@
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Events": "{\"dblclick\":\"Edit\"}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where TypeId = 2 and ServiceId = 1 and ActionId = 1 and  (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.PicId = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds where TypeId = 2 and ServiceId = 1 and ActionId = 1 and  (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.PicId = '{TokenUserId}')\",\r\n    \"delete\": \"select top 1 CustomerId from Inquiry where CustomerId in ({EntityIds}) union select top 1 VendorId from DefaultFee where VendorId in ({EntityIds}) union select top 1 PayerId from InquiryDetail where PayerId in ({EntityIds}) union select top 1 PayerId from InquiryDetail where PayeeId in ({EntityIds}) union select top 1 CustomerId from Booking where CustomerId in ({EntityIds})\",\r\n    \"update\" : \"update Inquiry set CustomerId = '{NewId}' where CustomerId in ({EntityIds}); update DefaultFee set VendorId = '{NewId}' where VendorId in ({EntityIds}); update InquiryDetail set PayerId = '{NewId}' where PayerId in ({EntityIds}); update InquiryDetail set PayerId = '{NewId}' where PayeeId in ({EntityIds}); update Booking set  CustomerId = '{NewId}' where CustomerId in ({EntityIds});UPDATE p1 SET p1.History = CONCAT(ISNULL(p1.History, ''), '', N'The partner ', ISNULL(agg.PartnerNames, N''), N' was deleted by user {TokenUserName} on ', GETDATE() ) FROM [Partner] p1 CROSS APPLY ( SELECT STRING_AGG(CONCAT(p2.Name, N' (', p2.Id, ')'), N', ') AS PartnerNames FROM [Partner] p2 WHERE p2.Id IN ({EntityIds}) ) agg WHERE p1.Id = '{NewId}';\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "Partner",
@@ -84,7 +79,6 @@
             "Icon": "fal fa-rss mr-1",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -99,7 +93,6 @@
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Events": "{\"dblclick\":\"Edit\"}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where TypeId = 2 and ServiceId = 1 and ActionId = 3 and  (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.PicId = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds where TypeId = 2 and ServiceId = 1 and ActionId = 3 and  (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.PicId = '{TokenUserId}')\",\r\n    \"delete\": \"select top 1 CustomerId from Inquiry where CustomerId in ({EntityIds}) union select top 1 VendorId from DefaultFee where VendorId in ({EntityIds}) union select top 1 PayerId from InquiryDetail where PayerId in ({EntityIds}) union select top 1 PayerId from InquiryDetail where PayeeId in ({EntityIds}) union select top 1 CustomerId from Booking where CustomerId in ({EntityIds})\",\r\n    \"update\" : \"update Inquiry set CustomerId = '{NewId}' where CustomerId in ({EntityIds}); update DefaultFee set VendorId = '{NewId}' where VendorId in ({EntityIds}); update InquiryDetail set PayerId = '{NewId}' where PayerId in ({EntityIds}); update InquiryDetail set PayerId = '{NewId}' where PayeeId in ({EntityIds}); update Booking set  CustomerId = '{NewId}' where CustomerId in ({EntityIds});UPDATE p1 SET p1.History = CONCAT(ISNULL(p1.History, ''), '', N'The partner ', ISNULL(agg.PartnerNames, N''), N' was deleted by user {TokenUserName} on ', GETDATE() ) FROM [Partner] p1 CROSS APPLY ( SELECT STRING_AGG(CONCAT(p2.Name, N' (', p2.Id, ')'), N', ') AS PartnerNames FROM [Partner] p2 WHERE p2.Id IN ({EntityIds}) ) agg WHERE p1.Id = '{NewId}';\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "Partner",
@@ -116,7 +109,6 @@
             "Icon": "fal fa-border-all mr-1",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -132,7 +124,6 @@
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Events": "{\"dblclick\":\"Edit\"}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.PicId = '{TokenUserId}') and ServiceId = 1 and TypeId = 2\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.PicId = '{TokenUserId}') and TypeId = 2\",\r\n    \"delete\": \"select top 1 CustomerId from Inquiry where CustomerId in ({EntityIds}) union select top 1 VendorId from DefaultFee where VendorId in ({EntityIds}) union select top 1 PayerId from InquiryDetail where PayerId in ({EntityIds}) union select top 1 PayerId from InquiryDetail where PayeeId in ({EntityIds}) union select top 1 CustomerId from Booking where CustomerId in ({EntityIds})\",\r\n    \"update\" : \"update Inquiry set CustomerId = '{NewId}' where CustomerId in ({EntityIds}); update DefaultFee set VendorId = '{NewId}' where VendorId in ({EntityIds}); update InquiryDetail set PayerId = '{NewId}' where PayerId in ({EntityIds}); update InquiryDetail set PayerId = '{NewId}' where PayeeId in ({EntityIds}); update Booking set  CustomerId = '{NewId}' where CustomerId in ({EntityIds});UPDATE p1 SET p1.History = CONCAT(ISNULL(p1.History, ''), '', N'The partner ', ISNULL(agg.PartnerNames, N''), N' was deleted by user {TokenUserName} on ', GETDATE() ) FROM [Partner] p1 CROSS APPLY ( SELECT STRING_AGG(CONCAT(p2.Name, N' (', p2.Id, ')'), N', ') AS PartnerNames FROM [Partner] p2 WHERE p2.Id IN ({EntityIds}) ) agg WHERE p1.Id = '{NewId}';\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "Partner",
@@ -151,7 +142,6 @@
             "ComponentType": "Input",
             "Label": "Email",
             "Width": "118px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "118px",
             "MaxWidth": "118px",
@@ -164,7 +154,6 @@
             "ComponentType": "Input",
             "Label": "Works Phone",
             "Width": "177px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "177px",
             "MaxWidth": "177px",
@@ -177,7 +166,6 @@
             "ComponentType": "Input",
             "Label": "Code",
             "Width": "82px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "82px",
             "MaxWidth": "82px",
@@ -192,7 +180,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Edit\"}",
             "Width": "56px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "56px",
             "MaxWidth": "56px",
@@ -208,7 +195,6 @@
             "Row": 100,
             "Label": "Status",
             "Width": "138px",
-            "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fal fa-heart mr-1'></i>Active</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fal fa-lock mr-1'></i>Lock</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fal fa-rss mr-1'></i>Awaiting</span>\"\r\n    }\r\n]",
             "FocusSearch": true,
             "MinWidth": "138px",
@@ -222,7 +208,6 @@
             "ComponentType": "Input",
             "Label": "Tax Code",
             "Width": "118px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "118px",
             "MaxWidth": "118px",
@@ -238,7 +223,6 @@
             "Row": 100,
             "Label": "Sourse",
             "Width": "138px",
-            "Active": true,
             "RefName": "MasterData",
             "FocusSearch": true,
             "MinWidth": "138px",
@@ -252,7 +236,6 @@
             "ComponentType": "Input",
             "Label": "Abbreviation",
             "Width": "332px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "332px",
             "MaxWidth": "332px",
@@ -268,7 +251,6 @@
             "Row": 100,
             "Label": "Type",
             "Width": "138px",
-            "Active": true,
             "RefName": "MasterData",
             "FocusSearch": true,
             "MinWidth": "138px",
@@ -285,7 +267,6 @@
             "Row": 100,
             "Label": "Create On",
             "Width": "72px",
-            "Active": true,
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
@@ -305,7 +286,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Edit\"}",
             "Width": "56px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "56px",
             "MaxWidth": "56px",
@@ -320,46 +300,39 @@
             "Label": "Add",
             "Icon": "fal fa-plus",
             "ClassName": "btn",
-            "Events": "{\"click\":\"Add\"}",
-            "Active": true
+            "Events": "{\"click\":\"Add\"}"
         }
     ],
     "FeaturePolicies": [
         {
             "Id": "11DB31FB-10DB-49D8-B137-0D2FC3F30CA9",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "3425B5A5-4BBC-4787-B750-AA4D3CA8467E",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "72515771-7164-4E7A-91A6-CD1642E1F536",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "7D884E01-40D8-44AF-84BB-C01742B44438",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "90B57E56-9CCD-4685-A74B-053BDBE06FDF",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "9EA77A4A-CA09-4AF0-AF37-425A35D3037A",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "BBACAE12-0A80-4BAA-B150-496C99E1B7CB",
@@ -367,14 +340,12 @@
             "CanRead": true,
             "CanWrite": true,
             "CanDelete": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "D781BA80-8DE6-4676-B7F0-5166D9F25B6C",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "E2A26BE7-DF51-4930-8068-ACCA429E6A6A",
@@ -385,14 +356,12 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "F28BF14F-CBDF-441E-AD6A-D7054BD65A7E",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

@@ -6,7 +6,6 @@
     "Order": 2,
     "Icon": "fal fa-globe-asia",
     "IsMenu": true,
-    "Active": true,
     "IgnoreEncode": true,
     "ComponentGroup": [
         {
@@ -16,7 +15,6 @@
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "001f1a14-0000-0000-8000-7fccd91ce033",
@@ -29,7 +27,6 @@
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "DefaultVal": "{\r\n    \"ParentId\":\"000a1a24-0000-0000-8000-c157c2c56579\"\r\n}",
-                    "Active": true,
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from MasterData as ds where (ds.ParentId = '000a1a24-0000-0000-8000-c157c2c56579')\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds where (ds.ParentId = '000a1a24-0000-0000-8000-c157c2c56579')\"\r\n}",
                     "IsRealtime": true,
@@ -48,7 +45,6 @@
             "ComponentType": "Input",
             "Label": "Name",
             "Width": "227px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "227px",
@@ -62,7 +58,6 @@
             "ComponentType": "Input",
             "Label": "Description",
             "Width": "229px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "229px",
@@ -76,7 +71,6 @@
             "ComponentType": "Input",
             "Label": "Code",
             "Width": "238px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "238px",
@@ -90,7 +84,6 @@
             "ComponentType": "Checkbox",
             "Label": "Local",
             "Width": "70px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "70px",
@@ -102,38 +95,32 @@
         {
             "Id": "0AEBA246-B1CD-4140-A057-8FA90743F5F7",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "1D3916A5-D9B9-4F0F-B6CA-2B5A727B595B",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "1DA22FCA-E3B6-4946-9B1C-2B112A5F8D83",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "3FAD438E-93E9-42BF-B3F3-304836F3F4E2",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "82BC071B-728D-499A-9196-AEAFA10001B7",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "8BA8C3F7-2BAF-425D-9252-4A03D5209CF6",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "951D3790-3F62-423A-B4F7-FF9BB5CF2984",
@@ -144,26 +131,22 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "CADCCDC4-A7BA-49EB-9372-D41DB6A2B40C",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "E0F427F4-2E79-4932-9EC5-780DFD7EFB3C",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "EA8735B1-F15E-4F51-831B-355D6E867F08",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

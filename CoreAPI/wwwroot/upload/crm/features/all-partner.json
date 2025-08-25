@@ -8,7 +8,6 @@
     "Icon": "fal fa-user-chart",
     "IsMenu": true,
     "EntityId": "Partner",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "019391e3-ca62-70ca-b468-2a829f88960f",
@@ -17,7 +16,6 @@
             "ComponentType": "Section",
             "Icon": "fal fa-border-all mr-1",
             "XxlCol": 1,
-            "Active": true,
             "Components": [
                 {
                     "Id": "0193925a-c555-706c-aaf9-47d7e40529f1",
@@ -29,7 +27,6 @@
                     "CanSearch": true,
                     "ClassName": "sticky",
                     "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from [Partner] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [Partner] as ds\",\r\n    \"delete\": \"select top 1 CustomerId from Inquiry where CustomerId in ({EntityIds}) union select top 1 VendorId from DefaultFee where VendorId in ({EntityIds}) union select top 1 PayerId from InquiryDetail where PayerId in ({EntityIds}) union select top 1 PayerId from InquiryDetail where PayeeId in ({EntityIds}) union select top 1 CustomerId from Booking where CustomerId in ({EntityIds})\",\r\n    \"update\" : \"update Inquiry set CustomerId = '{NewId}' where CustomerId in ({EntityIds}); update DefaultFee set VendorId = '{NewId}' where VendorId in ({EntityIds}); update InquiryDetail set PayerId = '{NewId}' where PayerId in ({EntityIds}); update InquiryDetail set PayerId = '{NewId}' where PayeeId in ({EntityIds}); update Booking set  CustomerId = '{NewId}' where CustomerId in ({EntityIds});UPDATE p1 SET p1.History = CONCAT(ISNULL(p1.History, ''), '', N'The partner ', ISNULL(agg.PartnerNames, N''), N' was deleted by user {TokenUserName} on ', GETDATE() ) FROM [Partner] p1 CROSS APPLY ( SELECT STRING_AGG(CONCAT(p2.Name, N' (', p2.Id, ')'), N', ') AS PartnerNames FROM [Partner] p2 WHERE p2.Id IN ({EntityIds}) ) agg WHERE p1.Id = '{NewId}';\"\r\n}",
                     "RefName": "Partner",
                     "PreQuery": "{\r\n    \"Message\": \"Unable to delete issue data\"\r\n}",
@@ -48,7 +45,6 @@
             "ClassName": "btn",
             "Events": "{\r\n    \"click\": \"Edit\"\r\n}",
             "Width": "56px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "56px",
             "MaxWidth": "56px",
@@ -61,7 +57,6 @@
             "ComponentType": "Input",
             "Label": "Code",
             "Width": "82px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "82px",
             "MaxWidth": "82px",
@@ -74,7 +69,6 @@
             "ComponentType": "Input",
             "Label": "Abbreviation",
             "Width": "367px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "367px",
             "MaxWidth": "367px",
@@ -87,7 +81,6 @@
             "ComponentType": "Input",
             "Label": "Works Phone",
             "Width": "177px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "177px",
             "MaxWidth": "177px",
@@ -100,7 +93,6 @@
             "ComponentType": "Input",
             "Label": "Email",
             "Width": "118px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "118px",
             "MaxWidth": "118px",
@@ -113,7 +105,6 @@
             "ComponentType": "Input",
             "Label": "Tax Code",
             "Width": "118px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "118px",
             "MaxWidth": "118px",
@@ -129,7 +120,6 @@
             "Row": 100,
             "Label": "Sourse",
             "Width": "138px",
-            "Active": true,
             "RefName": "MasterData",
             "FocusSearch": true,
             "MinWidth": "138px",
@@ -143,7 +133,6 @@
             "ComponentType": "Input",
             "Label": "Type",
             "Width": "287px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "287px",
             "MaxWidth": "287px",
@@ -161,7 +150,6 @@
             "Row": 100,
             "Label": "Status",
             "Width": "138px",
-            "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fal fa-heart mr-1'></i>Active</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fal fa-lock mr-1'></i>Lock</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fal fa-rss mr-1'></i>Awaiting</span>\"\r\n    }\r\n]",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
@@ -180,7 +168,6 @@
             "Row": 100,
             "Label": "Created on",
             "Width": "85px",
-            "Active": true,
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
@@ -199,7 +186,6 @@
             "ClassName": "btn",
             "Events": "{\r\n    \"click\": \"Edit\"\r\n}",
             "Width": "56px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "56px",
             "MaxWidth": "56px",
@@ -210,8 +196,7 @@
         {
             "Id": "08677938-5227-43EB-ABA2-A85DF3B8A8BB",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "09404D24-E788-4C05-B475-DB693E79FE43",
@@ -222,56 +207,47 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "3675BE67-B4EA-4D33-BF36-A30E91B6E4CF",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "5B9BA225-D766-43DB-990C-A2A3D16D1CFC",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "988B1E39-16EA-4E3D-A791-FB8FB465D712",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "9C22DC86-0DFC-4B21-81E0-1150FF3195E9",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "9E524F72-CDA2-4F63-A894-2C66B0FAAF1E",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "ABA28913-5507-4E2E-BF17-451FCA4C3560",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "B3AB5630-AFCB-4A01-87F0-5819CB44B418",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "FC629897-E3FE-4CBD-BD71-5C4D4E617F6D",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

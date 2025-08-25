@@ -6,7 +6,6 @@
     "Order": 0,
     "Style": "width:1400px;",
     "EntityId": "ShipmentProcess",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "0195800a-dfb0-72ad-94f7-d5a19bc4fc57",
@@ -15,7 +14,6 @@
             "ComponentType": "Section",
             "ClassName": "ribbon-group",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "0195800a-dfef-766e-b581-17c0bd291af2",
@@ -27,8 +25,7 @@
                     "Icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
-                    "Events": "{ \"click\" : \"SavePatch\" }",
-                    "Active": true
+                    "Events": "{ \"click\" : \"SavePatch\" }"
                 }
             ]
         },
@@ -37,8 +34,7 @@
             "FieldName": "Container ",
             "Order": 2,
             "ComponentType": "Section",
-            "XxlCol": 12,
-            "Active": true
+            "XxlCol": 12
         },
         {
             "Id": "0195800a-e07c-77fb-865f-1ea604bca1b5",
@@ -47,7 +43,6 @@
             "ComponentType": "Section",
             "ClassName": "card-body profile",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "0195800a-e041-72fc-8d31-bb4804e58c66",
             "XxlOuterColumn": 12,
             "Components": [
@@ -60,7 +55,6 @@
                     "Row": 20,
                     "Label": "ShipmentProcessDetail",
                     "DefaultVal": "{\r\n    \"ProcessId\": this.EditForm.Entity.Id,\r\n    \"TypeId\": this.EditForm.Entity.TypeId\r\n}",
-                    "Active": true,
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentProcessDetail as ds where ProcessId = '{ProcessId}'\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentProcessDetail as ds where ProcessId = '{ProcessId}'\"\r\n}",
                     "RefName": "ShipmentProcessDetail",
@@ -80,7 +74,6 @@
             "Precision": 3,
             "Label": "Job Name",
             "Width": "166px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "166px",
@@ -95,7 +88,6 @@
             "ComponentType": "Select",
             "Label": "Update Mode",
             "Width": "136px",
-            "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Manual\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"Automation\"\r\n    }\r\n]",
             "FocusSearch": true,
             "Editable": true,
@@ -110,7 +102,6 @@
             "ComponentType": "Checkbox",
             "Label": "Tracing",
             "Width": "136px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "136px",
@@ -125,7 +116,6 @@
             "Precision": 3,
             "Label": "Show On Tasklist",
             "Width": "119px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "119px",
@@ -140,7 +130,6 @@
             "ComponentType": "Select",
             "Label": "Base on",
             "Width": "136px",
-            "Active": true,
             "Query": "[    {        \"Id\": 1,        \"Name\": \"Manual\"    },    {        \"Id\": 2,        \"Name\": \"Automation\"    }]",
             "FocusSearch": true,
             "Editable": true,
@@ -156,7 +145,6 @@
             "Precision": 3,
             "Label": "Deadline Num",
             "Width": "110px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "110px",
@@ -172,7 +160,6 @@
             "Precision": 3,
             "Label": "Alert Before",
             "Width": "110px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "110px",
@@ -188,7 +175,6 @@
             "Precision": 3,
             "Label": "Lock Shipment",
             "Width": "119px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "119px",
@@ -204,7 +190,6 @@
             "Precision": 3,
             "Label": "Complete Shipment",
             "Width": "119px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "119px",
@@ -224,28 +209,24 @@
             "Icon": "fal fa-save",
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
-            "Events": "{ \"click\" : \"SavePatch\" }",
-            "Active": true
+            "Events": "{ \"click\" : \"SavePatch\" }"
         }
     ],
     "FeaturePolicies": [
         {
             "Id": "0A4EA456-5CE8-42E5-A199-00DC21A5E785",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "4F63D90E-C548-4C03-8DD9-6B5AE465C044",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "5B3EC67C-CA90-47B9-8891-263BDC20BE0C",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "70036A9C-7096-4F49-8323-18358DCC0E18",
@@ -256,26 +237,22 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "711672B2-0D85-41E1-803C-FC70CFB2E368",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "9EB2F25C-0FD8-4B75-BDD7-C7A8FD251EA4",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "BA0547C9-B96B-4DAD-8874-4C971EE8C1A3",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "C6967C77-9130-43EE-9055-98C4AE7E6F28",
@@ -286,20 +263,17 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "F0CA4481-794D-489D-BA22-5052A10EAA11",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "F12BBD3C-C98D-4B47-9A95-EE70A9B84292",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

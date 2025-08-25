@@ -8,7 +8,6 @@
     "Icon": "fal fa-smile",
     "IsMenu": true,
     "EntityId": "ApprovalConfig",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "003f0868-0000-0000-8000-0e89bc655d0a",
@@ -16,7 +15,6 @@
             "Order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "003f08e4-0000-0000-8000-e0d0c4fe4d8d",
@@ -28,7 +26,6 @@
                     "CanSearch": true,
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from ApprovalConfig as ds where ParentId is null\",\r\n    \"total\": \"select count(ds.Id) as total from ApprovalConfig as ds where ParentId is null\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "ApprovalConfig",
@@ -49,7 +46,6 @@
             "Row": 100,
             "Label": "Name",
             "Width": "149px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Voucher Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Voucher Type'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -67,7 +63,6 @@
             "ClassName": "btn",
             "Events": "{\r\n    \"click\": \"Edit\"\r\n}",
             "Width": "52px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "52px",
             "MaxWidth": "52px",
@@ -84,7 +79,6 @@
             "ClassName": "btn",
             "Events": "{\r\n    \"click\": \"Edit\"\r\n}",
             "Width": "52px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "52px",
             "MaxWidth": "52px",
@@ -99,16 +93,14 @@
             "Label": "Add",
             "Icon": "fal fa-plus",
             "ClassName": "btn",
-            "Events": "{\"click\":\"Add\"}",
-            "Active": true
+            "Events": "{\"click\":\"Add\"}"
         }
     ],
     "FeaturePolicies": [
         {
             "Id": "0627D3DA-47D6-46BE-8663-0BFC6E17A56D",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "2BBA39E0-5269-4227-9AF7-92B1BC7DCA2A",
@@ -117,56 +109,47 @@
             "CanReadAll": true,
             "CanWrite": true,
             "CanWriteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "70BABFC6-31D1-4E83-B279-C0DC956B8B5A",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "71E89335-690D-4047-B390-F347913F8BFD",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "741C2561-D2F0-46F3-A51B-B413A803A9F4",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "9245CB4C-31E0-4AB8-B16C-26475809D022",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A85EE7E2-2D09-436C-B9DC-A10D8010B7FE",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "B4B9EFDA-F5C7-4EDE-B19B-3B1BC47ADD08",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "D3B6AE99-4EC9-4027-9AFC-3C00304EF086",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "F4DF28F0-99B0-40D8-8496-DAD1C6FE880A",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

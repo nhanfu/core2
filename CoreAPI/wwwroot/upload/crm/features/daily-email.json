@@ -8,14 +8,12 @@
     "Icon": "fas fa-at",
     "IsMenu": true,
     "EntityId": "PlanEmail",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "00133068-0000-0000-8000-243170fdae5a",
             "Order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Active": true,
             "DisplayBadge": true,
             "Components": [
                 {
@@ -29,7 +27,6 @@
                     "Label": "EmailTemplate",
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from PlanEmail as ds\",\r\n    \"total\": \"select count(ds.Id) as total from PlanEmail as ds\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "PlanEmail",
@@ -48,7 +45,6 @@
             "Row": 100,
             "Label": "Inserted By",
             "Width": "256px",
-            "Active": true,
             "RefName": "User",
             "FocusSearch": true,
             "MinWidth": "256px",
@@ -64,7 +60,6 @@
             "Row": 100,
             "Label": "Feature",
             "Width": "255px",
-            "Active": true,
             "RefName": "Feature",
             "FocusSearch": true,
             "MinWidth": "255px",
@@ -78,7 +73,6 @@
             "ComponentType": "Input",
             "Label": "Subject Mail",
             "Width": "267px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "267px",
             "MaxWidth": "267px",
@@ -91,7 +85,6 @@
             "ComponentType": "Input",
             "Label": "Name",
             "Width": "241px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "241px",
             "MaxWidth": "241px",
@@ -107,7 +100,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Edit\"}",
             "Width": "35px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "35px",
             "MaxWidth": "35px",
@@ -120,7 +112,6 @@
             "ComponentType": "Datepicker",
             "Label": "Daily Date",
             "Width": "175px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "175px",
             "MaxWidth": "175px",
@@ -134,7 +125,6 @@
             "Label": "Pause",
             "Disabled": true,
             "Width": "84px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "84px",
@@ -153,7 +143,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Edit\"}",
             "Width": "35px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "35px",
             "MaxWidth": "35px",
@@ -168,40 +157,34 @@
             "Label": "Add",
             "Icon": "fal fa-plus",
             "ClassName": "btn",
-            "Events": "{\"click\":\"Add\"}",
-            "Active": true
+            "Events": "{\"click\":\"Add\"}"
         }
     ],
     "FeaturePolicies": [
         {
             "Id": "07B23BF6-E59B-4551-BBB3-EB7940BE53F1",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "2B7D3BD2-3C50-499D-85F2-ECF123905CB3",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "843718A6-7705-4C17-963E-D043A15E6A2E",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A15D7930-C28A-4324-BA1C-2B8E2E82A2DC",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "B5C57E28-CA2C-432B-87D9-75E2CF90A137",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "BF84D2A6-B650-4BB9-BFE8-FA747E14DB7D",
@@ -212,32 +195,27 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "C267C7B9-7567-432C-AEC2-2814FDA736E3",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "C3CB5269-34A2-43FE-80BE-F2F1DE1FDC50",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "D1D48EB4-DB4D-4430-B3A2-68B4985C1ACE",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "DC7E0C04-D391-412C-80F6-6AFC08C30781",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

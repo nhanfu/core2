@@ -5,7 +5,6 @@
     "Order": 2,
     "Script": "return {\r\n    Init: function () {\r\n        const formatDate = (date) => this.dayjs(date).format(\"YYYY-MM-DD\");\r\n        let today = this.dayjs();\r\n        let firstDayOfMonth = today.startOf(\"month\");\r\n        let lastDayOfMonth = today.endOf(\"month\").add(1, \"day\");\r\n        this.Entity = {\r\n            InsertedBy: this.Token.UserId,\r\n            Id: this.Uuid7.NewGuid(),\r\n            FromDate: firstDayOfMonth,\r\n            ToDate: lastDayOfMonth\r\n        };\r\n    },\r\n    OpenFilter: function () {\r\n        var newItem = this.EditForm.GroupTree.find(x => x.FieldName == \"SearchForm\");\r\n        var form = this.EditForm.OpenConfig(\"Filter report!\", async () => {\r\n            var component = this.EditForm.ChildCom.find(x => x.Meta.FieldName == \"HBL\");\r\n            component.ReloadData().then(() => {\r\n                if (this.EditForm.Entity.GroupBy == \"HblNo,MblNo,FileId,VendorId,CurrencyId\") {\r\n                    component.HideColumn([]);\r\n                }\r\n                else if (this.EditForm.Entity.GroupBy == \"MblNo,FileId,VendorId,CurrencyId\") {\r\n                    component.HideColumn(\"HblNo\");\r\n                }\r\n                else {\r\n                    component.HideColumn(\"HblNo\", \"FileId\", \"MblNo\");\r\n                }\r\n            })\r\n        }, () => { }, true, [], false, newItem);\r\n    }\r\n}",
     "Icon": "fas fa-analytics",
-    "Active": true,
     "IgnoreEncode": true,
     "ComponentGroup": [
         {
@@ -23,7 +22,6 @@
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 1,
-            "Active": true,
             "SmOuterColumn": 20,
             "XxlOuterColumn": 12,
             "Components": [
@@ -38,7 +36,6 @@
                     "GroupFormat": "return this.Entity.Vendor.Name",
                     "Label": "ShipmentFee",
                     "ClassName": "sticky",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select newid() as Id,{GroupBy},\r\n    sum(isnull(Quantity,1)) as Quantity,\r\n    (case when {Currency} = 1 then\r\n    SUM(CASE WHEN (ds.CurrencyCode = 'USD' or ds.CurrencyCode = 'VND') THEN (case when (ds.TypeId = 1 or (ds.TypeId in (3,4) and ds.IsAdvCustomer = 1)) then isnull(TotalAmountTax,0) else 0 end)*ds.ExchangeRateUSD ELSE (case when (ds.TypeId = 1 or (ds.TypeId in (3,4) and ds.IsAdvCustomer = 1)) then isnull(TotalAmountTax,0) else 0 end) / ds.ExchangeRateUSD END)\r\n    else\r\n        SUM(case when (ds.TypeId = 1 or (ds.TypeId in (3,4) and ds.IsAdvCustomer = 1)) then ds.TotalAmountTax * ds.ExchangeRateVND else 0 end)\r\n    end) as AR,\r\n    sum(case when (ds.TypeId = 1 or (ds.TypeId in (3,4) and ds.IsAdvCustomer = 1)) then isnull(TotalAmountTax,0) else 0 end) as AROG,\r\n    sum(case when (ds.TypeId = 2 or (ds.TypeId in (3,4) and ds.IsAdvCustomer = 0)) then isnull(TotalAmountTax,0) else 0 end) as APOG,\r\n    (case when {Currency} = 1 then\r\n    SUM(CASE WHEN (ds.CurrencyCode = 'USD' or ds.CurrencyCode = 'VND') THEN (case when (ds.TypeId = 2 or (ds.TypeId in (3,4) and ds.IsAdvCustomer = 0)) then isnull(TotalAmountTax,0) else 0 end)*ds.ExchangeRateUSD ELSE (case when (ds.TypeId = 2 or (ds.TypeId in (3,4) and ds.IsAdvCustomer = 0)) then isnull(TotalAmountTax,0) else 0 end) / ds.ExchangeRateUSD END)\r\n    else\r\n        SUM(case when (ds.TypeId = 2 or (ds.TypeId in (3,4) and ds.IsAdvCustomer = 0)) then ds.TotalAmountTax * ds.ExchangeRateVND else 0 end)\r\n    end) as AP,\r\n    ((case when {Currency} = 1 then\r\n    SUM(CASE WHEN (ds.CurrencyCode = 'USD' or ds.CurrencyCode = 'VND') THEN (case when (ds.TypeId = 1 or (ds.TypeId in (3,4) and ds.IsAdvCustomer = 1)) then isnull(TotalAmountTax,0) else 0 end)*ds.ExchangeRateUSD ELSE (case when (ds.TypeId = 1 or (ds.TypeId in (3,4) and ds.IsAdvCustomer = 1)) then isnull(TotalAmountTax,0) else 0 end) / ds.ExchangeRateUSD END)\r\n    else\r\n        SUM(case when (ds.TypeId = 1 or (ds.TypeId in (3,4) and ds.IsAdvCustomer = 1)) then ds.TotalAmountTax * ds.ExchangeRateVND else 0 end)\r\n    end)\r\n    -\r\n    (case when {Currency} = 1 then\r\n    SUM(CASE WHEN (ds.CurrencyCode = 'USD' or ds.CurrencyCode = 'VND') THEN (case when (ds.TypeId = 2 or (ds.TypeId in (3,4) and ds.IsAdvCustomer = 0)) then isnull(TotalAmountTax,0) else 0 end)*ds.ExchangeRateUSD ELSE (case when (ds.TypeId = 2 or (ds.TypeId in (3,4) and ds.IsAdvCustomer = 0)) then isnull(TotalAmountTax,0) else 0 end) / ds.ExchangeRateUSD END)\r\n    else\r\n        SUM(case when (ds.TypeId = 2 or (ds.TypeId in (3,4) and ds.IsAdvCustomer = 0)) then ds.TotalAmountTax * ds.ExchangeRateVND else 0 end)\r\n    end)) as Balance\r\n    from ShipmentFee as ds \r\n    where (ds.{DateFieldId} >= '{FromDate}' and ds.{DateFieldId} < '{ToDate}' \r\n    and ds.IsComplete in ({Complete}) \r\n    and ds.IsPaid in ({Paid}) \r\n    and ds.IsObh in ({Obh}) \r\n    and ds.IsInvoice in ({Invoice})\r\n    and ds.IsNoDocs in ({NoDocs})\r\n    and ds.ShipmentTypeId in ({ShipmentTypeId})\r\n    and ({FeeTypeId})\r\n    and ds.IsLock in ({Lock})\r\n    and ds.IsPaymentAcc in ({PaymentAcc})\r\n    and ds.IsDebtAcc in ({DebtAcc})\r\n    and ('{DescriptionIds}' = '' or ds.DescriptionId in (SELECT value FROM STRING_SPLIT('{DescriptionIds}', ',')))\r\n    and (('{FileIds}' = '' or ds.FileId in (SELECT value FROM STRING_SPLIT('{FileIds}', ','))))\r\n    and (('{HblIds}' = '' or ds.ShipmentId in (SELECT value FROM STRING_SPLIT('{HblIds}', ','))))\r\n    and ('{VendorIds}' = '' or ds.VendorId in (SELECT value FROM STRING_SPLIT('{VendorIds}', ',')))\r\n    and ('{DebtIds}' = '' or ds.DebtId in (SELECT value FROM STRING_SPLIT('{DebtIds}', ',')))\r\n    and ('{PaymentIds}' = '' or ds.PaymentAccId in (SELECT value FROM STRING_SPLIT('{PaymentIds}', ',')))\r\n    and ('{SaleIds}' = '' or ds.SaleId in (SELECT value FROM STRING_SPLIT('{SaleIds}', ',')))\r\n    and ('{TypeIds}' = '' or ds.ServiceId in (SELECT value FROM STRING_SPLIT('{TypeIds}', ',')))\r\n    AND ('{DepartmentId}' = '' or ds.DepartmentId = '{DepartmentId}')\r\n    and ((-2 = {Vat} OR (-2 != {Vat} AND ds.Vat = {Vat})) OR (-1 = {Vat} AND ds.Vat IS NULL))\r\n    )\r\n    group by {GroupBy}\",\r\n    \"total\": \"select count(*) as total\r\n\tfrom (select count(ds.Id) as total from ShipmentFee as ds \r\n    where (ds.{DateFieldId} >= '{FromDate}' and ds.{DateFieldId} < '{ToDate}' \r\n    and ds.IsComplete in ({Complete}) \r\n    and ds.IsPaid in ({Paid}) \r\n    and ds.IsObh in ({Obh}) \r\n    and ds.IsInvoice in ({Invoice})\r\n    and ds.IsNoDocs in ({NoDocs})\r\n    and ds.ShipmentTypeId in ({ShipmentTypeId})\r\n    and ({FeeTypeId})\r\n    and ds.IsLock in ({Lock})\r\n    and ds.IsPaymentAcc in ({PaymentAcc})\r\n    and ds.IsDebtAcc in ({DebtAcc})\r\n    and ('{DescriptionIds}' = '' or ds.DescriptionId in (SELECT value FROM STRING_SPLIT('{DescriptionIds}', ',')))\r\n    and (('{FileIds}' = '' or ds.FileId in (SELECT value FROM STRING_SPLIT('{FileIds}', ','))))\r\n    and (('{HblIds}' = '' or ds.ShipmentId in (SELECT value FROM STRING_SPLIT('{HblIds}', ','))))\r\n    and ('{VendorIds}' = '' or ds.VendorId in (SELECT value FROM STRING_SPLIT('{VendorIds}', ',')))\r\n    and ('{DebtIds}' = '' or ds.DebtId in (SELECT value FROM STRING_SPLIT('{DebtIds}', ',')))\r\n    and ('{PaymentIds}' = '' or ds.PaymentAccId in (SELECT value FROM STRING_SPLIT('{PaymentIds}', ',')))\r\n    and ('{SaleIds}' = '' or ds.SaleId in (SELECT value FROM STRING_SPLIT('{SaleIds}', ',')))\r\n    and ('{TypeIds}' = '' or ds.ServiceId in (SELECT value FROM STRING_SPLIT('{TypeIds}', ',')))\r\n    AND ('{DepartmentId}' = '' or ds.DepartmentId = '{DepartmentId}')\r\n    and ((-2 = {Vat} OR (-2 != {Vat} AND ds.Vat = {Vat})) OR (-1 = {Vat} AND ds.Vat IS NULL))\r\n    )\r\n    group by {GroupBy}) as ds\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "ShipmentFee",
@@ -68,8 +65,7 @@
                     "Label": "From Date",
                     "ShowLabel": true,
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
-                    "SmCol": 7,
-                    "Active": true
+                    "SmCol": 7
                 },
                 {
                     "Id": "01953833-eef9-709a-8b80-50d76983965d",
@@ -81,8 +77,7 @@
                     "Label": "To Date",
                     "ShowLabel": true,
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
-                    "SmCol": 7,
-                    "Active": true
+                    "SmCol": 7
                 },
                 {
                     "Id": "01953835-3fb7-774f-bdcf-71d90bedf1fd",
@@ -98,7 +93,6 @@
                     "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
                     "SmCol": 7,
                     "DefaultVal": "ShipmentDate",
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": \"ShipmentDate\",\r\n        \"Name\": \"Shipment\"\r\n    },\r\n    {\r\n        \"Id\": \"EtdDate\",\r\n        \"Name\": \"ETD\"\r\n    },\r\n    {\r\n        \"Id\": \"EtaDate\",\r\n        \"Name\": \"ETA\"\r\n    },\r\n    {\r\n        \"Id\": \"CompleteDate\",\r\n        \"Name\": \"Complete\"\r\n    },\r\n    {\r\n        \"Id\": \"DebtDate\",\r\n        \"Name\": \"Debt voucher\"\r\n    },\r\n    {\r\n        \"Id\": \"PaymentDate\",\r\n        \"Name\": \"Payment\"\r\n    },\r\n    {\r\n        \"Id\": \"PaidDate\",\r\n        \"Name\": \"Paid\"\r\n    },\r\n    {\r\n        \"Id\": \"ShipmentInvoiceDate\",\r\n        \"Name\": \"Invoice\"\r\n    },\r\n    {\r\n        \"Id\": \"InvoiceDate\",\r\n        \"Name\": \"VAT Invoice\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
@@ -114,7 +108,6 @@
                     "Label": "Service mode",
                     "ShowLabel": true,
                     "SmCol": 7,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Service Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Service Type'\"\r\n}",
                     "RefName": "MasterData",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -134,7 +127,6 @@
                     "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
                     "SmCol": 7,
                     "DefaultVal": "\"0,1\"",
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": \"0,1\",\r\n        \"Name\": \"Include\"\r\n    },\r\n    {\r\n        \"Id\": \"1\",\r\n        \"Name\": \"Only\"\r\n    },\r\n    {\r\n        \"Id\": \"0\",\r\n        \"Name\": \"Exclude\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
@@ -150,7 +142,6 @@
                     "ShowLabel": true,
                     "SmCol": 7,
                     "DefaultVal": "0",
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"USD\"\r\n    },\r\n    {\r\n        \"Id\": 0,\r\n        \"Name\": \"VND\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
                     "Editable": true,
@@ -171,7 +162,6 @@
                     "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
                     "SmCol": 7,
                     "DefaultVal": "\"1\"",
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": \"0,1\",\r\n        \"Name\": \"Include\"\r\n    },\r\n    {\r\n        \"Id\": \"1\",\r\n        \"Name\": \"Only\"\r\n    },\r\n    {\r\n        \"Id\": \"0\",\r\n        \"Name\": \"Exclude\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
@@ -187,7 +177,6 @@
                     "ShowLabel": true,
                     "SmCol": 7,
                     "DefaultVal": "HblNo,MblNo,FileId,VendorId,CurrencyId",
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": \"HblNo,MblNo,FileId,VendorId,CurrencyId\",\r\n        \"Name\": \"HBL\"\r\n    },\r\n    {\r\n        \"Id\": \"MblNo,FileId,VendorId,CurrencyId\",\r\n        \"Name\": \"Job\"\r\n    },\r\n    {\r\n        \"Id\": \"VendorId,CurrencyId\",\r\n        \"Name\": \"Partner\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
                     "Editable": true,
@@ -203,7 +192,6 @@
             "Label": "Debtors & Related Parties",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "0195382d-9bab-751d-a73c-82ea72661ea3",
             "SmOuterColumn": 1,
             "XxlOuterColumn": 1,
@@ -220,7 +208,6 @@
                     "Label": "Department",
                     "ShowLabel": true,
                     "SmCol": 6,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Department Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Department Type'\"\r\n}",
                     "RefName": "MasterData",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
@@ -237,7 +224,6 @@
                     "Label": "Sales man",
                     "ShowLabel": true,
                     "SmCol": 6,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [User] as ds where (TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 1)\"\r\n}",
                     "RefName": "User",
                     "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
@@ -257,7 +243,6 @@
                     "ShowLabel": true,
                     "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('provider-editor',{ ServiceId: 3, ActionId: 1})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('provider-editor',this.Matched)\",\r\n    \"change\": \"ChangeDataFee\"\r\n}",
                     "SmCol": 6,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds\"\r\n}",
                     "RefName": "Partner",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
@@ -275,8 +260,7 @@
                     "Label": "Main Debtor",
                     "ShowLabel": true,
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
-                    "SmCol": 6,
-                    "Active": true
+                    "SmCol": 6
                 }
             ]
         },
@@ -288,7 +272,6 @@
             "Label": "Shipment infor",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "0195382d-9bab-751d-a73c-82ea72661ea3",
             "SmOuterColumn": 1,
             "XxlOuterColumn": 1,
@@ -307,7 +290,6 @@
                     "Events": "{\r\n    \"change\":\"ShowHideColumn\"\r\n}",
                     "PopulateField": "this.EditForm.ShowHideDetail();\r\nreturn null;",
                     "SmCol": 6,
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Air Export\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-plane-departure mr-1'></i>Air Export</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"Air Import\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-plane-arrival mr-1'></i>Air Import</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Sea Export FCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-ship mr-1'></i>Sea Export FCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Sea Import FCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-shipping-fast mr-1'></i>Sea Import FCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"Sea Export LCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fas fa-boxes mr-1'></i>Sea Export LCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 6,\r\n        \"Name\": \"Sea Import LCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fas fa-dolly mr-1'></i>Sea Import LCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 16,\r\n        \"Name\": \"Import Consol\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #17a2b8;'><i class='fas fa-warehouse mr-1'></i>Import Consol</span>\"\r\n    },\r\n    {\r\n        \"Id\": 17,\r\n        \"Name\": \"Export Consol\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #343a40;'><i class='fas fa-plane-departure mr-1'></i>Export Consol</span>\"\r\n    },\r\n    {\r\n        \"Id\": 13,\r\n        \"Name\": \"TRUCKING\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-truck mr-1'></i>TRUCKING</span>\"\r\n    },\r\n    {\r\n        \"Id\": 9,\r\n        \"Name\": \"Logistics\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-truck mr-1'></i>Logistics</span>\"\r\n    }\r\n]\r\n",
                     "Template": "[{ \"FieldName\" : \"Description\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
                     "IsMultiple": true
@@ -325,7 +307,6 @@
                     "ShowLabel": true,
                     "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
                     "SmCol": 6,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select Id,isnull(Code,HblNo) as Code from Shipment ds where ParentId is null\",\r\n    \"total\": \"select count(ds.Id) as total from Shipment ds where ParentId is null\"\r\n}",
                     "RefName": "Shipment",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Code\",\r\n        \"Label\": \"Code\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
@@ -344,7 +325,6 @@
                     "Label": "Shipment type",
                     "ShowLabel": true,
                     "SmCol": 6,
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": \"0,1\",\r\n        \"Name\": \"ALL\"\r\n    },\r\n    {\r\n        \"Id\": \"0\",\r\n        \"Name\": \"FREE-HAND\"\r\n    },\r\n    {\r\n        \"Id\": \"1\",\r\n        \"Name\": \"NOMINATE\"\r\n    }\r\n]",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]"
                 },
@@ -361,7 +341,6 @@
                     "ShowLabel": true,
                     "Events": "{\r\n    \"change\": \"DefaultDetail\"\r\n}",
                     "SmCol": 6,
-                    "Active": true,
                     "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                     "RefName": "Terminal",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
@@ -380,7 +359,6 @@
                     "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
                     "SmCol": 6,
                     "DefaultVal": "0",
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"POL\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"POD\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Transit\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Delivery\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"Warehouse\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
@@ -397,7 +375,6 @@
                     "ShowLabel": true,
                     "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
                     "SmCol": 6,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Shipment ds where ParentId is not null\",\r\n    \"total\": \"select count(ds.Id) as total from Shipment ds where ParentId is not null\"\r\n}",
                     "RefName": "Shipment",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"HblNo\",\r\n        \"Label\": \"HblNo\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
@@ -414,7 +391,6 @@
             "Label": "Fee Status",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "0195382d-9bab-751d-a73c-82ea72661ea3",
             "SmOuterColumn": 1,
             "XxlOuterColumn": 1,
@@ -431,7 +407,6 @@
                     "ShowLabel": true,
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
                     "SmCol": 6,
-                    "Active": true,
                     "EntityId": "AddCharge"
                 },
                 {
@@ -448,7 +423,6 @@
                     "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
                     "SmCol": 6,
                     "DefaultVal": "\"0,1\"",
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": \"0,1\",\r\n        \"Name\": \"Include\"\r\n    },\r\n    {\r\n        \"Id\": \"1\",\r\n        \"Name\": \"Only\"\r\n    },\r\n    {\r\n        \"Id\": \"0\",\r\n        \"Name\": \"Exclude\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
                     "EntityId": "AddCharge"
@@ -466,7 +440,6 @@
                     "ShowLabel": true,
                     "SmCol": 6,
                     "DefaultVal": "\"0,1\"",
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": \"0,1\",\r\n        \"Name\": \"Include\"\r\n    },\r\n    {\r\n        \"Id\": \"1\",\r\n        \"Name\": \"Only\"\r\n    },\r\n    {\r\n        \"Id\": \"0\",\r\n        \"Name\": \"Exclude\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
                     "EntityId": "AddCharge"
@@ -485,7 +458,6 @@
                     "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
                     "SmCol": 6,
                     "DefaultVal": "\"0,1\"",
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": \"0,1\",\r\n        \"Name\": \"Include\"\r\n    },\r\n    {\r\n        \"Id\": \"1\",\r\n        \"Name\": \"Only\"\r\n    },\r\n    {\r\n        \"Id\": \"0\",\r\n        \"Name\": \"Exclude\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
                     "EntityId": "AddCharge"
@@ -504,7 +476,6 @@
                     "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
                     "SmCol": 6,
                     "DefaultVal": "\"0,1\"",
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": \"0,1\",\r\n        \"Name\": \"Include\"\r\n    },\r\n    {\r\n        \"Id\": \"1\",\r\n        \"Name\": \"Only\"\r\n    },\r\n    {\r\n        \"Id\": \"0\",\r\n        \"Name\": \"Exclude\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
                     "EntityId": "AddCharge"
@@ -523,7 +494,6 @@
                     "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
                     "SmCol": 6,
                     "DefaultVal": "ds.TypeId in (1,2,3,4)",
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": \"ds.TypeId in (1,2,3,4)\",\r\n        \"Name\": \"ALL\"\r\n    },\r\n    {\r\n        \"Id\": \"(ds.TypeId = 1 or (ds.TypeId in (3,4) and ds.IsAdvCustomer = 1))\",\r\n        \"Name\": \"Receivable\"\r\n    },\r\n    {\r\n        \"Id\": \"(ds.TypeId = 2 or (ds.TypeId in (3,4) and ds.IsAdvCustomer = 0))\",\r\n        \"Name\": \"Payable\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
                     "EntityId": "AddCharge"
@@ -540,7 +510,6 @@
                     "Label": "Payment No",
                     "ShowLabel": true,
                     "SmCol": 6,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where (ds.TypeId in (5,6))\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where (ds.TypeId in (5,6))\"\r\n}",
                     "RefName": "Voucher",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Code\",\r\n        \"Label\": \"Code\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
@@ -561,7 +530,6 @@
                     "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
                     "SmCol": 6,
                     "DefaultVal": "\"0,1\"",
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": \"0,1\",\r\n        \"Name\": \"Include\"\r\n    },\r\n    {\r\n        \"Id\": \"1\",\r\n        \"Name\": \"Only\"\r\n    },\r\n    {\r\n        \"Id\": \"0\",\r\n        \"Name\": \"Exclude\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
@@ -579,7 +547,6 @@
                     "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
                     "SmCol": 6,
                     "DefaultVal": "\"0,1\"",
-                    "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": \"0,1\",\r\n        \"Name\": \"Include\"\r\n    },\r\n    {\r\n        \"Id\": \"1\",\r\n        \"Name\": \"Only\"\r\n    },\r\n    {\r\n        \"Id\": \"0\",\r\n        \"Name\": \"Exclude\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
                     "EntityId": "AddCharge"
@@ -596,7 +563,6 @@
                     "Label": "Debt No",
                     "ShowLabel": true,
                     "SmCol": 6,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where (ds.TypeId in (3,4))\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where (ds.TypeId in (3,4))\"\r\n}",
                     "RefName": "Voucher",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Code\",\r\n        \"Label\": \"Code\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
@@ -616,7 +582,6 @@
                     "ShowLabel": true,
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
                     "SmCol": 6,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from FeeType as ds\",\r\n    \"total\": \"select count(ds.Id) as total from FeeType as ds\"\r\n}",
                     "RefName": "FeeType",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
@@ -633,7 +598,6 @@
                     "Label": "Ref No",
                     "ShowLabel": true,
                     "SmCol": 6,
-                    "Active": true,
                     "EntityId": "AddCharge"
                 }
             ]
@@ -647,7 +611,6 @@
             "ComponentType": "Input",
             "Label": "HBL",
             "Width": "140px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "140px",
             "MaxWidth": "140px",
@@ -662,7 +625,6 @@
             "Precision": 2,
             "Label": "OG Currency",
             "Width": "145px",
-            "Active": true,
             "FocusSearch": true,
             "GroupName": "Account Receivable",
             "MinWidth": "145px",
@@ -680,7 +642,6 @@
             "Label": "Balance",
             "Events": "{\r\n    \"input\": \"CalcUnitPrice\"\r\n}",
             "Width": "132px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "132px",
             "MaxWidth": "132px",
@@ -697,7 +658,6 @@
             "Row": 100,
             "Label": "Partner",
             "Width": "232px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select *,CASE WHEN ds.Id IN ('{PartnerIds}') THEN 0 ELSE 1 END AS priority from Partner as ds where ServiceId in (1,2,3) and (TypeId not in (1,2) or TypeId is null) and ActionId = 1 and IsNoDebt = 0\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where ServiceId in (1,2,3) and (TypeId not in (1,2) or TypeId is null) and ActionId = 1 and IsNoDebt = 0\"\r\n}",
             "RefName": "Partner",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
@@ -716,7 +676,6 @@
             "Row": 100,
             "Label": "Job",
             "Width": "134px",
-            "Active": true,
             "RefName": "Shipment",
             "FocusSearch": true,
             "MinWidth": "134px",
@@ -731,7 +690,6 @@
             "ComponentType": "Input",
             "Label": "Mbl No",
             "Width": "134px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "134px",
             "MaxWidth": "134px",
@@ -750,7 +708,6 @@
             "Events": "{\"change\":\"CheckCurrency\"}",
             "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
             "Width": "100px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Currency'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Currency'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
@@ -769,7 +726,6 @@
             "GroupFormat": "const vndAmount = this.ChildrenItems\r\n    .map(x => x.Entity).reduce((a, b) => a.plus(b.AR || 0), new this.Decimal(0))\r\n        .toFixed(2)\r\n        .replace(/\\B(?=(\\d{3})+(?!\\d))/g, ',');\r\nreturn vndAmount;",
             "Label": "Currency",
             "Width": "145px",
-            "Active": true,
             "FocusSearch": true,
             "GroupName": "Account Receivable",
             "MinWidth": "145px",
@@ -786,7 +742,6 @@
             "GroupFormat": "const vndAmount = this.ChildrenItems\r\n    .map(x => x.Entity).reduce((a, b) => a.plus(b.AP || 0), new this.Decimal(0))\r\n        .toFixed(2)\r\n        .replace(/\\B(?=(\\d{3})+(?!\\d))/g, ',');\r\nreturn vndAmount;",
             "Label": "Currency",
             "Width": "145px",
-            "Active": true,
             "FocusSearch": true,
             "GroupName": "Account Payable",
             "MinWidth": "145px",
@@ -802,7 +757,6 @@
             "Precision": 2,
             "Label": "OG Currency",
             "Width": "145px",
-            "Active": true,
             "FocusSearch": true,
             "GroupName": "Account Payable",
             "MinWidth": "145px",
@@ -821,7 +775,6 @@
             "Icon": "fal fa-search",
             "ClassName": "btn btn-sub",
             "Events": "{\r\n    \"click\": \"OpenFilter\"\r\n}",
-            "Active": true,
             "DisabledExp": "this.EditForm.Entity.InsertedBy != this.Token.UserId || this.EditForm.Entity.StatusId == 2 || (this.EditForm.Entity.StatusId == 3 && this.EditForm.Entity.UserApprovedIds) || [2, 3].includes(this.EditForm.Entity.ProgressId)"
         }
     ],
@@ -829,8 +782,7 @@
         {
             "Id": "0404660B-E90C-45C8-99A4-2052E12FB553",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "07B5A6D3-667C-4261-BD4C-71C82CA950EA",
@@ -839,50 +791,42 @@
             "CanReadAll": true,
             "CanWrite": true,
             "CanWriteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "234FCF5B-AE08-4A03-9C78-525042AE849B",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "28BF7C22-9135-455D-BEDE-C02AF08ED41F",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "51D84090-7E71-4AE7-8214-6BA7D492A981",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "B4230D3D-24A3-47A7-9BE6-875BF79E5ACB",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "B64DA865-EC99-4BB7-A690-5F140FD8D90D",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "E55CB5E3-EF51-4933-97BD-A806D24F09B8",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "F33FAF2C-580D-4160-AFD4-1F2B9DCB3161",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "FA65EBD5-28DA-4889-8142-3F1A54986EB2",
@@ -891,8 +835,7 @@
             "CanReadAll": true,
             "CanWrite": true,
             "CanWriteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

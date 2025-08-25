@@ -6,7 +6,6 @@
     "Order": 6,
     "Icon": "fal fa-function",
     "IsMenu": true,
-    "Active": true,
     "IgnoreEncode": true,
     "ComponentGroup": [
         {
@@ -16,7 +15,6 @@
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "009a254c-0000-0000-8000-14f870be4af5",
@@ -30,7 +28,6 @@
                     "GroupFormat": "this.Entity.GroupName",
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "Active": true,
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from SaleFunction as ds\",\r\n    \"total\": \"select count(ds.Id) as total from SaleFunction as ds\"\r\n}",
                     "IsRealtime": true,
@@ -49,7 +46,6 @@
             "ComponentType": "Input",
             "Label": "Description",
             "Width": "671px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "671px",
@@ -63,7 +59,6 @@
             "ComponentType": "Input",
             "Label": "Value",
             "Width": "166px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "166px",
@@ -77,7 +72,6 @@
             "ComponentType": "Input",
             "Label": "Code",
             "Width": "285px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "285px",
@@ -91,7 +85,6 @@
             "ComponentType": "Checkbox",
             "Label": "No",
             "Width": "80px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "80px",
@@ -104,7 +97,6 @@
             "Order": 3,
             "ComponentType": "Input",
             "Label": "Group Name",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "166px",
@@ -116,32 +108,27 @@
         {
             "Id": "1484E2CA-EF15-4B5D-B1EE-F6D8C06CD55D",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "32FBAACE-8145-407D-BBDF-C2397D277B6B",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "3FB79E3E-230A-46F2-9CF0-49DF8E7357FF",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "57E8C02F-59A7-4979-84EE-B7D2BE28688C",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "96FE2482-5D24-4DE5-8444-5212BEA35E36",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "AED63E48-715D-4840-A443-40AF100E537D",
@@ -152,32 +139,27 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "BE58C99C-A902-446E-8555-E1B3FD801055",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "C51B56FA-E786-4A44-95EC-87286F57C595",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "C921AAF9-2551-44BB-83A8-D2A355F7E3DF",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "F3AEF7AA-624F-4188-ACF4-ADBF983D4490",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

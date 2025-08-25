@@ -6,7 +6,6 @@
     "Order": 0,
     "Script": "return {\r\n    Add: function () {\r\n        var cus = {\r\n            ServiceId: 2\r\n        }\r\n        this.OpenPopup(\"partner-editor\", cus);\r\n    },\r\n    EditSubjects: function (btn, entity) {\r\n        debugger;\r\n        this.OpenPopup(\"partner-editor\", entity);\r\n    }\r\n}",
     "Icon": "fal fa-shipping-timed",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "00d81864-0000-0000-8000-987305218cda",
@@ -15,7 +14,6 @@
             "Label": "All",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -31,7 +29,6 @@
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Events": "{\"dblclick\":\"EditSubjects\"}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where ServiceId = 2\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds where ServiceId = 2\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "Partner",
@@ -47,7 +44,6 @@
             "Label": "Agent",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -63,7 +59,6 @@
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Events": "{\"dblclick\":\"EditSubjects\"}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where ServiceId = 2 and exists (select s.Id from PartnerService s where s.ServiceId = 2 and s.PartnerId = ds.Id)\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds where ServiceId = 2 and exists (select s.Id from PartnerService s where s.ServiceId = 2 and s.PartnerId = ds.Id)\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "Partner",
@@ -79,7 +74,6 @@
             "Label": "Shipper",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -95,7 +89,6 @@
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Events": "{\"dblclick\":\"EditSubjects\"}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where ServiceId = 2 and exists (select s.Id from PartnerService s where s.ServiceId = 1 and s.PartnerId = ds.Id)\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds where ServiceId = 2 and exists (select s.Id from PartnerService s where s.ServiceId = 1 and s.PartnerId = ds.Id)\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "Partner",
@@ -113,7 +106,6 @@
             "ComponentType": "Input",
             "Label": "Address",
             "Width": "330px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "330px",
             "MaxWidth": "330px",
@@ -126,7 +118,6 @@
             "ComponentType": "Input",
             "Label": "Code",
             "Width": "89px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "89px",
             "MaxWidth": "89px",
@@ -141,7 +132,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"EditSubjects\"}",
             "Width": "61px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "61px",
             "MaxWidth": "61px",
@@ -157,7 +147,6 @@
             "Row": 100,
             "Label": "Inserted By",
             "Width": "150px",
-            "Active": true,
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
@@ -172,7 +161,6 @@
             "ComponentType": "Input",
             "Label": "Name",
             "Width": "227px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "227px",
             "MaxWidth": "227px",
@@ -185,7 +173,6 @@
             "ComponentType": "Input",
             "Label": "Phone Number",
             "Width": "193px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "193px",
             "MaxWidth": "193px",
@@ -201,7 +188,6 @@
             "Row": 100,
             "Label": "PIC",
             "Width": "69px",
-            "Active": true,
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
@@ -216,7 +202,6 @@
             "ComponentType": "Checkbox",
             "Label": "Active",
             "Width": "98px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "98px",
             "MaxWidth": "98px",
@@ -229,7 +214,6 @@
             "ComponentType": "Datepicker",
             "Label": "Inserted Date",
             "Width": "173px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "173px",
             "MaxWidth": "173px",
@@ -242,7 +226,6 @@
             "ComponentType": "Input",
             "Label": "Tax Code",
             "Width": "128px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "128px",
             "MaxWidth": "128px",
@@ -259,7 +242,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"EditSubjects\"}",
             "Width": "61px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "61px",
             "MaxWidth": "61px",
@@ -270,38 +252,32 @@
         {
             "Id": "2C7F04DC-4661-45B8-A997-068F77EF984A",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "319BCE62-60D5-4E8A-9751-70AE67DAF0F4",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "57F982EC-92D0-43CC-9B13-8F1A6654312F",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "57FE4E46-7764-48A2-9F3C-5B68105CABA1",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "5E382E46-56E8-41B9-9494-ECEFA26AA9F4",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "7C93D13E-70F9-4B42-9CF2-9B41C2B81CF4",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "9594A857-2FD2-442C-90D2-58E2AFBE8A6E",
@@ -312,26 +288,22 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A9C9DC9D-1B64-433B-A5EE-F4518FD386A8",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "CB34D0AA-2742-4B18-8E23-ACF3E9C283E9",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "FA68FECD-E81D-4F1A-AEBE-4C4A0460914B",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

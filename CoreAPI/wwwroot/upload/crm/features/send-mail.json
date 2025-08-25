@@ -4,7 +4,6 @@
     "Label": "Send Mail",
     "Order": 0,
     "Script": "return {\r\n    SendMail: async () => {\r\n        var rs = await this.Client.PostAsync(this.Entity, \"/api/sendEmail\");\r\n        this.Toast.Success(\"Send mail success\");\r\n    }\r\n}",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "00c701c0-0000-0000-8000-d630839fd487",
@@ -13,7 +12,6 @@
             "ComponentType": "Section",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "000101f0-0000-0000-8000-131592a6941f",
@@ -22,8 +20,7 @@
                     "ComponentType": "Input",
                     "Column": 12,
                     "Label": "To",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00e201fc-0000-0000-8000-e5da05f7a3af",
@@ -32,8 +29,7 @@
                     "ComponentType": "Input",
                     "Column": 12,
                     "Label": "Subject",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00fc01bc-0000-0000-8000-f02d4aed04b3",
@@ -42,8 +38,7 @@
                     "ComponentType": "Word",
                     "Column": 12,
                     "Label": "Text",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 }
             ]
         },
@@ -54,7 +49,6 @@
             "ComponentType": "Section",
             "ClassName": "ribbon-group",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "000201e8-0000-0000-8000-229a37f69600",
@@ -65,8 +59,7 @@
                     "Label": "Send",
                     "Icon": "fal fa-envelope",
                     "ClassName": "btn detail-button primary",
-                    "Events": "{\"click\":\"SendMail\"}",
-                    "Active": true
+                    "Events": "{\"click\":\"SendMail\"}"
                 }
             ]
         }
@@ -81,28 +74,24 @@
             "Label": "Send",
             "Icon": "fal fa-envelope",
             "ClassName": "btn detail-button primary",
-            "Events": "{\"click\":\"SendMail\"}",
-            "Active": true
+            "Events": "{\"click\":\"SendMail\"}"
         }
     ],
     "FeaturePolicies": [
         {
             "Id": "018621DA-B23B-4F9D-8281-7B26FA94ECA6",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "0BE23A08-70B7-44C7-A9DE-101CB61CEE0C",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "42C1547D-654D-4B32-A1A2-BC450413FBB9",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "52C63CA7-E49A-4927-A7CF-C07AB17B31AE",
@@ -113,44 +102,37 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "58E193E0-D90E-4F88-B38C-F68F24A4BCFC",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "84575ECC-24DA-47C5-832C-7CA94D5BA571",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "901D5646-C03C-4ADD-837F-E3E8A1C85363",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "9BA4B7B0-BC08-4C25-B20C-1FEBFFCE01F9",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A322CF02-163D-4EAE-BA6D-E386D0C41B80",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "EF8EE622-FD1F-49DA-86E7-8D86D4C10009",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

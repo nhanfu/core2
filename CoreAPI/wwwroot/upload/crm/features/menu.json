@@ -7,7 +7,6 @@
     "Script": "return {\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"feature-editor\", entity);\r\n    }\r\n}",
     "Icon": "fal fa-ellipsis-h-alt",
     "IsMenu": true,
-    "Active": true,
     "IgnoreEncode": true,
     "ComponentGroup": [
         {
@@ -17,7 +16,6 @@
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "006e1330-0000-0000-8000-c4465acdf2b8",
@@ -30,7 +28,6 @@
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Active": true,
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from Feature as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Feature as ds\"\r\n}",
                     "IsRealtime": true,
@@ -48,7 +45,6 @@
             "ComponentType": "Number",
             "Label": "Order",
             "Width": "59px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "59px",
@@ -62,7 +58,6 @@
             "ComponentType": "Checkbox",
             "Label": "Active",
             "Width": "95px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "95px",
@@ -76,7 +71,6 @@
             "ComponentType": "Input",
             "Label": "Entity",
             "Width": "129px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "129px",
@@ -90,7 +84,6 @@
             "ComponentType": "Checkbox",
             "Label": "Menu",
             "Width": "88px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "88px",
@@ -104,7 +97,6 @@
             "ComponentType": "Input",
             "Label": "Icon",
             "Width": "168px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "168px",
@@ -121,7 +113,6 @@
             "Row": 100,
             "Label": "Parent",
             "Width": "85px",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from Feature as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Feature as ds\"\r\n}",
             "RefName": "Feature",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
@@ -138,7 +129,6 @@
             "ComponentType": "Input",
             "Label": "Name",
             "Width": "290px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "290px",
@@ -152,7 +142,6 @@
             "ComponentType": "Input",
             "Label": "Id",
             "Width": "266px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "266px",
             "MaxWidth": "266px",
@@ -165,7 +154,6 @@
             "ComponentType": "Input",
             "Label": "Label",
             "Width": "290px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "290px",
@@ -179,7 +167,6 @@
             "ComponentType": "Checkbox",
             "Label": "Lock",
             "Width": "88px",
-            "Active": true,
             "FocusSearch": true,
             "Editable": true,
             "MinWidth": "88px",
@@ -191,8 +178,7 @@
         {
             "Id": "1B5A9F51-E6C8-4F1A-8005-467638808D0F",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "21A95728-824B-4633-ABB9-B71E33BF068A",
@@ -203,56 +189,47 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "37787095-3573-4B45-B964-74230A359DC9",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "3CDB467E-238D-4EAE-9B99-09B9FD1DEC7A",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "6ACD3867-0A90-4F7C-95D0-6761E25E04F9",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "7B7CCF91-7E17-4525-B23F-8A013C0B3B7D",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "8BBB843C-6E1B-4639-B079-828E82F641A9",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "B20E4C96-60B4-4EF9-B6EC-39574DA654DC",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "C671C75A-5EA5-413A-B9FE-79954D955F18",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "FF62338C-F8EE-4693-A57C-FE87403D63B6",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

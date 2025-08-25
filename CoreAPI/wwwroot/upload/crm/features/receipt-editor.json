@@ -4,15 +4,13 @@
     "Label": "Receipt Editor",
     "Order": 0,
     "EntityId": "Voucher",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "0006ff00-0000-0000-8000-a3d7da86a5bd",
             "FieldName": "Container",
             "Order": 0,
             "ComponentType": "Section",
-            "XxlCol": 12,
-            "Active": true
+            "XxlCol": 12
         },
         {
             "Id": "0009ff04-0000-0000-8000-800623167b0a",
@@ -22,7 +20,6 @@
             "Label": "Receipt Detail",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "0006ff00-0000-0000-8000-a3d7da86a5bd",
             "XxlOuterColumn": 12,
             "Components": [
@@ -36,7 +33,6 @@
                     "CanSearch": true,
                     "ClassName": "sticky",
                     "DefaultVal": "{\r\n    \"VoucherId\": this.EditForm.Entity.Id,\r\n}",
-                    "Active": true,
                     "CanAdd": true,
                     "Query": "{\r\n    \"sql\": \"select * from VoucherDetail as ds where VoucherId = '{VoucherId}'\",\r\n    \"total\": \"select count(ds.Id) as total from VoucherDetail as ds   where VoucherId = '{VoucherId}'\"\r\n}",
                     "RefName": "VoucherDetail",
@@ -51,7 +47,6 @@
             "Order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Active": true,
             "ParentId": "0006ff00-0000-0000-8000-a3d7da86a5bd",
             "XxlOuterColumn": 12,
             "Components": [
@@ -67,7 +62,6 @@
                     "Label": "Subject",
                     "ShowLabel": true,
                     "PopulateField": "(e, matched) => {\r\n    e.Entity.SubjectName = matched.Name;\r\n    e.Entity.Address = matched.Address;\r\n}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\"\r\n}",
                     "RefName": "Partner",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]"
@@ -79,8 +73,7 @@
                     "ComponentType": "Input",
                     "Column": 4,
                     "Label": "Subject Name",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "004eff20-0000-0000-8000-91b34fd7830d",
@@ -89,8 +82,7 @@
                     "ComponentType": "Datepicker",
                     "Column": 4,
                     "Label": "Posted Date",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "0050ff74-0000-0000-8000-a30996ddb320",
@@ -99,8 +91,7 @@
                     "ComponentType": "Datepicker",
                     "Column": 4,
                     "Label": "Voucher Date",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "0051ff20-0000-0000-8000-e3b8df633937",
@@ -109,8 +100,7 @@
                     "ComponentType": "Input",
                     "Column": 4,
                     "Label": "Voucher No",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "0052ffd4-0000-0000-8000-6aa93715d162",
@@ -120,8 +110,7 @@
                     "Column": 4,
                     "Label": "Payer",
                     "ShowLabel": true,
-                    "Events": "{\r\n    \"sql\": \"select * from Partner as ds where ServiceId in (1,2,3) and (TypeId not in (1,2) or TypeId is null)\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where ServiceId in (1,2,3) and (TypeId not in (1,2) or TypeId is null)\"\r\n}",
-                    "Active": true
+                    "Events": "{\r\n    \"sql\": \"select * from Partner as ds where ServiceId in (1,2,3) and (TypeId not in (1,2) or TypeId is null)\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where ServiceId in (1,2,3) and (TypeId not in (1,2) or TypeId is null)\"\r\n}"
                 },
                 {
                     "Id": "0054ff28-0000-0000-8000-30832af58a5b",
@@ -130,8 +119,7 @@
                     "ComponentType": "Input",
                     "Column": 4,
                     "Label": "Address",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "0055ff5c-0000-0000-8000-a66b6adb261c",
@@ -144,7 +132,6 @@
                     "Row": 100,
                     "Label": "Employee",
                     "ShowLabel": true,
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [User] as ds where (TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 1)\"\r\n}",
                     "RefName": "User",
                     "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]"
@@ -157,8 +144,7 @@
                     "Column": 8,
                     "Row": 4,
                     "Label": "Reason",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "0057ff1c-0000-0000-8000-8d654cc66414",
@@ -166,8 +152,7 @@
                     "Order": 10,
                     "ComponentType": "FileUpload",
                     "Column": 4,
-                    "Label": "Attached",
-                    "Active": true
+                    "Label": "Attached"
                 },
                 {
                     "Id": "00c2ff24-0000-0000-8000-4189abb1ea8f",
@@ -177,7 +162,6 @@
                     "Column": 4,
                     "Label": "Amount",
                     "ShowLabel": true,
-                    "Active": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 }
             ]
@@ -189,7 +173,6 @@
             "ComponentType": "Section",
             "ClassName": "ribbon-group",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "00d7ffcc-0000-0000-8000-3eca7bc05c5d",
@@ -201,8 +184,7 @@
                     "Icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
-                    "Events": "{ \"click\" : \"SavePatch\" }",
-                    "Active": true
+                    "Events": "{ \"click\" : \"SavePatch\" }"
                 }
             ]
         }
@@ -214,7 +196,6 @@
             "Order": 1,
             "ComponentType": "Input",
             "Label": "Item Name",
-            "Active": true,
             "Editable": true,
             "EntityId": "VoucherDetail"
         },
@@ -227,7 +208,6 @@
             "PlainText": "Select data",
             "Row": 100,
             "Label": "Debit Account",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds where (ParentId is null)\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds  where (ParentId is null)\"\r\n}",
             "RefName": "AccountNo",
             "Template": "[{ \"FieldName\" : \"Id\", \"Label\" : \"Id\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\"\r\n: \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\"\r\n: \"Input\" }]",
@@ -244,7 +224,6 @@
             "PlainText": "Select data",
             "Row": 100,
             "Label": "Subject",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\"\r\n}",
             "RefName": "Partner",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
@@ -260,7 +239,6 @@
             "PlainText": "Select data",
             "Row": 100,
             "Label": "Credit Account",
-            "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds\"\r\n}",
             "RefName": "AccountNo",
             "Template": "[{ \"FieldName\" : \"Id\", \"Label\" : \"Id\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\"\r\n: \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\"\r\n: \"Input\" }]",
@@ -274,7 +252,6 @@
             "Order": 5,
             "ComponentType": "Input",
             "Label": "SubjectName",
-            "Active": true,
             "Editable": true,
             "EntityId": "VoucherDetail"
         },
@@ -284,7 +261,6 @@
             "Order": 6,
             "ComponentType": "Number",
             "Label": "Amount",
-            "Active": true,
             "Editable": true,
             "EntityId": "VoucherDetail",
             "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
@@ -301,46 +277,39 @@
             "Icon": "fal fa-save",
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
-            "Events": "{ \"click\" : \"SavePatch\" }",
-            "Active": true
+            "Events": "{ \"click\" : \"SavePatch\" }"
         }
     ],
     "FeaturePolicies": [
         {
             "Id": "0062EAFD-C573-4582-A69C-1B6EB13A4DEF",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "1E897B7A-C87B-406D-8E0A-DF94387A5DD1",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "713A9A4C-4849-436A-9189-06326BB26A12",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "7A78D879-7053-4B98-AE58-AFC4B978996E",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A27343FC-50E4-4DB1-A94E-3A37EE07A15A",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "D5211E1B-6EC8-439D-807B-0C640CEBD207",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "E0C44FF3-A174-4D16-BA78-78AC24E91401",
@@ -351,26 +320,22 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "EFA5571F-62AF-4D3D-9055-4DB5392B557B",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "F261A5CE-276B-4DF7-A57D-7DBBB4810B4F",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "FB84692D-F319-4C7F-ABD7-939418AC0636",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

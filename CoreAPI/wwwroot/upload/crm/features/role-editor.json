@@ -5,7 +5,6 @@
     "Order": 0,
     "Style": "width:99%;",
     "EntityId": "Role",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "00e81d50-0000-0000-8000-0172354eb2ff",
@@ -15,7 +14,6 @@
             "Icon": "fal fa-user-tag mr-1",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -30,7 +28,6 @@
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 20.5rem)",
                     "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.*,ds1.ParentId,seq.Id as GroupFeatureId from FeaturePolicy as ds left join Feature ds1 on ds.FeatureId = ds1.Id left join Feature ds2 on ds1.ParentId = ds2.Id outer apply (select top 1 * from FeaturePolicy where FeatureId = ds1.ParentId and RoleId = ds.RoleId) seq where ds.RoleId = '{RoleId}' and ds1.ParentId is not null and seq.Id is not null\",\r\n    \"total\": \"select count(ds.Id) as total from FeaturePolicy as ds left join Feature ds1 on ds.FeatureId = ds1.Id left join Feature ds2 on ds1.ParentId = ds2.Id outer apply (select top 1 * from FeaturePolicy where FeatureId = ds1.ParentId and RoleId = ds.RoleId) seq where ds.RoleId = '{RoleId}' and ds1.ParentId is not null and seq.Id is not null\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "FeaturePolicy",
@@ -47,7 +44,6 @@
             "ComponentType": "Section",
             "ClassName": "ribbon-group",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "00e81d78-0000-0000-8000-1119be5e63ca",
@@ -59,8 +55,7 @@
                     "Icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
-                    "Events": "{ \"click\" : \"SavePatch\" }",
-                    "Active": true
+                    "Events": "{ \"click\" : \"SavePatch\" }"
                 }
             ]
         },
@@ -71,7 +66,6 @@
             "ComponentType": "Section",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Active": true,
             "Components": [
                 {
                     "Id": "00e81d18-0000-0000-8000-a10cb7c309fb",
@@ -80,8 +74,7 @@
                     "ComponentType": "Input",
                     "Column": 6,
                     "Label": "Name",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00e81d94-0000-0000-8000-4d59860b92d1",
@@ -90,8 +83,7 @@
                     "ComponentType": "Input",
                     "Column": 6,
                     "Label": "Description",
-                    "ShowLabel": true,
-                    "Active": true
+                    "ShowLabel": true
                 }
             ]
         },
@@ -102,7 +94,6 @@
             "Label": "Users",
             "Icon": "fal fa-users mr-1",
             "XxlCol": 12,
-            "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
             "Components": [
@@ -115,7 +106,6 @@
                     "Row": 50,
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Events": "{\"dblclick\":\"EditUser\"}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from [User] as ds where RoleIds like N'%{RoleId}%'\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where RoleIds like N'%{RoleId}%'\"\r\n}",
                     "RefName": "User",
                     "PreQuery": "{\r\n    \"RoleId\" : this.EditForm.Entity.Id\r\n}",
@@ -135,7 +125,6 @@
             "Row": 100,
             "Label": "Group",
             "Width": "96px",
-            "Active": true,
             "RefName": "MasterData",
             "MinWidth": "96px",
             "MaxWidth": "96px",
@@ -150,7 +139,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"EditUser\"}",
             "Width": "65px",
-            "Active": true,
             "MinWidth": "65px",
             "MaxWidth": "65px",
             "EntityId": "User"
@@ -162,7 +150,6 @@
             "ComponentType": "Input",
             "Label": "ID",
             "Width": "180px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "180px",
             "MaxWidth": "180px",
@@ -175,7 +162,6 @@
             "ComponentType": "Input",
             "Label": "Nick Name",
             "Width": "143px",
-            "Active": true,
             "MinWidth": "143px",
             "MaxWidth": "143px",
             "EntityId": "User"
@@ -187,7 +173,6 @@
             "ComponentType": "Input",
             "Label": "Full Name",
             "Width": "143px",
-            "Active": true,
             "MinWidth": "143px",
             "MaxWidth": "143px",
             "EntityId": "User"
@@ -199,7 +184,6 @@
             "ComponentType": "Input",
             "Label": "Brithday",
             "Width": "143px",
-            "Active": true,
             "MinWidth": "143px",
             "MaxWidth": "143px",
             "EntityId": "User"
@@ -214,7 +198,6 @@
             "Row": 100,
             "Label": "Sex",
             "Width": "118px",
-            "Active": true,
             "RefName": "MasterData",
             "MinWidth": "118px",
             "MaxWidth": "118px",
@@ -227,7 +210,6 @@
             "ComponentType": "Input",
             "Label": "Identity Card",
             "Width": "143px",
-            "Active": true,
             "MinWidth": "143px",
             "MaxWidth": "143px",
             "EntityId": "User"
@@ -239,7 +221,6 @@
             "ComponentType": "Input",
             "Label": "Address",
             "Width": "127px",
-            "Active": true,
             "MinWidth": "127px",
             "MaxWidth": "127px",
             "EntityId": "User"
@@ -251,7 +232,6 @@
             "ComponentType": "Input",
             "Label": "Phone Number",
             "Width": "207px",
-            "Active": true,
             "MinWidth": "207px",
             "MaxWidth": "207px",
             "EntityId": "User"
@@ -263,7 +243,6 @@
             "ComponentType": "Input",
             "Label": "Job Position",
             "Width": "200px",
-            "Active": true,
             "MinWidth": "200px",
             "MaxWidth": "200px",
             "EntityId": "User"
@@ -278,7 +257,6 @@
             "Row": 100,
             "Label": "Parent",
             "Width": "1px",
-            "Active": true,
             "RefName": "FeaturePolicy",
             "FocusSearch": true,
             "MinWidth": "1px",
@@ -295,7 +273,6 @@
             "Row": 50,
             "Label": "Feature",
             "Width": "241px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "241px",
             "MaxWidth": "241px",
@@ -310,7 +287,6 @@
             "Label": "Read",
             "ShowLabel": true,
             "Width": "100px",
-            "Active": true,
             "TextAlign": "center",
             "Editable": true,
             "MinWidth": "100px",
@@ -326,7 +302,6 @@
             "Label": "Read All",
             "ShowLabel": true,
             "Width": "122px",
-            "Active": true,
             "FocusSearch": true,
             "TextAlign": "center",
             "Editable": true,
@@ -343,7 +318,6 @@
             "Label": "Write",
             "ShowLabel": true,
             "Width": "122px",
-            "Active": true,
             "TextAlign": "center",
             "Editable": true,
             "MinWidth": "122px",
@@ -359,7 +333,6 @@
             "Label": "Write All",
             "ShowLabel": true,
             "Width": "145px",
-            "Active": true,
             "TextAlign": "center",
             "Editable": true,
             "MinWidth": "145px",
@@ -375,7 +348,6 @@
             "Label": "Delete",
             "ShowLabel": true,
             "Width": "117px",
-            "Active": true,
             "TextAlign": "center",
             "Editable": true,
             "MinWidth": "117px",
@@ -391,7 +363,6 @@
             "Label": "Delete All",
             "ShowLabel": true,
             "Width": "125px",
-            "Active": true,
             "TextAlign": "center",
             "Editable": true,
             "MinWidth": "125px",
@@ -410,7 +381,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"EditUser\"}",
             "Width": "65px",
-            "Active": true,
             "MinWidth": "65px",
             "MaxWidth": "65px",
             "EntityId": "User"
@@ -425,46 +395,39 @@
             "Icon": "fal fa-save",
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
-            "Events": "{ \"click\" : \"SavePatch\" }",
-            "Active": true
+            "Events": "{ \"click\" : \"SavePatch\" }"
         }
     ],
     "FeaturePolicies": [
         {
             "Id": "283E2B51-6FFD-4DE0-80FC-B666B086D622",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "5DDED553-6437-472A-8BD2-8D4DDD22E4A3",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "867F3BA5-F77B-4419-AA09-E511E3CD3F90",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "9CE4FC05-2E15-46C6-AE40-BDED06829F22",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "B1DAD14C-6652-4BDD-9317-88291DFB627F",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "BB386B56-CBD4-4276-9B34-7BCAF342BC7C",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "C0848A27-5E0D-4433-B46B-9C056C116F16",
@@ -473,8 +436,7 @@
             "CanReadAll": true,
             "CanWrite": true,
             "CanWriteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "C70DD2CB-3DE6-4F06-B18D-0156EEC0ACB7",
@@ -483,20 +445,17 @@
             "CanReadAll": true,
             "CanWrite": true,
             "CanWriteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "D440B397-49E7-46E9-8240-62A988C59294",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "F9077CDF-3B81-4EA5-912A-D0F9817D0651",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

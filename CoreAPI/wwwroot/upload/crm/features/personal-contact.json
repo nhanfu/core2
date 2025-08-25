@@ -8,7 +8,6 @@
     "Icon": "fal fa-address-card",
     "IsMenu": true,
     "EntityId": "PartnerContact",
-    "Active": true,
     "ComponentGroup": [
         {
             "Id": "00a73764-0000-0000-8000-29459187d57f",
@@ -17,7 +16,6 @@
             "Icon": "fal fa-border-all mr-1",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
             "DisplayBadge": true,
             "Components": [
                 {
@@ -32,7 +30,6 @@
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Events": "{\"dblclick\":\"Edit\"}",
-                    "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from PartnerContact as ds\",\r\n    \"total\": \"select count(ds.Id) as total from PartnerContact as ds\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "PartnerContact",
@@ -52,7 +49,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Edit\"}",
             "Width": "56px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "56px",
             "MaxWidth": "56px",
@@ -66,7 +62,6 @@
             "ComponentType": "Input",
             "Label": "Name",
             "Width": "146px",
-            "Active": true,
             "MinWidth": "146px",
             "MaxWidth": "146px",
             "EntityId": "PartnerContact"
@@ -78,7 +73,6 @@
             "ComponentType": "Input",
             "Label": "Email",
             "Width": "158px",
-            "Active": true,
             "MinWidth": "158px",
             "MaxWidth": "158px",
             "EntityId": "PartnerContact"
@@ -90,7 +84,6 @@
             "ComponentType": "Input",
             "Label": "Phone",
             "Width": "175px",
-            "Active": true,
             "MinWidth": "175px",
             "MaxWidth": "175px",
             "EntityId": "PartnerContact"
@@ -102,7 +95,6 @@
             "ComponentType": "Datepicker",
             "Label": "Birthday",
             "Width": "188px",
-            "Active": true,
             "MinWidth": "188px",
             "MaxWidth": "188px",
             "EntityId": "PartnerContact"
@@ -114,7 +106,6 @@
             "ComponentType": "Input",
             "Label": "Job Titles",
             "Width": "180px",
-            "Active": true,
             "MinWidth": "180px",
             "MaxWidth": "180px",
             "EntityId": "PartnerContact"
@@ -126,7 +117,6 @@
             "ComponentType": "Input",
             "Label": "Note",
             "Width": "230px",
-            "Active": true,
             "MinWidth": "230px",
             "MaxWidth": "230px",
             "EntityId": "PartnerContact"
@@ -140,7 +130,6 @@
             "Row": 100,
             "Label": "Object",
             "Width": "381px",
-            "Active": true,
             "RefName": "Partner",
             "FocusSearch": true,
             "MinWidth": "381px",
@@ -154,7 +143,6 @@
             "ComponentType": "Checkbox",
             "Label": "Main",
             "Width": "65px",
-            "Active": true,
             "MinWidth": "65px",
             "MaxWidth": "65px",
             "EntityId": "PartnerContact"
@@ -170,7 +158,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Edit\"}",
             "Width": "56px",
-            "Active": true,
             "FocusSearch": true,
             "MinWidth": "56px",
             "MaxWidth": "56px",
@@ -182,8 +169,7 @@
         {
             "Id": "02950712-05A1-4D16-9C99-7FFB9E067834",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "0DBC26E1-49BC-4E05-9C06-825C60BDF802",
@@ -194,14 +180,12 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "27CDA70A-DDA3-4160-AA2D-0CAD713AD78A",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "3706267F-5E63-4A3B-A1A7-9AB3095556CF",
@@ -209,44 +193,37 @@
             "CanRead": true,
             "CanWrite": true,
             "CanDelete": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "9FA14EFF-6C64-429D-97B5-B3ECB1DFC36D",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A73C5DB5-A1F0-49CE-97F4-66DD2841EFC9",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "ACA960CB-A883-477E-BABC-6996A505AA5F",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "B587021B-8542-468D-9EF1-DF2DFAE314F5",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "BB06152B-882E-403C-A754-909975C354F3",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "E030B2D5-3824-4735-BF7B-3E3D06F1ED50",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }

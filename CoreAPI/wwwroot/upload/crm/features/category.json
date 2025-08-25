@@ -6,7 +6,6 @@
     "Script": "return {\r\n    AddNew() {\r\n        this.OpenPopup(\"component-editor\", null);\r\n    },\r\n    Hello() {\r\n        alert(\"Hello\");\r\n    }\r\n}\r\n",
     "Icon": "fal fa-list",
     "IsMenu": true,
-    "Active": true,
     "IgnoreEncode": true,
     "ComponentGroup": [
         {
@@ -15,8 +14,7 @@
             "ComponentType": "Section",
             "ClassName": "wrapper scroll-content",
             "Width": "100%",
-            "XxlCol": 3,
-            "Active": true
+            "XxlCol": 3
         },
         {
             "Id": "6e63c20d-2788-4776-9da0-4cfe7c982ca2",
@@ -24,7 +22,6 @@
             "ComponentType": "Section",
             "Label": "Component",
             "ClassName": "wrapper",
-            "Active": true,
             "ParentId": "6e63c20d-2788-4776-9da0-4cfe7c982ca1",
             "IsTab": true,
             "XxlOuterColumn": 3,
@@ -37,7 +34,6 @@
                     "Row": 50,
                     "CanSearch": true,
                     "ClassName": "sticky",
-                    "Active": true,
                     "Query": "{ \"sql\" : \"select * from Component as ds\" , \"total\" : \"select count(ds.Id) as total from Component as ds\" }",
                     "RefName": "Component",
                     "ShowHotKey": true,
@@ -54,7 +50,6 @@
             "ComponentType": "Input",
             "Label": "Name",
             "ShowLabel": true,
-            "Active": true,
             "created_by": "GridView",
             "EntityId": "GridView"
         },
@@ -65,7 +60,6 @@
             "ComponentType": "Input",
             "Label": "Name",
             "ShowLabel": true,
-            "Active": true,
             "created_by": "GridView",
             "EntityId": "GridView"
         },
@@ -76,7 +70,6 @@
             "ComponentType": "Checkbox",
             "Label": "IsPublic",
             "ShowLabel": true,
-            "Active": true,
             "created_by": "GridView",
             "EntityId": "GridView"
         },
@@ -87,7 +80,6 @@
             "ComponentType": "Checkbox",
             "Label": "LoadEntity",
             "ShowLabel": true,
-            "Active": true,
             "created_by": "GridView",
             "EntityId": "GridView"
         },
@@ -98,7 +90,6 @@
             "ComponentType": "Input",
             "Label": "Entity",
             "ShowLabel": true,
-            "Active": true,
             "created_by": "GridView",
             "EntityId": "GridView"
         },
@@ -109,7 +100,6 @@
             "ComponentType": "Checkbox",
             "Label": "IsPublic",
             "ShowLabel": true,
-            "Active": true,
             "created_by": "GridView",
             "EntityId": "GridView"
         },
@@ -120,7 +110,6 @@
             "ComponentType": "Input",
             "Label": "Style",
             "ShowLabel": true,
-            "Active": true,
             "created_by": "GridView",
             "EntityId": "GridView"
         },
@@ -131,7 +120,6 @@
             "ComponentType": "Input",
             "Label": "Id",
             "ShowLabel": true,
-            "Active": true,
             "created_by": "GridView",
             "EntityId": "GridView"
         }
@@ -145,8 +133,7 @@
             "Label": "Add",
             "Icon": "fal fa-plus",
             "ClassName": "btn",
-            "Events": "{\"click\":\"AddNew\"}",
-            "Active": true
+            "Events": "{\"click\":\"AddNew\"}"
         },
         {
             "Id": "0098f680-0000-0000-8000-340deaee1332",
@@ -156,8 +143,7 @@
             "Label": "Push",
             "Icon": "fal fa-walking",
             "ClassName": "btn",
-            "Events": "{\"click\":\"Hello\"}",
-            "Active": true
+            "Events": "{\"click\":\"Hello\"}"
         },
         {
             "Id": "009cf6d4-0000-0000-8000-76040fc5fc1d",
@@ -166,40 +152,34 @@
             "ComponentType": "Button",
             "Label": "Status",
             "Icon": "fal fa-signal-alt-2",
-            "ClassName": "btn",
-            "Active": true
+            "ClassName": "btn"
         }
     ],
     "FeaturePolicies": [
         {
             "Id": "0304C04A-D479-47DF-B334-6482BC3CF997",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "1B3CF15A-7E01-4AD3-9431-8C2FD794FD31",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "30A2EE8C-631D-4662-BA45-BB58D1A311FA",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "67263FD5-1822-4999-83AF-1AB57B352DF1",
             "RoleId": "CUSTOMER",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "83224F40-C626-4DCC-807F-BDF6597750B7",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "86862121-5EE1-4CC4-AE73-550994692676",
@@ -210,32 +190,27 @@
             "CanWriteAll": true,
             "CanDelete": true,
             "CanDeleteAll": true,
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "9E11B70F-69D7-439D-B9F8-B40C7FC5C879",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "A8DB81E6-C5F4-49D8-9362-61E2F715D668",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "ED1E741E-4938-405E-B45F-26A8E51C389D",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         },
         {
             "Id": "ED431BEB-A8AA-4131-A402-71FB68164BD0",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
-            "TableName": "Feature",
-            "Active": true
+            "TableName": "Feature"
         }
     ]
 }
