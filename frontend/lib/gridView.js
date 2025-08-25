@@ -1524,7 +1524,6 @@ export class GridView extends ListView {
                         case "Input":
                             var txtSearch = new Textbox({
                                 FieldName: header.FieldName,
-                                Visibility: true,
                                 PlainText: 'Input search...',
                                 ShowLabel: false
                             });
@@ -1550,7 +1549,6 @@ export class GridView extends ListView {
                         case "Datepicker":
                             var txtSearch = new Datepicker({
                                 FieldName: header.FieldName,
-                                Visibility: true,
                                 ShowLabel: false,
                                 Precision: 2,
                                 ShowHotKey: true
@@ -1575,7 +1573,6 @@ export class GridView extends ListView {
                         case "Checkbox":
                             var txtSearch = new Select({
                                 FieldName: header.FieldName,
-                                Visibility: true,
                                 ShowLabel: false,
                                 Query: `[{
                                             "Id": "1,0",

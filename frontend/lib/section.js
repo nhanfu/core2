@@ -700,7 +700,7 @@ export class Section extends EditableComponent {
             const colSpan = inner || 1;
             const rowSpan = ui.RowSpan || 1;
             ui.Label = ui.Label || '';
-            Html.Div.ClassName("layout-item").Style(`grid-column: span ${colSpan};grid-row: span ${rowSpan}`).Visibility(ui.Visibility);
+            Html.Div.ClassName("layout-item").Style(`grid-column: span ${colSpan};grid-row: span ${rowSpan}`);
             if (ui.ShowLabel) {
                 var required = "";
                 if (!Utils.isNullOrWhiteSpace(ui.Validation)) {

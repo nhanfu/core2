@@ -134,7 +134,6 @@ export class ListViewSearch extends EditableComponent {
         Html.Take(this.Element).Div.Render();
         var txtSearch = new Textbox({
             FieldName: 'SearchTerm',
-            Visibility: true,
             Label: 'Search',
             PlainText: 'Search',
             ShowLabel: false,
@@ -145,7 +144,6 @@ export class ListViewSearch extends EditableComponent {
         Html.End.Render();
         var startDate = new Datepicker({
             FieldName: 'StartDate',
-            Visibility: true,
             Label: 'From date',
             PlainText: 'From date',
             ShowLabel: false,
@@ -155,7 +153,6 @@ export class ListViewSearch extends EditableComponent {
         this.AddChild(startDate);
         var endDate = new Datepicker({
             FieldName: 'EndDate',
-            Visibility: true,
             Label: 'To date',
             PlainText: 'To date',
             ShowLabel: false,

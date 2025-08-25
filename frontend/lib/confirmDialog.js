@@ -77,7 +77,6 @@ export class ConfirmDialog extends EditableComponent {
                             x.Active = true;
                             x.CanRead = true;
                             x.CanReadAll = true;
-                            x.Visibility = true;
                             x.CanWrite = true;
                             x.CanWriteAll = true;
                             x.ShowLabel = true;
@@ -96,14 +95,12 @@ export class ConfirmDialog extends EditableComponent {
                     com.CanReadAll = true;
                     com.CanWrite = true;
                     com.CanWriteAll = true;
-                    com.Visibility = true;
                     com.ShowLabel = false;
                     com.ComponentType = "Textarea";
                     com.FieldName = "ReasonOfChange";
                     com.Row = 3;
                     com.Column = 12;
                     com.XxlCol = 12;
-                    com.Visibility = true;
                     com.MultipleLine = this.MultipleLine;
                     this.Component.push(com);
                 }

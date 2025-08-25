@@ -58,8 +58,6 @@ export class Component {
     Events = null;
     /** @type {boolean} */
     Disabled = false;
-    /** @type {boolean} */
-    Visibility = false;
     /** @type {string} */
     Validation = null;
     /** @type {boolean} */

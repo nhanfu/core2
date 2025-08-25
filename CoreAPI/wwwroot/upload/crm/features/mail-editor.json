@@ -15,7 +15,6 @@
             "Order": 2,
             "ComponentType": "Section",
             "ClassName": "card-body",
-            "Visibility": true,
             "Active": true,
             "FeatureId": "00ae308c-0000-0000-8000-f43b38b2cb13",
             "ParentId": "00db307c-0000-0000-8000-a669cd3a7e06",
@@ -25,7 +24,6 @@
                 {
                     "Id": "00dd30f0-0000-0000-8000-0721fd09f366",
                     "ComponentGroupId": "00cd3098-0000-0000-8000-589ff2110afc",
-                    "Visibility": true,
                     "Active": true,
                     "FeatureId": "00ae308c-0000-0000-8000-f43b38b2cb13",
                     "ReportTypeId": 1
@@ -38,7 +36,6 @@
             "Order": 1,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
-            "Visibility": true,
             "XxlCol": 12,
             "Active": true,
             "FeatureId": "00ae308c-0000-0000-8000-f43b38b2cb13",

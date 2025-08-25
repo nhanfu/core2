@@ -14,7 +14,6 @@
             "Order": 3,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
-            "Visibility": true,
             "XxlCol": 12,
             "Active": true,
             "FeatureId": "00513f2c-0000-0000-8000-bb5563d679d0",
@@ -26,7 +25,6 @@
             "ComponentType": "Section",
             "Icon": "fal fa-info mr-1",
             "ClassName": "card-body",
-            "Visibility": true,
             "XxlCol": 12,
             "Active": true,
             "FeatureId": "00513f2c-0000-0000-8000-bb5563d679d0",
@@ -43,7 +41,6 @@
                     "Column": 6,
                     "Label": "Representative",
                     "ShowLabel": true,
-                    "Visibility": true,
                     "Active": true,
                     "FeatureId": "00513f2c-0000-0000-8000-bb5563d679d0",
                     "ReportTypeId": 1
@@ -57,7 +54,6 @@
                     "Column": 6,
                     "Label": "Representative",
                     "ShowLabel": true,
-                    "Visibility": true,
                     "Active": true,
                     "FeatureId": "00513f2c-0000-0000-8000-bb5563d679d0",
                     "ReportTypeId": 1
@@ -71,7 +67,6 @@
                     "Column": 6,
                     "Label": "Position",
                     "ShowLabel": true,
-                    "Visibility": true,
                     "Active": true,
                     "FeatureId": "00513f2c-0000-0000-8000-bb5563d679d0",
                     "ReportTypeId": 1
@@ -85,7 +80,6 @@
                     "Column": 6,
                     "Label": "Position",
                     "ShowLabel": true,
-                    "Visibility": true,
                     "Active": true,
                     "FeatureId": "00513f2c-0000-0000-8000-bb5563d679d0",
                     "ReportTypeId": 1
@@ -99,7 +93,6 @@
                     "Column": 6,
                     "Label": "Indentity Card",
                     "ShowLabel": true,
-                    "Visibility": true,
                     "Active": true,
                     "FeatureId": "00513f2c-0000-0000-8000-bb5563d679d0",
                     "ReportTypeId": 1
@@ -113,7 +106,6 @@
                     "Column": 6,
                     "Label": "Indentity Card",
                     "ShowLabel": true,
-                    "Visibility": true,
                     "Active": true,
                     "FeatureId": "00513f2c-0000-0000-8000-bb5563d679d0",
                     "ReportTypeId": 1
@@ -127,7 +119,6 @@
                     "Column": 6,
                     "Label": "Tel",
                     "ShowLabel": true,
-                    "Visibility": true,
                     "Active": true,
                     "FeatureId": "00513f2c-0000-0000-8000-bb5563d679d0",
                     "ReportTypeId": 1
@@ -141,7 +132,6 @@
                     "Column": 6,
                     "Label": "Tel",
                     "ShowLabel": true,
-                    "Visibility": true,
                     "Active": true,
                     "FeatureId": "00513f2c-0000-0000-8000-bb5563d679d0",
                     "ReportTypeId": 1
@@ -156,7 +146,6 @@
                     "Row": 4,
                     "Label": "Reason",
                     "ShowLabel": true,
-                    "Visibility": true,
                     "Active": true,
                     "FeatureId": "00513f2c-0000-0000-8000-bb5563d679d0",
                     "ReportTypeId": 1
@@ -170,7 +159,6 @@
                     "Column": 2,
                     "Label": "File No",
                     "ShowLabel": true,
-                    "Visibility": true,
                     "Active": true,
                     "FeatureId": "00513f2c-0000-0000-8000-bb5563d679d0",
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
@@ -185,7 +173,6 @@
                     "Column": 2,
                     "Label": "DO Date",
                     "ShowLabel": true,
-                    "Visibility": true,
                     "Active": true,
                     "FeatureId": "00513f2c-0000-0000-8000-bb5563d679d0",
                     "ReportTypeId": 1
@@ -199,7 +186,6 @@
                     "Column": 2,
                     "Label": "Do No",
                     "ShowLabel": true,
-                    "Visibility": true,
                     "Active": true,
                     "FeatureId": "00513f2c-0000-0000-8000-bb5563d679d0",
                     "ReportTypeId": 1
@@ -216,7 +202,6 @@
                     "Row": 100,
                     "Label": "Delivery Place",
                     "ShowLabel": true,
-                    "Visibility": true,
                     "Active": true,
                     "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                     "RefName": "Terminal",
@@ -234,7 +219,6 @@
                     "Label": "HBL No",
                     "ShowLabel": true,
                     "Disabled": true,
-                    "Visibility": true,
                     "Active": true,
                     "FeatureId": "00513f2c-0000-0000-8000-bb5563d679d0",
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
@@ -249,7 +233,6 @@
                     "Column": 2,
                     "Label": "Time of Delivery",
                     "ShowLabel": true,
-                    "Visibility": true,
                     "Active": true,
                     "FeatureId": "00513f2c-0000-0000-8000-bb5563d679d0",
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
@@ -265,7 +248,6 @@
                     "Row": 4,
                     "Label": "Evidence",
                     "ShowLabel": true,
-                    "Visibility": true,
                     "Active": true,
                     "FeatureId": "00513f2c-0000-0000-8000-bb5563d679d0",
                     "ReportTypeId": 1
@@ -280,7 +262,6 @@
                     "Row": 4,
                     "Label": "Special Notes",
                     "ShowLabel": true,
-                    "Visibility": true,
                     "Active": true,
                     "FeatureId": "00513f2c-0000-0000-8000-bb5563d679d0",
                     "ReportTypeId": 1
@@ -295,7 +276,6 @@
                     "Row": 4,
                     "Label": "Condition of goods upon delivery",
                     "ShowLabel": true,
-                    "Visibility": true,
                     "Active": true,
                     "FeatureId": "00513f2c-0000-0000-8000-bb5563d679d0",
                     "ReportTypeId": 1
@@ -310,7 +290,6 @@
                     "Row": 4,
                     "Label": "Description of Goods",
                     "ShowLabel": true,
-                    "Visibility": true,
                     "Active": true,
                     "FeatureId": "00513f2c-0000-0000-8000-bb5563d679d0",
                     "ReportTypeId": 1
@@ -328,7 +307,6 @@
                     "Label": "Shipper",
                     "ShowLabel": true,
                     "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('partner-editor',{ ServiceId: 2, ActionId: 1, PartnerTypeIds: '00e318b8-0000-0000-8000-a7988356b712',PartnerTypeIdsText: 'Shipper'}})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('partner-editor',thisMatched)\"\r\n}",
-                    "Visibility": true,
                     "PopulateField": "let shipper = this.EditForm.Entity.Shipper;\r\nlet shipperText = \"\";\r\n\r\nif (shipper.CompanyName) shipperText += shipper.Name + \"\\n\";\r\nif (shipper.Address) shipperText += shipper.Address + \"\\n\";\r\nif (shipper.ContactName) shipperText += shipper.ContactName + \"\\n\";\r\nif (shipper.ContactPhoneNumber) shipperText += shipper.ContactPhoneNumber + \"\\n\";\r\n\r\nthis.EditForm.Entity.ShipperDes = shipperText.trim(); // Loại bỏ khoảng trắng thừa cuối chuỗi\r\nthis.EditForm.UpdateView(false, false, \"ShipperDes\");\r\nreturn null;",
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and (PartnerTypeIdsText like N'%Shipper%'))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and (PartnerTypeIdsText like N'%Shipper%'))\"\r\n}",
@@ -352,7 +330,6 @@
                     "Label": "Consignee",
                     "ShowLabel": true,
                     "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('partner-editor',{ ServiceId: 2, ActionId: 1, PartnerTypeIds: '00e51814-0000-0000-8000-4128ce0e4c14',PartnerTypeIdsText: 'Consignee'})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('partner-editor',this.Matched)\"\r\n}",
-                    "Visibility": true,
                     "PopulateField": "let shipper = this.EditForm.Entity.Consignee;\r\nlet shipperText = \"\";\r\n\r\nif (shipper.CompanyName) shipperText += shipper.Name + \"\\n\";\r\nif (shipper.Address) shipperText += shipper.Address + \"\\n\";\r\nif (shipper.ContactName) shipperText += shipper.ContactName + \"\\n\";\r\nif (shipper.ContactPhoneNumber) shipperText += shipper.ContactPhoneNumber + \"\\n\";\r\n\r\nthis.EditForm.Entity.ConsigneeDes = shipperText.trim(); // Loại bỏ khoảng trắng thừa cuối chuỗi\r\nthis.EditForm.UpdateView(false, false, \"ConsigneeDes\");\r\nreturn null;",
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 2 and (PartnerTypeIdsText like N'%Consignee%'))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 2 and (PartnerTypeIdsText like N'%Consignee%'))\"\r\n}",
@@ -372,7 +349,6 @@
                     "Column": 6,
                     "Row": 4,
                     "Label": "Shipper",
-                    "Visibility": true,
                     "Active": true,
                     "FeatureId": "00513f2c-0000-0000-8000-bb5563d679d0",
                     "ReportTypeId": 1
@@ -386,7 +362,6 @@
                     "Column": 6,
                     "Row": 4,
                     "Label": "Consignee",
-                    "Visibility": true,
                     "Active": true,
                     "FeatureId": "00513f2c-0000-0000-8000-bb5563d679d0",
                     "ReportTypeId": 1
@@ -399,7 +374,6 @@
             "Order": 1,
             "ComponentType": "Section",
             "ClassName": "ribbon-group",
-            "Visibility": true,
             "XxlCol": 12,
             "Active": true,
             "FeatureId": "00513f2c-0000-0000-8000-bb5563d679d0",
@@ -417,7 +391,6 @@
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }",
-                    "Visibility": true,
                     "Active": true,
                     "FeatureId": "00513f2c-0000-0000-8000-bb5563d679d0",
                     "ReportTypeId": 1
@@ -433,7 +406,6 @@
                     "Icon": "fal fa-print",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{\r\n    \"click\": \"PrintPdf\"\r\n}",
-                    "Visibility": true,
                     "Active": true,
                     "Query": "WITH Sumcont AS (\r\n    SELECT \r\n        SUM(ct1.PKG) AS PKG1,\r\n\t\tSUM(ct1.Weight) AS weight1,\r\n\t\tSUM(ct1.CBM) AS cbm1\r\n\t\t \r\n        \r\n    FROM dbo.EntityContainer ct1\r\n    LEFT JOIN dbo.Shipment sm1 ON ct1.EntityId = sm1.Id\r\n    WHERE sm1.Id = '{Id}'\r\n    GROUP BY sm1.Id\r\n)\r\nSELECT \r\nISNULL(sm.HblNo,'') AS HBLNo,\r\nISNULL(sm.ShipperDes,'') AS shippertext,\r\nLEFT(sm.ShipperDes, CHARINDEX(CHAR(10), sm.ShipperDes) - 1) AS Shipperts,\r\nLEFT(sm.ConsigneeDes, CHARINDEX(CHAR(10), sm.ConsigneeDes)- 1) AS Consigneename,\r\nSUBSTRING(\r\n        sm.ConsigneeDes,\r\n        CHARINDEX(CHAR(10), sm.ConsigneeDes) + 1,\r\n        CHARINDEX(CHAR(10), sm.ConsigneeDes, CHARINDEX(CHAR(10), sm.ConsigneeDes) + 1) - CHARINDEX(CHAR(10), sm.ConsigneeDes) - 1\r\n    ) AS ConsigneeAdd,\r\nsm.MblNo AS mbl,\r\nISNULL(customer.CompanyName,'') AS Customers,\r\nFORMAT(ISNULL(sm.EtaDate,''),'dd/MM/yyyy') as ETA,\r\nISNULL(sm.ConsigneeDes,'') AS consigneetext, \r\nISNULL(sm.NotifyPartyDes,'') AS NotyDes,\r\nISNULL(sm.Vessel,'') AS Feedervessel,\r\nsm.OceanVesselVoy,\r\nISNULL(sm.OceanVessel,'') AS VEssel,\r\nISNULL(POl.Name,'') AS POLName,\r\nISNULL(POD.Name,'') AS PODName,\r\nISNULL(destination.Name,'') AS Destination,\r\nisnull(payableat.Name,'') as Payable,\r\nisnull(sm.NumberOriginalIdText,'') AS numberbill,\r\nCASE WHEN sm.ShippingMark IS NOT NULL THEN '<strong> Shipping Marks: </strong>' + CHAR(10) +  sm.ShippingMark ELSE '' END  AS SPMK,\r\nISNULL(sm.DetailsGoods,'') AS DetailsGoodstext,\r\nISNULL( sm.ForDeliveryGoodsDes,'') AS Deliverygoods,\r\nISNULL(charge.Name,'') AS Chageterm,\r\nISNULL(place.Name,'') AS placeissue,\r\n\r\nFORMAT(ISNULL(sm.IssueDate,''),'dd MMM, yy') AS dateissue,\r\nISNULL(receipt.Name,'') AS placereceipt,\r\nISNULL(deliveryplace.Name,'') AS deliveryplace ,\r\nISNULL(typemove.Name,'') AS Typeofmove,\r\nISNULL(caluse.Name,'') AS clause,\r\nFORMAT(ISNULL(sm.SaillingDate,''),'dd MMM, yyyy') AS saillingdate,\r\nISNULL(sm.ContainerText,'') AS quantityofcontainer,\r\nISNULL(unit.Name,'') AS Unitpkg,\r\nISNULL(sm.DemFree,0) AS DEM,\r\nFORMAT((SELECT PKG1 FROM Sumcont WHERE Sumcont.PKG1 IS NOT NULL),'N{CTotalPrice}') AS sumpkg,\r\nFORMAT((SELECT weight1 FROM Sumcont WHERE Sumcont.weight1 IS NOT NULL ),'N{CTotalPrice}') AS sumweight,\r\nFORMAT((SELECT cbm1 FROM Sumcont WHERE Sumcont.cbm1 IS NOT NULL),'N{CTotalPrice}') AS sumcbm\r\n\r\nFROM dbo.Shipment sm LEFT JOIN dbo.Terminal POL ON POL.Id = sm.PolId\r\nLEFT JOIN dbo.Terminal POD ON POD.Id = sm.PodId\r\nLEFT JOIN dbo.Partner customer ON customer.Id = sm.CustomerId \r\nLEFT JOIN dbo.Terminal destination ON destination.Id = sm.PlaceReceiptId\r\nLEFT JOIN dbo.MasterData payableat ON payableat.Id = sm.FreightPayableId\r\nLEFT JOIN dbo.MasterData charge ON charge.Id = sm.FreightChargeId\r\nLEFT JOIN dbo.MasterData place ON place.Id = sm.PlaceIssueId \r\nLEFT JOIN dbo.Terminal receipt ON receipt.Id = sm.PlaceReceiptId\r\nLEFT JOIN dbo.Terminal deliveryplace ON deliveryplace.Id = sm.PlaceDeliveryId\r\nLEFT JOIN dbo.MasterData typemove ON typemove.Id = sm.TypeMoveId\r\nLEFT JOIN dbo.MasterData caluse ON caluse.Id = sm.ClauseId\r\nLEFT JOIN dbo.MasterData unit ON unit.Id=sm.UnitId\r\nWHERE   sm.Id='{Id}' \r\n\r\nSELECT \r\nISNULL(contype.Name,'') AS consize,\r\nISNULL(ct.ContainerNo,'') AS ContNo,\r\nISNULL(ct.SealNo,'') AS Seal,\r\nformat(ISNULL(ct.PKG,''),'N{CTotalPrice}') AS Qty,\r\nISNULL(unit.Name,'') AS Unit,\r\nformat(ISNULL(ct.Weight,''),'N{CTotalPrice}') AS GW,\r\nformat(ISNULL(ct.CBM,''),'N{CTotalPrice}') AS CBM\r\n\r\nFROM dbo.EntityContainer ct LEFT JOIN dbo.Shipment sm ON ct.EntityId=sm.Id\r\nLEFT JOIN dbo.MasterData contype ON ct.ContainerTypeId = contype.Id \r\nLEFT JOIN dbo.MasterData unit ON unit.Id=ct.UnitId \r\nWHERE ct.EntityId=sm.Id AND sm.Id='{Id}'\r\n\r\nSELECT SUM(ct.PKG) AS pkg3, SUM(ct.Weight) AS weight3 , SUM(ct.CBM) AS cbm3\r\nFROM dbo.EntityContainer  ct LEFT JOIN dbo.Shipment shipt ON ct.EntityId=shipt.Id\r\nWHERE shipt.Id='{Id}' ",
                     "Template": "<table style=\"width: 100.043%; border-collapse: collapse; height: 1350px; max-height: 1088px;\" border=\"0\">\n<tbody>\n<tr style=\"height: 17px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 17px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 17px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 17px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 20.7708px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 51.5243%; text-align: center; vertical-align: middle;\" colspan=\"6\" rowspan=\"4\"><span style=\"font-size: 24pt;\"><strong>LỆNH GIAO H&Agrave;NG</strong></span><br><span style=\"font-size: 16pt;\"><strong>(DELIVERY ORDER)</strong></span><br><br></td>\n<td style=\"width: 9.91842%;\"><span style=\"font-size: 11pt;\">Do No</span></td>\n<td style=\"width: 1.80335%;\">:</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 20.7708px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\"><span style=\"font-size: 11pt;\">Date</span></td>\n<td style=\"width: 1.80335%;\">:</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 20.7708px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 19.0208px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 17px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 18.6667px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\"><span style=\"font-size: 11pt;\"><strong>K&Iacute;NH GỬI (To)</strong></span></td>\n<td style=\"width: 1.28811%;\"><span style=\"font-size: 11pt;\">:</span></td>\n<td style=\"width: 72.6492%;\" colspan=\"8\"><span style=\"font-size: 11pt;\"><strong>Cảng ${POD}</strong></span></td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 17px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 29.5417px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"vertical-align: top; width: 95.4487%;\" colspan=\"10\" rowspan=\"2\">\n<p><span style=\"font-size: 11pt;\">C&ocirc;ng ty <strong>{}</strong> tr&acirc;n trọng y&ecirc;u cầu Qu&yacute; cơ quan giao h&agrave;ng cho:</span></p>\n<p><span style=\"font-size: 11pt;\"><em>Please deliver the following shipment to</em></span></p>\n<p>&nbsp;</p>\n</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 25.125px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 36.6667px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%; text-align: left; vertical-align: top;\"><span style=\"font-size: 11pt;\"><strong>Consignee</strong></span></td>\n<td style=\"width: 1.28811%; text-align: left; vertical-align: top;\"><span style=\"font-size: 11pt;\">:</span></td>\n<td style=\"width: 72.6492%; text-align: left; vertical-align: top;\" colspan=\"8\">\n<p><span style=\"font-size: 11pt;\"><strong>${Consigneename}</strong></span></p>\n<p><span style=\"font-size: 11pt;\"><strong>${ConsigneeAdd}</strong></span></p>\n</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 18.6667px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 51.3954%;\" colspan=\"3\"><span style=\"font-size: 11pt;\">&nbsp;</span></td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 18.6667px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 51.3954%;\" colspan=\"3\"><span style=\"font-size: 11pt;\">L&ocirc; h&agrave;ng với chi tiết cụ thể như sau:</span></td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 16.6667px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 51.3954%;\" colspan=\"3\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 19.6667px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">\n<p><span style=\"font-size: 11pt;\"><strong>Số HBL (B/L)</strong></span></p>\n</td>\n<td style=\"width: 1.28811%;\"><span style=\"font-size: 11pt;\">:</span></td>\n<td style=\"width: 29.8841%;\" colspan=\"2\"><span style=\"font-size: 11pt;\">${HBLNo}</span></td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\"><span style=\"font-size: 11pt;\"><strong>Số MBL (MBL No)</strong></span></td>\n<td style=\"width: 1.28811%;\"><span style=\"font-size: 11pt;\">:</span></td>\n<td style=\"width: 22.4131%;\" colspan=\"3\"><span style=\"font-size: 11pt;\">${mbl}</span></td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 16.6667px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">\n<p>&nbsp;</p>\n</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 18.6667px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\"><span style=\"font-size: 11pt;\"><strong>Cảng xếp h&agrave;ng (POL)</strong></span></td>\n<td style=\"width: 1.28811%;\"><span style=\"font-size: 11pt;\">:</span></td>\n<td style=\"width: 29.8841%;\" colspan=\"2\"><span style=\"font-size: 11pt;\">${POLName}</span></td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\"><span style=\"font-size: 11pt;\"><strong>T&agrave;u (Vessel / Voy)</strong></span></td>\n<td style=\"width: 1.28811%;\"><span style=\"font-size: 11pt;\">:</span></td>\n<td style=\"width: 22.4131%;\" colspan=\"3\"><span style=\"font-size: 11pt;\">${VEssel}</span></td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 16.6667px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">\n<p>&nbsp;</p>\n</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 36.6667px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%; vertical-align: top;\">\n<p><span style=\"font-size: 11pt;\"><strong>Cảng dỡ h&agrave;ng (POD)</strong></span></p>\n</td>\n<td style=\"width: 1.28811%; vertical-align: top;\"><span style=\"font-size: 11pt;\">:</span></td>\n<td style=\"vertical-align: top; width: 29.8841%;\" colspan=\"2\"><span style=\"font-size: 11pt;\">${PODName}</span></td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%; vertical-align: top;\">\n<p><span style=\"font-size: 11pt;\"><strong>Nơi giao h&agrave;ng</strong></span></p>\n<p><span style=\"font-size: 11pt;\"><strong>(Place of Delivery)</strong></span></p>\n</td>\n<td style=\"width: 1.28811%; vertical-align: top;\"><span style=\"font-size: 11pt;\">:</span></td>\n<td style=\"width: 22.4131%; vertical-align: top;\" colspan=\"3\"><span style=\"font-size: 11pt;\">${Destination}</span></td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 16.6667px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 30.7917px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 95.4487%;\" colspan=\"10\" rowspan=\"6\">\n<table style=\"border-collapse: collapse; width: 99.7796%; height: 167px;\" border=\"1\"><colgroup><col style=\"width: 31.4525%;\"><col style=\"width: 13.1275%;\"><col style=\"width: 31.5898%;\"><col style=\"width: 23.7945%;\"></colgroup>\n<tbody>\n<tr style=\"height: 32.6667px;\">\n<td style=\"text-align: center; vertical-align: middle;\"><span style=\"font-size: 11pt;\"><strong>SỐ CONTAINER</strong></span><br><span style=\"font-size: 11pt;\"><em><strong>Container No.</strong></em></span></td>\n<td style=\"text-align: center; vertical-align: middle;\"><span style=\"font-size: 11pt;\"><strong>SỐ LƯỢNG</strong></span><br><span style=\"font-size: 11pt;\"><em><strong>Quantity</strong></em></span></td>\n<td style=\"text-align: center; vertical-align: middle;\"><span style=\"font-size: 11pt;\"><strong>T&Ecirc;N H&Agrave;NG H&Oacute;A</strong></span><br><span style=\"font-size: 11pt;\"><em><strong>Description</strong></em></span></td>\n<td style=\"text-align: center; vertical-align: middle;\"><span style=\"font-size: 11pt;\"><strong>TRỌNG/KHỐI LƯỢNG</strong></span><br><span style=\"font-size: 11pt;\"><em><strong>Weight/Measurement</strong></em></span></td>\n</tr>\n<tr style=\"height: 109.667px;\">\n<td style=\"vertical-align: top;\">\n<table style=\"border-collapse: collapse; width: 100.231%; height: 16px;\" border=\"1\"><colgroup><col style=\"width: 99.5745%;\"></colgroup>\n<tbody data-table=\"c0\">\n<tr style=\"height: 16px;\">\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\" scope=\"row\"><span style=\"font-size: 11pt;\">&nbsp; {ContNo}/{consize}/{Seal}</span></td>\n</tr>\n</tbody>\n</table>\n<p><span style=\"font-size: 11pt;\"> ${SPMK}</span></p>\n</td>\n<td style=\"vertical-align: top; text-align: center;\"><span style=\"font-size: 11pt;\">${sumpkg} ${Unitpkg}</span></td>\n<td style=\"vertical-align: top;\"><span style=\"font-size: 11pt;\">${DetailsGoodstext}</span></td>\n<td style=\"vertical-align: top; text-align: center;\">\n<p><span style=\"font-size: 11pt;\">${sumweight}&nbsp; KGS</span></p>\n<p><span style=\"font-size: 11pt;\">${sumcbm} CBM</span></p>\n</td>\n</tr>\n<tr style=\"height: 24.6667px;\">\n<td><span style=\"font-size: 11pt;\"> ${quantityofcontainer}</span></td>\n<td style=\"text-align: center;\"><span style=\"font-size: 11pt;\">${sumpkg} ${Unitpkg}</span></td>\n<td>&nbsp;</td>\n<td style=\"text-align: center;\">\n<p><span style=\"font-size: 11pt;\">${sumweight}&nbsp; KGS</span></p>\n<p><span style=\"font-size: 11pt;\">${sumcbm} CBM</span></p>\n</td>\n</tr>\n</tbody>\n</table>\n</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 30.1875px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 30.7917px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 30.7917px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 30.7917px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 30.9792px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 16.6667px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 16.6667px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 95.4487%;\" colspan=\"10\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 18.6667px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\"><span style=\"font-size: 11pt;\">Chữ k&yacute; (Signature)</span></td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 67.6667px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 95.4487%;\" colspan=\"10\">\n<p>&nbsp;</p>\n</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 19px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td class=\"xl99\" style=\"width: 21.5114%;\" align=\"left\" width=\"173\" height=\"19\"><span style=\"font-size: 11pt;\">Họ v&agrave; T&ecirc;n:</span></td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 19px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td class=\"xl99\" style=\"width: 21.5114%;\" align=\"left\" height=\"19\"><span style=\"font-size: 11pt;\">Số ĐT li&ecirc;n lạc:</span></td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 19px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td class=\"xl99\" style=\"width: 21.5114%;\" align=\"left\" height=\"19\"><span style=\"font-size: 11pt;\">Ng&agrave;y nhận lệnh:</span></td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 17px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 108.667px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 95.4487%;\" colspan=\"10\"><span style=\"font-size: 11pt;\"><em>* Vui l&ograve;ng kiểm tra kỹ chi tiết lệnh tại văn ph&ograve;ng của ch&uacute;ng t&ocirc;i.</em></span><br><span style=\"font-size: 11pt;\"><em>* Mọi sai s&oacute;t sau khi qu&yacute; kh&aacute;ch rời khỏi văn ph&ograve;ng, ch&uacute;ng t&ocirc;i ho&agrave;n to&agrave;n kh&ocirc;ng chịu tr&aacute;ch nhiệm.</em></span><br><span style=\"font-size: 11pt;\"><em>* T&acirc;́t cả các dịch vụ logistics do chúng t&ocirc;i cung c&acirc;́p cho khách hàng được đi&ecirc;̀u chỉnh bởi Đi&ecirc;̀u ki&ecirc;̣n kinh doanh chu&acirc;̉n của Hiệp Hội Doanh nghiệp Dịch vụ Logistics Việt Nam (vi&ecirc;́t tắt là VLA), toàn bộ nội dung ĐKC của VLA có th&ecirc;̉ truy c&acirc;̣p qua website: www.vla.com.vn, hoặc có th&ecirc;̉ được cung c&acirc;́p khi có y&ecirc;u c&acirc;̀u</em></span></td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 17px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 17px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 17px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 17px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 17px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 17px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 17px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 17px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 17px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 17px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 17px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 17px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 17px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 17px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 17px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 17px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 17px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 17px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 17px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 17px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 17px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 17px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 17px;\">\n<td style=\"width: 2.96264%;\">&nbsp;</td>\n<td style=\"width: 21.5114%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 28.596%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 0.128811%;\">&nbsp;</td>\n<td style=\"width: 18.9352%;\">&nbsp;</td>\n<td style=\"width: 1.28811%;\">&nbsp;</td>\n<td style=\"width: 9.91842%;\">&nbsp;</td>\n<td style=\"width: 1.80335%;\">&nbsp;</td>\n<td style=\"width: 10.6913%;\">&nbsp;</td>\n<td style=\"width: 1.54573%;\">&nbsp;</td>\n</tr>\n</tbody>\n</table>\n<p>&nbsp;</p>",
@@ -451,7 +423,6 @@
             "ComponentType": "Input",
             "Row": 50,
             "Label": "Name",
-            "Visibility": true,
             "Width": "94px",
             "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from Role as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Role as ds\"\r\n}",
@@ -472,7 +443,6 @@
             "ComponentType": "Input",
             "Row": 50,
             "Label": "Swift Code",
-            "Visibility": true,
             "Width": "127px",
             "Active": true,
             "RefName": "Role",
@@ -491,7 +461,6 @@
             "ComponentType": "Input",
             "Row": 50,
             "Label": "Number",
-            "Visibility": true,
             "Width": "102px",
             "Active": true,
             "Query": "{\r\n    \"sql\": \"select * from Role as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Role as ds\"\r\n}",
@@ -514,7 +483,6 @@
             "PlainText": "Select data",
             "Row": 100,
             "Label": "Bank",
-            "Visibility": true,
             "Width": "112px",
             "Active": true,
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Bank'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Bank'\"\r\n}",
@@ -542,7 +510,6 @@
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
             "Events": "{ \"click\" : \"SavePatch\" }",
-            "Visibility": true,
             "Active": true,
             "FeatureId": "00513f2c-0000-0000-8000-bb5563d679d0",
             "ReportTypeId": 1

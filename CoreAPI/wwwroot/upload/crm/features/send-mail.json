@@ -12,7 +12,6 @@
             "Order": 1,
             "ComponentType": "Section",
             "ClassName": "card-body",
-            "Visibility": true,
             "XxlCol": 12,
             "Active": true,
             "FeatureId": "00f30144-0000-0000-8000-80c0eabfb781",
@@ -27,7 +26,6 @@
                     "Column": 12,
                     "Label": "To",
                     "ShowLabel": true,
-                    "Visibility": true,
                     "Active": true,
                     "FeatureId": "00f30144-0000-0000-8000-80c0eabfb781",
                     "ReportTypeId": 1
@@ -41,7 +39,6 @@
                     "Column": 12,
                     "Label": "Subject",
                     "ShowLabel": true,
-                    "Visibility": true,
                     "Active": true,
                     "FeatureId": "00f30144-0000-0000-8000-80c0eabfb781",
                     "ReportTypeId": 1
@@ -55,7 +52,6 @@
                     "Column": 12,
                     "Label": "Text",
                     "ShowLabel": true,
-                    "Visibility": true,
                     "Active": true,
                     "FeatureId": "00f30144-0000-0000-8000-80c0eabfb781",
                     "ReportTypeId": 1
@@ -68,7 +64,6 @@
             "Order": 2,
             "ComponentType": "Section",
             "ClassName": "ribbon-group",
-            "Visibility": true,
             "XxlCol": 12,
             "Active": true,
             "FeatureId": "00f30144-0000-0000-8000-80c0eabfb781",
@@ -85,7 +80,6 @@
                     "Icon": "fal fa-envelope",
                     "ClassName": "btn detail-button primary",
                     "Events": "{\"click\":\"SendMail\"}",
-                    "Visibility": true,
                     "Active": true,
                     "FeatureId": "00f30144-0000-0000-8000-80c0eabfb781",
                     "ReportTypeId": 1
@@ -105,7 +99,6 @@
             "Icon": "fal fa-envelope",
             "ClassName": "btn detail-button primary",
             "Events": "{\"click\":\"SendMail\"}",
-            "Visibility": true,
             "Active": true,
             "FeatureId": "00f30144-0000-0000-8000-80c0eabfb781",
             "ReportTypeId": 1

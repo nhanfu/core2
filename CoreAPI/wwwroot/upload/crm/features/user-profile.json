@@ -15,7 +15,6 @@
             "Order": 1,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
-            "Visibility": true,
             "Active": true,
             "FeatureId": "00f02818-0000-0000-8000-31a79d1d5dbe",
             "ReportTypeId": 1
