@@ -21,7 +21,6 @@
             "Active": true,
             "ParentId": "004f3824-0000-0000-8000-76b7af40815f",
             "XxlOuterColumn": 12,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "004f3820-0000-0000-8000-fee7f20bc647",
@@ -32,8 +31,7 @@
                     "Label": "Note",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "004f3870-0000-0000-8000-798424c933fc",
@@ -43,8 +41,7 @@
                     "Column": 6,
                     "Label": "Email",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "004f3890-0000-0000-8000-46315f774f60",
@@ -54,8 +51,7 @@
                     "Column": 6,
                     "Label": "Job Tiles",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "004f38a0-0000-0000-8000-573c783c1654",
@@ -68,8 +64,7 @@
                     "ShowLabel": true,
                     "Events": "{\"change\":\"GetInfo\"}",
                     "DefaultVal": "1989898989898989",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "004f38b0-0000-0000-8000-769e75f52a6c",
@@ -79,8 +74,7 @@
                     "Column": 6,
                     "Label": "Birthday",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "004f38cc-0000-0000-8000-87f44e633b9e",
@@ -91,8 +85,7 @@
                     "Label": "Phone Number",
                     "ShowLabel": true,
                     "DefaultVal": "11111",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00973890-0000-0000-8000-d9bb2a0a8164",
@@ -107,8 +100,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Gender'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Gender'\"\r\n}",
                     "RefName": "MasterData",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 }
             ]
         },
@@ -119,8 +111,7 @@
             "ComponentType": "Section",
             "XsCol": 6,
             "XxlCol": 12,
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "00503894-0000-0000-8000-807dae4d9887",
@@ -131,7 +122,6 @@
             "XxlCol": 12,
             "Active": true,
             "XxlOuterColumn": 12,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00503854-0000-0000-8000-aea539c5b141",
@@ -143,8 +133,7 @@
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         },
@@ -156,8 +145,7 @@
             "ClassName": "title-group",
             "Style": "margin-bottom: 0px;padding: 0;",
             "XxlCol": 12,
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         }
     ],
     "Components": [
@@ -171,8 +159,7 @@
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
             "Events": "{ \"click\" : \"SavePatch\" }",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         }
     ],
     "FeaturePolicies": [

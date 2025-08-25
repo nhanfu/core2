@@ -22,7 +22,6 @@
             "IsTab": true,
             "XxlOuterColumn": 4,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00018ed9c-0000-0000-8000-478688c30c86",
@@ -46,8 +45,7 @@
                     "PreQuery": "{ FeatureId : this.EditForm.Entity.Id }",
                     "ShowHotKey": true,
                     "OrderBy": "ds.EntityId asc,ds.[Order] asc",
-                    "XxlOuterColumn": 3,
-                    "ReportTypeId": 1
+                    "XxlOuterColumn": 3
                 }
             ]
         },
@@ -63,7 +61,6 @@
             "IsTab": true,
             "XxlOuterColumn": 4,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00daed74-0000-0000-8000-7729001006d0",
@@ -86,8 +83,7 @@
                     "PreQuery": "{ \"FeatureId\": this.EditForm.Entity.Id }",
                     "ShowHotKey": true,
                     "OrderBy": "ds.ParentId asc,ds.[Order] asc",
-                    "XxlOuterColumn": 3,
-                    "ReportTypeId": 1
+                    "XxlOuterColumn": 3
                 }
             ]
         },
@@ -103,7 +99,6 @@
             "IsTab": true,
             "XxlOuterColumn": 4,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00dded68-0000-0000-8000-333740c3d147",
@@ -129,8 +124,7 @@
                     "ShowHotKey": true,
                     "TextAlign": "center",
                     "OrderBy": "ds.ComponentGroupId asc,ds.[Order] asc",
-                    "XxlOuterColumn": 3,
-                    "ReportTypeId": 1
+                    "XxlOuterColumn": 3
                 }
             ]
         },
@@ -142,7 +136,6 @@
             "XxlCol": 10,
             "Active": true,
             "XxlOuterColumn": 0,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00bdee60-0000-0000-8000-94ee977fde25",
@@ -154,8 +147,7 @@
                     "Icon": "fal fa-window-close",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"Cancel\" }",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "6e63c20d-2788-4776-9da0-4cfe7c9821tt2",
@@ -166,8 +158,7 @@
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         },
@@ -183,7 +174,6 @@
             "IsTab": true,
             "XxlOuterColumn": 4,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0058f710-0000-0000-8000-be62d91b75fe",
@@ -203,8 +193,7 @@
                     "RefName": "FeaturePolicy",
                     "PreQuery": "{ \"FeatureId\": this.EditForm.Entity.Id }",
                     "OrderBy": "ds.RoleId asc",
-                    "XxlOuterColumn": 3,
-                    "ReportTypeId": 1
+                    "XxlOuterColumn": 3
                 }
             ]
         },
@@ -215,8 +204,7 @@
             "Width": "100%",
             "XxlCol": 4,
             "Active": true,
-            "XxlOuterColumn": 0,
-            "ReportTypeId": 1
+            "XxlOuterColumn": 0
         },
         {
             "Id": "0075eec0-0000-0000-8000-2b4949f8d2d0",
@@ -228,7 +216,6 @@
             "Active": true,
             "ParentId": "009a04d0-0000-0000-8000-aebdcbda37c8",
             "XxlOuterColumn": 2,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0091ee5c-0000-0000-8000-9c14eb5b6a09",
@@ -242,8 +229,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                     "RefName": "History",
                     "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
-                    "Lang": "json",
-                    "ReportTypeId": 1
+                    "Lang": "json"
                 }
             ]
         },
@@ -256,8 +242,7 @@
             "Active": true,
             "ParentId": "0059ee34-0000-0000-8000-8bddd6b24670",
             "IsTab": true,
-            "XxlOuterColumn": 4,
-            "ReportTypeId": 1
+            "XxlOuterColumn": 4
         },
         {
             "Id": "00aaee54-0000-0000-8000-63babcecc696",
@@ -270,7 +255,6 @@
             "Active": true,
             "ParentId": "009a04d0-0000-0000-8000-aebdcbda37c8",
             "XxlOuterColumn": 1,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0055ee18-0000-0000-8000-85a502a49805",
@@ -280,8 +264,7 @@
                     "Column": 6,
                     "Label": "Public",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0064f99c-0000-0000-8000-58f19052625c",
@@ -291,8 +274,7 @@
                     "Column": 12,
                     "Label": "Style",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "006fee70-0000-0000-8000-1d5253c26cf8",
@@ -302,8 +284,7 @@
                     "Column": 6,
                     "Label": "Label",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0074eec8-0000-0000-8000-912e6ad2adff",
@@ -319,8 +300,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Feature as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Feature as ds\"\r\n}",
                     "RefName": "Feature",
-                    "Template": "[{ \"FieldName\" : \"Id\", \"Label\" : \"Id\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Label\", \"Label\" : \"Label\", \"ComponentType\"\r\n: \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Id\", \"Label\" : \"Id\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Label\", \"Label\" : \"Label\", \"ComponentType\"\r\n: \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "008106f0-0000-0000-8000-898967e9a874",
@@ -330,8 +310,7 @@
                     "Column": 6,
                     "Label": "Full Screen",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "008dee88-0000-0000-8000-1a37320f58a8",
@@ -341,8 +320,7 @@
                     "Column": 6,
                     "Label": "Menu",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00900608-0000-0000-8000-4cb68fd5f6d1",
@@ -352,8 +330,7 @@
                     "Column": 6,
                     "Label": "Small Screen",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0091ee5c-0000-0000-8000-84664f737d74",
@@ -363,8 +340,7 @@
                     "Column": 6,
                     "Label": "Icon",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00b1f8f4-0000-0000-8000-53a24091a1e9",
@@ -374,8 +350,7 @@
                     "Column": 6,
                     "Label": "Table",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00b70114-0000-0000-8000-71389a4a4088",
@@ -385,8 +360,7 @@
                     "Column": 6,
                     "Label": "Order",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00c7ee80-0000-0000-8000-99df1a0fbd0a",
@@ -396,8 +370,7 @@
                     "Column": 6,
                     "Label": "Name",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01939b63-e640-76a9-bb32-1a85c2772b80",
@@ -407,8 +380,7 @@
                     "Column": 6,
                     "Label": "Lock",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01953c97-6866-7357-955b-6c0f5df4f241",
@@ -424,8 +396,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Feature as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Feature as ds\"\r\n}",
                     "RefName": "Feature",
-                    "Template": "[{ \"FieldName\" : \"Id\", \"Label\" : \"Id\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Label\", \"Label\" : \"Label\", \"ComponentType\"\r\n: \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Id\", \"Label\" : \"Id\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Label\", \"Label\" : \"Label\", \"ComponentType\"\r\n: \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 }
             ]
         },
@@ -439,7 +410,6 @@
             "Active": true,
             "ParentId": "009a04d0-0000-0000-8000-aebdcbda37c8",
             "XxlOuterColumn": 2,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0089ee0c-0000-0000-8000-16b003b9d1fb",
@@ -453,8 +423,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                     "RefName": "History",
                     "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
-                    "Lang": "html",
-                    "ReportTypeId": 1
+                    "Lang": "html"
                 }
             ]
         },
@@ -468,7 +437,6 @@
             "Active": true,
             "IsTab": true,
             "XxlOuterColumn": 5,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0093ee80-0000-0000-8000-7baf72d77488",
@@ -482,8 +450,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                     "RefName": "History",
                     "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
-                    "Lang": "javascript",
-                    "ReportTypeId": 1
+                    "Lang": "javascript"
                 }
             ]
         }
@@ -509,8 +476,7 @@
             "MinWidth": "7px",
             "MaxWidth": "7px",
             "created_by": "Component",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "0006ed8c-0000-0000-8000-c92542c85117",
@@ -525,8 +491,7 @@
             "MinWidth": "10px",
             "MaxWidth": "10px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "00090154-0000-0000-8000-e6186e55595b",
@@ -542,8 +507,7 @@
             "MinWidth": "81px",
             "MaxWidth": "81px",
             "created_by": "FeaturePolicy",
-            "EntityId": "FeaturePolicy",
-            "ReportTypeId": 1
+            "EntityId": "FeaturePolicy"
         },
         {
             "Id": "00090154-0000-0000-8001-dd9290413bac",
@@ -559,8 +523,7 @@
             "MinWidth": "70px",
             "MaxWidth": "70px",
             "created_by": "FeaturePolicy",
-            "EntityId": "FeaturePolicy",
-            "ReportTypeId": 1
+            "EntityId": "FeaturePolicy"
         },
         {
             "Id": "00090154-0000-0000-8002-a4f75cf2f2e6",
@@ -576,8 +539,7 @@
             "MinWidth": "78px",
             "MaxWidth": "78px",
             "created_by": "FeaturePolicy",
-            "EntityId": "FeaturePolicy",
-            "ReportTypeId": 1
+            "EntityId": "FeaturePolicy"
         },
         {
             "Id": "000aed14-0000-0000-8000-080e4aa3dd39",
@@ -593,8 +555,7 @@
             "MinWidth": "215px",
             "MaxWidth": "215px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "000aed78-0000-0000-8000-acdc057c364a",
@@ -609,8 +570,7 @@
             "MinWidth": "248px",
             "MaxWidth": "248px",
             "created_by": "Section",
-            "EntityId": "Section",
-            "ReportTypeId": 1
+            "EntityId": "Section"
         },
         {
             "Id": "000aed78-0000-0000-8001-155ed26124d2",
@@ -625,8 +585,7 @@
             "MinWidth": "68px",
             "MaxWidth": "68px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "000aed78-0000-0000-8002-3d38fe645dee",
@@ -641,8 +600,7 @@
             "MinWidth": "218px",
             "MaxWidth": "218px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "000aed78-0000-0000-8004-9cab5ead40e6",
@@ -657,8 +615,7 @@
             "MinWidth": "106px",
             "MaxWidth": "106px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "000aed78-0000-0000-8005-1afb7b898f82",
@@ -673,8 +630,7 @@
             "MinWidth": "108px",
             "MaxWidth": "108px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "000aed78-0000-0000-8006-5901e2c225d1",
@@ -689,8 +645,7 @@
             "MinWidth": "121px",
             "MaxWidth": "121px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "000aed78-0000-0000-8007-2f2be74bb990",
@@ -708,8 +663,7 @@
             "MinWidth": "119px",
             "MaxWidth": "119px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "000aed78-0000-0000-8008-2c2c3c39a725",
@@ -725,8 +679,7 @@
             "MinWidth": "77px",
             "MaxWidth": "77px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "000aed78-0000-0000-8009-1e4a1e416dcc",
@@ -741,8 +694,7 @@
             "MinWidth": "68px",
             "MaxWidth": "68px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "0016edc0-0000-0000-8000-fc56aef5f25b",
@@ -757,8 +709,7 @@
             "MinWidth": "668px",
             "MaxWidth": "668px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "001aee30-0000-0000-8000-42a5cffc3046",
@@ -773,8 +724,7 @@
             "MinWidth": "43px",
             "MaxWidth": "43px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "001b0250-0000-0000-8000-fdb39c348932",
@@ -789,8 +739,7 @@
             "MinWidth": "114px",
             "MaxWidth": "114px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "001cef84-0000-0000-8000-7a2e49ebbe7a",
@@ -805,8 +754,7 @@
             "MinWidth": "114px",
             "MaxWidth": "114px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "001f02b8-0000-0000-8000-b5d370dc7376",
@@ -821,8 +769,7 @@
             "MinWidth": "219px",
             "MaxWidth": "219px",
             "created_by": "Component",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "001fedd4-0000-0000-8000-3162067da346",
@@ -837,8 +784,7 @@
             "MinWidth": "44px",
             "MaxWidth": "44px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "0020ed68-0000-0000-8000-df5bf6e923a0",
@@ -853,8 +799,7 @@
             "MinWidth": "91px",
             "MaxWidth": "91px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "00240d68-0000-0000-8000-14aef0d49146",
@@ -869,8 +814,7 @@
             "MinWidth": "153px",
             "MaxWidth": "153px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "00250dac-0000-0000-8000-d3a579eb251e",
@@ -887,8 +831,7 @@
             "MaxWidth": "153px",
             "created_by": "GridPolicy",
             "EntityId": "GridPolicy",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "00251184-0000-0000-8000-d8d870988a84",
@@ -905,8 +848,7 @@
             "MinWidth": "56px",
             "MaxWidth": "56px",
             "created_by": "Component",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "0025eda4-0000-0000-8000-5f3396853202",
@@ -921,8 +863,7 @@
             "MinWidth": "153px",
             "MaxWidth": "153px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "0027edd4-0000-0000-8000-41c4687bd6c0",
@@ -937,8 +878,7 @@
             "MinWidth": "116px",
             "MaxWidth": "116px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "0037ed68-0000-0000-8000-676d09793894",
@@ -954,8 +894,7 @@
             "MinWidth": "81px",
             "MaxWidth": "81px",
             "created_by": "Section",
-            "EntityId": "Section",
-            "ReportTypeId": 1
+            "EntityId": "Section"
         },
         {
             "Id": "0039ee38-0000-0000-8000-14b2a19a1875",
@@ -971,8 +910,7 @@
             "MinWidth": "62px",
             "MaxWidth": "62px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "003aed54-0000-0000-8000-2ee85c1a3a0a",
@@ -987,8 +925,7 @@
             "MinWidth": "124px",
             "MaxWidth": "124px",
             "created_by": "Section",
-            "EntityId": "Section",
-            "ReportTypeId": 1
+            "EntityId": "Section"
         },
         {
             "Id": "003aeec0-0000-0000-8000-1ca8c4fbe0e4",
@@ -1003,8 +940,7 @@
             "MinWidth": "79px",
             "MaxWidth": "79px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "003bedf4-0000-0000-8000-25fc01ec87df",
@@ -1020,8 +956,7 @@
             "MinWidth": "80px",
             "MaxWidth": "80px",
             "created_by": "Section",
-            "EntityId": "Section",
-            "ReportTypeId": 1
+            "EntityId": "Section"
         },
         {
             "Id": "003ded08-0000-0000-8000-56de7e1a97ff",
@@ -1041,8 +976,7 @@
             "MinWidth": "120px",
             "MaxWidth": "120px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "003fed14-0000-0000-8000-bb7a28891efa",
@@ -1057,8 +991,7 @@
             "MinWidth": "156px",
             "MaxWidth": "156px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "0041ed18-0000-0000-8000-dd189a6824f3",
@@ -1074,8 +1007,7 @@
             "MinWidth": "98px",
             "MaxWidth": "98px",
             "created_by": "Section",
-            "EntityId": "Section",
-            "ReportTypeId": 1
+            "EntityId": "Section"
         },
         {
             "Id": "0043ed1c-0000-0000-8000-c752c2618397",
@@ -1097,8 +1029,7 @@
             "MinWidth": "211px",
             "MaxWidth": "211px",
             "created_by": "Section",
-            "EntityId": "Section",
-            "ReportTypeId": 1
+            "EntityId": "Section"
         },
         {
             "Id": "0045edb0-0000-0000-8000-1087f0a03756",
@@ -1114,8 +1045,7 @@
             "MinWidth": "70px",
             "MaxWidth": "70px",
             "created_by": "Section",
-            "EntityId": "Section",
-            "ReportTypeId": 1
+            "EntityId": "Section"
         },
         {
             "Id": "0047ed64-0000-0000-8000-5b62dfdd0b14",
@@ -1130,8 +1060,7 @@
             "MinWidth": "236px",
             "MaxWidth": "236px",
             "created_by": "Section",
-            "EntityId": "Section",
-            "ReportTypeId": 1
+            "EntityId": "Section"
         },
         {
             "Id": "0049ed90-0000-0000-8000-3d5346319477",
@@ -1146,8 +1075,7 @@
             "MinWidth": "520px",
             "MaxWidth": "520px",
             "created_by": "Section",
-            "EntityId": "Section",
-            "ReportTypeId": 1
+            "EntityId": "Section"
         },
         {
             "Id": "004ded40-0000-0000-8000-2ad3267d8068",
@@ -1162,8 +1090,7 @@
             "MinWidth": "123px",
             "MaxWidth": "123px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "004dee28-0000-0000-8000-02f5361c8726",
@@ -1178,8 +1105,7 @@
             "MinWidth": "61px",
             "MaxWidth": "61px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "00533d78-0000-0000-8000-0ad84410f2f7",
@@ -1194,8 +1120,7 @@
             "MinWidth": "116px",
             "MaxWidth": "116px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "006e3bcc-0000-0000-8000-cab4bb430d77",
@@ -1210,8 +1135,7 @@
             "MinWidth": "121px",
             "MaxWidth": "121px",
             "created_by": "Section",
-            "EntityId": "Section",
-            "ReportTypeId": 1
+            "EntityId": "Section"
         },
         {
             "Id": "0074290c-0000-0000-8000-1b5478b7a893",
@@ -1227,8 +1151,7 @@
             "MinWidth": "81px",
             "MaxWidth": "81px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "00940260-0000-0000-8000-65a26ca0c98d",
@@ -1243,8 +1166,7 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "00943b54-0000-0000-8000-54a0b4cc0be4",
@@ -1259,8 +1181,7 @@
             "MinWidth": "125px",
             "MaxWidth": "125px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "00943dcc-0000-0000-8000-0f9ebd938d1a",
@@ -1275,8 +1196,7 @@
             "MinWidth": "118px",
             "MaxWidth": "118px",
             "created_by": "Section",
-            "EntityId": "Section",
-            "ReportTypeId": 1
+            "EntityId": "Section"
         },
         {
             "Id": "0099f7dc-0000-0000-8000-16f8adaf5567",
@@ -1292,8 +1212,7 @@
             "MinWidth": "70px",
             "MaxWidth": "70px",
             "created_by": "FeaturePolicy",
-            "EntityId": "FeaturePolicy",
-            "ReportTypeId": 1
+            "EntityId": "FeaturePolicy"
         },
         {
             "Id": "00a0307c-0000-0000-8000-5daebab2f944",
@@ -1308,8 +1227,7 @@
             "MinWidth": "7px",
             "MaxWidth": "7px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "00a030d8-0000-0000-8000-23760531f2ff",
@@ -1324,8 +1242,7 @@
             "MinWidth": "7px",
             "MaxWidth": "7px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "00a1ed28-0000-0000-8000-b1adc85351b5",
@@ -1341,8 +1258,7 @@
             "MinWidth": "124px",
             "MaxWidth": "124px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "00a1ef88-0000-0000-8000-b5777a0b8162",
@@ -1357,8 +1273,7 @@
             "MinWidth": "256px",
             "MaxWidth": "256px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "00a40e1c-0000-0000-8000-37fe0fc07040",
@@ -1375,8 +1290,7 @@
             "MinWidth": "87px",
             "MaxWidth": "87px",
             "created_by": "Component",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "00a7eea0-0000-0000-8000-9beaf42aa576",
@@ -1391,8 +1305,7 @@
             "MinWidth": "247px",
             "MaxWidth": "247px",
             "created_by": "Section",
-            "EntityId": "Section",
-            "ReportTypeId": 1
+            "EntityId": "Section"
         },
         {
             "Id": "00aaedd0-0000-0000-8000-0eaa2cacbeab",
@@ -1415,8 +1328,7 @@
             "MinWidth": "374px",
             "MaxWidth": "374px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "00ad021c-0000-0000-8000-7ed64f3a916c",
@@ -1432,8 +1344,7 @@
             "MinWidth": "80px",
             "MaxWidth": "80px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "00adee40-0000-0000-8000-ca4ed74107f8",
@@ -1454,8 +1365,7 @@
             "MinWidth": "8px",
             "MaxWidth": "8px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "00afee48-0000-0000-8000-27a0dab099b2",
@@ -1476,8 +1386,7 @@
             "MinWidth": "7px",
             "MaxWidth": "7px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "00b3f790-0000-0000-8000-e45e49cba927",
@@ -1493,8 +1402,7 @@
             "MinWidth": "67px",
             "MaxWidth": "67px",
             "created_by": "FeaturePolicy",
-            "EntityId": "FeaturePolicy",
-            "ReportTypeId": 1
+            "EntityId": "FeaturePolicy"
         },
         {
             "Id": "00b4eef8-0000-0000-8000-536c79272a8a",
@@ -1509,8 +1417,7 @@
             "MinWidth": "78px",
             "MaxWidth": "78px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "00b4f740-0000-0000-8000-d6dad303ab25",
@@ -1527,8 +1434,7 @@
             "MinWidth": "83px",
             "MaxWidth": "83px",
             "created_by": "FeaturePolicy",
-            "EntityId": "FeaturePolicy",
-            "ReportTypeId": 1
+            "EntityId": "FeaturePolicy"
         },
         {
             "Id": "00bcedb8-0000-0000-8000-3ea47489d3a5",
@@ -1543,8 +1449,7 @@
             "MinWidth": "111px",
             "MaxWidth": "111px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "00bdf7d8-0000-0000-8000-4deee49c5021",
@@ -1560,8 +1465,7 @@
             "MinWidth": "87px",
             "MaxWidth": "87px",
             "created_by": "FeaturePolicy",
-            "EntityId": "FeaturePolicy",
-            "ReportTypeId": 1
+            "EntityId": "FeaturePolicy"
         },
         {
             "Id": "00c1ee2c-0000-0000-8000-1bd3d7bde48e",
@@ -1576,8 +1480,7 @@
             "MinWidth": "125px",
             "MaxWidth": "125px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "00c5f778-0000-0000-8000-e9e54381b5e2",
@@ -1593,8 +1496,7 @@
             "MinWidth": "107px",
             "MaxWidth": "107px",
             "created_by": "FeaturePolicy",
-            "EntityId": "FeaturePolicy",
-            "ReportTypeId": 1
+            "EntityId": "FeaturePolicy"
         },
         {
             "Id": "00ceeffc-0000-0000-8000-8ee846a14f4d",
@@ -1609,8 +1511,7 @@
             "MinWidth": "188px",
             "MaxWidth": "188px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "00d1ee7c-0000-0000-8000-2975ed562ae8",
@@ -1626,8 +1527,7 @@
             "MinWidth": "81px",
             "MaxWidth": "81px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "00d24148-0000-0000-8000-782eec02bfd6",
@@ -1642,8 +1542,7 @@
             "MinWidth": "554px",
             "MaxWidth": "554px",
             "created_by": "Component",
-            "EntityId": "Section",
-            "ReportTypeId": 1
+            "EntityId": "Section"
         },
         {
             "Id": "00dced50-0000-0000-8000-57f701e2bbfa",
@@ -1659,8 +1558,7 @@
             "MinWidth": "48px",
             "MaxWidth": "48px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "00f4f730-0000-0000-8000-b74fbb234018",
@@ -1681,8 +1579,7 @@
             "MinWidth": "240px",
             "MaxWidth": "240px",
             "created_by": "FeaturePolicy",
-            "EntityId": "FeaturePolicy",
-            "ReportTypeId": 1
+            "EntityId": "FeaturePolicy"
         },
         {
             "Id": "01952657-30f1-722e-b4ed-968eb823c9d6",
@@ -1698,8 +1595,7 @@
             "MinWidth": "70px",
             "MaxWidth": "70px",
             "created_by": "Section",
-            "EntityId": "Section",
-            "ReportTypeId": 1
+            "EntityId": "Section"
         },
         {
             "Id": "019526ad-7fe7-769a-98ce-d8a8e99cc59e",
@@ -1716,8 +1612,7 @@
             "MinWidth": "70px",
             "MaxWidth": "70px",
             "created_by": "Section",
-            "EntityId": "Section",
-            "ReportTypeId": 1
+            "EntityId": "Section"
         },
         {
             "Id": "01956186-0595-70fa-ab73-67ef33fdbadc",
@@ -1731,8 +1626,7 @@
             "Active": true,
             "MinWidth": "57px",
             "MaxWidth": "57px",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "01956186-0595-70fa-ab73-6b2d42c33bf5",
@@ -1746,8 +1640,7 @@
             "Active": true,
             "MinWidth": "49px",
             "MaxWidth": "49px",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "019604eb-55be-712f-8a70-b9975e29b6a9",
@@ -1763,8 +1656,7 @@
             "MinWidth": "70px",
             "MaxWidth": "70px",
             "created_by": "Section",
-            "EntityId": "Section",
-            "ReportTypeId": 1
+            "EntityId": "Section"
         },
         {
             "Id": "6e63c20d-2788-4776-9da0-4cfe7c98111",
@@ -1779,8 +1671,7 @@
             "MinWidth": "132px",
             "MaxWidth": "132px",
             "created_by": "Section",
-            "EntityId": "Section",
-            "ReportTypeId": 1
+            "EntityId": "Section"
         },
         {
             "Id": "6e63c20d-2788-4776-9da0-4cfe7c98112",
@@ -1795,8 +1686,7 @@
             "MinWidth": "104px",
             "MaxWidth": "104px",
             "created_by": "Section",
-            "EntityId": "Section",
-            "ReportTypeId": 1
+            "EntityId": "Section"
         },
         {
             "Id": "6e63c20d-2788-4776-9da0-4cfe7c98119",
@@ -1812,8 +1702,7 @@
             "MinWidth": "126px",
             "MaxWidth": "126px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         }
     ],
     "Components": [
@@ -1827,8 +1716,7 @@
             "Icon": "fal fa-window-close",
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"Cancel\" }",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "6e63c20d-2788-4776-9da0-4cfe7c9821tt2",
@@ -1839,8 +1727,7 @@
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
             "Events": "{ \"click\" : \"SavePatch\" }",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         }
     ],
     "FeaturePolicies": [

@@ -18,7 +18,6 @@
             "Active": true,
             "ParentId": "0062f8bc-0000-0000-8000-754793ee6e29",
             "XxlOuterColumn": 12,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0026f844-0000-0000-8000-9feb41d51ef8",
@@ -30,8 +29,7 @@
                     "Icon": "fas fa-play",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{\r\n    \"click\": \"ExecTable\"\r\n}",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00d7f9b8-0000-0000-8000-460225237c38",
@@ -43,8 +41,7 @@
                     "Icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "Events": "{\"click\":\"SavePatch\"}",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         },
@@ -55,8 +52,7 @@
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "00bbf898-0000-0000-8000-ac13aff45f1d",
@@ -68,7 +64,6 @@
             "Active": true,
             "ParentId": "0062f8bc-0000-0000-8000-754793ee6e29",
             "XxlOuterColumn": 12,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0073f8a0-0000-0000-8000-46ea04a490f7",
@@ -84,8 +79,7 @@
                     "RefName": "COLUMNS",
                     "PreQuery": "{\r\n    \"TABLE_NAME\": this.EditForm.Entity.TABLE_NAME,\r\n}",
                     "Editable": true,
-                    "OrderBy": "ds.ORDINAL_POSITION asc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.ORDINAL_POSITION asc"
                 }
             ]
         },
@@ -98,7 +92,6 @@
             "Active": true,
             "ParentId": "0062f8bc-0000-0000-8000-754793ee6e29",
             "XxlOuterColumn": 12,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00f3f8dc-0000-0000-8000-1142949a8573",
@@ -109,8 +102,7 @@
                     "Label": "TABLE_SCHEMA",
                     "ShowLabel": true,
                     "Disabled": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00f6f868-0000-0000-8000-3c041266a1bb",
@@ -121,8 +113,7 @@
                     "Label": "TABLE_NAME",
                     "ShowLabel": true,
                     "Disabled": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         }
@@ -139,8 +130,7 @@
             "MinWidth": "246px",
             "MaxWidth": "246px",
             "created_by": "Column",
-            "EntityId": "COLUMNS",
-            "ReportTypeId": 1
+            "EntityId": "COLUMNS"
         },
         {
             "Id": "0087f858-0000-0000-8000-5f0a44726ffe",
@@ -154,8 +144,7 @@
             "MinWidth": "165px",
             "MaxWidth": "165px",
             "created_by": "Column",
-            "EntityId": "COLUMNS",
-            "ReportTypeId": 1
+            "EntityId": "COLUMNS"
         },
         {
             "Id": "00defbe4-0000-0000-8000-4b31ee1c0b74",
@@ -168,8 +157,7 @@
             "MinWidth": "105px",
             "MaxWidth": "105px",
             "created_by": "Column",
-            "EntityId": "COLUMNS",
-            "ReportTypeId": 1
+            "EntityId": "COLUMNS"
         },
         {
             "Id": "0195efb7-15a4-774e-b66b-46930119d2c4",
@@ -182,8 +170,7 @@
             "MinWidth": "122px",
             "MaxWidth": "122px",
             "created_by": "Column",
-            "EntityId": "COLUMNS",
-            "ReportTypeId": 1
+            "EntityId": "COLUMNS"
         },
         {
             "Id": "0195efba-fb9e-72f0-a35b-a99bcf068775",
@@ -196,8 +183,7 @@
             "MinWidth": "122px",
             "MaxWidth": "122px",
             "created_by": "Column",
-            "EntityId": "COLUMNS",
-            "ReportTypeId": 1
+            "EntityId": "COLUMNS"
         },
         {
             "Id": "0195efbb-1b6a-74bb-8a60-10e785fc7ac8",
@@ -210,8 +196,7 @@
             "MinWidth": "122px",
             "MaxWidth": "122px",
             "created_by": "Column",
-            "EntityId": "COLUMNS",
-            "ReportTypeId": 1
+            "EntityId": "COLUMNS"
         },
         {
             "Id": "0195efbb-fa73-758c-bf39-02b72dfbbb53",
@@ -224,8 +209,7 @@
             "MinWidth": "200px",
             "MaxWidth": "200px",
             "created_by": "Column",
-            "EntityId": "COLUMNS",
-            "ReportTypeId": 1
+            "EntityId": "COLUMNS"
         }
     ],
     "Components": [
@@ -239,8 +223,7 @@
             "Icon": "fas fa-play",
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{\r\n    \"click\": \"ExecTable\"\r\n}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "00d7f9b8-0000-0000-8000-460225237c38",
@@ -252,8 +235,7 @@
             "Icon": "fal fa-save",
             "ClassName": "btn detail-button primary",
             "Events": "{\"click\":\"SavePatch\"}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         }
     ],
     "FeaturePolicies": [

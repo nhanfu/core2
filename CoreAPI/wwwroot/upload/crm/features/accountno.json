@@ -19,7 +19,6 @@
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01945994-42ae-707d-89e2-d00ac0aac7e2",
@@ -34,8 +33,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds\"\r\n}",
                     "RefName": "AccountNo",
-                    "OrderBy": "ds.[Code] asc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.[Code] asc"
                 }
             ]
         }
@@ -52,8 +50,7 @@
             "FocusSearch": true,
             "MinWidth": "252px",
             "MaxWidth": "252px",
-            "EntityId": "AccountNo",
-            "ReportTypeId": 1
+            "EntityId": "AccountNo"
         },
         {
             "Id": "01945994-434b-7564-afa1-f00a5830f71e",
@@ -67,8 +64,7 @@
             "FocusSearch": true,
             "MinWidth": "77px",
             "MaxWidth": "77px",
-            "EntityId": "AccountNo",
-            "ReportTypeId": 1
+            "EntityId": "AccountNo"
         },
         {
             "Id": "01945994-4398-70c3-a388-ae6fd05a2890",
@@ -81,8 +77,7 @@
             "FocusSearch": true,
             "MinWidth": "33px",
             "MaxWidth": "33px",
-            "EntityId": "AccountNo",
-            "ReportTypeId": 1
+            "EntityId": "AccountNo"
         },
         {
             "Id": "01945994-4431-75a8-9e42-a26a92744eb6",
@@ -95,8 +90,7 @@
             "FocusSearch": true,
             "MinWidth": "171px",
             "MaxWidth": "171px",
-            "EntityId": "AccountNo",
-            "ReportTypeId": 1
+            "EntityId": "AccountNo"
         },
         {
             "Id": "01945994-447d-743a-acbe-96c7b798ce6b",
@@ -115,8 +109,7 @@
             "FocusSearch": true,
             "MinWidth": "142px",
             "MaxWidth": "142px",
-            "EntityId": "AccountNo",
-            "ReportTypeId": 1
+            "EntityId": "AccountNo"
         },
         {
             "Id": "01945999-a3af-7356-b340-54f7f8a7a819",
@@ -129,8 +122,7 @@
             "FocusSearch": true,
             "MinWidth": "269px",
             "MaxWidth": "269px",
-            "EntityId": "AccountNo",
-            "ReportTypeId": 1
+            "EntityId": "AccountNo"
         },
         {
             "Id": "0194599a-5b9c-762c-ac6f-b800447d682f",
@@ -151,8 +143,7 @@
             "MinWidth": "115px",
             "MaxWidth": "115px",
             "OrderBy": "ds.Enum asc",
-            "EntityId": "AccountNo",
-            "ReportTypeId": 1
+            "EntityId": "AccountNo"
         },
         {
             "Id": "0194599a-86e6-7608-8f12-6b0bff2a197a",
@@ -173,8 +164,7 @@
             "MinWidth": "115px",
             "MaxWidth": "115px",
             "OrderBy": "ds.Enum asc",
-            "EntityId": "AccountNo",
-            "ReportTypeId": 1
+            "EntityId": "AccountNo"
         },
         {
             "Id": "0194599d-f6ff-73ce-8c4d-9c51c032341e",
@@ -192,8 +182,7 @@
             "MinWidth": "149px",
             "MaxWidth": "149px",
             "EntityId": "AccountNo",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "0194599f-6312-734c-8e1e-263afb475e01",
@@ -206,8 +195,7 @@
             "FocusSearch": true,
             "MinWidth": "47px",
             "MaxWidth": "47px",
-            "EntityId": "AccountNo",
-            "ReportTypeId": 1
+            "EntityId": "AccountNo"
         },
         {
             "Id": "01945a72-c48e-766f-b6c9-e84615ea7232",
@@ -222,8 +210,7 @@
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
-            "EntityId": "AccountNo",
-            "ReportTypeId": 1
+            "EntityId": "AccountNo"
         }
     ],
     "Components": [
@@ -237,8 +224,7 @@
             "Icon": "fal fa-plus",
             "ClassName": "btn",
             "Events": "{\r\n    \"click\": \"Add\"\r\n}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "01945a72-c48e-766f-b6c9-e84615ea7232",
@@ -253,8 +239,7 @@
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
-            "EntityId": "AccountNo",
-            "ReportTypeId": 1
+            "EntityId": "AccountNo"
         }
     ],
     "FeaturePolicies": [

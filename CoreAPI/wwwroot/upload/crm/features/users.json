@@ -19,7 +19,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "003a00e4-0000-0000-8000-83e45ed6f836",
@@ -34,8 +33,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from [User] as ds where (TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 1)\"\r\n}",
                     "RefName": "User",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -48,7 +46,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "019517d7-510a-74bc-a88b-b92fd72dac2b",
@@ -63,8 +60,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from [User] as ds where (TypeId = 2)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 2)\"\r\n}",
                     "RefName": "User",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         }
@@ -84,8 +80,7 @@
             "RefName": "MasterData",
             "MinWidth": "200px",
             "MaxWidth": "200px",
-            "EntityId": "User",
-            "ReportTypeId": 1
+            "EntityId": "User"
         },
         {
             "Id": "00521d58-0000-0000-8000-f6ad933a0087",
@@ -97,8 +92,7 @@
             "Active": true,
             "MinWidth": "143px",
             "MaxWidth": "143px",
-            "EntityId": "User",
-            "ReportTypeId": 1
+            "EntityId": "User"
         },
         {
             "Id": "005c0078-0000-0000-8000-70509600921e",
@@ -110,8 +104,7 @@
             "Active": true,
             "MinWidth": "206px",
             "MaxWidth": "206px",
-            "EntityId": "User",
-            "ReportTypeId": 1
+            "EntityId": "User"
         },
         {
             "Id": "005c00b0-0000-0000-8000-85b56e77dcc4",
@@ -123,8 +116,7 @@
             "Active": true,
             "MinWidth": "127px",
             "MaxWidth": "127px",
-            "EntityId": "User",
-            "ReportTypeId": 1
+            "EntityId": "User"
         },
         {
             "Id": "005d0038-0000-0000-8000-fe98a58818fa",
@@ -136,8 +128,7 @@
             "Active": true,
             "MinWidth": "142px",
             "MaxWidth": "142px",
-            "EntityId": "User",
-            "ReportTypeId": 1
+            "EntityId": "User"
         },
         {
             "Id": "005d0074-0000-0000-8000-fc5f2953ae96",
@@ -153,8 +144,7 @@
             "RefName": "MasterData",
             "MinWidth": "118px",
             "MaxWidth": "118px",
-            "EntityId": "User",
-            "ReportTypeId": 1
+            "EntityId": "User"
         },
         {
             "Id": "005e0014-0000-0000-8000-241eb87fa392",
@@ -167,8 +157,7 @@
             "FocusSearch": true,
             "MinWidth": "180px",
             "MaxWidth": "180px",
-            "EntityId": "User",
-            "ReportTypeId": 1
+            "EntityId": "User"
         },
         {
             "Id": "0075006c-0000-0000-8000-62568d9506c0",
@@ -182,8 +171,7 @@
             "Active": true,
             "MinWidth": "65px",
             "MaxWidth": "65px",
-            "EntityId": "User",
-            "ReportTypeId": 1
+            "EntityId": "User"
         },
         {
             "Id": "00e81d78-0000-0000-8000-e1c6e276a999",
@@ -195,8 +183,7 @@
             "Active": true,
             "MinWidth": "143px",
             "MaxWidth": "143px",
-            "EntityId": "User",
-            "ReportTypeId": 1
+            "EntityId": "User"
         },
         {
             "Id": "00e90044-0000-0000-8000-5caa628dc832",
@@ -210,8 +197,7 @@
             "MinWidth": "208px",
             "MaxWidth": "208px",
             "EntityId": "User",
-            "IsMultiple": true,
-            "ReportTypeId": 1
+            "IsMultiple": true
         },
         {
             "Id": "00fa1df8-0000-0000-8000-eb55958aa08c",
@@ -223,8 +209,7 @@
             "Active": true,
             "MinWidth": "143px",
             "MaxWidth": "143px",
-            "EntityId": "User",
-            "ReportTypeId": 1
+            "EntityId": "User"
         }
     ],
     "Components": [
@@ -238,8 +223,7 @@
             "Icon": "fal fa-plus",
             "ClassName": "btn btn-info",
             "Events": "{\"click\":\"AddUser\"}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "0075006c-0000-0000-8000-62568d9506c0",
@@ -253,8 +237,7 @@
             "Active": true,
             "MinWidth": "65px",
             "MaxWidth": "65px",
-            "EntityId": "User",
-            "ReportTypeId": 1
+            "EntityId": "User"
         }
     ],
     "FeaturePolicies": [

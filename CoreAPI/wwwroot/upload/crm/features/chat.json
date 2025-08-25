@@ -12,8 +12,7 @@
             "ComponentType": "Section",
             "XxlCol": 12,
             "Active": true,
-            "XxlOuterColumn": 0,
-            "ReportTypeId": 1
+            "XxlOuterColumn": 0
         },
         {
             "Id": "00bc19ec-0000-0000-8000-8c7b8792d14e",
@@ -24,8 +23,7 @@
             "XxlCol": 12,
             "Active": true,
             "ParentId": "00bc19b0-0000-0000-8000-c7817636af49",
-            "XxlOuterColumn": 12,
-            "ReportTypeId": 1
+            "XxlOuterColumn": 12
         },
         {
             "Id": "00bd191c-0000-0000-8000-0fd041172430",
@@ -36,8 +34,7 @@
             "XxlCol": 12,
             "Active": true,
             "ParentId": "00bc19b0-0000-0000-8000-c7817636af49",
-            "XxlOuterColumn": 12,
-            "ReportTypeId": 1
+            "XxlOuterColumn": 12
         }
     ],
     "GridPolicies": [
@@ -59,8 +56,7 @@
             "Editable": true,
             "MinWidth": "357px",
             "MaxWidth": "357px",
-            "EntityId": "TerminalService",
-            "ReportTypeId": 1
+            "EntityId": "TerminalService"
         }
     ],
     "FeaturePolicies": [

@@ -20,8 +20,7 @@
             "XxlCol": 12,
             "Active": true,
             "IsTab": true,
-            "DisplayBadge": true,
-            "ReportTypeId": 1
+            "DisplayBadge": true
         },
         {
             "Id": "01939224-37c4-74d8-a94e-38db1c5e7d15",
@@ -33,8 +32,7 @@
             "XxlCol": 12,
             "Active": true,
             "IsTab": true,
-            "DisplayBadge": true,
-            "ReportTypeId": 1
+            "DisplayBadge": true
         },
         {
             "Id": "0193975a-5515-779c-9671-18deb8164fab",
@@ -50,7 +48,6 @@
             "DisplayBadge": true,
             "EntityName": "Voucher",
             "TableName": "Shipment",
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01939224-3755-77b3-9713-638f4aa7fb46",
@@ -67,8 +64,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where ([TypeId] = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where ([TypeId] = 1)\"\r\n}",
                     "RefName": "Voucher",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -87,7 +83,6 @@
             "DisplayBadge": true,
             "EntityName": "Voucher",
             "TableName": "Shipment",
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01939760-2b9a-775b-9316-9c3e3b9bcac1",
@@ -103,8 +98,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where ([TypeId] = 1 and [StatusId] = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where ([TypeId] = 1 and [StatusId] = 1)\"\r\n}",
                     "RefName": "Voucher",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -122,7 +116,6 @@
             "DisplayBadge": true,
             "EntityName": "Voucher",
             "TableName": "Shipment",
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01939760-34bb-77ab-a0f9-41397e85d3ed",
@@ -138,8 +131,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where ([TypeId] = 1 and [StatusId] = 2)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where ([TypeId] = 1 and [StatusId] = 2)\"\r\n}",
                     "RefName": "Voucher",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -157,7 +149,6 @@
             "DisplayBadge": true,
             "EntityName": "Voucher",
             "TableName": "Shipment",
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01939760-a571-7266-b3f7-2940f95fb244",
@@ -173,8 +164,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where ([TypeId] = 1 and [StatusId] = 3)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where ([TypeId] = 1 and [StatusId] = 3)\"\r\n}",
                     "RefName": "Voucher",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -192,7 +182,6 @@
             "DisplayBadge": true,
             "EntityName": "Voucher",
             "TableName": "Shipment",
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01939760-aeb2-72f8-ab49-25288ad9968c",
@@ -208,8 +197,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where ([TypeId] = 1 and [StatusId] = 4)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where ([TypeId] = 1 and [StatusId] = 4)\"\r\n}",
                     "RefName": "Voucher",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -227,7 +215,6 @@
             "DisplayBadge": true,
             "EntityName": "Voucher",
             "TableName": "Shipment",
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0193af00-662e-746e-945e-cfd147b8e1b2",
@@ -244,8 +231,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where ([TypeId] = 2)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where ([TypeId] = 2)\"\r\n}",
                     "RefName": "Voucher",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -264,7 +250,6 @@
             "DisplayBadge": true,
             "EntityName": "Voucher",
             "TableName": "Shipment",
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0193af00-662f-762d-b653-c4083ec1fe48",
@@ -280,8 +265,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where ([TypeId] = 2 and [StatusId] = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where ([TypeId] = 2 and [StatusId] = 1)\"\r\n}",
                     "RefName": "Voucher",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -299,7 +283,6 @@
             "DisplayBadge": true,
             "EntityName": "Voucher",
             "TableName": "Shipment",
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0193af00-662f-762d-b653-cb231467aa03",
@@ -315,8 +298,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where ([TypeId] = 2 and [StatusId] = 2)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where ([TypeId] = 2 and [StatusId] = 2)\"\r\n}",
                     "RefName": "Voucher",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -334,7 +316,6 @@
             "DisplayBadge": true,
             "EntityName": "Voucher",
             "TableName": "Shipment",
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0193af00-662f-762d-b653-cc44dd5f0393",
@@ -350,8 +331,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where ([TypeId] = 2 and [StatusId] = 3)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where ([TypeId] = 2 and [StatusId] = 3)\"\r\n}",
                     "RefName": "Voucher",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -369,7 +349,6 @@
             "DisplayBadge": true,
             "EntityName": "Voucher",
             "TableName": "Shipment",
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0193af00-662f-762d-b653-d39fc6cfc2ab",
@@ -385,8 +364,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where ([TypeId] = 2 and [StatusId] = 4)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where ([TypeId] = 2 and [StatusId] = 4)\"\r\n}",
                     "RefName": "Voucher",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         }
@@ -403,8 +381,7 @@
             "FocusSearch": true,
             "MinWidth": "108px",
             "MaxWidth": "108px",
-            "EntityId": "Voucher",
-            "ReportTypeId": 1
+            "EntityId": "Voucher"
         },
         {
             "Id": "01939224-3a77-725d-8604-18eebbf1aa65",
@@ -423,8 +400,7 @@
             "TextAlign": "center",
             "MinWidth": "138px",
             "MaxWidth": "138px",
-            "EntityId": "Voucher",
-            "ReportTypeId": 1
+            "EntityId": "Voucher"
         },
         {
             "Id": "01939774-a54a-70df-a9b6-0732a520db97",
@@ -440,8 +416,7 @@
             "TextAlign": "center",
             "MinWidth": "90px",
             "MaxWidth": "90px",
-            "EntityId": "Voucher",
-            "ReportTypeId": 1
+            "EntityId": "Voucher"
         },
         {
             "Id": "01939775-76e3-712a-8f2d-c4620813eb8f",
@@ -458,8 +433,7 @@
             "TextAlign": "center",
             "MinWidth": "91px",
             "MaxWidth": "91px",
-            "EntityId": "Voucher",
-            "ReportTypeId": 1
+            "EntityId": "Voucher"
         },
         {
             "Id": "0193977a-e3ca-7212-aea9-49579e4a5917",
@@ -475,8 +449,7 @@
             "TextAlign": "center",
             "MinWidth": "81px",
             "MaxWidth": "81px",
-            "EntityId": "Voucher",
-            "ReportTypeId": 1
+            "EntityId": "Voucher"
         },
         {
             "Id": "0193977c-19ca-75bf-aeba-6a64ad172564",
@@ -495,8 +468,7 @@
             "TextAlign": "center",
             "MinWidth": "93px",
             "MaxWidth": "93px",
-            "EntityId": "Voucher",
-            "ReportTypeId": 1
+            "EntityId": "Voucher"
         },
         {
             "Id": "01939780-8d1a-7729-a9ad-afca648df804",
@@ -513,8 +485,7 @@
             "MinWidth": "85px",
             "MaxWidth": "85px",
             "EntityId": "Voucher",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
-            "ReportTypeId": 1
+            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
         },
         {
             "Id": "01939781-1f1a-74fc-b8ec-ab192a8196dc",
@@ -530,8 +501,7 @@
             "TextAlign": "center",
             "MinWidth": "122px",
             "MaxWidth": "122px",
-            "EntityId": "Voucher",
-            "ReportTypeId": 1
+            "EntityId": "Voucher"
         },
         {
             "Id": "0193a170-6b6e-71c1-b30c-bc562320f630",
@@ -550,8 +520,7 @@
             "TextAlign": "center",
             "MinWidth": "78px",
             "MaxWidth": "78px",
-            "EntityId": "Voucher",
-            "ReportTypeId": 1
+            "EntityId": "Voucher"
         },
         {
             "Id": "0193a170-d1f6-7618-a012-9a790424d07c",
@@ -570,8 +539,7 @@
             "TextAlign": "center",
             "MinWidth": "130px",
             "MaxWidth": "130px",
-            "EntityId": "Voucher",
-            "ReportTypeId": 1
+            "EntityId": "Voucher"
         },
         {
             "Id": "0193a171-05be-745b-9cf9-92add59fd327",
@@ -590,8 +558,7 @@
             "TextAlign": "center",
             "MinWidth": "74px",
             "MaxWidth": "74px",
-            "EntityId": "Voucher",
-            "ReportTypeId": 1
+            "EntityId": "Voucher"
         },
         {
             "Id": "0193a171-29f6-762c-9ab1-9691f3017064",
@@ -610,8 +577,7 @@
             "TextAlign": "center",
             "MinWidth": "53px",
             "MaxWidth": "53px",
-            "EntityId": "Voucher",
-            "ReportTypeId": 1
+            "EntityId": "Voucher"
         },
         {
             "Id": "0193a181-d9a4-76f9-8d22-1821541dcdbe",
@@ -630,8 +596,7 @@
             "TextAlign": "center",
             "MinWidth": "130px",
             "MaxWidth": "130px",
-            "EntityId": "Voucher",
-            "ReportTypeId": 1
+            "EntityId": "Voucher"
         },
         {
             "Id": "0193a19e-3242-70df-b359-7b21b3cd7ef5",
@@ -650,8 +615,7 @@
             "TextAlign": "center",
             "MinWidth": "78px",
             "MaxWidth": "78px",
-            "EntityId": "Voucher",
-            "ReportTypeId": 1
+            "EntityId": "Voucher"
         },
         {
             "Id": "0193eee4-9f63-7465-b630-bc42b542e90a",
@@ -669,8 +633,7 @@
             "HasFilter": true,
             "MinWidth": "116px",
             "MaxWidth": "116px",
-            "EntityId": "Voucher",
-            "ReportTypeId": 1
+            "EntityId": "Voucher"
         },
         {
             "Id": "019410ab-6358-714f-a4c1-db8ff0b69e63",
@@ -686,8 +649,7 @@
             "TextAlign": "center",
             "MinWidth": "122px",
             "MaxWidth": "122px",
-            "EntityId": "Voucher",
-            "ReportTypeId": 1
+            "EntityId": "Voucher"
         },
         {
             "Id": "01950d80-a30a-770f-b206-a393fab6acb8",
@@ -702,8 +664,7 @@
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
-            "EntityId": "Voucher1",
-            "ReportTypeId": 1
+            "EntityId": "Voucher1"
         },
         {
             "Id": "01950d80-a30a-770f-b206-a443b5cd49fa",
@@ -719,8 +680,7 @@
             "TextAlign": "center",
             "MinWidth": "90px",
             "MaxWidth": "90px",
-            "EntityId": "Voucher1",
-            "ReportTypeId": 1
+            "EntityId": "Voucher1"
         },
         {
             "Id": "01950d80-a30a-770f-b206-a9f53d9f042b",
@@ -739,8 +699,7 @@
             "TextAlign": "center",
             "MinWidth": "130px",
             "MaxWidth": "130px",
-            "EntityId": "Voucher1",
-            "ReportTypeId": 1
+            "EntityId": "Voucher1"
         },
         {
             "Id": "01950d80-a30b-7120-8854-af4170afe676",
@@ -759,8 +718,7 @@
             "TextAlign": "center",
             "MinWidth": "78px",
             "MaxWidth": "78px",
-            "EntityId": "Voucher1",
-            "ReportTypeId": 1
+            "EntityId": "Voucher1"
         },
         {
             "Id": "01950d80-a30b-7120-8854-b119d5b8513b",
@@ -777,8 +735,7 @@
             "TextAlign": "center",
             "MinWidth": "91px",
             "MaxWidth": "91px",
-            "EntityId": "Voucher1",
-            "ReportTypeId": 1
+            "EntityId": "Voucher1"
         },
         {
             "Id": "01950d80-a30b-7120-8854-b5711d14c140",
@@ -794,8 +751,7 @@
             "TextAlign": "center",
             "MinWidth": "81px",
             "MaxWidth": "81px",
-            "EntityId": "Voucher1",
-            "ReportTypeId": 1
+            "EntityId": "Voucher1"
         },
         {
             "Id": "01950d80-a30b-7120-8854-b84cf141f7c6",
@@ -814,8 +770,7 @@
             "TextAlign": "center",
             "MinWidth": "93px",
             "MaxWidth": "93px",
-            "EntityId": "Voucher1",
-            "ReportTypeId": 1
+            "EntityId": "Voucher1"
         },
         {
             "Id": "01950d80-a30b-7120-8854-be9389fa607b",
@@ -834,8 +789,7 @@
             "TextAlign": "center",
             "MinWidth": "78px",
             "MaxWidth": "78px",
-            "EntityId": "Voucher1",
-            "ReportTypeId": 1
+            "EntityId": "Voucher1"
         },
         {
             "Id": "01950d80-a30b-7120-8854-c0704393ea50",
@@ -852,8 +806,7 @@
             "MinWidth": "85px",
             "MaxWidth": "85px",
             "EntityId": "Voucher1",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
-            "ReportTypeId": 1
+            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
         },
         {
             "Id": "01950d80-a30c-754e-9c18-c1655de67da9",
@@ -866,8 +819,7 @@
             "FocusSearch": true,
             "MinWidth": "108px",
             "MaxWidth": "108px",
-            "EntityId": "Voucher1",
-            "ReportTypeId": 1
+            "EntityId": "Voucher1"
         },
         {
             "Id": "01950d80-a30c-754e-9c18-cfd63900f090",
@@ -886,8 +838,7 @@
             "TextAlign": "center",
             "MinWidth": "130px",
             "MaxWidth": "130px",
-            "EntityId": "Voucher1",
-            "ReportTypeId": 1
+            "EntityId": "Voucher1"
         },
         {
             "Id": "01950d80-a30c-754e-9c18-d0fd909fc6c8",
@@ -905,8 +856,7 @@
             "HasFilter": true,
             "MinWidth": "116px",
             "MaxWidth": "116px",
-            "EntityId": "Voucher1",
-            "ReportTypeId": 1
+            "EntityId": "Voucher1"
         },
         {
             "Id": "01950d80-a30c-754e-9c18-d5c39fa926cf",
@@ -925,8 +875,7 @@
             "TextAlign": "center",
             "MinWidth": "138px",
             "MaxWidth": "138px",
-            "EntityId": "Voucher1",
-            "ReportTypeId": 1
+            "EntityId": "Voucher1"
         },
         {
             "Id": "01957b1e-c776-7639-ab35-d24ba5628fb0",
@@ -941,8 +890,7 @@
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
-            "EntityId": "Voucher",
-            "ReportTypeId": 1
+            "EntityId": "Voucher"
         }
     ],
     "Components": [
@@ -956,8 +904,7 @@
             "Icon": "fal fa-plus",
             "ClassName": "btn",
             "Events": "{\r\n    \"click\": \"Add\"\r\n}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "0193af36-e202-7784-8f43-461ea950f5d2",
@@ -969,8 +916,7 @@
             "Icon": "fal fa-plus",
             "ClassName": "btn",
             "Events": "{\r\n    \"click\": \"AddReim\"\r\n}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "01950d80-a30a-770f-b206-a393fab6acb8",
@@ -985,8 +931,7 @@
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
-            "EntityId": "Voucher1",
-            "ReportTypeId": 1
+            "EntityId": "Voucher1"
         },
         {
             "Id": "01957b1e-c776-7639-ab35-d24ba5628fb0",
@@ -1001,8 +946,7 @@
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
-            "EntityId": "Voucher",
-            "ReportTypeId": 1
+            "EntityId": "Voucher"
         }
     ],
     "FeaturePolicies": [

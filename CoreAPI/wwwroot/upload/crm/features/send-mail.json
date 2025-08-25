@@ -14,7 +14,6 @@
             "ClassName": "card-body",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "000101f0-0000-0000-8000-131592a6941f",
@@ -24,8 +23,7 @@
                     "Column": 12,
                     "Label": "To",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00e201fc-0000-0000-8000-e5da05f7a3af",
@@ -35,8 +33,7 @@
                     "Column": 12,
                     "Label": "Subject",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00fc01bc-0000-0000-8000-f02d4aed04b3",
@@ -46,8 +43,7 @@
                     "Column": 12,
                     "Label": "Text",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         },
@@ -59,7 +55,6 @@
             "ClassName": "ribbon-group",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "000201e8-0000-0000-8000-229a37f69600",
@@ -71,8 +66,7 @@
                     "Icon": "fal fa-envelope",
                     "ClassName": "btn detail-button primary",
                     "Events": "{\"click\":\"SendMail\"}",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         }
@@ -88,8 +82,7 @@
             "Icon": "fal fa-envelope",
             "ClassName": "btn detail-button primary",
             "Events": "{\"click\":\"SendMail\"}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         }
     ],
     "FeaturePolicies": [

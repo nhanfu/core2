@@ -13,7 +13,6 @@
             "ComponentType": "Section",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0022f784-0000-0000-8000-f877b189f411",
@@ -31,8 +30,7 @@
                     "IsRealtime": true,
                     "RefName": "TableName",
                     "TopEmpty": true,
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         }
@@ -47,8 +45,7 @@
             "Active": true,
             "Editable": true,
             "created_by": "TableName",
-            "EntityId": "TableName",
-            "ReportTypeId": 1
+            "EntityId": "TableName"
         },
         {
             "Id": "0068f7c0-0000-0000-8000-9357a9db3c47",
@@ -59,8 +56,7 @@
             "Active": true,
             "Editable": true,
             "created_by": "TableName",
-            "EntityId": "TableName",
-            "ReportTypeId": 1
+            "EntityId": "TableName"
         },
         {
             "Id": "0070f760-0000-0000-8000-f189f7d25efb",
@@ -71,8 +67,7 @@
             "Active": true,
             "Editable": true,
             "created_by": "TableName",
-            "EntityId": "TableName",
-            "ReportTypeId": 1
+            "EntityId": "TableName"
         },
         {
             "Id": "0073f798-0000-0000-8000-22cc398cb779",
@@ -82,8 +77,7 @@
             "Label": "Inserted Date",
             "Active": true,
             "created_by": "TableName",
-            "EntityId": "TableName",
-            "ReportTypeId": 1
+            "EntityId": "TableName"
         },
         {
             "Id": "0079f7a0-0000-0000-8000-421c24e7d12a",
@@ -98,8 +92,7 @@
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "created_by": "TableName",
-            "EntityId": "TableName",
-            "ReportTypeId": 1
+            "EntityId": "TableName"
         },
         {
             "Id": "0084f73c-0000-0000-8000-9345a3b23d02",
@@ -112,8 +105,7 @@
             "Active": true,
             "Editable": true,
             "created_by": "TableName",
-            "EntityId": "TableName",
-            "ReportTypeId": 1
+            "EntityId": "TableName"
         }
     ],
     "Components": [
@@ -128,8 +120,7 @@
             "Active": true,
             "Editable": true,
             "created_by": "TableName",
-            "EntityId": "TableName",
-            "ReportTypeId": 1
+            "EntityId": "TableName"
         }
     ],
     "FeaturePolicies": [

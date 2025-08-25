@@ -19,8 +19,7 @@
             "XsCol": 6,
             "XxlCol": 12,
             "Active": true,
-            "DisabledExp": "this.Entity.ActionId == 2",
-            "ReportTypeId": 1
+            "DisabledExp": "this.Entity.ActionId == 2"
         },
         {
             "Id": "0194e866-1701-744b-82f6-8bf07af3edbc",
@@ -32,7 +31,6 @@
             "Active": true,
             "ParentId": "0194e866-16ce-7493-8598-6649808d0985",
             "XxlOuterColumn": 12,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0194e866-1735-72bc-999a-2d36bad940f3",
@@ -44,8 +42,7 @@
                     "Label": "Label",
                     "ShowLabel": true,
                     "Events": "{\"change\":\"GetInfo\"}",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0194e866-1782-7078-9f84-2e4be790ae57",
@@ -55,8 +52,7 @@
                     "Column": 12,
                     "Label": "Group Name",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         },
@@ -72,7 +68,6 @@
             "IsTab": true,
             "XxlOuterColumn": 12,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0194e866-1b42-72a3-86c8-c9927b6d2bfb",
@@ -88,8 +83,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from Component as ds where FeatureId = '{FeatureId}' and ComponentType = 'Section'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where FeatureId = '{FeatureId}' and ComponentType = 'Section'\"\r\n}",
                     "RefName": "Component",
                     "PreQuery": "{\r\n    \"FeatureId\": this.EditForm.Entity.Id\r\n}",
-                    "Editable": true,
-                    "ReportTypeId": 1
+                    "Editable": true
                 }
             ]
         },
@@ -102,8 +96,7 @@
             "Style": "margin-bottom: 0px;padding: 0;",
             "XxlCol": 12,
             "Active": true,
-            "DisabledExp": "this.Entity.ActionId == 2",
-            "ReportTypeId": 1
+            "DisabledExp": "this.Entity.ActionId == 2"
         },
         {
             "Id": "0194e866-1c93-76d5-878e-4bc699b8f141",
@@ -114,7 +107,6 @@
             "XxlCol": 12,
             "Active": true,
             "XxlOuterColumn": 12,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0194e866-1cdd-710d-a743-023ba5ba8b37",
@@ -127,8 +119,7 @@
                     "Icon": "fas fa-sliders-h-square",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"SaveAs\" }",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0194e866-1d16-70cb-b7b1-6e74a4477996",
@@ -140,8 +131,7 @@
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"Prospect\" }",
                     "Active": true,
-                    "ShowExp": "this.Entity.ActionId == 1",
-                    "ReportTypeId": 1
+                    "ShowExp": "this.Entity.ActionId == 1"
                 },
                 {
                     "Id": "0194e866-1d52-7569-a53b-a62cf1db52e6",
@@ -153,8 +143,7 @@
                     "Icon": "fas fa-sliders-h-square",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"SaveAdd\" }",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0194e866-1d84-7676-9cfb-85e0452d1d10",
@@ -166,8 +155,7 @@
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         }
@@ -185,8 +173,7 @@
             "Editable": true,
             "MinWidth": "51px",
             "MaxWidth": "51px",
-            "EntityId": "ComponentGroup",
-            "ReportTypeId": 1
+            "EntityId": "ComponentGroup"
         },
         {
             "Id": "0194e866-1ef0-7529-856c-c95142f74243",
@@ -200,8 +187,7 @@
             "Editable": true,
             "MinWidth": "230px",
             "MaxWidth": "230px",
-            "EntityId": "ComponentGroup",
-            "ReportTypeId": 1
+            "EntityId": "ComponentGroup"
         },
         {
             "Id": "0194e866-1f29-764d-bede-e62a36f476c0",
@@ -215,8 +201,7 @@
             "Editable": true,
             "MinWidth": "158px",
             "MaxWidth": "158px",
-            "EntityId": "ComponentGroup",
-            "ReportTypeId": 1
+            "EntityId": "ComponentGroup"
         },
         {
             "Id": "0194e866-1f93-705a-bb26-5c87f56afd49",
@@ -230,8 +215,7 @@
             "Editable": true,
             "MinWidth": "188px",
             "MaxWidth": "188px",
-            "EntityId": "ComponentGroup",
-            "ReportTypeId": 1
+            "EntityId": "ComponentGroup"
         },
         {
             "Id": "0194e866-1ff1-7425-b723-aba19bbf158c",
@@ -245,8 +229,7 @@
             "Editable": true,
             "MinWidth": "146px",
             "MaxWidth": "146px",
-            "EntityId": "ComponentGroup",
-            "ReportTypeId": 1
+            "EntityId": "ComponentGroup"
         },
         {
             "Id": "0194e866-20aa-73ca-a9bd-7ab8ca8e7686",
@@ -260,8 +243,7 @@
             "Editable": true,
             "MinWidth": "180px",
             "MaxWidth": "180px",
-            "EntityId": "ComponentGroup",
-            "ReportTypeId": 1
+            "EntityId": "ComponentGroup"
         },
         {
             "Id": "0194e866-2145-7511-8fcd-05a5d87fcccb",
@@ -275,8 +257,7 @@
             "Editable": true,
             "MinWidth": "175px",
             "MaxWidth": "175px",
-            "EntityId": "ComponentGroup",
-            "ReportTypeId": 1
+            "EntityId": "ComponentGroup"
         }
     ],
     "Components": [
@@ -291,8 +272,7 @@
             "Icon": "fas fa-sliders-h-square",
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"SaveAs\" }",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "0194e866-1d16-70cb-b7b1-6e74a4477996",
@@ -304,8 +284,7 @@
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"Prospect\" }",
             "Active": true,
-            "ShowExp": "this.Entity.ActionId == 1",
-            "ReportTypeId": 1
+            "ShowExp": "this.Entity.ActionId == 1"
         },
         {
             "Id": "0194e866-1d52-7569-a53b-a62cf1db52e6",
@@ -317,8 +296,7 @@
             "Icon": "fas fa-sliders-h-square",
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"SaveAdd\" }",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "0194e866-1d84-7676-9cfb-85e0452d1d10",
@@ -330,8 +308,7 @@
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
             "Events": "{ \"click\" : \"SavePatch\" }",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         }
     ],
     "FeaturePolicies": [

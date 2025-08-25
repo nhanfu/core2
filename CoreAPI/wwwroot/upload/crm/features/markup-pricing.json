@@ -18,7 +18,6 @@
             "XxlCol": 12,
             "Active": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00aa1504-0000-0000-8000-3fa260948026",
@@ -35,8 +34,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from MarkupPricing as ds\",\r\n    \"total\": \"select count(ds.Id) as total from MarkupPricing as ds\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "MarkupPricing",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         }
@@ -58,8 +56,7 @@
             "FocusSearch": true,
             "MinWidth": "85px",
             "MaxWidth": "85px",
-            "EntityId": "MarkupPricing",
-            "ReportTypeId": 1
+            "EntityId": "MarkupPricing"
         },
         {
             "Id": "00aa1554-0000-0000-8000-9cf185b1681b",
@@ -81,8 +78,7 @@
             "Editable": true,
             "MinWidth": "240px",
             "MaxWidth": "240px",
-            "EntityId": "MarkupPricing",
-            "ReportTypeId": 1
+            "EntityId": "MarkupPricing"
         },
         {
             "Id": "00aa156c-0000-0000-8000-73004bab1979",
@@ -102,8 +98,7 @@
             "Editable": true,
             "MinWidth": "116px",
             "MaxWidth": "116px",
-            "EntityId": "MarkupPricing",
-            "ReportTypeId": 1
+            "EntityId": "MarkupPricing"
         },
         {
             "Id": "00aa15f4-0000-0000-8000-d4df203115b6",
@@ -123,8 +118,7 @@
             "Editable": true,
             "MinWidth": "132px",
             "MaxWidth": "132px",
-            "EntityId": "MarkupPricing",
-            "ReportTypeId": 1
+            "EntityId": "MarkupPricing"
         },
         {
             "Id": "00bc15b8-0000-0000-8000-c3013c1aac3a",
@@ -144,8 +138,7 @@
             "Editable": true,
             "MinWidth": "102px",
             "MaxWidth": "102px",
-            "EntityId": "MarkupPricing",
-            "ReportTypeId": 1
+            "EntityId": "MarkupPricing"
         },
         {
             "Id": "00df1550-0000-0000-8000-5b54783c389f",
@@ -159,8 +152,7 @@
             "Editable": true,
             "MinWidth": "136px",
             "MaxWidth": "136px",
-            "EntityId": "MarkupPricing",
-            "ReportTypeId": 1
+            "EntityId": "MarkupPricing"
         },
         {
             "Id": "00e815b8-0000-0000-8000-01e63154a178",
@@ -179,8 +171,7 @@
             "Editable": true,
             "MinWidth": "123px",
             "MaxWidth": "123px",
-            "EntityId": "MarkupPricing",
-            "ReportTypeId": 1
+            "EntityId": "MarkupPricing"
         },
         {
             "Id": "00f515a8-0000-0000-8000-721eaa779269",
@@ -200,8 +191,7 @@
             "Editable": true,
             "MinWidth": "102px",
             "MaxWidth": "102px",
-            "EntityId": "MarkupPricing",
-            "ReportTypeId": 1
+            "EntityId": "MarkupPricing"
         },
         {
             "Id": "00fc15a4-0000-0000-8000-1c99137480f8",
@@ -215,8 +205,7 @@
             "Editable": true,
             "MinWidth": "136px",
             "MaxWidth": "136px",
-            "EntityId": "MarkupPricing",
-            "ReportTypeId": 1
+            "EntityId": "MarkupPricing"
         }
     ],
     "FeaturePolicies": [

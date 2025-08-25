@@ -18,7 +18,6 @@
             "Active": true,
             "ParentId": "00b41d50-0000-0000-8000-8892919b7f6e",
             "XxlOuterColumn": 3,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0073003c-0000-0000-8000-2fed6bd1f522",
@@ -28,8 +27,7 @@
                     "Column": 12,
                     "Label": "Address",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "008b1df8-0000-0000-8000-441d09315f16",
@@ -41,8 +39,7 @@
                     "ShowLabel": true,
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "008c008c-0000-0000-8000-06ba7b0f89c7",
@@ -53,8 +50,7 @@
                     "Label": "Phone",
                     "ShowLabel": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "00af0068-0000-0000-8000-c1a0050c49aa",
@@ -66,8 +62,7 @@
                     "ShowLabel": true,
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 }
             ]
         },
@@ -82,7 +77,6 @@
             "Active": true,
             "ParentId": "00b41d50-0000-0000-8000-8892919b7f6e",
             "XxlOuterColumn": 3,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "006f1d1c-0000-0000-8000-8f906877d81b",
@@ -92,8 +86,7 @@
                     "Column": 6,
                     "Label": "Target Local Curr",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00711ddc-0000-0000-8000-5fb6d65430ad",
@@ -104,8 +97,7 @@
                     "Precision": 2,
                     "Label": "Target USD Curr",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "007e1d04-0000-0000-8000-74cf25ad2f21",
@@ -115,8 +107,7 @@
                     "Column": 6,
                     "Label": "Salary Amount",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "007e1d04-0000-0000-8001-add1c631c3a1",
@@ -126,8 +117,7 @@
                     "Column": 6,
                     "Label": "Salary Coefficient",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00821d40-0000-0000-8000-49d6ac05b5ac",
@@ -137,8 +127,7 @@
                     "Column": 6,
                     "Label": "Insurance Amount",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00891d70-0000-0000-8000-75503a0f30c2",
@@ -148,8 +137,7 @@
                     "Column": 6,
                     "Label": "TaxCode",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "009f1d30-0000-0000-8000-9e4432a8a2fe",
@@ -159,8 +147,7 @@
                     "Column": 6,
                     "Label": "Dependents",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00a81d88-0000-0000-8000-705f11d96ba2",
@@ -176,8 +163,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Type Bonus'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Type Bonus'\"\r\n}",
                     "RefName": "MasterData",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "00da1d50-0000-0000-8000-01819b43560a",
@@ -193,8 +179,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Type Contract'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Type Contract'\"\r\n}",
                     "RefName": "MasterData",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 }
             ]
         },
@@ -210,7 +195,6 @@
             "ParentId": "00b41d50-0000-0000-8000-8892919b7f6e",
             "XxlOuterColumn": 3,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00001dc0-0000-0000-8000-3ee1132490e1",
@@ -220,8 +204,7 @@
                     "Column": 12,
                     "Label": "Acc Number",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00001dc0-0000-0000-8001-9c0866daa1ad",
@@ -231,8 +214,7 @@
                     "Column": 12,
                     "Label": "Acc Name",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00001dc0-0000-0000-8002-504da59d0899",
@@ -248,8 +230,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Bank'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Bank'\"\r\n}",
                     "RefName": "MasterData",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 }
             ]
         },
@@ -263,7 +244,6 @@
             "Active": true,
             "ParentId": "00b41d50-0000-0000-8000-8892919b7f6e",
             "XxlOuterColumn": 6,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00041db8-0000-0000-8000-6b3fa18313e2",
@@ -273,8 +253,7 @@
                     "Column": 4,
                     "Label": "Joint Date",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00161de4-0000-0000-8000-75992840e3b8",
@@ -291,8 +270,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Team Group'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Team Group'\"\r\n}",
                     "RefName": "MasterData",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "003e1d58-0000-0000-8000-8be4c5123567",
@@ -309,8 +287,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Department Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Department Type'\"\r\n}",
                     "RefName": "MasterData",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "00421d20-0000-0000-8000-45cf87b6cce5",
@@ -321,8 +298,7 @@
                     "Row": 50,
                     "Label": "Knowledge",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00551d50-0000-0000-8000-fa2b05c0a08c",
@@ -339,8 +315,7 @@
                     "Query": "{\r\n    \"sql\": \"select ds.* from [Role] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [Role] as ds\"\r\n}",
                     "RefName": "Role",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "IsMultiple": true,
-                    "ReportTypeId": 1
+                    "IsMultiple": true
                 },
                 {
                     "Id": "005e380c-0000-0000-8000-d8fee203827c",
@@ -351,8 +326,7 @@
                     "Row": 50,
                     "Label": "Department",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "005f3850-0000-0000-8000-2c120dcfbf69",
@@ -363,8 +337,7 @@
                     "Row": 50,
                     "Label": "LeadTeam",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00d53514-0000-0000-8000-d6bcd2b448f8",
@@ -381,8 +354,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from [Partner] as ds where ServiceId = 5\",\r\n    \"total\": \"select count(ds.Id) as total from [Partner] as ds where ServiceId = 5\"\r\n}",
                     "RefName": "Partner",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01939712-8706-749d-8554-898c3bd7c87a",
@@ -399,8 +371,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Position Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Position Type'\"\r\n}",
                     "RefName": "MasterData",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 }
             ]
         },
@@ -416,7 +387,6 @@
             "ParentId": "00b41d50-0000-0000-8000-8892919b7f6e",
             "XxlOuterColumn": 3,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "005d1dac-0000-0000-8000-dac24c19fe61",
@@ -426,8 +396,7 @@
                     "Column": 12,
                     "Label": "Login Failed",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00f21dbc-0000-0000-8000-35c879cb2037",
@@ -437,8 +406,7 @@
                     "Column": 12,
                     "Label": "Email key",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0195181e-f2fc-70c7-b1b6-be38f819fa01",
@@ -448,8 +416,7 @@
                     "Column": 12,
                     "Label": "Mail Server",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0195181f-3997-728b-8632-0739ab40d91f",
@@ -459,8 +426,7 @@
                     "Column": 12,
                     "Label": "Port Server",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         },
@@ -472,7 +438,6 @@
             "ClassName": "ribbon-group",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00d400dc-0000-0000-8000-7d5605c5bbfc",
@@ -485,8 +450,7 @@
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         },
@@ -500,7 +464,6 @@
             "Active": true,
             "ParentId": "00b41d50-0000-0000-8000-8892919b7f6e",
             "XxlOuterColumn": 2,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00bd1df4-0000-0000-8000-817b56b2984c",
@@ -509,8 +472,7 @@
                     "ComponentType": "FileUpload",
                     "Column": 12,
                     "Active": true,
-                    "VirtualScroll": true,
-                    "ReportTypeId": 1
+                    "VirtualScroll": true
                 }
             ]
         },
@@ -524,7 +486,6 @@
             "Active": true,
             "ParentId": "00b41d50-0000-0000-8000-8892919b7f6e",
             "XxlOuterColumn": 4,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00310034-0000-0000-8000-73de0d5946e0",
@@ -534,8 +495,7 @@
                     "Column": 6,
                     "Label": "Brithday",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "003b0008-0000-0000-8000-5cbd37e77122",
@@ -545,8 +505,7 @@
                     "Column": 6,
                     "Label": "Nick Name",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "004400d4-0000-0000-8000-015d647927ff",
@@ -557,8 +516,7 @@
                     "Label": "Full Name",
                     "ShowLabel": true,
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "004600a0-0000-0000-8000-04ecd891eafd",
@@ -571,8 +529,7 @@
                     "ShowLabel": true,
                     "Active": true,
                     "RefName": "Partner",
-                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
-                    "ReportTypeId": 1
+                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]"
                 },
                 {
                     "Id": "0051005c-0000-0000-8000-cd8de21a3536",
@@ -588,8 +545,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Gender'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Gender'\"\r\n}",
                     "RefName": "MasterData",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "005e00c0-0000-0000-8000-54266fdd888d",
@@ -600,8 +556,7 @@
                     "Row": 50,
                     "Label": "Date ",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00780060-0000-0000-8000-cc98465e09fc",
@@ -611,8 +566,7 @@
                     "Column": 4,
                     "Label": "Place of Issue",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         },
@@ -622,8 +576,7 @@
             "Order": 3,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         }
     ],
     "GridPolicies": [
@@ -644,8 +597,7 @@
             "Editable": true,
             "MinWidth": "536px",
             "MaxWidth": "536px",
-            "EntityId": "UserRole",
-            "ReportTypeId": 1
+            "EntityId": "UserRole"
         }
     ],
     "Components": [
@@ -660,8 +612,7 @@
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
             "Events": "{ \"click\" : \"SavePatch\" }",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         }
     ],
     "FeaturePolicies": [

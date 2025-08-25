@@ -16,7 +16,6 @@
             "ComponentType": "Section",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00570f84-0000-0000-8000-6257490370f8",
@@ -27,8 +26,7 @@
                     "Active": true,
                     "Query": "select * from Partner as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.PicId = '{TokenUserId}')",
                     "RefName": "Partner",
-                    "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "ReportTypeId": 1
+                    "PreQuery": "{ \"UserId\": this.Token.UserId }"
                 }
             ]
         }

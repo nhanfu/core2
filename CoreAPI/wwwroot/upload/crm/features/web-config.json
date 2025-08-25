@@ -15,7 +15,6 @@
             "ComponentType": "Section",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00c01458-0000-0000-8000-2cce6e0b741c",
@@ -32,8 +31,7 @@
                     "IsRealtime": true,
                     "RefName": "WebConfig",
                     "TopEmpty": true,
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         }
@@ -50,8 +48,7 @@
             "Editable": true,
             "MinWidth": "829px",
             "MaxWidth": "829px",
-            "EntityId": "WebConfig",
-            "ReportTypeId": 1
+            "EntityId": "WebConfig"
         },
         {
             "Id": "00c014f8-0000-0000-8000-087596a6e825",
@@ -64,8 +61,7 @@
             "FocusSearch": true,
             "MinWidth": "165px",
             "MaxWidth": "165px",
-            "EntityId": "WebConfig",
-            "ReportTypeId": 1
+            "EntityId": "WebConfig"
         }
     ],
     "FeaturePolicies": [

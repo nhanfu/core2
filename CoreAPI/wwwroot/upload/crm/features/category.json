@@ -16,8 +16,7 @@
             "ClassName": "wrapper scroll-content",
             "Width": "100%",
             "XxlCol": 3,
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "6e63c20d-2788-4776-9da0-4cfe7c982ca2",
@@ -29,7 +28,6 @@
             "ParentId": "6e63c20d-2788-4776-9da0-4cfe7c982ca1",
             "IsTab": true,
             "XxlOuterColumn": 3,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "001ef2bc-0000-0000-8000-197aa5870cc9",
@@ -43,8 +41,7 @@
                     "Query": "{ \"sql\" : \"select * from Component as ds\" , \"total\" : \"select count(ds.Id) as total from Component as ds\" }",
                     "RefName": "Component",
                     "ShowHotKey": true,
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         }
@@ -59,8 +56,7 @@
             "ShowLabel": true,
             "Active": true,
             "created_by": "GridView",
-            "EntityId": "GridView",
-            "ReportTypeId": 1
+            "EntityId": "GridView"
         },
         {
             "Id": "003aee28-0000-0000-8000-10b07b89e899",
@@ -71,8 +67,7 @@
             "ShowLabel": true,
             "Active": true,
             "created_by": "GridView",
-            "EntityId": "GridView",
-            "ReportTypeId": 1
+            "EntityId": "GridView"
         },
         {
             "Id": "003deee8-0000-0000-8000-003b4e1333a6",
@@ -83,8 +78,7 @@
             "ShowLabel": true,
             "Active": true,
             "created_by": "GridView",
-            "EntityId": "GridView",
-            "ReportTypeId": 1
+            "EntityId": "GridView"
         },
         {
             "Id": "0054eed0-0000-0000-8000-86cb6f73c32c",
@@ -95,8 +89,7 @@
             "ShowLabel": true,
             "Active": true,
             "created_by": "GridView",
-            "EntityId": "GridView",
-            "ReportTypeId": 1
+            "EntityId": "GridView"
         },
         {
             "Id": "00b6ee70-0000-0000-8000-3d1dcd28e974",
@@ -107,8 +100,7 @@
             "ShowLabel": true,
             "Active": true,
             "created_by": "GridView",
-            "EntityId": "GridView",
-            "ReportTypeId": 1
+            "EntityId": "GridView"
         },
         {
             "Id": "00c4ef44-0000-0000-8000-25c19d939985",
@@ -119,8 +111,7 @@
             "ShowLabel": true,
             "Active": true,
             "created_by": "GridView",
-            "EntityId": "GridView",
-            "ReportTypeId": 1
+            "EntityId": "GridView"
         },
         {
             "Id": "00c6ee5c-0000-0000-8000-941c029c202d",
@@ -131,8 +122,7 @@
             "ShowLabel": true,
             "Active": true,
             "created_by": "GridView",
-            "EntityId": "GridView",
-            "ReportTypeId": 1
+            "EntityId": "GridView"
         },
         {
             "Id": "6e63c20d-2788-4776-9da0-4cfe7c98rrrr",
@@ -143,8 +133,7 @@
             "ShowLabel": true,
             "Active": true,
             "created_by": "GridView",
-            "EntityId": "GridView",
-            "ReportTypeId": 1
+            "EntityId": "GridView"
         }
     ],
     "Components": [
@@ -157,8 +146,7 @@
             "Icon": "fal fa-plus",
             "ClassName": "btn",
             "Events": "{\"click\":\"AddNew\"}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "0098f680-0000-0000-8000-340deaee1332",
@@ -169,8 +157,7 @@
             "Icon": "fal fa-walking",
             "ClassName": "btn",
             "Events": "{\"click\":\"Hello\"}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "009cf6d4-0000-0000-8000-76040fc5fc1d",
@@ -180,8 +167,7 @@
             "Label": "Status",
             "Icon": "fal fa-signal-alt-2",
             "ClassName": "btn",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         }
     ],
     "FeaturePolicies": [

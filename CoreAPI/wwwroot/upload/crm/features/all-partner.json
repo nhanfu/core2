@@ -18,7 +18,6 @@
             "Icon": "fal fa-border-all mr-1",
             "XxlCol": 1,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0193925a-c555-706c-aaf9-47d7e40529f1",
@@ -34,8 +33,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from [Partner] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [Partner] as ds\",\r\n    \"delete\": \"select top 1 CustomerId from Inquiry where CustomerId in ({EntityIds}) union select top 1 VendorId from DefaultFee where VendorId in ({EntityIds}) union select top 1 PayerId from InquiryDetail where PayerId in ({EntityIds}) union select top 1 PayerId from InquiryDetail where PayeeId in ({EntityIds}) union select top 1 CustomerId from Booking where CustomerId in ({EntityIds})\",\r\n    \"update\" : \"update Inquiry set CustomerId = '{NewId}' where CustomerId in ({EntityIds}); update DefaultFee set VendorId = '{NewId}' where VendorId in ({EntityIds}); update InquiryDetail set PayerId = '{NewId}' where PayerId in ({EntityIds}); update InquiryDetail set PayerId = '{NewId}' where PayeeId in ({EntityIds}); update Booking set  CustomerId = '{NewId}' where CustomerId in ({EntityIds});UPDATE p1 SET p1.History = CONCAT(ISNULL(p1.History, ''), '', N'The partner ', ISNULL(agg.PartnerNames, N''), N' was deleted by user {TokenUserName} on ', GETDATE() ) FROM [Partner] p1 CROSS APPLY ( SELECT STRING_AGG(CONCAT(p2.Name, N' (', p2.Id, ')'), N', ') AS PartnerNames FROM [Partner] p2 WHERE p2.Id IN ({EntityIds}) ) agg WHERE p1.Id = '{NewId}';\"\r\n}",
                     "RefName": "Partner",
                     "PreQuery": "{\r\n    \"Message\": \"Unable to delete issue data\"\r\n}",
-                    "OrderBy": "ServiceId desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ServiceId desc"
                 }
             ]
         }
@@ -54,8 +52,7 @@
             "FocusSearch": true,
             "MinWidth": "56px",
             "MaxWidth": "56px",
-            "EntityId": "Customer",
-            "ReportTypeId": 1
+            "EntityId": "Customer"
         },
         {
             "Id": "0193c354-01a7-702b-9ac4-e6abc30a5559",
@@ -68,8 +65,7 @@
             "FocusSearch": true,
             "MinWidth": "82px",
             "MaxWidth": "82px",
-            "EntityId": "Customer",
-            "ReportTypeId": 1
+            "EntityId": "Customer"
         },
         {
             "Id": "0193c354-01a8-710a-9ab6-5a34bb1ff210",
@@ -82,8 +78,7 @@
             "FocusSearch": true,
             "MinWidth": "367px",
             "MaxWidth": "367px",
-            "EntityId": "Customer",
-            "ReportTypeId": 1
+            "EntityId": "Customer"
         },
         {
             "Id": "0193c354-01a8-710a-9ab6-5c422922f4ad",
@@ -96,8 +91,7 @@
             "FocusSearch": true,
             "MinWidth": "177px",
             "MaxWidth": "177px",
-            "EntityId": "Customer",
-            "ReportTypeId": 1
+            "EntityId": "Customer"
         },
         {
             "Id": "0193c354-01a8-710a-9ab6-63f47804adf8",
@@ -110,8 +104,7 @@
             "FocusSearch": true,
             "MinWidth": "118px",
             "MaxWidth": "118px",
-            "EntityId": "Customer",
-            "ReportTypeId": 1
+            "EntityId": "Customer"
         },
         {
             "Id": "0193c354-01a8-710a-9ab6-648d591494ee",
@@ -124,8 +117,7 @@
             "FocusSearch": true,
             "MinWidth": "118px",
             "MaxWidth": "118px",
-            "EntityId": "Customer",
-            "ReportTypeId": 1
+            "EntityId": "Customer"
         },
         {
             "Id": "0193c354-01a8-710a-9ab6-6a1cd9b31c38",
@@ -142,8 +134,7 @@
             "FocusSearch": true,
             "MinWidth": "138px",
             "MaxWidth": "138px",
-            "EntityId": "Customer",
-            "ReportTypeId": 1
+            "EntityId": "Customer"
         },
         {
             "Id": "0193c354-01a8-710a-9ab6-6e7e4ac8b83e",
@@ -157,8 +148,7 @@
             "MinWidth": "287px",
             "MaxWidth": "287px",
             "EntityId": "Customer",
-            "IsMultiple": true,
-            "ReportTypeId": 1
+            "IsMultiple": true
         },
         {
             "Id": "0193c354-01a8-710a-9ab6-73807b33f450",
@@ -178,8 +168,7 @@
             "BasicSearch": true,
             "MinWidth": "138px",
             "MaxWidth": "138px",
-            "EntityId": "Customer",
-            "ReportTypeId": 1
+            "EntityId": "Customer"
         },
         {
             "Id": "0193c354-01a8-710a-9ab6-777e586a9297",
@@ -197,8 +186,7 @@
             "FocusSearch": true,
             "MinWidth": "85px",
             "MaxWidth": "85px",
-            "EntityId": "Customer",
-            "ReportTypeId": 1
+            "EntityId": "Customer"
         }
     ],
     "Components": [
@@ -215,8 +203,7 @@
             "FocusSearch": true,
             "MinWidth": "56px",
             "MaxWidth": "56px",
-            "EntityId": "Customer",
-            "ReportTypeId": 1
+            "EntityId": "Customer"
         }
     ],
     "FeaturePolicies": [

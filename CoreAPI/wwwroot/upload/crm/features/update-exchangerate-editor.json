@@ -17,7 +17,6 @@
             "ClassName": "ribbon-group",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0195846b-ef86-72f4-a39e-5fced3f589b4",
@@ -30,8 +29,7 @@
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01958544-97b6-7506-a5c2-b88c0d38adc7",
@@ -43,8 +41,7 @@
                     "Icon": "fas fa-sliders-h-square",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{\r\n    \"click\": \"SaveAs\"\r\n}",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         },
@@ -54,8 +51,7 @@
             "Order": 2,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "0195846b-f00b-76e0-8e91-67205446602e",
@@ -68,7 +64,6 @@
             "DisabledExp": "!this.Entity.Id.startsWith('-')",
             "ParentId": "0195846b-efc6-754c-a5c8-a7c50c2c320d",
             "XxlOuterColumn": 12,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0195846b-f06b-716a-b0f1-c9a7185ffa5a",
@@ -87,8 +82,7 @@
                     "RefName": "ExchangeRateHistoryDetail",
                     "PreQuery": "{\r\n    \"HistoryId\": this.EditForm.Entity.Id\r\n}",
                     "Editable": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "0195846f-ec86-72be-bdba-e7f6245a6358",
@@ -101,8 +95,7 @@
                     "ShowLabel": true,
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0195846f-ec87-747d-9f56-a51f8d1d5cc6",
@@ -115,8 +108,7 @@
                     "ShowLabel": true,
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
                     "Disabled": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01958470-318a-75b1-824a-c45fd5a0bb57",
@@ -129,8 +121,7 @@
                     "ShowLabel": true,
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01958470-3bec-731e-9cba-564aa28d0c7c",
@@ -143,8 +134,7 @@
                     "ShowLabel": true,
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
                     "Disabled": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0195854b-722d-7788-b422-0e6c05cf1a77",
@@ -163,8 +153,7 @@
                     "RefName": "Shipment",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Code\",\r\n        \"Label\": \"Code\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
                     "PreQuery": "{\r\n    \"VendorIds\": this.Entity.VendorIds \r\n}",
-                    "IsMultiple": true,
-                    "ReportTypeId": 1
+                    "IsMultiple": true
                 },
                 {
                     "Id": "01958aa7-55a3-768a-88a7-11ea2f51b1bd",
@@ -177,8 +166,7 @@
                     "ShowLabel": true,
                     "Events": "{\r\n    \"input\": \"CalcRateUSD\"\r\n}",
                     "Active": true,
-                    "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
                 }
             ]
         }
@@ -204,8 +192,7 @@
             "MinWidth": "158px",
             "MaxWidth": "158px",
             "OrderBy": "ds.Enum asc",
-            "EntityId": "ExchangeRateHistoryDetail",
-            "ReportTypeId": 1
+            "EntityId": "ExchangeRateHistoryDetail"
         },
         {
             "Id": "01958472-61cb-74fd-ba8c-5602bd7a5917",
@@ -222,8 +209,7 @@
             "MinWidth": "186px",
             "MaxWidth": "186px",
             "EntityId": "ExchangeRateHistoryDetail",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
-            "ReportTypeId": 1
+            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
         },
         {
             "Id": "01958472-61cb-74fd-ba8c-5a728a9ef313",
@@ -238,8 +224,7 @@
             "Editable": true,
             "MinWidth": "200px",
             "MaxWidth": "200px",
-            "EntityId": "ExchangeRateHistoryDetail",
-            "ReportTypeId": 1
+            "EntityId": "ExchangeRateHistoryDetail"
         }
     ],
     "Components": [
@@ -254,8 +239,7 @@
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
             "Events": "{ \"click\" : \"SavePatch\" }",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "01958544-97b6-7506-a5c2-b88c0d38adc7",
@@ -267,8 +251,7 @@
             "Icon": "fas fa-sliders-h-square",
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{\r\n    \"click\": \"SaveAs\"\r\n}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         }
     ],
     "FeaturePolicies": [

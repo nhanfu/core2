@@ -21,7 +21,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01953bd2-6a70-77f5-9e9e-f8725170b542",
@@ -38,8 +37,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from Shipment as ds where ((ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or (ds.SaleIds like '%{TokenUserId}%' and ds.ShipmentTypeId = 0) or ds.UserViewIds like '%{TokenUserId}%' or (ds.ReceiverIds like '%{TokenUserId}%') or (ds.ForwardId = '{TokenUserId}')) and TypeId = 5 and ParentId is null)\",\r\n    \"total\": \"select count(ds.Id) as total from Shipment as ds where ((ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or (ds.SaleIds like '%{TokenUserId}%' and ds.ShipmentTypeId = 0) or ds.UserViewIds like '%{TokenUserId}%' or (ds.ReceiverIds like '%{TokenUserId}%') or (ds.ForwardId = '{TokenUserId}')) and TypeId = 5 and ParentId is null)\",\r\n    \"delete\": \"select top 1 ds.Id from ShipmentInvoice ds where ds.ShipmentId in ({EntityIds}) and ds.ActionId in (2)\",\r\n    \"search\": [\r\n        {\r\n            \"Label\": \"HBL No\",\r\n            \"FieldName\": \"HBLNoSearch\",\r\n            \"Where\": \"exists (select s1.Id from Shipment s1 where s1.ParentId = ds.Id and charindex(@hblnosearch, s1.HblNo) >= 1)\"\r\n        },\r\n        {\r\n            \"Label\": \"Customer\",\r\n            \"FieldName\": \"Customer\",\r\n            \"Where\": \"exists (select s1.Id from Shipment s1 left join Partner p on p.Id = s1.CustomerId where s1.ParentId = ds.Id and charindex(@customer, p.Name) >= 1)\"\r\n        }\r\n    ]\r\n}",
                     "RefName": "Shipment",
                     "PreQuery": "{\r\n    \"Message\": \"Unable to delete issue data\"\r\n}",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -54,7 +52,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01953bd2-6b28-75ee-813b-6fee3766eee3",
@@ -71,8 +68,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from Shipment as ds where ((ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or (ds.SaleId = '{TokenUserId}' and ds.ShipmentTypeId = 0) or ds.UserViewIds like '%{TokenUserId}%' or (ds.ReceiverIds like '%{TokenUserId}%') or (ds.ForwardId = '{TokenUserId}')) and TypeId = 5 and ParentId is not null)\",\r\n    \"total\": \"select count(ds.Id) as total from Shipment as ds where ((ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or (ds.SaleId = '{TokenUserId}' and ds.ShipmentTypeId = 0) or ds.UserViewIds like '%{TokenUserId}%' or (ds.ReceiverIds like '%{TokenUserId}%') or (ds.ForwardId = '{TokenUserId}')) and TypeId = 5 and ParentId is not null)\",\r\n    \"delete\": \"select top 1 Id from ShipmentFee where ShipmentId in ({EntityIds}) and IsLock = 1\"\r\n}",
                     "RefName": "Shipment",
                     "PreQuery": "{\r\n    \"Message\": \"Unable to delete issue data\"\r\n}",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         }
@@ -89,8 +85,7 @@
             "FocusSearch": true,
             "MinWidth": "121px",
             "MaxWidth": "121px",
-            "EntityId": "Shipment",
-            "ReportTypeId": 1
+            "EntityId": "Shipment"
         },
         {
             "Id": "01953bd2-6bfc-74bc-8918-bb6df4c204b2",
@@ -105,8 +100,7 @@
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
-            "EntityId": "Shipment",
-            "ReportTypeId": 1
+            "EntityId": "Shipment"
         },
         {
             "Id": "01953bd2-6c38-759d-aa08-d80a53acccc1",
@@ -119,8 +113,7 @@
             "FocusSearch": true,
             "MinWidth": "108px",
             "MaxWidth": "108px",
-            "EntityId": "Shipment",
-            "ReportTypeId": 1
+            "EntityId": "Shipment"
         },
         {
             "Id": "01953bd2-6c6d-714e-978e-b74fdbed97c4",
@@ -133,8 +126,7 @@
             "FocusSearch": true,
             "MinWidth": "116px",
             "MaxWidth": "116px",
-            "EntityId": "Shipment",
-            "ReportTypeId": 1
+            "EntityId": "Shipment"
         },
         {
             "Id": "01953bd2-6c9e-738b-96bc-de22f59f1a8c",
@@ -147,8 +139,7 @@
             "FocusSearch": true,
             "MinWidth": "132px",
             "MaxWidth": "132px",
-            "EntityId": "Shipment",
-            "ReportTypeId": 1
+            "EntityId": "Shipment"
         },
         {
             "Id": "01953bd2-6d08-7235-843a-52ee7ed29e3a",
@@ -167,8 +158,7 @@
             "TextAlign": "center",
             "MinWidth": "99px",
             "MaxWidth": "99px",
-            "EntityId": "Shipment",
-            "ReportTypeId": 1
+            "EntityId": "Shipment"
         },
         {
             "Id": "01953bd2-6d49-76f1-b5c5-cc10db5632b0",
@@ -186,8 +176,7 @@
             "FocusSearch": true,
             "MinWidth": "124px",
             "MaxWidth": "124px",
-            "EntityId": "Shipment",
-            "ReportTypeId": 1
+            "EntityId": "Shipment"
         },
         {
             "Id": "01953bd2-6d7f-7039-af7c-83e8ee382cc8",
@@ -205,8 +194,7 @@
             "FocusSearch": true,
             "MinWidth": "130px",
             "MaxWidth": "130px",
-            "EntityId": "Shipment",
-            "ReportTypeId": 1
+            "EntityId": "Shipment"
         },
         {
             "Id": "01953bd2-6dad-7241-9c76-b74aa1b8c86d",
@@ -219,8 +207,7 @@
             "FocusSearch": true,
             "MinWidth": "130px",
             "MaxWidth": "130px",
-            "EntityId": "Shipment",
-            "ReportTypeId": 1
+            "EntityId": "Shipment"
         },
         {
             "Id": "01953bd2-6de2-7126-9020-08305b83bc65",
@@ -237,8 +224,7 @@
             "FocusSearch": true,
             "MinWidth": "245px",
             "MaxWidth": "245px",
-            "EntityId": "Shipment",
-            "ReportTypeId": 1
+            "EntityId": "Shipment"
         },
         {
             "Id": "01953bd2-6e1b-701c-99cf-4ca54adefd77",
@@ -251,8 +237,7 @@
             "FocusSearch": true,
             "MinWidth": "108px",
             "MaxWidth": "108px",
-            "EntityId": "Shipment",
-            "ReportTypeId": 1
+            "EntityId": "Shipment"
         },
         {
             "Id": "01953bd2-6e4f-729b-94d1-93071839c676",
@@ -267,8 +252,7 @@
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
-            "EntityId": "Shipment1",
-            "ReportTypeId": 1
+            "EntityId": "Shipment1"
         },
         {
             "Id": "01953bd2-6e81-75ae-85b7-3e390f0535e5",
@@ -281,8 +265,7 @@
             "FocusSearch": true,
             "MinWidth": "111px",
             "MaxWidth": "111px",
-            "EntityId": "Shipment1",
-            "ReportTypeId": 1
+            "EntityId": "Shipment1"
         },
         {
             "Id": "01953bd2-6eb0-73ce-aef4-dbaebcd49aaa",
@@ -295,8 +278,7 @@
             "FocusSearch": true,
             "MinWidth": "108px",
             "MaxWidth": "108px",
-            "EntityId": "Shipment1",
-            "ReportTypeId": 1
+            "EntityId": "Shipment1"
         },
         {
             "Id": "01953bd2-6eea-742c-a576-bb5c883bccd7",
@@ -309,8 +291,7 @@
             "FocusSearch": true,
             "MinWidth": "116px",
             "MaxWidth": "116px",
-            "EntityId": "Shipment1",
-            "ReportTypeId": 1
+            "EntityId": "Shipment1"
         },
         {
             "Id": "01953bd2-6f2c-721c-a8cd-7ce8c5a4d0ae",
@@ -328,8 +309,7 @@
             "FocusSearch": true,
             "MinWidth": "124px",
             "MaxWidth": "124px",
-            "EntityId": "Shipment1",
-            "ReportTypeId": 1
+            "EntityId": "Shipment1"
         },
         {
             "Id": "01953bd2-6f92-73d8-a069-66ed8b69119b",
@@ -342,8 +322,7 @@
             "FocusSearch": true,
             "MinWidth": "108px",
             "MaxWidth": "108px",
-            "EntityId": "Shipment1",
-            "ReportTypeId": 1
+            "EntityId": "Shipment1"
         },
         {
             "Id": "01953bd2-6fd7-77e3-b9e5-59b5c7303f22",
@@ -361,8 +340,7 @@
             "FocusSearch": true,
             "MinWidth": "130px",
             "MaxWidth": "130px",
-            "EntityId": "Shipment1",
-            "ReportTypeId": 1
+            "EntityId": "Shipment1"
         },
         {
             "Id": "01953bd2-700f-7748-8d4b-ddbce130c050",
@@ -375,8 +353,7 @@
             "FocusSearch": true,
             "MinWidth": "130px",
             "MaxWidth": "130px",
-            "EntityId": "Shipment1",
-            "ReportTypeId": 1
+            "EntityId": "Shipment1"
         },
         {
             "Id": "01953bd2-704b-763f-ab9c-e0e1edae5f35",
@@ -392,8 +369,7 @@
             "MaxWidth": "59px",
             "EntityId": "Shipment1",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-70ab-7214-859f-43a588120d92",
@@ -410,8 +386,7 @@
             "MaxWidth": "74px",
             "EntityId": "Shipment1",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-70ed-7649-9000-3f34ccee945a",
@@ -433,8 +408,7 @@
             "MaxWidth": "68px",
             "EntityId": "Shipment1",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-7124-771e-97ec-682d58d5b64a",
@@ -456,8 +430,7 @@
             "MaxWidth": "99px",
             "EntityId": "Shipment1",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-7162-76ac-a315-e2378fca67a9",
@@ -479,8 +452,7 @@
             "MaxWidth": "100px",
             "EntityId": "Shipment1",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-719d-7195-89ab-1db4c73705f0",
@@ -497,8 +469,7 @@
             "MaxWidth": "131px",
             "EntityId": "Shipment1",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-71db-77c9-96a4-bd6c9b7ab1b8",
@@ -515,8 +486,7 @@
             "MaxWidth": "76px",
             "EntityId": "Shipment1",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-7217-774c-a0e0-051c92d1a7cb",
@@ -541,8 +511,7 @@
             "MaxWidth": "212px",
             "EntityId": "Shipment1",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-7250-745e-9365-21926a9a6173",
@@ -567,8 +536,7 @@
             "MaxWidth": "226px",
             "EntityId": "Shipment1",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-7294-708c-989b-5296e150083a",
@@ -593,8 +561,7 @@
             "MaxWidth": "72px",
             "EntityId": "Shipment1",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-72e7-767b-b93e-f13f0190dac9",
@@ -619,8 +586,7 @@
             "MaxWidth": "129px",
             "EntityId": "Shipment1",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-7320-76dd-ae4e-943d484769d3",
@@ -646,8 +612,7 @@
             "MaxWidth": "201px",
             "EntityId": "Shipment1",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-7357-756a-a3b9-b95ddea14832",
@@ -669,8 +634,7 @@
             "MaxWidth": "108px",
             "EntityId": "Shipment1",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-73a6-756a-aba5-1a57d1a5bc23",
@@ -691,8 +655,7 @@
             "MaxWidth": "129px",
             "EntityId": "Shipment1",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-73ec-75cd-8d78-ae0d048a3546",
@@ -714,8 +677,7 @@
             "MaxWidth": "76px",
             "EntityId": "Shipment1",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-7436-77be-82c6-9a234515320c",
@@ -735,8 +697,7 @@
             "MaxWidth": "61px",
             "EntityId": "Shipment1",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-7476-754d-9ab2-94d6b2171dfa",
@@ -752,8 +713,7 @@
             "MaxWidth": "71px",
             "EntityId": "Shipment1",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-74c5-76bc-a774-65f851661459",
@@ -769,8 +729,7 @@
             "MaxWidth": "53px",
             "EntityId": "Shipment1",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-74ff-72f5-8455-f62a07ba917b",
@@ -786,8 +745,7 @@
             "MaxWidth": "40px",
             "EntityId": "Shipment1",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-7564-768c-b507-ba678f1b80a5",
@@ -803,8 +761,7 @@
             "MaxWidth": "52px",
             "EntityId": "Shipment1",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-75b0-74e0-9c2b-00ffc38cc119",
@@ -825,8 +782,7 @@
             "MaxWidth": "81px",
             "EntityId": "Shipment1",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-75ea-7342-8dff-996b55c6ced4",
@@ -848,8 +804,7 @@
             "MaxWidth": "104px",
             "EntityId": "Shipment1",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-761f-7247-b49d-d31c2c512da7",
@@ -871,8 +826,7 @@
             "MaxWidth": "64px",
             "EntityId": "Shipment1",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-7659-7653-bc69-801e479017f1",
@@ -890,8 +844,7 @@
             "EntityId": "Shipment1",
             "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-7691-71db-b1ae-c2520cb572a3",
@@ -909,8 +862,7 @@
             "EntityId": "Shipment1",
             "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-76c4-77a9-95fa-ff90f72d38ab",
@@ -928,8 +880,7 @@
             "EntityId": "Shipment1",
             "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-7701-708f-ad2c-d444804575b5",
@@ -947,8 +898,7 @@
             "EntityId": "Shipment1",
             "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-7733-71b8-b984-ef12380374e3",
@@ -970,8 +920,7 @@
             "MaxWidth": "70px",
             "EntityId": "Shipment1",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-77a1-714a-91f2-c1676a3bb206",
@@ -993,8 +942,7 @@
             "MaxWidth": "113px",
             "EntityId": "Shipment1",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-77d4-7788-a295-8b773b474242",
@@ -1016,8 +964,7 @@
             "MaxWidth": "108px",
             "EntityId": "Shipment1",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-7809-70f1-99b0-947b7611bf03",
@@ -1037,8 +984,7 @@
             "EntityId": "Shipment1",
             "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-783a-75fb-8453-7c60e7ccc84c",
@@ -1061,8 +1007,7 @@
             "MaxWidth": "76px",
             "EntityId": "Shipment1",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-786d-770b-ac44-de7009ed1722",
@@ -1082,8 +1027,7 @@
             "EntityId": "Shipment1",
             "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-78a3-7158-bb68-3dc767ba38be",
@@ -1101,8 +1045,7 @@
             "MaxWidth": "124px",
             "EntityId": "Shipment1",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-78db-7769-ae8c-a96b16a8b505",
@@ -1122,8 +1065,7 @@
             "EntityId": "Shipment1",
             "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-791a-7359-8cb4-8df5a5937385",
@@ -1143,8 +1085,7 @@
             "EntityId": "Shipment1",
             "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "01953bd2-7958-74ac-98d8-444b2e9c1df1",
@@ -1165,8 +1106,7 @@
             "MaxWidth": "54px",
             "EntityId": "Shipment1",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         }
     ],
     "Components": [
@@ -1180,8 +1120,7 @@
             "Icon": "fal fa-plus",
             "ClassName": "btn",
             "Events": "{\"click\":\"Add\"}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "01953bd2-6b76-75bc-a8a2-40263c194cb1",
@@ -1193,8 +1132,7 @@
             "Icon": "fal fa-plus",
             "ClassName": "btn",
             "Events": "{\"click\":\"Add\"}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "01953bd2-6bfc-74bc-8918-bb6df4c204b2",
@@ -1209,8 +1147,7 @@
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
-            "EntityId": "Shipment",
-            "ReportTypeId": 1
+            "EntityId": "Shipment"
         },
         {
             "Id": "01953bd2-6e4f-729b-94d1-93071839c676",
@@ -1225,8 +1162,7 @@
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
-            "EntityId": "Shipment1",
-            "ReportTypeId": 1
+            "EntityId": "Shipment1"
         }
     ],
     "FeaturePolicies": [

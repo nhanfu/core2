@@ -19,7 +19,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00df1594-0000-0000-8000-1b19334229c7",
@@ -35,8 +34,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from Pricing as ds where IsPublic = 0 and TypeId = 1\",\r\n    \"total\": \"select count(ds.Id) as total from Pricing as ds where IsPublic = 0 and TypeId = 1\"\r\n}",
                     "RefName": "Pricing",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -49,7 +47,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00df154c-0000-0000-8000-1375869e9399",
@@ -66,8 +63,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from Pricing as ds where IsPublic = 1 and TypeId = 1\",\r\n    \"total\": \"select count(ds.Id) as total from Pricing as ds where IsPublic = 1 and TypeId = 1\"\r\n}",
                     "RefName": "Pricing",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -82,7 +78,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00df1594-0000-0000-8000-a299b832015a",
@@ -98,8 +93,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Pricing as ds where TypeId = 1\",\r\n    \"total\": \"select count(ds.Id) as total from Pricing as ds where TypeId = 1\"\r\n}",
                     "RefName": "Pricing",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         }
@@ -117,8 +111,7 @@
             "FocusSearch": true,
             "MinWidth": "69px",
             "MaxWidth": "69px",
-            "EntityId": "Pricing",
-            "ReportTypeId": 1
+            "EntityId": "Pricing"
         },
         {
             "Id": "00a615e0-0000-0000-8000-e34e0fa68c1b",
@@ -133,8 +126,7 @@
             "MinWidth": "259px",
             "MaxWidth": "259px",
             "EntityId": "Pricing",
-            "IsMultiple": true,
-            "ReportTypeId": 1
+            "IsMultiple": true
         },
         {
             "Id": "00a91524-0000-0000-8000-04d8525f32b7",
@@ -148,8 +140,7 @@
             "FocusSearch": true,
             "MinWidth": "85px",
             "MaxWidth": "85px",
-            "EntityId": "Pricing",
-            "ReportTypeId": 1
+            "EntityId": "Pricing"
         },
         {
             "Id": "00ab15b0-0000-0000-8000-1d7d33d09c5b",
@@ -163,8 +154,7 @@
             "FocusSearch": true,
             "MinWidth": "85px",
             "MaxWidth": "85px",
-            "EntityId": "Pricing",
-            "ReportTypeId": 1
+            "EntityId": "Pricing"
         },
         {
             "Id": "00ad15e8-0000-0000-8000-e3edc76b0595",
@@ -183,8 +173,7 @@
             "FocusSearch": true,
             "MinWidth": "85px",
             "MaxWidth": "85px",
-            "EntityId": "Pricing",
-            "ReportTypeId": 1
+            "EntityId": "Pricing"
         },
         {
             "Id": "00df1588-0000-0000-8000-d1d6bcf4f3c9",
@@ -202,8 +191,7 @@
             "FocusSearch": true,
             "MinWidth": "97px",
             "MaxWidth": "97px",
-            "EntityId": "Pricing",
-            "ReportTypeId": 1
+            "EntityId": "Pricing"
         },
         {
             "Id": "00df1598-0000-0000-8000-6c090307afc5",
@@ -222,8 +210,7 @@
             "HasFilter": true,
             "MinWidth": "120px",
             "MaxWidth": "120px",
-            "EntityId": "Pricing",
-            "ReportTypeId": 1
+            "EntityId": "Pricing"
         },
         {
             "Id": "00e01580-0000-0000-8000-7fefcd85bac1",
@@ -240,8 +227,7 @@
             "FocusSearch": true,
             "MinWidth": "177px",
             "MaxWidth": "177px",
-            "EntityId": "Pricing",
-            "ReportTypeId": 1
+            "EntityId": "Pricing"
         },
         {
             "Id": "00e01584-0000-0000-8000-80e29c90640b",
@@ -256,8 +242,7 @@
             "MinWidth": "155px",
             "MaxWidth": "155px",
             "EntityId": "Pricing",
-            "IsMultiple": true,
-            "ReportTypeId": 1
+            "IsMultiple": true
         },
         {
             "Id": "00e01594-0000-0000-8000-302d90832a5c",
@@ -274,8 +259,7 @@
             "FocusSearch": true,
             "MinWidth": "167px",
             "MaxWidth": "167px",
-            "EntityId": "Pricing",
-            "ReportTypeId": 1
+            "EntityId": "Pricing"
         },
         {
             "Id": "00e01594-0000-0000-8000-d418d79634a3",
@@ -293,8 +277,7 @@
             "FocusSearch": true,
             "MinWidth": "123px",
             "MaxWidth": "123px",
-            "EntityId": "Pricing",
-            "ReportTypeId": 1
+            "EntityId": "Pricing"
         },
         {
             "Id": "00e015b4-0000-0000-8000-e45fb37f32cf",
@@ -309,8 +292,7 @@
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
-            "EntityId": "Pricing",
-            "ReportTypeId": 1
+            "EntityId": "Pricing"
         },
         {
             "Id": "00e015d4-0000-0000-8000-8198532b8583",
@@ -328,8 +310,7 @@
             "FocusSearch": true,
             "MinWidth": "124px",
             "MaxWidth": "124px",
-            "EntityId": "Pricing",
-            "ReportTypeId": 1
+            "EntityId": "Pricing"
         },
         {
             "Id": "00e015e0-0000-0000-8000-eab766ff80b6",
@@ -347,8 +328,7 @@
             "FocusSearch": true,
             "MinWidth": "103px",
             "MaxWidth": "103px",
-            "EntityId": "Pricing",
-            "ReportTypeId": 1
+            "EntityId": "Pricing"
         },
         {
             "Id": "00e015e8-0000-0000-8000-819c74d4f91d",
@@ -363,8 +343,7 @@
             "MinWidth": "274px",
             "MaxWidth": "274px",
             "EntityId": "Pricing",
-            "IsMultiple": true,
-            "ReportTypeId": 1
+            "IsMultiple": true
         },
         {
             "Id": "00e315d8-0000-0000-8000-1b89cfcc503b",
@@ -379,8 +358,7 @@
             "MinWidth": "192px",
             "MaxWidth": "192px",
             "EntityId": "Pricing",
-            "IsMultiple": true,
-            "ReportTypeId": 1
+            "IsMultiple": true
         }
     ],
     "Components": [
@@ -394,8 +372,7 @@
             "Icon": "fal fa-plus",
             "ClassName": "btn",
             "Events": "{\"click\":\"Add\"}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "005f1510-0000-0000-8001-fc8d3eec5f8a",
@@ -407,8 +384,7 @@
             "Icon": "fal fa-plus",
             "ClassName": "btn",
             "Events": "{\"click\":\"Add\"}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "00e015b4-0000-0000-8000-e45fb37f32cf",
@@ -423,8 +399,7 @@
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
-            "EntityId": "Pricing",
-            "ReportTypeId": 1
+            "EntityId": "Pricing"
         }
     ],
     "FeaturePolicies": [

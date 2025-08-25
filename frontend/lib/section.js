@@ -802,7 +802,7 @@ export class Section extends EditableComponent {
             var inner = this.EditForm.GetInnerColumn(ui);
             const colSpan = inner || 1;
             ui.Label = ui.Label || '';
-            Html.TData.ColSpan(colSpan).Visibility(ui.Visibility);
+            Html.TData.ColSpan(colSpan);
             if (ui.ShowLabel) {
                 Html.Instance.Div.ClassName("group-control").Style(ui.ChildStyle).Div.ClassName('header-label').IText(ui.Label, this.EditForm.Meta.Label).End.Render();
             }

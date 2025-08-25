@@ -20,7 +20,6 @@
             "Active": true,
             "ParentId": "00c31904-0000-0000-8000-46d4766400b3",
             "XxlOuterColumn": 12,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "007d19e8-0000-0000-8000-a2692d9ab9b2",
@@ -37,8 +36,7 @@
                     "RefName": "Pricing",
                     "PreQuery": "var typeId = 1;\r\nvar datafield = \"\";\r\nvar serviceId = \"\";\r\nif (this.Entity.Service.Name.toUpperCase().includes(\"IMPORT\")) {\r\n    datafield = this.dayjs(this.Entity.EtaDate).format('YYYY-MM-DD');\r\n}\r\nelse {\r\n    datafield = this.dayjs(this.Entity.EtdDate).format('YYYY-MM-DD');\r\n}\r\nif (this.Entity.Service.Name.toUpperCase().includes(\"AIR\")) {\r\n    typeId = 2;\r\n}\r\nelse if (this.Entity.Service.Name.toUpperCase().includes(\"TRUCKING\")) {\r\n    typeId = 3;\r\n    serviceId = this.Entity.ServiceId;\r\n}\r\nelse if (this.Entity.Service.Name.toUpperCase().includes(\"LOGISTICS\")) {\r\n    typeId = 4;\r\n}\r\nreturn {\r\n    \"PolId\": this.EditForm.Entity.PolId,\r\n    \"PodId\": this.EditForm.Entity.PodId,\r\n    \"ServiceId\": this.Entity.ServiceId,\r\n    \"CommodityId\": this.EditForm.OpenFrom.Entity.CommodityId,\r\n    \"EtaDate\": this.dayjs(this.EditForm.OpenFrom.Entity.EtaDate).format('YYYY-MM-DD'),\r\n    \"EtdDate\": this.dayjs(this.EditForm.OpenFrom.Entity.EtdDate).format('YYYY-MM-DD'),\r\n    \"DateField\": datafield,\r\n    \"PricingId\": this.EditForm.Entity.PricingId || '',\r\n    \"StatusId\": this.EditForm.Entity.StatusId,\r\n    \"TypeId\": typeId,\r\n    \"ServiceId\": serviceId,\r\n    \"IsLCL\": this.EditForm.Entity.Service.Name.includes('LCL') ? 1 : 0,\r\n    \"IsFCL\": this.EditForm.Entity.Service.Name.includes('FCL') ? 1 : 0\r\n}",
                     "OrderBy": "ds.InsertedDate desc",
-                    "IsMultiple": true,
-                    "ReportTypeId": 1
+                    "IsMultiple": true
                 }
             ]
         },
@@ -53,7 +51,6 @@
             "Active": true,
             "ParentId": "00c31904-0000-0000-8000-46d4766400b3",
             "XxlOuterColumn": 6,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00c01c84-0000-0000-8000-1335aa3d9748",
@@ -65,8 +62,7 @@
                     "ShowLabel": true,
                     "Disabled": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "00c01c84-0000-0000-8001-d74e17fa4211",
@@ -78,8 +74,7 @@
                     "ShowLabel": true,
                     "Disabled": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "00c01c84-0000-0000-8002-5ef897b052ac",
@@ -91,8 +86,7 @@
                     "ShowLabel": true,
                     "Disabled": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "00d21c48-0000-0000-8000-f3cb24deaace",
@@ -103,8 +97,7 @@
                     "Row": 3,
                     "Label": "Note",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00d21ce4-0000-0000-8000-a9ed42542a43",
@@ -116,8 +109,7 @@
                     "ShowLabel": true,
                     "Disabled": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 }
             ]
         },
@@ -130,7 +122,6 @@
             "XxlCol": 12,
             "Active": true,
             "XxlOuterColumn": 12,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "008a17f0-0000-0000-8000-6c765809e58a",
@@ -146,8 +137,7 @@
                     "Active": true,
                     "Query": "select PricingDetail.*\r\nfrom PricingDetail\r\nleft join Pricing on PricingDetail.PricingId = Pricing.Id\r\nwhere PolId = '{PolId}' and PodId = '{PodId}'\r\nand FromDate <= '{EtdDate}' and ToDate >= '{EtdDate}'\r\nand CommodityId = '{CommodityId}'\r\nand (({ServiceId} in (1,2) and TypeId = 2) or ({ServiceId} not in (1,2) and TypeId = 1))\r\nand Pricing.Id in (select top 1 Pricing.Id\r\nfrom PricingDetail\r\nleft join Pricing on PricingDetail.PricingId = Pricing.Id\r\nwhere PolId = '{PolId}' and PodId = '{PodId}'\r\nand FromDate <= '{EtdDate}' and ToDate >= '{EtdDate}'\r\nand CommodityId = '{CommodityId}'\r\nand TypeId = 1)",
                     "PreQuery": "{\r\n    \"PolId\": this.EditForm.OpenFrom.Entity.PolId,\r\n    \"PodId\": this.EditForm.OpenFrom.Entity.PodId,\r\n    \"ServiceId\": this.Entity.ServiceId,\r\n    \"CommodityId\": this.EditForm.OpenFrom.Entity.CommodityId,\r\n    \"EtaDate\": this.dayjs(this.EditForm.OpenFrom.Entity.EtaDate).format('YYYY-MM-DD'),\r\n    \"EtdDate\": this.dayjs(this.EditForm.OpenFrom.Entity.EtdDate).format('YYYY-MM-DD')\r\n}",
-                    "ShowExp": "this.Entity.StatusId == 2 && (this.Entity.UserReceiverId == this.Token.UserId || (this.Entity.GroupReceiverId == this.Token.TeamId)) && this.Entity.QuotationId == null",
-                    "ReportTypeId": 1
+                    "ShowExp": "this.Entity.StatusId == 2 && (this.Entity.UserReceiverId == this.Token.UserId || (this.Entity.GroupReceiverId == this.Token.TeamId)) && this.Entity.QuotationId == null"
                 },
                 {
                     "Id": "00d318b8-0000-0000-8000-5d869af23139",
@@ -161,8 +151,7 @@
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{\"click\":\"CreateQuote\"}",
                     "Active": true,
-                    "ShowExp": "this.Entity.StatusId == 3 && this.Entity.InsertedBy == this.Token.UserId && this.Entity.QuotationId == null",
-                    "ReportTypeId": 1
+                    "ShowExp": "this.Entity.StatusId == 3 && this.Entity.InsertedBy == this.Token.UserId && this.Entity.QuotationId == null"
                 },
                 {
                     "Id": "00d70248-0000-0000-8000-7ea05c2c37cb",
@@ -177,8 +166,7 @@
                     "Active": true,
                     "Query": "select ds.*,ctr.Name as UnitName,fee.GroupName as GroupFee,isnull(ds.VendorId,Pricing.VendorId) as ActVendorId\r\nfrom PricingDetail ds\r\nleft join Pricing on ds.PricingId = Pricing.Id\r\nleft join MasterData ctr on ds.UnitId = ctr.Id \r\nleft join FeeType fee on ds.DescriptionId = fee.Id \r\nwhere ds.PricingId = '{PricingId}' \r\nand DescriptionId is not null \r\nand (('{IsLCL}' = '1' and (ctr.Name like N'%LCL%' or ctr.Name like N'%ALL%')) or ('{IsLCL}' = '0'))\r\nand (('{IsFCL}' = '1' and ctr.Name not like N'%LCL%') or ('{IsFCL}' = '0'))",
                     "PreQuery": "var feeGrid = this.EditForm.ChildCom.find(x => x.IsListView && x.Meta.FieldName == 'Pricing');\r\nreturn {\r\n    \"PricingId\" : feeGrid.AllListViewItem.find(x=> x.Selected ).Entity.Id || 0,\r\n    \"IsLCL\" : this.EditForm.Entity.Service.Name.includes('LCL') ? 1 : 0,\r\n    \"IsFCL\": this.EditForm.Entity.Service.Name.includes('FCL') ? 1 : 0\r\n}",
-                    "ShowExp": "this.Entity.StatusId == 2 && (this.Entity.UserReceiverId == this.Token.UserId || (this.Entity.GroupReceiverId == this.Token.TeamId)) && this.Entity.QuotationId == null",
-                    "ReportTypeId": 1
+                    "ShowExp": "this.Entity.StatusId == 2 && (this.Entity.UserReceiverId == this.Token.UserId || (this.Entity.GroupReceiverId == this.Token.TeamId)) && this.Entity.QuotationId == null"
                 },
                 {
                     "Id": "00f61b04-0000-0000-8000-0d00bdbbcc31",
@@ -191,8 +179,7 @@
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{\"click\":\"UnLoadPricing\"}",
                     "Active": true,
-                    "ShowExp": "this.Entity.StatusId == 3 && (this.Entity.UserReceiverId == this.Token.UserId || (this.Entity.GroupReceiverId == this.Token.TeamId)) && this.Entity.QuotationId == null",
-                    "ReportTypeId": 1
+                    "ShowExp": "this.Entity.StatusId == 3 && (this.Entity.UserReceiverId == this.Token.UserId || (this.Entity.GroupReceiverId == this.Token.TeamId)) && this.Entity.QuotationId == null"
                 },
                 {
                     "Id": "00fc193c-0000-0000-8000-b0fa4dcd1bf9",
@@ -205,8 +192,7 @@
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"DeclineEntity\" }",
                     "Active": true,
-                    "ShowExp": "this.Entity.StatusId == 2 && (this.Entity.UserReceiverId == this.Token.UserId || (this.Entity.GroupReceiverId == this.Token.TeamId)) && this.Entity.QuotationId == null",
-                    "ReportTypeId": 1
+                    "ShowExp": "this.Entity.StatusId == 2 && (this.Entity.UserReceiverId == this.Token.UserId || (this.Entity.GroupReceiverId == this.Token.TeamId)) && this.Entity.QuotationId == null"
                 }
             ]
         },
@@ -221,7 +207,6 @@
             "Active": true,
             "ParentId": "00c31904-0000-0000-8000-46d4766400b3",
             "XxlOuterColumn": 6,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00761780-0000-0000-8000-cdcc5acd67be",
@@ -236,8 +221,7 @@
                     "ShowLabel": true,
                     "Disabled": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "00761780-0000-0000-8001-fe857094427f",
@@ -251,8 +235,7 @@
                     "ShowLabel": true,
                     "Disabled": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "00a402b0-0000-0000-8000-a8cafbc6d712",
@@ -269,8 +252,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Team Group'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Team Group'\"\r\n}",
                     "RefName": "MasterData",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "00a60278-0000-0000-8000-02b01dfde13c",
@@ -281,8 +263,7 @@
                     "Label": "Deadline",
                     "ShowLabel": true,
                     "Disabled": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00d102a8-0000-0000-8000-42b96e320ddc",
@@ -298,8 +279,7 @@
                     "Disabled": true,
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Air Export\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-plane-departure mr-1'></i>Air Export</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"Air Import\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-plane-arrival mr-1'></i>Air Import</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Sea Export FCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fas fa-ship mr-1'></i>Sea Export FCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Sea Import FCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fas fa-ship mr-1'></i>Sea Import FCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"Sea Export LCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #17a2b8;'><i class='fas fa-ship mr-1'></i>Sea Export LCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 6,\r\n        \"Name\": \"Sea Import LCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #6f42c1;'><i class='fas fa-ship mr-1'></i>Sea Import LCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 9,\r\n        \"Name\": \"Logistics\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-box mr-1'></i>Logistics</span>\"\r\n    },\r\n    {\r\n        \"Id\": 15,\r\n        \"Name\": \"FCL TRUCKING\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fas fa-truck mr-1'></i>FCL TRUCKING</span>\"\r\n    },\r\n    {\r\n        \"Id\": 10,\r\n        \"Name\": \"FTL TRUCKING\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #17a2b8;'><i class='fas fa-truck mr-1'></i>FTL TRUCKING</span>\"\r\n    },\r\n    {\r\n        \"Id\": 12,\r\n        \"Name\": \"LTL TRUCKING\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fas fa-truck mr-1'></i>LTL TRUCKING</span>\"\r\n    },\r\n    {\r\n        \"Id\": 14,\r\n        \"Name\": \"Other Logistics\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-cogs mr-1'></i>Other Logistics</span>\"\r\n    }\r\n]\r\n",
-                    "Template": "[{ \"FieldName\" : \"Description\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Description\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "00e60258-0000-0000-8000-4ee1f6b4dba7",
@@ -316,8 +296,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from [Terminal] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"\r\n}",
                     "RefName": "Terminal",
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "00e80268-0000-0000-8000-544a0425007d",
@@ -334,8 +313,7 @@
                     "Active": true,
                     "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                     "RefName": "Terminal",
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "00e90238-0000-0000-8000-111818c0095f",
@@ -352,8 +330,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [User] as ds where RoleIdsText like N'%PRICING%' or RoleIdsText like N'%DOCS%'\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where RoleIdsText like N'%PRICING%' or RoleIdsText like N'%DOCS%'\"\r\n}",
                     "RefName": "User",
-                    "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]"
                 }
             ]
         },
@@ -368,7 +345,6 @@
             "Active": true,
             "ParentId": "00c31904-0000-0000-8000-46d4766400b3",
             "XxlOuterColumn": 12,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "006a022c-0000-0000-8000-b0e955dcfae0",
@@ -392,8 +368,7 @@
                     "DisabledExp": "this.EditForm.Entity.StatusId != 2",
                     "Editable": true,
                     "OrderBy": "ds.[UnitId] asc",
-                    "AddRowExp": "this.Entity.StatusId == 2",
-                    "ReportTypeId": 1
+                    "AddRowExp": "this.Entity.StatusId == 2"
                 }
             ]
         },
@@ -405,8 +380,7 @@
             "ClassName": "scroll-content",
             "Disabled": true,
             "XxlCol": 12,
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "00da1930-0000-0000-8000-3a98537b58ce",
@@ -419,7 +393,6 @@
             "Active": true,
             "ParentId": "00c31904-0000-0000-8000-46d4766400b3",
             "XxlOuterColumn": 12,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00fb197c-0000-0000-8000-83b460620ed3",
@@ -436,8 +409,7 @@
                     "RefName": "Approvement",
                     "PreQuery": "{\r\n    \"RecordId\": this.EditForm.Entity.Id\r\n}",
                     "OrderBy": "ds.InsertedDate desc",
-                    "AddRowExp": "this.Entity.StatusId != 3",
-                    "ReportTypeId": 1
+                    "AddRowExp": "this.Entity.StatusId != 3"
                 }
             ]
         }
@@ -459,8 +431,7 @@
             "FocusSearch": true,
             "MinWidth": "116px",
             "MaxWidth": "116px",
-            "EntityId": "Approvement",
-            "ReportTypeId": 1
+            "EntityId": "Approvement"
         },
         {
             "Id": "00201d04-0000-0000-8000-202e98d72c05",
@@ -475,8 +446,7 @@
             "MinWidth": "143px",
             "MaxWidth": "143px",
             "EntityId": "Pricing",
-            "IsMultiple": true,
-            "ReportTypeId": 1
+            "IsMultiple": true
         },
         {
             "Id": "004c1dc4-0000-0000-8000-7eace2cf4651",
@@ -491,8 +461,7 @@
             "MinWidth": "194px",
             "MaxWidth": "194px",
             "EntityId": "Pricing",
-            "IsMultiple": true,
-            "ReportTypeId": 1
+            "IsMultiple": true
         },
         {
             "Id": "00511c38-0000-0000-8000-bcd244137bd9",
@@ -513,8 +482,7 @@
             "Editable": true,
             "MinWidth": "128px",
             "MaxWidth": "128px",
-            "EntityId": "DefaultFee",
-            "ReportTypeId": 1
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "00571ef4-0000-0000-8000-639c7b56d265",
@@ -531,8 +499,7 @@
             "MinWidth": "75px",
             "MaxWidth": "75px",
             "EntityId": "DefaultFee",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "005f1b50-0000-0000-8000-583b39744a6e",
@@ -545,8 +512,7 @@
             "Editable": true,
             "MinWidth": "62px",
             "MaxWidth": "62px",
-            "EntityId": "DefaultFee",
-            "ReportTypeId": 1
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "0061194c-0000-0000-8000-0f9215153418",
@@ -564,8 +530,7 @@
             "FocusSearch": true,
             "MinWidth": "116px",
             "MaxWidth": "116px",
-            "EntityId": "Pricing",
-            "ReportTypeId": 1
+            "EntityId": "Pricing"
         },
         {
             "Id": "0061194c-0000-0000-8001-8b60dea534c0",
@@ -583,8 +548,7 @@
             "FocusSearch": true,
             "MinWidth": "114px",
             "MaxWidth": "114px",
-            "EntityId": "Pricing",
-            "ReportTypeId": 1
+            "EntityId": "Pricing"
         },
         {
             "Id": "0061194c-0000-0000-8002-c325a40f73bd",
@@ -602,8 +566,7 @@
             "FocusSearch": true,
             "MinWidth": "90px",
             "MaxWidth": "90px",
-            "EntityId": "Pricing",
-            "ReportTypeId": 1
+            "EntityId": "Pricing"
         },
         {
             "Id": "0061194c-0000-0000-8003-f7662d7de248",
@@ -618,8 +581,7 @@
             "MinWidth": "148px",
             "MaxWidth": "148px",
             "EntityId": "Pricing",
-            "IsMultiple": true,
-            "ReportTypeId": 1
+            "IsMultiple": true
         },
         {
             "Id": "0061194c-0000-0000-8004-1bfe226394ea",
@@ -634,8 +596,7 @@
             "MinWidth": "134px",
             "MaxWidth": "134px",
             "EntityId": "Pricing",
-            "IsMultiple": true,
-            "ReportTypeId": 1
+            "IsMultiple": true
         },
         {
             "Id": "0061194c-0000-0000-8005-596457345247",
@@ -651,8 +612,7 @@
             "FocusSearch": true,
             "MinWidth": "113px",
             "MaxWidth": "113px",
-            "EntityId": "Pricing",
-            "ReportTypeId": 1
+            "EntityId": "Pricing"
         },
         {
             "Id": "0061194c-0000-0000-8006-8d420cc86a65",
@@ -671,8 +631,7 @@
             "HasFilter": true,
             "MinWidth": "120px",
             "MaxWidth": "120px",
-            "EntityId": "Pricing",
-            "ReportTypeId": 1
+            "EntityId": "Pricing"
         },
         {
             "Id": "0061194c-0000-0000-8007-a617d4a09dbc",
@@ -690,8 +649,7 @@
             "FocusSearch": true,
             "MinWidth": "124px",
             "MaxWidth": "124px",
-            "EntityId": "Pricing",
-            "ReportTypeId": 1
+            "EntityId": "Pricing"
         },
         {
             "Id": "0061194c-0000-0000-8008-c7f992d84e4b",
@@ -706,8 +664,7 @@
             "MinWidth": "85px",
             "MaxWidth": "85px",
             "EntityId": "Pricing",
-            "IsMultiple": true,
-            "ReportTypeId": 1
+            "IsMultiple": true
         },
         {
             "Id": "0061194c-0000-0000-8009-2a75557a0baf",
@@ -721,8 +678,7 @@
             "FocusSearch": true,
             "MinWidth": "85px",
             "MaxWidth": "85px",
-            "EntityId": "Pricing",
-            "ReportTypeId": 1
+            "EntityId": "Pricing"
         },
         {
             "Id": "0061194c-0000-0000-800a-a92c5456b950",
@@ -736,8 +692,7 @@
             "FocusSearch": true,
             "MinWidth": "85px",
             "MaxWidth": "85px",
-            "EntityId": "Pricing",
-            "ReportTypeId": 1
+            "EntityId": "Pricing"
         },
         {
             "Id": "0061194c-0000-0000-800b-90a735d36a1b",
@@ -755,8 +710,7 @@
             "FocusSearch": true,
             "MinWidth": "85px",
             "MaxWidth": "85px",
-            "EntityId": "Pricing",
-            "ReportTypeId": 1
+            "EntityId": "Pricing"
         },
         {
             "Id": "006119e8-0000-0000-8000-bcb772aa02d1",
@@ -771,8 +725,7 @@
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
-            "EntityId": "Pricing",
-            "ReportTypeId": 1
+            "EntityId": "Pricing"
         },
         {
             "Id": "006119e8-0000-0000-8001-be7a4bc41721",
@@ -789,8 +742,7 @@
             "FocusSearch": true,
             "MinWidth": "123px",
             "MaxWidth": "123px",
-            "EntityId": "Pricing",
-            "ReportTypeId": 1
+            "EntityId": "Pricing"
         },
         {
             "Id": "006119e8-0000-0000-8002-0aa4bfb26987",
@@ -807,8 +759,7 @@
             "FocusSearch": true,
             "MinWidth": "111px",
             "MaxWidth": "111px",
-            "EntityId": "Pricing",
-            "ReportTypeId": 1
+            "EntityId": "Pricing"
         },
         {
             "Id": "00801924-0000-0000-8000-6c734d6f6bb1",
@@ -821,8 +772,7 @@
             "FocusSearch": true,
             "MinWidth": "374px",
             "MaxWidth": "374px",
-            "EntityId": "Approvement",
-            "ReportTypeId": 1
+            "EntityId": "Approvement"
         },
         {
             "Id": "0085020c-0000-0000-8000-9e04ae132210",
@@ -842,8 +792,7 @@
             "Editable": true,
             "MinWidth": "139px",
             "MaxWidth": "139px",
-            "EntityId": "DefaultFee",
-            "ReportTypeId": 1
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "008502e8-0000-0000-8000-2fdd2f662a37",
@@ -865,8 +814,7 @@
             "MinWidth": "143px",
             "MaxWidth": "143px",
             "OrderBy": "ds.IsFreight desc",
-            "EntityId": "DefaultFee",
-            "ReportTypeId": 1
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "00860210-0000-0000-8000-fb25e3f781c5",
@@ -886,8 +834,7 @@
             "Editable": true,
             "MinWidth": "72px",
             "MaxWidth": "72px",
-            "EntityId": "DefaultFee",
-            "ReportTypeId": 1
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "008602d8-0000-0000-8000-cf019d963dfd",
@@ -902,8 +849,7 @@
             "MinWidth": "117px",
             "MaxWidth": "117px",
             "EntityId": "DefaultFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "008a190c-0000-0000-8000-77834b395e9f",
@@ -917,8 +863,7 @@
             "FocusSearch": true,
             "MinWidth": "144px",
             "MaxWidth": "144px",
-            "EntityId": "Approvement",
-            "ReportTypeId": 1
+            "EntityId": "Approvement"
         },
         {
             "Id": "009a19e4-0000-0000-8000-d0818ee1ab0b",
@@ -931,8 +876,7 @@
             "FocusSearch": true,
             "MinWidth": "133px",
             "MaxWidth": "133px",
-            "EntityId": "Approvement",
-            "ReportTypeId": 1
+            "EntityId": "Approvement"
         },
         {
             "Id": "009a1db0-0000-0000-8000-77653ce125e1",
@@ -949,8 +893,7 @@
             "FocusSearch": true,
             "MinWidth": "83px",
             "MaxWidth": "83px",
-            "EntityId": "Pricing",
-            "ReportTypeId": 1
+            "EntityId": "Pricing"
         },
         {
             "Id": "00ac02a4-0000-0000-8000-1d8ba22ceb10",
@@ -967,8 +910,7 @@
             "MinWidth": "75px",
             "MaxWidth": "75px",
             "EntityId": "DefaultFee",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "00b20200-0000-0000-8000-0410b95d4155",
@@ -989,8 +931,7 @@
             "MinWidth": "60px",
             "MaxWidth": "60px",
             "OrderBy": "ds.Enum asc",
-            "EntityId": "DefaultFee",
-            "ReportTypeId": 1
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "00b60260-0000-0000-8000-30447aba4fa6",
@@ -1005,8 +946,7 @@
             "MinWidth": "48px",
             "MaxWidth": "48px",
             "EntityId": "DefaultFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "00ba02b0-0000-0000-8000-fd848a8aea2e",
@@ -1023,8 +963,7 @@
             "MinWidth": "102px",
             "MaxWidth": "102px",
             "EntityId": "DefaultFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "00bd0260-0000-0000-8000-ae156213ef6a",
@@ -1037,8 +976,7 @@
             "Editable": true,
             "MinWidth": "62px",
             "MaxWidth": "62px",
-            "EntityId": "DefaultFee",
-            "ReportTypeId": 1
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "00db1820-0000-0000-8000-c2a2f39e340d",
@@ -1051,8 +989,7 @@
             "Editable": true,
             "MinWidth": "229px",
             "MaxWidth": "229px",
-            "EntityId": "DefaultFee",
-            "ReportTypeId": 1
+            "EntityId": "DefaultFee"
         }
     ],
     "Components": [
@@ -1069,8 +1006,7 @@
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
-            "EntityId": "Pricing",
-            "ReportTypeId": 1
+            "EntityId": "Pricing"
         },
         {
             "Id": "008a17f0-0000-0000-8000-6c765809e58a",
@@ -1086,8 +1022,7 @@
             "Active": true,
             "Query": "select PricingDetail.*\r\nfrom PricingDetail\r\nleft join Pricing on PricingDetail.PricingId = Pricing.Id\r\nwhere PolId = '{PolId}' and PodId = '{PodId}'\r\nand FromDate <= '{EtdDate}' and ToDate >= '{EtdDate}'\r\nand CommodityId = '{CommodityId}'\r\nand (({ServiceId} in (1,2) and TypeId = 2) or ({ServiceId} not in (1,2) and TypeId = 1))\r\nand Pricing.Id in (select top 1 Pricing.Id\r\nfrom PricingDetail\r\nleft join Pricing on PricingDetail.PricingId = Pricing.Id\r\nwhere PolId = '{PolId}' and PodId = '{PodId}'\r\nand FromDate <= '{EtdDate}' and ToDate >= '{EtdDate}'\r\nand CommodityId = '{CommodityId}'\r\nand TypeId = 1)",
             "PreQuery": "{\r\n    \"PolId\": this.EditForm.OpenFrom.Entity.PolId,\r\n    \"PodId\": this.EditForm.OpenFrom.Entity.PodId,\r\n    \"ServiceId\": this.Entity.ServiceId,\r\n    \"CommodityId\": this.EditForm.OpenFrom.Entity.CommodityId,\r\n    \"EtaDate\": this.dayjs(this.EditForm.OpenFrom.Entity.EtaDate).format('YYYY-MM-DD'),\r\n    \"EtdDate\": this.dayjs(this.EditForm.OpenFrom.Entity.EtdDate).format('YYYY-MM-DD')\r\n}",
-            "ShowExp": "this.Entity.StatusId == 2 && (this.Entity.UserReceiverId == this.Token.UserId || (this.Entity.GroupReceiverId == this.Token.TeamId)) && this.Entity.QuotationId == null",
-            "ReportTypeId": 1
+            "ShowExp": "this.Entity.StatusId == 2 && (this.Entity.UserReceiverId == this.Token.UserId || (this.Entity.GroupReceiverId == this.Token.TeamId)) && this.Entity.QuotationId == null"
         },
         {
             "Id": "00d318b8-0000-0000-8000-5d869af23139",
@@ -1101,8 +1036,7 @@
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{\"click\":\"CreateQuote\"}",
             "Active": true,
-            "ShowExp": "this.Entity.StatusId == 3 && this.Entity.InsertedBy == this.Token.UserId && this.Entity.QuotationId == null",
-            "ReportTypeId": 1
+            "ShowExp": "this.Entity.StatusId == 3 && this.Entity.InsertedBy == this.Token.UserId && this.Entity.QuotationId == null"
         },
         {
             "Id": "00d70248-0000-0000-8000-7ea05c2c37cb",
@@ -1117,8 +1051,7 @@
             "Active": true,
             "Query": "select ds.*,ctr.Name as UnitName,fee.GroupName as GroupFee,isnull(ds.VendorId,Pricing.VendorId) as ActVendorId\r\nfrom PricingDetail ds\r\nleft join Pricing on ds.PricingId = Pricing.Id\r\nleft join MasterData ctr on ds.UnitId = ctr.Id \r\nleft join FeeType fee on ds.DescriptionId = fee.Id \r\nwhere ds.PricingId = '{PricingId}' \r\nand DescriptionId is not null \r\nand (('{IsLCL}' = '1' and (ctr.Name like N'%LCL%' or ctr.Name like N'%ALL%')) or ('{IsLCL}' = '0'))\r\nand (('{IsFCL}' = '1' and ctr.Name not like N'%LCL%') or ('{IsFCL}' = '0'))",
             "PreQuery": "var feeGrid = this.EditForm.ChildCom.find(x => x.IsListView && x.Meta.FieldName == 'Pricing');\r\nreturn {\r\n    \"PricingId\" : feeGrid.AllListViewItem.find(x=> x.Selected ).Entity.Id || 0,\r\n    \"IsLCL\" : this.EditForm.Entity.Service.Name.includes('LCL') ? 1 : 0,\r\n    \"IsFCL\": this.EditForm.Entity.Service.Name.includes('FCL') ? 1 : 0\r\n}",
-            "ShowExp": "this.Entity.StatusId == 2 && (this.Entity.UserReceiverId == this.Token.UserId || (this.Entity.GroupReceiverId == this.Token.TeamId)) && this.Entity.QuotationId == null",
-            "ReportTypeId": 1
+            "ShowExp": "this.Entity.StatusId == 2 && (this.Entity.UserReceiverId == this.Token.UserId || (this.Entity.GroupReceiverId == this.Token.TeamId)) && this.Entity.QuotationId == null"
         },
         {
             "Id": "00f61b04-0000-0000-8000-0d00bdbbcc31",
@@ -1131,8 +1064,7 @@
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{\"click\":\"UnLoadPricing\"}",
             "Active": true,
-            "ShowExp": "this.Entity.StatusId == 3 && (this.Entity.UserReceiverId == this.Token.UserId || (this.Entity.GroupReceiverId == this.Token.TeamId)) && this.Entity.QuotationId == null",
-            "ReportTypeId": 1
+            "ShowExp": "this.Entity.StatusId == 3 && (this.Entity.UserReceiverId == this.Token.UserId || (this.Entity.GroupReceiverId == this.Token.TeamId)) && this.Entity.QuotationId == null"
         },
         {
             "Id": "00fc193c-0000-0000-8000-b0fa4dcd1bf9",
@@ -1145,8 +1077,7 @@
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"DeclineEntity\" }",
             "Active": true,
-            "ShowExp": "this.Entity.StatusId == 2 && (this.Entity.UserReceiverId == this.Token.UserId || (this.Entity.GroupReceiverId == this.Token.TeamId)) && this.Entity.QuotationId == null",
-            "ReportTypeId": 1
+            "ShowExp": "this.Entity.StatusId == 2 && (this.Entity.UserReceiverId == this.Token.UserId || (this.Entity.GroupReceiverId == this.Token.TeamId)) && this.Entity.QuotationId == null"
         }
     ],
     "FeaturePolicies": [

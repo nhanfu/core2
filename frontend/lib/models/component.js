@@ -272,6 +272,8 @@ export class Component {
     ComponentDefaultValueId;
     /** @type {string} */
     GroupTypeId;
+    
+    ReportTypeId = 1;
     CanRead = false;
     CanReadAll = false;
     CanWrite = false;

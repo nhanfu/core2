@@ -20,7 +20,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "007608d4-0000-0000-8000-fb888ae3dca0",
@@ -37,8 +36,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from Inquiry as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 1 and TypeId = 3 and ServiceId in (1,2)\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 1 and TypeId = 3 and ServiceId in (1,2)\"\r\n}",
                     "RefName": "Inquiry",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -52,7 +50,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "007608d4-0000-0000-8000-e6f6c17fa925",
@@ -68,8 +65,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from Inquiry as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 3 and TypeId = 3 and ServiceId in (1,2)\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 3 and TypeId = 3 and ServiceId in (1,2)\"\r\n}",
                     "RefName": "Inquiry",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -84,7 +80,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00760874-0000-0000-8000-f045d248b773",
@@ -101,8 +96,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from Inquiry as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and TypeId = 3 and ServiceId in (1,2)\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and TypeId = 3 and ServiceId in (1,2)\"\r\n}",
                     "RefName": "Inquiry",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -116,7 +110,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00760880-0000-0000-8000-355845fbe18a",
@@ -132,8 +125,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from Inquiry as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 2 and TypeId = 3 and ServiceId in (1,2)\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 2 and TypeId = 3 and ServiceId in (1,2)\"\r\n}",
                     "RefName": "Inquiry",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -147,7 +139,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00760854-0000-0000-8000-6fdbeeb8c55a",
@@ -163,8 +154,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from Inquiry as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 4 and TypeId = 3 and ServiceId in (1,2)\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 4 and TypeId = 3 and ServiceId in (1,2)\"\r\n}",
                     "RefName": "Inquiry",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         }
@@ -182,8 +172,7 @@
             "FocusSearch": true,
             "MinWidth": "84px",
             "MaxWidth": "84px",
-            "EntityId": "Quote",
-            "ReportTypeId": 1
+            "EntityId": "Quote"
         },
         {
             "Id": "00760810-0000-0000-8000-3688fb44a7a9",
@@ -195,8 +184,7 @@
             "Active": true,
             "MinWidth": "119px",
             "MaxWidth": "119px",
-            "EntityId": "Quote",
-            "ReportTypeId": 1
+            "EntityId": "Quote"
         },
         {
             "Id": "00760814-0000-0000-8000-5ddf7da59c85",
@@ -213,8 +201,7 @@
             "FocusSearch": true,
             "MinWidth": "120px",
             "MaxWidth": "120px",
-            "EntityId": "Quote",
-            "ReportTypeId": 1
+            "EntityId": "Quote"
         },
         {
             "Id": "00760824-0000-0000-8000-b2d996abadd2",
@@ -226,8 +213,7 @@
             "Active": true,
             "MinWidth": "124px",
             "MaxWidth": "124px",
-            "EntityId": "Quote",
-            "ReportTypeId": 1
+            "EntityId": "Quote"
         },
         {
             "Id": "00760854-0000-0000-8000-df589a9a354e",
@@ -241,8 +227,7 @@
             "Active": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
-            "EntityId": "Quote",
-            "ReportTypeId": 1
+            "EntityId": "Quote"
         },
         {
             "Id": "00760864-0000-0000-8000-1818c365c9d5",
@@ -260,8 +245,7 @@
             "FocusSearch": true,
             "MinWidth": "93px",
             "MaxWidth": "93px",
-            "EntityId": "Quote",
-            "ReportTypeId": 1
+            "EntityId": "Quote"
         },
         {
             "Id": "00760870-0000-0000-8000-55e89b9630ca",
@@ -278,8 +262,7 @@
             "FocusSearch": true,
             "MinWidth": "74px",
             "MaxWidth": "74px",
-            "EntityId": "Quote",
-            "ReportTypeId": 1
+            "EntityId": "Quote"
         },
         {
             "Id": "00760890-0000-0000-8000-da2c83fb10ab",
@@ -296,8 +279,7 @@
             "ShowHotKey": true,
             "MinWidth": "306px",
             "MaxWidth": "306px",
-            "EntityId": "Quote",
-            "ReportTypeId": 1
+            "EntityId": "Quote"
         },
         {
             "Id": "007608a4-0000-0000-8000-9447e9b81d70",
@@ -315,8 +297,7 @@
             "HasFilter": true,
             "MinWidth": "110px",
             "MaxWidth": "110px",
-            "EntityId": "Quote",
-            "ReportTypeId": 1
+            "EntityId": "Quote"
         },
         {
             "Id": "007608dc-0000-0000-8000-30180e42677f",
@@ -334,8 +315,7 @@
             "FocusSearch": true,
             "MinWidth": "114px",
             "MaxWidth": "114px",
-            "EntityId": "Quote",
-            "ReportTypeId": 1
+            "EntityId": "Quote"
         },
         {
             "Id": "007608e0-0000-0000-8000-88072d6d1734",
@@ -347,8 +327,7 @@
             "Active": true,
             "MinWidth": "150px",
             "MaxWidth": "150px",
-            "EntityId": "Quote",
-            "ReportTypeId": 1
+            "EntityId": "Quote"
         },
         {
             "Id": "007608f0-0000-0000-8000-5b6ff65860a8",
@@ -361,8 +340,7 @@
             "FocusSearch": true,
             "MinWidth": "79px",
             "MaxWidth": "79px",
-            "EntityId": "Quote",
-            "ReportTypeId": 1
+            "EntityId": "Quote"
         },
         {
             "Id": "007608f8-0000-0000-8000-eb1a90ea7f9b",
@@ -378,8 +356,7 @@
             "RefName": "MasterData",
             "MinWidth": "167px",
             "MaxWidth": "167px",
-            "EntityId": "Quote",
-            "ReportTypeId": 1
+            "EntityId": "Quote"
         },
         {
             "Id": "00d22504-0000-0000-8000-0f8e2df4b487",
@@ -398,8 +375,7 @@
             "TextAlign": "center",
             "MinWidth": "72px",
             "MaxWidth": "72px",
-            "EntityId": "Quote",
-            "ReportTypeId": 1
+            "EntityId": "Quote"
         }
     ],
     "Components": [
@@ -413,8 +389,7 @@
             "Icon": "fal fa-plus",
             "ClassName": "btn",
             "Events": "{\"click\":\"Add\"}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "001a0e24-0000-0000-8001-042fcbc02235",
@@ -426,8 +401,7 @@
             "Icon": "fal fa-plus",
             "ClassName": "btn",
             "Events": "{\"click\":\"Add\"}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "00760854-0000-0000-8000-df589a9a354e",
@@ -441,8 +415,7 @@
             "Active": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
-            "EntityId": "Quote",
-            "ReportTypeId": 1
+            "EntityId": "Quote"
         }
     ],
     "FeaturePolicies": [

@@ -17,7 +17,6 @@
             "Active": true,
             "ParentId": "006101bc-0000-0000-8000-56fd91893632",
             "XxlOuterColumn": 12,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00640174-0000-0000-8000-7fc3b8942e40",
@@ -27,8 +26,7 @@
                     "Column": 12,
                     "Label": "Code",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00660190-0000-0000-8000-e0bcaf3b76c7",
@@ -38,8 +36,7 @@
                     "Column": 12,
                     "Label": "Name",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00670164-0000-0000-8000-61f37ad981db",
@@ -50,8 +47,7 @@
                     "Row": 3,
                     "Label": "Address",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0195027b-84c3-7292-97fa-cb55dbd12d66",
@@ -68,8 +64,7 @@
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Country Manage'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Country Manage'\"\r\n}",
                     "RefName": "MasterData",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "EntityId": "Terminal",
-                    "ReportTypeId": 1
+                    "EntityId": "Terminal"
                 },
                 {
                     "Id": "0195027b-84c3-7292-97fa-cfddc85b13ff",
@@ -86,8 +81,7 @@
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Country Manage'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Country Manage'\"\r\n}",
                     "RefName": "MasterData",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "EntityId": "Terminal",
-                    "ReportTypeId": 1
+                    "EntityId": "Terminal"
                 },
                 {
                     "Id": "0195027b-84c3-7292-97fa-d2a891655385",
@@ -105,8 +99,7 @@
                     "RefName": "MasterData",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
                     "EntityId": "Terminal",
-                    "IsMultiple": true,
-                    "ReportTypeId": 1
+                    "IsMultiple": true
                 }
             ]
         },
@@ -118,7 +111,6 @@
             "ClassName": "ribbon-group",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "007b0164-0000-0000-8000-ba4b69718057",
@@ -131,8 +123,7 @@
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         },
@@ -143,8 +134,7 @@
             "ComponentType": "Section",
             "XxlCol": 12,
             "Active": true,
-            "XxlOuterColumn": 0,
-            "ReportTypeId": 1
+            "XxlOuterColumn": 0
         }
     ],
     "GridPolicies": [
@@ -165,8 +155,7 @@
             "Editable": true,
             "MinWidth": "357px",
             "MaxWidth": "357px",
-            "EntityId": "TerminalService",
-            "ReportTypeId": 1
+            "EntityId": "TerminalService"
         }
     ],
     "Components": [
@@ -181,8 +170,7 @@
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
             "Events": "{ \"click\" : \"SavePatch\" }",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         }
     ],
     "FeaturePolicies": [

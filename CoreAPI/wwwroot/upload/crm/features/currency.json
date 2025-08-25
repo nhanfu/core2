@@ -17,7 +17,6 @@
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00df0fa0-0000-0000-8000-99d171eb0c75",
@@ -36,8 +35,7 @@
                     "IsRealtime": true,
                     "RefName": "MasterData",
                     "TopEmpty": true,
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         }
@@ -55,8 +53,7 @@
             "Editable": true,
             "MinWidth": "211px",
             "MaxWidth": "211px",
-            "EntityId": "MasterData",
-            "ReportTypeId": 1
+            "EntityId": "MasterData"
         },
         {
             "Id": "007e1bc8-0000-0000-8000-8b95cebfa6d8",
@@ -70,8 +67,7 @@
             "Editable": true,
             "MinWidth": "211px",
             "MaxWidth": "211px",
-            "EntityId": "MasterData",
-            "ReportTypeId": 1
+            "EntityId": "MasterData"
         },
         {
             "Id": "00df0f58-0000-0000-8000-24b40759b1bc",
@@ -85,8 +81,7 @@
             "Editable": true,
             "MinWidth": "211px",
             "MaxWidth": "211px",
-            "EntityId": "MasterData",
-            "ReportTypeId": 1
+            "EntityId": "MasterData"
         },
         {
             "Id": "00df0f88-0000-0000-8000-01c301121481",
@@ -100,8 +95,7 @@
             "Editable": true,
             "MinWidth": "117px",
             "MaxWidth": "117px",
-            "EntityId": "MasterData",
-            "ReportTypeId": 1
+            "EntityId": "MasterData"
         },
         {
             "Id": "00df0ffc-0000-0000-8000-7dc0f81ac0d9",
@@ -115,8 +109,7 @@
             "Editable": true,
             "MinWidth": "122px",
             "MaxWidth": "122px",
-            "EntityId": "MasterData",
-            "ReportTypeId": 1
+            "EntityId": "MasterData"
         }
     ],
     "FeaturePolicies": [

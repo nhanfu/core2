@@ -17,7 +17,6 @@
             "ComponentType": "Section",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00ee1dc0-0000-0000-8000-5219ff2d2399",
@@ -34,8 +33,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from [Role] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [Role] as ds\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "Role",
-                    "OrderBy": "ds.Hidden asc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.Hidden asc"
                 }
             ]
         }
@@ -54,8 +52,7 @@
             "FocusSearch": true,
             "MinWidth": "65px",
             "MaxWidth": "65px",
-            "EntityId": "Role",
-            "ReportTypeId": 1
+            "EntityId": "Role"
         },
         {
             "Id": "00ee1d6c-0000-0000-8000-29ca10fd7f5b",
@@ -68,8 +65,7 @@
             "FocusSearch": true,
             "MinWidth": "143px",
             "MaxWidth": "143px",
-            "EntityId": "Role",
-            "ReportTypeId": 1
+            "EntityId": "Role"
         },
         {
             "Id": "00ee1ddc-0000-0000-8000-f96a0b930aeb",
@@ -84,8 +80,7 @@
             "Editable": true,
             "MinWidth": "504px",
             "MaxWidth": "504px",
-            "EntityId": "Role",
-            "ReportTypeId": 1
+            "EntityId": "Role"
         },
         {
             "Id": "01938bd2-beee-718a-ab5f-0b78993d5b45",
@@ -99,8 +94,7 @@
             "Editable": true,
             "MinWidth": "143px",
             "MaxWidth": "143px",
-            "EntityId": "Role",
-            "ReportTypeId": 1
+            "EntityId": "Role"
         }
     ],
     "Components": [
@@ -117,8 +111,7 @@
             "FocusSearch": true,
             "MinWidth": "65px",
             "MaxWidth": "65px",
-            "EntityId": "Role",
-            "ReportTypeId": 1
+            "EntityId": "Role"
         }
     ],
     "FeaturePolicies": [

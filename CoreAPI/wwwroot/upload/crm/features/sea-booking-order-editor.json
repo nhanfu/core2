@@ -20,7 +20,6 @@
             "Active": true,
             "ParentId": "00770f7c-0000-0000-8000-11a61dca68e3",
             "XxlOuterColumn": 4,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00940ff4-0000-0000-8000-c3d90590f848",
@@ -39,8 +38,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and (PartnerTypeIdsText like N'%Shipper%'))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and (PartnerTypeIdsText like N'%Shipper%'))\"\r\n}",
                     "RefName": "Partner",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
-                    "ShowHotKey": true,
-                    "ReportTypeId": 1
+                    "ShowHotKey": true
                 },
                 {
                     "Id": "00980f44-0000-0000-8000-79db30e44e8d",
@@ -59,8 +57,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and PartnerTypeIdsText like N'%Consignee%')\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and PartnerTypeIdsText like N'%Consignee%')\"\r\n}",
                     "RefName": "Partner",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
-                    "ShowHotKey": true,
-                    "ReportTypeId": 1
+                    "ShowHotKey": true
                 },
                 {
                     "Id": "00a70f4c-0000-0000-8000-bca308497908",
@@ -70,8 +67,7 @@
                     "Column": 6,
                     "Row": 7,
                     "Label": "Shipper",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00a70f4c-0000-0000-8001-7741ffbcbfcc",
@@ -81,8 +77,7 @@
                     "Column": 6,
                     "Row": 7,
                     "Label": "Consignee",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         },
@@ -96,7 +91,6 @@
             "Active": true,
             "ParentId": "00770f7c-0000-0000-8000-11a61dca68e3",
             "XxlOuterColumn": 4,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00770f2c-0000-0000-8000-abd326e59350",
@@ -107,8 +101,7 @@
                     "Row": 50,
                     "Label": "PIC",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00770f7c-0000-0000-8000-1e22edcdc010",
@@ -118,8 +111,7 @@
                     "Column": 6,
                     "Label": "Booking No",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00770f98-0000-0000-8000-55ddc3068151",
@@ -140,8 +132,7 @@
                     "RefName": "Partner",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
                     "PreQuery": "{\r\n    \"UserId\": this.Token.UserId,\r\n    \"UserName\": this.Token.UserName\r\n}",
-                    "ShowHotKey": true,
-                    "ReportTypeId": 1
+                    "ShowHotKey": true
                 },
                 {
                     "Id": "00770fd8-0000-0000-8000-25bddbc6b404",
@@ -151,8 +142,7 @@
                     "Column": 6,
                     "Label": "Booking Date",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00c80ff0-0000-0000-8000-4a5d110fa54e",
@@ -167,8 +157,7 @@
                     "ShowLabel": true,
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"DDP\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"CIP\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"CPT\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"CFR\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"FAS\"\r\n    },\r\n    {\r\n        \"Id\": 6,\r\n        \"Name\": \"FCA\"\r\n    },\r\n    {\r\n        \"Id\": 7,\r\n        \"Name\": \"EXW\"\r\n    },\r\n    {\r\n        \"Id\": 8,\r\n        \"Name\": \"CIF\"\r\n    },\r\n    {\r\n        \"Id\": 9,\r\n        \"Name\": \"DPU\"\r\n    },\r\n    {\r\n        \"Id\": 10,\r\n        \"Name\": \"DAP\"\r\n    },\r\n    {\r\n        \"Id\": 11,\r\n        \"Name\": \"FOB\"\r\n    }\r\n]",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "00c80ff0-0000-0000-8001-14bc57cc399a",
@@ -178,8 +167,7 @@
                     "Column": 6,
                     "Label": "Delivery term",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         },
@@ -193,7 +181,6 @@
             "Active": true,
             "ParentId": "00770f7c-0000-0000-8000-11a61dca68e3",
             "XxlOuterColumn": 4,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00770f50-0000-0000-8000-ed6183ae386e",
@@ -205,8 +192,7 @@
                     "ShowLabel": true,
                     "Style": " height: 30px;",
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "00770fa0-0000-0000-8000-f230e68abec8",
@@ -222,8 +208,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where ds1.Name in (N'Unit Type','LTL Type','Container Type')\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where ds1.Name in (N'Unit Type','LTL Type','Container Type')\"\r\n}",
                     "RefName": "MasterData",
-                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
-                    "ReportTypeId": 1
+                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]"
                 },
                 {
                     "Id": "00770fcc-0000-0000-8000-8d426f7bc685",
@@ -234,8 +219,7 @@
                     "Label": "CBM",
                     "ShowLabel": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "00ba139c-0000-0000-8000-a090858076b8",
@@ -246,8 +230,7 @@
                     "Label": "GW",
                     "ShowLabel": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "00d60fdc-0000-0000-8000-22b889dfcd56",
@@ -264,8 +247,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from EntityContainer as ds where EntityId = '{EntityId}'\",\r\n    \"total\": \"select count(ds.Id) as total from EntityContainer as ds where EntityId = '{EntityId}'\"\r\n}",
                     "RefName": "EntityContainer",
                     "PreQuery": "{\r\n    \"EntityId\": this.EditForm.Entity.Id\r\n}",
-                    "Editable": true,
-                    "ReportTypeId": 1
+                    "Editable": true
                 }
             ]
         },
@@ -276,8 +258,7 @@
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 8,
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "00770fbc-0000-0000-8000-dbcc44ba7f27",
@@ -289,7 +270,6 @@
             "Active": true,
             "ParentId": "00770f7c-0000-0000-8000-11a61dca68e3",
             "XxlOuterColumn": 4,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00000f2c-0000-0000-8000-5abf1dafab86",
@@ -305,8 +285,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Commodity Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Commodity Type'\"\r\n}",
                     "RefName": "MasterData",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "00190f84-0000-0000-8000-06ba39b4165d",
@@ -323,8 +302,7 @@
                     "DefaultVal": "0",
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 0,\r\n        \"Name\": \"FREE-HAND\"\r\n    },\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"NOMINATE\"\r\n    }\r\n]",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "00230f18-0000-0000-8000-ef50fe862522",
@@ -340,8 +318,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [User] as ds where (TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 1)\"\r\n}",
                     "RefName": "User",
-                    "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]"
                 },
                 {
                     "Id": "00770f74-0000-0000-8000-ec6daf29f532",
@@ -356,8 +333,7 @@
                     "ShowLabel": true,
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"DRAFT\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"ORIGINAL\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"SURRENDERED\"\r\n    }\r\n]",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "00770f7c-0000-0000-8000-9f8ebce321da",
@@ -367,8 +343,7 @@
                     "Column": 6,
                     "Label": "HBL No",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00770fd0-0000-0000-8000-3ffa2faca9e9",
@@ -378,8 +353,7 @@
                     "Column": 6,
                     "Label": "Service",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         },
@@ -392,7 +366,6 @@
             "Style": "margin-bottom: 0px;padding: 0;",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00273a68-0000-0000-8000-04b9d8245a36",
@@ -407,8 +380,7 @@
                     "Disabled": true,
                     "PopulateField": "this.EditForm.ShowHideDetail();\r\nreturn null;",
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Description\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Description\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "00780f90-0000-0000-8000-29d3fa4d4e7d",
@@ -427,8 +399,7 @@
                     "PopulateField": "this.EditForm.ShowHideDetail();\r\nreturn null;",
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Sea Export FCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-ship mr-1'></i>Sea Export FCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Sea Import FCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-shipping-fast mr-1'></i>Sea Import FCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"Sea Export LCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fas fa-boxes mr-1'></i>Sea Export LCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 6,\r\n        \"Name\": \"Sea Import LCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fas fa-dolly mr-1'></i>Sea Import LCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 16,\r\n        \"Name\": \"Import Consol\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #17a2b8;'><i class='fas fa-warehouse mr-1'></i>Import Consol</span>\"\r\n    },\r\n    {\r\n        \"Id\": 17,\r\n        \"Name\": \"Export Consol\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #343a40;'><i class='fas fa-plane-departure mr-1'></i>Export Consol</span>\"\r\n    }\r\n]\r\n",
-                    "Template": "[{ \"FieldName\" : \"Description\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Description\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 }
             ]
         },
@@ -441,7 +412,6 @@
             "Style": "margin-bottom: 0px;padding: 0;",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "001d365c-0000-0000-8000-2d8bb42adfc9",
@@ -456,8 +426,7 @@
                     "Events": "{\r\n    \"click\": \"PrintPdf\"\r\n}",
                     "Active": true,
                     "Query": "SELECT \r\nCUS.Name AS CUSNAME,\r\nBK.ShipperText AS SHIPPERINFOR,\r\n\r\nFORMAT(BK.PlaceStuffingDate,'dd MMM, yy') AS STUFFINGDATE,\r\nSTUFFING.Name AS PLACEOFSTUFFING,\r\nBK.ContactStuffing AS Contact,\r\nFORMAT(bk.VgmCutOffDate, 'dd MMM, yy hh:mm') AS Closingtime,\r\nbk.FeederVessel AS FeederVesselN, \r\nbk.FeederVoy AS FeederVoyN,\r\nFORMAT(BK.EtdDate,'dd MMM, yy') AS ETD,\r\nFORMAT(BK.EtaDate,'dd MMM, yy') AS ETA,\r\nPOL.Name AS POLNAME,\r\nPOD.Name AS PODNAME,\r\nISNULL((SELECT STRING_AGG(CONCAT(ROUND(inc.Quantity, 0), ' x ', cont.Name ), ' & ') AS Containers\r\n     FROM EntityContainer inc\r\n     LEFT JOIN MasterData cont ON inc.ContainerTypeId = cont.Id\r\n     WHERE inc.EntityId = '{Id}'),'') AS ContainersQty,\r\nBK.Quantity AS Qty,\r\nUnit.Name AS UnitPKG,\r\nBK.GW AS GWIF,\r\ndropofat.Name droof,\r\npickup.Name pkat,\r\nBK.CBM AS CBMIF,\r\nCOMMO.Name AS COMMO,\r\nBK.SpecialRequest AS SPREQUEST, \r\nISNULL(HBLType.Name,'') AS HBLType,\r\nisnull(Inco.Name,'') AS Inco,\r\nHBLType.Name AS HBLType,\r\ncre.NickName AS Creater\r\nFROM dbo.Booking BK\r\nLEFT JOIN dbo.Partner CUS ON CUS.Id = BK.CustomerId\r\nLEFT JOIN dbo.Terminal STUFFING ON STUFFING.Id = BK.PlaceStuffingId\r\nLEFT JOIN dbo.Terminal POL ON POL.Id = BK.PolId \r\nLEFT JOIN dbo.Terminal POD ON POD.Id = BK.PodId\r\nLEFT JOIN dbo.Terminal pickup ON pickup.Id = BK.PickupId\r\nLEFT JOIN dbo.Terminal dropofat ON dropofat.Id = BK.DropOffId\r\nLEFT JOIN dbo.MasterData Unit ON Unit.Id = BK.UnitId \r\nLEFT JOIN dbo.MasterData COMMO ON COMMO.Id = BK.CommodityId\r\nLEFT JOIN dbo.Terminal Deli ON Deli.Id = BK.DeliveryId\r\nLEFT JOIN dbo.MasterData Inco ON Inco.Id = BK.IncotermId\r\nLEFT JOIN dbo.MasterData HBLType ON HBLType.Id = BK.HblTypeId\r\nLEFT JOIN dbo.[User] cre ON cre.Id =  '{TokenUserId}'\r\nWHERE \r\nBK.Id='{Id}'\r\n",
-                    "Template": "<table style=\"border-collapse: collapse; width: 99.5279%; height: 959.76px; border-width: 1px; margin-left: 0px; margin-right: auto;\" border=\"1\"><colgroup><col style=\"width: 1.94217%;\"><col style=\"width: 22.0112%;\"><col style=\"width: 11.912%;\"><col style=\"width: 9.96979%;\"><col style=\"width: 14.5015%;\"><col style=\"width: 9.84031%;\"><col style=\"width: 15.0194%;\"><col style=\"width: 14.7605%;\"></colgroup>\n<tbody>\n<tr style=\"height: 16.6667px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"5\">\n<p><strong>SHIPPER</strong></p>\n<p>&nbsp;</p>\n<p>${SHIPPERINFOR}</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: center; vertical-align: middle;\" colspan=\"4\" rowspan=\"2\"><span style=\"font-size: 12pt;\"><strong>&nbsp;BOOKING NO ${Booking No}</strong></span></td>\n</tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 46px;\">\n<td style=\"text-align: center; vertical-align: middle;\" colspan=\"4\" rowspan=\"15\">\n<p>${CLogo}</p>\n<p><span style=\"font-size: 12pt;\"><strong>${CCompanyName}</strong></span></p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p style=\"font-size: 18pt; min-width: 260px; display: inline-block; border-radius: 29PX; border: 1px solid rgb(0, 0, 0); text-align: center; font-weight: 600;\">BOOKING CONFIRMATION</p>\n</td>\n</tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"5\">\n<p><strong>Consignee</strong></p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 10px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 21.5521px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"4\">\n<p><strong>PORT OF LOADING</strong></p>\n<p>&nbsp;</p>\n<p>${Port of Loading}</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 21.5521px;\"></tr>\n<tr style=\"height: 0px;\"></tr>\n<tr style=\"height: 21.5625px;\"></tr>\n<tr style=\"height: 21.5521px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"3\">\n<p><strong>PORT OF DISCHARGE</strong></p>\n<p>${Port of Discharge}</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 21.5521px;\"></tr>\n<tr style=\"height: 21.5625px;\"></tr>\n<tr style=\"height: 16.6667px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"4\">\n<p><strong>CLOSING TIME</strong></p>\n<p>&nbsp;</p>\n<p style=\"text-align: center;\">${Closingtime}&nbsp;</p>\n</td>\n<td style=\"vertical-align: top; text-align: center;\" colspan=\"2\" rowspan=\"4\">\n<p><strong>Date of Stuffing</strong></p>\n<p>&nbsp;</p>\n<p>${STUFFINGDATE}&nbsp;</p>\n</td>\n<td style=\"vertical-align: top; text-align: center;\" colspan=\"2\" rowspan=\"4\">\n<p><strong>Place of Stuffing</strong></p>\n<p>&nbsp;</p>\n<p>${PLACEOFSTUFFING}&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 33.5729px;\"></tr>\n<tr style=\"height: 27.2917px;\">\n<td style=\"text-align: left; vertical-align: middle;\" colspan=\"4\" rowspan=\"3\">\n<p><strong>VESSEL NAME / VOYAGE No.</strong></p>\n<p>&nbsp;</p>\n<p>&nbsp;${FeederVesselN} ${FeederVoyN}</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"3\">\n<p><strong>Contact</strong></p>\n<p style=\"text-align: center;\"><strong>${Contact}&nbsp;</strong></p>\n</td>\n</tr>\n<tr style=\"height: 10px;\"></tr>\n<tr style=\"height: 27.375px;\"></tr>\n<tr style=\"height: 22.5104px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"4\">\n<p><strong>DESCRIPTION OF GOODS</strong></p>\n<p>${COMMO}</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"4\">\n<p><strong>Other terms &amp; conditions</strong></p>\n<p>${Incoterm}</p>\n<p>${Delivery term}</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" rowspan=\"4\">\n<p><strong>H-B/L No.</strong></p>\n<p>&nbsp;</p>\n<p style=\"text-align: center;\">&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" rowspan=\"4\">\n<p><strong>Type B/L</strong></p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 19.375px;\"></tr>\n<tr style=\"height: 10px;\"></tr>\n<tr style=\"height: 19.3854px;\"></tr>\n<tr style=\"height: 27.3438px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"3\">\n<p><strong>No. of Container(s) or Package(s)</strong></p>\n<p>${ContainersQty} ${Qty} ${UnitPKG}</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"3\">\n<p><strong>VOLUME</strong></p>\n<p>&nbsp;${CBMIF}</p>\n<p style=\"text-align: center;\">&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"3\">\n<p><strong>GROSSWEIGHT</strong></p>\n<p>${GWIF}</p>\n</td>\n</tr>\n<tr style=\"height: 12.0417px;\"></tr>\n<tr style=\"height: 25.2812px;\"></tr>\n<tr style=\"height: 18.0521px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"5\">\n<p><strong>PICK-UP AT</strong></p>\n<p>&nbsp;${pkat}</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"5\">\n<p><strong>DROP-OF AT</strong></p>\n<p>&nbsp;${droof}</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 20.2292px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"8\" rowspan=\"7\">\n<p><strong>Remark</strong></p>\n<p>&nbsp;${Remark}</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 18.0521px;\"></tr>\n<tr style=\"height: 18.0521px;\"></tr>\n<tr style=\"height: 18.0521px;\"></tr>\n<tr style=\"height: 18.0521px;\"></tr>\n<tr style=\"height: 18.0521px;\"></tr>\n<tr style=\"height: 145.042px;\"></tr>\n</tbody>\n</table>",
-                    "ReportTypeId": 1
+                    "Template": "<table style=\"border-collapse: collapse; width: 99.5279%; height: 959.76px; border-width: 1px; margin-left: 0px; margin-right: auto;\" border=\"1\"><colgroup><col style=\"width: 1.94217%;\"><col style=\"width: 22.0112%;\"><col style=\"width: 11.912%;\"><col style=\"width: 9.96979%;\"><col style=\"width: 14.5015%;\"><col style=\"width: 9.84031%;\"><col style=\"width: 15.0194%;\"><col style=\"width: 14.7605%;\"></colgroup>\n<tbody>\n<tr style=\"height: 16.6667px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"5\">\n<p><strong>SHIPPER</strong></p>\n<p>&nbsp;</p>\n<p>${SHIPPERINFOR}</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: center; vertical-align: middle;\" colspan=\"4\" rowspan=\"2\"><span style=\"font-size: 12pt;\"><strong>&nbsp;BOOKING NO ${Booking No}</strong></span></td>\n</tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 46px;\">\n<td style=\"text-align: center; vertical-align: middle;\" colspan=\"4\" rowspan=\"15\">\n<p>${CLogo}</p>\n<p><span style=\"font-size: 12pt;\"><strong>${CCompanyName}</strong></span></p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p style=\"font-size: 18pt; min-width: 260px; display: inline-block; border-radius: 29PX; border: 1px solid rgb(0, 0, 0); text-align: center; font-weight: 600;\">BOOKING CONFIRMATION</p>\n</td>\n</tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"5\">\n<p><strong>Consignee</strong></p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 10px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 21.5521px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"4\">\n<p><strong>PORT OF LOADING</strong></p>\n<p>&nbsp;</p>\n<p>${Port of Loading}</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 21.5521px;\"></tr>\n<tr style=\"height: 0px;\"></tr>\n<tr style=\"height: 21.5625px;\"></tr>\n<tr style=\"height: 21.5521px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"3\">\n<p><strong>PORT OF DISCHARGE</strong></p>\n<p>${Port of Discharge}</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 21.5521px;\"></tr>\n<tr style=\"height: 21.5625px;\"></tr>\n<tr style=\"height: 16.6667px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"4\">\n<p><strong>CLOSING TIME</strong></p>\n<p>&nbsp;</p>\n<p style=\"text-align: center;\">${Closingtime}&nbsp;</p>\n</td>\n<td style=\"vertical-align: top; text-align: center;\" colspan=\"2\" rowspan=\"4\">\n<p><strong>Date of Stuffing</strong></p>\n<p>&nbsp;</p>\n<p>${STUFFINGDATE}&nbsp;</p>\n</td>\n<td style=\"vertical-align: top; text-align: center;\" colspan=\"2\" rowspan=\"4\">\n<p><strong>Place of Stuffing</strong></p>\n<p>&nbsp;</p>\n<p>${PLACEOFSTUFFING}&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 33.5729px;\"></tr>\n<tr style=\"height: 27.2917px;\">\n<td style=\"text-align: left; vertical-align: middle;\" colspan=\"4\" rowspan=\"3\">\n<p><strong>VESSEL NAME / VOYAGE No.</strong></p>\n<p>&nbsp;</p>\n<p>&nbsp;${FeederVesselN} ${FeederVoyN}</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"3\">\n<p><strong>Contact</strong></p>\n<p style=\"text-align: center;\"><strong>${Contact}&nbsp;</strong></p>\n</td>\n</tr>\n<tr style=\"height: 10px;\"></tr>\n<tr style=\"height: 27.375px;\"></tr>\n<tr style=\"height: 22.5104px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"4\">\n<p><strong>DESCRIPTION OF GOODS</strong></p>\n<p>${COMMO}</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"4\">\n<p><strong>Other terms &amp; conditions</strong></p>\n<p>${Incoterm}</p>\n<p>${Delivery term}</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" rowspan=\"4\">\n<p><strong>H-B/L No.</strong></p>\n<p>&nbsp;</p>\n<p style=\"text-align: center;\">&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" rowspan=\"4\">\n<p><strong>Type B/L</strong></p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 19.375px;\"></tr>\n<tr style=\"height: 10px;\"></tr>\n<tr style=\"height: 19.3854px;\"></tr>\n<tr style=\"height: 27.3438px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"3\">\n<p><strong>No. of Container(s) or Package(s)</strong></p>\n<p>${ContainersQty} ${Qty} ${UnitPKG}</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"3\">\n<p><strong>VOLUME</strong></p>\n<p>&nbsp;${CBMIF}</p>\n<p style=\"text-align: center;\">&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"3\">\n<p><strong>GROSSWEIGHT</strong></p>\n<p>${GWIF}</p>\n</td>\n</tr>\n<tr style=\"height: 12.0417px;\"></tr>\n<tr style=\"height: 25.2812px;\"></tr>\n<tr style=\"height: 18.0521px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"5\">\n<p><strong>PICK-UP AT</strong></p>\n<p>&nbsp;${pkat}</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"5\">\n<p><strong>DROP-OF AT</strong></p>\n<p>&nbsp;${droof}</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 20.2292px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"8\" rowspan=\"7\">\n<p><strong>Remark</strong></p>\n<p>&nbsp;${Remark}</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 18.0521px;\"></tr>\n<tr style=\"height: 18.0521px;\"></tr>\n<tr style=\"height: 18.0521px;\"></tr>\n<tr style=\"height: 18.0521px;\"></tr>\n<tr style=\"height: 18.0521px;\"></tr>\n<tr style=\"height: 145.042px;\"></tr>\n</tbody>\n</table>"
                 },
                 {
                     "Id": "00780f08-0000-0000-8000-5a43e46cb8f9",
@@ -470,8 +439,7 @@
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"DeclineEntity\" }",
                     "Active": true,
-                    "ShowExp": "this.Entity.StatusId == 2",
-                    "ReportTypeId": 1
+                    "ShowExp": "this.Entity.StatusId == 2"
                 },
                 {
                     "Id": "00780f38-0000-0000-8000-a984c6e0f1ab",
@@ -484,8 +452,7 @@
                     "Icon": "fas fa-sliders-h-square",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"SaveAdd\" }",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00780f80-0000-0000-8000-7accb783af9e",
@@ -498,8 +465,7 @@
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00780fa0-0000-0000-8000-27bc3c75ac55",
@@ -512,8 +478,7 @@
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"SendEntity\" }",
                     "Active": true,
-                    "ShowExp": "this.Entity.StatusId == 1 || this.Entity.StatusId == 4",
-                    "ReportTypeId": 1
+                    "ShowExp": "this.Entity.StatusId == 1 || this.Entity.StatusId == 4"
                 },
                 {
                     "Id": "00780fdc-0000-0000-8000-9f1054321f53",
@@ -526,8 +491,7 @@
                     "Icon": "fas fa-sliders-h-square",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"SaveAs\" }",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00780fe0-0000-0000-8000-f18d1e4619b7",
@@ -540,8 +504,7 @@
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"ApprovedEntity\" }",
                     "Active": true,
-                    "ShowExp": "this.Entity.StatusId == 2",
-                    "ReportTypeId": 1
+                    "ShowExp": "this.Entity.StatusId == 2"
                 },
                 {
                     "Id": "008136a4-0000-0000-8000-197090ce0d30",
@@ -556,8 +519,7 @@
                     "Events": "{\r\n    \"click\": \"PrintPdf\"\r\n}",
                     "Active": true,
                     "Query": "SELECT \r\nCUS.Name AS CUSNAME,\r\nCUS.PhoneNumber AS PhoneNumber,\r\nBK.ShipperText AS SHIPPERINFOR,\r\nFORMAT(BK.BookingDate,'dd MMM, yy') AS BKDATE,\r\nBK.ConsigneeText AS CONSIGNEEINFOR,\r\nFORMAT(BK.PlaceStuffingDate,'dd MMM, yy') AS STUFFINGDATE,\r\nSTUFFING.Name AS PLACEOFSTUFFING,\r\nBK.ContactStuffing AS Contact,\r\nFORMAT(bk.VgmCutOffDate, 'dd MMM, yy hh:mm') AS Closingtime,\r\nbk.FeederVessel AS FeederVesselN, \r\nbk.FeederVoy AS FeederVoyN,\r\nFORMAT(BK.EtdDate,'dd MMM, yy') AS ETD,\r\nFORMAT(BK.EtaDate,'dd MMM, yy') AS ETA,\r\nPOL.Name AS POLNAME,\r\nPOD.Name AS PODNAME,\r\n(SELECT STRING_AGG(CONCAT(ROUND(inc.Quantity, 0), ' x ', cont.Name ), ' & ') AS Containers\r\n     FROM EntityContainer inc\r\n     LEFT JOIN MasterData cont ON inc.ContainerTypeId = cont.Id\r\n     WHERE inc.EntityId = '{Id}') AS ContainersQty,\r\nBK.Quantity AS Qty,\r\nUnit.Name AS UnitPKG,\r\nBK.GW AS GWIF,\r\nBK.CBM AS CBMIF,\r\nCOMMO.Name AS COMMO,\r\nBK.SpecialRequest AS SPREQUEST, \r\nInco.Name AS IncotermN,\r\nHBLType.Name AS HBLType,\r\ncre.NickName AS Creater\r\nFROM dbo.Booking BK\r\nLEFT JOIN dbo.Partner CUS ON CUS.Id = BK.CustomerId\r\nLEFT JOIN dbo.Terminal STUFFING ON STUFFING.Id = BK.PlaceStuffingId\r\nLEFT JOIN dbo.Terminal POL ON POL.Id = BK.PolId \r\nLEFT JOIN dbo.Terminal POD ON POD.Id = BK.PodId\r\nLEFT JOIN dbo.MasterData Unit ON Unit.Id = BK.UnitId \r\nLEFT JOIN dbo.MasterData COMMO ON COMMO.Id = BK.CommodityId\r\nLEFT JOIN dbo.Terminal Deli ON Deli.Id = BK.DeliveryId\r\nLEFT JOIN dbo.MasterData Inco ON Inco.Id = BK.IncotermId\r\nLEFT JOIN dbo.MasterData HBLType ON HBLType.Id = BK.HblTypeId\r\nLEFT JOIN dbo.[User] cre ON cre.Id =  '{TokenUserId}'\r\nWHERE \r\nBK.Id='{Id}'\r\n\r\n\r\n\r\n",
-                    "Template": "<table style=\"border-collapse: collapse; width: 100.044%; height: 76.6667px;\" border=\"1\"><colgroup><col style=\"width: 15.9143%;\"><col style=\"width: 9.07509%;\"><col style=\"width: 12.4947%;\"><col style=\"width: 12.4947%;\"><col style=\"width: 12.4947%;\"><col style=\"width: 12.4947%;\"><col style=\"width: 14.9936%;\"><col style=\"width: 9.99575%;\"></colgroup>\n<tbody>\n<tr>\n<td rowspan=\"4\"><strong>${CLogo}</strong></td>\n<td style=\"text-align: left;\" colspan=\"7\"><strong>${CCompanyName}</strong></td>\n</tr>\n<tr>\n<td style=\"text-align: left;\" colspan=\"7\"><strong>Address: ${CAddress}</strong></td>\n</tr>\n<tr>\n<td><strong>Tel</strong></td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td><strong>Fax</strong></td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n</tr>\n<tr>\n<td><strong>Email</strong></td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td><strong>Website</strong></td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n</tr>\n</tbody>\n</table>\n<div style=\"mso-element: frame; mso-element-frame-width: 542.25pt; mso-element-frame-height: 69.5pt; mso-element-wrap: auto; mso-element-anchor-vertical: page; mso-element-anchor-horizontal: page; mso-element-left: 30.05pt; mso-element-top: 149.1pt; mso-height-rule: exactly;\">\n<p>&nbsp;</p>\n<table style=\"border-collapse: collapse; width: 99.9124%; height: 43.6667px; border-style: hidden; border-width: 1px; margin-left: auto; margin-right: auto;\" border=\"1\"><colgroup><col style=\"width: 100%;\"></colgroup>\n<tbody>\n<tr>\n<td style=\"text-align: center;\">\n<div style=\"font-size: 24pt; min-width: 600px; display: inline-block; border-radius: 29px; border-image: initial; font-weight: 600; vertical-align: middle; border: 1px solid;\">BOOKING NOTE</div>\n</td>\n</tr>\n</tbody>\n</table>\n</div>\n<p>&nbsp;</p>\n<table style=\"border-collapse: collapse; width: 100.044%; height: 99px;\" border=\"1\"><colgroup><col style=\"width: 12.4946%;\"><col style=\"width: 12.4946%;\"><col style=\"width: 12.4946%;\"><col style=\"width: 12.4946%;\"><col style=\"width: 12.4946%;\"><col style=\"width: 12.4946%;\"><col style=\"width: 12.4946%;\"><col style=\"width: 12.4946%;\"></colgroup>\n<tbody>\n<tr style=\"height: 33px;\">\n<td><strong>From</strong>\n<div style=\"mso-element: frame; mso-element-frame-width: 77.6pt; mso-element-frame-height: 12.75pt; mso-element-wrap: auto; mso-element-anchor-vertical: page; mso-element-anchor-horizontal: page; mso-element-left: 34.05pt; mso-element-top: 189.1pt; mso-height-rule: exactly;\">&nbsp;</div>\n</td>\n<td colspan=\"3\">&nbsp;${CCompanyName}</td>\n<td><strong>To</strong></td>\n<td colspan=\"3\">&nbsp;${Customer}</td>\n</tr>\n<tr style=\"height: 33px;\">\n<td><strong>Date</strong>\n<div style=\"mso-element: frame; mso-element-frame-width: 77.6pt; mso-element-frame-height: 12.75pt; mso-element-wrap: auto; mso-element-anchor-vertical: page; mso-element-anchor-horizontal: page; mso-element-left: 34.05pt; mso-element-top: 207.1pt; mso-height-rule: exactly;\">&nbsp;</div>\n</td>\n<td colspan=\"3\">&nbsp;${BKDATE}</td>\n<td><strong>Tel</strong></td>\n<td colspan=\"3\">&nbsp;${PhoneNumber}</td>\n</tr>\n<tr style=\"height: 33px;\">\n<td><strong>Revision</strong>\n<div style=\"mso-element: frame; mso-element-frame-width: 77.6pt; mso-element-frame-height: 12.75pt; mso-element-wrap: auto; mso-element-anchor-vertical: page; mso-element-anchor-horizontal: page; mso-element-left: 34.05pt; mso-element-top: 225.75pt; mso-height-rule: exactly;\">&nbsp;</div>\n</td>\n<td colspan=\"3\">&nbsp;</td>\n<td><strong>Booking no</strong></td>\n<td colspan=\"3\">&nbsp;<strong>${Booking No}</strong></td>\n</tr>\n</tbody>\n</table>\n<p>&nbsp;</p>\n<table style=\"border-collapse: collapse; width: 100.044%; height: 703.667px; border-width: 1px; margin-left: 0px; margin-right: auto;\" border=\"1\"><colgroup><col style=\"width: 12.237%;\"><col style=\"width: 11.8506%;\"><col style=\"width: 11.9794%;\"><col style=\"width: 11.9794%;\"><col style=\"width: 7.59983%;\"><col style=\"width: 20.3521%;\"><col style=\"width: 12.1082%;\"><col style=\"width: 11.8506%;\"></colgroup>\n<tbody>\n<tr style=\"height: 48.3333px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"2\">\n<p><strong>Shipper</strong></p>\n<p>${SHIPPERINFOR}</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\">\n<p><strong>Date of Stuffing</strong></p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>${STUFFINGDATE}</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\"><strong>Place of Stuffing</strong></td>\n</tr>\n<tr style=\"height: 48.3333px;\"></tr>\n<tr style=\"height: 20px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"2\">\n<p><strong>Consignee</strong></p>\n<p>${CONSIGNEEINFOR}</p>\n</td>\n<td style=\"vertical-align: top; text-align: center;\" colspan=\"2\" rowspan=\"2\">\n<p><strong>Contact</strong></p>\n<p>&nbsp;</p>\n<p>${Contact Stuffing}</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\">\n<p><strong>Closing Time</strong></p>\n<br>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 73.5417px;\"></tr>\n<tr style=\"height: 11.1458px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\">\n<p><strong>Vessel / Voy</strong></p>\n<p>&nbsp;${FeederVesselN}&nbsp; ${FeederVoyN}</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" rowspan=\"2\">\n<p><strong>ETD</strong></p>\n<p>${ETD}</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" rowspan=\"2\">\n<p><strong>ETA</strong></p>\n<p>${ETA}</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\">\n<p><strong>Port of Loading</strong></p>\n<p><strong>&nbsp;${</strong>Port of Loading<strong>}</strong></p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\">\n<p><strong>Port of Discharge</strong></p>\n<p><strong>&nbsp;${</strong>Port of Discharge<strong>}</strong></p>\n</td>\n</tr>\n<tr style=\"height: 37.5208px;\"></tr>\n<tr style=\"height: 33.5208px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\" rowspan=\"2\">\n<p><strong>No. of Container(s) or Package(s)</strong></p>\n<p><strong>${ContainersQty} ${Qty} ${UnitPKG}</strong></p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\" rowspan=\"2\">\n<p><strong>Commodity</strong></p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" rowspan=\"2\">\n<p><strong>G.W</strong></p>\n<p><strong>${GWIF}</strong></p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" rowspan=\"2\">\n<p><strong>CBM</strong></p>\n<p><strong>${CBMIF}</strong></p>\n</td>\n</tr>\n<tr style=\"height: 37.5208px;\"></tr>\n<tr style=\"height: 10px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"6\" rowspan=\"2\">\n<p><strong>Special Request</strong></p>\n<p><strong>${Special Request}</strong></p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\">\n<p><strong>Place of delivery</strong></p>\n<p><strong>${</strong>Place of delivery<strong>}</strong></p>\n</td>\n</tr>\n<tr style=\"height: 37.5208px;\"></tr>\n<tr style=\"height: 37.5208px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"2\">\n<p><strong>Service Required</strong></p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\">\n<p><strong>Payment term</strong></p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\">\n<p><strong>Freight Rate</strong></p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 37.5208px;\"></tr>\n<tr style=\"height: 37.5208px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"2\">\n<p><strong>Pick-up at</strong></p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"2\">\n<p><strong>Drop-off at</strong></p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 37.5208px;\"></tr>\n<tr style=\"height: 37.5208px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"2\">\n<p><strong>Other terms &amp; conditions</strong></p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\">\n<p><strong>H-B/L No.</strong></p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\"><strong>HBL Type</strong></td>\n</tr>\n<tr style=\"height: 37.5208px;\"></tr>\n<tr style=\"height: 37.5208px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"8\" rowspan=\"3\"><strong>Remark</strong><br><strong><br></strong><strong><br></strong></td>\n</tr>\n<tr style=\"height: 10px;\"></tr>\n<tr style=\"height: 73.5833px;\"></tr>\n</tbody>\n</table>",
-                    "ReportTypeId": 1
+                    "Template": "<table style=\"border-collapse: collapse; width: 100.044%; height: 76.6667px;\" border=\"1\"><colgroup><col style=\"width: 15.9143%;\"><col style=\"width: 9.07509%;\"><col style=\"width: 12.4947%;\"><col style=\"width: 12.4947%;\"><col style=\"width: 12.4947%;\"><col style=\"width: 12.4947%;\"><col style=\"width: 14.9936%;\"><col style=\"width: 9.99575%;\"></colgroup>\n<tbody>\n<tr>\n<td rowspan=\"4\"><strong>${CLogo}</strong></td>\n<td style=\"text-align: left;\" colspan=\"7\"><strong>${CCompanyName}</strong></td>\n</tr>\n<tr>\n<td style=\"text-align: left;\" colspan=\"7\"><strong>Address: ${CAddress}</strong></td>\n</tr>\n<tr>\n<td><strong>Tel</strong></td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td><strong>Fax</strong></td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n</tr>\n<tr>\n<td><strong>Email</strong></td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td><strong>Website</strong></td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n</tr>\n</tbody>\n</table>\n<div style=\"mso-element: frame; mso-element-frame-width: 542.25pt; mso-element-frame-height: 69.5pt; mso-element-wrap: auto; mso-element-anchor-vertical: page; mso-element-anchor-horizontal: page; mso-element-left: 30.05pt; mso-element-top: 149.1pt; mso-height-rule: exactly;\">\n<p>&nbsp;</p>\n<table style=\"border-collapse: collapse; width: 99.9124%; height: 43.6667px; border-style: hidden; border-width: 1px; margin-left: auto; margin-right: auto;\" border=\"1\"><colgroup><col style=\"width: 100%;\"></colgroup>\n<tbody>\n<tr>\n<td style=\"text-align: center;\">\n<div style=\"font-size: 24pt; min-width: 600px; display: inline-block; border-radius: 29px; border-image: initial; font-weight: 600; vertical-align: middle; border: 1px solid;\">BOOKING NOTE</div>\n</td>\n</tr>\n</tbody>\n</table>\n</div>\n<p>&nbsp;</p>\n<table style=\"border-collapse: collapse; width: 100.044%; height: 99px;\" border=\"1\"><colgroup><col style=\"width: 12.4946%;\"><col style=\"width: 12.4946%;\"><col style=\"width: 12.4946%;\"><col style=\"width: 12.4946%;\"><col style=\"width: 12.4946%;\"><col style=\"width: 12.4946%;\"><col style=\"width: 12.4946%;\"><col style=\"width: 12.4946%;\"></colgroup>\n<tbody>\n<tr style=\"height: 33px;\">\n<td><strong>From</strong>\n<div style=\"mso-element: frame; mso-element-frame-width: 77.6pt; mso-element-frame-height: 12.75pt; mso-element-wrap: auto; mso-element-anchor-vertical: page; mso-element-anchor-horizontal: page; mso-element-left: 34.05pt; mso-element-top: 189.1pt; mso-height-rule: exactly;\">&nbsp;</div>\n</td>\n<td colspan=\"3\">&nbsp;${CCompanyName}</td>\n<td><strong>To</strong></td>\n<td colspan=\"3\">&nbsp;${Customer}</td>\n</tr>\n<tr style=\"height: 33px;\">\n<td><strong>Date</strong>\n<div style=\"mso-element: frame; mso-element-frame-width: 77.6pt; mso-element-frame-height: 12.75pt; mso-element-wrap: auto; mso-element-anchor-vertical: page; mso-element-anchor-horizontal: page; mso-element-left: 34.05pt; mso-element-top: 207.1pt; mso-height-rule: exactly;\">&nbsp;</div>\n</td>\n<td colspan=\"3\">&nbsp;${BKDATE}</td>\n<td><strong>Tel</strong></td>\n<td colspan=\"3\">&nbsp;${PhoneNumber}</td>\n</tr>\n<tr style=\"height: 33px;\">\n<td><strong>Revision</strong>\n<div style=\"mso-element: frame; mso-element-frame-width: 77.6pt; mso-element-frame-height: 12.75pt; mso-element-wrap: auto; mso-element-anchor-vertical: page; mso-element-anchor-horizontal: page; mso-element-left: 34.05pt; mso-element-top: 225.75pt; mso-height-rule: exactly;\">&nbsp;</div>\n</td>\n<td colspan=\"3\">&nbsp;</td>\n<td><strong>Booking no</strong></td>\n<td colspan=\"3\">&nbsp;<strong>${Booking No}</strong></td>\n</tr>\n</tbody>\n</table>\n<p>&nbsp;</p>\n<table style=\"border-collapse: collapse; width: 100.044%; height: 703.667px; border-width: 1px; margin-left: 0px; margin-right: auto;\" border=\"1\"><colgroup><col style=\"width: 12.237%;\"><col style=\"width: 11.8506%;\"><col style=\"width: 11.9794%;\"><col style=\"width: 11.9794%;\"><col style=\"width: 7.59983%;\"><col style=\"width: 20.3521%;\"><col style=\"width: 12.1082%;\"><col style=\"width: 11.8506%;\"></colgroup>\n<tbody>\n<tr style=\"height: 48.3333px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"2\">\n<p><strong>Shipper</strong></p>\n<p>${SHIPPERINFOR}</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\">\n<p><strong>Date of Stuffing</strong></p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>${STUFFINGDATE}</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\"><strong>Place of Stuffing</strong></td>\n</tr>\n<tr style=\"height: 48.3333px;\"></tr>\n<tr style=\"height: 20px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"2\">\n<p><strong>Consignee</strong></p>\n<p>${CONSIGNEEINFOR}</p>\n</td>\n<td style=\"vertical-align: top; text-align: center;\" colspan=\"2\" rowspan=\"2\">\n<p><strong>Contact</strong></p>\n<p>&nbsp;</p>\n<p>${Contact Stuffing}</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\">\n<p><strong>Closing Time</strong></p>\n<br>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 73.5417px;\"></tr>\n<tr style=\"height: 11.1458px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\">\n<p><strong>Vessel / Voy</strong></p>\n<p>&nbsp;${FeederVesselN}&nbsp; ${FeederVoyN}</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" rowspan=\"2\">\n<p><strong>ETD</strong></p>\n<p>${ETD}</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" rowspan=\"2\">\n<p><strong>ETA</strong></p>\n<p>${ETA}</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\">\n<p><strong>Port of Loading</strong></p>\n<p><strong>&nbsp;${</strong>Port of Loading<strong>}</strong></p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\">\n<p><strong>Port of Discharge</strong></p>\n<p><strong>&nbsp;${</strong>Port of Discharge<strong>}</strong></p>\n</td>\n</tr>\n<tr style=\"height: 37.5208px;\"></tr>\n<tr style=\"height: 33.5208px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\" rowspan=\"2\">\n<p><strong>No. of Container(s) or Package(s)</strong></p>\n<p><strong>${ContainersQty} ${Qty} ${UnitPKG}</strong></p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\" rowspan=\"2\">\n<p><strong>Commodity</strong></p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" rowspan=\"2\">\n<p><strong>G.W</strong></p>\n<p><strong>${GWIF}</strong></p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" rowspan=\"2\">\n<p><strong>CBM</strong></p>\n<p><strong>${CBMIF}</strong></p>\n</td>\n</tr>\n<tr style=\"height: 37.5208px;\"></tr>\n<tr style=\"height: 10px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"6\" rowspan=\"2\">\n<p><strong>Special Request</strong></p>\n<p><strong>${Special Request}</strong></p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\">\n<p><strong>Place of delivery</strong></p>\n<p><strong>${</strong>Place of delivery<strong>}</strong></p>\n</td>\n</tr>\n<tr style=\"height: 37.5208px;\"></tr>\n<tr style=\"height: 37.5208px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"2\">\n<p><strong>Service Required</strong></p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\">\n<p><strong>Payment term</strong></p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\">\n<p><strong>Freight Rate</strong></p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 37.5208px;\"></tr>\n<tr style=\"height: 37.5208px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"2\">\n<p><strong>Pick-up at</strong></p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"2\">\n<p><strong>Drop-off at</strong></p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 37.5208px;\"></tr>\n<tr style=\"height: 37.5208px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"2\">\n<p><strong>Other terms &amp; conditions</strong></p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\">\n<p><strong>H-B/L No.</strong></p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\"><strong>HBL Type</strong></td>\n</tr>\n<tr style=\"height: 37.5208px;\"></tr>\n<tr style=\"height: 37.5208px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"8\" rowspan=\"3\"><strong>Remark</strong><br><strong><br></strong><strong><br></strong></td>\n</tr>\n<tr style=\"height: 10px;\"></tr>\n<tr style=\"height: 73.5833px;\"></tr>\n</tbody>\n</table>"
                 },
                 {
                     "Id": "00fe3728-0000-0000-8000-6f90ae8e7499",
@@ -572,8 +534,7 @@
                     "Events": "{\r\n    \"click\": \"PrintPdf\"\r\n}",
                     "Active": true,
                     "Query": "SELECT \r\nCUS.Name AS CUSNAME,\r\nBK.ShipperText AS SHIPPERINFOR,\r\n\r\nFORMAT(BK.PlaceStuffingDate,'dd MMM, yy') AS STUFFINGDATE,\r\nSTUFFING.Name AS PLACEOFSTUFFING,\r\nBK.ContactStuffing AS Contact,\r\nFORMAT(bk.VgmCutOffDate, 'dd MMM, yy hh:mm') AS Closingtime,\r\n\r\n\r\nFORMAT(BK.EtdDate,'dd MMM, yy') AS ETD,\r\nFORMAT(BK.EtaDate,'dd MMM, yy') AS ETA,\r\nPOL.Name AS POLNAME,\r\nPOD.Name AS PODNAME,\r\nISNULL((SELECT STRING_AGG(CONCAT(ROUND(inc.Quantity, 0), ' x ', cont.Name ), ' & ') AS Containers\r\n     FROM dbo.EntityContainer inc\r\n     LEFT JOIN MasterData cont ON inc.ContainerTypeId = cont.Id\r\n     WHERE inc.Id = '{Id}'),'') AS ContainersQty,\r\nBK.Quantity AS Qty,\r\nUnit.Name AS UnitPKG,\r\nBK.GW AS GWIF,\r\nBK.CBM AS CBMIF,\r\nCOMMO.Name AS COMMO,\r\nBK.SpecialRequest AS SPREQUEST, \r\nISNULL(HBLType.Name,'') AS HBLType,\r\nisnull(Inco.Name,'') AS Inco,\r\nHBLType.Name AS HBLType,\r\ncre.NickName AS Creater\r\nFROM dbo.Booking BK\r\nLEFT JOIN dbo.Partner CUS ON CUS.Id = BK.CustomerId\r\nLEFT JOIN dbo.Terminal STUFFING ON STUFFING.Id = BK.PlaceStuffingId\r\nLEFT JOIN dbo.Terminal POL ON POL.Id = BK.PolId \r\nLEFT JOIN dbo.Terminal POD ON POD.Id = BK.PodId\r\nLEFT JOIN dbo.MasterData Unit ON Unit.Id = BK.UnitId \r\nLEFT JOIN dbo.MasterData COMMO ON COMMO.Id = BK.CommodityId\r\nLEFT JOIN dbo.Terminal Deli ON Deli.Id = BK.DeliveryId\r\nLEFT JOIN dbo.MasterData Inco ON Inco.Id = BK.IncotermId\r\nLEFT JOIN dbo.MasterData HBLType ON HBLType.Id = BK.HblTypeId\r\nLEFT JOIN dbo.[User] cre ON cre.Id =  '{TokenUserId}'\r\nWHERE \r\nBK.Id='{Id}'\r\n\r\n\r\n\r\n",
-                    "Template": "<table style=\"border-collapse: collapse; width: 99.5279%; height: 959.76px; border-width: 1px; margin-left: 0px; margin-right: auto;\" border=\"1\"><colgroup><col style=\"width: 1.94217%;\"><col style=\"width: 22.2702%;\"><col style=\"width: 11.912%;\"><col style=\"width: 9.96979%;\"><col style=\"width: 14.5015%;\"><col style=\"width: 9.84031%;\"><col style=\"width: 15.0194%;\"><col style=\"width: 14.5015%;\"></colgroup>\n<tbody>\n<tr style=\"height: 16.6667px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"5\">\n<p><strong>SHIPPER</strong></p>\n<p>&nbsp;</p>\n<p>${SHIPPERINFOR}</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: center; vertical-align: middle;\" colspan=\"4\" rowspan=\"2\"><span style=\"font-size: 12pt;\"><strong>&nbsp;BOOKING NO ${Booking No}</strong></span></td>\n</tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 46px;\">\n<td style=\"text-align: center; vertical-align: middle;\" colspan=\"4\" rowspan=\"15\">\n<p>${CLogo}</p>\n<p><span style=\"font-size: 12pt;\"><strong>${CCompanyName}</strong></span></p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p style=\"font-size: 18pt; min-width: 260px; display: inline-block; border-radius: 29PX; border: 1px solid rgb(0, 0, 0); text-align: center; font-weight: 600;\">BOOKING CONFIRMATION</p>\n</td>\n</tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"5\">\n<p><strong>Consignee</strong></p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 10px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 21.5521px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"4\">\n<p><strong>PORT OF LOADING</strong></p>\n<p>&nbsp;</p>\n<p>${Port of Loading}</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 21.5521px;\"></tr>\n<tr style=\"height: 0px;\"></tr>\n<tr style=\"height: 21.5625px;\"></tr>\n<tr style=\"height: 21.5521px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"3\">\n<p><strong>PORT OF DISCHARGE</strong></p>\n<p>&nbsp;</p>\n<p>${Port of Discharge}</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 21.5521px;\"></tr>\n<tr style=\"height: 21.5625px;\"></tr>\n<tr style=\"height: 16.6667px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"4\">\n<p><strong>CLOSING TIME</strong></p>\n<p>&nbsp;</p>\n<p style=\"text-align: center;\"><span style=\"font-size: 13pt;\">${Closingtime}</span></p>\n</td>\n<td style=\"vertical-align: top; text-align: center;\" colspan=\"2\" rowspan=\"4\">\n<p><strong>Date of Stuffing</strong></p>\n<p>&nbsp;</p>\n<p><span style=\"font-size: 13pt;\">${STUFFINGDATE}</span></p>\n</td>\n<td style=\"vertical-align: top; text-align: center;\" colspan=\"2\" rowspan=\"4\">\n<p><strong>Place of Stuffing</strong></p>\n<p>&nbsp;</p>\n<p><span style=\"font-size: 13pt;\">${PLACEOFSTUFFING}</span></p>\n</td>\n</tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 33.5729px;\"></tr>\n<tr style=\"height: 27.2917px;\">\n<td style=\"text-align: left; vertical-align: middle;\" colspan=\"4\" rowspan=\"3\">\n<p><strong>VESSEL NAME / VOYAGE No.</strong></p>\n<p>&nbsp;</p>\n<p>${Feeder vessel} / ${Voy}</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"3\">\n<p><strong>Contact</strong></p>\n<p style=\"text-align: center;\"><span style=\"font-size: 14pt;\">${Contact}</span></p>\n</td>\n</tr>\n<tr style=\"height: 10px;\"></tr>\n<tr style=\"height: 27.375px;\"></tr>\n<tr style=\"height: 22.5104px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"4\">\n<p><strong>DESCRIPTION OF GOODS</strong></p>\n<p>&nbsp;</p>\n<p>${Commodity}</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"4\">\n<p><strong>Other terms &amp; conditions</strong></p>\n<p>&nbsp;${Inco}</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" rowspan=\"4\">\n<p><strong>H-B/L No.</strong></p>\n<p>&nbsp;</p>\n<p style=\"text-align: center;\">${HBL No}</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" rowspan=\"4\">\n<p><strong>Type B/L</strong></p>\n<p>&nbsp;</p>\n<p>${HBLType}</p>\n</td>\n</tr>\n<tr style=\"height: 19.375px;\"></tr>\n<tr style=\"height: 10px;\"></tr>\n<tr style=\"height: 19.3854px;\"></tr>\n<tr style=\"height: 27.3438px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"3\">\n<p><strong>No. of Container(s) or Package(s)</strong></p>\n<p>&nbsp;</p>\n<p>${ContainersQty} - ${Quantity} ${Unit}</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"3\">\n<p><strong>VOLUME</strong></p>\n<p>&nbsp;</p>\n<p style=\"text-align: center;\">${CBM} (${Unit})</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"3\">\n<p><strong>GROSSWEIGHT</strong></p>\n<p>&nbsp;</p>\n<p style=\"text-align: center;\">${GW} (KGS)</p>\n</td>\n</tr>\n<tr style=\"height: 12.0417px;\"></tr>\n<tr style=\"height: 25.2812px;\"></tr>\n<tr style=\"height: 18.0521px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"5\">\n<p><strong>PICK-UP AT</strong></p>\n<p>&nbsp;</p>\n<p>${Pickup address}</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"5\">\n<p><strong>DROP-OF AT</strong></p>\n<p>&nbsp;</p>\n<p>${Delivery address}</p>\n</td>\n</tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 20.2292px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"8\" rowspan=\"7\">\n<p><strong>Remark</strong></p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 18.0521px;\"></tr>\n<tr style=\"height: 18.0521px;\"></tr>\n<tr style=\"height: 18.0521px;\"></tr>\n<tr style=\"height: 18.0521px;\"></tr>\n<tr style=\"height: 18.0521px;\"></tr>\n<tr style=\"height: 145.042px;\"></tr>\n</tbody>\n</table>",
-                    "ReportTypeId": 1
+                    "Template": "<table style=\"border-collapse: collapse; width: 99.5279%; height: 959.76px; border-width: 1px; margin-left: 0px; margin-right: auto;\" border=\"1\"><colgroup><col style=\"width: 1.94217%;\"><col style=\"width: 22.2702%;\"><col style=\"width: 11.912%;\"><col style=\"width: 9.96979%;\"><col style=\"width: 14.5015%;\"><col style=\"width: 9.84031%;\"><col style=\"width: 15.0194%;\"><col style=\"width: 14.5015%;\"></colgroup>\n<tbody>\n<tr style=\"height: 16.6667px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"5\">\n<p><strong>SHIPPER</strong></p>\n<p>&nbsp;</p>\n<p>${SHIPPERINFOR}</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: center; vertical-align: middle;\" colspan=\"4\" rowspan=\"2\"><span style=\"font-size: 12pt;\"><strong>&nbsp;BOOKING NO ${Booking No}</strong></span></td>\n</tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 46px;\">\n<td style=\"text-align: center; vertical-align: middle;\" colspan=\"4\" rowspan=\"15\">\n<p>${CLogo}</p>\n<p><span style=\"font-size: 12pt;\"><strong>${CCompanyName}</strong></span></p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p style=\"font-size: 18pt; min-width: 260px; display: inline-block; border-radius: 29PX; border: 1px solid rgb(0, 0, 0); text-align: center; font-weight: 600;\">BOOKING CONFIRMATION</p>\n</td>\n</tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"5\">\n<p><strong>Consignee</strong></p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 10px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 21.5521px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"4\">\n<p><strong>PORT OF LOADING</strong></p>\n<p>&nbsp;</p>\n<p>${Port of Loading}</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 21.5521px;\"></tr>\n<tr style=\"height: 0px;\"></tr>\n<tr style=\"height: 21.5625px;\"></tr>\n<tr style=\"height: 21.5521px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"3\">\n<p><strong>PORT OF DISCHARGE</strong></p>\n<p>&nbsp;</p>\n<p>${Port of Discharge}</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 21.5521px;\"></tr>\n<tr style=\"height: 21.5625px;\"></tr>\n<tr style=\"height: 16.6667px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"4\">\n<p><strong>CLOSING TIME</strong></p>\n<p>&nbsp;</p>\n<p style=\"text-align: center;\"><span style=\"font-size: 13pt;\">${Closingtime}</span></p>\n</td>\n<td style=\"vertical-align: top; text-align: center;\" colspan=\"2\" rowspan=\"4\">\n<p><strong>Date of Stuffing</strong></p>\n<p>&nbsp;</p>\n<p><span style=\"font-size: 13pt;\">${STUFFINGDATE}</span></p>\n</td>\n<td style=\"vertical-align: top; text-align: center;\" colspan=\"2\" rowspan=\"4\">\n<p><strong>Place of Stuffing</strong></p>\n<p>&nbsp;</p>\n<p><span style=\"font-size: 13pt;\">${PLACEOFSTUFFING}</span></p>\n</td>\n</tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 33.5729px;\"></tr>\n<tr style=\"height: 27.2917px;\">\n<td style=\"text-align: left; vertical-align: middle;\" colspan=\"4\" rowspan=\"3\">\n<p><strong>VESSEL NAME / VOYAGE No.</strong></p>\n<p>&nbsp;</p>\n<p>${Feeder vessel} / ${Voy}</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"3\">\n<p><strong>Contact</strong></p>\n<p style=\"text-align: center;\"><span style=\"font-size: 14pt;\">${Contact}</span></p>\n</td>\n</tr>\n<tr style=\"height: 10px;\"></tr>\n<tr style=\"height: 27.375px;\"></tr>\n<tr style=\"height: 22.5104px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"4\">\n<p><strong>DESCRIPTION OF GOODS</strong></p>\n<p>&nbsp;</p>\n<p>${Commodity}</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"4\">\n<p><strong>Other terms &amp; conditions</strong></p>\n<p>&nbsp;${Inco}</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" rowspan=\"4\">\n<p><strong>H-B/L No.</strong></p>\n<p>&nbsp;</p>\n<p style=\"text-align: center;\">${HBL No}</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" rowspan=\"4\">\n<p><strong>Type B/L</strong></p>\n<p>&nbsp;</p>\n<p>${HBLType}</p>\n</td>\n</tr>\n<tr style=\"height: 19.375px;\"></tr>\n<tr style=\"height: 10px;\"></tr>\n<tr style=\"height: 19.3854px;\"></tr>\n<tr style=\"height: 27.3438px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"3\">\n<p><strong>No. of Container(s) or Package(s)</strong></p>\n<p>&nbsp;</p>\n<p>${ContainersQty} - ${Quantity} ${Unit}</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"3\">\n<p><strong>VOLUME</strong></p>\n<p>&nbsp;</p>\n<p style=\"text-align: center;\">${CBM} (${Unit})</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"3\">\n<p><strong>GROSSWEIGHT</strong></p>\n<p>&nbsp;</p>\n<p style=\"text-align: center;\">${GW} (KGS)</p>\n</td>\n</tr>\n<tr style=\"height: 12.0417px;\"></tr>\n<tr style=\"height: 25.2812px;\"></tr>\n<tr style=\"height: 18.0521px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"5\">\n<p><strong>PICK-UP AT</strong></p>\n<p>&nbsp;</p>\n<p>${Pickup address}</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"5\">\n<p><strong>DROP-OF AT</strong></p>\n<p>&nbsp;</p>\n<p>${Delivery address}</p>\n</td>\n</tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 20.2292px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"8\" rowspan=\"7\">\n<p><strong>Remark</strong></p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 18.0521px;\"></tr>\n<tr style=\"height: 18.0521px;\"></tr>\n<tr style=\"height: 18.0521px;\"></tr>\n<tr style=\"height: 18.0521px;\"></tr>\n<tr style=\"height: 18.0521px;\"></tr>\n<tr style=\"height: 145.042px;\"></tr>\n</tbody>\n</table>"
                 }
             ]
         },
@@ -588,7 +549,6 @@
             "Active": true,
             "ParentId": "00770f7c-0000-0000-8000-11a61dca68e3",
             "XxlOuterColumn": 4,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "000b0fd0-0000-0000-8000-31d71cb20636",
@@ -605,8 +565,7 @@
                     "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                     "RefName": "Terminal",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "TabGroup": "PlaceStuffingId",
-                    "ReportTypeId": 1
+                    "TabGroup": "PlaceStuffingId"
                 },
                 {
                     "Id": "000b0fd0-0000-0000-8001-9f4532ccf824",
@@ -616,8 +575,7 @@
                     "Column": 6,
                     "Label": "Date of Stuffing",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "002a0f9c-0000-0000-8000-721c74a759c5",
@@ -627,8 +585,7 @@
                     "Column": 6,
                     "Label": "Contact Stuffing",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00310ff4-0000-0000-8000-28bb646500e6",
@@ -639,8 +596,7 @@
                     "Precision": 7,
                     "Label": "Laden on board",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "004b0f70-0000-0000-8000-8c177b69bd90",
@@ -656,8 +612,7 @@
                     "Active": true,
                     "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                     "RefName": "Terminal",
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "00520f00-0000-0000-8000-377510dd913b",
@@ -667,8 +622,7 @@
                     "Column": 6,
                     "Label": "ETD",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "005c0fdc-0000-0000-8000-8c6327a7f85c",
@@ -679,8 +633,7 @@
                     "Precision": 7,
                     "Label": "DOCS Cut-off",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00610f64-0000-0000-8000-7cc471773b4a",
@@ -691,8 +644,7 @@
                     "Precision": 7,
                     "Label": "VGM Cut-off",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00690f34-0000-0000-8000-8963b19f3b82",
@@ -703,8 +655,7 @@
                     "Precision": 7,
                     "Label": "SI Cut-off",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00780f50-0000-0000-8000-6f903d9fbe46",
@@ -715,8 +666,7 @@
                     "Precision": 7,
                     "Label": "CY Cut-off",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00a92d10-0000-0000-8000-453eb4363641",
@@ -733,8 +683,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from EntityTransit as ds where EntityId = '{EntityId}'\",\r\n    \"total\": \"select count(ds.Id) as total from EntityTransit as ds where EntityId = '{EntityId}'\"\r\n}",
                     "RefName": "EntityTransit",
                     "PreQuery": "{ \"EntityId\": this.EditForm.Entity.Id}",
-                    "Editable": true,
-                    "ReportTypeId": 1
+                    "Editable": true
                 },
                 {
                     "Id": "00bb0f18-0000-0000-8000-85539f33b17d",
@@ -744,8 +693,7 @@
                     "Column": 6,
                     "Label": "Pickup Date",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00bb0fb4-0000-0000-8000-1b49dbef1c8f",
@@ -761,8 +709,7 @@
                     "Active": true,
                     "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                     "RefName": "Terminal",
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "00bd0f84-0000-0000-8000-cdcedb572a94",
@@ -772,8 +719,7 @@
                     "Column": 3,
                     "Label": "Feeder vessel",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00bd0f84-0000-0000-8001-d9bc02ca05ad",
@@ -783,8 +729,7 @@
                     "Column": 3,
                     "Label": "Ocean vessel",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00be13c4-0000-0000-8000-2ae1f2dd9bcb",
@@ -794,8 +739,7 @@
                     "Column": 3,
                     "Label": "Voy",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00c21380-0000-0000-8000-d66fdd3f02be",
@@ -805,8 +749,7 @@
                     "Column": 3,
                     "Label": "Voy",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00d50fac-0000-0000-8000-6177113bf099",
@@ -817,8 +760,7 @@
                     "Offset": 6,
                     "Label": "Empty Return Date",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00dc0fec-0000-0000-8000-ec4749ede007",
@@ -834,8 +776,7 @@
                     "Active": true,
                     "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                     "RefName": "Terminal",
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "00dc0fec-0000-0000-8001-5b5143ab06b0",
@@ -845,8 +786,7 @@
                     "Column": 6,
                     "Label": "Drop off date",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         },
@@ -861,7 +801,6 @@
             "Active": true,
             "ParentId": "00770f7c-0000-0000-8000-11a61dca68e3",
             "XxlOuterColumn": 4,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00280f6c-0000-0000-8000-5f79a3510308",
@@ -876,8 +815,7 @@
                     "ShowLabel": true,
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 0,\r\n        \"Name\": \"Collect\"\r\n    },\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Prepaid\"\r\n    }\r\n]",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "00300fa0-0000-0000-8000-395adac8a29b",
@@ -888,8 +826,7 @@
                     "Label": "Freight rate",
                     "ShowLabel": true,
                     "Active": true,
-                    "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
                 },
                 {
                     "Id": "00420ff8-0000-0000-8000-dcd13007d1c1",
@@ -900,8 +837,7 @@
                     "Label": "DEM (free)",
                     "ShowLabel": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "00420ff8-0000-0000-8001-1916e5e12d00",
@@ -912,8 +848,7 @@
                     "Label": "DET (free)",
                     "ShowLabel": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "00750f4c-0000-0000-8000-312a6b78f786",
@@ -924,8 +859,7 @@
                     "Row": 3,
                     "Label": "Delivery address",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00750fe8-0000-0000-8000-7d49c9f785e9",
@@ -936,8 +870,7 @@
                     "Row": 3,
                     "Label": "Pickup address",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00800fd0-0000-0000-8000-8ea75e53ec5e",
@@ -953,8 +886,7 @@
                     "Active": true,
                     "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                     "RefName": "Terminal",
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "00800fd0-0000-0000-8001-de6cc50bef9a",
@@ -964,8 +896,7 @@
                     "Column": 6,
                     "Label": "ETA",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00970fd4-0000-0000-8000-6a9004c85cc3",
@@ -976,8 +907,7 @@
                     "Row": 3,
                     "Label": "Special Request",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "009d0f54-0000-0000-8000-5ab2bb1a0f2b",
@@ -987,8 +917,7 @@
                     "Column": 6,
                     "Label": "Movement",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00a20f68-0000-0000-8000-f9d0ac376d85",
@@ -1000,8 +929,7 @@
                     "Label": "Remark",
                     "ShowLabel": true,
                     "Style": "height: 160px;",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00ec0fcc-0000-0000-8000-07d2cc999903",
@@ -1017,8 +945,7 @@
                     "Active": true,
                     "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                     "RefName": "Terminal",
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "00ed0f4c-0000-0000-8000-cf8c34bf868f",
@@ -1034,8 +961,7 @@
                     "Active": true,
                     "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                     "RefName": "Terminal",
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 }
             ]
         }
@@ -1059,8 +985,7 @@
             "Editable": true,
             "MinWidth": "206px",
             "MaxWidth": "206px",
-            "EntityId": "EntityContainer",
-            "ReportTypeId": 1
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "00790f78-0000-0000-8000-bd5b4257f56f",
@@ -1075,8 +1000,7 @@
             "MinWidth": "171px",
             "MaxWidth": "171px",
             "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "00b02dfc-0000-0000-8000-cc97cc7bb6d8",
@@ -1096,8 +1020,7 @@
             "Editable": true,
             "MinWidth": "224px",
             "MaxWidth": "224px",
-            "EntityId": "EntityTransit",
-            "ReportTypeId": 1
+            "EntityId": "EntityTransit"
         },
         {
             "Id": "00b02dfc-0000-0000-8001-e492608872a3",
@@ -1112,8 +1035,7 @@
             "Editable": true,
             "MinWidth": "206px",
             "MaxWidth": "206px",
-            "EntityId": "EntityTransit",
-            "ReportTypeId": 1
+            "EntityId": "EntityTransit"
         },
         {
             "Id": "00b02dfc-0000-0000-8002-f26deffba41d",
@@ -1128,8 +1050,7 @@
             "Editable": true,
             "MinWidth": "206px",
             "MaxWidth": "206px",
-            "EntityId": "EntityTransit",
-            "ReportTypeId": 1
+            "EntityId": "EntityTransit"
         }
     ],
     "Components": [
@@ -1144,8 +1065,7 @@
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"DeclineEntity\" }",
             "Active": true,
-            "ShowExp": "this.Entity.StatusId == 2",
-            "ReportTypeId": 1
+            "ShowExp": "this.Entity.StatusId == 2"
         },
         {
             "Id": "00780f38-0000-0000-8000-a984c6e0f1ab",
@@ -1158,8 +1078,7 @@
             "Icon": "fas fa-sliders-h-square",
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"SaveAdd\" }",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "00780f80-0000-0000-8000-7accb783af9e",
@@ -1172,8 +1091,7 @@
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
             "Events": "{ \"click\" : \"SavePatch\" }",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "00780fa0-0000-0000-8000-27bc3c75ac55",
@@ -1186,8 +1104,7 @@
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"SendEntity\" }",
             "Active": true,
-            "ShowExp": "this.Entity.StatusId == 1 || this.Entity.StatusId == 4",
-            "ReportTypeId": 1
+            "ShowExp": "this.Entity.StatusId == 1 || this.Entity.StatusId == 4"
         },
         {
             "Id": "00780fdc-0000-0000-8000-9f1054321f53",
@@ -1200,8 +1117,7 @@
             "Icon": "fas fa-sliders-h-square",
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"SaveAs\" }",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "00780fe0-0000-0000-8000-f18d1e4619b7",
@@ -1214,8 +1130,7 @@
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"ApprovedEntity\" }",
             "Active": true,
-            "ShowExp": "this.Entity.StatusId == 2",
-            "ReportTypeId": 1
+            "ShowExp": "this.Entity.StatusId == 2"
         }
     ],
     "FeaturePolicies": [

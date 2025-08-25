@@ -16,7 +16,6 @@
             "ComponentType": "Section",
             "XxlCol": 1,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00d91a40-0000-0000-8000-50658af9c6e8",
@@ -34,8 +33,7 @@
                     "IsRealtime": true,
                     "RefName": "ChatEntity",
                     "TopEmpty": true,
-                    "PreQuery": "{\r\n    \"RecordId\" : this.Entity.Id\r\n}",
-                    "ReportTypeId": 1
+                    "PreQuery": "{\r\n    \"RecordId\" : this.Entity.Id\r\n}"
                 }
             ]
         }
@@ -56,8 +54,7 @@
             "Template": "[\r\n    {\r\n        \"FieldName\": \"FullName\",\r\n        \"Label\": \"Full Name\",\r\n        \"ComponentType\": \"FullName\"\r\n    },\r\n    {\r\n        \"FieldName\": \"NickName\",\r\n        \"Label\": \"NickName\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"DepartmentId\",\r\n        \"Label\": \"Department\",\r\n        \"ComponentType\": \"Dropdown\",\r\n        \"RefName\": \"MasterData\",\r\n        \"FormatData\": \"{Name}\"\r\n    }\r\n]",
             "Editable": true,
             "EntityId": "Feature",
-            "IsMultiple": true,
-            "ReportTypeId": 1
+            "IsMultiple": true
         },
         {
             "Id": "00d91a28-0000-0000-8000-07f349c1c7e9",
@@ -71,8 +68,7 @@
             "Editable": true,
             "MinWidth": "290px",
             "MaxWidth": "290px",
-            "EntityId": "Feature",
-            "ReportTypeId": 1
+            "EntityId": "Feature"
         },
         {
             "Id": "00d91a2c-0000-0000-8000-061a134ae2c5",
@@ -86,8 +82,7 @@
             "Editable": true,
             "MinWidth": "88px",
             "MaxWidth": "88px",
-            "EntityId": "Feature",
-            "ReportTypeId": 1
+            "EntityId": "Feature"
         },
         {
             "Id": "00d91a54-0000-0000-8000-79b429f5338c",
@@ -101,8 +96,7 @@
             "Editable": true,
             "MinWidth": "168px",
             "MaxWidth": "168px",
-            "EntityId": "Feature",
-            "ReportTypeId": 1
+            "EntityId": "Feature"
         },
         {
             "Id": "00d91a68-0000-0000-8000-a5889c57f66b",
@@ -116,8 +110,7 @@
             "Editable": true,
             "MinWidth": "290px",
             "MaxWidth": "290px",
-            "EntityId": "Feature",
-            "ReportTypeId": 1
+            "EntityId": "Feature"
         },
         {
             "Id": "00d91a80-0000-0000-8000-ec7e5601b508",
@@ -137,8 +130,7 @@
             "Editable": true,
             "MinWidth": "306px",
             "MaxWidth": "306px",
-            "EntityId": "Feature",
-            "ReportTypeId": 1
+            "EntityId": "Feature"
         },
         {
             "Id": "00d91a9c-0000-0000-8000-215cf9d57635",
@@ -154,8 +146,7 @@
             "MinWidth": "96px",
             "MaxWidth": "96px",
             "EntityId": "Feature",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "00d91ad4-0000-0000-8000-8b625ed8986d",
@@ -169,8 +160,7 @@
             "Editable": true,
             "MinWidth": "95px",
             "MaxWidth": "95px",
-            "EntityId": "Feature",
-            "ReportTypeId": 1
+            "EntityId": "Feature"
         },
         {
             "Id": "00d91ad8-0000-0000-8000-0ece52fcad5d",
@@ -183,8 +173,7 @@
             "FocusSearch": true,
             "MinWidth": "266px",
             "MaxWidth": "266px",
-            "EntityId": "Feature",
-            "ReportTypeId": 1
+            "EntityId": "Feature"
         }
     ],
     "FeaturePolicies": [

@@ -21,7 +21,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0027140c-0000-0000-8000-c880109556cd",
@@ -38,8 +37,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from Booking as ds where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and TypeId = 5)\",\r\n    \"total\": \"select count(ds.Id) as total from Booking as ds  where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and TypeId = 5)\"\r\n}",
                     "RefName": "Booking",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -53,7 +51,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0027141c-0000-0000-8000-48e65a1527a0",
@@ -69,8 +66,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from Booking as ds where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and StatusId = 4  and TypeId = 5)\",\r\n    \"total\": \"select count(ds.Id) as total from Booking as ds  where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and StatusId = 4  and TypeId = 5)\"\r\n}",
                     "RefName": "Booking",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -84,7 +80,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0027141c-0000-0000-8000-93dc53fe6d93",
@@ -100,8 +95,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from Booking as ds where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and StatusId = 2  and TypeId = 5)\",\r\n    \"total\": \"select count(ds.Id) as total from Booking as ds  where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and StatusId = 2  and TypeId = 5)\"\r\n}",
                     "RefName": "Booking",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -115,7 +109,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00271430-0000-0000-8000-f475bc2b2ab9",
@@ -131,8 +124,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from Booking as ds where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and StatusId = 3  and TypeId = 5)\",\r\n    \"total\": \"select count(ds.Id) as total from Booking as ds  where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and StatusId = 3  and TypeId = 5)\"\r\n}",
                     "RefName": "Booking",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -146,7 +138,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00271488-0000-0000-8000-55304e117abb",
@@ -163,8 +154,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from Booking as ds where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and StatusId = 1  and TypeId = 5)\",\r\n    \"total\": \"select count(ds.Id) as total from Booking as ds  where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and StatusId = 1  and TypeId = 5)\"\r\n}",
                     "RefName": "Booking",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         }
@@ -186,8 +176,7 @@
             "ShowHotKey": true,
             "MinWidth": "303px",
             "MaxWidth": "303px",
-            "EntityId": "Booking",
-            "ReportTypeId": 1
+            "EntityId": "Booking"
         },
         {
             "Id": "00271414-0000-0000-8000-39aeb371eecd",
@@ -205,8 +194,7 @@
             "FocusSearch": true,
             "MinWidth": "150px",
             "MaxWidth": "150px",
-            "EntityId": "Booking",
-            "ReportTypeId": 1
+            "EntityId": "Booking"
         },
         {
             "Id": "00271440-0000-0000-8000-335d3854d71c",
@@ -223,8 +211,7 @@
             "FocusSearch": true,
             "MinWidth": "109px",
             "MaxWidth": "109px",
-            "EntityId": "Booking",
-            "ReportTypeId": 1
+            "EntityId": "Booking"
         },
         {
             "Id": "00271444-0000-0000-8000-ba04b4655abb",
@@ -237,8 +224,7 @@
             "FocusSearch": true,
             "MinWidth": "130px",
             "MaxWidth": "130px",
-            "EntityId": "Booking",
-            "ReportTypeId": 1
+            "EntityId": "Booking"
         },
         {
             "Id": "00271450-0000-0000-8000-57ead2276961",
@@ -255,8 +241,7 @@
             "FocusSearch": true,
             "MinWidth": "85px",
             "MaxWidth": "85px",
-            "EntityId": "Booking",
-            "ReportTypeId": 1
+            "EntityId": "Booking"
         },
         {
             "Id": "00271470-0000-0000-8000-5c207dfe3033",
@@ -270,8 +255,7 @@
             "HasFilter": true,
             "MinWidth": "98px",
             "MaxWidth": "98px",
-            "EntityId": "Booking",
-            "ReportTypeId": 1
+            "EntityId": "Booking"
         },
         {
             "Id": "00271474-0000-0000-8000-1af646ef7a07",
@@ -284,8 +268,7 @@
             "FocusSearch": true,
             "MinWidth": "108px",
             "MaxWidth": "108px",
-            "EntityId": "Booking",
-            "ReportTypeId": 1
+            "EntityId": "Booking"
         },
         {
             "Id": "00271480-0000-0000-8000-eaa3ef279a4e",
@@ -302,8 +285,7 @@
             "FocusSearch": true,
             "MinWidth": "144px",
             "MaxWidth": "144px",
-            "EntityId": "Booking",
-            "ReportTypeId": 1
+            "EntityId": "Booking"
         },
         {
             "Id": "002714b4-0000-0000-8000-2eb0e5055033",
@@ -321,8 +303,7 @@
             "FocusSearch": true,
             "MinWidth": "90px",
             "MaxWidth": "90px",
-            "EntityId": "Booking",
-            "ReportTypeId": 1
+            "EntityId": "Booking"
         },
         {
             "Id": "002714bc-0000-0000-8000-70f172827dd3",
@@ -336,8 +317,7 @@
             "Active": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
-            "EntityId": "Booking",
-            "ReportTypeId": 1
+            "EntityId": "Booking"
         },
         {
             "Id": "002714c8-0000-0000-8000-367fede11621",
@@ -350,8 +330,7 @@
             "FocusSearch": true,
             "MinWidth": "108px",
             "MaxWidth": "108px",
-            "EntityId": "Booking",
-            "ReportTypeId": 1
+            "EntityId": "Booking"
         },
         {
             "Id": "00f925b4-0000-0000-8000-4ecb63e58b5d",
@@ -370,8 +349,7 @@
             "TextAlign": "center",
             "MinWidth": "105px",
             "MaxWidth": "105px",
-            "EntityId": "Booking",
-            "ReportTypeId": 1
+            "EntityId": "Booking"
         }
     ],
     "Components": [
@@ -387,8 +365,7 @@
             "Active": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
-            "EntityId": "Booking",
-            "ReportTypeId": 1
+            "EntityId": "Booking"
         },
         {
             "Id": "006a1494-0000-0000-8000-07fb2671cf05",
@@ -400,8 +377,7 @@
             "Icon": "fal fa-plus",
             "ClassName": "btn",
             "Events": "{\"click\":\"Add\"}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "006a1494-0000-0000-8001-fcb4c84c4086",
@@ -413,8 +389,7 @@
             "Icon": "fal fa-plus",
             "ClassName": "btn",
             "Events": "{\"click\":\"Add\"}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         }
     ],
     "FeaturePolicies": [

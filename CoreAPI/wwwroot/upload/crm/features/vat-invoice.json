@@ -21,7 +21,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01943bfc-9d9e-70b4-836d-1eb063aefc91",
@@ -37,8 +36,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentInvoice as ds where (ds.TypeId = 3)\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentInvoice as ds where (ds.TypeId = 3)\"\r\n}",
                     "RefName": "ShipmentInvoice",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -52,7 +50,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01943bfc-9e1f-764b-8d87-94c77492c348",
@@ -68,8 +65,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentInvoice as ds where (ds.TypeId = 3 and ds.StatusId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentInvoice as ds where (ds.TypeId = 3 and ds.StatusId = 1)\"\r\n}",
                     "RefName": "ShipmentInvoice",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -83,7 +79,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01943bfc-9ec2-76bf-8163-5f1f3a6af334",
@@ -99,8 +94,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentInvoice as ds where (ds.TypeId = 3 and ds.StatusId = 2)\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentInvoice as ds where (ds.TypeId = 3 and ds.StatusId = 2)\"\r\n}",
                     "RefName": "ShipmentInvoice",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -114,7 +108,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01943bfc-9f2c-707f-866c-f6b7613f6b86",
@@ -130,8 +123,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentInvoice as ds where (ds.TypeId = 3 and ds.StatusId = 3)\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentInvoice as ds where (ds.TypeId = 3 and ds.StatusId = 3)\"\r\n}",
                     "RefName": "ShipmentInvoice",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -145,7 +137,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01943bfc-9fac-715d-8925-829ed890fc18",
@@ -161,8 +152,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentInvoice as ds where (ds.TypeId = 3 and ds.StatusId = 4)\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentInvoice as ds where (ds.TypeId = 3 and ds.StatusId = 4)\"\r\n}",
                     "RefName": "ShipmentInvoice",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         }
@@ -185,8 +175,7 @@
             "TextAlign": "center",
             "MinWidth": "159px",
             "MaxWidth": "159px",
-            "EntityId": "ShipmentInvoice",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentInvoice"
         },
         {
             "Id": "01943bfc-a03e-73bf-bceb-09e3618f354b",
@@ -204,8 +193,7 @@
             "MinWidth": "151px",
             "MaxWidth": "151px",
             "EntityId": "ShipmentInvoice",
-            "IsMultiple": true,
-            "ReportTypeId": 1
+            "IsMultiple": true
         },
         {
             "Id": "01943bfc-a075-709f-a8ed-a4d98972489e",
@@ -218,8 +206,7 @@
             "FocusSearch": true,
             "MinWidth": "108px",
             "MaxWidth": "108px",
-            "EntityId": "ShipmentInvoice",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentInvoice"
         },
         {
             "Id": "01943bfc-a0dd-76f0-a422-eb611dde567e",
@@ -232,8 +219,7 @@
             "FocusSearch": true,
             "MinWidth": "130px",
             "MaxWidth": "130px",
-            "EntityId": "ShipmentInvoice",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentInvoice"
         },
         {
             "Id": "01943bfc-a106-722c-8cc4-b92506ba6c7b",
@@ -250,8 +236,7 @@
             "FocusSearch": true,
             "MinWidth": "178px",
             "MaxWidth": "178px",
-            "EntityId": "ShipmentInvoice",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentInvoice"
         },
         {
             "Id": "01943bfc-a139-71ba-82b0-4b895b41ffb5",
@@ -266,8 +251,7 @@
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
-            "EntityId": "ShipmentInvoice",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentInvoice"
         },
         {
             "Id": "01943bfc-a172-716c-aac8-78520b6215ea",
@@ -283,8 +267,7 @@
             "FocusSearch": true,
             "MinWidth": "95px",
             "MaxWidth": "95px",
-            "EntityId": "ShipmentInvoice",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentInvoice"
         },
         {
             "Id": "01943bfc-a1b2-739d-8a57-35c6f782a30e",
@@ -305,8 +288,7 @@
             "MinWidth": "124px",
             "MaxWidth": "124px",
             "OrderBy": "ds.Enum asc",
-            "EntityId": "ShipmentInvoice",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentInvoice"
         },
         {
             "Id": "01943bfc-a1f6-706a-8955-b5f13fa7666a",
@@ -322,8 +304,7 @@
             "MinWidth": "101px",
             "MaxWidth": "101px",
             "EntityId": "ShipmentInvoice",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "01943bfc-a273-704d-94ca-21d07e8b666c",
@@ -341,8 +322,7 @@
             "HasFilter": true,
             "MinWidth": "116px",
             "MaxWidth": "116px",
-            "EntityId": "ShipmentInvoice",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentInvoice"
         },
         {
             "Id": "01945558-9655-7245-92ea-815c91738c0b",
@@ -359,8 +339,7 @@
             "FocusSearch": true,
             "MinWidth": "186px",
             "MaxWidth": "186px",
-            "EntityId": "ShipmentInvoice",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentInvoice"
         }
     ],
     "Components": [
@@ -377,8 +356,7 @@
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
-            "EntityId": "ShipmentInvoice",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentInvoice"
         },
         {
             "Id": "01943c00-1b20-763f-83a1-9dee1dadadf8",
@@ -390,8 +368,7 @@
             "Icon": "fal fa-plus",
             "ClassName": "btn",
             "Events": "{\r\n    \"click\": \"Add\"\r\n}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         }
     ],
     "FeaturePolicies": [

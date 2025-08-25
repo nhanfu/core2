@@ -23,7 +23,6 @@
             "IsTab": true,
             "TabGroup": "A",
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0194a015-8a11-7061-b10d-e8bf0ff23550",
@@ -39,8 +38,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where (ds.TypeId in (3,4))\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where (ds.TypeId in (3,4))\"\r\n}",
                     "RefName": "Voucher",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -56,7 +54,6 @@
             "IsTab": true,
             "TabGroup": "A",
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0194a015-8b01-70f8-a730-97dae6699951",
@@ -72,8 +69,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where (ds.TypeId in (5,6))\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where (ds.TypeId in (5,6))\"\r\n}",
                     "RefName": "Voucher",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -88,7 +84,6 @@
             "IsTab": true,
             "TabGroup": "A",
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0194a015-8bb0-70bf-88de-a3e726a3c6c5",
@@ -104,8 +99,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where (ds.TypeId = 7)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where (ds.TypeId = 7)\"\r\n}",
                     "RefName": "Voucher",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         }
@@ -128,8 +122,7 @@
             "TextAlign": "center",
             "MinWidth": "92px",
             "MaxWidth": "92px",
-            "EntityId": "Voucher3",
-            "ReportTypeId": 1
+            "EntityId": "Voucher3"
         },
         {
             "Id": "0194a015-8cce-777f-9e73-2cb526dd7f2b",
@@ -142,8 +135,7 @@
             "FocusSearch": true,
             "MinWidth": "108px",
             "MaxWidth": "108px",
-            "EntityId": "Voucher3",
-            "ReportTypeId": 1
+            "EntityId": "Voucher3"
         },
         {
             "Id": "0194a015-8d3f-721d-8645-05d6b6c1319f",
@@ -160,8 +152,7 @@
             "FocusSearch": true,
             "MinWidth": "99px",
             "MaxWidth": "99px",
-            "EntityId": "Voucher3",
-            "ReportTypeId": 1
+            "EntityId": "Voucher3"
         },
         {
             "Id": "0194a015-8d96-752f-ab0a-4524a93323b7",
@@ -174,8 +165,7 @@
             "FocusSearch": true,
             "MinWidth": "130px",
             "MaxWidth": "130px",
-            "EntityId": "Voucher3",
-            "ReportTypeId": 1
+            "EntityId": "Voucher3"
         },
         {
             "Id": "0194a015-8e04-705e-92e6-8838cd972d85",
@@ -192,8 +182,7 @@
             "FocusSearch": true,
             "MinWidth": "144px",
             "MaxWidth": "144px",
-            "EntityId": "Voucher3",
-            "ReportTypeId": 1
+            "EntityId": "Voucher3"
         },
         {
             "Id": "0194a015-8e6c-761e-947e-5a5724870a70",
@@ -208,8 +197,7 @@
             "FocusSearch": true,
             "MinWidth": "38px",
             "MaxWidth": "38px",
-            "EntityId": "Voucher3",
-            "ReportTypeId": 1
+            "EntityId": "Voucher3"
         },
         {
             "Id": "0194a015-8ed5-706a-b85b-f8ed28f5c413",
@@ -225,8 +213,7 @@
             "FocusSearch": true,
             "MinWidth": "95px",
             "MaxWidth": "95px",
-            "EntityId": "Voucher3",
-            "ReportTypeId": 1
+            "EntityId": "Voucher3"
         },
         {
             "Id": "0194a015-8f42-76da-ad09-4799648b2ef3",
@@ -240,8 +227,7 @@
             "FocusSearch": true,
             "MinWidth": "111px",
             "MaxWidth": "111px",
-            "EntityId": "Voucher3",
-            "ReportTypeId": 1
+            "EntityId": "Voucher3"
         },
         {
             "Id": "0194a015-8f98-74ae-b51b-40b1aef8f567",
@@ -259,8 +245,7 @@
             "MinWidth": "124px",
             "MaxWidth": "124px",
             "EntityId": "Voucher3",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "0194a015-90be-74cf-abb4-4e6c440b9dbe",
@@ -273,8 +258,7 @@
             "FocusSearch": true,
             "MinWidth": "130px",
             "MaxWidth": "130px",
-            "EntityId": "Voucher3",
-            "ReportTypeId": 1
+            "EntityId": "Voucher3"
         },
         {
             "Id": "0194a015-912b-722e-b659-8cc78a5ee061",
@@ -288,8 +272,7 @@
             "FocusSearch": true,
             "MinWidth": "124px",
             "MaxWidth": "124px",
-            "EntityId": "Voucher3",
-            "ReportTypeId": 1
+            "EntityId": "Voucher3"
         },
         {
             "Id": "0194ea3f-ab5c-75a8-9d92-eacafd414eae",
@@ -304,8 +287,7 @@
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
-            "EntityId": "Voucher4",
-            "ReportTypeId": 1
+            "EntityId": "Voucher4"
         },
         {
             "Id": "0194ea3f-ab5d-760d-9b13-a30d8b532d29",
@@ -318,8 +300,7 @@
             "FocusSearch": true,
             "MinWidth": "130px",
             "MaxWidth": "130px",
-            "EntityId": "Voucher4",
-            "ReportTypeId": 1
+            "EntityId": "Voucher4"
         },
         {
             "Id": "0194ea3f-ab5d-760d-9b13-a4877a1e6217",
@@ -337,8 +318,7 @@
             "MinWidth": "124px",
             "MaxWidth": "124px",
             "EntityId": "Voucher4",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "0194ea3f-ab5d-760d-9b13-abe8465b70a4",
@@ -355,8 +335,7 @@
             "FocusSearch": true,
             "MinWidth": "261px",
             "MaxWidth": "261px",
-            "EntityId": "Voucher4",
-            "ReportTypeId": 1
+            "EntityId": "Voucher4"
         },
         {
             "Id": "0194ea3f-ab5d-760d-9b13-ad228efa2f76",
@@ -372,8 +351,7 @@
             "FocusSearch": true,
             "MinWidth": "95px",
             "MaxWidth": "95px",
-            "EntityId": "Voucher4",
-            "ReportTypeId": 1
+            "EntityId": "Voucher4"
         },
         {
             "Id": "0194ea3f-ab5e-721d-8739-f647ffe725a1",
@@ -387,8 +365,7 @@
             "FocusSearch": true,
             "MinWidth": "124px",
             "MaxWidth": "124px",
-            "EntityId": "Voucher4",
-            "ReportTypeId": 1
+            "EntityId": "Voucher4"
         },
         {
             "Id": "0194ea3f-ab5e-721d-8739-fbb6c08610de",
@@ -401,8 +378,7 @@
             "FocusSearch": true,
             "MinWidth": "108px",
             "MaxWidth": "108px",
-            "EntityId": "Voucher4",
-            "ReportTypeId": 1
+            "EntityId": "Voucher4"
         },
         {
             "Id": "0194ea3f-ab5e-721d-8739-fc0f052499f6",
@@ -415,8 +391,7 @@
             "FocusSearch": true,
             "MinWidth": "130px",
             "MaxWidth": "130px",
-            "EntityId": "Voucher4",
-            "ReportTypeId": 1
+            "EntityId": "Voucher4"
         },
         {
             "Id": "0194ea3f-ab5e-721d-873a-032552b7abf4",
@@ -433,8 +408,7 @@
             "FocusSearch": true,
             "MinWidth": "113px",
             "MaxWidth": "113px",
-            "EntityId": "Voucher4",
-            "ReportTypeId": 1
+            "EntityId": "Voucher4"
         },
         {
             "Id": "0194ea3f-ab5e-721d-873a-053997a1cf27",
@@ -453,8 +427,7 @@
             "TextAlign": "center",
             "MinWidth": "159px",
             "MaxWidth": "159px",
-            "EntityId": "Voucher4",
-            "ReportTypeId": 1
+            "EntityId": "Voucher4"
         },
         {
             "Id": "0194ea42-953a-732d-b589-5fb0aa3a2d7a",
@@ -469,8 +442,7 @@
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
-            "EntityId": "Voucher5",
-            "ReportTypeId": 1
+            "EntityId": "Voucher5"
         },
         {
             "Id": "0194ea42-953a-732d-b589-62b9731e9951",
@@ -483,8 +455,7 @@
             "FocusSearch": true,
             "MinWidth": "130px",
             "MaxWidth": "130px",
-            "EntityId": "Voucher5",
-            "ReportTypeId": 1
+            "EntityId": "Voucher5"
         },
         {
             "Id": "0194ea42-953a-732d-b589-64ed5b2785d3",
@@ -502,8 +473,7 @@
             "MinWidth": "124px",
             "MaxWidth": "124px",
             "EntityId": "Voucher5",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "0194ea42-953b-7621-9dc9-55ca9ce14b1c",
@@ -520,8 +490,7 @@
             "FocusSearch": true,
             "MinWidth": "144px",
             "MaxWidth": "144px",
-            "EntityId": "Voucher5",
-            "ReportTypeId": 1
+            "EntityId": "Voucher5"
         },
         {
             "Id": "0194ea42-953b-7621-9dc9-5baed8693c81",
@@ -537,8 +506,7 @@
             "FocusSearch": true,
             "MinWidth": "95px",
             "MaxWidth": "95px",
-            "EntityId": "Voucher5",
-            "ReportTypeId": 1
+            "EntityId": "Voucher5"
         },
         {
             "Id": "0194ea42-953b-7621-9dc9-5dcece0aec3a",
@@ -552,8 +520,7 @@
             "FocusSearch": true,
             "MinWidth": "124px",
             "MaxWidth": "124px",
-            "EntityId": "Voucher5",
-            "ReportTypeId": 1
+            "EntityId": "Voucher5"
         },
         {
             "Id": "0194ea42-953b-7621-9dc9-6284482cf9d0",
@@ -567,8 +534,7 @@
             "FocusSearch": true,
             "MinWidth": "124px",
             "MaxWidth": "124px",
-            "EntityId": "Voucher5",
-            "ReportTypeId": 1
+            "EntityId": "Voucher5"
         },
         {
             "Id": "0194ea42-953b-7621-9dc9-65ee6cabf7b4",
@@ -581,8 +547,7 @@
             "FocusSearch": true,
             "MinWidth": "108px",
             "MaxWidth": "108px",
-            "EntityId": "Voucher5",
-            "ReportTypeId": 1
+            "EntityId": "Voucher5"
         },
         {
             "Id": "0194ea42-953b-7621-9dc9-6aa6f21d370a",
@@ -595,8 +560,7 @@
             "FocusSearch": true,
             "MinWidth": "130px",
             "MaxWidth": "130px",
-            "EntityId": "Voucher5",
-            "ReportTypeId": 1
+            "EntityId": "Voucher5"
         },
         {
             "Id": "0194ea42-953b-7621-9dc9-6cdad7bc7abb",
@@ -613,8 +577,7 @@
             "FocusSearch": true,
             "MinWidth": "113px",
             "MaxWidth": "113px",
-            "EntityId": "Voucher5",
-            "ReportTypeId": 1
+            "EntityId": "Voucher5"
         },
         {
             "Id": "0194ea42-953c-76b8-9b3d-81643154a9f8",
@@ -633,8 +596,7 @@
             "TextAlign": "center",
             "MinWidth": "159px",
             "MaxWidth": "159px",
-            "EntityId": "Voucher5",
-            "ReportTypeId": 1
+            "EntityId": "Voucher5"
         }
     ],
     "Components": [
@@ -651,8 +613,7 @@
             "FocusSearch": true,
             "MinWidth": "38px",
             "MaxWidth": "38px",
-            "EntityId": "Voucher3",
-            "ReportTypeId": 1
+            "EntityId": "Voucher3"
         },
         {
             "Id": "0194a027-fee8-765d-a02c-2b7147c0b1bb",
@@ -664,8 +625,7 @@
             "Icon": "fal fa-plus",
             "ClassName": "btn",
             "Events": "{\r\n    \"click\": \"AddVoucher3\"\r\n}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "0194a028-a1db-7308-80d8-7ef66421406c",
@@ -677,8 +637,7 @@
             "Icon": "fal fa-plus",
             "ClassName": "btn",
             "Events": "{\r\n    \"click\": \"AddVoucher4\"\r\n}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "0194a028-b18c-7583-8d11-1ea2128d8482",
@@ -690,8 +649,7 @@
             "Icon": "fal fa-plus",
             "ClassName": "btn",
             "Events": "{\r\n    \"click\": \"AddSOA\"\r\n}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "0194ea3f-ab5c-75a8-9d92-eacafd414eae",
@@ -706,8 +664,7 @@
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
-            "EntityId": "Voucher4",
-            "ReportTypeId": 1
+            "EntityId": "Voucher4"
         },
         {
             "Id": "0194ea42-953a-732d-b589-5fb0aa3a2d7a",
@@ -722,8 +679,7 @@
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
-            "EntityId": "Voucher5",
-            "ReportTypeId": 1
+            "EntityId": "Voucher5"
         }
     ],
     "FeaturePolicies": [

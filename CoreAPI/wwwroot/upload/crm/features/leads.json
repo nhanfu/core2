@@ -21,7 +21,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01947824-9e94-7756-aff5-2719ca3529e8",
@@ -39,8 +38,7 @@
                     "IsRealtime": true,
                     "RefName": "Partner",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -55,7 +53,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00fe161c-0000-0000-8000-2fdec745e529",
@@ -73,8 +70,7 @@
                     "IsRealtime": true,
                     "RefName": "Partner",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -89,7 +85,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00fe16f8-0000-0000-8000-4b0cc6b72fb4",
@@ -107,8 +102,7 @@
                     "IsRealtime": true,
                     "RefName": "Partner",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -123,7 +117,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00fe16c8-0000-0000-8000-81884431278b",
@@ -142,8 +135,7 @@
                     "RefName": "Partner",
                     "PreQuery": "{\r\n    \"UserId\": this.Token.UserId\r\n}",
                     "OrderBy": "ds.InsertedDate desc",
-                    "XsOuterColumn": 1,
-                    "ReportTypeId": 1
+                    "XsOuterColumn": 1
                 }
             ]
         }
@@ -166,8 +158,7 @@
             "TextAlign": "center",
             "MinWidth": "81px",
             "MaxWidth": "81px",
-            "EntityId": "Customer",
-            "ReportTypeId": 1
+            "EntityId": "Customer"
         },
         {
             "Id": "00ff1644-0000-0000-8000-6ba647a8488f",
@@ -180,8 +171,7 @@
             "FocusSearch": true,
             "MinWidth": "118px",
             "MaxWidth": "118px",
-            "EntityId": "Customer",
-            "ReportTypeId": 1
+            "EntityId": "Customer"
         },
         {
             "Id": "00ff1658-0000-0000-8000-f5900136dc49",
@@ -196,8 +186,7 @@
             "FocusSearch": true,
             "MinWidth": "59px",
             "MaxWidth": "59px",
-            "EntityId": "Customer",
-            "ReportTypeId": 1
+            "EntityId": "Customer"
         },
         {
             "Id": "00ff1688-0000-0000-8000-6eb9754bef12",
@@ -214,8 +203,7 @@
             "FocusSearch": true,
             "MinWidth": "138px",
             "MaxWidth": "138px",
-            "EntityId": "Customer",
-            "ReportTypeId": 1
+            "EntityId": "Customer"
         },
         {
             "Id": "00ff1690-0000-0000-8000-331fbe8385e1",
@@ -232,8 +220,7 @@
             "FocusSearch": true,
             "MinWidth": "138px",
             "MaxWidth": "138px",
-            "EntityId": "Customer",
-            "ReportTypeId": 1
+            "EntityId": "Customer"
         },
         {
             "Id": "00ff16a0-0000-0000-8000-17873b7abf18",
@@ -250,8 +237,7 @@
             "FocusSearch": true,
             "MinWidth": "138px",
             "MaxWidth": "138px",
-            "EntityId": "Customer",
-            "ReportTypeId": 1
+            "EntityId": "Customer"
         },
         {
             "Id": "00ff16cc-0000-0000-8000-b262e1086f0a",
@@ -264,8 +250,7 @@
             "FocusSearch": true,
             "MinWidth": "280px",
             "MaxWidth": "280px",
-            "EntityId": "Customer",
-            "ReportTypeId": 1
+            "EntityId": "Customer"
         },
         {
             "Id": "00ff16d0-0000-0000-8000-b132fba00498",
@@ -278,8 +263,7 @@
             "FocusSearch": true,
             "MinWidth": "82px",
             "MaxWidth": "82px",
-            "EntityId": "Customer",
-            "ReportTypeId": 1
+            "EntityId": "Customer"
         },
         {
             "Id": "00ff16e4-0000-0000-8000-f8626c561e2d",
@@ -292,8 +276,7 @@
             "FocusSearch": true,
             "MinWidth": "134px",
             "MaxWidth": "134px",
-            "EntityId": "Customer",
-            "ReportTypeId": 1
+            "EntityId": "Customer"
         },
         {
             "Id": "00ff16fc-0000-0000-8000-00c31c5577eb",
@@ -306,8 +289,7 @@
             "FocusSearch": true,
             "MinWidth": "177px",
             "MaxWidth": "177px",
-            "EntityId": "Customer",
-            "ReportTypeId": 1
+            "EntityId": "Customer"
         }
     ],
     "Components": [
@@ -321,8 +303,7 @@
             "Icon": "fal fa-plus",
             "ClassName": "btn",
             "Events": "{\r\n    \"click\": \"Add\"\r\n}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "00ff1658-0000-0000-8000-f5900136dc49",
@@ -337,8 +318,7 @@
             "FocusSearch": true,
             "MinWidth": "59px",
             "MaxWidth": "59px",
-            "EntityId": "Customer",
-            "ReportTypeId": 1
+            "EntityId": "Customer"
         }
     ],
     "FeaturePolicies": [

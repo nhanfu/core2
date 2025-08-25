@@ -16,7 +16,6 @@
             "ClassName": "ribbon-group",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01945a5a-b510-7750-83d7-1166f4fd7485",
@@ -29,8 +28,7 @@
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         },
@@ -40,8 +38,7 @@
             "Order": 3,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "01945a5a-b659-7219-becd-bbb1f66d030a",
@@ -53,7 +50,6 @@
             "Active": true,
             "ParentId": "01945a5a-b54b-745e-8815-12c32abc8965",
             "XxlOuterColumn": 12,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01945a5a-b688-74bd-b770-1ba6ec7cb37f",
@@ -64,8 +60,7 @@
                     "Label": "Account No",
                     "ShowLabel": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "01945a5a-b6d5-716f-aebf-60c7f054704d",
@@ -76,8 +71,7 @@
                     "Label": "Account Name",
                     "ShowLabel": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "01945a5a-b703-7502-8556-c4daea14b3d4",
@@ -87,8 +81,7 @@
                     "Column": 2,
                     "Label": "Account Name EN",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01945a5a-b74c-75d3-8e05-8f7e623606e1",
@@ -98,8 +91,7 @@
                     "Column": 2,
                     "Label": "Description",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01945a5a-b77c-718e-b9d5-31bce10ce181",
@@ -110,8 +102,7 @@
                     "Label": "Active",
                     "ShowLabel": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "01945a6e-5300-733c-b950-77f618067794",
@@ -128,8 +119,7 @@
                     "Query": "[\r\n        {\r\n        \"Id\": 1,\r\n        \"Name\": \"Debit Balance\"\r\n        },\r\n        {\r\n        \"Id\": 2,\r\n        \"Name\": \"Credit Balance\"\r\n        },\r\n        {\r\n        \"Id\": 3,\r\n        \"Name\": \"Hermaphrodite\"\r\n        },\r\n        {\r\n        \"Id\": 4,\r\n        \"Name\": \"No balance\"\r\n        }\r\n         \r\n    \r\n]",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
                     "EntityId": "AccountNo",
-                    "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
                 },
                 {
                     "Id": "01945a6e-5300-733c-b950-78f1c10e3345",
@@ -148,8 +138,7 @@
                     "RefName": "MasterData",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
                     "OrderBy": "ds.Enum asc",
-                    "EntityId": "AccountNo",
-                    "ReportTypeId": 1
+                    "EntityId": "AccountNo"
                 },
                 {
                     "Id": "01945a6e-5300-733c-b950-7dfcdfa02c3a",
@@ -168,8 +157,7 @@
                     "RefName": "MasterData",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
                     "OrderBy": "ds.Enum asc",
-                    "EntityId": "AccountNo",
-                    "ReportTypeId": 1
+                    "EntityId": "AccountNo"
                 },
                 {
                     "Id": "01945a6e-5300-733c-b950-806f543c7977",
@@ -186,8 +174,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds\"\r\n}",
                     "RefName": "AccountNo",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "EntityId": "AccountNo",
-                    "ReportTypeId": 1
+                    "EntityId": "AccountNo"
                 }
             ]
         }
@@ -211,8 +198,7 @@
             "Editable": true,
             "MinWidth": "112px",
             "MaxWidth": "112px",
-            "EntityId": "PartnerBankAccount",
-            "ReportTypeId": 1
+            "EntityId": "PartnerBankAccount"
         },
         {
             "Id": "01945a5a-b92e-739e-9f0a-cc4d746bc3b0",
@@ -230,8 +216,7 @@
             "Editable": true,
             "MinWidth": "102px",
             "MaxWidth": "102px",
-            "EntityId": "PartnerBankAccount",
-            "ReportTypeId": 1
+            "EntityId": "PartnerBankAccount"
         },
         {
             "Id": "01945a5a-b968-740a-a3c7-f1fbc7f614f1",
@@ -249,8 +234,7 @@
             "Editable": true,
             "MinWidth": "94px",
             "MaxWidth": "94px",
-            "EntityId": "PartnerBankAccount",
-            "ReportTypeId": 1
+            "EntityId": "PartnerBankAccount"
         },
         {
             "Id": "01945a5a-b9b7-7108-b144-1982a9e30b16",
@@ -266,8 +250,7 @@
             "Editable": true,
             "MinWidth": "127px",
             "MaxWidth": "127px",
-            "EntityId": "PartnerBankAccount",
-            "ReportTypeId": 1
+            "EntityId": "PartnerBankAccount"
         }
     ],
     "Components": [
@@ -282,8 +265,7 @@
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
             "Events": "{ \"click\" : \"SavePatch\" }",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         }
     ],
     "FeaturePolicies": [

@@ -16,7 +16,6 @@
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00800e10-0000-0000-8000-06092a1abf46",
@@ -35,8 +34,7 @@
                     "IsRealtime": true,
                     "RefName": "MasterData",
                     "TopEmpty": true,
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         }
@@ -53,8 +51,7 @@
             "Editable": true,
             "MinWidth": "191px",
             "MaxWidth": "191px",
-            "EntityId": "MasterData",
-            "ReportTypeId": 1
+            "EntityId": "MasterData"
         },
         {
             "Id": "00800e34-0000-0000-8000-1594992ba569",
@@ -67,8 +64,7 @@
             "Editable": true,
             "MinWidth": "209px",
             "MaxWidth": "209px",
-            "EntityId": "MasterData",
-            "ReportTypeId": 1
+            "EntityId": "MasterData"
         },
         {
             "Id": "00800ed4-0000-0000-8000-4e22b05d7611",
@@ -81,8 +77,7 @@
             "Editable": true,
             "MinWidth": "187px",
             "MaxWidth": "187px",
-            "EntityId": "MasterData",
-            "ReportTypeId": 1
+            "EntityId": "MasterData"
         },
         {
             "Id": "00953480-0000-0000-8000-3699e9eb3e89",
@@ -95,8 +90,7 @@
             "Editable": true,
             "MinWidth": "209px",
             "MaxWidth": "209px",
-            "EntityId": "MasterData",
-            "ReportTypeId": 1
+            "EntityId": "MasterData"
         }
     ],
     "FeaturePolicies": [

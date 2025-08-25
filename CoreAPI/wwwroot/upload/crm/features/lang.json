@@ -15,7 +15,6 @@
             "ComponentType": "Section",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00d5039c-0000-0000-8000-861979a5e56e",
@@ -32,8 +31,7 @@
                     "IsRealtime": true,
                     "RefName": "Dictionary",
                     "TopEmpty": true,
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         }
@@ -50,8 +48,7 @@
             "Editable": true,
             "MinWidth": "84px",
             "MaxWidth": "84px",
-            "EntityId": "Dictionary",
-            "ReportTypeId": 1
+            "EntityId": "Dictionary"
         },
         {
             "Id": "00fb0378-0000-0000-8000-7ffb73fac6e4",
@@ -64,8 +61,7 @@
             "Editable": true,
             "MinWidth": "417px",
             "MaxWidth": "417px",
-            "EntityId": "Dictionary",
-            "ReportTypeId": 1
+            "EntityId": "Dictionary"
         },
         {
             "Id": "00fb03bc-0000-0000-8000-711cf90e1b94",
@@ -78,8 +74,7 @@
             "Editable": true,
             "MinWidth": "197px",
             "MaxWidth": "197px",
-            "EntityId": "Dictionary",
-            "ReportTypeId": 1
+            "EntityId": "Dictionary"
         }
     ],
     "FeaturePolicies": [

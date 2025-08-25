@@ -19,7 +19,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01951460-c3a0-7370-b710-6c7bc9080562",
@@ -36,8 +35,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentSI as ds where (TypeId = 2 and CustomerId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentSI as ds where (TypeId = 2 and CustomerId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}')\"\r\n}",
                     "RefName": "Inquiry",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -51,7 +49,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01951460-de8e-70fb-86c4-4e3d00ff2b1a",
@@ -68,8 +65,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentSI as ds where (TypeId = 2 and ProgressId = 1 and CustomerId = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentSI as ds where (TypeId = 2 and ProgressId = 1 and CustomerId = '{TokenUserId}')\"\r\n}",
                     "RefName": "ShipmentSI",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -83,7 +79,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01951460-e4dc-763b-ae43-a3d94dbaeec6",
@@ -100,8 +95,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentSI as ds where (TypeId = 2 and ProgressId = 1 and IsSend = 1 and CustomerId = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentSI as ds where (TypeId = 2 and ProgressId = 1 and IsSend = 1 and CustomerId = '{TokenUserId}')\"\r\n}",
                     "RefName": "ShipmentSI",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -115,7 +109,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01951460-ea17-75cb-a0d3-9956fd7686ea",
@@ -132,8 +125,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentSI as ds where (TypeId = 2 and ProgressId = 2 and CustomerId = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentSI as ds where (TypeId = 2 and ProgressId = 2 and CustomerId = '{TokenUserId}')\"\r\n}",
                     "RefName": "ShipmentSI",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -147,7 +139,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01951461-24a4-7319-955b-0aef82215586",
@@ -164,8 +155,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentSI as ds where (TypeId = 2 and ProgressId = 3 and CustomerId = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentSI as ds where (TypeId = 2 and ProgressId = 3 and CustomerId = '{TokenUserId}')\"\r\n}",
                     "RefName": "ShipmentSI",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -179,7 +169,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01951460-f02a-7008-8f87-6f080de7b53d",
@@ -196,8 +185,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentSI as ds where (TypeId = 2 and ProgressId = 4 and CustomerId = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentSI as ds where (TypeId = 2 and ProgressId = 4 and CustomerId = '{TokenUserId}')\"\r\n}",
                     "RefName": "ShipmentSI",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         }
@@ -217,8 +205,7 @@
             "MinWidth": "56px",
             "MaxWidth": "56px",
             "created_by": "Customer",
-            "EntityId": "ShipmentSI",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentSI"
         },
         {
             "Id": "01951464-2f82-74df-a991-33c6f2972217",
@@ -236,8 +223,7 @@
             "ShowHotKey": true,
             "MinWidth": "245px",
             "MaxWidth": "245px",
-            "EntityId": "ShipmentSI",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentSI"
         },
         {
             "Id": "01951464-8ff6-777f-875f-17b9a1dc3164",
@@ -256,8 +242,7 @@
             "TextAlign": "center",
             "MinWidth": "175px",
             "MaxWidth": "175px",
-            "EntityId": "ShipmentSI",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentSI"
         },
         {
             "Id": "01951464-c50a-72e4-b521-4befae0d6ee0",
@@ -275,8 +260,7 @@
             "FocusSearch": true,
             "MinWidth": "176px",
             "MaxWidth": "176px",
-            "EntityId": "ShipmentSI",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentSI"
         },
         {
             "Id": "01951464-c50a-72e4-b521-4d72b3a4f0e2",
@@ -294,8 +278,7 @@
             "FocusSearch": true,
             "MinWidth": "243px",
             "MaxWidth": "243px",
-            "EntityId": "ShipmentSI",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentSI"
         },
         {
             "Id": "01951465-48b5-7796-a486-7f50792356e6",
@@ -309,8 +292,7 @@
             "MinWidth": "162px",
             "MaxWidth": "162px",
             "created_by": "Customer",
-            "EntityId": "ShipmentSI",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentSI"
         }
     ],
     "Components": [
@@ -328,8 +310,7 @@
             "MinWidth": "56px",
             "MaxWidth": "56px",
             "created_by": "Customer",
-            "EntityId": "ShipmentSI",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentSI"
         }
     ],
     "FeaturePolicies": [

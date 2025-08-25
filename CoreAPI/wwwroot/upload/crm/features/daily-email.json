@@ -17,7 +17,6 @@
             "XxlCol": 12,
             "Active": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "001430e4-0000-0000-8000-c49c5932ddf4",
@@ -34,8 +33,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from PlanEmail as ds\",\r\n    \"total\": \"select count(ds.Id) as total from PlanEmail as ds\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "PlanEmail",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         }
@@ -55,8 +53,7 @@
             "FocusSearch": true,
             "MinWidth": "256px",
             "MaxWidth": "256px",
-            "EntityId": "EmailTemplate",
-            "ReportTypeId": 1
+            "EntityId": "EmailTemplate"
         },
         {
             "Id": "00033064-0000-0000-8000-b82fa8b2b297",
@@ -72,8 +69,7 @@
             "FocusSearch": true,
             "MinWidth": "255px",
             "MaxWidth": "255px",
-            "EntityId": "EmailTemplate",
-            "ReportTypeId": 1
+            "EntityId": "EmailTemplate"
         },
         {
             "Id": "00113470-0000-0000-8000-dbd1f0b4bc07",
@@ -86,8 +82,7 @@
             "FocusSearch": true,
             "MinWidth": "267px",
             "MaxWidth": "267px",
-            "EntityId": "EmailTemplate",
-            "ReportTypeId": 1
+            "EntityId": "EmailTemplate"
         },
         {
             "Id": "0014302c-0000-0000-8000-fe8749cd866f",
@@ -100,8 +95,7 @@
             "FocusSearch": true,
             "MinWidth": "241px",
             "MaxWidth": "241px",
-            "EntityId": "EmailTemplate",
-            "ReportTypeId": 1
+            "EntityId": "EmailTemplate"
         },
         {
             "Id": "0014304c-0000-0000-8000-4ce154161a6a",
@@ -117,8 +111,7 @@
             "FocusSearch": true,
             "MinWidth": "35px",
             "MaxWidth": "35px",
-            "EntityId": "EmailTemplate",
-            "ReportTypeId": 1
+            "EntityId": "EmailTemplate"
         },
         {
             "Id": "001430d0-0000-0000-8000-f0cbf85dc331",
@@ -131,8 +124,7 @@
             "FocusSearch": true,
             "MinWidth": "175px",
             "MaxWidth": "175px",
-            "EntityId": "EmailTemplate",
-            "ReportTypeId": 1
+            "EntityId": "EmailTemplate"
         },
         {
             "Id": "00ee32b4-0000-0000-8000-8439404ac8b6",
@@ -147,8 +139,7 @@
             "Editable": true,
             "MinWidth": "84px",
             "MaxWidth": "84px",
-            "EntityId": "EmailTemplate",
-            "ReportTypeId": 1
+            "EntityId": "EmailTemplate"
         }
     ],
     "Components": [
@@ -166,8 +157,7 @@
             "FocusSearch": true,
             "MinWidth": "35px",
             "MaxWidth": "35px",
-            "EntityId": "EmailTemplate",
-            "ReportTypeId": 1
+            "EntityId": "EmailTemplate"
         },
         {
             "Id": "00203060-0000-0000-8000-bf0ebc7453ae",
@@ -179,8 +169,7 @@
             "Icon": "fal fa-plus",
             "ClassName": "btn",
             "Events": "{\"click\":\"Add\"}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         }
     ],
     "FeaturePolicies": [

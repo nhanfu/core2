@@ -21,7 +21,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01940838-88fd-76ff-865f-2d11e2a711f0",
@@ -37,8 +36,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentInvoice as ds where (ds.TypeId = 2)\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentInvoice as ds where (ds.TypeId = 2)\"\r\n}",
                     "RefName": "ShipmentInvoice",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -52,7 +50,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01943b74-67a2-73ea-ae15-1985dbac3316",
@@ -68,8 +65,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentInvoice as ds where (ds.TypeId = 2 and ds.StatusId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentInvoice as ds where (ds.TypeId = 2 and ds.StatusId = 1)\"\r\n}",
                     "RefName": "ShipmentInvoice",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -83,7 +79,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01943b74-6c8f-746f-9afb-3ce0a023b1b7",
@@ -99,8 +94,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentInvoice as ds where (ds.TypeId = 2 and ds.StatusId = 2)\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentInvoice as ds where (ds.TypeId = 2 and ds.StatusId = 2)\"\r\n}",
                     "RefName": "ShipmentInvoice",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -114,7 +108,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01943b74-7178-7032-8396-d26144f7a555",
@@ -130,8 +123,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentInvoice as ds where (ds.TypeId = 2 and ds.StatusId = 3)\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentInvoice as ds where (ds.TypeId = 2 and ds.StatusId = 3)\"\r\n}",
                     "RefName": "ShipmentInvoice",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -145,7 +137,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01943b74-76f0-7698-8f66-fd14c32972b9",
@@ -161,8 +152,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentInvoice as ds where (ds.TypeId = 2 and ds.StatusId = 4)\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentInvoice as ds where (ds.TypeId = 2 and ds.StatusId = 4)\"\r\n}",
                     "RefName": "ShipmentInvoice",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         }
@@ -185,8 +175,7 @@
             "TextAlign": "center",
             "MinWidth": "159px",
             "MaxWidth": "159px",
-            "EntityId": "ShipmentInvoice",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentInvoice"
         },
         {
             "Id": "01940838-8c64-7457-9958-d948efe83558",
@@ -200,8 +189,7 @@
             "FocusSearch": true,
             "MinWidth": "151px",
             "MaxWidth": "151px",
-            "EntityId": "ShipmentInvoice",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentInvoice"
         },
         {
             "Id": "01940838-8cb3-72cf-879a-14daa7425aca",
@@ -214,8 +202,7 @@
             "FocusSearch": true,
             "MinWidth": "108px",
             "MaxWidth": "108px",
-            "EntityId": "ShipmentInvoice",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentInvoice"
         },
         {
             "Id": "01940838-8d5c-750b-a3f9-99e159ec265a",
@@ -232,8 +219,7 @@
             "FocusSearch": true,
             "MinWidth": "138px",
             "MaxWidth": "138px",
-            "EntityId": "ShipmentInvoice",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentInvoice"
         },
         {
             "Id": "01940838-8da3-7509-a761-6fb6f8472f9c",
@@ -246,8 +232,7 @@
             "FocusSearch": true,
             "MinWidth": "130px",
             "MaxWidth": "130px",
-            "EntityId": "ShipmentInvoice",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentInvoice"
         },
         {
             "Id": "01940838-8dfa-71af-9887-cf914b1a7b50",
@@ -264,8 +249,7 @@
             "FocusSearch": true,
             "MinWidth": "144px",
             "MaxWidth": "144px",
-            "EntityId": "ShipmentInvoice",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentInvoice"
         },
         {
             "Id": "01940838-8e87-7693-8f3c-4c7a9fc39482",
@@ -280,8 +264,7 @@
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
-            "EntityId": "ShipmentInvoice",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentInvoice"
         },
         {
             "Id": "0194318b-556e-71e9-b1f4-b866de607b17",
@@ -297,8 +280,7 @@
             "FocusSearch": true,
             "MinWidth": "95px",
             "MaxWidth": "95px",
-            "EntityId": "ShipmentInvoice",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentInvoice"
         },
         {
             "Id": "0194318b-556e-71e9-b1f4-bd5fcd790488",
@@ -319,8 +301,7 @@
             "MinWidth": "124px",
             "MaxWidth": "124px",
             "OrderBy": "ds.Enum asc",
-            "EntityId": "ShipmentInvoice",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentInvoice"
         },
         {
             "Id": "0194318b-556e-71e9-b1f4-c09415042fcf",
@@ -336,8 +317,7 @@
             "MinWidth": "101px",
             "MaxWidth": "101px",
             "EntityId": "ShipmentInvoice",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "01943b5e-8073-73c8-88cf-605862342af3",
@@ -357,8 +337,7 @@
             "MinWidth": "115px",
             "MaxWidth": "115px",
             "OrderBy": "ds.Enum asc",
-            "EntityId": "ShipmentInvoice",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentInvoice"
         },
         {
             "Id": "01943b60-d2ef-713a-8775-aac1e2ad914f",
@@ -376,8 +355,7 @@
             "HasFilter": true,
             "MinWidth": "116px",
             "MaxWidth": "116px",
-            "EntityId": "ShipmentInvoice",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentInvoice"
         }
     ],
     "Components": [
@@ -394,8 +372,7 @@
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
-            "EntityId": "ShipmentInvoice",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentInvoice"
         },
         {
             "Id": "01940844-19b5-7633-b7c2-405a82e03663",
@@ -407,8 +384,7 @@
             "Icon": "fal fa-plus",
             "ClassName": "btn",
             "Events": "{\r\n    \"click\": \"Add\"\r\n}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         }
     ],
     "FeaturePolicies": [

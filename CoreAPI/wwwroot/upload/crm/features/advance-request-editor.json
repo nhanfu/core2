@@ -17,8 +17,7 @@
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "Active": true,
-            "DisabledExp": "[2, 3].includes(this.EditForm.Entity.StatusId)",
-            "ReportTypeId": 1
+            "DisabledExp": "[2, 3].includes(this.EditForm.Entity.StatusId)"
         },
         {
             "Id": "01939c4c-c11d-757a-802f-f3c9f1e204eb",
@@ -30,7 +29,6 @@
             "Active": true,
             "ParentId": "01939c4c-c0d5-75c6-9958-0401497a5a11",
             "XxlOuterColumn": 12,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01939c4c-c15b-735b-97b1-716631f0a847",
@@ -40,8 +38,7 @@
                     "Column": 4,
                     "Label": "Ref No",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01939c4c-c19d-7244-b604-ec00aa511be5",
@@ -51,8 +48,7 @@
                     "Column": 4,
                     "Label": "Post Date",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01939c62-01bc-70f8-8ce5-98016b27fdb9",
@@ -70,8 +66,7 @@
                     "Query": "{\r\n    \"sql\": \"select ds.* from [User] as ds where (TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 1)\"\r\n}",
                     "RefName": "User",
                     "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
-                    "OrderBy": "ds.[InsertedDate]",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.[InsertedDate]"
                 },
                 {
                     "Id": "01939c67-5652-72b9-a716-5faaeeda7ac1",
@@ -88,8 +83,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Department Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Department Type'\"\r\n}",
                     "RefName": "MasterData",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01939c6d-9df1-7207-82fd-2576cf00ba2f",
@@ -106,8 +100,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Position Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Position Type'\"\r\n}",
                     "RefName": "MasterData",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01939c72-3cf0-75ed-ab4a-6bdb96266705",
@@ -125,8 +118,7 @@
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 0,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='far fa-check-circle mr-1'></i>Clear</span>\"\r\n    },\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='far fa-times-circle mr-1'></i>UnClear</span>\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "DisabledExp": "return true;",
-                    "ReportTypeId": 1
+                    "DisabledExp": "return true;"
                 },
                 {
                     "Id": "01939c72-ef0f-7043-9eae-46e72e626995",
@@ -139,8 +131,7 @@
                     "ShowLabel": true,
                     "Events": "{\r\n    \"input\": \"ToWords\",\r\n    \"change\": \"CalcTotalAmount\"\r\n}",
                     "Active": true,
-                    "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
                 },
                 {
                     "Id": "01939c74-4448-7465-a627-4e13bbb2c23c",
@@ -158,8 +149,7 @@
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Currency'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Currency'\"\r\n}",
                     "RefName": "MasterData",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
-                    "OrderBy": "ds.Enum asc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.Enum asc"
                 },
                 {
                     "Id": "01939c74-4b70-7560-b679-609e862d6e32",
@@ -175,8 +165,7 @@
                     "DefaultVal": "1",
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Bank\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"Cash\"\r\n    }\r\n]",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01939c75-47b7-7659-bfe9-1185bb06f732",
@@ -194,8 +183,7 @@
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"To Do\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #95a5a6; display: inline-block;'> <i class='fal fa-clipboard-list mr-1'></i> To Do</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"In Progress\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #3498db; display: inline-block;'><i class='fal fa-spinner fa-spin mr-1'></i> In Progress</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Complete\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #28a745; display: inline-block;'><i class='fal fa-check-circle mr-1'></i> Complete</span>\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Decline\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #e74c3c; display: inline-block;'><i class='fal fa-times-circle mr-1'></i> Cancel</span>\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Description\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "DisabledExp": "return true;",
-                    "ReportTypeId": 1
+                    "DisabledExp": "return true;"
                 },
                 {
                     "Id": "01939c77-83a0-7788-8b30-43c6170d02b8",
@@ -207,8 +195,7 @@
                     "Label": "To Words",
                     "ShowLabel": true,
                     "Disabled": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0193a0b7-a86f-77ff-a8ac-e7a2909ad8e0",
@@ -219,8 +206,7 @@
                     "Row": 50,
                     "Label": "Reimbursement Date",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0193a0e2-b17b-726a-99d4-d8c6cf7c39a5",
@@ -233,8 +219,7 @@
                     "Label": "Fille Attach",
                     "ShowLabel": true,
                     "Active": true,
-                    "IsMultiple": true,
-                    "ReportTypeId": 1
+                    "IsMultiple": true
                 },
                 {
                     "Id": "0193a0e2-b17b-726a-99d4-dde4a81aef6c",
@@ -247,8 +232,7 @@
                     "Label": "Description",
                     "ShowLabel": true,
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0193a0e4-8781-73f8-965e-f91fb3d59ea7",
@@ -262,8 +246,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [User] as ds where (TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 1)\"\r\n}",
                     "RefName": "User",
-                    "OrderBy": "ds.[InsertedDate]",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.[InsertedDate]"
                 },
                 {
                     "Id": "0193f63e-8ee0-701d-a43d-c802d5d33847",
@@ -282,8 +265,7 @@
                     "RefName": "User",
                     "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
                     "DisabledExp": "true",
-                    "IsMultiple": true,
-                    "ReportTypeId": 1
+                    "IsMultiple": true
                 }
             ]
         },
@@ -300,7 +282,6 @@
             "TabGroup": "Other charges",
             "XxlOuterColumn": 12,
             "IsDropDown": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01939c4c-c7bd-7638-b6d3-9695d0ea0851",
@@ -319,8 +300,7 @@
                     "RefName": "VoucherDetail",
                     "PreQuery": "{\r\n    \"VoucherId\": this.EditForm.Entity.Id\r\n}",
                     "Editable": true,
-                    "OrderBy": "ds.[InsertedDate] asc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.[InsertedDate] asc"
                 }
             ]
         },
@@ -332,8 +312,7 @@
             "ClassName": "title-option",
             "Style": "margin-bottom: 0px;padding: 0;",
             "XxlCol": 12,
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "01939c4c-c876-736b-8db1-8de8e1bce38a",
@@ -344,7 +323,6 @@
             "Style": "margin-bottom: 0px;padding: 0;",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01939c4c-c954-749f-8f00-9b241b2fc68d",
@@ -357,8 +335,7 @@
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0193eed4-c671-773e-bbf8-31f6cb2c265b",
@@ -371,8 +348,7 @@
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"SendEntity\" }",
                     "Active": true,
-                    "ShowExp": "(this.Entity.StatusId == 1 || this.Entity.StatusId == 4) && this.Token.UserId == this.Entity.InsertedBy && !this.Entity.Id.startsWith('-')",
-                    "ReportTypeId": 1
+                    "ShowExp": "(this.Entity.StatusId == 1 || this.Entity.StatusId == 4) && this.Token.UserId == this.Entity.InsertedBy && !this.Entity.Id.startsWith('-')"
                 },
                 {
                     "Id": "0193eed4-c671-773e-bbf8-374b51ba0d51",
@@ -385,8 +361,7 @@
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"DeclineEntity\" }",
                     "Active": true,
-                    "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserApprovedIds.includes(this.Token.UserId);",
-                    "ReportTypeId": 1
+                    "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserApprovedIds.includes(this.Token.UserId);"
                 },
                 {
                     "Id": "0193eed4-c671-773e-bbf8-38f5b6611120",
@@ -399,8 +374,7 @@
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"ApprovedEntity\" }",
                     "Active": true,
-                    "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserApprovedIds.includes(this.Token.UserId);",
-                    "ReportTypeId": 1
+                    "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserApprovedIds.includes(this.Token.UserId);"
                 },
                 {
                     "Id": "0193f8b3-2171-77bf-b0a8-49912dd04d26",
@@ -415,8 +389,7 @@
                     "Active": true,
                     "Query": "select MasterData.Name as CustomerType,de.Name as Department,Partner.Address AS addresscus,sales.PhoneNumber AS telsales,\r\nsales.Email AS email,sales.NickName AS nickname,de.Name as Department,ct.JobTitles AS JobTitles ,\r\nPartner.CompanyName AS CusNameEN,\r\nct.ContactName AS ContactName ,ct.ContactPhoneNumber AS telcus, \r\n(SELECT STRING_AGG(CONCAT(cont.Name, ' x ', Round(EntityContainer.Quantity,0)), ' & ') as ContainerText\r\nFROM EntityContainer\r\nLEFT JOIN MasterData cont ON EntityContainer.ContainerTypeId = cont.Id\r\nWHERE EntityId = '{Id}') as ContainerText\r\nfrom Inquiry\r\nleft join Partner on Inquiry.CustomerId = Partner.Id\r\nleft join MasterData on Partner.CustomerTypeId = MasterData.Id\r\nLEFT JOIN PartnerContact ct ON ct.PartnerId = Partner.Id\r\nLEFT JOIN [USER] sales on dbo.Partner.SaleId = sales.Id \r\nleft join [User] u on u.Id = '{TokenUserId}'\r\nleft join MasterData de on de.Id = u.DepartmentId\r\nwhere Inquiry.Id = '{Id}'\r\n\r\nselect concat(pol.Name,pod.Name) as Level1,detail.GroupFee, pol.Name as Pol,pod.Name as Pod,fee.Name as Description,otherUnit.Name as Unit,curr.Code as Curr,\r\n(select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%LCL%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId)+ \r\nisnull((select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%ALL%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId),0) as LCL,\r\nRound((select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%20%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId)+ \r\nisnull((select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%ALL%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId),0),{CTotalPrice}) as Cont20,\r\n(select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%40%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId)\r\n+ \r\nisnull((select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%ALL%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId),0)+ \r\nisnull((select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%ALL%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId),0) as Cont40,\r\n(select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%45%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId)\r\n+ \r\nisnull((select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%ALL%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId),0) as Cont45\r\nfrom InquiryDetail detail\r\nleft join Terminal pol on detail.PolId = pol.Id\r\nleft join Terminal pod on detail.PodId = pod.Id\r\nleft join MasterData curr on detail.CurrencyId = curr.Id\r\nleft join FeeType fee on detail.DescriptionId = fee.Id\r\nleft join MasterData unit on detail.UnitId = unit.Id\r\nleft join MasterData groupFee on fee.GroupId = groupFee.Id\r\nleft join MasterData otherUnit on detail.OtherUnitId = otherUnit.Id\r\nwhere OtherFee = 1 and InquiryId = '{Id}'\r\ngroup by pol.Name,detail.PolId,pod.Name,detail.PodId,detail.CurrencyId,curr.Code,detail.DescriptionId,fee.Name,otherUnit.Name,detail.GroupFee,groupFee.Enum\r\nORDER BY concat(pol.Name,pod.Name),groupFee.Enum ASC",
                     "Template": "<table style=\"width: 100.054%; border-collapse: collapse; height: 320.01px;\" border=\"0\"><colgroup><col style=\"width: 16.5486%;\"><col style=\"width: 1.31338%;\"><col style=\"width: 45.9684%;\"><col style=\"width: 1.31338%;\"><col style=\"width: 10.3757%;\"><col style=\"width: 10.9011%;\"><col style=\"width: 1.31338%;\"><col style=\"width: 12.2145%;\"></colgroup>\n<tbody>\n<tr style=\"height: 0px;\">\n<td rowspan=\"3\"><span style=\"font-size: 10pt;\">&nbsp;${CLogo}</span></td>\n<td rowspan=\"3\"><span style=\"font-size: 10pt;\">&nbsp;</span></td>\n<td style=\"text-align: center;\" colspan=\"6\" rowspan=\"3\"><span style=\"font-size: 10pt;\"><strong>${CCompanyName}</strong><br>Address: ${CAddress}<br>Hotline:<a href=\"tel:19003133\">1900 3133<br></a>Email:&nbsp;</span></td>\n</tr>\n<tr style=\"height: 0px;\"></tr>\n<tr style=\"height: 97px;\"></tr>\n<tr style=\"height: 25px;\">\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td style=\"text-align: center;\" colspan=\"3\" rowspan=\"3\">\n<div style=\"font-size: 28pt; min-width: 400px; display: inline-block; border-radius: 29px; border: 1px solid rgb(0, 0, 0); text-align: center; font-weight: 600;\">Quotation</div>\n</td>\n<td><span style=\"font-size: 9pt;\">Quote No</span></td>\n<td><span style=\"font-size: 9pt;\">:</span></td>\n<td><span style=\"font-size: 9pt; color: #e03e2d;\">${Quo No}</span></td>\n</tr>\n<tr style=\"height: 25px;\">\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td><span style=\"font-size: 9pt;\">Created At</span></td>\n<td><span style=\"font-size: 9pt;\">:</span></td>\n<td><span style=\"font-size: 9pt;\">${Quo Date}</span></td>\n</tr>\n<tr style=\"height: 25.0104px;\">\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td><span style=\"font-size: 9pt;\">Valid Until</span></td>\n<td><span style=\"font-size: 9pt;\">:</span></td>\n<td><span style=\"font-size: 9pt;\">${Validity}</span></td>\n</tr>\n<tr style=\"height: 24px;\">\n<td class=\"xl67\" style=\"width: 65px; text-align: left; vertical-align: top;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Company Name</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>:</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">${CusNameEN}</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>From</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\">${nickname}</td>\n</tr>\n<tr style=\"height: 24px;\">\n<td class=\"xl67\" style=\"width: 65px; text-align: left; vertical-align: top;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Address</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>:</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">${addresscus}</span></td>\n<td style=\"width: 30.5px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td class=\"xl67\" style=\"width: 15.25px; text-align: left; vertical-align: top;\" width=\"61\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Dept</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\"><span style=\"font-size: 10pt;\">${Department}</span></td>\n</tr>\n<tr style=\"height: 24px;\">\n<td class=\"xl67\" style=\"width: 65px; text-align: left; vertical-align: top;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>To</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>:</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">${ContactName}</span></td>\n<td style=\"width: 30.5px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td class=\"xl67\" style=\"width: 15.25px; text-align: left; vertical-align: top;\" width=\"61\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Tel</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\"><span style=\"font-size: 10pt;\">${telsales}</span></td>\n</tr>\n<tr style=\"height: 24px;\">\n<td class=\"xl67\" style=\"width: 65px; text-align: left; vertical-align: top;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Title</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>:</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">${JobTitles}</span></td>\n<td style=\"width: 30.5px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td class=\"xl67\" style=\"width: 15.25px; text-align: left; vertical-align: top;\" width=\"61\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Email</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\"><span style=\"font-size: 10pt;\">${email}</span></td>\n</tr>\n<tr style=\"height: 24px;\">\n<td class=\"xl67\" style=\"width: 65px; text-align: left; vertical-align: top;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Tel</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>:</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">${telcus}</span></td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n</tr>\n<tr>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n</tr>\n</tbody>\n</table>\n<table class=\"dashed\" style=\"border-collapse: collapse; width: 100%; height: 38.0208px; margin-left: 0px; border: 0.01px solid rgb(126, 140, 141); margin-right: auto;\" border=\"1\"><colgroup><col style=\"width: 12.2363%;\"><col style=\"width: 13.5532%;\"><col style=\"width: 37.7632%;\"><col style=\"width: 11.3158%;\"><col style=\"width: 9.21053%;\"><col style=\"width: 15.9211%;\"></colgroup>\n<tbody data-table=\"t1\">\n<tr>\n<td style=\"border: 0.01px solid rgb(126, 140, 141); text-align: center;\" scope=\"rowgroup\"><span style=\"font-size: 10pt;\">POL</span></td>\n<td style=\"border: 0.01px solid rgb(126, 140, 141); text-align: center;\" scope=\"rowgroup\"><span style=\"font-size: 10pt;\">POD</span></td>\n<td style=\"border: 0.01px solid rgb(126, 140, 141); text-align: center;\" scope=\"rowgroup\"><span style=\"font-size: 10pt;\">Carrier</span></td>\n<td style=\"border: 0.01px solid rgb(126, 140, 141); text-align: center;\" scope=\"rowgroup\"><span style=\"font-size: 10pt;\">VIA</span></td>\n<td style=\"border: 0.01px solid rgb(126, 140, 141); text-align: center;\" scope=\"rowgroup\"><span style=\"font-size: 10pt;\">TT</span></td>\n<td style=\"border: 0.01px solid rgb(126, 140, 141); text-align: center;\" scope=\"rowgroup\"><span style=\"font-size: 10pt;\">FREQ</span></td>\n</tr>\n<tr>\n<td style=\"border-image: initial; border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{POL}</span></td>\n<td style=\"border-image: initial; border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{POD}</span></td>\n<td style=\"border-image: initial; border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{Carrier}</span></td>\n<td style=\"border-image: initial; border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{VIA}</span></td>\n<td style=\"border-image: initial; border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{Tran}</span></td>\n<td style=\"border-image: initial; border-color: #7e8c8d; text-align: center;\">\n<p>{ScheduleIdsText}</p>\n</td>\n</tr>\n</tbody>\n</table>\n<p>&nbsp;</p>\n<table class=\"dashed\" style=\"border-collapse: collapse; width: 100%; height: 179.333px; border: 1px solid rgb(126, 140, 141);\" border=\"1\"><colgroup><col style=\"width: 20.2632%;\"><col style=\"width: 11.7105%;\"><col style=\"width: 11.3158%;\"><col style=\"width: 11.4474%;\"><col style=\"width: 9.73684%;\"><col style=\"width: 9.21053%;\"><col style=\"width: 10.1316%;\"><col style=\"width: 5.65789%;\"><col style=\"width: 10.5263%;\"></colgroup>\n<thead>\n<tr>\n<td style=\"text-align: center; border-color: #7e8c8d;\" rowspan=\"2\"><span style=\"font-size: 10pt;\">Description</span></td>\n<td style=\"text-align: center; border-color: #7e8c8d;\" rowspan=\"2\"><span style=\"font-size: 10pt;\">Curr</span></td>\n<td style=\"text-align: center; border-color: #7e8c8d;\" rowspan=\"2\"><span style=\"font-size: 10pt;\">Unit</span></td>\n<td style=\"text-align: center; border-color: #7e8c8d;\" colspan=\"4\"><span style=\"font-size: 10pt;\">Price</span></td>\n<td style=\"text-align: center; border-color: #7e8c8d;\" rowspan=\"2\"><span style=\"font-size: 10pt;\">VAT</span></td>\n<td style=\"text-align: center; border-color: #7e8c8d;\" rowspan=\"2\"><span style=\"font-size: 10pt;\">Remark</span></td>\n</tr>\n<tr>\n<td style=\"text-align: center; border-color: #7e8c8d;\"><span style=\"font-size: 10pt;\">LCL</span></td>\n<td class=\"xl67\" style=\"text-align: center; border-color: #7e8c8d;\" width=\"74\" height=\"24\"><span style=\"font-size: 10pt;\">20</span></td>\n<td class=\"xl67\" style=\"text-align: center; border-color: #7e8c8d;\" width=\"61\" height=\"24\"><span style=\"font-size: 10pt;\">40</span></td>\n<td class=\"xl67\" style=\"text-align: center; border-color: #7e8c8d;\" width=\"77\" height=\"24\"><span style=\"font-size: 10pt;\">45</span></td>\n</tr>\n</thead>\n<tbody data-group=\"Level1|GroupFee\" data-table=\"c0\">\n<tr>\n<td style=\"background-color: #ced4d9; text-align: left;\" colspan=\"9\"><span style=\"font-size: 10pt;\">ROUTE: #{Pol} - #{Pod}</span></td>\n</tr>\n<tr>\n<td style=\"background-color: #ecf0f1;\" colspan=\"9\"><span style=\"font-size: 10pt;\">#{GroupFee}</span></td>\n</tr>\n<tr>\n<td style=\"border-color: #7e8c8d;\"><span style=\"font-size: 10pt;\">{Description}</span></td>\n<td style=\"border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{Curr}</span></td>\n<td style=\"border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{Unit}</span></td>\n<td style=\"border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{LCL}</span></td>\n<td style=\"border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{Cont20}</span></td>\n<td style=\"border-color: #7e8c8d; text-align: center;\">{Cont40}</td>\n<td style=\"border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{Cont45}</span></td>\n<td style=\"border-color: #7e8c8d; text-align: center;\">&nbsp;</td>\n<td style=\"border-color: #7e8c8d; text-align: center;\">&nbsp;</td>\n</tr>\n</tbody>\n<tfoot>\n<tr>\n<td style=\"vertical-align: top; border-color: #7e8c8d;\" colspan=\"9\"><span style=\"font-size: 10pt;\"><br></span><span style=\"font-size: 10pt;\"><br></span></td>\n</tr>\n</tfoot>\n</table>\n<p>&nbsp;</p>\n<p><span style=\"font-size: 10pt;\">${Remark}</span></p>",
-                    "ShowExp": "var config = JSON.parse(localStorage.getItem(\"SalesFunction\"));\r\nif (!config[\"APPROVE_QUOTATION_FILE\"]) {\r\n    return this.Entity.StatusId == 3;\r\n}\r\nelse {\r\n    return !this.Entity.Id.startsWith('-');\r\n}",
-                    "ReportTypeId": 1
+                    "ShowExp": "var config = JSON.parse(localStorage.getItem(\"SalesFunction\"));\r\nif (!config[\"APPROVE_QUOTATION_FILE\"]) {\r\n    return this.Entity.StatusId == 3;\r\n}\r\nelse {\r\n    return !this.Entity.Id.startsWith('-');\r\n}"
                 },
                 {
                     "Id": "01950399-c49a-7016-b6de-b8fc4e97ddea",
@@ -429,8 +402,7 @@
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{    \"click\": \"CreateRP\"}",
                     "Active": true,
-                    "ShowExp": "this.Entity.PaymentAccId && this.Entity.StatusId == 3 && (this.Entity.UserApprovedIds && this.Entity.UserApprovedIds.includes(this.Token.UserId) || this.Entity.ForwardId == this.Token.UserId) ",
-                    "ReportTypeId": 1
+                    "ShowExp": "this.Entity.PaymentAccId && this.Entity.StatusId == 3 && (this.Entity.UserApprovedIds && this.Entity.UserApprovedIds.includes(this.Token.UserId) || this.Entity.ForwardId == this.Token.UserId) "
                 },
                 {
                     "Id": "01950399-c49a-7016-b6de-bcf8c2384eac",
@@ -443,8 +415,7 @@
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{    \"click\": \"CreateRP\"}",
                     "Active": true,
-                    "ShowExp": "!this.Entity.Id.startsWith('-') && !this.Entity.PaymentAccId && this.Entity.StatusId == 3 && (this.Entity.UserApprovedIds && this.Entity.UserApprovedIds.includes(this.Token.UserId) || this.Entity.ForwardId == this.Token.UserId) ",
-                    "ReportTypeId": 1
+                    "ShowExp": "!this.Entity.Id.startsWith('-') && !this.Entity.PaymentAccId && this.Entity.StatusId == 3 && (this.Entity.UserApprovedIds && this.Entity.UserApprovedIds.includes(this.Token.UserId) || this.Entity.ForwardId == this.Token.UserId) "
                 }
             ]
         },
@@ -461,7 +432,6 @@
             "TabGroup": "Other charges",
             "XxlOuterColumn": 12,
             "IsDropDown": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0193f379-8caa-767f-ad6c-0ff6183355c4",
@@ -478,8 +448,7 @@
                     "RefName": "Approvement",
                     "PreQuery": "{\r\n    \"RecordId\": this.EditForm.Entity.Id\r\n}",
                     "OrderBy": "ds.InsertedDate desc",
-                    "AddRowExp": "this.Entity.StatusId != 3",
-                    "ReportTypeId": 1
+                    "AddRowExp": "this.Entity.StatusId != 3"
                 }
             ]
         }
@@ -505,8 +474,7 @@
             "MinWidth": "255px",
             "MaxWidth": "255px",
             "OrderBy": "ds.IsFreight desc",
-            "EntityId": "VoucherDetail",
-            "ReportTypeId": 1
+            "EntityId": "VoucherDetail"
         },
         {
             "Id": "01939c4c-ca32-75c5-88e3-e1fc94710078",
@@ -527,8 +495,7 @@
             "MinWidth": "99px",
             "MaxWidth": "99px",
             "OrderBy": "ds.Name asc",
-            "EntityId": "VoucherDetail",
-            "ReportTypeId": 1
+            "EntityId": "VoucherDetail"
         },
         {
             "Id": "01939c4c-ca63-773e-8b44-f5e5b98cefd4",
@@ -545,8 +512,7 @@
             "MinWidth": "87px",
             "MaxWidth": "87px",
             "EntityId": "VoucherDetail",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "01939c4c-ca96-749f-9f75-f56100bbc322",
@@ -567,8 +533,7 @@
             "MinWidth": "118px",
             "MaxWidth": "118px",
             "OrderBy": "ds.InsertedDate desc",
-            "EntityId": "VoucherDetail",
-            "ReportTypeId": 1
+            "EntityId": "VoucherDetail"
         },
         {
             "Id": "01939c4c-caf9-7313-92f4-84b36f24b120",
@@ -590,8 +555,7 @@
             "MinWidth": "123px",
             "MaxWidth": "123px",
             "OrderBy": "ds.InsertedDate desc",
-            "EntityId": "VoucherDetail",
-            "ReportTypeId": 1
+            "EntityId": "VoucherDetail"
         },
         {
             "Id": "01939c91-dac5-740d-9135-c18aede64fd2",
@@ -613,8 +577,7 @@
             "MinWidth": "107px",
             "MaxWidth": "107px",
             "OrderBy": "ds.Enum asc",
-            "EntityId": "VoucherDetail",
-            "ReportTypeId": 1
+            "EntityId": "VoucherDetail"
         },
         {
             "Id": "01939c92-4d84-719a-9fb4-feba4514c1a3",
@@ -630,8 +593,7 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "VoucherDetail",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "01939c93-533d-71ea-9f1f-5fba95b98ff0",
@@ -647,8 +609,7 @@
             "MinWidth": "114px",
             "MaxWidth": "114px",
             "EntityId": "VoucherDetail",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
-            "ReportTypeId": 1
+            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
         },
         {
             "Id": "01939c93-7c45-736e-979e-ca3448217bb2",
@@ -664,8 +625,7 @@
             "MinWidth": "153px",
             "MaxWidth": "153px",
             "EntityId": "VoucherDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "01939c93-b76f-741c-879c-48978f6dc15a",
@@ -685,8 +645,7 @@
             "Editable": true,
             "MinWidth": "118px",
             "MaxWidth": "118px",
-            "EntityId": "VoucherDetail",
-            "ReportTypeId": 1
+            "EntityId": "VoucherDetail"
         },
         {
             "Id": "01939cd0-f442-702b-be79-cc8bbf829575",
@@ -703,8 +662,7 @@
             "MinWidth": "73px",
             "MaxWidth": "73px",
             "EntityId": "VoucherDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "0193f379-d65d-7569-9e3c-c20c3ebfd391",
@@ -717,8 +675,7 @@
             "FocusSearch": true,
             "MinWidth": "133px",
             "MaxWidth": "133px",
-            "EntityId": "Approvement",
-            "ReportTypeId": 1
+            "EntityId": "Approvement"
         },
         {
             "Id": "0193f379-d65e-750c-ae74-5c06a74785a9",
@@ -731,8 +688,7 @@
             "FocusSearch": true,
             "MinWidth": "374px",
             "MaxWidth": "374px",
-            "EntityId": "Approvement",
-            "ReportTypeId": 1
+            "EntityId": "Approvement"
         },
         {
             "Id": "0193f379-d65e-750c-ae74-63e3833205f1",
@@ -746,8 +702,7 @@
             "FocusSearch": true,
             "MinWidth": "144px",
             "MaxWidth": "144px",
-            "EntityId": "Approvement",
-            "ReportTypeId": 1
+            "EntityId": "Approvement"
         },
         {
             "Id": "0193f379-d65e-750c-ae74-674bd076578c",
@@ -765,8 +720,7 @@
             "FocusSearch": true,
             "MinWidth": "116px",
             "MaxWidth": "116px",
-            "EntityId": "Approvement",
-            "ReportTypeId": 1
+            "EntityId": "Approvement"
         }
     ],
     "Components": [
@@ -781,8 +735,7 @@
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
             "Events": "{ \"click\" : \"SavePatch\" }",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "0193eed4-c671-773e-bbf8-31f6cb2c265b",
@@ -795,8 +748,7 @@
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"SendEntity\" }",
             "Active": true,
-            "ShowExp": "(this.Entity.StatusId == 1 || this.Entity.StatusId == 4) && this.Token.UserId == this.Entity.InsertedBy && !this.Entity.Id.startsWith('-')",
-            "ReportTypeId": 1
+            "ShowExp": "(this.Entity.StatusId == 1 || this.Entity.StatusId == 4) && this.Token.UserId == this.Entity.InsertedBy && !this.Entity.Id.startsWith('-')"
         },
         {
             "Id": "0193eed4-c671-773e-bbf8-374b51ba0d51",
@@ -809,8 +761,7 @@
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"DeclineEntity\" }",
             "Active": true,
-            "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserApprovedIds.includes(this.Token.UserId);",
-            "ReportTypeId": 1
+            "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserApprovedIds.includes(this.Token.UserId);"
         },
         {
             "Id": "0193eed4-c671-773e-bbf8-38f5b6611120",
@@ -823,8 +774,7 @@
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"ApprovedEntity\" }",
             "Active": true,
-            "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserApprovedIds.includes(this.Token.UserId);",
-            "ReportTypeId": 1
+            "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserApprovedIds.includes(this.Token.UserId);"
         },
         {
             "Id": "01950399-c49a-7016-b6de-b8fc4e97ddea",
@@ -837,8 +787,7 @@
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{    \"click\": \"CreateRP\"}",
             "Active": true,
-            "ShowExp": "this.Entity.PaymentAccId && this.Entity.StatusId == 3 && (this.Entity.UserApprovedIds && this.Entity.UserApprovedIds.includes(this.Token.UserId) || this.Entity.ForwardId == this.Token.UserId) ",
-            "ReportTypeId": 1
+            "ShowExp": "this.Entity.PaymentAccId && this.Entity.StatusId == 3 && (this.Entity.UserApprovedIds && this.Entity.UserApprovedIds.includes(this.Token.UserId) || this.Entity.ForwardId == this.Token.UserId) "
         },
         {
             "Id": "01950399-c49a-7016-b6de-bcf8c2384eac",
@@ -851,8 +800,7 @@
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{    \"click\": \"CreateRP\"}",
             "Active": true,
-            "ShowExp": "!this.Entity.Id.startsWith('-') && !this.Entity.PaymentAccId && this.Entity.StatusId == 3 && (this.Entity.UserApprovedIds && this.Entity.UserApprovedIds.includes(this.Token.UserId) || this.Entity.ForwardId == this.Token.UserId) ",
-            "ReportTypeId": 1
+            "ShowExp": "!this.Entity.Id.startsWith('-') && !this.Entity.PaymentAccId && this.Entity.StatusId == 3 && (this.Entity.UserApprovedIds && this.Entity.UserApprovedIds.includes(this.Token.UserId) || this.Entity.ForwardId == this.Token.UserId) "
         }
     ],
     "FeaturePolicies": [

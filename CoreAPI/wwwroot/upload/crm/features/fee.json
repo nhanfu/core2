@@ -14,7 +14,6 @@
             "ComponentType": "Section",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00bf0268-0000-0000-8000-e6b136f588a5",
@@ -31,8 +30,7 @@
                     "IsRealtime": true,
                     "RefName": "FeeType",
                     "TopEmpty": true,
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         }
@@ -53,8 +51,7 @@
             "Editable": true,
             "MinWidth": "68px",
             "MaxWidth": "68px",
-            "EntityId": "FeeType",
-            "ReportTypeId": 1
+            "EntityId": "FeeType"
         },
         {
             "Id": "00192c98-0000-0000-8000-d582a5fe3771",
@@ -71,8 +68,7 @@
             "Editable": true,
             "MinWidth": "73px",
             "MaxWidth": "73px",
-            "EntityId": "FeeType",
-            "ReportTypeId": 1
+            "EntityId": "FeeType"
         },
         {
             "Id": "004d0204-0000-0000-8000-8244c3e72b32",
@@ -85,8 +81,7 @@
             "Editable": true,
             "MinWidth": "152px",
             "MaxWidth": "152px",
-            "EntityId": "FeeType",
-            "ReportTypeId": 1
+            "EntityId": "FeeType"
         },
         {
             "Id": "00510248-0000-0000-8000-3feae9466b61",
@@ -99,8 +94,7 @@
             "Editable": true,
             "MinWidth": "151px",
             "MaxWidth": "151px",
-            "EntityId": "FeeType",
-            "ReportTypeId": 1
+            "EntityId": "FeeType"
         },
         {
             "Id": "00510264-0000-0000-8000-83a17a4076be",
@@ -119,8 +113,7 @@
             "Editable": true,
             "MinWidth": "115px",
             "MaxWidth": "115px",
-            "EntityId": "FeeType",
-            "ReportTypeId": 1
+            "EntityId": "FeeType"
         },
         {
             "Id": "008f2624-0000-0000-8000-12a54335dc03",
@@ -142,8 +135,7 @@
             "MinWidth": "67px",
             "MaxWidth": "67px",
             "OrderBy": "ds.Enum asc",
-            "EntityId": "FeeType",
-            "ReportTypeId": 1
+            "EntityId": "FeeType"
         },
         {
             "Id": "009a26bc-0000-0000-8000-da2fe7cf8685",
@@ -163,8 +155,7 @@
             "Editable": true,
             "MinWidth": "109px",
             "MaxWidth": "109px",
-            "EntityId": "FeeType",
-            "ReportTypeId": 1
+            "EntityId": "FeeType"
         },
         {
             "Id": "00a62634-0000-0000-8001-e712eaafc838",
@@ -180,8 +171,7 @@
             "Editable": true,
             "MinWidth": "60px",
             "MaxWidth": "60px",
-            "EntityId": "FeeType",
-            "ReportTypeId": 1
+            "EntityId": "FeeType"
         },
         {
             "Id": "00aa154c-0000-0000-8000-b24f4549e3eb",
@@ -197,8 +187,7 @@
             "Editable": true,
             "MinWidth": "69px",
             "MaxWidth": "69px",
-            "EntityId": "FeeType",
-            "ReportTypeId": 1
+            "EntityId": "FeeType"
         },
         {
             "Id": "00c531fc-0000-0000-8000-fa084f7050ed",
@@ -211,8 +200,7 @@
             "Editable": true,
             "MinWidth": "129px",
             "MaxWidth": "129px",
-            "EntityId": "FeeType",
-            "ReportTypeId": 1
+            "EntityId": "FeeType"
         },
         {
             "Id": "0193da1a-5afe-713e-80bf-4cf0c803dec8",
@@ -228,8 +216,7 @@
             "Editable": true,
             "MinWidth": "60px",
             "MaxWidth": "60px",
-            "EntityId": "FeeType",
-            "ReportTypeId": 1
+            "EntityId": "FeeType"
         },
         {
             "Id": "0193da1a-62a6-7754-b915-764eb239dc09",
@@ -245,8 +232,7 @@
             "Editable": true,
             "MinWidth": "97px",
             "MaxWidth": "97px",
-            "EntityId": "FeeType",
-            "ReportTypeId": 1
+            "EntityId": "FeeType"
         },
         {
             "Id": "0194f52e-afc4-766f-8f3d-0a3492a65ee8",
@@ -268,8 +254,7 @@
             "MinWidth": "79px",
             "MaxWidth": "79px",
             "OrderBy": "ds.Code asc",
-            "EntityId": "FeeType",
-            "ReportTypeId": 1
+            "EntityId": "FeeType"
         },
         {
             "Id": "0194f52e-afc5-75ba-a66f-2037e4d2d70a",
@@ -291,8 +276,7 @@
             "MinWidth": "85px",
             "MaxWidth": "85px",
             "OrderBy": "ds.Code asc",
-            "EntityId": "FeeType",
-            "ReportTypeId": 1
+            "EntityId": "FeeType"
         },
         {
             "Id": "0194f52e-e772-7025-8ce1-7b9699835d7e",
@@ -314,8 +298,7 @@
             "MinWidth": "78px",
             "MaxWidth": "78px",
             "OrderBy": "ds.Code asc",
-            "EntityId": "FeeType",
-            "ReportTypeId": 1
+            "EntityId": "FeeType"
         },
         {
             "Id": "0194f52f-ce25-721a-8556-ae4eebe9d2a3",
@@ -337,8 +320,7 @@
             "MinWidth": "76px",
             "MaxWidth": "76px",
             "OrderBy": "ds.Code asc",
-            "EntityId": "FeeType",
-            "ReportTypeId": 1
+            "EntityId": "FeeType"
         }
     ],
     "FeaturePolicies": [

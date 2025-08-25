@@ -21,7 +21,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "009effec-0000-0000-8000-03445a1dbf96",
@@ -41,8 +40,7 @@
                     "RefName": "Partner",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
                     "PreQuery": "{\r\n    \"UserId\": this.Token.UserId,\r\n    \"UserName\": this.Token.UserName\r\n}",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -57,7 +55,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "009dff00-0000-0000-8000-8e66176a2004",
@@ -77,8 +74,7 @@
                     "RefName": "Partner",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
                     "PreQuery": "{\r\n    \"UserId\": this.Token.UserId,\r\n    \"UserName\": this.Token.UserName\r\n}",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -93,7 +89,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0003f800-0000-0000-8000-e59219c3fe6e",
@@ -113,8 +108,7 @@
                     "RefName": "Partner",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
                     "PreQuery": "{\r\n    \"Message\": \"Unable to delete issue data\"\r\n}",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -129,7 +123,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "009fff1c-0000-0000-8000-7f96aaf06681",
@@ -149,8 +142,7 @@
                     "RefName": "Partner",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
                     "PreQuery": "{\r\n    \"UserId\": this.Token.UserId,\r\n    \"UserName\": this.Token.UserName\r\n}",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         }
@@ -168,8 +160,7 @@
             "MinWidth": "177px",
             "MaxWidth": "177px",
             "created_by": "Customer",
-            "EntityId": "Customer",
-            "ReportTypeId": 1
+            "EntityId": "Customer"
         },
         {
             "Id": "0028f8fc-0000-0000-8000-265ba0d3c1bd",
@@ -182,8 +173,7 @@
             "MinWidth": "374px",
             "MaxWidth": "374px",
             "created_by": "Customer",
-            "EntityId": "Customer",
-            "ReportTypeId": 1
+            "EntityId": "Customer"
         },
         {
             "Id": "0029f828-0000-0000-8000-1ac3e91c401b",
@@ -196,8 +186,7 @@
             "MinWidth": "82px",
             "MaxWidth": "82px",
             "created_by": "Customer",
-            "EntityId": "Customer",
-            "ReportTypeId": 1
+            "EntityId": "Customer"
         },
         {
             "Id": "007901d0-0000-0000-8000-f98c2fd3d4ff",
@@ -210,8 +199,7 @@
             "MinWidth": "118px",
             "MaxWidth": "118px",
             "created_by": "Customer",
-            "EntityId": "Customer",
-            "ReportTypeId": 1
+            "EntityId": "Customer"
         },
         {
             "Id": "007cff5c-0000-0000-8000-21c29433c3e2",
@@ -227,8 +215,7 @@
             "MinWidth": "56px",
             "MaxWidth": "56px",
             "created_by": "Customer",
-            "EntityId": "Customer",
-            "ReportTypeId": 1
+            "EntityId": "Customer"
         },
         {
             "Id": "00a3259c-0000-0000-8000-ed452e172d36",
@@ -247,8 +234,7 @@
             "TextAlign": "center",
             "MinWidth": "84px",
             "MaxWidth": "84px",
-            "EntityId": "Customer",
-            "ReportTypeId": 1
+            "EntityId": "Customer"
         },
         {
             "Id": "00de1628-0000-0000-8000-af6a2899c867",
@@ -266,8 +252,7 @@
             "MinWidth": "95px",
             "MaxWidth": "95px",
             "created_by": "Customer",
-            "EntityId": "Customer",
-            "ReportTypeId": 1
+            "EntityId": "Customer"
         },
         {
             "Id": "00e01648-0000-0000-8000-e4c282a249a6",
@@ -281,8 +266,7 @@
             "MinWidth": "118px",
             "MaxWidth": "118px",
             "created_by": "Customer",
-            "EntityId": "Customer",
-            "ReportTypeId": 1
+            "EntityId": "Customer"
         },
         {
             "Id": "00e7165c-0000-0000-8000-1efb96e75136",
@@ -300,8 +284,7 @@
             "MinWidth": "138px",
             "MaxWidth": "138px",
             "created_by": "Customer",
-            "EntityId": "Customer",
-            "ReportTypeId": 1
+            "EntityId": "Customer"
         },
         {
             "Id": "00f116cc-0000-0000-8000-ee55cad325be",
@@ -319,8 +302,7 @@
             "MinWidth": "138px",
             "MaxWidth": "138px",
             "created_by": "Customer",
-            "EntityId": "Customer",
-            "ReportTypeId": 1
+            "EntityId": "Customer"
         }
     ],
     "Components": [
@@ -338,8 +320,7 @@
             "MinWidth": "56px",
             "MaxWidth": "56px",
             "created_by": "Customer",
-            "EntityId": "Customer",
-            "ReportTypeId": 1
+            "EntityId": "Customer"
         },
         {
             "Id": "00bc001c-0000-0000-8000-b6d965d11fde",
@@ -351,8 +332,7 @@
             "Icon": "fal fa-plus",
             "ClassName": "btn",
             "Events": "{\"click\":\"Add\"}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "00bc0078-0000-0000-8000-eeac9fd5eb34",
@@ -364,8 +344,7 @@
             "Icon": "fal fa-plus",
             "ClassName": "btn",
             "Events": "{\"click\":\"Add\"}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "00bd00e4-0000-0000-8000-c9b59da8c95b",
@@ -377,8 +356,7 @@
             "Icon": "fal fa-plus",
             "ClassName": "btn",
             "Events": "{\"click\":\"Add\"}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "00d1f8f8-0000-0000-8000-f6654453a423",
@@ -390,8 +368,7 @@
             "Icon": "fal fa-plus",
             "ClassName": "btn",
             "Events": "{\"click\":\"Add\"}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         }
     ],
     "FeaturePolicies": [

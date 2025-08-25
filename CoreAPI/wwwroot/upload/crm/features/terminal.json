@@ -18,7 +18,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00a6010c-0000-0000-8000-3036e27bb371",
@@ -35,8 +34,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from Terminal as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Terminal as ds\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "Terminal",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -48,8 +46,7 @@
             "XxlCol": 12,
             "Active": true,
             "IsTab": true,
-            "DisplayBadge": true,
-            "ReportTypeId": 1
+            "DisplayBadge": true
         },
         {
             "Id": "00c00164-0000-0000-8000-6ad245955447",
@@ -59,8 +56,7 @@
             "XxlCol": 12,
             "Active": true,
             "IsTab": true,
-            "DisplayBadge": true,
-            "ReportTypeId": 1
+            "DisplayBadge": true
         }
     ],
     "GridPolicies": [
@@ -77,8 +73,7 @@
             "Active": true,
             "MinWidth": "35px",
             "MaxWidth": "35px",
-            "EntityId": "Terminal",
-            "ReportTypeId": 1
+            "EntityId": "Terminal"
         },
         {
             "Id": "004d2bec-0000-0000-8000-f138d451e755",
@@ -97,8 +92,7 @@
             "FocusSearch": true,
             "MinWidth": "149px",
             "MaxWidth": "149px",
-            "EntityId": "Terminal",
-            "ReportTypeId": 1
+            "EntityId": "Terminal"
         },
         {
             "Id": "00d30104-0000-0000-8000-a078404528b4",
@@ -110,8 +104,7 @@
             "Active": true,
             "MinWidth": "158px",
             "MaxWidth": "158px",
-            "EntityId": "Terminal",
-            "ReportTypeId": 1
+            "EntityId": "Terminal"
         },
         {
             "Id": "00d601ec-0000-0000-8000-63d67a9d3828",
@@ -123,8 +116,7 @@
             "Active": true,
             "MinWidth": "256px",
             "MaxWidth": "256px",
-            "EntityId": "Terminal",
-            "ReportTypeId": 1
+            "EntityId": "Terminal"
         },
         {
             "Id": "00df0168-0000-0000-8000-66e77ab414c4",
@@ -136,8 +128,7 @@
             "Active": true,
             "MinWidth": "84px",
             "MaxWidth": "84px",
-            "EntityId": "Terminal",
-            "ReportTypeId": 1
+            "EntityId": "Terminal"
         },
         {
             "Id": "00df018c-0000-0000-8000-ec70673c3e60",
@@ -149,8 +140,7 @@
             "Active": true,
             "MinWidth": "178px",
             "MaxWidth": "178px",
-            "EntityId": "Terminal",
-            "ReportTypeId": 1
+            "EntityId": "Terminal"
         },
         {
             "Id": "00e001ec-0000-0000-8000-b2f8889bd756",
@@ -166,8 +156,7 @@
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "MinWidth": "74px",
             "MaxWidth": "74px",
-            "EntityId": "Terminal",
-            "ReportTypeId": 1
+            "EntityId": "Terminal"
         },
         {
             "Id": "00e401d0-0000-0000-8000-6784df52e2c5",
@@ -179,8 +168,7 @@
             "Active": true,
             "MinWidth": "148px",
             "MaxWidth": "148px",
-            "EntityId": "Terminal",
-            "ReportTypeId": 1
+            "EntityId": "Terminal"
         },
         {
             "Id": "00e50120-0000-0000-8000-208c0ed13c04",
@@ -196,8 +184,7 @@
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "MinWidth": "157px",
             "MaxWidth": "157px",
-            "EntityId": "Terminal",
-            "ReportTypeId": 1
+            "EntityId": "Terminal"
         },
         {
             "Id": "00e60178-0000-0000-8000-79f6e5e65dbd",
@@ -209,8 +196,7 @@
             "Active": true,
             "MinWidth": "167px",
             "MaxWidth": "167px",
-            "EntityId": "Terminal",
-            "ReportTypeId": 1
+            "EntityId": "Terminal"
         },
         {
             "Id": "01950269-739d-77b2-9a12-516aa705549e",
@@ -229,8 +215,7 @@
             "FocusSearch": true,
             "MinWidth": "149px",
             "MaxWidth": "149px",
-            "EntityId": "Terminal",
-            "ReportTypeId": 1
+            "EntityId": "Terminal"
         },
         {
             "Id": "01950274-fcba-750e-a21e-9293923537df",
@@ -250,8 +235,7 @@
             "MinWidth": "225px",
             "MaxWidth": "225px",
             "EntityId": "Terminal",
-            "IsMultiple": true,
-            "ReportTypeId": 1
+            "IsMultiple": true
         }
     ],
     "Components": [
@@ -268,8 +252,7 @@
             "Active": true,
             "MinWidth": "35px",
             "MaxWidth": "35px",
-            "EntityId": "Terminal",
-            "ReportTypeId": 1
+            "EntityId": "Terminal"
         },
         {
             "Id": "004301b8-0000-0000-8000-a74a8ab6b07a",
@@ -281,8 +264,7 @@
             "Icon": "fal fa-plus",
             "ClassName": "btn",
             "Events": "{\"click\":\"Add\"}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         }
     ],
     "FeaturePolicies": [

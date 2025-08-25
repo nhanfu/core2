@@ -13,7 +13,6 @@
             "Order": 1,
             "ComponentType": "Section",
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0001ffbc-0000-0000-8000-65e18bc65d4f",
@@ -30,8 +29,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "AccountNo",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         }
@@ -46,8 +44,7 @@
             "Active": true,
             "Editable": true,
             "EntityId": "AccountNo",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "0022ff08-0000-0000-8000-e3c832262478",
@@ -57,8 +54,7 @@
             "Label": "Code",
             "Active": true,
             "Editable": true,
-            "EntityId": "AccountNo",
-            "ReportTypeId": 1
+            "EntityId": "AccountNo"
         },
         {
             "Id": "0023ff44-0000-0000-8000-9c032a57eec4",
@@ -68,8 +64,7 @@
             "Label": "Name",
             "Active": true,
             "Editable": true,
-            "EntityId": "AccountNo",
-            "ReportTypeId": 1
+            "EntityId": "AccountNo"
         },
         {
             "Id": "0024ff58-0000-0000-8000-104f18c32612",
@@ -79,8 +74,7 @@
             "Label": "NameEnglish",
             "Active": true,
             "Editable": true,
-            "EntityId": "AccountNo",
-            "ReportTypeId": 1
+            "EntityId": "AccountNo"
         },
         {
             "Id": "0040ffe4-0000-0000-8000-ac4a5dea5285",
@@ -96,8 +90,7 @@
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "Editable": true,
-            "EntityId": "AccountNo",
-            "ReportTypeId": 1
+            "EntityId": "AccountNo"
         },
         {
             "Id": "0042ff48-0000-0000-8000-d7ad9bd12757",
@@ -107,8 +100,7 @@
             "Label": "Reason",
             "Active": true,
             "Editable": true,
-            "EntityId": "AccountNo",
-            "ReportTypeId": 1
+            "EntityId": "AccountNo"
         }
     ],
     "FeaturePolicies": [

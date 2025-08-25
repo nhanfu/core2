@@ -14,8 +14,7 @@
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "0195317c-3b20-76dc-80e6-ebcde6e7d806",
@@ -29,7 +28,6 @@
             "ParentId": "0195317c-3883-7701-bb4c-80592a014293",
             "SmOuterColumn": 20,
             "XxlOuterColumn": 5,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0195317c-3b47-712f-94c1-3b66afc24b84",
@@ -42,8 +40,7 @@
                     "Active": true,
                     "Query": "WITH InquiryData AS (\r\n    SELECT \r\n        ds2.ServiceId,\r\n        ds2.ProgressId,\r\n        COUNT(ds2.Id) AS value\r\n    FROM InquiryDetail ds2\r\n    JOIN Inquiry ds1 ON ds2.InquiryId = ds1.Id\r\n    WHERE ds1.TypeId = 1 \r\n        AND ds2.UserReceiverId = '{TokenUserId}' \r\n        AND ds2.InsertedDate >= '{FromDate}' \r\n        AND ds2.InsertedDate < '{ToDate}'\r\n    GROUP BY ds2.ServiceId, ds2.ProgressId\r\n),\r\nServiceMapping AS (\r\n    SELECT 1 AS ServiceId, 'Air Export' AS name UNION ALL\r\n    SELECT 2, 'Air Import' UNION ALL\r\n    SELECT 3, 'Sea Export FCL' UNION ALL\r\n    SELECT 4, 'Sea Import FCL' UNION ALL\r\n    SELECT 5, 'Sea Export LCL' UNION ALL\r\n    SELECT 6, 'Sea Import LCL' UNION ALL\r\n    SELECT 9, 'Logistics' UNION ALL\r\n    SELECT 15, 'FCL TRUCKING' UNION ALL\r\n    SELECT 10, 'FTL TRUCKING' UNION ALL\r\n    SELECT 12, 'LTL TRUCKING' UNION ALL\r\n    SELECT 14, 'Other Logistics'\r\n),\r\nProgressTypes AS (\r\n    SELECT 1 AS ProgressId UNION ALL\r\n    SELECT 2 UNION ALL\r\n    SELECT 3 UNION ALL\r\n    SELECT 4 UNION ALL\r\n    SELECT 5\r\n)\r\nSELECT \r\n    s.name,\r\n    p.ProgressId,\r\n    COALESCE(d.value, 0) AS value\r\nFROM ServiceMapping s\r\nCROSS JOIN ProgressTypes p\r\nLEFT JOIN InquiryData d ON s.ServiceId = d.ServiceId AND p.ProgressId = d.ProgressId\r\nORDER BY s.name, p.ProgressId;",
                     "RefName": "Partner",
-                    "Template": "const progressNames = [\"To Do\", \"In Progress\", \"Complete\", \"Pending\", \"Cancel\"];\r\nconst progressColors = {\r\n    \"To Do\": \"#95a5a6\", \r\n    \"In Progress\": \"#3498db\",\r\n    \"Complete\": \"#28a745\",\r\n    \"Pending\": \"#f39c12\",\r\n    \"Cancel\": \"#e74c3c\" \r\n};\r\nconst serviceNames = [...new Set(this.Data[0].map(item => item.name))];\r\nconst formattedData = serviceNames.map(() => Array(progressNames.length).fill(0));\r\nthis.Data[0].forEach(item => {\r\n    const serviceIndex = serviceNames.indexOf(item.name);\r\n    const progressIndex = item.ProgressId - 1;\r\n    if (serviceIndex !== -1 && progressIndex >= 0 && progressIndex < progressNames.length) {\r\n        formattedData[serviceIndex][progressIndex] = item.value;\r\n    }\r\n});\r\nconst serviceTotals = formattedData.map(row => row.reduce((sum, val) => sum + val, 0));\r\nconst sortedIndexes = serviceTotals\r\n    .map((total, index) => ({ total, index }))\r\n    .sort((a, b) => a.total - b.total)\r\n    .map(item => item.index);\r\nconst sortedServiceNames = sortedIndexes.map(index => serviceNames[index]);\r\nconst sortedFormattedData = sortedIndexes.map(index => formattedData[index]);\r\nreturn {\r\n    title: {\r\n        left: 'left',\r\n        text: 'Inquiry'\r\n    },\r\n    tooltip: {\r\n        trigger: 'axis',\r\n        axisPointer: { type: 'shadow' }\r\n    },\r\n    legend: { data: progressNames },\r\n    grid: {\r\n        left: '3%', right: '4%', bottom: '3%', containLabel: true\r\n    },\r\n    xAxis: { type: 'value' },\r\n    yAxis: {\r\n        type: 'category',\r\n        data: sortedServiceNames // Đã sắp xếp theo tổng giá trị nhỏ -> lớn\r\n    },\r\n    series: progressNames.map((progress, index) => ({\r\n        name: progress,\r\n        type: 'bar',\r\n        stack: 'total',\r\n        label: { show: true },\r\n        emphasis: { focus: 'series' },\r\n        itemStyle: { color: progressColors[progress] },\r\n        data: sortedFormattedData.map(row => row[index]) // Dữ liệu cũng được sắp xếp lại\r\n    }))\r\n};\r\n",
-                    "ReportTypeId": 1
+                    "Template": "const progressNames = [\"To Do\", \"In Progress\", \"Complete\", \"Pending\", \"Cancel\"];\r\nconst progressColors = {\r\n    \"To Do\": \"#95a5a6\", \r\n    \"In Progress\": \"#3498db\",\r\n    \"Complete\": \"#28a745\",\r\n    \"Pending\": \"#f39c12\",\r\n    \"Cancel\": \"#e74c3c\" \r\n};\r\nconst serviceNames = [...new Set(this.Data[0].map(item => item.name))];\r\nconst formattedData = serviceNames.map(() => Array(progressNames.length).fill(0));\r\nthis.Data[0].forEach(item => {\r\n    const serviceIndex = serviceNames.indexOf(item.name);\r\n    const progressIndex = item.ProgressId - 1;\r\n    if (serviceIndex !== -1 && progressIndex >= 0 && progressIndex < progressNames.length) {\r\n        formattedData[serviceIndex][progressIndex] = item.value;\r\n    }\r\n});\r\nconst serviceTotals = formattedData.map(row => row.reduce((sum, val) => sum + val, 0));\r\nconst sortedIndexes = serviceTotals\r\n    .map((total, index) => ({ total, index }))\r\n    .sort((a, b) => a.total - b.total)\r\n    .map(item => item.index);\r\nconst sortedServiceNames = sortedIndexes.map(index => serviceNames[index]);\r\nconst sortedFormattedData = sortedIndexes.map(index => formattedData[index]);\r\nreturn {\r\n    title: {\r\n        left: 'left',\r\n        text: 'Inquiry'\r\n    },\r\n    tooltip: {\r\n        trigger: 'axis',\r\n        axisPointer: { type: 'shadow' }\r\n    },\r\n    legend: { data: progressNames },\r\n    grid: {\r\n        left: '3%', right: '4%', bottom: '3%', containLabel: true\r\n    },\r\n    xAxis: { type: 'value' },\r\n    yAxis: {\r\n        type: 'category',\r\n        data: sortedServiceNames // Đã sắp xếp theo tổng giá trị nhỏ -> lớn\r\n    },\r\n    series: progressNames.map((progress, index) => ({\r\n        name: progress,\r\n        type: 'bar',\r\n        stack: 'total',\r\n        label: { show: true },\r\n        emphasis: { focus: 'series' },\r\n        itemStyle: { color: progressColors[progress] },\r\n        data: sortedFormattedData.map(row => row[index]) // Dữ liệu cũng được sắp xếp lại\r\n    }))\r\n};\r\n"
                 }
             ]
         },
@@ -59,7 +56,6 @@
             "ParentId": "0195317c-3883-7701-bb4c-80592a014293",
             "SmOuterColumn": 20,
             "XxlOuterColumn": 3,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0195317c-3b9b-729d-b300-249c5960311a",
@@ -73,8 +69,7 @@
                     "Active": true,
                     "Query": "SELECT 'Pending' AS name, COUNT(*) AS value \r\nFROM ShipmentTask  ds2\r\nWHERE ds2.IsFinish = 0 AND ds2.InsertedBy = '{TokenUserId}'  and ds2.JobDate >= '{FromDate}' and ds2.JobDate < '{ToDate}'\r\nUNION ALL\r\nSELECT 'Completed' AS name, COUNT(*) AS value \r\nFROM ShipmentTask ds2\r\nWHERE ds2.IsFinish = 1 AND ds2.InsertedBy = '{TokenUserId}'  and ds2.JobDate >= '{FromDate}' and ds2.JobDate < '{ToDate}'\r\nUNION ALL\r\nSELECT 'Overdue' AS name, COUNT(*) AS value \r\nFROM ShipmentTask ds2 \r\nWHERE ((ds2.FinishDate > ds2.EstimateFinishDate and ds2.EstimateFinishDate is not null) or (ds2.EstimateFinishDate < GetDate() and ds2.FinishDate is null and ds2.EstimateFinishDate is not null)) AND ds2.InsertedBy = '{TokenUserId}'  and ds2.JobDate >= '{FromDate}' and ds2.JobDate < '{ToDate}'",
                     "RefName": "Partner",
-                    "Template": "return {\r\n    title: {\r\n        left: 'left',\r\n        text: 'Tasks'\r\n    },\r\n    tooltip: {\r\n        trigger: 'item'\r\n    },\r\n    legend: {\r\n        left: 'center'\r\n    },\r\n    series: [\r\n        {\r\n            name: 'Tasks',\r\n            type: 'pie',\r\n            radius: ['40%', '70%'],\r\n            avoidLabelOverlap: false,\r\n            itemStyle: {\r\n                borderRadius: 10,\r\n                borderColor: '#fff',\r\n                borderWidth: 2\r\n            },\r\n            label: {\r\n                show: false,\r\n                position: 'center'\r\n            },\r\n            emphasis: {\r\n                label: {\r\n                    show: true,\r\n                    fontSize: 20\r\n                }\r\n            },\r\n            labelLine: {\r\n                show: false\r\n            },\r\n            data: this.Data[0],\r\n            color: ['#f39c12', '#28a745', '#e74c3c']\r\n        }\r\n    ]\r\n};",
-                    "ReportTypeId": 1
+                    "Template": "return {\r\n    title: {\r\n        left: 'left',\r\n        text: 'Tasks'\r\n    },\r\n    tooltip: {\r\n        trigger: 'item'\r\n    },\r\n    legend: {\r\n        left: 'center'\r\n    },\r\n    series: [\r\n        {\r\n            name: 'Tasks',\r\n            type: 'pie',\r\n            radius: ['40%', '70%'],\r\n            avoidLabelOverlap: false,\r\n            itemStyle: {\r\n                borderRadius: 10,\r\n                borderColor: '#fff',\r\n                borderWidth: 2\r\n            },\r\n            label: {\r\n                show: false,\r\n                position: 'center'\r\n            },\r\n            emphasis: {\r\n                label: {\r\n                    show: true,\r\n                    fontSize: 20\r\n                }\r\n            },\r\n            labelLine: {\r\n                show: false\r\n            },\r\n            data: this.Data[0],\r\n            color: ['#f39c12', '#28a745', '#e74c3c']\r\n        }\r\n    ]\r\n};"
                 }
             ]
         },
@@ -90,7 +85,6 @@
             "ParentId": "0195317c-3883-7701-bb4c-80592a014293",
             "SmOuterColumn": 20,
             "XxlOuterColumn": 4,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0195317c-3bf2-7798-b53a-25c463ed20d6",
@@ -104,8 +98,7 @@
                     "Active": true,
                     "Query": "WITH TypeMapping AS (\r\n    SELECT 1 AS TypeId, 'Air Export' AS Name UNION ALL\r\n    SELECT 2, 'Air Import' UNION ALL\r\n    SELECT 3, 'Sea Export FCL' UNION ALL\r\n    SELECT 4, 'Sea Import FCL' UNION ALL\r\n    SELECT 5, 'Sea Export LCL' UNION ALL\r\n    SELECT 6, 'Sea Import LCL' UNION ALL\r\n    SELECT 16, 'Sea Import Consol' UNION ALL\r\n    SELECT 17, 'Sea Export Consol' UNION ALL\r\n    SELECT 13, 'Trucking' UNION ALL\r\n    SELECT 9, 'Logistics' UNION ALL\r\n    SELECT 14, 'Other Logistics'\r\n)\r\n\r\nSELECT \r\n    COUNT(ds2.Id) AS value, \r\n    tm.Name AS name\r\nFROM TypeMapping tm\r\nJOIN Shipment ds2 ON ds2.TypeId = tm.TypeId\r\n    AND ds2.ParentId IS NULL\r\n    AND ds2.InsertedBy = '{TokenUserId}'  \r\n    AND ds2.ShipmentDate >= '{FromDate}' \r\n    AND ds2.ShipmentDate < '{ToDate}'\r\nGROUP BY tm.TypeId, tm.Name\r\nHAVING COUNT(ds2.Id) > 0;\r\n\r\nWITH TypeMapping AS (\r\n    SELECT 1 AS TypeId, 'Air Export' AS Name UNION ALL\r\n    SELECT 2, 'Air Import' UNION ALL\r\n    SELECT 3, 'Sea Export FCL' UNION ALL\r\n    SELECT 4, 'Sea Import FCL' UNION ALL\r\n    SELECT 5, 'Sea Export LCL' UNION ALL\r\n    SELECT 6, 'Sea Import LCL' UNION ALL\r\n    SELECT 16, 'Sea Import Consol' UNION ALL\r\n    SELECT 17, 'Sea Export Consol' UNION ALL\r\n    SELECT 13, 'Trucking' UNION ALL\r\n    SELECT 9, 'Logistics' UNION ALL\r\n    SELECT 14, 'Other Logistics'\r\n)\r\n\r\nSELECT \r\n    COUNT(ds2.Id) AS value, \r\n    tm.Name AS name\r\nFROM TypeMapping tm\r\nJOIN Shipment ds2 ON ds2.TypeId = tm.TypeId\r\n    AND ds2.ParentId IS NOT NULL\r\n    AND ds2.InsertedBy = '{TokenUserId}'  \r\n    AND ds2.ShipmentDate >= '{FromDate}' \r\n    AND ds2.ShipmentDate < '{ToDate}'\r\nGROUP BY tm.TypeId, tm.Name\r\nHAVING COUNT(ds2.Id) > 0;",
                     "RefName": "Partner",
-                    "Template": "return {\r\n    title: {\r\n        left: 'left',\r\n        text: 'Shipment Count'\r\n    },\r\n    tooltip: {\r\n        trigger: 'item',\r\n        formatter: '{a} <br/>{b}: {c} ({d}%)'\r\n    },\r\n    series: [\r\n        {\r\n            name: 'Hbl',\r\n            type: 'pie',\r\n            selectedMode: 'single',\r\n            radius: [0, '30%'],\r\n            label: {\r\n                position: 'inner',\r\n                fontSize: 9\r\n            },\r\n            labelLine: {\r\n                show: false\r\n            },\r\n            data: this.Data[1]\r\n        },\r\n        {\r\n            name: 'Job',\r\n            type: 'pie',\r\n            radius: ['45%', '60%'],\r\n            labelLine: {\r\n                length: 30\r\n            },\r\n            data: this.Data[0]\r\n        }\r\n    ]\r\n};",
-                    "ReportTypeId": 1
+                    "Template": "return {\r\n    title: {\r\n        left: 'left',\r\n        text: 'Shipment Count'\r\n    },\r\n    tooltip: {\r\n        trigger: 'item',\r\n        formatter: '{a} <br/>{b}: {c} ({d}%)'\r\n    },\r\n    series: [\r\n        {\r\n            name: 'Hbl',\r\n            type: 'pie',\r\n            selectedMode: 'single',\r\n            radius: [0, '30%'],\r\n            label: {\r\n                position: 'inner',\r\n                fontSize: 9\r\n            },\r\n            labelLine: {\r\n                show: false\r\n            },\r\n            data: this.Data[1]\r\n        },\r\n        {\r\n            name: 'Job',\r\n            type: 'pie',\r\n            radius: ['45%', '60%'],\r\n            labelLine: {\r\n                length: 30\r\n            },\r\n            data: this.Data[0]\r\n        }\r\n    ]\r\n};"
                 }
             ]
         },
@@ -120,7 +113,6 @@
             "ParentId": "0195317c-3883-7701-bb4c-80592a014293",
             "SmOuterColumn": 12,
             "XxlOuterColumn": 6,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0195317c-3ca0-712e-be7a-8195f5fc52ca",
@@ -134,8 +126,7 @@
                     "Active": true,
                     "Query": "SELECT \r\n    all_types.name, \r\n    COALESCE(subquery.value, 0) AS value\r\nFROM (\r\n    SELECT \r\n        COUNT(ds2.Id) AS value, \r\n        CASE \r\n            WHEN ds2.ServiceId = 1 THEN 'Air Export'\r\n            WHEN ds2.ServiceId = 2 THEN 'Air Import'\r\n            WHEN ds2.ServiceId = 3 THEN 'Sea Export FCL'\r\n            WHEN ds2.ServiceId = 4 THEN 'Sea Import FCL'\r\n            WHEN ds2.ServiceId = 5 THEN 'Sea Export LCL'\r\n            WHEN ds2.ServiceId = 6 THEN 'Sea Import LCL'\r\n            WHEN ds2.ServiceId = 16 THEN 'Sea Import Consol'\r\n            WHEN ds2.ServiceId = 17 THEN 'Sea Export Consol'\r\n            WHEN ds2.ServiceId = 13 THEN 'Trucking'\r\n            WHEN ds2.ServiceId = 9 THEN 'Logistics'\r\n        END AS name\r\n    FROM Booking ds2\r\n    WHERE ds2.TypeId IN (6,7,8,9) \r\n        AND ds2.ReceiverIds LIKE '%{TokenUserId}%' \r\n        AND ds2.ShipmentId IS NOT NULL \r\n        AND ds2.InsertedDate >= '{FromDate}' \r\n        AND ds2.InsertedDate < '{ToDate}'\r\n    GROUP BY ds2.ServiceId\r\n) AS subquery\r\nRIGHT JOIN (\r\n    SELECT 'Air Export' AS name UNION ALL\r\n    SELECT 'Air Import' UNION ALL\r\n    SELECT 'Sea Export FCL' UNION ALL\r\n    SELECT 'Sea Import FCL' UNION ALL\r\n    SELECT 'Sea Export LCL' UNION ALL\r\n    SELECT 'Sea Import LCL' UNION ALL\r\n    SELECT 'Sea Import Consol' UNION ALL\r\n    SELECT 'Sea Export Consol' UNION ALL\r\n    SELECT 'Trucking' UNION ALL\r\n    SELECT 'Logistics'\r\n) AS all_types ON subquery.name = all_types.name\r\nORDER BY name asc;\r\nSELECT \r\n    all_types2.name, \r\n    COALESCE(subquery2.value, 0) AS value\r\nFROM (\r\n    SELECT \r\n        COUNT(ds2.Id) AS value, \r\n        CASE \r\n            WHEN ds2.ServiceId = 1 THEN 'Air Export'\r\n            WHEN ds2.ServiceId = 2 THEN 'Air Import'\r\n            WHEN ds2.ServiceId = 3 THEN 'Sea Export FCL'\r\n            WHEN ds2.ServiceId = 4 THEN 'Sea Import FCL'\r\n            WHEN ds2.ServiceId = 5 THEN 'Sea Export LCL'\r\n            WHEN ds2.ServiceId = 6 THEN 'Sea Import LCL'\r\n            WHEN ds2.ServiceId = 16 THEN 'Sea Import Consol'\r\n            WHEN ds2.ServiceId = 17 THEN 'Sea Export Consol'\r\n            WHEN ds2.ServiceId = 13 THEN 'Trucking'\r\n            WHEN ds2.ServiceId = 9 THEN 'Logistics'\r\n        END AS name\r\n    FROM Booking ds2\r\n    WHERE ds2.TypeId IN (6,7,8,9) \r\n        AND ds2.ReceiverIds LIKE '%{TokenUserId}%' \r\n        AND ds2.ShipmentId IS NULL \r\n        AND ds2.InsertedDate >= '{FromDate}' \r\n        AND ds2.InsertedDate < '{ToDate}'\r\n    GROUP BY ds2.ServiceId\r\n) AS subquery2\r\nRIGHT JOIN (\r\n    SELECT 'Air Export' AS name UNION ALL\r\n    SELECT 'Air Import' UNION ALL\r\n    SELECT 'Sea Export FCL' UNION ALL\r\n    SELECT 'Sea Import FCL' UNION ALL\r\n    SELECT 'Sea Export LCL' UNION ALL\r\n    SELECT 'Sea Import LCL' UNION ALL\r\n    SELECT 'Sea Import Consol' UNION ALL\r\n    SELECT 'Sea Export Consol' UNION ALL\r\n    SELECT 'Trucking' UNION ALL\r\n    SELECT 'Logistics'\r\n) AS all_types2 ON subquery2.name = all_types2.name\r\nORDER BY name asc;",
                     "RefName": "Partner",
-                    "Template": "return {\r\n  title: {\r\n    left: 'left',\r\n    text: 'Booking Local'\r\n  },\r\n  tooltip: {\r\n    trigger: 'axis',\r\n    axisPointer: {\r\n      type: 'shadow'\r\n    }\r\n  },\r\n  legend: {},\r\n  grid: {\r\n    left: '3%',\r\n    right: '4%',\r\n    bottom: '3%',\r\n    containLabel: true\r\n  },\r\n  xAxis: {\r\n    type: 'value' // Chuyển xAxis thành trục giá trị\r\n  },\r\n  yAxis: {\r\n    type: 'category', // Chuyển yAxis thành trục danh mục\r\n    data: this.Data[0].map(x => x.name) // Đặt nhãn ở trục dọc\r\n  },\r\n  series: [\r\n    {\r\n      name: 'Unprocessed',\r\n      type: 'bar',\r\n      barWidth: 20,\r\n      stack: 'total',\r\n      label: {\r\n        show: true\r\n      },\r\n      emphasis: {\r\n        focus: 'series'\r\n      },\r\n      itemStyle: { color: \"#95a5a6\" },\r\n      data: this.Data[1].map(x => x.value) // Dữ liệu giữ nguyên\r\n    },\r\n    {\r\n      name: 'Processed',\r\n      type: 'bar',\r\n      barWidth: 20,\r\n      stack: 'total',\r\n      label: {\r\n        show: true\r\n      },\r\n      emphasis: {\r\n        focus: 'series'\r\n      },\r\n      itemStyle: { color: \"#28a745\" },\r\n      data: this.Data[0].map(x => x.value) // Dữ liệu giữ nguyên\r\n    }\r\n  ]\r\n};",
-                    "ReportTypeId": 1
+                    "Template": "return {\r\n  title: {\r\n    left: 'left',\r\n    text: 'Booking Local'\r\n  },\r\n  tooltip: {\r\n    trigger: 'axis',\r\n    axisPointer: {\r\n      type: 'shadow'\r\n    }\r\n  },\r\n  legend: {},\r\n  grid: {\r\n    left: '3%',\r\n    right: '4%',\r\n    bottom: '3%',\r\n    containLabel: true\r\n  },\r\n  xAxis: {\r\n    type: 'value' // Chuyển xAxis thành trục giá trị\r\n  },\r\n  yAxis: {\r\n    type: 'category', // Chuyển yAxis thành trục danh mục\r\n    data: this.Data[0].map(x => x.name) // Đặt nhãn ở trục dọc\r\n  },\r\n  series: [\r\n    {\r\n      name: 'Unprocessed',\r\n      type: 'bar',\r\n      barWidth: 20,\r\n      stack: 'total',\r\n      label: {\r\n        show: true\r\n      },\r\n      emphasis: {\r\n        focus: 'series'\r\n      },\r\n      itemStyle: { color: \"#95a5a6\" },\r\n      data: this.Data[1].map(x => x.value) // Dữ liệu giữ nguyên\r\n    },\r\n    {\r\n      name: 'Processed',\r\n      type: 'bar',\r\n      barWidth: 20,\r\n      stack: 'total',\r\n      label: {\r\n        show: true\r\n      },\r\n      emphasis: {\r\n        focus: 'series'\r\n      },\r\n      itemStyle: { color: \"#28a745\" },\r\n      data: this.Data[0].map(x => x.value) // Dữ liệu giữ nguyên\r\n    }\r\n  ]\r\n};"
                 }
             ]
         },
@@ -150,7 +141,6 @@
             "ParentId": "0195317c-3883-7701-bb4c-80592a014293",
             "SmOuterColumn": 12,
             "XxlOuterColumn": 6,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "019537d4-6b4e-70f9-bdf9-7de20e7cb8da",
@@ -164,8 +154,7 @@
                     "Active": true,
                     "Query": "SELECT \r\n    all_types.name, \r\n    COALESCE(subquery.value, 0) AS value\r\nFROM (\r\n    SELECT \r\n        COUNT(ds2.Id) AS value, \r\n        CASE \r\n            WHEN ds2.TypeId = 1 THEN 'Air Export'\r\n            WHEN ds2.TypeId = 2 THEN 'Air Import'\r\n            WHEN ds2.TypeId = 3 THEN 'Sea Export FCL'\r\n            WHEN ds2.TypeId = 4 THEN 'Sea Import FCL'\r\n            WHEN ds2.TypeId = 5 THEN 'Sea Export LCL'\r\n            WHEN ds2.TypeId = 6 THEN 'Sea Import LCL'\r\n            WHEN ds2.TypeId = 16 THEN 'Sea Import Consol'\r\n            WHEN ds2.TypeId = 17 THEN 'Sea Export Consol'\r\n            WHEN ds2.TypeId = 13 THEN 'Trucking'\r\n            WHEN ds2.TypeId = 9 THEN 'Logistics'\r\n            WHEN ds2.TypeId = 14 THEN 'Other Logistics'\r\n        END AS name\r\n    FROM Shipment ds2\r\n    JOIN Shipment ds3 ON ds3.Id = ds2.ParentId\r\n    AND ds2.ParentId IS NOT NULL\r\n    AND ds2.InsertedBy = '{TokenUserId}'  \r\n    AND ds2.ShipmentDate >= '{FromDate}' \r\n    AND ds2.ShipmentDate < '{ToDate}'\r\n    WHERE ds2.ParentId is not null and ds3.IsComplete = 0\r\n    GROUP BY ds2.TypeId\r\n) AS subquery\r\nRIGHT JOIN (\r\n    SELECT 'Air Export' AS name UNION ALL\r\n    SELECT 'Air Import' UNION ALL\r\n    SELECT 'Sea Export FCL' UNION ALL\r\n    SELECT 'Sea Import FCL' UNION ALL\r\n    SELECT 'Sea Export LCL' UNION ALL\r\n    SELECT 'Sea Import LCL' UNION ALL\r\n    SELECT 'Sea Import Consol' UNION ALL\r\n    SELECT 'Sea Export Consol' UNION ALL\r\n    SELECT 'Trucking' UNION ALL\r\n    SELECT 'Logistics' UNION ALL\r\n    SELECT 'Other Logistics'\r\n) AS all_types ON subquery.name = all_types.name\r\nORDER BY name asc;\r\nSELECT \r\n    all_types2.name, \r\n    COALESCE(subquery2.value, 0) AS value\r\nFROM (\r\n    SELECT \r\n        COUNT(ds2.Id) AS value, \r\n        CASE \r\n            WHEN ds2.TypeId = 1 THEN 'Air Export'\r\n            WHEN ds2.TypeId = 2 THEN 'Air Import'\r\n            WHEN ds2.TypeId = 3 THEN 'Sea Export FCL'\r\n            WHEN ds2.TypeId = 4 THEN 'Sea Import FCL'\r\n            WHEN ds2.TypeId = 5 THEN 'Sea Export LCL'\r\n            WHEN ds2.TypeId = 6 THEN 'Sea Import LCL'\r\n            WHEN ds2.TypeId = 16 THEN 'Sea Import Consol'\r\n            WHEN ds2.TypeId = 17 THEN 'Sea Export Consol'\r\n            WHEN ds2.TypeId = 13 THEN 'Trucking'\r\n            WHEN ds2.TypeId = 9 THEN 'Logistics'\r\n            WHEN ds2.TypeId = 14 THEN 'Other Logistics'\r\n        END AS name\r\n    FROM Shipment ds2\r\n    JOIN Shipment ds3 ON ds3.Id = ds2.ParentId\r\n    AND ds2.ParentId IS NOT NULL\r\n    AND ds2.InsertedBy = '{TokenUserId}'  \r\n    AND ds2.ShipmentDate >= '{FromDate}' \r\n    AND ds2.ShipmentDate < '{ToDate}'\r\n    WHERE ds2.ParentId is not null and ds3.IsComplete = 0\r\n    GROUP BY ds2.TypeId\r\n) AS subquery2\r\nRIGHT JOIN (\r\n    SELECT 'Air Export' AS name UNION ALL\r\n    SELECT 'Air Import' UNION ALL\r\n    SELECT 'Sea Export FCL' UNION ALL\r\n    SELECT 'Sea Import FCL' UNION ALL\r\n    SELECT 'Sea Export LCL' UNION ALL\r\n    SELECT 'Sea Import LCL' UNION ALL\r\n    SELECT 'Sea Import Consol' UNION ALL\r\n    SELECT 'Sea Export Consol' UNION ALL\r\n    SELECT 'Trucking' UNION ALL\r\n    SELECT 'Logistics' UNION ALL\r\n    SELECT 'Other Logistics'\r\n) AS all_types2 ON subquery2.name = all_types2.name\r\nORDER BY name asc;",
                     "RefName": "Partner",
-                    "Template": "return {\r\n  title: {\r\n    left: 'left',\r\n    text: 'Shipment Done'\r\n  },\r\n  tooltip: {\r\n    trigger: 'axis',\r\n    axisPointer: {\r\n      type: 'shadow'\r\n    }\r\n  },\r\n  legend: {},\r\n  grid: {\r\n    left: '3%',\r\n    right: '4%',\r\n    bottom: '3%',\r\n    containLabel: true\r\n  },\r\n  xAxis: {\r\n    type: 'value' // Đổi xAxis thành value\r\n  },\r\n  yAxis: {\r\n    type: 'category', // Đổi yAxis thành category\r\n    data: this.Data[0].map(x => x.name) // Lấy danh sách tên trên trục Y\r\n  },\r\n  series: [\r\n    {\r\n      name: 'New',\r\n      type: 'bar',\r\n      barWidth: 20,\r\n      stack: 'total', \r\n      label: {\r\n        show: true\r\n      },\r\n      emphasis: {\r\n        focus: 'series'\r\n      },\r\n      itemStyle: { color: \"#95a5a6\" },\r\n      data: this.Data[1].map(x => x.value)\r\n    },\r\n    {\r\n      name: 'Done',\r\n      type: 'bar',\r\n      barWidth: 20,\r\n      stack: 'total',\r\n      label: {\r\n        show: true\r\n      },\r\n      emphasis: {\r\n        focus: 'series'\r\n      },\r\n      itemStyle: { color: \"#28a745\" },\r\n      data: this.Data[0].map(x => x.value)\r\n    }\r\n  ]\r\n};",
-                    "ReportTypeId": 1
+                    "Template": "return {\r\n  title: {\r\n    left: 'left',\r\n    text: 'Shipment Done'\r\n  },\r\n  tooltip: {\r\n    trigger: 'axis',\r\n    axisPointer: {\r\n      type: 'shadow'\r\n    }\r\n  },\r\n  legend: {},\r\n  grid: {\r\n    left: '3%',\r\n    right: '4%',\r\n    bottom: '3%',\r\n    containLabel: true\r\n  },\r\n  xAxis: {\r\n    type: 'value' // Đổi xAxis thành value\r\n  },\r\n  yAxis: {\r\n    type: 'category', // Đổi yAxis thành category\r\n    data: this.Data[0].map(x => x.name) // Lấy danh sách tên trên trục Y\r\n  },\r\n  series: [\r\n    {\r\n      name: 'New',\r\n      type: 'bar',\r\n      barWidth: 20,\r\n      stack: 'total', \r\n      label: {\r\n        show: true\r\n      },\r\n      emphasis: {\r\n        focus: 'series'\r\n      },\r\n      itemStyle: { color: \"#95a5a6\" },\r\n      data: this.Data[1].map(x => x.value)\r\n    },\r\n    {\r\n      name: 'Done',\r\n      type: 'bar',\r\n      barWidth: 20,\r\n      stack: 'total',\r\n      label: {\r\n        show: true\r\n      },\r\n      emphasis: {\r\n        focus: 'series'\r\n      },\r\n      itemStyle: { color: \"#28a745\" },\r\n      data: this.Data[0].map(x => x.value)\r\n    }\r\n  ]\r\n};"
                 }
             ]
         }
@@ -185,8 +174,7 @@
             "FocusSearch": true,
             "MinWidth": "135px",
             "MaxWidth": "135px",
-            "EntityId": "Shipment",
-            "ReportTypeId": 1
+            "EntityId": "Shipment"
         },
         {
             "Id": "0195317c-3d13-76eb-894b-d1455d41161a",
@@ -199,8 +187,7 @@
             "FocusSearch": true,
             "MinWidth": "104px",
             "MaxWidth": "104px",
-            "EntityId": "Shipment",
-            "ReportTypeId": 1
+            "EntityId": "Shipment"
         },
         {
             "Id": "0195317c-3d47-7440-a87e-d6deddf073d8",
@@ -218,8 +205,7 @@
             "FocusSearch": true,
             "MinWidth": "85px",
             "MaxWidth": "85px",
-            "EntityId": "Shipment",
-            "ReportTypeId": 1
+            "EntityId": "Shipment"
         },
         {
             "Id": "0195317c-3d6f-70fb-8691-28af77ec5337",
@@ -237,8 +223,7 @@
             "FocusSearch": true,
             "MinWidth": "92px",
             "MaxWidth": "92px",
-            "EntityId": "Shipment",
-            "ReportTypeId": 1
+            "EntityId": "Shipment"
         },
         {
             "Id": "0195317c-3d94-767b-8ba7-e2ce81f9d8a8",
@@ -251,8 +236,7 @@
             "FocusSearch": true,
             "MinWidth": "89px",
             "MaxWidth": "89px",
-            "EntityId": "Shipment",
-            "ReportTypeId": 1
+            "EntityId": "Shipment"
         },
         {
             "Id": "0195317c-3dcb-747e-ad98-2a478c7392cb",
@@ -265,8 +249,7 @@
             "FocusSearch": true,
             "MinWidth": "52px",
             "MaxWidth": "52px",
-            "EntityId": "Shipment",
-            "ReportTypeId": 1
+            "EntityId": "Shipment"
         },
         {
             "Id": "0195317c-3e02-754a-9ea3-6519ad3e774c",
@@ -280,8 +263,7 @@
             "MinWidth": "104px",
             "MaxWidth": "104px",
             "EntityId": "Shipment",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
-            "ReportTypeId": 1
+            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
         },
         {
             "Id": "0195317c-3e38-770d-b435-57f7ae3d2ebe",
@@ -295,8 +277,7 @@
             "MinWidth": "104px",
             "MaxWidth": "104px",
             "EntityId": "Shipment",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
-            "ReportTypeId": 1
+            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
         },
         {
             "Id": "0195317c-3e70-7643-b89d-391cb3e52cb1",
@@ -310,8 +291,7 @@
             "MinWidth": "104px",
             "MaxWidth": "104px",
             "EntityId": "Shipment",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
-            "ReportTypeId": 1
+            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
         }
     ],
     "FeaturePolicies": [

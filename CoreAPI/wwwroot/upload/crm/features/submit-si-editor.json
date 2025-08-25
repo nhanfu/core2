@@ -18,7 +18,6 @@
             "ClassName": "ribbon-group",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01951695-9680-759f-b077-4a1e78eed678",
@@ -31,8 +30,7 @@
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{\r\n    \"click\": \"SavePatch\"\r\n}",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0195196d-bd81-7621-8511-8cf871f655c7",
@@ -45,8 +43,7 @@
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"SendEntity\" }",
                     "Active": true,
-                    "ShowExp": "(this.Entity.StatusId == 1 || this.Entity.StatusId == 4) && this.Token.UserId == this.Entity.CustomerId",
-                    "ReportTypeId": 1
+                    "ShowExp": "(this.Entity.StatusId == 1 || this.Entity.StatusId == 4) && this.Token.UserId == this.Entity.CustomerId"
                 },
                 {
                     "Id": "0195196d-bd81-7621-8511-919e5c91133f",
@@ -59,8 +56,7 @@
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"DeclineEntity\" }",
                     "Active": true,
-                    "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserReceiverId == this.Token.UserId",
-                    "ReportTypeId": 1
+                    "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserReceiverId == this.Token.UserId"
                 },
                 {
                     "Id": "0195196d-bd82-776a-b2e1-03d06e689d69",
@@ -73,8 +69,7 @@
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"ApprovedEntity\" }",
                     "Active": true,
-                    "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserReceiverId == this.Token.UserId",
-                    "ReportTypeId": 1
+                    "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserReceiverId == this.Token.UserId"
                 }
             ]
         },
@@ -85,8 +80,7 @@
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "0195147c-2d64-7687-9bb8-c7eb0c43d03e",
@@ -99,7 +93,6 @@
             "DisabledExp": "this.EditForm.Entity.ProgressId == 3 || this.EditForm.Entity.ProgressId == 2",
             "ParentId": "0195147c-2d64-7687-9bb8-c10dbd5c4b94",
             "XxlOuterColumn": 12,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0195147c-b3e0-770f-bbae-9d662c2b5cc6",
@@ -112,8 +105,7 @@
                     "Disabled": true,
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "0195147c-b3e0-770f-bbae-a11805c21105",
@@ -132,8 +124,7 @@
                     "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                     "RefName": "Terminal",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "0195147c-b3e1-75fd-8cfb-23638670ec55",
@@ -152,8 +143,7 @@
                     "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                     "RefName": "Terminal",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ShowHotKey": true,
-                    "ReportTypeId": 1
+                    "ShowHotKey": true
                 },
                 {
                     "Id": "01951699-73ec-75b6-be0a-cedd5a15b43a",
@@ -173,8 +163,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%')))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 2 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%' or AdditionTypeIdsText like N'%Agent%')))\"\r\n}",
                     "RefName": "Partner",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
-                    "ShowHotKey": true,
-                    "ReportTypeId": 1
+                    "ShowHotKey": true
                 },
                 {
                     "Id": "0195169a-6a6a-73ac-b8e8-582d3dd5e64d",
@@ -192,8 +181,7 @@
                     "DefaultVal": "1",
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"To Do\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #95a5a6; display: inline-block;'> <i class='fal fa-clipboard-list mr-1'></i> To Do</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"In Progress\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #3498db; display: inline-block;'><i class='fal fa-spinner fa-spin mr-1'></i> In Progress</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Complete\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #28a745; display: inline-block;'><i class='fal fa-check-circle mr-1'></i> Complete</span>\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Pending\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #f39c12; display: inline-block;'><i class='fal fa-hourglass-half mr-1'></i> Pending</span>\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"Cancel\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #e74c3c; display: inline-block;'><i class='fal fa-times-circle mr-1'></i> Cancel</span>\"\r\n    }\r\n]",
-                    "Template": "[{ \"FieldName\" : \"Description\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Description\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "0195169c-9b97-716c-bbf4-7c493d190304",
@@ -205,8 +193,7 @@
                     "Label": "Shipper",
                     "ShowLabel": true,
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0195169c-9b97-716c-bbf4-83ac3edf924b",
@@ -218,8 +205,7 @@
                     "Label": "Consignee",
                     "ShowLabel": true,
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0195169c-9b97-716c-bbf4-85e89e4be833",
@@ -231,8 +217,7 @@
                     "Label": "Notify Party",
                     "ShowLabel": true,
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0195169e-6db8-700d-9340-e3c24cf16bb2",
@@ -245,8 +230,7 @@
                     "Label": "Shipping Marks",
                     "ShowLabel": true,
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0195169e-6db8-700d-9340-e82872fa6b42",
@@ -260,8 +244,7 @@
                     "ShowLabel": true,
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
                     "Active": true,
-                    "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
                 },
                 {
                     "Id": "0195169e-6db8-700d-9340-ece10c16b973",
@@ -275,8 +258,7 @@
                     "ShowLabel": true,
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "0195169e-6db8-700d-9340-f1f756639381",
@@ -290,8 +272,7 @@
                     "ShowLabel": true,
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "019516a0-9459-709c-b537-2dbaec367ebe",
@@ -308,8 +289,7 @@
                     "PopulateField": "\nthis.EditForm.ShipmentDetail.FreightPayableId = this.Matched.Name == \"Prepaid\" ? 0 : 1;\r\nthis.EditForm.UpdateView2(false, false, \"ShipmentDetail\", true, \"FreightPayableId\");\r\nreturn null;",
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 0,\r\n        \"Name\": \"Collect\"\r\n    },\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Prepaid\"\r\n    }\r\n]",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "019516af-d86b-77fe-8251-06f2a9b9e5e8",
@@ -325,8 +305,7 @@
                     "PopulateField": "this.EditForm.ShipmentDetail.NumberOriginalId = this.EditForm.ShipmentDetail.HblTypeId == 2 ? 2 : 1;\r\nthis.EditForm.ShipmentDetail.NumberOriginalIdText = this.EditForm.ShipmentDetail.HblTypeId == 2 ? \"THREE (03)\" : \"ZERO (0)\";\r\nthis.EditForm.UpdateView2(false, false, \"ShipmentDetail\", false, \"NumberOriginalIdText\", \"NumberOriginalId\");\r\nreturn null;",
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"DRAFT\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"ORIGINAL\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"SURRENDERED\"\r\n    }\r\n]",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "019516b3-a454-72f9-9c96-472d35dbfecf",
@@ -344,8 +323,7 @@
                     "PopulateField": "this.EditForm.ShowHideDetail();\r\nreturn null;",
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Air Export\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-plane-departure mr-1'></i>Air Export</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"Air Import\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-plane-arrival mr-1'></i>Air Import</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Sea Export FCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-ship mr-1'></i>Sea Export FCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Sea Import FCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-shipping-fast mr-1'></i>Sea Import FCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"Sea Export LCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fas fa-boxes mr-1'></i>Sea Export LCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 6,\r\n        \"Name\": \"Sea Import LCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fas fa-dolly mr-1'></i>Sea Import LCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 16,\r\n        \"Name\": \"Import Consol\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #17a2b8;'><i class='fas fa-warehouse mr-1'></i>Import Consol</span>\"\r\n    },\r\n    {\r\n        \"Id\": 17,\r\n        \"Name\": \"Export Consol\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #343a40;'><i class='fas fa-plane-departure mr-1'></i>Export Consol</span>\"\r\n    }\r\n]",
-                    "Template": "[{ \"FieldName\" : \"Description\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Description\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01951df6-407b-7298-a729-aaa4a9f42d97",
@@ -362,8 +340,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where ds1.Name in (N'Unit Type','LTL Type','Container Type')\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where ds1.Name in (N'Unit Type','LTL Type','Container Type')\"\r\n}",
                     "RefName": "MasterData",
-                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
-                    "ReportTypeId": 1
+                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]"
                 },
                 {
                     "Id": "01951dfe-f34f-7419-aed3-ee5f07dd25aa",
@@ -376,8 +353,7 @@
                     "Label": "Details of Goods",
                     "ShowLabel": true,
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         },
@@ -391,7 +367,6 @@
             "DisabledExp": "this.EditForm.Entity.ProgressId == 3 || this.EditForm.Entity.ProgressId == 2",
             "ParentId": "0195147c-2d64-7687-9bb8-c10dbd5c4b94",
             "XxlOuterColumn": 12,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "019516b6-27c1-702e-81a4-83130e3d7fab",
@@ -409,8 +384,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from EntityContainer as ds where EntityId = '{EntityId}'\",\r\n    \"total\": \"select count(ds.Id) as total from EntityContainer as ds where EntityId = '{EntityId}'\"\r\n}",
                     "RefName": "EntityContainer",
                     "PreQuery": "{\r\n    \"EntityId\": this.EditForm.Entity.Id\r\n}",
-                    "Editable": true,
-                    "ReportTypeId": 1
+                    "Editable": true
                 },
                 {
                     "Id": "01951908-a55c-757d-bb77-fd0866814f4b",
@@ -423,8 +397,7 @@
                     "Disabled": true,
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 }
             ]
         },
@@ -439,7 +412,6 @@
             "DisabledExp": "this.EditForm.Entity.ProgressId == 3 || this.EditForm.Entity.ProgressId == 2",
             "ParentId": "0195147c-2d64-7687-9bb8-c10dbd5c4b94",
             "XxlOuterColumn": 12,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "019516ba-549e-741f-b92b-7c5743d2969e",
@@ -449,8 +421,7 @@
                     "Column": 12,
                     "Row": 4,
                     "Label": "Remark",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01951e05-70bf-718e-811c-3e263e21e5ce",
@@ -470,8 +441,7 @@
                     "PreQuery": "{\r\n    \"EntityId\": this.EditForm.Entity.Id,\r\n    \"TableName\": \"ShipmentSI\",\r\n    \"TypeId\": 1\r\n}",
                     "Editable": true,
                     "EntityName": "ShipmentDetail",
-                    "TableName": "Shipment",
-                    "ReportTypeId": 1
+                    "TableName": "Shipment"
                 }
             ]
         }
@@ -492,8 +462,7 @@
             "MinWidth": "49px",
             "MaxWidth": "49px",
             "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "019516b6-955c-77be-b55e-a86ce5c98e3a",
@@ -513,8 +482,7 @@
             "Editable": true,
             "MinWidth": "90px",
             "MaxWidth": "90px",
-            "EntityId": "EntityContainer",
-            "ReportTypeId": 1
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "019516b6-955c-77be-b55e-afff08b2c2d5",
@@ -531,8 +499,7 @@
             "MinWidth": "105px",
             "MaxWidth": "105px",
             "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "019516b6-955c-77be-b55e-b1f64d08af2d",
@@ -548,8 +515,7 @@
             "MinWidth": "84px",
             "MaxWidth": "84px",
             "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "019516b6-955d-77b8-bd24-06e4c6cb4220",
@@ -565,8 +531,7 @@
             "MinWidth": "54px",
             "MaxWidth": "54px",
             "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "019516b6-955d-77b8-bd24-09a10b78431c",
@@ -585,8 +550,7 @@
             "Editable": true,
             "MinWidth": "102px",
             "MaxWidth": "102px",
-            "EntityId": "EntityContainer",
-            "ReportTypeId": 1
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "019516b6-955d-77b8-bd24-0e2ab870cf2b",
@@ -602,8 +566,7 @@
             "MinWidth": "68px",
             "MaxWidth": "68px",
             "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "019516b6-955d-77b8-bd24-13f99ee68cc3",
@@ -619,8 +582,7 @@
             "MinWidth": "87px",
             "MaxWidth": "87px",
             "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "019516b6-955d-77b8-bd24-1414245dc10e",
@@ -636,8 +598,7 @@
             "MinWidth": "50px",
             "MaxWidth": "50px",
             "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "019516b6-955d-77b8-bd24-196d6ab2742e",
@@ -653,8 +614,7 @@
             "MinWidth": "98px",
             "MaxWidth": "98px",
             "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "019516b6-955d-77b8-bd24-1e93332ccd77",
@@ -670,8 +630,7 @@
             "MinWidth": "112px",
             "MaxWidth": "112px",
             "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "01951e05-dbba-707f-a7af-67cac3f245ae",
@@ -688,8 +647,7 @@
             "MinWidth": "392px",
             "MaxWidth": "392px",
             "EntityId": "EntityAttachedIn",
-            "EntityName": "ShipmentDetail",
-            "ReportTypeId": 1
+            "EntityName": "ShipmentDetail"
         },
         {
             "Id": "01951e05-dbba-707f-a7af-6d629d1ee356",
@@ -707,8 +665,7 @@
             "MaxWidth": "267px",
             "EntityId": "EntityAttachedIn",
             "IsMultiple": true,
-            "VirtualScroll": true,
-            "ReportTypeId": 1
+            "VirtualScroll": true
         },
         {
             "Id": "01951e05-dbbb-7469-ad9a-9f11413968a9",
@@ -724,8 +681,7 @@
             "Editable": true,
             "MinWidth": "152px",
             "MaxWidth": "152px",
-            "EntityId": "EntityAttachedIn",
-            "ReportTypeId": 1
+            "EntityId": "EntityAttachedIn"
         }
     ],
     "Components": [
@@ -740,8 +696,7 @@
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
             "Events": "{\r\n    \"click\": \"SavePatch\"\r\n}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "019518f9-309e-732e-b309-bbb50b21b18d",
@@ -754,8 +709,7 @@
             "Events": "{\r\n    \"click\": \"DownloadTemplate\"\r\n}",
             "Active": true,
             "Query": "select EntityContainer.*\r\nfrom EntityContainer\r\nleft join Shipment on EntityContainer.EntityId = Shipment.Id\r\nwhere Shipment.ParentId = '{ShipmentId}'",
-            "PreQuery": "{\r\n    \"ShipmentId\": this.EditForm.Entity.Id\r\n}",
-            "ReportTypeId": 1
+            "PreQuery": "{\r\n    \"ShipmentId\": this.EditForm.Entity.Id\r\n}"
         },
         {
             "Id": "019518f9-30a0-73dd-80a9-21f034faa09b",
@@ -768,8 +722,7 @@
             "Events": "{\r\n    \"click\": \"UploadContainer\"\r\n}",
             "Active": true,
             "Query": "select EntityContainer.*\r\nfrom EntityContainer\r\nleft join Shipment on EntityContainer.EntityId = Shipment.Id\r\nwhere Shipment.ParentId = '{ShipmentId}'",
-            "PreQuery": "{\r\n    \"ShipmentId\": this.EditForm.Entity.Id\r\n}",
-            "ReportTypeId": 1
+            "PreQuery": "{\r\n    \"ShipmentId\": this.EditForm.Entity.Id\r\n}"
         },
         {
             "Id": "0195196d-bd81-7621-8511-8cf871f655c7",
@@ -782,8 +735,7 @@
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"SendEntity\" }",
             "Active": true,
-            "ShowExp": "(this.Entity.StatusId == 1 || this.Entity.StatusId == 4) && this.Token.UserId == this.Entity.CustomerId",
-            "ReportTypeId": 1
+            "ShowExp": "(this.Entity.StatusId == 1 || this.Entity.StatusId == 4) && this.Token.UserId == this.Entity.CustomerId"
         },
         {
             "Id": "0195196d-bd81-7621-8511-919e5c91133f",
@@ -796,8 +748,7 @@
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"DeclineEntity\" }",
             "Active": true,
-            "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserReceiverId == this.Token.UserId",
-            "ReportTypeId": 1
+            "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserReceiverId == this.Token.UserId"
         },
         {
             "Id": "0195196d-bd82-776a-b2e1-03d06e689d69",
@@ -810,8 +761,7 @@
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"ApprovedEntity\" }",
             "Active": true,
-            "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserReceiverId == this.Token.UserId",
-            "ReportTypeId": 1
+            "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserReceiverId == this.Token.UserId"
         }
     ],
     "FeaturePolicies": [

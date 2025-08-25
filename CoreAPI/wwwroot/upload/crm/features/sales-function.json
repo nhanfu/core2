@@ -17,7 +17,6 @@
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "009a254c-0000-0000-8000-14f870be4af5",
@@ -37,8 +36,7 @@
                     "IsRealtime": true,
                     "RefName": "SaleFunction",
                     "TopEmpty": true,
-                    "OrderBy": "ds.GroupName asc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.GroupName asc"
                 }
             ]
         }
@@ -56,8 +54,7 @@
             "Editable": true,
             "MinWidth": "671px",
             "MaxWidth": "671px",
-            "EntityId": "SaleFunction",
-            "ReportTypeId": 1
+            "EntityId": "SaleFunction"
         },
         {
             "Id": "009a2544-0000-0000-8000-7e80c67ac1b1",
@@ -71,8 +68,7 @@
             "Editable": true,
             "MinWidth": "166px",
             "MaxWidth": "166px",
-            "EntityId": "SaleFunction",
-            "ReportTypeId": 1
+            "EntityId": "SaleFunction"
         },
         {
             "Id": "009a25f0-0000-0000-8000-0cbc95efeaf1",
@@ -86,8 +82,7 @@
             "Editable": true,
             "MinWidth": "285px",
             "MaxWidth": "285px",
-            "EntityId": "SaleFunction",
-            "ReportTypeId": 1
+            "EntityId": "SaleFunction"
         },
         {
             "Id": "00e53088-0000-0000-8000-29f280ad91bc",
@@ -101,8 +96,7 @@
             "Editable": true,
             "MinWidth": "80px",
             "MaxWidth": "80px",
-            "EntityId": "SaleFunction",
-            "ReportTypeId": 1
+            "EntityId": "SaleFunction"
         },
         {
             "Id": "01934200-1c60-7171-bd5e-47bbc361fd6c",
@@ -115,8 +109,7 @@
             "Editable": true,
             "MinWidth": "166px",
             "MaxWidth": "166px",
-            "EntityId": "SaleFunction",
-            "ReportTypeId": 1
+            "EntityId": "SaleFunction"
         }
     ],
     "FeaturePolicies": [

@@ -20,7 +20,6 @@
             "Active": true,
             "ParentId": "003904f4-0000-0000-8000-5b8073d14aa9",
             "XxlOuterColumn": 6,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "001206dc-0000-0000-8000-870b0b303ac6",
@@ -35,8 +34,7 @@
                     "ShowLabel": true,
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"DDP\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"CIP\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"CPT\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"CFR\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"FAS\"\r\n    },\r\n    {\r\n        \"Id\": 6,\r\n        \"Name\": \"FCA\"\r\n    },\r\n    {\r\n        \"Id\": 7,\r\n        \"Name\": \"EXW\"\r\n    },\r\n    {\r\n        \"Id\": 8,\r\n        \"Name\": \"CIF\"\r\n    },\r\n    {\r\n        \"Id\": 9,\r\n        \"Name\": \"DPU\"\r\n    },\r\n    {\r\n        \"Id\": 10,\r\n        \"Name\": \"DAP\"\r\n    },\r\n    {\r\n        \"Id\": 11,\r\n        \"Name\": \"FOB\"\r\n    }\r\n]",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "00ed01ac-0000-0000-8000-dba0d99088a2",
@@ -56,8 +54,7 @@
                     "RefName": "Partner",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
                     "PreQuery": "{\r\n    \"UserId\": this.Token.UserId,\r\n    \"UserName\": this.Token.UserName\r\n}",
-                    "ShowHotKey": true,
-                    "ReportTypeId": 1
+                    "ShowHotKey": true
                 },
                 {
                     "Id": "00f40118-0000-0000-8000-825f683756e5",
@@ -74,8 +71,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from [Terminal] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"\r\n}",
                     "RefName": "Terminal",
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "00f50148-0000-0000-8000-1c2e10aab27c",
@@ -92,8 +88,7 @@
                     "Active": true,
                     "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                     "RefName": "Terminal",
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "00f60160-0000-0000-8000-18d0b3e1550f",
@@ -109,8 +104,7 @@
                     "Active": true,
                     "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                     "RefName": "Terminal",
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "00f90130-0000-0000-8000-9f4a7990ef7d",
@@ -126,8 +120,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Commodity Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Commodity Type'\"\r\n}",
                     "RefName": "MasterData",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "00fa0178-0000-0000-8000-daf16b66450a",
@@ -138,8 +131,7 @@
                     "Label": "ETD",
                     "ShowLabel": true,
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00fb0190-0000-0000-8000-f51e6aacb143",
@@ -150,8 +142,7 @@
                     "Label": "ETA",
                     "ShowLabel": true,
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00fb175c-0000-0000-8000-97a5781866d4",
@@ -161,8 +152,7 @@
                     "Column": 6,
                     "Label": "Cargo Ready Date",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         },
@@ -174,8 +164,7 @@
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "Active": true,
-            "DisabledExp": "(this.Entity.InsertedBy && this.Entity.InsertedBy != this.Token.UserId) || [3, 2].some(y => y === this.Entity.ProgressId)",
-            "ReportTypeId": 1
+            "DisabledExp": "(this.Entity.InsertedBy && this.Entity.InsertedBy != this.Token.UserId) || [3, 2].some(y => y === this.Entity.ProgressId)"
         },
         {
             "Id": "003b0428-0000-0000-8000-79f2c78a32dc",
@@ -188,7 +177,6 @@
             "DisabledExp": "(this.Entity.InsertedBy && this.Entity.InsertedBy != this.Token.UserId) || [3, 2].some(y => y === this.Entity.ProgressId)",
             "ParentId": "003904f4-0000-0000-8000-5b8073d14aa9",
             "XxlOuterColumn": 8,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "000b01a4-0000-0000-8000-898fd3ea875d",
@@ -200,8 +188,7 @@
                     "ShowLabel": true,
                     "Active": true,
                     "RefName": "Inquiry",
-                    "IsMultiple": true,
-                    "ReportTypeId": 1
+                    "IsMultiple": true
                 },
                 {
                     "Id": "00e40494-0000-0000-8000-3166d9623353",
@@ -214,8 +201,7 @@
                     "ShowLabel": true,
                     "Active": true,
                     "RefName": "Inquiry",
-                    "IsMultiple": true,
-                    "ReportTypeId": 1
+                    "IsMultiple": true
                 }
             ]
         },
@@ -230,7 +216,6 @@
             "DisabledExp": "(this.Entity.InsertedBy && this.Entity.InsertedBy != this.Token.UserId) || [3, 2].some(y => y === this.Entity.ProgressId)",
             "ParentId": "003904f4-0000-0000-8000-5b8073d14aa9",
             "XxlOuterColumn": 4,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00220444-0000-0000-8000-8479fb8e009a",
@@ -246,8 +231,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from EntityContainer as ds where EntityId = '{EntityId}'\",\r\n    \"total\": \"select count(ds.Id) as total from EntityContainer as ds where EntityId = '{EntityId}'\"\r\n}",
                     "RefName": "EntityContainer",
                     "PreQuery": "{\r\n    \"EntityId\": this.EditForm.Entity.Id\r\n}",
-                    "Editable": true,
-                    "ReportTypeId": 1
+                    "Editable": true
                 }
             ]
         },
@@ -261,7 +245,6 @@
             "Active": true,
             "ParentId": "003904f4-0000-0000-8000-5b8073d14aa9",
             "XxlOuterColumn": 12,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00a402ec-0000-0000-8000-acc9f2acd9a2",
@@ -280,8 +263,7 @@
                     "RefName": "InquiryDetail",
                     "PreQuery": "{\r\n    \"InquiryId\": this.EditForm.Entity.Id,\r\n    \"UserId\" : this.Token.UserId\r\n}",
                     "Editable": true,
-                    "AddRowExp": "this.EditForm.Entity.StatusId == 1 || this.EditForm.Entity.StatusId == 2",
-                    "ReportTypeId": 1
+                    "AddRowExp": "this.EditForm.Entity.StatusId == 1 || this.EditForm.Entity.StatusId == 2"
                 }
             ]
         },
@@ -295,7 +277,6 @@
             "Active": true,
             "ParentId": "003904f4-0000-0000-8000-5b8073d14aa9",
             "XxlOuterColumn": 6,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00030184-0000-0000-8000-a03ec8fc1d00",
@@ -306,8 +287,7 @@
                     "Label": "CW",
                     "ShowLabel": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "000701cc-0000-0000-8000-f39aef5548a6",
@@ -318,8 +298,7 @@
                     "Label": "GW",
                     "ShowLabel": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "0008017c-0000-0000-8000-455219c0e934",
@@ -330,8 +309,7 @@
                     "Label": "CBM",
                     "ShowLabel": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "00090154-0000-0000-8000-735b3f2067a6",
@@ -342,8 +320,7 @@
                     "Row": 50,
                     "Label": "Pickup Address",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "000a01ac-0000-0000-8000-eecc28082d5d",
@@ -354,8 +331,7 @@
                     "Row": 50,
                     "Label": "Delivery Address",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00f70178-0000-0000-8000-e8499b81de9d",
@@ -367,8 +343,7 @@
                     "Label": "Quantity",
                     "ShowLabel": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "00f801c8-0000-0000-8000-73dfd91d5574",
@@ -378,8 +353,7 @@
                     "Column": 6,
                     "Label": "Delivery Term",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00fd0104-0000-0000-8000-1650e1683a07",
@@ -395,8 +369,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where ds1.Name in (N'Unit Type','LTL Type','Container Type')\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where ds1.Name in (N'Unit Type','LTL Type','Container Type')\"\r\n}",
                     "RefName": "MasterData",
-                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
-                    "ReportTypeId": 1
+                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]"
                 },
                 {
                     "Id": "00fe0174-0000-0000-8000-bdb2a14671e9",
@@ -406,8 +379,7 @@
                     "Column": 6,
                     "Label": "Dimension",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         },
@@ -419,7 +391,6 @@
             "ClassName": "ribbon-group",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0013021c-0000-0000-8000-da6b6a6f7e96",
@@ -432,8 +403,7 @@
                     "Icon": "fas fa-sliders-h-square",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"SaveAdd\" }",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "001d01cc-0000-0000-8000-29abb34dd5eb",
@@ -446,8 +416,7 @@
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0050039c-0000-0000-8000-8495f98f5c32",
@@ -460,8 +429,7 @@
                     "Icon": "fas fa-sliders-h-square",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"SaveAs\" }",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0076231c-0000-0000-8000-550ebb85bcdc",
@@ -477,8 +445,7 @@
                     "Active": true,
                     "Query": "select DefaultFee.*,FeeType.Description as FeeType,FeeType.IsFreight,FeeType.GroupName as GroupFee,MasterData.Name as UnitName\r\nfrom DefaultFee\r\nleft join FeeType on DefaultFee.DescriptionId = FeeType.Id\r\nleft join MasterData on DefaultFee.UnitId = MasterData.Id\r\nwhere InquiryDetailId in ('{InquiryDetailIds}')\r\norder by DefaultFee.UnitId asc\r\n\r\nselect Pricing.*,p.PartnerTypeIdsText,p.ResidenceTypeIdText\r\nfrom InquiryDetail\r\nleft join Pricing on InquiryDetail.PricingId = Pricing.Id\r\nleft join [Partner] p on pricing.VendorId = p.Id\r\nwhere InquiryDetail.Id in ('{InquiryDetailIds}')",
                     "PreQuery": "var detail = this.EditForm.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"InquiryDetail\");\r\nvar ids = detail.AllListViewItem.map(x=> x.Entity.Id).join(\"','\");\r\nreturn {\r\n    \"InquiryDetailIds\": ids\r\n}",
-                    "ShowExp": "this.Entity.InsertedBy == this.Token.UserId",
-                    "ReportTypeId": 1
+                    "ShowExp": "this.Entity.InsertedBy == this.Token.UserId"
                 }
             ]
         },
@@ -491,7 +458,6 @@
             "Style": "margin-bottom: 0px;padding: 0;",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00e9016c-0000-0000-8000-f5d2c0d67405",
@@ -503,8 +469,7 @@
                     "ShowLabel": true,
                     "Style": "display: flex;align-items: center;gap: 1rem;",
                     "Disabled": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         }
@@ -527,8 +492,7 @@
             "Editable": true,
             "MinWidth": "137px",
             "MaxWidth": "137px",
-            "EntityId": "EntityContainer",
-            "ReportTypeId": 1
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "00a404ec-0000-0000-8000-42e7d0ba8269",
@@ -544,8 +508,7 @@
             "MinWidth": "121px",
             "MaxWidth": "121px",
             "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "00c90200-0000-0000-8000-a7a58fb21349",
@@ -565,8 +528,7 @@
             "Editable": true,
             "MinWidth": "171px",
             "MaxWidth": "171px",
-            "EntityId": "InquiryDetail",
-            "ReportTypeId": 1
+            "EntityId": "InquiryDetail"
         },
         {
             "Id": "00cb0218-0000-0000-8000-27d328107821",
@@ -587,8 +549,7 @@
             "Editable": true,
             "MinWidth": "175px",
             "MaxWidth": "175px",
-            "EntityId": "InquiryDetail",
-            "ReportTypeId": 1
+            "EntityId": "InquiryDetail"
         },
         {
             "Id": "00cd028c-0000-0000-8000-f44f16f406be",
@@ -609,8 +570,7 @@
             "Editable": true,
             "MinWidth": "149px",
             "MaxWidth": "149px",
-            "EntityId": "InquiryDetail",
-            "ReportTypeId": 1
+            "EntityId": "InquiryDetail"
         },
         {
             "Id": "00ce02d0-0000-0000-8000-fa70affefe8f",
@@ -631,8 +591,7 @@
             "Editable": true,
             "MinWidth": "130px",
             "MaxWidth": "130px",
-            "EntityId": "InquiryDetail",
-            "ReportTypeId": 1
+            "EntityId": "InquiryDetail"
         },
         {
             "Id": "00cf0230-0000-0000-8000-39a58074f595",
@@ -654,8 +613,7 @@
             "MinWidth": "125px",
             "MaxWidth": "125px",
             "OrderBy": "ds.ParentId asc",
-            "EntityId": "InquiryDetail",
-            "ReportTypeId": 1
+            "EntityId": "InquiryDetail"
         },
         {
             "Id": "00da021c-0000-0000-8000-68424de931c0",
@@ -670,8 +628,7 @@
             "Active": true,
             "MinWidth": "32px",
             "MaxWidth": "32px",
-            "EntityId": "InquiryDetail",
-            "ReportTypeId": 1
+            "EntityId": "InquiryDetail"
         },
         {
             "Id": "00db1f34-0000-0000-8000-80a551f26c99",
@@ -693,8 +650,7 @@
             "MinWidth": "151px",
             "MaxWidth": "151px",
             "OrderBy": "ds.Enum asc",
-            "EntityId": "InquiryDetail",
-            "ReportTypeId": 1
+            "EntityId": "InquiryDetail"
         },
         {
             "Id": "00dc02e0-0000-0000-8000-b6b3f0404477",
@@ -711,8 +667,7 @@
             "Editable": true,
             "MinWidth": "199px",
             "MaxWidth": "199px",
-            "EntityId": "InquiryDetail",
-            "ReportTypeId": 1
+            "EntityId": "InquiryDetail"
         },
         {
             "Id": "00de0240-0000-0000-8000-0b762675ea3d",
@@ -728,8 +683,7 @@
             "FocusSearch": true,
             "MinWidth": "111px",
             "MaxWidth": "111px",
-            "EntityId": "InquiryDetail",
-            "ReportTypeId": 1
+            "EntityId": "InquiryDetail"
         },
         {
             "Id": "00fa0268-0000-0000-8000-f4348e259c60",
@@ -744,8 +698,7 @@
             "Editable": true,
             "MinWidth": "156px",
             "MaxWidth": "156px",
-            "EntityId": "InquiryDetail",
-            "ReportTypeId": 1
+            "EntityId": "InquiryDetail"
         }
     ],
     "Components": [
@@ -760,8 +713,7 @@
             "Icon": "fas fa-sliders-h-square",
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"SaveAdd\" }",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "001d01cc-0000-0000-8000-29abb34dd5eb",
@@ -774,8 +726,7 @@
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
             "Events": "{ \"click\" : \"SavePatch\" }",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "0050039c-0000-0000-8000-8495f98f5c32",
@@ -788,8 +739,7 @@
             "Icon": "fas fa-sliders-h-square",
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"SaveAs\" }",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "0076231c-0000-0000-8000-550ebb85bcdc",
@@ -805,8 +755,7 @@
             "Active": true,
             "Query": "select DefaultFee.*,FeeType.Description as FeeType,FeeType.IsFreight,FeeType.GroupName as GroupFee,MasterData.Name as UnitName\r\nfrom DefaultFee\r\nleft join FeeType on DefaultFee.DescriptionId = FeeType.Id\r\nleft join MasterData on DefaultFee.UnitId = MasterData.Id\r\nwhere InquiryDetailId in ('{InquiryDetailIds}')\r\norder by DefaultFee.UnitId asc\r\n\r\nselect Pricing.*,p.PartnerTypeIdsText,p.ResidenceTypeIdText\r\nfrom InquiryDetail\r\nleft join Pricing on InquiryDetail.PricingId = Pricing.Id\r\nleft join [Partner] p on pricing.VendorId = p.Id\r\nwhere InquiryDetail.Id in ('{InquiryDetailIds}')",
             "PreQuery": "var detail = this.EditForm.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"InquiryDetail\");\r\nvar ids = detail.AllListViewItem.map(x=> x.Entity.Id).join(\"','\");\r\nreturn {\r\n    \"InquiryDetailIds\": ids\r\n}",
-            "ShowExp": "this.Entity.InsertedBy == this.Token.UserId",
-            "ReportTypeId": 1
+            "ShowExp": "this.Entity.InsertedBy == this.Token.UserId"
         },
         {
             "Id": "00da021c-0000-0000-8000-68424de931c0",
@@ -821,8 +770,7 @@
             "Active": true,
             "MinWidth": "32px",
             "MaxWidth": "32px",
-            "EntityId": "InquiryDetail",
-            "ReportTypeId": 1
+            "EntityId": "InquiryDetail"
         }
     ],
     "FeaturePolicies": [

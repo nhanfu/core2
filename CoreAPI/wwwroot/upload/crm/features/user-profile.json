@@ -15,8 +15,7 @@
             "Order": 1,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         }
     ],
     "FeaturePolicies": [

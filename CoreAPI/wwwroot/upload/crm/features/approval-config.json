@@ -17,7 +17,6 @@
             "ComponentType": "Section",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "003f08e4-0000-0000-8000-e0d0c4fe4d8d",
@@ -34,8 +33,7 @@
                     "IsRealtime": true,
                     "RefName": "ApprovalConfig",
                     "TopEmpty": true,
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         }
@@ -58,8 +56,7 @@
             "FocusSearch": true,
             "MinWidth": "149px",
             "MaxWidth": "149px",
-            "EntityId": "ApprovalConfig",
-            "ReportTypeId": 1
+            "EntityId": "ApprovalConfig"
         },
         {
             "Id": "008218a4-0000-0000-8000-b16daa1a0e53",
@@ -74,8 +71,7 @@
             "FocusSearch": true,
             "MinWidth": "52px",
             "MaxWidth": "52px",
-            "EntityId": "ApprovalConfig",
-            "ReportTypeId": 1
+            "EntityId": "ApprovalConfig"
         }
     ],
     "Components": [
@@ -92,8 +88,7 @@
             "FocusSearch": true,
             "MinWidth": "52px",
             "MaxWidth": "52px",
-            "EntityId": "ApprovalConfig",
-            "ReportTypeId": 1
+            "EntityId": "ApprovalConfig"
         },
         {
             "Id": "00af1870-0000-0000-8000-dbf274e6e5f2",
@@ -105,8 +100,7 @@
             "Icon": "fal fa-plus",
             "ClassName": "btn",
             "Events": "{\"click\":\"Add\"}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         }
     ],
     "FeaturePolicies": [

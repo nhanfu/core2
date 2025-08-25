@@ -17,7 +17,6 @@
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00470784-0000-0000-8000-c418799f689b",
@@ -35,8 +34,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from Component as ds where ds.ComponentType = 'Service'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ds.ComponentType = 'Service'\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "Component",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         }
@@ -53,8 +51,7 @@
             "Editable": true,
             "MinWidth": "94px",
             "MaxWidth": "94px",
-            "EntityId": "Service",
-            "ReportTypeId": 1
+            "EntityId": "Service"
         },
         {
             "Id": "00470758-0000-0000-8000-c6c5780bcbde",
@@ -67,8 +64,7 @@
             "Editable": true,
             "MinWidth": "76px",
             "MaxWidth": "76px",
-            "EntityId": "Service",
-            "ReportTypeId": 1
+            "EntityId": "Service"
         },
         {
             "Id": "00470788-0000-0000-8000-eac3001d615e",
@@ -81,8 +77,7 @@
             "Editable": true,
             "MinWidth": "615px",
             "MaxWidth": "615px",
-            "EntityId": "Service",
-            "ReportTypeId": 1
+            "EntityId": "Service"
         },
         {
             "Id": "004707a4-0000-0000-8000-3d64edf3f47a",
@@ -95,8 +90,7 @@
             "Editable": true,
             "MinWidth": "119px",
             "MaxWidth": "119px",
-            "EntityId": "Service",
-            "ReportTypeId": 1
+            "EntityId": "Service"
         },
         {
             "Id": "004707b8-0000-0000-8000-18f405ed704a",
@@ -109,8 +103,7 @@
             "Editable": true,
             "MinWidth": "155px",
             "MaxWidth": "155px",
-            "EntityId": "Service",
-            "ReportTypeId": 1
+            "EntityId": "Service"
         },
         {
             "Id": "019605fe-b174-75cc-a622-1070bb0c4ba2",
@@ -123,8 +116,7 @@
             "Editable": true,
             "MinWidth": "399px",
             "MaxWidth": "399px",
-            "EntityId": "Service",
-            "ReportTypeId": 1
+            "EntityId": "Service"
         },
         {
             "Id": "019605fe-cf66-74db-aec6-51038be163cc",
@@ -137,8 +129,7 @@
             "Editable": true,
             "MinWidth": "110px",
             "MaxWidth": "110px",
-            "EntityId": "Service",
-            "ReportTypeId": 1
+            "EntityId": "Service"
         }
     ],
     "FeaturePolicies": [

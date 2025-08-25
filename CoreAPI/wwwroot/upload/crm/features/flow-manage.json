@@ -18,7 +18,6 @@
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01947706-b312-7449-9579-c788fd7bef80",
@@ -35,8 +34,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from Feature as ds where IsFlow = 1\",\r\n    \"total\": \"select count(ds.Id) as total from Feature as ds where IsFlow = 1\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "Feature",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         }
@@ -54,8 +52,7 @@
             "FocusSearch": true,
             "MinWidth": "178px",
             "MaxWidth": "178px",
-            "EntityId": "Feature",
-            "ReportTypeId": 1
+            "EntityId": "Feature"
         },
         {
             "Id": "01947706-b3a1-702b-b668-ede2a7c5f93e",
@@ -68,8 +65,7 @@
             "FocusSearch": true,
             "MinWidth": "95px",
             "MaxWidth": "95px",
-            "EntityId": "Feature",
-            "ReportTypeId": 1
+            "EntityId": "Feature"
         },
         {
             "Id": "01947706-b543-74c4-8597-e49d0d062b76",
@@ -82,8 +78,7 @@
             "FocusSearch": true,
             "MinWidth": "266px",
             "MaxWidth": "266px",
-            "EntityId": "Feature",
-            "ReportTypeId": 1
+            "EntityId": "Feature"
         },
         {
             "Id": "01947706-b591-776a-b8f5-42745488bbaf",
@@ -96,8 +91,7 @@
             "FocusSearch": true,
             "MinWidth": "290px",
             "MaxWidth": "290px",
-            "EntityId": "Feature",
-            "ReportTypeId": 1
+            "EntityId": "Feature"
         }
     ],
     "Components": [
@@ -111,8 +105,7 @@
             "Icon": "fal fa-plus",
             "ClassName": "btn",
             "Events": "{\r\n    \"click\": \"Add\"\r\n}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         }
     ],
     "FeaturePolicies": [

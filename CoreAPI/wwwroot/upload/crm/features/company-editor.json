@@ -14,8 +14,7 @@
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "0075369c-0000-0000-8000-d975d35ac0a3",
@@ -28,7 +27,6 @@
             "Active": true,
             "ParentId": "00753694-0000-0000-8000-e42e66a912f9",
             "XxlOuterColumn": 12,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "002736c4-0000-0000-8000-4650729f91a8",
@@ -39,8 +37,7 @@
                     "Label": "Name VN",
                     "ShowLabel": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "00753670-0000-0000-8000-0271342aedb6",
@@ -51,8 +48,7 @@
                     "Label": "Phone",
                     "ShowLabel": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "00753678-0000-0000-8000-a57f5526989c",
@@ -63,8 +59,7 @@
                     "Label": "Name EN",
                     "ShowLabel": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "00753678-0000-0000-8000-aa258f00e75c",
@@ -74,8 +69,7 @@
                     "Column": 6,
                     "Label": "Address VN",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "007536f8-0000-0000-8000-d3a6de1b8a52",
@@ -86,8 +80,7 @@
                     "Label": "Email",
                     "ShowLabel": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "007939f0-0000-0000-8000-8a5f8fe777f2",
@@ -98,8 +91,7 @@
                     "Label": "TaxCode",
                     "ShowLabel": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "00863958-0000-0000-8000-d2cb95a8c808",
@@ -110,8 +102,7 @@
                     "Label": "Fax",
                     "ShowLabel": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "008b3970-0000-0000-8000-c27813595425",
@@ -122,8 +113,7 @@
                     "Label": "Web",
                     "ShowLabel": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "00b039a8-0000-0000-8000-096ecc3228e3",
@@ -133,8 +123,7 @@
                     "Column": 6,
                     "Label": "Address EN",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         },
@@ -146,7 +135,6 @@
             "ClassName": "ribbon-group",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00753650-0000-0000-8000-36863ea1e1d5",
@@ -159,8 +147,7 @@
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         },
@@ -174,7 +161,6 @@
             "Active": true,
             "ParentId": "00753694-0000-0000-8000-e42e66a912f9",
             "XxlOuterColumn": 12,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "007536fc-0000-0000-8000-88c9a4e3ad4c",
@@ -186,8 +172,7 @@
                     "ShowLabel": true,
                     "ClassName": "profile",
                     "Active": true,
-                    "VirtualScroll": true,
-                    "ReportTypeId": 1
+                    "VirtualScroll": true
                 },
                 {
                     "Id": "009a3a98-0000-0000-8000-ee3d0aa26b8d",
@@ -205,8 +190,7 @@
                     "RefName": "PartnerBankAccount",
                     "PreQuery": "{ PartnerId: this.EditForm.Entity.Id}",
                     "Editable": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "0195ef5e-b963-737b-804d-7e04ef585649",
@@ -218,8 +202,7 @@
                     "ShowLabel": true,
                     "ClassName": "profile",
                     "Active": true,
-                    "VirtualScroll": true,
-                    "ReportTypeId": 1
+                    "VirtualScroll": true
                 }
             ]
         },
@@ -241,8 +224,7 @@
                     "Column": 6,
                     "Label": "Footer",
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 }
             ]
         },
@@ -264,8 +246,7 @@
                     "Column": 6,
                     "Label": "Header",
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 }
             ]
         }
@@ -289,8 +270,7 @@
             "Editable": true,
             "MinWidth": "112px",
             "MaxWidth": "112px",
-            "EntityId": "PartnerBankAccount",
-            "ReportTypeId": 1
+            "EntityId": "PartnerBankAccount"
         },
         {
             "Id": "00c33a24-0000-0000-8000-9c4a59c28505",
@@ -308,8 +288,7 @@
             "Editable": true,
             "MinWidth": "102px",
             "MaxWidth": "102px",
-            "EntityId": "PartnerBankAccount",
-            "ReportTypeId": 1
+            "EntityId": "PartnerBankAccount"
         },
         {
             "Id": "00cb3a38-0000-0000-8000-4f19866f70da",
@@ -327,8 +306,7 @@
             "Editable": true,
             "MinWidth": "94px",
             "MaxWidth": "94px",
-            "EntityId": "PartnerBankAccount",
-            "ReportTypeId": 1
+            "EntityId": "PartnerBankAccount"
         },
         {
             "Id": "00d03a0c-0000-0000-8000-6468f74c4629",
@@ -344,8 +322,7 @@
             "Editable": true,
             "MinWidth": "127px",
             "MaxWidth": "127px",
-            "EntityId": "PartnerBankAccount",
-            "ReportTypeId": 1
+            "EntityId": "PartnerBankAccount"
         },
         {
             "Id": "0195ff8e-b139-72d2-82a7-4e065ab880b7",
@@ -361,8 +338,7 @@
             "Editable": true,
             "MinWidth": "94px",
             "MaxWidth": "94px",
-            "EntityId": "PartnerBankAccount",
-            "ReportTypeId": 1
+            "EntityId": "PartnerBankAccount"
         },
         {
             "Id": "0195ff8e-b13a-737d-bf30-af594986dcd3",
@@ -378,8 +354,7 @@
             "Editable": true,
             "MinWidth": "94px",
             "MaxWidth": "94px",
-            "EntityId": "PartnerBankAccount",
-            "ReportTypeId": 1
+            "EntityId": "PartnerBankAccount"
         }
     ],
     "Components": [
@@ -394,8 +369,7 @@
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
             "Events": "{ \"click\" : \"SavePatch\" }",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         }
     ],
     "FeaturePolicies": [

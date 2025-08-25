@@ -17,7 +17,6 @@
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01943bef-3b41-70c9-8147-06ddbce2a662",
@@ -35,8 +34,7 @@
                     "IsRealtime": true,
                     "RefName": "InvoiceConfig",
                     "TopEmpty": true,
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         }
@@ -54,8 +52,7 @@
             "Editable": true,
             "MinWidth": "153px",
             "MaxWidth": "153px",
-            "EntityId": "InvoiceConfig",
-            "ReportTypeId": 1
+            "EntityId": "InvoiceConfig"
         },
         {
             "Id": "01943bef-3ba8-717a-8b0f-317de85f3490",
@@ -69,8 +66,7 @@
             "Editable": true,
             "MinWidth": "273px",
             "MaxWidth": "273px",
-            "EntityId": "InvoiceConfig",
-            "ReportTypeId": 1
+            "EntityId": "InvoiceConfig"
         },
         {
             "Id": "01943bef-3be2-761b-850f-e44605601ff1",
@@ -84,8 +80,7 @@
             "Editable": true,
             "MinWidth": "209px",
             "MaxWidth": "209px",
-            "EntityId": "InvoiceConfig",
-            "ReportTypeId": 1
+            "EntityId": "InvoiceConfig"
         },
         {
             "Id": "01943bef-3c0e-704d-a469-7bb93ccdadc1",
@@ -99,8 +94,7 @@
             "Editable": true,
             "MinWidth": "124px",
             "MaxWidth": "124px",
-            "EntityId": "InvoiceConfig",
-            "ReportTypeId": 1
+            "EntityId": "InvoiceConfig"
         },
         {
             "Id": "01943bef-3cb7-76d9-b636-117d8b3f274d",
@@ -114,8 +108,7 @@
             "Editable": true,
             "MinWidth": "94px",
             "MaxWidth": "94px",
-            "EntityId": "InvoiceConfig",
-            "ReportTypeId": 1
+            "EntityId": "InvoiceConfig"
         },
         {
             "Id": "01943bef-3cf2-76b6-86a6-d7186a0f2c3e",
@@ -129,8 +122,7 @@
             "Editable": true,
             "MinWidth": "111px",
             "MaxWidth": "111px",
-            "EntityId": "InvoiceConfig",
-            "ReportTypeId": 1
+            "EntityId": "InvoiceConfig"
         },
         {
             "Id": "01943bf2-6f83-72c3-8315-eeae016c3c55",
@@ -151,8 +143,7 @@
             "Editable": true,
             "MinWidth": "214px",
             "MaxWidth": "214px",
-            "EntityId": "InvoiceConfig",
-            "ReportTypeId": 1
+            "EntityId": "InvoiceConfig"
         }
     ],
     "FeaturePolicies": [

@@ -17,7 +17,6 @@
             "ComponentType": "Section",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "007b3620-0000-0000-8000-141120505fec",
@@ -32,8 +31,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from [Partner] as ds where ServiceId = 5\",\r\n    \"total\": \"select count(ds.Id) as total from [Partner] as ds where ServiceId = 5\"\r\n}",
                     "RefName": "Partner",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         }
@@ -50,8 +48,7 @@
             "FocusSearch": true,
             "MinWidth": "356px",
             "MaxWidth": "356px",
-            "EntityId": "Partner",
-            "ReportTypeId": 1
+            "EntityId": "Partner"
         },
         {
             "Id": "007b3638-0000-0000-8000-d7c54bb08b8c",
@@ -66,8 +63,7 @@
             "FocusSearch": true,
             "MinWidth": "65px",
             "MaxWidth": "65px",
-            "EntityId": "Partner",
-            "ReportTypeId": 1
+            "EntityId": "Partner"
         },
         {
             "Id": "007b3640-0000-0000-8000-36b969d8dca0",
@@ -80,8 +76,7 @@
             "FocusSearch": true,
             "MinWidth": "620px",
             "MaxWidth": "620px",
-            "EntityId": "Partner",
-            "ReportTypeId": 1
+            "EntityId": "Partner"
         },
         {
             "Id": "007b36cc-0000-0000-8000-abda784bd934",
@@ -94,8 +89,7 @@
             "FocusSearch": true,
             "MinWidth": "328px",
             "MaxWidth": "328px",
-            "EntityId": "Partner",
-            "ReportTypeId": 1
+            "EntityId": "Partner"
         },
         {
             "Id": "007b36e0-0000-0000-8000-9f7081c3f9ee",
@@ -108,8 +102,7 @@
             "FocusSearch": true,
             "MinWidth": "153px",
             "MaxWidth": "153px",
-            "EntityId": "Partner",
-            "ReportTypeId": 1
+            "EntityId": "Partner"
         }
     ],
     "Components": [
@@ -126,8 +119,7 @@
             "FocusSearch": true,
             "MinWidth": "65px",
             "MaxWidth": "65px",
-            "EntityId": "Partner",
-            "ReportTypeId": 1
+            "EntityId": "Partner"
         }
     ],
     "FeaturePolicies": [

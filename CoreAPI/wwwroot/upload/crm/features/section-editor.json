@@ -17,8 +17,7 @@
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "0038f0d4-0000-0000-8000-43c611dc07f9",
@@ -27,7 +26,6 @@
             "ClassName": "ribbon-group",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0020f034-0000-0000-8000-2ce431f614f1",
@@ -40,8 +38,7 @@
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "005bf0d0-0000-0000-8000-f72d89c217a3",
@@ -53,8 +50,7 @@
                     "Icon": "fal fa-window-close",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"Cancel\" }",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         },
@@ -68,7 +64,6 @@
             "Active": true,
             "ParentId": "000e0488-0000-0000-8000-1e43224733f6",
             "IsTab": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00022868-0000-0000-8000-415a527dfe46",
@@ -82,8 +77,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                     "RefName": "History",
                     "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
-                    "Lang": "html",
-                    "ReportTypeId": 1
+                    "Lang": "html"
                 }
             ]
         },
@@ -96,8 +90,7 @@
             "XxlCol": 12,
             "Active": true,
             "ParentId": "000e0488-0000-0000-8000-1e43224733f6",
-            "IsTab": true,
-            "ReportTypeId": 1
+            "IsTab": true
         },
         {
             "Id": "00abf074-0000-0000-8000-4ab0cdf22d93",
@@ -108,8 +101,7 @@
             "XxlCol": 12,
             "Active": true,
             "ParentId": "000e0488-0000-0000-8000-1e43224733f6",
-            "IsTab": true,
-            "ReportTypeId": 1
+            "IsTab": true
         },
         {
             "Id": "00adf014-0000-0000-8000-ce29d83661e5",
@@ -119,8 +111,7 @@
             "ClassName": "grid-view",
             "XxlCol": 12,
             "Active": true,
-            "ParentId": "00abf074-0000-0000-8000-4ab0cdf22d93",
-            "ReportTypeId": 1
+            "ParentId": "00abf074-0000-0000-8000-4ab0cdf22d93"
         },
         {
             "Id": "00c8f020-0000-0000-8000-df5538cc4bd8",
@@ -133,7 +124,6 @@
             "Active": true,
             "ParentId": "00abf074-0000-0000-8000-4ab0cdf22d93",
             "XxlOuterColumn": 4,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0003f144-0000-0000-8000-e3c45b8765b5",
@@ -143,8 +133,7 @@
                     "Column": 3,
                     "Label": "Disabled",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "000706f4-0000-0000-8000-ccedf50eded8",
@@ -158,8 +147,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                     "RefName": "History",
                     "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
-                    "Lang": "css",
-                    "ReportTypeId": 1
+                    "Lang": "css"
                 },
                 {
                     "Id": "00120aa4-0000-0000-8000-918182de13e8",
@@ -169,8 +157,7 @@
                     "Column": 3,
                     "Label": "Active",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0028f968-0000-0000-8000-33dc41fed9b0",
@@ -180,8 +167,7 @@
                     "Column": 12,
                     "Label": "Description",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "003ff028-0000-0000-8000-69b6e74c9074",
@@ -191,8 +177,7 @@
                     "Column": 6,
                     "Label": "FieldName",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "004e0a44-0000-0000-8000-f2c561150253",
@@ -202,8 +187,7 @@
                     "Column": 3,
                     "Label": "DropDown",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0060f0c8-0000-0000-8000-933e53f23680",
@@ -213,8 +197,7 @@
                     "Column": 6,
                     "Label": "Order",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0069f0cc-0000-0000-8000-e7d32a5ab34a",
@@ -224,8 +207,7 @@
                     "Column": 6,
                     "Label": "ClassName",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "007df0c4-0000-0000-8000-daa28128e047",
@@ -235,8 +217,7 @@
                     "Column": 3,
                     "Label": "Tab",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00f2f03c-0000-0000-8000-1ccdbcad9bf8",
@@ -246,8 +227,7 @@
                     "Column": 6,
                     "Label": "Label",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         },
@@ -262,7 +242,6 @@
             "Active": true,
             "ParentId": "00abf074-0000-0000-8000-4ab0cdf22d93",
             "XxlOuterColumn": 4,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0020f14c-0000-0000-8001-d9721ce77f51",
@@ -273,8 +252,7 @@
                     "Precision": 0,
                     "Label": "Mobile",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0020f14c-0000-0000-8004-b5612b8b1c8b",
@@ -284,8 +262,7 @@
                     "Column": 6,
                     "Label": "Desktop",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00650204-0000-0000-8000-488cbefc5d96",
@@ -299,8 +276,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                     "RefName": "History",
                     "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
-                    "Lang": "javascript",
-                    "ReportTypeId": 1
+                    "Lang": "javascript"
                 },
                 {
                     "Id": "00ee00b0-0000-0000-8000-c263a21296b6",
@@ -311,8 +287,7 @@
                     "Label": "Icon",
                     "ShowLabel": true,
                     "Disabled": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00fb0714-0000-0000-8000-22e23552611f",
@@ -322,8 +297,7 @@
                     "Column": 6,
                     "Label": "TabGroup",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         },
@@ -336,7 +310,6 @@
             "Active": true,
             "ParentId": "00adf014-0000-0000-8000-ce29d83661e5",
             "XxlOuterColumn": 12,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0011f034-0000-0000-8000-8170c567b366",
@@ -356,8 +329,7 @@
                     "RefName": "Component",
                     "PreQuery": "{\r\n    \"ComponentGroupId\": this.EditForm.Entity.Id\r\n}",
                     "ShowHotKey": true,
-                    "OrderBy": "ds.[Order] asc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.[Order] asc"
                 }
             ]
         },
@@ -372,7 +344,6 @@
             "Active": true,
             "ParentId": "00abf074-0000-0000-8000-4ab0cdf22d93",
             "XxlOuterColumn": 4,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "002340c4-0000-0000-8000-dae8c45e9555",
@@ -382,8 +353,7 @@
                     "Column": 3,
                     "Label": "Editable",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0086f1f4-0000-0000-8000-f96eb74a0d3a",
@@ -394,8 +364,7 @@
                     "Label": "Mobile",
                     "ShowLabel": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "00b00044-0000-0000-8000-087bea3680fe",
@@ -405,8 +374,7 @@
                     "Column": 3,
                     "Label": "Badge",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00c2f1ec-0000-0000-8000-09f3e32eac8e",
@@ -416,8 +384,7 @@
                     "Column": 3,
                     "Label": "Desktop",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00f228cc-0000-0000-8000-3f0bd0c968f0",
@@ -431,8 +398,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                     "RefName": "History",
                     "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
-                    "Lang": "css",
-                    "ReportTypeId": 1
+                    "Lang": "css"
                 }
             ]
         }
@@ -451,8 +417,7 @@
             "MinWidth": "99px",
             "MaxWidth": "99px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "0089f02c-0000-0000-8000-a46e0ee6aea8",
@@ -467,8 +432,7 @@
             "MinWidth": "271px",
             "MaxWidth": "271px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "0089f02c-0000-0000-8001-9970c70a58af",
@@ -483,8 +447,7 @@
             "MinWidth": "1px",
             "MaxWidth": "1px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "0089f02c-0000-0000-8002-32c81174c001",
@@ -499,8 +462,7 @@
             "MinWidth": "190px",
             "MaxWidth": "190px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "0089f02c-0000-0000-8003-e157c664c1d6",
@@ -515,8 +477,7 @@
             "MinWidth": "174px",
             "MaxWidth": "174px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "0089f02c-0000-0000-8004-3ac276f07ebc",
@@ -531,8 +492,7 @@
             "MinWidth": "97px",
             "MaxWidth": "97px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "0089f02c-0000-0000-8005-cc3d5d54b26a",
@@ -547,8 +507,7 @@
             "MinWidth": "276px",
             "MaxWidth": "276px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "0089f02c-0000-0000-8006-ec8570675d4a",
@@ -565,8 +524,7 @@
             "MinWidth": "55px",
             "MaxWidth": "55px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "0089f02c-0000-0000-8007-e23297953f30",
@@ -581,8 +539,7 @@
             "MinWidth": "360px",
             "MaxWidth": "360px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "0089f02c-0000-0000-8008-74082b3c4c4c",
@@ -597,8 +554,7 @@
             "MinWidth": "197px",
             "MaxWidth": "197px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "0089f02c-0000-0000-8009-07459620eb1f",
@@ -615,8 +571,7 @@
             "MinWidth": "170px",
             "MaxWidth": "170px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "0089f02c-0000-0000-800a-917fea1b9e31",
@@ -631,8 +586,7 @@
             "MinWidth": "197px",
             "MaxWidth": "197px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "0089f090-0000-0000-8001-965cdc5ba3f0",
@@ -653,8 +607,7 @@
             "MinWidth": "173px",
             "MaxWidth": "173px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "0089f090-0000-0000-8002-04b236e74d02",
@@ -669,8 +622,7 @@
             "MinWidth": "991px",
             "MaxWidth": "991px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "0089f090-0000-0000-8003-1240b8672a53",
@@ -685,8 +637,7 @@
             "MinWidth": "198px",
             "MaxWidth": "198px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "0089f090-0000-0000-8004-17cbd6a3a40b",
@@ -701,8 +652,7 @@
             "MinWidth": "212px",
             "MaxWidth": "212px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "0089f090-0000-0000-8005-49958c8e277e",
@@ -717,8 +667,7 @@
             "MinWidth": "380px",
             "MaxWidth": "380px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "0089f090-0000-0000-8006-a77e0d85c07b",
@@ -734,8 +683,7 @@
             "MinWidth": "78px",
             "MaxWidth": "78px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "0089f090-0000-0000-8007-45b346b7c9b7",
@@ -750,8 +698,7 @@
             "MinWidth": "217px",
             "MaxWidth": "217px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "0089f090-0000-0000-8008-cd211fe8b6ef",
@@ -767,8 +714,7 @@
             "MinWidth": "181px",
             "MaxWidth": "181px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "0089f090-0000-0000-8009-57373ded7876",
@@ -784,8 +730,7 @@
             "MinWidth": "70px",
             "MaxWidth": "70px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "008f1efc-0000-0000-8000-622d5836497b",
@@ -801,8 +746,7 @@
             "MinWidth": "57px",
             "MaxWidth": "57px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "00d73f18-0000-0000-8000-ef6918b2aa67",
@@ -817,8 +761,7 @@
             "MinWidth": "143px",
             "MaxWidth": "143px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "00ec3b4c-0000-0000-8000-1fe63ba34e14",
@@ -833,8 +776,7 @@
             "MinWidth": "106px",
             "MaxWidth": "106px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "00f00108-0000-0000-8000-b42267cae91d",
@@ -851,8 +793,7 @@
             "MinWidth": "65px",
             "MaxWidth": "65px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "0194318f-db42-722e-808b-374a7d229b8f",
@@ -868,8 +809,7 @@
             "MinWidth": "226px",
             "MaxWidth": "226px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         },
         {
             "Id": "01954fa9-2097-71a2-aec0-ed23e4b2944c",
@@ -886,8 +826,7 @@
             "MinWidth": "55px",
             "MaxWidth": "55px",
             "created_by": "Component",
-            "EntityId": "Component",
-            "ReportTypeId": 1
+            "EntityId": "Component"
         }
     ],
     "Components": [
@@ -902,8 +841,7 @@
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
             "Events": "{ \"click\" : \"SavePatch\" }",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "005bf0d0-0000-0000-8000-f72d89c217a3",
@@ -915,8 +853,7 @@
             "Icon": "fal fa-window-close",
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"Cancel\" }",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         }
     ],
     "FeaturePolicies": [

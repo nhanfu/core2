@@ -15,7 +15,6 @@
             "ComponentType": "Section",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00ec1130-0000-0000-8000-3baf9ead10a1",
@@ -32,8 +31,7 @@
                     "IsRealtime": true,
                     "RefName": "History",
                     "TopEmpty": true,
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         }
@@ -56,8 +54,7 @@
             "MinWidth": "197px",
             "MaxWidth": "197px",
             "OrderBy": "ds.InsertedDate desc",
-            "EntityId": "History",
-            "ReportTypeId": 1
+            "EntityId": "History"
         },
         {
             "Id": "00ec1154-0000-0000-8000-23fdcf1d4103",
@@ -70,8 +67,7 @@
             "FocusSearch": true,
             "MinWidth": "1086px",
             "MaxWidth": "1086px",
-            "EntityId": "History",
-            "ReportTypeId": 1
+            "EntityId": "History"
         },
         {
             "Id": "00ec1154-0000-0000-8000-4df71507978b",
@@ -85,8 +81,7 @@
             "FocusSearch": true,
             "MinWidth": "197px",
             "MaxWidth": "197px",
-            "EntityId": "History",
-            "ReportTypeId": 1
+            "EntityId": "History"
         },
         {
             "Id": "00ec11a0-0000-0000-8000-1f6d140709c4",
@@ -99,8 +94,7 @@
             "FocusSearch": true,
             "MinWidth": "165px",
             "MaxWidth": "165px",
-            "EntityId": "History",
-            "ReportTypeId": 1
+            "EntityId": "History"
         }
     ],
     "FeaturePolicies": [

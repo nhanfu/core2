@@ -18,7 +18,6 @@
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01945a8b-ad11-748b-831b-b97409b897d7",
@@ -35,8 +34,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from AccountTransferSetup as ds\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "AccountTransferSetup",
-                    "OrderBy": "ds.InsertedDate asc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate asc"
                 }
             ]
         }
@@ -54,8 +52,7 @@
             "Editable": true,
             "MinWidth": "305px",
             "MaxWidth": "305px",
-            "EntityId": "AccountTransferSetup",
-            "ReportTypeId": 1
+            "EntityId": "AccountTransferSetup"
         },
         {
             "Id": "01945a8b-ada7-7499-874a-a0c6f1806d0d",
@@ -69,8 +66,7 @@
             "Editable": true,
             "MinWidth": "102px",
             "MaxWidth": "102px",
-            "EntityId": "AccountTransferSetup",
-            "ReportTypeId": 1
+            "EntityId": "AccountTransferSetup"
         },
         {
             "Id": "01945a8b-add7-764c-8169-581d39fb2907",
@@ -84,8 +80,7 @@
             "Editable": true,
             "MinWidth": "131px",
             "MaxWidth": "131px",
-            "EntityId": "AccountTransferSetup",
-            "ReportTypeId": 1
+            "EntityId": "AccountTransferSetup"
         },
         {
             "Id": "01945a95-eb20-7038-9480-043f4d0edf2c",
@@ -104,8 +99,7 @@
             "Editable": true,
             "MinWidth": "142px",
             "MaxWidth": "142px",
-            "EntityId": "AccountTransferSetup",
-            "ReportTypeId": 1
+            "EntityId": "AccountTransferSetup"
         },
         {
             "Id": "01945a96-b17a-716c-8bae-853e3bb722ca",
@@ -124,8 +118,7 @@
             "Editable": true,
             "MinWidth": "142px",
             "MaxWidth": "142px",
-            "EntityId": "AccountTransferSetup",
-            "ReportTypeId": 1
+            "EntityId": "AccountTransferSetup"
         },
         {
             "Id": "01945a97-254f-75cd-9635-fb22d80b72c9",
@@ -139,8 +132,7 @@
             "Editable": true,
             "MinWidth": "131px",
             "MaxWidth": "131px",
-            "EntityId": "AccountTransferSetup",
-            "ReportTypeId": 1
+            "EntityId": "AccountTransferSetup"
         },
         {
             "Id": "01945a97-8bbb-73f3-8aab-86cc472b9672",
@@ -160,8 +152,7 @@
             "MinWidth": "149px",
             "MaxWidth": "149px",
             "EntityId": "AccountTransferSetup",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "01945a99-4057-772c-9b22-1e19f5dfa6f7",
@@ -183,8 +174,7 @@
             "Editable": true,
             "MinWidth": "118px",
             "MaxWidth": "118px",
-            "EntityId": "AccountTransferSetup",
-            "ReportTypeId": 1
+            "EntityId": "AccountTransferSetup"
         }
     ],
     "FeaturePolicies": [

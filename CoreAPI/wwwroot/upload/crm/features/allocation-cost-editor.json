@@ -17,8 +17,7 @@
             "XxlCol": 12,
             "Active": true,
             "ParentId": "00ae44f8-0000-0000-8000-1e36c17d9cb2",
-            "XxlOuterColumn": 12,
-            "ReportTypeId": 1
+            "XxlOuterColumn": 12
         },
         {
             "Id": "009844d8-0000-0000-8000-65bc4feecec8",
@@ -31,7 +30,6 @@
             "Active": true,
             "ParentId": "00ae44f8-0000-0000-8000-1e36c17d9cb2",
             "XxlOuterColumn": 12,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00284498-0000-0000-8000-86817832d9bd",
@@ -43,8 +41,7 @@
                     "Label": "Notes",
                     "ShowLabel": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "00b74470-0000-0000-8000-9cced0515902",
@@ -55,8 +52,7 @@
                     "Label": "Ref No",
                     "ShowLabel": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "00b744d4-0000-0000-8000-ecb698f7a9ce",
@@ -67,8 +63,7 @@
                     "Label": "Cost",
                     "ShowLabel": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 }
             ]
         },
@@ -83,7 +78,6 @@
             "Active": true,
             "ParentId": "00ae44f8-0000-0000-8000-1e36c17d9cb2",
             "XxlOuterColumn": 12,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00e444fc-0000-0000-8000-cbed0de63631",
@@ -107,8 +101,7 @@
                     "Editable": true,
                     "OrderBy": "ds.[Order] asc",
                     "EntityName": "ShipmentDetail",
-                    "TableName": "Shipment",
-                    "ReportTypeId": 1
+                    "TableName": "Shipment"
                 }
             ]
         },
@@ -120,7 +113,6 @@
             "ClassName": "ribbon-group",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00ae44a8-0000-0000-8000-c4458a2cb325",
@@ -133,8 +125,7 @@
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         },
@@ -145,8 +136,7 @@
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         }
     ],
     "GridPolicies": [
@@ -171,8 +161,7 @@
             "MaxWidth": "118px",
             "OrderBy": "priority ASC, ds.Id ASC",
             "EntityId": "ShipmentFee",
-            "EntityName": "ShipmentDetail",
-            "ReportTypeId": 1
+            "EntityName": "ShipmentDetail"
         },
         {
             "Id": "00294470-0000-0000-8001-295f9088cec2",
@@ -194,8 +183,7 @@
             "MinWidth": "165px",
             "MaxWidth": "165px",
             "OrderBy": "ds.IsFreight desc",
-            "EntityId": "ShipmentFee",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentFee"
         },
         {
             "Id": "00294470-0000-0000-8002-8ef8240868f6",
@@ -214,8 +202,7 @@
             "MaxWidth": "102px",
             "EntityId": "ShipmentFee",
             "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "EntityName": "ShipmentDetail",
-            "ReportTypeId": 1
+            "EntityName": "ShipmentDetail"
         },
         {
             "Id": "00294470-0000-0000-8003-c10c1fde83a4",
@@ -235,8 +222,7 @@
             "Editable": true,
             "MinWidth": "90px",
             "MaxWidth": "90px",
-            "EntityId": "ShipmentFee",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentFee"
         },
         {
             "Id": "00294470-0000-0000-8004-be7f86a0e420",
@@ -254,8 +240,7 @@
             "MaxWidth": "93px",
             "EntityId": "ShipmentFee",
             "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "EntityName": "ShipmentDetail",
-            "ReportTypeId": 1
+            "EntityName": "ShipmentDetail"
         },
         {
             "Id": "00294470-0000-0000-8005-9ce022b301f5",
@@ -272,8 +257,7 @@
             "MinWidth": "74px",
             "MaxWidth": "74px",
             "EntityId": "ShipmentFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "002944d4-0000-0000-8000-b4ae223cffcd",
@@ -295,8 +279,7 @@
             "MinWidth": "124px",
             "MaxWidth": "124px",
             "OrderBy": "ds.Enum asc",
-            "EntityId": "ShipmentFee",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentFee"
         },
         {
             "Id": "002944d4-0000-0000-8001-976a318da2ff",
@@ -315,8 +298,7 @@
             "MaxWidth": "95px",
             "EntityId": "ShipmentFee",
             "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "EntityName": "ShipmentDetail",
-            "ReportTypeId": 1
+            "EntityName": "ShipmentDetail"
         },
         {
             "Id": "002944d4-0000-0000-8002-60be26c0fb10",
@@ -331,8 +313,7 @@
             "Editable": true,
             "MinWidth": "76px",
             "MaxWidth": "76px",
-            "EntityId": "ShipmentFee",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentFee"
         },
         {
             "Id": "002944d4-0000-0000-8003-ad5280232433",
@@ -347,8 +328,7 @@
             "Editable": true,
             "MinWidth": "143px",
             "MaxWidth": "143px",
-            "EntityId": "ShipmentFee",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentFee"
         },
         {
             "Id": "002944d4-0000-0000-8004-5a572efa7fc5",
@@ -363,8 +343,7 @@
             "Editable": true,
             "MinWidth": "143px",
             "MaxWidth": "143px",
-            "EntityId": "ShipmentFee",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentFee"
         }
     ],
     "Components": [
@@ -379,8 +358,7 @@
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
             "Events": "{ \"click\" : \"SavePatch\" }",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         }
     ],
     "FeaturePolicies": [

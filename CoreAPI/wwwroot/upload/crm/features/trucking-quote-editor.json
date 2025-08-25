@@ -17,8 +17,7 @@
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "00771028-0000-0000-8000-2227a4e619b2",
@@ -30,7 +29,6 @@
             "Active": true,
             "ParentId": "00771010-0000-0000-8000-23350ec4242c",
             "XxlOuterColumn": 4,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00771000-0000-0000-8000-268c4eb77e2c",
@@ -51,8 +49,7 @@
                     "RefName": "Partner",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
                     "PreQuery": "{\r\n    \"UserId\": this.Token.UserId,\r\n    \"UserName\": this.Token.UserName\r\n}",
-                    "ShowHotKey": true,
-                    "ReportTypeId": 1
+                    "ShowHotKey": true
                 },
                 {
                     "Id": "00771004-0000-0000-8000-b891911c06a3",
@@ -62,8 +59,7 @@
                     "Column": 6,
                     "Label": "Tel/Email",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0077100c-0000-0000-8000-ec071f257549",
@@ -74,8 +70,7 @@
                     "Row": 50,
                     "Label": "PIC",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00771020-0000-0000-8000-86cb5a03818d",
@@ -85,8 +80,7 @@
                     "Column": 6,
                     "Label": "Quo Date",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0077106c-0000-0000-8000-a9f35d61a9cf",
@@ -96,8 +90,7 @@
                     "Column": 6,
                     "Label": "Quo No",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "007710c4-0000-0000-8000-a4412bdd8ed2",
@@ -107,8 +100,7 @@
                     "Column": 12,
                     "Label": "Service",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         },
@@ -123,7 +115,6 @@
             "Active": true,
             "ParentId": "00771010-0000-0000-8000-23350ec4242c",
             "XxlOuterColumn": 4,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00771040-0000-0000-8000-a8511118b6d6",
@@ -133,8 +124,7 @@
                     "Column": 6,
                     "Label": "Delivery Date",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00771070-0000-0000-8000-e3e3e0a05267",
@@ -144,8 +134,7 @@
                     "Column": 6,
                     "Label": "Pickup Date",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00771098-0000-0000-8000-792c82856eeb",
@@ -155,8 +144,7 @@
                     "Column": 6,
                     "Label": "Effect",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "007710bc-0000-0000-8000-847cba64d695",
@@ -166,8 +154,7 @@
                     "Column": 6,
                     "Label": "Validity",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00b1101c-0000-0000-8000-388fc26119d6",
@@ -183,8 +170,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Commodity Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Commodity Type'\"\r\n}",
                     "RefName": "MasterData",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "00b1101c-0000-0000-8001-f9a2c4e6bf85",
@@ -200,8 +186,7 @@
                     "Events": "{\r\n    \"change\": \"ShowHideDetail\"\r\n}",
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 0,\r\n        \"Name\": \"FREE-HAND\"\r\n    },\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"NOMINATE\"\r\n    }\r\n]",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 }
             ]
         },
@@ -215,8 +200,7 @@
             "Active": true,
             "ParentId": "00771010-0000-0000-8000-23350ec4242c",
             "XxlOuterColumn": 12,
-            "IsDropDown": true,
-            "ReportTypeId": 1
+            "IsDropDown": true
         },
         {
             "Id": "00771094-0000-0000-8000-9f1219e28a2b",
@@ -228,7 +212,6 @@
             "Active": true,
             "ParentId": "00771090-0000-0000-8000-dbdaaa370c8a",
             "XxlOuterColumn": 3,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "001a1098-0000-0000-8000-cbfbc8277c05",
@@ -244,8 +227,7 @@
                     "Active": true,
                     "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                     "RefName": "Terminal",
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "001a1098-0000-0000-8001-f06077c0f80d",
@@ -261,8 +243,7 @@
                     "Active": true,
                     "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                     "RefName": "Terminal",
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "00771048-0000-0000-8000-c884055ad525",
@@ -281,8 +262,7 @@
                     "RefName": "Partner",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
                     "ShowHotKey": true,
-                    "TabGroup": "ConsigneeId",
-                    "ReportTypeId": 1
+                    "TabGroup": "ConsigneeId"
                 },
                 {
                     "Id": "00781004-0000-0000-8000-6315ee50f50b",
@@ -293,8 +273,7 @@
                     "Row": 3,
                     "Label": "Subject",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00781028-0000-0000-8000-968d1a6ca412",
@@ -305,8 +284,7 @@
                     "Row": 50,
                     "Label": "Pickup Address",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00781034-0000-0000-8000-ab939e9d5f41",
@@ -316,8 +294,7 @@
                     "Column": 6,
                     "Label": "Delivery Address",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0078104c-0000-0000-8000-3b8b43b658c3",
@@ -332,8 +309,7 @@
                     "ShowLabel": true,
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"DDP\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"CIP\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"CPT\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"CFR\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"FAS\"\r\n    },\r\n    {\r\n        \"Id\": 6,\r\n        \"Name\": \"FCA\"\r\n    },\r\n    {\r\n        \"Id\": 7,\r\n        \"Name\": \"EXW\"\r\n    },\r\n    {\r\n        \"Id\": 8,\r\n        \"Name\": \"CIF\"\r\n    },\r\n    {\r\n        \"Id\": 9,\r\n        \"Name\": \"DPU\"\r\n    },\r\n    {\r\n        \"Id\": 10,\r\n        \"Name\": \"DAP\"\r\n    },\r\n    {\r\n        \"Id\": 11,\r\n        \"Name\": \"FOB\"\r\n    }\r\n]",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "007810c0-0000-0000-8000-0e09a923f748",
@@ -343,8 +319,7 @@
                     "Column": 6,
                     "Label": "Delivery term",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         },
@@ -358,7 +333,6 @@
             "Active": true,
             "ParentId": "00771010-0000-0000-8000-23350ec4242c",
             "XxlOuterColumn": 4,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00771078-0000-0000-8000-fdc373f492d5",
@@ -369,8 +343,7 @@
                     "Row": 3,
                     "Label": "Note",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "007710a4-0000-0000-8000-e3e29d42efd3",
@@ -381,8 +354,7 @@
                     "Label": "CBM",
                     "ShowLabel": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "007710ac-0000-0000-8000-2314b96f470f",
@@ -393,8 +365,7 @@
                     "Label": "GW",
                     "ShowLabel": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "007710d8-0000-0000-8000-1c72f215272f",
@@ -405,8 +376,7 @@
                     "Label": "Quantity",
                     "ShowLabel": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "007710dc-0000-0000-8000-d6c350df02e5",
@@ -417,8 +387,7 @@
                     "Label": "CW",
                     "ShowLabel": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "007710fc-0000-0000-8000-60bd020ff5d2",
@@ -434,8 +403,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where ds1.Name in (N'Unit Type','LTL Type','Container Type')\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where ds1.Name in (N'Unit Type','LTL Type','Container Type')\"\r\n}",
                     "RefName": "MasterData",
-                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
-                    "ReportTypeId": 1
+                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]"
                 }
             ]
         },
@@ -451,7 +419,6 @@
             "ParentId": "00771010-0000-0000-8000-23350ec4242c",
             "TabGroup": "Other charges",
             "XxlOuterColumn": 12,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00781014-0000-0000-8000-ecc6f4ca0d74",
@@ -473,8 +440,7 @@
                     "PreQuery": "{ \"InquiryId\": this.EditForm.Entity.Id}",
                     "IsSumary": true,
                     "Editable": true,
-                    "OrderBy": "ds.[Order] asc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.[Order] asc"
                 }
             ]
         },
@@ -489,7 +455,6 @@
             "Active": true,
             "ParentId": "00771090-0000-0000-8000-dbdaaa370c8a",
             "XxlOuterColumn": 6,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00781064-0000-0000-8000-a088d99eea16",
@@ -501,8 +466,7 @@
                     "Label": "Remark",
                     "Style": "max-height: 160px; overflow-y: auto;",
                     "DefaultVal": "return `Test default value`;",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         },
@@ -515,7 +479,6 @@
             "Style": "margin-bottom: 0px;padding: 0;",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00781090-0000-0000-8000-b9e926660ab3",
@@ -528,8 +491,7 @@
                     "ShowLabel": true,
                     "Style": "display: flex;align-items: center;gap: 1rem;height: 33px;",
                     "Events": "{\r\n    \"change\": \"ShowHideDetail\"\r\n}",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "007810d0-0000-0000-8000-041641283c84",
@@ -548,8 +510,7 @@
                     "PopulateField": "this.EditForm.ShowHideDetail();\r\nreturn null;",
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 15,\r\n        \"Name\": \"FCL TRUCKING\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-truck mr-1'></i>FCL TRUCKING</span>\"\r\n    },\r\n    {\r\n        \"Id\": 10,\r\n        \"Name\": \"FTL TRUCKING\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fas fa-truck mr-1'></i>FTL TRUCKING</span>\"\r\n    },\r\n    {\r\n        \"Id\": 12,\r\n        \"Name\": \"LTL TRUCKING\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fas fa-truck mr-1'></i>LTL TRUCKING</span>\"\r\n    },\r\n    {\r\n        \"Id\": 13,\r\n        \"Name\": \"General TRUCKING\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-truck mr-1'></i>General TRUCKING</span>\"\r\n    }\r\n]\r\n",
-                    "Template": "[{ \"FieldName\" : \"Description\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Description\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 }
             ]
         },
@@ -565,7 +526,6 @@
             "ParentId": "00771010-0000-0000-8000-23350ec4242c",
             "TabGroup": "Other charges",
             "XxlOuterColumn": 12,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00781004-0000-0000-8000-87d873dab76c",
@@ -581,8 +541,7 @@
                     "Query": "var detail = this.EditForm.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"InquiryDetail\");\r\nvar fee = this.EditForm.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"DefaultFee\");\r\nvar listItem = fee.AllListViewItem.filter(x => !x.GroupRow && !x.Entity.IsObh && (x.Entity.Rate || x.Entity.Cost)).map(x => x.Entity);\r\nvar groupedItems = {};\r\nlistItem.forEach(item => {\r\n    var key = `${item.PolId}-${item.PodId}`;\r\n    var sumDetail = detail.AllListViewItem.map(x => x.Entity).find(x => x.PolId == item.PolId && x.PodId == item.PodId);\r\n    var allUnitPrice = item.Unit.Name.includes('ALL') ? new this.Decimal(item.Rate || 0) : new this.Decimal(0);\r\n    var newItem = {\r\n        PolId: sumDetail.PolId,\r\n        Pol: sumDetail.Pol,\r\n        PodId: sumDetail.PodId,\r\n        Pod: sumDetail.Pod,\r\n        VendorId: sumDetail.VendorId,\r\n        Vendor: sumDetail.Vendor,\r\n        Cont40: ((item.Unit.Name.includes('40') && !item.Unit.Name.includes(\"40'HC\") ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateVND || 1)).plus(allUnitPrice.times(item.ExchangeRateVND || 1)),\r\n        Cont20: ((item.Unit.Name.includes('20') ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateVND || 1)).plus(allUnitPrice.times(item.ExchangeRateVND || 1)),\r\n        Cont45: ((item.Unit.Name.includes('45') > 0 ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateVND || 1)).plus(allUnitPrice.times(item.ExchangeRateVND || 1)),\r\n        Cont40HC: ((item.Unit.Name.includes(\"40'HC\") ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateVND || 1)).plus(allUnitPrice.times(item.ExchangeRateVND || 1)),\r\n        LTL: (([\"CBM\", \"KGS\"].includes(item.Unit.Name) ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateVND || 1)).plus(allUnitPrice.times(item.ExchangeRateVND || 1)),\r\n        FTL: ((item.Unit.Name.endsWith(\"T\") && !item.Unit.IsContainer ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateVND || 1)).plus(allUnitPrice.times(item.ExchangeRateVND || 1)),\r\n\r\n        Cont40USD: ((item.Unit.Name.includes('40') && !item.Unit.Name.includes(\"40'HC\") ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateUSD || 1)).plus(allUnitPrice.times(item.ExchangeRateUSD || 1)),\r\n        Cont20USD: ((item.Unit.Name.includes('20') ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateUSD || 1)).plus(allUnitPrice.times(item.ExchangeRateUSD || 1)),\r\n        Cont45USD: ((item.Unit.Name.includes('45') > 0 ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateUSD || 1)).plus(allUnitPrice.times(item.ExchangeRateUSD || 1)),\r\n        Cont40HCUSD: ((item.Unit.Name.includes(\"40'HC\") ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateUSD || 1)).plus(allUnitPrice.times(item.ExchangeRateUSD || 1)),\r\n        LTLUSD: (([\"CBM\", \"KGS\"].includes(item.Unit.Name) ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateUSD || 1)).plus(allUnitPrice.times(item.ExchangeRateUSD || 1)),\r\n        FTLUSD: ((item.Unit.Name.endsWith(\"T\") && !item.Unit.IsContainer ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateUSD || 1)).plus(allUnitPrice.times(item.ExchangeRateUSD || 1)),\r\n    }\r\n    if (!groupedItems[key]) {\r\n        groupedItems[key] = newItem;\r\n    }\r\n    else {\r\n        groupedItems[key].Cont40 = groupedItems[key].Cont40.plus(newItem.Cont40);\r\n        groupedItems[key].Cont20 = groupedItems[key].Cont20.plus(newItem.Cont20);\r\n        groupedItems[key].Cont45 = groupedItems[key].Cont45.plus(newItem.Cont45);\r\n        groupedItems[key].Cont40HC = groupedItems[key].Cont40HC.plus(newItem.Cont40HC);\r\n        groupedItems[key].LTL = groupedItems[key].LTL.plus(newItem.LTL);\r\n        groupedItems[key].FTL = groupedItems[key].FTL.plus(newItem.FTL);\r\n        groupedItems[key].Cont40USD = groupedItems[key].Cont40USD.plus(newItem.Cont40USD);\r\n        groupedItems[key].Cont20USD = groupedItems[key].Cont20USD.plus(newItem.Cont20USD);\r\n        groupedItems[key].Cont45USD = groupedItems[key].Cont45USD.plus(newItem.Cont45USD);\r\n        groupedItems[key].Cont40HCUSD = groupedItems[key].Cont40HCUSD.plus(newItem.Cont40HCUSD);\r\n        groupedItems[key].LTLUSD = groupedItems[key].LTLUSD.plus(newItem.LTLUSD);\r\n        groupedItems[key].FTLUSD = groupedItems[key].FTLUSD.plus(newItem.FTLUSD);\r\n    }\r\n\r\n});\r\nvar result = Object.values(groupedItems).map(item => {\r\n    return {\r\n        PolId: item.PolId,\r\n        Pol: item.Pol,\r\n        PodId: item.PodId,\r\n        Pod: item.Pod,\r\n        VendorId: item.VendorId,\r\n        Vendor: item.Vendor,\r\n        Cont40: item.Cont40,\r\n        Cont20: item.Cont20,\r\n        Cont45: item.Cont45,\r\n        Cont40HC: item.Cont40HC,\r\n        LTL: item.LTL,\r\n        FTL: item.FTL,\r\n        Cont40USD: item.Cont40USD,\r\n        Cont20USD: item.Cont20USD,\r\n        Cont45USD: item.Cont45USD,\r\n        Cont40HCUSD: item.Cont40HCUSD,\r\n        LTLUSD: item.LTLUSD,\r\n        FTLUSD: item.FTLUSD\r\n    };\r\n});\r\n\r\nreturn result;",
                     "IsSumary": true,
                     "OrderBy": "ds.InsertedDate desc",
-                    "AddRowExp": "this.EditForm.Entity.StatusId == 1 || this.EditForm.Entity.StatusId == 4",
-                    "ReportTypeId": 1
+                    "AddRowExp": "this.EditForm.Entity.StatusId == 1 || this.EditForm.Entity.StatusId == 4"
                 }
             ]
         },
@@ -596,7 +555,6 @@
             "Active": true,
             "ParentId": "00771090-0000-0000-8000-dbdaaa370c8a",
             "XxlOuterColumn": 3,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00781054-0000-0000-8000-448eb0b1e304",
@@ -612,8 +570,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from EntityContainer as ds where EntityId = '{EntityId}'\",\r\n    \"total\": \"select count(ds.Id) as total from EntityContainer as ds where EntityId = '{EntityId}'\"\r\n}",
                     "RefName": "EntityContainer",
                     "PreQuery": "{ \"EntityId\": this.EditForm.Entity.Id}",
-                    "Editable": true,
-                    "ReportTypeId": 1
+                    "Editable": true
                 }
             ]
         },
@@ -626,7 +583,6 @@
             "Style": "margin-bottom: 0px;padding: 0;",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "001d3524-0000-0000-8000-4fb56ed8e426",
@@ -642,8 +598,7 @@
                     "Active": true,
                     "Query": "select MasterData.Name as CustomerType,de.Name as Department,Partner.Address AS addresscus,sales.PhoneNumber AS telsales,sales.Email AS email,sales.NickName AS nickname,de.Name as Department,ct.JobTitles AS JobTitles ,ct.ContactName AS ContactName ,ct.ContactPhoneNumber AS telcus, (SELECT STRING_AGG(CONCAT(cont.Name, ' x ', Round(EntityContainer.Quantity,0)), ' & ') as ContainerText\r\nFROM EntityContainer\r\nLEFT JOIN MasterData cont ON EntityContainer.ContainerTypeId = cont.Id\r\nWHERE EntityId = '{Id}') as ContainerText\r\nfrom Inquiry\r\nleft join Partner on Inquiry.CustomerId = Partner.Id\r\nleft join MasterData on Partner.CustomerTypeId = MasterData.Id\r\nLEFT JOIN PartnerContact ct ON ct.PartnerId = Partner.Id\r\nLEFT JOIN [USER] sales on dbo.Partner.SaleId = sales.Id \r\nleft join [User] u on u.Id = '{TokenUserId}'\r\nleft join MasterData de on de.Id = u.DepartmentId\r\nwhere Inquiry.Id = '{Id}'\r\n\r\n\r\nselect concat(pol.Name,pod.Name) as Level1,detail.GroupFee, pol.Name as Pol,pod.Name as Pod,fee.Name as Description,\r\ncurr.Code as Curr,\r\nformat((select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand (unit.Name like N'%CBM%' OR unit.Name like N'%KGS%')\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId)+ \r\nisnull((select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%ALL%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId),0),'N02') as LCL,\r\nFormat(Round((select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%20%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId)+ \r\nisnull((select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%ALL%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId),0),0),'N02') as Cont20,\r\nformat((select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%40%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId)\r\n+ \r\nisnull((select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%ALL%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId),0)+ \r\nisnull((select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%ALL%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId),0),'N02') as Cont40,\r\nformat((select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%45%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId)\r\n+ \r\nisnull((select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nleft join MasterData unit on detail2.UnitId = unit.Id\r\nwhere InquiryId = '{Id}' \r\nand unit.Name like N'%ALL%'\r\nand detail2.PolId = detail.PolId \r\nand detail2.PodId = detail.PodId\r\nand detail2.DescriptionId = detail.DescriptionId),0),'N02') as Cont45\r\nfrom InquiryDetail detail\r\nleft join Terminal pol on detail.PolId = pol.Id\r\nleft join Terminal pod on detail.PodId = pod.Id\r\nleft join MasterData curr on detail.CurrencyId = curr.Id\r\nleft join FeeType fee on detail.DescriptionId = fee.Id\r\nleft join MasterData groupFee on fee.GroupId = groupFee.Id\r\nleft join MasterData otherUnit on detail.OtherUnitId = otherUnit.Id\r\nwhere OtherFee = 1 and InquiryId = '{Id}'\r\ngroup by pol.Name,detail.PolId,pod.Name,detail.PodId,detail.CurrencyId,curr.Code,detail.DescriptionId,fee.Name,\r\ndetail.GroupFee,groupFee.Enum\r\nORDER BY concat(pol.Name,pod.Name),groupFee.Enum ASC",
                     "Template": "<table style=\"width: 100.054%; border-collapse: collapse; height: 424.302px;\" border=\"0\"><colgroup><col style=\"width: 15.1039%;\"><col style=\"width: 0.78803%;\"><col style=\"width: 49.1206%;\"><col style=\"width: 1.7074%;\"><col style=\"width: 8.40566%;\"><col style=\"width: 1.31338%;\"><col style=\"width: 10.6384%;\"><col style=\"width: 1.31338%;\"><col style=\"width: 11.6891%;\"></colgroup>\n<tbody>\n<tr style=\"height: 0px;\">\n<td rowspan=\"3\"><span style=\"font-size: 10pt;\">&nbsp;${CLogo}</span></td>\n<td rowspan=\"3\"><span style=\"font-size: 10pt;\">&nbsp;</span></td>\n<td colspan=\"7\" rowspan=\"3\"><span style=\"font-size: 10pt;\">${CCompanyName}<br>Address: ${CAddress}<br>Hotline:<a href=\"tel:19003133\">1900 3133<br></a>Email: contact@als.com.vn</span></td>\n</tr>\n<tr style=\"height: 0px;\"></tr>\n<tr style=\"height: 120.292px;\"></tr>\n<tr style=\"height: 31px;\">\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td style=\"text-align: center;\" colspan=\"3\" rowspan=\"3\">\n<div style=\"font-size: 28pt; min-width: 400px; display: inline-block; border-radius: 29px; border: 1px solid rgb(0, 0, 0); text-align: center; font-weight: 600;\">Quotation</div>\n</td>\n<td><span style=\"font-size: 9pt;\">&nbsp;</span></td>\n<td><span style=\"font-size: 9pt;\">Quote No</span></td>\n<td><span style=\"font-size: 9pt;\">:</span></td>\n<td><span style=\"font-size: 9pt; color: #e03e2d;\">${Quo No}</span></td>\n</tr>\n<tr style=\"height: 31px;\">\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td><span style=\"font-size: 9pt;\">&nbsp;</span></td>\n<td><span style=\"font-size: 9pt;\">Created At</span></td>\n<td><span style=\"font-size: 9pt;\">:</span></td>\n<td><span style=\"font-size: 9pt;\">${Quo Date}</span></td>\n</tr>\n<tr style=\"height: 31.0104px;\">\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td><span style=\"font-size: 9pt;\">&nbsp;</span></td>\n<td><span style=\"font-size: 9pt;\">Valid Until</span></td>\n<td><span style=\"font-size: 9pt;\">:</span></td>\n<td><span style=\"font-size: 9pt;\">${Validity}</span></td>\n</tr>\n<tr style=\"height: 24px;\">\n<td class=\"xl67\" style=\"width: 65px;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Company Name</strong></span></td>\n<td style=\"width: 65px;\"><span style=\"font-size: 10pt;\"><strong>:</strong></span></td>\n<td><span style=\"font-size: 10pt;\">${Customer}</span></td>\n<td><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td><span style=\"font-size: 10pt;\"><strong>From</strong></span></td>\n<td>:</td>\n<td colspan=\"3\">${nickname}</td>\n</tr>\n<tr style=\"height: 24px;\">\n<td class=\"xl67\" style=\"width: 65px; text-align: left;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Address</strong></span></td>\n<td style=\"width: 65px;\"><span style=\"font-size: 10pt;\"><strong>:</strong></span></td>\n<td style=\"text-align: left;\"><span style=\"font-size: 10pt;\">${addresscus}</span></td>\n<td style=\"width: 30.5px;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td class=\"xl67\" style=\"width: 15.25px;\" width=\"61\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Dept</strong></span></td>\n<td><span style=\"font-size: 10pt;\">:</span></td>\n<td colspan=\"3\"><span style=\"font-size: 10pt;\">${Department}</span></td>\n</tr>\n<tr style=\"height: 24px;\">\n<td class=\"xl67\" style=\"width: 65px;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>To</strong></span></td>\n<td style=\"width: 65px;\"><span style=\"font-size: 10pt;\"><strong>:</strong></span></td>\n<td><span style=\"font-size: 10pt;\">${ContactName}</span></td>\n<td style=\"width: 30.5px;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td class=\"xl67\" style=\"width: 15.25px;\" width=\"61\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Tel</strong></span></td>\n<td><span style=\"font-size: 10pt;\">:</span></td>\n<td colspan=\"3\"><span style=\"font-size: 10pt;\">${telsales}</span></td>\n</tr>\n<tr style=\"height: 24px;\">\n<td class=\"xl67\" style=\"width: 65px;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Title</strong></span></td>\n<td style=\"width: 65px;\"><span style=\"font-size: 10pt;\"><strong>:</strong></span></td>\n<td><span style=\"font-size: 10pt;\">${JobTitles}</span></td>\n<td style=\"width: 30.5px;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td class=\"xl67\" style=\"width: 15.25px;\" width=\"61\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Email</strong></span></td>\n<td><span style=\"font-size: 10pt;\">:</span></td>\n<td colspan=\"3\"><span style=\"font-size: 10pt;\">${email}</span></td>\n</tr>\n<tr style=\"height: 24px;\">\n<td class=\"xl67\" style=\"width: 65px;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Tel</strong></span></td>\n<td style=\"width: 65px;\"><span style=\"font-size: 10pt;\"><strong>:</strong></span></td>\n<td><span style=\"font-size: 10pt;\">${telcus}</span></td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n</tr>\n<tr style=\"height: 91px;\">\n<td class=\"xl67\" colspan=\"9\" width=\"817\" height=\"91\"><span style=\"font-size: 10pt;\">Dear ${PIC}</span><br><span style=\"font-size: 10pt;\">Thank you for your continued interest in our services. </span><br><span style=\"font-size: 10pt;\">We're excited to present a customized sea freight quote tailored to your specific needs. Our competitive rates and comprehensive solutions will ensure a seamless shipping experience.</span></td>\n</tr>\n</tbody>\n</table>\n<table class=\"dashed\" style=\"border-collapse: collapse; width: 100.054%; height: 37.9167px; margin-left: 0px; border: 0.01px solid rgb(126, 140, 141); margin-right: auto;\" border=\"1\"><colgroup><col style=\"width: 30.2071%;\"><col style=\"width: 33.492%;\"><col style=\"width: 36.2494%;\"></colgroup>\n<tbody data-table=\"t1\">\n<tr>\n<td style=\"border: 0.01px solid rgb(126, 140, 141); text-align: center;\" scope=\"rowgroup\"><span style=\"font-size: 10pt;\">POL</span></td>\n<td style=\"border: 0.01px solid rgb(126, 140, 141); text-align: center;\" scope=\"rowgroup\"><span style=\"font-size: 10pt;\">POD</span></td>\n<td style=\"border: 0.01px solid rgb(126, 140, 141); text-align: center;\" scope=\"rowgroup\"><span style=\"font-size: 10pt;\">Empty Return</span></td>\n</tr>\n<tr>\n<td style=\"border-image: initial; border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{Origin}</span></td>\n<td style=\"border-image: initial; border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{Destination}</span></td>\n<td style=\"border-image: initial; border-color: #7e8c8d; text-align: center;\"><span style=\"font-size: 10pt;\">{Empty Return}</span></td>\n</tr>\n</tbody>\n</table>\n<p>&nbsp;</p>\n<table class=\"dashed\" style=\"border-collapse: collapse; width: 100%; height: 179.333px; border: 1px solid rgb(126, 140, 141);\" border=\"1\"><colgroup><col style=\"width: 20.3112%;\"><col style=\"width: 11.7325%;\"><col style=\"width: 10.0925%;\"><col style=\"width: 11.8586%;\"><col style=\"width: 11.1019%;\"><col style=\"width: 9.20942%;\"><col style=\"width: 9.58789%;\"><col style=\"width: 5.67704%;\"><col style=\"width: 10.471%;\"></colgroup>\n<thead>\n<tr>\n<td style=\"text-align: center; border-color: #7e8c8d;\" rowspan=\"2\"><span style=\"font-size: 10pt;\">Description</span></td>\n<td style=\"text-align: center; border-color: #7e8c8d;\" rowspan=\"2\"><span style=\"font-size: 10pt;\">Curr</span></td>\n<td style=\"text-align: center; border-color: #7e8c8d;\" rowspan=\"2\"><span style=\"font-size: 10pt;\">Unit</span></td>\n<td style=\"text-align: center; border-color: #7e8c8d;\" colspan=\"4\"><span style=\"font-size: 10pt;\">Price</span></td>\n<td style=\"text-align: center; border-color: #7e8c8d;\" rowspan=\"2\"><span style=\"font-size: 10pt;\">VAT</span></td>\n<td style=\"text-align: center; border-color: #7e8c8d;\" rowspan=\"2\"><span style=\"font-size: 10pt;\">Remark</span></td>\n</tr>\n<tr>\n<td style=\"text-align: center; border-color: #7e8c8d;\"><span style=\"font-size: 10pt;\">LTL</span></td>\n<td class=\"xl67\" style=\"text-align: center; border-color: #7e8c8d;\" width=\"74\" height=\"24\"><span style=\"font-size: 10pt;\">20</span></td>\n<td class=\"xl67\" style=\"text-align: center; border-color: #7e8c8d;\" width=\"61\" height=\"24\"><span style=\"font-size: 10pt;\">40</span></td>\n<td class=\"xl67\" style=\"text-align: center; border-color: #7e8c8d;\" width=\"77\" height=\"24\"><span style=\"font-size: 10pt;\">45</span></td>\n</tr>\n</thead>\n<tbody data-group=\"Level1|GroupFee\" data-table=\"c0\">\n<tr>\n<td style=\"background-color: #ced4d9; text-align: left;\" colspan=\"9\"><span style=\"font-size: 10pt;\">ROUTE: #{Pol} - #{Pod}</span></td>\n</tr>\n<tr>\n<td style=\"background-color: #ecf0f1;\" colspan=\"9\"><span style=\"font-size: 10pt;\">#{GroupFee}</span></td>\n</tr>\n<tr>\n<td style=\"border-color: #7e8c8d; vertical-align: middle;\"><span style=\"font-size: 10pt;\">{Description}</span></td>\n<td style=\"border-color: #7e8c8d; text-align: center; vertical-align: middle;\"><span style=\"font-size: 10pt;\">{Curr}</span></td>\n<td style=\"border-color: #7e8c8d; text-align: center; vertical-align: middle;\">&nbsp;</td>\n<td style=\"border-color: #7e8c8d; text-align: center; vertical-align: middle;\">&nbsp;{LCL}&nbsp;</td>\n<td style=\"border-color: #7e8c8d; text-align: center; vertical-align: middle;\"><span style=\"font-size: 10pt;\"> {Cont20} </span></td>\n<td style=\"border-color: #7e8c8d; text-align: center; vertical-align: middle;\">&nbsp;{Cont40}&nbsp;</td>\n<td style=\"border-color: #7e8c8d; text-align: center; vertical-align: middle;\"><span style=\"font-size: 10pt;\"> {Cont45} </span></td>\n<td style=\"border-color: #7e8c8d; text-align: center; vertical-align: middle;\">&nbsp;</td>\n<td style=\"border-color: #7e8c8d; text-align: center; vertical-align: middle;\">&nbsp;</td>\n</tr>\n</tbody>\n<tfoot>\n<tr>\n<td style=\"vertical-align: top; border-color: #7e8c8d;\" colspan=\"9\"><span style=\"font-size: 10pt;\"><br></span><span style=\"font-size: 10pt;\"><br></span></td>\n</tr>\n</tfoot>\n</table>\n<p>&nbsp;</p>\n<p><span style=\"font-size: 10pt;\">${Remark}</span></p>",
-                    "ShowExp": "var config = JSON.parse(localStorage.getItem(\"SalesFunction\"));\r\nif (!config[\"APPROVE_QUOTATION_FILE\"]) {\r\n    return this.Entity.StatusId == 3;\r\n}\r\nelse {\r\n    return !this.Entity.Id.startsWith('-');\r\n}",
-                    "ReportTypeId": 1
+                    "ShowExp": "var config = JSON.parse(localStorage.getItem(\"SalesFunction\"));\r\nif (!config[\"APPROVE_QUOTATION_FILE\"]) {\r\n    return this.Entity.StatusId == 3;\r\n}\r\nelse {\r\n    return !this.Entity.Id.startsWith('-');\r\n}"
                 },
                 {
                     "Id": "0078100c-0000-0000-8000-7c7c11cd80bf",
@@ -656,8 +611,7 @@
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"DeclineEntity\" }",
                     "Active": true,
-                    "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserApprovedIds.includes(this.Token.UserId) && !this.Entity.Id.startsWith('-')",
-                    "ReportTypeId": 1
+                    "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserApprovedIds.includes(this.Token.UserId) && !this.Entity.Id.startsWith('-')"
                 },
                 {
                     "Id": "00781024-0000-0000-8000-8264b6c914d0",
@@ -670,8 +624,7 @@
                     "Icon": "fas fa-sliders-h-square",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"SaveAs\" }",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0078103c-0000-0000-8000-fb028ff23295",
@@ -684,8 +637,7 @@
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00781040-0000-0000-8000-eb76d673d2a8",
@@ -698,8 +650,7 @@
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"SendEntity\" }",
                     "Active": true,
-                    "ShowExp": "(this.Entity.StatusId == 1 || this.Entity.StatusId == 4)  && this.Entity.InsertedBy == this.Token.UserId && !this.Entity.Id.startsWith('-')",
-                    "ReportTypeId": 1
+                    "ShowExp": "(this.Entity.StatusId == 1 || this.Entity.StatusId == 4)  && this.Entity.InsertedBy == this.Token.UserId && !this.Entity.Id.startsWith('-')"
                 },
                 {
                     "Id": "00781088-0000-0000-8000-b578b0d8988c",
@@ -712,8 +663,7 @@
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"ApprovedEntity\" }",
                     "Active": true,
-                    "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserApprovedIds.includes(this.Token.UserId) && !this.Entity.Id.startsWith('-')",
-                    "ReportTypeId": 1
+                    "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserApprovedIds.includes(this.Token.UserId) && !this.Entity.Id.startsWith('-')"
                 },
                 {
                     "Id": "007810b8-0000-0000-8000-ccdb6c770ddc",
@@ -726,8 +676,7 @@
                     "Icon": "fas fa-sliders-h-square",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"SaveAdd\" }",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00e62e58-0000-0000-8000-379366250f9f",
@@ -741,8 +690,7 @@
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{\r\n    \"click\": \"CreateBookingLocal\"\r\n}",
                     "Active": true,
-                    "ShowExp": "(this.dayjs(this.Entity.FromDate) < this.dayjs() && (!this.Entity.ToDate || (this.Entity.ToDate &&  this.dayjs(this.Entity.ToDate ) > this.dayjs())))  && this.Entity.StatusId == 3",
-                    "ReportTypeId": 1
+                    "ShowExp": "(this.dayjs(this.Entity.FromDate) < this.dayjs() && (!this.Entity.ToDate || (this.Entity.ToDate &&  this.dayjs(this.Entity.ToDate ) > this.dayjs())))  && this.Entity.StatusId == 3"
                 },
                 {
                     "Id": "00f639fc-0000-0000-8000-adc76e9a2d4a",
@@ -758,8 +706,7 @@
                     "Active": true,
                     "Query": "WITH CurrencySums AS (\r\n    SELECT \r\n        SUM(det.Rate*isnull(det.Quantity,1)) AS TotalAmount,\r\n        curr.Code AS CurrencyCode,\r\n\t\tcurr.IsLocal AS localcurr\r\n    FROM InquiryDetail det\r\n    LEFT JOIN dbo.MasterData curr ON curr.Id = det.CurrencyId\r\n    WHERE det.InquiryId = '{Id}'\r\n    GROUP BY curr.Code,curr.IsLocal\r\n)\r\nSELECT \r\n    cusType.Name AS CusType, \r\n    dept.Name AS Dept, \r\n    POL.Name AS POL, \r\n    POD.Name AS POD, \r\n\tdetails.ScheduleIdsText AS Schedule,\r\n\tdetails.TransitTime AS transitime,\r\n    cust.Address AS CustAddr, \r\n    sales.PhoneNumber AS SalesTel, \r\n    sales.Email AS SalesEmail, \r\n    sales.NickName AS SalesNick, \r\n    dept.Name AS SalesDept, \r\n    contact.JobTitles AS JobTitle, \r\n    contact.ContactName AS ContactName, \r\n    ISNULL(inco.Name, '') AS Inco, \r\n    ISNULL(Inquiry.DeliveryTerm, '') AS DeliveryT, \r\n    commo.Name AS Commo, \r\n    FORMAT(Inquiry.CargoReadyDate, 'dd MMM, yyyy') AS CargoReady, \r\n    Inquiry.GW AS QGW, \r\n    Inquiry.DeminsionText AS Dimension, \r\n    Inquiry.Quantity AS Qty, \r\n    unit.Name AS DUnit, \r\n    Inquiry.Pickup AS DPickup, \r\n    Inquiry.Delivery AS DDelivery, \r\n    Inquiry.Remark AS DRemark, \r\n    contact.ContactPhoneNumber AS CustTel,\r\n    (SELECT STRING_AGG(CONCAT(cont.Name, ' x ', ROUND(inc.Quantity, 0)), ' & ') AS Containers\r\n     FROM dbo.EntityContainer inc\r\n     LEFT JOIN MasterData cont ON inc.ContainerTypeId = cont.Id\r\n     WHERE inc.EntityId = '{Id}') AS Containers,\r\n\r\n    (SELECT STRING_AGG(CONCAT((CASE WHEN CurrencySums.localcurr = 1 \tTHEN  FORMAT(TotalAmount, 'N{CLocalTotalPrice}')\r\n\tELSE FORMAT(TotalAmount,'N{CTotalPrice}') END), ' ', CurrencyCode), '</br>') \r\n     FROM CurrencySums\r\n     WHERE TotalAmount IS NOT NULL) AS AmountText\r\n\r\nFROM Inquiry\r\nLEFT JOIN Partner cust ON Inquiry.CustomerId = cust.Id\r\nLEFT JOIN MasterData cusType ON cust.CustomerTypeId = cusType.Id\r\nLEFT JOIN dbo.Terminal POL ON POL.Id = Inquiry.PolId \r\nLEFT JOIN dbo.Terminal POD ON POD.Id = Inquiry.PodId\r\nLEFT JOIN dbo.MasterData inco ON inco.Id = Inquiry.IncotermId\r\nLEFT JOIN dbo.MasterData commo ON commo.Id = Inquiry.CommodityId\r\nLEFT JOIN dbo.MasterData unit ON unit.Id = Inquiry.UnitId \r\nLEFT JOIN dbo.InquiryDetail details ON details.InquiryId = dbo.Inquiry.Id\r\n\r\nOUTER APPLY (SELECT TOP 1 * FROM PartnerContact WHERE PartnerId = Inquiry.CustomerId) AS contact\r\n\r\nLEFT JOIN [USER] sales ON cust.SaleId = sales.Id \r\nLEFT JOIN [User] [User] ON [User].Id = '{TokenUserId}'\r\nLEFT JOIN MasterData dept ON dept.Id = [User].DepartmentId\r\n\r\nWHERE Inquiry.Id = '{Id}'\r\n\r\nSELECT \r\nctnr.Code AS CTNR,\r\ngroupfee.Name AS GROUPFEE,\r\npol.Name AS POL, \r\npod.Name AS POD, \r\nfee.Name AS DESCRIPTON, \r\nFORMAT( ISNULL(iq.Quantity,1),'N{CQuantity}') AS QTY,\r\n unit.Name AS UNIT,\r\n curr.Code AS CURR,\r\n CASE WHEN curr.IsLocal=1 THEN \r\n FORMAT(iq.Rate,'N{CLocalUnitPrice}')\r\n ELSE FORMAT(iq.Rate,'N{CUnitPrice}')\r\n   END AS RATE,\r\n\r\n CASE WHEN curr.IsLocal =1 \r\n THEN FORMAT((ISNULL(iq.Quantity,1)*iq.Rate),'N{CLocalTotalPrice}') \r\n ELSE FORMAT((ISNULL(iq.Quantity,1)*iq.Rate),'N{CTotalPrice}') END   AS Amount \r\n ,iq.Note AS notes,\r\n  (select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nLEFT JOIN dbo.MasterData curr ON curr.Id = detail2.CurrencyId\r\nwhere InquiryId = '{Id}' \r\nand curr.Code like N'%USD%'\r\n) AS USDtoal,\r\n (select sum(isnull(Rate,0))\r\nfrom InquiryDetail detail2\r\nLEFT JOIN dbo.MasterData curr ON curr.Id = detail2.CurrencyId\r\nwhere InquiryId = '{Id}' \r\nand curr.Code like N'%VND%'\r\n) AS VNDTotal\r\n \r\n  FROM \r\ndbo.InquiryDetail iq\r\nLEFT JOIN dbo.MasterData ctnr ON ctnr.Id = iq.UnitId\r\nLEFT JOIN dbo.Terminal pol ON pol.Id = iq.PolId \r\nLEFT JOIN dbo.Terminal pod ON pod.Id = iq.PodId\r\nLEFT JOIN dbo.FeeType fee ON fee.Id=iq.DescriptionId\r\nLEFT JOIN dbo.MasterData groupfee ON groupfee.Id = fee.GroupId\r\nLEFT JOIN dbo.MasterData unit ON unit.Id = iq.OtherUnitId\r\nLEFT JOIN dbo.MasterData curr ON curr.Id=iq.CurrencyId\r\nOUTER APPLY dbo.WebConfig decimalcf\r\nWHERE \r\niq.InquiryId='{Id}' AND iq.OtherFee=1\r\nGROUP BY ctnr.Code,groupfee.Name,fee.Name,pol.Name,pod.Name,curr.IsLocal, iq.Quantity,unit.Name, curr.Code,iq.Rate,iq.Note,groupfee.Enum\r\nORDER BY  ctnr.code ,groupfee.Enum ASC",
                     "Template": "<table style=\"width: 100.043%; border-collapse: collapse; height: 266.958px;\" border=\"0\"><colgroup><col style=\"width: 16.359%;\"><col style=\"width: 1.28811%;\"><col style=\"width: 46.1142%;\"><col style=\"width: 1.28811%;\"><col style=\"width: 8.5015%;\"><col style=\"width: 1.28811%;\"><col style=\"width: 12.6234%;\"><col style=\"width: 1.28811%;\"><col style=\"width: 11.2065%;\"></colgroup>\n<tbody>\n<tr style=\"height: 0px;\">\n<td rowspan=\"4\">${CLogo}</td>\n<td rowspan=\"3\"><span style=\"font-size: 10pt;\">&nbsp;</span></td>\n<td style=\"text-align: center;\" colspan=\"7\" rowspan=\"3\">\n<p><span style=\"font-size: 13pt;\"><strong>${CCompanyName}</strong></span></p>\n<p>Address: ${CAddress}</p>\n</td>\n</tr>\n<tr style=\"height: 0px;\"></tr>\n<tr style=\"height: 42.625px;\"></tr>\n<tr style=\"height: 16.6667px;\">\n<td>&nbsp;</td>\n<td style=\"text-align: center;\" colspan=\"3\">\n<div>&nbsp;</div>\n</td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 9pt; height: 10px;\">&nbsp;</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 9pt; height: 10px;\">&nbsp;</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 9pt;\">&nbsp;</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 9pt; color: #e03e2d;\">&nbsp;</span></td>\n</tr>\n<tr style=\"height: 16.6667px;\">\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td style=\"text-align: center;\" colspan=\"3\">\n<div>&nbsp;</div>\n</td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 9pt; height: 10px;\">&nbsp;</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 9pt; height: 10px;\">&nbsp;</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 9pt;\">&nbsp;</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 9pt; color: #e03e2d;\">&nbsp;</span></td>\n</tr>\n<tr style=\"height: 18.6667px;\">\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td style=\"text-align: center;\" colspan=\"3\" rowspan=\"3\">\n<div style=\"font-size: 28pt; min-width: 400px; display: inline-block; border-radius: 29px; border: 1px solid rgb(0, 0, 0); text-align: center; font-weight: 600;\">Quotation</div>\n</td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 9pt; height: 10px;\">&nbsp;</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 9pt; height: 10px;\">Quote No</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 9pt;\">:</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 9pt; color: #e03e2d;\">${Quo No}</span></td>\n</tr>\n<tr style=\"height: 18.6667px;\">\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 9pt;\">&nbsp;</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 9pt;\">Created At</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 9pt;\">:</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 9pt;\">${Quo Date}</span></td>\n</tr>\n<tr style=\"height: 18.6667px;\">\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 9pt;\">Valid Until</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 9pt;\">:</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 9pt;\">${Validity}</span></td>\n</tr>\n<tr style=\"height: 27px;\">\n<td class=\"xl67\" style=\"width: 65px; text-align: left; vertical-align: top;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Company Name</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">:</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">${Customer}</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>From</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\">:</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\">${SalesNick}</td>\n</tr>\n<tr style=\"height: 27px;\">\n<td class=\"xl67\" style=\"width: 65px; text-align: left; vertical-align: top;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Address</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">:</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">${CustAddr}</span></td>\n<td style=\"width: 30.5px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td class=\"xl67\" style=\"width: 15.25px; text-align: left; vertical-align: top;\" width=\"61\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Dept</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">:</span></td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\"><span style=\"font-size: 10pt;\">${SalesDept}</span></td>\n</tr>\n<tr style=\"height: 27px;\">\n<td class=\"xl67\" style=\"width: 65px; text-align: left; vertical-align: top;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>To</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">:</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">${ContactName}</span></td>\n<td style=\"width: 30.5px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td class=\"xl67\" style=\"width: 15.25px; text-align: left; vertical-align: top;\" width=\"61\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Tel</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">:</span></td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\"><span style=\"font-size: 10pt;\">${SalesTel}</span></td>\n</tr>\n<tr style=\"height: 27px;\">\n<td class=\"xl67\" style=\"width: 65px; text-align: left; vertical-align: top;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Title</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">:</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">${JobTitle}</span></td>\n<td style=\"width: 30.5px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td class=\"xl67\" style=\"width: 15.25px; text-align: left; vertical-align: top;\" width=\"61\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Email</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">:</span></td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\"><span style=\"font-size: 10pt;\">${SalesEmail}</span></td>\n</tr>\n<tr style=\"height: 27px;\">\n<td class=\"xl67\" style=\"width: 65px; text-align: left; vertical-align: top;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Tel</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">:</span></td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\">${CustTel}</span></td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n</tr>\n</tbody>\n</table>\n<p>&nbsp;</p>\n<p><em><strong>Shipment Details</strong></em></p>\n<p>&nbsp;</p>\n<table style=\"border-collapse: collapse; width: 100.054%; height: 117.375px;\" border=\"0\"><colgroup><col style=\"width: 16.8724%;\"><col style=\"width: 1.28797%;\"><col style=\"width: 18.6755%;\"><col style=\"width: 13.1373%;\"><col style=\"width: 1.28797%;\"><col style=\"width: 21.1227%;\"><col style=\"width: 7.9854%;\"><col style=\"width: 1.28797%;\"><col style=\"width: 18.2891%;\"></colgroup>\n<tbody>\n<tr style=\"height: 23.4688px;\">\n<td style=\"text-align: left; vertical-align: top;\"><strong>Route</strong></td>\n<td style=\"text-align: left; vertical-align: top;\">:</td>\n<td style=\"text-align: left; vertical-align: top;\">${POL} - ${POD}</td>\n<td style=\"text-align: left; vertical-align: top;\"><strong>Quantity</strong></td>\n<td style=\"text-align: left; vertical-align: top;\">:</td>\n<td style=\"text-align: left; vertical-align: top;\">${Containers}</td>\n<td style=\"text-align: left; vertical-align: top;\"><strong>Pickup</strong></td>\n<td style=\"text-align: left; vertical-align: top;\">:</td>\n<td style=\"text-align: left; vertical-align: top;\" rowspan=\"2\">${DPickup}</td>\n</tr>\n<tr style=\"height: 23.4688px;\">\n<td style=\"text-align: left; vertical-align: top;\"><strong>Incoterm</strong></td>\n<td style=\"text-align: left; vertical-align: top;\">:</td>\n<td style=\"text-align: left; vertical-align: top;\">${Inco}</td>\n<td style=\"text-align: left; vertical-align: top;\"><strong>PCS</strong></td>\n<td style=\"text-align: left; vertical-align: top;\">:</td>\n<td style=\"text-align: left; vertical-align: top;\">${Qty} ${DUnit}</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 23.4688px;\">\n<td style=\"text-align: left; vertical-align: top;\"><strong>Delivery term</strong></td>\n<td style=\"text-align: left; vertical-align: top;\">:</td>\n<td style=\"text-align: left; vertical-align: top;\">${DeliveryT}</td>\n<td style=\"text-align: left; vertical-align: top;\"><strong>DIM (LxWxH)</strong></td>\n<td style=\"text-align: left; vertical-align: top;\">:</td>\n<td style=\"text-align: left; vertical-align: top;\">${DeminsionText}</td>\n<td style=\"text-align: left; vertical-align: top;\"><strong>Delivery</strong></td>\n<td style=\"text-align: left; vertical-align: top;\">:</td>\n<td style=\"text-align: left; vertical-align: top;\" rowspan=\"2\">${DDelivery}</td>\n</tr>\n<tr style=\"height: 23.4688px;\">\n<td style=\"text-align: left; vertical-align: top;\"><strong>Commodity</strong></td>\n<td style=\"text-align: left; vertical-align: top;\">:</td>\n<td style=\"text-align: left; vertical-align: top;\">${Commo}</td>\n<td style=\"text-align: left; vertical-align: top;\"><strong>G.W/CBM</strong></td>\n<td style=\"text-align: left; vertical-align: top;\">:</td>\n<td style=\"text-align: left; vertical-align: top;\">${QGW}/${CBM}</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n</tr>\n<tr style=\"height: 23.5px;\">\n<td style=\"text-align: left; vertical-align: top;\"><strong>Cargo Ready Date</strong></td>\n<td style=\"text-align: left; vertical-align: top;\">:</td>\n<td style=\"text-align: left; vertical-align: top;\">${CargoReady}</td>\n<td style=\"text-align: left; vertical-align: top;\"><strong>TT/Freq</strong></td>\n<td style=\"text-align: left; vertical-align: top;\">:</td>\n<td style=\"text-align: left; vertical-align: top;\">${transitime} / ${Schedule}</td>\n<td style=\"text-align: left; vertical-align: top;\"><strong>Remark</strong></td>\n<td style=\"text-align: left; vertical-align: top;\">:</td>\n<td style=\"text-align: left; vertical-align: top;\">${Note}</td>\n</tr>\n</tbody>\n</table>\n<p>&nbsp;</p>\n<p><em><strong>Price Details</strong></em></p>\n<p>&nbsp;</p>\n<table class=\"dashez dazhed dashed\" style=\"border-collapse: collapse; width: 100%; height: 105.083px;\" border=\"1\"><colgroup><col style=\"width: 27.8947%;\"><col style=\"width: 9.86842%;\"><col style=\"width: 8.68421%;\"><col style=\"width: 9.21053%;\"><col style=\"width: 12.2368%;\"><col style=\"width: 13.6842%;\"><col style=\"width: 18.5526%;\"></colgroup>\n<thead>\n<tr style=\"height: 28px;\">\n<td class=\"xl67\" style=\"width: 176pt; text-align: center; vertical-align: middle;\" width=\"234\" height=\"28\"><strong>Description</strong></td>\n<td class=\"xl67\" style=\"width: 60pt; text-align: center; vertical-align: middle;\" width=\"80\"><strong>Quantity</strong></td>\n<td class=\"xl67\" style=\"width: 116pt; text-align: center; vertical-align: middle;\" width=\"155\"><strong>Unit</strong></td>\n<td class=\"xl67\" style=\"width: 78pt; text-align: center; vertical-align: middle;\" width=\"104\"><strong>Curr</strong></td>\n<td class=\"xl67\" style=\"width: 80pt; text-align: center; vertical-align: middle;\" width=\"107\"><strong>Rate</strong></td>\n<td class=\"xl67\" style=\"width: 68pt; text-align: center; vertical-align: middle;\" width=\"90\"><strong>Amount</strong></td>\n<td class=\"xl67\" style=\"width: 141pt; text-align: center; vertical-align: middle;\" width=\"188\"><strong>Remark</strong></td>\n</tr>\n</thead>\n<tbody data-table=\"c0\" data-group=\"CTNR|GROUPFEE\">\n<tr style=\"height: 25.6875px;\">\n<td style=\"background-color: #ced4d9;\" colspan=\"7\">&nbsp;CALCULATED BY: #{CTNR}</td>\n</tr>\n<tr style=\"height: 25.6875px;\">\n<td style=\"background-color: #ecf0f1;\" colspan=\"7\">&nbsp;#{GROUPFEE}</td>\n</tr>\n<tr style=\"height: 25.7083px;\">\n<td style=\"text-align: left;\">&nbsp;{DESCRIPTON}</td>\n<td style=\"text-align: center;\">{QTY}</td>\n<td style=\"text-align: center;\">{UNIT}</td>\n<td style=\"text-align: center;\">{CURR}</td>\n<td style=\"text-align: center;\">{RATE}</td>\n<td style=\"text-align: right;\">{Amount}</td>\n<td>&nbsp;{notes}</td>\n</tr>\n</tbody>\n</table>\n<table style=\"border-collapse: collapse; width: 100.054%; height: 18.9583px;\" border=\"1\"><colgroup><col style=\"width: 14.3344%;\"><col style=\"width: 14.3344%;\"><col style=\"width: 14.3344%;\"><col style=\"width: 14.3344%;\"><col style=\"width: 10.6522%;\"><col style=\"width: 10.5207%;\"><col style=\"width: 21.5674%;\"></colgroup>\n<tbody>\n<tr>\n<td style=\"text-align: right;\" colspan=\"5\"><strong>TOTAL&nbsp;&nbsp;</strong></td>\n<td style=\"text-align: center;\" colspan=\"2\">\n<p><strong>${AmountText}</strong></p>\n</td>\n</tr>\n</tbody>\n</table>\n<p>&nbsp;</p>\n<p><span style=\"font-size: 10pt;\">${Remark}</span></p>",
-                    "ShowExp": "var config = JSON.parse(localStorage.getItem(\"SalesFunction\"));\r\nif (!config[\"APPROVE_QUOTATION_FILE\"]) {\r\n    return this.Entity.StatusId == 3;\r\n}\r\nelse {\r\n    return !this.Entity.Id.startsWith('-');\r\n}",
-                    "ReportTypeId": 1
+                    "ShowExp": "var config = JSON.parse(localStorage.getItem(\"SalesFunction\"));\r\nif (!config[\"APPROVE_QUOTATION_FILE\"]) {\r\n    return this.Entity.StatusId == 3;\r\n}\r\nelse {\r\n    return !this.Entity.Id.startsWith('-');\r\n}"
                 }
             ]
         },
@@ -773,7 +720,6 @@
             "Active": true,
             "ParentId": "00771010-0000-0000-8000-23350ec4242c",
             "XxlOuterColumn": 12,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "007810b8-0000-0000-8000-9dce0086d16b",
@@ -792,8 +738,7 @@
                     "RefName": "InquiryDetail",
                     "PreQuery": "{ \"InquiryId\": this.EditForm.Entity.Id}",
                     "IsSumary": true,
-                    "Editable": true,
-                    "ReportTypeId": 1
+                    "Editable": true
                 }
             ]
         },
@@ -810,7 +755,6 @@
             "TabGroup": "Other charges",
             "XxlOuterColumn": 12,
             "IsDropDown": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0098313c-0000-0000-8000-f2cb3a25cc46",
@@ -826,8 +770,7 @@
                     "Query": "var detail = this.EditForm.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"DefaultFee\");\r\nvar inquiryDetail = this.EditForm.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"InquiryDetail\");\r\nvar listItem = detail.AllListViewItem.filter(x => !x.GroupRow).map(x => x.Entity);\r\nvar sellingRates = listItem.filter(x => x.Rate && !x.IsObh);\r\nvar buyingRates = listItem.filter(x => x.Cost && !x.IsObh);\r\nvar routes = inquiryDetail.AllListViewItem.filter(x => !x.GroupRow).map(x => x.Entity);\r\nvar datas = [];\r\nroutes.forEach(item => {\r\n    var sellingRate = sellingRates.filter(x => x.PolId == item.PolId && x.PodId == item.PodId);\r\n    var buyingRate = buyingRates.filter(x => x.PolId == item.PolId && x.PodId == item.PodId);\r\n    var vnd = {\r\n        PolId: item.PolId,\r\n        Pol: item.Pol,\r\n        PodId: item.PodId,\r\n        Pod: item.Pod,\r\n        CurrencyText: \"VND\",\r\n        RevenueAll: (sellingRate.filter(x => x.Unit.Name == 'ALL').reduce((a, b) => a.plus(this.Decimal(b.Rate || 0).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        CostAll: (buyingRate.filter(x => x.Unit.Name == 'ALL').reduce((a, b) => a.plus(this.Decimal((b.Cost || 0)).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        RevenueFTL: (sellingRate.filter(x => x.Unit.Name.endsWith(\"T\") && !item.Unit.IsContainer).reduce((a, b) => a.plus(this.Decimal(b.Rate || 0).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        CostFTL: (buyingRate.filter(x => x.Unit.Name.endsWith(\"T\") && !item.Unit.IsContainer).reduce((a, b) => a.plus(this.Decimal((b.Cost || 0)).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        RevenueLTL: (sellingRate.filter(x => [\"CBM\", \"KGS\"].includes(x.Unit.Name)).reduce((a, b) => a.plus(this.Decimal(b.Rate || 0).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        CostLTL: (buyingRate.filter(x => [\"CBM\", \"KGS\"].includes(x.Unit.Name)).reduce((a, b) => a.plus(this.Decimal((b.Cost || 0)).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Revenue20: (sellingRate.filter(x => x.Unit.Name.includes('20')).reduce((a, b) => a.plus(this.Decimal(b.Rate || 0).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Cost20: (buyingRate.filter(x => x.Unit.Name.includes('20')).reduce((a, b) => a.plus(this.Decimal((b.Cost || 0)).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Revenue40: (sellingRate.filter(x => x.Unit.Name.includes('40') && !x.Unit.Name.includes(\"40'HC\")).reduce((a, b) => a.plus(this.Decimal(b.Rate || 0).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Cost40: (buyingRate.filter(x => x.Unit.Name.includes('40') && !x.Unit.Name.includes(\"40'HC\")).reduce((a, b) => a.plus(this.Decimal((b.Cost || 0)).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Revenue40HC: (sellingRate.filter(x => x.Unit.Name.includes(\"40'HC\")).reduce((a, b) => a.plus(this.Decimal(b.Rate || 0).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Cost40HC: (buyingRate.filter(x => x.Unit.Name.includes(\"40'HC\")).reduce((a, b) => a.plus(this.Decimal((b.Cost || 0)).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Revenue45: (sellingRate.filter(x => x.Unit.Name.includes('45')).reduce((a, b) => a.plus(this.Decimal(b.Rate || 0).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Cost45: (buyingRate.filter(x => x.Unit.Name.includes('45')).reduce((a, b) => a.plus(this.Decimal((b.Cost || 0)).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n    }\r\n\r\n    vnd.RevenueFTL = vnd.RevenueFTL.plus(vnd.RevenueAll);\r\n    vnd.CostFTL = vnd.CostFTL.plus(vnd.CostAll);\r\n    vnd.ProfitFTL = vnd.RevenueFTL.sub(vnd.CostFTL);\r\n    vnd.ProfitRateFTL = (vnd.ProfitFTL.div(vnd.RevenueFTL || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    vnd.RevenueLTL = vnd.RevenueLTL.plus(vnd.RevenueAll);\r\n    vnd.CostLTL = vnd.CostLTL.plus(vnd.CostAll);\r\n    vnd.ProfitLTL = vnd.RevenueLTL.sub(vnd.CostLTL);\r\n    vnd.ProfitRateLTL = (vnd.ProfitLTL.div(vnd.RevenueLTL || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    vnd.Revenue20 = vnd.Revenue20.plus(vnd.RevenueAll);\r\n    vnd.Cost20 = vnd.Cost20.plus(vnd.CostAll);\r\n    vnd.Profit20 = vnd.Revenue20.sub(vnd.Cost20);\r\n    vnd.ProfitRate20 = (vnd.Profit20.div(vnd.Revenue20 || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    vnd.Revenue40 = vnd.Revenue40.plus(vnd.RevenueAll);\r\n    vnd.Cost40 = vnd.Cost40.plus(vnd.CostAll);\r\n    vnd.Profit40 = vnd.Revenue40.sub(vnd.Cost40);\r\n    vnd.ProfitRate40 = (vnd.Profit40.div(vnd.Revenue40 || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    vnd.Revenue40HC = vnd.Revenue40HC.plus(vnd.RevenueAll);\r\n    vnd.Cost40HC = vnd.Cost40HC.plus(vnd.CostAll);\r\n    vnd.Profit40HC = vnd.Revenue40HC.sub(vnd.Cost40HC);\r\n    vnd.ProfitRate40HC = (vnd.Profit40HC.div(vnd.Revenue40HC || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    vnd.Revenue45 = vnd.Revenue45.plus(vnd.RevenueAll);\r\n    vnd.Cost45 = vnd.Cost45.plus(vnd.CostAll);\r\n    vnd.Profit45 = vnd.Revenue45.sub(vnd.Cost45);\r\n    vnd.ProfitRate45 = (vnd.Profit45.div(vnd.Revenue45 || this.Decimal(1))).times(this.Decimal(100));\r\n    var usd = {\r\n        PolId: item.PolId,\r\n        Pol: item.Pol,\r\n        PodId: item.PodId,\r\n        Pod: item.Pod,\r\n        CurrencyText: \"USD\",\r\n        RevenueAll: (sellingRate.filter(x => x.Unit.Name == 'ALL').reduce((a, b) => a.plus(this.Decimal(b.Rate || 0).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        CostAll: (buyingRate.filter(x => x.Unit.Name == 'ALL').reduce((a, b) => a.plus(this.Decimal((b.Cost || 0)).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        RevenueFTL: (sellingRate.filter(x => x.Unit.Name.endsWith(\"T\") && !item.Unit.IsContainer).reduce((a, b) => a.plus(this.Decimal(b.Rate || 0).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        CostFTL: (buyingRate.filter(x => x.Unit.Name.endsWith(\"T\") && !item.Unit.IsContainer).reduce((a, b) => a.plus(this.Decimal((b.Cost || 0)).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        RevenueLTL: (sellingRate.filter(x => [\"CBM\", \"KGS\"].includes(x.Unit.Name)).reduce((a, b) => a.plus(this.Decimal(b.Rate || 0).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        CostLTL: (buyingRate.filter(x => [\"CBM\", \"KGS\"].includes(x.Unit.Name)).reduce((a, b) => a.plus(this.Decimal((b.Cost || 0)).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Revenue20: (sellingRate.filter(x => x.Unit.Name.includes('20')).reduce((a, b) => a.plus(this.Decimal(b.Rate || 0).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Cost20: (buyingRate.filter(x => x.Unit.Name.includes('20')).reduce((a, b) => a.plus(this.Decimal((b.Cost || 0)).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Revenue40: (sellingRate.filter(x => x.Unit.Name.includes('40') && !x.Unit.Name.includes(\"40'HC\")).reduce((a, b) => a.plus(this.Decimal(b.Rate || 0).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Cost40: (buyingRate.filter(x => x.Unit.Name.includes('40') && !x.Unit.Name.includes(\"40'HC\")).reduce((a, b) => a.plus(this.Decimal((b.Cost || 0)).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Revenue40HC: (sellingRate.filter(x => x.Unit.Name.includes(\"40'HC\")).reduce((a, b) => a.plus(this.Decimal(b.Rate || 0).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Cost40HC: (buyingRate.filter(x => x.Unit.Name.includes(\"40'HC\")).reduce((a, b) => a.plus(this.Decimal((b.Cost || 0)).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Revenue45: (sellingRate.filter(x => x.Unit.Name.includes('45')).reduce((a, b) => a.plus(this.Decimal(b.Rate || 0).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Cost45: (buyingRate.filter(x => x.Unit.Name.includes('45')).reduce((a, b) => a.plus(this.Decimal((b.Cost || 0)).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n    }\r\n    usd.RevenueFTL = usd.RevenueFTL.plus(usd.RevenueAll);\r\n    usd.CostFTL = usd.CostFTL.plus(usd.CostAll);\r\n    usd.ProfitFTL = usd.RevenueFTL.sub(usd.CostFTL);\r\n    usd.ProfitRateFTL = (usd.ProfitFTL.div(usd.RevenueFTL || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    usd.RevenueLTL = usd.RevenueLTL.plus(usd.RevenueAll);\r\n    usd.CostLTL = usd.CostLTL.plus(usd.CostAll);\r\n    usd.ProfitLTL = usd.RevenueLTL.sub(usd.CostLTL);\r\n    usd.ProfitRateLTL0 = (usd.ProfitLTL.div(usd.RevenueLTL || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    usd.Revenue20 = usd.Revenue20.plus(usd.RevenueAll);\r\n    usd.Cost20 = usd.Cost20.plus(usd.CostAll);\r\n    usd.Profit20 = usd.Revenue20.sub(usd.Cost20);\r\n    usd.ProfitRate20 = (usd.Profit20.div(usd.Revenue20 || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    usd.Revenue40 = usd.Revenue40.plus(usd.RevenueAll);\r\n    usd.Cost40 = usd.Cost40.plus(usd.CostAll);\r\n    usd.Profit40 = usd.Revenue40.sub(usd.Cost40);\r\n    usd.ProfitRate40 = (usd.Profit40.div(usd.Revenue40 || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    usd.Revenue40HC = usd.Revenue40HC.plus(usd.RevenueAll);\r\n    usd.Cost40HC = usd.Cost40HC.plus(usd.CostAll);\r\n    usd.Profit40HC = usd.Revenue40HC.sub(usd.Cost40HC);\r\n    usd.ProfitRate40HC = (usd.Profit40HC.div(usd.Revenue40HC || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    usd.Revenue45 = usd.Revenue45.plus(usd.RevenueAll);\r\n    usd.Cost45 = usd.Cost45.plus(usd.CostAll);\r\n    usd.Profit45 = usd.Revenue45.sub(usd.Cost45);\r\n    usd.ProfitRate45 = (usd.Profit45.div(usd.Revenue45 || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    var totalRevenueVND = this.Decimal(0);\r\n    var totalCostVND = this.Decimal(0);\r\n    var totalRevenueUSD = this.Decimal(0);\r\n    var totalCostUSD = this.Decimal(0);\r\n    var bookingDetail = this.EditForm.ChildCom.find(x => x.Meta.FieldName == \"DefaultFee\");\r\n    if (bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.IsContainer && x.Entity.Unit.Name.includes('20'))) {\r\n        totalRevenueVND = totalRevenueVND.plus(vnd.Revenue20);\r\n        totalCostVND = totalCostVND.plus(vnd.Cost20);\r\n        totalRevenueUSD = totalRevenueUSD.plus(usd.Revenue20);\r\n        totalCostUSD = totalCostUSD.plus(usd.Cost20);\r\n    }\r\n    if (bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.IsContainer && x.Entity.Unit.Name.includes(\"40'HC\"))) {\r\n        totalRevenueVND = totalRevenueVND.plus(vnd.Revenue40HC);\r\n        totalCostVND = totalCostVND.plus(vnd.Cost40HC);\r\n        totalRevenueUSD = totalRevenueUSD.plus(usd.Revenue40HC);\r\n        totalCostUSD = totalCostUSD.plus(usd.Cost40HC);\r\n    }\r\n    if (bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.IsContainer && x.Entity.Unit.Name.includes(\"40\") && !x.Entity.Unit.Name.includes(\"40'HC\"))) {\r\n        totalRevenueVND = totalRevenueVND.plus(vnd.Revenue40);\r\n        totalCostVND = totalCostVND.plus(vnd.Cost40);\r\n        totalRevenueUSD = totalRevenueUSD.plus(usd.Revenue40);\r\n        totalCostUSD = totalCostUSD.plus(usd.Cost40);\r\n    }\r\n    if (bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.IsContainer && x.Entity.Unit.Name.includes(\"45\"))) {\r\n        totalRevenueVND = totalRevenueVND.plus(vnd.Revenue45);\r\n        totalCostVND = totalCostVND.plus(vnd.Cost45);\r\n        totalRevenueUSD = totalRevenueUSD.plus(usd.Revenue45);\r\n        totalCostUSD = totalCostUSD.plus(usd.Cost45);\r\n    }\r\n    if (bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name.endsWith(\"T\") && !x.Entity.Unit.IsContainer)) {\r\n        totalRevenueVND = totalRevenueVND.plus(vnd.RevenueFTL);\r\n        totalCostVND = totalCostVND.plus(vnd.CostFTL);\r\n        totalRevenueUSD = totalRevenueUSD.plus(usd.RevenueFTL);\r\n        totalCostUSD = totalCostUSD.plus(usd.CostFTL);\r\n    }\r\n    if (bookingDetail.AllListViewItem.some(x => x.Entity.Unit && [\"CBM\", \"KGS\"].includes(x.Entity.Unit.Name))) {\r\n        totalRevenueVND = totalRevenueVND.plus(vnd.RevenueLTL);\r\n        totalCostVND = totalCostVND.plus(vnd.CostLTL);\r\n        totalRevenueUSD = totalRevenueUSD.plus(usd.RevenueLTL);\r\n        totalCostUSD = totalCostUSD.plus(usd.CostLTL);\r\n    }\r\n\r\n    vnd.RevenueTotal = totalRevenueVND;\r\n    vnd.CostTotal = totalCostVND;\r\n    vnd.ProfitTotal = vnd.RevenueTotal.sub(vnd.CostTotal);\r\n    vnd.ProfitRateTotal = (vnd.ProfitTotal.div(vnd.RevenueTotal || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    usd.RevenueTotal = totalRevenueUSD;\r\n    usd.CostTotal = totalCostUSD;\r\n    usd.ProfitTotal = usd.RevenueTotal.sub(usd.CostTotal);\r\n    usd.ProfitRateTotal = (usd.ProfitTotal.div(usd.RevenueTotal || this.Decimal(1))).times(this.Decimal(100));\r\n    datas.push(vnd);\r\n    datas.push(usd);\r\n})\r\nreturn datas;",
                     "IsSumary": true,
                     "OrderBy": "ds.InsertedDate desc",
-                    "AddRowExp": "this.EditForm.Entity.StatusId == 1 || this.EditForm.Entity.StatusId == 4",
-                    "ReportTypeId": 1
+                    "AddRowExp": "this.EditForm.Entity.StatusId == 1 || this.EditForm.Entity.StatusId == 4"
                 }
             ]
         }
@@ -852,8 +795,7 @@
             "Editable": true,
             "MinWidth": "118px",
             "MaxWidth": "118px",
-            "EntityId": "DefaultFee",
-            "ReportTypeId": 1
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "000b2790-0000-0000-8000-edbbd1cf1396",
@@ -870,8 +812,7 @@
             "MinWidth": "75px",
             "MaxWidth": "75px",
             "EntityId": "DefaultFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "000b27f4-0000-0000-8000-a93bd17fd477",
@@ -887,8 +828,7 @@
             "MinWidth": "46px",
             "MaxWidth": "46px",
             "EntityId": "DefaultFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "000b27f4-0000-0000-8001-f8aac383c6d7",
@@ -907,8 +847,7 @@
             "Editable": true,
             "MinWidth": "46px",
             "MaxWidth": "46px",
-            "EntityId": "DefaultFee",
-            "ReportTypeId": 1
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "000b27f4-0000-0000-8002-029f5d27d22e",
@@ -923,8 +862,7 @@
             "Editable": true,
             "MinWidth": "137px",
             "MaxWidth": "137px",
-            "EntityId": "DefaultFee",
-            "ReportTypeId": 1
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "000b27f4-0000-0000-8003-df5daea2fc02",
@@ -946,8 +884,7 @@
             "Editable": true,
             "MinWidth": "118px",
             "MaxWidth": "118px",
-            "EntityId": "DefaultFee",
-            "ReportTypeId": 1
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "00113158-0000-0000-8000-dea8d0c39464",
@@ -963,8 +900,7 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "00113158-0000-0000-8001-6256d3a7bbb6",
@@ -981,8 +917,7 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "00113158-0000-0000-8002-b7ee7e0f8e64",
@@ -999,8 +934,7 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "001131f4-0000-0000-8000-8d9e421d4dd5",
@@ -1016,8 +950,7 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "0018110c-0000-0000-8000-bb35a656f256",
@@ -1034,8 +967,7 @@
             "MinWidth": "146px",
             "MaxWidth": "146px",
             "EntityId": "Summary",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "00781004-0000-0000-8000-e7882ea0a63e",
@@ -1055,8 +987,7 @@
             "Editable": true,
             "MinWidth": "161px",
             "MaxWidth": "161px",
-            "EntityId": "EntityContainer",
-            "ReportTypeId": 1
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "0078102c-0000-0000-8000-adf6769c30e9",
@@ -1077,8 +1008,7 @@
             "ShowHotKey": true,
             "MinWidth": "118px",
             "MaxWidth": "118px",
-            "EntityId": "Summary",
-            "ReportTypeId": 1
+            "EntityId": "Summary"
         },
         {
             "Id": "00781030-0000-0000-8000-7bf03e105d48",
@@ -1095,8 +1025,7 @@
             "MinWidth": "170px",
             "MaxWidth": "170px",
             "EntityId": "Summary",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "007810a4-0000-0000-8000-4ec820053d28",
@@ -1119,8 +1048,7 @@
             "Editable": true,
             "MinWidth": "138px",
             "MaxWidth": "138px",
-            "EntityId": "InquiryDetail",
-            "ReportTypeId": 1
+            "EntityId": "InquiryDetail"
         },
         {
             "Id": "007810c4-0000-0000-8000-e1a098e3d13a",
@@ -1137,8 +1065,7 @@
             "MinWidth": "174px",
             "MaxWidth": "174px",
             "EntityId": "Summary",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "007810d8-0000-0000-8000-0e9f42754eb3",
@@ -1160,8 +1087,7 @@
             "Editable": true,
             "MinWidth": "113px",
             "MaxWidth": "113px",
-            "EntityId": "DefaultFee",
-            "ReportTypeId": 1
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "007810e0-0000-0000-8000-33da5b74ae3c",
@@ -1182,8 +1108,7 @@
             "Editable": true,
             "MinWidth": "76px",
             "MaxWidth": "76px",
-            "EntityId": "DefaultFee",
-            "ReportTypeId": 1
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "007810e8-0000-0000-8000-2bd71f777f13",
@@ -1200,8 +1125,7 @@
             "MinWidth": "168px",
             "MaxWidth": "168px",
             "EntityId": "Summary",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "007810f4-0000-0000-8000-a2534eeba1a1",
@@ -1218,8 +1142,7 @@
             "MinWidth": "144px",
             "MaxWidth": "144px",
             "EntityId": "Summary",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "00791008-0000-0000-8000-2996cca7af9b",
@@ -1241,8 +1164,7 @@
             "Editable": true,
             "MinWidth": "165px",
             "MaxWidth": "165px",
-            "EntityId": "InquiryDetail",
-            "ReportTypeId": 1
+            "EntityId": "InquiryDetail"
         },
         {
             "Id": "00791038-0000-0000-8000-db6fbda1446d",
@@ -1263,8 +1185,7 @@
             "Editable": true,
             "MinWidth": "160px",
             "MaxWidth": "160px",
-            "EntityId": "DefaultFee",
-            "ReportTypeId": 1
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "0079105c-0000-0000-8000-316a51ed5e98",
@@ -1286,8 +1207,7 @@
             "Editable": true,
             "MinWidth": "157px",
             "MaxWidth": "157px",
-            "EntityId": "InquiryDetail",
-            "ReportTypeId": 1
+            "EntityId": "InquiryDetail"
         },
         {
             "Id": "00791064-0000-0000-8000-aba421961c85",
@@ -1302,8 +1222,7 @@
             "MinWidth": "63px",
             "MaxWidth": "63px",
             "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "00791068-0000-0000-8000-aefaa761371a",
@@ -1326,8 +1245,7 @@
             "MinWidth": "194px",
             "MaxWidth": "194px",
             "OrderBy": "ds.IsFreight desc",
-            "EntityId": "DefaultFee",
-            "ReportTypeId": 1
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "0079107c-0000-0000-8000-7f7565a020fa",
@@ -1349,8 +1267,7 @@
             "MinWidth": "75px",
             "MaxWidth": "75px",
             "EntityId": "DefaultFee",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "0079107c-0000-0000-8000-cacba8371352",
@@ -1371,8 +1288,7 @@
             "MinWidth": "75px",
             "MaxWidth": "75px",
             "EntityId": "DefaultFee",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "007910d4-0000-0000-8000-15f0e5cd0f44",
@@ -1392,8 +1308,7 @@
             "FocusSearch": true,
             "MinWidth": "113px",
             "MaxWidth": "113px",
-            "EntityId": "Summary",
-            "ReportTypeId": 1
+            "EntityId": "Summary"
         },
         {
             "Id": "007910e4-0000-0000-8000-c01c1dcf8ba8",
@@ -1416,8 +1331,7 @@
             "MinWidth": "95px",
             "MaxWidth": "95px",
             "OrderBy": "ds.Enum asc",
-            "EntityId": "DefaultFee",
-            "ReportTypeId": 1
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "007910f8-0000-0000-8000-8720f53d472d",
@@ -1437,8 +1351,7 @@
             "FocusSearch": true,
             "MinWidth": "119px",
             "MaxWidth": "119px",
-            "EntityId": "Summary",
-            "ReportTypeId": 1
+            "EntityId": "Summary"
         },
         {
             "Id": "009a312c-0000-0000-8000-168801faff44",
@@ -1454,8 +1367,7 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "009a3190-0000-0000-8000-f6078d6bacf0",
@@ -1471,8 +1383,7 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "009a3190-0000-0000-8001-499c6e3d1962",
@@ -1489,8 +1400,7 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "009a3190-0000-0000-8002-88ba7915ed5a",
@@ -1507,8 +1417,7 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "00a13120-0000-0000-8000-27a0dfdc4089",
@@ -1524,8 +1433,7 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "00a13120-0000-0000-8001-751f5742cbf4",
@@ -1541,8 +1449,7 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "00a13120-0000-0000-8002-784838df463d",
@@ -1559,8 +1466,7 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "00a13158-0000-0000-8000-0f961c6a47b8",
@@ -1577,8 +1483,7 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "00a13158-0000-0000-8001-6de42c83c70b",
@@ -1595,8 +1500,7 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "00a13158-0000-0000-8002-2c79b12bd4ae",
@@ -1612,8 +1516,7 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "00a13158-0000-0000-8003-f16c4a8904ac",
@@ -1629,8 +1532,7 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "00a13184-0000-0000-8000-21cc3908e7e1",
@@ -1647,8 +1549,7 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "00a13184-0000-0000-8001-5f83c96f94f3",
@@ -1664,8 +1565,7 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "00a13184-0000-0000-8002-91b2d615f832",
@@ -1681,8 +1581,7 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "00a13184-0000-0000-8003-bb0fec702581",
@@ -1699,8 +1598,7 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "00a13184-0000-0000-8004-066ba8d0e3c9",
@@ -1717,8 +1615,7 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "00a13190-0000-0000-8000-972c3e518c8d",
@@ -1738,8 +1635,7 @@
             "FocusSearch": true,
             "MinWidth": "97px",
             "MaxWidth": "97px",
-            "EntityId": "Summary2",
-            "ReportTypeId": 1
+            "EntityId": "Summary2"
         },
         {
             "Id": "00a131bc-0000-0000-8000-29e95e6ad9f1",
@@ -1756,8 +1652,7 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "00a131bc-0000-0000-8001-654382a48e72",
@@ -1774,8 +1669,7 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "00a131e8-0000-0000-8000-c97f9337e171",
@@ -1791,8 +1685,7 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "00a131e8-0000-0000-8001-c4d07ca9087a",
@@ -1808,8 +1701,7 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "00a131e8-0000-0000-8002-a42aeb56f5f9",
@@ -1826,8 +1718,7 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "00a131e8-0000-0000-8003-57f0f491cbbb",
@@ -1844,8 +1735,7 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "00a131f4-0000-0000-8000-acd58f9e6d98",
@@ -1865,8 +1755,7 @@
             "FocusSearch": true,
             "MinWidth": "84px",
             "MaxWidth": "84px",
-            "EntityId": "Summary2",
-            "ReportTypeId": 1
+            "EntityId": "Summary2"
         },
         {
             "Id": "00a131f4-0000-0000-8001-4ce79397c0a7",
@@ -1880,8 +1769,7 @@
             "FocusSearch": true,
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "ReportTypeId": 1
+            "EntityId": "Summary2"
         },
         {
             "Id": "00a131f4-0000-0000-8002-5236ee2ec5be",
@@ -1897,8 +1785,7 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "00a131f4-0000-0000-8003-b25f4bd8cbda",
@@ -1914,8 +1801,7 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
-            "ReportTypeId": 1
+            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
         },
         {
             "Id": "00b02798-0000-0000-8000-2235902893ba",
@@ -1937,8 +1823,7 @@
             "Editable": true,
             "MinWidth": "141px",
             "MaxWidth": "141px",
-            "EntityId": "InquiryDetail",
-            "ReportTypeId": 1
+            "EntityId": "InquiryDetail"
         },
         {
             "Id": "00b8272c-0000-0000-8000-08bbd9526fdf",
@@ -1955,8 +1840,7 @@
             "MinWidth": "146px",
             "MaxWidth": "146px",
             "EntityId": "Summary",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         }
     ],
     "Components": [
@@ -1971,8 +1855,7 @@
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"DeclineEntity\" }",
             "Active": true,
-            "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserApprovedIds.includes(this.Token.UserId) && !this.Entity.Id.startsWith('-')",
-            "ReportTypeId": 1
+            "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserApprovedIds.includes(this.Token.UserId) && !this.Entity.Id.startsWith('-')"
         },
         {
             "Id": "00781024-0000-0000-8000-8264b6c914d0",
@@ -1985,8 +1868,7 @@
             "Icon": "fas fa-sliders-h-square",
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"SaveAs\" }",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "0078103c-0000-0000-8000-fb028ff23295",
@@ -1999,8 +1881,7 @@
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
             "Events": "{ \"click\" : \"SavePatch\" }",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "00781040-0000-0000-8000-eb76d673d2a8",
@@ -2013,8 +1894,7 @@
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"SendEntity\" }",
             "Active": true,
-            "ShowExp": "(this.Entity.StatusId == 1 || this.Entity.StatusId == 4)  && this.Entity.InsertedBy == this.Token.UserId && !this.Entity.Id.startsWith('-')",
-            "ReportTypeId": 1
+            "ShowExp": "(this.Entity.StatusId == 1 || this.Entity.StatusId == 4)  && this.Entity.InsertedBy == this.Token.UserId && !this.Entity.Id.startsWith('-')"
         },
         {
             "Id": "00781088-0000-0000-8000-b578b0d8988c",
@@ -2027,8 +1907,7 @@
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"ApprovedEntity\" }",
             "Active": true,
-            "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserApprovedIds.includes(this.Token.UserId) && !this.Entity.Id.startsWith('-')",
-            "ReportTypeId": 1
+            "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserApprovedIds.includes(this.Token.UserId) && !this.Entity.Id.startsWith('-')"
         },
         {
             "Id": "007810b8-0000-0000-8000-ccdb6c770ddc",
@@ -2041,8 +1920,7 @@
             "Icon": "fas fa-sliders-h-square",
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"SaveAdd\" }",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "00e62e58-0000-0000-8000-379366250f9f",
@@ -2056,8 +1934,7 @@
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{\r\n    \"click\": \"CreateBookingLocal\"\r\n}",
             "Active": true,
-            "ShowExp": "(this.dayjs(this.Entity.FromDate) < this.dayjs() && (!this.Entity.ToDate || (this.Entity.ToDate &&  this.dayjs(this.Entity.ToDate ) > this.dayjs())))  && this.Entity.StatusId == 3",
-            "ReportTypeId": 1
+            "ShowExp": "(this.dayjs(this.Entity.FromDate) < this.dayjs() && (!this.Entity.ToDate || (this.Entity.ToDate &&  this.dayjs(this.Entity.ToDate ) > this.dayjs())))  && this.Entity.StatusId == 3"
         }
     ],
     "FeaturePolicies": [

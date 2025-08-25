@@ -17,7 +17,6 @@
             "ClassName": "ribbon-group",
             "XxlCol": 10,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01960423-4e3d-7394-a710-813610df0558",
@@ -28,8 +27,7 @@
                     "ClassName": "btn",
                     "HotKey": "Ctrl-S",
                     "Events": "{\r\n    \"click\": \"SavePatch\"\r\n}",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         },
@@ -41,8 +39,7 @@
             "ClassName": "wrapper scroll-content",
             "XxlCol": 12,
             "Active": true,
-            "IsTab": true,
-            "ReportTypeId": 1
+            "IsTab": true
         },
         {
             "Id": "01960423-4f1d-74cd-8749-bc92b82745dd",
@@ -55,7 +52,6 @@
             "Active": true,
             "ParentId": "01960423-4e7b-708b-b705-0773580f10ac",
             "XxlOuterColumn": 4,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01960423-4f59-7295-af27-4a1166e31e12",
@@ -65,8 +61,7 @@
                     "Column": 6,
                     "Label": "Name",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-4f95-77f7-9669-5bdb8bee526e",
@@ -76,8 +71,7 @@
                     "Column": 6,
                     "Label": "Populate Name",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-4fdf-708c-b74b-16c55e005e5c",
@@ -87,8 +81,7 @@
                     "Column": 6,
                     "Label": "Label",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-5017-7420-91eb-0a15cc3f68ce",
@@ -102,8 +95,7 @@
                     "ShowLabel": true,
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": \"Input\",\r\n        \"Name\": \"Input\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fal fa-keyboard mr-1'></i>Input</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Select\",\r\n        \"Name\": \"Select\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fal fa-list mr-1'></i>Select</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Button\",\r\n        \"Name\": \"Button\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fal fa-hand-pointer mr-1'></i>Button</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Textarea\",\r\n        \"Name\": \"Textarea\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fal fa-align-left mr-1'></i>Textarea</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Number\",\r\n        \"Name\": \"Number\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #17a2b8;'><i class='fal fa-hashtag mr-1'></i>Number</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Checkbox\",\r\n        \"Name\": \"Checkbox\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #6f42c1;'><i class='fal fa-check-square mr-1'></i>Checkbox</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Dropdown\",\r\n        \"Name\": \"Dropdown\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fal fa-caret-down mr-1'></i>Dropdown</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Datepicker\",\r\n        \"Name\": \"Datepicker\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #fd7e14;'><i class='fal fa-calendar-alt mr-1'></i>Datepicker</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"FileUpload\",\r\n        \"Name\": \"FileUpload\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fal fa-upload mr-1'></i>FileUpload</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"GridView\",\r\n        \"Name\": \"GridView\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fal fa-th-large mr-1'></i>GridView</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Word\",\r\n        \"Name\": \"Word\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #6c757d;'><i class='fal fa-file-word mr-1'></i>Word</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"CodeEditor\",\r\n        \"Name\": \"CodeEditor\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #17a2b8;'><i class='fal fa-code mr-1'></i>CodeEditor</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Label\",\r\n        \"Name\": \"Label\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #343a40;'><i class='fal fa-tag mr-1'></i>Label</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Pdf\",\r\n        \"Name\": \"Pdf\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #0b98a7;'><i class='fal fa-file-pdf mr-1'></i>Pdf</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Chart\",\r\n        \"Name\": \"Chart\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #0b98a7;'><i class='fal fa-file-pdf mr-1'></i>Chart</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Excel\",\r\n        \"Name\": \"Excel\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #0b98a9;'><i class='fal fa-file-excel mr-1'></i>Excel</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Chat\",\r\n        \"Name\": \"Chat\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #0b98a9;'><i class='fal fa-file-excel mr-1'></i>Chat</span>\"\r\n    }\r\n]",
-                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
-                    "ReportTypeId": 1
+                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]"
                 },
                 {
                     "Id": "01960423-5055-703f-be94-598950255546",
@@ -117,8 +109,7 @@
                     "ShowLabel": true,
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"A4\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"A4 L\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"A5\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"A5 L\"\r\n    }\r\n]",
-                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
-                    "ReportTypeId": 1
+                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]"
                 },
                 {
                     "Id": "01960423-508b-71ac-9e74-5d22c4cc1663",
@@ -135,8 +126,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from Component as ds where ComponentType = 'Section' and FeatureId = '{FeatureId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentType = 'Section' and FeatureId = '{FeatureId}'\"\r\n}",
                     "RefName": "Component",
                     "Template": "[{ \"FieldName\" : \"Id\", \"Label\" : \"Id\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Label\", \"Label\" : \"Label\", \"ComponentType\"\r\n: \"Input\" },{ \"FieldName\" : \"FeatureId\", \"Label\" : \"Feature\", \"ComponentType\" : \"Dropdown\", \"FormatData\" : \"{Name}\", \"RefName\" : \"Feature\"  }]",
-                    "PreQuery": "{\r\n    \"FeatureId\": this.Entity.FeatureId\r\n}",
-                    "ReportTypeId": 1
+                    "PreQuery": "{\r\n    \"FeatureId\": this.Entity.FeatureId\r\n}"
                 },
                 {
                     "Id": "01960423-50c3-70d3-b47c-54ba2d03aa9b",
@@ -152,8 +142,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from WebConfig as ds where [Key] in ('Quantity','TotalPrice','UnitPrice','LocalUnitPrice','LocalTotalPrice')\",\r\n    \"total\": \"select count(ds.Id) as total from WebConfig as ds where [Key] in ('Quantity','TotalPrice','UnitPrice','LocalUnitPrice','LocalTotalPrice')\"\r\n}",
                     "RefName": "WebConfig",
-                    "Template": "[{ \"FieldName\" : \"Key\", \"Label\" : \"Key\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Value\", \"Label\" : \"Value\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Key\", \"Label\" : \"Key\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Value\", \"Label\" : \"Value\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01960423-50fa-71a8-89ff-fadd7d516e83",
@@ -163,8 +152,7 @@
                     "Column": 3,
                     "Label": "GroupBy",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-5134-757a-b3de-93dc0ac59fc4",
@@ -174,8 +162,7 @@
                     "Column": 3,
                     "Label": "Icon",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-516f-72ca-8027-ac5781824e76",
@@ -193,8 +180,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from Component as ds where ComponentType != 'Section' and FeatureId = '{FeatureId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentType != 'Section' and FeatureId = '{FeatureId}'\"\r\n}",
                     "RefName": "Component",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Label\",\r\n        \"Label\": \"Label\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"ComponentType\",\r\n        \"Label\": \"Component Type\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
-                    "PreQuery": "{\r\n    \"FeatureId\": this.Entity.FeatureId\r\n}",
-                    "ReportTypeId": 1
+                    "PreQuery": "{\r\n    \"FeatureId\": this.Entity.FeatureId\r\n}"
                 },
                 {
                     "Id": "01960423-525a-76c4-a016-6b1be54b8cdc",
@@ -205,8 +191,7 @@
                     "Label": "Excel",
                     "ShowLabel": true,
                     "Active": true,
-                    "Lang": "json",
-                    "ReportTypeId": 1
+                    "Lang": "json"
                 }
             ]
         },
@@ -220,7 +205,6 @@
             "Active": true,
             "ParentId": "01960423-4e7b-708b-b705-0773580f10ac",
             "XxlOuterColumn": 4,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01960423-52cc-7403-beaa-94fe4b32b6df",
@@ -231,8 +215,7 @@
                     "Label": "Label",
                     "ShowLabel": true,
                     "Style": "display: flex; justify-content: space-between;",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-5304-71e6-b553-0257fc11f5d6",
@@ -243,8 +226,7 @@
                     "Label": "Disabled",
                     "ShowLabel": true,
                     "Style": "display: flex; justify-content: space-between;",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-5339-70f9-8758-455f5fd001f7",
@@ -255,8 +237,7 @@
                     "Label": "Edit",
                     "ShowLabel": true,
                     "Style": "display: flex; justify-content: space-between;",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-5377-74ee-8486-1af58a33a57e",
@@ -267,8 +248,7 @@
                     "Label": "Cache",
                     "ShowLabel": true,
                     "Style": "display: flex; justify-content: space-between;",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-53b0-709f-a090-a178a4ca5d32",
@@ -279,8 +259,7 @@
                     "Label": "Search",
                     "ShowLabel": true,
                     "Style": "display: flex; justify-content: space-between;",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-53e8-75a4-84e7-41972c335b5a",
@@ -291,8 +270,7 @@
                     "Label": "Add",
                     "ShowLabel": true,
                     "Style": "display: flex; justify-content: space-between;",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-542c-7163-a285-36e376d15897",
@@ -303,8 +281,7 @@
                     "Label": "Selecteds",
                     "ShowLabel": true,
                     "Style": "display: flex; justify-content: space-between;",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-5462-7157-997a-c6b1e6def8d7",
@@ -317,8 +294,7 @@
                     "Style": "display: flex; justify-content: space-between;",
                     "Active": true,
                     "Summary": "Total",
-                    "SummaryColSpan": 2,
-                    "ReportTypeId": 1
+                    "SummaryColSpan": 2
                 },
                 {
                     "Id": "01960423-54a0-76a9-a4be-24bb26039308",
@@ -329,8 +305,7 @@
                     "Label": "Virtual",
                     "ShowLabel": true,
                     "Style": "display: flex; justify-content: space-between;",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-54d9-702f-bd23-153d0cd782de",
@@ -341,8 +316,7 @@
                     "Label": "Enter",
                     "ShowLabel": true,
                     "Style": "display: flex; justify-content: space-between;",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-551b-7063-9de8-d8d76ccd7826",
@@ -353,8 +327,7 @@
                     "Label": "Focus",
                     "ShowLabel": true,
                     "Style": "display: flex; justify-content: space-between;",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-555b-7728-811e-e83eba87305e",
@@ -365,8 +338,7 @@
                     "Label": "Private",
                     "ShowLabel": true,
                     "Style": "display: flex; justify-content: space-between;",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-558f-7548-8d6c-bd1a9d5a930f",
@@ -377,8 +349,7 @@
                     "Label": "Top",
                     "ShowLabel": true,
                     "Style": "display: flex; justify-content: space-between;",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-55c7-7392-a6fe-3f635526b0db",
@@ -389,8 +360,7 @@
                     "Label": "Visibility",
                     "ShowLabel": true,
                     "Style": "display: flex; justify-content: space-between;",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-55ff-7039-9632-c9802a6f7f92",
@@ -401,8 +371,7 @@
                     "Label": "Active",
                     "ShowLabel": true,
                     "Style": "display: flex; justify-content: space-between;",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-5641-73e9-8944-97fbb7d3d2d3",
@@ -413,8 +382,7 @@
                     "Label": "Real time",
                     "ShowLabel": true,
                     "Style": "display: flex; justify-content: space-between;",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-567e-7098-9a73-7e654a741f7c",
@@ -425,8 +393,7 @@
                     "Label": "Frozen",
                     "ShowLabel": true,
                     "Style": "display: flex; justify-content: space-between;",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-56af-7098-b18a-4d3f88a831ea",
@@ -437,8 +404,7 @@
                     "Label": "Header",
                     "ShowLabel": true,
                     "Style": "display: flex; justify-content: space-between;",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-56e3-714b-a1d8-d6a392117990",
@@ -448,8 +414,7 @@
                     "Column": 2,
                     "Label": "Lang",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-5718-71ac-83e3-fbfdb183c0bf",
@@ -459,8 +424,7 @@
                     "Column": 2,
                     "Label": "MaxWidth",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-57b4-707d-a266-cb6130230013",
@@ -470,8 +434,7 @@
                     "Column": 2,
                     "Label": "MinWidth",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-57f7-71c6-b6d4-752fe6e7267a",
@@ -481,8 +444,7 @@
                     "Column": 2,
                     "Label": "Width",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-5835-74d9-9530-1aa6a78dc4b9",
@@ -492,8 +454,7 @@
                     "Column": 2,
                     "Label": "Text Align",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-5867-75f8-a1f4-e779184a0c25",
@@ -503,8 +464,7 @@
                     "Column": 2,
                     "Label": "ClassName",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-58a7-71ed-8124-e37d8a14c1f8",
@@ -514,8 +474,7 @@
                     "Column": 2,
                     "Label": "Group Name",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-58dd-70f2-82ef-72f21ae8f7d9",
@@ -525,8 +484,7 @@
                     "Column": 3,
                     "Label": "Summary",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-5914-7178-a277-d0e65fb8984f",
@@ -537,8 +495,7 @@
                     "Precision": 0,
                     "Label": "ColSpan",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-594e-717f-b3b4-6f44d50df586",
@@ -548,8 +505,7 @@
                     "Column": 4,
                     "Label": "OrderBy",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-5986-73ac-b182-294602db7bfa",
@@ -564,8 +520,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                     "RefName": "History",
                     "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
-                    "Lang": "json",
-                    "ReportTypeId": 1
+                    "Lang": "json"
                 }
             ]
         },
@@ -580,7 +535,6 @@
             "Active": true,
             "ParentId": "01960423-4e7b-708b-b705-0773580f10ac",
             "XxlOuterColumn": 4,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01960423-5ad3-7478-8f26-64c164c65709",
@@ -591,8 +545,7 @@
                     "Precision": 0,
                     "Label": "Mobile",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-5b27-72ae-b996-c6b7ccac6775",
@@ -603,8 +556,7 @@
                     "Precision": 0,
                     "Label": "RowS",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-5b6e-7730-8fc5-64ecd954b593",
@@ -615,8 +567,7 @@
                     "Precision": 0,
                     "Label": "Row",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-5ba6-71ae-aead-df3f50b3da1d",
@@ -627,8 +578,7 @@
                     "Precision": 0,
                     "Label": "Offset",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-5be1-74cc-a981-e444a8655c0e",
@@ -639,8 +589,7 @@
                     "Precision": 0,
                     "Label": "Order",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-5c14-731f-a8ed-27efea3409c3",
@@ -651,8 +600,7 @@
                     "Precision": 0,
                     "Label": "Precision",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-5c47-7539-90d8-7b740eef8276",
@@ -662,8 +610,7 @@
                     "Column": 12,
                     "Label": "Style",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-5c81-729c-a669-cda71c1ccfa5",
@@ -673,8 +620,7 @@
                     "Column": 6,
                     "Label": "ChildStyle",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-5cc5-716a-b039-9565b7973e55",
@@ -684,8 +630,7 @@
                     "Column": 2,
                     "Label": "HotKey",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-5d00-736f-9930-4d447f7ca318",
@@ -695,8 +640,7 @@
                     "Column": 3,
                     "Label": "Table",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-5d44-754d-abb1-5bf01cc3d4b0",
@@ -707,8 +651,7 @@
                     "Precision": 0,
                     "Label": "Child Table",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-5d7e-750c-bcc4-0f5213bd04ec",
@@ -719,8 +662,7 @@
                     "Precision": 0,
                     "Label": "Child Entity",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-5dbd-76c6-9a51-180b1741fcde",
@@ -730,8 +672,7 @@
                     "Column": 6,
                     "Label": "Plain Text",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-5e7d-778e-9288-14468d1f9b25",
@@ -745,8 +686,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                     "RefName": "History",
                     "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
-                    "Lang": "javascript",
-                    "ReportTypeId": 1
+                    "Lang": "javascript"
                 }
             ]
         },
@@ -762,7 +702,6 @@
             "IsTab": true,
             "XxlOuterColumn": 6,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01960423-5f88-702b-b2a7-548887581f66",
@@ -785,8 +724,7 @@
                     "PreQuery": "{\r\n    \"FeatureId\": this.EditForm.Entity.FeatureId,\r\n    \"FieldName\": this.EditForm.Entity.FieldName\r\n}",
                     "ShowHotKey": true,
                     "OrderBy": "ds.EntityId asc,ds.[Order] asc",
-                    "XxlOuterColumn": 3,
-                    "ReportTypeId": 1
+                    "XxlOuterColumn": 3
                 }
             ]
         },
@@ -799,7 +737,6 @@
             "Active": true,
             "IsTab": true,
             "XxlOuterColumn": 6,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01960423-6039-710d-bdbf-d8841114607a",
@@ -813,8 +750,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                     "RefName": "History",
                     "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
-                    "Lang": "json",
-                    "ReportTypeId": 1
+                    "Lang": "json"
                 }
             ]
         },
@@ -826,7 +762,6 @@
             "XxlCol": 12,
             "Active": true,
             "IsTab": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01960423-60bd-7489-bc81-f7bfd4189863",
@@ -840,8 +775,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                     "RefName": "History",
                     "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
-                    "Lang": "sql",
-                    "ReportTypeId": 1
+                    "Lang": "sql"
                 }
             ]
         },
@@ -853,8 +787,7 @@
             "ClassName": "wrapper scroll-content",
             "XxlCol": 10,
             "Active": true,
-            "IsTab": true,
-            "ReportTypeId": 1
+            "IsTab": true
         },
         {
             "Id": "01960423-613c-729e-8cc1-c4da6891813d",
@@ -865,7 +798,6 @@
             "Active": true,
             "ParentId": "01960423-60fe-746b-b461-fd28411bb6cc",
             "XxlOuterColumn": 4,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01960423-617a-7038-9cde-5041b6b4db0f",
@@ -881,8 +813,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                     "RefName": "History",
                     "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
-                    "Lang": "json",
-                    "ReportTypeId": 1
+                    "Lang": "json"
                 }
             ]
         },
@@ -894,8 +825,7 @@
             "ClassName": "wrapper scroll-content",
             "XxlCol": 10,
             "Active": true,
-            "IsTab": true,
-            "ReportTypeId": 1
+            "IsTab": true
         },
         {
             "Id": "01960423-621e-76a0-aba0-1616b8711f27",
@@ -906,7 +836,6 @@
             "Active": true,
             "ParentId": "01960423-61bc-770f-b7b9-ec7c42f74639",
             "XxlOuterColumn": 4,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01960423-625f-77ca-976d-8b521a3b0633",
@@ -921,8 +850,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                     "RefName": "History",
                     "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
-                    "Lang": "json",
-                    "ReportTypeId": 1
+                    "Lang": "json"
                 }
             ]
         },
@@ -934,8 +862,7 @@
             "ClassName": "wrapper scroll-content",
             "XxlCol": 10,
             "Active": true,
-            "IsTab": true,
-            "ReportTypeId": 1
+            "IsTab": true
         },
         {
             "Id": "01960423-62ec-735c-8986-046ffb2f6523",
@@ -946,7 +873,6 @@
             "Active": true,
             "ParentId": "01960423-62a7-748d-a662-5c6a9607e5bc",
             "XxlOuterColumn": 4,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01960423-6331-738f-89db-841952c79ec9",
@@ -961,8 +887,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                     "RefName": "History",
                     "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
-                    "Lang": "json",
-                    "ReportTypeId": 1
+                    "Lang": "json"
                 }
             ]
         },
@@ -974,8 +899,7 @@
             "ClassName": "wrapper scroll-content",
             "XxlCol": 10,
             "Active": true,
-            "IsTab": true,
-            "ReportTypeId": 1
+            "IsTab": true
         },
         {
             "Id": "01960423-63ba-770f-93d0-6dcf1fb61045",
@@ -986,7 +910,6 @@
             "Active": true,
             "ParentId": "01960423-6376-72ca-a46f-51d3de8c6792",
             "XxlOuterColumn": 4,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01960423-6400-741f-9975-a767cfc337ee",
@@ -1001,8 +924,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                     "RefName": "History",
                     "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
-                    "Lang": "json",
-                    "ReportTypeId": 1
+                    "Lang": "json"
                 }
             ]
         },
@@ -1014,7 +936,6 @@
             "XxlCol": 10,
             "Active": true,
             "IsTab": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01960423-5dfb-72c9-b55b-c313cebd6e17",
@@ -1029,8 +950,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                     "RefName": "History",
                     "PreQuery": "{\r\n    \"ComponentId\": this.Meta.Id,\r\n    \"RecordId\": this.EditForm.Entity.Id\r\n}",
-                    "Lang": "json",
-                    "ReportTypeId": 1
+                    "Lang": "json"
                 },
                 {
                     "Id": "01960423-5e3c-70ef-bf9d-1a73450c80e9",
@@ -1045,8 +965,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                     "RefName": "History",
                     "PreQuery": "{\r\n    \"ComponentId\": this.Meta.Id,\r\n    \"RecordId\": this.EditForm.Entity.Id\r\n}",
-                    "Lang": "json",
-                    "ReportTypeId": 1
+                    "Lang": "json"
                 }
             ]
         },
@@ -1058,7 +977,6 @@
             "XxlCol": 10,
             "Active": true,
             "IsTab": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01960423-51ef-729d-b271-5493fef0902c",
@@ -1072,8 +990,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                     "RefName": "History",
                     "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
-                    "Lang": "javascript",
-                    "ReportTypeId": 1
+                    "Lang": "javascript"
                 },
                 {
                     "Id": "01960423-5227-7345-9989-1e4d78fd2ed1",
@@ -1084,8 +1001,7 @@
                     "Label": "Validation",
                     "ShowLabel": true,
                     "Active": true,
-                    "Lang": "javascript",
-                    "ReportTypeId": 1
+                    "Lang": "javascript"
                 },
                 {
                     "Id": "01960423-59e1-72c5-86fb-1a8147a9a1d2",
@@ -1095,8 +1011,7 @@
                     "Column": 5,
                     "Label": "DisabledExp",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-5a27-76df-895c-863df6b93fe1",
@@ -1106,8 +1021,7 @@
                     "Column": 5,
                     "Label": "ShowExp",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "01960423-5a5e-714d-ade4-af5ea974b1d9",
@@ -1117,8 +1031,7 @@
                     "Column": 5,
                     "Label": "AddRowExp",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         }
@@ -1138,8 +1051,7 @@
             "MinWidth": "43px",
             "MaxWidth": "43px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "01960423-648a-722b-b064-b3e745de1ff1",
@@ -1156,8 +1068,7 @@
             "MinWidth": "124px",
             "MaxWidth": "124px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "01960423-6512-73fa-a0a0-112bf4ada1dc",
@@ -1175,8 +1086,7 @@
             "MinWidth": "56px",
             "MaxWidth": "56px",
             "created_by": "Component",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "01960423-655b-77eb-93f3-f509396867e8",
@@ -1193,8 +1103,7 @@
             "MinWidth": "48px",
             "MaxWidth": "48px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "01960423-65a3-743b-a479-8ba68511387c",
@@ -1210,8 +1119,7 @@
             "MinWidth": "121px",
             "MaxWidth": "121px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "01960423-65eb-70a4-a7bf-cd4a95f89f2b",
@@ -1227,8 +1135,7 @@
             "MinWidth": "132px",
             "MaxWidth": "132px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "01960423-662d-7359-9aa3-bc4938d4773a",
@@ -1246,8 +1153,7 @@
             "MinWidth": "119px",
             "MaxWidth": "119px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "01960423-669c-72ae-81d0-9b042dbc8de6",
@@ -1264,8 +1170,7 @@
             "MinWidth": "87px",
             "MaxWidth": "87px",
             "created_by": "Component",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "01960423-6707-765c-b38f-57a334843f70",
@@ -1281,8 +1186,7 @@
             "MinWidth": "153px",
             "MaxWidth": "153px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "01960423-674f-7641-9a96-e89c994e5298",
@@ -1299,8 +1203,7 @@
             "MinWidth": "153px",
             "MaxWidth": "153px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "01960423-6792-75fb-9012-ff6f9240be49",
@@ -1317,8 +1220,7 @@
             "MinWidth": "126px",
             "MaxWidth": "126px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "01960423-67d6-775d-8eeb-70caf29ce97e",
@@ -1335,8 +1237,7 @@
             "MinWidth": "215px",
             "MaxWidth": "215px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "01960423-6843-7619-8338-b365d14c417a",
@@ -1352,8 +1253,7 @@
             "MinWidth": "108px",
             "MaxWidth": "108px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "01960423-688a-7668-91e4-ac89bf3de053",
@@ -1369,8 +1269,7 @@
             "MinWidth": "219px",
             "MaxWidth": "219px",
             "created_by": "Component",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "01960423-68d0-76cc-995e-0d2e3cbcc3db",
@@ -1386,8 +1285,7 @@
             "MinWidth": "188px",
             "MaxWidth": "188px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "01960423-6914-7122-a5e2-ee675c8b6111",
@@ -1409,8 +1307,7 @@
             "MinWidth": "8px",
             "MaxWidth": "8px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "01960423-694c-752d-b249-013bd4335e37",
@@ -1433,8 +1330,7 @@
             "MinWidth": "7px",
             "MaxWidth": "7px",
             "created_by": "Component",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "01960423-6982-73ca-b1df-98785a1442f1",
@@ -1450,8 +1346,7 @@
             "MinWidth": "7px",
             "MaxWidth": "7px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "01960423-69c8-712c-bacc-5383a8f59229",
@@ -1467,8 +1362,7 @@
             "MinWidth": "10px",
             "MaxWidth": "10px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "01960423-6a0d-72f5-8712-bca74af40165",
@@ -1484,8 +1378,7 @@
             "MinWidth": "7px",
             "MaxWidth": "7px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "01960423-6a54-73db-8c0d-a8d5bdd61ac0",
@@ -1501,8 +1394,7 @@
             "MinWidth": "44px",
             "MaxWidth": "44px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "01960423-6a91-70cd-b983-ae4d5f45537d",
@@ -1519,8 +1411,7 @@
             "MinWidth": "80px",
             "MaxWidth": "80px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "01960423-6ad4-718d-945d-83b0534aa676",
@@ -1536,8 +1427,7 @@
             "Editable": true,
             "MinWidth": "57px",
             "MaxWidth": "57px",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "01960423-6b19-74be-9b6e-5c7abbb47d58",
@@ -1553,8 +1443,7 @@
             "MinWidth": "106px",
             "MaxWidth": "106px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "01960423-6b65-7193-977b-67f30bc3ee50",
@@ -1571,8 +1460,7 @@
             "Editable": true,
             "MinWidth": "49px",
             "MaxWidth": "49px",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "01960423-6bad-728f-9603-1a2611ac3bcb",
@@ -1588,8 +1476,7 @@
             "MinWidth": "153px",
             "MaxWidth": "153px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "ReportTypeId": 1
+            "EntityId": "GridPolicy"
         }
     ],
     "Components": [
@@ -1602,8 +1489,7 @@
             "ClassName": "btn",
             "HotKey": "Ctrl-S",
             "Events": "{\r\n    \"click\": \"SavePatch\"\r\n}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         }
     ],
     "FeaturePolicies": [

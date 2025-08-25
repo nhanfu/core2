@@ -19,7 +19,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "008b01ec-0000-0000-8000-c32190370534",
@@ -36,8 +35,7 @@
                     "Query": "{\r\n    \"sql\": \"select *,(select Max(StatusId) from InquiryDetail ds1 where ds1.InquiryId = ds.Id and (ds1.InsertedBy = '{TokenUserId}' or (ds1.IsSend = 1 and (ds1.UserReceiverId = '{TokenUserId}' or ds1.GroupReceiverId = '{TokenGroupId}')))) as MaxStatusId  from Inquiry as ds where (ds.InsertedBy = '{TokenUserId}' or exists (select Id from InquiryDetail ds2 where ds2.InquiryId = ds.Id and (ds2.IsSend = 1 and (ds2.UserReceiverId = '{TokenUserId}' or ds2.GroupReceiverId = '{TokenGroupId}')))) and ds.TypeId = 1 and ds.StatusId = 3\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.InsertedBy = '{TokenUserId}' or exists (select Id from InquiryDetail ds2 where ds2.InquiryId = ds.Id and (ds2.IsSend = 1 and (ds2.UserReceiverId = '{TokenUserId}' or ds2.GroupReceiverId = '{TokenGroupId}')))) and ds.TypeId = 1 and ds.StatusId = 3\"\r\n}",
                     "RefName": "Inquiry",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -51,7 +49,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "008b0100-0000-0000-8000-73bc6a46f5a5",
@@ -68,8 +65,7 @@
                     "Query": "{\r\n    \"sql\": \"select *,(select Max(StatusId) from InquiryDetail ds1 where ds1.InquiryId = ds.Id and (ds1.InsertedBy = '{TokenUserId}' or (ds1.IsSend = 1 and (ds1.UserReceiverId = '{TokenUserId}' or ds1.GroupReceiverId = '{TokenGroupId}')))) as MaxStatusId  from Inquiry as ds where (ds.InsertedBy = '{TokenUserId}' or exists (select Id from InquiryDetail ds2 where ds2.InquiryId = ds.Id and (ds2.IsSend = 1 and (ds2.UserReceiverId = '{TokenUserId}' or ds2.GroupReceiverId = '{TokenGroupId}')))) and ds.TypeId = 1 and ds.StatusId = 4\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.InsertedBy = '{TokenUserId}' or exists (select Id from InquiryDetail ds2 where ds2.InquiryId = ds.Id and (ds2.IsSend = 1 and (ds2.UserReceiverId = '{TokenUserId}' or ds2.GroupReceiverId = '{TokenGroupId}')))) and ds.TypeId = 1 and ds.StatusId = 4\"\r\n}",
                     "RefName": "Inquiry",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -84,7 +80,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00a202a4-0000-0000-8000-bcd24ae89118",
@@ -101,8 +96,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select *,(select min(StatusId) from InquiryDetail ds1 where ds1.InquiryId = ds.Id and (ds1.InsertedBy = '{TokenUserId}' or (ds1.IsSend = 1 and (ds1.UserReceiverId = '{TokenUserId}' or ds1.GroupReceiverId = '{TokenGroupId}')))) as MaxStatusId  from Inquiry as ds where (ds.InsertedBy = '{TokenUserId}' or exists (select Id from InquiryDetail ds2 where ds2.InquiryId = ds.Id and (ds2.IsSend = 1 and (ds2.UserReceiverId = '{TokenUserId}' or ds2.GroupReceiverId = '{TokenGroupId}')))) and ds.TypeId = 1\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.InsertedBy = '{TokenUserId}' or exists (select Id from InquiryDetail ds2 where ds2.InquiryId = ds.Id and (ds2.IsSend = 1 and (ds2.UserReceiverId = '{TokenUserId}' or ds2.GroupReceiverId = '{TokenGroupId}')))) and ds.TypeId = 1\"\r\n}",
                     "RefName": "Inquiry",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -116,7 +110,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "007d0140-0000-0000-8000-c59461a8e317",
@@ -133,8 +126,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select *,(select Max(StatusId) from InquiryDetail ds1 where ds1.InquiryId = ds.Id and (ds1.InsertedBy = '{TokenUserId}' or (ds1.IsSend = 1 and (ds1.UserReceiverId = '{TokenUserId}' or ds1.GroupReceiverId = '{TokenGroupId}')))) as MaxStatusId  from Inquiry as ds where (ds.InsertedBy = '{TokenUserId}' or exists (select Id from InquiryDetail ds2 where ds2.InquiryId = ds.Id and (ds2.IsSend = 1 and (ds2.UserReceiverId = '{TokenUserId}' or ds2.GroupReceiverId = '{TokenGroupId}')))) and ds.TypeId = 1 and ds.StatusId = 1\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.InsertedBy = '{TokenUserId}' or exists (select Id from InquiryDetail ds2 where ds2.InquiryId = ds.Id and (ds2.IsSend = 1 and (ds2.UserReceiverId = '{TokenUserId}' or ds2.GroupReceiverId = '{TokenGroupId}')))) and ds.TypeId = 1 and ds.StatusId = 1\"\r\n}",
                     "RefName": "Inquiry",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -148,7 +140,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "008a0198-0000-0000-8000-0cd5dcdbf05a",
@@ -165,8 +156,7 @@
                     "Query": "{\r\n    \"sql\": \"select *,(select Max(StatusId) from InquiryDetail ds1 where ds1.InquiryId = ds.Id and (ds1.InsertedBy = '{TokenUserId}' or (ds1.IsSend = 1 and (ds1.UserReceiverId = '{TokenUserId}' or ds1.GroupReceiverId = '{TokenGroupId}')))) as MaxStatusId  from Inquiry as ds where (ds.InsertedBy = '{TokenUserId}' or exists (select Id from InquiryDetail ds2 where ds2.InquiryId = ds.Id and (ds2.IsSend = 1 and (ds2.UserReceiverId = '{TokenUserId}' or ds2.GroupReceiverId = '{TokenGroupId}')))) and ds.TypeId = 1 and ds.StatusId = 2\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.InsertedBy = '{TokenUserId}' or exists (select Id from InquiryDetail ds2 where ds2.InquiryId = ds.Id and (ds2.IsSend = 1 and (ds2.UserReceiverId = '{TokenUserId}' or ds2.GroupReceiverId = '{TokenGroupId}')))) and ds.TypeId = 1 and ds.StatusId = 2\"\r\n}",
                     "RefName": "Inquiry",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         }
@@ -182,8 +172,7 @@
             "Active": true,
             "MinWidth": "122px",
             "MaxWidth": "122px",
-            "EntityId": "Inquiry",
-            "ReportTypeId": 1
+            "EntityId": "Inquiry"
         },
         {
             "Id": "00181e44-0000-0000-8000-ceb90ec923c2",
@@ -199,8 +188,7 @@
             "MinWidth": "84px",
             "MaxWidth": "84px",
             "EntityId": "Inquiry",
-            "IsMultiple": true,
-            "ReportTypeId": 1
+            "IsMultiple": true
         },
         {
             "Id": "001c01e8-0000-0000-8000-8a4799182fdd",
@@ -214,8 +202,7 @@
             "Active": true,
             "MinWidth": "35px",
             "MaxWidth": "35px",
-            "EntityId": "Inquiry",
-            "ReportTypeId": 1
+            "EntityId": "Inquiry"
         },
         {
             "Id": "001d019c-0000-0000-8000-eb3c6a3942a8",
@@ -228,8 +215,7 @@
             "FocusSearch": true,
             "MinWidth": "89px",
             "MaxWidth": "89px",
-            "EntityId": "Inquiry",
-            "ReportTypeId": 1
+            "EntityId": "Inquiry"
         },
         {
             "Id": "001e0194-0000-0000-8000-3757ab9c51b0",
@@ -246,8 +232,7 @@
             "ShowHotKey": true,
             "MinWidth": "211px",
             "MaxWidth": "211px",
-            "EntityId": "Inquiry",
-            "ReportTypeId": 1
+            "EntityId": "Inquiry"
         },
         {
             "Id": "001e01b4-0000-0000-8000-4a017a62b58a",
@@ -265,8 +250,7 @@
             "FocusSearch": true,
             "MinWidth": "102px",
             "MaxWidth": "102px",
-            "EntityId": "Inquiry",
-            "ReportTypeId": 1
+            "EntityId": "Inquiry"
         },
         {
             "Id": "001e01e0-0000-0000-8000-ded2de21767f",
@@ -284,8 +268,7 @@
             "FocusSearch": true,
             "MinWidth": "176px",
             "MaxWidth": "176px",
-            "EntityId": "Inquiry",
-            "ReportTypeId": 1
+            "EntityId": "Inquiry"
         },
         {
             "Id": "001f0174-0000-0000-8000-e31f9d5ae28e",
@@ -298,8 +281,7 @@
             "MinWidth": "66px",
             "MaxWidth": "66px",
             "EntityId": "Inquiry",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "00271e8c-0000-0000-8000-581008d1f20b",
@@ -318,8 +300,7 @@
             "TextAlign": "center",
             "MinWidth": "79px",
             "MaxWidth": "79px",
-            "EntityId": "Inquiry",
-            "ReportTypeId": 1
+            "EntityId": "Inquiry"
         },
         {
             "Id": "002c1e98-0000-0000-8000-6c32163bbaa2",
@@ -336,8 +317,7 @@
             "FocusSearch": true,
             "MinWidth": "110px",
             "MaxWidth": "110px",
-            "EntityId": "Inquiry",
-            "ReportTypeId": 1
+            "EntityId": "Inquiry"
         },
         {
             "Id": "004d0140-0000-0000-8000-479d3513a9f9",
@@ -351,8 +331,7 @@
             "MinWidth": "353px",
             "MaxWidth": "353px",
             "EntityId": "Inquiry",
-            "IsMultiple": true,
-            "ReportTypeId": 1
+            "IsMultiple": true
         },
         {
             "Id": "0052017c-0000-0000-8000-63e01f503a7e",
@@ -368,8 +347,7 @@
             "MinWidth": "152px",
             "MaxWidth": "152px",
             "EntityId": "Inquiry",
-            "IsMultiple": true,
-            "ReportTypeId": 1
+            "IsMultiple": true
         }
     ],
     "Components": [
@@ -385,8 +363,7 @@
             "Active": true,
             "MinWidth": "35px",
             "MaxWidth": "35px",
-            "EntityId": "Inquiry",
-            "ReportTypeId": 1
+            "EntityId": "Inquiry"
         },
         {
             "Id": "00c70164-0000-0000-8000-c46ed19505b3",
@@ -398,8 +375,7 @@
             "Icon": "fal fa-plus",
             "ClassName": "btn",
             "Events": "{\"click\":\"Add\"}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "00d30228-0000-0000-8000-34cd626f88d1",
@@ -411,8 +387,7 @@
             "Icon": "fal fa-plus",
             "ClassName": "btn",
             "Events": "{\"click\":\"Add\"}",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         }
     ],
     "FeaturePolicies": [

@@ -16,7 +16,6 @@
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "000705a4-0000-0000-8000-bfd5b3a16a17",
@@ -35,8 +34,7 @@
                     "IsRealtime": true,
                     "RefName": "MasterData",
                     "TopEmpty": true,
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         }
@@ -53,8 +51,7 @@
             "Editable": true,
             "MinWidth": "305px",
             "MaxWidth": "305px",
-            "EntityId": "MasterData",
-            "ReportTypeId": 1
+            "EntityId": "MasterData"
         },
         {
             "Id": "0007056c-0000-0000-8000-a3efb2951ab8",
@@ -67,8 +64,7 @@
             "Editable": true,
             "MinWidth": "102px",
             "MaxWidth": "102px",
-            "EntityId": "MasterData",
-            "ReportTypeId": 1
+            "EntityId": "MasterData"
         },
         {
             "Id": "00070590-0000-0000-8000-1c0ad9132f0d",
@@ -81,8 +77,7 @@
             "Editable": true,
             "MinWidth": "131px",
             "MaxWidth": "131px",
-            "EntityId": "MasterData",
-            "ReportTypeId": 1
+            "EntityId": "MasterData"
         },
         {
             "Id": "00a529dc-0000-0000-8000-cbc1e3090c78",
@@ -95,8 +90,7 @@
             "Editable": true,
             "MinWidth": "124px",
             "MaxWidth": "124px",
-            "EntityId": "MasterData",
-            "ReportTypeId": 1
+            "EntityId": "MasterData"
         },
         {
             "Id": "00ed29cc-0000-0000-8000-38edcbfa6faa",
@@ -109,8 +103,7 @@
             "Editable": true,
             "MinWidth": "94px",
             "MaxWidth": "94px",
-            "EntityId": "MasterData",
-            "ReportTypeId": 1
+            "EntityId": "MasterData"
         },
         {
             "Id": "00ee2938-0000-0000-8000-a7c10634870c",
@@ -123,8 +116,7 @@
             "Editable": true,
             "MinWidth": "95px",
             "MaxWidth": "95px",
-            "EntityId": "MasterData",
-            "ReportTypeId": 1
+            "EntityId": "MasterData"
         }
     ],
     "FeaturePolicies": [

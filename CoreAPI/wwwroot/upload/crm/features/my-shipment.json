@@ -18,7 +18,6 @@
             "XxlCol": 12,
             "Active": true,
             "ParentId": "01952345-bbd6-70b7-bc43-0ab510392619",
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0195233d-9004-774c-86c5-b2bf5f4ef7f9",
@@ -33,8 +32,7 @@
                     "Active": true,
                     "Query": "select ds.*,'{SearchNo}' as SearchNo,\r\npol.Name as polName,\r\npod.Name as podName,\r\npt.Name as ptName,\r\nformat(ds.EtdDate,'yyyy-MM-dd') AS etdDate,\r\nformat(ds.EtaDate,'yyyy-MM-dd') AS etaDate,\r\nreceipt.Name AS PlaceofReceipt,\r\ndestination.Name AS Destination,\r\nincoterm.Name AS incoterm ,\r\n deli.Name  AS TermOfDelivery,\r\ncomo.Name AS Commodity,\r\nds.Quantity ,\r\nConcat(ds.Quantity,' | ',unit.Name) AS Pieces,\r\nds.CBM AS Measuament,\r\nds.GW AS totalWeight,\r\nds.Vessel AS Vessel,\r\nds.VesselVoy AS Voyage,\r\nds.ContainerText,\r\n(select top 1 concat(format(EtaTsDate,'yyyy-MM-dd'),'/',format(EtdTsDate,'yyyy-MM-dd')) from EntityTransit where EntityId = ds.ParentId and PortTransitId = ds.PortTransitId) as etaTsDate,\r\ncreator.FullName AS FullName,\r\ncreator.Avatar AS Avatar,\r\ndep.Name AS DEP,\r\ncreator.PhoneNumber AS phone,\r\ncreator.Email AS email\r\nfrom Shipment ds\r\nleft join Terminal pol on ds.POLId = pol.Id\r\nleft join Terminal pod on ds.PODId = pod.Id\r\nLEFT JOIN dbo.Terminal receipt ON ds.PlaceReceiptId = receipt.Id\r\nLEFT JOIN dbo.Terminal destination ON destination.Id=ds.FinalDestinationId\r\nLEFT JOIN dbo.MasterData incoterm ON ds.IncotermId =incoterm.Id\r\nLEFT JOIN dbo.MasterData deli ON ds.TypeMoveId = deli.id\r\nLEFT JOIN dbo.MasterData como ON ds.CommodityId = como.Id\r\nLEFT JOIN dbo.MasterData unit ON ds.UnitId = unit.Id\r\nleft join Terminal pt on ds.PortTransitId = pt.Id\r\nLEFT JOIN dbo.[User] creator ON ds.InsertedBy = creator.Id\r\nLEFT JOIN dbo.MasterData dep ON dep.id=creator.DepartmentId\r\nwhere (ds.HblNo = '{SearchNo}' or ds.BookingNo = '{SearchNo}' and ds.CustomerId = '{TokenUserId}')",
                     "PreQuery": "{\r\n    \"SearchNo\" : this.Entity.SearchNo\r\n}",
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "0195233e-858f-75b9-b94e-1b4a8c1bb127",
@@ -46,8 +44,7 @@
                     "Precision": 2,
                     "ChildStyle": "height: 30px;",
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 }
             ]
         },
@@ -60,8 +57,7 @@
             "Style": "width: 1200px;margin: auto;padding: 1rem;display: none;padding-bottom: 19rem;",
             "XxlCol": 12,
             "Active": true,
-            "ParentId": "01952345-bbd6-70b7-bc43-0ab510392619",
-            "ReportTypeId": 1
+            "ParentId": "01952345-bbd6-70b7-bc43-0ab510392619"
         },
         {
             "Id": "01952345-bbd6-70b7-bc43-0ab510392619",
@@ -70,8 +66,7 @@
             "Label": "Track & Trace",
             "XxlCol": 12,
             "Active": true,
-            "IsTab": true,
-            "ReportTypeId": 1
+            "IsTab": true
         },
         {
             "Id": "0195235e-987a-757a-8877-7e7a1147e08a",
@@ -83,7 +78,6 @@
             "XxlCol": 12,
             "Active": true,
             "ParentId": "01952345-7bc4-726a-a1da-24220580d41b",
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01952be8-ca47-700f-9a0a-48cda19a7365",
@@ -96,8 +90,7 @@
                     "Label": "POL",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952be8-ca47-700f-9a0a-4fc91b4c9b75",
@@ -110,8 +103,7 @@
                     "Label": "Port of Transit",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952be8-ca47-700f-9a0a-535e8008ea2b",
@@ -123,8 +115,7 @@
                     "Row": 50,
                     "Label": "POD",
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952be8-ca47-700f-9a0a-57e3e11ef286",
@@ -137,8 +128,7 @@
                     "Label": "ETD",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952be8-ca47-700f-9a0a-58da65149cc0",
@@ -151,8 +141,7 @@
                     "Label": "ETA/ETD",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952be8-ca47-700f-9a0a-5f8f2f9c9884",
@@ -165,8 +154,7 @@
                     "Label": "ETA",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952be8-ca47-700f-9a0a-61c262ab4ae9",
@@ -179,8 +167,7 @@
                     "Label": "Pick up place/ Place of receipt",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952be8-ca48-75fe-b562-5be5a873d495",
@@ -191,8 +178,7 @@
                     "Row": 50,
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952be8-ca48-75fe-b562-5d484527b1a4",
@@ -205,8 +191,7 @@
                     "Label": "Final destination/ Place of delivery",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952be8-ca48-75fe-b562-63f0a1ac8df7",
@@ -219,8 +204,7 @@
                     "Label": "Term Of Delivery",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952be8-ca48-75fe-b562-66d920639645",
@@ -231,8 +215,7 @@
                     "Row": 50,
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952be8-ca48-75fe-b562-6b4a50f8677b",
@@ -245,8 +228,7 @@
                     "Label": "Commodity",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952be8-ca48-75fe-b562-6c27acd72f8e",
@@ -259,8 +241,7 @@
                     "Label": "Number of pieces",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952be8-ca48-75fe-b562-729ebba95f9a",
@@ -273,8 +254,7 @@
                     "Label": "Measuament",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952be8-ca48-75fe-b562-77ff3d5aada9",
@@ -287,8 +267,7 @@
                     "Label": "Total Weight",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 }
             ]
         },
@@ -302,7 +281,6 @@
             "XxlCol": 12,
             "Active": true,
             "ParentId": "01952345-7bc4-726a-a1da-24220580d41b",
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01952357-3295-713d-9715-0df9932146b6",
@@ -315,8 +293,7 @@
                     "Label": "Name",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952357-3295-713d-9715-12bb6374f480",
@@ -329,8 +306,7 @@
                     "Label": "Voyage",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952357-3296-733c-8615-8c7a1ab36b27",
@@ -343,8 +319,7 @@
                     "Label": "Port of Load",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952357-3296-733c-8615-938b8ddecf70",
@@ -357,8 +332,7 @@
                     "Label": "Port of Discharge",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 }
             ]
         },
@@ -372,7 +346,6 @@
             "XxlCol": 12,
             "Active": true,
             "ParentId": "01952345-7bc4-726a-a1da-24220580d41b",
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01952359-7a24-742b-aecd-d4e8d2d97e94",
@@ -384,8 +357,7 @@
                     "ShowLabel": true,
                     "Disabled": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 },
                 {
                     "Id": "01952359-7a24-742b-aecd-dba8cee35f13",
@@ -401,8 +373,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from EntityContainer as ds where EntityId = '{EntityId}'\",\r\n    \"total\": \"select count(ds.Id) as total from EntityContainer as ds where EntityId = '{EntityId}'\"\r\n}",
                     "RefName": "EntityContainer",
-                    "PreQuery": "{\r\n    \"EntityId\": this.EditForm.Entity.Id\r\n}",
-                    "ReportTypeId": 1
+                    "PreQuery": "{\r\n    \"EntityId\": this.EditForm.Entity.Id\r\n}"
                 }
             ]
         },
@@ -416,7 +387,6 @@
             "XxlCol": 12,
             "Active": true,
             "ParentId": "01952345-7bc4-726a-a1da-24220580d41b",
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0195235b-fdf7-70f2-80ca-a8a9ee0c6257",
@@ -431,8 +401,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentTask as ds where ShipmentId = '{ShipmentId}' and IsFinish = 1\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentTask as ds where ShipmentId = '{ShipmentId}' and IsFinish = 1\"\r\n}",
                     "RefName": "ShipmentTask",
-                    "PreQuery": "{\r\n    \"ShipmentId\": this.EditForm.Entity.Id\r\n}",
-                    "ReportTypeId": 1
+                    "PreQuery": "{\r\n    \"ShipmentId\": this.EditForm.Entity.Id\r\n}"
                 }
             ]
         },
@@ -446,7 +415,6 @@
             "XxlCol": 12,
             "Active": true,
             "ParentId": "01952345-7bc4-726a-a1da-24220580d41b",
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01952365-acff-761e-a9c3-cb184ef45f85",
@@ -459,8 +427,7 @@
                     "Label": "Department",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952365-acff-761e-a9c3-ccecca392c21",
@@ -473,8 +440,7 @@
                     "Label": "Tel",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952365-ad00-7194-ac14-c19445981013",
@@ -488,8 +454,7 @@
                     "Label": "Name",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952365-ad00-7194-ac14-c42640ad7ef4",
@@ -502,8 +467,7 @@
                     "Label": "Email",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 }
             ]
         },
@@ -515,8 +479,7 @@
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "Active": true,
-            "IsTab": true,
-            "ReportTypeId": 1
+            "IsTab": true
         },
         {
             "Id": "019526a9-978c-773f-87a6-a5e6164ae6f4",
@@ -531,7 +494,6 @@
             "IsTab": true,
             "TabGroup": "A",
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "019526c6-a9d8-7029-a348-939d38c442d6",
@@ -548,8 +510,7 @@
                     "Query": "{\r\n    \"sql\": \"select ds.*,\r\npol.Name as polName,\r\npod.Name as podName,\r\npt.Name as ptName,\r\nformat(ds.EtdDate,'yyyy-MM-dd') AS etdDate,\r\nformat(ds.EtaDate,'yyyy-MM-dd') AS etaDate,\r\nreceipt.Name AS PlaceofReceipt,\r\ndestination.Name AS Destination,\r\nincoterm.Name AS incoterm ,\r\n deli.Name  AS TermOfDelivery,\r\ncomo.Name AS Commodity,\r\nds.Quantity ,\r\nConcat(ds.Quantity,' | ',unit.Name) AS Pieces,\r\nds.CBM AS Measuament,\r\nds.GW AS totalWeight,\r\nds.Vessel AS Vessel,\r\nds.VesselVoy AS Voyage,\r\nds.ContainerText,\r\n(select top 1 concat(format(EtaTsDate,'yyyy-MM-dd'),'/',format(EtdTsDate,'yyyy-MM-dd')) from EntityTransit where EntityId = ds.ParentId and PortTransitId = ds.PortTransitId) as etaTsDate,\r\ncreator.FullName AS FullName,\r\ncreator.Avatar AS Avatar,\r\ndep.Name AS DEP,\r\ncreator.PhoneNumber AS phone,\r\ncreator.Email AS email\r\nfrom Shipment ds\r\nleft join Terminal pol on ds.POLId = pol.Id\r\nleft join Terminal pod on ds.PODId = pod.Id\r\nLEFT JOIN dbo.Terminal receipt ON ds.PlaceReceiptId = receipt.Id\r\nLEFT JOIN dbo.Terminal destination ON destination.Id=ds.FinalDestinationId\r\nLEFT JOIN dbo.MasterData incoterm ON ds.IncotermId =incoterm.Id\r\nLEFT JOIN dbo.MasterData deli ON ds.TypeMoveId = deli.id\r\nLEFT JOIN dbo.MasterData como ON ds.CommodityId = como.Id\r\nLEFT JOIN dbo.MasterData unit ON ds.UnitId = unit.Id\r\nleft join Terminal pt on ds.PortTransitId = pt.Id\r\nLEFT JOIN dbo.[User] creator ON ds.InsertedBy = creator.Id\r\nLEFT JOIN dbo.MasterData dep ON dep.id=creator.DepartmentId where (ds.ParentId is not null and CustomerId = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from Shipment as ds where (ds.ParentId is not null and CustomerId = '{TokenUserId}')\"\r\n}",
                     "RefName": "Shipment",
                     "PreQuery": "{\r\n    \"Message\": \"Unable to delete issue data\"\r\n}",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -565,7 +526,6 @@
             "IsTab": true,
             "TabGroup": "A",
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "019526c6-e10f-7555-be79-d122af1a81db",
@@ -582,8 +542,7 @@
                     "Query": "{\r\n    \"sql\": \"select ds.*,\r\npol.Name as polName,\r\npod.Name as podName,\r\npt.Name as ptName,\r\nformat(ds.EtdDate,'yyyy-MM-dd') AS etdDate,\r\nformat(ds.EtaDate,'yyyy-MM-dd') AS etaDate,\r\nreceipt.Name AS PlaceofReceipt,\r\ndestination.Name AS Destination,\r\nincoterm.Name AS incoterm ,\r\n deli.Name  AS TermOfDelivery,\r\ncomo.Name AS Commodity,\r\nds.Quantity ,\r\nConcat(ds.Quantity,' | ',unit.Name) AS Pieces,\r\nds.CBM AS Measuament,\r\nds.GW AS totalWeight,\r\nds.Vessel AS Vessel,\r\nds.VesselVoy AS Voyage,\r\nds.ContainerText,\r\n(select top 1 concat(format(EtaTsDate,'yyyy-MM-dd'),'/',format(EtdTsDate,'yyyy-MM-dd')) from EntityTransit where EntityId = ds.ParentId and PortTransitId = ds.PortTransitId) as etaTsDate,\r\ncreator.FullName AS FullName,\r\ncreator.Avatar AS Avatar,\r\ndep.Name AS DEP,\r\ncreator.PhoneNumber AS phone,\r\ncreator.Email AS email\r\nfrom Shipment ds\r\nleft join Terminal pol on ds.POLId = pol.Id\r\nleft join Terminal pod on ds.PODId = pod.Id\r\nLEFT JOIN dbo.Terminal receipt ON ds.PlaceReceiptId = receipt.Id\r\nLEFT JOIN dbo.Terminal destination ON destination.Id=ds.FinalDestinationId\r\nLEFT JOIN dbo.MasterData incoterm ON ds.IncotermId =incoterm.Id\r\nLEFT JOIN dbo.MasterData deli ON ds.TypeMoveId = deli.id\r\nLEFT JOIN dbo.MasterData como ON ds.CommodityId = como.Id\r\nLEFT JOIN dbo.MasterData unit ON ds.UnitId = unit.Id\r\nleft join Terminal pt on ds.PortTransitId = pt.Id\r\nLEFT JOIN dbo.[User] creator ON ds.InsertedBy = creator.Id\r\nLEFT JOIN dbo.MasterData dep ON dep.id=creator.DepartmentId\r\n where (ds.TypeId in (3) and ds.ParentId is not null and ds.CustomerId = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from Shipment as ds where (ds.TypeId in (3) and ds.ParentId is not null and ds.CustomerId = '{TokenUserId}')\"\r\n}",
                     "RefName": "Shipment",
                     "PreQuery": "{\r\n    \"Message\": \"Unable to delete issue data\"\r\n}",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -599,7 +558,6 @@
             "IsTab": true,
             "TabGroup": "A",
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "019526c6-fbb5-7479-8321-4cd31a73f24b",
@@ -616,8 +574,7 @@
                     "Query": "{\r\n    \"sql\": \"select ds.*,\r\npol.Name as polName,\r\npod.Name as podName,\r\npt.Name as ptName,\r\nformat(ds.EtdDate,'yyyy-MM-dd') AS etdDate,\r\nformat(ds.EtaDate,'yyyy-MM-dd') AS etaDate,\r\nreceipt.Name AS PlaceofReceipt,\r\ndestination.Name AS Destination,\r\nincoterm.Name AS incoterm ,\r\n deli.Name  AS TermOfDelivery,\r\ncomo.Name AS Commodity,\r\nds.Quantity ,\r\nConcat(ds.Quantity,' | ',unit.Name) AS Pieces,\r\nds.CBM AS Measuament,\r\nds.GW AS totalWeight,\r\nds.Vessel AS Vessel,\r\nds.VesselVoy AS Voyage,\r\nds.ContainerText,\r\n(select top 1 concat(format(EtaTsDate,'yyyy-MM-dd'),'/',format(EtdTsDate,'yyyy-MM-dd')) from EntityTransit where EntityId = ds.ParentId and PortTransitId = ds.PortTransitId) as etaTsDate,\r\ncreator.FullName AS FullName,\r\ncreator.Avatar AS Avatar,\r\ndep.Name AS DEP,\r\ncreator.PhoneNumber AS phone,\r\ncreator.Email AS email\r\nfrom Shipment ds\r\nleft join Terminal pol on ds.POLId = pol.Id\r\nleft join Terminal pod on ds.PODId = pod.Id\r\nLEFT JOIN dbo.Terminal receipt ON ds.PlaceReceiptId = receipt.Id\r\nLEFT JOIN dbo.Terminal destination ON destination.Id=ds.FinalDestinationId\r\nLEFT JOIN dbo.MasterData incoterm ON ds.IncotermId =incoterm.Id\r\nLEFT JOIN dbo.MasterData deli ON ds.TypeMoveId = deli.id\r\nLEFT JOIN dbo.MasterData como ON ds.CommodityId = como.Id\r\nLEFT JOIN dbo.MasterData unit ON ds.UnitId = unit.Id\r\nleft join Terminal pt on ds.PortTransitId = pt.Id\r\nLEFT JOIN dbo.[User] creator ON ds.InsertedBy = creator.Id\r\nLEFT JOIN dbo.MasterData dep ON dep.id=creator.DepartmentId where (ds.TypeId in (1) and ds.ParentId is not null and ds.CustomerId = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from Shipment as ds where (ds.TypeId in (1) and ds.ParentId is not null and ds.CustomerId = '{TokenUserId}')\"\r\n}",
                     "RefName": "Shipment",
                     "PreQuery": "{\r\n    \"Message\": \"Unable to delete issue data\"\r\n}",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         },
@@ -630,8 +587,7 @@
             "Style": "width: 1200px;margin: auto;padding: 1rem;display: none;padding-bottom: 19rem;",
             "XxlCol": 12,
             "Active": true,
-            "ParentId": "01952345-bbd6-70b7-bc43-0ab510392619",
-            "ReportTypeId": 1
+            "ParentId": "01952345-bbd6-70b7-bc43-0ab510392619"
         },
         {
             "Id": "01952bd6-87f5-71cc-ac58-de6a441c7097",
@@ -643,7 +599,6 @@
             "XxlCol": 12,
             "Active": true,
             "ParentId": "01952bce-d761-70d1-8f9f-a0a2fc168c39",
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01952bfa-0bad-723a-b9b7-17c3994ac3dc",
@@ -656,8 +611,7 @@
                     "Label": "Department",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952bfa-0bad-723a-b9b7-1b80a3d229df",
@@ -670,8 +624,7 @@
                     "Label": "Tel",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952bfa-0bad-723a-b9b7-1e27fd1c3bc4",
@@ -685,8 +638,7 @@
                     "Label": "Name",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952bfa-0bad-723a-b9b7-205a133724d2",
@@ -699,8 +651,7 @@
                     "Label": "Email",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 }
             ]
         },
@@ -714,7 +665,6 @@
             "XxlCol": 12,
             "Active": true,
             "ParentId": "01952bce-d761-70d1-8f9f-a0a2fc168c39",
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01952bf9-6f1d-7628-8017-8ef5bba557c1",
@@ -729,8 +679,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentTask as ds where ShipmentId = '{ShipmentId}'\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentTask as ds where ShipmentId = '{ShipmentId}'\"\r\n}",
                     "RefName": "ShipmentTask",
-                    "PreQuery": "{\r\n    \"ShipmentId\": this.EditForm.Entity.Id\r\n}",
-                    "ReportTypeId": 1
+                    "PreQuery": "{\r\n    \"ShipmentId\": this.EditForm.Entity.Id\r\n}"
                 }
             ]
         },
@@ -744,7 +693,6 @@
             "XxlCol": 12,
             "Active": true,
             "ParentId": "01952bce-d761-70d1-8f9f-a0a2fc168c39",
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01952bf7-35de-71c8-8fcb-c32dd0594a8c",
@@ -762,8 +710,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from EntityDimension as ds where EntityId = '{EntityId}'\",\r\n    \"total\": \"select count(ds.Id) as total from EntityDimension as ds where EntityId = '{EntityId}'\"\r\n}",
                     "RefName": "EntityDimension",
-                    "PreQuery": "{\r\n    \"EntityId\": this.EditForm.Entity.Id,\r\n    \"TableName\": \"ShipmentDetail\"\r\n}",
-                    "ReportTypeId": 1
+                    "PreQuery": "{\r\n    \"EntityId\": this.EditForm.Entity.Id,\r\n    \"TableName\": \"ShipmentDetail\"\r\n}"
                 }
             ]
         },
@@ -777,7 +724,6 @@
             "XxlCol": 12,
             "Active": true,
             "ParentId": "01952bce-d761-70d1-8f9f-a0a2fc168c39",
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01952bf1-6d21-77dc-a9b5-70a057f0a9b9",
@@ -790,8 +736,7 @@
                     "Label": "Plane",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952bf1-6d21-77dc-a9b5-752d7bc8c5d1",
@@ -804,8 +749,7 @@
                     "Label": "Port of Load",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952bf1-6d21-77dc-a9b5-7a8461150fa6",
@@ -818,8 +762,7 @@
                     "Label": "Transit",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952bf1-6d22-761b-9348-fd06510db310",
@@ -832,8 +775,7 @@
                     "Label": "Port of Discharge",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 }
             ]
         },
@@ -847,7 +789,6 @@
             "XxlCol": 12,
             "Active": true,
             "ParentId": "01952bce-d761-70d1-8f9f-a0a2fc168c39",
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "01952bf0-2642-7760-ba4e-8d82b9d7f98b",
@@ -860,8 +801,7 @@
                     "Label": "AOL",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952bf0-2642-7760-ba4e-9175ec9767fd",
@@ -874,8 +814,7 @@
                     "Label": "Port of Transit",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952bf0-2642-7760-ba4e-950acf93761e",
@@ -888,8 +827,7 @@
                     "Label": "AOD",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952bf0-2643-72d1-b857-92652b18d1f2",
@@ -902,8 +840,7 @@
                     "Label": "ATD",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952bf0-2643-72d1-b857-953934d437c0",
@@ -916,8 +853,7 @@
                     "Label": "ETA/ETD",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952bf0-2643-72d1-b857-9924a80329b6",
@@ -930,8 +866,7 @@
                     "Label": "ETA",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952bf0-2643-72d1-b857-9c9a03dec1af",
@@ -944,8 +879,7 @@
                     "Label": "Term Of Delivery",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952bf0-2643-72d1-b857-a34d672cff91",
@@ -956,8 +890,7 @@
                     "Row": 50,
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952bf0-2643-72d1-b857-a4dd7c107085",
@@ -970,8 +903,7 @@
                     "Label": "Commodity",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952bf0-2643-72d1-b857-a97679e3da9c",
@@ -984,8 +916,7 @@
                     "Label": "Number of pieces",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952bf0-2643-72d1-b857-ace81fee4fdf",
@@ -998,8 +929,7 @@
                     "Label": "Gross Weight",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "01952bf0-2643-72d1-b857-b0734cf87a61",
@@ -1012,8 +942,7 @@
                     "Label": "Chargeable Weight",
                     "ShowLabel": true,
                     "Active": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 }
             ]
         }
@@ -1032,8 +961,7 @@
             "FocusSearch": true,
             "MinWidth": "56px",
             "MaxWidth": "56px",
-            "EntityId": "ShipmentSI",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentSI"
         },
         {
             "Id": "01952338-4d6c-713f-bdb4-70e865da109c",
@@ -1051,8 +979,7 @@
             "ShowHotKey": true,
             "MinWidth": "245px",
             "MaxWidth": "245px",
-            "EntityId": "ShipmentSI",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentSI"
         },
         {
             "Id": "01952338-4dac-71b9-8a57-d1853c579dd1",
@@ -1071,8 +998,7 @@
             "TextAlign": "center",
             "MinWidth": "175px",
             "MaxWidth": "175px",
-            "EntityId": "ShipmentSI",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentSI"
         },
         {
             "Id": "01952338-4df1-7554-a18f-04094cb360b6",
@@ -1090,8 +1016,7 @@
             "FocusSearch": true,
             "MinWidth": "176px",
             "MaxWidth": "176px",
-            "EntityId": "ShipmentSI",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentSI"
         },
         {
             "Id": "01952338-4e2e-74de-9cc2-e4022c36e5a5",
@@ -1109,8 +1034,7 @@
             "FocusSearch": true,
             "MinWidth": "243px",
             "MaxWidth": "243px",
-            "EntityId": "ShipmentSI",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentSI"
         },
         {
             "Id": "01952338-4e69-7708-8759-410efcbef072",
@@ -1123,8 +1047,7 @@
             "FocusSearch": true,
             "MinWidth": "162px",
             "MaxWidth": "162px",
-            "EntityId": "ShipmentSI",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentSI"
         },
         {
             "Id": "01952359-efad-773e-aa74-dd9c66bf1403",
@@ -1140,8 +1063,7 @@
             "MinWidth": "49px",
             "MaxWidth": "49px",
             "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "01952359-efad-773e-aa74-e2823b197bac",
@@ -1160,8 +1082,7 @@
             "FocusSearch": true,
             "MinWidth": "103px",
             "MaxWidth": "103px",
-            "EntityId": "EntityContainer",
-            "ReportTypeId": 1
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01952359-efad-773e-aa74-e5ba7153605d",
@@ -1177,8 +1098,7 @@
             "MinWidth": "105px",
             "MaxWidth": "105px",
             "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "01952359-efad-773e-aa74-ea0b2b9a4d28",
@@ -1193,8 +1113,7 @@
             "MinWidth": "84px",
             "MaxWidth": "84px",
             "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "01952359-efae-7054-b34d-29316dc3019b",
@@ -1209,8 +1128,7 @@
             "MinWidth": "54px",
             "MaxWidth": "54px",
             "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "01952359-efae-7054-b34d-2dcc1b723bd1",
@@ -1228,8 +1146,7 @@
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
             "MinWidth": "102px",
             "MaxWidth": "102px",
-            "EntityId": "EntityContainer",
-            "ReportTypeId": 1
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01952359-efae-7054-b34d-317b88851b25",
@@ -1244,8 +1161,7 @@
             "MinWidth": "80px",
             "MaxWidth": "80px",
             "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "01952359-efae-7054-b34d-34858140ea6d",
@@ -1260,8 +1176,7 @@
             "MinWidth": "87px",
             "MaxWidth": "87px",
             "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "01952359-efae-7054-b34d-3b88469ae38f",
@@ -1276,8 +1191,7 @@
             "MinWidth": "67px",
             "MaxWidth": "67px",
             "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "01952359-efae-7054-b34d-3f518b7e7278",
@@ -1292,8 +1206,7 @@
             "MinWidth": "336px",
             "MaxWidth": "336px",
             "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "0195235c-bf99-7118-8fe6-dd88ba7bafa9",
@@ -1308,8 +1221,7 @@
             "MinWidth": "119px",
             "MaxWidth": "119px",
             "EntityId": "ShipmentTask",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "0195235c-bf9b-731d-9860-620ee716d01c",
@@ -1323,8 +1235,7 @@
             "FocusSearch": true,
             "MinWidth": "136px",
             "MaxWidth": "136px",
-            "EntityId": "ShipmentTask",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentTask"
         },
         {
             "Id": "0195235c-bf9c-710d-a13f-407258c56cf2",
@@ -1339,8 +1250,7 @@
             "MinWidth": "808px",
             "MaxWidth": "808px",
             "EntityId": "ShipmentTask",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "019526c7-f3ea-75cb-b8f0-2c3e021d03b6",
@@ -1353,8 +1263,7 @@
             "FocusSearch": true,
             "MinWidth": "123px",
             "MaxWidth": "123px",
-            "EntityId": "Shipment1",
-            "ReportTypeId": 1
+            "EntityId": "Shipment1"
         },
         {
             "Id": "019526c7-f3eb-70ed-aba0-9ea67dae65d4",
@@ -1374,8 +1283,7 @@
             "EntityId": "Shipment1",
             "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "019526c7-f3eb-70ed-aba0-a21c3e88e7d7",
@@ -1395,8 +1303,7 @@
             "EntityId": "Shipment1",
             "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "019526c7-f3eb-70ed-aba0-a40595cec9a3",
@@ -1416,8 +1323,7 @@
             "MaxWidth": "101px",
             "EntityId": "Shipment1",
             "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "019526c7-f3eb-70ed-aba0-ab56ec6ce7f4",
@@ -1435,8 +1341,7 @@
             "MaxWidth": "159px",
             "EntityId": "Shipment1",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "019526c7-f3eb-70ed-aba0-afe74c44e638",
@@ -1452,8 +1357,7 @@
             "MaxWidth": "120px",
             "EntityId": "Shipment1",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "019526c7-f3ec-7758-85a5-3fce303bda82",
@@ -1469,8 +1373,7 @@
             "MaxWidth": "101px",
             "EntityId": "Shipment1",
             "EntityName": "ShipmentDetail",
-            "TableName": "Shipment",
-            "ReportTypeId": 1
+            "TableName": "Shipment"
         },
         {
             "Id": "019526c7-f3ec-7758-85a5-4100c4fb4b15",
@@ -1488,8 +1391,7 @@
             "FocusSearch": true,
             "MinWidth": "173px",
             "MaxWidth": "173px",
-            "EntityId": "Shipment1",
-            "ReportTypeId": 1
+            "EntityId": "Shipment1"
         },
         {
             "Id": "019526c7-f3ec-7758-85a5-4603812a8c68",
@@ -1502,8 +1404,7 @@
             "FocusSearch": true,
             "MinWidth": "108px",
             "MaxWidth": "108px",
-            "EntityId": "Shipment1",
-            "ReportTypeId": 1
+            "EntityId": "Shipment1"
         },
         {
             "Id": "019526c7-f3ec-7758-85a5-49334729b9b8",
@@ -1521,8 +1422,7 @@
             "FocusSearch": true,
             "MinWidth": "193px",
             "MaxWidth": "193px",
-            "EntityId": "Shipment1",
-            "ReportTypeId": 1
+            "EntityId": "Shipment1"
         },
         {
             "Id": "019526c9-27df-716f-b5f2-b24281c91d1b",
@@ -1538,8 +1438,7 @@
             "FocusSearch": true,
             "MinWidth": "154px",
             "MaxWidth": "154px",
-            "EntityId": "Shipment1",
-            "ReportTypeId": 1
+            "EntityId": "Shipment1"
         },
         {
             "Id": "019526df-cc02-70e5-b446-db5b6e6fd527",
@@ -1554,8 +1453,7 @@
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
-            "EntityId": "Shipment1",
-            "ReportTypeId": 1
+            "EntityId": "Shipment1"
         },
         {
             "Id": "01952bf7-ff02-7063-95ee-4abc1174f863",
@@ -1569,8 +1467,7 @@
             "MinWidth": "125px",
             "MaxWidth": "125px",
             "EntityId": "EntityDimension",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "01952bf7-ff03-706c-9df8-f0a57fb33432",
@@ -1584,8 +1481,7 @@
             "MinWidth": "115px",
             "MaxWidth": "115px",
             "EntityId": "EntityDimension",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "01952bf7-ff03-706c-9df8-f49b83ec4b7f",
@@ -1599,8 +1495,7 @@
             "MinWidth": "121px",
             "MaxWidth": "121px",
             "EntityId": "EntityDimension",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "01952bf7-ff04-7094-bf6c-9324af02ab51",
@@ -1616,8 +1511,7 @@
             "MinWidth": "113px",
             "MaxWidth": "113px",
             "EntityId": "EntityDimension",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         }
     ],
     "Components": [
@@ -1634,8 +1528,7 @@
             "FocusSearch": true,
             "MinWidth": "56px",
             "MaxWidth": "56px",
-            "EntityId": "ShipmentSI",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentSI"
         },
         {
             "Id": "0195233d-9004-774c-86c5-b2bf5f4ef7f9",
@@ -1650,8 +1543,7 @@
             "Active": true,
             "Query": "select ds.*,'{SearchNo}' as SearchNo,\r\npol.Name as polName,\r\npod.Name as podName,\r\npt.Name as ptName,\r\nformat(ds.EtdDate,'yyyy-MM-dd') AS etdDate,\r\nformat(ds.EtaDate,'yyyy-MM-dd') AS etaDate,\r\nreceipt.Name AS PlaceofReceipt,\r\ndestination.Name AS Destination,\r\nincoterm.Name AS incoterm ,\r\n deli.Name  AS TermOfDelivery,\r\ncomo.Name AS Commodity,\r\nds.Quantity ,\r\nConcat(ds.Quantity,' | ',unit.Name) AS Pieces,\r\nds.CBM AS Measuament,\r\nds.GW AS totalWeight,\r\nds.Vessel AS Vessel,\r\nds.VesselVoy AS Voyage,\r\nds.ContainerText,\r\n(select top 1 concat(format(EtaTsDate,'yyyy-MM-dd'),'/',format(EtdTsDate,'yyyy-MM-dd')) from EntityTransit where EntityId = ds.ParentId and PortTransitId = ds.PortTransitId) as etaTsDate,\r\ncreator.FullName AS FullName,\r\ncreator.Avatar AS Avatar,\r\ndep.Name AS DEP,\r\ncreator.PhoneNumber AS phone,\r\ncreator.Email AS email\r\nfrom Shipment ds\r\nleft join Terminal pol on ds.POLId = pol.Id\r\nleft join Terminal pod on ds.PODId = pod.Id\r\nLEFT JOIN dbo.Terminal receipt ON ds.PlaceReceiptId = receipt.Id\r\nLEFT JOIN dbo.Terminal destination ON destination.Id=ds.FinalDestinationId\r\nLEFT JOIN dbo.MasterData incoterm ON ds.IncotermId =incoterm.Id\r\nLEFT JOIN dbo.MasterData deli ON ds.TypeMoveId = deli.id\r\nLEFT JOIN dbo.MasterData como ON ds.CommodityId = como.Id\r\nLEFT JOIN dbo.MasterData unit ON ds.UnitId = unit.Id\r\nleft join Terminal pt on ds.PortTransitId = pt.Id\r\nLEFT JOIN dbo.[User] creator ON ds.InsertedBy = creator.Id\r\nLEFT JOIN dbo.MasterData dep ON dep.id=creator.DepartmentId\r\nwhere (ds.HblNo = '{SearchNo}' or ds.BookingNo = '{SearchNo}' and ds.CustomerId = '{TokenUserId}')",
             "PreQuery": "{\r\n    \"SearchNo\" : this.Entity.SearchNo\r\n}",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "019526df-cc02-70e5-b446-db5b6e6fd527",
@@ -1666,8 +1558,7 @@
             "FocusSearch": true,
             "MinWidth": "34px",
             "MaxWidth": "34px",
-            "EntityId": "Shipment1",
-            "ReportTypeId": 1
+            "EntityId": "Shipment1"
         }
     ],
     "FeaturePolicies": [

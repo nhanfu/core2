@@ -16,7 +16,6 @@
             "ClassName": "ribbon-group",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0195800a-dfef-766e-b581-17c0bd291af2",
@@ -29,8 +28,7 @@
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         },
@@ -40,8 +38,7 @@
             "Order": 2,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "0195800a-e07c-77fb-865f-1ea604bca1b5",
@@ -53,7 +50,6 @@
             "Active": true,
             "ParentId": "0195800a-e041-72fc-8d31-bb4804e58c66",
             "XxlOuterColumn": 12,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0195800a-e0e4-748a-a354-0b792d21cb65",
@@ -70,8 +66,7 @@
                     "RefName": "ShipmentProcessDetail",
                     "PreQuery": "{\r\n    \"ProcessId\": this.EditForm.Entity.Id,\r\n    \"TypeId\": this.EditForm.Entity.TypeId\r\n}",
                     "Editable": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 }
             ]
         }
@@ -91,8 +86,7 @@
             "MinWidth": "166px",
             "MaxWidth": "166px",
             "EntityId": "ShipmentProcessDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "0195800e-c666-7112-9cfb-9bc6e640f4b3",
@@ -107,8 +101,7 @@
             "Editable": true,
             "MinWidth": "136px",
             "MaxWidth": "136px",
-            "EntityId": "ShipmentProcessDetail",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentProcessDetail"
         },
         {
             "Id": "0195800e-c666-7112-9cfb-9ceccb7123e1",
@@ -122,8 +115,7 @@
             "Editable": true,
             "MinWidth": "136px",
             "MaxWidth": "136px",
-            "EntityId": "ShipmentProcessDetail",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentProcessDetail"
         },
         {
             "Id": "0195800e-c666-7112-9cfb-a236eff504ec",
@@ -139,8 +131,7 @@
             "MinWidth": "119px",
             "MaxWidth": "119px",
             "EntityId": "ShipmentProcessDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "0195800e-c666-7112-9cfb-a4dff1b02844",
@@ -155,8 +146,7 @@
             "Editable": true,
             "MinWidth": "136px",
             "MaxWidth": "136px",
-            "EntityId": "ShipmentProcessDetail",
-            "ReportTypeId": 1
+            "EntityId": "ShipmentProcessDetail"
         },
         {
             "Id": "0195800e-c666-7112-9cfb-aa92785393a2",
@@ -172,8 +162,7 @@
             "MinWidth": "110px",
             "MaxWidth": "110px",
             "EntityId": "ShipmentProcessDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "0195800e-c667-745e-89e9-1c1b961b1154",
@@ -189,8 +178,7 @@
             "MinWidth": "110px",
             "MaxWidth": "110px",
             "EntityId": "ShipmentProcessDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "0195800e-c667-745e-89e9-234e7618ce87",
@@ -206,8 +194,7 @@
             "MinWidth": "119px",
             "MaxWidth": "119px",
             "EntityId": "ShipmentProcessDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         },
         {
             "Id": "0195800e-c667-745e-89e9-25d5bff22af3",
@@ -223,8 +210,7 @@
             "MinWidth": "119px",
             "MaxWidth": "119px",
             "EntityId": "ShipmentProcessDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         }
     ],
     "Components": [
@@ -239,8 +225,7 @@
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
             "Events": "{ \"click\" : \"SavePatch\" }",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         }
     ],
     "FeaturePolicies": [

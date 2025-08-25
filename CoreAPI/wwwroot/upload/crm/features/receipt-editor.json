@@ -12,8 +12,7 @@
             "Order": 0,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         },
         {
             "Id": "0009ff04-0000-0000-8000-800623167b0a",
@@ -26,7 +25,6 @@
             "Active": true,
             "ParentId": "0006ff00-0000-0000-8000-a3d7da86a5bd",
             "XxlOuterColumn": 12,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "001dffb0-0000-0000-8000-64697cd847db",
@@ -43,8 +41,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from VoucherDetail as ds where VoucherId = '{VoucherId}'\",\r\n    \"total\": \"select count(ds.Id) as total from VoucherDetail as ds   where VoucherId = '{VoucherId}'\"\r\n}",
                     "RefName": "VoucherDetail",
                     "PreQuery": "{\r\n    \"VoucherId\": this.EditForm.Entity.Id,\r\n}",
-                    "Editable": true,
-                    "ReportTypeId": 1
+                    "Editable": true
                 }
             ]
         },
@@ -57,7 +54,6 @@
             "Active": true,
             "ParentId": "0006ff00-0000-0000-8000-a3d7da86a5bd",
             "XxlOuterColumn": 12,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "0042ff24-0000-0000-8000-c34dd6eab33e",
@@ -74,8 +70,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\"\r\n}",
                     "RefName": "Partner",
-                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
-                    "ReportTypeId": 1
+                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]"
                 },
                 {
                     "Id": "004dff98-0000-0000-8000-333ef106a8b3",
@@ -85,8 +80,7 @@
                     "Column": 4,
                     "Label": "Subject Name",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "004eff20-0000-0000-8000-91b34fd7830d",
@@ -96,8 +90,7 @@
                     "Column": 4,
                     "Label": "Posted Date",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0050ff74-0000-0000-8000-a30996ddb320",
@@ -107,8 +100,7 @@
                     "Column": 4,
                     "Label": "Voucher Date",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0051ff20-0000-0000-8000-e3b8df633937",
@@ -118,8 +110,7 @@
                     "Column": 4,
                     "Label": "Voucher No",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0052ffd4-0000-0000-8000-6aa93715d162",
@@ -130,8 +121,7 @@
                     "Label": "Payer",
                     "ShowLabel": true,
                     "Events": "{\r\n    \"sql\": \"select * from Partner as ds where ServiceId in (1,2,3) and (TypeId not in (1,2) or TypeId is null)\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where ServiceId in (1,2,3) and (TypeId not in (1,2) or TypeId is null)\"\r\n}",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0054ff28-0000-0000-8000-30832af58a5b",
@@ -141,8 +131,7 @@
                     "Column": 4,
                     "Label": "Address",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0055ff5c-0000-0000-8000-a66b6adb261c",
@@ -158,8 +147,7 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select ds.* from [User] as ds where (TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 1)\"\r\n}",
                     "RefName": "User",
-                    "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
-                    "ReportTypeId": 1
+                    "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]"
                 },
                 {
                     "Id": "0056ff24-0000-0000-8000-9cdaf3126f4b",
@@ -170,8 +158,7 @@
                     "Row": 4,
                     "Label": "Reason",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "0057ff1c-0000-0000-8000-8d654cc66414",
@@ -180,8 +167,7 @@
                     "ComponentType": "FileUpload",
                     "Column": 4,
                     "Label": "Attached",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00c2ff24-0000-0000-8000-4189abb1ea8f",
@@ -192,8 +178,7 @@
                     "Label": "Amount",
                     "ShowLabel": true,
                     "Active": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-                    "ReportTypeId": 1
+                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
                 }
             ]
         },
@@ -205,7 +190,6 @@
             "ClassName": "ribbon-group",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00d7ffcc-0000-0000-8000-3eca7bc05c5d",
@@ -218,8 +202,7 @@
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         }
@@ -233,8 +216,7 @@
             "Label": "Item Name",
             "Active": true,
             "Editable": true,
-            "EntityId": "VoucherDetail",
-            "ReportTypeId": 1
+            "EntityId": "VoucherDetail"
         },
         {
             "Id": "0062ff70-0000-0000-8000-0c2e873f9a38",
@@ -251,8 +233,7 @@
             "Template": "[{ \"FieldName\" : \"Id\", \"Label\" : \"Id\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\"\r\n: \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\"\r\n: \"Input\" }]",
             "Editable": true,
             "OrderBy": "ds.No asc",
-            "EntityId": "VoucherDetail",
-            "ReportTypeId": 1
+            "EntityId": "VoucherDetail"
         },
         {
             "Id": "0063ff34-0000-0000-8000-5de6a1ac2051",
@@ -268,8 +249,7 @@
             "RefName": "Partner",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
             "Editable": true,
-            "EntityId": "VoucherDetail",
-            "ReportTypeId": 1
+            "EntityId": "VoucherDetail"
         },
         {
             "Id": "0063ff64-0000-0000-8000-c363832b694e",
@@ -286,8 +266,7 @@
             "Template": "[{ \"FieldName\" : \"Id\", \"Label\" : \"Id\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\"\r\n: \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\"\r\n: \"Input\" }]",
             "Editable": true,
             "OrderBy": "ds.No asc",
-            "EntityId": "VoucherDetail",
-            "ReportTypeId": 1
+            "EntityId": "VoucherDetail"
         },
         {
             "Id": "0064ff1c-0000-0000-8000-ee065da3285d",
@@ -297,8 +276,7 @@
             "Label": "SubjectName",
             "Active": true,
             "Editable": true,
-            "EntityId": "VoucherDetail",
-            "ReportTypeId": 1
+            "EntityId": "VoucherDetail"
         },
         {
             "Id": "0064ff90-0000-0000-8000-9680818ae7c1",
@@ -309,8 +287,7 @@
             "Active": true,
             "Editable": true,
             "EntityId": "VoucherDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
-            "ReportTypeId": 1
+            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
         }
     ],
     "Components": [
@@ -325,8 +302,7 @@
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
             "Events": "{ \"click\" : \"SavePatch\" }",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         }
     ],
     "FeaturePolicies": [

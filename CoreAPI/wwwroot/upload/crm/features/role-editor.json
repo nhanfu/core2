@@ -18,7 +18,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00571d34-0000-0000-8000-05d6e9501dcd",
@@ -37,8 +36,7 @@
                     "RefName": "FeaturePolicy",
                     "PreQuery": "{\r\n    \"RoleId\" : this.EditForm.Entity.Id\r\n}",
                     "OrderBy": "ds2.[Order] asc,seq.Id asc",
-                    "IsMultiple": true,
-                    "ReportTypeId": 1
+                    "IsMultiple": true
                 }
             ]
         },
@@ -50,7 +48,6 @@
             "ClassName": "ribbon-group",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00e81d78-0000-0000-8000-1119be5e63ca",
@@ -63,8 +60,7 @@
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }",
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         },
@@ -76,7 +72,6 @@
             "ClassName": "card-body",
             "XxlCol": 12,
             "Active": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00e81d18-0000-0000-8000-a10cb7c309fb",
@@ -86,8 +81,7 @@
                     "Column": 6,
                     "Label": "Name",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 },
                 {
                     "Id": "00e81d94-0000-0000-8000-4d59860b92d1",
@@ -97,8 +91,7 @@
                     "Column": 6,
                     "Label": "Description",
                     "ShowLabel": true,
-                    "Active": true,
-                    "ReportTypeId": 1
+                    "Active": true
                 }
             ]
         },
@@ -112,7 +105,6 @@
             "Active": true,
             "IsTab": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "003b1d2c-0000-0000-8000-4815d2e6c4c0",
@@ -127,8 +119,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from [User] as ds where RoleIds like N'%{RoleId}%'\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where RoleIds like N'%{RoleId}%'\"\r\n}",
                     "RefName": "User",
                     "PreQuery": "{\r\n    \"RoleId\" : this.EditForm.Entity.Id\r\n}",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         }
@@ -148,8 +139,7 @@
             "RefName": "MasterData",
             "MinWidth": "96px",
             "MaxWidth": "96px",
-            "EntityId": "User",
-            "ReportTypeId": 1
+            "EntityId": "User"
         },
         {
             "Id": "00451db8-0000-0000-8000-2be92e48d6de",
@@ -163,8 +153,7 @@
             "Active": true,
             "MinWidth": "65px",
             "MaxWidth": "65px",
-            "EntityId": "User",
-            "ReportTypeId": 1
+            "EntityId": "User"
         },
         {
             "Id": "00451db8-0000-0000-8001-acf0063a94ec",
@@ -177,8 +166,7 @@
             "FocusSearch": true,
             "MinWidth": "180px",
             "MaxWidth": "180px",
-            "EntityId": "User",
-            "ReportTypeId": 1
+            "EntityId": "User"
         },
         {
             "Id": "00451db8-0000-0000-8002-799e4b7e5be7",
@@ -190,8 +178,7 @@
             "Active": true,
             "MinWidth": "143px",
             "MaxWidth": "143px",
-            "EntityId": "User",
-            "ReportTypeId": 1
+            "EntityId": "User"
         },
         {
             "Id": "00451db8-0000-0000-8003-b6da9b60b388",
@@ -203,8 +190,7 @@
             "Active": true,
             "MinWidth": "143px",
             "MaxWidth": "143px",
-            "EntityId": "User",
-            "ReportTypeId": 1
+            "EntityId": "User"
         },
         {
             "Id": "00451db8-0000-0000-8004-3b636c58e351",
@@ -216,8 +202,7 @@
             "Active": true,
             "MinWidth": "143px",
             "MaxWidth": "143px",
-            "EntityId": "User",
-            "ReportTypeId": 1
+            "EntityId": "User"
         },
         {
             "Id": "00451db8-0000-0000-8005-f0a09cc6def9",
@@ -233,8 +218,7 @@
             "RefName": "MasterData",
             "MinWidth": "118px",
             "MaxWidth": "118px",
-            "EntityId": "User",
-            "ReportTypeId": 1
+            "EntityId": "User"
         },
         {
             "Id": "00451db8-0000-0000-8006-d1a90a19357c",
@@ -246,8 +230,7 @@
             "Active": true,
             "MinWidth": "143px",
             "MaxWidth": "143px",
-            "EntityId": "User",
-            "ReportTypeId": 1
+            "EntityId": "User"
         },
         {
             "Id": "00451db8-0000-0000-8007-7663ee0fffab",
@@ -259,8 +242,7 @@
             "Active": true,
             "MinWidth": "127px",
             "MaxWidth": "127px",
-            "EntityId": "User",
-            "ReportTypeId": 1
+            "EntityId": "User"
         },
         {
             "Id": "00451db8-0000-0000-8008-e847260600f2",
@@ -272,8 +254,7 @@
             "Active": true,
             "MinWidth": "207px",
             "MaxWidth": "207px",
-            "EntityId": "User",
-            "ReportTypeId": 1
+            "EntityId": "User"
         },
         {
             "Id": "00451db8-0000-0000-8009-2a0fc6f16333",
@@ -285,8 +266,7 @@
             "Active": true,
             "MinWidth": "200px",
             "MaxWidth": "200px",
-            "EntityId": "User",
-            "ReportTypeId": 1
+            "EntityId": "User"
         },
         {
             "Id": "00711d18-0000-0000-8000-6db4690e995f",
@@ -304,8 +284,7 @@
             "MinWidth": "1px",
             "MaxWidth": "1px",
             "created_by": "FeaturePolicy",
-            "EntityId": "FeaturePolicy",
-            "ReportTypeId": 1
+            "EntityId": "FeaturePolicy"
         },
         {
             "Id": "007a1d6c-0000-0000-8000-6ec7b916cf83",
@@ -321,8 +300,7 @@
             "MinWidth": "241px",
             "MaxWidth": "241px",
             "created_by": "FeaturePolicy",
-            "EntityId": "FeaturePolicy",
-            "ReportTypeId": 1
+            "EntityId": "FeaturePolicy"
         },
         {
             "Id": "007a1dd0-0000-0000-8001-3982e5f335ca",
@@ -338,8 +316,7 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "created_by": "FeaturePolicy",
-            "EntityId": "FeaturePolicy",
-            "ReportTypeId": 1
+            "EntityId": "FeaturePolicy"
         },
         {
             "Id": "007a1dd0-0000-0000-8002-5cd2d0a6ea86",
@@ -356,8 +333,7 @@
             "MinWidth": "122px",
             "MaxWidth": "122px",
             "created_by": "FeaturePolicy",
-            "EntityId": "FeaturePolicy",
-            "ReportTypeId": 1
+            "EntityId": "FeaturePolicy"
         },
         {
             "Id": "007a1dd0-0000-0000-8003-604a55ec4d96",
@@ -373,8 +349,7 @@
             "MinWidth": "122px",
             "MaxWidth": "122px",
             "created_by": "FeaturePolicy",
-            "EntityId": "FeaturePolicy",
-            "ReportTypeId": 1
+            "EntityId": "FeaturePolicy"
         },
         {
             "Id": "007a1dd0-0000-0000-8004-6343aaf8046b",
@@ -390,8 +365,7 @@
             "MinWidth": "145px",
             "MaxWidth": "145px",
             "created_by": "FeaturePolicy",
-            "EntityId": "FeaturePolicy",
-            "ReportTypeId": 1
+            "EntityId": "FeaturePolicy"
         },
         {
             "Id": "007a1dd0-0000-0000-8005-c0c9d1b8807e",
@@ -407,8 +381,7 @@
             "MinWidth": "117px",
             "MaxWidth": "117px",
             "created_by": "FeaturePolicy",
-            "EntityId": "FeaturePolicy",
-            "ReportTypeId": 1
+            "EntityId": "FeaturePolicy"
         },
         {
             "Id": "007a1dd0-0000-0000-8006-5e11f9794db2",
@@ -424,8 +397,7 @@
             "MinWidth": "125px",
             "MaxWidth": "125px",
             "created_by": "FeaturePolicy",
-            "EntityId": "FeaturePolicy",
-            "ReportTypeId": 1
+            "EntityId": "FeaturePolicy"
         }
     ],
     "Components": [
@@ -441,8 +413,7 @@
             "Active": true,
             "MinWidth": "65px",
             "MaxWidth": "65px",
-            "EntityId": "User",
-            "ReportTypeId": 1
+            "EntityId": "User"
         },
         {
             "Id": "00e81d78-0000-0000-8000-1119be5e63ca",
@@ -455,8 +426,7 @@
             "ClassName": "btn detail-button primary",
             "HotKey": "Ctrl-S",
             "Events": "{ \"click\" : \"SavePatch\" }",
-            "Active": true,
-            "ReportTypeId": 1
+            "Active": true
         }
     ],
     "FeaturePolicies": [

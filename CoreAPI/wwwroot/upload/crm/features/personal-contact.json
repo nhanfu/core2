@@ -19,7 +19,6 @@
             "XxlCol": 12,
             "Active": true,
             "DisplayBadge": true,
-            "ReportTypeId": 1,
             "Components": [
                 {
                     "Id": "00a73704-0000-0000-8000-7ab01e090d61",
@@ -38,8 +37,7 @@
                     "IsRealtime": true,
                     "RefName": "PartnerContact",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
-                    "OrderBy": "ds.InsertedDate desc",
-                    "ReportTypeId": 1
+                    "OrderBy": "ds.InsertedDate desc"
                 }
             ]
         }
@@ -59,8 +57,7 @@
             "MinWidth": "56px",
             "MaxWidth": "56px",
             "created_by": "Customer",
-            "EntityId": "PartnerContact",
-            "ReportTypeId": 1
+            "EntityId": "PartnerContact"
         },
         {
             "Id": "00c03808-0000-0000-8000-aeb5be1e30de",
@@ -72,8 +69,7 @@
             "Active": true,
             "MinWidth": "146px",
             "MaxWidth": "146px",
-            "EntityId": "PartnerContact",
-            "ReportTypeId": 1
+            "EntityId": "PartnerContact"
         },
         {
             "Id": "00c03808-0000-0000-8001-d1e3a3a8c949",
@@ -85,8 +81,7 @@
             "Active": true,
             "MinWidth": "158px",
             "MaxWidth": "158px",
-            "EntityId": "PartnerContact",
-            "ReportTypeId": 1
+            "EntityId": "PartnerContact"
         },
         {
             "Id": "00c0386c-0000-0000-8000-1ae150e9aeec",
@@ -98,8 +93,7 @@
             "Active": true,
             "MinWidth": "175px",
             "MaxWidth": "175px",
-            "EntityId": "PartnerContact",
-            "ReportTypeId": 1
+            "EntityId": "PartnerContact"
         },
         {
             "Id": "00c0386c-0000-0000-8001-4012825d3131",
@@ -111,8 +105,7 @@
             "Active": true,
             "MinWidth": "188px",
             "MaxWidth": "188px",
-            "EntityId": "PartnerContact",
-            "ReportTypeId": 1
+            "EntityId": "PartnerContact"
         },
         {
             "Id": "00c0386c-0000-0000-8002-c81db750b502",
@@ -124,8 +117,7 @@
             "Active": true,
             "MinWidth": "180px",
             "MaxWidth": "180px",
-            "EntityId": "PartnerContact",
-            "ReportTypeId": 1
+            "EntityId": "PartnerContact"
         },
         {
             "Id": "00c0386c-0000-0000-8003-3efba7c3fe24",
@@ -137,8 +129,7 @@
             "Active": true,
             "MinWidth": "230px",
             "MaxWidth": "230px",
-            "EntityId": "PartnerContact",
-            "ReportTypeId": 1
+            "EntityId": "PartnerContact"
         },
         {
             "Id": "00f038e4-0000-0000-8000-1b9c546377e4",
@@ -154,8 +145,7 @@
             "FocusSearch": true,
             "MinWidth": "381px",
             "MaxWidth": "381px",
-            "EntityId": "PartnerContact",
-            "ReportTypeId": 1
+            "EntityId": "PartnerContact"
         },
         {
             "Id": "00f8438c-0000-0000-8000-6884450805c9",
@@ -167,8 +157,7 @@
             "Active": true,
             "MinWidth": "65px",
             "MaxWidth": "65px",
-            "EntityId": "PartnerContact",
-            "ReportTypeId": 1
+            "EntityId": "PartnerContact"
         }
     ],
     "Components": [
@@ -186,8 +175,7 @@
             "MinWidth": "56px",
             "MaxWidth": "56px",
             "created_by": "Customer",
-            "EntityId": "PartnerContact",
-            "ReportTypeId": 1
+            "EntityId": "PartnerContact"
         }
     ],
     "FeaturePolicies": [
