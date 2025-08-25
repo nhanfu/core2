@@ -26,7 +26,6 @@
                     "FieldName": "PartnerContact",
                     "Order": 1,
                     "ComponentType": "GridView",
-                    "ComponentGroupId": "00a73764-0000-0000-8000-29459187d57f",
                     "FormatData": "{Name}",
                     "Column": 12,
                     "Row": 50,

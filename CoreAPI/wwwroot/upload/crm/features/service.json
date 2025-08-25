@@ -24,7 +24,6 @@
                     "FieldName": "Service",
                     "Order": 1,
                     "ComponentType": "GridView",
-                    "ComponentGroupId": "004607cc-0000-0000-8000-f92ae49e0dbc",
                     "Column": 12,
                     "Row": 50,
                     "CanSearch": true,

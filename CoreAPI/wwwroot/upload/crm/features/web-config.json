@@ -22,7 +22,6 @@
                     "FieldName": "WebConfig",
                     "Order": 1,
                     "ComponentType": "GridView",
-                    "ComponentGroupId": "00c0142c-0000-0000-8000-4cc126f6efc6",
                     "Column": 12,
                     "Row": 50,
                     "CanSearch": true,

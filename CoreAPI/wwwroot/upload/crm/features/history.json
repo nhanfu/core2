@@ -22,7 +22,6 @@
                     "FieldName": "History",
                     "Order": 1,
                     "ComponentType": "GridView",
-                    "ComponentGroupId": "00ec11c0-0000-0000-8000-c4059002e1ad",
                     "Column": 12,
                     "Row": 50,
                     "CanSearch": true,

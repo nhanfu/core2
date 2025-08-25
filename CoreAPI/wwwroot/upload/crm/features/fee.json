@@ -21,7 +21,6 @@
                     "FieldName": "FeeType",
                     "Order": 1,
                     "ComponentType": "GridView",
-                    "ComponentGroupId": "005c0214-0000-0000-8000-8b66e6e5fee1",
                     "Column": 12,
                     "Row": 50,
                     "CanSearch": true,

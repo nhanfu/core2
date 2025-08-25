@@ -25,7 +25,6 @@
                     "FieldName": "Customer",
                     "Order": 1,
                     "ComponentType": "GridView",
-                    "ComponentGroupId": "019391e3-ca62-70ca-b468-2a829f88960f",
                     "Column": 12,
                     "Row": 100,
                     "CanSearch": true,

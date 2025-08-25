@@ -20,7 +20,6 @@
                     "FieldName": "TableName",
                     "Order": 1,
                     "ComponentType": "GridView",
-                    "ComponentGroupId": "008ef864-0000-0000-8000-459845c14aa7",
                     "Column": 12,
                     "Row": 50,
                     "CanSearch": true,

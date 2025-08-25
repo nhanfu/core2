@@ -23,7 +23,6 @@
                     "FieldName": "ChatEntity",
                     "Order": 1,
                     "ComponentType": "Chat",
-                    "ComponentGroupId": "00d91ac4-0000-0000-8000-ec6e0a7b6dcb",
                     "FormatData": "{FormatChat}",
                     "Column": 2,
                     "Row": 200,

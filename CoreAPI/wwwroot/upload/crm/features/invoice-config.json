@@ -24,7 +24,6 @@
                     "FieldName": "InvoiceConfig",
                     "Order": 1,
                     "ComponentType": "GridView",
-                    "ComponentGroupId": "01943bef-3b01-70b2-b7d0-4b8a0e82ed75",
                     "Column": 12,
                     "Row": 50,
                     "CanSearch": true,

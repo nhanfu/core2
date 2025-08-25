@@ -24,7 +24,6 @@
                     "FieldName": "SaleFunction",
                     "Order": 1,
                     "ComponentType": "GridView",
-                    "ComponentGroupId": "009a251c-0000-0000-8000-51c389254ce3",
                     "Column": 12,
                     "Row": 50,
                     "CanSearch": true,

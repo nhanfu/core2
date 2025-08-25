@@ -25,7 +25,6 @@
                     "FieldName": "ShipmentProcess",
                     "Order": 1,
                     "ComponentType": "GridView",
-                    "ComponentGroupId": "01937b58-c477-720b-a065-631e016197c1",
                     "Column": 12,
                     "Row": 50,
                     "CanSearch": true,

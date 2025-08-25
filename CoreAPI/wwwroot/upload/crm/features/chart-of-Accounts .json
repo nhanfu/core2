@@ -20,7 +20,6 @@
                     "FieldName": "AccountNo",
                     "Order": 1,
                     "ComponentType": "GridView",
-                    "ComponentGroupId": "00b3ffd8-0000-0000-8000-2c9d9cfd3929",
                     "Column": 12,
                     "Row": 50,
                     "CanSearch": true,

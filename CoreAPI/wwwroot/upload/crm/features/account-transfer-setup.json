@@ -25,7 +25,6 @@
                     "FieldName": "AccountTransferSetup",
                     "Order": 1,
                     "ComponentType": "GridView",
-                    "ComponentGroupId": "01945a8b-acdf-729b-8d02-aee28dd69725",
                     "Column": 12,
                     "Row": 50,
                     "CanSearch": true,

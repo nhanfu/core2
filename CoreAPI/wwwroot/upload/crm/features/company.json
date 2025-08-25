@@ -24,7 +24,6 @@
                     "FieldName": "Partner",
                     "Order": 1,
                     "ComponentType": "GridView",
-                    "ComponentGroupId": "007b3614-0000-0000-8000-a0ce7dabbc84",
                     "Column": 12,
                     "Row": 50,
                     "CanSearch": true,

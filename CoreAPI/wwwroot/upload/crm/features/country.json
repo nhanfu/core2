@@ -24,7 +24,6 @@
                     "FieldName": "MasterData",
                     "Order": 1,
                     "ComponentType": "GridView",
-                    "ComponentGroupId": "001f1a20-0000-0000-8000-c98082a71a8e",
                     "Column": 12,
                     "Row": 50,
                     "CanSearch": true,

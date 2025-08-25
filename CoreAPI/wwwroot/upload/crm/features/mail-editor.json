@@ -22,7 +22,6 @@
             "Components": [
                 {
                     "Id": "00dd30f0-0000-0000-8000-0721fd09f366",
-                    "ComponentGroupId": "00cd3098-0000-0000-8000-589ff2110afc",
                     "Active": true,
                     "ReportTypeId": 1
                 }

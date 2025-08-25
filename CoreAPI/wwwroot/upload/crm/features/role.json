@@ -24,7 +24,6 @@
                     "FieldName": "Role",
                     "Order": 1,
                     "ComponentType": "GridView",
-                    "ComponentGroupId": "00ee1d18-0000-0000-8000-63b445fb3520",
                     "Column": 12,
                     "Row": 50,
                     "CanSearch": true,

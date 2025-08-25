@@ -22,7 +22,6 @@
                     "FieldName": "Dictionary",
                     "Order": 1,
                     "ComponentType": "GridView",
-                    "ComponentGroupId": "00d403b0-0000-0000-8000-c2fb94a5cc41",
                     "Column": 12,
                     "Row": 50,
                     "CanSearch": true,

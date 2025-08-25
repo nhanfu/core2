@@ -25,7 +25,6 @@
                     "FieldName": "MarkupPricing",
                     "Order": 1,
                     "ComponentType": "GridView",
-                    "ComponentGroupId": "00aa15f8-0000-0000-8000-8df06ba28b87",
                     "Column": 12,
                     "Row": 50,
                     "CanSearch": true,

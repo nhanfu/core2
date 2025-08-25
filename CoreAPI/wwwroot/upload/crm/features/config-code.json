@@ -24,7 +24,6 @@
                     "FieldName": "Config",
                     "Order": 1,
                     "ComponentType": "GridView",
-                    "ComponentGroupId": "00b40064-0000-0000-8000-a45d926c75bf",
                     "Column": 12,
                     "Row": 50,
                     "CanSearch": true,

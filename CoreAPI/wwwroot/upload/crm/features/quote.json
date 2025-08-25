@@ -22,7 +22,6 @@
                     "FieldName": "Report1",
                     "Order": 1,
                     "ComponentType": "HtmlCode",
-                    "ComponentGroupId": "00a901b4-0000-0000-8000-b9db612bb4bc",
                     "Column": 12,
                     "Active": true,
                     "Query": "select * from Partner as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.PicId = '{TokenUserId}')",

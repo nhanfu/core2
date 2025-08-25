@@ -25,7 +25,6 @@
                     "FieldName": "Feature",
                     "Order": 1,
                     "ComponentType": "GridView",
-                    "ComponentGroupId": "006e13f0-0000-0000-8000-5c2318ec3160",
                     "Column": 12,
                     "Row": 50,
                     "CanSearch": true,

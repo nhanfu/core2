@@ -23,7 +23,6 @@
                     "FieldName": "ConfigUnique",
                     "Order": 1,
                     "ComponentType": "GridView",
-                    "ComponentGroupId": "008c1f64-0000-0000-8000-6f3fb6497429",
                     "Column": 12,
                     "Row": 50,
                     "CanSearch": true,
