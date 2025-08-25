@@ -19,7 +19,6 @@
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1,
@@ -42,7 +41,6 @@
                     "IsRealtime": true,
                     "RefName": "ExchangeRate",
                     "TopEmpty": true,
-                    "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -56,7 +54,6 @@
             "Label": "SearchForm",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
             "TabGroup": "SearchForm",
             "ReportTypeId": 1,
             "Components": [
@@ -73,7 +70,6 @@
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
                     "SmCol": 5,
                     "Active": true,
-                    "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
                     "ReportTypeId": 1
                 },
                 {
@@ -89,7 +85,6 @@
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
                     "SmCol": 5,
                     "Active": true,
-                    "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
                     "ReportTypeId": 1
                 },
                 {
@@ -110,7 +105,6 @@
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": \"ShipmentDate\",\r\n        \"Name\": \"Shipment\"\r\n    },\r\n    {\r\n        \"Id\": \"EtdDate\",\r\n        \"Name\": \"ETD\"\r\n    },\r\n    {\r\n        \"Id\": \"EtaDate\",\r\n        \"Name\": \"ETA\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
                     "ReportTypeId": 1
                 },
                 {
@@ -126,7 +120,6 @@
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
                     "SmCol": 5,
                     "Active": true,
-                    "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
                     "ReportTypeId": 1
                 }
             ]
@@ -139,7 +132,6 @@
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1,
@@ -161,7 +153,6 @@
                     "IsRealtime": true,
                     "RefName": "ExchangeRateHistory",
                     "TopEmpty": true,
-                    "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -178,7 +169,6 @@
             "Width": "166px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
             "Editable": true,
             "MinWidth": "166px",
             "MaxWidth": "166px",
@@ -194,7 +184,6 @@
             "Width": "186px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
             "Editable": true,
             "MinWidth": "186px",
             "MaxWidth": "186px",
@@ -216,7 +205,6 @@
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
             "Editable": true,
             "MinWidth": "119px",
             "MaxWidth": "119px",
@@ -234,7 +222,6 @@
             "Width": "201px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
             "Editable": true,
             "MinWidth": "201px",
             "MaxWidth": "201px",
@@ -252,7 +239,6 @@
             "Width": "155px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
             "Editable": true,
             "MinWidth": "155px",
             "MaxWidth": "155px",
@@ -269,7 +255,6 @@
             "Width": "186px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
             "MinWidth": "186px",
             "MaxWidth": "186px",
             "EntityId": "ExchangeRateHistory",
@@ -284,7 +269,6 @@
             "Width": "166px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
             "MinWidth": "166px",
             "MaxWidth": "166px",
             "EntityId": "ExchangeRateHistory",
@@ -299,7 +283,6 @@
             "Width": "259px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
             "MinWidth": "259px",
             "MaxWidth": "259px",
             "EntityId": "ExchangeRateHistory",
@@ -318,7 +301,6 @@
             "Active": true,
             "RefName": "Partner",
             "ShowHotKey": true,
-            "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
             "MinWidth": "211px",
             "MaxWidth": "211px",
             "EntityId": "ExchangeRateHistory",
@@ -333,7 +315,6 @@
             "Width": "166px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
             "MinWidth": "166px",
             "MaxWidth": "166px",
             "EntityId": "ExchangeRateHistory",
@@ -350,7 +331,6 @@
             "Width": "59px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
             "MinWidth": "59px",
             "MaxWidth": "59px",
             "EntityId": "ExchangeRateHistory",
@@ -370,7 +350,6 @@
             "ClassName": "btn",
             "Events": "{\r\n    \"click\": \"Add\"\r\n}",
             "Active": true,
-            "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
             "ReportTypeId": 1
         },
         {
@@ -384,7 +363,6 @@
             "Width": "59px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
             "MinWidth": "59px",
             "MaxWidth": "59px",
             "EntityId": "ExchangeRateHistory",
@@ -394,21 +372,18 @@
     "FeaturePolicies": [
         {
             "Id": "07F37363-23F2-4A0F-A28A-D8EF6BB7F97B",
-            "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "0DE094C0-ABEF-445D-A0DE-58E1071F0EA3",
-            "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "2CF1E0A8-C08F-4846-9B46-698B4BD68BEE",
-            "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
             "CanRead": true,
             "CanReadAll": true,
@@ -421,49 +396,42 @@
         },
         {
             "Id": "3A753F56-0204-41BD-90AD-7F25AF70324C",
-            "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "854358E5-3E82-4531-ACF8-1C1445241D54",
-            "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "B228B105-D7A7-46F3-BED1-F503B6D49AC7",
-            "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "C46781ED-8EBE-4054-9A0D-2342E96AF508",
-            "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "C796375F-C0D2-419B-AFE7-72BE16352441",
-            "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "DB5D2430-E209-496B-9702-45B518176B03",
-            "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "FD231EB0-47FA-4700-AB58-2DC301FBEEED",
-            "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
@@ -472,7 +440,6 @@
     "UserSettings": [
         {
             "Id": "06777dc6-f176-7ba7-8000-c2c4039713c0",
-            "FeatureId": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
             "ComponentId": "00fe0f70-0000-0000-8000-3dea7c925e0d",
             "UserId": "00781eb8-0000-0000-8000-52bf71dcaef7",
             "Value": "[{\"Id\":\"00fe0f28-0000-0000-8000-f5487f07a3e9\",\"FieldName\":\"FromDate\",\"Order\":0,\"Width\":\"186px\"},{\"Id\":\"00b90f90-0000-0000-8000-fcd9d7534b72\",\"FieldName\":\"ToDate\",\"Order\":1,\"Width\":\"166px\"},{\"Id\":\"00fe0f30-0000-0000-8000-c80a42c96007\",\"FieldName\":\"CurrencyId\",\"Order\":2,\"Width\":\"119px\"},{\"Id\":\"01942c1d-98ec-7275-a39c-75bd6f695259\",\"FieldName\":\"RateVND\",\"Order\":3,\"Width\":\"183px\"},{\"Id\":\"01942c1d-98ed-7438-adfa-7a06920c86e3\",\"FieldName\":\"RateSaleVND\",\"Order\":4,\"Width\":\"132px\"},{\"Id\":\"00fe0f5c-0000-0000-8000-994396fdcd3a\",\"FieldName\":\"RateUSD\",\"Order\":5,\"Width\":\"129px\"},{\"Id\":\"01942b84-6e82-707c-8c2e-0a46d1fd4f48\",\"FieldName\":\"RateSaleUSD\",\"Order\":6,\"Width\":\"109px\"}]",

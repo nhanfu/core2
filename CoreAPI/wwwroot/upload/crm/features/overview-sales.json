@@ -18,7 +18,6 @@
             "Style": "height:325px;",
             "XxlCol": 1,
             "Active": true,
-            "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
             "ParentId": "00641604-0000-0000-8000-18acb54c8cc7",
             "SmOuterColumn": 20,
             "XxlOuterColumn": 4,
@@ -38,7 +37,6 @@
                     "Query": "select count(ds2.Id) as value, \r\n(case when ds2.TypeId = 2 then 'SEA'\r\nwhen ds2.TypeId = 3 then 'AIR'\r\nwhen ds2.TypeId = 4 then 'TRUCKING'\r\nwhen ds2.TypeId = 5 then 'LOGISTICS'\r\nend) name\r\nfrom Inquiry ds2\r\nwhere (ds2.TypeId in (2,3,4,5) and ds2.InsertedBy = '{TokenUserId}'  and ds2.InsertedDate >= '{FromDate}' and ds2.InsertedDate < '{ToDate}')\r\ngroup by ds2.TypeId\r\n\r\nselect count(ds2.Id) as value, \r\n(case when ds2.TypeId = 2 then 'SEA'\r\nwhen ds2.TypeId = 3 then 'AIR'\r\nwhen ds2.TypeId = 4 then 'TRUCKING'\r\nwhen ds2.TypeId = 5 then 'LOGISTICS'\r\nend) name\r\nfrom Inquiry ds2\r\nwhere (ds2.TypeId in (2,3,4,5) and ds2.InsertedBy = '{TokenUserId}' and ds2.BookingLocalId is not null  and ds2.InsertedDate >= '{FromDate}' and ds2.InsertedDate < '{ToDate}')\r\ngroup by ds2.TypeId",
                     "RefName": "Partner",
                     "Template": "return {\r\n    title: {\r\n        left: 'left',\r\n        text: 'Quotation'\r\n    },\r\n    tooltip: {\r\n        trigger: 'item',\r\n        formatter: '{a} <br/>{b}: {c} ({d}%)'\r\n    },\r\n    series: [\r\n        {\r\n            name: 'Win',\r\n            type: 'pie',\r\n            selectedMode: 'single',\r\n            radius: [0, '30%'],\r\n            label: {\r\n                position: 'inner',\r\n                fontSize: 9\r\n            },\r\n            labelLine: {\r\n                show: false\r\n            },\r\n            data: this.Data[1]\r\n        },\r\n        {\r\n            name: 'Quotation',\r\n            type: 'pie',\r\n            radius: ['45%', '60%'],\r\n            labelLine: {\r\n                length: 30\r\n            },\r\n            data: this.Data[0]\r\n        }\r\n    ]\r\n};",
-                    "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
                     "ReportTypeId": 1
                 }
             ]
@@ -51,7 +49,6 @@
             "ClassName": "scroll-content",
             "XxlCol": 20,
             "Active": true,
-            "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
             "ReportTypeId": 1
         },
         {
@@ -62,7 +59,6 @@
             "ClassName": "card-body",
             "XxlCol": 1,
             "Active": true,
-            "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
             "ParentId": "00641604-0000-0000-8000-18acb54c8cc7",
             "XxlOuterColumn": 20,
             "ReportTypeId": 1,
@@ -81,7 +77,6 @@
                     "Query": "SET NOCOUNT ON;\r\nWITH RevenueCostProfit AS (\r\n    SELECT \r\n        sm.CustomerId as VendorId,\r\n        SUM(sm.ActualCostUSD) AS ActualCostUSD,\r\n        SUM(sm.ActualRevenueUSD) AS ActualRevenueUSD,\r\n        SUM(sm.ActualProfitUSD) AS ActualProfitUSD\r\n    FROM Shipment sm\r\n    JOIN Shipment s on sm.ParentId = s.Id\r\n    WHERE sm.ParentId is not null and sm.SaleId = '{TokenUserId}' and s.IsComplete = 1 and sm.ShipmentDate >= '{FromDate}' and sm.ShipmentDate < '{ToDate}'\r\n    GROUP BY sm.CustomerId\r\n),\r\nRevenue1 AS (\r\n    SELECT \r\n        sf.VendorId,\r\n        SUM(CASE WHEN sf.CurrencyId = 'VND' THEN sf.TotalAmount ELSE sf.TotalAmount * COALESCE(sf.ExchangeRateVND, 1) END) AS ActualRevenueLocal,\r\n        SUM(CASE WHEN sf.CurrencyId = 'USD' THEN sf.TotalAmount ELSE sf.TotalAmount * COALESCE(sf.ExchangeRateUSD, 1) END) AS ActualRevenueUSD\r\n    FROM ShipmentFee sf\r\n    JOIN Shipment sm on sf.ShipmentId = sm.Id\r\n    JOIN Shipment s on sm.ParentId = s.Id\r\n    WHERE sf.TypeId = 1 and sf.SaleId = '{TokenUserId}' and s.IsComplete = 1 and sm.ShipmentDate >= '{FromDate}' and sm.ShipmentDate < '{ToDate}'\r\n    GROUP BY sf.VendorId\r\n),\r\nCost1 AS (\r\n    SELECT \r\n        sf.VendorId,\r\n        SUM(CASE WHEN sf.CurrencyId = 'VND' THEN sf.TotalAmount ELSE sf.TotalAmount * COALESCE(sf.ExchangeRateVND, 1) END) AS ActualCostLocal,\r\n        SUM(CASE WHEN sf.CurrencyId = 'USD' THEN sf.TotalAmount ELSE sf.TotalAmount * COALESCE(sf.ExchangeRateUSD, 1) END) AS ActualCostUSD\r\n    FROM ShipmentFee sf\r\n    JOIN Shipment sm on sf.ShipmentId = sm.Id\r\n    JOIN Shipment s on sm.ParentId = s.Id\r\n    WHERE sf.TypeId in (2,3,4) and sf.SaleId = '{TokenUserId}' and s.IsComplete = 1 and sm.ShipmentDate >= '{FromDate}' and sm.ShipmentDate < '{ToDate}'\r\n    GROUP BY sf.VendorId\r\n),\r\nRevenue2 AS (\r\n    SELECT \r\n        sf.VendorId,\r\n        SUM(CASE WHEN sf.CurrencyId = 'VND' THEN sf.TotalAmount ELSE sf.TotalAmount * COALESCE(sf.ExchangeRateVND, 1) END) AS ActualRevenueLocal,\r\n        SUM(CASE WHEN sf.CurrencyId = 'USD' THEN sf.TotalAmount ELSE sf.TotalAmount * COALESCE(sf.ExchangeRateUSD, 1) END) AS ActualRevenueUSD\r\n    FROM ShipmentFee sf\r\n    JOIN Shipment sm on sf.ShipmentId = sm.Id\r\n    JOIN Shipment s on sm.ParentId = s.Id\r\n    WHERE sf.TypeId = 1 and sf.SaleId = '{TokenUserId}' and sf.IsPaid = 1 and s.IsComplete = 1 and sm.ShipmentDate >= '{FromDate}' and sm.ShipmentDate < '{ToDate}'\r\n    GROUP BY sf.VendorId\r\n),\r\nCost2 AS (\r\n    SELECT \r\n        sf.VendorId,\r\n        SUM(CASE WHEN sf.CurrencyId = 'VND' THEN sf.TotalAmount ELSE sf.TotalAmount * COALESCE(sf.ExchangeRateVND, 1) END) AS ActualCostLocal,\r\n        SUM(CASE WHEN sf.CurrencyId = 'USD' THEN sf.TotalAmount ELSE sf.TotalAmount * COALESCE(sf.ExchangeRateUSD, 1) END) AS ActualCostUSD\r\n    FROM ShipmentFee sf\r\n    JOIN Shipment sm on sf.ShipmentId = sm.Id\r\n    JOIN Shipment s on sm.ParentId = s.Id\r\n    WHERE sf.TypeId in (2,3,4) and sf.SaleId = '{TokenUserId}' and sf.IsPaid = 1 and s.IsComplete = 1 and sm.ShipmentDate >= '{FromDate}' and sm.ShipmentDate < '{ToDate}'\r\n    GROUP BY sf.VendorId\r\n)\r\nselect\r\n\tp.Name as label,\r\n    isnull(r.ActualRevenueUSD,0) as ActualRevenueUSD,\r\n    isnull(r.ActualCostUSD,0) as ActualCostUSD,\r\n    isnull(r.ActualProfitUSD,0) as ActualProfitUSD,\r\n    (isnull(r1.ActualRevenueUSD,0) - isnull(c1.ActualCostUSD,0)) as REUSD,\r\n    (isnull(r2.ActualRevenueUSD,0) - isnull(c2.ActualCostUSD,0)) as PEUSD,\r\n    ((isnull(r1.ActualRevenueUSD,0) - isnull(c1.ActualCostUSD,0)) - (isnull(r2.ActualRevenueUSD,0) - isnull(c2.ActualCostUSD,0))) as REMAINUSD\r\nFROM RevenueCostProfit r\r\nLEFT JOIN Partner p on p.Id = r.VendorId\r\nLEFT JOIN Revenue1 r1 ON p.Id = r1.VendorId\r\nLEFT JOIN Cost1 c1 ON p.Id = c1.VendorId\r\nLEFT JOIN Revenue2 r2 ON p.Id = r2.VendorId\r\nLEFT JOIN Cost2 c2 ON p.Id = c2.VendorId",
                     "RefName": "Partner",
                     "Template": "return {\r\n  tooltip: {\r\n    trigger: 'axis',\r\n    axisPointer: {\r\n      type: 'cross',\r\n      crossStyle: { color: '#999' }\r\n    }\r\n  },\r\n  toolbox: {\r\n    feature: {\r\n      dataView: { show: true, readOnly: false },\r\n      magicType: { show: true, type: ['line', 'bar'] },\r\n      restore: { show: true },\r\n      saveAsImage: { show: true }\r\n    }\r\n  },\r\n  legend: {\r\n    data: ['Revenue', 'Cost', 'Profit', 'Receivables', 'Paid', 'Remaining']\r\n  },\r\n  grid: {\r\n    left: '5%',\r\n    right: '5%',\r\n    bottom: '10%',\r\n    containLabel: true\r\n  },\r\n  xAxis: [\r\n    {\r\n      type: 'category',\r\n      data: this.Data[0]\r\n        .map(x => ({\r\n          ...x,\r\n          total: x.ActualRevenueUSD + x.ActualCostUSD + x.ActualProfitUSD\r\n        }))\r\n        .sort((a, b) => a.total - b.total)\r\n        .map(x => x.label),\r\n      axisPointer: { type: 'shadow' },\r\n      boundaryGap: true\r\n    }\r\n  ],\r\n  yAxis: [\r\n    {\r\n      type: 'value',\r\n      name: 'Amount',\r\n      min: function (value) {\r\n        return value.min < 0 ? value.min * 1.2 : 0;\r\n      },\r\n      axisLabel: {\r\n        formatter: function (value) {\r\n          return new Intl.NumberFormat('de-DE', {\r\n            maximumFractionDigits: 0\r\n          }).format(value) + ' $';\r\n        }\r\n      }\r\n    },\r\n    {\r\n      type: 'value',\r\n      name: 'Balance',\r\n      position: 'right',\r\n      axisLabel: {\r\n        formatter: function (value) {\r\n          return new Intl.NumberFormat('de-DE', {\r\n            maximumFractionDigits: 0\r\n          }).format(value) + ' $';\r\n        }\r\n      }\r\n    }\r\n  ],\r\n  series: (() => {\r\n    let sortedData = this.Data[0]\r\n      .map(x => ({\r\n        ...x,\r\n        total: x.ActualRevenueUSD + x.ActualCostUSD + x.ActualProfitUSD\r\n      }))\r\n      .sort((a, b) => a.total - b.total);\r\n\r\n    return [\r\n      {\r\n        name: 'Revenue',\r\n        type: 'bar',\r\n        stack: 'Total',\r\n        barWidth: 20,\r\n        barGap: '-100%',\r\n        barMinHeight: 5,\r\n        tooltip: {\r\n          valueFormatter: function (value) {\r\n            return new Intl.NumberFormat('de-DE', {\r\n              maximumFractionDigits: 0\r\n            }).format(value) + ' $';\r\n          }\r\n        },\r\n        data: sortedData.map(x => x.ActualRevenueUSD)\r\n      },\r\n      {\r\n        name: 'Cost',\r\n        type: 'bar',\r\n        stack: 'Total',\r\n        barWidth: 20,\r\n        barGap: '-100%',\r\n        barMinHeight: 5,\r\n        tooltip: {\r\n          valueFormatter: function (value) {\r\n            return new Intl.NumberFormat('de-DE', {\r\n              maximumFractionDigits: 0\r\n            }).format(value) + ' $';\r\n          }\r\n        },\r\n        data: sortedData.map(x => x.ActualCostUSD)\r\n      },\r\n      {\r\n        name: 'Profit',\r\n        type: 'bar',\r\n        stack: 'Total',\r\n        barWidth: 20,\r\n        barGap: '-100%',\r\n        barMinHeight: 5,\r\n        tooltip: {\r\n          valueFormatter: function (value) {\r\n            return new Intl.NumberFormat('de-DE', {\r\n              maximumFractionDigits: 0\r\n            }).format(value) + ' $';\r\n          }\r\n        },\r\n        data: sortedData.map(x => x.ActualProfitUSD)\r\n      },\r\n      {\r\n        name: 'Receivables',\r\n        type: 'line',\r\n        smooth: true,\r\n        yAxisIndex: 1, // Dùng trục y bên phải\r\n        tooltip: {\r\n          valueFormatter: function (value) {\r\n            return new Intl.NumberFormat('de-DE', {\r\n              maximumFractionDigits: 0\r\n            }).format(value) + ' $';\r\n          }\r\n        },\r\n        data: sortedData.map(x => x.REUSD)\r\n      },\r\n      {\r\n        name: 'Paid',\r\n        type: 'line',\r\n        smooth: true,\r\n        yAxisIndex: 1, // Dùng trục y bên phải\r\n        tooltip: {\r\n          valueFormatter: function (value) {\r\n            return new Intl.NumberFormat('de-DE', {\r\n              maximumFractionDigits: 0\r\n            }).format(value) + ' $';\r\n          }\r\n        },\r\n        data: sortedData.map(x => x.PEUSD)\r\n      },\r\n      {\r\n        name: 'Remaining',\r\n        type: 'line',\r\n        smooth: true,\r\n        yAxisIndex: 1, // Dùng trục y bên phải\r\n        tooltip: {\r\n          valueFormatter: function (value) {\r\n            return new Intl.NumberFormat('de-DE', {\r\n              maximumFractionDigits: 0\r\n            }).format(value) + ' $';\r\n          }\r\n        },\r\n        data: sortedData.map(x => x.REMAINUSD)\r\n      }\r\n    ];\r\n  })()\r\n};",
-                    "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
                     "ReportTypeId": 1
                 }
             ]
@@ -95,7 +90,6 @@
             "Style": "height:325px;",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
             "ParentId": "00641604-0000-0000-8000-18acb54c8cc7",
             "SmOuterColumn": 20,
             "XxlOuterColumn": 8,
@@ -117,7 +111,6 @@
                     "Query": "{\r\n    \"sql\": \"select * from Shipment as ds where ds.SaleId = '{TokenUserId}' and ds.ShipmentTypeId = 0 and ds.ParentId is not null  and ds.ShipmentDate >= '{FromDate}' and ds.ShipmentDate < '{ToDate}'\",\r\n    \"total\": \"select count(ds.Id) as total from Shipment as ds where ds.SaleId = '{TokenUserId}' and ds.ShipmentTypeId = 0 and ds.ParentId is not null  and ds.ShipmentDate >= '{FromDate}' and ds.ShipmentDate < '{ToDate}'\"\r\n}",
                     "RefName": "Shipment",
                     "PreQuery": "const formatDate = (date) => this.dayjs(date).format(\"YYYY-MM-DD\");\r\nlet today = this.dayjs();\r\nlet firstDayOfMonth = today.startOf(\"month\");\r\nlet lastDayOfMonth = today.endOf(\"month\").add(1, \"day\");\r\nreturn {\r\n    FromDate: formatDate(firstDayOfMonth),\r\n    ToDate: formatDate(lastDayOfMonth),\r\n}",
-                    "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
                     "OrderBy": "ds.ShipmentDate desc",
                     "ReportTypeId": 1
                 }
@@ -132,7 +125,6 @@
             "Style": "height:325px;",
             "XxlCol": 1,
             "Active": true,
-            "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
             "ParentId": "00641604-0000-0000-8000-18acb54c8cc7",
             "SmOuterColumn": 20,
             "XxlOuterColumn": 4,
@@ -150,7 +142,6 @@
                     "Query": "select sum(ds2.ActualProfitUSD) as Amount\r\nfrom Shipment ds2\r\nwhere ds2.ParentId is not null and ds2.SaleId = '{TokenUserId}' and ds2.ShipmentTypeId = 0 and ds2.ShipmentDate >= '{FromDate}' and ds2.ShipmentDate < '{ToDate}'\r\n\r\nselect top 1 ds2.TargetUSDCurr as TotalAmount\r\nfrom [User] ds2\r\nwhere ds2.Id = '{TokenUserId}'",
                     "RefName": "Partner",
                     "Template": "let Amount = this.Data[0][0].Amount || 0;\r\nlet TotalAmount = this.Data[1][0].TotalAmount || 0;\r\nlet percentage = ((Amount / TotalAmount) * 100).toFixed(0);\r\n\r\n// Giới hạn giá trị tối đa là 120%\r\nlet gaugeValue = percentage;\r\n\r\nreturn {\r\n    title: {\r\n        text: 'KPI',\r\n        left: 'left'\r\n    },\r\n    series: [\r\n        {\r\n            type: 'gauge',\r\n            splitNumber: 12,\r\n            axisLine: {\r\n                lineStyle: {\r\n                    width: 25,\r\n                    color: [\r\n                        [0.42, '#67e0e3'],  // 0% - 50% (Xanh nhạt)\r\n                        [0.67, '#37a2da'],  // 50% - 80% (Xanh đậm)\r\n                        [0.83, '#ffa500'],  // 80% - 100% (Vàng cam)\r\n                        [1.0, '#fd666d']    // 100% - 120% (Đỏ)\r\n                    ]\r\n                }\r\n            },\r\n            pointer: {\r\n                itemStyle: {\r\n                    color: 'auto'\r\n                }\r\n            },\r\n            axisTick: {\r\n                distance: -25,\r\n                length: 8,\r\n                lineStyle: {\r\n                    color: '#fff',\r\n                    width: 2\r\n                }\r\n            },\r\n            splitLine: {\r\n                distance: -25,\r\n                length: 25,\r\n                lineStyle: {\r\n                    color: '#fff',\r\n                    width: 4\r\n                }\r\n            },\r\n            axisLabel: {\r\n                color: '#333',\r\n                distance: 40,\r\n                fontSize: 9,\r\n                fontFamily: 'Arial, sans-serif'\r\n            },\r\n            detail: {\r\n                valueAnimation: true,\r\n                formatter: '{value}%',\r\n                color: '#333',\r\n                fontSize: 22,\r\n                fontWeight: 'bold',\r\n                fontFamily: 'Arial, sans-serif'\r\n            },\r\n            max: 120, // Giới hạn tối đa là 120%\r\n            data: [\r\n                {\r\n                    value: gaugeValue // Đưa vào giá trị đã scale\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n};",
-                    "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
                     "ReportTypeId": 1
                 }
             ]
@@ -164,7 +155,6 @@
             "Style": "height:325px;",
             "XxlCol": 1,
             "Active": true,
-            "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
             "ParentId": "00641604-0000-0000-8000-18acb54c8cc7",
             "SmOuterColumn": 20,
             "XxlOuterColumn": 4,
@@ -184,7 +174,6 @@
                     "Query": "select count(ds2.Id) as value, \r\np.Name as name\r\nfrom PartnerCare ds2\r\njoin Partner p on ds2.PartnerId = p.Id\r\nwhere ds2.CategoryId is not null and ds2.InsertedBy = '{TokenUserId}' and ds2.InsertedDate >= '{FromDate}' and ds2.InsertedDate < '{ToDate}'\r\ngroup by p.Name\r\n\r\nselect count(ds2.Id) as value, \r\nc.Name as name\r\nfrom PartnerCare ds2\r\njoin MasterData c on ds2.CategoryId = c.Id\r\nwhere ds2.CategoryId is not null and ds2.InsertedBy = '{TokenUserId}' and ds2.InsertedDate >= '{FromDate}' and ds2.InsertedDate < '{ToDate}'\r\ngroup by c.Name",
                     "RefName": "Partner",
                     "Template": "return {\r\n    title: {\r\n        left: 'left',\r\n        text: 'Activities'\r\n    },\r\n    tooltip: {\r\n        trigger: 'item',\r\n        formatter: '{a} <br/>{b}: {c} ({d}%)'\r\n    },\r\n    series: [\r\n        {\r\n            name: 'Category',\r\n            type: 'pie',\r\n            selectedMode: 'single',\r\n            radius: [0, '30%'],\r\n            label: {\r\n                position: 'inner',\r\n                fontSize: 9\r\n            },\r\n            labelLine: {\r\n                show: false\r\n            },\r\n            data: this.Data[1]\r\n        },\r\n        {\r\n            name: 'Activities',\r\n            type: 'pie',\r\n            radius: ['45%', '60%'],\r\n            labelLine: {\r\n                length: 30\r\n            },\r\n            data: this.Data[0]\r\n        }\r\n    ]\r\n};",
-                    "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
                     "ReportTypeId": 1
                 }
             ]
@@ -198,7 +187,6 @@
             "Style": "height: 92px;",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
             "ParentId": "00641604-0000-0000-8000-18acb54c8cc7",
             "SmOuterColumn": 10,
             "XxlOuterColumn": 4,
@@ -214,7 +202,6 @@
                     "Active": true,
                     "Query": "SELECT \r\n    COUNT(ds2.Id) AS Total,\r\n    isnull(SUM(CASE WHEN s.IsComplete = 1 THEN 1 ELSE 0 END),0) AS CompletedTotal\r\nFROM Shipment AS ds2\r\njoin Shipment s on ds2.ParentId = s.Id\r\nWHERE ds2.ParentId IS NOT NULL and ds2.ShipmentDate >= '{FromDate}' and ds2.ShipmentDate < '{ToDate}'\r\nAND ds2.SaleId = '{TokenUserId}'",
                     "PreQuery": "const formatDate = (date) => this.dayjs(date).format(\"YYYY-MM-DD\");\r\nlet today = this.dayjs();\r\nlet firstDayOfMonth = today.startOf(\"month\");\r\nlet lastDayOfMonth = today.endOf(\"month\").add(1, \"day\");\r\nreturn {\r\n    FromDate: formatDate(firstDayOfMonth),\r\n    ToDate: formatDate(lastDayOfMonth),\r\n}",
-                    "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
                     "IsMultiple": true,
                     "ReportTypeId": 1
                 }
@@ -229,7 +216,6 @@
             "Style": "height: 92px;",
             "XxlCol": 1,
             "Active": true,
-            "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
             "ParentId": "00641604-0000-0000-8000-18acb54c8cc7",
             "SmOuterColumn": 10,
             "XxlOuterColumn": 4,
@@ -245,7 +231,6 @@
                     "Active": true,
                     "Query": "select count(ds2.Id) as Total \r\nfrom Partner as ds2 \r\nwhere ds2.ServiceId = 1 and ds2.TypeId = 1 and ds2.SaleId = '{TokenUserId}'",
                     "PreQuery": "const formatDate = (date) => this.dayjs(date).format(\"YYYY-MM-DD\");\r\nlet today = this.dayjs();\r\nlet firstDayOfMonth = today.startOf(\"month\");\r\nlet lastDayOfMonth = today.endOf(\"month\").add(1, \"day\");\r\nreturn {\r\n    FromDate: formatDate(firstDayOfMonth),\r\n    ToDate: formatDate(lastDayOfMonth),\r\n}",
-                    "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
                     "IsMultiple": true,
                     "ReportTypeId": 1
                 }
@@ -260,7 +245,6 @@
             "Style": "height: 92px;",
             "XxlCol": 1,
             "Active": true,
-            "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
             "ParentId": "00641604-0000-0000-8000-18acb54c8cc7",
             "SmOuterColumn": 10,
             "XxlOuterColumn": 4,
@@ -276,7 +260,6 @@
                     "Active": true,
                     "Query": "select count(ds2.Id) as Total \r\nfrom Partner as ds2 \r\nwhere ds2.ServiceId = 1 and ds2.TypeId = 2 and ds2.SaleId = '{TokenUserId}' and ds2.InsertedDate >= '{FromDate}' and ds2.InsertedDate < '{ToDate}'",
                     "PreQuery": "const formatDate = (date) => this.dayjs(date).format(\"YYYY-MM-DD\");\r\nlet today = this.dayjs();\r\nlet firstDayOfMonth = today.startOf(\"month\");\r\nlet lastDayOfMonth = today.endOf(\"month\").add(1, \"day\");\r\nreturn {\r\n    FromDate: formatDate(firstDayOfMonth),\r\n    ToDate: formatDate(lastDayOfMonth),\r\n}",
-                    "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
                     "IsMultiple": true,
                     "ReportTypeId": 1
                 }
@@ -291,7 +274,6 @@
             "Style": "height: 92px;",
             "XxlCol": 1,
             "Active": true,
-            "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
             "ParentId": "00641604-0000-0000-8000-18acb54c8cc7",
             "SmOuterColumn": 10,
             "XxlOuterColumn": 4,
@@ -307,7 +289,6 @@
                     "Active": true,
                     "Query": "select count(ds2.Id) as Total \r\nfrom Partner as ds2 \r\nwhere ds2.ServiceId = 1 and ds2.TypeId = 3 and ds2.SaleId = '{TokenUserId}' and ds2.InsertedDate >= '{FromDate}' and ds2.InsertedDate < '{ToDate}'",
                     "PreQuery": "const formatDate = (date) => this.dayjs(date).format(\"YYYY-MM-DD\");\r\nlet today = this.dayjs();\r\nlet firstDayOfMonth = today.startOf(\"month\");\r\nlet lastDayOfMonth = today.endOf(\"month\").add(1, \"day\");\r\nreturn {\r\n    FromDate: formatDate(firstDayOfMonth),\r\n    ToDate: formatDate(lastDayOfMonth),\r\n}",
-                    "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
                     "IsMultiple": true,
                     "ReportTypeId": 1
                 }
@@ -322,7 +303,6 @@
             "Style": "height: 92px;",
             "XxlCol": 1,
             "Active": true,
-            "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
             "ParentId": "00641604-0000-0000-8000-18acb54c8cc7",
             "SmOuterColumn": 20,
             "XxlOuterColumn": 4,
@@ -338,7 +318,6 @@
                     "Active": true,
                     "Query": "select count(ds2.Id) as Total \r\nfrom Partner as ds2 \r\nwhere ds2.ServiceId = 1 and ds2.ActionId = 2 and ds2.SaleId = '{TokenUserId}' and ds2.InsertedDate >= '{FromDate}' and ds2.InsertedDate < '{ToDate}'",
                     "PreQuery": "const formatDate = (date) => this.dayjs(date).format(\"YYYY-MM-DD\");\r\nlet today = this.dayjs();\r\nlet firstDayOfMonth = today.startOf(\"month\");\r\nlet lastDayOfMonth = today.endOf(\"month\").add(1, \"day\");\r\nreturn {\r\n    FromDate: formatDate(firstDayOfMonth),\r\n    ToDate: formatDate(lastDayOfMonth),\r\n}",
-                    "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
                     "IsMultiple": true,
                     "ReportTypeId": 1
                 }
@@ -358,7 +337,6 @@
             "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Air Export\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-plane-departure mr-1'></i>Air Export</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"Air Import\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-plane-arrival mr-1'></i>Air Import</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Sea Export FCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-ship mr-1'></i>Sea Export FCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Sea Import FCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-shipping-fast mr-1'></i>Sea Import FCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"Sea Export LCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fas fa-boxes mr-1'></i>Sea Export LCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 6,\r\n        \"Name\": \"Sea Import LCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fas fa-dolly mr-1'></i>Sea Import LCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 16,\r\n        \"Name\": \"Import Consol\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #17a2b8;'><i class='fas fa-warehouse mr-1'></i>Import Consol</span>\"\r\n    },\r\n    {\r\n        \"Id\": 17,\r\n        \"Name\": \"Export Consol\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #343a40;'><i class='fas fa-plane-departure mr-1'></i>Export Consol</span>\"\r\n    }\r\n]\r\n",
             "FocusSearch": true,
-            "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
             "MinWidth": "120px",
             "MaxWidth": "120px",
             "EntityId": "Shipment",
@@ -373,7 +351,6 @@
             "Width": "104px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
             "MinWidth": "104px",
             "MaxWidth": "104px",
             "EntityId": "Shipment",
@@ -393,7 +370,6 @@
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
             "MinWidth": "85px",
             "MaxWidth": "85px",
             "EntityId": "Shipment",
@@ -413,7 +389,6 @@
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
             "MinWidth": "92px",
             "MaxWidth": "92px",
             "EntityId": "Shipment",
@@ -428,7 +403,6 @@
             "Width": "89px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
             "MinWidth": "89px",
             "MaxWidth": "89px",
             "EntityId": "Shipment",
@@ -443,7 +417,6 @@
             "Width": "52px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
             "MinWidth": "52px",
             "MaxWidth": "52px",
             "EntityId": "Shipment",
@@ -458,7 +431,6 @@
             "Width": "104px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
             "MinWidth": "104px",
             "MaxWidth": "104px",
             "EntityId": "Shipment",
@@ -474,7 +446,6 @@
             "Width": "104px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
             "MinWidth": "104px",
             "MaxWidth": "104px",
             "EntityId": "Shipment",
@@ -490,7 +461,6 @@
             "Width": "104px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
             "MinWidth": "104px",
             "MaxWidth": "104px",
             "EntityId": "Shipment",
@@ -501,21 +471,18 @@
     "FeaturePolicies": [
         {
             "Id": "10F27AA9-DBD7-46C4-A991-1527902ECB08",
-            "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "273AE548-86D9-4FA9-A068-DFE18A1D6AB9",
-            "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "4F1A154A-0160-4207-AF07-12ADFA42CE86",
-            "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "CanRead": true,
             "CanReadAll": true,
@@ -524,21 +491,18 @@
         },
         {
             "Id": "5A9DFD3A-918A-429C-B0C8-330F225E630A",
-            "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "7AEE99EA-4C03-4309-8032-C79539DB1C28",
-            "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "8D6AE53E-AE7C-409F-8FA5-34DC2CE7D880",
-            "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "CanRead": true,
             "CanReadAll": true,
@@ -547,7 +511,6 @@
         },
         {
             "Id": "A3CCE9A8-EB6A-4200-980D-CC7594D1C8A2",
-            "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
             "CanRead": true,
             "CanReadAll": true,
@@ -556,21 +519,18 @@
         },
         {
             "Id": "AE96136C-0F7F-4593-8B42-447EF2C37431",
-            "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "F8CB9291-115A-4094-99E1-C29C1D062183",
-            "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "FAA656B7-112E-44BC-AAB9-28CFE86A82E3",
-            "FeatureId": "00ba06dc-0000-0000-8000-1bed612230b7",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true

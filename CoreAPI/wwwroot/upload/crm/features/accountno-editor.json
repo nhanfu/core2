@@ -16,7 +16,6 @@
             "ClassName": "ribbon-group",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "01945a5a-b42b-7309-8a6b-3ae211cefa38",
             "ReportTypeId": 1,
             "Components": [
                 {
@@ -32,7 +31,6 @@
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }",
                     "Active": true,
-                    "FeatureId": "01945a5a-b42b-7309-8a6b-3ae211cefa38",
                     "ReportTypeId": 1
                 }
             ]
@@ -44,7 +42,6 @@
             "ComponentType": "Section",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "01945a5a-b42b-7309-8a6b-3ae211cefa38",
             "ReportTypeId": 1
         },
         {
@@ -55,7 +52,6 @@
             "ClassName": "card-body",
             "XxlCol": 10,
             "Active": true,
-            "FeatureId": "01945a5a-b42b-7309-8a6b-3ae211cefa38",
             "ParentId": "01945a5a-b54b-745e-8815-12c32abc8965",
             "XxlOuterColumn": 12,
             "ReportTypeId": 1,
@@ -70,7 +66,6 @@
                     "Label": "Account No",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "01945a5a-b42b-7309-8a6b-3ae211cefa38",
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
                     "ReportTypeId": 1
                 },
@@ -84,7 +79,6 @@
                     "Label": "Account Name",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "01945a5a-b42b-7309-8a6b-3ae211cefa38",
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
                     "ReportTypeId": 1
                 },
@@ -98,7 +92,6 @@
                     "Label": "Account Name EN",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "01945a5a-b42b-7309-8a6b-3ae211cefa38",
                     "ReportTypeId": 1
                 },
                 {
@@ -111,7 +104,6 @@
                     "Label": "Description",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "01945a5a-b42b-7309-8a6b-3ae211cefa38",
                     "ReportTypeId": 1
                 },
                 {
@@ -124,7 +116,6 @@
                     "Label": "Active",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "01945a5a-b42b-7309-8a6b-3ae211cefa38",
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
                     "ReportTypeId": 1
                 },
@@ -143,7 +134,6 @@
                     "Active": true,
                     "Query": "[\r\n        {\r\n        \"Id\": 1,\r\n        \"Name\": \"Debit Balance\"\r\n        },\r\n        {\r\n        \"Id\": 2,\r\n        \"Name\": \"Credit Balance\"\r\n        },\r\n        {\r\n        \"Id\": 3,\r\n        \"Name\": \"Hermaphrodite\"\r\n        },\r\n        {\r\n        \"Id\": 4,\r\n        \"Name\": \"No balance\"\r\n        }\r\n         \r\n    \r\n]",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
-                    "FeatureId": "01945a5a-b42b-7309-8a6b-3ae211cefa38",
                     "EntityId": "AccountNo",
                     "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
                     "ReportTypeId": 1
@@ -165,7 +155,6 @@
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Currency'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Currency'\"\r\n}",
                     "RefName": "MasterData",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01945a5a-b42b-7309-8a6b-3ae211cefa38",
                     "OrderBy": "ds.Enum asc",
                     "EntityId": "AccountNo",
                     "ReportTypeId": 1
@@ -187,7 +176,6 @@
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Currency'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Currency'\"\r\n}",
                     "RefName": "MasterData",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01945a5a-b42b-7309-8a6b-3ae211cefa38",
                     "OrderBy": "ds.Enum asc",
                     "EntityId": "AccountNo",
                     "ReportTypeId": 1
@@ -208,7 +196,6 @@
                     "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds\"\r\n}",
                     "RefName": "AccountNo",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01945a5a-b42b-7309-8a6b-3ae211cefa38",
                     "EntityId": "AccountNo",
                     "ReportTypeId": 1
                 }
@@ -231,7 +218,6 @@
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "01945a5a-b42b-7309-8a6b-3ae211cefa38",
             "Editable": true,
             "MinWidth": "112px",
             "MaxWidth": "112px",
@@ -251,7 +237,6 @@
             "RefName": "Role",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "01945a5a-b42b-7309-8a6b-3ae211cefa38",
             "Editable": true,
             "MinWidth": "102px",
             "MaxWidth": "102px",
@@ -271,7 +256,6 @@
             "RefName": "Role",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "01945a5a-b42b-7309-8a6b-3ae211cefa38",
             "Editable": true,
             "MinWidth": "94px",
             "MaxWidth": "94px",
@@ -289,7 +273,6 @@
             "Active": true,
             "RefName": "Role",
             "FocusSearch": true,
-            "FeatureId": "01945a5a-b42b-7309-8a6b-3ae211cefa38",
             "Editable": true,
             "MinWidth": "127px",
             "MaxWidth": "127px",
@@ -311,14 +294,12 @@
             "HotKey": "Ctrl-S",
             "Events": "{ \"click\" : \"SavePatch\" }",
             "Active": true,
-            "FeatureId": "01945a5a-b42b-7309-8a6b-3ae211cefa38",
             "ReportTypeId": 1
         }
     ],
     "FeaturePolicies": [
         {
             "Id": "1FCAFFAA-B496-4383-97BF-BDC6897703CF",
-            "FeatureId": "01945a5a-b42b-7309-8a6b-3ae211cefa38",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
             "CanRead": true,
             "CanReadAll": true,
@@ -329,56 +310,48 @@
         },
         {
             "Id": "21699771-F5A2-43C0-B4C3-E9F490BBCBC9",
-            "FeatureId": "01945a5a-b42b-7309-8a6b-3ae211cefa38",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "27CC6FE7-800E-4C5E-B8AC-C32CCE0E7B9A",
-            "FeatureId": "01945a5a-b42b-7309-8a6b-3ae211cefa38",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "3D119519-AF18-4F48-B2EE-9F99273405E4",
-            "FeatureId": "01945a5a-b42b-7309-8a6b-3ae211cefa38",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "545948CB-E4DD-43F8-98A4-0E7FFAC09B88",
-            "FeatureId": "01945a5a-b42b-7309-8a6b-3ae211cefa38",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "6EA6438E-CA28-41E2-A04F-6C94E0E18636",
-            "FeatureId": "01945a5a-b42b-7309-8a6b-3ae211cefa38",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "72033854-ECBD-4E5A-AF2C-091769631041",
-            "FeatureId": "01945a5a-b42b-7309-8a6b-3ae211cefa38",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "8DDC0673-5EFB-4375-A425-2FAB0A4A70E3",
-            "FeatureId": "01945a5a-b42b-7309-8a6b-3ae211cefa38",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "B85586D7-3FB8-4300-8472-9DA780D41CBE",
-            "FeatureId": "01945a5a-b42b-7309-8a6b-3ae211cefa38",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "CanRead": true,
             "CanReadAll": true,
@@ -389,7 +362,6 @@
         },
         {
             "Id": "D984B433-9BD8-4ACC-BEAD-A38054689DBA",
-            "FeatureId": "01945a5a-b42b-7309-8a6b-3ae211cefa38",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "CanRead": true,
             "CanReadAll": true,

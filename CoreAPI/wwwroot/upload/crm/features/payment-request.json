@@ -19,7 +19,6 @@
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1,
@@ -39,7 +38,6 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentInvoice as ds where (ds.TypeId = 2)\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentInvoice as ds where (ds.TypeId = 2)\"\r\n}",
                     "RefName": "ShipmentInvoice",
-                    "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -53,7 +51,6 @@
             "Icon": "fal fa-plus mr-1",
             "ClassName": "scroll-content",
             "Active": true,
-            "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1,
@@ -73,7 +70,6 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentInvoice as ds where (ds.TypeId = 2 and ds.StatusId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentInvoice as ds where (ds.TypeId = 2 and ds.StatusId = 1)\"\r\n}",
                     "RefName": "ShipmentInvoice",
-                    "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -87,7 +83,6 @@
             "Icon": "fal fa-ellipsis-h mr-1",
             "ClassName": "scroll-content",
             "Active": true,
-            "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1,
@@ -107,7 +102,6 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentInvoice as ds where (ds.TypeId = 2 and ds.StatusId = 2)\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentInvoice as ds where (ds.TypeId = 2 and ds.StatusId = 2)\"\r\n}",
                     "RefName": "ShipmentInvoice",
-                    "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -121,7 +115,6 @@
             "Icon": "fal fa-smile mr-1",
             "ClassName": "scroll-content",
             "Active": true,
-            "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1,
@@ -141,7 +134,6 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentInvoice as ds where (ds.TypeId = 2 and ds.StatusId = 3)\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentInvoice as ds where (ds.TypeId = 2 and ds.StatusId = 3)\"\r\n}",
                     "RefName": "ShipmentInvoice",
-                    "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -155,7 +147,6 @@
             "Icon": "fal fa-frown mr-1",
             "ClassName": "scroll-content",
             "Active": true,
-            "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1,
@@ -175,7 +166,6 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentInvoice as ds where (ds.TypeId = 2 and ds.StatusId = 4)\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentInvoice as ds where (ds.TypeId = 2 and ds.StatusId = 4)\"\r\n}",
                     "RefName": "ShipmentInvoice",
-                    "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -197,7 +187,6 @@
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
-            "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
             "TextAlign": "center",
             "MinWidth": "159px",
             "MaxWidth": "159px",
@@ -214,7 +203,6 @@
             "Width": "151px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
             "MinWidth": "151px",
             "MaxWidth": "151px",
             "EntityId": "ShipmentInvoice",
@@ -229,7 +217,6 @@
             "Width": "108px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
             "MinWidth": "108px",
             "MaxWidth": "108px",
             "EntityId": "ShipmentInvoice",
@@ -248,7 +235,6 @@
             "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-edit mr-1'></i>Draft</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fas fa-check-circle mr-1'></i>Issued</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-ban mr-1'></i>Void</span>\"\r\n    }\r\n]",
             "FocusSearch": true,
-            "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
             "MinWidth": "138px",
             "MaxWidth": "138px",
             "EntityId": "ShipmentInvoice",
@@ -263,7 +249,6 @@
             "Width": "130px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
             "MinWidth": "130px",
             "MaxWidth": "130px",
             "EntityId": "ShipmentInvoice",
@@ -282,7 +267,6 @@
             "Active": true,
             "RefName": "Partner",
             "FocusSearch": true,
-            "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
             "MinWidth": "144px",
             "MaxWidth": "144px",
             "EntityId": "ShipmentInvoice",
@@ -299,7 +283,6 @@
             "Width": "34px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
             "MinWidth": "34px",
             "MaxWidth": "34px",
             "EntityId": "ShipmentInvoice",
@@ -317,7 +300,6 @@
             "Width": "95px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
             "MinWidth": "95px",
             "MaxWidth": "95px",
             "EntityId": "ShipmentInvoice",
@@ -339,7 +321,6 @@
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
             "MinWidth": "124px",
             "MaxWidth": "124px",
             "OrderBy": "ds.Enum asc",
@@ -357,7 +338,6 @@
             "Width": "101px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
             "MinWidth": "101px",
             "MaxWidth": "101px",
             "EntityId": "ShipmentInvoice",
@@ -379,7 +359,6 @@
             "Template": "[{ \"FieldName\" : \"Description\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "DisabledExp": "!((this.Entity.UserReceiverId == this.Token.UserId || (this.Token.TeamId && this.Entity.GroupReceiverId == this.Token.TeamId)) && this.Entity.ProgressId != 3)",
             "FocusSearch": true,
-            "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
             "MinWidth": "115px",
             "MaxWidth": "115px",
             "OrderBy": "ds.Enum asc",
@@ -399,7 +378,6 @@
             "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fal fa-plus mr-1'></i>New</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: #333; background-color: #ffc107;'><i class='fal fa-ellipsis-h mr-1'></i>Approving</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fal fa-smile mr-1'></i>Approved</span>\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fal fa-frown mr-1'></i>Decline</span>\"\r\n    }\r\n]",
             "FocusSearch": true,
-            "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
             "HasFilter": true,
             "MinWidth": "116px",
             "MaxWidth": "116px",
@@ -419,7 +397,6 @@
             "Width": "34px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
             "MinWidth": "34px",
             "MaxWidth": "34px",
             "EntityId": "ShipmentInvoice",
@@ -437,21 +414,18 @@
             "ClassName": "btn",
             "Events": "{\r\n    \"click\": \"Add\"\r\n}",
             "Active": true,
-            "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
             "ReportTypeId": 1
         }
     ],
     "FeaturePolicies": [
         {
             "Id": "4D0E126C-1668-4EBA-8212-CD9FA604BD50",
-            "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "53104920-9244-45FB-8BEA-4853A1A92ED3",
-            "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
             "CanRead": true,
             "CanWrite": true,
@@ -460,28 +434,24 @@
         },
         {
             "Id": "7BDC2DC5-E170-4FEA-9A09-10469621706A",
-            "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "856B9C68-6ABA-4F2C-A5A3-44B26904A559",
-            "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "862DFFD4-8FEC-46A7-9C4C-1507D2778F7D",
-            "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "8EAEF11D-0EB6-41E7-BD7C-564588643A7C",
-            "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "CanRead": true,
             "CanReadAll": true,
@@ -492,14 +462,12 @@
         },
         {
             "Id": "9F7E22D5-8C3A-4394-A128-4A5366B64D59",
-            "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "B0722166-18F0-4E5B-B1EE-AF54AFD67F37",
-            "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "CanRead": true,
             "CanWrite": true,
@@ -508,14 +476,12 @@
         },
         {
             "Id": "C3AC8E64-637E-4C01-A724-19642A5F953D",
-            "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "FA43A94E-21C7-4B9A-91DA-1DAE5B535B2A",
-            "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
@@ -524,7 +490,6 @@
     "UserSettings": [
         {
             "Id": "06784aa2-7b36-7808-8000-b8eb8326ef6f",
-            "FeatureId": "01940838-8804-719e-bbf6-ff713de09384",
             "ComponentId": "01940838-88fd-76ff-865f-2d11e2a711f0",
             "UserId": "007d04ac-0000-0000-8000-5b0373c45e9b",
             "Value": "[{\"Id\":\"01940838-8e87-7693-8f3c-4c7a9fc39482\",\"FieldName\":\"btnEdit\",\"Order\":0,\"Width\":\"34px\"},{\"Id\":\"01940838-8da3-7509-a761-6fb6f8472f9c\",\"FieldName\":\"Code\",\"Order\":1,\"Width\":\"130px\"},{\"Id\":\"01940838-8d5c-750b-a3f9-99e159ec265a\",\"FieldName\":\"ActionId\",\"Order\":2,\"Width\":\"86px\"},{\"Id\":\"01943b5e-8073-73c8-88cf-605862342af3\",\"FieldName\":\"ProgressId\",\"Order\":3,\"Width\":\"115px\"},{\"Id\":\"01940838-8cb3-72cf-879a-14daa7425aca\",\"FieldName\":\"InsertedDate\",\"Order\":4,\"Width\":\"108px\"},{\"Id\":\"0194318b-556e-71e9-b1f4-b866de607b17\",\"FieldName\":\"PostDate\",\"Order\":5,\"Width\":\"95px\"},{\"Id\":\"01940838-8dfa-71af-9887-cf914b1a7b50\",\"FieldName\":\"VendorIds\",\"Order\":6,\"Width\":\"144px\"},{\"Id\":\"0194318b-556e-71e9-b1f4-bd5fcd790488\",\"FieldName\":\"CurrencyId\",\"Order\":7,\"Width\":\"124px\"},{\"Id\":\"0194318b-556e-71e9-b1f4-c09415042fcf\",\"FieldName\":\"ExchangeRateINV\",\"Order\":8,\"Width\":\"101px\"},{\"Id\":\"01940838-8b80-7097-8918-cf9d9ed5266c\",\"FieldName\":\"InsertedBy\",\"Order\":9,\"Width\":\"159px\"},{\"Id\":\"01940838-8c64-7457-9958-d948efe83558\",\"FieldName\":\"DebitAmount\",\"Order\":10,\"Width\":\"151px\"},{\"Id\":\"01943b60-d2ef-713a-8775-aac1e2ad914f\",\"FieldName\":\"StatusId\",\"Order\":11,\"Width\":\"116px\"}]",

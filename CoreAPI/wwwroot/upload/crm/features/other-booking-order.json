@@ -18,7 +18,6 @@
             "Icon": "fal fa-plus mr-1",
             "ClassName": "scroll-content",
             "Active": true,
-            "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1,
@@ -39,7 +38,6 @@
                     "Query": "{\r\n    \"sql\": \"select * from Booking as ds where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and StatusId = 1 and TypeId = 3)\",\r\n    \"total\": \"select count(ds.Id) as total from Booking as ds  where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and StatusId = 1 and TypeId = 3)\"\r\n}",
                     "RefName": "Booking",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -53,7 +51,6 @@
             "Icon": "fal fa-ellipsis-h mr-1",
             "ClassName": "scroll-content",
             "Active": true,
-            "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1,
@@ -73,7 +70,6 @@
                     "Query": "{\r\n    \"sql\": \"select * from Booking as ds where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and StatusId = 2 and TypeId = 3)\",\r\n    \"total\": \"select count(ds.Id) as total from Booking as ds  where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and StatusId = 2 and TypeId = 3)\"\r\n}",
                     "RefName": "Booking",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -87,7 +83,6 @@
             "Icon": "fal fa-frown mr-1",
             "ClassName": "scroll-content",
             "Active": true,
-            "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1,
@@ -107,7 +102,6 @@
                     "Query": "{\r\n    \"sql\": \"select * from Booking as ds where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and StatusId = 4 and TypeId = 3)\",\r\n    \"total\": \"select count(ds.Id) as total from Booking as ds  where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and StatusId = 4 and TypeId = 3)\"\r\n}",
                     "RefName": "Booking",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -121,7 +115,6 @@
             "Icon": "fal fa-smile mr-1",
             "ClassName": "scroll-content",
             "Active": true,
-            "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1,
@@ -141,7 +134,6 @@
                     "Query": "{\r\n    \"sql\": \"select * from Booking as ds where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and StatusId = 3 and TypeId = 3)\",\r\n    \"total\": \"select count(ds.Id) as total from Booking as ds  where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and StatusId = 3 and TypeId = 3)\"\r\n}",
                     "RefName": "Booking",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -156,7 +148,6 @@
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1,
@@ -177,7 +168,6 @@
                     "Query": "{\r\n    \"sql\": \"select * from Booking as ds where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and TypeId = 3)\",\r\n    \"total\": \"select count(ds.Id) as total from Booking as ds  where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and TypeId = 3)\"\r\n}",
                     "RefName": "Booking",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -195,7 +185,6 @@
             "Events": "{\"click\":\"Edit\"}",
             "Width": "34px",
             "Active": true,
-            "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
             "MinWidth": "34px",
             "MaxWidth": "34px",
             "EntityId": "Booking",
@@ -214,7 +203,6 @@
             "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 8,\r\n        \"Name\": \"Other\",\r\n    },\r\n    {\r\n        \"Id\": 9,\r\n        \"Name\": \"Logistics\",\r\n    },\r\n    {\r\n        \"Id\": 10,\r\n        \"Name\": \"Trucking\",\r\n    }\r\n]",
             "FocusSearch": true,
-            "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
             "MinWidth": "123px",
             "MaxWidth": "123px",
             "EntityId": "Booking",
@@ -229,7 +217,6 @@
             "Width": "130px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
             "MinWidth": "130px",
             "MaxWidth": "130px",
             "EntityId": "Booking",
@@ -244,7 +231,6 @@
             "Width": "108px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
             "MinWidth": "108px",
             "MaxWidth": "108px",
             "EntityId": "Booking",
@@ -264,7 +250,6 @@
             "RefName": "Partner",
             "FocusSearch": true,
             "ShowHotKey": true,
-            "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
             "MinWidth": "321px",
             "MaxWidth": "321px",
             "EntityId": "Booking",
@@ -284,7 +269,6 @@
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
             "MinWidth": "90px",
             "MaxWidth": "90px",
             "EntityId": "Booking",
@@ -304,7 +288,6 @@
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
             "MinWidth": "150px",
             "MaxWidth": "150px",
             "EntityId": "Booking",
@@ -323,7 +306,6 @@
             "Active": true,
             "RefName": "MasterData",
             "FocusSearch": true,
-            "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
             "MinWidth": "175px",
             "MaxWidth": "175px",
             "EntityId": "Booking",
@@ -342,7 +324,6 @@
             "Active": true,
             "RefName": "Partner",
             "FocusSearch": true,
-            "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
             "MinWidth": "157px",
             "MaxWidth": "157px",
             "EntityId": "Booking",
@@ -361,7 +342,6 @@
             "Active": true,
             "RefName": "Partner",
             "FocusSearch": true,
-            "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
             "MinWidth": "125px",
             "MaxWidth": "125px",
             "EntityId": "Booking",
@@ -380,7 +360,6 @@
             "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"New\",\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"Approving\",\r\n    }, {\r\n        \"Id\": 3,\r\n        \"Name\": \"Approved\",\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Decline\",\r\n    }\r\n]",
             "FocusSearch": true,
-            "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
             "HasFilter": true,
             "MinWidth": "98px",
             "MaxWidth": "98px",
@@ -400,7 +379,6 @@
             "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fal fa-plus mr-1'></i>New</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: #333; background-color: #ffc107;'><i class='fal fa-ellipsis-h mr-1'></i>Approving</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fal fa-smile mr-1'></i>Approved</span>\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fal fa-frown mr-1'></i>Decline</span>\"\r\n    }\r\n]",
             "FocusSearch": true,
-            "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
             "MinWidth": "85px",
             "MaxWidth": "85px",
             "EntityId": "Booking",
@@ -420,7 +398,6 @@
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
-            "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
             "TextAlign": "center",
             "MinWidth": "72px",
             "MaxWidth": "72px",
@@ -439,7 +416,6 @@
             "Events": "{\"click\":\"Edit\"}",
             "Width": "34px",
             "Active": true,
-            "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
             "MinWidth": "34px",
             "MaxWidth": "34px",
             "EntityId": "Booking",
@@ -457,7 +433,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Add\"}",
             "Active": true,
-            "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
             "ReportTypeId": 1
         },
         {
@@ -472,35 +447,30 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Add\"}",
             "Active": true,
-            "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
             "ReportTypeId": 1
         }
     ],
     "FeaturePolicies": [
         {
             "Id": "03B8BF0E-1C3E-44CE-ABE5-7387E3BAB0EC",
-            "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "1AD37589-6A02-4F6F-B76D-C2DD9679B3E2",
-            "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "2CC6F8FF-3A01-4320-93EF-9B402A68466F",
-            "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "33A83EA8-88C4-4802-987D-3D4AECD69462",
-            "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "CanRead": true,
             "CanWrite": true,
@@ -510,21 +480,18 @@
         },
         {
             "Id": "83FA9845-D38C-41AB-88C7-48003DB703E9",
-            "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "87B97377-3812-420F-A48D-8B14A922ECDC",
-            "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "A9315DDA-DB93-4015-8D71-2E6371218E56",
-            "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "CanRead": true,
             "CanWrite": true,
@@ -533,14 +500,12 @@
         },
         {
             "Id": "C12A7888-C267-4C5E-9C86-29B2C5A8C159",
-            "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "E5D0BB4C-2702-49D6-BDF1-6E4167859C71",
-            "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
             "CanRead": true,
             "CanReadAll": true,
@@ -553,7 +518,6 @@
         },
         {
             "Id": "E6B090F0-42F4-4A39-A509-503AF797D55A",
-            "FeatureId": "00d913f4-0000-0000-8000-a4e3edd40b21",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "TableName": "Feature",
             "Active": true

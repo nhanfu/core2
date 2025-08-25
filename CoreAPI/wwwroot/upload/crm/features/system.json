@@ -16,7 +16,6 @@
             "ComponentType": "Section",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "000a0514-0000-0000-8000-1f67beb1bcef",
             "ReportTypeId": 1,
             "Components": [
                 {
@@ -30,7 +29,6 @@
                     "Query": "select * from Partner as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.PicId = '{TokenUserId}')",
                     "RefName": "Partner",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "FeatureId": "000a0514-0000-0000-8000-1f67beb1bcef",
                     "ReportTypeId": 1
                 }
             ]
@@ -39,63 +37,54 @@
     "FeaturePolicies": [
         {
             "Id": "0499F61A-3CD1-4D5F-9897-DF8B9810B854",
-            "FeatureId": "000a0514-0000-0000-8000-1f67beb1bcef",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "41831CCC-A3D2-4BBB-8C9A-DCB802386DB8",
-            "FeatureId": "000a0514-0000-0000-8000-1f67beb1bcef",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "5BB00530-0C52-431A-819F-DBB48A2A2CAF",
-            "FeatureId": "000a0514-0000-0000-8000-1f67beb1bcef",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "62BB3D62-D3B8-411D-AE07-E102C842D9D5",
-            "FeatureId": "000a0514-0000-0000-8000-1f67beb1bcef",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "6BD277AE-726D-44C0-A7D4-E17B12D34629",
-            "FeatureId": "000a0514-0000-0000-8000-1f67beb1bcef",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "752E325C-B952-4EEB-8D5E-8277F6AE1B10",
-            "FeatureId": "000a0514-0000-0000-8000-1f67beb1bcef",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "84ED8A3B-C32B-4FD3-A4D3-EFF5D65EA725",
-            "FeatureId": "000a0514-0000-0000-8000-1f67beb1bcef",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "8BC667CF-2586-4463-B0E2-D6EC311E9D55",
-            "FeatureId": "000a0514-0000-0000-8000-1f67beb1bcef",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "CF14358D-21B3-4602-BB7D-D256B93CECC2",
-            "FeatureId": "000a0514-0000-0000-8000-1f67beb1bcef",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
             "CanRead": true,
             "CanReadAll": true,
@@ -108,7 +97,6 @@
         },
         {
             "Id": "D7BC74A5-D322-48EE-A799-DDDB1F26C449",
-            "FeatureId": "000a0514-0000-0000-8000-1f67beb1bcef",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true

@@ -18,7 +18,6 @@
             "Icon": "fal fa-plus mr-1",
             "ClassName": "scroll-content",
             "Active": true,
-            "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1,
@@ -39,7 +38,6 @@
                     "Query": "{\r\n    \"sql\": \"select * from Inquiry as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 1 and TypeId = 3 and ServiceId in (1,2)\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 1 and TypeId = 3 and ServiceId in (1,2)\"\r\n}",
                     "RefName": "Inquiry",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -53,7 +51,6 @@
             "Icon": "fal fa-smile mr-1",
             "ClassName": "scroll-content",
             "Active": true,
-            "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1,
@@ -73,7 +70,6 @@
                     "Query": "{\r\n    \"sql\": \"select * from Inquiry as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 3 and TypeId = 3 and ServiceId in (1,2)\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 3 and TypeId = 3 and ServiceId in (1,2)\"\r\n}",
                     "RefName": "Inquiry",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -88,7 +84,6 @@
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1,
@@ -109,7 +104,6 @@
                     "Query": "{\r\n    \"sql\": \"select * from Inquiry as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and TypeId = 3 and ServiceId in (1,2)\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and TypeId = 3 and ServiceId in (1,2)\"\r\n}",
                     "RefName": "Inquiry",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -123,7 +117,6 @@
             "Icon": "fal fa-ellipsis-h mr-1",
             "ClassName": "scroll-content",
             "Active": true,
-            "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1,
@@ -143,7 +136,6 @@
                     "Query": "{\r\n    \"sql\": \"select * from Inquiry as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 2 and TypeId = 3 and ServiceId in (1,2)\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 2 and TypeId = 3 and ServiceId in (1,2)\"\r\n}",
                     "RefName": "Inquiry",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -157,7 +149,6 @@
             "Icon": "fal fa-frown mr-1",
             "ClassName": "scroll-content",
             "Active": true,
-            "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1,
@@ -177,7 +168,6 @@
                     "Query": "{\r\n    \"sql\": \"select * from Inquiry as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 4 and TypeId = 3 and ServiceId in (1,2)\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 4 and TypeId = 3 and ServiceId in (1,2)\"\r\n}",
                     "RefName": "Inquiry",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -195,7 +185,6 @@
             "Width": "84px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
             "MinWidth": "84px",
             "MaxWidth": "84px",
             "EntityId": "Quote",
@@ -209,7 +198,6 @@
             "Label": "To date",
             "Width": "119px",
             "Active": true,
-            "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
             "MinWidth": "119px",
             "MaxWidth": "119px",
             "EntityId": "Quote",
@@ -228,7 +216,6 @@
             "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Air Export\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-plane-departure mr-1'></i>Air Export</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"Air Import\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-plane-arrival mr-1'></i>Air Import</span>\"\r\n    }\r\n]\r\n",
             "FocusSearch": true,
-            "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
             "MinWidth": "120px",
             "MaxWidth": "120px",
             "EntityId": "Quote",
@@ -242,7 +229,6 @@
             "Label": "Quo No",
             "Width": "124px",
             "Active": true,
-            "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
             "MinWidth": "124px",
             "MaxWidth": "124px",
             "EntityId": "Quote",
@@ -258,7 +244,6 @@
             "Events": "{\"click\":\"Edit\"}",
             "Width": "34px",
             "Active": true,
-            "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
             "MinWidth": "34px",
             "MaxWidth": "34px",
             "EntityId": "Quote",
@@ -278,7 +263,6 @@
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
             "MinWidth": "93px",
             "MaxWidth": "93px",
             "EntityId": "Quote",
@@ -297,7 +281,6 @@
             "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 0,\r\n        \"Name\": \"FREE-HAND\"\r\n    },\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"NOMINATE\"\r\n    }\r\n]",
             "FocusSearch": true,
-            "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
             "MinWidth": "74px",
             "MaxWidth": "74px",
             "EntityId": "Quote",
@@ -316,7 +299,6 @@
             "Active": true,
             "RefName": "Partner",
             "ShowHotKey": true,
-            "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
             "MinWidth": "306px",
             "MaxWidth": "306px",
             "EntityId": "Quote",
@@ -335,7 +317,6 @@
             "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fal fa-plus mr-1'></i>New</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: #333; background-color: #ffc107;'><i class='fal fa-ellipsis-h mr-1'></i>Approving</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fal fa-smile mr-1'></i>Approved</span>\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fal fa-frown mr-1'></i>Decline</span>\"\r\n    }\r\n]",
             "FocusSearch": true,
-            "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
             "HasFilter": true,
             "MinWidth": "110px",
             "MaxWidth": "110px",
@@ -356,7 +337,6 @@
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
             "MinWidth": "114px",
             "MaxWidth": "114px",
             "EntityId": "Quote",
@@ -370,7 +350,6 @@
             "Label": "From date",
             "Width": "150px",
             "Active": true,
-            "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
             "MinWidth": "150px",
             "MaxWidth": "150px",
             "EntityId": "Quote",
@@ -385,7 +364,6 @@
             "Width": "79px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
             "MinWidth": "79px",
             "MaxWidth": "79px",
             "EntityId": "Quote",
@@ -403,7 +381,6 @@
             "Width": "167px",
             "Active": true,
             "RefName": "MasterData",
-            "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
             "MinWidth": "167px",
             "MaxWidth": "167px",
             "EntityId": "Quote",
@@ -423,7 +400,6 @@
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
-            "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
             "TextAlign": "center",
             "MinWidth": "72px",
             "MaxWidth": "72px",
@@ -444,7 +420,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Add\"}",
             "Active": true,
-            "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
             "ReportTypeId": 1
         },
         {
@@ -459,7 +434,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Add\"}",
             "Active": true,
-            "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
             "ReportTypeId": 1
         },
         {
@@ -472,7 +446,6 @@
             "Events": "{\"click\":\"Edit\"}",
             "Width": "34px",
             "Active": true,
-            "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
             "MinWidth": "34px",
             "MaxWidth": "34px",
             "EntityId": "Quote",
@@ -482,14 +455,12 @@
     "FeaturePolicies": [
         {
             "Id": "26CC7493-6183-4E26-BB89-1BA437014082",
-            "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "2D7E9FBC-5BCF-46A2-88A0-DF8F543AC97F",
-            "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "CanRead": true,
             "CanWrite": true,
@@ -499,35 +470,30 @@
         },
         {
             "Id": "8172896E-C0D7-4F19-B6D4-6FC06CB44EAE",
-            "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "96EADA15-BFD3-486A-B19C-FEF777D5CFC8",
-            "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "96FA73A7-E14B-4CF7-A56A-AC7E01738DED",
-            "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "C1FBEE39-45B1-4557-B239-BDADD2AEFD5B",
-            "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "D090C398-D674-4732-A295-03B594CFD17D",
-            "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
             "CanRead": true,
             "CanReadAll": true,
@@ -540,21 +506,18 @@
         },
         {
             "Id": "D4248BAC-5BD6-428A-9989-DD6D0E024978",
-            "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "D8C81739-B783-435B-8F7B-DA048E8CE90B",
-            "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "E6F20FBA-7B5F-460E-996A-15F498C4F8A9",
-            "FeatureId": "0076087c-0000-0000-8000-cc77ba922042",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
             "Active": true

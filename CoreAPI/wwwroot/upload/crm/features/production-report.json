@@ -15,7 +15,6 @@
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 1,
-            "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
             "SmOuterColumn": 20,
             "ReportTypeId": 1
         },
@@ -28,7 +27,6 @@
             "ClassName": "card-body",
             "XxlCol": 10,
             "Active": true,
-            "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
             "ParentId": "01955115-4784-734b-88e8-1db7552efdcc",
             "ReportTypeId": 1,
             "Components": [
@@ -45,7 +43,6 @@
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
                     "SmCol": 5,
                     "Active": true,
-                    "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
                     "ReportTypeId": 1
                 },
                 {
@@ -61,7 +58,6 @@
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
                     "SmCol": 5,
                     "Active": true,
-                    "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
                     "ReportTypeId": 1
                 },
                 {
@@ -82,7 +78,6 @@
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": \"ShipmentDate\",\r\n        \"Name\": \"Shipment\"\r\n    },\r\n    {\r\n        \"Id\": \"EtdDate\",\r\n        \"Name\": \"ETD\"\r\n    },\r\n    {\r\n        \"Id\": \"EtaDate\",\r\n        \"Name\": \"ETA\"\r\n    },\r\n    {\r\n        \"Id\": \"CompleteDate\",\r\n        \"Name\": \"Complete\"\r\n    },\r\n    {\r\n        \"Id\": \"DebtDate\",\r\n        \"Name\": \"Debt voucher\"\r\n    },\r\n    {\r\n        \"Id\": \"PaymentDate\",\r\n        \"Name\": \"Payment\"\r\n    },\r\n    {\r\n        \"Id\": \"PaidDate\",\r\n        \"Name\": \"Paid\"\r\n    },\r\n    {\r\n        \"Id\": \"ShipmentInvoiceDate\",\r\n        \"Name\": \"Invoice\"\r\n    },\r\n    {\r\n        \"Id\": \"InvoiceDate\",\r\n        \"Name\": \"VAT Invoice\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
                     "ReportTypeId": 1
                 },
                 {
@@ -103,7 +98,6 @@
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": \"0,1\",\r\n        \"Name\": \"Include\"\r\n    },\r\n    {\r\n        \"Id\": \"1\",\r\n        \"Name\": \"Only\"\r\n    },\r\n    {\r\n        \"Id\": \"0\",\r\n        \"Name\": \"Exclude\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
                     "ReportTypeId": 1
                 },
                 {
@@ -121,7 +115,6 @@
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": \"ds.TypeId, sm.VendorId, sm.AgentId, ds.SaleId, ds.InsertedBy, ds.PolId, ds.PodId, ds.ParentId, ds.CustomerId\",\r\n        \"Name\": \"General\",\r\n        \"GroupBy\": \"TypeId\",\r\n        \"GroupFormat\": \"this.Entity.Type.Name\",\r\n        \"OrderBy\": \"ds.TypeId asc, ds.ParentId asc\"\r\n    },\r\n    {\r\n        \"Id\": \"ds.TypeId, ds.SaleId, ds.PolId, ds.PodId, ds.ParentId\",\r\n        \"Name\": \"Salesman\",\r\n        \"GroupBy\": \"SaleId\",\r\n        \"GroupFormat\": \"this.Entity.Sale.FullName\",\r\n        \"OrderBy\": \"ds.SaleId asc,ds.TypeId asc, ds.ParentId asc\"\r\n    },\r\n    {\r\n        \"Id\": \"ds.TypeId, ds.PolId, ds.PodId, ds.ParentId, ds.CustomerId\",\r\n        \"Name\": \"Customers\",\r\n        \"GroupBy\": \"CustomerId\",\r\n        \"GroupFormat\": \"this.Entity.Customer.Name\",\r\n        \"OrderBy\": \"ds.CustomerId asc,ds.TypeId asc, ds.ParentId asc\"\r\n    },\r\n    {\r\n        \"Id\": \"ds.TypeId, sm.AgentId, ds.PolId, ds.PodId, ds.ParentId\",\r\n        \"Name\": \"Agent\",\r\n        \"GroupBy\": \"AgentId\",\r\n        \"GroupFormat\": \"this.Entity.Agent.Name\",\r\n        \"OrderBy\": \"sm.AgentId asc,ds.TypeId asc, ds.ParentId asc\"\r\n    },\r\n    {\r\n        \"Id\": \"ds.TypeId, sm.VendorId, ds.PolId, ds.PodId, ds.ParentId\",\r\n        \"Name\": \"Provider\",\r\n        \"GroupBy\": \"VendorId\",\r\n        \"GroupFormat\": \"this.Entity.Vendor.Name\",\r\n        \"OrderBy\": \"sm.VendorId asc,ds.TypeId asc, ds.ParentId asc\"\r\n    },\r\n    {\r\n        \"Id\": \"ds.TypeId, ds.InsertedBy, ds.PolId, ds.PodId, ds.ParentId\",\r\n        \"Name\": \"Creator\",\r\n        \"GroupBy\": \"InsertedBy\",\r\n        \"GroupFormat\": \"this.Entity.InsertedByMasterData.FullName\",\r\n        \"OrderBy\": \"ds.InsertedBy asc,ds.TypeId asc, ds.ParentId asc\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
                     "Editable": true,
                     "EntityId": "ShipmentFee1",
                     "ReportTypeId": 1
@@ -137,7 +130,6 @@
             "ClassName": "card-body",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
             "ParentId": "01955115-4784-734b-88e8-1db7552efdcc",
             "SmOuterColumn": 1,
             "XxlOuterColumn": 1,
@@ -160,7 +152,6 @@
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Department Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Department Type'\"\r\n}",
                     "RefName": "MasterData",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
                     "ReportTypeId": 1
                 },
                 {
@@ -180,7 +171,6 @@
                     "Query": "{\r\n    \"sql\": \"select ds.* from [User] as ds where (TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 1)\"\r\n}",
                     "RefName": "User",
                     "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
-                    "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
                     "IsMultiple": true,
                     "TableName": "Shipment",
                     "ReportTypeId": 1
@@ -202,7 +192,6 @@
                     "Query": "{\r\n    \"sql\": \"select ds.* from [User] as ds where (TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 1)\"\r\n}",
                     "RefName": "User",
                     "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
-                    "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
                     "IsMultiple": true,
                     "TableName": "Shipment",
                     "ReportTypeId": 1
@@ -218,7 +207,6 @@
             "ClassName": "card-body",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
             "ParentId": "01955115-4784-734b-88e8-1db7552efdcc",
             "SmOuterColumn": 1,
             "XxlOuterColumn": 1,
@@ -244,7 +232,6 @@
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
                     "PreQuery": "{\r\n    \"HblIds\": this.Entity.HblIds ? this.Entity.HblIds : '',\r\n}",
                     "ShowHotKey": true,
-                    "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
                     "IsMultiple": true,
                     "ReportTypeId": 1
                 },
@@ -268,7 +255,6 @@
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
                     "PreQuery": "{\r\n    \"HblIds\": this.Entity.HblIds ? this.Entity.HblIds : '',\r\n}",
                     "ShowHotKey": true,
-                    "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
                     "IsMultiple": true,
                     "ReportTypeId": 1
                 },
@@ -292,7 +278,6 @@
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
                     "PreQuery": "{\r\n    \"HblIds\": this.Entity.HblIds ? this.Entity.HblIds : '',\r\n}",
                     "ShowHotKey": true,
-                    "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
                     "IsMultiple": true,
                     "ReportTypeId": 1
                 }
@@ -307,7 +292,6 @@
             "ClassName": "card-body",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
             "ParentId": "01955115-4784-734b-88e8-1db7552efdcc",
             "SmOuterColumn": 1,
             "XxlOuterColumn": 1,
@@ -331,7 +315,6 @@
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Air Export\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-plane-departure mr-1'></i>Air Export</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"Air Import\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-plane-arrival mr-1'></i>Air Import</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Sea Export FCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-ship mr-1'></i>Sea Export FCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Sea Import FCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-shipping-fast mr-1'></i>Sea Import FCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"Sea Export LCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fas fa-boxes mr-1'></i>Sea Export LCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 6,\r\n        \"Name\": \"Sea Import LCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fas fa-dolly mr-1'></i>Sea Import LCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 16,\r\n        \"Name\": \"Import Consol\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #17a2b8;'><i class='fas fa-warehouse mr-1'></i>Import Consol</span>\"\r\n    },\r\n    {\r\n        \"Id\": 17,\r\n        \"Name\": \"Export Consol\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #343a40;'><i class='fas fa-plane-departure mr-1'></i>Export Consol</span>\"\r\n    },\r\n    {\r\n        \"Id\": 13,\r\n        \"Name\": \"TRUCKING\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-truck mr-1'></i>TRUCKING</span>\"\r\n    },\r\n    {\r\n        \"Id\": 9,\r\n        \"Name\": \"Logistics\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-truck mr-1'></i>Logistics</span>\"\r\n    }\r\n]\r\n",
                     "Template": "[{ \"FieldName\" : \"Description\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
                     "IsMultiple": true,
                     "ReportTypeId": 1
                 },
@@ -351,7 +334,6 @@
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 0,\r\n        \"Name\": \"FREE-HAND\"\r\n    },\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"NOMINATE\"\r\n    }\r\n]",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
-                    "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
                     "ReportTypeId": 1
                 },
                 {
@@ -372,7 +354,6 @@
                     "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                     "RefName": "Terminal",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
                     "IsMultiple": true,
                     "ReportTypeId": 1
                 },
@@ -394,7 +375,6 @@
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"POL\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"POD\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Transit\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Delivery\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"Warehouse\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
                     "ReportTypeId": 1
                 },
                 {
@@ -415,7 +395,6 @@
                     "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                     "RefName": "Terminal",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
                     "IsMultiple": true,
                     "ReportTypeId": 1
                 },
@@ -437,7 +416,6 @@
                     "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                     "RefName": "Terminal",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
                     "ReportTypeId": 1
                 },
                 {
@@ -457,7 +435,6 @@
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"DRAFT\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"ORIGINAL\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"SURRENDERED\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
                     "TableName": "Shipment",
                     "ReportTypeId": 1
                 },
@@ -477,7 +454,6 @@
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 0,\r\n        \"Name\": \"FREE-HAND\"\r\n    },\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"NOMINATE\"\r\n    }\r\n]",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
-                    "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
                     "ReportTypeId": 1
                 },
                 {
@@ -497,7 +473,6 @@
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Service Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Service Type'\"\r\n}",
                     "RefName": "MasterData",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
                     "IsMultiple": true,
                     "ReportTypeId": 1
                 }
@@ -510,7 +485,6 @@
             "ClassName": "scroll-content",
             "XxlCol": 1,
             "Active": true,
-            "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
             "SmOuterColumn": 20,
             "XxlOuterColumn": 12,
             "ReportTypeId": 1,
@@ -533,7 +507,6 @@
                     "RefName": "Shipment",
                     "PreQuery": "{\r\n    \"FromDate\": this.EditForm.Entity.FromDate ? this.dayjs(this.EditForm.Entity.FromDate).format('YYYY-MM-DD') : '',\r\n    \"ToDate\": this.EditForm.Entity.ToDate ? this.dayjs(this.EditForm.Entity.ToDate).format('YYYY-MM-DD') : '',\r\n    \"DateFieldId\": this.EditForm.Entity.DateFieldId ? this.EditForm.Entity.DateFieldId : 'ShipmentDate',\r\n    \"Complete\": this.EditForm.Entity.Complete || \"0,1\",\r\n    \"Group\": this.EditForm.Entity.GroupId || \"ds.TypeId, sm.VendorId, sm.AgentId, ds.SaleId, ds.InsertedBy, ds.PolId, ds.PodId, ds.ParentId, ds.CustomerId\",\r\n    \"OrderBy\": this.EditForm.Entity.Group ? this.EditForm.Entity.Group.OrderBy : \"ds.TypeId asc,ds.ParentId asc\",\r\n    \"SaleIds\": this.EditForm.Entity.SaleIds ? this.EditForm.Entity.SaleIds : \"\",\r\n    \"VendorIds\": this.EditForm.Entity.VendorIds ? this.EditForm.Entity.VendorIds : \"\",\r\n    \"InsertedByIds\": this.EditForm.Entity.InsertedByIds ? this.EditForm.Entity.InsertedByIds : \"\",\r\n    \"ConsigneeIds\": this.EditForm.Entity.ConsigneeIds ? this.EditForm.Entity.ConsigneeIds : \"\",\r\n    \"ShipperIds\": this.EditForm.Entity.ShipperIds ? this.EditForm.Entity.ShipperIds : \"\",\r\n    \"ServiceIds\": this.EditForm.Entity.ServiceIds ? this.EditForm.Entity.ServiceIds : \"\",\r\n    \"TypeIds\": this.EditForm.Entity.TypeIds ? this.EditForm.Entity.TypeIds : \"\",\r\n    \"PolIds\": this.EditForm.Entity.PolIds ? this.EditForm.Entity.PolIds : \"\",\r\n    \"PodIds\": this.EditForm.Entity.PodIds ? this.EditForm.Entity.PodIds : \"\"\r\n}",
                     "IsSumary": true,
-                    "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
                     "ReportTypeId": 1
                 }
             ]
@@ -554,7 +527,6 @@
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
             "MinWidth": "104px",
             "MaxWidth": "104px",
             "EntityId": "Shipment",
@@ -574,7 +546,6 @@
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
             "MinWidth": "130px",
             "MaxWidth": "130px",
             "EntityId": "Shipment",
@@ -592,7 +563,6 @@
             "Active": true,
             "RefName": "Shipment",
             "FocusSearch": true,
-            "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
             "MinWidth": "153px",
             "MaxWidth": "153px",
             "EntityId": "Shipment",
@@ -611,7 +581,6 @@
             "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Air Export\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-plane-departure mr-1'></i>Air Export</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"Air Import\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-plane-arrival mr-1'></i>Air Import</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Sea Export FCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-ship mr-1'></i>Sea Export FCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Sea Import FCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-shipping-fast mr-1'></i>Sea Import FCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"Sea Export LCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fas fa-boxes mr-1'></i>Sea Export LCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 6,\r\n        \"Name\": \"Sea Import LCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fas fa-dolly mr-1'></i>Sea Import LCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 16,\r\n        \"Name\": \"Import Consol\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #17a2b8;'><i class='fas fa-warehouse mr-1'></i>Import Consol</span>\"\r\n    },\r\n    {\r\n        \"Id\": 17,\r\n        \"Name\": \"Export Consol\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #343a40;'><i class='fas fa-plane-departure mr-1'></i>Export Consol</span>\"\r\n    },\r\n    {\r\n        \"Id\": 13,\r\n        \"Name\": \"Trucking\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #343a40;'><i class='fas fa-plane-departure mr-1'></i>Trucking</span>\"\r\n    }\r\n]\r\n",
             "FocusSearch": true,
-            "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
             "Frozen": true,
             "MinWidth": "139px",
             "MaxWidth": "139px",
@@ -634,7 +603,6 @@
             "Query": "{\r\n    \"sql\": \"select ds.* from [User] as ds where (TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 1)\"\r\n}",
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
-            "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
             "Frozen": true,
             "MinWidth": "64px",
             "MaxWidth": "64px",
@@ -657,7 +625,6 @@
             "Width": "64px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
             "Summary": "Total",
             "SummaryColSpan": 2,
             "MinWidth": "64px",
@@ -679,7 +646,6 @@
             "Width": "61px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
             "Summary": "Total",
             "SummaryColSpan": 2,
             "MinWidth": "61px",
@@ -708,7 +674,6 @@
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
             "PreQuery": "{\r\n    \"UserId\": this.Token.UserId,\r\n    \"UserName\": this.Token.UserName\r\n}",
             "ShowHotKey": true,
-            "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
             "Frozen": true,
             "MinWidth": "108px",
             "MaxWidth": "108px",
@@ -731,7 +696,6 @@
             "Width": "58px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
             "Summary": "Total",
             "SummaryColSpan": 2,
             "MinWidth": "58px",
@@ -753,7 +717,6 @@
             "Active": true,
             "RefName": "Partner",
             "FocusSearch": true,
-            "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
             "MinWidth": "87px",
             "MaxWidth": "87px",
             "EntityId": "Shipment",
@@ -773,7 +736,6 @@
             "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and (PartnerTypeIdsText like N'%Agent%'))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0  and (PartnerTypeIdsText like N'%Agent%'))\"\r\n}",
             "RefName": "Partner",
             "FocusSearch": true,
-            "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
             "Frozen": true,
             "MinWidth": "74px",
             "MaxWidth": "74px",
@@ -797,7 +759,6 @@
             "Query": "select * \r\nfrom MasterData as ds \r\nwhere ds.ParentId = '00a10160-0000-0000-8000-117700e7cf7e' and Active = 1 \r\norder by Code asc",
             "FocusSearch": true,
             "GroupName": "Teus",
-            "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
             "Summary": "Total",
             "SummaryColSpan": 2,
             "MinWidth": "60px",
@@ -820,7 +781,6 @@
             "Width": "61px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
             "Summary": "Total",
             "SummaryColSpan": 2,
             "MinWidth": "61px",
@@ -845,7 +805,6 @@
             "Query": "{\r\n    \"sql\": \"select ds.* from [User] as ds where (TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 1)\"\r\n}",
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
-            "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
             "Frozen": true,
             "MinWidth": "64px",
             "MaxWidth": "64px",
@@ -868,14 +827,12 @@
             "Events": "{\r\n    \"click\": \"OpenFilter\"\r\n}",
             "Active": true,
             "DisabledExp": "this.EditForm.Entity.InsertedBy != this.Token.UserId || this.EditForm.Entity.StatusId == 2 || (this.EditForm.Entity.StatusId == 3 && this.EditForm.Entity.UserApprovedIds) || [2, 3].includes(this.EditForm.Entity.ProgressId)",
-            "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
             "ReportTypeId": 1
         }
     ],
     "FeaturePolicies": [
         {
             "Id": "21884C07-EE48-4A52-9538-064A6106CFED",
-            "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "CanRead": true,
             "CanReadAll": true,
@@ -886,14 +843,12 @@
         },
         {
             "Id": "4800F8F6-EED6-41B6-8723-97F689A2D14C",
-            "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "4AC6B055-DC81-45B0-91CD-80E8E389ECD9",
-            "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
             "CanRead": true,
             "CanReadAll": true,
@@ -904,49 +859,42 @@
         },
         {
             "Id": "55413445-FE82-4F3A-9101-FCA75F1DC9BE",
-            "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "6B6076D7-AA45-472B-941F-D63AB6509260",
-            "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "8F1E6297-D04D-4702-A6F2-7CA59D3D7638",
-            "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "9A358F03-7341-4573-A3EE-1FC7321D0C81",
-            "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "CE926CBF-1237-4724-8849-937C88534F9E",
-            "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "DFAF91E9-B095-444C-B3E8-D68910023E45",
-            "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "E0AA44CB-FA85-4166-BDD0-8B659AE61A17",
-            "FeatureId": "01955115-46a4-7050-93bb-05f3d9f2a25e",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
             "Active": true

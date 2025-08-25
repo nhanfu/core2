@@ -17,7 +17,6 @@
             "Width": "100%",
             "XxlCol": 3,
             "Active": true,
-            "FeatureId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
             "ReportTypeId": 1
         },
         {
@@ -27,7 +26,6 @@
             "Label": "Component",
             "ClassName": "wrapper",
             "Active": true,
-            "FeatureId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
             "ParentId": "6e63c20d-2788-4776-9da0-4cfe7c982ca1",
             "IsTab": true,
             "XxlOuterColumn": 3,
@@ -46,7 +44,6 @@
                     "Query": "{ \"sql\" : \"select * from Component as ds\" , \"total\" : \"select count(ds.Id) as total from Component as ds\" }",
                     "RefName": "Component",
                     "ShowHotKey": true,
-                    "FeatureId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -62,7 +59,6 @@
             "Label": "Name",
             "ShowLabel": true,
             "Active": true,
-            "FeatureId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
             "created_by": "GridView",
             "EntityId": "GridView",
             "ReportTypeId": 1
@@ -75,7 +71,6 @@
             "Label": "Name",
             "ShowLabel": true,
             "Active": true,
-            "FeatureId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
             "created_by": "GridView",
             "EntityId": "GridView",
             "ReportTypeId": 1
@@ -88,7 +83,6 @@
             "Label": "IsPublic",
             "ShowLabel": true,
             "Active": true,
-            "FeatureId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
             "created_by": "GridView",
             "EntityId": "GridView",
             "ReportTypeId": 1
@@ -101,7 +95,6 @@
             "Label": "LoadEntity",
             "ShowLabel": true,
             "Active": true,
-            "FeatureId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
             "created_by": "GridView",
             "EntityId": "GridView",
             "ReportTypeId": 1
@@ -114,7 +107,6 @@
             "Label": "Entity",
             "ShowLabel": true,
             "Active": true,
-            "FeatureId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
             "created_by": "GridView",
             "EntityId": "GridView",
             "ReportTypeId": 1
@@ -127,7 +119,6 @@
             "Label": "IsPublic",
             "ShowLabel": true,
             "Active": true,
-            "FeatureId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
             "created_by": "GridView",
             "EntityId": "GridView",
             "ReportTypeId": 1
@@ -140,7 +131,6 @@
             "Label": "Style",
             "ShowLabel": true,
             "Active": true,
-            "FeatureId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
             "created_by": "GridView",
             "EntityId": "GridView",
             "ReportTypeId": 1
@@ -153,7 +143,6 @@
             "Label": "Id",
             "ShowLabel": true,
             "Active": true,
-            "FeatureId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
             "created_by": "GridView",
             "EntityId": "GridView",
             "ReportTypeId": 1
@@ -171,7 +160,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"AddNew\"}",
             "Active": true,
-            "FeatureId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
             "ReportTypeId": 1
         },
         {
@@ -185,7 +173,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Hello\"}",
             "Active": true,
-            "FeatureId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
             "ReportTypeId": 1
         },
         {
@@ -198,49 +185,42 @@
             "Icon": "fal fa-signal-alt-2",
             "ClassName": "btn",
             "Active": true,
-            "FeatureId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
             "ReportTypeId": 1
         }
     ],
     "FeaturePolicies": [
         {
             "Id": "0304C04A-D479-47DF-B334-6482BC3CF997",
-            "FeatureId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "1B3CF15A-7E01-4AD3-9431-8C2FD794FD31",
-            "FeatureId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "30A2EE8C-631D-4662-BA45-BB58D1A311FA",
-            "FeatureId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "67263FD5-1822-4999-83AF-1AB57B352DF1",
-            "FeatureId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "83224F40-C626-4DCC-807F-BDF6597750B7",
-            "FeatureId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "86862121-5EE1-4CC4-AE73-550994692676",
-            "FeatureId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
             "CanRead": true,
             "CanReadAll": true,
@@ -253,28 +233,24 @@
         },
         {
             "Id": "9E11B70F-69D7-439D-B9F8-B40C7FC5C879",
-            "FeatureId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "A8DB81E6-C5F4-49D8-9362-61E2F715D668",
-            "FeatureId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "ED1E741E-4938-405E-B45F-26A8E51C389D",
-            "FeatureId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "ED431BEB-A8AA-4131-A402-71FB68164BD0",
-            "FeatureId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "TableName": "Feature",
             "Active": true

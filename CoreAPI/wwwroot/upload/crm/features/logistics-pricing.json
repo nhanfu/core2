@@ -19,7 +19,6 @@
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "00e31b68-0000-0000-8000-2264c9e5fe88",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1,
@@ -40,7 +39,6 @@
                     "Query": "{\r\n    \"sql\": \"select * from Pricing as ds where TypeId = 4\",\r\n    \"total\": \"select count(ds.Id) as total from Pricing as ds where TypeId = 4\"\r\n}",
                     "RefName": "Pricing",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "FeatureId": "00e31b68-0000-0000-8000-2264c9e5fe88",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -53,7 +51,6 @@
             "Label": "Public",
             "ClassName": "scroll-content",
             "Active": true,
-            "FeatureId": "00e31b68-0000-0000-8000-2264c9e5fe88",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1,
@@ -74,7 +71,6 @@
                     "Query": "{\r\n    \"sql\": \"select * from Pricing as ds where IsPublic = 1 and TypeId = 4\",\r\n    \"total\": \"select count(ds.Id) as total from Pricing as ds where IsPublic = 1 and TypeId = 4\"\r\n}",
                     "RefName": "Pricing",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "FeatureId": "00e31b68-0000-0000-8000-2264c9e5fe88",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -87,7 +83,6 @@
             "Label": "Private",
             "ClassName": "scroll-content",
             "Active": true,
-            "FeatureId": "00e31b68-0000-0000-8000-2264c9e5fe88",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1,
@@ -107,7 +102,6 @@
                     "Query": "{\r\n    \"sql\": \"select * from Pricing as ds where IsPublic = 0 and TypeId = 4\",\r\n    \"total\": \"select count(ds.Id) as total from Pricing as ds where IsPublic = 0 and TypeId = 4\"\r\n}",
                     "RefName": "Pricing",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "FeatureId": "00e31b68-0000-0000-8000-2264c9e5fe88",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -128,7 +122,6 @@
             "Active": true,
             "RefName": "MasterData",
             "FocusSearch": true,
-            "FeatureId": "00e31b68-0000-0000-8000-2264c9e5fe88",
             "MinWidth": "116px",
             "MaxWidth": "116px",
             "EntityId": "Pricing",
@@ -144,7 +137,6 @@
             "Width": "85px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00e31b68-0000-0000-8000-2264c9e5fe88",
             "MinWidth": "85px",
             "MaxWidth": "85px",
             "EntityId": "Pricing",
@@ -160,7 +152,6 @@
             "Width": "360px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00e31b68-0000-0000-8000-2264c9e5fe88",
             "MinWidth": "360px",
             "MaxWidth": "360px",
             "EntityId": "Pricing",
@@ -180,7 +171,6 @@
             "Active": true,
             "RefName": "Partner",
             "FocusSearch": true,
-            "FeatureId": "00e31b68-0000-0000-8000-2264c9e5fe88",
             "MinWidth": "211px",
             "MaxWidth": "211px",
             "EntityId": "Pricing",
@@ -200,7 +190,6 @@
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
-            "FeatureId": "00e31b68-0000-0000-8000-2264c9e5fe88",
             "MinWidth": "85px",
             "MaxWidth": "85px",
             "EntityId": "Pricing",
@@ -216,7 +205,6 @@
             "Width": "85px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00e31b68-0000-0000-8000-2264c9e5fe88",
             "MinWidth": "85px",
             "MaxWidth": "85px",
             "EntityId": "Pricing",
@@ -236,7 +224,6 @@
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "00e31b68-0000-0000-8000-2264c9e5fe88",
             "MinWidth": "124px",
             "MaxWidth": "124px",
             "EntityId": "Pricing",
@@ -255,7 +242,6 @@
             "Active": true,
             "RefName": "Partner",
             "FocusSearch": true,
-            "FeatureId": "00e31b68-0000-0000-8000-2264c9e5fe88",
             "MinWidth": "364px",
             "MaxWidth": "364px",
             "EntityId": "Pricing",
@@ -275,7 +261,6 @@
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "00e31b68-0000-0000-8000-2264c9e5fe88",
             "HasFilter": true,
             "MinWidth": "120px",
             "MaxWidth": "120px",
@@ -296,7 +281,6 @@
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "00e31b68-0000-0000-8000-2264c9e5fe88",
             "MinWidth": "116px",
             "MaxWidth": "116px",
             "EntityId": "Pricing",
@@ -313,7 +297,6 @@
             "Width": "34px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00e31b68-0000-0000-8000-2264c9e5fe88",
             "MinWidth": "34px",
             "MaxWidth": "34px",
             "EntityId": "Pricing",
@@ -333,7 +316,6 @@
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "00e31b68-0000-0000-8000-2264c9e5fe88",
             "MinWidth": "132px",
             "MaxWidth": "132px",
             "EntityId": "Pricing",
@@ -349,7 +331,6 @@
             "Width": "65px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00e31b68-0000-0000-8000-2264c9e5fe88",
             "MinWidth": "65px",
             "MaxWidth": "65px",
             "EntityId": "Pricing",
@@ -369,7 +350,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Add\"}",
             "Active": true,
-            "FeatureId": "00e31b68-0000-0000-8000-2264c9e5fe88",
             "ReportTypeId": 1
         },
         {
@@ -384,7 +364,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Add\"}",
             "Active": true,
-            "FeatureId": "00e31b68-0000-0000-8000-2264c9e5fe88",
             "ReportTypeId": 1
         },
         {
@@ -398,7 +377,6 @@
             "Width": "34px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00e31b68-0000-0000-8000-2264c9e5fe88",
             "MinWidth": "34px",
             "MaxWidth": "34px",
             "EntityId": "Pricing",
@@ -408,14 +386,12 @@
     "FeaturePolicies": [
         {
             "Id": "0E430EB1-A616-4734-A4A6-CE02AF4C33FD",
-            "FeatureId": "00e31b68-0000-0000-8000-2264c9e5fe88",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "11F7C8D5-3A22-4CE0-9D5B-038CBE44B893",
-            "FeatureId": "00e31b68-0000-0000-8000-2264c9e5fe88",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "CanRead": true,
             "CanWrite": true,
@@ -425,7 +401,6 @@
         },
         {
             "Id": "16C30BCC-3732-4783-BFCC-7EBAFF98AEF8",
-            "FeatureId": "00e31b68-0000-0000-8000-2264c9e5fe88",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
             "CanRead": true,
             "CanReadAll": true,
@@ -438,49 +413,42 @@
         },
         {
             "Id": "2526E5B6-350A-40C6-94D6-92E6FCBF8BEC",
-            "FeatureId": "00e31b68-0000-0000-8000-2264c9e5fe88",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "3863C234-A267-4971-A152-3631D8FF10B3",
-            "FeatureId": "00e31b68-0000-0000-8000-2264c9e5fe88",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "58A751E5-F452-4CF6-A481-0C4497910AC9",
-            "FeatureId": "00e31b68-0000-0000-8000-2264c9e5fe88",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "8C9B06C5-A645-406E-9212-615067D404BB",
-            "FeatureId": "00e31b68-0000-0000-8000-2264c9e5fe88",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "B10E7309-39B2-473B-853B-002C4A5CD2DD",
-            "FeatureId": "00e31b68-0000-0000-8000-2264c9e5fe88",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "CFC9D63F-BC6F-4836-9ECC-F038C62C54A1",
-            "FeatureId": "00e31b68-0000-0000-8000-2264c9e5fe88",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "E05D7BFE-70B3-4F19-8514-9E1D7EF63A20",
-            "FeatureId": "00e31b68-0000-0000-8000-2264c9e5fe88",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "CanRead": true,
             "CanReadAll": true,

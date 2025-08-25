@@ -17,7 +17,6 @@
             "ClassName": "ribbon-group",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
             "ReportTypeId": 1,
             "Components": [
                 {
@@ -33,7 +32,6 @@
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }",
                     "Active": true,
-                    "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
                     "ReportTypeId": 1
                 },
                 {
@@ -48,7 +46,6 @@
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{\r\n    \"click\": \"SaveAs\"\r\n}",
                     "Active": true,
-                    "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
                     "ReportTypeId": 1
                 }
             ]
@@ -60,7 +57,6 @@
             "ComponentType": "Section",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
             "ReportTypeId": 1
         },
         {
@@ -72,7 +68,6 @@
             "XxlCol": 12,
             "Active": true,
             "DisabledExp": "!this.Entity.Id.startsWith('-')",
-            "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
             "ParentId": "0195846b-efc6-754c-a5c8-a7c50c2c320d",
             "XxlOuterColumn": 12,
             "ReportTypeId": 1,
@@ -94,7 +89,6 @@
                     "Query": "{\r\n    \"sql\": \"select * from ExchangeRateHistoryDetail as ds where HistoryId = '{HistoryId}'\",\r\n    \"total\": \"select count(ds.Id) as total from ExchangeRateHistoryDetail as ds where HistoryId = '{HistoryId}'\"\r\n}",
                     "RefName": "ExchangeRateHistoryDetail",
                     "PreQuery": "{\r\n    \"HistoryId\": this.EditForm.Entity.Id\r\n}",
-                    "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
                     "Editable": true,
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
                     "ReportTypeId": 1
@@ -112,7 +106,6 @@
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
                     "Active": true,
-                    "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
                     "ReportTypeId": 1
                 },
                 {
@@ -128,7 +121,6 @@
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
                     "Disabled": true,
                     "Active": true,
-                    "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
                     "ReportTypeId": 1
                 },
                 {
@@ -144,7 +136,6 @@
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
                     "Active": true,
-                    "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
                     "ReportTypeId": 1
                 },
                 {
@@ -160,7 +151,6 @@
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
                     "Disabled": true,
                     "Active": true,
-                    "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
                     "ReportTypeId": 1
                 },
                 {
@@ -181,7 +171,6 @@
                     "RefName": "Shipment",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Code\",\r\n        \"Label\": \"Code\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
                     "PreQuery": "{\r\n    \"VendorIds\": this.Entity.VendorIds \r\n}",
-                    "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
                     "IsMultiple": true,
                     "ReportTypeId": 1
                 },
@@ -197,7 +186,6 @@
                     "ShowLabel": true,
                     "Events": "{\r\n    \"input\": \"CalcRateUSD\"\r\n}",
                     "Active": true,
-                    "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
                     "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
                     "ReportTypeId": 1
                 }
@@ -221,7 +209,6 @@
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
             "Editable": true,
             "MinWidth": "158px",
             "MaxWidth": "158px",
@@ -240,7 +227,6 @@
             "Width": "186px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
             "Editable": true,
             "MinWidth": "186px",
             "MaxWidth": "186px",
@@ -258,7 +244,6 @@
             "Width": "200px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
             "Editable": true,
             "MinWidth": "200px",
             "MaxWidth": "200px",
@@ -280,7 +265,6 @@
             "HotKey": "Ctrl-S",
             "Events": "{ \"click\" : \"SavePatch\" }",
             "Active": true,
-            "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
             "ReportTypeId": 1
         },
         {
@@ -295,21 +279,18 @@
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{\r\n    \"click\": \"SaveAs\"\r\n}",
             "Active": true,
-            "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
             "ReportTypeId": 1
         }
     ],
     "FeaturePolicies": [
         {
             "Id": "0F4F40BF-672C-4A31-B902-0B19396FFB4A",
-            "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "148311D9-5A22-450B-ACDC-710AF52C2355",
-            "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
             "CanRead": true,
             "CanReadAll": true,
@@ -322,42 +303,36 @@
         },
         {
             "Id": "1754032C-A1B5-4D5F-95F3-1DD61937081A",
-            "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "1DE61D7A-B97E-4480-A67F-C5951652219B",
-            "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "34205D19-55CE-4503-97A6-1C86910B6C12",
-            "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "7551AFEE-F212-47EF-AEB0-DEC404B95A5C",
-            "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "8D79756E-3D0B-41F1-800C-3AC9683EB733",
-            "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "8FFC3DA3-C99F-4C72-8EE9-411936B394D8",
-            "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "CanRead": true,
             "CanReadAll": true,
@@ -370,7 +345,6 @@
         },
         {
             "Id": "A2B34B6B-5490-4947-8B11-9D63879FDC71",
-            "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "CanRead": true,
             "CanReadAll": true,
@@ -382,7 +356,6 @@
         },
         {
             "Id": "FAF14471-CB3E-482B-B7C7-7CC46502E773",
-            "FeatureId": "0195846b-eec2-731c-a42d-8b5352227845",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true

@@ -18,7 +18,6 @@
             "ClassName": "card-body",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "ParentId": "00223fb4-0000-0000-8000-a812d69d8f2e",
             "XxlOuterColumn": 12,
             "ReportTypeId": 1,
@@ -39,7 +38,6 @@
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentInvoice as ds where (FileIds like '%{FileIds}%' and ActionId != 1 and TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentInvoice as ds where (FileIds like '%{FileIds}%' and ActionId != 1 and TypeId = 1)\"\r\n}",
                     "RefName": "ShipmentInvoice",
                     "PreQuery": "{\r\n    \"FileIds\": this.EditForm.Entity.FileIds\r\n}",
-                    "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -54,7 +52,6 @@
             "XxlCol": 12,
             "Active": true,
             "DisabledExp": "(this.Entity.ActionId != 2 && !this.Entity.Id.startsWith('-')) || [2, 3].includes(this.Entity.ProgressId) || this.Entity.ShipmentInvoiceId",
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "ParentId": "00223fb4-0000-0000-8000-a812d69d8f2e",
             "XxlOuterColumn": 6,
             "ReportTypeId": 1,
@@ -70,7 +67,6 @@
                     "Label": "Send Partner",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
                     "ReportTypeId": 1
                 },
                 {
@@ -86,7 +82,6 @@
                     "Disabled": true,
                     "Active": true,
                     "DisabledExp": "!this.Entity.Id.startsWith('-')",
-                    "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
                     "ReportTypeId": 1
                 },
                 {
@@ -100,7 +95,6 @@
                     "Label": "Due Date",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
                     "ReportTypeId": 1
                 },
                 {
@@ -114,7 +108,6 @@
                     "Label": "Date Other Ref",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
                     "ReportTypeId": 1
                 },
                 {
@@ -130,7 +123,6 @@
                     "Disabled": true,
                     "Active": true,
                     "DisabledExp": "true",
-                    "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
                     "ReportTypeId": 1
                 },
                 {
@@ -144,7 +136,6 @@
                     "Label": "Invoice Date",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
                     "ReportTypeId": 1
                 },
                 {
@@ -163,7 +154,6 @@
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Debit/Credit Note\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"Invoice\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
                     "ReportTypeId": 1
                 },
                 {
@@ -177,7 +167,6 @@
                     "Label": "Ref No",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
                     "ReportTypeId": 1
                 },
                 {
@@ -191,7 +180,6 @@
                     "Label": "Other Ref No",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
                     "ReportTypeId": 1
                 },
                 {
@@ -209,7 +197,6 @@
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Bank\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"Cash\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
                     "ReportTypeId": 1
                 },
                 {
@@ -228,7 +215,6 @@
                     "Active": true,
                     "Query": "if (this.EditForm.Entity.Id.startsWith('-') || this.EditForm.Entity.ActionId == 1) {\r\n    return [\r\n        {\r\n            \"Id\": 1,\r\n            \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-edit mr-1'></i>Draft</span>\"\r\n        },\r\n        {\r\n            \"Id\": 2,\r\n            \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fas fa-check-circle mr-1'></i>Issued</span>\"\r\n        },\r\n        {\r\n            \"Id\": 3,\r\n            \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-ban mr-1'></i>Void</span>\"\r\n        }\r\n    ]\r\n}\r\nelse {\r\n    return [\r\n        {\r\n            \"Id\": 2,\r\n            \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fas fa-check-circle mr-1'></i>Issued</span>\"\r\n        },\r\n        {\r\n            \"Id\": 3,\r\n            \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-ban mr-1'></i>Void</span>\"\r\n        }\r\n    ]\r\n}\r\n\r\n",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
                     "ReportTypeId": 1
                 },
                 {
@@ -247,7 +233,6 @@
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"To Do\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #95a5a6; display: inline-block;'> <i class='fal fa-clipboard-list mr-1'></i> To Do</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"In Progress\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #3498db; display: inline-block;'><i class='fal fa-spinner fa-spin mr-1'></i> In Progress</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Complete\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #28a745; display: inline-block;'><i class='fal fa-check-circle mr-1'></i> Complete</span>\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Pending\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #f39c12; display: inline-block;'><i class='fal fa-hourglass-half mr-1'></i> Pending</span>\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"Cancel\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #e74c3c; display: inline-block;'><i class='fal fa-times-circle mr-1'></i> Cancel</span>\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Description\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
                     "ReportTypeId": 1
                 },
                 {
@@ -263,7 +248,6 @@
                     "ShowLabel": true,
                     "Events": "{\r\n    \"change\": \"ChangeExchangeRate\"\r\n}",
                     "Active": true,
-                    "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
                     "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
                     "ReportTypeId": 1
                 },
@@ -285,7 +269,6 @@
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Currency' and ds.Name = 'VND'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Currency' and ds.Name = 'VND'\"\r\n}",
                     "RefName": "MasterData",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
                     "OrderBy": "ds.Enum asc",
                     "ReportTypeId": 1
                 }
@@ -299,7 +282,6 @@
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "ReportTypeId": 1
         },
         {
@@ -310,7 +292,6 @@
             "ClassName": "ribbon-group",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "ReportTypeId": 1,
             "Components": [
                 {
@@ -326,7 +307,6 @@
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"Invoice\" }",
                     "Active": true,
-                    "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
                     "ReportTypeId": 1
                 },
                 {
@@ -345,7 +325,6 @@
                     "Query": "WITH  hblnolist AS \r\n(\r\n SELECT\r\n s.HblNo AS hblNos,\r\n SUM(s.Quantity) AS quanty,\r\n s.ContainerText textc,\r\n si.Id AS idinv\r\nFROM ShipmentInvoice si\r\nCROSS APPLY STRING_SPLIT(si.HblIds, ',') AS split_hbl\r\nLEFT JOIN Shipment s ON s.Id = split_hbl.value\r\nwhere si.Id='{Id}'\r\nGROUP BY si.Id,s.Quantity,s.ContainerText,s.HblNo\r\n),\r\nCurrencySums AS (\r\n    SELECT \r\n       SUM(dt.Quantity*dt.Amount) AS TotalAmount,\r\n\t\tSUM(dt.TotalAmountTax) AS TotalAFT,\r\n\t\tSUM(ABS(dt.AmountTax)) AS TaxAmount,\r\n\t\tdt.Vat,\r\n        curr.Code AS CurrencyCode,\r\n\t\tcurr.IsLocal AS localcurr\r\n    FROM dbo.ShipmentInvoiceDetail dt\r\n    LEFT JOIN dbo.MasterData curr ON curr.Id = dt.CurrencyId\r\n\tLEFT JOIN dbo.ShipmentInvoice sm ON sm.Id=dt.ShipmentInvoiceId\r\n    WHERE sm.Id = '{Id}'\r\n    GROUP BY curr.Code,curr.IsLocal,dt.Vat\r\n),\r\nVAT AS \r\n (\r\n  SELECT (CASE WHEN ISNULL(smdt.Vat,0)=10 THEN ROUND(SUM(smdt.TotalAmount*smdt.ExchangeRateINV)*0.1,0) ELSE 0 END) AS tax10,\r\n         (CASE WHEN ISNULL(smdt.Vat,0)=8 THEN ROUND(SUM(smdt.TotalAmount*smdt.ExchangeRateINV)*0.08,0) ELSE 0 END) AS tax8,\r\n\t\t (CASE WHEN ISNULL(smdt.Vat,0)<0 THEN ROUND((ABS(smdt.Vat)*smdt.ExchangeRateINV),0) ELSE 0 END) AS taxOT,\r\n\t\t (CASE WHEN ISNULL(smdt.Vat,0)=5.26 THEN ROUND(SUM(smdt.TotalAmount*smdt.ExchangeRateINV)*0.0526,0) ELSE 0 END) AS tax5\r\n  FROM dbo.ShipmentInvoiceDetail smdt LEFT JOIN dbo.ShipmentInvoice sminv ON smdt.ShipmentInvoiceId=sminv.Id\r\n  WHERE sminv.Id='{Id}'\r\n  GROUP BY smdt.Vat,smdt.ExchangeRateINV\r\n ),\r\n Amountbft AS \r\n ( SELECT \r\n CASE WHEN (smv3.CurrencyCode IS NULL OR  smv3.CurrencyCode<>'VND') THEN dt3.TotalAmount \r\n ELSE ROUND(ROUND(dt3.Amount*dt3.ExchangeRateINV,0)*dt3.Quantity,0) END AS BFT\r\n FROM dbo.ShipmentInvoiceDetail dt3 JOIN dbo.ShipmentInvoice smv3 ON dt3.ShipmentInvoiceId=smv3.Id\r\n   WHERE smv3.Id='{Id}'\r\n   GROUP BY smv3.Id,smv3.CurrencyCode,dt3.TotalAmount,dt3.Amount,dt3.ExchangeRateINV,dt3.Quantity\r\n )\r\nSELECT sminv.VoucherTypeId, cus.CompanyName AS  Partnerv, \r\nISNULL(cus.Address,'') AS addv,\r\nISNULL(cus.PhoneNumber,'') AS Tel,\r\nISNULL(cus.Fax,'') AS Fax,\r\nISNULL(sminv.Code,'DRAFT') AS Invno,\r\nISNULL(FORMAT(sminv.InvoiceDate,'dd MMM, yyyy'),'') AS Dateinv,\r\nsm.MblNo AS MBLNo,\r\npol.Name AS POLName,\r\nPOD.Name AS PODName,\r\nISNULL(FORMAT(sm.EtdDate,'dd MMM'),'') AS ETD,\r\nISNULL(FORMAT(sm.EtaDate,'dd MMM'),'') AS ETA,\r\nISNULL(sm.Quantity,'') AS Volume,\r\n\r\n(ISNULL(sm.Vessel,'') + ' ' + ISNULL(sm.VesselVoy,'')) AS vessal ,\r\n\r\nCASE WHEN sminv.RevisedDate IS NOT NULL THEN '<Strong>Revised Date: </Strong>' +  ISNULL(FORMAT(sminv.RevisedDate,'dd MMM, yyy'),'') ELSE '' end AS Reviseddate,\r\nCASE \r\n\tWHEN sminv.InvoiceTypeId = 1 AND sminv.DebitAmount<0 THEN 'CREDIT NOTE'\r\n\tWHEN sminv.InvoiceTypeId = 1 AND sminv.DebitAmount>=0 THEN 'DEBIT NOTE'\r\nELSE\r\n\t'INVOICE'\r\nEND\r\nAS Titles,\r\nCASE WHEN sminv.CurrencyId IS NULL THEN 'Original Curr' ELSE curr.Name END AS Currinv,\r\nFORMAT(CASE WHEN sminv.CurrencyId IS NULL THEN 1 ELSE sminv.ExchangeRateINV END,'#,##.00') AS EXT,\r\ncurr.Code, \r\n\r\nISNULL(FORMAT(sminv.DueDate,'dd MMM, yy'),'') AS Duedate,\r\n \r\n(SELECT SUM(hblnolist.quanty) FROM hblnolist WHERE hblnolist.idinv=sminv.Id) AS Quantity1,\r\n(SELECT STRING_AGG(hblnolist.hblNos,'/') FROM hblnolist WHERE hblnolist.idinv=sminv.Id) AS HBLs,\r\n(SELECT STRING_AGG(hblnolist.textc,' & ') FROM hblnolist WHERE hblnolist.idinv=sminv.Id) AS conttext2,\r\nCASE WHEN sminv.CurrencyCode='VND' THEN \r\nCASE WHEN (SELECT SUM(VAT.tax8) FROM VAT WHERE VAT.tax8 IS NOT NULL )>0 THEN '8%: ' + CONVERT(VARCHAR(50),FORMAT((SELECT SUM(VAT.tax8) FROM VAT WHERE VAT.tax8 IS NOT NULL ) ,'N0') ) ELSE '' end \r\nELSE (SELECT '8% '+  STRING_AGG(CONCAT((CASE WHEN CurrencySums.localcurr = 1 \tTHEN  FORMAT(CurrencySums.TaxAmount, 'N0')\r\n\tELSE FORMAT(CurrencySums.TotalAFT,'N02') END), ' ', CurrencyCode), ' ') \r\n     FROM CurrencySums\r\n     WHERE CurrencySums.Vat=8)\r\nEND AS Tax8 ,\r\nCASE WHEN sminv.CurrencyCode='VND' THEN \r\nCASE WHEN ((SELECT SUM(VAT.tax10) FROM VAT WHERE VAT.tax10 IS NOT NULL )>0) THEN '10%: '+ CONVERT(VARCHAR(50), FORMAT((SELECT SUM(VAT.tax10) FROM VAT WHERE VAT.tax10 IS NOT NULL ),'N0')) ELSE ''  END \r\nELSE \r\n(SELECT '10%: '+  STRING_AGG(CONCAT((CASE WHEN CurrencySums.localcurr = 1 \tTHEN  FORMAT(CurrencySums.TaxAmount, 'N0')\r\n\tELSE FORMAT(CurrencySums.TotalAFT,'N02') END), ' ', CurrencyCode), ' ') \r\n     FROM CurrencySums\r\n     WHERE CurrencySums.Vat=10) END \r\nAS Tax10 ,\r\n\r\nCASE WHEN sminv.CurrencyCode='VND' THEN \r\nCASE WHEN ((SELECT SUM(VAT.tax5) FROM VAT WHERE VAT.tax5 IS NOT NULL )>0) THEN '5%: '+ CONVERT(VARCHAR(50),format((SELECT SUM(VAT.tax5) FROM VAT WHERE VAT.tax5 IS NOT NULL ),'N0')) ELSE '' END \r\nELSE \r\n(SELECT '5%: '+  STRING_AGG(CONCAT((CASE WHEN CurrencySums.localcurr = 1 \tTHEN  FORMAT(CurrencySums.TaxAmount, 'N0')\r\n\tELSE FORMAT(CurrencySums.TotalAFT,'N02') END), ' ', CurrencyCode), ' ') \r\n     FROM CurrencySums\r\n     WHERE CurrencySums.Vat LIKE '5.%') END \r\nAS Tax5 ,\r\nCASE  WHEN sminv.CurrencyCode='VND' THEN\r\nCASE WHEN ((SELECT SUM(VAT.taxOT) FROM VAT WHERE VAT.taxOT IS NOT NULL )>0) THEN 'OT Tax: '+ CONVERT(VARCHAR(50),format((SELECT SUM(VAT.taxOT) FROM VAT WHERE VAT.taxOT IS NOT NULL ),'N0') ) ELSE '' END \r\nELSE\r\n  (SELECT 'OT Tax: '+  STRING_AGG(CONCAT((CASE WHEN CurrencySums.localcurr = 1 \tTHEN  FORMAT(CurrencySums.TaxAmount, 'N0')\r\n\tELSE FORMAT(CurrencySums.TotalAFT,'N02') END), ' ', CurrencyCode), ' ') \r\n     FROM CurrencySums\r\n     WHERE CurrencySums.Vat<0)\r\nEND AS OTtax ,\r\n\r\nformat((SELECT SUM(BFT) FROM Amountbft WHERE Amountbft.BFT IS NOT NULL),'N0') AS BFT,\r\nFORMAT(((SELECT SUM(VAT.tax8) FROM VAT WHERE VAT.tax8 IS NOT NULL ) + (SELECT SUM(VAT.tax10) FROM VAT WHERE VAT.tax10 IS NOT NULL )+ (SELECT SUM(VAT.taxOT) FROM VAT WHERE VAT.taxOT IS NOT NULL ) + (SELECT SUM(VAT.tax5) FROM VAT WHERE VAT.tax5 IS NOT NULL ) + (SELECT SUM(BFT) FROM Amountbft WHERE Amountbft.BFT IS NOT NULL) ),'N0') AS TotalAFTAX,\r\n\r\n\r\nCASE WHEN sminv.CurrencyCode='VND' THEN format((SELECT SUM(BFT) FROM Amountbft WHERE Amountbft.BFT IS NOT NULL),'N0')\r\nELSE (SELECT STRING_AGG(CONCAT((CASE WHEN CurrencySums.localcurr = 1 \tTHEN  FORMAT(TotalAmount, 'N0')\r\n\tELSE FORMAT(TotalAmount,'N02') END), ' ', CurrencyCode), '</br>') \r\n     FROM CurrencySums\r\n     WHERE TotalAmount IS NOT NULL)\r\nEND AS AmountText,\r\nCASE WHEN sminv.CurrencyCode<> 'VND' THEN FORMAT(((SELECT SUM(VAT.tax8) FROM VAT WHERE VAT.tax8 IS NOT NULL ) + (SELECT SUM(VAT.tax10) FROM VAT WHERE VAT.tax10 IS NOT NULL )+ (SELECT SUM(VAT.taxOT) FROM VAT WHERE VAT.taxOT IS NOT NULL ) + (SELECT SUM(VAT.tax5) FROM VAT WHERE VAT.tax5 IS NOT NULL ) + (SELECT SUM(BFT) FROM Amountbft WHERE Amountbft.BFT IS NOT NULL) ),'N0') \r\nELSE (SELECT STRING_AGG(CONCAT((CASE WHEN CurrencySums.localcurr = 1 \tTHEN  FORMAT(CurrencySums.TotalAFT, 'N0')\r\n\tELSE FORMAT(CurrencySums.TotalAFT,'N02') END), ' ', CurrencyCode), '</br>') \r\n     FROM CurrencySums\r\n     WHERE CurrencySums.TotalAFT IS NOT NULL)\r\nEND AS TotalAFTAX_bo,\r\nCASE WHEN sminv.CurrencyCode='VND' THEN format((SELECT SUM(VAT.tax8) FROM VAT WHERE VAT.tax8 IS NOT NULL ) + (SELECT SUM(VAT.tax10) FROM VAT WHERE VAT.tax10 IS NOT NULL ) +  (SELECT SUM(VAT.taxOT) FROM VAT WHERE VAT.taxOT IS NOT NULL ) +  (SELECT SUM(VAT.tax5) FROM VAT WHERE VAT.tax5 IS NOT NULL ),'N0')\r\nELSE (SELECT STRING_AGG(CONCAT((CASE WHEN CurrencySums.localcurr = 1 \tTHEN  FORMAT(CurrencySums.TaxAmount, 'N0')\r\n\tELSE FORMAT(CurrencySums.TaxAmount,'N02') END), ' ', CurrencyCode), '</br>') \r\n     FROM CurrencySums\r\n     WHERE TaxAmount IS NOT NULL)\r\nEND AS TotalVAT\r\n\r\nFROM dbo.ShipmentInvoice sminv LEFT JOIN dbo.Partner cus ON cus.Id=sminv.VendorIds\r\nLEFT JOIN dbo.Shipment sm ON sm.Id = sminv.FileIds\r\nLEFT JOIN dbo.MasterData curr ON curr.Id = sminv.CurrencyId\r\nLEFT JOIN dbo.Terminal pol ON pol.Id = sm.PolId \r\nLEFT JOIN dbo.Terminal POD ON POD.Id = sm.PodId\r\n WHERE sminv.Id='{Id}'\r\n\r\n \r\n\r\n\r\n SELECT\r\nFORMAT(CASE WHEN sminv.DebitAmount>= 0 AND dt.TypeId=2 THEN \r\n\t(CASE \r\n\tWHEN sminv.CurrencyId IS NULL THEN  dt.Quantity * dt.Amount \r\n\tWHEN curr.Code = 'VND'  THEN ROUND(dt.Quantity * ROUND(dt.Amount*dt.ExchangeRateINV,0),0)\r\n\tELSE dt.Quantity * dt.Amount END) * (-1)\r\n\r\nWHEN sminv.DebitAmount>= 0 AND dt.TypeId=1 THEN (\r\n\t(CASE \r\n\tWHEN sminv.CurrencyId IS NULL THEN  dt.Quantity * dt.Amount \r\n\tWHEN curr.Code = 'VND'  THEN ROUND(dt.Quantity * ROUND(dt.Amount*dt.ExchangeRateINV,0),0)\r\n\tELSE dt.Quantity * dt.Amount END))\r\n\r\nWHEN sminv.DebitAmount< 0 AND dt.TypeId=1 THEN (CASE \r\n\tWHEN sminv.CurrencyId IS NULL THEN  dt.Quantity * dt.Amount \r\n\tWHEN curr.Code = 'VND'  THEN ROUND(dt.Quantity * ROUND(dt.Amount*dt.ExchangeRateINV,0),0)\r\n\tELSE dt.Quantity * dt.Amount END) * (-1)\r\nELSE \t(CASE \r\n\tWHEN sminv.CurrencyId IS NULL THEN  dt.Quantity * dt.Amount \r\n\tWHEN curr.Code = 'VND'  THEN ROUND(dt.Quantity * ROUND(dt.Amount*dt.ExchangeRateINV,0),0)\r\n\tELSE dt.Quantity * dt.Amount END)\r\nEND,(CASE WHEN curr.Name='VND' THEN 'N0' ELSE 'N2' END)) AS AmountINV\r\n,FORMAT((CASE \r\n\tWHEN sminv.CurrencyId IS NULL THEN  dt.Quantity * dt.Amount \r\n\tWHEN curr.Code = 'VND'  THEN ROUND(dt.Quantity * ROUND(dt.Amount*dt.ExchangeRateINV,0),0)\r\nELSE dt.Quantity * dt.Amount END),(CASE WHEN curr.Name='VND' THEN 'N0' ELSE 'N2' END))\r\nAS Amountvnd,\r\n\r\nfee.Name AS namefee,\r\nunit.Name AS unit, \r\nformat(dt.Quantity,'N{CQuantity}') AS Qty, \r\n FORMAT(dt.Amount,(CASE WHEN curdt.Name='VND' THEN 'N0' ELSE 'N2' END)) AS amountOG,\r\ncurdt.Code AS curdt,\r\nformat(dt.Vat,'N{CQuantity}') AS VAT,\r\nROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS Sott\r\n\r\n\r\nFROM dbo.ShipmentInvoice sminv LEFT JOIN dbo.Partner cus ON cus.Id=sminv.VendorIds\r\nLEFT JOIN dbo.ShipmentInvoiceDetail dt ON dt.ShipmentInvoiceId = sminv.Id \r\nLEFT JOIN dbo.Shipment sm ON sm.Id = sminv.ShipmentId\r\nLEFT JOIN dbo.MasterData curr ON curr.Id = sminv.CurrencyId\r\nLEFT JOIN dbo.FeeType fee ON fee.Id=dt.DescriptionId\r\nLEFT JOIN  dbo.MasterData curdt ON curdt.Id=dt.CurrencyId\r\nLEFT JOIN dbo.MasterData unit ON unit.Id=dt.UnitId\r\nLEFT JOIN dbo.Terminal pol ON pol.Id = sm.PolId \r\nLEFT JOIN dbo.Terminal POD ON POD.Id = sm.PodId\r\n WHERE sminv.Id='{Id}'\r\n  ORDER BY dt.[Order] ASC",
                     "Template": "<p>&nbsp;</p>\n<table style=\"border-collapse: collapse; width: 99.8319%; height: 244.875px; border-style: hidden;\" border=\"0\"><colgroup><col style=\"width: 12.2065%;\"><col style=\"width: 1.76177%;\"><col style=\"width: 11.3257%;\"><col style=\"width: 25.4198%;\"><col style=\"width: 12.2065%;\"><col style=\"width: 1.63593%;\"><col style=\"width: 35.3612%;\"></colgroup>\n<tbody>\n<tr style=\"height: 19px;\">\n<td colspan=\"4\"><strong>BILL TO</strong></td>\n<td style=\"vertical-align: middle; text-align: center;\" colspan=\"3\" rowspan=\"3\">\n<div style=\"font-size: 28pt; min-width: 350px; display: inline-block; border-radius: 29px; border: 1px solid rgb(0, 0, 0); text-align: center; font-weight: 600;\">${Titles}</div>\n</td>\n</tr>\n<tr style=\"height: 17.75px;\">\n<td colspan=\"4\"><strong>${Partnerv}</strong></td>\n</tr>\n<tr style=\"height: 17.75px;\">\n<td colspan=\"4\">&nbsp;${addv}</td>\n</tr>\n<tr style=\"height: 22.6979px;\">\n<td colspan=\"4\">&nbsp;TELL: ${Tel} ${Fax}</td>\n<td style=\"text-align: center;\" colspan=\"3\" rowspan=\"2\">\n<div><strong>Number:</strong> ${Invno}</div>\n<p><strong>Date:</strong> ${Dateinv}</p>\n<p>${Reviseddate}</p>\n</td>\n</tr>\n<tr style=\"height: 25.9688px;\">\n<td colspan=\"4\">&nbsp;</td>\n</tr>\n<tr style=\"height: 16.6667px;\">\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n</tr>\n<tr style=\"height: 22.125px;\">\n<td><strong>MBL/MAWB</strong></td>\n<td><strong>:</strong></td>\n<td colspan=\"2\">${MBLNo}</td>\n<td><strong>Volume</strong></td>\n<td><strong>:</strong></td>\n<td>${conttext2}</td>\n</tr>\n<tr style=\"height: 21.0625px;\">\n<td><strong>HBL/HAWB</strong></td>\n<td><strong>:</strong></td>\n<td colspan=\"2\">${HBLs}</td>\n<td><strong>Q'ty</strong></td>\n<td><strong>:</strong></td>\n<td>${Quantity1}</td>\n</tr>\n<tr style=\"height: 22.9375px;\">\n<td><strong>POL/AOL</strong></td>\n<td><strong>:</strong></td>\n<td colspan=\"2\">${POLName}</td>\n<td><strong>ETD / ETA</strong></td>\n<td><strong>:</strong></td>\n<td>${ETD} / ${ETA}</td>\n</tr>\n<tr style=\"height: 22.9375px;\">\n<td><strong>POD/AOD</strong></td>\n<td><strong>:</strong></td>\n<td colspan=\"2\">${PODName}</td>\n<td><strong>VSL./ FLT.</strong></td>\n<td><strong>:</strong></td>\n<td>${vessal}</td>\n</tr>\n<tr style=\"height: 16.6667px;\">\n<td><strong>Currency:</strong></td>\n<td><strong>:</strong></td>\n<td colspan=\"2\">${Currinv}</td>\n<td><strong>Due Date</strong></td>\n<td><strong>:</strong></td>\n<td>${Duedate}</td>\n</tr>\n<tr style=\"height: 19.3125px;\">\n<td><strong>Ext rate</strong></td>\n<td><strong>:</strong></td>\n<td colspan=\"2\">${EXT}</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n</tr>\n</tbody>\n</table>\n<p>&nbsp;</p>\n<table class=\"dashaze dashez dazhed dashed\" style=\"border-collapse: collapse; width: 100.21%; height: 113.063px; border-style: solid; border-width: 1px;\" border=\"1\"><colgroup><col style=\"width: 6.15836%;\"><col style=\"width: 24.3821%;\"><col style=\"width: 11.5626%;\"><col style=\"width: 11.5624%;\"><col style=\"width: 14.8306%;\"><col style=\"width: 7.79221%;\"><col style=\"width: 6.78676%;\"><col style=\"width: 16.9669%;\"></colgroup>\n<thead>\n<tr style=\"height: 22.625px;\">\n<td style=\"vertical-align: middle; text-align: center; border: 1px solid #000000;\"><strong>No</strong></td>\n<td style=\"vertical-align: middle; text-align: center; border: 1px solid #000000;\"><strong>Description</strong></td>\n<td style=\"vertical-align: middle; text-align: center; border: 1px solid #000000;\"><strong>Quantity</strong></td>\n<td style=\"vertical-align: middle; text-align: center; border: 1px solid #000000;\"><strong>Unit</strong></td>\n<td style=\"vertical-align: middle; text-align: center; border: 1px solid #000000;\"><strong>Price</strong></td>\n<td style=\"vertical-align: middle; text-align: center; border: 1px solid #000000;\"><strong>VAT %</strong></td>\n<td style=\"vertical-align: middle; text-align: center; border: 1px solid #000000;\"><strong>Curr.</strong></td>\n<td style=\"vertical-align: middle; text-align: center; border: 1px solid #000000;\"><strong>Amount</strong></td>\n</tr>\n</thead>\n<tbody data-table=\"c0\">\n<tr style=\"height: 21.4375px;\">\n<td style=\"text-align: center; vertical-align: middle; border: 1px solid #000000;\">\n<p>{Sott}</p>\n</td>\n<td style=\"text-align: left; vertical-align: middle; border: 1px solid #000000;\">\n<p>{namefee}</p>\n</td>\n<td style=\"text-align: center; vertical-align: middle; border: 1px solid #000000;\">\n<p>{Qty}</p>\n</td>\n<td style=\"text-align: center; vertical-align: middle; border: 1px solid #000000;\">\n<p>{unit}</p>\n</td>\n<td style=\"text-align: center; vertical-align: middle; border: 1px solid #000000;\">\n<p>{amountOG}</p>\n</td>\n<td style=\"text-align: center; vertical-align: middle; border: 1px solid #000000;\">\n<p>{VAT}</p>\n</td>\n<td style=\"text-align: center; vertical-align: middle; border: 1px solid #000000;\">\n<p>{curdt}</p>\n</td>\n<td style=\"vertical-align: middle; border: 1px solid rgb(0, 0, 0); text-align: right;\">\n<p>{AmountINV}</p>\n</td>\n</tr>\n</tbody>\n<tfoot>\n<tr>\n<td style=\"text-align: center; vertical-align: middle; border: 1px solid rgb(0, 0, 0);\" colspan=\"6\">\n<p><strong>Total Before Tax<br></strong></p>\n</td>\n<td style=\"vertical-align: middle; border: 1px solid rgb(0, 0, 0); text-align: center;\" colspan=\"2\">\n<p><strong>${BFT}</strong></p>\n</td>\n</tr>\n<tr style=\"height: 20.6667px;\">\n<td style=\"text-align: center; vertical-align: middle; border: 1px solid rgb(0, 0, 0);\" colspan=\"6\">\n<p><strong>TAX Amount: ${Tax5} ${Tax8} ${Tax10} ${OTtax} </strong></p>\n</td>\n<td style=\"vertical-align: middle; border: 1px solid rgb(0, 0, 0); text-align: center;\" colspan=\"2\">\n<p><strong>${TotalVAT}</strong></p>\n</td>\n</tr>\n<tr style=\"height: 26.6667px;\">\n<td style=\"text-align: center; vertical-align: middle; border: 1px solid rgb(0, 0, 0);\" colspan=\"6\">\n<p><strong> Total</strong></p>\n</td>\n<td style=\"vertical-align: middle; border: 1px solid rgb(0, 0, 0); text-align: center;\" colspan=\"2\">\n<p><strong>${TotalAFTAX}</strong></p>\n</td>\n</tr>\n</tfoot>\n</table>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<table style=\"border-collapse: collapse; width: 41.9748%; height: 100px;\" border=\"1\"><colgroup><col style=\"width: 37.9101%;\"><col style=\"width: 4.81806%;\"><col style=\"width: 57.1715%;\"></colgroup>\n<tbody>\n<tr style=\"height: 16.6667px;\">\n<td colspan=\"2\"><span style=\"font-size: 13.3333px; white-space-collapse: collapse;\">BANKING DETAILS<br></span></td>\n<td><span style=\"font-size: 13.3333px; white-space-collapse: collapse;\">&nbsp;</span></td>\n</tr>\n<tr style=\"height: 16.6667px;\">\n<td>ACCOUNT NAME<span style=\"font-size: 13.3333px;\"><br></span></td>\n<td><span style=\"font-size: 13.3333px;\">:</span></td>\n<td><span style=\"font-size: 13.3333px;\">&nbsp;</span></td>\n</tr>\n<tr style=\"height: 16.6667px;\">\n<td><span style=\"font-size: 13.3333px;\">BANK NAME</span></td>\n<td><span style=\"font-size: 13.3333px;\">:</span></td>\n<td><span style=\"font-size: 13.3333px;\">&nbsp;</span></td>\n</tr>\n<tr style=\"height: 16.6667px;\">\n<td><span style=\"font-size: 13.3333px;\">BANK ADRESS</span></td>\n<td><span style=\"font-size: 13.3333px;\">:</span></td>\n<td><span style=\"font-size: 13.3333px;\">&nbsp;</span></td>\n</tr>\n<tr style=\"height: 16.6667px;\">\n<td><span style=\"font-size: 13.3333px;\">SWIFT CODE</span></td>\n<td><span style=\"font-size: 13.3333px;\">:</span></td>\n<td><span style=\"font-size: 13.3333px;\">&nbsp;</span></td>\n</tr>\n<tr style=\"height: 16.6667px;\">\n<td><span style=\"font-size: 13.3333px;\">ACCOUNT NO</span></td>\n<td><span style=\"font-size: 13.3333px;\">:</span></td>\n<td><span style=\"font-size: 13.3333px;\">&nbsp;</span></td>\n</tr>\n</tbody>\n</table>",
                     "ShowHotKey": true,
-                    "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
                     "ShowExp": "!this.EditForm.Entity.Id.startsWith(\"-\")",
                     "ReportTypeId": 1
                 },
@@ -362,7 +341,6 @@
                     "HotKey": "Ctrl-S",
                     "Events": "{\r\n    \"click\": \"AddInvoice\"\r\n}",
                     "Active": true,
-                    "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
                     "ShowExp": "!this.EditForm.Entity.ShipmentInvoiceId",
                     "ReportTypeId": 1
                 },
@@ -380,7 +358,6 @@
                     "Events": "{\r\n    \"click\": \"VatInvoice\"\r\n}",
                     "Active": true,
                     "PreQuery": "{\r\n    \"ShipmentInvoiceId\" : this.EditForm.Entity.Id\r\n}",
-                    "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
                     "ShowExp": "this.EditForm.Entity.ActionId == 2 && this.Token.RoleNames.some(x => x.toUpperCase() == \"CREATE VATINV FROM DEBIT\") && !this.EditForm.Entity.VatInvoiceId",
                     "ReportTypeId": 1
                 },
@@ -400,7 +377,6 @@
                     "Query": "WITH  hblnolist AS \r\n(\r\n SELECT\r\n s.HblNo AS hblNos,\r\n SUM(s.Quantity) AS quanty,\r\n s.ContainerText textc,\r\n si.Id AS idinv\r\nFROM ShipmentInvoice si\r\nCROSS APPLY STRING_SPLIT(si.HblIds, ',') AS split_hbl\r\nLEFT JOIN Shipment s ON s.Id = split_hbl.value\r\nwhere si.Id='{Id}'\r\nGROUP BY si.Id,s.Quantity,s.ContainerText,s.HblNo\r\n),\r\nCurrencySums AS (\r\n  SELECT SUM(CASE WHEN (sm.DebitAmount>0 AND dt.TypeId=1) THEN  \r\n       (dt.Quantity*dt.Amount) \r\nWHEN sm.DebitAmount>0 AND dt.TypeId<>1 THEN \r\n\t   (dt.Quantity*dt.Amount) * (-1)\r\n\r\nWHEN sm.DebitAmount<0 AND dt.TypeId=1 THEN \r\n\t(dt.Quantity*dt.Amount)* (-1)\r\nWHEN sm.DebitAmount<0 AND dt.TypeId<>1 THEN \r\n\t(dt.Quantity*dt.Amount)\r\nEND)\r\nAS TotalAmount,\r\nSUM( CASE WHEN (sm.DebitAmount>0 AND dt.TypeId=1) THEN  \r\n\t\t(ABS(dt.AmountTax)) \r\nWHEN sm.DebitAmount>0 AND dt.TypeId<>1 THEN\r\n\t\t(ABS(dt.AmountTax)) * (-1)\r\nWHEN sm.DebitAmount<0 AND dt.TypeId=1 THEN \r\n\t\t(ABS(dt.AmountTax))* (-1)\r\nWHEN sm.DebitAmount<0 AND dt.TypeId<>1 THEN \r\n\t\t(ABS(dt.AmountTax)) \r\nEND ) AS TaxAmount,\r\nSUM ( CASE WHEN (sm.DebitAmount>0 AND dt.TypeId=1) THEN  \r\n\t\t( (dt.Quantity*dt.Amount) + ABS(dt.AmountTax)) \r\n\tWHEN sm.DebitAmount>0 AND dt.TypeId<>1 THEN\r\n\t\t((dt.Quantity*dt.Amount) + ABS(dt.AmountTax))  *(-1)\r\n\tWHEN sm.DebitAmount<0 AND dt.TypeId=1 THEN \r\n\t\t( (dt.Quantity*dt.Amount) + ABS(dt.AmountTax)) *(-1)\r\n\tWHEN sm.DebitAmount<0 AND dt.TypeId<>1 THEN\r\n\t\t( (dt.Quantity*dt.Amount) + (ABS(dt.AmountTax))) \r\n END)\r\nAS TotalAFT,\r\n        curr.Code AS CurrencyCode,\r\n\t\tcurr.IsLocal AS localcurr\r\n    FROM dbo.ShipmentInvoiceDetail dt\r\n    LEFT JOIN dbo.MasterData curr ON curr.Id = dt.CurrencyId\r\n\tLEFT JOIN dbo.ShipmentInvoice sm ON sm.Id=dt.ShipmentInvoiceId\r\n    WHERE sm.Id = '{Id}'\r\n    GROUP BY curr.Code,curr.IsLocal,sm.DebitAmount\r\n),\r\nVAT AS \r\n (SELECT \r\nCASE WHEN (sminv.DebitAmount>0 AND smdt.TypeId=1) THEN \r\n\t\tCASE WHEN ISNULL(smdt.Vat,0)>0  THEN \r\n\t\tROUND(ROUND(ROUND(smdt.Amount*smdt.ExchangeRateINV,0)*smdt.Quantity,0)*(smdt.Vat/100),0)\r\n\t\tWHEN smdt.Vat<0 THEN ROUND(ABS(smdt.Vat*smdt.ExchangeRateINV),0) \r\n\t\tELSE 0 END\t\r\n\tWHEN (sminv.DebitAmount>0 AND smdt.TypeId<> 1) THEN \r\n\t\t(CASE WHEN ISNULL(smdt.Vat,0)>0  THEN \r\n\t\tROUND(ROUND(ROUND(smdt.Amount*smdt.ExchangeRateINV,0)*smdt.Quantity,0)*(smdt.Vat/100),0)\r\n\t\tWHEN smdt.Vat<0 THEN ROUND(ABS(smdt.Vat*smdt.ExchangeRateINV),0) \r\n\t\tELSE 0 END\t)*(-1)\r\n\tWHEN (sminv.DebitAmount<0 AND smdt.TypeId= 1) then\r\n\t(CASE WHEN ISNULL(smdt.Vat,0)>0  THEN \r\n\t\tROUND(ROUND(ROUND(smdt.Amount*smdt.ExchangeRateINV,0)*smdt.Quantity,0)*(smdt.Vat/100),0)\r\n\t\tWHEN smdt.Vat<0 THEN ROUND(ABS(smdt.Vat*smdt.ExchangeRateINV),0) \r\n\t\tELSE 0 END\t)*(-1)\r\n\tWHEN (sminv.DebitAmount<0 AND smdt.TypeId<> 1) then\r\n\t(CASE WHEN ISNULL(smdt.Vat,0)>0  THEN \r\n\t\tROUND(ROUND(ROUND(smdt.Amount*smdt.ExchangeRateINV,0)*smdt.Quantity,0)*(smdt.Vat/100),0)\r\n\t\tWHEN smdt.Vat<0 THEN ROUND(ABS(smdt.Vat*smdt.ExchangeRateINV),0) \r\n\t\tELSE 0 END\t)\r\nEND \r\n\t\tAS vatsum\r\n\r\n  FROM dbo.ShipmentInvoiceDetail smdt LEFT JOIN dbo.ShipmentInvoice sminv ON smdt.ShipmentInvoiceId=sminv.Id\r\n  WHERE sminv.Id='{Id}'\r\n ),\r\n Amountbft AS \r\n ( SELECT CASE WHEN (smv3.DebitAmount>0 AND dt3.TypeId=1) THEN \r\n\t\tCASE WHEN smv3.CurrencyCode<>'VND'OR smv3.CurrencyCode IS NULL THEN dt3.TotalAmount\r\n\t\tELSE ROUND(ROUND(dt3.Amount*dt3.ExchangeRateINV,0)*dt3.Quantity,0) END \r\nWHEN smv3.DebitAmount>0 AND dt3.TypeId<>1 THEN \r\n\t\tCASE WHEN smv3.CurrencyCode<>'VND' OR smv3.CurrencyCode IS NULL THEN dt3.TotalAmount*(-1)\r\n\t\tELSE ROUND(ROUND(dt3.Amount*dt3.ExchangeRateINV,0)*dt3.Quantity,0)*(-1) END \r\nWHEN smv3.DebitAmount<0 AND dt3.TypeId=1 THEN \r\n\t\tCASE WHEN smv3.CurrencyCode<>'VND' OR smv3.CurrencyCode IS NULL THEN dt3.TotalAmount*(-1)\r\n\t\tELSE ROUND(ROUND(dt3.Amount*dt3.ExchangeRateINV,0)*dt3.Quantity,0)*(-1) END \r\nWHEN smv3.DebitAmount<0 AND dt3.TypeId<>1 THEN \r\n\t\tCASE WHEN smv3.CurrencyCode<>'VND' OR smv3.CurrencyCode IS NULL THEN dt3.TotalAmount\r\n\t\tELSE ROUND(ROUND(dt3.Amount*dt3.ExchangeRateINV,0)*dt3.Quantity,0) END \r\nEND AS BFT\r\n\r\n FROM dbo.ShipmentInvoiceDetail dt3 JOIN ShipmentInvoice smv3 ON dt3.ShipmentInvoiceId=smv3.Id\r\n   WHERE smv3.Id='{Id}'\r\n   GROUP BY smv3.Id,smv3.CurrencyCode,dt3.TotalAmount,dt3.Amount,dt3.ExchangeRateINV,dt3.Quantity,dt3.TypeId,smv3.DebitAmount\r\n )\r\nSELECT sminv.VoucherTypeId, cus.CompanyName AS  Partnerv, \r\nISNULL(cus.Address,'') AS addv,\r\nISNULL(cus.PhoneNumber,'') AS Tel,\r\nISNULL(cus.Fax,'') AS Fax,\r\nISNULL(sminv.Code,'DRAFT') AS Invno,\r\nISNULL(FORMAT(sminv.InvoiceDate,'dd MMM, yyyy'),'') AS Dateinv,\r\nsm.MblNo AS MBLNo,\r\npol.Name AS POLName,\r\nPOD.Name AS PODName,\r\nISNULL(FORMAT(sm.EtdDate,'dd MMM'),'') AS ETD,\r\nISNULL(FORMAT(sm.EtaDate,'dd MMM'),'') AS ETA,\r\nISNULL(sm.Quantity,'') AS Volume,\r\n\r\n(ISNULL(sm.Vessel,'') + ' ' + ISNULL(sm.VesselVoy,'')) AS vessal ,\r\n\r\nCASE WHEN sminv.RevisedDate IS NOT NULL THEN '<Strong>Revised Date: </Strong>' +  ISNULL(FORMAT(sminv.RevisedDate,'dd MMM, yyy'),'') ELSE '' end AS Reviseddate,\r\nCASE \r\n\tWHEN sminv.InvoiceTypeId = 1 AND sminv.DebitAmount<0 THEN 'CREDIT NOTE'\r\n\tWHEN sminv.InvoiceTypeId = 1 AND sminv.DebitAmount>=0 THEN 'DEBIT NOTE'\r\nELSE\r\n\t'INVOICE'\r\nEND\r\nAS Titles,\r\nCASE WHEN sminv.CurrencyId IS NULL THEN 'Original Curr' ELSE curr.Name END AS Currinv,\r\nFORMAT(CASE WHEN sminv.CurrencyId IS NULL THEN 1 ELSE sminv.ExchangeRateINV END,'#,##.00') AS EXT,\r\ncurr.Code, \r\n\r\nISNULL(FORMAT(sminv.DueDate,'dd MMM, yy'),'') AS Duedate,\r\n \r\n(SELECT SUM(hblnolist.quanty) FROM hblnolist WHERE hblnolist.idinv=sminv.Id) AS Quantity1,\r\n(SELECT STRING_AGG(hblnolist.hblNos,'/') FROM hblnolist WHERE hblnolist.idinv=sminv.Id) AS HBLs,\r\n(SELECT STRING_AGG(hblnolist.textc,' & ') FROM hblnolist WHERE hblnolist.idinv=sminv.Id) AS conttext2,\r\nformat((SELECT SUM(VAT.vatsum) FROM VAT WHERE VAT.vatsum IS NOT NULL ),'N0') AS TotalVAT ,\r\nformat((SELECT SUM(BFT) FROM Amountbft WHERE Amountbft.BFT IS NOT NULL),'N0') AS BFT,\r\nFORMAT(((SELECT SUM(VAT.vatsum) FROM VAT WHERE VAT.vatsum IS NOT NULL ) + (SELECT SUM(BFT) FROM Amountbft WHERE Amountbft.BFT IS NOT NULL) ),'N0') AS TotalAFTAX,\r\nCASE WHEN sminv.CurrencyCode='VND' THEN format((SELECT SUM(BFT) FROM Amountbft WHERE Amountbft.BFT IS NOT NULL),'N0') \r\nELSE (SELECT STRING_AGG(CONCAT((CASE WHEN CurrencySums.localcurr = 1 \tTHEN  FORMAT(TotalAmount, 'N0')\r\n\tELSE FORMAT(TotalAmount,'N02') END), ' ', CurrencyCode), '</br>') \r\n     FROM CurrencySums\r\n     WHERE TotalAmount IS NOT NULL)\r\nEND AS BFTText,\r\nCASE WHEN sminv.CurrencyCode='VND' THEN format((SELECT SUM(VAT.vatsum) FROM VAT WHERE VAT.vatsum IS NOT NULL ),'N0')\r\nELSE (SELECT STRING_AGG(CONCAT((CASE WHEN CurrencySums.localcurr = 1 \tTHEN  FORMAT(CurrencySums.TaxAmount, 'N0')\r\n\tELSE FORMAT(CurrencySums.TaxAmount,'N02') END), ' ', CurrencyCode), '</br>') \r\n     FROM CurrencySums\r\n     WHERE CurrencySums.TaxAmount IS NOT NULL)\r\nEND AS TotalVATTEXT,\r\n  CASE WHEN sminv.CurrencyCode='VND' THEN  FORMAT(((SELECT SUM(VAT.vatsum) FROM VAT WHERE VAT.vatsum IS NOT NULL ) + (SELECT SUM(BFT) FROM Amountbft WHERE Amountbft.BFT IS NOT NULL) ),'N0') \r\n ELSE (SELECT STRING_AGG(CONCAT((CASE WHEN CurrencySums.localcurr = 1 \tTHEN  FORMAT(CurrencySums.TotalAFT, 'N0')\r\n\tELSE FORMAT(CurrencySums.TotalAFT,'N02') END), ' ', CurrencyCode), '</br>') \r\n     FROM CurrencySums\r\n     WHERE TotalAmount IS NOT NULL) END \r\n AS TotalAFTAXTEXT\r\n\r\n\r\nFROM dbo.ShipmentInvoice sminv LEFT JOIN dbo.Partner cus ON cus.Id=sminv.VendorIds\r\nLEFT JOIN dbo.Shipment sm ON sm.Id = sminv.FileIds\r\nLEFT JOIN dbo.MasterData curr ON curr.Id = sminv.CurrencyId\r\nLEFT JOIN dbo.Terminal pol ON pol.Id = sm.PolId \r\nLEFT JOIN dbo.Terminal POD ON POD.Id = sm.PodId\r\n WHERE sminv.Id='{Id}'\r\n\r\n SELECT\r\nFORMAT(CASE WHEN sminv.DebitAmount>= 0 AND dt.TypeId=2 THEN \r\n\t(CASE \r\n\tWHEN sminv.CurrencyId IS NULL THEN  dt.Quantity * dt.Amount \r\n\tWHEN curr.Code = 'VND'  THEN ROUND(dt.Quantity * ROUND(dt.Amount*dt.ExchangeRateINV,0),0)\r\n\tELSE dt.Quantity * dt.Amount END) * (-1)\r\n\r\nWHEN sminv.DebitAmount>= 0 AND dt.TypeId=1 THEN (\r\n\t(CASE \r\n\tWHEN sminv.CurrencyId IS NULL THEN  dt.Quantity * dt.Amount \r\n\tWHEN curr.Code = 'VND'  THEN ROUND(dt.Quantity * ROUND(dt.Amount*dt.ExchangeRateINV,0),0)\r\n\tELSE dt.Quantity * dt.Amount END))\r\n\r\nWHEN sminv.DebitAmount< 0 AND dt.TypeId=1 THEN (CASE \r\n\tWHEN sminv.CurrencyId IS NULL THEN  dt.Quantity * dt.Amount \r\n\tWHEN curr.Code = 'VND'  THEN ROUND(dt.Quantity * ROUND(dt.Amount*dt.ExchangeRateINV,0),0)\r\n\tELSE dt.Quantity * dt.Amount END) * (-1)\r\nELSE \t(CASE \r\n\tWHEN sminv.CurrencyId IS NULL THEN  dt.Quantity * dt.Amount \r\n\tWHEN curr.Code = 'VND'  THEN ROUND(dt.Quantity * ROUND(dt.Amount*dt.ExchangeRateINV,0),0)\r\n\tELSE dt.Quantity * dt.Amount END)\r\nEND,(CASE WHEN curr.Name='VND' THEN 'N0' ELSE 'N2' END)) AS AmountINV\r\n,FORMAT((CASE \r\n\tWHEN sminv.CurrencyId IS NULL THEN  dt.Quantity * dt.Amount \r\n\tWHEN curr.Code = 'VND'  THEN ROUND(dt.Quantity * ROUND(dt.Amount*dt.ExchangeRateINV,0),0)\r\nELSE dt.Quantity * dt.Amount END),(CASE WHEN curr.Name='VND' THEN 'N0' ELSE 'N2' END))\r\nAS Amountvnd,\r\n\r\nformat(( \r\nCASE WHEN sminv.DebitAmount> 0 AND dt.TypeId=1 THEN \r\n    CASE WHEN (sminv.CurrencyId IS NULL OR sminv.CurrencyCode <> 'VND') AND dt.Vat>0 THEN  (dt.Quantity * dt.Amount) * (ISNULL(dt.Vat,0)/100)\r\n\tWHEN (sminv.CurrencyId IS NULL OR sminv.CurrencyCode <> 'VND') AND dt.Vat < 0 THEN ABS(dt.Vat)\r\n\tWHEN curr.Code = 'VND' AND dt.Vat>0 THEN ROUND(dt.Quantity * ROUND(dt.Amount*dt.ExchangeRateINV,0)*(ISNULL(dt.Vat,0)/100),0)\r\n\t WHEN curr.Code = 'VND' AND dt.Vat<0 THEN ABS(dt.Vat)*dt.ExchangeRateINV\r\n\tELSE ROUND(dt.Quantity * dt.Amount * (ISNULL(dt.Vat,0)/100),0) END\r\nWHEN \tsminv.DebitAmount > 0 AND dt.TypeId<>1 THEN \r\n\t(CASE WHEN (sminv.CurrencyId IS NULL OR sminv.CurrencyCode <> 'VND') AND dt.Vat>0 THEN  (dt.Quantity * dt.Amount) * (ISNULL(dt.Vat,0)/100)\r\n\tWHEN (sminv.CurrencyId IS NULL OR sminv.CurrencyCode <> 'VND') AND dt.Vat < 0 THEN ABS(dt.Vat)\r\n\tWHEN curr.Code = 'VND' AND dt.Vat>0 THEN ROUND(dt.Quantity * ROUND(dt.Amount*dt.ExchangeRateINV,0)*(ISNULL(dt.Vat,0)/100),0)\r\n\t WHEN curr.Code = 'VND' AND dt.Vat<0 THEN ABS(dt.Vat)*dt.ExchangeRateINV\r\n\tELSE ROUND(dt.Quantity * dt.Amount * (ISNULL(dt.Vat,0)/100),0) END)*(-1)\r\nWHEN sminv.DebitAmount < 0 AND dt.TypeId=1 THEN \r\n\t(CASE WHEN (sminv.CurrencyId IS NULL OR sminv.CurrencyCode <> 'VND') AND dt.Vat>0 THEN  (dt.Quantity * dt.Amount) * (ISNULL(dt.Vat,0)/100)\r\n\tWHEN (sminv.CurrencyId IS NULL OR sminv.CurrencyCode <> 'VND') AND dt.Vat < 0 THEN ABS(dt.Vat)\r\n\tWHEN curr.Code = 'VND' AND dt.Vat>0 THEN ROUND(dt.Quantity * ROUND(dt.Amount*dt.ExchangeRateINV,0)*(ISNULL(dt.Vat,0)/100),0)\r\n\t WHEN curr.Code = 'VND' AND dt.Vat<0 THEN ABS(dt.Vat)*dt.ExchangeRateINV\r\n\tELSE ROUND(dt.Quantity * dt.Amount * (ISNULL(dt.Vat,0)/100),0) END)*(-1)\r\nWHEN sminv.DebitAmount < 0 AND dt.TypeId<>1 THEN \r\n\t(CASE WHEN (sminv.CurrencyId IS NULL OR sminv.CurrencyCode <> 'VND') AND dt.Vat>0 THEN  (dt.Quantity * dt.Amount) * (ISNULL(dt.Vat,0)/100)\r\n\tWHEN (sminv.CurrencyId IS NULL OR sminv.CurrencyCode <> 'VND') AND dt.Vat < 0 THEN ABS(dt.Vat)\r\n\tWHEN curr.Code = 'VND' AND dt.Vat>0 THEN ROUND(dt.Quantity * ROUND(dt.Amount*dt.ExchangeRateINV,0)*(ISNULL(dt.Vat,0)/100),0)\r\n\t WHEN curr.Code = 'VND' AND dt.Vat<0 THEN ABS(dt.Vat)*dt.ExchangeRateINV\r\n\tELSE ROUND(dt.Quantity * dt.Amount * (ISNULL(dt.Vat,0)/100),0) END)\r\nEND)\r\n, (CASE WHEN sminv.CurrencyCode='VND' then 'N0' else 'N02' end))\r\n\r\nAS AmtVAT,\r\n\r\nfee.Name AS namefee,\r\nunit.Name AS unit, \r\nformat(dt.Quantity,'N{CQuantity}') AS Qty, \r\n FORMAT(dt.Amount,(CASE WHEN curdt.Name='VND' THEN 'N0' ELSE 'N2' END)) AS amountOG,\r\ncurdt.Code AS curdt,\r\nformat(dt.Vat,'N{CQuantity}') AS VAT,\r\nROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS Sott\r\n\r\n\r\nFROM dbo.ShipmentInvoice sminv LEFT JOIN dbo.Partner cus ON cus.Id=sminv.VendorIds\r\nLEFT JOIN dbo.ShipmentInvoiceDetail dt ON dt.ShipmentInvoiceId = sminv.Id \r\nLEFT JOIN dbo.Shipment sm ON sm.Id = sminv.ShipmentId\r\nLEFT JOIN dbo.MasterData curr ON curr.Id = sminv.CurrencyId\r\nLEFT JOIN dbo.FeeType fee ON fee.Id=dt.DescriptionId\r\nLEFT JOIN  dbo.MasterData curdt ON curdt.Id=dt.CurrencyId\r\nLEFT JOIN dbo.MasterData unit ON unit.Id=dt.UnitId\r\nLEFT JOIN dbo.Terminal pol ON pol.Id = sm.PolId \r\nLEFT JOIN dbo.Terminal POD ON POD.Id = sm.PodId\r\n WHERE sminv.Id='{Id}'\r\n  ORDER BY dt.[Order] ASC",
                     "Template": "<p>&nbsp;</p>\n<table style=\"border-collapse: collapse; width: 99.8319%; height: 226.542px; border-style: hidden;\" border=\"0\"><colgroup><col style=\"width: 12.2065%;\"><col style=\"width: 1.76177%;\"><col style=\"width: 11.3257%;\"><col style=\"width: 25.4198%;\"><col style=\"width: 12.2065%;\"><col style=\"width: 1.63593%;\"><col style=\"width: 35.3612%;\"></colgroup>\n<tbody>\n<tr style=\"height: 16.3333px;\">\n<td><strong>BILL TO</strong></td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td style=\"vertical-align: middle; text-align: center;\" colspan=\"3\" rowspan=\"3\">\n<div style=\"font-size: 28pt; min-width: 350px; display: inline-block; border-radius: 29px; border: 1px solid rgb(0, 0, 0); text-align: center; font-weight: 600;\">${Titles}</div>\n</td>\n</tr>\n<tr style=\"height: 16.6667px;\">\n<td colspan=\"4\"><strong> ${Partnerv}</strong></td>\n</tr>\n<tr style=\"height: 17.75px;\">\n<td colspan=\"4\">&nbsp;${addv}</td>\n</tr>\n<tr style=\"height: 19.9375px;\">\n<td colspan=\"4\">&nbsp;TELL: ${Tel} ${Fax}</td>\n<td style=\"text-align: center;\" colspan=\"3\" rowspan=\"2\">\n<div><strong>Number:</strong> ${Invno}</div>\n<p><strong>Date:</strong> ${Dateinv}</p>\n<p>${Reviseddate}</p>\n</td>\n</tr>\n<tr style=\"height: 12.7292px;\">\n<td colspan=\"4\">&nbsp;</td>\n</tr>\n<tr style=\"height: 17.75px;\">\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n</tr>\n<tr style=\"height: 22.125px;\">\n<td><strong>MBL/MAWB</strong></td>\n<td><strong>:</strong></td>\n<td colspan=\"2\">${MBLNo}</td>\n<td><strong>Volume</strong></td>\n<td><strong>:</strong></td>\n<td>${conttext2}</td>\n</tr>\n<tr style=\"height: 21.0625px;\">\n<td><strong>HBL/HAWB</strong></td>\n<td><strong>:</strong></td>\n<td colspan=\"2\">${HBLs}</td>\n<td><strong>Q'ty</strong></td>\n<td><strong>:</strong></td>\n<td>${Quantity1}</td>\n</tr>\n<tr style=\"height: 22.9375px;\">\n<td><strong>POL/AOL</strong></td>\n<td><strong>:</strong></td>\n<td colspan=\"2\">${POLName}</td>\n<td><strong>ETD / ETA</strong></td>\n<td><strong>:</strong></td>\n<td>${ETD} / ${ETA}</td>\n</tr>\n<tr style=\"height: 22.9375px;\">\n<td><strong>POD/AOD</strong></td>\n<td><strong>:</strong></td>\n<td colspan=\"2\">${PODName}</td>\n<td><strong>VSL./ FLT.</strong></td>\n<td><strong>:</strong></td>\n<td>${vessal}</td>\n</tr>\n<tr style=\"height: 17px;\">\n<td><strong>Currency:</strong></td>\n<td><strong>:</strong></td>\n<td colspan=\"2\">${Currinv}</td>\n<td><strong>Due Date</strong></td>\n<td><strong>:</strong></td>\n<td>${Duedate}</td>\n</tr>\n<tr style=\"height: 19.3125px;\">\n<td><strong>Ext rate</strong></td>\n<td><strong>:</strong></td>\n<td colspan=\"2\">${EXT}</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n</tr>\n</tbody>\n</table>\n<p>&nbsp;</p>\n<table class=\"dashaze dashez dazhed dashed\" style=\"border-collapse: collapse; width: 100.252%; height: 97.0625px; border-style: solid; border-width: 1px;\" border=\"1\"><colgroup><col style=\"width: 4.91194%;\"><col style=\"width: 20.5313%;\"><col style=\"width: 9.94789%;\"><col style=\"width: 8.06061%;\"><col style=\"width: 10.9574%;\"><col style=\"width: 7.55682%;\"><col style=\"width: 6.80114%;\"><col style=\"width: 15.7434%;\"><col style=\"width: 15.4915%;\"></colgroup>\n<thead>\n<tr style=\"height: 22.625px;\">\n<td style=\"vertical-align: middle; text-align: center; border: 1px solid #000000;\"><strong>No</strong></td>\n<td style=\"vertical-align: middle; text-align: center; border: 1px solid #000000;\"><strong>Description</strong></td>\n<td style=\"vertical-align: middle; text-align: center; border: 1px solid #000000;\"><strong>Quantity</strong></td>\n<td style=\"vertical-align: middle; text-align: center; border: 1px solid #000000;\"><strong>Unit</strong></td>\n<td style=\"vertical-align: middle; text-align: center; border: 1px solid #000000;\"><strong>Price</strong></td>\n<td style=\"vertical-align: middle; text-align: center; border: 1px solid #000000;\"><strong>VAT %</strong></td>\n<td style=\"vertical-align: middle; text-align: center; border: 1px solid #000000;\"><strong>Curr.</strong></td>\n<td style=\"vertical-align: middle; text-align: center; border: 1px solid rgb(0, 0, 0);\"><strong>VAT Amount</strong></td>\n<td style=\"vertical-align: middle; text-align: center; border: 1px solid #000000;\"><strong>Amount</strong></td>\n</tr>\n</thead>\n<tbody data-table=\"c0\">\n<tr style=\"height: 25.125px;\">\n<td style=\"text-align: center; vertical-align: middle; border: 1px solid #000000;\">\n<p>{Sott}</p>\n</td>\n<td style=\"text-align: left; vertical-align: middle; border: 1px solid #000000;\">\n<p>{namefee}</p>\n</td>\n<td style=\"text-align: center; vertical-align: middle; border: 1px solid #000000;\">\n<p>{Qty}</p>\n</td>\n<td style=\"text-align: center; vertical-align: middle; border: 1px solid #000000;\">\n<p>{unit}</p>\n</td>\n<td style=\"text-align: center; vertical-align: middle; border: 1px solid #000000;\">\n<p>{amountOG}</p>\n</td>\n<td style=\"text-align: center; vertical-align: middle; border: 1px solid #000000;\">\n<p>{VAT}</p>\n</td>\n<td style=\"text-align: center; vertical-align: middle; border: 1px solid #000000;\">\n<p>{curdt}</p>\n</td>\n<td style=\"vertical-align: middle; border: 1px solid rgb(0, 0, 0); text-align: right;\">\n<p>{AmtVAT}</p>\n</td>\n<td style=\"vertical-align: middle; border: 1px solid rgb(0, 0, 0); text-align: right;\">\n<p>{AmountINV}</p>\n</td>\n</tr>\n</tbody>\n<tfoot>\n<tr style=\"height: 22.6458px;\">\n<td style=\"text-align: center; vertical-align: middle; border: 1px solid rgb(0, 0, 0);\" colspan=\"7\">\n<p><strong>Sub Total </strong></p>\n</td>\n<td style=\"vertical-align: middle; border: 1px solid rgb(0, 0, 0); text-align: center;\">\n<p><strong>${TotalVATTEXT}<br></strong></p>\n</td>\n<td style=\"vertical-align: middle; border: 1px solid rgb(0, 0, 0); text-align: center;\">\n<p><strong>${BFTText}<br></strong></p>\n</td>\n</tr>\n<tr style=\"height: 26.6667px;\">\n<td style=\"text-align: center; vertical-align: middle; border: 1px solid rgb(0, 0, 0);\" colspan=\"7\">\n<p><strong>Total</strong></p>\n</td>\n<td style=\"vertical-align: middle; border: 1px solid rgb(0, 0, 0); text-align: center;\" colspan=\"2\">\n<p><strong>${TotalAFTAXTEXT}</strong></p>\n</td>\n</tr>\n</tfoot>\n</table>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<table style=\"border-collapse: collapse; width: 41.9748%; height: 100px;\" border=\"1\"><colgroup><col style=\"width: 37.9101%;\"><col style=\"width: 4.81806%;\"><col style=\"width: 57.1715%;\"></colgroup>\n<tbody>\n<tr style=\"height: 16.6667px;\">\n<td colspan=\"2\"><span style=\"font-size: 13.3333px; white-space-collapse: collapse;\">BANKING DETAILS<br></span></td>\n<td><span style=\"font-size: 13.3333px; white-space-collapse: collapse;\">&nbsp;</span></td>\n</tr>\n<tr style=\"height: 16.6667px;\">\n<td>ACCOUNT NAME<span style=\"font-size: 13.3333px;\"><br></span></td>\n<td><span style=\"font-size: 13.3333px;\">:</span></td>\n<td><span style=\"font-size: 13.3333px;\">&nbsp;</span></td>\n</tr>\n<tr style=\"height: 16.6667px;\">\n<td><span style=\"font-size: 13.3333px;\">BANK NAME</span></td>\n<td><span style=\"font-size: 13.3333px;\">:</span></td>\n<td><span style=\"font-size: 13.3333px;\">&nbsp;</span></td>\n</tr>\n<tr style=\"height: 16.6667px;\">\n<td><span style=\"font-size: 13.3333px;\">BANK ADRESS</span></td>\n<td><span style=\"font-size: 13.3333px;\">:</span></td>\n<td><span style=\"font-size: 13.3333px;\">&nbsp;</span></td>\n</tr>\n<tr style=\"height: 16.6667px;\">\n<td><span style=\"font-size: 13.3333px;\">SWIFT CODE</span></td>\n<td><span style=\"font-size: 13.3333px;\">:</span></td>\n<td><span style=\"font-size: 13.3333px;\">&nbsp;</span></td>\n</tr>\n<tr style=\"height: 16.6667px;\">\n<td><span style=\"font-size: 13.3333px;\">ACCOUNT NO</span></td>\n<td><span style=\"font-size: 13.3333px;\">:</span></td>\n<td><span style=\"font-size: 13.3333px;\">&nbsp;</span></td>\n</tr>\n</tbody>\n</table>",
                     "ShowHotKey": true,
-                    "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
                     "ShowExp": "!this.EditForm.Entity.Id.startsWith(\"-\")",
                     "ReportTypeId": 1
                 },
@@ -418,7 +394,6 @@
                     "Events": "{\r\n    \"click\": \"VatInvoice\"\r\n}",
                     "Active": true,
                     "PreQuery": "{\r\n    \"ShipmentInvoiceId\" : this.EditForm.Entity.Id\r\n}",
-                    "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
                     "ShowExp": "this.EditForm.Entity.VatInvoiceId",
                     "ReportTypeId": 1
                 }
@@ -433,7 +408,6 @@
             "XxlCol": 12,
             "Active": true,
             "DisabledExp": "(this.Entity.ActionId != 2 && !this.Entity.Id.startsWith('-')) || [2, 3].includes(this.Entity.ProgressId) || this.Entity.ShipmentInvoiceId",
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "ParentId": "00223fb4-0000-0000-8000-a812d69d8f2e",
             "XxlOuterColumn": 12,
             "ReportTypeId": 1,
@@ -457,7 +431,6 @@
                     "RefName": "ShipmentInvoiceDetail",
                     "PreQuery": "{\r\n    \"HblIds\": this.EditForm.Entity.HblIds.split(',').join(\"','\"),\r\n    \"MblIds\": this.EditForm.Entity.FileIds.split(',').join(\"','\"),\r\n    \"VendorIds\": this.EditForm.Entity.VendorIds,\r\n    \"ShipmentInvoiceId\": this.EditForm.Entity.Id,\r\n    \"ExchangeRateINV\": this.EditForm.Entity.ExchangeRateINV || 1,\r\n    \"ExchangeRateINV2\": this.EditForm.Entity.ExchangeRateINV2 || 1,\r\n    \"ObhTypeId\": this.EditForm.Entity.ObhTypeId,\r\n    \"FeeTypeId\": this.EditForm.Entity.FeeTypeId || \"1,2,3,4\",\r\n    \"Currency\": this.EditForm.Entity.Currency ? this.EditForm.Entity.Currency.Code : 'VND',\r\n    \"CurrencyId\": this.EditForm.Entity.CurrencyId\r\n}",
                     "IsSumary": true,
-                    "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
                     "Editable": true,
                     "OrderBy": "ds.ShipmentId asc",
                     "EntityId": "ShipmentInvoice",
@@ -475,7 +448,6 @@
             "XxlCol": 12,
             "Active": true,
             "DisabledExp": "(this.Entity.ActionId != 2 && !this.Entity.Id.startsWith('-')) || [2, 3].includes(this.Entity.ProgressId) || this.Entity.ShipmentInvoiceId",
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "ParentId": "00223fb4-0000-0000-8000-a812d69d8f2e",
             "XxlOuterColumn": 6,
             "ReportTypeId": 1,
@@ -496,7 +468,6 @@
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Payment\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"Issue Tax\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
                     "ReportTypeId": 1
                 },
                 {
@@ -515,7 +486,6 @@
                     "Query": "{\r\n    \"sql\": \"select ds.* from [User] as ds where (TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 1)\"\r\n}",
                     "RefName": "User",
                     "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
-                    "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
                     "IsMultiple": true,
                     "ReportTypeId": 1
                 },
@@ -530,7 +500,6 @@
                     "Label": "Deadline",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
                     "ReportTypeId": 1
                 },
                 {
@@ -545,7 +514,6 @@
                     "Label": "Remark",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
                     "ReportTypeId": 1
                 }
             ]
@@ -559,7 +527,6 @@
             "XxlCol": 24,
             "Active": true,
             "DisabledExp": "(this.Entity.ActionId != 2 && !this.Entity.Id.startsWith('-')) || [2, 3].includes(this.Entity.ProgressId) || this.Entity.ShipmentInvoiceId",
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "ParentId": "00223fb4-0000-0000-8000-a812d69d8f2e",
             "XxlOuterColumn": 12,
             "ReportTypeId": 1,
@@ -584,7 +551,6 @@
                     "PreQuery": "{\r\n    \"HblIds\": this.EditForm.Entity.HblIds.split(',').join(\"','\"),\r\n    \"MblIds\": this.EditForm.Entity.FileIds.split(',').join(\"','\")\r\n}",
                     "DisabledExp": "[2,3].includes(this.EditForm.Entity.StatusId) || !this.Entity.Id.startsWith('-')",
                     "ShowHotKey": true,
-                    "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
                     "ReportTypeId": 1
                 },
                 {
@@ -605,7 +571,6 @@
                     "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Include\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"Only\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Exclude\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
                     "DisabledExp": "[2,3].includes(this.EditForm.Entity.StatusId) || !this.Entity.Id.startsWith('-')",
-                    "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
                     "ReportTypeId": 1
                 },
                 {
@@ -626,7 +591,6 @@
                     "Query": "[\r\n    {\r\n        \"Id\": \"ds.TypeId in (1,2,3,4)\",\r\n        \"Name\": \"ALL\"\r\n    },\r\n    {\r\n        \"Id\": \"(ds.TypeId = 1 or (ds.TypeId in (3,4) and ds.IsAdvCustomer = 1))\",\r\n        \"Name\": \"Receivable\"\r\n    },\r\n    {\r\n        \"Id\": \"(ds.TypeId = 2 or (ds.TypeId in (3,4) and ds.IsAdvCustomer = 0))\",\r\n        \"Name\": \"Payable\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
                     "DisabledExp": "[2,3].includes(this.EditForm.Entity.StatusId) || !this.Entity.Id.startsWith('-')",
-                    "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
                     "ReportTypeId": 1
                 },
                 {
@@ -642,7 +606,6 @@
                     "Disabled": true,
                     "Active": true,
                     "RefName": "Shipment",
-                    "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
                     "OrderBy": "ds.Code asc,ds.SeqKey asc",
                     "IsMultiple": true,
                     "ReportTypeId": 1
@@ -666,7 +629,6 @@
                     "Template": "[{ \"FieldName\" : \"HblNo\", \"Label\" : \"Hbl No\", \"ComponentType\" : \"Input\" }]",
                     "PreQuery": "{\r\n    \"FileIds\": this.EditForm.Entity.FileIds\r\n}",
                     "DisabledExp": "[2,3].includes(this.EditForm.Entity.StatusId) || !this.Entity.Id.startsWith('-')",
-                    "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
                     "EntityId": "CopyJob",
                     "IsMultiple": true,
                     "ReportTypeId": 1
@@ -686,7 +648,6 @@
             "Width": "101px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "Editable": true,
             "MinWidth": "101px",
             "MaxWidth": "101px",
@@ -706,7 +667,6 @@
             "Active": true,
             "FocusSearch": true,
             "IsSumary": true,
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "Summary": "Total",
             "SummaryColSpan": 3,
             "MinWidth": "142px",
@@ -732,7 +692,6 @@
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "Editable": true,
             "MinWidth": "99px",
             "MaxWidth": "99px",
@@ -754,7 +713,6 @@
             "Active": true,
             "FocusSearch": true,
             "IsSumary": true,
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "Summary": "Total",
             "SummaryColSpan": 3,
             "MinWidth": "110px",
@@ -780,7 +738,6 @@
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Description\", \"Label\" : \"Description\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"GroupId\", \"Label\" : \"Group\", \"ComponentType\" : \"Dropdown\", \"RefName\" : \"MasterData\", \"FormatData\" : \"{Name}\" }]",
             "DisabledExp": "this.Entity.NoSubmit",
             "FocusSearch": true,
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "Editable": true,
             "MinWidth": "286px",
             "MaxWidth": "286px",
@@ -800,7 +757,6 @@
             "Active": true,
             "DisabledExp": "this.Entity.NoSubmit",
             "FocusSearch": true,
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "Editable": true,
             "MinWidth": "102px",
             "MaxWidth": "102px",
@@ -824,7 +780,6 @@
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
             "DisabledExp": "this.Entity.NoSubmit",
             "FocusSearch": true,
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "Editable": true,
             "MinWidth": "90px",
             "MaxWidth": "90px",
@@ -843,7 +798,6 @@
             "Active": true,
             "DisabledExp": "this.Entity.NoSubmit",
             "FocusSearch": true,
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "Editable": true,
             "MinWidth": "93px",
             "MaxWidth": "93px",
@@ -863,7 +817,6 @@
             "Active": true,
             "DisabledExp": "this.Entity.NoSubmit",
             "FocusSearch": true,
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "Editable": true,
             "MinWidth": "127px",
             "MaxWidth": "127px",
@@ -885,7 +838,6 @@
             "RefName": "Shipment",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
             "FocusSearch": true,
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "MinWidth": "118px",
             "MaxWidth": "118px",
             "EntityId": "ShipmentInvoiceDetail",
@@ -909,7 +861,6 @@
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Debit/Credit Note\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"Invoice\"\r\n    }\r\n]",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "Editable": true,
             "MinWidth": "133px",
             "MaxWidth": "133px",
@@ -933,7 +884,6 @@
             "Query": "{\r\n    \"sql\": \"select * from Shipment as ds where ((ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ReceiverIds like '%{TokenUserId}%' and ds.StatusId = 3) or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and TypeId = 1 and ParentId is null)\",\r\n    \"total\": \"select count(ds.Id) as total from Shipment as ds where ((ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ReceiverIds like '%{TokenUserId}%' and ds.StatusId = 3) or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and TypeId = 1 and ParentId is null)\"\r\n}",
             "RefName": "Shipment",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Code\",\r\n        \"Label\": \"File No\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"MblNo\",\r\n        \"Label\": \"MBL No\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "MinWidth": "142px",
             "MaxWidth": "142px",
             "OrderBy": "ds.Code asc,ds.SeqKey asc",
@@ -959,7 +909,6 @@
             "RefName": "Shipment",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"ParentId\",\r\n        \"Label\": \"File No\",\r\n        \"ComponentType\": \"Dropdown\",\r\n        \"RefName\": \"Shipment\",\r\n        \"FormatData\": \"{Code}\"\r\n    },\r\n    {\r\n        \"FieldName\": \"HblNo\",\r\n        \"Label\": \"Hbl No\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
             "PreQuery": "{\r\n    \"ParentIds\": this.Entity.EntityIds.split(',').join(\"','\")\r\n}",
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "MinWidth": "162px",
             "MaxWidth": "162px",
             "OrderBy": "ds.Code asc,ds.SeqKey asc",
@@ -983,7 +932,6 @@
             "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"ALL\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"Include\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Exclude\"\r\n    }\r\n]",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "MinWidth": "94px",
             "MaxWidth": "94px",
             "EntityId": "ShipmentInvoice",
@@ -1005,7 +953,6 @@
             "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": \"ds.TypeId in (1,2,3,4)\",\r\n        \"Name\": \"ALL\"\r\n    },\r\n    {\r\n        \"Id\": \"(ds.TypeId = 1 or (ds.TypeId in (3,4) and ds.IsAdvCustomer = 1))\",\r\n        \"Name\": \"Receivable\"\r\n    },\r\n    {\r\n        \"Id\": \"(ds.TypeId = 2 or (ds.TypeId in (3,4) and ds.IsAdvCustomer = 0))\",\r\n        \"Name\": \"Payable\"\r\n    }\r\n]",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "MinWidth": "96px",
             "MaxWidth": "96px",
             "EntityId": "ShipmentInvoice",
@@ -1028,7 +975,6 @@
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-edit mr-1'></i>Draft</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fas fa-check-circle mr-1'></i>Issued</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-ban mr-1'></i>Void</span>\"\r\n    }\r\n]\r\n",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "MinWidth": "97px",
             "MaxWidth": "97px",
             "EntityId": "ShipmentInvoice",
@@ -1045,7 +991,6 @@
             "ShowLabel": true,
             "Width": "130px",
             "Active": true,
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "MinWidth": "130px",
             "MaxWidth": "130px",
             "EntityId": "ShipmentInvoice",
@@ -1063,7 +1008,6 @@
             "Width": "131px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "MinWidth": "131px",
             "MaxWidth": "131px",
             "EntityId": "ShipmentInvoice",
@@ -1081,7 +1025,6 @@
             "Width": "113px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "MinWidth": "113px",
             "MaxWidth": "113px",
             "EntityId": "ShipmentInvoice",
@@ -1098,7 +1041,6 @@
             "ShowLabel": true,
             "Width": "117px",
             "Active": true,
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "MinWidth": "117px",
             "MaxWidth": "117px",
             "EntityId": "ShipmentInvoice",
@@ -1115,7 +1057,6 @@
             "ShowLabel": true,
             "Width": "81px",
             "Active": true,
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "MinWidth": "81px",
             "MaxWidth": "81px",
             "EntityId": "ShipmentInvoice",
@@ -1133,7 +1074,6 @@
             "Width": "95px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "MinWidth": "95px",
             "MaxWidth": "95px",
             "EntityId": "ShipmentInvoice",
@@ -1151,7 +1091,6 @@
             "Width": "125px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "MinWidth": "125px",
             "MaxWidth": "125px",
             "EntityId": "ShipmentInvoice",
@@ -1169,7 +1108,6 @@
             "ShowLabel": true,
             "Width": "77px",
             "Active": true,
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "MinWidth": "77px",
             "MaxWidth": "77px",
             "EntityId": "ShipmentInvoice",
@@ -1189,7 +1127,6 @@
             "Width": "128px",
             "DefaultVal": "this.Decimal(JSON.parse(localStorage.getItem(\"ExchangeRateVND\"))[\"USD\"])",
             "Active": true,
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "MinWidth": "128px",
             "MaxWidth": "128px",
             "EntityId": "ShipmentInvoice",
@@ -1209,7 +1146,6 @@
             "Width": "55px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "Editable": true,
             "MinWidth": "55px",
             "MaxWidth": "55px",
@@ -1237,7 +1173,6 @@
             "DisabledExp": "!this.Entity.Id.startsWith('-')",
             "FocusSearch": true,
             "ShowHotKey": true,
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "MinWidth": "386px",
             "MaxWidth": "386px",
             "EntityId": "ShipmentInvoice",
@@ -1259,7 +1194,6 @@
             "RefName": "ShipmentInvoice",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Code\",\r\n        \"Label\": \"Code\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"PostDate\",\r\n        \"Label\": \"Post Date\",\r\n        \"ComponentType\": \"Datepicker\"\r\n    }\r\n]",
             "PreQuery": "{\r\n    \"FileIds\": this.EditForm.Entity.FileIds.split(',').join(\"','\"),\r\n    \"VendorIds\": this.Entity.VendorIds\r\n}",
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "Editable": true,
             "EntityId": "Options",
             "ReportTypeId": 1
@@ -1279,7 +1213,6 @@
             "HotKey": "Ctrl-S",
             "Events": "{ \"click\" : \"Invoice\" }",
             "Active": true,
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "ReportTypeId": 1
         },
         {
@@ -1295,7 +1228,6 @@
             "HotKey": "Ctrl-S",
             "Events": "{\r\n    \"click\": \"AddInvoice\"\r\n}",
             "Active": true,
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "ShowExp": "!this.EditForm.Entity.ShipmentInvoiceId",
             "ReportTypeId": 1
         },
@@ -1313,7 +1245,6 @@
             "Events": "{\r\n    \"click\": \"VatInvoice\"\r\n}",
             "Active": true,
             "PreQuery": "{\r\n    \"ShipmentInvoiceId\" : this.EditForm.Entity.Id\r\n}",
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "ShowExp": "this.EditForm.Entity.ActionId == 2 && this.Token.RoleNames.some(x => x.toUpperCase() == \"CREATE VATINV FROM DEBIT\") && !this.EditForm.Entity.VatInvoiceId",
             "ReportTypeId": 1
         },
@@ -1331,7 +1262,6 @@
             "Events": "{\r\n    \"click\": \"VatInvoice\"\r\n}",
             "Active": true,
             "PreQuery": "{\r\n    \"ShipmentInvoiceId\" : this.EditForm.Entity.Id\r\n}",
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "ShowExp": "this.EditForm.Entity.VatInvoiceId",
             "ReportTypeId": 1
         }
@@ -1339,7 +1269,6 @@
     "FeaturePolicies": [
         {
             "Id": "0A18E663-FA1F-4AA3-9F72-20843DA15A93",
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "CanRead": true,
             "TableName": "Feature",
@@ -1347,49 +1276,42 @@
         },
         {
             "Id": "3A7EE518-5915-4D4A-B2BE-8B4487BBF242",
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "414F1532-6515-430B-9F70-8EF9443864A3",
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "74CEE178-72CB-4D25-BA67-0F525C65BCC6",
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "7625120F-997E-4FE3-9072-CE749928E767",
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "8C0E5BAE-C8E7-468E-A320-1D3CF74B3D21",
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "92302414-C86F-487E-8E31-523D5C40D16E",
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "B196F48F-DBF9-45C1-99BE-20879B0B48F9",
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "CanRead": true,
             "CanWrite": true,
@@ -1398,7 +1320,6 @@
         },
         {
             "Id": "BE29AE97-FD95-4C38-9B64-69D33DB5990C",
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
             "CanRead": true,
             "CanReadAll": true,
@@ -1409,7 +1330,6 @@
         },
         {
             "Id": "F5CBF818-B520-40D8-8FF3-54825859CD3F",
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
@@ -1418,7 +1338,6 @@
     "UserSettings": [
         {
             "Id": "0676652d-95a2-7c92-8000-8b7846cd9543",
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "ComponentId": "01932dbc-046d-7708-8b42-8e7be803bff0",
             "UserId": "00781eb8-0000-0000-8000-52bf71dcaef7",
             "Value": "[{\"Id\":\"00f340cc-0000-0000-8000-0563f6f4b421\",\"FieldName\":\"ShipmentId\",\"Order\":0,\"Width\":\"118px\"},{\"Id\":\"01932dbc-046c-714f-bf93-b4bc9fd897dd\",\"FieldName\":\"IsLock\",\"Order\":1,\"Width\":\"55px\"},{\"Id\":\"00bf40d0-0000-0000-8001-f9d6b9eef11c\",\"FieldName\":\"DescriptionId\",\"Order\":2,\"Width\":\"286px\"},{\"Id\":\"00bf40d0-0000-0000-8002-2651a4d17663\",\"FieldName\":\"Quantity\",\"Order\":3,\"Width\":\"102px\"},{\"Id\":\"00bf40d0-0000-0000-8003-e59cbb1c1e33\",\"FieldName\":\"UnitId\",\"Order\":4,\"Width\":\"90px\"},{\"Id\":\"00bf40d0-0000-0000-8004-d5c13e1b65d9\",\"FieldName\":\"Amount\",\"Order\":5,\"Width\":\"93px\"},{\"Id\":\"00bf4034-0000-0000-8000-bdc96943038e\",\"FieldName\":\"CurrencyId\",\"Order\":6,\"Width\":\"99px\"},{\"Id\":\"001940c8-0000-0000-8000-2e0e9a9a3aec\",\"FieldName\":\"ExchangeRateINV\",\"Order\":7,\"Width\":\"101px\"},{\"Id\":\"00bf40d0-0000-0000-8005-c9ff6384d12c\",\"FieldName\":\"Vat\",\"Order\":8,\"Width\":\"127px\"},{\"Id\":\"00434074-0000-0000-8000-2ec76ab138e4\",\"FieldName\":\"Payable\",\"Order\":9,\"Width\":\"142px\"},{\"Id\":\"00bf4034-0000-0000-8001-8921e0aae01a\",\"FieldName\":\"Receivable\",\"Order\":10,\"Width\":\"110px\"}]",
@@ -1426,7 +1345,6 @@
         },
         {
             "Id": "06773c7b-6fae-787d-8000-d6b65b66c474",
-            "FeatureId": "00213f0c-0000-0000-8000-de80e4c37f4a",
             "ComponentId": "00fa4000-0000-0000-8000-af05bc46316c",
             "UserId": "00781eb8-0000-0000-8000-52bf71dcaef7",
             "Value": "[{\"Id\":\"01932dbc-046b-7228-b4fd-337bdcd33135\",\"FieldName\":\"Code\",\"Order\":0,\"Width\":\"131px\"},{\"Id\":\"01932dbc-046d-7708-8b42-8726230cc5a8\",\"FieldName\":\"VendorId\",\"Order\":1,\"Width\":\"386px\"},{\"Id\":\"01932dbc-046b-7228-b4fd-27f1716d9322\",\"FieldName\":\"ActionId\",\"Order\":2,\"Width\":\"97px\"},{\"Id\":\"01932dbc-046c-714f-bf93-a91a9b214acb\",\"FieldName\":\"DebitAmount\",\"Order\":3,\"Width\":\"125px\"},{\"Id\":\"01932dbc-046c-714f-bf93-a7b3c11be5be\",\"FieldName\":\"PostDate\",\"Order\":4,\"Width\":\"95px\"},{\"Id\":\"01932dbc-046c-714f-bf93-a06e3bd64ca9\",\"FieldName\":\"DueDate\",\"Order\":5,\"Width\":\"81px\"},{\"Id\":\"01932dbc-046c-714f-bf93-9e3d2b52ce3f\",\"FieldName\":\"PostOtherDate\",\"Order\":6,\"Width\":\"117px\"},{\"Id\":\"01932dbc-046b-7228-b4fd-342a93955a3f\",\"FieldName\":\"RevisedDate\",\"Order\":7,\"Width\":\"113px\"},{\"Id\":\"01932dbc-0469-7659-acf9-72baa6e5adff\",\"FieldName\":\"VoucherTypeId\",\"Order\":8,\"Width\":\"133px\"},{\"Id\":\"01932dbc-046a-7117-bcf4-c31b8780b8f1\",\"FieldName\":\"EntityIds\",\"Order\":9,\"Width\":\"142px\"},{\"Id\":\"01932dbc-046a-7117-bcf4-c8d4ba5a5334\",\"FieldName\":\"HblIds\",\"Order\":10,\"Width\":\"161px\"},{\"Id\":\"01932dbc-046c-714f-bf93-adf6e242422d\",\"FieldName\":\"MblNos\",\"Order\":11,\"Width\":\"77px\"},{\"Id\":\"01932dbc-046a-7117-bcf4-cdfae74cea63\",\"FieldName\":\"ObhTypeId\",\"Order\":12,\"Width\":\"94px\"},{\"Id\":\"01932dbc-046b-7228-b4fd-22e22396c750\",\"FieldName\":\"FeeTypeId\",\"Order\":13,\"Width\":\"96px\"},{\"Id\":\"01932dbc-046c-714f-bf93-b004e3e9971e\",\"FieldName\":\"ExchangeRateUSD\",\"Order\":14,\"Width\":\"128px\"},{\"Id\":\"01932dbc-046b-7228-b4fd-2fea57b0557e\",\"FieldName\":\"Remark\",\"Order\":15,\"Width\":\"130px\"}]",

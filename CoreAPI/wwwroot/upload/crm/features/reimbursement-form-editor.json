@@ -19,7 +19,6 @@
             "XxlCol": 12,
             "Active": true,
             "DisabledExp": "[2, 3].includes(this.EditForm.Entity.StatusId)",
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "ReportTypeId": 1
         },
         {
@@ -30,7 +29,6 @@
             "ClassName": "card-body",
             "XxlCol": 18,
             "Active": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "ParentId": "0193b5ee-4d73-7173-b600-ac4a0e36194f",
             "XxlOuterColumn": 12,
             "ReportTypeId": 1,
@@ -45,7 +43,6 @@
                     "Label": "Ref No",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
                     "ReportTypeId": 1
                 },
                 {
@@ -60,7 +57,6 @@
                     "Label": "Reimbursement Detail",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
                     "ReportTypeId": 1
                 },
                 {
@@ -73,7 +69,6 @@
                     "Label": "Post Date",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
                     "ReportTypeId": 1
                 },
                 {
@@ -93,7 +88,6 @@
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Department Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Department Type'\"\r\n}",
                     "RefName": "MasterData",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
                     "ReportTypeId": 1
                 },
                 {
@@ -113,7 +107,6 @@
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 0,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='far fa-check-circle mr-1'></i>Clear</span>\"\r\n    },\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='far fa-times-circle mr-1'></i>UnClear</span>\"\r\n    }\r\n]",
                     "DisabledExp": "true",
-                    "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
                     "Editable": true,
                     "ReportTypeId": 1
                 },
@@ -130,7 +123,6 @@
                     "Events": "{\r\n    \"input\": \"ToWords\"\r\n}",
                     "Disabled": true,
                     "Active": true,
-                    "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
                     "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
                     "ReportTypeId": 1
                 },
@@ -152,7 +144,6 @@
                     "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"To Do\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #95a5a6; display: inline-block;'> <i class='fal fa-clipboard-list mr-1'></i> To Do</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"In Progress\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #3498db; display: inline-block;'><i class='fal fa-spinner fa-spin mr-1'></i> In Progress</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Complete\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #28a745; display: inline-block;'><i class='fal fa-check-circle mr-1'></i> Complete</span>\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Decline\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #e74c3c; display: inline-block;'><i class='fal fa-times-circle mr-1'></i> Cancel</span>\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Description\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
                     "DisabledExp": "true",
-                    "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
                     "ReportTypeId": 1
                 },
                 {
@@ -167,7 +158,6 @@
                     "Label": "Fille Attach",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
                     "IsMultiple": true,
                     "ReportTypeId": 1
                 },
@@ -182,7 +172,6 @@
                     "Label": "Date Complete",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
                     "ReportTypeId": 1
                 },
                 {
@@ -198,7 +187,6 @@
                     "Events": "{\r\n    \"input\": \"ToWords\"\r\n}",
                     "Disabled": true,
                     "Active": true,
-                    "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
                     "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
                     "ReportTypeId": 1
                 },
@@ -215,7 +203,6 @@
                     "Events": "{\r\n    \"input\": \"ToWords\"\r\n}",
                     "Disabled": true,
                     "Active": true,
-                    "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
                     "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
                     "ReportTypeId": 1
                 },
@@ -236,7 +223,6 @@
                     "Query": "{\r\n    \"sql\": \"select ds.* from [User] as ds where (TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 1)\"\r\n}",
                     "RefName": "User",
                     "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
-                    "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
                     "OrderBy": "ds.[InsertedDate]",
                     "ReportTypeId": 1
                 },
@@ -258,7 +244,6 @@
                     "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where ds.VoucherId = '{ReimbursementId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where ds.VoucherId = '{VoucherId}'\"\r\n}",
                     "RefName": "Voucher",
                     "PreQuery": "{\r\n    \"ReimbursementId\": this.EditForm.Entity.Id\r\n}",
-                    "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
                     "Editable": true,
                     "OrderBy": "ds.[InsertedDate] asc",
                     "ReportTypeId": 1
@@ -281,7 +266,6 @@
                     "RefName": "User",
                     "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
                     "DisabledExp": "true",
-                    "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
                     "IsMultiple": true,
                     "ReportTypeId": 1
                 }
@@ -296,7 +280,6 @@
             "ClassName": "card-body",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "ParentId": "0193b5ee-4d73-7173-b600-ac4a0e36194f",
             "TabGroup": "Other charges",
             "XxlOuterColumn": 12,
@@ -319,7 +302,6 @@
                     "Query": "{\r\n    \"sql\": \"select ds.* from VoucherDetail as ds where (ds.[VoucherId] = '{VoucherId}')\",\r\n    \"total\": \"select count(ds.Id) as total from VoucherDetail as ds where (ds.[VoucherId] = '{VoucherId}')\"\r\n}",
                     "RefName": "VoucherDetail",
                     "PreQuery": "{\r\n    \"VoucherId\": this.EditForm.Entity.Id\r\n}",
-                    "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
                     "Editable": true,
                     "OrderBy": "ds.[InsertedDate] asc",
                     "ReportTypeId": 1
@@ -335,7 +317,6 @@
             "Style": "margin-bottom: 0px;padding: 0;",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "ReportTypeId": 1
         },
         {
@@ -347,7 +328,6 @@
             "Style": "margin-bottom: 0px;padding: 0;",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "ReportTypeId": 1,
             "Components": [
                 {
@@ -363,7 +343,6 @@
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }",
                     "Active": true,
-                    "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
                     "ReportTypeId": 1
                 },
                 {
@@ -378,7 +357,6 @@
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"SendEntity\" }",
                     "Active": true,
-                    "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
                     "ShowExp": "(this.Entity.StatusId == 1 || this.Entity.StatusId == 4) && this.Token.UserId == this.Entity.InsertedBy && !this.Entity.Id.startsWith('-')",
                     "ReportTypeId": 1
                 },
@@ -394,7 +372,6 @@
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"DeclineEntity\" }",
                     "Active": true,
-                    "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
                     "ShowExp": "var rs = this.Entity.StatusId == 2 && this.Entity.UserApprovedIds.includes(this.Token.UserId); return rs; ",
                     "ReportTypeId": 1
                 },
@@ -410,7 +387,6 @@
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"ApprovedEntity\" }",
                     "Active": true,
-                    "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
                     "ShowExp": "var rs = this.Entity.StatusId == 2 && this.Entity.UserApprovedIds.includes(this.Token.UserId); return rs; ",
                     "ReportTypeId": 1
                 },
@@ -426,7 +402,6 @@
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{    \"click\": \"CreateRP\"}",
                     "Active": true,
-                    "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
                     "ShowExp": "!this.Entity.Id.startsWith('-') && !this.Entity.PaymentAccId && this.Entity.StatusId == 3 && (this.Entity.UserApprovedIds && this.Entity.UserApprovedIds.includes(this.Token.UserId) || this.Entity.ForwardId == this.Token.UserId) ",
                     "ReportTypeId": 1
                 },
@@ -442,7 +417,6 @@
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{    \"click\": \"CreateRP\"}",
                     "Active": true,
-                    "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
                     "ShowExp": "this.Entity.PaymentAccId && this.Entity.StatusId == 3 && (this.Entity.UserApprovedIds && this.Entity.UserApprovedIds.includes(this.Token.UserId) || this.Entity.ForwardId == this.Token.UserId) ",
                     "ReportTypeId": 1
                 }
@@ -457,7 +431,6 @@
             "ClassName": "card-body",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "ParentId": "0193b5ee-4d73-7173-b600-ac4a0e36194f",
             "TabGroup": "Other charges",
             "XxlOuterColumn": 12,
@@ -479,7 +452,6 @@
                     "Query": "{\r\n    \"sql\": \"select * from Approvement as ds where RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Approvement as ds where RecordId = '{RecordId}'\"\r\n}",
                     "RefName": "Approvement",
                     "PreQuery": "{\r\n    \"RecordId\": this.EditForm.Entity.Id\r\n}",
-                    "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
                     "OrderBy": "ds.InsertedDate desc",
                     "AddRowExp": "this.Entity.StatusId != 3",
                     "ReportTypeId": 1
@@ -504,7 +476,6 @@
             "RefName": "FeeType",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Description\", \"Label\" : \"Description\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"GroupId\", \"Label\" : \"Group\", \"ComponentType\" : \"Dropdown\", \"RefName\" : \"MasterData\", \"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "Editable": true,
             "MinWidth": "183px",
             "MaxWidth": "183px",
@@ -523,7 +494,6 @@
             "Width": "92px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "Editable": true,
             "MinWidth": "92px",
             "MaxWidth": "92px",
@@ -546,7 +516,6 @@
             "RefName": "Shipment",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"File No\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "Editable": true,
             "MinWidth": "118px",
             "MaxWidth": "118px",
@@ -571,7 +540,6 @@
             "Template": "[{ \"FieldName\" : \"HblNo\", \"Label\" : \"HblNo\", \"ComponentType\" : \"Input\" }]",
             "PreQuery": "{\r\n    \"FileId\": this.Entity.FileId\r\n}",
             "FocusSearch": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "Editable": true,
             "MinWidth": "123px",
             "MaxWidth": "123px",
@@ -590,7 +558,6 @@
             "Width": "93px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "Editable": true,
             "MinWidth": "93px",
             "MaxWidth": "93px",
@@ -609,7 +576,6 @@
             "Width": "73px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "Editable": true,
             "MinWidth": "73px",
             "MaxWidth": "73px",
@@ -627,7 +593,6 @@
             "Width": "92px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "MinWidth": "92px",
             "MaxWidth": "92px",
             "EntityId": "ReimbursementDetail",
@@ -644,7 +609,6 @@
             "Active": true,
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Id\",\r\n        \"Label\": \"Id\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
             "FocusSearch": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "MinWidth": "74px",
             "MaxWidth": "74px",
             "EntityId": "ReimbursementDetail",
@@ -661,7 +625,6 @@
             "Active": true,
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Id\",\r\n        \"Label\": \"Id\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
             "FocusSearch": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "MinWidth": "90px",
             "MaxWidth": "90px",
             "EntityId": "ReimbursementDetail",
@@ -682,7 +645,6 @@
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Bank\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"Cash\"\r\n    }\r\n]",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "Editable": true,
             "MinWidth": "73px",
             "MaxWidth": "73px",
@@ -700,7 +662,6 @@
             "Active": true,
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Id\",\r\n        \"Label\": \"Id\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
             "FocusSearch": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "MinWidth": "97px",
             "MaxWidth": "97px",
             "EntityId": "ReimbursementDetail",
@@ -722,7 +683,6 @@
             "RefName": "Partner",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Code\",\r\n        \"Label\": \"Code\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"CompanyNameInv\",\r\n        \"Label\": \"Company Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"300px\",\r\n        \"MinWidth\": \"300px\",\r\n        \"Width\": \"300px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"400px\",\r\n        \"MinWidth\": \"400px\",\r\n        \"Width\": \"400px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\"\r\n    }\r\n]",
             "FocusSearch": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "Editable": true,
             "MinWidth": "168px",
             "MaxWidth": "168px",
@@ -740,7 +700,6 @@
             "Width": "58px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "Editable": true,
             "MinWidth": "58px",
             "MaxWidth": "58px",
@@ -763,7 +722,6 @@
             "RefName": "Partner",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
             "FocusSearch": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "Editable": true,
             "MinWidth": "87px",
             "MaxWidth": "87px",
@@ -781,7 +739,6 @@
             "Width": "100px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "Editable": true,
             "MinWidth": "100px",
             "MaxWidth": "100px",
@@ -803,7 +760,6 @@
             "RefName": "Partner",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
             "FocusSearch": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "Editable": true,
             "MinWidth": "87px",
             "MaxWidth": "87px",
@@ -825,7 +781,6 @@
             "RefName": "Partner",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
             "FocusSearch": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "Editable": true,
             "MinWidth": "151px",
             "MaxWidth": "151px",
@@ -841,7 +796,6 @@
             "Width": "73px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "Editable": true,
             "MinWidth": "73px",
             "MaxWidth": "73px",
@@ -857,7 +811,6 @@
             "Width": "87px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "Editable": true,
             "MinWidth": "87px",
             "MaxWidth": "87px",
@@ -874,7 +827,6 @@
             "Width": "117px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "Editable": true,
             "MinWidth": "117px",
             "MaxWidth": "117px",
@@ -890,7 +842,6 @@
             "Width": "87px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "Editable": true,
             "MinWidth": "87px",
             "MaxWidth": "87px",
@@ -912,7 +863,6 @@
             "Query": "select *,Id as ParentId\r\nfrom [Voucher]\r\nwhere Id in ({AdvanceId})\r\n\r\nSELECT *, VoucherId AS ParentId\r\nFROM [VoucherDetail]\r\nWHERE VoucherId in ({AdvanceId})",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "PreQuery": "{\r\n    \"AdvanceId\": this.Entity.AdvanceId ? this.Entity.AdvanceId.split(',').map(id => `'${id}'`).join(',') : '',\r\n}",
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "EntityId": "CopyAdvanceRequest",
             "IsMultiple": true,
             "ReportTypeId": 1
@@ -933,7 +883,6 @@
             "RefName": "Voucher",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Code\",\r\n        \"Label\": \"Advance No\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Amount\",\r\n        \"Label\": \"Amount\",\r\n        \"ComponentType\": \"Number\"\r\n    },\r\n    {\r\n        \"FieldName\": \"DeadlineDate\",\r\n        \"Label\": \"Reimbursement Date\",\r\n        \"ComponentType\": \"Datepicker\"\r\n    }\r\n]",
             "PreQuery": "{\r\n    \"UserId\": this.EditForm.Entity.UserId,\r\n    \"ParentIds\": this.EditForm.FirstCom(\"ReimbursementDetail\").Item.map(x=>x.Entity.ParentId).join(',')\r\n}",
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "OrderBy": "ds.InsertedDate desc",
             "EntityId": "CopyAdvanceRequest",
             "IsMultiple": true,
@@ -956,7 +905,6 @@
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "Editable": true,
             "MinWidth": "76px",
             "MaxWidth": "76px",
@@ -979,7 +927,6 @@
             "Active": true,
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
             "FocusSearch": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "Editable": true,
             "MinWidth": "87px",
             "MaxWidth": "87px",
@@ -995,7 +942,6 @@
             "Width": "133px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "MinWidth": "133px",
             "MaxWidth": "133px",
             "EntityId": "Approvement",
@@ -1010,7 +956,6 @@
             "Width": "374px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "MinWidth": "374px",
             "MaxWidth": "374px",
             "EntityId": "Approvement",
@@ -1026,7 +971,6 @@
             "Width": "144px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "MinWidth": "144px",
             "MaxWidth": "144px",
             "EntityId": "Approvement",
@@ -1046,7 +990,6 @@
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "MinWidth": "116px",
             "MaxWidth": "116px",
             "EntityId": "Approvement",
@@ -1067,7 +1010,6 @@
             "RefName": "MasterData",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
             "FocusSearch": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "Editable": true,
             "MinWidth": "99px",
             "MaxWidth": "99px",
@@ -1090,7 +1032,6 @@
             "HotKey": "Ctrl-S",
             "Events": "{ \"click\" : \"SavePatch\" }",
             "Active": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "ReportTypeId": 1
         },
         {
@@ -1104,7 +1045,6 @@
             "ClassName": "btn btn-sub",
             "Events": "{\r\n    \"click\": \"AddDetail\"\r\n}",
             "Active": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "ReportTypeId": 1
         },
         {
@@ -1119,7 +1059,6 @@
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"SendEntity\" }",
             "Active": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "ShowExp": "(this.Entity.StatusId == 1 || this.Entity.StatusId == 4) && this.Token.UserId == this.Entity.InsertedBy && !this.Entity.Id.startsWith('-')",
             "ReportTypeId": 1
         },
@@ -1135,7 +1074,6 @@
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"DeclineEntity\" }",
             "Active": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "ShowExp": "var rs = this.Entity.StatusId == 2 && this.Entity.UserApprovedIds.includes(this.Token.UserId); return rs; ",
             "ReportTypeId": 1
         },
@@ -1151,7 +1089,6 @@
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{ \"click\" : \"ApprovedEntity\" }",
             "Active": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "ShowExp": "var rs = this.Entity.StatusId == 2 && this.Entity.UserApprovedIds.includes(this.Token.UserId); return rs; ",
             "ReportTypeId": 1
         },
@@ -1167,7 +1104,6 @@
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{    \"click\": \"CreateRP\"}",
             "Active": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "ShowExp": "!this.Entity.Id.startsWith('-') && !this.Entity.PaymentAccId && this.Entity.StatusId == 3 && (this.Entity.UserApprovedIds && this.Entity.UserApprovedIds.includes(this.Token.UserId) || this.Entity.ForwardId == this.Token.UserId) ",
             "ReportTypeId": 1
         },
@@ -1183,7 +1119,6 @@
             "ClassName": "btn detail-button secondary-outline",
             "Events": "{    \"click\": \"CreateRP\"}",
             "Active": true,
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "ShowExp": "this.Entity.PaymentAccId && this.Entity.StatusId == 3 && (this.Entity.UserApprovedIds && this.Entity.UserApprovedIds.includes(this.Token.UserId) || this.Entity.ForwardId == this.Token.UserId) ",
             "ReportTypeId": 1
         }
@@ -1191,7 +1126,6 @@
     "FeaturePolicies": [
         {
             "Id": "0CC1E3FE-E33C-4387-9343-33CD16D25293",
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "CanRead": true,
             "CanReadAll": true,
@@ -1202,28 +1136,24 @@
         },
         {
             "Id": "36C2D46A-F5CA-4207-90FB-826CC22AE1F3",
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "4266D373-A0F7-41B3-9D63-525F87BA3DCB",
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "5B0A4338-3F9B-431A-BE67-60386256214C",
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "8E62029A-15B5-4883-A169-0F7927E7099E",
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "CanRead": true,
             "CanWrite": true,
@@ -1233,14 +1163,12 @@
         },
         {
             "Id": "B123650F-D39B-4CC3-B9F0-1DCC8D433FC4",
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "E1CF3558-0C1C-4466-A828-AF5E45AD9531",
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "CanRead": true,
             "CanWrite": true,
@@ -1250,7 +1178,6 @@
         },
         {
             "Id": "EC27B4CB-1A1B-4091-A56B-4DEC1418065E",
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
             "CanRead": true,
             "CanReadAll": true,
@@ -1262,7 +1189,6 @@
         },
         {
             "Id": "EC46C9E4-BD6D-4E79-A74D-9F0FDF58A4BC",
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "CanRead": true,
             "CanReadAll": true,
@@ -1274,7 +1200,6 @@
         },
         {
             "Id": "F62A1A21-1D7D-4FEA-B20C-B3A4190B04F9",
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
             "Active": true
@@ -1283,7 +1208,6 @@
     "UserSettings": [
         {
             "Id": "0676eb54-a331-7209-8000-ac9d792b1f13",
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "ComponentId": "0193b5ee-51ab-724c-835b-1444a91eb156",
             "UserId": "00661ecc-0000-0000-8000-b1880d2c43e5",
             "Value": "[{\"Id\":\"0193b6b8-b204-7538-872f-7b88695a7f46\",\"FieldName\":\"VendorId\",\"Order\":0,\"Width\":\"151px\"},{\"Id\":\"0193b5ee-5302-730a-9741-e101ea41d92e\",\"FieldName\":\"DescriptionId\",\"Order\":1,\"Width\":\"255px\"},{\"Id\":\"0193b5ee-53a7-7018-bbed-da1c8460fed2\",\"FieldName\":\"FileId\",\"Order\":2,\"Width\":\"118px\"},{\"Id\":\"0193b5ee-53da-70e5-9830-36ee4b753df7\",\"FieldName\":\"ShipmentId\",\"Order\":3,\"Width\":\"123px\"},{\"Id\":\"0193b5ee-5532-73a5-a44d-69f89c69e3d5\",\"FieldName\":\"Quantity\",\"Order\":4,\"Width\":\"73px\"},{\"Id\":\"0193b5ee-5374-71d8-b1ed-5e9c50e747d4\",\"FieldName\":\"Amount\",\"Order\":5,\"Width\":\"113px\"},{\"Id\":\"0193b6b9-f6d8-755a-938e-bbd68a44d7d3\",\"FieldName\":\"Vat\",\"Order\":6,\"Width\":\"87px\"},{\"Id\":\"01940b06-6245-7388-81cd-053bd8a73b85\",\"FieldName\":\"CurrencyId\",\"Order\":7,\"Width\":\"76px\"},{\"Id\":\"0193b5ee-5486-756c-a161-e3fd8682d6c2\",\"FieldName\":\"TotalAmountTax\",\"Order\":8,\"Width\":\"93px\"},{\"Id\":\"01940b77-9221-763c-a41a-bb58c16b3325\",\"FieldName\":\"IsObh\",\"Order\":9,\"Width\":\"87px\"},{\"Id\":\"0193b6ba-7a02-7675-972f-30a050ab36dc\",\"FieldName\":\"ObhId\",\"Order\":10,\"Width\":\"135px\"},{\"Id\":\"0193b6ba-d598-7149-8254-eb6b5054a230\",\"FieldName\":\"InvoiceIssuerId\",\"Order\":11,\"Width\":\"155px\"},{\"Id\":\"0193b6bb-2cfa-7249-a098-8bcc60f33047\",\"FieldName\":\"PartnerId\",\"Order\":12,\"Width\":\"151px\"},{\"Id\":\"0193b6ba-9a28-706b-a9ff-f496bb46e26c\",\"FieldName\":\"InvoiceNo\",\"Order\":13,\"Width\":\"100px\"},{\"Id\":\"0193b6bb-94e1-7098-97c2-0cb035cc61d5\",\"FieldName\":\"SeriNo\",\"Order\":14,\"Width\":\"73px\"},{\"Id\":\"0193b6bb-eda9-721f-897a-c41c8ab0421d\",\"FieldName\":\"InvoiceDate\",\"Order\":15,\"Width\":\"87px\"},{\"Id\":\"0193b6bb-bbc8-7658-b070-43bc25574824\",\"FieldName\":\"InvoiceId\",\"Order\":16,\"Width\":\"87px\"},{\"Id\":\"0193b6bc-2907-772c-94b7-85a6cfe2373a\",\"FieldName\":\"Notes\",\"Order\":17,\"Width\":\"87px\"}]",
@@ -1291,7 +1215,6 @@
         },
         {
             "Id": "067700d6-9ace-79f4-8000-819a53e7f210",
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "ComponentId": "0193bb4e-51e6-7709-9805-24f1055a64d4",
             "UserId": "00781eb8-0000-0000-8000-52bf71dcaef7",
             "Value": "[]",
@@ -1299,7 +1222,6 @@
         },
         {
             "Id": "0678496e-5e42-7bae-8000-f46d5eae1fbd",
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "ComponentId": "0193b5ee-51ab-724c-835b-1444a91eb156",
             "UserId": "00781eb8-0000-0000-8000-52bf71dcaef7",
             "Value": "[{\"Id\":\"0193b6b8-b204-7538-872f-7b88695a7f46\",\"FieldName\":\"VendorId\",\"Order\":0,\"Width\":\"168px\"},{\"Id\":\"0193b5ee-5302-730a-9741-e101ea41d92e\",\"FieldName\":\"DescriptionId\",\"Order\":1,\"Width\":\"183px\"},{\"Id\":\"0193b5ee-53da-70e5-9830-36ee4b753df7\",\"FieldName\":\"ShipmentId\",\"Order\":2,\"Width\":\"123px\"},{\"Id\":\"0193b5ee-53a7-7018-bbed-da1c8460fed2\",\"FieldName\":\"FileId\",\"Order\":3,\"Width\":\"118px\"},{\"Id\":\"019411ff-5b6a-75f9-885a-adbc4bcf041b\",\"FieldName\":\"UnitId\",\"Order\":4,\"Width\":\"99px\"},{\"Id\":\"0193b5ee-5532-73a5-a44d-69f89c69e3d5\",\"FieldName\":\"Quantity\",\"Order\":5,\"Width\":\"73px\"},{\"Id\":\"0193b5ee-5374-71d8-b1ed-5e9c50e747d4\",\"FieldName\":\"Amount\",\"Order\":6,\"Width\":\"92px\"},{\"Id\":\"0193b6b9-f6d8-755a-938e-bbd68a44d7d3\",\"FieldName\":\"Vat\",\"Order\":7,\"Width\":\"58px\"},{\"Id\":\"01940b06-6245-7388-81cd-053bd8a73b85\",\"FieldName\":\"CurrencyId\",\"Order\":8,\"Width\":\"76px\"},{\"Id\":\"0193b5ee-5486-756c-a161-e3fd8682d6c2\",\"FieldName\":\"TotalAmountTax\",\"Order\":9,\"Width\":\"93px\"},{\"Id\":\"01940b77-9221-763c-a41a-bb58c16b3325\",\"FieldName\":\"IsObh\",\"Order\":10,\"Width\":\"87px\"},{\"Id\":\"0193b6ba-7a02-7675-972f-30a050ab36dc\",\"FieldName\":\"ObhId\",\"Order\":11,\"Width\":\"87px\"},{\"Id\":\"0193b6ba-d598-7149-8254-eb6b5054a230\",\"FieldName\":\"InvoiceIssuerId\",\"Order\":12,\"Width\":\"140px\"},{\"Id\":\"0193b6bb-2cfa-7249-a098-8bcc60f33047\",\"FieldName\":\"PartnerId\",\"Order\":13,\"Width\":\"151px\"},{\"Id\":\"0193b6ba-9a28-706b-a9ff-f496bb46e26c\",\"FieldName\":\"InvoiceNo\",\"Order\":14,\"Width\":\"100px\"},{\"Id\":\"0193b6bb-94e1-7098-97c2-0cb035cc61d5\",\"FieldName\":\"SeriNo\",\"Order\":15,\"Width\":\"73px\"},{\"Id\":\"0193b6bb-bbc8-7658-b070-43bc25574824\",\"FieldName\":\"InvoiceId\",\"Order\":16,\"Width\":\"87px\"},{\"Id\":\"0193b6bb-eda9-721f-897a-c41c8ab0421d\",\"FieldName\":\"InvoiceDate\",\"Order\":17,\"Width\":\"117px\"},{\"Id\":\"0193b6bc-2907-772c-94b7-85a6cfe2373a\",\"FieldName\":\"Notes\",\"Order\":18,\"Width\":\"87px\"}]",
@@ -1307,7 +1229,6 @@
         },
         {
             "Id": "06784ba3-0f0e-7d04-8000-07924763cdfc",
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "ComponentId": "0193b646-a706-7481-a8b6-6b3df1fdb571",
             "UserId": "00781eb8-0000-0000-8000-52bf71dcaef7",
             "Value": "[{\"Id\":\"0193b68d-c896-7448-afcf-cac8adefad32\",\"FieldName\":\"Code\",\"Order\":0,\"Width\":\"111px\"},{\"Id\":\"0193b6ac-d0c1-718e-ae63-6e8b94c9dd46\",\"FieldName\":\"Amount\",\"Order\":1,\"Width\":\"152px\"},{\"Id\":\"0193b6ac-be72-77fc-8571-bce937bfb1ca\",\"FieldName\":\"VoucherDate\",\"Order\":2,\"Width\":\"103px\"},{\"Id\":\"0193b6ac-ca3a-7178-92a2-af5364682ac2\",\"FieldName\":\"PaymentMethodId\",\"Order\":3,\"Width\":\"74px\"},{\"Id\":\"0193b6ac-c451-76e5-a49e-6f2225e5b199\",\"FieldName\":\"Note\",\"Order\":4,\"Width\":\"75px\"}]",
@@ -1315,7 +1236,6 @@
         },
         {
             "Id": "0678680f-0369-765a-8000-3c44f7a9044b",
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "ComponentId": "0193bb4e-51e6-7709-9805-24f1055a64d4",
             "UserId": "00661ecc-0000-0000-8000-b1880d2c43e5",
             "Value": "[]",
@@ -1323,7 +1243,6 @@
         },
         {
             "Id": "06786817-bb67-7a8d-8000-5f8751491a64",
-            "FeatureId": "0193b5ee-4d13-7348-a289-7aa5f58acefa",
             "ComponentId": "0193b6b8-b204-7538-872f-7b88695a7f46",
             "UserId": "00781eb8-0000-0000-8000-52bf71dcaef7",
             "Value": "[]",

@@ -14,7 +14,6 @@
             "ClassName": "card-body",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "00f30144-0000-0000-8000-80c0eabfb781",
             "ReportTypeId": 1,
             "Components": [
                 {
@@ -27,7 +26,6 @@
                     "Label": "To",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "00f30144-0000-0000-8000-80c0eabfb781",
                     "ReportTypeId": 1
                 },
                 {
@@ -40,7 +38,6 @@
                     "Label": "Subject",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "00f30144-0000-0000-8000-80c0eabfb781",
                     "ReportTypeId": 1
                 },
                 {
@@ -53,7 +50,6 @@
                     "Label": "Text",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "00f30144-0000-0000-8000-80c0eabfb781",
                     "ReportTypeId": 1
                 }
             ]
@@ -66,7 +62,6 @@
             "ClassName": "ribbon-group",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "00f30144-0000-0000-8000-80c0eabfb781",
             "ReportTypeId": 1,
             "Components": [
                 {
@@ -81,7 +76,6 @@
                     "ClassName": "btn detail-button primary",
                     "Events": "{\"click\":\"SendMail\"}",
                     "Active": true,
-                    "FeatureId": "00f30144-0000-0000-8000-80c0eabfb781",
                     "ReportTypeId": 1
                 }
             ]
@@ -100,35 +94,30 @@
             "ClassName": "btn detail-button primary",
             "Events": "{\"click\":\"SendMail\"}",
             "Active": true,
-            "FeatureId": "00f30144-0000-0000-8000-80c0eabfb781",
             "ReportTypeId": 1
         }
     ],
     "FeaturePolicies": [
         {
             "Id": "018621DA-B23B-4F9D-8281-7B26FA94ECA6",
-            "FeatureId": "00f30144-0000-0000-8000-80c0eabfb781",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "0BE23A08-70B7-44C7-A9DE-101CB61CEE0C",
-            "FeatureId": "00f30144-0000-0000-8000-80c0eabfb781",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "42C1547D-654D-4B32-A1A2-BC450413FBB9",
-            "FeatureId": "00f30144-0000-0000-8000-80c0eabfb781",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "52C63CA7-E49A-4927-A7CF-C07AB17B31AE",
-            "FeatureId": "00f30144-0000-0000-8000-80c0eabfb781",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
             "CanRead": true,
             "CanReadAll": true,
@@ -141,42 +130,36 @@
         },
         {
             "Id": "58E193E0-D90E-4F88-B38C-F68F24A4BCFC",
-            "FeatureId": "00f30144-0000-0000-8000-80c0eabfb781",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "84575ECC-24DA-47C5-832C-7CA94D5BA571",
-            "FeatureId": "00f30144-0000-0000-8000-80c0eabfb781",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "901D5646-C03C-4ADD-837F-E3E8A1C85363",
-            "FeatureId": "00f30144-0000-0000-8000-80c0eabfb781",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "9BA4B7B0-BC08-4C25-B20C-1FEBFFCE01F9",
-            "FeatureId": "00f30144-0000-0000-8000-80c0eabfb781",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "A322CF02-163D-4EAE-BA6D-E386D0C41B80",
-            "FeatureId": "00f30144-0000-0000-8000-80c0eabfb781",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "EF8EE622-FD1F-49DA-86E7-8D86D4C10009",
-            "FeatureId": "00f30144-0000-0000-8000-80c0eabfb781",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "TableName": "Feature",
             "Active": true

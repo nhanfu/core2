@@ -16,7 +16,6 @@
             "ClassName": "card-body",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
             "ParentId": "003f3fac-0000-0000-8000-b4c1a8d1b122",
             "XxlOuterColumn": 12,
             "ReportTypeId": 1,
@@ -40,7 +39,6 @@
                     "RefName": "Partner",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
                     "ShowHotKey": true,
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "TabGroup": "ConsigneeId",
                     "ReportTypeId": 1
                 },
@@ -63,7 +61,6 @@
                     "RefName": "Partner",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
                     "ShowHotKey": true,
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "TabGroup": "NotifyPartyId",
                     "ReportTypeId": 1
                 },
@@ -86,7 +83,6 @@
                     "RefName": "Partner",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
                     "ShowHotKey": true,
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "ReportTypeId": 1
                 },
                 {
@@ -108,7 +104,6 @@
                     "RefName": "Partner",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
                     "ShowHotKey": true,
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "TabGroup": "RealConsigneeId",
                     "ReportTypeId": 1
                 },
@@ -131,7 +126,6 @@
                     "RefName": "Partner",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
                     "ShowHotKey": true,
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "TabGroup": "RealShipperId",
                     "ReportTypeId": 1
                 },
@@ -145,7 +139,6 @@
                     "Label": "PIC",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
                     "ReportTypeId": 1
                 },
@@ -161,7 +154,6 @@
                     "Label": "Shipper Name & Address",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "ReportTypeId": 1
                 },
                 {
@@ -173,7 +165,6 @@
                     "Column": 4,
                     "Row": 4,
                     "Active": true,
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "ReportTypeId": 1
                 },
                 {
@@ -185,7 +176,6 @@
                     "Column": 4,
                     "Row": 4,
                     "Active": true,
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "ReportTypeId": 1
                 },
                 {
@@ -198,7 +188,6 @@
                     "Row": 4,
                     "Label": "Real Consignee",
                     "Active": true,
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "ReportTypeId": 1
                 },
                 {
@@ -213,7 +202,6 @@
                     "Label": "Notes",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "ReportTypeId": 1
                 },
                 {
@@ -226,7 +214,6 @@
                     "Row": 4,
                     "Label": "Real Shipper",
                     "Active": true,
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "ReportTypeId": 1
                 }
             ]
@@ -239,7 +226,6 @@
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
             "ReportTypeId": 1
         },
         {
@@ -250,7 +236,6 @@
             "ClassName": "ribbon-group",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
             "ReportTypeId": 1,
             "Components": [
                 {
@@ -267,7 +252,6 @@
                     "Active": true,
                     "Query": "\r\nSELECT \r\nFORMAT(si.IssueDate,'dd MMM, yy') AS isseudate,\r\nSUM( ISNULL(ct.Weight,0)) AS sumgw,\r\nSUM(ISNULL(ct.CBM,0)) AS sumcbm,\r\nSUM(ISNULL(ct.PKG,0)) AS sumpkg,\r\n  (SELECT STRING_AGG(CONCAT(contN.Name, ' x ', ROUND(inc.Quantity, 0)), ' & ') AS Containers\r\n     FROM EntityContainer inc\r\n     LEFT JOIN MasterData contN ON inc.ContainerTypeId = contN.Id\r\n     WHERE inc.EntityId = '{Id}') AS Containers\r\n\r\n FROM \r\ndbo.ShipmentSI si LEFT JOIN dbo.EntityContainer ct ON ct.EntityId=si.Id \r\nLEFT JOIN dbo.MasterData loaicont ON loaicont.Id = ct.ContainerTypeId\r\nWHERE si.Id='{Id}' \r\nGROUP BY si.Id, si.IssueDate\r\n\r\nSELECT si.Code,ISNULL(ct.ContainerNo,'') AS contno,\r\n ISNULL(ct.SealNo,0) AS sealno, \r\n ISNULL(ct.PKG,0) as PKG,\r\n ISNULL(ct.Description,'') AS Desctiption, \r\n ISNULL(ct.Weight,0)AS weightt, \r\n ISNULL(ct.CBM,0) AS cbm , ISNULL(loaicont.Name,'') AS tencont\r\n FROM dbo.EntityContainer ct  JOIN dbo.ShipmentSI si ON si.Id = ct.EntityId \r\n LEFT JOIN dbo.MasterData loaicont ON ct.ContainerTypeId=loaicont.Id \r\nWHERE si.Id='{Id}'  and loaicont.Name is not null\r\n",
                     "Template": "<p>&nbsp;</p>\n<table style=\"width: 99.6687%; border-collapse: collapse; height: 206.25px;\" border=\"0\"><colgroup><col style=\"width: 16.5499%;\"><col style=\"width: 1.29296%;\"><col style=\"width: 49.1336%;\"><col style=\"width: 1.29199%;\"><col style=\"width: 5.94763%;\"><col style=\"width: 1.29296%;\"><col style=\"width: 11.5074%;\"><col style=\"width: 6.59412%;\"><col style=\"width: 6.33552%;\"></colgroup>\n<tbody>\n<tr style=\"height: 17.375px;\">\n<td rowspan=\"3\"><span style=\"font-size: 10pt;\">&nbsp;${CLogo}</span></td>\n<td rowspan=\"3\"><span style=\"font-size: 10pt;\">&nbsp;</span></td>\n<td style=\"text-align: center;\" colspan=\"7\" rowspan=\"3\"><span style=\"font-size: 10pt;\"><strong>${CCompanyName}</strong><br>Address: ${CAddress}<br>Hotline:<a href=\"tel:19003133\">1900 3133<br></a>Email:&nbsp;</span></td>\n</tr>\n<tr style=\"height: 17.375px;\"></tr>\n<tr style=\"height: 21px;\"></tr>\n<tr style=\"height: 16.6667px;\">\n<td><span style=\"font-size: 10pt;\">&nbsp;</span></td>\n<td><span style=\"font-size: 10pt;\">&nbsp;</span></td>\n<td style=\"text-align: center;\" colspan=\"7\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n</tr>\n<tr style=\"height: 37.3542px;\">\n<td style=\"text-align: center;\" colspan=\"9\" rowspan=\"3\">\n<div style=\"font-size: 28pt; min-width: 400px; display: inline-block; border-radius: 29px; border: 1px solid rgb(0, 0, 0); text-align: center; font-weight: 600;\">SHIPPING INSTRUCTION</div>\n</td>\n</tr>\n<tr style=\"height: 10px;\"></tr>\n<tr style=\"height: 10px;\"></tr>\n<tr style=\"height: 16.6667px;\">\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\">&nbsp;</td>\n</tr>\n<tr style=\"height: 35.8125px;\">\n<td class=\"xl67\" style=\"width: 65px; text-align: left; vertical-align: top;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>To</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>:</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;${Provider}</td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\"><strong>Date</strong></td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\">${isseudate}</td>\n</tr>\n<tr style=\"height: 24px;\">\n<td class=\"xl67\" style=\"width: 65px; text-align: left; vertical-align: top;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Attn</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>:</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\">${PIC}</td>\n<td style=\"width: 30.5px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td class=\"xl67\" style=\"width: 15.25px; text-align: left; vertical-align: top;\" width=\"61\" height=\"24\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\">&nbsp;</td>\n</tr>\n</tbody>\n</table>\n<p>&nbsp;</p>\n<p>Please issue MB/L as Booking No:&nbsp; <span style=\"font-size: 12pt;\"><strong>${Booking No}</strong></span> following details:</p>\n<p>&nbsp;</p>\n<table style=\"border-collapse: collapse; width: 100.043%; height: 127.99px;\" border=\"0\"><colgroup><col style=\"width: 17.6471%;\"><col style=\"width: 9.46292%;\"><col style=\"width: 1.27877%;\"><col style=\"width: 24.5524%;\"><col style=\"width: 1.27877%;\"><col style=\"width: 45.7801%;\"></colgroup>\n<tbody>\n<tr style=\"height: 32.3333px;\">\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\"><strong><span style=\"font-size: 13.3333px;\">1. SHIPPER:</span></strong></td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"5\"><span style=\"font-size: 13.3333px;\">${ShipperDes}</span><br><span style=\"font-size: 13.3333px;\"><br></span></td>\n</tr>\n<tr style=\"height: 16px;\">\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\"><strong>2. CONSIGNEE:</strong></td>\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\" colspan=\"5\">${ConsigneeDes}</td>\n</tr>\n<tr style=\"height: 16px;\">\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\"><strong><span style=\"font-size: 13.3333px;\">&nbsp;</span></strong></td>\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\" colspan=\"5\">&nbsp;</td>\n</tr>\n<tr style=\"height: 18.0521px;\">\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\"><strong><span style=\"font-size: 13.3333px;\">3. Notify party:</span></strong></td>\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\" colspan=\"5\">${NotifyPartyDes}</td>\n</tr>\n<tr style=\"height: 16px;\">\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\" colspan=\"2\"><strong><span style=\"font-size: 13.3333px;\">&nbsp;</span></strong></td>\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\"><strong><span style=\"font-size: 13.3333px;\">&nbsp;</span></strong></td>\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\"><strong><span style=\"font-size: 13.3333px;\">&nbsp;</span></strong></td>\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\"><strong><span style=\"font-size: 13.3333px;\">&nbsp;</span></strong></td>\n</tr>\n<tr style=\"height: 17.9375px;\">\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\" colspan=\"2\"><strong><span style=\"font-size: 13.3333px;\">4. Port of Loading</span></strong></td>\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\"><strong><span style=\"font-size: 13.3333px;\">&nbsp;</span></strong></td>\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\"><strong><span style=\"font-size: 13.3333px;\">Port of Discharge</span></strong></td>\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\"><strong><span style=\"font-size: 13.3333px;\">&nbsp;Port of Delivery</span></strong></td>\n</tr>\n<tr style=\"height: 11.6667px;\">\n<td style=\"text-align: left; border-style: hidden;\" colspan=\"2\">&nbsp;</td>\n<td style=\"text-align: left; border-style: hidden;\">&nbsp;</td>\n<td style=\"text-align: left; border-style: hidden;\">&nbsp;</td>\n<td style=\"text-align: left; border-style: hidden;\">&nbsp;</td>\n<td style=\"text-align: left; border-style: hidden;\">&nbsp;</td>\n</tr>\n</tbody>\n</table>\n<p><strong>5. Description of goods</strong></p>\n<p>&nbsp;</p>\n<table style=\"border-collapse: collapse; width: 100.043%; height: 50px;\" border=\"1\"><colgroup><col style=\"width: 20.6097%;\"><col style=\"width: 11.8506%;\"><col style=\"width: 13.2675%;\"><col style=\"width: 27.8231%;\"><col style=\"width: 12.6234%;\"><col style=\"width: 13.7827%;\"></colgroup>\n<thead>\n<tr style=\"height: 16.6667px; text-align: center;\">\n<td><strong>Container/Seal No.</strong></td>\n<td><strong>Type</strong></td>\n<td><strong>Packages</strong></td>\n<td><strong>Description of Goods</strong></td>\n<td><strong>G.W (KGS)</strong></td>\n<td><strong>CBM</strong></td>\n</tr>\n</thead>\n<tbody data-table=\"c0\">\n<tr style=\"height: 16.6667px;\">\n<td>{contno}/{sealno}</td>\n<td style=\"text-align: center;\">{tencont}</td>\n<td style=\"text-align: center;\">{PKG}</td>\n<td>{Desctiption}</td>\n<td style=\"text-align: center;\">{weightt}</td>\n<td style=\"text-align: center;\">{cbm}</td>\n</tr>\n</tbody>\n<tfoot>\n<tr>\n<td style=\"text-align: center;\" colspan=\"2\">TOTAL: ${Containers}</td>\n<td style=\"text-align: center;\">${sumpkg}</td>\n<td style=\"text-align: center;\">&nbsp;</td>\n<td style=\"text-align: center;\">${sumgw}</td>\n<td style=\"text-align: center;\">${sumcbm}</td>\n</tr>\n</tfoot>\n</table>\n<div>&nbsp;</div>\n<div><strong>6. Freight and Charge: <span style=\"font-size: 12pt;\">${Payment term}</span></strong></div>\n<div>Please fax us the draft of MBL to check before issue the original.</div>\n<div>&nbsp;</div>\n<div>Thanks for your Co-operation.</div>\n<div>&nbsp;</div>\n<div>Brgds,</div>",
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "ReportTypeId": 1
                 },
                 {
@@ -283,7 +267,6 @@
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }",
                     "Active": true,
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "ReportTypeId": 1
                 }
             ]
@@ -296,7 +279,6 @@
             "ClassName": "card-body",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
             "ParentId": "003f3fac-0000-0000-8000-b4c1a8d1b122",
             "XxlOuterColumn": 12,
             "ReportTypeId": 1,
@@ -312,7 +294,6 @@
                     "Label": "Shipping Marks",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "ReportTypeId": 1
                 },
                 {
@@ -326,7 +307,6 @@
                     "Label": "Description of Goods",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "ReportTypeId": 1
                 },
                 {
@@ -344,7 +324,6 @@
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"FCL/LCL; CY/CFS\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"LCL/FCL; CFS/CY\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"LCL/LCL; CFS/CFS\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"FCL/FCL; CY/C\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "ReportTypeId": 1
                 },
                 {
@@ -359,7 +338,6 @@
                     "Label": "GW",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
                     "ReportTypeId": 1
                 },
@@ -375,7 +353,6 @@
                     "Label": "CBM",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
                     "ReportTypeId": 1
                 },
@@ -395,7 +372,6 @@
                     "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Clause Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Clause Type'\"\r\n}",
                     "RefName": "MasterData",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "ReportTypeId": 1
                 },
                 {
@@ -409,7 +385,6 @@
                     "Label": "Package",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "ReportTypeId": 1
                 },
                 {
@@ -430,7 +405,6 @@
                     "Query": "{\r\n    \"sql\": \"select * from EntityContainer as ds where EntityId = '{EntityId}'\",\r\n    \"total\": \"select count(ds.Id) as total from EntityContainer as ds where EntityId = '{EntityId}'\"\r\n}",
                     "RefName": "EntityContainer",
                     "PreQuery": "{\r\n    \"EntityId\": this.EditForm.Entity.Id\r\n}",
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "Editable": true,
                     "ReportTypeId": 1
                 }
@@ -444,7 +418,6 @@
             "ClassName": "card-body",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
             "ParentId": "003f3fac-0000-0000-8000-b4c1a8d1b122",
             "XxlOuterColumn": 12,
             "ReportTypeId": 1,
@@ -464,7 +437,6 @@
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 0,\r\n        \"Name\": \"Collect\"\r\n    },\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Prepaid\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "ReportTypeId": 1
                 },
                 {
@@ -477,7 +449,6 @@
                     "Label": "Date issue",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "ReportTypeId": 1
                 },
                 {
@@ -490,7 +461,6 @@
                     "Label": "Booking No",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
                     "ReportTypeId": 1
                 },
@@ -504,7 +474,6 @@
                     "Label": "Ref No",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
                     "ReportTypeId": 1
                 },
@@ -519,7 +488,6 @@
                     "Label": "Loading Date",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "ReportTypeId": 1
                 },
                 {
@@ -539,7 +507,6 @@
                     "RefName": "Terminal",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
                     "ShowHotKey": true,
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "ReportTypeId": 1
                 },
                 {
@@ -558,7 +525,6 @@
                     "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                     "RefName": "Terminal",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "ReportTypeId": 1
                 },
                 {
@@ -571,7 +537,6 @@
                     "Label": "Vessel",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "ReportTypeId": 1
                 },
                 {
@@ -584,7 +549,6 @@
                     "Label": "Voy",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "ReportTypeId": 1
                 },
                 {
@@ -604,7 +568,6 @@
                     "RefName": "Terminal",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
                     "ShowHotKey": true,
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "ReportTypeId": 1
                 },
                 {
@@ -623,7 +586,6 @@
                     "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                     "RefName": "Terminal",
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
                     "ReportTypeId": 1
                 },
@@ -642,7 +604,6 @@
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"COPY\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"ORIGINAL\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"SURRENDERED\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
                     "ReportTypeId": 1
                 }
             ]
@@ -660,7 +621,6 @@
             "DefaultVal": "1",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
             "Editable": true,
             "MinWidth": "49px",
             "MaxWidth": "49px",
@@ -683,7 +643,6 @@
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
             "Editable": true,
             "MinWidth": "90px",
             "MaxWidth": "90px",
@@ -700,7 +659,6 @@
             "Width": "105px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
             "Editable": true,
             "MinWidth": "105px",
             "MaxWidth": "105px",
@@ -718,7 +676,6 @@
             "Width": "84px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
             "Editable": true,
             "MinWidth": "84px",
             "MaxWidth": "84px",
@@ -736,7 +693,6 @@
             "Width": "54px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
             "Editable": true,
             "MinWidth": "54px",
             "MaxWidth": "54px",
@@ -754,7 +710,6 @@
             "Width": "68px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
             "Editable": true,
             "MinWidth": "68px",
             "MaxWidth": "68px",
@@ -772,7 +727,6 @@
             "Width": "87px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
             "Editable": true,
             "MinWidth": "87px",
             "MaxWidth": "87px",
@@ -790,7 +744,6 @@
             "Width": "50px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
             "Editable": true,
             "MinWidth": "50px",
             "MaxWidth": "50px",
@@ -808,7 +761,6 @@
             "Width": "98px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
             "Editable": true,
             "MinWidth": "98px",
             "MaxWidth": "98px",
@@ -826,7 +778,6 @@
             "Width": "112px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
             "Editable": true,
             "MinWidth": "112px",
             "MaxWidth": "112px",
@@ -849,7 +800,6 @@
             "RefName": "MasterData",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
             "FocusSearch": true,
-            "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
             "Editable": true,
             "MinWidth": "77px",
             "MaxWidth": "77px",
@@ -871,21 +821,18 @@
             "HotKey": "Ctrl-S",
             "Events": "{ \"click\" : \"SavePatch\" }",
             "Active": true,
-            "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
             "ReportTypeId": 1
         }
     ],
     "FeaturePolicies": [
         {
             "Id": "2BA77D1B-34CC-4E87-8341-5E5D18599A09",
-            "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "33C41A07-3DE9-4E83-A8A7-07DFEBA2C507",
-            "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "CanRead": true,
             "TableName": "Feature",
@@ -893,28 +840,24 @@
         },
         {
             "Id": "3CF734E5-B4E5-4389-BA24-656F9C03FDB4",
-            "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "4493E1D6-DBB2-491F-9F87-006A48A435FA",
-            "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "4E12928E-4862-4721-8A64-CF1B6F68E5A3",
-            "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "6E4AE303-C9C6-448E-B2D7-FD19CB2D5BFD",
-            "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
             "CanRead": true,
             "CanReadAll": true,
@@ -927,14 +870,12 @@
         },
         {
             "Id": "876475AA-543B-4CED-97B8-7544AF14733A",
-            "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "A8608E6A-98C1-4B08-89F0-3315B439B5B6",
-            "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "CanRead": true,
             "CanWrite": true,
@@ -943,14 +884,12 @@
         },
         {
             "Id": "AE9E8EF8-ADD4-4AE0-8877-2FBC8D55977E",
-            "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "B225BB70-EA3A-45B2-8634-A1AB01D9C8D7",
-            "FeatureId": "003e3fa0-0000-0000-8000-d106fa82056f",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true

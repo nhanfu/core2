@@ -15,7 +15,6 @@
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "ReportTypeId": 1
         },
         {
@@ -25,7 +24,6 @@
             "ComponentType": "Section",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "ParentId": "01952c04-bf7f-7409-bbba-bc8c53b743f4",
             "ReportTypeId": 1
         },
@@ -38,7 +36,6 @@
             "ClassName": "card-body",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "ParentId": "01952c04-bfd3-76ce-a535-3b71266c0eda",
             "ReportTypeId": 1,
             "Components": [
@@ -55,7 +52,6 @@
                     "ShowLabel": true,
                     "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
                     "ReportTypeId": 1
                 },
                 {
@@ -71,7 +67,6 @@
                     "ShowLabel": true,
                     "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
                     "ReportTypeId": 1
                 },
                 {
@@ -87,7 +82,6 @@
                     "ShowLabel": true,
                     "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
                     "ReportTypeId": 1
                 },
                 {
@@ -103,7 +97,6 @@
                     "ShowLabel": true,
                     "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
                     "ReportTypeId": 1
                 },
                 {
@@ -119,7 +112,6 @@
                     "ShowLabel": true,
                     "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
                     "ReportTypeId": 1
                 },
                 {
@@ -135,7 +127,6 @@
                     "ShowLabel": true,
                     "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
                     "ReportTypeId": 1
                 },
                 {
@@ -151,7 +142,6 @@
                     "ShowLabel": true,
                     "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
                     "ReportTypeId": 1
                 },
                 {
@@ -165,7 +155,6 @@
                     "ShowLabel": true,
                     "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
                     "ReportTypeId": 1
                 },
                 {
@@ -181,7 +170,6 @@
                     "ShowLabel": true,
                     "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
                     "ReportTypeId": 1
                 },
                 {
@@ -197,7 +185,6 @@
                     "ShowLabel": true,
                     "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
                     "ReportTypeId": 1
                 },
                 {
@@ -213,7 +200,6 @@
                     "ShowLabel": true,
                     "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
                     "ReportTypeId": 1
                 },
                 {
@@ -229,7 +215,6 @@
                     "ShowLabel": true,
                     "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
                     "ReportTypeId": 1
                 }
             ]
@@ -243,7 +228,6 @@
             "ClassName": "card-body",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "ParentId": "01952c04-bfd3-76ce-a535-3b71266c0eda",
             "ReportTypeId": 1,
             "Components": [
@@ -260,7 +244,6 @@
                     "ShowLabel": true,
                     "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
                     "ReportTypeId": 1
                 },
                 {
@@ -276,7 +259,6 @@
                     "ShowLabel": true,
                     "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
                     "ReportTypeId": 1
                 },
                 {
@@ -292,7 +274,6 @@
                     "ShowLabel": true,
                     "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
                     "ReportTypeId": 1
                 },
                 {
@@ -308,7 +289,6 @@
                     "ShowLabel": true,
                     "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
                     "ReportTypeId": 1
                 }
             ]
@@ -322,7 +302,6 @@
             "ClassName": "card-body",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "ParentId": "01952c04-bfd3-76ce-a535-3b71266c0eda",
             "ReportTypeId": 1,
             "Components": [
@@ -344,7 +323,6 @@
                     "Query": "{\r\n    \"sql\": \"select * from EntityDimension as ds where EntityId = '{EntityId}'\",\r\n    \"total\": \"select count(ds.Id) as total from EntityDimension as ds where EntityId = '{EntityId}'\"\r\n}",
                     "RefName": "EntityDimension",
                     "PreQuery": "{\r\n    \"EntityId\": this.EditForm.Entity.Id,\r\n    \"TableName\": \"ShipmentDetail\"\r\n}",
-                    "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
                     "ReportTypeId": 1
                 }
             ]
@@ -358,7 +336,6 @@
             "ClassName": "card-body",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "ParentId": "01952c04-bfd3-76ce-a535-3b71266c0eda",
             "ReportTypeId": 1,
             "Components": [
@@ -376,7 +353,6 @@
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentTask as ds where ShipmentId = '{ShipmentId}' and IsFinish = 1\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentTask as ds where ShipmentId = '{ShipmentId}' and IsFinish = 1\"\r\n}",
                     "RefName": "ShipmentTask",
                     "PreQuery": "{\r\n    \"ShipmentId\": this.EditForm.Entity.Id\r\n}",
-                    "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
                     "ReportTypeId": 1
                 }
             ]
@@ -390,7 +366,6 @@
             "ClassName": "card-body",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "ParentId": "01952c04-bfd3-76ce-a535-3b71266c0eda",
             "ReportTypeId": 1,
             "Components": [
@@ -407,7 +382,6 @@
                     "ShowLabel": true,
                     "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
                     "ReportTypeId": 1
                 },
                 {
@@ -423,7 +397,6 @@
                     "ShowLabel": true,
                     "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
                     "ReportTypeId": 1
                 },
                 {
@@ -440,7 +413,6 @@
                     "ShowLabel": true,
                     "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
                     "ReportTypeId": 1
                 },
                 {
@@ -456,7 +428,6 @@
                     "ShowLabel": true,
                     "Active": true,
                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
                     "ReportTypeId": 1
                 }
             ]
@@ -474,7 +445,6 @@
             "Width": "56px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "56px",
             "MaxWidth": "56px",
             "EntityId": "ShipmentSI",
@@ -494,7 +464,6 @@
             "RefName": "Partner",
             "FocusSearch": true,
             "ShowHotKey": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "245px",
             "MaxWidth": "245px",
             "EntityId": "ShipmentSI",
@@ -514,7 +483,6 @@
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"To Do\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #95a5a6; display: inline-block;'> <i class='fal fa-clipboard-list mr-1'></i> To Do</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"In Progress\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #3498db; display: inline-block;'><i class='fal fa-spinner fa-spin mr-1'></i> In Progress</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Complete\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #28a745; display: inline-block;'><i class='fal fa-check-circle mr-1'></i> Complete</span>\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Decline\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #e74c3c; display: inline-block;'><i class='fal fa-times-circle mr-1'></i> Cancel</span>\"\r\n    }\r\n]",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "TextAlign": "center",
             "MinWidth": "175px",
             "MaxWidth": "175px",
@@ -535,7 +503,6 @@
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "176px",
             "MaxWidth": "176px",
             "EntityId": "ShipmentSI",
@@ -555,7 +522,6 @@
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "243px",
             "MaxWidth": "243px",
             "EntityId": "ShipmentSI",
@@ -570,7 +536,6 @@
             "Width": "162px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "162px",
             "MaxWidth": "162px",
             "EntityId": "ShipmentSI",
@@ -587,7 +552,6 @@
             "DefaultVal": "1",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "49px",
             "MaxWidth": "49px",
             "EntityId": "EntityContainer",
@@ -609,7 +573,6 @@
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "103px",
             "MaxWidth": "103px",
             "EntityId": "EntityContainer",
@@ -626,7 +589,6 @@
             "Width": "105px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "105px",
             "MaxWidth": "105px",
             "EntityId": "EntityContainer",
@@ -643,7 +605,6 @@
             "Width": "84px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "84px",
             "MaxWidth": "84px",
             "EntityId": "EntityContainer",
@@ -660,7 +621,6 @@
             "Width": "54px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "54px",
             "MaxWidth": "54px",
             "EntityId": "EntityContainer",
@@ -681,7 +641,6 @@
             "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Unit Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Unit Type'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "102px",
             "MaxWidth": "102px",
             "EntityId": "EntityContainer",
@@ -697,7 +656,6 @@
             "Width": "80px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "80px",
             "MaxWidth": "80px",
             "EntityId": "EntityContainer",
@@ -714,7 +672,6 @@
             "Width": "87px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "87px",
             "MaxWidth": "87px",
             "EntityId": "EntityContainer",
@@ -731,7 +688,6 @@
             "Width": "67px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "67px",
             "MaxWidth": "67px",
             "EntityId": "EntityContainer",
@@ -748,7 +704,6 @@
             "Width": "318px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "318px",
             "MaxWidth": "318px",
             "EntityId": "EntityContainer",
@@ -765,7 +720,6 @@
             "Width": "119px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "119px",
             "MaxWidth": "119px",
             "EntityId": "ShipmentTask",
@@ -782,7 +736,6 @@
             "Width": "136px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "136px",
             "MaxWidth": "136px",
             "EntityId": "ShipmentTask",
@@ -798,7 +751,6 @@
             "Width": "384px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "384px",
             "MaxWidth": "384px",
             "EntityId": "ShipmentTask",
@@ -814,7 +766,6 @@
             "Width": "123px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "123px",
             "MaxWidth": "123px",
             "EntityId": "Shipment1",
@@ -833,7 +784,6 @@
             "Events": "{\r\n    \"change\": \"CalcTotalParent\"\r\n}",
             "Width": "78px",
             "Active": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "78px",
             "MaxWidth": "78px",
             "EntityId": "Shipment1",
@@ -855,7 +805,6 @@
             "Events": "{\r\n    \"change\": \"CalcTotalParent\"\r\n}",
             "Width": "88px",
             "Active": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "88px",
             "MaxWidth": "88px",
             "EntityId": "Shipment1",
@@ -878,7 +827,6 @@
             "Width": "101px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "101px",
             "MaxWidth": "101px",
             "EntityId": "Shipment1",
@@ -898,7 +846,6 @@
             "ShowLabel": true,
             "Width": "159px",
             "Active": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "159px",
             "MaxWidth": "159px",
             "EntityId": "Shipment1",
@@ -916,7 +863,6 @@
             "ShowLabel": true,
             "Width": "120px",
             "Active": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "120px",
             "MaxWidth": "120px",
             "EntityId": "Shipment1",
@@ -934,7 +880,6 @@
             "ShowLabel": true,
             "Width": "101px",
             "Active": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "101px",
             "MaxWidth": "101px",
             "EntityId": "Shipment1",
@@ -956,7 +901,6 @@
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "173px",
             "MaxWidth": "173px",
             "EntityId": "Shipment1",
@@ -971,7 +915,6 @@
             "Width": "108px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "108px",
             "MaxWidth": "108px",
             "EntityId": "Shipment1",
@@ -991,7 +934,6 @@
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "193px",
             "MaxWidth": "193px",
             "EntityId": "Shipment1",
@@ -1009,7 +951,6 @@
             "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Air Export\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-plane-departure mr-1'></i>Air Export</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"Air Import\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-plane-arrival mr-1'></i>Air Import</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Sea Export FCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-ship mr-1'></i>Sea Export FCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Sea Import FCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-shipping-fast mr-1'></i>Sea Import FCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"Sea Export LCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fas fa-boxes mr-1'></i>Sea Export LCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 6,\r\n        \"Name\": \"Sea Import LCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fas fa-dolly mr-1'></i>Sea Import LCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 16,\r\n        \"Name\": \"Import Consol\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #17a2b8;'><i class='fas fa-warehouse mr-1'></i>Import Consol</span>\"\r\n    },\r\n    {\r\n        \"Id\": 17,\r\n        \"Name\": \"Export Consol\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #343a40;'><i class='fas fa-plane-departure mr-1'></i>Export Consol</span>\"\r\n    }\r\n]\r\n",
             "FocusSearch": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "154px",
             "MaxWidth": "154px",
             "EntityId": "Shipment1",
@@ -1026,7 +967,6 @@
             "Width": "34px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "34px",
             "MaxWidth": "34px",
             "EntityId": "Shipment1",
@@ -1041,7 +981,6 @@
             "Width": "125px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "125px",
             "MaxWidth": "125px",
             "EntityId": "EntityDimension",
@@ -1057,7 +996,6 @@
             "Width": "115px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "115px",
             "MaxWidth": "115px",
             "EntityId": "EntityDimension",
@@ -1073,7 +1011,6 @@
             "Width": "121px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "121px",
             "MaxWidth": "121px",
             "EntityId": "EntityDimension",
@@ -1091,7 +1028,6 @@
             "DefaultVal": "1",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "113px",
             "MaxWidth": "113px",
             "EntityId": "EntityDimension",
@@ -1111,7 +1047,6 @@
             "Width": "56px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "56px",
             "MaxWidth": "56px",
             "EntityId": "ShipmentSI",
@@ -1128,7 +1063,6 @@
             "Width": "34px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "MinWidth": "34px",
             "MaxWidth": "34px",
             "EntityId": "Shipment1",
@@ -1138,35 +1072,30 @@
     "FeaturePolicies": [
         {
             "Id": "072C4598-BA6E-4D1B-A003-4806F14646FE",
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "1F9F7DA1-429C-48A3-81DE-4CB50A98DA00",
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "4DCD1F6D-52CB-4AF4-A0FC-586622913B1B",
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "59649F71-8CD7-4CEB-8417-651B6CCBBF4A",
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "ADC9F11B-B1D3-4608-8724-D2BBADC6761A",
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "CanRead": true,
             "CanReadAll": true,
@@ -1175,14 +1104,12 @@
         },
         {
             "Id": "B30D547D-B72A-46D2-A73A-4C30193FDD3A",
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "E3A67CB7-2819-486B-910B-F6F9E135CCAE",
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
             "CanRead": true,
             "CanReadAll": true,
@@ -1191,7 +1118,6 @@
         },
         {
             "Id": "F2B7B75E-E1DA-4A5A-827E-971E658B0FDF",
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "RoleId": "CUSTOMER",
             "CanRead": true,
             "CanReadAll": true,
@@ -1200,14 +1126,12 @@
         },
         {
             "Id": "FA39D6C5-9B78-452B-85FA-226738EE0227",
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "FC501FE4-AB42-4278-8B44-0BF5130243DC",
-            "FeatureId": "01952c04-bf25-736b-a100-273db6a3581d",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "TableName": "Feature",
             "Active": true

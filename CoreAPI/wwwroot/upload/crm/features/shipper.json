@@ -16,7 +16,6 @@
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "00d8185c-0000-0000-8000-3fbaa96b6b89",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1,
@@ -39,7 +38,6 @@
                     "IsRealtime": true,
                     "RefName": "Partner",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "FeatureId": "00d8185c-0000-0000-8000-3fbaa96b6b89",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -53,7 +51,6 @@
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "00d8185c-0000-0000-8000-3fbaa96b6b89",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1,
@@ -76,7 +73,6 @@
                     "IsRealtime": true,
                     "RefName": "Partner",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "FeatureId": "00d8185c-0000-0000-8000-3fbaa96b6b89",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -90,7 +86,6 @@
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "00d8185c-0000-0000-8000-3fbaa96b6b89",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1,
@@ -113,7 +108,6 @@
                     "IsRealtime": true,
                     "RefName": "Partner",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "FeatureId": "00d8185c-0000-0000-8000-3fbaa96b6b89",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -130,7 +124,6 @@
             "Width": "330px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00d8185c-0000-0000-8000-3fbaa96b6b89",
             "MinWidth": "330px",
             "MaxWidth": "330px",
             "EntityId": "Customer",
@@ -145,7 +138,6 @@
             "Width": "89px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00d8185c-0000-0000-8000-3fbaa96b6b89",
             "MinWidth": "89px",
             "MaxWidth": "89px",
             "EntityId": "Customer",
@@ -162,7 +154,6 @@
             "Width": "61px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00d8185c-0000-0000-8000-3fbaa96b6b89",
             "MinWidth": "61px",
             "MaxWidth": "61px",
             "EntityId": "Customer",
@@ -182,7 +173,6 @@
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
-            "FeatureId": "00d8185c-0000-0000-8000-3fbaa96b6b89",
             "MinWidth": "150px",
             "MaxWidth": "150px",
             "EntityId": "Customer",
@@ -197,7 +187,6 @@
             "Width": "227px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00d8185c-0000-0000-8000-3fbaa96b6b89",
             "MinWidth": "227px",
             "MaxWidth": "227px",
             "EntityId": "Customer",
@@ -212,7 +201,6 @@
             "Width": "193px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00d8185c-0000-0000-8000-3fbaa96b6b89",
             "MinWidth": "193px",
             "MaxWidth": "193px",
             "EntityId": "Customer",
@@ -232,7 +220,6 @@
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
-            "FeatureId": "00d8185c-0000-0000-8000-3fbaa96b6b89",
             "MinWidth": "69px",
             "MaxWidth": "69px",
             "EntityId": "Customer",
@@ -247,7 +234,6 @@
             "Width": "98px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00d8185c-0000-0000-8000-3fbaa96b6b89",
             "MinWidth": "98px",
             "MaxWidth": "98px",
             "EntityId": "Customer",
@@ -262,7 +248,6 @@
             "Width": "173px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00d8185c-0000-0000-8000-3fbaa96b6b89",
             "MinWidth": "173px",
             "MaxWidth": "173px",
             "EntityId": "Customer",
@@ -277,7 +262,6 @@
             "Width": "128px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00d8185c-0000-0000-8000-3fbaa96b6b89",
             "MinWidth": "128px",
             "MaxWidth": "128px",
             "EntityId": "Customer",
@@ -296,7 +280,6 @@
             "Width": "61px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00d8185c-0000-0000-8000-3fbaa96b6b89",
             "MinWidth": "61px",
             "MaxWidth": "61px",
             "EntityId": "Customer",
@@ -306,49 +289,42 @@
     "FeaturePolicies": [
         {
             "Id": "2C7F04DC-4661-45B8-A997-068F77EF984A",
-            "FeatureId": "00d8185c-0000-0000-8000-3fbaa96b6b89",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "319BCE62-60D5-4E8A-9751-70AE67DAF0F4",
-            "FeatureId": "00d8185c-0000-0000-8000-3fbaa96b6b89",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "57F982EC-92D0-43CC-9B13-8F1A6654312F",
-            "FeatureId": "00d8185c-0000-0000-8000-3fbaa96b6b89",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "57FE4E46-7764-48A2-9F3C-5B68105CABA1",
-            "FeatureId": "00d8185c-0000-0000-8000-3fbaa96b6b89",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "5E382E46-56E8-41B9-9494-ECEFA26AA9F4",
-            "FeatureId": "00d8185c-0000-0000-8000-3fbaa96b6b89",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "7C93D13E-70F9-4B42-9CF2-9B41C2B81CF4",
-            "FeatureId": "00d8185c-0000-0000-8000-3fbaa96b6b89",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "9594A857-2FD2-442C-90D2-58E2AFBE8A6E",
-            "FeatureId": "00d8185c-0000-0000-8000-3fbaa96b6b89",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
             "CanRead": true,
             "CanReadAll": true,
@@ -361,21 +337,18 @@
         },
         {
             "Id": "A9C9DC9D-1B64-433B-A5EE-F4518FD386A8",
-            "FeatureId": "00d8185c-0000-0000-8000-3fbaa96b6b89",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "CB34D0AA-2742-4B18-8E23-ACF3E9C283E9",
-            "FeatureId": "00d8185c-0000-0000-8000-3fbaa96b6b89",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "FA68FECD-E81D-4F1A-AEBE-4C4A0460914B",
-            "FeatureId": "00d8185c-0000-0000-8000-3fbaa96b6b89",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "TableName": "Feature",
             "Active": true

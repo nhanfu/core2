@@ -16,7 +16,6 @@
             "ComponentType": "Section",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "008c1fa8-0000-0000-8000-385761a6006d",
             "ReportTypeId": 1,
             "Components": [
                 {
@@ -35,7 +34,6 @@
                     "IsRealtime": true,
                     "RefName": "ConfigUnique",
                     "TopEmpty": true,
-                    "FeatureId": "008c1fa8-0000-0000-8000-385761a6006d",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -57,7 +55,6 @@
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "008c1fa8-0000-0000-8000-385761a6006d",
             "Editable": true,
             "MinWidth": "469px",
             "MaxWidth": "469px",
@@ -73,7 +70,6 @@
             "Width": "165px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "008c1fa8-0000-0000-8000-385761a6006d",
             "Editable": true,
             "MinWidth": "165px",
             "MaxWidth": "165px",
@@ -92,7 +88,6 @@
             "Query": "{    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Object Type'\",    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Object Type'\"}",
             "RefName": "MasterData",
             "FocusSearch": true,
-            "FeatureId": "008c1fa8-0000-0000-8000-385761a6006d",
             "Editable": true,
             "MinWidth": "469px",
             "MaxWidth": "469px",
@@ -103,21 +98,18 @@
     "FeaturePolicies": [
         {
             "Id": "20AF3948-E942-4701-AB8C-F4D23A2CB4F8",
-            "FeatureId": "008c1fa8-0000-0000-8000-385761a6006d",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "21FDF96A-40BD-4ECE-81FC-8F3340808267",
-            "FeatureId": "008c1fa8-0000-0000-8000-385761a6006d",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "28544C3D-FBD6-4700-9D76-6CB19CEC47FC",
-            "FeatureId": "008c1fa8-0000-0000-8000-385761a6006d",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
             "CanRead": true,
             "CanReadAll": true,
@@ -130,49 +122,42 @@
         },
         {
             "Id": "679891C1-99DD-42A2-B773-15FCA5A80F20",
-            "FeatureId": "008c1fa8-0000-0000-8000-385761a6006d",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "75EED31A-7DA3-4C83-A7DA-4E203A15AD04",
-            "FeatureId": "008c1fa8-0000-0000-8000-385761a6006d",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "8F78E589-4FB1-4AD6-8864-B77D69704D9A",
-            "FeatureId": "008c1fa8-0000-0000-8000-385761a6006d",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "98F99C37-279A-475F-A236-E5276265F328",
-            "FeatureId": "008c1fa8-0000-0000-8000-385761a6006d",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "A03DC3DF-20DB-40D5-8CD1-84A7AE4E01BD",
-            "FeatureId": "008c1fa8-0000-0000-8000-385761a6006d",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "A7351B0F-D2CD-4A5C-ACB8-7662A3496A91",
-            "FeatureId": "008c1fa8-0000-0000-8000-385761a6006d",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "DCA7BBC4-611C-4811-9543-CEF26BA57CE1",
-            "FeatureId": "008c1fa8-0000-0000-8000-385761a6006d",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "TableName": "Feature",
             "Active": true

@@ -16,7 +16,6 @@
             "ComponentType": "Section",
             "XxlCol": 1,
             "Active": true,
-            "FeatureId": "00d91af4-0000-0000-8000-ae98b5c7f966",
             "ReportTypeId": 1,
             "Components": [
                 {
@@ -37,7 +36,6 @@
                     "RefName": "ChatEntity",
                     "TopEmpty": true,
                     "PreQuery": "{\r\n    \"RecordId\" : this.Entity.Id\r\n}",
-                    "FeatureId": "00d91af4-0000-0000-8000-ae98b5c7f966",
                     "ReportTypeId": 1
                 }
             ]
@@ -57,7 +55,6 @@
             "Query": "{\r\n    \"sql\": \"select ds.* from [User] as ds where (ds.TypeId = 1 and ds.Id != '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (ds.TypeId = 1 and ds.Id != '{TokenUserId}')\"\r\n}",
             "RefName": "User",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"FullName\",\r\n        \"Label\": \"Full Name\",\r\n        \"ComponentType\": \"FullName\"\r\n    },\r\n    {\r\n        \"FieldName\": \"NickName\",\r\n        \"Label\": \"NickName\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"DepartmentId\",\r\n        \"Label\": \"Department\",\r\n        \"ComponentType\": \"Dropdown\",\r\n        \"RefName\": \"MasterData\",\r\n        \"FormatData\": \"{Name}\"\r\n    }\r\n]",
-            "FeatureId": "00d91af4-0000-0000-8000-ae98b5c7f966",
             "Editable": true,
             "EntityId": "Feature",
             "IsMultiple": true,
@@ -72,7 +69,6 @@
             "Width": "290px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00d91af4-0000-0000-8000-ae98b5c7f966",
             "Editable": true,
             "MinWidth": "290px",
             "MaxWidth": "290px",
@@ -88,7 +84,6 @@
             "Width": "88px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00d91af4-0000-0000-8000-ae98b5c7f966",
             "Editable": true,
             "MinWidth": "88px",
             "MaxWidth": "88px",
@@ -104,7 +99,6 @@
             "Width": "168px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00d91af4-0000-0000-8000-ae98b5c7f966",
             "Editable": true,
             "MinWidth": "168px",
             "MaxWidth": "168px",
@@ -120,7 +114,6 @@
             "Width": "290px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00d91af4-0000-0000-8000-ae98b5c7f966",
             "Editable": true,
             "MinWidth": "290px",
             "MaxWidth": "290px",
@@ -142,7 +135,6 @@
             "RefName": "Feature",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "00d91af4-0000-0000-8000-ae98b5c7f966",
             "Editable": true,
             "MinWidth": "306px",
             "MaxWidth": "306px",
@@ -159,7 +151,6 @@
             "Width": "96px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00d91af4-0000-0000-8000-ae98b5c7f966",
             "Editable": true,
             "MinWidth": "96px",
             "MaxWidth": "96px",
@@ -176,7 +167,6 @@
             "Width": "95px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00d91af4-0000-0000-8000-ae98b5c7f966",
             "Editable": true,
             "MinWidth": "95px",
             "MaxWidth": "95px",
@@ -192,7 +182,6 @@
             "Width": "266px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00d91af4-0000-0000-8000-ae98b5c7f966",
             "MinWidth": "266px",
             "MaxWidth": "266px",
             "EntityId": "Feature",
@@ -202,7 +191,6 @@
     "FeaturePolicies": [
         {
             "Id": "44A5350A-D76D-4DFE-AFAD-419D28622354",
-            "FeatureId": "00d91af4-0000-0000-8000-ae98b5c7f966",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
             "CanRead": true,
             "CanReadAll": true,
@@ -215,63 +203,54 @@
         },
         {
             "Id": "5AEFDC71-4051-44C6-9235-B8D6813A1598",
-            "FeatureId": "00d91af4-0000-0000-8000-ae98b5c7f966",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "6FCB49CC-18FF-47D3-9E77-5106EE939020",
-            "FeatureId": "00d91af4-0000-0000-8000-ae98b5c7f966",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "7708163F-4663-4CDD-898C-0EDE1B4FAEC4",
-            "FeatureId": "00d91af4-0000-0000-8000-ae98b5c7f966",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "899FE359-CECC-45A3-9909-AF0831A810AF",
-            "FeatureId": "00d91af4-0000-0000-8000-ae98b5c7f966",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "9BB82AB3-5194-41F9-BCCC-D56CC9A6AA42",
-            "FeatureId": "00d91af4-0000-0000-8000-ae98b5c7f966",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "AEE97E17-F848-4165-85DB-1619CE9B98E5",
-            "FeatureId": "00d91af4-0000-0000-8000-ae98b5c7f966",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "C0773315-991F-49E5-A05C-78CE1CC2BD62",
-            "FeatureId": "00d91af4-0000-0000-8000-ae98b5c7f966",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "CB3CCFE5-6580-436C-879D-F5A4556A0A57",
-            "FeatureId": "00d91af4-0000-0000-8000-ae98b5c7f966",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "D13A35EF-F4F2-4571-93C2-F334F3E62AC5",
-            "FeatureId": "00d91af4-0000-0000-8000-ae98b5c7f966",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "TableName": "Feature",
             "Active": true

@@ -16,7 +16,6 @@
             "ClassName": "card-body",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1,
@@ -38,7 +37,6 @@
                     "IsRealtime": true,
                     "RefName": "FeaturePolicy",
                     "PreQuery": "{\r\n    \"RoleId\" : this.EditForm.Entity.Id\r\n}",
-                    "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
                     "OrderBy": "ds2.[Order] asc,seq.Id asc",
                     "IsMultiple": true,
                     "ReportTypeId": 1
@@ -53,7 +51,6 @@
             "ClassName": "ribbon-group",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "ReportTypeId": 1,
             "Components": [
                 {
@@ -69,7 +66,6 @@
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }",
                     "Active": true,
-                    "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
                     "ReportTypeId": 1
                 }
             ]
@@ -82,7 +78,6 @@
             "ClassName": "card-body",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "ReportTypeId": 1,
             "Components": [
                 {
@@ -95,7 +90,6 @@
                     "Label": "Name",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
                     "ReportTypeId": 1
                 },
                 {
@@ -108,7 +102,6 @@
                     "Label": "Description",
                     "ShowLabel": true,
                     "Active": true,
-                    "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
                     "ReportTypeId": 1
                 }
             ]
@@ -121,7 +114,6 @@
             "Icon": "fal fa-users mr-1",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1,
@@ -140,7 +132,6 @@
                     "Query": "{\r\n    \"sql\": \"select * from [User] as ds where RoleIds like N'%{RoleId}%'\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where RoleIds like N'%{RoleId}%'\"\r\n}",
                     "RefName": "User",
                     "PreQuery": "{\r\n    \"RoleId\" : this.EditForm.Entity.Id\r\n}",
-                    "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -160,7 +151,6 @@
             "Width": "96px",
             "Active": true,
             "RefName": "MasterData",
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "MinWidth": "96px",
             "MaxWidth": "96px",
             "EntityId": "User",
@@ -176,7 +166,6 @@
             "Events": "{\"click\":\"EditUser\"}",
             "Width": "65px",
             "Active": true,
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "MinWidth": "65px",
             "MaxWidth": "65px",
             "EntityId": "User",
@@ -191,7 +180,6 @@
             "Width": "180px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "MinWidth": "180px",
             "MaxWidth": "180px",
             "EntityId": "User",
@@ -205,7 +193,6 @@
             "Label": "Nick Name",
             "Width": "143px",
             "Active": true,
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "MinWidth": "143px",
             "MaxWidth": "143px",
             "EntityId": "User",
@@ -219,7 +206,6 @@
             "Label": "Full Name",
             "Width": "143px",
             "Active": true,
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "MinWidth": "143px",
             "MaxWidth": "143px",
             "EntityId": "User",
@@ -233,7 +219,6 @@
             "Label": "Brithday",
             "Width": "143px",
             "Active": true,
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "MinWidth": "143px",
             "MaxWidth": "143px",
             "EntityId": "User",
@@ -251,7 +236,6 @@
             "Width": "118px",
             "Active": true,
             "RefName": "MasterData",
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "MinWidth": "118px",
             "MaxWidth": "118px",
             "EntityId": "User",
@@ -265,7 +249,6 @@
             "Label": "Identity Card",
             "Width": "143px",
             "Active": true,
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "MinWidth": "143px",
             "MaxWidth": "143px",
             "EntityId": "User",
@@ -279,7 +262,6 @@
             "Label": "Address",
             "Width": "127px",
             "Active": true,
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "MinWidth": "127px",
             "MaxWidth": "127px",
             "EntityId": "User",
@@ -293,7 +275,6 @@
             "Label": "Phone Number",
             "Width": "207px",
             "Active": true,
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "MinWidth": "207px",
             "MaxWidth": "207px",
             "EntityId": "User",
@@ -307,7 +288,6 @@
             "Label": "Job Position",
             "Width": "200px",
             "Active": true,
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "MinWidth": "200px",
             "MaxWidth": "200px",
             "EntityId": "User",
@@ -326,7 +306,6 @@
             "Active": true,
             "RefName": "FeaturePolicy",
             "FocusSearch": true,
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "MinWidth": "1px",
             "MaxWidth": "1px",
             "created_by": "FeaturePolicy",
@@ -344,7 +323,6 @@
             "Width": "241px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "MinWidth": "241px",
             "MaxWidth": "241px",
             "created_by": "FeaturePolicy",
@@ -360,7 +338,6 @@
             "ShowLabel": true,
             "Width": "100px",
             "Active": true,
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "TextAlign": "center",
             "Editable": true,
             "MinWidth": "100px",
@@ -379,7 +356,6 @@
             "Width": "122px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "TextAlign": "center",
             "Editable": true,
             "MinWidth": "122px",
@@ -397,7 +373,6 @@
             "ShowLabel": true,
             "Width": "122px",
             "Active": true,
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "TextAlign": "center",
             "Editable": true,
             "MinWidth": "122px",
@@ -415,7 +390,6 @@
             "ShowLabel": true,
             "Width": "145px",
             "Active": true,
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "TextAlign": "center",
             "Editable": true,
             "MinWidth": "145px",
@@ -433,7 +407,6 @@
             "ShowLabel": true,
             "Width": "117px",
             "Active": true,
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "TextAlign": "center",
             "Editable": true,
             "MinWidth": "117px",
@@ -451,7 +424,6 @@
             "ShowLabel": true,
             "Width": "125px",
             "Active": true,
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "TextAlign": "center",
             "Editable": true,
             "MinWidth": "125px",
@@ -472,7 +444,6 @@
             "Events": "{\"click\":\"EditUser\"}",
             "Width": "65px",
             "Active": true,
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "MinWidth": "65px",
             "MaxWidth": "65px",
             "EntityId": "User",
@@ -491,56 +462,48 @@
             "HotKey": "Ctrl-S",
             "Events": "{ \"click\" : \"SavePatch\" }",
             "Active": true,
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "ReportTypeId": 1
         }
     ],
     "FeaturePolicies": [
         {
             "Id": "283E2B51-6FFD-4DE0-80FC-B666B086D622",
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "5DDED553-6437-472A-8BD2-8D4DDD22E4A3",
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "867F3BA5-F77B-4419-AA09-E511E3CD3F90",
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "9CE4FC05-2E15-46C6-AE40-BDED06829F22",
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "B1DAD14C-6652-4BDD-9317-88291DFB627F",
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "BB386B56-CBD4-4276-9B34-7BCAF342BC7C",
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "C0848A27-5E0D-4433-B46B-9C056C116F16",
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
             "CanRead": true,
             "CanReadAll": true,
@@ -551,7 +514,6 @@
         },
         {
             "Id": "C70DD2CB-3DE6-4F06-B18D-0156EEC0ACB7",
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "CanRead": true,
             "CanReadAll": true,
@@ -562,14 +524,12 @@
         },
         {
             "Id": "D440B397-49E7-46E9-8240-62A988C59294",
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "F9077CDF-3B81-4EA5-912A-D0F9817D0651",
-            "FeatureId": "00e81d00-0000-0000-8000-86b4c65580a9",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true

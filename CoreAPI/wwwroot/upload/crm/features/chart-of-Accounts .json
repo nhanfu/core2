@@ -13,7 +13,6 @@
             "Order": 1,
             "ComponentType": "Section",
             "Active": true,
-            "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
             "ReportTypeId": 1,
             "Components": [
                 {
@@ -32,7 +31,6 @@
                     "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "AccountNo",
-                    "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -47,7 +45,6 @@
             "ComponentType": "Number",
             "Label": "No",
             "Active": true,
-            "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
             "Editable": true,
             "EntityId": "AccountNo",
             "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
@@ -60,7 +57,6 @@
             "ComponentType": "Input",
             "Label": "Code",
             "Active": true,
-            "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
             "Editable": true,
             "EntityId": "AccountNo",
             "ReportTypeId": 1
@@ -72,7 +68,6 @@
             "ComponentType": "Input",
             "Label": "Name",
             "Active": true,
-            "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
             "Editable": true,
             "EntityId": "AccountNo",
             "ReportTypeId": 1
@@ -84,7 +79,6 @@
             "ComponentType": "Input",
             "Label": "NameEnglish",
             "Active": true,
-            "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
             "Editable": true,
             "EntityId": "AccountNo",
             "ReportTypeId": 1
@@ -102,7 +96,6 @@
             "Query": "{\r\n    \"sql\": \"select * from MasterData as ds where ParentId = '00f4ff84-0000-0000-8000-23de57f90690'\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds where ParentId = '00f4ff84-0000-0000-8000-23de57f90690'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-            "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
             "Editable": true,
             "EntityId": "AccountNo",
             "ReportTypeId": 1
@@ -114,7 +107,6 @@
             "ComponentType": "Input",
             "Label": "Reason",
             "Active": true,
-            "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
             "Editable": true,
             "EntityId": "AccountNo",
             "ReportTypeId": 1
@@ -123,70 +115,60 @@
     "FeaturePolicies": [
         {
             "Id": "0C1A8EAA-08AD-41FC-A8A6-04F2DDBB83B7",
-            "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "147F9C62-C896-4212-A4BF-2F7826CB94C6",
-            "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "17CD428E-0CF0-46BC-92B8-F753798E8922",
-            "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "21919908-A2C7-4A54-ABC6-D2678CF0BF54",
-            "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "5C7C97B7-80FD-47FC-AF3D-BD18C24EC0EB",
-            "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "82BE449C-4C90-450F-9233-458A896ED7A1",
-            "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "84577B91-69E0-467F-A07D-F204464BE555",
-            "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "B6ADDBD2-F6C0-45AB-90E5-EE2FA7B15074",
-            "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "DCDF2C67-6BC5-44B2-A77F-B22695B23307",
-            "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "FEB8A73E-C83D-4DE9-A946-4E4F9DD26256",
-            "FeatureId": "0054ff24-0000-0000-8000-4fb9b5ecea88",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
             "CanRead": true,
             "CanReadAll": true,

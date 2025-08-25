@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 function clean(obj) {
-    const excludeKeys = new Set(["Visibility", "UpdatedDate", "InsertedBy", "UpdatedBy", "InsertedDate"]);
+    const excludeKeys = new Set(["ComponentGroupId"]);
     if (Array.isArray(obj)) {
         return obj
             .map(clean)

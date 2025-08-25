@@ -17,7 +17,6 @@
             "Label": "WebConfig",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "00b319bc-0000-0000-8000-c8e352bdf557",
             "IsTab": true,
             "ReportTypeId": 1,
             "Components": [
@@ -37,7 +36,6 @@
                     "IsRealtime": true,
                     "RefName": "TableName",
                     "TopEmpty": true,
-                    "FeatureId": "00b319bc-0000-0000-8000-c8e352bdf557",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -51,7 +49,6 @@
             "Label": "Table",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "00b319bc-0000-0000-8000-c8e352bdf557",
             "IsTab": true,
             "ReportTypeId": 1,
             "Components": [
@@ -70,7 +67,6 @@
                     "Query": "{\r\n    \"sql\": \"SELECT * FROM INFORMATION_SCHEMA.TABLES as ds WHERE TABLE_TYPE = 'BASE TABLE'\",\r\n    \"total\": \"SELECT count(*) as total FROM INFORMATION_SCHEMA.TABLES as ds WHERE TABLE_TYPE = 'BASE TABLE'\"\r\n}",
                     "RefName": "TABLES",
                     "TopEmpty": true,
-                    "FeatureId": "00b319bc-0000-0000-8000-c8e352bdf557",
                     "OrderBy": "ds.TABLE_NAME asc",
                     "ReportTypeId": 1
                 }
@@ -87,7 +83,6 @@
             "Width": "180px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00b319bc-0000-0000-8000-c8e352bdf557",
             "Editable": true,
             "MinWidth": "180px",
             "MaxWidth": "180px",
@@ -103,7 +98,6 @@
             "Width": "165px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00b319bc-0000-0000-8000-c8e352bdf557",
             "Editable": true,
             "MinWidth": "165px",
             "MaxWidth": "165px",
@@ -119,7 +113,6 @@
             "Width": "774px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00b319bc-0000-0000-8000-c8e352bdf557",
             "Editable": true,
             "MinWidth": "774px",
             "MaxWidth": "774px",
@@ -135,7 +128,6 @@
             "Width": "651px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00b319bc-0000-0000-8000-c8e352bdf557",
             "Editable": true,
             "MinWidth": "651px",
             "MaxWidth": "651px",
@@ -151,7 +143,6 @@
             "Width": "165px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00b319bc-0000-0000-8000-c8e352bdf557",
             "MinWidth": "165px",
             "MaxWidth": "165px",
             "EntityId": "TableName",
@@ -166,7 +157,6 @@
             "Width": "165px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00b319bc-0000-0000-8000-c8e352bdf557",
             "MinWidth": "165px",
             "MaxWidth": "165px",
             "EntityId": "TableName",
@@ -176,7 +166,6 @@
     "FeaturePolicies": [
         {
             "Id": "070039DD-61D7-450D-92A5-82B1F79B3E58",
-            "FeatureId": "00b319bc-0000-0000-8000-c8e352bdf557",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
             "CanRead": true,
             "CanReadAll": true,
@@ -187,21 +176,18 @@
         },
         {
             "Id": "3B93C078-AB4B-49EF-9682-5891DBBD1CA8",
-            "FeatureId": "00b319bc-0000-0000-8000-c8e352bdf557",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "53C7DAFE-EC22-463D-A3B6-3F7B42054629",
-            "FeatureId": "00b319bc-0000-0000-8000-c8e352bdf557",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "5ED7D06D-6E59-44A2-8C98-FD390D7BB7F5",
-            "FeatureId": "00b319bc-0000-0000-8000-c8e352bdf557",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "CanRead": true,
             "CanReadAll": true,
@@ -212,42 +198,36 @@
         },
         {
             "Id": "7A430A96-2A48-4238-A4C6-0AED1E232CA9",
-            "FeatureId": "00b319bc-0000-0000-8000-c8e352bdf557",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "85CD9524-53A2-48C4-8DB1-1C038B923EA3",
-            "FeatureId": "00b319bc-0000-0000-8000-c8e352bdf557",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "A23B3D13-62B8-419B-822F-6BDC5176F1AC",
-            "FeatureId": "00b319bc-0000-0000-8000-c8e352bdf557",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "CB4DA3D1-7DAB-4A47-A207-3FC9598BF422",
-            "FeatureId": "00b319bc-0000-0000-8000-c8e352bdf557",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "FD63230D-C80F-42F5-81CC-867113F40220",
-            "FeatureId": "00b319bc-0000-0000-8000-c8e352bdf557",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "FDB067EE-7D45-4598-AE67-BF93D220F6EC",
-            "FeatureId": "00b319bc-0000-0000-8000-c8e352bdf557",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "TableName": "Feature",
             "Active": true

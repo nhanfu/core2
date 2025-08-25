@@ -19,7 +19,6 @@
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "01945994-422a-77c5-a2be-a03e633ab183",
             "ReportTypeId": 1,
             "Components": [
                 {
@@ -36,7 +35,6 @@
                     "Active": true,
                     "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds\"\r\n}",
                     "RefName": "AccountNo",
-                    "FeatureId": "01945994-422a-77c5-a2be-a03e633ab183",
                     "OrderBy": "ds.[Code] asc",
                     "ReportTypeId": 1
                 }
@@ -53,7 +51,6 @@
             "Width": "252px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01945994-422a-77c5-a2be-a03e633ab183",
             "MinWidth": "252px",
             "MaxWidth": "252px",
             "EntityId": "AccountNo",
@@ -69,7 +66,6 @@
             "Width": "77px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01945994-422a-77c5-a2be-a03e633ab183",
             "MinWidth": "77px",
             "MaxWidth": "77px",
             "EntityId": "AccountNo",
@@ -84,7 +80,6 @@
             "Width": "33px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01945994-422a-77c5-a2be-a03e633ab183",
             "MinWidth": "33px",
             "MaxWidth": "33px",
             "EntityId": "AccountNo",
@@ -99,7 +94,6 @@
             "Width": "171px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01945994-422a-77c5-a2be-a03e633ab183",
             "MinWidth": "171px",
             "MaxWidth": "171px",
             "EntityId": "AccountNo",
@@ -120,7 +114,6 @@
             "RefName": "AccountNo",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "01945994-422a-77c5-a2be-a03e633ab183",
             "MinWidth": "142px",
             "MaxWidth": "142px",
             "EntityId": "AccountNo",
@@ -135,7 +128,6 @@
             "Width": "269px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01945994-422a-77c5-a2be-a03e633ab183",
             "MinWidth": "269px",
             "MaxWidth": "269px",
             "EntityId": "AccountNo",
@@ -157,7 +149,6 @@
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "01945994-422a-77c5-a2be-a03e633ab183",
             "MinWidth": "115px",
             "MaxWidth": "115px",
             "OrderBy": "ds.Enum asc",
@@ -180,7 +171,6 @@
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "01945994-422a-77c5-a2be-a03e633ab183",
             "MinWidth": "115px",
             "MaxWidth": "115px",
             "OrderBy": "ds.Enum asc",
@@ -200,7 +190,6 @@
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Debit Balance\"\r\n    }\r\n]",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
             "FocusSearch": true,
-            "FeatureId": "01945994-422a-77c5-a2be-a03e633ab183",
             "MinWidth": "149px",
             "MaxWidth": "149px",
             "EntityId": "AccountNo",
@@ -216,7 +205,6 @@
             "Width": "47px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01945994-422a-77c5-a2be-a03e633ab183",
             "MinWidth": "47px",
             "MaxWidth": "47px",
             "EntityId": "AccountNo",
@@ -233,7 +221,6 @@
             "Width": "34px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01945994-422a-77c5-a2be-a03e633ab183",
             "MinWidth": "34px",
             "MaxWidth": "34px",
             "EntityId": "AccountNo",
@@ -253,7 +240,6 @@
             "ClassName": "btn",
             "Events": "{\r\n    \"click\": \"Add\"\r\n}",
             "Active": true,
-            "FeatureId": "01945994-422a-77c5-a2be-a03e633ab183",
             "ReportTypeId": 1
         },
         {
@@ -267,7 +253,6 @@
             "Width": "34px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01945994-422a-77c5-a2be-a03e633ab183",
             "MinWidth": "34px",
             "MaxWidth": "34px",
             "EntityId": "AccountNo",
@@ -277,7 +262,6 @@
     "FeaturePolicies": [
         {
             "Id": "1D8071E7-F6CE-41CF-A9E2-6C01598CFFF2",
-            "FeatureId": "01945994-422a-77c5-a2be-a03e633ab183",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "CanRead": true,
             "CanReadAll": true,
@@ -288,14 +272,12 @@
         },
         {
             "Id": "26CDBFA5-D300-491E-857D-F75A40863379",
-            "FeatureId": "01945994-422a-77c5-a2be-a03e633ab183",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "2801B63F-85CB-46A3-8EE8-2C6BA9860B22",
-            "FeatureId": "01945994-422a-77c5-a2be-a03e633ab183",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
             "CanRead": true,
             "CanReadAll": true,
@@ -308,28 +290,24 @@
         },
         {
             "Id": "5A1D1A6C-81FE-4CD4-8A74-868E56AF09E7",
-            "FeatureId": "01945994-422a-77c5-a2be-a03e633ab183",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "5A2C945F-0D80-4351-B1E9-F82B02DCE49E",
-            "FeatureId": "01945994-422a-77c5-a2be-a03e633ab183",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "8FAB1456-184A-4BB2-B2D9-80F1682999D2",
-            "FeatureId": "01945994-422a-77c5-a2be-a03e633ab183",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "9549CEE8-1128-4894-9951-61A1EAF6A572",
-            "FeatureId": "01945994-422a-77c5-a2be-a03e633ab183",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "CanRead": true,
             "CanReadAll": true,
@@ -342,21 +320,18 @@
         },
         {
             "Id": "9B33701F-5012-41DB-942E-9848712A65DF",
-            "FeatureId": "01945994-422a-77c5-a2be-a03e633ab183",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "9DEE82FE-C883-4C74-83B3-38445BE702E8",
-            "FeatureId": "01945994-422a-77c5-a2be-a03e633ab183",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "BCBA30E8-AAA9-40F9-9F2E-C0E46DAA968D",
-            "FeatureId": "01945994-422a-77c5-a2be-a03e633ab183",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
@@ -365,7 +340,6 @@
     "UserSettings": [
         {
             "Id": "067930b6-0786-78ec-8000-76cf66304725",
-            "FeatureId": "01945994-422a-77c5-a2be-a03e633ab183",
             "ComponentId": "01945994-42ae-707d-89e2-d00ac0aac7e2",
             "UserId": "00781eb8-0000-0000-8000-52bf71dcaef7",
             "Value": "[{\"Id\":\"01945a72-c48e-766f-b6c9-e84615ea7232\",\"FieldName\":\"btnEdit\",\"Order\":0,\"Width\":\"34px\"},{\"Id\":\"01945994-434b-7564-afa1-f00a5830f71e\",\"FieldName\":\"Code\",\"Order\":1,\"Width\":\"153px\"},{\"Id\":\"01945994-4314-7029-a867-cb48cadde6e4\",\"FieldName\":\"Name\",\"Order\":2,\"Width\":\"252px\"},{\"Id\":\"0194599d-f6ff-73ce-8c4d-9c51c032341e\",\"FieldName\":\"TypeId\",\"Order\":3,\"Width\":\"149px\"},{\"Id\":\"01945999-a3af-7356-b340-54f7f8a7a819\",\"FieldName\":\"NameEnglish\",\"Order\":4,\"Width\":\"97px\"},{\"Id\":\"01945994-4431-75a8-9e42-a26a92744eb6\",\"FieldName\":\"Description\",\"Order\":5,\"Width\":\"171px\"},{\"Id\":\"0194599a-5b9c-762c-ac6f-b800447d682f\",\"FieldName\":\"CurrencyId\",\"Order\":6,\"Width\":\"115px\"},{\"Id\":\"0194599a-86e6-7608-8f12-6b0bff2a197a\",\"FieldName\":\"OgCurrencyId\",\"Order\":7,\"Width\":\"115px\"},{\"Id\":\"01945994-4398-70c3-a388-ae6fd05a2890\",\"FieldName\":\"No\",\"Order\":8,\"Width\":\"123px\"},{\"Id\":\"01945994-447d-743a-acbe-96c7b798ce6b\",\"FieldName\":\"ParentId\",\"Order\":9,\"Width\":\"142px\"},{\"Id\":\"0194599f-6312-734c-8e1e-263afb475e01\",\"FieldName\":\"Active\",\"Order\":10,\"Width\":\"68px\"}]",

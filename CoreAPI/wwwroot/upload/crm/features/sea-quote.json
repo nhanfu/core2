@@ -19,7 +19,6 @@
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1,
@@ -40,7 +39,6 @@
                     "Query": "{\r\n    \"sql\": \"select * from Inquiry as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and TypeId = 2 and ServiceId in (3,4,5,6,11)\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and TypeId = 2 and ServiceId in (3,4,5,6,11)\"\r\n}",
                     "RefName": "Inquiry",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -54,7 +52,6 @@
             "Icon": "fal fa-plus mr-1",
             "ClassName": "scroll-content",
             "Active": true,
-            "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1,
@@ -75,7 +72,6 @@
                     "Query": "{\r\n    \"sql\": \"select * from Inquiry as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 1 and TypeId = 2 and ServiceId in (3,4,5,6,11)\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 1 and TypeId = 2 and ServiceId in (3,4,5,6,11)\"\r\n}",
                     "RefName": "Inquiry",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -89,7 +85,6 @@
             "Icon": "fal fa-ellipsis-h mr-1",
             "ClassName": "scroll-content",
             "Active": true,
-            "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1,
@@ -109,7 +104,6 @@
                     "Query": "{\r\n    \"sql\": \"select * from Inquiry as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 2 and TypeId = 2 and ServiceId in (3,4,5,6,11)\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 2 and TypeId = 2 and ServiceId in (3,4,5,6,11)\"\r\n}",
                     "RefName": "Inquiry",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -123,7 +117,6 @@
             "Icon": "fal fa-smile mr-1",
             "ClassName": "scroll-content",
             "Active": true,
-            "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1,
@@ -143,7 +136,6 @@
                     "Query": "{\r\n    \"sql\": \"select * from Inquiry as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 3 and TypeId = 2 and ServiceId in (3,4,5,6,11)\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 3 and TypeId = 2 and ServiceId in (3,4,5,6,11)\"\r\n}",
                     "RefName": "Inquiry",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -157,7 +149,6 @@
             "Icon": "fal fa-frown mr-1",
             "ClassName": "scroll-content",
             "Active": true,
-            "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1,
@@ -177,7 +168,6 @@
                     "Query": "{\r\n    \"sql\": \"select * from Inquiry as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 4 and TypeId = 2 and ServiceId in (3,4,5,6,11)\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 4 and TypeId = 2 and ServiceId in (3,4,5,6,11)\"\r\n}",
                     "RefName": "Inquiry",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -195,7 +185,6 @@
             "Width": "76px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
             "Frozen": true,
             "MinWidth": "76px",
             "MaxWidth": "76px",
@@ -215,7 +204,6 @@
             "Width": "139px",
             "Query": "[\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Sea Export FCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-ship mr-1'></i>Sea Export FCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Sea Import FCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-shipping-fast mr-1'></i>Sea Import FCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"Sea Export LCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fas fa-boxes mr-1'></i>Sea Export LCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 6,\r\n        \"Name\": \"Sea Import LCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fas fa-dolly mr-1'></i>Sea Import LCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 11,\r\n        \"Name\": \"General\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #6c757d;'><i class='fas fa-globe mr-1'></i>General</span>\"\r\n    }\r\n]\r\n",
             "FocusSearch": true,
-            "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
             "Frozen": true,
             "MinWidth": "139px",
             "MaxWidth": "139px",
@@ -230,7 +218,6 @@
             "Label": "From date",
             "Width": "81px",
             "Active": true,
-            "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
             "MinWidth": "81px",
             "MaxWidth": "81px",
             "EntityId": "Quote",
@@ -244,7 +231,6 @@
             "Label": "To date",
             "Width": "85px",
             "Active": true,
-            "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
             "MinWidth": "85px",
             "MaxWidth": "85px",
             "EntityId": "Quote",
@@ -263,7 +249,6 @@
             "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fal fa-plus mr-1'></i>New</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: #333; background-color: #ffc107;'><i class='fal fa-ellipsis-h mr-1'></i>Approving</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fal fa-smile mr-1'></i>Approved</span>\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fal fa-frown mr-1'></i>Decline</span>\"\r\n    }\r\n]",
             "FocusSearch": true,
-            "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
             "HasFilter": true,
             "MinWidth": "116px",
             "MaxWidth": "116px",
@@ -283,7 +268,6 @@
             "Active": true,
             "Query": "[\r\n    {\r\n        \"Id\": 0,\r\n        \"Name\": \"FREE-HAND\"\r\n    },\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"NOMINATE\"\r\n    }\r\n]",
             "FocusSearch": true,
-            "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
             "MinWidth": "86px",
             "MaxWidth": "86px",
             "EntityId": "Quote",
@@ -297,7 +281,6 @@
             "Label": "Quo No",
             "Width": "130px",
             "Active": true,
-            "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
             "Frozen": true,
             "MinWidth": "130px",
             "MaxWidth": "130px",
@@ -313,7 +296,6 @@
             "Width": "108px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
             "MinWidth": "108px",
             "MaxWidth": "108px",
             "EntityId": "Quote",
@@ -332,7 +314,6 @@
             "Active": true,
             "RefName": "Partner",
             "ShowHotKey": true,
-            "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
             "MinWidth": "158px",
             "MaxWidth": "158px",
             "EntityId": "Quote",
@@ -352,7 +333,6 @@
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
             "Frozen": true,
             "MinWidth": "150px",
             "MaxWidth": "150px",
@@ -373,7 +353,6 @@
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
             "MinWidth": "90px",
             "MaxWidth": "90px",
             "EntityId": "Quote",
@@ -391,7 +370,6 @@
             "Width": "115px",
             "Active": true,
             "RefName": "MasterData",
-            "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
             "MinWidth": "115px",
             "MaxWidth": "115px",
             "EntityId": "Quote",
@@ -411,7 +389,6 @@
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
-            "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
             "TextAlign": "center",
             "MinWidth": "72px",
             "MaxWidth": "72px",
@@ -429,7 +406,6 @@
             "Width": "43px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
             "Frozen": true,
             "MinWidth": "43px",
             "MaxWidth": "43px",
@@ -450,7 +426,6 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Add\"}",
             "Active": true,
-            "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
             "ReportTypeId": 1
         },
         {
@@ -464,7 +439,6 @@
             "Width": "43px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
             "Frozen": true,
             "MinWidth": "43px",
             "MaxWidth": "43px",
@@ -483,28 +457,24 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Add\"}",
             "Active": true,
-            "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
             "ReportTypeId": 1
         }
     ],
     "FeaturePolicies": [
         {
             "Id": "3A97DF1A-E2D0-4484-B430-AD43B2AE49F9",
-            "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "50E20095-02AE-482D-9EC9-FE4C1888B27A",
-            "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "54F7A709-1918-4F67-8B1D-E8A1BF8A695E",
-            "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "CanRead": true,
             "CanWrite": true,
@@ -514,35 +484,30 @@
         },
         {
             "Id": "8A2EF3BA-8B7C-4EE5-824A-115AD18E2B94",
-            "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "97248621-08BB-438C-A24F-BD342ECE2747",
-            "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "993D99AA-8488-41FB-9966-908B50B3FC5F",
-            "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "AB2705D0-C7E8-4E9F-A856-FCB1338932A6",
-            "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "C100927C-D7AA-461A-9ED1-417279BEF46D",
-            "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
             "CanRead": true,
             "CanReadAll": true,
@@ -555,14 +520,12 @@
         },
         {
             "Id": "CFE743F7-D606-4491-8C0E-863F07E88F95",
-            "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "D6F190E8-CE44-4D26-ACC4-219CA21B2F9A",
-            "FeatureId": "00270414-0000-0000-8000-1a0ec1f74c1c",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "TableName": "Feature",
             "Active": true

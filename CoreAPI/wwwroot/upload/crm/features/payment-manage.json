@@ -18,7 +18,6 @@
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "DisplayBadge": true,
             "ReportTypeId": 1,
             "Components": [
@@ -37,7 +36,6 @@
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentFee as ds where (ds.Active = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentFee as ds where (ds.Active = 1)\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "ShipmentFee",
-                    "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -51,7 +49,6 @@
             "Label": "SearchForm",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "TabGroup": "SearchForm",
             "ReportTypeId": 1,
             "Components": [
@@ -68,7 +65,6 @@
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
                     "SmCol": 5,
                     "Active": true,
-                    "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
                     "ReportTypeId": 1
                 },
                 {
@@ -84,7 +80,6 @@
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
                     "SmCol": 5,
                     "Active": true,
-                    "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
                     "ReportTypeId": 1
                 },
                 {
@@ -105,7 +100,6 @@
                     "Active": true,
                     "Query": "[\r\n    {\r\n        \"Id\": \"ShipmentDate\",\r\n        \"Name\": \"Shipment\"\r\n    },\r\n    {\r\n        \"Id\": \"EtdDate\",\r\n        \"Name\": \"ETD\"\r\n    },\r\n    {\r\n        \"Id\": \"EtaDate\",\r\n        \"Name\": \"ETA\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
                     "ReportTypeId": 1
                 },
                 {
@@ -121,7 +115,6 @@
                     "Events": "{    \"change\": \"ChangeDataFee\"}",
                     "SmCol": 5,
                     "Active": true,
-                    "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
                     "ReportTypeId": 1
                 }
             ]
@@ -144,7 +137,6 @@
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
             "PreQuery": "{\r\n    \"PartnerIds\": [this.EditForm.ShipmentDetail.CustomerId,this.EditForm.ShipmentDetail.ShipperId,this.EditForm.ShipmentDetail.ConsigneeId,this.EditForm.Entity.AgentId,this.EditForm.Entity.VendorId].filter(x=> x).join(`','`)\r\n}",
             "FocusSearch": true,
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "MinWidth": "128px",
             "MaxWidth": "128px",
             "OrderBy": "priority ASC, ds.Id ASC",
@@ -168,7 +160,6 @@
             "RefName": "FeeType",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Description\", \"Label\" : \"Description\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"GroupId\", \"Label\" : \"Group\", \"ComponentType\" : \"Dropdown\", \"RefName\" : \"MasterData\", \"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "MinWidth": "165px",
             "MaxWidth": "165px",
             "OrderBy": "ds.IsFreight desc",
@@ -186,7 +177,6 @@
             "Width": "60px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "MinWidth": "60px",
             "MaxWidth": "60px",
             "EntityId": "ShipmentFee",
@@ -210,7 +200,6 @@
             "RefName": "MasterData",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
             "FocusSearch": true,
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "MinWidth": "90px",
             "MaxWidth": "90px",
             "EntityId": "ShipmentFee",
@@ -228,7 +217,6 @@
             "Width": "115px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "MinWidth": "115px",
             "MaxWidth": "115px",
             "EntityId": "ShipmentFee",
@@ -247,7 +235,6 @@
             "Width": "43px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "MinWidth": "43px",
             "MaxWidth": "43px",
             "EntityId": "ShipmentFee",
@@ -270,7 +257,6 @@
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "MinWidth": "124px",
             "MaxWidth": "124px",
             "OrderBy": "ds.Enum asc",
@@ -288,7 +274,6 @@
             "Width": "95px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "MinWidth": "95px",
             "MaxWidth": "95px",
             "EntityId": "ShipmentFee",
@@ -311,7 +296,6 @@
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
             "PreQuery": "{\r\n    \"PartnerIds\": [this.EditForm.ShipmentDetail.CustomerId,this.EditForm.ShipmentDetail.ShipperId,this.EditForm.ShipmentDetail.ConsigneeId,this.EditForm.Entity.AgentId,this.EditForm.Entity.VendorId].filter(x=> x).join(`','`)\r\n}",
             "FocusSearch": true,
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "MinWidth": "118px",
             "MaxWidth": "118px",
             "OrderBy": "priority ASC",
@@ -331,7 +315,6 @@
             "Active": true,
             "RefName": "ShipmentInvoice",
             "FocusSearch": true,
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "MinWidth": "110px",
             "MaxWidth": "110px",
             "EntityId": "ShipmentFee",
@@ -349,7 +332,6 @@
             "Active": true,
             "RefName": "ShipmentInvoice",
             "FocusSearch": true,
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "MinWidth": "98px",
             "MaxWidth": "98px",
             "EntityId": "ShipmentFee",
@@ -365,7 +347,6 @@
             "Width": "108px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "MinWidth": "108px",
             "MaxWidth": "108px",
             "EntityId": "ShipmentFee",
@@ -384,7 +365,6 @@
             "Active": true,
             "RefName": "Shipment",
             "FocusSearch": true,
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "MinWidth": "118px",
             "MaxWidth": "118px",
             "EntityId": "ShipmentFee",
@@ -404,7 +384,6 @@
             "Active": true,
             "RefName": "Shipment",
             "FocusSearch": true,
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "MinWidth": "139px",
             "MaxWidth": "139px",
             "EntityId": "ShipmentFee",
@@ -420,7 +399,6 @@
             "Width": "80px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "MinWidth": "80px",
             "MaxWidth": "80px",
             "EntityId": "ShipmentFee",
@@ -436,7 +414,6 @@
             "Width": "78px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "MinWidth": "78px",
             "MaxWidth": "78px",
             "EntityId": "ShipmentFee",
@@ -454,7 +431,6 @@
             "Active": true,
             "DisabledExp": "!this.Entity.PaymentAccId",
             "FocusSearch": true,
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "Frozen": true,
             "Editable": true,
             "MinWidth": "49px",
@@ -472,7 +448,6 @@
             "Width": "115px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "MinWidth": "115px",
             "MaxWidth": "115px",
             "EntityId": "ShipmentFee",
@@ -488,7 +463,6 @@
             "Width": "115px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "MinWidth": "115px",
             "MaxWidth": "115px",
             "EntityId": "ShipmentFee",
@@ -504,7 +478,6 @@
             "Width": "115px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "MinWidth": "115px",
             "MaxWidth": "115px",
             "EntityId": "ShipmentFee",
@@ -520,7 +493,6 @@
             "Width": "92px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "MinWidth": "92px",
             "MaxWidth": "92px",
             "EntityId": "ShipmentFee",
@@ -538,7 +510,6 @@
             "Width": "105px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "MinWidth": "105px",
             "MaxWidth": "105px",
             "EntityId": "ShipmentFee",
@@ -556,7 +527,6 @@
             "Width": "88px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "MinWidth": "88px",
             "MaxWidth": "88px",
             "EntityId": "ShipmentFee",
@@ -573,7 +543,6 @@
             "Active": true,
             "DisabledExp": "debugger;\r\nreturn this.Entity.PaymentAccId;",
             "FocusSearch": true,
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "Frozen": true,
             "Editable": true,
             "MinWidth": "104px",
@@ -592,7 +561,6 @@
             "Width": "104px",
             "Active": true,
             "FocusSearch": true,
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "Frozen": true,
             "MinWidth": "104px",
             "MaxWidth": "104px",
@@ -609,7 +577,6 @@
             "Label": "Total Remain",
             "Width": "104px",
             "Active": true,
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "Frozen": true,
             "MinWidth": "104px",
             "MaxWidth": "104px",
@@ -621,14 +588,12 @@
     "FeaturePolicies": [
         {
             "Id": "2B89B60F-815B-4F0D-85C6-A51E54F3A623",
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "34C72ABF-5D48-41AA-8D49-34241884BD0B",
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "CanRead": true,
             "CanReadAll": true,
@@ -637,35 +602,30 @@
         },
         {
             "Id": "41EDF2B5-A848-48AC-9799-414E4A44196B",
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "A2C513A2-E1E8-4A69-A5C7-C50D0BBF71F8",
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "A9DFD5D5-FD28-4A67-B6D7-B03628DEB234",
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "AA25F9EB-BD05-4E5C-BFFB-1B7D70612A6F",
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "DAEE91D1-AAA5-4E21-8BD1-149B8E252AEE",
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "CanRead": true,
             "CanReadAll": true,
@@ -674,21 +634,18 @@
         },
         {
             "Id": "E0C41287-563E-43DE-9841-660DC60E4465",
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "ED6379AD-3D14-4CF2-86BD-FC5DB943D64D",
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "F67511E0-A088-407A-B010-3520557D2431",
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
             "CanRead": true,
             "CanReadAll": true,
@@ -699,7 +656,6 @@
     "UserSettings": [
         {
             "Id": "0678b63d-c382-7215-8000-efee1ec59044",
-            "FeatureId": "01946a26-7f63-721d-be41-85adbd456d84",
             "ComponentId": "01946a26-8096-707e-b156-f7a1cf70e31f",
             "UserId": "00781eb8-0000-0000-8000-52bf71dcaef7",
             "Value": "[{\"Id\":\"01946a2a-a6b1-7094-b60e-1e03b1ac9433\",\"FieldName\":\"VendorId\",\"Order\":0,\"Width\":\"118px\"},{\"Id\":\"01946a2b-8e9d-7358-a7db-30d7233dcad6\",\"FieldName\":\"FileId\",\"Order\":1,\"Width\":\"102px\"},{\"Id\":\"01946a2f-e536-7419-b7a6-3dc96810e8ff\",\"FieldName\":\"EtaDate\",\"Order\":2,\"Width\":\"132px\"},{\"Id\":\"01946a2f-edcc-709a-8db3-5c2600e66cf7\",\"FieldName\":\"EtdDate\",\"Order\":3,\"Width\":\"102px\"},{\"Id\":\"01946a2f-6081-74c8-bac0-340ef268e3f2\",\"FieldName\":\"ShipmentId\",\"Order\":4,\"Width\":\"102px\"},{\"Id\":\"01946a2a-a6b1-7094-b60e-22c6726333c9\",\"FieldName\":\"DescriptionId\",\"Order\":5,\"Width\":\"165px\"},{\"Id\":\"01946a2a-a6b1-7094-b60e-240184a79720\",\"FieldName\":\"Quantity\",\"Order\":6,\"Width\":\"102px\"},{\"Id\":\"01946a2a-a6b2-75c0-8362-d7ac2b73f162\",\"FieldName\":\"UnitId\",\"Order\":7,\"Width\":\"90px\"},{\"Id\":\"01946a2a-a6b2-75c0-8362-d9297d49cc1d\",\"FieldName\":\"Amount\",\"Order\":8,\"Width\":\"93px\"},{\"Id\":\"01946a2a-a6b2-75c0-8362-dfd794a85076\",\"FieldName\":\"Vat\",\"Order\":9,\"Width\":\"74px\"},{\"Id\":\"01946a2a-a6b2-75c0-8362-e17ee8c33e28\",\"FieldName\":\"CurrencyId\",\"Order\":10,\"Width\":\"124px\"},{\"Id\":\"01946a2a-a6b3-7208-930e-8efbedc0c2a4\",\"FieldName\":\"TotalAmountTax\",\"Order\":11,\"Width\":\"95px\"},{\"Id\":\"01946a2a-a6b3-7208-930e-929637c4c186\",\"FieldName\":\"ObhId\",\"Order\":12,\"Width\":\"98px\"},{\"Id\":\"01946a2a-a6b3-7208-930e-9630f32066e7\",\"FieldName\":\"ShipmentInvoiceId\",\"Order\":13,\"Width\":\"109px\"},{\"Id\":\"01946a2a-a6b4-72bc-8fd7-46e2b3cbd9d9\",\"FieldName\":\"PaymentRequestId\",\"Order\":14,\"Width\":\"114px\"},{\"Id\":\"01946a2a-a6b4-72bc-8fd7-4a026cc3cb56\",\"FieldName\":\"InvoiceId\",\"Order\":15,\"Width\":\"86px\"}]",

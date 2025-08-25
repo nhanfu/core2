@@ -16,7 +16,6 @@
             "Label": "All",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "006f0138-0000-0000-8000-7b44fe51f718",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1,
@@ -37,7 +36,6 @@
                     "Query": "{\r\n    \"sql\": \"select * from Terminal as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Terminal as ds\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "Terminal",
-                    "FeatureId": "006f0138-0000-0000-8000-7b44fe51f718",
                     "OrderBy": "ds.InsertedDate desc",
                     "ReportTypeId": 1
                 }
@@ -50,7 +48,6 @@
             "Label": "Port",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "006f0138-0000-0000-8000-7b44fe51f718",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1
@@ -62,7 +59,6 @@
             "Label": "Warehouse",
             "XxlCol": 12,
             "Active": true,
-            "FeatureId": "006f0138-0000-0000-8000-7b44fe51f718",
             "IsTab": true,
             "DisplayBadge": true,
             "ReportTypeId": 1
@@ -80,7 +76,6 @@
             "Events": "{\"click\":\"Edit\"}",
             "Width": "35px",
             "Active": true,
-            "FeatureId": "006f0138-0000-0000-8000-7b44fe51f718",
             "MinWidth": "35px",
             "MaxWidth": "35px",
             "EntityId": "Terminal",
@@ -101,7 +96,6 @@
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "006f0138-0000-0000-8000-7b44fe51f718",
             "MinWidth": "149px",
             "MaxWidth": "149px",
             "EntityId": "Terminal",
@@ -115,7 +109,6 @@
             "Label": "Code",
             "Width": "158px",
             "Active": true,
-            "FeatureId": "006f0138-0000-0000-8000-7b44fe51f718",
             "MinWidth": "158px",
             "MaxWidth": "158px",
             "EntityId": "Terminal",
@@ -129,7 +122,6 @@
             "Label": "Name",
             "Width": "256px",
             "Active": true,
-            "FeatureId": "006f0138-0000-0000-8000-7b44fe51f718",
             "MinWidth": "256px",
             "MaxWidth": "256px",
             "EntityId": "Terminal",
@@ -143,7 +135,6 @@
             "Label": "Active",
             "Width": "84px",
             "Active": true,
-            "FeatureId": "006f0138-0000-0000-8000-7b44fe51f718",
             "MinWidth": "84px",
             "MaxWidth": "84px",
             "EntityId": "Terminal",
@@ -157,7 +148,6 @@
             "Label": "Address",
             "Width": "178px",
             "Active": true,
-            "FeatureId": "006f0138-0000-0000-8000-7b44fe51f718",
             "MinWidth": "178px",
             "MaxWidth": "178px",
             "EntityId": "Terminal",
@@ -175,7 +165,6 @@
             "Active": true,
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
-            "FeatureId": "006f0138-0000-0000-8000-7b44fe51f718",
             "MinWidth": "74px",
             "MaxWidth": "74px",
             "EntityId": "Terminal",
@@ -189,7 +178,6 @@
             "Label": "Inserted Date",
             "Width": "148px",
             "Active": true,
-            "FeatureId": "006f0138-0000-0000-8000-7b44fe51f718",
             "MinWidth": "148px",
             "MaxWidth": "148px",
             "EntityId": "Terminal",
@@ -207,7 +195,6 @@
             "Active": true,
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
-            "FeatureId": "006f0138-0000-0000-8000-7b44fe51f718",
             "MinWidth": "157px",
             "MaxWidth": "157px",
             "EntityId": "Terminal",
@@ -221,7 +208,6 @@
             "Label": "Updated Date",
             "Width": "167px",
             "Active": true,
-            "FeatureId": "006f0138-0000-0000-8000-7b44fe51f718",
             "MinWidth": "167px",
             "MaxWidth": "167px",
             "EntityId": "Terminal",
@@ -242,7 +228,6 @@
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "006f0138-0000-0000-8000-7b44fe51f718",
             "MinWidth": "149px",
             "MaxWidth": "149px",
             "EntityId": "Terminal",
@@ -263,7 +248,6 @@
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "FeatureId": "006f0138-0000-0000-8000-7b44fe51f718",
             "MinWidth": "225px",
             "MaxWidth": "225px",
             "EntityId": "Terminal",
@@ -283,7 +267,6 @@
             "Events": "{\"click\":\"Edit\"}",
             "Width": "35px",
             "Active": true,
-            "FeatureId": "006f0138-0000-0000-8000-7b44fe51f718",
             "MinWidth": "35px",
             "MaxWidth": "35px",
             "EntityId": "Terminal",
@@ -301,56 +284,48 @@
             "ClassName": "btn",
             "Events": "{\"click\":\"Add\"}",
             "Active": true,
-            "FeatureId": "006f0138-0000-0000-8000-7b44fe51f718",
             "ReportTypeId": 1
         }
     ],
     "FeaturePolicies": [
         {
             "Id": "03595B73-1A7D-4D24-9684-B55829C01020",
-            "FeatureId": "006f0138-0000-0000-8000-7b44fe51f718",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "060799B4-3000-4B3D-B5C0-F4AA28C423A8",
-            "FeatureId": "006f0138-0000-0000-8000-7b44fe51f718",
             "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "59FEB4D9-59C5-4958-91F2-A435F267F981",
-            "FeatureId": "006f0138-0000-0000-8000-7b44fe51f718",
             "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "5E5CEF10-CCC7-4A82-B72C-C19D1D9BDB80",
-            "FeatureId": "006f0138-0000-0000-8000-7b44fe51f718",
             "RoleId": "CUSTOMER",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "8412CD1F-C8F3-4D9B-9C34-AF12A1C39653",
-            "FeatureId": "006f0138-0000-0000-8000-7b44fe51f718",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "86A41300-146A-442D-8C92-951CDA1CD333",
-            "FeatureId": "006f0138-0000-0000-8000-7b44fe51f718",
             "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "8FF5087A-6268-4499-B37E-9E577AAFBF96",
-            "FeatureId": "006f0138-0000-0000-8000-7b44fe51f718",
             "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
             "CanRead": true,
             "CanReadAll": true,
@@ -363,21 +338,18 @@
         },
         {
             "Id": "A05E40C2-E726-4D67-803F-46FFBA49D3BC",
-            "FeatureId": "006f0138-0000-0000-8000-7b44fe51f718",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "A4FB9587-1EC6-4C88-9752-6EDCE9DB0B41",
-            "FeatureId": "006f0138-0000-0000-8000-7b44fe51f718",
             "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
             "TableName": "Feature",
             "Active": true
         },
         {
             "Id": "F35723E0-BBE4-4656-8CF1-41B5200C53EA",
-            "FeatureId": "006f0138-0000-0000-8000-7b44fe51f718",
             "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
             "TableName": "Feature",
             "Active": true
