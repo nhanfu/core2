@@ -201,8 +201,7 @@
                     "Precision": 3,
                     "Label": "USD => VND",
                     "ShowLabel": true,
-                    "Events": "{\r\n    \"change\": \"ChangeExchangeRate\"\r\n}",
-                    "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+                    "Events": "{\r\n    \"change\": \"ChangeExchangeRate\"\r\n}"
                 },
                 {
                     "Id": "0195a3db-3bee-7551-90d9-88a7a611d60d",
@@ -542,8 +541,7 @@
             "Editable": true,
             "MinWidth": "101px",
             "MaxWidth": "101px",
-            "EntityId": "ShipmentInvoiceDetail",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "ShipmentInvoiceDetail"
         },
         {
             "Id": "00434074-0000-0000-8000-2ec76ab138e4",
@@ -560,8 +558,7 @@
             "SummaryColSpan": 3,
             "MinWidth": "142px",
             "MaxWidth": "142px",
-            "EntityId": "ShipmentInvoiceDetail",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+            "EntityId": "ShipmentInvoiceDetail"
         },
         {
             "Id": "00bf4034-0000-0000-8000-bdc96943038e",
@@ -602,8 +599,7 @@
             "SummaryColSpan": 3,
             "MinWidth": "110px",
             "MaxWidth": "110px",
-            "EntityId": "ShipmentInvoiceDetail",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+            "EntityId": "ShipmentInvoiceDetail"
         },
         {
             "Id": "00bf40d0-0000-0000-8001-f9d6b9eef11c",
@@ -641,8 +637,7 @@
             "Editable": true,
             "MinWidth": "102px",
             "MaxWidth": "102px",
-            "EntityId": "ShipmentInvoiceDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentInvoiceDetail"
         },
         {
             "Id": "00bf40d0-0000-0000-8003-e59cbb1c1e33",
@@ -678,8 +673,7 @@
             "Editable": true,
             "MinWidth": "93px",
             "MaxWidth": "93px",
-            "EntityId": "ShipmentInvoiceDetail",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "ShipmentInvoiceDetail"
         },
         {
             "Id": "00bf40d0-0000-0000-8005-c9ff6384d12c",
@@ -695,8 +689,7 @@
             "Editable": true,
             "MinWidth": "127px",
             "MaxWidth": "127px",
-            "EntityId": "ShipmentInvoiceDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentInvoiceDetail"
         },
         {
             "Id": "00f340cc-0000-0000-8000-0563f6f4b421",
@@ -940,8 +933,7 @@
             "FocusSearch": true,
             "MinWidth": "125px",
             "MaxWidth": "125px",
-            "EntityId": "ShipmentInvoice",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+            "EntityId": "ShipmentInvoice"
         },
         {
             "Id": "01932dbc-046c-714f-bf93-adf6e242422d",
@@ -972,8 +964,7 @@
             "DefaultVal": "this.Decimal(JSON.parse(localStorage.getItem(\"ExchangeRateVND\"))[\"USD\"])",
             "MinWidth": "128px",
             "MaxWidth": "128px",
-            "EntityId": "ShipmentInvoice",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "ShipmentInvoice"
         },
         {
             "Id": "01932dbc-046c-714f-bf93-b4bc9fd897dd",

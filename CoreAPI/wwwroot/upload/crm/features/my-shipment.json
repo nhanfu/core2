@@ -28,8 +28,7 @@
                     "ClassName": "btn btn-sm primary",
                     "Events": "{\r\n    \"click\": \"Search\"\r\n}",
                     "Query": "select ds.*,'{SearchNo}' as SearchNo,\r\npol.Name as polName,\r\npod.Name as podName,\r\npt.Name as ptName,\r\nformat(ds.EtdDate,'yyyy-MM-dd') AS etdDate,\r\nformat(ds.EtaDate,'yyyy-MM-dd') AS etaDate,\r\nreceipt.Name AS PlaceofReceipt,\r\ndestination.Name AS Destination,\r\nincoterm.Name AS incoterm ,\r\n deli.Name  AS TermOfDelivery,\r\ncomo.Name AS Commodity,\r\nds.Quantity ,\r\nConcat(ds.Quantity,' | ',unit.Name) AS Pieces,\r\nds.CBM AS Measuament,\r\nds.GW AS totalWeight,\r\nds.Vessel AS Vessel,\r\nds.VesselVoy AS Voyage,\r\nds.ContainerText,\r\n(select top 1 concat(format(EtaTsDate,'yyyy-MM-dd'),'/',format(EtdTsDate,'yyyy-MM-dd')) from EntityTransit where EntityId = ds.ParentId and PortTransitId = ds.PortTransitId) as etaTsDate,\r\ncreator.FullName AS FullName,\r\ncreator.Avatar AS Avatar,\r\ndep.Name AS DEP,\r\ncreator.PhoneNumber AS phone,\r\ncreator.Email AS email\r\nfrom Shipment ds\r\nleft join Terminal pol on ds.POLId = pol.Id\r\nleft join Terminal pod on ds.PODId = pod.Id\r\nLEFT JOIN dbo.Terminal receipt ON ds.PlaceReceiptId = receipt.Id\r\nLEFT JOIN dbo.Terminal destination ON destination.Id=ds.FinalDestinationId\r\nLEFT JOIN dbo.MasterData incoterm ON ds.IncotermId =incoterm.Id\r\nLEFT JOIN dbo.MasterData deli ON ds.TypeMoveId = deli.id\r\nLEFT JOIN dbo.MasterData como ON ds.CommodityId = como.Id\r\nLEFT JOIN dbo.MasterData unit ON ds.UnitId = unit.Id\r\nleft join Terminal pt on ds.PortTransitId = pt.Id\r\nLEFT JOIN dbo.[User] creator ON ds.InsertedBy = creator.Id\r\nLEFT JOIN dbo.MasterData dep ON dep.id=creator.DepartmentId\r\nwhere (ds.HblNo = '{SearchNo}' or ds.BookingNo = '{SearchNo}' and ds.CustomerId = '{TokenUserId}')",
-                    "PreQuery": "{\r\n    \"SearchNo\" : this.Entity.SearchNo\r\n}",
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "PreQuery": "{\r\n    \"SearchNo\" : this.Entity.SearchNo\r\n}"
                 },
                 {
                     "Id": "0195233e-858f-75b9-b94e-1b4a8c1bb127",
@@ -39,8 +38,7 @@
                     "PlainText": "HBL NO, BOOKING NO",
                     "Column": 11,
                     "Precision": 2,
-                    "ChildStyle": "height: 30px;",
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ChildStyle": "height: 30px;"
                 }
             ]
         },
@@ -327,8 +325,7 @@
                     "Column": 12,
                     "Label": "Quantiy of Container",
                     "ShowLabel": true,
-                    "Disabled": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Disabled": true
                 },
                 {
                     "Id": "01952359-7a24-742b-aecd-dba8cee35f13",
@@ -983,8 +980,7 @@
             "FocusSearch": true,
             "MinWidth": "49px",
             "MaxWidth": "49px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01952359-efad-773e-aa74-e2823b197bac",
@@ -1016,8 +1012,7 @@
             "FocusSearch": true,
             "MinWidth": "105px",
             "MaxWidth": "105px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01952359-efad-773e-aa74-ea0b2b9a4d28",
@@ -1030,8 +1025,7 @@
             "FocusSearch": true,
             "MinWidth": "84px",
             "MaxWidth": "84px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01952359-efae-7054-b34d-29316dc3019b",
@@ -1044,8 +1038,7 @@
             "FocusSearch": true,
             "MinWidth": "54px",
             "MaxWidth": "54px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01952359-efae-7054-b34d-2dcc1b723bd1",
@@ -1075,8 +1068,7 @@
             "FocusSearch": true,
             "MinWidth": "80px",
             "MaxWidth": "80px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01952359-efae-7054-b34d-34858140ea6d",
@@ -1089,8 +1081,7 @@
             "FocusSearch": true,
             "MinWidth": "87px",
             "MaxWidth": "87px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01952359-efae-7054-b34d-3b88469ae38f",
@@ -1103,8 +1094,7 @@
             "FocusSearch": true,
             "MinWidth": "67px",
             "MaxWidth": "67px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01952359-efae-7054-b34d-3f518b7e7278",
@@ -1117,8 +1107,7 @@
             "FocusSearch": true,
             "MinWidth": "336px",
             "MaxWidth": "336px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "0195235c-bf99-7118-8fe6-dd88ba7bafa9",
@@ -1131,8 +1120,7 @@
             "FocusSearch": true,
             "MinWidth": "119px",
             "MaxWidth": "119px",
-            "EntityId": "ShipmentTask",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentTask"
         },
         {
             "Id": "0195235c-bf9b-731d-9860-620ee716d01c",
@@ -1158,8 +1146,7 @@
             "FocusSearch": true,
             "MinWidth": "808px",
             "MaxWidth": "808px",
-            "EntityId": "ShipmentTask",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentTask"
         },
         {
             "Id": "019526c7-f3ea-75cb-b8f0-2c3e021d03b6",
@@ -1188,7 +1175,6 @@
             "MinWidth": "78px",
             "MaxWidth": "78px",
             "EntityId": "Shipment1",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail",
             "TableName": "Shipment"
         },
@@ -1207,7 +1193,6 @@
             "MinWidth": "88px",
             "MaxWidth": "88px",
             "EntityId": "Shipment1",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail",
             "TableName": "Shipment"
         },
@@ -1227,7 +1212,6 @@
             "MinWidth": "101px",
             "MaxWidth": "101px",
             "EntityId": "Shipment1",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "TableName": "Shipment"
         },
         {
@@ -1362,8 +1346,7 @@
             "FocusSearch": true,
             "MinWidth": "125px",
             "MaxWidth": "125px",
-            "EntityId": "EntityDimension",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityDimension"
         },
         {
             "Id": "01952bf7-ff03-706c-9df8-f0a57fb33432",
@@ -1375,8 +1358,7 @@
             "FocusSearch": true,
             "MinWidth": "115px",
             "MaxWidth": "115px",
-            "EntityId": "EntityDimension",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityDimension"
         },
         {
             "Id": "01952bf7-ff03-706c-9df8-f49b83ec4b7f",
@@ -1388,8 +1370,7 @@
             "FocusSearch": true,
             "MinWidth": "121px",
             "MaxWidth": "121px",
-            "EntityId": "EntityDimension",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityDimension"
         },
         {
             "Id": "01952bf7-ff04-7094-bf6c-9324af02ab51",
@@ -1403,8 +1384,7 @@
             "FocusSearch": true,
             "MinWidth": "113px",
             "MaxWidth": "113px",
-            "EntityId": "EntityDimension",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityDimension"
         }
     ],
     "Components": [
@@ -1433,8 +1413,7 @@
             "ClassName": "btn btn-sm primary",
             "Events": "{\r\n    \"click\": \"Search\"\r\n}",
             "Query": "select ds.*,'{SearchNo}' as SearchNo,\r\npol.Name as polName,\r\npod.Name as podName,\r\npt.Name as ptName,\r\nformat(ds.EtdDate,'yyyy-MM-dd') AS etdDate,\r\nformat(ds.EtaDate,'yyyy-MM-dd') AS etaDate,\r\nreceipt.Name AS PlaceofReceipt,\r\ndestination.Name AS Destination,\r\nincoterm.Name AS incoterm ,\r\n deli.Name  AS TermOfDelivery,\r\ncomo.Name AS Commodity,\r\nds.Quantity ,\r\nConcat(ds.Quantity,' | ',unit.Name) AS Pieces,\r\nds.CBM AS Measuament,\r\nds.GW AS totalWeight,\r\nds.Vessel AS Vessel,\r\nds.VesselVoy AS Voyage,\r\nds.ContainerText,\r\n(select top 1 concat(format(EtaTsDate,'yyyy-MM-dd'),'/',format(EtdTsDate,'yyyy-MM-dd')) from EntityTransit where EntityId = ds.ParentId and PortTransitId = ds.PortTransitId) as etaTsDate,\r\ncreator.FullName AS FullName,\r\ncreator.Avatar AS Avatar,\r\ndep.Name AS DEP,\r\ncreator.PhoneNumber AS phone,\r\ncreator.Email AS email\r\nfrom Shipment ds\r\nleft join Terminal pol on ds.POLId = pol.Id\r\nleft join Terminal pod on ds.PODId = pod.Id\r\nLEFT JOIN dbo.Terminal receipt ON ds.PlaceReceiptId = receipt.Id\r\nLEFT JOIN dbo.Terminal destination ON destination.Id=ds.FinalDestinationId\r\nLEFT JOIN dbo.MasterData incoterm ON ds.IncotermId =incoterm.Id\r\nLEFT JOIN dbo.MasterData deli ON ds.TypeMoveId = deli.id\r\nLEFT JOIN dbo.MasterData como ON ds.CommodityId = como.Id\r\nLEFT JOIN dbo.MasterData unit ON ds.UnitId = unit.Id\r\nleft join Terminal pt on ds.PortTransitId = pt.Id\r\nLEFT JOIN dbo.[User] creator ON ds.InsertedBy = creator.Id\r\nLEFT JOIN dbo.MasterData dep ON dep.id=creator.DepartmentId\r\nwhere (ds.HblNo = '{SearchNo}' or ds.BookingNo = '{SearchNo}' and ds.CustomerId = '{TokenUserId}')",
-            "PreQuery": "{\r\n    \"SearchNo\" : this.Entity.SearchNo\r\n}",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "PreQuery": "{\r\n    \"SearchNo\" : this.Entity.SearchNo\r\n}"
         },
         {
             "Id": "019526df-cc02-70e5-b446-db5b6e6fd527",

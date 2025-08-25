@@ -120,8 +120,7 @@
                     "Precision": 2,
                     "Label": "Amount",
                     "ShowLabel": true,
-                    "Events": "{\r\n    \"input\": \"ToWords\",\r\n    \"change\": \"CalcTotalAmount\"\r\n}",
-                    "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+                    "Events": "{\r\n    \"input\": \"ToWords\",\r\n    \"change\": \"CalcTotalAmount\"\r\n}"
                 },
                 {
                     "Id": "01939c74-4448-7465-a627-4e13bbb2c23c",
@@ -476,8 +475,7 @@
             "Editable": true,
             "MinWidth": "87px",
             "MaxWidth": "87px",
-            "EntityId": "VoucherDetail",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "VoucherDetail"
         },
         {
             "Id": "01939c4c-ca96-749f-9f75-f56100bbc322",
@@ -553,8 +551,7 @@
             "Editable": true,
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "VoucherDetail",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "VoucherDetail"
         },
         {
             "Id": "01939c93-533d-71ea-9f1f-5fba95b98ff0",
@@ -568,8 +565,7 @@
             "Editable": true,
             "MinWidth": "114px",
             "MaxWidth": "114px",
-            "EntityId": "VoucherDetail",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+            "EntityId": "VoucherDetail"
         },
         {
             "Id": "01939c93-7c45-736e-979e-ca3448217bb2",
@@ -583,8 +579,7 @@
             "Editable": true,
             "MinWidth": "153px",
             "MaxWidth": "153px",
-            "EntityId": "VoucherDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "VoucherDetail"
         },
         {
             "Id": "01939c93-b76f-741c-879c-48978f6dc15a",
@@ -618,8 +613,7 @@
             "Editable": true,
             "MinWidth": "73px",
             "MaxWidth": "73px",
-            "EntityId": "VoucherDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "VoucherDetail"
         },
         {
             "Id": "0193f379-d65d-7569-9e3c-c20c3ebfd391",

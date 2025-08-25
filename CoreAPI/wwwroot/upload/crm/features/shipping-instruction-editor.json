@@ -118,8 +118,7 @@
                     "ComponentType": "Input",
                     "Column": 6,
                     "Label": "PIC",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00533f20-0000-0000-8000-e00426ad90eb",
@@ -275,8 +274,7 @@
                     "Row": 50,
                     "Precision": 0,
                     "Label": "GW",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00be3f30-0000-0000-8001-34ebfe8b0770",
@@ -287,8 +285,7 @@
                     "Row": 50,
                     "Precision": 0,
                     "Label": "CBM",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00be3fcc-0000-0000-8000-e7c33c11c853",
@@ -375,8 +372,7 @@
                     "ComponentType": "Input",
                     "Column": 3,
                     "Label": "Booking No",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "003f3fcc-0000-0000-8000-5d83377e8e11",
@@ -385,8 +381,7 @@
                     "ComponentType": "Input",
                     "Column": 3,
                     "Label": "Ref No",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00403f0c-0000-0000-8000-e1747d25bee6",
@@ -476,8 +471,7 @@
                     "ShowLabel": true,
                     "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                     "RefName": "Terminal",
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "00d63ffc-0000-0000-8000-9b37bac01152",
@@ -510,8 +504,7 @@
             "Editable": true,
             "MinWidth": "49px",
             "MaxWidth": "49px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "00073f80-0000-0000-8000-5872d508cd3b",
@@ -544,8 +537,7 @@
             "Editable": true,
             "MinWidth": "105px",
             "MaxWidth": "105px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "00073f80-0000-0000-8002-7622efb619c7",
@@ -559,8 +551,7 @@
             "Editable": true,
             "MinWidth": "84px",
             "MaxWidth": "84px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "00073f80-0000-0000-8003-f44a478fb0bb",
@@ -574,8 +565,7 @@
             "Editable": true,
             "MinWidth": "54px",
             "MaxWidth": "54px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "00073f80-0000-0000-8004-4d485b0f7789",
@@ -589,8 +579,7 @@
             "Editable": true,
             "MinWidth": "68px",
             "MaxWidth": "68px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "00073f80-0000-0000-8005-01c82db69264",
@@ -604,8 +593,7 @@
             "Editable": true,
             "MinWidth": "87px",
             "MaxWidth": "87px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "00073f80-0000-0000-8006-273786938d5a",
@@ -619,8 +607,7 @@
             "Editable": true,
             "MinWidth": "50px",
             "MaxWidth": "50px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "00073f80-0000-0000-8007-0750b1d5ae34",
@@ -634,8 +621,7 @@
             "Editable": true,
             "MinWidth": "98px",
             "MaxWidth": "98px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "00073f80-0000-0000-8008-d5b37da7332e",
@@ -649,8 +635,7 @@
             "Editable": true,
             "MinWidth": "112px",
             "MaxWidth": "112px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01939aed-c2d3-746b-9493-cac19a96fe31",

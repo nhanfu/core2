@@ -225,8 +225,7 @@
                     "Column": 6,
                     "Label": "Quantity",
                     "ShowLabel": true,
-                    "Style": " height: 30px;",
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Style": " height: 30px;"
                 },
                 {
                     "Id": "00081400-0000-0000-8001-a61e8c0be8d0",
@@ -250,8 +249,7 @@
                     "ComponentType": "Number",
                     "Column": 4,
                     "Label": "GW",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00081400-0000-0000-8003-36f13184a2e6",
@@ -260,8 +258,7 @@
                     "ComponentType": "Number",
                     "Column": 4,
                     "Label": "CW",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00081400-0000-0000-8004-609bd4c5f769",
@@ -270,8 +267,7 @@
                     "ComponentType": "Number",
                     "Column": 4,
                     "Label": "CBM",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00081400-0000-0000-8005-c1b2b5b13221",
@@ -280,8 +276,7 @@
                     "ComponentType": "Number",
                     "Column": 6,
                     "Label": "Rate Comfirm",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00081400-0000-0000-8006-1232550f1e8f",
@@ -328,8 +323,7 @@
                     "Label": "KGS",
                     "ShowLabel": true,
                     "Style": "display: flex; flex-flow: row-reverse; white-space: nowrap; align-items: center;gap: 35px;",
-                    "Disabled": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Disabled": true
                 },
                 {
                     "Id": "00081464-0000-0000-8003-b692600d9491",
@@ -340,8 +334,7 @@
                     "Label": "CBM",
                     "ShowLabel": true,
                     "Style": "display: flex; flex-flow: row-reverse; white-space: nowrap; align-items: center;gap: 35px;",
-                    "Disabled": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Disabled": true
                 },
                 {
                     "Id": "00081464-0000-0000-8004-c81f2d6f0c66",
@@ -629,8 +622,7 @@
             "Editable": true,
             "MinWidth": "96px",
             "MaxWidth": "96px",
-            "EntityId": "EntityDimension",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityDimension"
         },
         {
             "Id": "0021144c-0000-0000-8001-2420c0376194",
@@ -643,8 +635,7 @@
             "Editable": true,
             "MinWidth": "112px",
             "MaxWidth": "112px",
-            "EntityId": "EntityDimension",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityDimension"
         },
         {
             "Id": "002114e8-0000-0000-8000-1ed45047af81",
@@ -657,8 +648,7 @@
             "Editable": true,
             "MinWidth": "138px",
             "MaxWidth": "138px",
-            "EntityId": "EntityDimension",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityDimension"
         },
         {
             "Id": "002114e8-0000-0000-8001-d48c43e39ab5",
@@ -671,8 +661,7 @@
             "Editable": true,
             "MinWidth": "97px",
             "MaxWidth": "97px",
-            "EntityId": "EntityDimension",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityDimension"
         },
         {
             "Id": "005c1414-0000-0000-8000-a1f3afe752b6",
@@ -686,8 +675,7 @@
             "Editable": true,
             "MinWidth": "206px",
             "MaxWidth": "206px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "005c14f4-0000-0000-8000-e8569b7d9a6d",

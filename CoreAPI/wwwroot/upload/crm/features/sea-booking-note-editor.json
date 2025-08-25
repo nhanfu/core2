@@ -494,8 +494,7 @@
                     "ComponentType": "Number",
                     "Column": 6,
                     "Label": "Net Weight",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "001c13f0-0000-0000-8000-c5dd4ff736dd",
@@ -504,8 +503,7 @@
                     "ComponentType": "Number",
                     "Column": 6,
                     "Label": "CBM",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "001f1350-0000-0000-8000-7968af7fb0ee",
@@ -539,8 +537,7 @@
                     "ComponentType": "Number",
                     "Column": 6,
                     "Label": "Freight rate",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "004e137c-0000-0000-8003-dd5252c3b2c9",
@@ -549,8 +546,7 @@
                     "ComponentType": "Number",
                     "Column": 6,
                     "Label": "Dem (free)",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "004e13e0-0000-0000-8002-f52271bc397b",
@@ -603,8 +599,7 @@
                     "ComponentType": "Number",
                     "Column": 6,
                     "Label": "Dem (free)",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00f2130c-0000-0000-8000-5990cfd0ef42",
@@ -613,8 +608,7 @@
                     "ComponentType": "Number",
                     "Column": 6,
                     "Label": "Gross Weight",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00f21360-0000-0000-8000-99acd47ac444",
@@ -624,8 +618,7 @@
                     "Column": 6,
                     "Label": "Quantity",
                     "ShowLabel": true,
-                    "Style": " height: 30px;",
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Style": " height: 30px;"
                 },
                 {
                     "Id": "00f21384-0000-0000-8000-c3961edc3423",
@@ -747,8 +740,7 @@
             "Editable": true,
             "MinWidth": "206px",
             "MaxWidth": "206px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "00f31378-0000-0000-8000-c6bbd3a60d33",

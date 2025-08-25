@@ -561,8 +561,7 @@
             "Editable": true,
             "MinWidth": "106px",
             "MaxWidth": "106px",
-            "EntityId": "VoucherDetail",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+            "EntityId": "VoucherDetail"
         },
         {
             "Id": "0194a02d-66c9-775d-b66f-be7a2fa2b06b",
@@ -635,8 +634,7 @@
             "Editable": true,
             "MinWidth": "77px",
             "MaxWidth": "77px",
-            "EntityId": "VoucherDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "VoucherDetail"
         },
         {
             "Id": "0194a02d-6846-7088-a0fd-cbd1c9f7f125",
@@ -670,8 +668,7 @@
             "Editable": true,
             "MinWidth": "97px",
             "MaxWidth": "97px",
-            "EntityId": "VoucherDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "VoucherDetail"
         },
         {
             "Id": "0194a02d-69a8-76ae-b1b8-1f5941d44866",
@@ -1029,8 +1026,7 @@
             "FocusSearch": true,
             "MinWidth": "102px",
             "MaxWidth": "102px",
-            "EntityId": "SearchData",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "SearchData"
         },
         {
             "Id": "0194a02d-71ea-718d-a989-4649470534a5",
@@ -1062,8 +1058,7 @@
             "FocusSearch": true,
             "MinWidth": "93px",
             "MaxWidth": "93px",
-            "EntityId": "SearchData",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "SearchData"
         },
         {
             "Id": "0194a02d-729b-77e4-b11d-6ad7def530df",
@@ -1097,8 +1092,7 @@
             "FocusSearch": true,
             "MinWidth": "88px",
             "MaxWidth": "88px",
-            "EntityId": "SearchData",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "SearchData"
         },
         {
             "Id": "0194a02d-7348-7554-9179-7ce2228879bb",
@@ -1112,8 +1106,7 @@
             "FocusSearch": true,
             "MinWidth": "40px",
             "MaxWidth": "40px",
-            "EntityId": "SearchData",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "SearchData"
         },
         {
             "Id": "0194a02d-739c-71c5-a01d-2094ef9073fc",
@@ -1129,8 +1122,7 @@
             "IsSumary": true,
             "MinWidth": "81px",
             "MaxWidth": "81px",
-            "EntityId": "SearchData",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+            "EntityId": "SearchData"
         },
         {
             "Id": "0194a02d-73ee-75da-a8e1-cd432bfc02b6",
@@ -1146,8 +1138,7 @@
             "IsSumary": true,
             "MinWidth": "110px",
             "MaxWidth": "110px",
-            "EntityId": "SearchData",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+            "EntityId": "SearchData"
         },
         {
             "Id": "0194a02d-7442-709d-96bc-4da1887dfba8",
@@ -1182,8 +1173,7 @@
             "IsSumary": true,
             "MinWidth": "81px",
             "MaxWidth": "81px",
-            "EntityId": "SearchData",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+            "EntityId": "SearchData"
         },
         {
             "Id": "0194a02d-7505-77be-95f4-8985e36a3246",
@@ -1199,8 +1189,7 @@
             "Editable": true,
             "MinWidth": "112px",
             "MaxWidth": "112px",
-            "EntityId": "VoucherDetail",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "VoucherDetail"
         },
         {
             "Id": "0194a02d-755a-7088-b86f-da7cc1f6b0a0",
@@ -1260,8 +1249,7 @@
             "Editable": true,
             "MinWidth": "86px",
             "MaxWidth": "86px",
-            "EntityId": "VoucherDetail",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "VoucherDetail"
         },
         {
             "Id": "0194a02d-76b7-7312-841c-6dc6b3a40a56",
@@ -1335,8 +1323,7 @@
             "Editable": true,
             "MinWidth": "125px",
             "MaxWidth": "125px",
-            "EntityId": "VoucherDetail",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "VoucherDetail"
         },
         {
             "Id": "0194a0c3-8a07-7308-af79-0b01b8b7a2cc",
@@ -1351,8 +1338,7 @@
             "Editable": true,
             "MinWidth": "128px",
             "MaxWidth": "128px",
-            "EntityId": "VoucherDetail",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "VoucherDetail"
         },
         {
             "Id": "0194a0c4-37aa-754a-84bd-a8d8d8d691b1",
@@ -1422,8 +1408,7 @@
             "Editable": true,
             "MinWidth": "93px",
             "MaxWidth": "93px",
-            "EntityId": "VoucherDetail",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "VoucherDetail"
         },
         {
             "Id": "0194c1cc-573e-72c6-806d-e5683ecf911a",
@@ -1675,8 +1660,7 @@
             "SummaryColSpan": 4,
             "MinWidth": "110px",
             "MaxWidth": "110px",
-            "EntityId": "SearchData",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+            "EntityId": "SearchData"
         }
     ],
     "Components": [

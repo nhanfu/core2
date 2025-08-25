@@ -59,8 +59,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from ShipmentProcessDetail as ds where ProcessId = '{ProcessId}'\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentProcessDetail as ds where ProcessId = '{ProcessId}'\"\r\n}",
                     "RefName": "ShipmentProcessDetail",
                     "PreQuery": "{\r\n    \"ProcessId\": this.EditForm.Entity.Id,\r\n    \"TypeId\": this.EditForm.Entity.TypeId\r\n}",
-                    "Editable": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Editable": true
                 }
             ]
         }
@@ -78,8 +77,7 @@
             "Editable": true,
             "MinWidth": "166px",
             "MaxWidth": "166px",
-            "EntityId": "ShipmentProcessDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentProcessDetail"
         },
         {
             "Id": "0195800e-c666-7112-9cfb-9bc6e640f4b3",
@@ -120,8 +118,7 @@
             "Editable": true,
             "MinWidth": "119px",
             "MaxWidth": "119px",
-            "EntityId": "ShipmentProcessDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentProcessDetail"
         },
         {
             "Id": "0195800e-c666-7112-9cfb-a4dff1b02844",
@@ -149,8 +146,7 @@
             "Editable": true,
             "MinWidth": "110px",
             "MaxWidth": "110px",
-            "EntityId": "ShipmentProcessDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentProcessDetail"
         },
         {
             "Id": "0195800e-c667-745e-89e9-1c1b961b1154",
@@ -164,8 +160,7 @@
             "Editable": true,
             "MinWidth": "110px",
             "MaxWidth": "110px",
-            "EntityId": "ShipmentProcessDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentProcessDetail"
         },
         {
             "Id": "0195800e-c667-745e-89e9-234e7618ce87",
@@ -179,8 +174,7 @@
             "Editable": true,
             "MinWidth": "119px",
             "MaxWidth": "119px",
-            "EntityId": "ShipmentProcessDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentProcessDetail"
         },
         {
             "Id": "0195800e-c667-745e-89e9-25d5bff22af3",
@@ -194,8 +188,7 @@
             "Editable": true,
             "MinWidth": "119px",
             "MaxWidth": "119px",
-            "EntityId": "ShipmentProcessDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentProcessDetail"
         }
     ],
     "Components": [

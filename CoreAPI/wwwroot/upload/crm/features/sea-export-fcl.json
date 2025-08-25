@@ -798,7 +798,6 @@
             "MinWidth": "43px",
             "MaxWidth": "43px",
             "EntityId": "Shipment1",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail",
             "TableName": "Shipment"
         },
@@ -815,7 +814,6 @@
             "MinWidth": "47px",
             "MaxWidth": "47px",
             "EntityId": "Shipment1",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail",
             "TableName": "Shipment"
         },
@@ -832,7 +830,6 @@
             "MinWidth": "60px",
             "MaxWidth": "60px",
             "EntityId": "Shipment1",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail",
             "TableName": "Shipment"
         },
@@ -849,7 +846,6 @@
             "MinWidth": "78px",
             "MaxWidth": "78px",
             "EntityId": "Shipment1",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail",
             "TableName": "Shipment"
         },
@@ -931,7 +927,6 @@
             "MinWidth": "78px",
             "MaxWidth": "78px",
             "EntityId": "Shipment1",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail",
             "TableName": "Shipment"
         },
@@ -972,7 +967,6 @@
             "MinWidth": "98px",
             "MaxWidth": "98px",
             "EntityId": "Shipment1",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail",
             "TableName": "Shipment"
         },
@@ -1008,7 +1002,6 @@
             "MinWidth": "88px",
             "MaxWidth": "88px",
             "EntityId": "Shipment1",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail",
             "TableName": "Shipment"
         },
@@ -1027,7 +1020,6 @@
             "MinWidth": "71px",
             "MaxWidth": "71px",
             "EntityId": "Shipment1",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail",
             "TableName": "Shipment"
         },

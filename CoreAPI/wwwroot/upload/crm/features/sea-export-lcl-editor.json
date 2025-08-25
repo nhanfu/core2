@@ -370,8 +370,7 @@
                     "Row": 50,
                     "Precision": 2,
                     "Label": "Qty",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "01953bee-a046-7427-9729-b6a20f0085d5",
@@ -397,8 +396,7 @@
                     "Row": 50,
                     "Precision": 2,
                     "Label": "GW",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "01953bee-a0ab-736b-9411-db54890d99f7",
@@ -409,8 +407,7 @@
                     "Row": 50,
                     "Precision": 2,
                     "Label": "NW",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "01953bee-a0e6-731e-90b4-35bf8b56536c",
@@ -421,8 +418,7 @@
                     "Row": 50,
                     "Precision": 2,
                     "Label": "CBM",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 }
             ]
         },
@@ -1294,7 +1290,6 @@
                     "Precision": 2,
                     "Label": "DEM",
                     "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
                     "EntityName": "ShipmentDetail",
                     "TableName": "Shipment"
                 },
@@ -1307,7 +1302,6 @@
                     "Precision": 2,
                     "Label": "DET",
                     "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
                     "EntityName": "ShipmentDetail",
                     "TableName": "Shipment"
                 },
@@ -1385,7 +1379,6 @@
                     "Precision": 2,
                     "Label": "Storage",
                     "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
                     "EntityName": "ShipmentDetail",
                     "TableName": "Shipment"
                 },
@@ -1398,7 +1391,6 @@
                     "Precision": 2,
                     "Label": "Freetime",
                     "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
                     "EntityName": "ShipmentDetail",
                     "TableName": "Shipment"
                 },
@@ -1503,7 +1495,6 @@
                     "Label": "Quantity",
                     "ShowLabel": true,
                     "Events": "{\r\n    \"change\": \"CalcTotalParent\"\r\n}",
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
                     "EntityName": "ShipmentDetail",
                     "TableName": "Shipment"
                 },
@@ -1536,7 +1527,6 @@
                     "Label": "Measuament",
                     "ShowLabel": true,
                     "Events": "{\r\n    \"change\": \"CalcTotalParent\"\r\n}",
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
                     "EntityName": "ShipmentDetail",
                     "TableName": "Shipment"
                 },
@@ -1564,7 +1554,6 @@
                     "Label": "GW",
                     "ShowLabel": true,
                     "Events": "{\r\n    \"change\": \"CalcTotalParent\"\r\n}",
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
                     "EntityName": "ShipmentDetail",
                     "TableName": "Shipment"
                 },
@@ -1579,7 +1568,6 @@
                     "Label": "NW",
                     "ShowLabel": true,
                     "Events": "{\r\n    \"change\": \"CalcTotalParent\"\r\n}",
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
                     "EntityName": "ShipmentDetail",
                     "TableName": "Shipment"
                 }
@@ -2507,8 +2495,7 @@
             "Editable": true,
             "MinWidth": "232px",
             "MaxWidth": "232px",
-            "EntityId": "ShipmentTask",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentTask"
         },
         {
             "Id": "01953bee-c8a3-7429-a787-f642ba91ced1",
@@ -2542,8 +2529,7 @@
             "Editable": true,
             "MinWidth": "119px",
             "MaxWidth": "119px",
-            "EntityId": "ShipmentTask",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentTask"
         },
         {
             "Id": "01953bee-c927-735a-a803-249e97653d9d",
@@ -2572,8 +2558,7 @@
             "Editable": true,
             "MinWidth": "68px",
             "MaxWidth": "68px",
-            "EntityId": "ShipmentCustoms",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentCustoms"
         },
         {
             "Id": "01953bee-ca25-7510-9f8b-4cc5131baf19",
@@ -2658,7 +2643,6 @@
             "MinWidth": "93px",
             "MaxWidth": "93px",
             "EntityId": "ShipmentFee",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -2675,7 +2659,6 @@
             "MinWidth": "74px",
             "MaxWidth": "74px",
             "EntityId": "ShipmentFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -2712,8 +2695,7 @@
             "Editable": true,
             "MinWidth": "119px",
             "MaxWidth": "119px",
-            "EntityId": "ShipmentTrucking",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentTrucking"
         },
         {
             "Id": "01953bee-cc63-7628-8d80-d2dda1d6d45d",
@@ -2727,8 +2709,7 @@
             "Editable": true,
             "MinWidth": "68px",
             "MaxWidth": "68px",
-            "EntityId": "ShipmentCustoms",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentCustoms"
         },
         {
             "Id": "01953bee-cca1-72d8-832d-7e55f9925935",
@@ -2742,8 +2723,7 @@
             "Editable": true,
             "MinWidth": "119px",
             "MaxWidth": "119px",
-            "EntityId": "ShipmentTrucking",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentTrucking"
         },
         {
             "Id": "01953bee-ccd1-7741-99a7-64d56840f9cb",
@@ -2757,8 +2737,7 @@
             "Editable": true,
             "MinWidth": "119px",
             "MaxWidth": "119px",
-            "EntityId": "ShipmentTrucking",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentTrucking"
         },
         {
             "Id": "01953bee-cd09-71fb-8b0a-8c3325107672",
@@ -2772,8 +2751,7 @@
             "Editable": true,
             "MinWidth": "119px",
             "MaxWidth": "119px",
-            "EntityId": "ShipmentTrucking",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentTrucking"
         },
         {
             "Id": "01953bee-cd34-72f6-829c-257b8189973b",
@@ -2802,8 +2780,7 @@
             "Editable": true,
             "MinWidth": "119px",
             "MaxWidth": "119px",
-            "EntityId": "ShipmentTrucking",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentTrucking"
         },
         {
             "Id": "01953bee-cd9f-77f1-80d9-8904a1ff3239",
@@ -2858,7 +2835,6 @@
             "MinWidth": "93px",
             "MaxWidth": "93px",
             "EntityId": "ShipmentFee3",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -2875,7 +2851,6 @@
             "MinWidth": "74px",
             "MaxWidth": "74px",
             "EntityId": "ShipmentFee3",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -2916,7 +2891,6 @@
             "MinWidth": "95px",
             "MaxWidth": "95px",
             "EntityId": "ShipmentFee3",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -3039,7 +3013,6 @@
             "MinWidth": "102px",
             "MaxWidth": "102px",
             "EntityId": "ShipmentFee3",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -3094,8 +3067,7 @@
             "FocusSearch": true,
             "MinWidth": "179px",
             "MaxWidth": "179px",
-            "EntityId": "ShipmentDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentDetail"
         },
         {
             "Id": "01953bee-d13f-7469-ac17-d39858d6afc2",
@@ -3150,7 +3122,6 @@
             "MinWidth": "137px",
             "MaxWidth": "137px",
             "EntityId": "ShipmentFee",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -3462,8 +3433,7 @@
             "Editable": true,
             "MinWidth": "105px",
             "MaxWidth": "105px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01953bee-d5ce-7109-b3cd-906736edacaa",
@@ -3477,8 +3447,7 @@
             "Editable": true,
             "MinWidth": "84px",
             "MaxWidth": "84px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01953bee-d5fd-748b-91c4-5857092fef41",
@@ -3492,8 +3461,7 @@
             "Editable": true,
             "MinWidth": "70px",
             "MaxWidth": "70px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01953bee-d629-777e-853d-432a8cbf0b84",
@@ -3507,8 +3475,7 @@
             "Editable": true,
             "MinWidth": "68px",
             "MaxWidth": "68px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01953bee-d65e-7752-8ee9-05f847c2453e",
@@ -3522,8 +3489,7 @@
             "Editable": true,
             "MinWidth": "87px",
             "MaxWidth": "87px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01953bee-d694-741e-971e-c97e09a6cfc9",
@@ -3709,8 +3675,7 @@
             "Editable": true,
             "MinWidth": "50px",
             "MaxWidth": "50px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01953bee-d909-74ca-8203-fce464080923",
@@ -3724,8 +3689,7 @@
             "Editable": true,
             "MinWidth": "98px",
             "MaxWidth": "98px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01953bee-d944-7409-a45a-8d25966811ee",
@@ -3739,8 +3703,7 @@
             "Editable": true,
             "MinWidth": "112px",
             "MaxWidth": "112px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01953bee-d983-7268-b7a2-72a0307b75c8",
@@ -3755,7 +3718,6 @@
             "MinWidth": "119px",
             "MaxWidth": "119px",
             "EntityId": "ShipmentCustoms",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -3770,8 +3732,7 @@
             "Editable": true,
             "MinWidth": "119px",
             "MaxWidth": "119px",
-            "EntityId": "ShipmentCustoms",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentCustoms"
         },
         {
             "Id": "01953bee-d9e4-70b7-9123-e904b347acf9",
@@ -3785,8 +3746,7 @@
             "Editable": true,
             "MinWidth": "119px",
             "MaxWidth": "119px",
-            "EntityId": "ShipmentCustoms",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentCustoms"
         },
         {
             "Id": "01953bee-da14-75a3-9e6e-c518c03d3402",
@@ -3800,8 +3760,7 @@
             "Editable": true,
             "MinWidth": "119px",
             "MaxWidth": "119px",
-            "EntityId": "ShipmentCustoms",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentCustoms"
         },
         {
             "Id": "01953bee-da58-72cb-90a8-7e6de6931daf",
@@ -3834,8 +3793,7 @@
             "Editable": true,
             "MinWidth": "119px",
             "MaxWidth": "119px",
-            "EntityId": "ShipmentTrucking",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentTrucking"
         },
         {
             "Id": "01953bee-dac2-75f9-886c-da0d9f731e90",
@@ -3882,8 +3840,7 @@
             "Editable": true,
             "MinWidth": "119px",
             "MaxWidth": "119px",
-            "EntityId": "ShipmentTrucking",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentTrucking"
         },
         {
             "Id": "01953bee-db68-76af-aeeb-973ecc8b4469",
@@ -3897,8 +3854,7 @@
             "Editable": true,
             "MinWidth": "119px",
             "MaxWidth": "119px",
-            "EntityId": "ShipmentTrucking",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentTrucking"
         },
         {
             "Id": "01953bee-db9f-729f-b0e4-2cb0bf7c213d",
@@ -3926,8 +3882,7 @@
             "Editable": true,
             "MinWidth": "119px",
             "MaxWidth": "119px",
-            "EntityId": "ShipmentTrucking",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentTrucking"
         },
         {
             "Id": "01953bee-dc1a-74af-91f4-6687de75f4e1",
@@ -3955,8 +3910,7 @@
             "Editable": true,
             "MinWidth": "119px",
             "MaxWidth": "119px",
-            "EntityId": "ShipmentTrucking",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentTrucking"
         },
         {
             "Id": "01953bee-dc82-74b9-bcdf-081023b8180f",
@@ -3970,8 +3924,7 @@
             "Editable": true,
             "MinWidth": "119px",
             "MaxWidth": "119px",
-            "EntityId": "ShipmentTask",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentTask"
         },
         {
             "Id": "01953bee-dcbb-7494-93c0-e121a0eaa18a",
@@ -3985,8 +3938,7 @@
             "Editable": true,
             "MinWidth": "119px",
             "MaxWidth": "119px",
-            "EntityId": "ShipmentTrucking",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentTrucking"
         },
         {
             "Id": "01953bee-dd09-7428-affc-6cbad259522d",
@@ -4019,8 +3971,7 @@
             "Editable": true,
             "MinWidth": "119px",
             "MaxWidth": "119px",
-            "EntityId": "ShipmentTrucking",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentTrucking"
         },
         {
             "Id": "01953bee-dd69-7393-b4dc-095ed0d159c5",
@@ -4056,7 +4007,6 @@
             "MinWidth": "105px",
             "MaxWidth": "105px",
             "EntityId": "EntityContainer1",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -4072,7 +4022,6 @@
             "MinWidth": "84px",
             "MaxWidth": "84px",
             "EntityId": "EntityContainer1",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -4088,7 +4037,6 @@
             "MinWidth": "54px",
             "MaxWidth": "54px",
             "EntityId": "EntityContainer1",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -4104,7 +4052,6 @@
             "MinWidth": "54px",
             "MaxWidth": "54px",
             "EntityId": "EntityContainer1",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -4120,7 +4067,6 @@
             "MinWidth": "59px",
             "MaxWidth": "59px",
             "EntityId": "EntityContainer1",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -4136,7 +4082,6 @@
             "MinWidth": "87px",
             "MaxWidth": "87px",
             "EntityId": "EntityContainer1",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -4152,7 +4097,6 @@
             "MinWidth": "50px",
             "MaxWidth": "50px",
             "EntityId": "EntityContainer1",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -4168,7 +4112,6 @@
             "MinWidth": "98px",
             "MaxWidth": "98px",
             "EntityId": "EntityContainer1",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -4184,7 +4127,6 @@
             "MinWidth": "112px",
             "MaxWidth": "112px",
             "EntityId": "EntityContainer1",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -4258,7 +4200,6 @@
             "MinWidth": "102px",
             "MaxWidth": "102px",
             "EntityId": "ShipmentFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -4490,7 +4431,6 @@
             "MinWidth": "102px",
             "MaxWidth": "102px",
             "EntityId": "ShipmentFee2",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -4530,7 +4470,6 @@
             "MinWidth": "93px",
             "MaxWidth": "93px",
             "EntityId": "ShipmentFee2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -4547,7 +4486,6 @@
             "MinWidth": "110px",
             "MaxWidth": "110px",
             "EntityId": "ShipmentFee2",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -4588,7 +4526,6 @@
             "MinWidth": "137px",
             "MaxWidth": "137px",
             "EntityId": "ShipmentFee2",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -4694,7 +4631,6 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "ProfitLoss",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -4713,7 +4649,6 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "ProfitLoss",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -4731,7 +4666,6 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "ProfitLoss",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -4749,7 +4683,6 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "ProfitLoss",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -4767,7 +4700,6 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "ProfitLoss",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -4783,7 +4715,6 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "ProfitLoss",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -4801,7 +4732,6 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "ProfitLoss",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -4817,7 +4747,6 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "ProfitLoss",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -4850,7 +4779,6 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "ProfitLoss2",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -4866,7 +4794,6 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "ProfitLoss2",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -4882,7 +4809,6 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "ProfitLoss2",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -4898,7 +4824,6 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "ProfitLoss2",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -4914,7 +4839,6 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "ProfitLoss2",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -4930,7 +4854,6 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "ProfitLoss2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -4946,7 +4869,6 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "ProfitLoss2",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -4962,7 +4884,6 @@
             "MinWidth": "100px",
             "MaxWidth": "100px",
             "EntityId": "ProfitLoss2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
             "EntityName": "ShipmentDetail"
         },
         {

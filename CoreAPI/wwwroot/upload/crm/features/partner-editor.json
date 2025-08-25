@@ -382,8 +382,7 @@
                     "Column": 12,
                     "Precision": 2,
                     "Label": "Contact Name",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00bf18fc-0000-0000-8000-d662051a8f23",
@@ -468,8 +467,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from PartnerBankAccount as ds where PartnerId = '{PartnerId}'\",\r\n    \"total\": \"select count(ds.Id) as total from PartnerBankAccount as ds where PartnerId = '{PartnerId}'\"\r\n}",
                     "RefName": "PartnerBankAccount",
                     "PreQuery": "{\r\n    \"PartnerId\": this.EditForm.Entity.Id\r\n}",
-                    "Editable": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Editable": true
                 }
             ]
         },

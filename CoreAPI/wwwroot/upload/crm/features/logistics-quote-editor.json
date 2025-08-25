@@ -392,8 +392,7 @@
                     "ComponentType": "Number",
                     "Column": 6,
                     "Label": "Quantity",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00171188-0000-0000-8000-0d9d89eb8b6c",
@@ -402,8 +401,7 @@
                     "ComponentType": "Number",
                     "Column": 6,
                     "Label": "CBM",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00171190-0000-0000-8000-084fd9856ab9",
@@ -412,8 +410,7 @@
                     "ComponentType": "Number",
                     "Column": 6,
                     "Label": "CW",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "001711ac-0000-0000-8000-cbebe2b35bef",
@@ -437,8 +434,7 @@
                     "ComponentType": "Number",
                     "Column": 6,
                     "Label": "GW",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00701160-0000-0000-8000-0150043702a4",
@@ -673,8 +669,7 @@
             "Editable": true,
             "MinWidth": "69px",
             "MaxWidth": "69px",
-            "EntityId": "DefaultFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "00181120-0000-0000-8000-9c6e6904e808",
@@ -688,8 +683,7 @@
             "Editable": true,
             "MinWidth": "69px",
             "MaxWidth": "69px",
-            "EntityId": "DefaultFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "00181180-0000-0000-8000-639cbbf34bce",
@@ -764,8 +758,7 @@
             "Editable": true,
             "MinWidth": "75px",
             "MaxWidth": "75px",
-            "EntityId": "DefaultFee",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "0019117c-0000-0000-8000-7ae9a828d1d9",
@@ -775,8 +768,7 @@
             "Label": "Quantity",
             "FocusSearch": true,
             "Editable": true,
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "001911a8-0000-0000-8000-8a0949b05563",
@@ -810,8 +802,7 @@
             "Editable": true,
             "MinWidth": "75px",
             "MaxWidth": "75px",
-            "EntityId": "DefaultFee",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "001911d8-0000-0000-8000-f3baf95b271d",
@@ -850,8 +841,7 @@
             "SummaryColSpan": 2,
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "DefaultFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "DefaultFee"
         }
     ],
     "Components": [

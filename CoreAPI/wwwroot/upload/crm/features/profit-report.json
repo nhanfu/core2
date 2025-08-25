@@ -383,8 +383,7 @@
             "FocusSearch": true,
             "MinWidth": "134px",
             "MaxWidth": "134px",
-            "EntityId": "Shipment",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "Shipment"
         },
         {
             "Id": "0195561c-4150-7616-8968-af5fa371bed1",
@@ -583,8 +582,7 @@
             "IsSumary": true,
             "MinWidth": "165px",
             "MaxWidth": "165px",
-            "EntityId": "Shipment",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "Shipment"
         },
         {
             "Id": "01955c17-dffa-766a-811f-dc2b16699484",
@@ -622,8 +620,7 @@
             "FocusSearch": true,
             "MinWidth": "40px",
             "MaxWidth": "40px",
-            "EntityId": "Shipment",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "Shipment"
         },
         {
             "Id": "01955c19-458e-73aa-8051-08fcf8163e0e",
@@ -660,7 +657,6 @@
             "MinWidth": "103px",
             "MaxWidth": "103px",
             "EntityId": "Shipment",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
             "TableName": "Shipment"
         },
         {
@@ -682,7 +678,6 @@
             "MinWidth": "91px",
             "MaxWidth": "91px",
             "EntityId": "Shipment",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
             "TableName": "Shipment"
         },
         {
@@ -703,7 +698,6 @@
             "MinWidth": "85px",
             "MaxWidth": "85px",
             "EntityId": "Shipment",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
             "TableName": "Shipment"
         },
         {
@@ -724,7 +718,6 @@
             "MinWidth": "107px",
             "MaxWidth": "107px",
             "EntityId": "Shipment",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78",
             "TableName": "Shipment"
         },
         {

@@ -95,8 +95,7 @@
                     "Label": "Booking No/ Ref No",
                     "ShowLabel": true,
                     "Disabled": true,
-                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                 },
                 {
                     "Id": "0195147c-b3e0-770f-bbae-a11805c21105",
@@ -113,8 +112,7 @@
                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
                     "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                     "RefName": "Terminal",
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "0195147c-b3e1-75fd-8cfb-23638670ec55",
@@ -225,8 +223,7 @@
                     "Precision": 2,
                     "Label": "No of packages",
                     "ShowLabel": true,
-                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                 },
                 {
                     "Id": "0195169e-6db8-700d-9340-ece10c16b973",
@@ -238,8 +235,7 @@
                     "Precision": 2,
                     "Label": "Gross Weight",
                     "ShowLabel": true,
-                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                 },
                 {
                     "Id": "0195169e-6db8-700d-9340-f1f756639381",
@@ -251,8 +247,7 @@
                     "Precision": 2,
                     "Label": "Measurement",
                     "ShowLabel": true,
-                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                 },
                 {
                     "Id": "019516a0-9459-709c-b537-2dbaec367ebe",
@@ -368,8 +363,7 @@
                     "Label": "Quantiy of Container",
                     "ShowLabel": true,
                     "Disabled": true,
-                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                 }
             ]
         },
@@ -429,8 +423,7 @@
             "Editable": true,
             "MinWidth": "49px",
             "MaxWidth": "49px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "019516b6-955c-77be-b55e-a86ce5c98e3a",
@@ -464,8 +457,7 @@
             "Editable": true,
             "MinWidth": "105px",
             "MaxWidth": "105px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "019516b6-955c-77be-b55e-b1f64d08af2d",
@@ -479,8 +471,7 @@
             "Editable": true,
             "MinWidth": "84px",
             "MaxWidth": "84px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "019516b6-955d-77b8-bd24-06e4c6cb4220",
@@ -494,8 +485,7 @@
             "Editable": true,
             "MinWidth": "54px",
             "MaxWidth": "54px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "019516b6-955d-77b8-bd24-09a10b78431c",
@@ -527,8 +517,7 @@
             "Editable": true,
             "MinWidth": "68px",
             "MaxWidth": "68px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "019516b6-955d-77b8-bd24-13f99ee68cc3",
@@ -542,8 +531,7 @@
             "Editable": true,
             "MinWidth": "87px",
             "MaxWidth": "87px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "019516b6-955d-77b8-bd24-1414245dc10e",
@@ -557,8 +545,7 @@
             "Editable": true,
             "MinWidth": "50px",
             "MaxWidth": "50px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "019516b6-955d-77b8-bd24-196d6ab2742e",
@@ -572,8 +559,7 @@
             "Editable": true,
             "MinWidth": "98px",
             "MaxWidth": "98px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "019516b6-955d-77b8-bd24-1e93332ccd77",
@@ -587,8 +573,7 @@
             "Editable": true,
             "MinWidth": "112px",
             "MaxWidth": "112px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01951e05-dbba-707f-a7af-67cac3f245ae",

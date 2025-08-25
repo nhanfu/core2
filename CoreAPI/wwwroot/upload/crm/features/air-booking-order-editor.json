@@ -480,8 +480,7 @@
                     "ComponentType": "Number",
                     "Column": 6,
                     "Label": "GW",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "000612d8-0000-0000-8000-62c81832b54b",
@@ -506,8 +505,7 @@
                     "Column": 6,
                     "Label": "Quantity",
                     "ShowLabel": true,
-                    "Style": " height: 30px;",
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Style": " height: 30px;"
                 },
                 {
                     "Id": "000813e4-0000-0000-8000-3b500729c00d",
@@ -558,8 +556,7 @@
                     "Label": "KGS",
                     "ShowLabel": true,
                     "Style": "display: flex; flex-flow: row-reverse; white-space: nowrap; align-items: center;gap: 35px;",
-                    "Disabled": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Disabled": true
                 },
                 {
                     "Id": "008013b8-0000-0000-8001-42912e284f11",
@@ -570,8 +567,7 @@
                     "Label": "CBM",
                     "ShowLabel": true,
                     "Style": "display: flex; flex-flow: row-reverse; white-space: nowrap; align-items: center;gap: 35px;",
-                    "Disabled": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Disabled": true
                 },
                 {
                     "Id": "00bd1330-0000-0000-8000-39fed9aa7391",
@@ -580,8 +576,7 @@
                     "ComponentType": "Number",
                     "Column": 6,
                     "Label": "CBM",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00c113e4-0000-0000-8000-e685cfccac74",
@@ -590,8 +585,7 @@
                     "ComponentType": "Number",
                     "Column": 6,
                     "Label": "CW",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00cd13f8-0000-0000-8000-d6e3c18de20c",
@@ -617,8 +611,7 @@
                     "ComponentType": "Number",
                     "Column": 6,
                     "Label": "Rate Comfirm",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+                    "ShowLabel": true
                 }
             ]
         },
@@ -696,8 +689,7 @@
             "Editable": true,
             "MinWidth": "192px",
             "MaxWidth": "192px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "00101338-0000-0000-8000-e33431eaa1ef",
@@ -710,8 +702,7 @@
             "Editable": true,
             "MinWidth": "138px",
             "MaxWidth": "138px",
-            "EntityId": "EntityDimension",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityDimension"
         },
         {
             "Id": "00101338-0000-0000-8001-82340778f5bb",
@@ -724,8 +715,7 @@
             "Editable": true,
             "MinWidth": "97px",
             "MaxWidth": "97px",
-            "EntityId": "EntityDimension",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityDimension"
         },
         {
             "Id": "00101338-0000-0000-8002-f8255c1f45d7",
@@ -738,8 +728,7 @@
             "Editable": true,
             "MinWidth": "96px",
             "MaxWidth": "96px",
-            "EntityId": "EntityDimension",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityDimension"
         },
         {
             "Id": "005913e4-0000-0000-8000-ec572440fa3f",
@@ -830,8 +819,7 @@
             "Editable": true,
             "MinWidth": "112px",
             "MaxWidth": "112px",
-            "EntityId": "EntityDimension",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityDimension"
         }
     ],
     "Components": [

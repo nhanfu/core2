@@ -176,8 +176,7 @@
                     "Column": 3,
                     "Label": "Quantity",
                     "ShowLabel": true,
-                    "Style": " height: 30px;",
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Style": " height: 30px;"
                 },
                 {
                     "Id": "00770fa0-0000-0000-8000-f230e68abec8",
@@ -201,8 +200,7 @@
                     "ComponentType": "Number",
                     "Column": 3,
                     "Label": "CBM",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00ba139c-0000-0000-8000-a090858076b8",
@@ -211,8 +209,7 @@
                     "ComponentType": "Number",
                     "Column": 3,
                     "Label": "GW",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00d60fdc-0000-0000-8000-22b889dfcd56",
@@ -761,8 +758,7 @@
                     "ComponentType": "Number",
                     "Column": 6,
                     "Label": "Freight rate",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00420ff8-0000-0000-8000-dcd13007d1c1",
@@ -771,8 +767,7 @@
                     "ComponentType": "Number",
                     "Column": 6,
                     "Label": "DEM (free)",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00420ff8-0000-0000-8001-1916e5e12d00",
@@ -781,8 +776,7 @@
                     "ComponentType": "Number",
                     "Column": 6,
                     "Label": "DET (free)",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00750f4c-0000-0000-8000-312a6b78f786",
@@ -922,8 +916,7 @@
             "Editable": true,
             "MinWidth": "171px",
             "MaxWidth": "171px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "00b02dfc-0000-0000-8000-cc97cc7bb6d8",

@@ -367,8 +367,7 @@
             "FocusSearch": true,
             "MinWidth": "104px",
             "MaxWidth": "104px",
-            "EntityId": "Shipment",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+            "EntityId": "Shipment"
         },
         {
             "Id": "01952dfb-e62b-71e9-ace1-090cb227e0a7",
@@ -380,8 +379,7 @@
             "FocusSearch": true,
             "MinWidth": "104px",
             "MaxWidth": "104px",
-            "EntityId": "Shipment",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+            "EntityId": "Shipment"
         },
         {
             "Id": "01952dfc-223c-777a-9c3a-a5d904c9234e",
@@ -393,8 +391,7 @@
             "FocusSearch": true,
             "MinWidth": "104px",
             "MaxWidth": "104px",
-            "EntityId": "Shipment",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+            "EntityId": "Shipment"
         }
     ],
     "FeaturePolicies": [

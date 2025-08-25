@@ -485,8 +485,7 @@
             "FocusSearch": true,
             "MinWidth": "153px",
             "MaxWidth": "153px",
-            "EntityId": "Shipment",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "Shipment"
         },
         {
             "Id": "019551c1-dacc-768e-b3a8-8a0ca41458ee",
@@ -666,8 +665,7 @@
             "MinWidth": "60px",
             "MaxWidth": "60px",
             "EntityId": "Shipment",
-            "IsMultiple": true,
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "IsMultiple": true
         },
         {
             "Id": "01956110-06ca-750e-bcfa-b21765fa097c",

@@ -454,8 +454,7 @@
             "TextAlign": "center",
             "MinWidth": "85px",
             "MaxWidth": "85px",
-            "EntityId": "Voucher",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+            "EntityId": "Voucher"
         },
         {
             "Id": "01939781-1f1a-74fc-b8ec-ab192a8196dc",
@@ -757,8 +756,7 @@
             "TextAlign": "center",
             "MinWidth": "85px",
             "MaxWidth": "85px",
-            "EntityId": "Voucher1",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+            "EntityId": "Voucher1"
         },
         {
             "Id": "01950d80-a30c-754e-9c18-c1655de67da9",

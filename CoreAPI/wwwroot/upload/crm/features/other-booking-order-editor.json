@@ -100,8 +100,7 @@
                     "ComponentType": "Number",
                     "Column": 6,
                     "Label": "CBM",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00c71374-0000-0000-8000-510d92203a09",
@@ -110,8 +109,7 @@
                     "ComponentType": "Number",
                     "Column": 6,
                     "Label": "GW",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00c71394-0000-0000-8000-26e6a3a60181",
@@ -136,8 +134,7 @@
                     "Column": 6,
                     "Label": "Quantity",
                     "ShowLabel": true,
-                    "Style": " height: 30px;",
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Style": " height: 30px;"
                 }
             ]
         },
@@ -567,8 +564,7 @@
             "Editable": true,
             "MinWidth": "192px",
             "MaxWidth": "192px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         }
     ],
     "Components": [

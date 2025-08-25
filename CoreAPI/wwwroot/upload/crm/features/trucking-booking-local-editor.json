@@ -357,8 +357,7 @@
                     "Column": 3,
                     "Precision": 3,
                     "Label": "GW",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00981598-0000-0000-8000-03099c70cf2d",
@@ -368,8 +367,7 @@
                     "Column": 3,
                     "Precision": 3,
                     "Label": "CBM",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "009815a4-0000-0000-8000-62827a64cb9f",
@@ -380,8 +378,7 @@
                     "Precision": 3,
                     "Label": "Quantity",
                     "ShowLabel": true,
-                    "Style": " height: 30px;",
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Style": " height: 30px;"
                 },
                 {
                     "Id": "009815c8-0000-0000-8000-6754f5ee591e",
@@ -679,8 +676,7 @@
                     "Column": 6,
                     "Precision": 3,
                     "Label": "DEM (free)",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00991574-0000-0000-8000-4e7d0394dea1",
@@ -699,8 +695,7 @@
                     "Column": 6,
                     "Precision": 3,
                     "Label": "DET (free)",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00991598-0000-0000-8000-45c2c31a6bf1",
@@ -954,8 +949,7 @@
             "FocusSearch": true,
             "MinWidth": "204px",
             "MaxWidth": "204px",
-            "EntityId": "Summary",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary"
         },
         {
             "Id": "006e2df4-0000-0000-8001-6b8965d557ac",
@@ -968,8 +962,7 @@
             "FocusSearch": true,
             "MinWidth": "225px",
             "MaxWidth": "225px",
-            "EntityId": "Summary",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary"
         },
         {
             "Id": "006e2df4-0000-0000-8002-49118ee17a45",
@@ -983,8 +976,7 @@
             "FocusSearch": true,
             "MinWidth": "201px",
             "MaxWidth": "201px",
-            "EntityId": "Summary",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary"
         },
         {
             "Id": "006e2df4-0000-0000-8003-38cdf73a4e97",
@@ -998,8 +990,7 @@
             "FocusSearch": true,
             "MinWidth": "193px",
             "MaxWidth": "193px",
-            "EntityId": "Summary",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary"
         },
         {
             "Id": "006e2df4-0000-0000-8004-6507cbf9e34f",
@@ -1013,8 +1004,7 @@
             "FocusSearch": true,
             "MinWidth": "230px",
             "MaxWidth": "230px",
-            "EntityId": "Summary",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary"
         },
         {
             "Id": "007b2a30-0000-0000-8000-9e3eea656838",
@@ -1029,8 +1019,7 @@
             "Editable": true,
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "BookingDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "BookingDetail"
         },
         {
             "Id": "007b2a30-0000-0000-8001-509443e80c44",
@@ -1064,8 +1053,7 @@
             "Editable": true,
             "MinWidth": "86px",
             "MaxWidth": "86px",
-            "EntityId": "BookingDetail",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "BookingDetail"
         },
         {
             "Id": "007b2a30-0000-0000-8003-1d48f381b55a",
@@ -1101,8 +1089,7 @@
             "Editable": true,
             "MinWidth": "57px",
             "MaxWidth": "57px",
-            "EntityId": "BookingDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "BookingDetail"
         },
         {
             "Id": "007b2a30-0000-0000-8005-0c7ce992c983",
@@ -1118,8 +1105,7 @@
             "Editable": true,
             "MinWidth": "97px",
             "MaxWidth": "97px",
-            "EntityId": "BookingDetail",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+            "EntityId": "BookingDetail"
         },
         {
             "Id": "007b2a30-0000-0000-8006-05ea891ca798",
@@ -1290,8 +1276,7 @@
             "Editable": true,
             "MinWidth": "206px",
             "MaxWidth": "206px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         }
     ],
     "Components": [

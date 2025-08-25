@@ -74,8 +74,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from ExchangeRateHistoryDetail as ds where HistoryId = '{HistoryId}'\",\r\n    \"total\": \"select count(ds.Id) as total from ExchangeRateHistoryDetail as ds where HistoryId = '{HistoryId}'\"\r\n}",
                     "RefName": "ExchangeRateHistoryDetail",
                     "PreQuery": "{\r\n    \"HistoryId\": this.EditForm.Entity.Id\r\n}",
-                    "Editable": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Editable": true
                 },
                 {
                     "Id": "0195846f-ec86-72be-bdba-e7f6245a6358",
@@ -152,8 +151,7 @@
                     "Precision": 2,
                     "Label": "USD => VND",
                     "ShowLabel": true,
-                    "Events": "{\r\n    \"input\": \"CalcRateUSD\"\r\n}",
-                    "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+                    "Events": "{\r\n    \"input\": \"CalcRateUSD\"\r\n}"
                 }
             ]
         }
@@ -193,8 +191,7 @@
             "Editable": true,
             "MinWidth": "186px",
             "MaxWidth": "186px",
-            "EntityId": "ExchangeRateHistoryDetail",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+            "EntityId": "ExchangeRateHistoryDetail"
         },
         {
             "Id": "01958472-61cb-74fd-ba8c-5a728a9ef313",

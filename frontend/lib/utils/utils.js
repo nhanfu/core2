@@ -281,7 +281,7 @@ export class Utils {
 
     static FormatNumber(template, pre, args) {
         return template.replace(/{(\d+)}/g, (/** @type {any} */ match, /** @type {string | number} */ index) => {
-            return typeof args[index] != 'undefined' ? new Decimal(args[index]).toFixed(pre || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : match;
+            return typeof args[index] != 'undefined' ? new Decimal(args[index]).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : match;
         });
     }
 
@@ -407,12 +407,11 @@ export class Utils {
                     text = '';
                 }
                 else {
-                    var pre = header.GroupTypeId ? parseInt(LangSelect._webConfig[header.GroupTypeId]) : header.Precision
                     if (!this.isNullOrWhiteSpace(header.FormatData)) {
-                        text = this.FormatEntity(header.FormatData, row, true, pre);
+                        text = this.FormatEntity(header.FormatData, row, true);
                     }
                     else {
-                        var fixedValue = new Decimal(cellData).toFixed(pre || 0);
+                        var fixedValue = new Decimal(cellData).toFixed(0);
                         var parts = fixedValue.split('.');
                         parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                         text = parts.join('.');

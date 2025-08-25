@@ -229,8 +229,7 @@
             "FocusSearch": true,
             "MinWidth": "124px",
             "MaxWidth": "124px",
-            "EntityId": "Voucher3",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Voucher3"
         },
         {
             "Id": "0194a015-90be-74cf-abb4-4e6c440b9dbe",
@@ -297,8 +296,7 @@
             "FocusSearch": true,
             "MinWidth": "124px",
             "MaxWidth": "124px",
-            "EntityId": "Voucher4",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Voucher4"
         },
         {
             "Id": "0194ea3f-ab5d-760d-9b13-abe8465b70a4",
@@ -442,8 +440,7 @@
             "FocusSearch": true,
             "MinWidth": "124px",
             "MaxWidth": "124px",
-            "EntityId": "Voucher5",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Voucher5"
         },
         {
             "Id": "0194ea42-953b-7621-9dc9-55ca9ce14b1c",

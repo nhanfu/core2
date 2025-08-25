@@ -324,8 +324,7 @@
                     "ComponentType": "Number",
                     "Column": 6,
                     "Label": "CBM",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "007710ac-0000-0000-8000-2314b96f470f",
@@ -334,8 +333,7 @@
                     "ComponentType": "Number",
                     "Column": 6,
                     "Label": "GW",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "007710d8-0000-0000-8000-1c72f215272f",
@@ -344,8 +342,7 @@
                     "ComponentType": "Number",
                     "Column": 6,
                     "Label": "Quantity",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "007710dc-0000-0000-8000-d6c350df02e5",
@@ -354,8 +351,7 @@
                     "ComponentType": "Number",
                     "Column": 6,
                     "Label": "CW",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "007710fc-0000-0000-8000-60bd020ff5d2",
@@ -751,8 +747,7 @@
             "Editable": true,
             "MinWidth": "75px",
             "MaxWidth": "75px",
-            "EntityId": "DefaultFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "000b27f4-0000-0000-8000-a93bd17fd477",
@@ -766,8 +761,7 @@
             "Editable": true,
             "MinWidth": "46px",
             "MaxWidth": "46px",
-            "EntityId": "DefaultFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "000b27f4-0000-0000-8001-f8aac383c6d7",
@@ -834,8 +828,7 @@
             "GroupName": "LTL",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00113158-0000-0000-8001-6256d3a7bbb6",
@@ -850,8 +843,7 @@
             "GroupName": "LTL",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00113158-0000-0000-8002-b7ee7e0f8e64",
@@ -866,8 +858,7 @@
             "GroupName": "LTL",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "001131f4-0000-0000-8000-8d9e421d4dd5",
@@ -881,8 +872,7 @@
             "GroupName": "LTL",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "0018110c-0000-0000-8000-bb35a656f256",
@@ -897,8 +887,7 @@
             "FocusSearch": true,
             "MinWidth": "146px",
             "MaxWidth": "146px",
-            "EntityId": "Summary",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "Summary"
         },
         {
             "Id": "00781004-0000-0000-8000-e7882ea0a63e",
@@ -952,8 +941,7 @@
             "FocusSearch": true,
             "MinWidth": "170px",
             "MaxWidth": "170px",
-            "EntityId": "Summary",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "Summary"
         },
         {
             "Id": "007810a4-0000-0000-8000-4ec820053d28",
@@ -990,8 +978,7 @@
             "FocusSearch": true,
             "MinWidth": "174px",
             "MaxWidth": "174px",
-            "EntityId": "Summary",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "Summary"
         },
         {
             "Id": "007810d8-0000-0000-8000-0e9f42754eb3",
@@ -1047,8 +1034,7 @@
             "FocusSearch": true,
             "MinWidth": "168px",
             "MaxWidth": "168px",
-            "EntityId": "Summary",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "Summary"
         },
         {
             "Id": "007810f4-0000-0000-8000-a2534eeba1a1",
@@ -1063,8 +1049,7 @@
             "FocusSearch": true,
             "MinWidth": "144px",
             "MaxWidth": "144px",
-            "EntityId": "Summary",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "Summary"
         },
         {
             "Id": "00791008-0000-0000-8000-2996cca7af9b",
@@ -1139,8 +1124,7 @@
             "Editable": true,
             "MinWidth": "63px",
             "MaxWidth": "63px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "00791068-0000-0000-8000-aefaa761371a",
@@ -1182,8 +1166,7 @@
             "Editable": true,
             "MinWidth": "75px",
             "MaxWidth": "75px",
-            "EntityId": "DefaultFee",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "0079107c-0000-0000-8000-cacba8371352",
@@ -1202,8 +1185,7 @@
             "Editable": true,
             "MinWidth": "75px",
             "MaxWidth": "75px",
-            "EntityId": "DefaultFee",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "007910d4-0000-0000-8000-15f0e5cd0f44",
@@ -1277,8 +1259,7 @@
             "GroupName": "Total",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "009a3190-0000-0000-8000-f6078d6bacf0",
@@ -1292,8 +1273,7 @@
             "GroupName": "Total",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "009a3190-0000-0000-8001-499c6e3d1962",
@@ -1308,8 +1288,7 @@
             "GroupName": "Total",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "009a3190-0000-0000-8002-88ba7915ed5a",
@@ -1324,8 +1303,7 @@
             "GroupName": "Total",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00a13120-0000-0000-8000-27a0dfdc4089",
@@ -1339,8 +1317,7 @@
             "GroupName": "Cost40",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00a13120-0000-0000-8001-751f5742cbf4",
@@ -1354,8 +1331,7 @@
             "GroupName": "Cost40",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00a13120-0000-0000-8002-784838df463d",
@@ -1370,8 +1346,7 @@
             "GroupName": "Cost40",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00a13158-0000-0000-8000-0f961c6a47b8",
@@ -1386,8 +1361,7 @@
             "GroupName": "FTL",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00a13158-0000-0000-8001-6de42c83c70b",
@@ -1402,8 +1376,7 @@
             "GroupName": "FTL",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00a13158-0000-0000-8002-2c79b12bd4ae",
@@ -1417,8 +1390,7 @@
             "GroupName": "Cost20",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00a13158-0000-0000-8003-f16c4a8904ac",
@@ -1432,8 +1404,7 @@
             "GroupName": "Cost20",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00a13184-0000-0000-8000-21cc3908e7e1",
@@ -1448,8 +1419,7 @@
             "GroupName": "Cost40",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00a13184-0000-0000-8001-5f83c96f94f3",
@@ -1463,8 +1433,7 @@
             "GroupName": "Cost40HC",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00a13184-0000-0000-8002-91b2d615f832",
@@ -1478,8 +1447,7 @@
             "GroupName": "Cost40HC",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00a13184-0000-0000-8003-bb0fec702581",
@@ -1494,8 +1462,7 @@
             "GroupName": "Cost40HC",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00a13184-0000-0000-8004-066ba8d0e3c9",
@@ -1510,8 +1477,7 @@
             "GroupName": "Cost40HC",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00a13190-0000-0000-8000-972c3e518c8d",
@@ -1545,8 +1511,7 @@
             "GroupName": "Cost20",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00a131bc-0000-0000-8001-654382a48e72",
@@ -1561,8 +1526,7 @@
             "GroupName": "Cost20",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00a131e8-0000-0000-8000-c97f9337e171",
@@ -1576,8 +1540,7 @@
             "GroupName": "Cost45",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00a131e8-0000-0000-8001-c4d07ca9087a",
@@ -1591,8 +1554,7 @@
             "GroupName": "Cost45",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00a131e8-0000-0000-8002-a42aeb56f5f9",
@@ -1607,8 +1569,7 @@
             "GroupName": "Cost45",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00a131e8-0000-0000-8003-57f0f491cbbb",
@@ -1623,8 +1584,7 @@
             "GroupName": "Cost45",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00a131f4-0000-0000-8000-acd58f9e6d98",
@@ -1670,8 +1630,7 @@
             "GroupName": "FTL",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00a131f4-0000-0000-8003-b25f4bd8cbda",
@@ -1685,8 +1644,7 @@
             "GroupName": "FTL",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00b02798-0000-0000-8000-2235902893ba",
@@ -1722,8 +1680,7 @@
             "FocusSearch": true,
             "MinWidth": "146px",
             "MaxWidth": "146px",
-            "EntityId": "Summary",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "Summary"
         }
     ],
     "Components": [

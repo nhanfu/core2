@@ -32,8 +32,7 @@
                     "ComponentType": "Input",
                     "Column": 6,
                     "Label": "Name VN",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00753670-0000-0000-8000-0271342aedb6",
@@ -42,8 +41,7 @@
                     "ComponentType": "Input",
                     "Column": 6,
                     "Label": "Phone",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00753678-0000-0000-8000-a57f5526989c",
@@ -52,8 +50,7 @@
                     "ComponentType": "Input",
                     "Column": 6,
                     "Label": "Name EN",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00753678-0000-0000-8000-aa258f00e75c",
@@ -71,8 +68,7 @@
                     "ComponentType": "Input",
                     "Column": 6,
                     "Label": "Email",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "007939f0-0000-0000-8000-8a5f8fe777f2",
@@ -81,8 +77,7 @@
                     "ComponentType": "Input",
                     "Column": 6,
                     "Label": "TaxCode",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00863958-0000-0000-8000-d2cb95a8c808",
@@ -91,8 +86,7 @@
                     "ComponentType": "Input",
                     "Column": 6,
                     "Label": "Fax",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "008b3970-0000-0000-8000-c27813595425",
@@ -101,8 +95,7 @@
                     "ComponentType": "Input",
                     "Column": 6,
                     "Label": "Web",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00b039a8-0000-0000-8000-096ecc3228e3",
@@ -172,8 +165,7 @@
                     "Query": "{\r\n    \"sql\": \"select * from PartnerBankAccount as ds where PartnerId = '{PartnerId}'\",\r\n    \"total\": \"select count(ds.Id) as total from PartnerBankAccount as ds where PartnerId = '{PartnerId}'\"\r\n}",
                     "RefName": "PartnerBankAccount",
                     "PreQuery": "{ PartnerId: this.EditForm.Entity.Id}",
-                    "Editable": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Editable": true
                 },
                 {
                     "Id": "0195ef5e-b963-737b-804d-7e04ef585649",
@@ -203,8 +195,7 @@
                     "Order": 9,
                     "ComponentType": "Word",
                     "Column": 6,
-                    "Label": "Footer",
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Label": "Footer"
                 }
             ]
         },
@@ -223,8 +214,7 @@
                     "Order": 9,
                     "ComponentType": "Word",
                     "Column": 6,
-                    "Label": "Header",
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Label": "Header"
                 }
             ]
         }

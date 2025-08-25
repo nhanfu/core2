@@ -36,8 +36,7 @@
                     "Column": 11,
                     "Row": 2,
                     "Label": "Notes",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00b74470-0000-0000-8000-9cced0515902",
@@ -46,8 +45,7 @@
                     "ComponentType": "Input",
                     "Column": 1,
                     "Label": "Ref No",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00b744d4-0000-0000-8000-ecb698f7a9ce",
@@ -56,8 +54,7 @@
                     "ComponentType": "Checkbox",
                     "Column": 1,
                     "Label": "Cost",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 }
             ]
         },
@@ -187,7 +184,6 @@
             "MinWidth": "102px",
             "MaxWidth": "102px",
             "EntityId": "ShipmentFee",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -223,7 +219,6 @@
             "MinWidth": "93px",
             "MaxWidth": "93px",
             "EntityId": "ShipmentFee",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -239,8 +234,7 @@
             "Editable": true,
             "MinWidth": "74px",
             "MaxWidth": "74px",
-            "EntityId": "ShipmentFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentFee"
         },
         {
             "Id": "002944d4-0000-0000-8000-b4ae223cffcd",
@@ -278,7 +272,6 @@
             "MinWidth": "95px",
             "MaxWidth": "95px",
             "EntityId": "ShipmentFee",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
             "EntityName": "ShipmentDetail"
         },
         {

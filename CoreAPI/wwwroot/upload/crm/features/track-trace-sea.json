@@ -292,8 +292,7 @@
                     "Column": 12,
                     "Label": "Quantiy of Container",
                     "ShowLabel": true,
-                    "Disabled": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Disabled": true
                 },
                 {
                     "Id": "01952bca-8bd2-76c0-831a-91c065b0c89e",
@@ -507,8 +506,7 @@
             "FocusSearch": true,
             "MinWidth": "49px",
             "MaxWidth": "49px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01952761-089a-7432-b8c9-a0bfb3b4ccbe",
@@ -540,8 +538,7 @@
             "FocusSearch": true,
             "MinWidth": "105px",
             "MaxWidth": "105px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01952761-094a-7586-ba06-1765c9a88353",
@@ -554,8 +551,7 @@
             "FocusSearch": true,
             "MinWidth": "84px",
             "MaxWidth": "84px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01952761-0978-765b-9173-52ab02feddf3",
@@ -568,8 +564,7 @@
             "FocusSearch": true,
             "MinWidth": "54px",
             "MaxWidth": "54px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01952761-09b7-71fd-ac64-ce215c5cd8ee",
@@ -599,8 +594,7 @@
             "FocusSearch": true,
             "MinWidth": "80px",
             "MaxWidth": "80px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01952761-0a2b-74d8-8922-278719133234",
@@ -613,8 +607,7 @@
             "FocusSearch": true,
             "MinWidth": "87px",
             "MaxWidth": "87px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01952761-0a5f-73de-8e5a-ac501a7f8101",
@@ -627,8 +620,7 @@
             "FocusSearch": true,
             "MinWidth": "67px",
             "MaxWidth": "67px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01952761-0a97-7260-80ed-ba6cbc2c2f4e",
@@ -641,8 +633,7 @@
             "FocusSearch": true,
             "MinWidth": "318px",
             "MaxWidth": "318px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01952761-0ae1-7787-ad67-d9fd1fa60aca",
@@ -655,8 +646,7 @@
             "FocusSearch": true,
             "MinWidth": "119px",
             "MaxWidth": "119px",
-            "EntityId": "ShipmentTask",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentTask"
         },
         {
             "Id": "01952761-0b7d-701e-b4b4-850599a5064b",
@@ -682,8 +672,7 @@
             "FocusSearch": true,
             "MinWidth": "384px",
             "MaxWidth": "384px",
-            "EntityId": "ShipmentTask",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentTask"
         },
         {
             "Id": "01952761-0c71-74df-b213-4790eb0f3ec1",
@@ -712,7 +701,6 @@
             "MinWidth": "78px",
             "MaxWidth": "78px",
             "EntityId": "Shipment1",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail",
             "TableName": "Shipment"
         },
@@ -731,7 +719,6 @@
             "MinWidth": "88px",
             "MaxWidth": "88px",
             "EntityId": "Shipment1",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail",
             "TableName": "Shipment"
         },
@@ -751,7 +738,6 @@
             "MinWidth": "101px",
             "MaxWidth": "101px",
             "EntityId": "Shipment1",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "TableName": "Shipment"
         },
         {
@@ -889,8 +875,7 @@
             "ClassName": "btn btn-sm primary",
             "Events": "{\r\n    \"click\": \"Search\"\r\n}",
             "Query": "select Shipment.Id as Id,\r\npol.Name as polName,\r\npod.Name as podName,\r\npt.Name as ptName,\r\n(select top 1 concat(format(EtaTsDate,'yyyy-MM-dd'),'/',format(EtdTsDate,'yyyy-MM-dd')) from EntityTransit where EntityId = Shipment.ParentId and PortTransitId = Shipment.PortTransitId) as etaTsDate\r\nfrom Shipment\r\nleft join Terminal pol on Shipment.POLId = pol.Id\r\nleft join Terminal pod on Shipment.PODId = pod.Id\r\nleft join Terminal pt on Shipment.PortTransitId = pt.Id\r\nwhere (Shipment.HblNo = '{SearchNo}' or Shipment.BookingNo = '{SearchNo}') and Shipment.CustomerId = '{TokenUserId}'",
-            "PreQuery": "{\r\n    \"SearchNo\" : this.Entity.SearchNo\r\n}",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "PreQuery": "{\r\n    \"SearchNo\" : this.Entity.SearchNo\r\n}"
         },
         {
             "Id": "01952761-070b-745d-8747-c26d1adf0e27",

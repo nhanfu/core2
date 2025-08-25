@@ -26,7 +26,6 @@ export class Numbox extends EditableComponent {
         this._decimalSeparator = '.';
         this.SetSelection = true;
         this.DefaultValue = 0;
-        this.Meta.Precision = this.Meta.GroupTypeId ? parseInt(LangSelect._webConfig[this.Meta.GroupTypeId]) : parseInt(this.Meta.Precision || 0);
     }
 
     /** @type {Decimal} */

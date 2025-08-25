@@ -194,8 +194,7 @@
             "Editable": true,
             "MinWidth": "201px",
             "MaxWidth": "201px",
-            "EntityId": "ExchangeRate",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+            "EntityId": "ExchangeRate"
         },
         {
             "Id": "01942c1d-98ed-7438-adfa-7a06920c86e3",
@@ -209,8 +208,7 @@
             "Editable": true,
             "MinWidth": "155px",
             "MaxWidth": "155px",
-            "EntityId": "ExchangeRate",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+            "EntityId": "ExchangeRate"
         },
         {
             "Id": "0195845b-0e7b-7399-9a77-a2677f4d055b",

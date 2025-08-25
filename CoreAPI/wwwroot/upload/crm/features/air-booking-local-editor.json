@@ -432,8 +432,7 @@
                     "Precision": 3,
                     "Label": "Package",
                     "ShowLabel": true,
-                    "Style": " height: 30px;",
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Style": " height: 30px;"
                 },
                 {
                     "Id": "004d1450-0000-0000-8001-d24baf817639",
@@ -458,8 +457,7 @@
                     "Column": 2,
                     "Precision": 3,
                     "Label": "GW",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "004d14b4-0000-0000-8001-3d966e3ae8f7",
@@ -469,8 +467,7 @@
                     "Column": 2,
                     "Precision": 3,
                     "Label": "CBM",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "005414b4-0000-0000-8000-e611bf389d1c",
@@ -481,8 +478,7 @@
                     "Offset": 9,
                     "Precision": 3,
                     "Label": "CW",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "0061141c-0000-0000-8000-abd6895f2ea0",
@@ -1029,8 +1025,7 @@
                     "Label": "KGS",
                     "ShowLabel": true,
                     "Style": "display: flex; flex-flow: row-reverse; white-space: nowrap; align-items: center;gap: 35px;",
-                    "Disabled": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Disabled": true
                 },
                 {
                     "Id": "006a1484-0000-0000-8000-ca3b02e8cf2e",
@@ -1041,8 +1036,7 @@
                     "Label": "CBM",
                     "ShowLabel": true,
                     "Style": "display: flex; flex-flow: row-reverse; white-space: nowrap; align-items: center;gap: 35px;",
-                    "Disabled": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Disabled": true
                 },
                 {
                     "Id": "00a614ec-0000-0000-8001-27f71d185dff",
@@ -1101,8 +1095,7 @@
             "FocusSearch": true,
             "MinWidth": "204px",
             "MaxWidth": "204px",
-            "EntityId": "Summary",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary"
         },
         {
             "Id": "00162d04-0000-0000-8002-982363694f48",
@@ -1115,8 +1108,7 @@
             "FocusSearch": true,
             "MinWidth": "225px",
             "MaxWidth": "225px",
-            "EntityId": "Summary",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary"
         },
         {
             "Id": "00162d04-0000-0000-8003-ff1314d81d9d",
@@ -1130,8 +1122,7 @@
             "FocusSearch": true,
             "MinWidth": "201px",
             "MaxWidth": "201px",
-            "EntityId": "Summary",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary"
         },
         {
             "Id": "00162d04-0000-0000-8004-daf20bc84db4",
@@ -1145,8 +1136,7 @@
             "FocusSearch": true,
             "MinWidth": "193px",
             "MaxWidth": "193px",
-            "EntityId": "Summary",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary"
         },
         {
             "Id": "00162d04-0000-0000-8005-ad34f7be4d9c",
@@ -1160,8 +1150,7 @@
             "FocusSearch": true,
             "MinWidth": "230px",
             "MaxWidth": "230px",
-            "EntityId": "Summary",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary"
         },
         {
             "Id": "0026141c-0000-0000-8000-eea7990c847a",
@@ -1175,8 +1164,7 @@
             "Editable": true,
             "MinWidth": "206px",
             "MaxWidth": "206px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "002614c4-0000-0000-8000-62100a81f9ca",
@@ -1208,8 +1196,7 @@
             "Editable": true,
             "MinWidth": "130px",
             "MaxWidth": "130px",
-            "EntityId": "EntityDimension",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityDimension"
         },
         {
             "Id": "00751478-0000-0000-8001-711e76b1481a",
@@ -1222,8 +1209,7 @@
             "Editable": true,
             "MinWidth": "97px",
             "MaxWidth": "97px",
-            "EntityId": "EntityDimension",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityDimension"
         },
         {
             "Id": "007514dc-0000-0000-8000-d1fc4364eb5f",
@@ -1236,8 +1222,7 @@
             "Editable": true,
             "MinWidth": "96px",
             "MaxWidth": "96px",
-            "EntityId": "EntityDimension",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityDimension"
         },
         {
             "Id": "007514dc-0000-0000-8001-89844616e615",
@@ -1250,8 +1235,7 @@
             "Editable": true,
             "MinWidth": "112px",
             "MaxWidth": "112px",
-            "EntityId": "EntityDimension",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityDimension"
         },
         {
             "Id": "007c3764-0000-0000-8000-c98a717eba61",
@@ -1337,8 +1321,7 @@
             "Editable": true,
             "MinWidth": "86px",
             "MaxWidth": "86px",
-            "EntityId": "BookingDetail",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "BookingDetail"
         },
         {
             "Id": "00f22a3c-0000-0000-8001-121b07a5faa6",
@@ -1374,8 +1357,7 @@
             "Editable": true,
             "MinWidth": "57px",
             "MaxWidth": "57px",
-            "EntityId": "BookingDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "BookingDetail"
         },
         {
             "Id": "00f22a3c-0000-0000-8003-76e918343d2a",
@@ -1391,8 +1373,7 @@
             "Editable": true,
             "MinWidth": "97px",
             "MaxWidth": "97px",
-            "EntityId": "BookingDetail",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+            "EntityId": "BookingDetail"
         },
         {
             "Id": "00f22a3c-0000-0000-8004-1568b2710f61",
@@ -1491,8 +1472,7 @@
             "Editable": true,
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "BookingDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "BookingDetail"
         },
         {
             "Id": "00f22ad8-0000-0000-8003-097604338fbb",

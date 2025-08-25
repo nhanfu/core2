@@ -56,8 +56,7 @@
                     "Column": 4,
                     "Label": "CW",
                     "ShowLabel": true,
-                    "Disabled": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Disabled": true
                 },
                 {
                     "Id": "00c01c84-0000-0000-8001-d74e17fa4211",
@@ -67,8 +66,7 @@
                     "Column": 4,
                     "Label": "GW",
                     "ShowLabel": true,
-                    "Disabled": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Disabled": true
                 },
                 {
                     "Id": "00c01c84-0000-0000-8002-5ef897b052ac",
@@ -78,8 +76,7 @@
                     "Column": 4,
                     "Label": "CBM",
                     "ShowLabel": true,
-                    "Disabled": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Disabled": true
                 },
                 {
                     "Id": "00d21c48-0000-0000-8000-f3cb24deaace",
@@ -99,8 +96,7 @@
                     "Column": 4,
                     "Label": "Total Amount",
                     "ShowLabel": true,
-                    "Disabled": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Disabled": true
                 }
             ]
         },
@@ -464,8 +460,7 @@
             "Editable": true,
             "MinWidth": "75px",
             "MaxWidth": "75px",
-            "EntityId": "DefaultFee",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "005f1b50-0000-0000-8000-583b39744a6e",
@@ -793,8 +788,7 @@
             "Editable": true,
             "MinWidth": "117px",
             "MaxWidth": "117px",
-            "EntityId": "DefaultFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "008a190c-0000-0000-8000-77834b395e9f",
@@ -850,8 +844,7 @@
             "Editable": true,
             "MinWidth": "75px",
             "MaxWidth": "75px",
-            "EntityId": "DefaultFee",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "00b20200-0000-0000-8000-0410b95d4155",
@@ -884,8 +877,7 @@
             "Editable": true,
             "MinWidth": "48px",
             "MaxWidth": "48px",
-            "EntityId": "DefaultFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "00ba02b0-0000-0000-8000-fd848a8aea2e",
@@ -900,8 +892,7 @@
             "Editable": true,
             "MinWidth": "102px",
             "MaxWidth": "102px",
-            "EntityId": "DefaultFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "00bd0260-0000-0000-8000-ae156213ef6a",

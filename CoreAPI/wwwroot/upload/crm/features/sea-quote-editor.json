@@ -383,8 +383,7 @@
                     "Column": 6,
                     "Precision": 2,
                     "Label": "CW",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "0075268c-0000-0000-8000-23816f74ceae",
@@ -394,8 +393,7 @@
                     "Column": 6,
                     "Precision": 2,
                     "Label": "GW",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "007526b8-0000-0000-8000-e86853f75c9d",
@@ -405,8 +403,7 @@
                     "Column": 6,
                     "Precision": 2,
                     "Label": "Quantity",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "007526c4-0000-0000-8000-9a0e83c7c09f",
@@ -446,8 +443,7 @@
                     "Column": 6,
                     "Precision": 2,
                     "Label": "CBM",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 }
             ]
         },
@@ -809,8 +805,7 @@
             "GroupName": "Total",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "004a3150-0000-0000-8001-484e5d229db7",
@@ -824,8 +819,7 @@
             "GroupName": "Total",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "004a3150-0000-0000-8002-bc6ad1e5b356",
@@ -840,8 +834,7 @@
             "GroupName": "Total",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "004a31b4-0000-0000-8000-7c0a0350d8ef",
@@ -856,8 +849,7 @@
             "GroupName": "Total",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "0073301c-0000-0000-8000-af4bf04d89fc",
@@ -872,8 +864,7 @@
             "GroupName": "Cost45",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "0073301c-0000-0000-8001-a15f95ac38d1",
@@ -888,8 +879,7 @@
             "GroupName": "Cost45",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00733054-0000-0000-8000-05bcb565f1eb",
@@ -903,8 +893,7 @@
             "GroupName": "Cost40",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "0073308c-0000-0000-8000-9937fbf9032e",
@@ -931,8 +920,7 @@
             "GroupName": "LCL",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "0073308c-0000-0000-8002-5e1e8dc62286",
@@ -946,8 +934,7 @@
             "GroupName": "LCL",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "0073308c-0000-0000-8003-defad020a5d8",
@@ -962,8 +949,7 @@
             "GroupName": "LCL",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "0073308c-0000-0000-8004-97b83aacf40e",
@@ -978,8 +964,7 @@
             "GroupName": "LCL",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "007330b8-0000-0000-8000-d2b3708ecffd",
@@ -994,8 +979,7 @@
             "GroupName": "Cost40",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "007330b8-0000-0000-8001-719b4a596f6d",
@@ -1010,8 +994,7 @@
             "GroupName": "Cost40",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "007330b8-0000-0000-8002-4e573c7855e8",
@@ -1025,8 +1008,7 @@
             "GroupName": "Cost40HC",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "007330b8-0000-0000-8003-b6c1244f039f",
@@ -1040,8 +1022,7 @@
             "GroupName": "Cost40HC",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "007330b8-0000-0000-8004-01850b7d4693",
@@ -1056,8 +1037,7 @@
             "GroupName": "Cost40HC",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "007330b8-0000-0000-8005-e64be6f5abe9",
@@ -1072,8 +1052,7 @@
             "GroupName": "Cost40HC",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "007330b8-0000-0000-8006-f1ef712fca95",
@@ -1087,8 +1066,7 @@
             "GroupName": "Cost45",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "007330b8-0000-0000-8007-2cfae4584d54",
@@ -1102,8 +1080,7 @@
             "GroupName": "Cost45",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "007330f0-0000-0000-8000-fbb08375b5d5",
@@ -1117,8 +1094,7 @@
             "GroupName": "Cost20",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "007330f0-0000-0000-8001-f735405e4bb8",
@@ -1132,8 +1108,7 @@
             "GroupName": "Cost20",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "007330f0-0000-0000-8002-d2d6f4d223b9",
@@ -1148,8 +1123,7 @@
             "GroupName": "Cost20",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "007330f0-0000-0000-8003-b626fb3bfed7",
@@ -1164,8 +1138,7 @@
             "GroupName": "Cost20",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "007330f0-0000-0000-8004-3fd17b0b370a",
@@ -1179,8 +1152,7 @@
             "GroupName": "Cost40",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00762618-0000-0000-8000-164f21ad61e9",
@@ -1213,8 +1185,7 @@
             "Editable": true,
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "DefaultFee",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "0076263c-0000-0000-8000-d26ea06815ac",
@@ -1295,8 +1266,7 @@
             "Editable": true,
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "DefaultFee",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "007626d4-0000-0000-8000-2189a8d0f615",
@@ -1346,8 +1316,7 @@
             "FocusSearch": true,
             "MinWidth": "121px",
             "MaxWidth": "121px",
-            "EntityId": "Summary",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "Summary"
         },
         {
             "Id": "00772624-0000-0000-8000-a7ef31fdc76f",
@@ -1385,8 +1354,7 @@
             "FocusSearch": true,
             "MinWidth": "155px",
             "MaxWidth": "155px",
-            "EntityId": "Summary",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "Summary"
         },
         {
             "Id": "00772630-0000-0000-8000-c1fd7e5a48d2",
@@ -1405,8 +1373,7 @@
             "Editable": true,
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "DefaultFee",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "0077263c-0000-0000-8000-4988b5179781",
@@ -1426,8 +1393,7 @@
             "Editable": true,
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "DefaultFee",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "0077263c-0000-0000-8000-553b5e3f9de9",
@@ -1482,8 +1448,7 @@
             "FocusSearch": true,
             "MinWidth": "114px",
             "MaxWidth": "114px",
-            "EntityId": "Summary",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "Summary"
         },
         {
             "Id": "0077266c-0000-0000-8000-d4536bd5f82b",
@@ -1581,8 +1546,7 @@
             "Editable": true,
             "MinWidth": "60px",
             "MaxWidth": "60px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "007726b8-0000-0000-8000-e8bbee455ebd",
@@ -1611,8 +1575,7 @@
             "FocusSearch": true,
             "MinWidth": "127px",
             "MaxWidth": "127px",
-            "EntityId": "Summary",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "Summary"
         },
         {
             "Id": "007726fc-0000-0000-8000-43f2ce1bb471",
@@ -1647,8 +1610,7 @@
             "Editable": true,
             "MinWidth": "54px",
             "MaxWidth": "54px",
-            "EntityId": "DefaultFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "00782624-0000-0000-8000-3b81da79aacf",
@@ -1760,8 +1722,7 @@
             "FocusSearch": true,
             "MinWidth": "143px",
             "MaxWidth": "143px",
-            "EntityId": "Summary",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "Summary"
         },
         {
             "Id": "00782698-0000-0000-8000-c4020f2abd82",
@@ -1852,8 +1813,7 @@
             "Editable": true,
             "MinWidth": "69px",
             "MaxWidth": "69px",
-            "EntityId": "DefaultFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "DefaultFee"
         },
         {
             "Id": "007826e4-0000-0000-8000-cc2848c3a847",

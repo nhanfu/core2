@@ -572,8 +572,7 @@
                     "Precision": 3,
                     "Label": "Quantity",
                     "ShowLabel": true,
-                    "Style": " height: 30px;",
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Style": " height: 30px;"
                 },
                 {
                     "Id": "00791620-0000-0000-8000-734194657559",
@@ -583,8 +582,7 @@
                     "Column": 3,
                     "Precision": 3,
                     "Label": "CBM",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00791628-0000-0000-8000-88af9b516ec9",
@@ -627,8 +625,7 @@
                     "Column": 3,
                     "Precision": 3,
                     "Label": "GW",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00791694-0000-0000-8000-67bd3028487c",
@@ -1018,8 +1015,7 @@
             "Editable": true,
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "BookingDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "BookingDetail"
         },
         {
             "Id": "003d2a6c-0000-0000-8003-27d40f458f8a",
@@ -1053,8 +1049,7 @@
             "Editable": true,
             "MinWidth": "86px",
             "MaxWidth": "86px",
-            "EntityId": "BookingDetail",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "BookingDetail"
         },
         {
             "Id": "003d2a6c-0000-0000-8005-82592c01a3c7",
@@ -1090,8 +1085,7 @@
             "Editable": true,
             "MinWidth": "57px",
             "MaxWidth": "57px",
-            "EntityId": "BookingDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "BookingDetail"
         },
         {
             "Id": "003d2ad0-0000-0000-8001-a7f8f2b8a47a",
@@ -1107,8 +1101,7 @@
             "Editable": true,
             "MinWidth": "97px",
             "MaxWidth": "97px",
-            "EntityId": "BookingDetail",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+            "EntityId": "BookingDetail"
         },
         {
             "Id": "003d2ad0-0000-0000-8002-1fa6246cb503",
@@ -1183,8 +1176,7 @@
             "Editable": true,
             "MinWidth": "206px",
             "MaxWidth": "206px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "00a43728-0000-0000-8000-1c5a81f45df4",
@@ -1252,8 +1244,7 @@
             "FocusSearch": true,
             "MinWidth": "201px",
             "MaxWidth": "201px",
-            "EntityId": "Summary",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary"
         },
         {
             "Id": "00fa2d88-0000-0000-8000-82716f1f566e",
@@ -1267,8 +1258,7 @@
             "FocusSearch": true,
             "MinWidth": "193px",
             "MaxWidth": "193px",
-            "EntityId": "Summary",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary"
         },
         {
             "Id": "00fa2d88-0000-0000-8001-4d9490e58e55",
@@ -1282,8 +1272,7 @@
             "FocusSearch": true,
             "MinWidth": "230px",
             "MaxWidth": "230px",
-            "EntityId": "Summary",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary"
         },
         {
             "Id": "00fa2dc0-0000-0000-8000-ca828b2c72ec",
@@ -1311,8 +1300,7 @@
             "FocusSearch": true,
             "MinWidth": "204px",
             "MaxWidth": "204px",
-            "EntityId": "Summary",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary"
         },
         {
             "Id": "00fa2dc0-0000-0000-8002-663e33f2ceef",
@@ -1325,8 +1313,7 @@
             "FocusSearch": true,
             "MinWidth": "225px",
             "MaxWidth": "225px",
-            "EntityId": "Summary",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary"
         }
     ],
     "Components": [

@@ -460,8 +460,7 @@
             "FocusSearch": true,
             "MinWidth": "49px",
             "MaxWidth": "49px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01952c04-ca9f-75a7-92da-909273171702",
@@ -493,8 +492,7 @@
             "FocusSearch": true,
             "MinWidth": "105px",
             "MaxWidth": "105px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01952c04-cb2e-75cc-979b-22831db2ad68",
@@ -507,8 +505,7 @@
             "FocusSearch": true,
             "MinWidth": "84px",
             "MaxWidth": "84px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01952c04-cb81-70e4-884a-40966a0fa474",
@@ -521,8 +518,7 @@
             "FocusSearch": true,
             "MinWidth": "54px",
             "MaxWidth": "54px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01952c04-cbb9-717f-bc49-acf734f793c5",
@@ -552,8 +548,7 @@
             "FocusSearch": true,
             "MinWidth": "80px",
             "MaxWidth": "80px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01952c04-cc34-761e-b60d-a5a7624ef858",
@@ -566,8 +561,7 @@
             "FocusSearch": true,
             "MinWidth": "87px",
             "MaxWidth": "87px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01952c04-cc7a-755c-97a0-944473bf35b5",
@@ -580,8 +574,7 @@
             "FocusSearch": true,
             "MinWidth": "67px",
             "MaxWidth": "67px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01952c04-ccab-7558-9353-58d312d38b05",
@@ -594,8 +587,7 @@
             "FocusSearch": true,
             "MinWidth": "318px",
             "MaxWidth": "318px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "01952c04-cce7-7600-b97f-d625ce41daa2",
@@ -608,8 +600,7 @@
             "FocusSearch": true,
             "MinWidth": "119px",
             "MaxWidth": "119px",
-            "EntityId": "ShipmentTask",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentTask"
         },
         {
             "Id": "01952c04-cdec-74eb-8027-de37689c0fac",
@@ -635,8 +626,7 @@
             "FocusSearch": true,
             "MinWidth": "384px",
             "MaxWidth": "384px",
-            "EntityId": "ShipmentTask",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentTask"
         },
         {
             "Id": "01952c04-cef0-7260-a29b-655e9e030e9b",
@@ -665,7 +655,6 @@
             "MinWidth": "78px",
             "MaxWidth": "78px",
             "EntityId": "Shipment1",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail",
             "TableName": "Shipment"
         },
@@ -684,7 +673,6 @@
             "MinWidth": "88px",
             "MaxWidth": "88px",
             "EntityId": "Shipment1",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail",
             "TableName": "Shipment"
         },
@@ -704,7 +692,6 @@
             "MinWidth": "101px",
             "MaxWidth": "101px",
             "EntityId": "Shipment1",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "TableName": "Shipment"
         },
         {
@@ -839,8 +826,7 @@
             "FocusSearch": true,
             "MinWidth": "125px",
             "MaxWidth": "125px",
-            "EntityId": "EntityDimension",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityDimension"
         },
         {
             "Id": "01952c09-a1ad-71d0-9ccc-9b052186564d",
@@ -852,8 +838,7 @@
             "FocusSearch": true,
             "MinWidth": "115px",
             "MaxWidth": "115px",
-            "EntityId": "EntityDimension",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityDimension"
         },
         {
             "Id": "01952c09-a1ad-71d0-9ccc-9c38ff3e03a0",
@@ -865,8 +850,7 @@
             "FocusSearch": true,
             "MinWidth": "121px",
             "MaxWidth": "121px",
-            "EntityId": "EntityDimension",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityDimension"
         },
         {
             "Id": "01952c09-a1ad-71d0-9ccc-a35508e69bbf",
@@ -880,8 +864,7 @@
             "FocusSearch": true,
             "MinWidth": "113px",
             "MaxWidth": "113px",
-            "EntityId": "EntityDimension",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityDimension"
         }
     ],
     "Components": [

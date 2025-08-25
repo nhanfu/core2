@@ -244,8 +244,7 @@
             "FocusSearch": true,
             "MinWidth": "124px",
             "MaxWidth": "124px",
-            "EntityId": "ShipmentInvoice",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "ShipmentInvoice"
         },
         {
             "Id": "01945964-1d9b-764e-bb88-0fed41da2657",
@@ -404,8 +403,7 @@
             "FocusSearch": true,
             "MinWidth": "124px",
             "MaxWidth": "124px",
-            "EntityId": "ShipmentInvoice2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "ShipmentInvoice2"
         },
         {
             "Id": "01947485-fe2b-77a8-a342-f8f7294d3542",
@@ -614,8 +612,7 @@
             "FocusSearch": true,
             "MinWidth": "124px",
             "MaxWidth": "124px",
-            "EntityId": "ShipmentInvoice3",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "ShipmentInvoice3"
         },
         {
             "Id": "01947486-872d-76bc-a85a-1b636b162aea",

@@ -1079,33 +1079,30 @@ export class GridView extends ListView {
         }
         if (header.IsTotal) {
             const sum = this.TotalHeaders.reduce((a, b) => a.plus(b), new Decimal(0));
-            var pre = header.GroupTypeId ? parseInt(LangSelect._webConfig[header.GroupTypeId]) : header.Precision;
             if (this.Meta.Frozen) {
-                cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toDP(0).toFixed(pre || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toDP(0).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
             }
             else {
-                cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toFixed(pre || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
             }
         }
         else {
             if (this.Meta.IsMultiple) {
                 const sum = this.GetSelectedRows().reduce((a, b) => a.plus(new Decimal(b[header.FieldName] || 0)), new Decimal(0))
-                var pre = header.GroupTypeId ? parseInt(LangSelect._webConfig[header.GroupTypeId]) : header.Precision;
                 if (this.Meta.Frozen) {
-                    cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toDP(0).toFixed(pre || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                    cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toDP(0).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
                 }
                 else {
-                    cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toFixed(pre || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                    cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                 }
             }
             else {
                 const sum = this.AllListViewItem.filter(x => !x.GroupRow).map(x => x.Entity).reduce((a, b) => a.plus(new Decimal(b[header.FieldName] || 0)), new Decimal(0))
-                var pre = header.GroupTypeId ? parseInt(LangSelect._webConfig[header.GroupTypeId]) : header.Precision;
                 if (this.Meta.Frozen) {
-                    cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toDP(0).toFixed(pre || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                    cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toDP(0).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
                 }
                 else {
-                    cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toFixed(pre || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                    cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                 }
             }
         }

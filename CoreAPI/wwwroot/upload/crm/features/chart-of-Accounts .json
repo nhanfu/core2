@@ -39,8 +39,7 @@
             "ComponentType": "Number",
             "Label": "No",
             "Editable": true,
-            "EntityId": "AccountNo",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "AccountNo"
         },
         {
             "Id": "0022ff08-0000-0000-8000-e3c832262478",

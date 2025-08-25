@@ -114,8 +114,7 @@
                     "ComponentType": "Input",
                     "Column": 2,
                     "Label": "File No",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00523f20-0000-0000-8000-73644658a265",
@@ -158,8 +157,7 @@
                     "Column": 2,
                     "Label": "HBL No",
                     "ShowLabel": true,
-                    "Disabled": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Disabled": true
                 },
                 {
                     "Id": "00523fb0-0000-0000-8000-df91a19d4c18",
@@ -168,8 +166,7 @@
                     "ComponentType": "Datepicker",
                     "Column": 2,
                     "Label": "Time of Delivery",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00563f10-0000-0000-8000-6e7e792899d8",

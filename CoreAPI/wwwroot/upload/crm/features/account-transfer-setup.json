@@ -141,8 +141,7 @@
             "Editable": true,
             "MinWidth": "149px",
             "MaxWidth": "149px",
-            "EntityId": "AccountTransferSetup",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "AccountTransferSetup"
         },
         {
             "Id": "01945a99-4057-772c-9b22-1e19f5dfa6f7",

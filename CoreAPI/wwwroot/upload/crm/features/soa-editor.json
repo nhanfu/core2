@@ -416,8 +416,7 @@
             "FocusSearch": true,
             "MinWidth": "183px",
             "MaxWidth": "183px",
-            "EntityId": "SOADetail",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "SOADetail"
         },
         {
             "Id": "01949631-1f35-75b8-84e7-dd7d9f3e0203",
@@ -540,8 +539,7 @@
             "FocusSearch": true,
             "MinWidth": "139px",
             "MaxWidth": "139px",
-            "EntityId": "SOADetail",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "SOADetail"
         },
         {
             "Id": "01949720-6015-7634-b991-b103cb97b175",
@@ -557,8 +555,7 @@
             "SummaryColSpan": 4,
             "MinWidth": "164px",
             "MaxWidth": "164px",
-            "EntityId": "SOADetail",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "SOADetail"
         },
         {
             "Id": "01949721-95fd-77fc-8d36-efe6b3c90932",
@@ -707,8 +704,7 @@
             "FocusSearch": true,
             "MinWidth": "124px",
             "MaxWidth": "124px",
-            "EntityId": "ShipmentInvoice",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "ShipmentInvoice"
         },
         {
             "Id": "01949b01-7ebb-709a-9a5a-5355ff4e4c5d",

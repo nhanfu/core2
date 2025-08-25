@@ -558,8 +558,7 @@
                     "Precision": 3,
                     "Label": "Quantity",
                     "ShowLabel": true,
-                    "Style": " height: 30px;",
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Style": " height: 30px;"
                 },
                 {
                     "Id": "00061450-0000-0000-8000-b8612b5df26d",
@@ -593,8 +592,7 @@
                     "Column": 3,
                     "Precision": 3,
                     "Label": "GW",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00061498-0000-0000-8000-da85094c2c3b",
@@ -604,8 +602,7 @@
                     "Column": 3,
                     "Precision": 3,
                     "Label": "CBM",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "000614d0-0000-0000-8000-286de8643d92",
@@ -740,8 +737,7 @@
                     "Column": 6,
                     "Precision": 3,
                     "Label": "DET (free)",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00061430-0000-0000-8000-c0414811fc58",
@@ -751,8 +747,7 @@
                     "Column": 6,
                     "Precision": 3,
                     "Label": "Freight rate",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "000614ac-0000-0000-8000-c2724c556028",
@@ -762,8 +757,7 @@
                     "Column": 6,
                     "Precision": 3,
                     "Label": "DEM (free)",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00071454-0000-0000-8000-74549fce4233",
@@ -1134,8 +1128,7 @@
             "Editable": true,
             "MinWidth": "206px",
             "MaxWidth": "206px",
-            "EntityId": "EntityContainer",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "EntityContainer"
         },
         {
             "Id": "000c2d5c-0000-0000-8000-609639af9216",
@@ -1238,8 +1231,7 @@
             "Editable": true,
             "MinWidth": "185px",
             "MaxWidth": "185px",
-            "EntityId": "BookingDetail",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+            "EntityId": "BookingDetail"
         },
         {
             "Id": "00202d70-0000-0000-8000-4ae3a439ab0f",
@@ -1281,8 +1273,7 @@
             "GroupName": "Cost40",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "004c2dc0-0000-0000-8000-035caf688e40",
@@ -1296,8 +1287,7 @@
             "FocusSearch": true,
             "MinWidth": "230px",
             "MaxWidth": "230px",
-            "EntityId": "Summary",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary"
         },
         {
             "Id": "00503074-0000-0000-8000-fd882f93bb94",
@@ -1311,8 +1301,7 @@
             "GroupName": "LCL",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "005030d8-0000-0000-8000-6ffa0a5f8ae2",
@@ -1327,8 +1316,7 @@
             "GroupName": "LCL",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "005030d8-0000-0000-8001-11368180c7e2",
@@ -1343,8 +1331,7 @@
             "GroupName": "LCL",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00623088-0000-0000-8000-b42ce2456030",
@@ -1358,8 +1345,7 @@
             "GroupName": "Cost20",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00623088-0000-0000-8002-fd75e8b952bf",
@@ -1374,8 +1360,7 @@
             "GroupName": "Cost20",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00623088-0000-0000-8003-a5be3ab0a214",
@@ -1390,8 +1375,7 @@
             "GroupName": "Cost20",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "006a3024-0000-0000-8000-75d6ab15f61a",
@@ -1405,8 +1389,7 @@
             "GroupName": "Cost40HC",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "007c300c-0000-0000-8000-7165cb8e299e",
@@ -1420,8 +1403,7 @@
             "GroupName": "Cost45",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00972a20-0000-0000-8000-d7ef0f9409ed",
@@ -1455,8 +1437,7 @@
             "Editable": true,
             "MinWidth": "86px",
             "MaxWidth": "86px",
-            "EntityId": "BookingDetail",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "BookingDetail"
         },
         {
             "Id": "00972a20-0000-0000-8002-2c40de07e8d1",
@@ -1471,8 +1452,7 @@
             "Editable": true,
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "BookingDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "BookingDetail"
         },
         {
             "Id": "00972a20-0000-0000-8003-466c6004cd90",
@@ -1487,8 +1467,7 @@
             "Editable": true,
             "MinWidth": "57px",
             "MaxWidth": "57px",
-            "EntityId": "BookingDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "BookingDetail"
         },
         {
             "Id": "00972a20-0000-0000-8004-31163b1e0dfd",
@@ -1606,8 +1585,7 @@
             "FocusSearch": true,
             "MinWidth": "204px",
             "MaxWidth": "204px",
-            "EntityId": "Summary",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary"
         },
         {
             "Id": "00ab2d50-0000-0000-8001-d0c75fe3f9ee",
@@ -1620,8 +1598,7 @@
             "FocusSearch": true,
             "MinWidth": "225px",
             "MaxWidth": "225px",
-            "EntityId": "Summary",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary"
         },
         {
             "Id": "00ab2db4-0000-0000-8000-c149bf8cc801",
@@ -1635,8 +1612,7 @@
             "FocusSearch": true,
             "MinWidth": "201px",
             "MaxWidth": "201px",
-            "EntityId": "Summary",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary"
         },
         {
             "Id": "00ab2db4-0000-0000-8001-489a067fb415",
@@ -1650,8 +1626,7 @@
             "FocusSearch": true,
             "MinWidth": "193px",
             "MaxWidth": "193px",
-            "EntityId": "Summary",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary"
         },
         {
             "Id": "00b22d54-0000-0000-8000-c0c7aa97a66a",
@@ -1680,8 +1655,7 @@
             "GroupName": "Cost40",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00b83028-0000-0000-8002-59a2ec7730d6",
@@ -1696,8 +1670,7 @@
             "GroupName": "Cost40",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00b830c4-0000-0000-8000-5b506ff6eb50",
@@ -1711,8 +1684,7 @@
             "GroupName": "Cost40",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00c0302c-0000-0000-8000-4a528edbd310",
@@ -1726,8 +1698,7 @@
             "GroupName": "Cost40HC",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00c03090-0000-0000-8001-db93398762a6",
@@ -1742,8 +1713,7 @@
             "GroupName": "Cost40HC",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00c03090-0000-0000-8002-ac2fc85f8b6d",
@@ -1758,8 +1728,7 @@
             "GroupName": "Cost40HC",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00ce3050-0000-0000-8000-b5197ee0e379",
@@ -1773,8 +1742,7 @@
             "GroupName": "Cost45",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00ce3050-0000-0000-8002-f39ae72dd73a",
@@ -1789,8 +1757,7 @@
             "GroupName": "Cost45",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00ce30b4-0000-0000-8000-297bf604da82",
@@ -1805,8 +1772,7 @@
             "GroupName": "Cost45",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00e43038-0000-0000-8000-114a7c5210f9",
@@ -1820,8 +1786,7 @@
             "GroupName": "LCL",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         },
         {
             "Id": "00ee30f4-0000-0000-8000-06accdd2ca78",
@@ -1835,8 +1800,7 @@
             "GroupName": "Cost20",
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "Summary2",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "Summary2"
         }
     ],
     "Components": [

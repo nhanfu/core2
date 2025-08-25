@@ -201,8 +201,7 @@
                     "Column": 6,
                     "Precision": 2,
                     "Label": "Transit Time",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "001c1bc8-0000-0000-8000-df329ca277cf",
@@ -441,8 +440,7 @@
             "Editable": true,
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "PricingDetail",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "PricingDetail"
         },
         {
             "Id": "001c1be0-0000-0000-8000-2e32ac0042c7",
@@ -498,8 +496,7 @@
             "Editable": true,
             "MinWidth": "153px",
             "MaxWidth": "153px",
-            "EntityId": "PricingDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "PricingDetail"
         },
         {
             "Id": "001d1b9c-0000-0000-8000-637d479506f8",

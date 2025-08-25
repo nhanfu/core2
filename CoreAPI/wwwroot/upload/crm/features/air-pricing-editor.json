@@ -359,8 +359,7 @@
                     "Column": 3,
                     "Precision": 3,
                     "Label": "DEM (free)",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "005d1bc4-0000-0000-8000-98038a03c5b6",
@@ -370,8 +369,7 @@
                     "Column": 3,
                     "Precision": 3,
                     "Label": "DET (free)",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "005d1bc4-0000-0000-8001-7cec6d6e7431",
@@ -381,8 +379,7 @@
                     "Column": 3,
                     "Precision": 3,
                     "Label": "Free Time",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "005d1bc4-0000-0000-8002-06b5ce895f2f",
@@ -392,8 +389,7 @@
                     "Column": 3,
                     "Precision": 3,
                     "Label": "STO",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 }
             ]
         },
@@ -502,8 +498,7 @@
             "Editable": true,
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "PricingDetail",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "PricingDetail"
         },
         {
             "Id": "001516b8-0000-0000-8000-0074deef54b8",
@@ -517,8 +512,7 @@
             "Editable": true,
             "MinWidth": "63px",
             "MaxWidth": "63px",
-            "EntityId": "PricingDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "PricingDetail"
         },
         {
             "Id": "001516e4-0000-0000-8000-cb8d8e246308",
@@ -622,8 +616,7 @@
             "Editable": true,
             "MinWidth": "100px",
             "MaxWidth": "100px",
-            "EntityId": "PricingDetail",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "PricingDetail"
         }
     ],
     "Components": [

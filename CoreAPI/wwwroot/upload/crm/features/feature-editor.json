@@ -772,8 +772,7 @@
             "MinWidth": "153px",
             "MaxWidth": "153px",
             "created_by": "GridPolicy",
-            "EntityId": "GridPolicy",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "GridPolicy"
         },
         {
             "Id": "00251184-0000-0000-8000-d8d870988a84",

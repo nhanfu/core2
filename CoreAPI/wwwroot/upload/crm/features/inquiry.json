@@ -261,8 +261,7 @@
             "Width": "66px",
             "MinWidth": "66px",
             "MaxWidth": "66px",
-            "EntityId": "Inquiry",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "Inquiry"
         },
         {
             "Id": "00271e8c-0000-0000-8000-581008d1f20b",

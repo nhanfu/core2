@@ -53,8 +53,7 @@
                     "ComponentType": "Input",
                     "Column": 2,
                     "Label": "Account No",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "01945a5a-b6d5-716f-aebf-60c7f054704d",
@@ -63,8 +62,7 @@
                     "ComponentType": "Input",
                     "Column": 2,
                     "Label": "Account Name",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "01945a5a-b703-7502-8556-c4daea14b3d4",
@@ -91,8 +89,7 @@
                     "ComponentType": "Checkbox",
                     "Column": 2,
                     "Label": "Active",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "01945a6e-5300-733c-b950-77f618067794",
@@ -107,8 +104,7 @@
                     "ShowLabel": true,
                     "Query": "[\r\n        {\r\n        \"Id\": 1,\r\n        \"Name\": \"Debit Balance\"\r\n        },\r\n        {\r\n        \"Id\": 2,\r\n        \"Name\": \"Credit Balance\"\r\n        },\r\n        {\r\n        \"Id\": 3,\r\n        \"Name\": \"Hermaphrodite\"\r\n        },\r\n        {\r\n        \"Id\": 4,\r\n        \"Name\": \"No balance\"\r\n        }\r\n         \r\n    \r\n]",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
-                    "EntityId": "AccountNo",
-                    "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+                    "EntityId": "AccountNo"
                 },
                 {
                     "Id": "01945a6e-5300-733c-b950-78f1c10e3345",

@@ -260,8 +260,6 @@ export class Component {
     RowSpan;
     /** @type {string} */
     ComponentDefaultValueId;
-    /** @type {string} */
-    GroupTypeId;
     
     ReportTypeId = 1;
     CanRead = false;

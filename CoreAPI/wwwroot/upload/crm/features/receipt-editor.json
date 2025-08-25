@@ -161,8 +161,7 @@
                     "ComponentType": "Number",
                     "Column": 4,
                     "Label": "Amount",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 }
             ]
         },
@@ -262,8 +261,7 @@
             "ComponentType": "Number",
             "Label": "Amount",
             "Editable": true,
-            "EntityId": "VoucherDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "VoucherDetail"
         }
     ],
     "Components": [

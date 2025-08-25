@@ -283,8 +283,7 @@
             "FocusSearch": true,
             "MinWidth": "101px",
             "MaxWidth": "101px",
-            "EntityId": "ShipmentInvoice",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "ShipmentInvoice"
         },
         {
             "Id": "01943bfc-a273-704d-94ca-21d07e8b666c",

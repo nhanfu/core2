@@ -169,8 +169,7 @@
             "FocusSearch": true,
             "MinWidth": "149px",
             "MaxWidth": "149px",
-            "EntityId": "AccountNo",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "AccountNo"
         },
         {
             "Id": "0194599f-6312-734c-8e1e-263afb475e01",

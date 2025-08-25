@@ -523,8 +523,7 @@
                     "Label": "Vat",
                     "ShowLabel": true,
                     "Events": "{\r\n    \"change\": \"CalcTotal\"\r\n}",
-                    "ShowExp": "!this.EditForm.Entity.IsMultiple",
-                    "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+                    "ShowExp": "!this.EditForm.Entity.IsMultiple"
                 },
                 {
                     "Id": "0194a07a-0584-73ff-a67b-bab950b1ea5a",
@@ -666,8 +665,7 @@
             "Editable": true,
             "MinWidth": "101px",
             "MaxWidth": "101px",
-            "EntityId": "ShipmentInvoiceDetail",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "ShipmentInvoiceDetail"
         },
         {
             "Id": "01943c02-f555-777e-9189-e535a452168b",
@@ -753,8 +751,7 @@
             "Editable": true,
             "MinWidth": "102px",
             "MaxWidth": "102px",
-            "EntityId": "ShipmentInvoiceDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentInvoiceDetail"
         },
         {
             "Id": "01943c02-f679-7742-a76d-a6ceefc429cc",
@@ -788,8 +785,7 @@
             "Editable": true,
             "MinWidth": "93px",
             "MaxWidth": "93px",
-            "EntityId": "ShipmentInvoiceDetail",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "ShipmentInvoiceDetail"
         },
         {
             "Id": "01943c02-f6d5-7763-8465-ad08d1541cd4",
@@ -804,8 +800,7 @@
             "Editable": true,
             "MinWidth": "74px",
             "MaxWidth": "74px",
-            "EntityId": "ShipmentInvoiceDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentInvoiceDetail"
         },
         {
             "Id": "01943c02-f705-7798-9e8f-7e10573d8ad9",
@@ -1176,8 +1171,7 @@
             "FocusSearch": true,
             "MinWidth": "102px",
             "MaxWidth": "102px",
-            "EntityId": "SearchData",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "SearchData"
         },
         {
             "Id": "019478eb-8cac-7582-86a3-42d3d723709e",
@@ -1209,8 +1203,7 @@
             "FocusSearch": true,
             "MinWidth": "93px",
             "MaxWidth": "93px",
-            "EntityId": "SearchData",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "SearchData"
         },
         {
             "Id": "019478eb-8cad-7608-a539-f1c2235f17dd",
@@ -1244,8 +1237,7 @@
             "FocusSearch": true,
             "MinWidth": "143px",
             "MaxWidth": "143px",
-            "EntityId": "SearchData",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "SearchData"
         },
         {
             "Id": "019478eb-8cad-7608-a539-fb107e81f7e9",
@@ -1259,8 +1251,7 @@
             "FocusSearch": true,
             "MinWidth": "74px",
             "MaxWidth": "74px",
-            "EntityId": "SearchData",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "SearchData"
         },
         {
             "Id": "019478eb-8cad-7608-a539-ffa922db9c39",
@@ -1278,8 +1269,7 @@
             "SummaryColSpan": 4,
             "MinWidth": "81px",
             "MaxWidth": "81px",
-            "EntityId": "SearchData",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+            "EntityId": "SearchData"
         },
         {
             "Id": "019478eb-8cad-7608-a53a-01bfe1ffca83",
@@ -1298,8 +1288,7 @@
             "SummaryColSpan": 4,
             "MinWidth": "110px",
             "MaxWidth": "110px",
-            "EntityId": "SearchData",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+            "EntityId": "SearchData"
         },
         {
             "Id": "01947982-9ac1-74a9-bb63-8d3994e2387b",
@@ -1336,8 +1325,7 @@
             "SummaryColSpan": 4,
             "MinWidth": "81px",
             "MaxWidth": "81px",
-            "EntityId": "SearchData",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+            "EntityId": "SearchData"
         },
         {
             "Id": "01947989-292f-73c8-819c-65c28b15e183",
@@ -1413,8 +1401,7 @@
             "Editable": true,
             "MinWidth": "93px",
             "MaxWidth": "93px",
-            "EntityId": "ShipmentInvoiceDetail",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "ShipmentInvoiceDetail"
         },
         {
             "Id": "01947d38-90b0-761d-9611-65fc754596d7",

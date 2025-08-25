@@ -135,8 +135,7 @@
             "Editable": true,
             "MinWidth": "96px",
             "MaxWidth": "96px",
-            "EntityId": "Feature",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "Feature"
         },
         {
             "Id": "00d91ad4-0000-0000-8000-8b625ed8986d",

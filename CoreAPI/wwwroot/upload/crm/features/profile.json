@@ -243,8 +243,7 @@
                     "Label": "User Name",
                     "ShowLabel": true,
                     "Disabled": true,
-                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                 },
                 {
                     "Id": "0195500c-1697-7438-8101-e2f03161d9de",
@@ -253,8 +252,7 @@
                     "ComponentType": "Input",
                     "Column": 6,
                     "Label": "Phone",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "0195500c-1697-7438-8101-e4f0a3fd4f15",
@@ -264,8 +262,7 @@
                     "Column": 12,
                     "Label": "Email",
                     "ShowLabel": true,
-                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                 }
             ]
         },

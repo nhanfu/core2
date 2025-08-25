@@ -331,8 +331,7 @@
                     "ComponentType": "Number",
                     "Column": 3,
                     "Label": "Mobile",
-                    "ShowLabel": true,
-                    "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+                    "ShowLabel": true
                 },
                 {
                     "Id": "00b00044-0000-0000-8000-087bea3680fe",

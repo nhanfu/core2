@@ -156,7 +156,6 @@
             "MinWidth": "60px",
             "MaxWidth": "60px",
             "EntityId": "ShipmentFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -192,7 +191,6 @@
             "MinWidth": "115px",
             "MaxWidth": "115px",
             "EntityId": "ShipmentFee",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181",
             "EntityName": "ShipmentDetail"
         },
         {
@@ -207,8 +205,7 @@
             "FocusSearch": true,
             "MinWidth": "43px",
             "MaxWidth": "43px",
-            "EntityId": "ShipmentFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentFee"
         },
         {
             "Id": "01946a2a-a6b2-75c0-8362-e17ee8c33e28",
@@ -242,8 +239,7 @@
             "FocusSearch": true,
             "MinWidth": "95px",
             "MaxWidth": "95px",
-            "EntityId": "ShipmentFee",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+            "EntityId": "ShipmentFee"
         },
         {
             "Id": "01946a2a-a6b3-7208-930e-929637c4c186",
@@ -323,8 +319,7 @@
             "FocusSearch": true,
             "MinWidth": "118px",
             "MaxWidth": "118px",
-            "EntityId": "ShipmentFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentFee"
         },
         {
             "Id": "01946a2f-6081-74c8-bac0-340ef268e3f2",
@@ -340,8 +335,7 @@
             "FocusSearch": true,
             "MinWidth": "139px",
             "MaxWidth": "139px",
-            "EntityId": "ShipmentFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentFee"
         },
         {
             "Id": "01946a2f-e536-7419-b7a6-3dc96810e8ff",
@@ -353,8 +347,7 @@
             "FocusSearch": true,
             "MinWidth": "80px",
             "MaxWidth": "80px",
-            "EntityId": "ShipmentFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentFee"
         },
         {
             "Id": "01946a2f-edcc-709a-8db3-5c2600e66cf7",
@@ -366,8 +359,7 @@
             "FocusSearch": true,
             "MinWidth": "78px",
             "MaxWidth": "78px",
-            "EntityId": "ShipmentFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentFee"
         },
         {
             "Id": "0194e837-caf0-77e9-87c8-cb98c862e44a",
@@ -383,8 +375,7 @@
             "Editable": true,
             "MinWidth": "49px",
             "MaxWidth": "49px",
-            "EntityId": "ShipmentFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentFee"
         },
         {
             "Id": "0194e9d4-a449-70a4-8beb-edf235dda5f4",
@@ -396,8 +387,7 @@
             "FocusSearch": true,
             "MinWidth": "115px",
             "MaxWidth": "115px",
-            "EntityId": "ShipmentFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentFee"
         },
         {
             "Id": "0194fdda-e1cd-7699-8b34-aad4c4f4a921",
@@ -409,8 +399,7 @@
             "FocusSearch": true,
             "MinWidth": "115px",
             "MaxWidth": "115px",
-            "EntityId": "ShipmentFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentFee"
         },
         {
             "Id": "0194fddb-a85f-76a2-9f20-817c3c73674a",
@@ -422,8 +411,7 @@
             "FocusSearch": true,
             "MinWidth": "115px",
             "MaxWidth": "115px",
-            "EntityId": "ShipmentFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentFee"
         },
         {
             "Id": "0194fddc-1494-70ec-bdee-e875d4e6be23",
@@ -435,8 +423,7 @@
             "FocusSearch": true,
             "MinWidth": "92px",
             "MaxWidth": "92px",
-            "EntityId": "ShipmentFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentFee"
         },
         {
             "Id": "0194fddc-8619-7084-ae5b-f984412d56b3",
@@ -450,8 +437,7 @@
             "FocusSearch": true,
             "MinWidth": "105px",
             "MaxWidth": "105px",
-            "EntityId": "ShipmentFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentFee"
         },
         {
             "Id": "0194fddd-3a9c-73e3-8657-948d270d3760",
@@ -465,8 +451,7 @@
             "FocusSearch": true,
             "MinWidth": "88px",
             "MaxWidth": "88px",
-            "EntityId": "ShipmentFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentFee"
         },
         {
             "Id": "0194ff1c-289d-7554-bcdf-745c1f8f210e",
@@ -481,8 +466,7 @@
             "Editable": true,
             "MinWidth": "104px",
             "MaxWidth": "104px",
-            "EntityId": "ShipmentFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentFee"
         },
         {
             "Id": "0195d2c8-cc9e-7273-bfad-4b2545e6605d",
@@ -496,8 +480,7 @@
             "Frozen": true,
             "MinWidth": "104px",
             "MaxWidth": "104px",
-            "EntityId": "ShipmentFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentFee"
         },
         {
             "Id": "0195d2c9-8013-7389-ab78-fdc6aeefe1a6",
@@ -510,8 +493,7 @@
             "Frozen": true,
             "MinWidth": "104px",
             "MaxWidth": "104px",
-            "EntityId": "ShipmentFee",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "ShipmentFee"
         }
     ],
     "FeaturePolicies": [

@@ -100,8 +100,7 @@
                     "Label": "Amount Advance",
                     "ShowLabel": true,
                     "Events": "{\r\n    \"input\": \"ToWords\"\r\n}",
-                    "Disabled": true,
-                    "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+                    "Disabled": true
                 },
                 {
                     "Id": "0193b5ee-50a1-74f7-82df-51f4b73066e4",
@@ -152,8 +151,7 @@
                     "Label": "Amount Reimbursement",
                     "ShowLabel": true,
                     "Events": "{\r\n    \"input\": \"ToWords\"\r\n}",
-                    "Disabled": true,
-                    "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+                    "Disabled": true
                 },
                 {
                     "Id": "0193b5fb-2564-760b-b31e-f8fc28d5e0a5",
@@ -165,8 +163,7 @@
                     "Label": "Remaining Amount",
                     "ShowLabel": true,
                     "Events": "{\r\n    \"input\": \"ToWords\"\r\n}",
-                    "Disabled": true,
-                    "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+                    "Disabled": true
                 },
                 {
                     "Id": "0193b5ff-f824-7412-a596-a46b203c6ce3",
@@ -415,8 +412,7 @@
             "Editable": true,
             "MinWidth": "92px",
             "MaxWidth": "92px",
-            "EntityId": "VoucherDetail",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "VoucherDetail"
         },
         {
             "Id": "0193b5ee-53a7-7018-bbed-da1c8460fed2",
@@ -473,8 +469,7 @@
             "Editable": true,
             "MinWidth": "93px",
             "MaxWidth": "93px",
-            "EntityId": "VoucherDetail",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+            "EntityId": "VoucherDetail"
         },
         {
             "Id": "0193b5ee-5532-73a5-a44d-69f89c69e3d5",
@@ -489,8 +484,7 @@
             "Editable": true,
             "MinWidth": "73px",
             "MaxWidth": "73px",
-            "EntityId": "VoucherDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "VoucherDetail"
         },
         {
             "Id": "0193b68d-c896-7448-afcf-cac8adefad32",
@@ -564,8 +558,7 @@
             "FocusSearch": true,
             "MinWidth": "97px",
             "MaxWidth": "97px",
-            "EntityId": "ReimbursementDetail",
-            "GroupTypeId": "00eb142c-0000-0000-8000-2945bf4c2c78"
+            "EntityId": "ReimbursementDetail"
         },
         {
             "Id": "0193b6b8-b204-7538-872f-7b88695a7f46",
@@ -599,8 +592,7 @@
             "Editable": true,
             "MinWidth": "58px",
             "MaxWidth": "58px",
-            "EntityId": "VoucherDetail",
-            "GroupTypeId": "00d41484-0000-0000-8000-7725fc908bab"
+            "EntityId": "VoucherDetail"
         },
         {
             "Id": "0193b6ba-7a02-7675-972f-30a050ab36dc",
@@ -725,8 +717,7 @@
             "Editable": true,
             "MinWidth": "87px",
             "MaxWidth": "87px",
-            "EntityId": "VoucherDetail",
-            "GroupTypeId": "00ec1404-0000-0000-8000-858f8a4d5181"
+            "EntityId": "VoucherDetail"
         },
         {
             "Id": "0193bb4d-16dd-764c-9ac4-148d8b4fea70",
