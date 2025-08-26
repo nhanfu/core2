@@ -8,102 +8,101 @@
     "EntityId": "TableName",
     "ComponentGroup": [
         {
-            "Id": "001ff8fc-0000-0000-8000-c9b4daa4c1a1",
-            "FieldName": "ribbon-group",
-            "Order": 3,
-            "ComponentType": "Section",
-            "ClassName": "ribbon-group",
-            "XxlCol": 12,
-            "ParentId": "0062f8bc-0000-0000-8000-754793ee6e29",
-            "XxlOuterColumn": 12,
-            "Components": [
-                {
-                    "Id": "0026f844-0000-0000-8000-9feb41d51ef8",
-                    "FieldName": "btnExec",
-                    "Order": 3,
-                    "ComponentType": "Button",
-                    "Column": 1,
-                    "Label": "Exec",
-                    "Icon": "fas fa-play",
-                    "ClassName": "btn detail-button secondary-outline",
-                    "Events": "{\r\n    \"click\": \"ExecTable\"\r\n}"
-                },
-                {
-                    "Id": "00d7f9b8-0000-0000-8000-460225237c38",
-                    "FieldName": "btnSave",
-                    "Order": 3,
-                    "ComponentType": "Button",
-                    "Column": 1,
-                    "Label": "Save",
-                    "Icon": "fal fa-save",
-                    "ClassName": "btn detail-button primary",
-                    "Events": "{\"click\":\"SavePatch\"}"
-                }
-            ]
-        },
-        {
             "Id": "0062f8bc-0000-0000-8000-754793ee6e29",
             "FieldName": "wrapper",
             "Order": 1,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
-            "XxlCol": 12
-        },
-        {
-            "Id": "00bbf898-0000-0000-8000-ac13aff45f1d",
-            "Order": 2,
-            "ComponentType": "Section",
-            "Label": "Table Column",
-            "ClassName": "card-body",
             "XxlCol": 12,
-            "ParentId": "0062f8bc-0000-0000-8000-754793ee6e29",
-            "XxlOuterColumn": 12,
-            "Components": [
+            "Children": [
                 {
-                    "Id": "0073f8a0-0000-0000-8000-46ea04a490f7",
-                    "FieldName": "COLUMNS",
+                    "Id": "00d8f8e4-0000-0000-8000-271f5c033860",
                     "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 200,
-                    "ClassName": "sticky",
-                    "DefaultVal": "{\r\n    \"TABLE_NAME\": this.EditForm.Entity.TABLE_NAME,\r\n}",
-                    "Query": "{\r\n    \"sql\": \"SELECT *, case when IS_NULLABLE = 'YES' then 1 else 0 end as IS_NULLABLE FROM INFORMATION_SCHEMA.COLUMNS as ds WHERE TABLE_NAME = '{TABLE_NAME}'\",\r\n    \"total\": \"select count(*) as total FROM INFORMATION_SCHEMA.COLUMNS as ds WHERE TABLE_NAME = '{TABLE_NAME}'\"\r\n}",
-                    "RefName": "COLUMNS",
-                    "PreQuery": "{\r\n    \"TABLE_NAME\": this.EditForm.Entity.TABLE_NAME,\r\n}",
-                    "Editable": true,
-                    "OrderBy": "ds.ORDINAL_POSITION asc"
-                }
-            ]
-        },
-        {
-            "Id": "00d8f8e4-0000-0000-8000-271f5c033860",
-            "Order": 1,
-            "ComponentType": "Section",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "0062f8bc-0000-0000-8000-754793ee6e29",
-            "XxlOuterColumn": 12,
-            "Components": [
-                {
-                    "Id": "00f3f8dc-0000-0000-8000-1142949a8573",
-                    "FieldName": "TABLE_SCHEMA",
-                    "Order": 1,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "TABLE_SCHEMA",
-                    "ShowLabel": true,
-                    "Disabled": true
+                    "ComponentType": "Section",
+                    "ClassName": "card-body",
+                    "XxlCol": 12,
+                    "XxlOuterColumn": 12,
+                    "Components": [
+                        {
+                            "Id": "00f3f8dc-0000-0000-8000-1142949a8573",
+                            "FieldName": "TABLE_SCHEMA",
+                            "Order": 1,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Label": "TABLE_SCHEMA",
+                            "ShowLabel": true,
+                            "Disabled": true
+                        },
+                        {
+                            "Id": "00f6f868-0000-0000-8000-3c041266a1bb",
+                            "FieldName": "TABLE_NAME",
+                            "Order": 2,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Label": "TABLE_NAME",
+                            "ShowLabel": true,
+                            "Disabled": true
+                        }
+                    ]
                 },
                 {
-                    "Id": "00f6f868-0000-0000-8000-3c041266a1bb",
-                    "FieldName": "TABLE_NAME",
+                    "Id": "00bbf898-0000-0000-8000-ac13aff45f1d",
                     "Order": 2,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "TABLE_NAME",
-                    "ShowLabel": true,
-                    "Disabled": true
+                    "ComponentType": "Section",
+                    "Label": "Table Column",
+                    "ClassName": "card-body",
+                    "XxlCol": 12,
+                    "XxlOuterColumn": 12,
+                    "Components": [
+                        {
+                            "Id": "0073f8a0-0000-0000-8000-46ea04a490f7",
+                            "FieldName": "COLUMNS",
+                            "Order": 1,
+                            "ComponentType": "GridView",
+                            "Column": 12,
+                            "Row": 200,
+                            "ClassName": "sticky",
+                            "DefaultVal": "{\r\n    \"TABLE_NAME\": this.EditForm.Entity.TABLE_NAME,\r\n}",
+                            "Query": "{\r\n    \"sql\": \"SELECT *, case when IS_NULLABLE = 'YES' then 1 else 0 end as IS_NULLABLE FROM INFORMATION_SCHEMA.COLUMNS as ds WHERE TABLE_NAME = '{TABLE_NAME}'\",\r\n    \"total\": \"select count(*) as total FROM INFORMATION_SCHEMA.COLUMNS as ds WHERE TABLE_NAME = '{TABLE_NAME}'\"\r\n}",
+                            "RefName": "COLUMNS",
+                            "PreQuery": "{\r\n    \"TABLE_NAME\": this.EditForm.Entity.TABLE_NAME,\r\n}",
+                            "Editable": true,
+                            "OrderBy": "ds.ORDINAL_POSITION asc"
+                        }
+                    ]
+                },
+                {
+                    "Id": "001ff8fc-0000-0000-8000-c9b4daa4c1a1",
+                    "FieldName": "ribbon-group",
+                    "Order": 3,
+                    "ComponentType": "Section",
+                    "ClassName": "ribbon-group",
+                    "XxlCol": 12,
+                    "XxlOuterColumn": 12,
+                    "Components": [
+                        {
+                            "Id": "0026f844-0000-0000-8000-9feb41d51ef8",
+                            "FieldName": "btnExec",
+                            "Order": 3,
+                            "ComponentType": "Button",
+                            "Column": 1,
+                            "Label": "Exec",
+                            "Icon": "fas fa-play",
+                            "ClassName": "btn detail-button secondary-outline",
+                            "Events": "{\r\n    \"click\": \"ExecTable\"\r\n}"
+                        },
+                        {
+                            "Id": "00d7f9b8-0000-0000-8000-460225237c38",
+                            "FieldName": "btnSave",
+                            "Order": 3,
+                            "ComponentType": "Button",
+                            "Column": 1,
+                            "Label": "Save",
+                            "Icon": "fal fa-save",
+                            "ClassName": "btn detail-button primary",
+                            "Events": "{\"click\":\"SavePatch\"}"
+                        }
+                    ]
                 }
             ]
         }

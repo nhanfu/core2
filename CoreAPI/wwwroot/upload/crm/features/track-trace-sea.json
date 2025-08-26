@@ -12,388 +12,386 @@
             "Order": 1,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
-            "XxlCol": 12
-        },
-        {
-            "Id": "01952760-fd23-70c9-a76e-0276b5498d71",
-            "FieldName": "2",
-            "Order": 2,
-            "ComponentType": "Section",
             "XxlCol": 12,
-            "ParentId": "01952760-fbd7-73a4-917e-725e4b23c00f"
-        },
-        {
-            "Id": "01952760-fd65-7400-9b70-61d03068e0f7",
-            "FieldName": "2",
-            "Order": 2,
-            "ComponentType": "Section",
-            "Label": "Shipment Detail",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "01952760-fd23-70c9-a76e-0276b5498d71",
-            "Components": [
+            "Children": [
                 {
-                    "Id": "01952bc9-2b16-72fb-ad4b-72aaa73170ce",
-                    "FieldName": "polName",
-                    "Order": 4,
-                    "ComponentType": "Label",
-                    "PlainText": "Select data",
-                    "Column": 4,
-                    "Row": 50,
-                    "Label": "POL",
-                    "ShowLabel": true,
-                    "Icon": "fal fa-anchor",
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "01952bc9-2b16-72fb-ad4b-765dd8724bed",
-                    "FieldName": "ptName",
-                    "Order": 5,
-                    "ComponentType": "Label",
-                    "PlainText": "Select data",
-                    "Column": 4,
-                    "Row": 50,
-                    "Label": "Port of Transit",
-                    "ShowLabel": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "01952bc9-2b16-72fb-ad4b-79e6d2854bcb",
-                    "FieldName": "podName",
-                    "Order": 6,
-                    "ComponentType": "Label",
-                    "PlainText": "Select data",
-                    "Column": 4,
-                    "Row": 50,
-                    "Label": "POD",
-                    "ShowLabel": true,
-                    "Icon": "far fa-anchor",
-                    "Width": "50",
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
-                    "MinWidth": "50"
-                },
-                {
-                    "Id": "01952bc9-2b17-70a9-970b-997480c62200",
-                    "FieldName": "etdDate",
-                    "Order": 7,
-                    "ComponentType": "Label",
-                    "PlainText": "Select data",
-                    "Column": 4,
-                    "Row": 50,
-                    "Label": "ETD",
-                    "ShowLabel": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "01952bc9-2b17-70a9-970b-9cfd8a5d8637",
-                    "FieldName": "etaTsDate",
-                    "Order": 8,
-                    "ComponentType": "Label",
-                    "PlainText": "Select data",
-                    "Column": 4,
-                    "Row": 50,
-                    "Label": "ETA/ETD",
-                    "ShowLabel": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "01952bc9-2b17-70a9-970b-a156af653a74",
-                    "FieldName": "etaDate",
-                    "Order": 9,
-                    "ComponentType": "Label",
-                    "PlainText": "Select data",
-                    "Column": 4,
-                    "Row": 50,
-                    "Label": "ETA",
-                    "ShowLabel": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "01952bc9-2b18-7529-8920-517df4a44959",
-                    "FieldName": "PlaceofReceipt",
-                    "Order": 10,
-                    "ComponentType": "Label",
-                    "PlainText": "Select data",
-                    "Column": 4,
-                    "Row": 50,
-                    "Label": "Pick up place/ Place of receipt",
-                    "ShowLabel": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "01952bc9-2b18-7529-8920-56780d3add10",
-                    "Order": 11,
-                    "ComponentType": "Label",
-                    "PlainText": "Select data",
-                    "Column": 4,
-                    "Row": 50,
-                    "ShowLabel": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "01952bc9-2b18-7529-8920-584e99074860",
-                    "FieldName": "Destination",
-                    "Order": 12,
-                    "ComponentType": "Label",
-                    "PlainText": "Select data",
-                    "Column": 4,
-                    "Row": 50,
-                    "Label": "Final destination/ Place of delivery",
-                    "ShowLabel": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "01952bc9-2b18-7529-8920-5e2ea43ac24c",
-                    "FieldName": "TermOfDelivery",
-                    "Order": 14,
-                    "ComponentType": "Label",
-                    "PlainText": "Select data",
-                    "Column": 4,
-                    "Row": 50,
-                    "Label": "Term Of Delivery",
-                    "ShowLabel": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "01952bc9-2b18-7529-8920-603dbff8b37e",
-                    "FieldName": "Pieces",
-                    "Order": 17,
-                    "ComponentType": "Label",
-                    "PlainText": "Select data",
-                    "Column": 4,
-                    "Row": 50,
-                    "Label": "Number of pieces",
-                    "ShowLabel": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "01952bc9-2b19-759d-bd09-748152a98145",
-                    "FieldName": "Measuament",
-                    "Order": 18,
-                    "ComponentType": "Label",
-                    "PlainText": "Select data",
-                    "Column": 4,
-                    "Row": 50,
-                    "Label": "Measuament",
-                    "ShowLabel": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "01952be5-35ad-715d-8c09-2eca6fa39eb3",
-                    "Order": 15,
-                    "ComponentType": "Label",
-                    "PlainText": "Select data",
-                    "Column": 4,
-                    "Row": 50,
-                    "ShowLabel": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "01952be5-54e5-7196-8e68-585d0bb7d3c5",
-                    "FieldName": "Commodity",
-                    "Order": 16,
-                    "ComponentType": "Label",
-                    "PlainText": "Select data",
-                    "Column": 4,
-                    "Row": 50,
-                    "Label": "Commodity",
-                    "ShowLabel": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "01952be5-d6ec-724f-9a32-67a4c9ddbc80",
-                    "FieldName": "GW",
-                    "Order": 19,
-                    "ComponentType": "Label",
-                    "PlainText": "Select data",
-                    "Column": 4,
-                    "Row": 50,
-                    "Label": "Total Weight",
-                    "ShowLabel": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
-                }
-            ]
-        },
-        {
-            "Id": "01952761-0254-75af-827f-71837e509a3b",
-            "FieldName": "1",
-            "Order": 2,
-            "ComponentType": "Section",
-            "Label": "Vessel",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "01952760-fd23-70c9-a76e-0276b5498d71",
-            "Components": [
-                {
-                    "Id": "01952bca-0ebd-709b-beff-7cd89d235e76",
-                    "FieldName": "Vessel",
-                    "Order": 23,
-                    "ComponentType": "Label",
-                    "PlainText": "Select data",
-                    "Column": 3,
-                    "Row": 50,
-                    "Label": "Name",
-                    "ShowLabel": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "01952bca-0ebd-709b-beff-83dab2746088",
-                    "FieldName": "Voyage",
-                    "Order": 24,
-                    "ComponentType": "Label",
-                    "PlainText": "Select data",
-                    "Column": 3,
-                    "Row": 50,
-                    "Label": "Voyage",
-                    "ShowLabel": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "01952bca-0ebe-73db-96e0-937db408c345",
-                    "FieldName": "polName",
-                    "Order": 25,
-                    "ComponentType": "Label",
-                    "PlainText": "Select data",
-                    "Column": 3,
-                    "Row": 50,
-                    "Label": "Port of Load",
-                    "ShowLabel": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "01952bca-0ebe-73db-96e0-950515eef711",
-                    "FieldName": "polName",
-                    "Order": 26,
-                    "ComponentType": "Label",
-                    "PlainText": "Select data",
-                    "Column": 3,
-                    "Row": 50,
-                    "Label": "Port of Discharge",
-                    "ShowLabel": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
-                }
-            ]
-        },
-        {
-            "Id": "01952761-03b9-7739-8b3f-eb659d21489b",
-            "FieldName": "3",
-            "Order": 2,
-            "ComponentType": "Section",
-            "Label": "Container/Seal",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "01952760-fd23-70c9-a76e-0276b5498d71",
-            "Components": [
-                {
-                    "Id": "01952bca-8bd2-76c0-831a-8dc5f585e058",
-                    "FieldName": "ContainerText",
-                    "Order": 1,
-                    "ComponentType": "Label",
-                    "Column": 12,
-                    "Label": "Quantiy of Container",
-                    "ShowLabel": true,
-                    "Disabled": true
-                },
-                {
-                    "Id": "01952bca-8bd2-76c0-831a-91c065b0c89e",
-                    "FieldName": "EntityContainer",
+                    "Id": "01952760-fd23-70c9-a76e-0276b5498d71",
+                    "FieldName": "2",
                     "Order": 2,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 200,
-                    "CanCache": true,
-                    "Label": "Container List",
-                    "ClassName": "sticky",
-                    "ChildStyle": "height: 200px;",
-                    "Query": "{\r\n    \"sql\": \"select * from EntityContainer as ds where EntityId = '{EntityId}'\",\r\n    \"total\": \"select count(ds.Id) as total from EntityContainer as ds where EntityId = '{EntityId}'\"\r\n}",
-                    "RefName": "EntityContainer",
-                    "PreQuery": "{\r\n    \"EntityId\": this.EditForm.Entity.Id\r\n}"
-                }
-            ]
-        },
-        {
-            "Id": "01952761-0458-711e-8bc5-18e3d79d5ac5",
-            "FieldName": "4",
-            "Order": 2,
-            "ComponentType": "Section",
-            "Label": "Shipment Status History",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "01952760-fd23-70c9-a76e-0276b5498d71",
-            "Components": [
-                {
-                    "Id": "01952761-0485-71dd-9aa4-13904cc79dad",
-                    "FieldName": "ShipmentTask",
-                    "Order": 29,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 200,
-                    "CanCache": true,
-                    "Label": "Shipment Status History",
-                    "Query": "{\r\n    \"sql\": \"select * from ShipmentTask as ds where ShipmentId = '{ShipmentId}' and IsFinish = 1 and IsTracing = 1\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentTask as ds where ShipmentId = '{ShipmentId}' and IsFinish = 1 and IsTracing = 1\"\r\n}",
-                    "RefName": "ShipmentTask",
-                    "PreQuery": "{\r\n    \"ShipmentId\": this.EditForm.Entity.Id\r\n}"
-                }
-            ]
-        },
-        {
-            "Id": "01952761-04b4-7066-bbe7-e31a594081f2",
-            "FieldName": "5",
-            "Order": 2,
-            "ComponentType": "Section",
-            "Label": "Contact Information",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "01952760-fd23-70c9-a76e-0276b5498d71",
-            "Components": [
-                {
-                    "Id": "01952bca-ed1e-7417-a114-a763213f40f6",
-                    "FieldName": "DEP",
-                    "Order": 1,
-                    "ComponentType": "Label",
-                    "PlainText": "Select data",
-                    "Column": 6,
-                    "Row": 50,
-                    "Label": "Department",
-                    "ShowLabel": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "01952bca-ed1e-7417-a114-a945e658aa27",
-                    "FieldName": "phone",
-                    "Order": 2,
-                    "ComponentType": "Label",
-                    "PlainText": "Select data",
-                    "Column": 6,
-                    "Row": 50,
-                    "Label": "Tel",
-                    "ShowLabel": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "01952bca-ed1f-7205-aacd-3cc685a509e1",
-                    "FieldName": "NickName",
-                    "Order": 3,
-                    "ComponentType": "Label",
-                    "FormatData": "<div class=\"d-flex gap-2\">\r\n    <img src=\"{Avatar}\" alt=\"{FullName}\" class=\"avatar\">\r\n    <a class=\"full-name\">{FullName}</a>\r\n</div>",
-                    "PlainText": "Select data",
-                    "Column": 6,
-                    "Row": 50,
-                    "Label": "Name",
-                    "ShowLabel": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "01952bca-ed1f-7205-aacd-41a9e87a7f84",
-                    "FieldName": "email",
-                    "Order": 4,
-                    "ComponentType": "Label",
-                    "PlainText": "Select data",
-                    "Column": 6,
-                    "Row": 50,
-                    "Label": "Email",
-                    "ShowLabel": true,
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
+                    "ComponentType": "Section",
+                    "XxlCol": 12,
+                    "Children": [
+                        {
+                            "Id": "01952760-fd65-7400-9b70-61d03068e0f7",
+                            "FieldName": "2",
+                            "Order": 2,
+                            "ComponentType": "Section",
+                            "Label": "Shipment Detail",
+                            "ClassName": "card-body",
+                            "XxlCol": 12,
+                            "Components": [
+                                {
+                                    "Id": "01952bc9-2b16-72fb-ad4b-72aaa73170ce",
+                                    "FieldName": "polName",
+                                    "Order": 4,
+                                    "ComponentType": "Label",
+                                    "PlainText": "Select data",
+                                    "Column": 4,
+                                    "Row": 50,
+                                    "Label": "POL",
+                                    "ShowLabel": true,
+                                    "Icon": "fal fa-anchor",
+                                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
+                                },
+                                {
+                                    "Id": "01952bc9-2b16-72fb-ad4b-765dd8724bed",
+                                    "FieldName": "ptName",
+                                    "Order": 5,
+                                    "ComponentType": "Label",
+                                    "PlainText": "Select data",
+                                    "Column": 4,
+                                    "Row": 50,
+                                    "Label": "Port of Transit",
+                                    "ShowLabel": true,
+                                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
+                                },
+                                {
+                                    "Id": "01952bc9-2b16-72fb-ad4b-79e6d2854bcb",
+                                    "FieldName": "podName",
+                                    "Order": 6,
+                                    "ComponentType": "Label",
+                                    "PlainText": "Select data",
+                                    "Column": 4,
+                                    "Row": 50,
+                                    "Label": "POD",
+                                    "ShowLabel": true,
+                                    "Icon": "far fa-anchor",
+                                    "Width": "50",
+                                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
+                                    "MinWidth": "50"
+                                },
+                                {
+                                    "Id": "01952bc9-2b17-70a9-970b-997480c62200",
+                                    "FieldName": "etdDate",
+                                    "Order": 7,
+                                    "ComponentType": "Label",
+                                    "PlainText": "Select data",
+                                    "Column": 4,
+                                    "Row": 50,
+                                    "Label": "ETD",
+                                    "ShowLabel": true,
+                                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
+                                },
+                                {
+                                    "Id": "01952bc9-2b17-70a9-970b-9cfd8a5d8637",
+                                    "FieldName": "etaTsDate",
+                                    "Order": 8,
+                                    "ComponentType": "Label",
+                                    "PlainText": "Select data",
+                                    "Column": 4,
+                                    "Row": 50,
+                                    "Label": "ETA/ETD",
+                                    "ShowLabel": true,
+                                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
+                                },
+                                {
+                                    "Id": "01952bc9-2b17-70a9-970b-a156af653a74",
+                                    "FieldName": "etaDate",
+                                    "Order": 9,
+                                    "ComponentType": "Label",
+                                    "PlainText": "Select data",
+                                    "Column": 4,
+                                    "Row": 50,
+                                    "Label": "ETA",
+                                    "ShowLabel": true,
+                                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
+                                },
+                                {
+                                    "Id": "01952bc9-2b18-7529-8920-517df4a44959",
+                                    "FieldName": "PlaceofReceipt",
+                                    "Order": 10,
+                                    "ComponentType": "Label",
+                                    "PlainText": "Select data",
+                                    "Column": 4,
+                                    "Row": 50,
+                                    "Label": "Pick up place/ Place of receipt",
+                                    "ShowLabel": true,
+                                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
+                                },
+                                {
+                                    "Id": "01952bc9-2b18-7529-8920-56780d3add10",
+                                    "Order": 11,
+                                    "ComponentType": "Label",
+                                    "PlainText": "Select data",
+                                    "Column": 4,
+                                    "Row": 50,
+                                    "ShowLabel": true,
+                                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
+                                },
+                                {
+                                    "Id": "01952bc9-2b18-7529-8920-584e99074860",
+                                    "FieldName": "Destination",
+                                    "Order": 12,
+                                    "ComponentType": "Label",
+                                    "PlainText": "Select data",
+                                    "Column": 4,
+                                    "Row": 50,
+                                    "Label": "Final destination/ Place of delivery",
+                                    "ShowLabel": true,
+                                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
+                                },
+                                {
+                                    "Id": "01952bc9-2b18-7529-8920-5e2ea43ac24c",
+                                    "FieldName": "TermOfDelivery",
+                                    "Order": 14,
+                                    "ComponentType": "Label",
+                                    "PlainText": "Select data",
+                                    "Column": 4,
+                                    "Row": 50,
+                                    "Label": "Term Of Delivery",
+                                    "ShowLabel": true,
+                                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
+                                },
+                                {
+                                    "Id": "01952bc9-2b18-7529-8920-603dbff8b37e",
+                                    "FieldName": "Pieces",
+                                    "Order": 17,
+                                    "ComponentType": "Label",
+                                    "PlainText": "Select data",
+                                    "Column": 4,
+                                    "Row": 50,
+                                    "Label": "Number of pieces",
+                                    "ShowLabel": true,
+                                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
+                                },
+                                {
+                                    "Id": "01952bc9-2b19-759d-bd09-748152a98145",
+                                    "FieldName": "Measuament",
+                                    "Order": 18,
+                                    "ComponentType": "Label",
+                                    "PlainText": "Select data",
+                                    "Column": 4,
+                                    "Row": 50,
+                                    "Label": "Measuament",
+                                    "ShowLabel": true,
+                                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
+                                },
+                                {
+                                    "Id": "01952be5-35ad-715d-8c09-2eca6fa39eb3",
+                                    "Order": 15,
+                                    "ComponentType": "Label",
+                                    "PlainText": "Select data",
+                                    "Column": 4,
+                                    "Row": 50,
+                                    "ShowLabel": true,
+                                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
+                                },
+                                {
+                                    "Id": "01952be5-54e5-7196-8e68-585d0bb7d3c5",
+                                    "FieldName": "Commodity",
+                                    "Order": 16,
+                                    "ComponentType": "Label",
+                                    "PlainText": "Select data",
+                                    "Column": 4,
+                                    "Row": 50,
+                                    "Label": "Commodity",
+                                    "ShowLabel": true,
+                                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
+                                },
+                                {
+                                    "Id": "01952be5-d6ec-724f-9a32-67a4c9ddbc80",
+                                    "FieldName": "GW",
+                                    "Order": 19,
+                                    "ComponentType": "Label",
+                                    "PlainText": "Select data",
+                                    "Column": 4,
+                                    "Row": 50,
+                                    "Label": "Total Weight",
+                                    "ShowLabel": true,
+                                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
+                                }
+                            ]
+                        },
+                        {
+                            "Id": "01952761-0254-75af-827f-71837e509a3b",
+                            "FieldName": "1",
+                            "Order": 2,
+                            "ComponentType": "Section",
+                            "Label": "Vessel",
+                            "ClassName": "card-body",
+                            "XxlCol": 12,
+                            "Components": [
+                                {
+                                    "Id": "01952bca-0ebd-709b-beff-7cd89d235e76",
+                                    "FieldName": "Vessel",
+                                    "Order": 23,
+                                    "ComponentType": "Label",
+                                    "PlainText": "Select data",
+                                    "Column": 3,
+                                    "Row": 50,
+                                    "Label": "Name",
+                                    "ShowLabel": true,
+                                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
+                                },
+                                {
+                                    "Id": "01952bca-0ebd-709b-beff-83dab2746088",
+                                    "FieldName": "Voyage",
+                                    "Order": 24,
+                                    "ComponentType": "Label",
+                                    "PlainText": "Select data",
+                                    "Column": 3,
+                                    "Row": 50,
+                                    "Label": "Voyage",
+                                    "ShowLabel": true,
+                                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
+                                },
+                                {
+                                    "Id": "01952bca-0ebe-73db-96e0-937db408c345",
+                                    "FieldName": "polName",
+                                    "Order": 25,
+                                    "ComponentType": "Label",
+                                    "PlainText": "Select data",
+                                    "Column": 3,
+                                    "Row": 50,
+                                    "Label": "Port of Load",
+                                    "ShowLabel": true,
+                                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
+                                },
+                                {
+                                    "Id": "01952bca-0ebe-73db-96e0-950515eef711",
+                                    "FieldName": "polName",
+                                    "Order": 26,
+                                    "ComponentType": "Label",
+                                    "PlainText": "Select data",
+                                    "Column": 3,
+                                    "Row": 50,
+                                    "Label": "Port of Discharge",
+                                    "ShowLabel": true,
+                                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
+                                }
+                            ]
+                        },
+                        {
+                            "Id": "01952761-03b9-7739-8b3f-eb659d21489b",
+                            "FieldName": "3",
+                            "Order": 2,
+                            "ComponentType": "Section",
+                            "Label": "Container/Seal",
+                            "ClassName": "card-body",
+                            "XxlCol": 12,
+                            "Components": [
+                                {
+                                    "Id": "01952bca-8bd2-76c0-831a-8dc5f585e058",
+                                    "FieldName": "ContainerText",
+                                    "Order": 1,
+                                    "ComponentType": "Label",
+                                    "Column": 12,
+                                    "Label": "Quantiy of Container",
+                                    "ShowLabel": true,
+                                    "Disabled": true
+                                },
+                                {
+                                    "Id": "01952bca-8bd2-76c0-831a-91c065b0c89e",
+                                    "FieldName": "EntityContainer",
+                                    "Order": 2,
+                                    "ComponentType": "GridView",
+                                    "Column": 12,
+                                    "Row": 200,
+                                    "CanCache": true,
+                                    "Label": "Container List",
+                                    "ClassName": "sticky",
+                                    "ChildStyle": "height: 200px;",
+                                    "Query": "{\r\n    \"sql\": \"select * from EntityContainer as ds where EntityId = '{EntityId}'\",\r\n    \"total\": \"select count(ds.Id) as total from EntityContainer as ds where EntityId = '{EntityId}'\"\r\n}",
+                                    "RefName": "EntityContainer",
+                                    "PreQuery": "{\r\n    \"EntityId\": this.EditForm.Entity.Id\r\n}"
+                                }
+                            ]
+                        },
+                        {
+                            "Id": "01952761-0458-711e-8bc5-18e3d79d5ac5",
+                            "FieldName": "4",
+                            "Order": 2,
+                            "ComponentType": "Section",
+                            "Label": "Shipment Status History",
+                            "ClassName": "card-body",
+                            "XxlCol": 12,
+                            "Components": [
+                                {
+                                    "Id": "01952761-0485-71dd-9aa4-13904cc79dad",
+                                    "FieldName": "ShipmentTask",
+                                    "Order": 29,
+                                    "ComponentType": "GridView",
+                                    "Column": 12,
+                                    "Row": 200,
+                                    "CanCache": true,
+                                    "Label": "Shipment Status History",
+                                    "Query": "{\r\n    \"sql\": \"select * from ShipmentTask as ds where ShipmentId = '{ShipmentId}' and IsFinish = 1 and IsTracing = 1\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentTask as ds where ShipmentId = '{ShipmentId}' and IsFinish = 1 and IsTracing = 1\"\r\n}",
+                                    "RefName": "ShipmentTask",
+                                    "PreQuery": "{\r\n    \"ShipmentId\": this.EditForm.Entity.Id\r\n}"
+                                }
+                            ]
+                        },
+                        {
+                            "Id": "01952761-04b4-7066-bbe7-e31a594081f2",
+                            "FieldName": "5",
+                            "Order": 2,
+                            "ComponentType": "Section",
+                            "Label": "Contact Information",
+                            "ClassName": "card-body",
+                            "XxlCol": 12,
+                            "Components": [
+                                {
+                                    "Id": "01952bca-ed1e-7417-a114-a763213f40f6",
+                                    "FieldName": "DEP",
+                                    "Order": 1,
+                                    "ComponentType": "Label",
+                                    "PlainText": "Select data",
+                                    "Column": 6,
+                                    "Row": 50,
+                                    "Label": "Department",
+                                    "ShowLabel": true,
+                                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
+                                },
+                                {
+                                    "Id": "01952bca-ed1e-7417-a114-a945e658aa27",
+                                    "FieldName": "phone",
+                                    "Order": 2,
+                                    "ComponentType": "Label",
+                                    "PlainText": "Select data",
+                                    "Column": 6,
+                                    "Row": 50,
+                                    "Label": "Tel",
+                                    "ShowLabel": true,
+                                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
+                                },
+                                {
+                                    "Id": "01952bca-ed1f-7205-aacd-3cc685a509e1",
+                                    "FieldName": "NickName",
+                                    "Order": 3,
+                                    "ComponentType": "Label",
+                                    "FormatData": "<div class=\"d-flex gap-2\">\r\n    <img src=\"{Avatar}\" alt=\"{FullName}\" class=\"avatar\">\r\n    <a class=\"full-name\">{FullName}</a>\r\n</div>",
+                                    "PlainText": "Select data",
+                                    "Column": 6,
+                                    "Row": 50,
+                                    "Label": "Name",
+                                    "ShowLabel": true,
+                                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
+                                },
+                                {
+                                    "Id": "01952bca-ed1f-7205-aacd-41a9e87a7f84",
+                                    "FieldName": "email",
+                                    "Order": 4,
+                                    "ComponentType": "Label",
+                                    "PlainText": "Select data",
+                                    "Column": 6,
+                                    "Row": 50,
+                                    "Label": "Email",
+                                    "ShowLabel": true,
+                                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
+                                }
+                            ]
+                        }
+                    ]
                 }
             ]
         }

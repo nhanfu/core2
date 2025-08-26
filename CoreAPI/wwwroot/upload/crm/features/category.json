@@ -14,30 +14,31 @@
             "ComponentType": "Section",
             "ClassName": "wrapper scroll-content",
             "Width": "100%",
-            "XxlCol": 3
-        },
-        {
-            "Id": "6e63c20d-2788-4776-9da0-4cfe7c982ca2",
-            "Order": 9,
-            "ComponentType": "Section",
-            "Label": "Component",
-            "ClassName": "wrapper",
-            "ParentId": "6e63c20d-2788-4776-9da0-4cfe7c982ca1",
-            "IsTab": true,
-            "XxlOuterColumn": 3,
-            "Components": [
+            "XxlCol": 3,
+            "Children": [
                 {
-                    "Id": "001ef2bc-0000-0000-8000-197aa5870cc9",
-                    "FieldName": "GridView",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Row": 50,
-                    "CanSearch": true,
-                    "ClassName": "sticky",
-                    "Query": "{ \"sql\" : \"select * from Component as ds\" , \"total\" : \"select count(ds.Id) as total from Component as ds\" }",
-                    "RefName": "Component",
-                    "ShowHotKey": true,
-                    "OrderBy": "ds.InsertedDate desc"
+                    "Id": "6e63c20d-2788-4776-9da0-4cfe7c982ca2",
+                    "Order": 9,
+                    "ComponentType": "Section",
+                    "Label": "Component",
+                    "ClassName": "wrapper",
+                    "IsTab": true,
+                    "XxlOuterColumn": 3,
+                    "Components": [
+                        {
+                            "Id": "001ef2bc-0000-0000-8000-197aa5870cc9",
+                            "FieldName": "GridView",
+                            "Order": 1,
+                            "ComponentType": "GridView",
+                            "Row": 50,
+                            "CanSearch": true,
+                            "ClassName": "sticky",
+                            "Query": "{ \"sql\" : \"select * from Component as ds\" , \"total\" : \"select count(ds.Id) as total from Component as ds\" }",
+                            "RefName": "Component",
+                            "ShowHotKey": true,
+                            "OrderBy": "ds.InsertedDate desc"
+                        }
+                    ]
                 }
             ]
         }

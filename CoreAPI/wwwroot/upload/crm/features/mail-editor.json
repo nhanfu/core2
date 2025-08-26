@@ -9,26 +9,27 @@
     "IgnoreEncode": true,
     "ComponentGroup": [
         {
-            "Id": "00cd3098-0000-0000-8000-589ff2110afc",
-            "FieldName": "Container",
-            "Order": 2,
-            "ComponentType": "Section",
-            "ClassName": "card-body",
-            "ParentId": "00db307c-0000-0000-8000-a669cd3a7e06",
-            "XxlOuterColumn": 12,
-            "Components": [
-                {
-                    "Id": "00dd30f0-0000-0000-8000-0721fd09f366"
-                }
-            ]
-        },
-        {
             "Id": "00db307c-0000-0000-8000-a669cd3a7e06",
             "FieldName": "Main",
             "Order": 1,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
-            "XxlCol": 12
+            "XxlCol": 12,
+            "Children": [
+                {
+                    "Id": "00cd3098-0000-0000-8000-589ff2110afc",
+                    "FieldName": "Container",
+                    "Order": 2,
+                    "ComponentType": "Section",
+                    "ClassName": "card-body",
+                    "XxlOuterColumn": 12,
+                    "Components": [
+                        {
+                            "Id": "00dd30f0-0000-0000-8000-0721fd09f366"
+                        }
+                    ]
+                }
+            ]
         }
     ],
     "FeaturePolicies": [

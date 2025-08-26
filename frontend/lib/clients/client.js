@@ -120,40 +120,47 @@ export class Client {
      */
     async SubmitAsyncWithToken(options) {
         const isFormData = !!options.FormData;
-        options.Headers = {
-            ...(!options.Headers && !isFormData && { "Content-Type": "application/json" }),
+        const headers = {
+            "User-Agent": "Mozilla/5.0",
+            ...(isFormData ? {} : { "Content-Type": "application/json" }),
             ...(options.Headers || {}),
-            ...(!options.AllowAnonymous && { Authorization: `Bearer ${Client.Token?.AccessToken}` }),
-            "User-Agent": "Mozilla/5.0"
         };
+        if (!options.AllowAnonymous) {
+            headers.Authorization = `Bearer ${Client.Token?.AccessToken}`;
+        }
 
         const url = Client.api + (options.FinalUrl ?? options.Url);
 
         try {
             const response = await fetch(url, {
                 method: options.Method,
-                headers: options.Headers,
+                headers,
                 body: isFormData ? options.FormData : options.JsonData
             });
 
             if (!response.ok) {
-                const error = await response.json();
+                let error;
+                try {
+                    error = await response.json();
+                } catch {
+                    error = { status: response.status, statusText: response.statusText };
+                }
                 return Promise.reject(error);
             }
+
             const contentType = response.headers.get("Content-Type") || "";
-            const disposition = response.headers.get("Content-Disposition") || "";
             if (contentType.includes("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
-                const blob = await response.blob();
-                return blob;
-            } else {
-                return response.headers.get("content-type")?.includes("application/json")
-                    ? response.json()
-                    : response.text();
+                return await response.blob();
             }
+            if (contentType.includes("application/json")) {
+                return await response.json();
+            }
+            return await response.text();
         } catch (error) {
-            return Promise.reject(error);
+            return Promise.reject({ message: "Network error", error });
         }
     }
+    
     /**
      * 
      * @param {XHRWrapper} options 

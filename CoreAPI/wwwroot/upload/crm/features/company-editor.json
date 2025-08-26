@@ -12,99 +12,185 @@
             "Order": 3,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
-            "XxlCol": 12
-        },
-        {
-            "Id": "0075369c-0000-0000-8000-d975d35ac0a3",
-            "Order": 6,
-            "ComponentType": "Section",
-            "Label": "Info",
-            "Icon": "fal fa-info mr-1",
-            "ClassName": "card-body",
             "XxlCol": 12,
-            "ParentId": "00753694-0000-0000-8000-e42e66a912f9",
-            "XxlOuterColumn": 12,
-            "Components": [
+            "Children": [
                 {
-                    "Id": "002736c4-0000-0000-8000-4650729f91a8",
-                    "FieldName": "Name",
-                    "Order": 1,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Name VN",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00753670-0000-0000-8000-0271342aedb6",
-                    "FieldName": "PhoneNumber",
+                    "Id": "007536d8-0000-0000-8000-2ccef99f5e44",
+                    "FieldName": "Right",
                     "Order": 5,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Phone",
-                    "ShowLabel": true
+                    "ComponentType": "Section",
+                    "ClassName": "card-body profile",
+                    "XxlCol": 10,
+                    "XxlOuterColumn": 12,
+                    "Components": [
+                        {
+                            "Id": "007536fc-0000-0000-8000-88c9a4e3ad4c",
+                            "FieldName": "Logo",
+                            "Order": 1,
+                            "ComponentType": "FileUpload",
+                            "Column": 4,
+                            "Label": "Logo",
+                            "ShowLabel": true,
+                            "ClassName": "profile",
+                            "VirtualScroll": true
+                        },
+                        {
+                            "Id": "009a3a98-0000-0000-8000-ee3d0aa26b8d",
+                            "FieldName": "PartnerBankAccount",
+                            "Order": 2,
+                            "ComponentType": "GridView",
+                            "Column": 6,
+                            "RowSpan": 2,
+                            "Row": 20,
+                            "Label": "PartnerBankAccount",
+                            "DefaultVal": "{ PartnerId: this.EditForm.Entity.Id}",
+                            "CanAdd": true,
+                            "Query": "{\r\n    \"sql\": \"select * from PartnerBankAccount as ds where PartnerId = '{PartnerId}'\",\r\n    \"total\": \"select count(ds.Id) as total from PartnerBankAccount as ds where PartnerId = '{PartnerId}'\"\r\n}",
+                            "RefName": "PartnerBankAccount",
+                            "PreQuery": "{ PartnerId: this.EditForm.Entity.Id}",
+                            "Editable": true
+                        },
+                        {
+                            "Id": "0195ef5e-b963-737b-804d-7e04ef585649",
+                            "FieldName": "Icon",
+                            "Order": 3,
+                            "ComponentType": "FileUpload",
+                            "Column": 4,
+                            "Label": "Icon",
+                            "ShowLabel": true,
+                            "ClassName": "profile",
+                            "VirtualScroll": true
+                        }
+                    ]
                 },
                 {
-                    "Id": "00753678-0000-0000-8000-a57f5526989c",
-                    "FieldName": "CompanyName",
-                    "Order": 2,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Name EN",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00753678-0000-0000-8000-aa258f00e75c",
-                    "FieldName": "Address",
-                    "Order": 4,
-                    "ComponentType": "Textarea",
-                    "Column": 6,
-                    "Label": "Address VN",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "007536f8-0000-0000-8000-d3a6de1b8a52",
-                    "FieldName": "Email",
-                    "Order": 8,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Email",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "007939f0-0000-0000-8000-8a5f8fe777f2",
-                    "FieldName": "TaxCode",
+                    "Id": "0075369c-0000-0000-8000-d975d35ac0a3",
                     "Order": 6,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "TaxCode",
-                    "ShowLabel": true
+                    "ComponentType": "Section",
+                    "Label": "Info",
+                    "Icon": "fal fa-info mr-1",
+                    "ClassName": "card-body",
+                    "XxlCol": 12,
+                    "XxlOuterColumn": 12,
+                    "Components": [
+                        {
+                            "Id": "002736c4-0000-0000-8000-4650729f91a8",
+                            "FieldName": "Name",
+                            "Order": 1,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Label": "Name VN",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00753670-0000-0000-8000-0271342aedb6",
+                            "FieldName": "PhoneNumber",
+                            "Order": 5,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Label": "Phone",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00753678-0000-0000-8000-a57f5526989c",
+                            "FieldName": "CompanyName",
+                            "Order": 2,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Label": "Name EN",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00753678-0000-0000-8000-aa258f00e75c",
+                            "FieldName": "Address",
+                            "Order": 4,
+                            "ComponentType": "Textarea",
+                            "Column": 6,
+                            "Label": "Address VN",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "007536f8-0000-0000-8000-d3a6de1b8a52",
+                            "FieldName": "Email",
+                            "Order": 8,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Label": "Email",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "007939f0-0000-0000-8000-8a5f8fe777f2",
+                            "FieldName": "TaxCode",
+                            "Order": 6,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Label": "TaxCode",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00863958-0000-0000-8000-d2cb95a8c808",
+                            "FieldName": "Fax",
+                            "Order": 7,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Label": "Fax",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "008b3970-0000-0000-8000-c27813595425",
+                            "FieldName": "WebSite",
+                            "Order": 9,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Label": "Web",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00b039a8-0000-0000-8000-096ecc3228e3",
+                            "FieldName": "AddressInv",
+                            "Order": 3,
+                            "ComponentType": "Textarea",
+                            "Column": 6,
+                            "Label": "Address EN",
+                            "ShowLabel": true
+                        }
+                    ]
                 },
                 {
-                    "Id": "00863958-0000-0000-8000-d2cb95a8c808",
-                    "FieldName": "Fax",
+                    "Id": "0195dcf4-81d0-721e-9a86-9e09fa5802ae",
+                    "FieldName": "Header",
                     "Order": 7,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Fax",
-                    "ShowLabel": true
+                    "ComponentType": "Section",
+                    "Label": "Header",
+                    "ClassName": "card-body",
+                    "Components": [
+                        {
+                            "Id": "0195dcf5-4aab-7647-8f60-22837334f78b",
+                            "FieldName": "Header",
+                            "Order": 9,
+                            "ComponentType": "Word",
+                            "Column": 6,
+                            "Label": "Header"
+                        }
+                    ]
                 },
                 {
-                    "Id": "008b3970-0000-0000-8000-c27813595425",
-                    "FieldName": "WebSite",
-                    "Order": 9,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Web",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00b039a8-0000-0000-8000-096ecc3228e3",
-                    "FieldName": "AddressInv",
-                    "Order": 3,
-                    "ComponentType": "Textarea",
-                    "Column": 6,
-                    "Label": "Address EN",
-                    "ShowLabel": true
+                    "Id": "0195dcf2-cc9c-7578-b46c-2e15a80148ea",
+                    "FieldName": "Footer",
+                    "Order": 8,
+                    "ComponentType": "Section",
+                    "Label": "Footer",
+                    "ClassName": "card-body",
+                    "Components": [
+                        {
+                            "Id": "0195dcf2-f53d-776c-b6c6-7f2464c3a2e2",
+                            "FieldName": "Footer",
+                            "Order": 9,
+                            "ComponentType": "Word",
+                            "Column": 6,
+                            "Label": "Footer"
+                        }
+                    ]
                 }
             ]
         },
@@ -127,94 +213,6 @@
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }"
-                }
-            ]
-        },
-        {
-            "Id": "007536d8-0000-0000-8000-2ccef99f5e44",
-            "FieldName": "Right",
-            "Order": 5,
-            "ComponentType": "Section",
-            "ClassName": "card-body profile",
-            "XxlCol": 10,
-            "ParentId": "00753694-0000-0000-8000-e42e66a912f9",
-            "XxlOuterColumn": 12,
-            "Components": [
-                {
-                    "Id": "007536fc-0000-0000-8000-88c9a4e3ad4c",
-                    "FieldName": "Logo",
-                    "Order": 1,
-                    "ComponentType": "FileUpload",
-                    "Column": 4,
-                    "Label": "Logo",
-                    "ShowLabel": true,
-                    "ClassName": "profile",
-                    "VirtualScroll": true
-                },
-                {
-                    "Id": "009a3a98-0000-0000-8000-ee3d0aa26b8d",
-                    "FieldName": "PartnerBankAccount",
-                    "Order": 2,
-                    "ComponentType": "GridView",
-                    "Column": 6,
-                    "RowSpan": 2,
-                    "Row": 20,
-                    "Label": "PartnerBankAccount",
-                    "DefaultVal": "{ PartnerId: this.EditForm.Entity.Id}",
-                    "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from PartnerBankAccount as ds where PartnerId = '{PartnerId}'\",\r\n    \"total\": \"select count(ds.Id) as total from PartnerBankAccount as ds where PartnerId = '{PartnerId}'\"\r\n}",
-                    "RefName": "PartnerBankAccount",
-                    "PreQuery": "{ PartnerId: this.EditForm.Entity.Id}",
-                    "Editable": true
-                },
-                {
-                    "Id": "0195ef5e-b963-737b-804d-7e04ef585649",
-                    "FieldName": "Icon",
-                    "Order": 3,
-                    "ComponentType": "FileUpload",
-                    "Column": 4,
-                    "Label": "Icon",
-                    "ShowLabel": true,
-                    "ClassName": "profile",
-                    "VirtualScroll": true
-                }
-            ]
-        },
-        {
-            "Id": "0195dcf2-cc9c-7578-b46c-2e15a80148ea",
-            "FieldName": "Footer",
-            "Order": 8,
-            "ComponentType": "Section",
-            "Label": "Footer",
-            "ClassName": "card-body",
-            "ParentId": "00753694-0000-0000-8000-e42e66a912f9",
-            "Components": [
-                {
-                    "Id": "0195dcf2-f53d-776c-b6c6-7f2464c3a2e2",
-                    "FieldName": "Footer",
-                    "Order": 9,
-                    "ComponentType": "Word",
-                    "Column": 6,
-                    "Label": "Footer"
-                }
-            ]
-        },
-        {
-            "Id": "0195dcf4-81d0-721e-9a86-9e09fa5802ae",
-            "FieldName": "Header",
-            "Order": 7,
-            "ComponentType": "Section",
-            "Label": "Header",
-            "ClassName": "card-body",
-            "ParentId": "00753694-0000-0000-8000-e42e66a912f9",
-            "Components": [
-                {
-                    "Id": "0195dcf5-4aab-7647-8f60-22837334f78b",
-                    "FieldName": "Header",
-                    "Order": 9,
-                    "ComponentType": "Word",
-                    "Column": 6,
-                    "Label": "Header"
                 }
             ]
         }

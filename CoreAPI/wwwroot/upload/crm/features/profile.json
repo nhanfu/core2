@@ -9,333 +9,6 @@
     "EntityId": "User",
     "ComponentGroup": [
         {
-            "Id": "01954fd8-4a7c-74e6-b724-80d6b340b237",
-            "Order": 2,
-            "ComponentType": "Section",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "0195500d-b581-73a8-a48a-28a4dfed4614",
-            "XxlOuterColumn": 12,
-            "Components": [
-                {
-                    "Id": "0195500a-41e5-7341-a727-3a70ff254e34",
-                    "FieldName": "FullName",
-                    "Order": 1,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Full Name",
-                    "ShowLabel": true,
-                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "SmCol": 6
-                },
-                {
-                    "Id": "0195500a-41e5-7341-a727-3ffbda9318c3",
-                    "FieldName": "NickName",
-                    "Order": 2,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Nick Name",
-                    "ShowLabel": true,
-                    "SmCol": 6
-                },
-                {
-                    "Id": "0195500a-41e6-762d-9da1-fcd88cb4656b",
-                    "FieldName": "GenderId",
-                    "Order": 3,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 6,
-                    "Row": 100,
-                    "Label": "Sex",
-                    "ShowLabel": true,
-                    "SmCol": 6,
-                    "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Gender'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Gender'\"\r\n}",
-                    "RefName": "MasterData",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "0195500a-41e6-762d-9da2-02a4d2fb1c03",
-                    "FieldName": "Dob",
-                    "Order": 4,
-                    "ComponentType": "Datepicker",
-                    "Column": 6,
-                    "Label": "Brithday",
-                    "ShowLabel": true,
-                    "SmCol": 6
-                },
-                {
-                    "Id": "0195500a-41e6-762d-9da2-0611d1861914",
-                    "FieldName": "IdentityCard",
-                    "Order": 5,
-                    "ComponentType": "Input",
-                    "Column": 4,
-                    "Row": 50,
-                    "Label": "Identity Card",
-                    "ShowLabel": true,
-                    "SmCol": 6,
-                    "RefName": "Partner",
-                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]"
-                },
-                {
-                    "Id": "0195500a-41e6-762d-9da2-0a476964254b",
-                    "FieldName": "IdentityCardDate",
-                    "Order": 6,
-                    "ComponentType": "Datepicker",
-                    "Column": 4,
-                    "Row": 50,
-                    "Label": "Date ",
-                    "ShowLabel": true,
-                    "SmCol": 6
-                },
-                {
-                    "Id": "0195500a-41e6-762d-9da2-0e3291d8d73b",
-                    "FieldName": "PlaceIssue",
-                    "Order": 7,
-                    "ComponentType": "Datepicker",
-                    "Column": 4,
-                    "Label": "Place of Issue",
-                    "ShowLabel": true,
-                    "SmCol": 6
-                }
-            ]
-        },
-        {
-            "Id": "01954fd8-5abe-748c-abb2-37613d65d232",
-            "FieldName": "General",
-            "Order": 1,
-            "ComponentType": "Section",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "0195500d-b581-73a8-a48a-28a4dfed4614",
-            "XxlOuterColumn": 12,
-            "Components": [
-                {
-                    "Id": "0195500a-b5a4-75df-b7ad-e61ab4255fbd",
-                    "FieldName": "DepartmentId",
-                    "Order": 1,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 6,
-                    "Row": 100,
-                    "Label": "Department",
-                    "ShowLabel": true,
-                    "Disabled": true,
-                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "SmCol": 6,
-                    "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Department Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Department Type'\"\r\n}",
-                    "RefName": "MasterData",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "0195500a-b5a5-751c-8b2f-15c4a0a3678b",
-                    "FieldName": "PositionId",
-                    "Order": 3,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 6,
-                    "Row": 100,
-                    "Label": "Position",
-                    "ShowLabel": true,
-                    "Disabled": true,
-                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "SmCol": 6,
-                    "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Position Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Position Type'\"\r\n}",
-                    "RefName": "MasterData",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "0195500a-b5a5-751c-8b2f-19b3b4a50cab",
-                    "FieldName": "TeamId",
-                    "Order": 4,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 6,
-                    "Row": 100,
-                    "Label": "Group",
-                    "ShowLabel": true,
-                    "Disabled": true,
-                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "SmCol": 6,
-                    "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Team Group'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Team Group'\"\r\n}",
-                    "RefName": "MasterData",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "0195500a-b5a5-751c-8b2f-1d49c9998862",
-                    "FieldName": "JointDate",
-                    "Order": 5,
-                    "ComponentType": "Datepicker",
-                    "Column": 6,
-                    "Label": "Joint Date",
-                    "ShowLabel": true,
-                    "Disabled": true,
-                    "SmCol": 6
-                },
-                {
-                    "Id": "0195500a-b5a5-751c-8b2f-23e0db6e3c72",
-                    "FieldName": "Knowledge",
-                    "Order": 6,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Row": 50,
-                    "Label": "Knowledge",
-                    "ShowLabel": true,
-                    "SmCol": 6
-                },
-                {
-                    "Id": "0195500a-b5a5-751c-8b2f-242569a730e0",
-                    "FieldName": "CompanyId",
-                    "Order": 7,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 6,
-                    "Row": 100,
-                    "Label": "Company",
-                    "ShowLabel": true,
-                    "Disabled": true,
-                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "SmCol": 6,
-                    "Query": "{\r\n    \"sql\": \"select * from [Partner] as ds where ServiceId = 5\",\r\n    \"total\": \"select count(ds.Id) as total from [Partner] as ds where ServiceId = 5\"\r\n}",
-                    "RefName": "Partner",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "01955020-c91f-75ac-8cf3-57aa89ac757c",
-                    "FieldName": "Avatar",
-                    "Order": 0,
-                    "ComponentType": "FileUpload",
-                    "Column": 12,
-                    "SmCol": 12,
-                    "VirtualScroll": true
-                }
-            ]
-        },
-        {
-            "Id": "0195500b-9558-7269-8eac-6900e7bc3aff",
-            "Order": 3,
-            "ComponentType": "Section",
-            "Label": "Contact Info",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "0195500d-b581-73a8-a48a-28a4dfed4614",
-            "XxlOuterColumn": 12,
-            "Components": [
-                {
-                    "Id": "0195500c-1696-768a-9a56-b52d7e836b72",
-                    "FieldName": "Address",
-                    "Order": 1,
-                    "ComponentType": "Textarea",
-                    "Column": 12,
-                    "Label": "Address",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "0195500c-1697-7438-8101-df2d48396537",
-                    "FieldName": "UserName",
-                    "Order": 2,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "User Name",
-                    "ShowLabel": true,
-                    "Disabled": true,
-                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
-                },
-                {
-                    "Id": "0195500c-1697-7438-8101-e2f03161d9de",
-                    "FieldName": "PhoneNumber",
-                    "Order": 3,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Phone",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "0195500c-1697-7438-8101-e4f0a3fd4f15",
-                    "FieldName": "Email",
-                    "Order": 4,
-                    "ComponentType": "Input",
-                    "Column": 12,
-                    "Label": "Email",
-                    "ShowLabel": true,
-                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
-                }
-            ]
-        },
-        {
-            "Id": "0195500c-bf04-727c-a63e-55a89d39a465",
-            "Order": 4,
-            "ComponentType": "Section",
-            "Label": "Bank",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "0195500d-b581-73a8-a48a-28a4dfed4614",
-            "XxlOuterColumn": 12,
-            "Components": [
-                {
-                    "Id": "0195500c-f21a-757b-85d8-04ff7ff09f91",
-                    "FieldName": "AccNumber",
-                    "Order": 1,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Acc Number",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "0195500c-f21a-757b-85d8-0b4a2d37976f",
-                    "FieldName": "AccName",
-                    "Order": 2,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Acc Name",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "0195500c-f21a-757b-85d8-0c90e2619ab8",
-                    "FieldName": "BankId",
-                    "Order": 3,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 12,
-                    "Row": 100,
-                    "Label": "Bank Name",
-                    "ShowLabel": true,
-                    "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Bank'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Bank'\"\r\n}",
-                    "RefName": "MasterData",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "0195503e-3453-7723-9d7c-5df9cecfd46d",
-                    "FieldName": "btnChangePassword",
-                    "Order": 5,
-                    "ComponentType": "Button",
-                    "Column": 1,
-                    "Label": "Password",
-                    "Icon": "fal fa-edit",
-                    "ClassName": "btn btn-sm btn-secondary",
-                    "HotKey": "Ctrl-S",
-                    "Events": "{ \"click\" : \"ChangePassword\" }"
-                },
-                {
-                    "Id": "0195503e-3453-7723-9d7c-63f75767f075",
-                    "FieldName": "btnSave",
-                    "Order": 4,
-                    "ComponentType": "Button",
-                    "Column": 1,
-                    "Label": "Save",
-                    "Icon": "fal fa-save",
-                    "ClassName": "btn btn-sm btn-primary",
-                    "HotKey": "Ctrl-S",
-                    "Events": "{ \"click\" : \"SavePatch\" }"
-                }
-            ]
-        },
-        {
             "Id": "0195500d-b581-73a8-a48a-28a4dfed4614",
             "FieldName": "FullPage",
             "Order": 1,
@@ -343,7 +16,336 @@
             "ClassName": "scroll-content",
             "Style": "width: 375px;margin: auto;padding-bottom:10rem;",
             "XxlCol": 12,
-            "XxlOuterColumn": 12
+            "XxlOuterColumn": 12,
+            "Children": [
+                {
+                    "Id": "01954fd8-5abe-748c-abb2-37613d65d232",
+                    "FieldName": "General",
+                    "Order": 1,
+                    "ComponentType": "Section",
+                    "ClassName": "card-body",
+                    "XxlCol": 12,
+                    "XxlOuterColumn": 12,
+                    "Components": [
+                        {
+                            "Id": "0195500a-b5a4-75df-b7ad-e61ab4255fbd",
+                            "FieldName": "DepartmentId",
+                            "Order": 1,
+                            "ComponentType": "Dropdown",
+                            "FormatData": "{Name}",
+                            "PlainText": "Select data",
+                            "Column": 6,
+                            "Row": 100,
+                            "Label": "Department",
+                            "ShowLabel": true,
+                            "Disabled": true,
+                            "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
+                            "SmCol": 6,
+                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Department Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Department Type'\"\r\n}",
+                            "RefName": "MasterData",
+                            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
+                        },
+                        {
+                            "Id": "0195500a-b5a5-751c-8b2f-15c4a0a3678b",
+                            "FieldName": "PositionId",
+                            "Order": 3,
+                            "ComponentType": "Dropdown",
+                            "FormatData": "{Name}",
+                            "PlainText": "Select data",
+                            "Column": 6,
+                            "Row": 100,
+                            "Label": "Position",
+                            "ShowLabel": true,
+                            "Disabled": true,
+                            "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
+                            "SmCol": 6,
+                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Position Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Position Type'\"\r\n}",
+                            "RefName": "MasterData",
+                            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
+                        },
+                        {
+                            "Id": "0195500a-b5a5-751c-8b2f-19b3b4a50cab",
+                            "FieldName": "TeamId",
+                            "Order": 4,
+                            "ComponentType": "Dropdown",
+                            "FormatData": "{Name}",
+                            "PlainText": "Select data",
+                            "Column": 6,
+                            "Row": 100,
+                            "Label": "Group",
+                            "ShowLabel": true,
+                            "Disabled": true,
+                            "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
+                            "SmCol": 6,
+                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Team Group'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Team Group'\"\r\n}",
+                            "RefName": "MasterData",
+                            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
+                        },
+                        {
+                            "Id": "0195500a-b5a5-751c-8b2f-1d49c9998862",
+                            "FieldName": "JointDate",
+                            "Order": 5,
+                            "ComponentType": "Datepicker",
+                            "Column": 6,
+                            "Label": "Joint Date",
+                            "ShowLabel": true,
+                            "Disabled": true,
+                            "SmCol": 6
+                        },
+                        {
+                            "Id": "0195500a-b5a5-751c-8b2f-23e0db6e3c72",
+                            "FieldName": "Knowledge",
+                            "Order": 6,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Row": 50,
+                            "Label": "Knowledge",
+                            "ShowLabel": true,
+                            "SmCol": 6
+                        },
+                        {
+                            "Id": "0195500a-b5a5-751c-8b2f-242569a730e0",
+                            "FieldName": "CompanyId",
+                            "Order": 7,
+                            "ComponentType": "Dropdown",
+                            "FormatData": "{Name}",
+                            "PlainText": "Select data",
+                            "Column": 6,
+                            "Row": 100,
+                            "Label": "Company",
+                            "ShowLabel": true,
+                            "Disabled": true,
+                            "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
+                            "SmCol": 6,
+                            "Query": "{\r\n    \"sql\": \"select * from [Partner] as ds where ServiceId = 5\",\r\n    \"total\": \"select count(ds.Id) as total from [Partner] as ds where ServiceId = 5\"\r\n}",
+                            "RefName": "Partner",
+                            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
+                        },
+                        {
+                            "Id": "01955020-c91f-75ac-8cf3-57aa89ac757c",
+                            "FieldName": "Avatar",
+                            "Order": 0,
+                            "ComponentType": "FileUpload",
+                            "Column": 12,
+                            "SmCol": 12,
+                            "VirtualScroll": true
+                        }
+                    ],
+                    "Children": []
+                },
+                {
+                    "Id": "01954fd8-4a7c-74e6-b724-80d6b340b237",
+                    "Order": 2,
+                    "ComponentType": "Section",
+                    "ClassName": "card-body",
+                    "XxlCol": 12,
+                    "XxlOuterColumn": 12,
+                    "Components": [
+                        {
+                            "Id": "0195500a-41e5-7341-a727-3a70ff254e34",
+                            "FieldName": "FullName",
+                            "Order": 1,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Label": "Full Name",
+                            "ShowLabel": true,
+                            "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
+                            "SmCol": 6
+                        },
+                        {
+                            "Id": "0195500a-41e5-7341-a727-3ffbda9318c3",
+                            "FieldName": "NickName",
+                            "Order": 2,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Label": "Nick Name",
+                            "ShowLabel": true,
+                            "SmCol": 6
+                        },
+                        {
+                            "Id": "0195500a-41e6-762d-9da1-fcd88cb4656b",
+                            "FieldName": "GenderId",
+                            "Order": 3,
+                            "ComponentType": "Dropdown",
+                            "FormatData": "{Name}",
+                            "PlainText": "Select data",
+                            "Column": 6,
+                            "Row": 100,
+                            "Label": "Sex",
+                            "ShowLabel": true,
+                            "SmCol": 6,
+                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Gender'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Gender'\"\r\n}",
+                            "RefName": "MasterData",
+                            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
+                        },
+                        {
+                            "Id": "0195500a-41e6-762d-9da2-02a4d2fb1c03",
+                            "FieldName": "Dob",
+                            "Order": 4,
+                            "ComponentType": "Datepicker",
+                            "Column": 6,
+                            "Label": "Brithday",
+                            "ShowLabel": true,
+                            "SmCol": 6
+                        },
+                        {
+                            "Id": "0195500a-41e6-762d-9da2-0611d1861914",
+                            "FieldName": "IdentityCard",
+                            "Order": 5,
+                            "ComponentType": "Input",
+                            "Column": 4,
+                            "Row": 50,
+                            "Label": "Identity Card",
+                            "ShowLabel": true,
+                            "SmCol": 6,
+                            "RefName": "Partner",
+                            "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]"
+                        },
+                        {
+                            "Id": "0195500a-41e6-762d-9da2-0a476964254b",
+                            "FieldName": "IdentityCardDate",
+                            "Order": 6,
+                            "ComponentType": "Datepicker",
+                            "Column": 4,
+                            "Row": 50,
+                            "Label": "Date ",
+                            "ShowLabel": true,
+                            "SmCol": 6
+                        },
+                        {
+                            "Id": "0195500a-41e6-762d-9da2-0e3291d8d73b",
+                            "FieldName": "PlaceIssue",
+                            "Order": 7,
+                            "ComponentType": "Datepicker",
+                            "Column": 4,
+                            "Label": "Place of Issue",
+                            "ShowLabel": true,
+                            "SmCol": 6
+                        }
+                    ],
+                    "Children": []
+                },
+                {
+                    "Id": "0195500b-9558-7269-8eac-6900e7bc3aff",
+                    "Order": 3,
+                    "ComponentType": "Section",
+                    "Label": "Contact Info",
+                    "ClassName": "card-body",
+                    "XxlCol": 12,
+                    "XxlOuterColumn": 12,
+                    "Components": [
+                        {
+                            "Id": "0195500c-1696-768a-9a56-b52d7e836b72",
+                            "FieldName": "Address",
+                            "Order": 1,
+                            "ComponentType": "Textarea",
+                            "Column": 12,
+                            "Label": "Address",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "0195500c-1697-7438-8101-df2d48396537",
+                            "FieldName": "UserName",
+                            "Order": 2,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Label": "User Name",
+                            "ShowLabel": true,
+                            "Disabled": true,
+                            "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
+                        },
+                        {
+                            "Id": "0195500c-1697-7438-8101-e2f03161d9de",
+                            "FieldName": "PhoneNumber",
+                            "Order": 3,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Label": "Phone",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "0195500c-1697-7438-8101-e4f0a3fd4f15",
+                            "FieldName": "Email",
+                            "Order": 4,
+                            "ComponentType": "Input",
+                            "Column": 12,
+                            "Label": "Email",
+                            "ShowLabel": true,
+                            "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
+                        }
+                    ],
+                    "Children": []
+                },
+                {
+                    "Id": "0195500c-bf04-727c-a63e-55a89d39a465",
+                    "Order": 4,
+                    "ComponentType": "Section",
+                    "Label": "Bank",
+                    "ClassName": "card-body",
+                    "XxlCol": 12,
+                    "XxlOuterColumn": 12,
+                    "Components": [
+                        {
+                            "Id": "0195500c-f21a-757b-85d8-04ff7ff09f91",
+                            "FieldName": "AccNumber",
+                            "Order": 1,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Label": "Acc Number",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "0195500c-f21a-757b-85d8-0b4a2d37976f",
+                            "FieldName": "AccName",
+                            "Order": 2,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Label": "Acc Name",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "0195500c-f21a-757b-85d8-0c90e2619ab8",
+                            "FieldName": "BankId",
+                            "Order": 3,
+                            "ComponentType": "Dropdown",
+                            "FormatData": "{Name}",
+                            "PlainText": "Select data",
+                            "Column": 12,
+                            "Row": 100,
+                            "Label": "Bank Name",
+                            "ShowLabel": true,
+                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Bank'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Bank'\"\r\n}",
+                            "RefName": "MasterData",
+                            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
+                        },
+                        {
+                            "Id": "0195503e-3453-7723-9d7c-5df9cecfd46d",
+                            "FieldName": "btnChangePassword",
+                            "Order": 5,
+                            "ComponentType": "Button",
+                            "Column": 1,
+                            "Label": "Password",
+                            "Icon": "fal fa-edit",
+                            "ClassName": "btn btn-sm btn-secondary",
+                            "HotKey": "Ctrl-S",
+                            "Events": "{ \"click\" : \"ChangePassword\" }"
+                        },
+                        {
+                            "Id": "0195503e-3453-7723-9d7c-63f75767f075",
+                            "FieldName": "btnSave",
+                            "Order": 4,
+                            "ComponentType": "Button",
+                            "Column": 1,
+                            "Label": "Save",
+                            "Icon": "fal fa-save",
+                            "ClassName": "btn btn-sm btn-primary",
+                            "HotKey": "Ctrl-S",
+                            "Events": "{ \"click\" : \"SavePatch\" }"
+                        }
+                    ],
+                    "Children": []
+                }
+            ]
         }
     ],
     "Components": [

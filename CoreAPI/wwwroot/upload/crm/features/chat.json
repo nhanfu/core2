@@ -10,27 +10,27 @@
             "Order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "XxlOuterColumn": 0
-        },
-        {
-            "Id": "00bc19ec-0000-0000-8000-8c7b8792d14e",
-            "FieldName": "Left",
-            "Order": 1,
-            "ComponentType": "Section",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "00bc19b0-0000-0000-8000-c7817636af49",
-            "XxlOuterColumn": 12
-        },
-        {
-            "Id": "00bd191c-0000-0000-8000-0fd041172430",
-            "FieldName": "Right",
-            "Order": 2,
-            "ComponentType": "Section",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "00bc19b0-0000-0000-8000-c7817636af49",
-            "XxlOuterColumn": 12
+            "XxlOuterColumn": 0,
+            "Children": [
+                {
+                    "Id": "00bc19ec-0000-0000-8000-8c7b8792d14e",
+                    "FieldName": "Left",
+                    "Order": 1,
+                    "ComponentType": "Section",
+                    "ClassName": "card-body",
+                    "XxlCol": 12,
+                    "XxlOuterColumn": 12
+                },
+                {
+                    "Id": "00bd191c-0000-0000-8000-0fd041172430",
+                    "FieldName": "Right",
+                    "Order": 2,
+                    "ComponentType": "Section",
+                    "ClassName": "card-body",
+                    "XxlCol": 12,
+                    "XxlOuterColumn": 12
+                }
+            ]
         }
     ],
     "GridPolicies": [

@@ -18,187 +18,216 @@
             "ClassName": "scroll-content",
             "XsCol": 6,
             "XxlCol": 12,
-            "DisabledExp": "this.Entity.ActionId == 2"
-        },
-        {
-            "Id": "006616b0-0000-0000-8000-d652f4dbd03f",
-            "FieldName": "Common",
-            "Order": 1,
-            "ComponentType": "Section",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "00661608-0000-0000-8000-3b2f2b0a7cb6",
-            "XxlOuterColumn": 12,
-            "Components": [
+            "DisabledExp": "this.Entity.ActionId == 2",
+            "Children": [
                 {
-                    "Id": "00004310-0000-0000-8000-be42ec36ab45",
-                    "FieldName": "IsPublic",
-                    "Order": 11,
-                    "ComponentType": "Checkbox",
-                    "Column": 2,
-                    "Row": 3,
-                    "Label": "Public",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "000416d4-0000-0000-8000-c14f16622d27",
-                    "FieldName": "GroupId",
-                    "Order": 12,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 4,
-                    "Row": 100,
-                    "Label": "Group",
-                    "ShowLabel": true,
-                    "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Team Group'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Team Group'\"\r\n}",
-                    "RefName": "MasterData",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "0028161c-0000-0000-8000-313cd49bb133",
-                    "FieldName": "Raiting",
-                    "Order": 10,
-                    "ComponentType": "Number",
-                    "Column": 2,
-                    "Row": 3,
-                    "Label": "Raiting",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00331668-0000-0000-8000-c01bb24fdb3e",
-                    "FieldName": "Note",
-                    "Order": 14,
-                    "ComponentType": "Textarea",
-                    "Column": 6,
-                    "Row": 3,
-                    "Label": "Note",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00661630-0000-0000-8000-49c9dfb53bfe",
-                    "FieldName": "Industry",
-                    "Order": 9,
-                    "ComponentType": "Input",
-                    "Column": 4,
-                    "Row": 50,
-                    "Label": "Industry",
-                    "ShowLabel": true,
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "00661634-0000-0000-8000-38c438eefaac",
-                    "FieldName": "CompanyName",
-                    "Order": 6,
-                    "ComponentType": "Input",
-                    "Column": 4,
-                    "Row": 50,
-                    "Label": "Company Name (EN)",
-                    "ShowLabel": true,
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "00661644-0000-0000-8000-18b12360979c",
-                    "FieldName": "Email",
-                    "Order": 4,
-                    "ComponentType": "Input",
-                    "Column": 4,
-                    "Label": "Email",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00661658-0000-0000-8000-afc2bbb2119a",
-                    "FieldName": "Address",
-                    "Order": 13,
-                    "ComponentType": "Textarea",
-                    "Column": 6,
-                    "Row": 3,
-                    "Label": "Address",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "0066169c-0000-0000-8000-7edf2cb2ac4c",
-                    "FieldName": "ResidenceTypeId",
-                    "Order": 7,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 4,
-                    "Row": 100,
-                    "Label": "Residence Type",
-                    "ShowLabel": true,
-                    "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Residence Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Residence Type'\"\r\n}",
-                    "RefName": "MasterData",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "006616d4-0000-0000-8000-54db268108f9",
-                    "FieldName": "TaxCode",
-                    "Order": 0,
-                    "ComponentType": "Input",
-                    "Column": 4,
-                    "Row": 50,
-                    "Label": "Tax Code",
-                    "ShowLabel": true,
-                    "Events": "{\"change\":\"GetInfo\"}"
-                },
-                {
-                    "Id": "006616dc-0000-0000-8000-68e1e0931855",
-                    "FieldName": "Name",
-                    "Order": 3,
-                    "ComponentType": "Input",
-                    "Column": 4,
-                    "Label": "Abbreviation",
-                    "ShowLabel": true,
-                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
-                },
-                {
-                    "Id": "006616ec-0000-0000-8000-261e4b149457",
-                    "FieldName": "PhoneNumber",
+                    "Id": "006616b0-0000-0000-8000-d652f4dbd03f",
+                    "FieldName": "Common",
                     "Order": 1,
-                    "ComponentType": "Input",
-                    "Column": 4,
-                    "Label": "Works Phone",
-                    "ShowLabel": true
+                    "ComponentType": "Section",
+                    "ClassName": "card-body",
+                    "XxlCol": 12,
+                    "XxlOuterColumn": 12,
+                    "Components": [
+                        {
+                            "Id": "00004310-0000-0000-8000-be42ec36ab45",
+                            "FieldName": "IsPublic",
+                            "Order": 11,
+                            "ComponentType": "Checkbox",
+                            "Column": 2,
+                            "Row": 3,
+                            "Label": "Public",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "000416d4-0000-0000-8000-c14f16622d27",
+                            "FieldName": "GroupId",
+                            "Order": 12,
+                            "ComponentType": "Dropdown",
+                            "FormatData": "{Name}",
+                            "PlainText": "Select data",
+                            "Column": 4,
+                            "Row": 100,
+                            "Label": "Group",
+                            "ShowLabel": true,
+                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Team Group'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Team Group'\"\r\n}",
+                            "RefName": "MasterData",
+                            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
+                        },
+                        {
+                            "Id": "0028161c-0000-0000-8000-313cd49bb133",
+                            "FieldName": "Raiting",
+                            "Order": 10,
+                            "ComponentType": "Number",
+                            "Column": 2,
+                            "Row": 3,
+                            "Label": "Raiting",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00331668-0000-0000-8000-c01bb24fdb3e",
+                            "FieldName": "Note",
+                            "Order": 14,
+                            "ComponentType": "Textarea",
+                            "Column": 6,
+                            "Row": 3,
+                            "Label": "Note",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00661630-0000-0000-8000-49c9dfb53bfe",
+                            "FieldName": "Industry",
+                            "Order": 9,
+                            "ComponentType": "Input",
+                            "Column": 4,
+                            "Row": 50,
+                            "Label": "Industry",
+                            "ShowLabel": true,
+                            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
+                        },
+                        {
+                            "Id": "00661634-0000-0000-8000-38c438eefaac",
+                            "FieldName": "CompanyName",
+                            "Order": 6,
+                            "ComponentType": "Input",
+                            "Column": 4,
+                            "Row": 50,
+                            "Label": "Company Name (EN)",
+                            "ShowLabel": true,
+                            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
+                        },
+                        {
+                            "Id": "00661644-0000-0000-8000-18b12360979c",
+                            "FieldName": "Email",
+                            "Order": 4,
+                            "ComponentType": "Input",
+                            "Column": 4,
+                            "Label": "Email",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00661658-0000-0000-8000-afc2bbb2119a",
+                            "FieldName": "Address",
+                            "Order": 13,
+                            "ComponentType": "Textarea",
+                            "Column": 6,
+                            "Row": 3,
+                            "Label": "Address",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "0066169c-0000-0000-8000-7edf2cb2ac4c",
+                            "FieldName": "ResidenceTypeId",
+                            "Order": 7,
+                            "ComponentType": "Dropdown",
+                            "FormatData": "{Name}",
+                            "PlainText": "Select data",
+                            "Column": 4,
+                            "Row": 100,
+                            "Label": "Residence Type",
+                            "ShowLabel": true,
+                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Residence Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Residence Type'\"\r\n}",
+                            "RefName": "MasterData",
+                            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
+                        },
+                        {
+                            "Id": "006616d4-0000-0000-8000-54db268108f9",
+                            "FieldName": "TaxCode",
+                            "Order": 0,
+                            "ComponentType": "Input",
+                            "Column": 4,
+                            "Row": 50,
+                            "Label": "Tax Code",
+                            "ShowLabel": true,
+                            "Events": "{\"change\":\"GetInfo\"}"
+                        },
+                        {
+                            "Id": "006616dc-0000-0000-8000-68e1e0931855",
+                            "FieldName": "Name",
+                            "Order": 3,
+                            "ComponentType": "Input",
+                            "Column": 4,
+                            "Label": "Abbreviation",
+                            "ShowLabel": true,
+                            "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
+                        },
+                        {
+                            "Id": "006616ec-0000-0000-8000-261e4b149457",
+                            "FieldName": "PhoneNumber",
+                            "Order": 1,
+                            "ComponentType": "Input",
+                            "Column": 4,
+                            "Label": "Works Phone",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "006616fc-0000-0000-8000-edb7b48103c9",
+                            "FieldName": "SourseId",
+                            "Order": 5,
+                            "ComponentType": "Dropdown",
+                            "FormatData": "{Name}",
+                            "PlainText": "Select data",
+                            "Column": 4,
+                            "Row": 100,
+                            "Label": "Sourse",
+                            "ShowLabel": true,
+                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Sourse Customer'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Sourse Customer'\"\r\n}",
+                            "RefName": "MasterData",
+                            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
+                        },
+                        {
+                            "Id": "009a1630-0000-0000-8000-10dbd5acb0b2",
+                            "FieldName": "RegularShippingFrom",
+                            "Order": 2,
+                            "ComponentType": "Input",
+                            "Column": 4,
+                            "Label": "Regular Shipping From",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00de168c-0000-0000-8000-eb913d60dbe0",
+                            "FieldName": "AssignId",
+                            "Order": 8,
+                            "ComponentType": "Dropdown",
+                            "FormatData": "{FullName}",
+                            "PlainText": "Select data",
+                            "Column": 4,
+                            "Row": 100,
+                            "Label": "Assign to",
+                            "ShowLabel": true,
+                            "Query": "{\r\n    \"sql\": \"select ds.* from [User] as ds where (TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 1)\"\r\n}",
+                            "RefName": "User",
+                            "Template": "[\r\n    {\r\n        \"FieldName\": \"FullName\",\r\n        \"Label\": \"Full Name\",\r\n        \"ComponentType\": \"FullName\"\r\n    },\r\n    {\r\n        \"FieldName\": \"NickName\",\r\n        \"Label\": \"NickName\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"DepartmentId\",\r\n        \"Label\": \"Department\",\r\n        \"ComponentType\": \"Dropdown\",\r\n        \"RefName\": \"MasterData\",\r\n        \"FormatData\": \"{Name}\"\r\n    }\r\n]"
+                        }
+                    ]
                 },
                 {
-                    "Id": "006616fc-0000-0000-8000-edb7b48103c9",
-                    "FieldName": "SourseId",
+                    "Id": "0067167c-0000-0000-8000-869ecb9571fa",
                     "Order": 5,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 4,
-                    "Row": 100,
-                    "Label": "Sourse",
-                    "ShowLabel": true,
-                    "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Sourse Customer'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Sourse Customer'\"\r\n}",
-                    "RefName": "MasterData",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "009a1630-0000-0000-8000-10dbd5acb0b2",
-                    "FieldName": "RegularShippingFrom",
-                    "Order": 2,
-                    "ComponentType": "Input",
-                    "Column": 4,
-                    "Label": "Regular Shipping From",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00de168c-0000-0000-8000-eb913d60dbe0",
-                    "FieldName": "AssignId",
-                    "Order": 8,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{FullName}",
-                    "PlainText": "Select data",
-                    "Column": 4,
-                    "Row": 100,
-                    "Label": "Assign to",
-                    "ShowLabel": true,
-                    "Query": "{\r\n    \"sql\": \"select ds.* from [User] as ds where (TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 1)\"\r\n}",
-                    "RefName": "User",
-                    "Template": "[\r\n    {\r\n        \"FieldName\": \"FullName\",\r\n        \"Label\": \"Full Name\",\r\n        \"ComponentType\": \"FullName\"\r\n    },\r\n    {\r\n        \"FieldName\": \"NickName\",\r\n        \"Label\": \"NickName\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"DepartmentId\",\r\n        \"Label\": \"Department\",\r\n        \"ComponentType\": \"Dropdown\",\r\n        \"RefName\": \"MasterData\",\r\n        \"FormatData\": \"{Name}\"\r\n    }\r\n]"
+                    "ComponentType": "Section",
+                    "Label": "Contact details",
+                    "Icon": "fal fa-sticky-note mr-1",
+                    "XxlCol": 12,
+                    "IsTab": true,
+                    "XxlOuterColumn": 12,
+                    "DisplayBadge": true,
+                    "Components": [
+                        {
+                            "Id": "006716a8-0000-0000-8000-6614a55f50fc",
+                            "FieldName": "PartnerContact",
+                            "Order": 1,
+                            "ComponentType": "GridView",
+                            "Column": 12,
+                            "Row": 200,
+                            "Label": "Contact details",
+                            "DefaultVal": "{ PartnerId: this.EditForm.Entity.Id}",
+                            "CanAdd": true,
+                            "Query": "{\r\n    \"sql\": \"select * from PartnerContact as ds where PartnerId = '{PartnerId}'\",\r\n    \"total\": \"select count(ds.Id) as total from PartnerContact as ds where PartnerId = '{PartnerId}'\"\r\n}",
+                            "RefName": "PartnerContact",
+                            "PreQuery": "{ PartnerId: this.EditForm.Entity.Id}",
+                            "Editable": true
+                        }
+                    ]
                 }
             ]
         },
@@ -310,35 +339,6 @@
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"Prospect\" }",
                     "ShowExp": "this.Entity.ActionId == 1"
-                }
-            ]
-        },
-        {
-            "Id": "0067167c-0000-0000-8000-869ecb9571fa",
-            "Order": 5,
-            "ComponentType": "Section",
-            "Label": "Contact details",
-            "Icon": "fal fa-sticky-note mr-1",
-            "XxlCol": 12,
-            "ParentId": "00661608-0000-0000-8000-3b2f2b0a7cb6",
-            "IsTab": true,
-            "XxlOuterColumn": 12,
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "006716a8-0000-0000-8000-6614a55f50fc",
-                    "FieldName": "PartnerContact",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 200,
-                    "Label": "Contact details",
-                    "DefaultVal": "{ PartnerId: this.EditForm.Entity.Id}",
-                    "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from PartnerContact as ds where PartnerId = '{PartnerId}'\",\r\n    \"total\": \"select count(ds.Id) as total from PartnerContact as ds where PartnerId = '{PartnerId}'\"\r\n}",
-                    "RefName": "PartnerContact",
-                    "PreQuery": "{ PartnerId: this.EditForm.Entity.Id}",
-                    "Editable": true
                 }
             ]
         }

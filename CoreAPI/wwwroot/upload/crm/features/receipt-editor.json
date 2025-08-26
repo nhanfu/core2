@@ -10,158 +10,158 @@
             "FieldName": "Container",
             "Order": 0,
             "ComponentType": "Section",
-            "XxlCol": 12
-        },
-        {
-            "Id": "0009ff04-0000-0000-8000-800623167b0a",
-            "FieldName": "Center",
-            "Order": 3,
-            "ComponentType": "Section",
-            "Label": "Receipt Detail",
-            "ClassName": "card-body",
             "XxlCol": 12,
-            "ParentId": "0006ff00-0000-0000-8000-a3d7da86a5bd",
-            "XxlOuterColumn": 12,
-            "Components": [
+            "Children": [
                 {
-                    "Id": "001dffb0-0000-0000-8000-64697cd847db",
-                    "FieldName": "VoucherDetail",
+                    "Id": "0016ff84-0000-0000-8000-d6d5be76a8c4",
+                    "FieldName": "Center1",
                     "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 200,
-                    "CanSearch": true,
-                    "ClassName": "sticky",
-                    "DefaultVal": "{\r\n    \"VoucherId\": this.EditForm.Entity.Id,\r\n}",
-                    "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from VoucherDetail as ds where VoucherId = '{VoucherId}'\",\r\n    \"total\": \"select count(ds.Id) as total from VoucherDetail as ds   where VoucherId = '{VoucherId}'\"\r\n}",
-                    "RefName": "VoucherDetail",
-                    "PreQuery": "{\r\n    \"VoucherId\": this.EditForm.Entity.Id,\r\n}",
-                    "Editable": true
-                }
-            ]
-        },
-        {
-            "Id": "0016ff84-0000-0000-8000-d6d5be76a8c4",
-            "FieldName": "Center1",
-            "Order": 1,
-            "ComponentType": "Section",
-            "XxlCol": 12,
-            "ParentId": "0006ff00-0000-0000-8000-a3d7da86a5bd",
-            "XxlOuterColumn": 12,
-            "Components": [
-                {
-                    "Id": "0042ff24-0000-0000-8000-c34dd6eab33e",
-                    "FieldName": "SubjectId",
-                    "Order": 1,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 4,
-                    "Row": 100,
-                    "Label": "Subject",
-                    "ShowLabel": true,
-                    "PopulateField": "(e, matched) => {\r\n    e.Entity.SubjectName = matched.Name;\r\n    e.Entity.Address = matched.Address;\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\"\r\n}",
-                    "RefName": "Partner",
-                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]"
+                    "ComponentType": "Section",
+                    "XxlCol": 12,
+                    "XxlOuterColumn": 12,
+                    "Components": [
+                        {
+                            "Id": "0042ff24-0000-0000-8000-c34dd6eab33e",
+                            "FieldName": "SubjectId",
+                            "Order": 1,
+                            "ComponentType": "Dropdown",
+                            "FormatData": "{Name}",
+                            "PlainText": "Select data",
+                            "Column": 4,
+                            "Row": 100,
+                            "Label": "Subject",
+                            "ShowLabel": true,
+                            "PopulateField": "(e, matched) => {\r\n    e.Entity.SubjectName = matched.Name;\r\n    e.Entity.Address = matched.Address;\r\n}",
+                            "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\"\r\n}",
+                            "RefName": "Partner",
+                            "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]"
+                        },
+                        {
+                            "Id": "004dff98-0000-0000-8000-333ef106a8b3",
+                            "FieldName": "SubjectName",
+                            "Order": 2,
+                            "ComponentType": "Input",
+                            "Column": 4,
+                            "Label": "Subject Name",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "004eff20-0000-0000-8000-91b34fd7830d",
+                            "FieldName": "PostedDate",
+                            "Order": 3,
+                            "ComponentType": "Datepicker",
+                            "Column": 4,
+                            "Label": "Posted Date",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "0050ff74-0000-0000-8000-a30996ddb320",
+                            "FieldName": "VoucherDate",
+                            "Order": 6,
+                            "ComponentType": "Datepicker",
+                            "Column": 4,
+                            "Label": "Voucher Date",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "0051ff20-0000-0000-8000-e3b8df633937",
+                            "FieldName": "VoucherNo",
+                            "Order": 9,
+                            "ComponentType": "Input",
+                            "Column": 4,
+                            "Label": "Voucher No",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "0052ffd4-0000-0000-8000-6aa93715d162",
+                            "FieldName": "Payer",
+                            "Order": 4,
+                            "ComponentType": "Input",
+                            "Column": 4,
+                            "Label": "Payer",
+                            "ShowLabel": true,
+                            "Events": "{\r\n    \"sql\": \"select * from Partner as ds where ServiceId in (1,2,3) and (TypeId not in (1,2) or TypeId is null)\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where ServiceId in (1,2,3) and (TypeId not in (1,2) or TypeId is null)\"\r\n}"
+                        },
+                        {
+                            "Id": "0054ff28-0000-0000-8000-30832af58a5b",
+                            "FieldName": "Address",
+                            "Order": 5,
+                            "ComponentType": "Input",
+                            "Column": 4,
+                            "Label": "Address",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "0055ff5c-0000-0000-8000-a66b6adb261c",
+                            "FieldName": "EmployeeId",
+                            "Order": 7,
+                            "ComponentType": "Dropdown",
+                            "FormatData": "{FullName}",
+                            "PlainText": "Select data",
+                            "Column": 4,
+                            "Row": 100,
+                            "Label": "Employee",
+                            "ShowLabel": true,
+                            "Query": "{\r\n    \"sql\": \"select ds.* from [User] as ds where (TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 1)\"\r\n}",
+                            "RefName": "User",
+                            "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]"
+                        },
+                        {
+                            "Id": "0056ff24-0000-0000-8000-9cdaf3126f4b",
+                            "FieldName": "Reason",
+                            "Order": 11,
+                            "ComponentType": "Textarea",
+                            "Column": 8,
+                            "Row": 4,
+                            "Label": "Reason",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "0057ff1c-0000-0000-8000-8d654cc66414",
+                            "FieldName": "Attached",
+                            "Order": 10,
+                            "ComponentType": "FileUpload",
+                            "Column": 4,
+                            "Label": "Attached"
+                        },
+                        {
+                            "Id": "00c2ff24-0000-0000-8000-4189abb1ea8f",
+                            "FieldName": "Amount",
+                            "Order": 9,
+                            "ComponentType": "Number",
+                            "Column": 4,
+                            "Label": "Amount",
+                            "ShowLabel": true
+                        }
+                    ]
                 },
                 {
-                    "Id": "004dff98-0000-0000-8000-333ef106a8b3",
-                    "FieldName": "SubjectName",
-                    "Order": 2,
-                    "ComponentType": "Input",
-                    "Column": 4,
-                    "Label": "Subject Name",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "004eff20-0000-0000-8000-91b34fd7830d",
-                    "FieldName": "PostedDate",
+                    "Id": "0009ff04-0000-0000-8000-800623167b0a",
+                    "FieldName": "Center",
                     "Order": 3,
-                    "ComponentType": "Datepicker",
-                    "Column": 4,
-                    "Label": "Posted Date",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "0050ff74-0000-0000-8000-a30996ddb320",
-                    "FieldName": "VoucherDate",
-                    "Order": 6,
-                    "ComponentType": "Datepicker",
-                    "Column": 4,
-                    "Label": "Voucher Date",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "0051ff20-0000-0000-8000-e3b8df633937",
-                    "FieldName": "VoucherNo",
-                    "Order": 9,
-                    "ComponentType": "Input",
-                    "Column": 4,
-                    "Label": "Voucher No",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "0052ffd4-0000-0000-8000-6aa93715d162",
-                    "FieldName": "Payer",
-                    "Order": 4,
-                    "ComponentType": "Input",
-                    "Column": 4,
-                    "Label": "Payer",
-                    "ShowLabel": true,
-                    "Events": "{\r\n    \"sql\": \"select * from Partner as ds where ServiceId in (1,2,3) and (TypeId not in (1,2) or TypeId is null)\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where ServiceId in (1,2,3) and (TypeId not in (1,2) or TypeId is null)\"\r\n}"
-                },
-                {
-                    "Id": "0054ff28-0000-0000-8000-30832af58a5b",
-                    "FieldName": "Address",
-                    "Order": 5,
-                    "ComponentType": "Input",
-                    "Column": 4,
-                    "Label": "Address",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "0055ff5c-0000-0000-8000-a66b6adb261c",
-                    "FieldName": "EmployeeId",
-                    "Order": 7,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{FullName}",
-                    "PlainText": "Select data",
-                    "Column": 4,
-                    "Row": 100,
-                    "Label": "Employee",
-                    "ShowLabel": true,
-                    "Query": "{\r\n    \"sql\": \"select ds.* from [User] as ds where (TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 1)\"\r\n}",
-                    "RefName": "User",
-                    "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]"
-                },
-                {
-                    "Id": "0056ff24-0000-0000-8000-9cdaf3126f4b",
-                    "FieldName": "Reason",
-                    "Order": 11,
-                    "ComponentType": "Textarea",
-                    "Column": 8,
-                    "Row": 4,
-                    "Label": "Reason",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "0057ff1c-0000-0000-8000-8d654cc66414",
-                    "FieldName": "Attached",
-                    "Order": 10,
-                    "ComponentType": "FileUpload",
-                    "Column": 4,
-                    "Label": "Attached"
-                },
-                {
-                    "Id": "00c2ff24-0000-0000-8000-4189abb1ea8f",
-                    "FieldName": "Amount",
-                    "Order": 9,
-                    "ComponentType": "Number",
-                    "Column": 4,
-                    "Label": "Amount",
-                    "ShowLabel": true
+                    "ComponentType": "Section",
+                    "Label": "Receipt Detail",
+                    "ClassName": "card-body",
+                    "XxlCol": 12,
+                    "XxlOuterColumn": 12,
+                    "Components": [
+                        {
+                            "Id": "001dffb0-0000-0000-8000-64697cd847db",
+                            "FieldName": "VoucherDetail",
+                            "Order": 1,
+                            "ComponentType": "GridView",
+                            "Column": 12,
+                            "Row": 200,
+                            "CanSearch": true,
+                            "ClassName": "sticky",
+                            "DefaultVal": "{\r\n    \"VoucherId\": this.EditForm.Entity.Id,\r\n}",
+                            "CanAdd": true,
+                            "Query": "{\r\n    \"sql\": \"select * from VoucherDetail as ds where VoucherId = '{VoucherId}'\",\r\n    \"total\": \"select count(ds.Id) as total from VoucherDetail as ds   where VoucherId = '{VoucherId}'\"\r\n}",
+                            "RefName": "VoucherDetail",
+                            "PreQuery": "{\r\n    \"VoucherId\": this.EditForm.Entity.Id,\r\n}",
+                            "Editable": true
+                        }
+                    ]
                 }
             ]
         },

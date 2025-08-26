@@ -10,98 +10,99 @@
     "EntityId": "PartnerContact",
     "ComponentGroup": [
         {
-            "Id": "004f3824-0000-0000-8000-24ff3413919f",
-            "FieldName": "Common",
-            "Order": 1,
-            "ComponentType": "Section",
-            "ClassName": "card-body",
-            "XsCol": 6,
-            "XxlCol": 12,
-            "ParentId": "004f3824-0000-0000-8000-76b7af40815f",
-            "XxlOuterColumn": 12,
-            "Components": [
-                {
-                    "Id": "004f3820-0000-0000-8000-fee7f20bc647",
-                    "FieldName": "Note",
-                    "Order": 6,
-                    "ComponentType": "Textarea",
-                    "Column": 12,
-                    "Label": "Note",
-                    "ShowLabel": true,
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "004f3870-0000-0000-8000-798424c933fc",
-                    "FieldName": "ContactEmail",
-                    "Order": 3,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Email",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "004f3890-0000-0000-8000-46315f774f60",
-                    "FieldName": "JobTiles",
-                    "Order": 4,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Job Tiles",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "004f38a0-0000-0000-8000-573c783c1654",
-                    "FieldName": "ContactName",
-                    "Order": 1,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Row": 50,
-                    "Label": "Name",
-                    "ShowLabel": true,
-                    "Events": "{\"change\":\"GetInfo\"}",
-                    "DefaultVal": "1989898989898989"
-                },
-                {
-                    "Id": "004f38b0-0000-0000-8000-769e75f52a6c",
-                    "FieldName": "Birthday",
-                    "Order": 5,
-                    "ComponentType": "Datepicker",
-                    "Column": 6,
-                    "Label": "Birthday",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "004f38cc-0000-0000-8000-87f44e633b9e",
-                    "FieldName": "ContactPhoneNumber",
-                    "Order": 2,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Phone Number",
-                    "ShowLabel": true,
-                    "DefaultVal": "11111"
-                },
-                {
-                    "Id": "00973890-0000-0000-8000-d9bb2a0a8164",
-                    "FieldName": "GenderId",
-                    "Order": 5,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "Column": 6,
-                    "Row": 100,
-                    "Label": "Sex",
-                    "ShowLabel": true,
-                    "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Gender'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Gender'\"\r\n}",
-                    "RefName": "MasterData",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
-                }
-            ]
-        },
-        {
             "Id": "004f3824-0000-0000-8000-76b7af40815f",
             "FieldName": "Full",
             "Order": 1,
             "ComponentType": "Section",
             "XsCol": 6,
-            "XxlCol": 12
+            "XxlCol": 12,
+            "Children": [
+                {
+                    "Id": "004f3824-0000-0000-8000-24ff3413919f",
+                    "FieldName": "Common",
+                    "Order": 1,
+                    "ComponentType": "Section",
+                    "ClassName": "card-body",
+                    "XsCol": 6,
+                    "XxlCol": 12,
+                    "XxlOuterColumn": 12,
+                    "Components": [
+                        {
+                            "Id": "004f3820-0000-0000-8000-fee7f20bc647",
+                            "FieldName": "Note",
+                            "Order": 6,
+                            "ComponentType": "Textarea",
+                            "Column": 12,
+                            "Label": "Note",
+                            "ShowLabel": true,
+                            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
+                        },
+                        {
+                            "Id": "004f3870-0000-0000-8000-798424c933fc",
+                            "FieldName": "ContactEmail",
+                            "Order": 3,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Label": "Email",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "004f3890-0000-0000-8000-46315f774f60",
+                            "FieldName": "JobTiles",
+                            "Order": 4,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Label": "Job Tiles",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "004f38a0-0000-0000-8000-573c783c1654",
+                            "FieldName": "ContactName",
+                            "Order": 1,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Row": 50,
+                            "Label": "Name",
+                            "ShowLabel": true,
+                            "Events": "{\"change\":\"GetInfo\"}",
+                            "DefaultVal": "1989898989898989"
+                        },
+                        {
+                            "Id": "004f38b0-0000-0000-8000-769e75f52a6c",
+                            "FieldName": "Birthday",
+                            "Order": 5,
+                            "ComponentType": "Datepicker",
+                            "Column": 6,
+                            "Label": "Birthday",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "004f38cc-0000-0000-8000-87f44e633b9e",
+                            "FieldName": "ContactPhoneNumber",
+                            "Order": 2,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Label": "Phone Number",
+                            "ShowLabel": true,
+                            "DefaultVal": "11111"
+                        },
+                        {
+                            "Id": "00973890-0000-0000-8000-d9bb2a0a8164",
+                            "FieldName": "GenderId",
+                            "Order": 5,
+                            "ComponentType": "Dropdown",
+                            "FormatData": "{Name}",
+                            "Column": 6,
+                            "Row": 100,
+                            "Label": "Sex",
+                            "ShowLabel": true,
+                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Gender'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Gender'\"\r\n}",
+                            "RefName": "MasterData",
+                            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
+                        }
+                    ]
+                }
+            ]
         },
         {
             "Id": "00503894-0000-0000-8000-807dae4d9887",

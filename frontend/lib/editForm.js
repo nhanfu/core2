@@ -613,7 +613,7 @@ export class EditForm extends EditableComponent {
         }
         this.GroupTree = [];
         this.SetCurrentUserProperties();
-        this.GroupTree = this.BuildTree(feature.ComponentGroup);
+        this.GroupTree = feature.ComponentGroup;
         this.SetFeatureProperties(feature);
         this.SetFeatureStyleSheet(feature.StyleSheet);
         this.Policies = feature.FeaturePolicies;
@@ -1093,7 +1093,7 @@ export class EditForm extends EditableComponent {
             this.GroupTree = [];
         }
         else {
-            this.GroupTree = this.BuildTree(feature.ComponentGroup);
+            this.GroupTree = feature.ComponentGroup;
         }
         this.Element = this.RenderTemplate(null, feature);
         this.SetFeatureStyleSheet(feature.StyleSheet);
@@ -1207,62 +1207,6 @@ export class EditForm extends EditableComponent {
         return this.ListViews
             .filter(grid => grid.Meta.Id)
             .filter(grid => grid.DeleteTempIds.length > 0);
-    }
-
-    /**
-     * Builds a tree structure from a list of components.
-     * @param {Component[]} componentGroup - The list of components to build the tree from.
-     * @returns {Component[]} - The root components of the built tree.
-     */
-    BuildTree(componentGroup) {
-        var componentGroupMap = new Map(componentGroup.map(x => [x.Id, x]));
-        let parent;
-
-        for (const item of componentGroup) {
-            if (!item.ParentId) {
-                continue;
-            }
-
-            if (!componentGroupMap.has(item.ParentId)) {
-                continue;
-            }
-
-            parent = componentGroupMap.get(item.ParentId);
-
-            if (!parent.Children) {
-                parent.Children = [];
-            }
-
-            if (!parent.Children.includes(item)) {
-                parent.Children.push(item);
-            }
-
-            item.Parent = parent;
-        }
-
-        for (const item of componentGroup) {
-            if (!item.Children || !item.Children.length) {
-                item.Children = [];
-                continue;
-            }
-
-            for (const ui of item.Children) {
-                ui.Parent = item;
-            }
-
-            if (item.Children) {
-                item.Children = item.Children.sort((a, b) => a.Order - b.Order);
-            }
-        }
-
-        componentGroup.forEach(x => this.CalcItemInRow(x.Children.slice()));
-        const res = componentGroup.filter(x => !x.ParentId);
-
-        if (!res.length) {
-            console.log("No component group is root component. Wrong feature name or the configuration is wrong");
-        }
-
-        return res;
     }
 
     /**

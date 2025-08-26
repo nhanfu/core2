@@ -10,463 +10,492 @@
     "CodeId": "00742604-0000-0000-8000-adb936a690dd",
     "ComponentGroup": [
         {
-            "Id": "00171120-0000-0000-8000-7493827ca788",
-            "FieldName": "Show More Container",
-            "Order": 6,
-            "ComponentType": "Section",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "0017118c-0000-0000-8000-9392e899cb7b",
-            "XxlOuterColumn": 3,
-            "Components": [
-                {
-                    "Id": "001711d0-0000-0000-8000-c2fb15022d06",
-                    "FieldName": "EntityContainer",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 200,
-                    "ClassName": "sticky",
-                    "DefaultVal": "{\r\n    \"EntityId\": this.EditForm.Entity.Id,\r\n    \"TableName\": \"Quotation\"\r\n}",
-                    "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from EntityContainer as ds where EntityId = '{EntityId}'\",\r\n    \"total\": \"select count(ds.Id) as total from EntityContainer as ds where EntityId = '{EntityId}'\"\r\n}",
-                    "RefName": "EntityContainer",
-                    "PreQuery": "{ \"EntityId\": this.EditForm.Entity.Id}",
-                    "Editable": true,
-                    "AddRowExp": "this.EditForm.Entity.StatusId == 1 || this.EditForm.Entity.StatusId == 4"
-                }
-            ]
-        },
-        {
-            "Id": "00171130-0000-0000-8000-6898a05e2fea",
-            "FieldName": "Main",
-            "Order": 2,
-            "ComponentType": "Section",
-            "ClassName": "card-body",
-            "Style": "heigth:200px;",
-            "XxlCol": 12,
-            "ParentId": "001711ac-0000-0000-8000-901ad107ba47",
-            "XxlOuterColumn": 4,
-            "Components": [
-                {
-                    "Id": "00171104-0000-0000-8000-8ad59ecb981b",
-                    "FieldName": "CommodityId",
-                    "Order": 5,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 12,
-                    "Row": 100,
-                    "Label": "Commodity",
-                    "ShowLabel": true,
-                    "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Commodity Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Commodity Type'\"\r\n}",
-                    "RefName": "MasterData",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "00171104-0000-0000-8000-eff7111af0c2",
-                    "FieldName": "ToDate",
-                    "Order": 2,
-                    "ComponentType": "Datepicker",
-                    "Column": 6,
-                    "Label": "Validity",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00171168-0000-0000-8000-674152c49875",
-                    "FieldName": "FromDate",
-                    "Order": 1,
-                    "ComponentType": "Datepicker",
-                    "Column": 6,
-                    "Label": "Effect",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "0017116c-0000-0000-8000-41bc3848a971",
-                    "FieldName": "EtaDate",
-                    "Order": 3,
-                    "ComponentType": "Datepicker",
-                    "Column": 6,
-                    "Label": "ETA Date",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00171198-0000-0000-8000-937eadcac001",
-                    "FieldName": "EtdDate",
-                    "Order": 4,
-                    "ComponentType": "Datepicker",
-                    "Column": 6,
-                    "Label": "ETD Date",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00171198-0000-0000-8000-b1d8b98d5854",
-                    "FieldName": "ShipmentTypeId",
-                    "Order": 6,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 12,
-                    "Row": 100,
-                    "Label": "Shipment type",
-                    "ShowLabel": true,
-                    "Events": "{\"change\":\"ShowHideDetail\"}",
-                    "DefaultVal": "0",
-                    "Query": "[\r\n    {\r\n        \"Id\": 0,\r\n        \"Name\": \"FREE-HAND\"\r\n    },\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"NOMINATE\"\r\n    }\r\n]",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
-                }
-            ]
-        },
-        {
-            "Id": "00171184-0000-0000-8000-6eb0ab7438f7",
-            "FieldName": "Show More",
-            "Order": 4,
-            "ComponentType": "Section",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "0017118c-0000-0000-8000-9392e899cb7b",
-            "XxlOuterColumn": 3,
-            "Components": [
-                {
-                    "Id": "00171100-0000-0000-8000-957016f97258",
-                    "FieldName": "IncotermId",
-                    "Order": 2,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 6,
-                    "Row": 100,
-                    "Label": "Incoterm",
-                    "ShowLabel": true,
-                    "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"DDP\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"CIP\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"CPT\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"CFR\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"FAS\"\r\n    },\r\n    {\r\n        \"Id\": 6,\r\n        \"Name\": \"FCA\"\r\n    },\r\n    {\r\n        \"Id\": 7,\r\n        \"Name\": \"EXW\"\r\n    },\r\n    {\r\n        \"Id\": 8,\r\n        \"Name\": \"CIF\"\r\n    },\r\n    {\r\n        \"Id\": 9,\r\n        \"Name\": \"DPU\"\r\n    },\r\n    {\r\n        \"Id\": 10,\r\n        \"Name\": \"DAP\"\r\n    },\r\n    {\r\n        \"Id\": 11,\r\n        \"Name\": \"FOB\"\r\n    }\r\n]",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "00171158-0000-0000-8000-0deb70c0de38",
-                    "FieldName": "ConsigneeIdText",
-                    "Order": 1,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 12,
-                    "Row": 100,
-                    "Label": "Consignee",
-                    "ShowLabel": true,
-                    "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('partner-editor',{ ServiceId: 2, ActionId: 1, PartnerTypeIds: '00e51814-0000-0000-8000-4128ce0e4c14',PartnerTypeIdsText: 'Consignee'})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('partner-editor',this.Matched)\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 2 and (PartnerTypeIdsText like N'%Consignee%'))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 2 and (PartnerTypeIdsText like N'%Consignee%'))\"\r\n}",
-                    "RefName": "Partner",
-                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
-                    "ShowHotKey": true,
-                    "TabGroup": "ConsigneeId"
-                },
-                {
-                    "Id": "001711b0-0000-0000-8000-0722f6538169",
-                    "FieldName": "EmptyPickupId",
-                    "Order": 6,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 6,
-                    "Row": 100,
-                    "Label": "Empty Pickup",
-                    "ShowLabel": true,
-                    "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
-                    "RefName": "Terminal",
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "001711c8-0000-0000-8000-3e3fe94dd752",
-                    "FieldName": "DeliveryTerm",
-                    "Order": 3,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Delivery term",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "001711d0-0000-0000-8000-859403c2804f",
-                    "FieldName": "EmptyReturnId",
-                    "Order": 7,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 6,
-                    "Row": 100,
-                    "Label": "Empty Return",
-                    "ShowLabel": true,
-                    "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
-                    "RefName": "Terminal",
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "001711d0-0000-0000-8000-e653ee86b9ca",
-                    "FieldName": "Subject",
-                    "Order": 9,
-                    "ComponentType": "Textarea",
-                    "Column": 6,
-                    "Row": 3,
-                    "Label": "Subject",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "001711d4-0000-0000-8000-1cd0874485a2",
-                    "FieldName": "Pickup",
-                    "Order": 4,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Row": 50,
-                    "Label": "Place of receipt",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "001711dc-0000-0000-8000-8ad466101890",
-                    "FieldName": "Delivery",
-                    "Order": 5,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Place of delivery",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00ce1134-0000-0000-8000-b943af612f04",
-                    "FieldName": "CustomsOfficeId",
-                    "Order": 8,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 6,
-                    "Row": 100,
-                    "Label": "Customs Office",
-                    "ShowLabel": true,
-                    "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
-                    "RefName": "Terminal",
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
-                }
-            ]
-        },
-        {
-            "Id": "0017118c-0000-0000-8000-9392e899cb7b",
-            "FieldName": "Show More All",
-            "Order": 4,
-            "ComponentType": "Section",
-            "Label": "Show More",
-            "XxlCol": 12,
-            "ParentId": "001711ac-0000-0000-8000-901ad107ba47",
-            "XxlOuterColumn": 12,
-            "IsDropDown": true
-        },
-        {
             "Id": "001711ac-0000-0000-8000-901ad107ba47",
             "FieldName": "Container",
             "Order": 1,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
-            "XxlCol": 12
-        },
-        {
-            "Id": "001711dc-0000-0000-8000-63eddef71d05",
-            "FieldName": "Show More Remark",
-            "Order": 7,
-            "ComponentType": "Section",
-            "Label": "Remark",
-            "ClassName": "card-body",
             "XxlCol": 12,
-            "ParentId": "0017118c-0000-0000-8000-9392e899cb7b",
-            "XxlOuterColumn": 6,
-            "Components": [
+            "Children": [
                 {
-                    "Id": "00181114-0000-0000-8000-d57af8da5579",
-                    "FieldName": "Remark",
+                    "Id": "001711f0-0000-0000-8000-47ac80cca375",
+                    "FieldName": "Left",
                     "Order": 1,
-                    "ComponentType": "Word",
-                    "Column": 12,
-                    "Row": 1,
-                    "Label": "Remark",
-                    "Style": "max-height: 160px; overflow-y: auto;",
-                    "DefaultVal": "return `Test default value`;"
-                }
-            ]
-        },
-        {
-            "Id": "001711f0-0000-0000-8000-47ac80cca375",
-            "FieldName": "Left",
-            "Order": 1,
-            "ComponentType": "Section",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "001711ac-0000-0000-8000-901ad107ba47",
-            "XxlOuterColumn": 4,
-            "Components": [
+                    "ComponentType": "Section",
+                    "ClassName": "card-body",
+                    "XxlCol": 12,
+                    "XxlOuterColumn": 4,
+                    "Components": [
+                        {
+                            "Id": "00171108-0000-0000-8000-0f76d8bfcaf7",
+                            "FieldName": "ServiceDate",
+                            "Order": 2,
+                            "ComponentType": "Datepicker",
+                            "Column": 6,
+                            "Label": "Quo Date",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "0017113c-0000-0000-8000-a39e826fe07d",
+                            "FieldName": "PhoneNumber",
+                            "Order": 5,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Label": "Tel/Email",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00171170-0000-0000-8000-a281ae6542ca",
+                            "FieldName": "ServiceText",
+                            "Order": 6,
+                            "ComponentType": "Input",
+                            "Column": 12,
+                            "Label": "Service",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "0017117c-0000-0000-8000-ffd5c5bde66a",
+                            "FieldName": "Pic",
+                            "Order": 4,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Row": 50,
+                            "Label": "PIC",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "001711b8-0000-0000-8000-0550e92c13ca",
+                            "FieldName": "Code",
+                            "Order": 1,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Label": "Quo No",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "001711bc-0000-0000-8000-460ebec510f8",
+                            "FieldName": "CustomerId",
+                            "Order": 3,
+                            "ComponentType": "Dropdown",
+                            "FormatData": "{Name}",
+                            "PlainText": "Select data",
+                            "Column": 12,
+                            "Row": 100,
+                            "Label": "Customer",
+                            "ShowLabel": true,
+                            "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('customer-editor',{ ServiceId : 1, TypeId : 3, ActionId : 1, SaleId: this.Token.UserId })\",\r\n    \"edit\": \"this.EditForm.OpenPopup('customer-editor',this.Matched)\"\r\n}",
+                            "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
+                            "PopulateField": "this.EditForm.Entity.PhoneNumber = this.Matched.ContactPhoneNumber\r\nthis.EditForm.Entity.Pic = this.Matched.ContactName;\r\nthis.EditForm.Entity.Sale = null;\r\nthis.EditForm.Entity.SaleId = this.Matched.SaleId;\r\nlet customer = this.Matched;\r\nlet customerText = `${(customer.CompanyName || '')}\\n`;\r\ncustomerText += `${(customer.Address || '')}\\n`;\r\ncustomerText += `Tell: ${(customer.PhoneNumber || '')} Fax: ${(customer.Fax || '')}\\n`;\r\ncustomerText += `Contact person:${(customer.ContactName || '')}`;\r\nif (this.EditForm.Entity.Service.Name.includes('Import')) {\r\n    this.EditForm.Entity.ConsigneeId = this.Matched.Id;\r\n    this.EditForm.Entity.ConsigneeIdText = this.Matched.Name;\r\n}\r\nelse if (this.EditForm.Entity.Service.Name.includes('Export')) {\r\n    this.EditForm.Entity.ShipperId = this.Matched.Id;\r\n    this.EditForm.Entity.ShipperIdText = this.Matched.Name;\r\n}\r\nthis.EditForm.UpdateView(false, false, \"Pic\", \"SaleId\", \"PhoneNumber\", \"ConsigneeId\", \"ConsigneeIdText\", \"ShipperId\", \"ShipperIdText\");\r\nreturn null;",
+                            "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 1 and TypeId in (2,3) and (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.DistributeInformationIds like N'%{TokenUserId}%'))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 1 and TypeId in (2,3) and (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.DistributeInformationIds like N'%{TokenUserId}%'))\"\r\n}",
+                            "RefName": "Partner",
+                            "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
+                            "PreQuery": "{\r\n    \"UserId\": this.Token.UserId,\r\n    \"UserName\": this.Token.UserName\r\n}",
+                            "ShowHotKey": true
+                        }
+                    ]
+                },
                 {
-                    "Id": "00171108-0000-0000-8000-0f76d8bfcaf7",
-                    "FieldName": "ServiceDate",
+                    "Id": "00171130-0000-0000-8000-6898a05e2fea",
+                    "FieldName": "Main",
                     "Order": 2,
-                    "ComponentType": "Datepicker",
-                    "Column": 6,
-                    "Label": "Quo Date",
-                    "ShowLabel": true
+                    "ComponentType": "Section",
+                    "ClassName": "card-body",
+                    "Style": "heigth:200px;",
+                    "XxlCol": 12,
+                    "XxlOuterColumn": 4,
+                    "Components": [
+                        {
+                            "Id": "00171104-0000-0000-8000-8ad59ecb981b",
+                            "FieldName": "CommodityId",
+                            "Order": 5,
+                            "ComponentType": "Dropdown",
+                            "FormatData": "{Name}",
+                            "PlainText": "Select data",
+                            "Column": 12,
+                            "Row": 100,
+                            "Label": "Commodity",
+                            "ShowLabel": true,
+                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Commodity Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Commodity Type'\"\r\n}",
+                            "RefName": "MasterData",
+                            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
+                        },
+                        {
+                            "Id": "00171104-0000-0000-8000-eff7111af0c2",
+                            "FieldName": "ToDate",
+                            "Order": 2,
+                            "ComponentType": "Datepicker",
+                            "Column": 6,
+                            "Label": "Validity",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00171168-0000-0000-8000-674152c49875",
+                            "FieldName": "FromDate",
+                            "Order": 1,
+                            "ComponentType": "Datepicker",
+                            "Column": 6,
+                            "Label": "Effect",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "0017116c-0000-0000-8000-41bc3848a971",
+                            "FieldName": "EtaDate",
+                            "Order": 3,
+                            "ComponentType": "Datepicker",
+                            "Column": 6,
+                            "Label": "ETA Date",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00171198-0000-0000-8000-937eadcac001",
+                            "FieldName": "EtdDate",
+                            "Order": 4,
+                            "ComponentType": "Datepicker",
+                            "Column": 6,
+                            "Label": "ETD Date",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00171198-0000-0000-8000-b1d8b98d5854",
+                            "FieldName": "ShipmentTypeId",
+                            "Order": 6,
+                            "ComponentType": "Dropdown",
+                            "FormatData": "{Name}",
+                            "PlainText": "Select data",
+                            "Column": 12,
+                            "Row": 100,
+                            "Label": "Shipment type",
+                            "ShowLabel": true,
+                            "Events": "{\"change\":\"ShowHideDetail\"}",
+                            "DefaultVal": "0",
+                            "Query": "[\r\n    {\r\n        \"Id\": 0,\r\n        \"Name\": \"FREE-HAND\"\r\n    },\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"NOMINATE\"\r\n    }\r\n]",
+                            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
+                        }
+                    ]
                 },
                 {
-                    "Id": "0017113c-0000-0000-8000-a39e826fe07d",
-                    "FieldName": "PhoneNumber",
-                    "Order": 5,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Tel/Email",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00171170-0000-0000-8000-a281ae6542ca",
-                    "FieldName": "ServiceText",
-                    "Order": 6,
-                    "ComponentType": "Input",
-                    "Column": 12,
-                    "Label": "Service",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "0017117c-0000-0000-8000-ffd5c5bde66a",
-                    "FieldName": "Pic",
-                    "Order": 4,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Row": 50,
-                    "Label": "PIC",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "001711b8-0000-0000-8000-0550e92c13ca",
-                    "FieldName": "Code",
-                    "Order": 1,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Quo No",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "001711bc-0000-0000-8000-460ebec510f8",
-                    "FieldName": "CustomerId",
+                    "Id": "001711f8-0000-0000-8000-bc0eb04f5bae",
+                    "FieldName": "Right",
                     "Order": 3,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 12,
-                    "Row": 100,
-                    "Label": "Customer",
-                    "ShowLabel": true,
-                    "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('customer-editor',{ ServiceId : 1, TypeId : 3, ActionId : 1, SaleId: this.Token.UserId })\",\r\n    \"edit\": \"this.EditForm.OpenPopup('customer-editor',this.Matched)\"\r\n}",
-                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "PopulateField": "this.EditForm.Entity.PhoneNumber = this.Matched.ContactPhoneNumber\r\nthis.EditForm.Entity.Pic = this.Matched.ContactName;\r\nthis.EditForm.Entity.Sale = null;\r\nthis.EditForm.Entity.SaleId = this.Matched.SaleId;\r\nlet customer = this.Matched;\r\nlet customerText = `${(customer.CompanyName || '')}\\n`;\r\ncustomerText += `${(customer.Address || '')}\\n`;\r\ncustomerText += `Tell: ${(customer.PhoneNumber || '')} Fax: ${(customer.Fax || '')}\\n`;\r\ncustomerText += `Contact person:${(customer.ContactName || '')}`;\r\nif (this.EditForm.Entity.Service.Name.includes('Import')) {\r\n    this.EditForm.Entity.ConsigneeId = this.Matched.Id;\r\n    this.EditForm.Entity.ConsigneeIdText = this.Matched.Name;\r\n}\r\nelse if (this.EditForm.Entity.Service.Name.includes('Export')) {\r\n    this.EditForm.Entity.ShipperId = this.Matched.Id;\r\n    this.EditForm.Entity.ShipperIdText = this.Matched.Name;\r\n}\r\nthis.EditForm.UpdateView(false, false, \"Pic\", \"SaleId\", \"PhoneNumber\", \"ConsigneeId\", \"ConsigneeIdText\", \"ShipperId\", \"ShipperIdText\");\r\nreturn null;",
-                    "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 1 and TypeId in (2,3) and (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.DistributeInformationIds like N'%{TokenUserId}%'))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 1 and TypeId in (2,3) and (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.DistributeInformationIds like N'%{TokenUserId}%'))\"\r\n}",
-                    "RefName": "Partner",
-                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
-                    "PreQuery": "{\r\n    \"UserId\": this.Token.UserId,\r\n    \"UserName\": this.Token.UserName\r\n}",
-                    "ShowHotKey": true
-                }
-            ]
-        },
-        {
-            "Id": "001711f8-0000-0000-8000-bc0eb04f5bae",
-            "FieldName": "Right",
-            "Order": 3,
-            "ComponentType": "Section",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "001711ac-0000-0000-8000-901ad107ba47",
-            "XxlOuterColumn": 4,
-            "Components": [
-                {
-                    "Id": "00171110-0000-0000-8000-a0859d860508",
-                    "FieldName": "Note",
-                    "Order": 8,
-                    "ComponentType": "Textarea",
-                    "Column": 6,
-                    "Row": 3,
-                    "Label": "Note",
-                    "ShowLabel": true
+                    "ComponentType": "Section",
+                    "ClassName": "card-body",
+                    "XxlCol": 12,
+                    "XxlOuterColumn": 4,
+                    "Components": [
+                        {
+                            "Id": "00171110-0000-0000-8000-a0859d860508",
+                            "FieldName": "Note",
+                            "Order": 8,
+                            "ComponentType": "Textarea",
+                            "Column": 6,
+                            "Row": 3,
+                            "Label": "Note",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00171188-0000-0000-8000-08b8536fb044",
+                            "FieldName": "Quantity",
+                            "Order": 3,
+                            "ComponentType": "Number",
+                            "Column": 6,
+                            "Label": "Quantity",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00171188-0000-0000-8000-0d9d89eb8b6c",
+                            "FieldName": "CBM",
+                            "Order": 7,
+                            "ComponentType": "Number",
+                            "Column": 6,
+                            "Label": "CBM",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00171190-0000-0000-8000-084fd9856ab9",
+                            "FieldName": "CW",
+                            "Order": 6,
+                            "ComponentType": "Number",
+                            "Column": 6,
+                            "Label": "CW",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "001711ac-0000-0000-8000-cbebe2b35bef",
+                            "FieldName": "UnitId",
+                            "Order": 4,
+                            "ComponentType": "Dropdown",
+                            "FormatData": "{Name}",
+                            "PlainText": "Select data",
+                            "Column": 6,
+                            "Row": 100,
+                            "Label": "Unit",
+                            "ShowLabel": true,
+                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where ds1.Name in (N'Unit Type','LTL Type','Container Type')\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where ds1.Name in (N'Unit Type','LTL Type','Container Type')\"\r\n}",
+                            "RefName": "MasterData",
+                            "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]"
+                        },
+                        {
+                            "Id": "001711d0-0000-0000-8000-d33b0bc94dde",
+                            "FieldName": "GW",
+                            "Order": 5,
+                            "ComponentType": "Number",
+                            "Column": 6,
+                            "Label": "GW",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00701160-0000-0000-8000-0150043702a4",
+                            "FieldName": "PolId",
+                            "Order": 1,
+                            "ComponentType": "Dropdown",
+                            "FormatData": "{Name}",
+                            "PlainText": "Select data",
+                            "Column": 6,
+                            "Row": 100,
+                            "Label": "POL",
+                            "ShowLabel": true,
+                            "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
+                            "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
+                            "RefName": "Terminal",
+                            "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
+                        },
+                        {
+                            "Id": "00701160-0000-0000-8001-6dac9a2659f7",
+                            "FieldName": "PodId",
+                            "Order": 2,
+                            "ComponentType": "Dropdown",
+                            "FormatData": "{Name}",
+                            "PlainText": "Select data",
+                            "Column": 6,
+                            "Row": 100,
+                            "Label": "POD",
+                            "ShowLabel": true,
+                            "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
+                            "Query": "{\r\n    \"sql\": \"select * from [Terminal] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"\r\n}",
+                            "RefName": "Terminal",
+                            "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
+                        }
+                    ]
                 },
                 {
-                    "Id": "00171188-0000-0000-8000-08b8536fb044",
-                    "FieldName": "Quantity",
-                    "Order": 3,
-                    "ComponentType": "Number",
-                    "Column": 6,
-                    "Label": "Quantity",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00171188-0000-0000-8000-0d9d89eb8b6c",
-                    "FieldName": "CBM",
-                    "Order": 7,
-                    "ComponentType": "Number",
-                    "Column": 6,
-                    "Label": "CBM",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00171190-0000-0000-8000-084fd9856ab9",
-                    "FieldName": "CW",
-                    "Order": 6,
-                    "ComponentType": "Number",
-                    "Column": 6,
-                    "Label": "CW",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "001711ac-0000-0000-8000-cbebe2b35bef",
-                    "FieldName": "UnitId",
+                    "Id": "0017118c-0000-0000-8000-9392e899cb7b",
+                    "FieldName": "Show More All",
                     "Order": 4,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 6,
-                    "Row": 100,
-                    "Label": "Unit",
-                    "ShowLabel": true,
-                    "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where ds1.Name in (N'Unit Type','LTL Type','Container Type')\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where ds1.Name in (N'Unit Type','LTL Type','Container Type')\"\r\n}",
-                    "RefName": "MasterData",
-                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]"
+                    "ComponentType": "Section",
+                    "Label": "Show More",
+                    "XxlCol": 12,
+                    "XxlOuterColumn": 12,
+                    "IsDropDown": true,
+                    "Children": [
+                        {
+                            "Id": "00171184-0000-0000-8000-6eb0ab7438f7",
+                            "FieldName": "Show More",
+                            "Order": 4,
+                            "ComponentType": "Section",
+                            "ClassName": "card-body",
+                            "XxlCol": 12,
+                            "XxlOuterColumn": 3,
+                            "Components": [
+                                {
+                                    "Id": "00171100-0000-0000-8000-957016f97258",
+                                    "FieldName": "IncotermId",
+                                    "Order": 2,
+                                    "ComponentType": "Dropdown",
+                                    "FormatData": "{Name}",
+                                    "PlainText": "Select data",
+                                    "Column": 6,
+                                    "Row": 100,
+                                    "Label": "Incoterm",
+                                    "ShowLabel": true,
+                                    "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"DDP\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"CIP\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"CPT\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"CFR\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"FAS\"\r\n    },\r\n    {\r\n        \"Id\": 6,\r\n        \"Name\": \"FCA\"\r\n    },\r\n    {\r\n        \"Id\": 7,\r\n        \"Name\": \"EXW\"\r\n    },\r\n    {\r\n        \"Id\": 8,\r\n        \"Name\": \"CIF\"\r\n    },\r\n    {\r\n        \"Id\": 9,\r\n        \"Name\": \"DPU\"\r\n    },\r\n    {\r\n        \"Id\": 10,\r\n        \"Name\": \"DAP\"\r\n    },\r\n    {\r\n        \"Id\": 11,\r\n        \"Name\": \"FOB\"\r\n    }\r\n]",
+                                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
+                                },
+                                {
+                                    "Id": "00171158-0000-0000-8000-0deb70c0de38",
+                                    "FieldName": "ConsigneeIdText",
+                                    "Order": 1,
+                                    "ComponentType": "Dropdown",
+                                    "FormatData": "{Name}",
+                                    "PlainText": "Select data",
+                                    "Column": 12,
+                                    "Row": 100,
+                                    "Label": "Consignee",
+                                    "ShowLabel": true,
+                                    "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('partner-editor',{ ServiceId: 2, ActionId: 1, PartnerTypeIds: '00e51814-0000-0000-8000-4128ce0e4c14',PartnerTypeIdsText: 'Consignee'})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('partner-editor',this.Matched)\"\r\n}",
+                                    "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 2 and (PartnerTypeIdsText like N'%Consignee%'))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 2 and (PartnerTypeIdsText like N'%Consignee%'))\"\r\n}",
+                                    "RefName": "Partner",
+                                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
+                                    "ShowHotKey": true,
+                                    "TabGroup": "ConsigneeId"
+                                },
+                                {
+                                    "Id": "001711b0-0000-0000-8000-0722f6538169",
+                                    "FieldName": "EmptyPickupId",
+                                    "Order": 6,
+                                    "ComponentType": "Dropdown",
+                                    "FormatData": "{Name}",
+                                    "PlainText": "Select data",
+                                    "Column": 6,
+                                    "Row": 100,
+                                    "Label": "Empty Pickup",
+                                    "ShowLabel": true,
+                                    "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
+                                    "RefName": "Terminal",
+                                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
+                                },
+                                {
+                                    "Id": "001711c8-0000-0000-8000-3e3fe94dd752",
+                                    "FieldName": "DeliveryTerm",
+                                    "Order": 3,
+                                    "ComponentType": "Input",
+                                    "Column": 6,
+                                    "Label": "Delivery term",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "001711d0-0000-0000-8000-859403c2804f",
+                                    "FieldName": "EmptyReturnId",
+                                    "Order": 7,
+                                    "ComponentType": "Dropdown",
+                                    "FormatData": "{Name}",
+                                    "PlainText": "Select data",
+                                    "Column": 6,
+                                    "Row": 100,
+                                    "Label": "Empty Return",
+                                    "ShowLabel": true,
+                                    "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
+                                    "RefName": "Terminal",
+                                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
+                                },
+                                {
+                                    "Id": "001711d0-0000-0000-8000-e653ee86b9ca",
+                                    "FieldName": "Subject",
+                                    "Order": 9,
+                                    "ComponentType": "Textarea",
+                                    "Column": 6,
+                                    "Row": 3,
+                                    "Label": "Subject",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "001711d4-0000-0000-8000-1cd0874485a2",
+                                    "FieldName": "Pickup",
+                                    "Order": 4,
+                                    "ComponentType": "Input",
+                                    "Column": 6,
+                                    "Row": 50,
+                                    "Label": "Place of receipt",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "001711dc-0000-0000-8000-8ad466101890",
+                                    "FieldName": "Delivery",
+                                    "Order": 5,
+                                    "ComponentType": "Input",
+                                    "Column": 6,
+                                    "Label": "Place of delivery",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "00ce1134-0000-0000-8000-b943af612f04",
+                                    "FieldName": "CustomsOfficeId",
+                                    "Order": 8,
+                                    "ComponentType": "Dropdown",
+                                    "FormatData": "{Name}",
+                                    "PlainText": "Select data",
+                                    "Column": 6,
+                                    "Row": 100,
+                                    "Label": "Customs Office",
+                                    "ShowLabel": true,
+                                    "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
+                                    "RefName": "Terminal",
+                                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
+                                }
+                            ]
+                        },
+                        {
+                            "Id": "00171120-0000-0000-8000-7493827ca788",
+                            "FieldName": "Show More Container",
+                            "Order": 6,
+                            "ComponentType": "Section",
+                            "ClassName": "card-body",
+                            "XxlCol": 12,
+                            "XxlOuterColumn": 3,
+                            "Components": [
+                                {
+                                    "Id": "001711d0-0000-0000-8000-c2fb15022d06",
+                                    "FieldName": "EntityContainer",
+                                    "Order": 1,
+                                    "ComponentType": "GridView",
+                                    "Column": 12,
+                                    "Row": 200,
+                                    "ClassName": "sticky",
+                                    "DefaultVal": "{\r\n    \"EntityId\": this.EditForm.Entity.Id,\r\n    \"TableName\": \"Quotation\"\r\n}",
+                                    "CanAdd": true,
+                                    "Query": "{\r\n    \"sql\": \"select * from EntityContainer as ds where EntityId = '{EntityId}'\",\r\n    \"total\": \"select count(ds.Id) as total from EntityContainer as ds where EntityId = '{EntityId}'\"\r\n}",
+                                    "RefName": "EntityContainer",
+                                    "PreQuery": "{ \"EntityId\": this.EditForm.Entity.Id}",
+                                    "Editable": true,
+                                    "AddRowExp": "this.EditForm.Entity.StatusId == 1 || this.EditForm.Entity.StatusId == 4"
+                                }
+                            ]
+                        },
+                        {
+                            "Id": "001711dc-0000-0000-8000-63eddef71d05",
+                            "FieldName": "Show More Remark",
+                            "Order": 7,
+                            "ComponentType": "Section",
+                            "Label": "Remark",
+                            "ClassName": "card-body",
+                            "XxlCol": 12,
+                            "XxlOuterColumn": 6,
+                            "Components": [
+                                {
+                                    "Id": "00181114-0000-0000-8000-d57af8da5579",
+                                    "FieldName": "Remark",
+                                    "Order": 1,
+                                    "ComponentType": "Word",
+                                    "Column": 12,
+                                    "Row": 1,
+                                    "Label": "Remark",
+                                    "Style": "max-height: 160px; overflow-y: auto;",
+                                    "DefaultVal": "return `Test default value`;"
+                                }
+                            ]
+                        }
+                    ]
                 },
                 {
-                    "Id": "001711d0-0000-0000-8000-d33b0bc94dde",
-                    "FieldName": "GW",
-                    "Order": 5,
-                    "ComponentType": "Number",
-                    "Column": 6,
-                    "Label": "GW",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00701160-0000-0000-8000-0150043702a4",
-                    "FieldName": "PolId",
-                    "Order": 1,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 6,
-                    "Row": 100,
-                    "Label": "POL",
-                    "ShowLabel": true,
-                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
-                    "RefName": "Terminal",
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "00701160-0000-0000-8001-6dac9a2659f7",
-                    "FieldName": "PodId",
-                    "Order": 2,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 6,
-                    "Row": 100,
-                    "Label": "POD",
-                    "ShowLabel": true,
-                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "Query": "{\r\n    \"sql\": \"select * from [Terminal] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"\r\n}",
-                    "RefName": "Terminal",
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
+                    "Id": "00181178-0000-0000-8000-4dd9b756bc9f",
+                    "FieldName": "Fee",
+                    "Order": 10,
+                    "ComponentType": "Section",
+                    "Label": "Price Details",
+                    "ClassName": "card-body",
+                    "XxlCol": 12,
+                    "TabGroup": "Other charges",
+                    "XxlOuterColumn": 12,
+                    "Components": [
+                        {
+                            "Id": "0018110c-0000-0000-8000-d21b576310b4",
+                            "FieldName": "DefaultFee",
+                            "Order": 2,
+                            "ComponentType": "GridView",
+                            "Column": 12,
+                            "Row": 200,
+                            "Label": "DefaultFee",
+                            "ClassName": "sticky",
+                            "Events": "{\r\n    \"domcontentloaded\": \"ShowHideDetail\",\r\n    \"AfterCreated\": \"ShowHideDetail\",\r\n    \"BeforeCreated\": \"BeforeCreated\",\r\n    \"change\": \"CalcUnitPrice\"\r\n}",
+                            "DefaultVal": "{\r\n    \"InquiryId\": this.EditForm.Entity.Id ,\r\n    \"StatusId\": 1,\r\n    \"OtherFee\": true\r\n}",
+                            "CanAdd": true,
+                            "Query": "{\r\n    \"sql\": \"select * from InquiryDetail as ds where InquiryId = '{InquiryId}' and OtherFee = 1\",\r\n    \"total\": \"select count(ds.Id) as total from InquiryDetail as ds where InquiryId = '{InquiryId}' and OtherFee = 1\"\r\n}",
+                            "RefName": "InquiryDetail",
+                            "PreQuery": "{\r\n    \"InquiryId\": this.EditForm.Entity.Id\r\n}",
+                            "IsSumary": true,
+                            "Editable": true,
+                            "OrderBy": "ds.[Order] asc"
+                        }
+                    ]
                 }
             ]
         },
@@ -619,39 +648,6 @@
                     "ShowLabel": true,
                     "Style": "display: flex;align-items: center;gap: 1rem;height: 33px;",
                     "Events": "{\"change\":\"ShowHideDetail\"}"
-                }
-            ]
-        },
-        {
-            "Id": "00181178-0000-0000-8000-4dd9b756bc9f",
-            "FieldName": "Fee",
-            "Order": 10,
-            "ComponentType": "Section",
-            "Label": "Price Details",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "001711ac-0000-0000-8000-901ad107ba47",
-            "TabGroup": "Other charges",
-            "XxlOuterColumn": 12,
-            "Components": [
-                {
-                    "Id": "0018110c-0000-0000-8000-d21b576310b4",
-                    "FieldName": "DefaultFee",
-                    "Order": 2,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 200,
-                    "Label": "DefaultFee",
-                    "ClassName": "sticky",
-                    "Events": "{\r\n    \"domcontentloaded\": \"ShowHideDetail\",\r\n    \"AfterCreated\": \"ShowHideDetail\",\r\n    \"BeforeCreated\": \"BeforeCreated\",\r\n    \"change\": \"CalcUnitPrice\"\r\n}",
-                    "DefaultVal": "{\r\n    \"InquiryId\": this.EditForm.Entity.Id ,\r\n    \"StatusId\": 1,\r\n    \"OtherFee\": true\r\n}",
-                    "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from InquiryDetail as ds where InquiryId = '{InquiryId}' and OtherFee = 1\",\r\n    \"total\": \"select count(ds.Id) as total from InquiryDetail as ds where InquiryId = '{InquiryId}' and OtherFee = 1\"\r\n}",
-                    "RefName": "InquiryDetail",
-                    "PreQuery": "{\r\n    \"InquiryId\": this.EditForm.Entity.Id\r\n}",
-                    "IsSumary": true,
-                    "Editable": true,
-                    "OrderBy": "ds.[Order] asc"
                 }
             ]
         }

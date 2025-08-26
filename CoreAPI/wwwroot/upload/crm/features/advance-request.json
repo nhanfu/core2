@@ -18,7 +18,161 @@
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "IsTab": true,
-            "DisplayBadge": true
+            "DisplayBadge": true,
+            "Children": [
+                {
+                    "Id": "0193975a-5515-779c-9671-18deb8164fab",
+                    "Order": 1,
+                    "ComponentType": "Section",
+                    "Label": "ALL",
+                    "XxlCol": 12,
+                    "IsTab": true,
+                    "TabGroup": "A",
+                    "XxlOuterColumn": 12,
+                    "DisplayBadge": true,
+                    "EntityName": "Voucher",
+                    "TableName": "Shipment",
+                    "Components": [
+                        {
+                            "Id": "01939224-3755-77b3-9713-638f4aa7fb46",
+                            "FieldName": "Voucher",
+                            "Order": 1,
+                            "ComponentType": "GridView",
+                            "Column": 12,
+                            "Row": 50,
+                            "CanSearch": true,
+                            "Label": "Advance Request",
+                            "ClassName": "sticky",
+                            "ChildStyle": "height: calc(100vh - 12rem);",
+                            "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
+                            "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where ([TypeId] = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where ([TypeId] = 1)\"\r\n}",
+                            "RefName": "Voucher",
+                            "OrderBy": "ds.InsertedDate desc"
+                        }
+                    ]
+                },
+                {
+                    "Id": "0193975a-5515-779c-9671-1f6892a424f9",
+                    "Order": 2,
+                    "ComponentType": "Section",
+                    "Label": "New",
+                    "XxlCol": 12,
+                    "Editable": true,
+                    "IsTab": true,
+                    "TabGroup": "A",
+                    "XxlOuterColumn": 12,
+                    "DisplayBadge": true,
+                    "EntityName": "Voucher",
+                    "TableName": "Shipment",
+                    "Components": [
+                        {
+                            "Id": "01939760-2b9a-775b-9316-9c3e3b9bcac1",
+                            "FieldName": "Voucher",
+                            "Order": 1,
+                            "ComponentType": "GridView",
+                            "Column": 12,
+                            "Row": 50,
+                            "CanSearch": true,
+                            "Label": "Advance Request",
+                            "ClassName": "sticky",
+                            "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
+                            "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where ([TypeId] = 1 and [StatusId] = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where ([TypeId] = 1 and [StatusId] = 1)\"\r\n}",
+                            "RefName": "Voucher",
+                            "OrderBy": "ds.InsertedDate desc"
+                        }
+                    ]
+                },
+                {
+                    "Id": "0193975a-5516-765c-8113-f736440de86d",
+                    "Order": 3,
+                    "ComponentType": "Section",
+                    "Label": "Approving",
+                    "XxlCol": 12,
+                    "IsTab": true,
+                    "TabGroup": "A",
+                    "XxlOuterColumn": 12,
+                    "DisplayBadge": true,
+                    "EntityName": "Voucher",
+                    "TableName": "Shipment",
+                    "Components": [
+                        {
+                            "Id": "01939760-34bb-77ab-a0f9-41397e85d3ed",
+                            "FieldName": "Voucher",
+                            "Order": 1,
+                            "ComponentType": "GridView",
+                            "Column": 12,
+                            "Row": 50,
+                            "CanSearch": true,
+                            "Label": "Advance Request",
+                            "ClassName": "sticky",
+                            "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
+                            "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where ([TypeId] = 1 and [StatusId] = 2)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where ([TypeId] = 1 and [StatusId] = 2)\"\r\n}",
+                            "RefName": "Voucher",
+                            "OrderBy": "ds.InsertedDate desc"
+                        }
+                    ]
+                },
+                {
+                    "Id": "0193975e-033a-767f-b244-60d8b289ad56",
+                    "Order": 4,
+                    "ComponentType": "Section",
+                    "Label": "Approved",
+                    "XxlCol": 12,
+                    "IsTab": true,
+                    "TabGroup": "A",
+                    "XxlOuterColumn": 12,
+                    "DisplayBadge": true,
+                    "EntityName": "Voucher",
+                    "TableName": "Shipment",
+                    "Components": [
+                        {
+                            "Id": "01939760-a571-7266-b3f7-2940f95fb244",
+                            "FieldName": "Voucher",
+                            "Order": 1,
+                            "ComponentType": "GridView",
+                            "Column": 12,
+                            "Row": 50,
+                            "CanSearch": true,
+                            "Label": "Advance Request",
+                            "ClassName": "sticky",
+                            "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
+                            "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where ([TypeId] = 1 and [StatusId] = 3)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where ([TypeId] = 1 and [StatusId] = 3)\"\r\n}",
+                            "RefName": "Voucher",
+                            "OrderBy": "ds.InsertedDate desc"
+                        }
+                    ]
+                },
+                {
+                    "Id": "0193975e-5e39-7709-aa8d-4ce058cb6a68",
+                    "Order": 5,
+                    "ComponentType": "Section",
+                    "Label": "Decline",
+                    "XxlCol": 12,
+                    "IsTab": true,
+                    "TabGroup": "A",
+                    "XxlOuterColumn": 12,
+                    "DisplayBadge": true,
+                    "EntityName": "Voucher",
+                    "TableName": "Shipment",
+                    "Components": [
+                        {
+                            "Id": "01939760-aeb2-72f8-ab49-25288ad9968c",
+                            "FieldName": "Voucher",
+                            "Order": 1,
+                            "ComponentType": "GridView",
+                            "Column": 12,
+                            "Row": 50,
+                            "CanSearch": true,
+                            "Label": "Advance Request",
+                            "ClassName": "sticky",
+                            "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
+                            "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where ([TypeId] = 1 and [StatusId] = 4)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where ([TypeId] = 1 and [StatusId] = 4)\"\r\n}",
+                            "RefName": "Voucher",
+                            "OrderBy": "ds.InsertedDate desc"
+                        }
+                    ]
+                }
+            ]
         },
         {
             "Id": "01939224-37c4-74d8-a94e-38db1c5e7d15",
@@ -29,319 +183,159 @@
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "IsTab": true,
-            "DisplayBadge": true
-        },
-        {
-            "Id": "0193975a-5515-779c-9671-18deb8164fab",
-            "Order": 1,
-            "ComponentType": "Section",
-            "Label": "ALL",
-            "XxlCol": 12,
-            "ParentId": "01939224-36e8-73c9-ace4-3cb8df9eb7ed",
-            "IsTab": true,
-            "TabGroup": "A",
-            "XxlOuterColumn": 12,
             "DisplayBadge": true,
-            "EntityName": "Voucher",
-            "TableName": "Shipment",
-            "Components": [
+            "Children": [
                 {
-                    "Id": "01939224-3755-77b3-9713-638f4aa7fb46",
-                    "FieldName": "Voucher",
+                    "Id": "0193aef3-88c5-73cd-a63e-512349790c7e",
                     "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "Label": "Advance Request",
-                    "ClassName": "sticky",
-                    "ChildStyle": "height: calc(100vh - 12rem);",
-                    "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where ([TypeId] = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where ([TypeId] = 1)\"\r\n}",
-                    "RefName": "Voucher",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        },
-        {
-            "Id": "0193975a-5515-779c-9671-1f6892a424f9",
-            "Order": 2,
-            "ComponentType": "Section",
-            "Label": "New",
-            "XxlCol": 12,
-            "Editable": true,
-            "ParentId": "01939224-36e8-73c9-ace4-3cb8df9eb7ed",
-            "IsTab": true,
-            "TabGroup": "A",
-            "XxlOuterColumn": 12,
-            "DisplayBadge": true,
-            "EntityName": "Voucher",
-            "TableName": "Shipment",
-            "Components": [
+                    "ComponentType": "Section",
+                    "Label": "ALL",
+                    "XxlCol": 12,
+                    "IsTab": true,
+                    "TabGroup": "B",
+                    "XxlOuterColumn": 12,
+                    "DisplayBadge": true,
+                    "EntityName": "Voucher",
+                    "TableName": "Shipment",
+                    "Components": [
+                        {
+                            "Id": "0193af00-662e-746e-945e-cfd147b8e1b2",
+                            "FieldName": "Voucher1",
+                            "Order": 1,
+                            "ComponentType": "GridView",
+                            "Column": 12,
+                            "Row": 50,
+                            "CanSearch": true,
+                            "Label": "Advance Request",
+                            "ClassName": "sticky",
+                            "ChildStyle": "height: calc(100vh - 12rem);",
+                            "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
+                            "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where ([TypeId] = 2)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where ([TypeId] = 2)\"\r\n}",
+                            "RefName": "Voucher",
+                            "OrderBy": "ds.InsertedDate desc"
+                        }
+                    ]
+                },
                 {
-                    "Id": "01939760-2b9a-775b-9316-9c3e3b9bcac1",
-                    "FieldName": "Voucher",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "Label": "Advance Request",
-                    "ClassName": "sticky",
-                    "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where ([TypeId] = 1 and [StatusId] = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where ([TypeId] = 1 and [StatusId] = 1)\"\r\n}",
-                    "RefName": "Voucher",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        },
-        {
-            "Id": "0193975a-5516-765c-8113-f736440de86d",
-            "Order": 3,
-            "ComponentType": "Section",
-            "Label": "Approving",
-            "XxlCol": 12,
-            "ParentId": "01939224-36e8-73c9-ace4-3cb8df9eb7ed",
-            "IsTab": true,
-            "TabGroup": "A",
-            "XxlOuterColumn": 12,
-            "DisplayBadge": true,
-            "EntityName": "Voucher",
-            "TableName": "Shipment",
-            "Components": [
+                    "Id": "0193aef5-78f5-75c6-9568-fe0a6ecee329",
+                    "Order": 2,
+                    "ComponentType": "Section",
+                    "Label": "New",
+                    "XxlCol": 12,
+                    "Editable": true,
+                    "IsTab": true,
+                    "TabGroup": "B",
+                    "XxlOuterColumn": 12,
+                    "DisplayBadge": true,
+                    "EntityName": "Voucher",
+                    "TableName": "Shipment",
+                    "Components": [
+                        {
+                            "Id": "0193af00-662f-762d-b653-c4083ec1fe48",
+                            "FieldName": "Voucher1",
+                            "Order": 1,
+                            "ComponentType": "GridView",
+                            "Column": 12,
+                            "Row": 50,
+                            "CanSearch": true,
+                            "Label": "Advance Request",
+                            "ClassName": "sticky",
+                            "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
+                            "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where ([TypeId] = 2 and [StatusId] = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where ([TypeId] = 2 and [StatusId] = 1)\"\r\n}",
+                            "RefName": "Voucher",
+                            "OrderBy": "ds.InsertedDate desc"
+                        }
+                    ]
+                },
                 {
-                    "Id": "01939760-34bb-77ab-a0f9-41397e85d3ed",
-                    "FieldName": "Voucher",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "Label": "Advance Request",
-                    "ClassName": "sticky",
-                    "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where ([TypeId] = 1 and [StatusId] = 2)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where ([TypeId] = 1 and [StatusId] = 2)\"\r\n}",
-                    "RefName": "Voucher",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        },
-        {
-            "Id": "0193975e-033a-767f-b244-60d8b289ad56",
-            "Order": 4,
-            "ComponentType": "Section",
-            "Label": "Approved",
-            "XxlCol": 12,
-            "ParentId": "01939224-36e8-73c9-ace4-3cb8df9eb7ed",
-            "IsTab": true,
-            "TabGroup": "A",
-            "XxlOuterColumn": 12,
-            "DisplayBadge": true,
-            "EntityName": "Voucher",
-            "TableName": "Shipment",
-            "Components": [
+                    "Id": "0193aef5-e3f6-75f0-ac3e-c19f0a6c46b5",
+                    "Order": 3,
+                    "ComponentType": "Section",
+                    "Label": "Approving",
+                    "XxlCol": 12,
+                    "IsTab": true,
+                    "TabGroup": "B",
+                    "XxlOuterColumn": 12,
+                    "DisplayBadge": true,
+                    "EntityName": "Voucher",
+                    "TableName": "Shipment",
+                    "Components": [
+                        {
+                            "Id": "0193af00-662f-762d-b653-cb231467aa03",
+                            "FieldName": "Voucher1",
+                            "Order": 1,
+                            "ComponentType": "GridView",
+                            "Column": 12,
+                            "Row": 50,
+                            "CanSearch": true,
+                            "Label": "Advance Request",
+                            "ClassName": "sticky",
+                            "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
+                            "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where ([TypeId] = 2 and [StatusId] = 2)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where ([TypeId] = 2 and [StatusId] = 2)\"\r\n}",
+                            "RefName": "Voucher",
+                            "OrderBy": "ds.InsertedDate desc"
+                        }
+                    ]
+                },
                 {
-                    "Id": "01939760-a571-7266-b3f7-2940f95fb244",
-                    "FieldName": "Voucher",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "Label": "Advance Request",
-                    "ClassName": "sticky",
-                    "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where ([TypeId] = 1 and [StatusId] = 3)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where ([TypeId] = 1 and [StatusId] = 3)\"\r\n}",
-                    "RefName": "Voucher",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        },
-        {
-            "Id": "0193975e-5e39-7709-aa8d-4ce058cb6a68",
-            "Order": 5,
-            "ComponentType": "Section",
-            "Label": "Decline",
-            "XxlCol": 12,
-            "ParentId": "01939224-36e8-73c9-ace4-3cb8df9eb7ed",
-            "IsTab": true,
-            "TabGroup": "A",
-            "XxlOuterColumn": 12,
-            "DisplayBadge": true,
-            "EntityName": "Voucher",
-            "TableName": "Shipment",
-            "Components": [
+                    "Id": "0193aef5-ed8d-727f-8852-2488cade65ac",
+                    "Order": 4,
+                    "ComponentType": "Section",
+                    "Label": "Approved",
+                    "XxlCol": 12,
+                    "IsTab": true,
+                    "TabGroup": "B",
+                    "XxlOuterColumn": 12,
+                    "DisplayBadge": true,
+                    "EntityName": "Voucher",
+                    "TableName": "Shipment",
+                    "Components": [
+                        {
+                            "Id": "0193af00-662f-762d-b653-cc44dd5f0393",
+                            "FieldName": "Voucher1",
+                            "Order": 1,
+                            "ComponentType": "GridView",
+                            "Column": 12,
+                            "Row": 50,
+                            "CanSearch": true,
+                            "Label": "Advance Request",
+                            "ClassName": "sticky",
+                            "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
+                            "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where ([TypeId] = 2 and [StatusId] = 3)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where ([TypeId] = 2 and [StatusId] = 3)\"\r\n}",
+                            "RefName": "Voucher",
+                            "OrderBy": "ds.InsertedDate desc"
+                        }
+                    ]
+                },
                 {
-                    "Id": "01939760-aeb2-72f8-ab49-25288ad9968c",
-                    "FieldName": "Voucher",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "Label": "Advance Request",
-                    "ClassName": "sticky",
-                    "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where ([TypeId] = 1 and [StatusId] = 4)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where ([TypeId] = 1 and [StatusId] = 4)\"\r\n}",
-                    "RefName": "Voucher",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        },
-        {
-            "Id": "0193aef3-88c5-73cd-a63e-512349790c7e",
-            "Order": 1,
-            "ComponentType": "Section",
-            "Label": "ALL",
-            "XxlCol": 12,
-            "ParentId": "01939224-37c4-74d8-a94e-38db1c5e7d15",
-            "IsTab": true,
-            "TabGroup": "B",
-            "XxlOuterColumn": 12,
-            "DisplayBadge": true,
-            "EntityName": "Voucher",
-            "TableName": "Shipment",
-            "Components": [
-                {
-                    "Id": "0193af00-662e-746e-945e-cfd147b8e1b2",
-                    "FieldName": "Voucher1",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "Label": "Advance Request",
-                    "ClassName": "sticky",
-                    "ChildStyle": "height: calc(100vh - 12rem);",
-                    "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where ([TypeId] = 2)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where ([TypeId] = 2)\"\r\n}",
-                    "RefName": "Voucher",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        },
-        {
-            "Id": "0193aef5-78f5-75c6-9568-fe0a6ecee329",
-            "Order": 2,
-            "ComponentType": "Section",
-            "Label": "New",
-            "XxlCol": 12,
-            "Editable": true,
-            "ParentId": "01939224-37c4-74d8-a94e-38db1c5e7d15",
-            "IsTab": true,
-            "TabGroup": "B",
-            "XxlOuterColumn": 12,
-            "DisplayBadge": true,
-            "EntityName": "Voucher",
-            "TableName": "Shipment",
-            "Components": [
-                {
-                    "Id": "0193af00-662f-762d-b653-c4083ec1fe48",
-                    "FieldName": "Voucher1",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "Label": "Advance Request",
-                    "ClassName": "sticky",
-                    "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where ([TypeId] = 2 and [StatusId] = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where ([TypeId] = 2 and [StatusId] = 1)\"\r\n}",
-                    "RefName": "Voucher",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        },
-        {
-            "Id": "0193aef5-e3f6-75f0-ac3e-c19f0a6c46b5",
-            "Order": 3,
-            "ComponentType": "Section",
-            "Label": "Approving",
-            "XxlCol": 12,
-            "ParentId": "01939224-37c4-74d8-a94e-38db1c5e7d15",
-            "IsTab": true,
-            "TabGroup": "B",
-            "XxlOuterColumn": 12,
-            "DisplayBadge": true,
-            "EntityName": "Voucher",
-            "TableName": "Shipment",
-            "Components": [
-                {
-                    "Id": "0193af00-662f-762d-b653-cb231467aa03",
-                    "FieldName": "Voucher1",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "Label": "Advance Request",
-                    "ClassName": "sticky",
-                    "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where ([TypeId] = 2 and [StatusId] = 2)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where ([TypeId] = 2 and [StatusId] = 2)\"\r\n}",
-                    "RefName": "Voucher",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        },
-        {
-            "Id": "0193aef5-ed8d-727f-8852-2488cade65ac",
-            "Order": 4,
-            "ComponentType": "Section",
-            "Label": "Approved",
-            "XxlCol": 12,
-            "ParentId": "01939224-37c4-74d8-a94e-38db1c5e7d15",
-            "IsTab": true,
-            "TabGroup": "B",
-            "XxlOuterColumn": 12,
-            "DisplayBadge": true,
-            "EntityName": "Voucher",
-            "TableName": "Shipment",
-            "Components": [
-                {
-                    "Id": "0193af00-662f-762d-b653-cc44dd5f0393",
-                    "FieldName": "Voucher1",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "Label": "Advance Request",
-                    "ClassName": "sticky",
-                    "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where ([TypeId] = 2 and [StatusId] = 3)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where ([TypeId] = 2 and [StatusId] = 3)\"\r\n}",
-                    "RefName": "Voucher",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        },
-        {
-            "Id": "0193aef5-f507-708b-b571-29c2541a8d1e",
-            "Order": 5,
-            "ComponentType": "Section",
-            "Label": "Decline",
-            "XxlCol": 12,
-            "ParentId": "01939224-37c4-74d8-a94e-38db1c5e7d15",
-            "IsTab": true,
-            "TabGroup": "B",
-            "XxlOuterColumn": 12,
-            "DisplayBadge": true,
-            "EntityName": "Voucher",
-            "TableName": "Shipment",
-            "Components": [
-                {
-                    "Id": "0193af00-662f-762d-b653-d39fc6cfc2ab",
-                    "FieldName": "Voucher1",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "Label": "Advance Request",
-                    "ClassName": "sticky",
-                    "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where ([TypeId] = 2 and [StatusId] = 4)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where ([TypeId] = 2 and [StatusId] = 4)\"\r\n}",
-                    "RefName": "Voucher",
-                    "OrderBy": "ds.InsertedDate desc"
+                    "Id": "0193aef5-f507-708b-b571-29c2541a8d1e",
+                    "Order": 5,
+                    "ComponentType": "Section",
+                    "Label": "Decline",
+                    "XxlCol": 12,
+                    "IsTab": true,
+                    "TabGroup": "B",
+                    "XxlOuterColumn": 12,
+                    "DisplayBadge": true,
+                    "EntityName": "Voucher",
+                    "TableName": "Shipment",
+                    "Components": [
+                        {
+                            "Id": "0193af00-662f-762d-b653-d39fc6cfc2ab",
+                            "FieldName": "Voucher1",
+                            "Order": 1,
+                            "ComponentType": "GridView",
+                            "Column": 12,
+                            "Row": 50,
+                            "CanSearch": true,
+                            "Label": "Advance Request",
+                            "ClassName": "sticky",
+                            "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
+                            "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where ([TypeId] = 2 and [StatusId] = 4)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where ([TypeId] = 2 and [StatusId] = 4)\"\r\n}",
+                            "RefName": "Voucher",
+                            "OrderBy": "ds.InsertedDate desc"
+                        }
+                    ]
                 }
             ]
         }

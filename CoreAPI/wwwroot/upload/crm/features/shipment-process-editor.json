@@ -34,32 +34,33 @@
             "FieldName": "Container ",
             "Order": 2,
             "ComponentType": "Section",
-            "XxlCol": 12
-        },
-        {
-            "Id": "0195800a-e07c-77fb-865f-1ea604bca1b5",
-            "FieldName": "Right",
-            "Order": 3,
-            "ComponentType": "Section",
-            "ClassName": "card-body profile",
             "XxlCol": 12,
-            "ParentId": "0195800a-e041-72fc-8d31-bb4804e58c66",
-            "XxlOuterColumn": 12,
-            "Components": [
+            "Children": [
                 {
-                    "Id": "0195800a-e0e4-748a-a354-0b792d21cb65",
-                    "FieldName": "ShipmentProcessDetail",
-                    "Order": 9,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 20,
-                    "Label": "ShipmentProcessDetail",
-                    "DefaultVal": "{\r\n    \"ProcessId\": this.EditForm.Entity.Id,\r\n    \"TypeId\": this.EditForm.Entity.TypeId\r\n}",
-                    "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from ShipmentProcessDetail as ds where ProcessId = '{ProcessId}'\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentProcessDetail as ds where ProcessId = '{ProcessId}'\"\r\n}",
-                    "RefName": "ShipmentProcessDetail",
-                    "PreQuery": "{\r\n    \"ProcessId\": this.EditForm.Entity.Id,\r\n    \"TypeId\": this.EditForm.Entity.TypeId\r\n}",
-                    "Editable": true
+                    "Id": "0195800a-e07c-77fb-865f-1ea604bca1b5",
+                    "FieldName": "Right",
+                    "Order": 3,
+                    "ComponentType": "Section",
+                    "ClassName": "card-body profile",
+                    "XxlCol": 12,
+                    "XxlOuterColumn": 12,
+                    "Components": [
+                        {
+                            "Id": "0195800a-e0e4-748a-a354-0b792d21cb65",
+                            "FieldName": "ShipmentProcessDetail",
+                            "Order": 9,
+                            "ComponentType": "GridView",
+                            "Column": 12,
+                            "Row": 20,
+                            "Label": "ShipmentProcessDetail",
+                            "DefaultVal": "{\r\n    \"ProcessId\": this.EditForm.Entity.Id,\r\n    \"TypeId\": this.EditForm.Entity.TypeId\r\n}",
+                            "CanAdd": true,
+                            "Query": "{\r\n    \"sql\": \"select * from ShipmentProcessDetail as ds where ProcessId = '{ProcessId}'\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentProcessDetail as ds where ProcessId = '{ProcessId}'\"\r\n}",
+                            "RefName": "ShipmentProcessDetail",
+                            "PreQuery": "{\r\n    \"ProcessId\": this.EditForm.Entity.Id,\r\n    \"TypeId\": this.EditForm.Entity.TypeId\r\n}",
+                            "Editable": true
+                        }
+                    ]
                 }
             ]
         }

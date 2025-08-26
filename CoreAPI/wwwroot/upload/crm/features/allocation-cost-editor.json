@@ -8,93 +8,6 @@
     "EntityId": "ShipmentAllocation",
     "ComponentGroup": [
         {
-            "Id": "00824444-0000-0000-8000-08290b7a48c8",
-            "Order": 3,
-            "ComponentType": "Section",
-            "Icon": "fal fa-info mr-1",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "00ae44f8-0000-0000-8000-1e36c17d9cb2",
-            "XxlOuterColumn": 12
-        },
-        {
-            "Id": "009844d8-0000-0000-8000-65bc4feecec8",
-            "Order": 1,
-            "ComponentType": "Section",
-            "Label": "Allocation History",
-            "Icon": "fal fa-info mr-1",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "00ae44f8-0000-0000-8000-1e36c17d9cb2",
-            "XxlOuterColumn": 12,
-            "Components": [
-                {
-                    "Id": "00284498-0000-0000-8000-86817832d9bd",
-                    "FieldName": "Notes",
-                    "Order": 2,
-                    "ComponentType": "Textarea",
-                    "Column": 11,
-                    "Row": 2,
-                    "Label": "Notes",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00b74470-0000-0000-8000-9cced0515902",
-                    "FieldName": "Code",
-                    "Order": 1,
-                    "ComponentType": "Input",
-                    "Column": 1,
-                    "Label": "Ref No",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00b744d4-0000-0000-8000-ecb698f7a9ce",
-                    "FieldName": "Cost",
-                    "Order": 3,
-                    "ComponentType": "Checkbox",
-                    "Column": 1,
-                    "Label": "Cost",
-                    "ShowLabel": true
-                }
-            ]
-        },
-        {
-            "Id": "00ae4424-0000-0000-8000-d05791ceecd5",
-            "Order": 2,
-            "ComponentType": "Section",
-            "Label": "Fee",
-            "Icon": "fal fa-info mr-1",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "00ae44f8-0000-0000-8000-1e36c17d9cb2",
-            "XxlOuterColumn": 12,
-            "Components": [
-                {
-                    "Id": "00e444fc-0000-0000-8000-cbed0de63631",
-                    "FieldName": "ShipmentFee",
-                    "Order": 2,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 200,
-                    "CanCache": true,
-                    "GroupBy": "VendorId",
-                    "GroupFormat": "this.Entity.Vendor.Name",
-                    "Label": "ShipmentFee",
-                    "ClassName": "sticky",
-                    "ChildStyle": "height:350px;",
-                    "Events": "{\r\n    \"BeforeCreated\": \"BeforeCreated\"\r\n}",
-                    "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from ShipmentFee as ds where ShipmentId = '{ShipmentId}' and TypeId = 2\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentFee as ds where ShipmentId = '{ShipmentId}' and TypeId = 2\"\r\n}",
-                    "RefName": "ShipmentFee",
-                    "IsSumary": true,
-                    "Editable": true,
-                    "OrderBy": "ds.[Order] asc",
-                    "EntityName": "ShipmentDetail",
-                    "TableName": "Shipment"
-                }
-            ]
-        },
-        {
             "Id": "00ae4430-0000-0000-8000-50ec2da6039e",
             "FieldName": "Button",
             "Order": 1,
@@ -122,7 +35,93 @@
             "Order": 3,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
-            "XxlCol": 12
+            "XxlCol": 12,
+            "Children": [
+                {
+                    "Id": "009844d8-0000-0000-8000-65bc4feecec8",
+                    "Order": 1,
+                    "ComponentType": "Section",
+                    "Label": "Allocation History",
+                    "Icon": "fal fa-info mr-1",
+                    "ClassName": "card-body",
+                    "XxlCol": 12,
+                    "XxlOuterColumn": 12,
+                    "Components": [
+                        {
+                            "Id": "00284498-0000-0000-8000-86817832d9bd",
+                            "FieldName": "Notes",
+                            "Order": 2,
+                            "ComponentType": "Textarea",
+                            "Column": 11,
+                            "Row": 2,
+                            "Label": "Notes",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00b74470-0000-0000-8000-9cced0515902",
+                            "FieldName": "Code",
+                            "Order": 1,
+                            "ComponentType": "Input",
+                            "Column": 1,
+                            "Label": "Ref No",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00b744d4-0000-0000-8000-ecb698f7a9ce",
+                            "FieldName": "Cost",
+                            "Order": 3,
+                            "ComponentType": "Checkbox",
+                            "Column": 1,
+                            "Label": "Cost",
+                            "ShowLabel": true
+                        }
+                    ]
+                },
+                {
+                    "Id": "00ae4424-0000-0000-8000-d05791ceecd5",
+                    "Order": 2,
+                    "ComponentType": "Section",
+                    "Label": "Fee",
+                    "Icon": "fal fa-info mr-1",
+                    "ClassName": "card-body",
+                    "XxlCol": 12,
+                    "XxlOuterColumn": 12,
+                    "Components": [
+                        {
+                            "Id": "00e444fc-0000-0000-8000-cbed0de63631",
+                            "FieldName": "ShipmentFee",
+                            "Order": 2,
+                            "ComponentType": "GridView",
+                            "Column": 12,
+                            "Row": 200,
+                            "CanCache": true,
+                            "GroupBy": "VendorId",
+                            "GroupFormat": "this.Entity.Vendor.Name",
+                            "Label": "ShipmentFee",
+                            "ClassName": "sticky",
+                            "ChildStyle": "height:350px;",
+                            "Events": "{\r\n    \"BeforeCreated\": \"BeforeCreated\"\r\n}",
+                            "CanAdd": true,
+                            "Query": "{\r\n    \"sql\": \"select * from ShipmentFee as ds where ShipmentId = '{ShipmentId}' and TypeId = 2\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentFee as ds where ShipmentId = '{ShipmentId}' and TypeId = 2\"\r\n}",
+                            "RefName": "ShipmentFee",
+                            "IsSumary": true,
+                            "Editable": true,
+                            "OrderBy": "ds.[Order] asc",
+                            "EntityName": "ShipmentDetail",
+                            "TableName": "Shipment"
+                        }
+                    ]
+                },
+                {
+                    "Id": "00824444-0000-0000-8000-08290b7a48c8",
+                    "Order": 3,
+                    "ComponentType": "Section",
+                    "Icon": "fal fa-info mr-1",
+                    "ClassName": "card-body",
+                    "XxlCol": 12,
+                    "XxlOuterColumn": 12
+                }
+            ]
         }
     ],
     "GridPolicies": [

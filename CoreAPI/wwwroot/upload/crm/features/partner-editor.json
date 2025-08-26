@@ -9,396 +9,540 @@
     "CodeId": "0066f8fc-0000-0000-8000-902fce3743cc",
     "ComponentGroup": [
         {
-            "Id": "00403504-0000-0000-8000-b894e356ad60",
-            "Order": 3,
-            "ComponentType": "Section",
-            "Label": "Logo",
-            "Icon": "fal fa-info-circle mr-1",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "00bf18bc-0000-0000-8000-0e362ee6b314",
-            "XxlOuterColumn": 2,
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "00bf1854-0000-0000-8000-de5d08f0cd14",
-                    "FieldName": "Logo",
-                    "Order": 1,
-                    "ComponentType": "FileUpload",
-                    "Column": 12
-                }
-            ]
-        },
-        {
-            "Id": "00483550-0000-0000-8000-efc6401a3717",
-            "Order": 3,
-            "ComponentType": "Section",
-            "Label": "Detailed information",
-            "Icon": "fal fa-info-circle mr-1",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "00bf18bc-0000-0000-8000-0e362ee6b314",
-            "XxlOuterColumn": 10,
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "00bf1818-0000-0000-8000-b34cd98cb9ec",
-                    "FieldName": "TrackingURL",
-                    "Order": 7,
-                    "ComponentType": "Input",
-                    "Column": 3,
-                    "Row": 3,
-                    "Label": "Tracking URL",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00bf1820-0000-0000-8000-435e18b89727",
-                    "FieldName": "ZipCode",
-                    "Order": 3,
-                    "ComponentType": "Input",
-                    "Column": 3,
-                    "Label": "Zip Code",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00bf1824-0000-0000-8000-5ea482a338f0",
-                    "FieldName": "Po",
-                    "Order": 9,
-                    "ComponentType": "Input",
-                    "Column": 3,
-                    "Row": 3,
-                    "Label": "PO",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00bf183c-0000-0000-8000-0dca5f4ee495",
-                    "FieldName": "Attachment",
-                    "Order": 15,
-                    "ComponentType": "FileUpload",
-                    "Column": 6,
-                    "Label": "Attachment",
-                    "RefName": "Inquiry",
-                    "IsMultiple": true
-                },
-                {
-                    "Id": "00bf1844-0000-0000-8000-0f3b114a3c23",
-                    "FieldName": "Dob",
-                    "Order": 6,
-                    "ComponentType": "Datepicker",
-                    "Column": 3,
-                    "Row": 3,
-                    "Label": "Company Establishment ",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00bf1858-0000-0000-8000-8c36583e4f00",
-                    "FieldName": "ToastWarning",
-                    "Order": 14,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Warning",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00bf186c-0000-0000-8000-5add3b31502b",
-                    "FieldName": "PoDate",
-                    "Order": 12,
-                    "ComponentType": "Datepicker",
-                    "Column": 3,
-                    "Row": 3,
-                    "Label": "PO Date",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00bf18a4-0000-0000-8000-a17c9e51ac32",
-                    "FieldName": "IdCode",
-                    "Order": 2,
-                    "ComponentType": "Input",
-                    "Column": 3,
-                    "Row": 3,
-                    "Label": "ID CODE",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00bf18ac-0000-0000-8000-db2f13bf2bd7",
-                    "FieldName": "Raiting",
-                    "Order": 11,
-                    "ComponentType": "Number",
-                    "Column": 3,
-                    "Row": 3,
-                    "Precision": 0,
-                    "Label": "Raiting",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00bf18cc-0000-0000-8000-0ea24131b817",
-                    "FieldName": "IsNoDebt",
-                    "Order": 0,
-                    "ComponentType": "Checkbox",
-                    "Column": 3,
-                    "Row": 3,
-                    "Label": "NoDebt",
-                    "ShowLabel": true
-                }
-            ]
-        },
-        {
-            "Id": "00be1854-0000-0000-8000-1428060e5700",
-            "FieldName": "Common",
-            "Order": 0,
-            "ComponentType": "Section",
-            "ClassName": "card-body",
-            "XsCol": 6,
-            "XxlCol": 12,
-            "DisabledExp": "this.Entity.ActionId == 2",
-            "ParentId": "00be1880-0000-0000-8000-d627532b11bc",
-            "XxlOuterColumn": 12,
-            "Components": [
-                {
-                    "Id": "005e1844-0000-0000-8000-200f1c75631c",
-                    "FieldName": "ResidenceTypeId",
-                    "Order": 2,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 4,
-                    "Row": 100,
-                    "Label": "Residence Type",
-                    "ShowLabel": true,
-                    "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Residence Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Residence Type'\"\r\n}",
-                    "RefName": "MasterData",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "XsOuterColumn": 6
-                },
-                {
-                    "Id": "00611874-0000-0000-8000-6bb261f23278",
-                    "FieldName": "CountryId",
-                    "Order": 20,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 4,
-                    "Row": 100,
-                    "Label": "Country",
-                    "ShowLabel": true,
-                    "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Country Manage'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Country Manage'\"\r\n}",
-                    "RefName": "MasterData",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "XsOuterColumn": 6
-                },
-                {
-                    "Id": "00781870-0000-0000-8000-20542b142a62",
-                    "FieldName": "PartnerTypeIds",
-                    "Order": 3,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 4,
-                    "Row": 100,
-                    "Label": "Partner Type",
-                    "ShowLabel": true,
-                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Partners Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Partners Type'\"\r\n}",
-                    "RefName": "MasterData",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "XsOuterColumn": 6,
-                    "IsMultiple": true
-                },
-                {
-                    "Id": "00b029d4-0000-0000-8000-de3bb836cad4",
-                    "FieldName": "History",
-                    "Order": 19,
-                    "ComponentType": "Textarea",
-                    "Column": 4,
-                    "Row": 3,
-                    "Label": "History",
-                    "ShowLabel": true,
-                    "Disabled": true,
-                    "XsOuterColumn": 6
-                },
-                {
-                    "Id": "00be1880-0000-0000-8000-b3fa40e7af96",
-                    "FieldName": "CompanyName",
-                    "Order": 10,
-                    "ComponentType": "Input",
-                    "Column": 4,
-                    "Row": 50,
-                    "Label": "Company Name",
-                    "ShowLabel": true,
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "XsOuterColumn": 6
-                },
-                {
-                    "Id": "00be1884-0000-0000-8000-eca830d0d158",
-                    "FieldName": "PhoneNumber",
-                    "Order": 11,
-                    "ComponentType": "Input",
-                    "Column": 2,
-                    "Label": "Works Phone",
-                    "ShowLabel": true,
-                    "XsOuterColumn": 6
-                },
-                {
-                    "Id": "00be1888-0000-0000-8000-6f96c54af384",
-                    "FieldName": "SourseId",
-                    "Order": 12,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 4,
-                    "Row": 100,
-                    "Label": "Sourse",
-                    "ShowLabel": true,
-                    "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Sourse Customer'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Sourse Customer'\"\r\n}",
-                    "RefName": "MasterData",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-                    "XsOuterColumn": 6
-                },
-                {
-                    "Id": "00be1890-0000-0000-8000-4334f16db7ce",
-                    "FieldName": "Email",
-                    "Order": 8,
-                    "ComponentType": "Input",
-                    "Column": 4,
-                    "Offset": 4,
-                    "Label": "Email",
-                    "ShowLabel": true,
-                    "XsOuterColumn": 6
-                },
-                {
-                    "Id": "00be18dc-0000-0000-8000-e58e47c5dfc7",
-                    "FieldName": "Name",
-                    "Order": 7,
-                    "ComponentType": "Input",
-                    "Column": 4,
-                    "Label": "Abbreviation",
-                    "ShowLabel": true,
-                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                    "XsOuterColumn": 6
-                },
-                {
-                    "Id": "00be18f0-0000-0000-8000-16ff60987237",
-                    "FieldName": "Address",
-                    "Order": 18,
-                    "ComponentType": "Textarea",
-                    "Column": 4,
-                    "Row": 3,
-                    "Label": "Address",
-                    "ShowLabel": true,
-                    "XsOuterColumn": 6
-                },
-                {
-                    "Id": "00be18fc-0000-0000-8000-d35730dd1c12",
-                    "FieldName": "TaxCode",
-                    "Order": 1,
-                    "ComponentType": "Input",
-                    "Column": 4,
-                    "Row": 50,
-                    "Label": "Tax Code",
-                    "ShowLabel": true,
-                    "Events": "{\r\n    \"change\": \"GetInfo\"\r\n}",
-                    "XsOuterColumn": 6
-                },
-                {
-                    "Id": "01932940-b0c9-7511-b019-c0adeec363c8",
-                    "FieldName": "Fax",
-                    "Order": 11,
-                    "ComponentType": "Input",
-                    "Column": 2,
-                    "Label": "Fax",
-                    "ShowLabel": true,
-                    "XsOuterColumn": 6
-                }
-            ]
-        },
-        {
             "Id": "00be1880-0000-0000-8000-d627532b11bc",
             "FieldName": "Full",
             "Order": 1,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XsCol": 6,
-            "XxlCol": 12
-        },
-        {
-            "Id": "00be188c-0000-0000-8000-c38b05728c0e",
-            "Order": 2,
-            "ComponentType": "Section",
-            "Label": "Accountant information",
-            "Icon": "fal fa-info mr-1",
             "XxlCol": 12,
-            "DisabledExp": "!this.Token.RoleNames.some(x => x.toUpperCase() == \"UPDATE ACCOUNT PARTNER\")",
-            "ParentId": "00be1880-0000-0000-8000-d627532b11bc",
-            "IsTab": true,
-            "XsOuterColumn": 12,
-            "XxlOuterColumn": 12
-        },
-        {
-            "Id": "00be18fc-0000-0000-8000-b3ed548b7538",
-            "FieldName": "Left",
-            "Order": 9,
-            "ComponentType": "Section",
-            "Label": "Invoicing information",
-            "ClassName": "card-body",
-            "XsCol": 6,
-            "XxlCol": 12,
-            "ParentId": "00be188c-0000-0000-8000-c38b05728c0e",
-            "XsOuterColumn": 12,
-            "XxlOuterColumn": 4,
-            "Components": [
+            "Children": [
                 {
-                    "Id": "00bf1820-0000-0000-8000-711125a6a81c",
-                    "FieldName": "CompanyNameInv",
+                    "Id": "00be1854-0000-0000-8000-1428060e5700",
+                    "FieldName": "Common",
+                    "Order": 0,
+                    "ComponentType": "Section",
+                    "ClassName": "card-body",
+                    "XsCol": 6,
+                    "XxlCol": 12,
+                    "DisabledExp": "this.Entity.ActionId == 2",
+                    "XxlOuterColumn": 12,
+                    "Components": [
+                        {
+                            "Id": "005e1844-0000-0000-8000-200f1c75631c",
+                            "FieldName": "ResidenceTypeId",
+                            "Order": 2,
+                            "ComponentType": "Dropdown",
+                            "FormatData": "{Name}",
+                            "PlainText": "Select data",
+                            "Column": 4,
+                            "Row": 100,
+                            "Label": "Residence Type",
+                            "ShowLabel": true,
+                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Residence Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Residence Type'\"\r\n}",
+                            "RefName": "MasterData",
+                            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
+                            "XsOuterColumn": 6
+                        },
+                        {
+                            "Id": "00611874-0000-0000-8000-6bb261f23278",
+                            "FieldName": "CountryId",
+                            "Order": 20,
+                            "ComponentType": "Dropdown",
+                            "FormatData": "{Name}",
+                            "PlainText": "Select data",
+                            "Column": 4,
+                            "Row": 100,
+                            "Label": "Country",
+                            "ShowLabel": true,
+                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Country Manage'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Country Manage'\"\r\n}",
+                            "RefName": "MasterData",
+                            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
+                            "XsOuterColumn": 6
+                        },
+                        {
+                            "Id": "00781870-0000-0000-8000-20542b142a62",
+                            "FieldName": "PartnerTypeIds",
+                            "Order": 3,
+                            "ComponentType": "Dropdown",
+                            "FormatData": "{Name}",
+                            "PlainText": "Select data",
+                            "Column": 4,
+                            "Row": 100,
+                            "Label": "Partner Type",
+                            "ShowLabel": true,
+                            "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
+                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Partners Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Partners Type'\"\r\n}",
+                            "RefName": "MasterData",
+                            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
+                            "XsOuterColumn": 6,
+                            "IsMultiple": true
+                        },
+                        {
+                            "Id": "00b029d4-0000-0000-8000-de3bb836cad4",
+                            "FieldName": "History",
+                            "Order": 19,
+                            "ComponentType": "Textarea",
+                            "Column": 4,
+                            "Row": 3,
+                            "Label": "History",
+                            "ShowLabel": true,
+                            "Disabled": true,
+                            "XsOuterColumn": 6
+                        },
+                        {
+                            "Id": "00be1880-0000-0000-8000-b3fa40e7af96",
+                            "FieldName": "CompanyName",
+                            "Order": 10,
+                            "ComponentType": "Input",
+                            "Column": 4,
+                            "Row": 50,
+                            "Label": "Company Name",
+                            "ShowLabel": true,
+                            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
+                            "XsOuterColumn": 6
+                        },
+                        {
+                            "Id": "00be1884-0000-0000-8000-eca830d0d158",
+                            "FieldName": "PhoneNumber",
+                            "Order": 11,
+                            "ComponentType": "Input",
+                            "Column": 2,
+                            "Label": "Works Phone",
+                            "ShowLabel": true,
+                            "XsOuterColumn": 6
+                        },
+                        {
+                            "Id": "00be1888-0000-0000-8000-6f96c54af384",
+                            "FieldName": "SourseId",
+                            "Order": 12,
+                            "ComponentType": "Dropdown",
+                            "FormatData": "{Name}",
+                            "PlainText": "Select data",
+                            "Column": 4,
+                            "Row": 100,
+                            "Label": "Sourse",
+                            "ShowLabel": true,
+                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Sourse Customer'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Sourse Customer'\"\r\n}",
+                            "RefName": "MasterData",
+                            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
+                            "XsOuterColumn": 6
+                        },
+                        {
+                            "Id": "00be1890-0000-0000-8000-4334f16db7ce",
+                            "FieldName": "Email",
+                            "Order": 8,
+                            "ComponentType": "Input",
+                            "Column": 4,
+                            "Offset": 4,
+                            "Label": "Email",
+                            "ShowLabel": true,
+                            "XsOuterColumn": 6
+                        },
+                        {
+                            "Id": "00be18dc-0000-0000-8000-e58e47c5dfc7",
+                            "FieldName": "Name",
+                            "Order": 7,
+                            "ComponentType": "Input",
+                            "Column": 4,
+                            "Label": "Abbreviation",
+                            "ShowLabel": true,
+                            "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
+                            "XsOuterColumn": 6
+                        },
+                        {
+                            "Id": "00be18f0-0000-0000-8000-16ff60987237",
+                            "FieldName": "Address",
+                            "Order": 18,
+                            "ComponentType": "Textarea",
+                            "Column": 4,
+                            "Row": 3,
+                            "Label": "Address",
+                            "ShowLabel": true,
+                            "XsOuterColumn": 6
+                        },
+                        {
+                            "Id": "00be18fc-0000-0000-8000-d35730dd1c12",
+                            "FieldName": "TaxCode",
+                            "Order": 1,
+                            "ComponentType": "Input",
+                            "Column": 4,
+                            "Row": 50,
+                            "Label": "Tax Code",
+                            "ShowLabel": true,
+                            "Events": "{\r\n    \"change\": \"GetInfo\"\r\n}",
+                            "XsOuterColumn": 6
+                        },
+                        {
+                            "Id": "01932940-b0c9-7511-b019-c0adeec363c8",
+                            "FieldName": "Fax",
+                            "Order": 11,
+                            "ComponentType": "Input",
+                            "Column": 2,
+                            "Label": "Fax",
+                            "ShowLabel": true,
+                            "XsOuterColumn": 6
+                        }
+                    ]
+                },
+                {
+                    "Id": "00be188c-0000-0000-8000-c38b05728c0e",
                     "Order": 2,
-                    "ComponentType": "Input",
-                    "Column": 12,
-                    "Label": "Company Name",
-                    "ShowLabel": true
+                    "ComponentType": "Section",
+                    "Label": "Accountant information",
+                    "Icon": "fal fa-info mr-1",
+                    "XxlCol": 12,
+                    "DisabledExp": "!this.Token.RoleNames.some(x => x.toUpperCase() == \"UPDATE ACCOUNT PARTNER\")",
+                    "IsTab": true,
+                    "XsOuterColumn": 12,
+                    "XxlOuterColumn": 12,
+                    "Children": [
+                        {
+                            "Id": "00be18fc-0000-0000-8000-b3ed548b7538",
+                            "FieldName": "Left",
+                            "Order": 9,
+                            "ComponentType": "Section",
+                            "Label": "Invoicing information",
+                            "ClassName": "card-body",
+                            "XsCol": 6,
+                            "XxlCol": 12,
+                            "XsOuterColumn": 12,
+                            "XxlOuterColumn": 4,
+                            "Components": [
+                                {
+                                    "Id": "00bf1820-0000-0000-8000-711125a6a81c",
+                                    "FieldName": "CompanyNameInv",
+                                    "Order": 2,
+                                    "ComponentType": "Input",
+                                    "Column": 12,
+                                    "Label": "Company Name",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "00bf1824-0000-0000-8000-094417f8e3b1",
+                                    "FieldName": "EmailInv",
+                                    "Order": 4,
+                                    "ComponentType": "Input",
+                                    "Column": 12,
+                                    "Label": "Email received Invoice",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "00bf1858-0000-0000-8000-c65c6678061b",
+                                    "FieldName": "AddressInv",
+                                    "Order": 3,
+                                    "ComponentType": "Textarea",
+                                    "Column": 12,
+                                    "Row": 3,
+                                    "Label": "Address",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "00bf1894-0000-0000-8000-a0b47b1387d0",
+                                    "FieldName": "ContacNameInv",
+                                    "Order": 6,
+                                    "ComponentType": "Number",
+                                    "Column": 12,
+                                    "Precision": 2,
+                                    "Label": "Contact Name",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "00bf18fc-0000-0000-8000-d662051a8f23",
+                                    "FieldName": "AssignmentInvId",
+                                    "Order": 7,
+                                    "ComponentType": "Dropdown",
+                                    "FormatData": "{Name}",
+                                    "PlainText": "Select data",
+                                    "Column": 12,
+                                    "Row": 100,
+                                    "Precision": 3,
+                                    "Label": "Assignment Invoice",
+                                    "ShowLabel": true,
+                                    "Query": "{\r\n    \"sql\": \"select * from Partner as ds where ServiceId = 1 and TypeId in (2,3) and ActionId = 1 and IsNoDebt = 0\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where ServiceId = 1 and TypeId in (2,3) and ActionId = 1 and IsNoDebt = 0\"\r\n}",
+                                    "RefName": "Partner",
+                                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]"
+                                }
+                            ]
+                        },
+                        {
+                            "Id": "00bf18cc-0000-0000-8000-caa3c3392b67",
+                            "FieldName": "Right",
+                            "Order": 10,
+                            "ComponentType": "Section",
+                            "Label": "Debt information",
+                            "ClassName": "card-body",
+                            "XxlCol": 12,
+                            "XsOuterColumn": 12,
+                            "XxlOuterColumn": 3,
+                            "Components": [
+                                {
+                                    "Id": "00bf184c-0000-0000-8000-18f545d583df",
+                                    "FieldName": "CreditLimit",
+                                    "Order": 3,
+                                    "ComponentType": "Number",
+                                    "Column": 12,
+                                    "Label": "Credit Limit",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "00bf1870-0000-0000-8000-b44ebc7b8ae6",
+                                    "FieldName": "AssignmentDebitId",
+                                    "Order": 1,
+                                    "ComponentType": "Dropdown",
+                                    "FormatData": "{Name}",
+                                    "PlainText": "Select data",
+                                    "Column": 12,
+                                    "Row": 100,
+                                    "Precision": 3,
+                                    "Label": "Assignment debt",
+                                    "ShowLabel": true,
+                                    "Query": "{\r\n    \"sql\": \"select * from Partner as ds where ServiceId = 1 and TypeId in (2,3) and ActionId = 1 and IsNoDebt = 0\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where ServiceId = 1 and TypeId in (2,3) and ActionId = 1 and IsNoDebt = 0\"\r\n}",
+                                    "RefName": "Partner",
+                                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]"
+                                },
+                                {
+                                    "Id": "00bf1878-0000-0000-8000-557c0ba07225",
+                                    "FieldName": "DebitDay",
+                                    "Order": 2,
+                                    "ComponentType": "Number",
+                                    "Column": 12,
+                                    "Label": "Debt limit (days)",
+                                    "ShowLabel": true
+                                }
+                            ]
+                        },
+                        {
+                            "Id": "00bf189c-0000-0000-8000-151e9e3c5f19",
+                            "FieldName": "Bank Account",
+                            "Order": 11,
+                            "ComponentType": "Section",
+                            "Label": "Bank Account",
+                            "ClassName": "card-body",
+                            "XxlCol": 12,
+                            "XsOuterColumn": 12,
+                            "XxlOuterColumn": 5,
+                            "Components": [
+                                {
+                                    "Id": "0193c503-4f00-7668-99d4-c61299bb8639",
+                                    "FieldName": "PartnerBankAccount",
+                                    "Order": 9,
+                                    "ComponentType": "GridView",
+                                    "Column": 12,
+                                    "Row": 20,
+                                    "Label": "PartnerBankAccount",
+                                    "ClassName": "sticky",
+                                    "DefaultVal": "{\r\n    \"PartnerId\": this.EditForm.Entity.Id\r\n}",
+                                    "CanAdd": true,
+                                    "Query": "{\r\n    \"sql\": \"select * from PartnerBankAccount as ds where PartnerId = '{PartnerId}'\",\r\n    \"total\": \"select count(ds.Id) as total from PartnerBankAccount as ds where PartnerId = '{PartnerId}'\"\r\n}",
+                                    "RefName": "PartnerBankAccount",
+                                    "PreQuery": "{\r\n    \"PartnerId\": this.EditForm.Entity.Id\r\n}",
+                                    "Editable": true
+                                }
+                            ]
+                        }
+                    ]
                 },
                 {
-                    "Id": "00bf1824-0000-0000-8000-094417f8e3b1",
-                    "FieldName": "EmailInv",
-                    "Order": 4,
-                    "ComponentType": "Input",
-                    "Column": 12,
-                    "Label": "Email received Invoice",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00bf1858-0000-0000-8000-c65c6678061b",
-                    "FieldName": "AddressInv",
+                    "Id": "00bf18bc-0000-0000-8000-0e362ee6b314",
                     "Order": 3,
-                    "ComponentType": "Textarea",
-                    "Column": 12,
-                    "Row": 3,
-                    "Label": "Address",
-                    "ShowLabel": true
+                    "ComponentType": "Section",
+                    "Label": "Detailed information",
+                    "Icon": "fal fa-info-circle mr-1",
+                    "ClassName": "scroll-content",
+                    "XxlCol": 12,
+                    "IsTab": true,
+                    "XxlOuterColumn": 12,
+                    "DisplayBadge": true,
+                    "Children": [
+                        {
+                            "Id": "00403504-0000-0000-8000-b894e356ad60",
+                            "Order": 3,
+                            "ComponentType": "Section",
+                            "Label": "Logo",
+                            "Icon": "fal fa-info-circle mr-1",
+                            "ClassName": "card-body",
+                            "XxlCol": 12,
+                            "XxlOuterColumn": 2,
+                            "DisplayBadge": true,
+                            "Components": [
+                                {
+                                    "Id": "00bf1854-0000-0000-8000-de5d08f0cd14",
+                                    "FieldName": "Logo",
+                                    "Order": 1,
+                                    "ComponentType": "FileUpload",
+                                    "Column": 12
+                                }
+                            ]
+                        },
+                        {
+                            "Id": "00483550-0000-0000-8000-efc6401a3717",
+                            "Order": 3,
+                            "ComponentType": "Section",
+                            "Label": "Detailed information",
+                            "Icon": "fal fa-info-circle mr-1",
+                            "ClassName": "card-body",
+                            "XxlCol": 12,
+                            "XxlOuterColumn": 10,
+                            "DisplayBadge": true,
+                            "Components": [
+                                {
+                                    "Id": "00bf1818-0000-0000-8000-b34cd98cb9ec",
+                                    "FieldName": "TrackingURL",
+                                    "Order": 7,
+                                    "ComponentType": "Input",
+                                    "Column": 3,
+                                    "Row": 3,
+                                    "Label": "Tracking URL",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "00bf1820-0000-0000-8000-435e18b89727",
+                                    "FieldName": "ZipCode",
+                                    "Order": 3,
+                                    "ComponentType": "Input",
+                                    "Column": 3,
+                                    "Label": "Zip Code",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "00bf1824-0000-0000-8000-5ea482a338f0",
+                                    "FieldName": "Po",
+                                    "Order": 9,
+                                    "ComponentType": "Input",
+                                    "Column": 3,
+                                    "Row": 3,
+                                    "Label": "PO",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "00bf183c-0000-0000-8000-0dca5f4ee495",
+                                    "FieldName": "Attachment",
+                                    "Order": 15,
+                                    "ComponentType": "FileUpload",
+                                    "Column": 6,
+                                    "Label": "Attachment",
+                                    "RefName": "Inquiry",
+                                    "IsMultiple": true
+                                },
+                                {
+                                    "Id": "00bf1844-0000-0000-8000-0f3b114a3c23",
+                                    "FieldName": "Dob",
+                                    "Order": 6,
+                                    "ComponentType": "Datepicker",
+                                    "Column": 3,
+                                    "Row": 3,
+                                    "Label": "Company Establishment ",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "00bf1858-0000-0000-8000-8c36583e4f00",
+                                    "FieldName": "ToastWarning",
+                                    "Order": 14,
+                                    "ComponentType": "Input",
+                                    "Column": 6,
+                                    "Label": "Warning",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "00bf186c-0000-0000-8000-5add3b31502b",
+                                    "FieldName": "PoDate",
+                                    "Order": 12,
+                                    "ComponentType": "Datepicker",
+                                    "Column": 3,
+                                    "Row": 3,
+                                    "Label": "PO Date",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "00bf18a4-0000-0000-8000-a17c9e51ac32",
+                                    "FieldName": "IdCode",
+                                    "Order": 2,
+                                    "ComponentType": "Input",
+                                    "Column": 3,
+                                    "Row": 3,
+                                    "Label": "ID CODE",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "00bf18ac-0000-0000-8000-db2f13bf2bd7",
+                                    "FieldName": "Raiting",
+                                    "Order": 11,
+                                    "ComponentType": "Number",
+                                    "Column": 3,
+                                    "Row": 3,
+                                    "Precision": 0,
+                                    "Label": "Raiting",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "00bf18cc-0000-0000-8000-0ea24131b817",
+                                    "FieldName": "IsNoDebt",
+                                    "Order": 0,
+                                    "ComponentType": "Checkbox",
+                                    "Column": 3,
+                                    "Row": 3,
+                                    "Label": "NoDebt",
+                                    "ShowLabel": true
+                                }
+                            ]
+                        }
+                    ]
                 },
                 {
-                    "Id": "00bf1894-0000-0000-8000-a0b47b1387d0",
-                    "FieldName": "ContacNameInv",
-                    "Order": 6,
-                    "ComponentType": "Number",
-                    "Column": 12,
-                    "Precision": 2,
-                    "Label": "Contact Name",
-                    "ShowLabel": true
+                    "Id": "00bf18c8-0000-0000-8000-724b1742008b",
+                    "Order": 5,
+                    "ComponentType": "Section",
+                    "Label": "Contact details",
+                    "Icon": "fal fa-sticky-note mr-1",
+                    "XxlCol": 12,
+                    "IsTab": true,
+                    "XxlOuterColumn": 12,
+                    "DisplayBadge": true,
+                    "Components": [
+                        {
+                            "Id": "00bf180c-0000-0000-8000-0ca2a786eabf",
+                            "FieldName": "PartnerContact",
+                            "Order": 1,
+                            "ComponentType": "GridView",
+                            "Column": 12,
+                            "Row": 200,
+                            "DefaultVal": "{ PartnerId: this.EditForm.Entity.Id}",
+                            "CanAdd": true,
+                            "Query": "{\r\n    \"sql\": \"select * from PartnerContact as ds where PartnerId = '{PartnerId}'\",\r\n    \"total\": \"select count(ds.Id) as total from PartnerContact as ds where PartnerId = '{PartnerId}'\"\r\n}",
+                            "RefName": "PartnerContact",
+                            "PreQuery": "{ PartnerId: this.EditForm.Entity.Id}",
+                            "Editable": true
+                        }
+                    ]
                 },
                 {
-                    "Id": "00bf18fc-0000-0000-8000-d662051a8f23",
-                    "FieldName": "AssignmentInvId",
+                    "Id": "00bf18e0-0000-0000-8000-2c06face1469",
                     "Order": 7,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 12,
-                    "Row": 100,
-                    "Precision": 3,
-                    "Label": "Assignment Invoice",
-                    "ShowLabel": true,
-                    "Query": "{\r\n    \"sql\": \"select * from Partner as ds where ServiceId = 1 and TypeId in (2,3) and ActionId = 1 and IsNoDebt = 0\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where ServiceId = 1 and TypeId in (2,3) and ActionId = 1 and IsNoDebt = 0\"\r\n}",
-                    "RefName": "Partner",
-                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]"
+                    "ComponentType": "Section",
+                    "Label": "Activities",
+                    "Icon": "fal fa-history mr-1",
+                    "XxlCol": 12,
+                    "IsTab": true,
+                    "XxlOuterColumn": 12,
+                    "DisplayBadge": true,
+                    "Components": [
+                        {
+                            "Id": "00bf18cc-0000-0000-8000-6983cf0b059d",
+                            "FieldName": "PartnerCare",
+                            "Order": 1,
+                            "ComponentType": "GridView",
+                            "Column": 12,
+                            "Row": 200,
+                            "DefaultVal": "{ PartnerId: this.EditForm.Entity.Id}",
+                            "CanAdd": true,
+                            "Query": "{\r\n    \"sql\": \"select * from PartnerCare as ds where PartnerId = '{PartnerId}'\",\r\n    \"total\": \"select count(ds.Id) as total from PartnerCare as ds where PartnerId = '{PartnerId}'\"\r\n}",
+                            "RefName": "PartnerCare",
+                            "PreQuery": "{ PartnerId: this.EditForm.Entity.Id}",
+                            "Editable": true,
+                            "AddRowExp": "this.Entity.ActionId != 2"
+                        }
+                    ]
                 }
             ]
         },
@@ -438,154 +582,6 @@
                     "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fal fa-heart mr-1'></i>Active</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fal fa-lock mr-1'></i>Lock</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fal fa-rss mr-1'></i>Awaiting</span>\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
                     "XsOuterColumn": 6
-                }
-            ]
-        },
-        {
-            "Id": "00bf189c-0000-0000-8000-151e9e3c5f19",
-            "FieldName": "Bank Account",
-            "Order": 11,
-            "ComponentType": "Section",
-            "Label": "Bank Account",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "00be188c-0000-0000-8000-c38b05728c0e",
-            "XsOuterColumn": 12,
-            "XxlOuterColumn": 5,
-            "Components": [
-                {
-                    "Id": "0193c503-4f00-7668-99d4-c61299bb8639",
-                    "FieldName": "PartnerBankAccount",
-                    "Order": 9,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 20,
-                    "Label": "PartnerBankAccount",
-                    "ClassName": "sticky",
-                    "DefaultVal": "{\r\n    \"PartnerId\": this.EditForm.Entity.Id\r\n}",
-                    "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from PartnerBankAccount as ds where PartnerId = '{PartnerId}'\",\r\n    \"total\": \"select count(ds.Id) as total from PartnerBankAccount as ds where PartnerId = '{PartnerId}'\"\r\n}",
-                    "RefName": "PartnerBankAccount",
-                    "PreQuery": "{\r\n    \"PartnerId\": this.EditForm.Entity.Id\r\n}",
-                    "Editable": true
-                }
-            ]
-        },
-        {
-            "Id": "00bf18bc-0000-0000-8000-0e362ee6b314",
-            "Order": 3,
-            "ComponentType": "Section",
-            "Label": "Detailed information",
-            "Icon": "fal fa-info-circle mr-1",
-            "ClassName": "scroll-content",
-            "XxlCol": 12,
-            "ParentId": "00be1880-0000-0000-8000-d627532b11bc",
-            "IsTab": true,
-            "XxlOuterColumn": 12,
-            "DisplayBadge": true
-        },
-        {
-            "Id": "00bf18c8-0000-0000-8000-724b1742008b",
-            "Order": 5,
-            "ComponentType": "Section",
-            "Label": "Contact details",
-            "Icon": "fal fa-sticky-note mr-1",
-            "XxlCol": 12,
-            "ParentId": "00be1880-0000-0000-8000-d627532b11bc",
-            "IsTab": true,
-            "XxlOuterColumn": 12,
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "00bf180c-0000-0000-8000-0ca2a786eabf",
-                    "FieldName": "PartnerContact",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 200,
-                    "DefaultVal": "{ PartnerId: this.EditForm.Entity.Id}",
-                    "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from PartnerContact as ds where PartnerId = '{PartnerId}'\",\r\n    \"total\": \"select count(ds.Id) as total from PartnerContact as ds where PartnerId = '{PartnerId}'\"\r\n}",
-                    "RefName": "PartnerContact",
-                    "PreQuery": "{ PartnerId: this.EditForm.Entity.Id}",
-                    "Editable": true
-                }
-            ]
-        },
-        {
-            "Id": "00bf18cc-0000-0000-8000-caa3c3392b67",
-            "FieldName": "Right",
-            "Order": 10,
-            "ComponentType": "Section",
-            "Label": "Debt information",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "00be188c-0000-0000-8000-c38b05728c0e",
-            "XsOuterColumn": 12,
-            "XxlOuterColumn": 3,
-            "Components": [
-                {
-                    "Id": "00bf184c-0000-0000-8000-18f545d583df",
-                    "FieldName": "CreditLimit",
-                    "Order": 3,
-                    "ComponentType": "Number",
-                    "Column": 12,
-                    "Label": "Credit Limit",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00bf1870-0000-0000-8000-b44ebc7b8ae6",
-                    "FieldName": "AssignmentDebitId",
-                    "Order": 1,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 12,
-                    "Row": 100,
-                    "Precision": 3,
-                    "Label": "Assignment debt",
-                    "ShowLabel": true,
-                    "Query": "{\r\n    \"sql\": \"select * from Partner as ds where ServiceId = 1 and TypeId in (2,3) and ActionId = 1 and IsNoDebt = 0\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where ServiceId = 1 and TypeId in (2,3) and ActionId = 1 and IsNoDebt = 0\"\r\n}",
-                    "RefName": "Partner",
-                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]"
-                },
-                {
-                    "Id": "00bf1878-0000-0000-8000-557c0ba07225",
-                    "FieldName": "DebitDay",
-                    "Order": 2,
-                    "ComponentType": "Number",
-                    "Column": 12,
-                    "Label": "Debt limit (days)",
-                    "ShowLabel": true
-                }
-            ]
-        },
-        {
-            "Id": "00bf18e0-0000-0000-8000-2c06face1469",
-            "Order": 7,
-            "ComponentType": "Section",
-            "Label": "Activities",
-            "Icon": "fal fa-history mr-1",
-            "XxlCol": 12,
-            "ParentId": "00be1880-0000-0000-8000-d627532b11bc",
-            "IsTab": true,
-            "XxlOuterColumn": 12,
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "00bf18cc-0000-0000-8000-6983cf0b059d",
-                    "FieldName": "PartnerCare",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 200,
-                    "DefaultVal": "{ PartnerId: this.EditForm.Entity.Id}",
-                    "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from PartnerCare as ds where PartnerId = '{PartnerId}'\",\r\n    \"total\": \"select count(ds.Id) as total from PartnerCare as ds where PartnerId = '{PartnerId}'\"\r\n}",
-                    "RefName": "PartnerCare",
-                    "PreQuery": "{ PartnerId: this.EditForm.Entity.Id}",
-                    "Editable": true,
-                    "AddRowExp": "this.Entity.ActionId != 2"
                 }
             ]
         },

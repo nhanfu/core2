@@ -17,66 +17,66 @@
             "ClassName": "scroll-content",
             "XsCol": 6,
             "XxlCol": 12,
-            "DisabledExp": "this.Entity.ActionId == 2"
-        },
-        {
-            "Id": "0194e866-1701-744b-82f6-8bf07af3edbc",
-            "FieldName": "Common",
-            "Order": 1,
-            "ComponentType": "Section",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "0194e866-16ce-7493-8598-6649808d0985",
-            "XxlOuterColumn": 12,
-            "Components": [
+            "DisabledExp": "this.Entity.ActionId == 2",
+            "Children": [
                 {
-                    "Id": "0194e866-1735-72bc-999a-2d36bad940f3",
-                    "FieldName": "Label",
+                    "Id": "0194e866-1701-744b-82f6-8bf07af3edbc",
+                    "FieldName": "Common",
                     "Order": 1,
-                    "ComponentType": "Input",
-                    "Column": 12,
-                    "Row": 50,
-                    "Label": "Label",
-                    "ShowLabel": true,
-                    "Events": "{\"change\":\"GetInfo\"}"
+                    "ComponentType": "Section",
+                    "ClassName": "card-body",
+                    "XxlCol": 12,
+                    "XxlOuterColumn": 12,
+                    "Components": [
+                        {
+                            "Id": "0194e866-1735-72bc-999a-2d36bad940f3",
+                            "FieldName": "Label",
+                            "Order": 1,
+                            "ComponentType": "Input",
+                            "Column": 12,
+                            "Row": 50,
+                            "Label": "Label",
+                            "ShowLabel": true,
+                            "Events": "{\"change\":\"GetInfo\"}"
+                        },
+                        {
+                            "Id": "0194e866-1782-7078-9f84-2e4be790ae57",
+                            "FieldName": "Description",
+                            "Order": 2,
+                            "ComponentType": "Input",
+                            "Column": 12,
+                            "Label": "Group Name",
+                            "ShowLabel": true
+                        }
+                    ]
                 },
                 {
-                    "Id": "0194e866-1782-7078-9f84-2e4be790ae57",
-                    "FieldName": "Description",
-                    "Order": 2,
-                    "ComponentType": "Input",
-                    "Column": 12,
-                    "Label": "Group Name",
-                    "ShowLabel": true
-                }
-            ]
-        },
-        {
-            "Id": "0194e866-1b05-73aa-91fb-1c6bfea3eb26",
-            "Order": 5,
-            "ComponentType": "Section",
-            "Label": "Steps",
-            "Icon": "fal fa-sticky-note mr-1",
-            "XxlCol": 12,
-            "ParentId": "0194e866-16ce-7493-8598-6649808d0985",
-            "IsTab": true,
-            "XxlOuterColumn": 12,
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "0194e866-1b42-72a3-86c8-c9927b6d2bfb",
-                    "FieldName": "ComponentGroup",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 200,
-                    "Label": "Contact details",
-                    "DefaultVal": "{\r\n    \"FeatureId\": this.EditForm.Entity.Id\r\n}",
-                    "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from Component as ds where FeatureId = '{FeatureId}' and ComponentType = 'Section'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where FeatureId = '{FeatureId}' and ComponentType = 'Section'\"\r\n}",
-                    "RefName": "Component",
-                    "PreQuery": "{\r\n    \"FeatureId\": this.EditForm.Entity.Id\r\n}",
-                    "Editable": true
+                    "Id": "0194e866-1b05-73aa-91fb-1c6bfea3eb26",
+                    "Order": 5,
+                    "ComponentType": "Section",
+                    "Label": "Steps",
+                    "Icon": "fal fa-sticky-note mr-1",
+                    "XxlCol": 12,
+                    "IsTab": true,
+                    "XxlOuterColumn": 12,
+                    "DisplayBadge": true,
+                    "Components": [
+                        {
+                            "Id": "0194e866-1b42-72a3-86c8-c9927b6d2bfb",
+                            "FieldName": "ComponentGroup",
+                            "Order": 1,
+                            "ComponentType": "GridView",
+                            "Column": 12,
+                            "Row": 200,
+                            "Label": "Contact details",
+                            "DefaultVal": "{\r\n    \"FeatureId\": this.EditForm.Entity.Id\r\n}",
+                            "CanAdd": true,
+                            "Query": "{\r\n    \"sql\": \"select * from Component as ds where FeatureId = '{FeatureId}' and ComponentType = 'Section'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where FeatureId = '{FeatureId}' and ComponentType = 'Section'\"\r\n}",
+                            "RefName": "Component",
+                            "PreQuery": "{\r\n    \"FeatureId\": this.EditForm.Entity.Id\r\n}",
+                            "Editable": true
+                        }
+                    ]
                 }
             ]
         },

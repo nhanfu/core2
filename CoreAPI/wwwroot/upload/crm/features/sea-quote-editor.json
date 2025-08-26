@@ -9,471 +9,552 @@
     "EntityId": "Inquiry",
     "ComponentGroup": [
         {
-            "Id": "004a30ec-0000-0000-8000-88008a33ead1",
-            "FieldName": "Other infor shipment",
-            "Order": 13,
-            "ComponentType": "Section",
-            "Label": "Estimate Profit",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "007426dc-0000-0000-8000-9a4afdb97265",
-            "XxlOuterColumn": 12,
-            "IsDropDown": true,
-            "Components": [
-                {
-                    "Id": "00593054-0000-0000-8000-b9fb1f7d6067",
-                    "FieldName": "Summary2",
-                    "Order": 3,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "Label": "Summary",
-                    "ClassName": "sticky",
-                    "Events": "{\r\n    \"FirstLoad\": \"ReloadSummary2\"\r\n}",
-                    "Query": "var detail = this.EditForm.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"DefaultFee\");\r\nvar inquiryDetail = this.EditForm.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"InquiryDetail\");\r\nvar listItem = detail.AllListViewItem.filter(x => !x.GroupRow).map(x => x.Entity);\r\nvar sellingRates = listItem.filter(x => x.Rate && !x.IsObh);\r\nvar buyingRates = listItem.filter(x => x.Cost && !x.IsObh);\r\nvar routes = inquiryDetail.AllListViewItem.filter(x => !x.GroupRow).map(x => x.Entity);\r\nvar datas = [];\r\nroutes.forEach(item => {\r\n    var sellingRate = sellingRates.filter(x => x.PolId == item.PolId && x.PodId == item.PodId);\r\n    var buyingRate = buyingRates.filter(x => x.PolId == item.PolId && x.PodId == item.PodId);\r\n    var vnd = {\r\n        PolId: item.PolId,\r\n        Pol: item.Pol,\r\n        PodId: item.PodId,\r\n        Pod: item.Pod,\r\n        CurrencyText: \"VND\",\r\n        RevenueLCL: (sellingRate.filter(x => x.Unit.Name.includes('LCL')).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        CostLCL: (buyingRate.filter(x => x.Unit.Name.includes('LCL')).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        RevenueALL: (sellingRate.filter(x => !x.Unit.IsContainer && !x.Unit.Name.includes('LCL')).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        CostALL: (buyingRate.filter(x => !x.Unit.IsContainer && !x.Unit.Name.includes('LCL')).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Revenue20: (sellingRate.filter(x => x.Unit.Name.includes('20')).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Cost20: (buyingRate.filter(x => x.Unit.Name.includes('20')).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Revenue40: (sellingRate.filter(x => x.Unit.Name.includes('40') && !x.Unit.Name.includes(\"40'HC\")).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Cost40: (buyingRate.filter(x => x.Unit.Name.includes('40') && !x.Unit.Name.includes(\"40'HC\")).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Revenue40HC: (sellingRate.filter(x => x.Unit.Name.includes(\"40'HC\")).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Cost40HC: (buyingRate.filter(x => x.Unit.Name.includes(\"40'HC\")).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Revenue45: (sellingRate.filter(x => x.Unit.Name.includes('45')).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Cost45: (buyingRate.filter(x => x.Unit.Name.includes('45')).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n    }\r\n    vnd.RevenueLCL = vnd.RevenueLCL.plus(vnd.RevenueALL);\r\n    vnd.CostLCL = vnd.CostLCL.plus(vnd.CostALL);\r\n    vnd.ProfitLCL = vnd.RevenueLCL.sub(vnd.CostLCL);\r\n    vnd.ProfitRateLCL = (vnd.ProfitLCL.div(vnd.RevenueLCL || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    vnd.Revenue20 = vnd.Revenue20.plus(vnd.RevenueALL);\r\n    vnd.Cost20 = vnd.Cost20.plus(vnd.CostALL);\r\n    vnd.Profit20 = vnd.Revenue20.sub(vnd.Cost20);\r\n    vnd.ProfitRate20 = (vnd.Profit20.div(vnd.Revenue20 || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    vnd.Revenue40 = vnd.Revenue40.plus(vnd.RevenueALL);\r\n    vnd.Cost40 = vnd.Cost40.plus(vnd.CostALL);\r\n    vnd.Profit40 = vnd.Revenue40.sub(vnd.Cost40);\r\n    vnd.ProfitRate40 = (vnd.Profit40.div(vnd.Revenue40 || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    vnd.Revenue40HC = vnd.Revenue40HC.plus(vnd.RevenueALL);\r\n    vnd.Cost40HC = vnd.Cost40HC.plus(vnd.CostALL);\r\n    vnd.Profit40HC = vnd.Revenue40HC.sub(vnd.Cost40HC);\r\n    vnd.ProfitRate40HC = (vnd.Profit40HC.div(vnd.Revenue40HC || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    vnd.Revenue45 = vnd.Revenue45.plus(vnd.RevenueALL);\r\n    vnd.Cost45 = vnd.Cost45.plus(vnd.CostALL);\r\n    vnd.Profit45 = vnd.Revenue45.sub(vnd.Cost45);\r\n    vnd.ProfitRate45 = (vnd.Profit45.div(vnd.Revenue45 || this.Decimal(1))).times(this.Decimal(100));\r\n    var usd = {\r\n        PolId: item.PolId,\r\n        Pol: item.Pol,\r\n        PodId: item.PodId,\r\n        Pod: item.Pod,\r\n        CurrencyText: \"USD\",\r\n        RevenueLCL: (sellingRate.filter(x => x.Unit.Name.includes('LCL')).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        CostLCL: (buyingRate.filter(x => x.Unit.Name.includes('LCL')).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        RevenueALL: (sellingRate.filter(x => !x.Unit.IsContainer && !x.Unit.Name.includes('LCL')).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        CostALL: (buyingRate.filter(x => !x.Unit.IsContainer && !x.Unit.Name.includes('LCL')).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Revenue20: (sellingRate.filter(x => x.Unit.Name.includes('20')).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Cost20: (buyingRate.filter(x => x.Unit.Name.includes('20')).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Revenue40: (sellingRate.filter(x => x.Unit.Name.includes('40') && !x.Unit.Name.includes(\"40'HC\")).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Cost40: (buyingRate.filter(x => x.Unit.Name.includes('40') && !x.Unit.Name.includes(\"40'HC\")).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Revenue40HC: (sellingRate.filter(x => x.Unit.Name.includes(\"40'HC\")).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Cost40HC: (buyingRate.filter(x => x.Unit.Name.includes(\"40'HC\")).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Revenue45: (sellingRate.filter(x => x.Unit.Name.includes('45')).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Cost45: (buyingRate.filter(x => x.Unit.Name.includes('45')).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n    }\r\n    usd.RevenueLCL = usd.RevenueLCL.plus(usd.RevenueALL);\r\n    usd.CostLCL = usd.CostLCL.plus(usd.CostALL);\r\n    usd.ProfitLCL = usd.RevenueLCL.sub(usd.CostLCL);\r\n    usd.ProfitRateLCL = (usd.ProfitLCL.div(usd.RevenueLCL || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    usd.Revenue20 = usd.Revenue20.plus(usd.RevenueALL);\r\n    usd.Cost20 = usd.Cost20.plus(usd.CostALL);\r\n    usd.Profit20 = usd.Revenue20.sub(usd.Cost20);\r\n    usd.ProfitRate20 = (usd.Profit20.div(usd.Revenue20 || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    usd.Revenue40 = usd.Revenue40.plus(usd.RevenueALL);\r\n    usd.Cost40 = usd.Cost40.plus(usd.CostALL);\r\n    usd.Profit40 = usd.Revenue40.sub(usd.Cost40);\r\n    usd.ProfitRate40 = (usd.Profit40.div(usd.Revenue40 || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    usd.Revenue40HC = usd.Revenue40HC.plus(usd.RevenueALL);\r\n    usd.Cost40HC = usd.Cost40HC.plus(usd.CostALL);\r\n    usd.Profit40HC = usd.Revenue40HC.sub(usd.Cost40HC);\r\n    usd.ProfitRate40HC = (usd.Profit40HC.div(usd.Revenue40HC || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    usd.Revenue45 = usd.Revenue45.plus(usd.RevenueALL);\r\n    usd.Cost45 = usd.Cost45.plus(usd.CostALL);\r\n    usd.Profit45 = usd.Revenue45.sub(usd.Cost45);\r\n    usd.ProfitRate45 = (usd.Profit45.div(usd.Revenue45 || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    var totalRevenueVND = this.Decimal(0);\r\n    var totalCostVND = this.Decimal(0);\r\n\r\n    var totalRevenueUSD = this.Decimal(0);\r\n    var totalCostUSD = this.Decimal(0);\r\n    var bookingDetail = this.EditForm.ChildCom.find(x => x.Meta.FieldName == \"DefaultFee\");\r\n    if (bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name.includes('20'))) {\r\n        totalRevenueVND = totalRevenueVND.plus(vnd.Revenue20);\r\n        totalCostVND = totalCostVND.plus(vnd.Cost20);\r\n\r\n        totalRevenueUSD = totalRevenueUSD.plus(usd.Revenue20);\r\n        totalCostUSD = totalCostUSD.plus(usd.Cost20);\r\n    }\r\n    if (bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name.includes('LCL'))) {\r\n        totalRevenueVND = totalRevenueVND.plus(vnd.RevenueLCL);\r\n        totalCostVND = totalCostVND.plus(vnd.CostLCL);\r\n\r\n        totalRevenueUSD = totalRevenueUSD.plus(usd.RevenueLCL);\r\n        totalCostUSD = totalCostUSD.plus(usd.CostLCL);\r\n    }\r\n    if (bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name.includes(\"40'HC\"))) {\r\n        totalRevenueVND = totalRevenueVND.plus(vnd.Revenue40HC);\r\n        totalCostVND = totalCostVND.plus(vnd.Cost40HC);\r\n\r\n        totalRevenueUSD = totalRevenueUSD.plus(usd.Revenue40HC);\r\n        totalCostUSD = totalCostUSD.plus(usd.Cost40HC);\r\n    }\r\n    if (bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name.includes(\"40\") && !x.Entity.Unit.Name.includes(\"40'HC\"))) {\r\n        totalRevenueVND = totalRevenueVND.plus(vnd.Revenue40);\r\n        totalCostVND = totalCostVND.plus(vnd.Cost40);\r\n\r\n        totalRevenueUSD = totalRevenueUSD.plus(usd.Revenue40);\r\n        totalCostUSD = totalCostUSD.plus(usd.Cost40);\r\n    }\r\n    if (bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name.includes(\"45\"))) {\r\n        totalRevenueVND = totalRevenueVND.plus(vnd.Revenue45);\r\n        totalCostVND = totalCostVND.plus(vnd.Cost45);\r\n\r\n        totalRevenueUSD = totalRevenueUSD.plus(usd.Revenue45);\r\n        totalCostUSD = totalCostUSD.plus(usd.Cost45);\r\n    }\r\n    vnd.RevenueTotal = totalRevenueVND;\r\n    vnd.CostTotal = totalCostVND;\r\n    vnd.ProfitTotal = vnd.RevenueTotal.sub(vnd.CostTotal);\r\n    vnd.ProfitRateTotal = (vnd.ProfitTotal.div(vnd.RevenueTotal || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    usd.RevenueTotal = totalRevenueUSD;\r\n    usd.CostTotal = totalCostUSD;\r\n    usd.ProfitTotal = usd.RevenueTotal.sub(usd.CostTotal);\r\n    usd.ProfitRateTotal = (usd.ProfitTotal.div(usd.RevenueTotal || this.Decimal(1))).times(this.Decimal(100));\r\n    datas.push(vnd);\r\n    datas.push(usd);\r\n})\r\nreturn datas;",
-                    "IsSumary": true,
-                    "OrderBy": "ds.InsertedDate desc",
-                    "AddRowExp": "this.EditForm.Entity.StatusId == 1 || this.EditForm.Entity.StatusId == 4"
-                }
-            ]
-        },
-        {
-            "Id": "00742664-0000-0000-8000-c449ed2121d0",
-            "FieldName": "Left",
-            "Order": 1,
-            "ComponentType": "Section",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "007426dc-0000-0000-8000-9a4afdb97265",
-            "XxlOuterColumn": 4,
-            "Components": [
-                {
-                    "Id": "007426b8-0000-0000-8000-4dd390ed34cb",
-                    "FieldName": "Code",
-                    "Order": 0,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Quo No",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00752650-0000-0000-8000-c94e2ed474cb",
-                    "FieldName": "ServiceDate",
-                    "Order": 1,
-                    "ComponentType": "Datepicker",
-                    "Column": 6,
-                    "Label": "Quo Date",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00752684-0000-0000-8000-cd4ee5ece82a",
-                    "FieldName": "ServiceText",
-                    "Order": 5,
-                    "ComponentType": "Input",
-                    "Column": 12,
-                    "Label": "Service",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "007526b0-0000-0000-8000-9544121f26ce",
-                    "FieldName": "CustomerId",
-                    "Order": 2,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 12,
-                    "Row": 100,
-                    "Label": "Customer",
-                    "ShowLabel": true,
-                    "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('customer-editor',{ ServiceId : 1, TypeId : 3, ActionId : 1, SaleId: this.Token.UserId })\",\r\n    \"edit\": \"this.EditForm.OpenPopup('customer-editor',this.Matched)\"\r\n}",
-                    "Validation": "[\r\n    {\r\n        \"Rule\": \"required\",\r\n        \"Message\": \"{0} is required\"\r\n    }\r\n]",
-                    "PopulateField": "this.EditForm.Entity.PhoneNumber = this.Matched.ContactPhoneNumber\r\nthis.EditForm.Entity.Pic = this.Matched.ContactName;\r\nthis.EditForm.Entity.Sale = null;\r\nthis.EditForm.Entity.SaleId = this.Matched.SaleId;\r\nlet customer = this.Matched;\r\nlet customerText = `${(customer.CompanyName || '')}\\n`;\r\ncustomerText += `${(customer.Address || '')}\\n`;\r\ncustomerText += `Tell: ${(customer.PhoneNumber || '')} Fax: ${(customer.Fax || '')}\\n`;\r\ncustomerText += `Contact person:${(customer.ContactName || '')}`;\r\nif (this.EditForm.Entity.Service.Name.includes('Import')) {\r\n    this.EditForm.Entity.ConsigneeId = this.Matched.Id;\r\n    this.EditForm.Entity.ConsigneeIdText = this.Matched.Name;\r\n}\r\nelse if (this.EditForm.Entity.Service.Name.includes('Export')) {\r\n    this.EditForm.Entity.ShipperId = this.Matched.Id;\r\n    this.EditForm.Entity.ShipperIdText = this.Matched.Name;\r\n}\r\nthis.EditForm.UpdateView(false, false, \"Pic\", \"SaleId\", \"PhoneNumber\", \"ConsigneeId\", \"ConsigneeIdText\", \"ShipperId\", \"ShipperIdText\");\r\nreturn null;",
-                    "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 1 and TypeId in (2,3) and (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.DistributeInformationIds like N'%{TokenUserId}%'))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 1 and TypeId in (2,3) and (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.DistributeInformationIds like N'%{TokenUserId}%'))\"\r\n}",
-                    "RefName": "Partner",
-                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
-                    "PreQuery": "{\r\n    \"UserId\": this.Token.UserId,\r\n    \"UserName\": this.Token.UserName\r\n}",
-                    "ShowHotKey": true
-                },
-                {
-                    "Id": "007526c0-0000-0000-8000-9b55fb391824",
-                    "FieldName": "PhoneNumber",
-                    "Order": 4,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Tel/Email",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "007526dc-0000-0000-8000-c3565e8446aa",
-                    "FieldName": "Pic",
-                    "Order": 3,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Row": 50,
-                    "Label": "PIC",
-                    "ShowLabel": true
-                }
-            ]
-        },
-        {
             "Id": "007426dc-0000-0000-8000-9a4afdb97265",
             "FieldName": "Container",
             "Order": 1,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
-            "XxlCol": 12
-        },
-        {
-            "Id": "0075260c-0000-0000-8000-e8606ea5aee1",
-            "FieldName": "Show More",
-            "Order": 4,
-            "ComponentType": "Section",
-            "ClassName": "card-body",
             "XxlCol": 12,
-            "ParentId": "00752638-0000-0000-8000-0a0987c61231",
-            "XxlOuterColumn": 3,
-            "Components": [
+            "Children": [
                 {
-                    "Id": "00752610-0000-0000-8000-030ef3e0de97",
-                    "FieldName": "Subject",
-                    "Order": 4,
-                    "ComponentType": "Textarea",
-                    "Column": 6,
-                    "RowSpan": 3,
-                    "Row": 6,
-                    "Label": "Subject",
-                    "ShowLabel": true
+                    "Id": "00742664-0000-0000-8000-c449ed2121d0",
+                    "FieldName": "Left",
+                    "Order": 1,
+                    "ComponentType": "Section",
+                    "ClassName": "card-body",
+                    "XxlCol": 12,
+                    "XxlOuterColumn": 4,
+                    "Components": [
+                        {
+                            "Id": "007426b8-0000-0000-8000-4dd390ed34cb",
+                            "FieldName": "Code",
+                            "Order": 0,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Label": "Quo No",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00752650-0000-0000-8000-c94e2ed474cb",
+                            "FieldName": "ServiceDate",
+                            "Order": 1,
+                            "ComponentType": "Datepicker",
+                            "Column": 6,
+                            "Label": "Quo Date",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00752684-0000-0000-8000-cd4ee5ece82a",
+                            "FieldName": "ServiceText",
+                            "Order": 5,
+                            "ComponentType": "Input",
+                            "Column": 12,
+                            "Label": "Service",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "007526b0-0000-0000-8000-9544121f26ce",
+                            "FieldName": "CustomerId",
+                            "Order": 2,
+                            "ComponentType": "Dropdown",
+                            "FormatData": "{Name}",
+                            "PlainText": "Select data",
+                            "Column": 12,
+                            "Row": 100,
+                            "Label": "Customer",
+                            "ShowLabel": true,
+                            "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('customer-editor',{ ServiceId : 1, TypeId : 3, ActionId : 1, SaleId: this.Token.UserId })\",\r\n    \"edit\": \"this.EditForm.OpenPopup('customer-editor',this.Matched)\"\r\n}",
+                            "Validation": "[\r\n    {\r\n        \"Rule\": \"required\",\r\n        \"Message\": \"{0} is required\"\r\n    }\r\n]",
+                            "PopulateField": "this.EditForm.Entity.PhoneNumber = this.Matched.ContactPhoneNumber\r\nthis.EditForm.Entity.Pic = this.Matched.ContactName;\r\nthis.EditForm.Entity.Sale = null;\r\nthis.EditForm.Entity.SaleId = this.Matched.SaleId;\r\nlet customer = this.Matched;\r\nlet customerText = `${(customer.CompanyName || '')}\\n`;\r\ncustomerText += `${(customer.Address || '')}\\n`;\r\ncustomerText += `Tell: ${(customer.PhoneNumber || '')} Fax: ${(customer.Fax || '')}\\n`;\r\ncustomerText += `Contact person:${(customer.ContactName || '')}`;\r\nif (this.EditForm.Entity.Service.Name.includes('Import')) {\r\n    this.EditForm.Entity.ConsigneeId = this.Matched.Id;\r\n    this.EditForm.Entity.ConsigneeIdText = this.Matched.Name;\r\n}\r\nelse if (this.EditForm.Entity.Service.Name.includes('Export')) {\r\n    this.EditForm.Entity.ShipperId = this.Matched.Id;\r\n    this.EditForm.Entity.ShipperIdText = this.Matched.Name;\r\n}\r\nthis.EditForm.UpdateView(false, false, \"Pic\", \"SaleId\", \"PhoneNumber\", \"ConsigneeId\", \"ConsigneeIdText\", \"ShipperId\", \"ShipperIdText\");\r\nreturn null;",
+                            "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 1 and TypeId in (2,3) and (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.DistributeInformationIds like N'%{TokenUserId}%'))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 1 and TypeId in (2,3) and (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.DistributeInformationIds like N'%{TokenUserId}%'))\"\r\n}",
+                            "RefName": "Partner",
+                            "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
+                            "PreQuery": "{\r\n    \"UserId\": this.Token.UserId,\r\n    \"UserName\": this.Token.UserName\r\n}",
+                            "ShowHotKey": true
+                        },
+                        {
+                            "Id": "007526c0-0000-0000-8000-9b55fb391824",
+                            "FieldName": "PhoneNumber",
+                            "Order": 4,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Label": "Tel/Email",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "007526dc-0000-0000-8000-c3565e8446aa",
+                            "FieldName": "Pic",
+                            "Order": 3,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Row": 50,
+                            "Label": "PIC",
+                            "ShowLabel": true
+                        }
+                    ]
                 },
                 {
-                    "Id": "00752650-0000-0000-8000-796ae52ba00b",
-                    "FieldName": "Delivery",
-                    "Order": 6,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Delivery Address",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00752658-0000-0000-8000-02b26ae3e9e6",
-                    "FieldName": "Pickup",
-                    "Order": 5,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Row": 50,
-                    "Label": "Pickup Address",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00752680-0000-0000-8000-72469961a01f",
-                    "FieldName": "DeminsionText",
-                    "Order": 7,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Dimension",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00752694-0000-0000-8000-1bf05782a967",
-                    "FieldName": "IncotermId",
+                    "Id": "007526d0-0000-0000-8000-6ae6298f81d6",
+                    "FieldName": "Main",
                     "Order": 2,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 6,
-                    "Row": 100,
-                    "Label": "Incoterm",
-                    "ShowLabel": true,
-                    "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"DDP\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"CIP\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"CPT\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"CFR\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"FAS\"\r\n    },\r\n    {\r\n        \"Id\": 6,\r\n        \"Name\": \"FCA\"\r\n    },\r\n    {\r\n        \"Id\": 7,\r\n        \"Name\": \"EXW\"\r\n    },\r\n    {\r\n        \"Id\": 8,\r\n        \"Name\": \"CIF\"\r\n    },\r\n    {\r\n        \"Id\": 9,\r\n        \"Name\": \"DPU\"\r\n    },\r\n    {\r\n        \"Id\": 10,\r\n        \"Name\": \"DAP\"\r\n    },\r\n    {\r\n        \"Id\": 11,\r\n        \"Name\": \"FOB\"\r\n    }\r\n]",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
+                    "ComponentType": "Section",
+                    "ClassName": "card-body",
+                    "XxlCol": 12,
+                    "XxlOuterColumn": 4,
+                    "Components": [
+                        {
+                            "Id": "00752614-0000-0000-8000-b42b9a6ca1a2",
+                            "FieldName": "ToDate",
+                            "Order": 1,
+                            "ComponentType": "Datepicker",
+                            "Column": 6,
+                            "Label": "Validity",
+                            "ShowLabel": true,
+                            "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
+                        },
+                        {
+                            "Id": "00752660-0000-0000-8000-132ebdc6bde3",
+                            "FieldName": "EtaDate",
+                            "Order": 3,
+                            "ComponentType": "Datepicker",
+                            "Column": 6,
+                            "Label": "ETA",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00752698-0000-0000-8000-a00dfc733a23",
+                            "FieldName": "AgentIdText",
+                            "Order": 5,
+                            "ComponentType": "Dropdown",
+                            "FormatData": "{Name}",
+                            "PlainText": "Select data",
+                            "Column": 12,
+                            "Row": 100,
+                            "Label": "Agent",
+                            "ShowLabel": true,
+                            "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('partner-editor',{ ServiceId: 2, ActionId: 1, PartnerTypeIds: '00da1840-0000-0000-8000-4d715de86733',PartnerTypeIdsText: 'Agent'})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('partner-editor',this.Entity.Matched)\"\r\n}",
+                            "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\"\r\n}",
+                            "RefName": "Partner",
+                            "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
+                            "ShowHotKey": true,
+                            "TabGroup": "AgentId"
+                        },
+                        {
+                            "Id": "007526b0-0000-0000-8000-91d485872546",
+                            "FieldName": "EtdDate",
+                            "Order": 2,
+                            "ComponentType": "Datepicker",
+                            "Column": 6,
+                            "Label": "ETD",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "007526dc-0000-0000-8000-c5c6ff7ef283",
+                            "FieldName": "FromDate",
+                            "Order": 0,
+                            "ComponentType": "Datepicker",
+                            "Column": 6,
+                            "Label": "Effect",
+                            "ShowLabel": true,
+                            "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
+                        },
+                        {
+                            "Id": "007526e4-0000-0000-8000-59c1e880f0f1",
+                            "FieldName": "ShipperIdText",
+                            "Order": 4,
+                            "ComponentType": "Dropdown",
+                            "FormatData": "{Name}",
+                            "PlainText": "Select data",
+                            "Column": 12,
+                            "Row": 100,
+                            "Label": "Shipper",
+                            "ShowLabel": true,
+                            "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('partner-editor',{ ServiceId: 2, ActionId: 1, PartnerTypeIds: '00e318b8-0000-0000-8000-a7988356b712',PartnerTypeIdsText: 'Shipper'})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('partner-editor',thisMatched)\"\r\n}",
+                            "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 2 and (PartnerTypeIdsText like N'%Shipper%'))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 2 and (PartnerTypeIdsText like N'%Shipper%'))\"\r\n}",
+                            "RefName": "Partner",
+                            "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
+                            "ShowHotKey": true,
+                            "TabGroup": "ShipperId"
+                        }
+                    ]
                 },
                 {
-                    "Id": "007526b0-0000-0000-8000-afac26b5ae6d",
-                    "FieldName": "DeliveryTerm",
+                    "Id": "007526e8-0000-0000-8000-71eb17404372",
+                    "FieldName": "Right",
                     "Order": 3,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Delivery term",
-                    "ShowLabel": true
+                    "ComponentType": "Section",
+                    "ClassName": "card-body",
+                    "XxlCol": 12,
+                    "XxlOuterColumn": 4,
+                    "Components": [
+                        {
+                            "Id": "00752620-0000-0000-8000-57d0a6b9e2e1",
+                            "FieldName": "Note",
+                            "Order": 7,
+                            "ComponentType": "Textarea",
+                            "Column": 6,
+                            "Row": 3,
+                            "Label": "Note",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00752640-0000-0000-8000-269e26978ffa",
+                            "FieldName": "ShipmentTypeId",
+                            "Order": 0,
+                            "ComponentType": "Dropdown",
+                            "FormatData": "{Name}",
+                            "PlainText": "Select data",
+                            "Column": 6,
+                            "Row": 100,
+                            "Label": "Shipment type",
+                            "ShowLabel": true,
+                            "Events": "{\r\n    \"change\": \"ShowHideDetail\"\r\n}",
+                            "DefaultVal": "0",
+                            "Query": "[\r\n    {\r\n        \"Id\": 0,\r\n        \"Name\": \"FREE-HAND\"\r\n    },\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"NOMINATE\"\r\n    }\r\n]",
+                            "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]"
+                        },
+                        {
+                            "Id": "00752660-0000-0000-8000-d62c058510ff",
+                            "FieldName": "CW",
+                            "Order": 5,
+                            "ComponentType": "Number",
+                            "Column": 6,
+                            "Precision": 2,
+                            "Label": "CW",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "0075268c-0000-0000-8000-23816f74ceae",
+                            "FieldName": "GW",
+                            "Order": 4,
+                            "ComponentType": "Number",
+                            "Column": 6,
+                            "Precision": 2,
+                            "Label": "GW",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "007526b8-0000-0000-8000-e86853f75c9d",
+                            "FieldName": "Quantity",
+                            "Order": 2,
+                            "ComponentType": "Number",
+                            "Column": 6,
+                            "Precision": 2,
+                            "Label": "Quantity",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "007526c4-0000-0000-8000-9a0e83c7c09f",
+                            "FieldName": "UnitId",
+                            "Order": 3,
+                            "ComponentType": "Dropdown",
+                            "FormatData": "{Name}",
+                            "PlainText": "Select data",
+                            "Column": 6,
+                            "Row": 100,
+                            "Label": "Unit",
+                            "ShowLabel": true,
+                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where ds1.Name in (N'Unit Type','LTL Type','Container Type')\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where ds1.Name in (N'Unit Type','LTL Type','Container Type')\"\r\n}",
+                            "RefName": "MasterData",
+                            "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]"
+                        },
+                        {
+                            "Id": "007526c8-0000-0000-8000-eb296c040805",
+                            "FieldName": "CommodityId",
+                            "Order": 1,
+                            "ComponentType": "Dropdown",
+                            "FormatData": "{Name}",
+                            "PlainText": "Select data",
+                            "Column": 6,
+                            "Row": 100,
+                            "Label": "Commodity",
+                            "ShowLabel": true,
+                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Commodity Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Commodity Type'\"\r\n}",
+                            "RefName": "MasterData",
+                            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
+                        },
+                        {
+                            "Id": "007526dc-0000-0000-8000-cd614ef2337d",
+                            "FieldName": "CBM",
+                            "Order": 6,
+                            "ComponentType": "Number",
+                            "Column": 6,
+                            "Precision": 2,
+                            "Label": "CBM",
+                            "ShowLabel": true
+                        }
+                    ]
                 },
                 {
-                    "Id": "007526e0-0000-0000-8000-80d96ef877d0",
-                    "FieldName": "ConsigneeIdText",
-                    "Order": 1,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 12,
-                    "Row": 100,
-                    "Label": "Consignee",
-                    "ShowLabel": true,
-                    "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('partner-editor',{ ServiceId: 2, ActionId: 1, PartnerTypeIds: '00e51814-0000-0000-8000-4128ce0e4c14',PartnerTypeIdsText: 'Consignee'})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('partner-editor',this.Matched)\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 2 and (PartnerTypeIdsText like N'%Consignee%'))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 2 and (PartnerTypeIdsText like N'%Consignee%'))\"\r\n}",
-                    "RefName": "Partner",
-                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
-                    "ShowHotKey": true,
-                    "TabGroup": "ConsigneeId"
-                }
-            ]
-        },
-        {
-            "Id": "00752638-0000-0000-8000-0a0987c61231",
-            "FieldName": "Show More All",
-            "Order": 4,
-            "ComponentType": "Section",
-            "Label": "Show More",
-            "XxlCol": 12,
-            "ParentId": "007426dc-0000-0000-8000-9a4afdb97265",
-            "XxlOuterColumn": 12,
-            "IsDropDown": true
-        },
-        {
-            "Id": "007526d0-0000-0000-8000-6ae6298f81d6",
-            "FieldName": "Main",
-            "Order": 2,
-            "ComponentType": "Section",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "007426dc-0000-0000-8000-9a4afdb97265",
-            "XxlOuterColumn": 4,
-            "Components": [
-                {
-                    "Id": "00752614-0000-0000-8000-b42b9a6ca1a2",
-                    "FieldName": "ToDate",
-                    "Order": 1,
-                    "ComponentType": "Datepicker",
-                    "Column": 6,
-                    "Label": "Validity",
-                    "ShowLabel": true,
-                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
-                },
-                {
-                    "Id": "00752660-0000-0000-8000-132ebdc6bde3",
-                    "FieldName": "EtaDate",
-                    "Order": 3,
-                    "ComponentType": "Datepicker",
-                    "Column": 6,
-                    "Label": "ETA",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00752698-0000-0000-8000-a00dfc733a23",
-                    "FieldName": "AgentIdText",
-                    "Order": 5,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 12,
-                    "Row": 100,
-                    "Label": "Agent",
-                    "ShowLabel": true,
-                    "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('partner-editor',{ ServiceId: 2, ActionId: 1, PartnerTypeIds: '00da1840-0000-0000-8000-4d715de86733',PartnerTypeIdsText: 'Agent'})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('partner-editor',this.Entity.Matched)\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\"\r\n}",
-                    "RefName": "Partner",
-                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
-                    "ShowHotKey": true,
-                    "TabGroup": "AgentId"
-                },
-                {
-                    "Id": "007526b0-0000-0000-8000-91d485872546",
-                    "FieldName": "EtdDate",
-                    "Order": 2,
-                    "ComponentType": "Datepicker",
-                    "Column": 6,
-                    "Label": "ETD",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "007526dc-0000-0000-8000-c5c6ff7ef283",
-                    "FieldName": "FromDate",
-                    "Order": 0,
-                    "ComponentType": "Datepicker",
-                    "Column": 6,
-                    "Label": "Effect",
-                    "ShowLabel": true,
-                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
-                },
-                {
-                    "Id": "007526e4-0000-0000-8000-59c1e880f0f1",
-                    "FieldName": "ShipperIdText",
+                    "Id": "00752638-0000-0000-8000-0a0987c61231",
+                    "FieldName": "Show More All",
                     "Order": 4,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 12,
-                    "Row": 100,
-                    "Label": "Shipper",
-                    "ShowLabel": true,
-                    "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('partner-editor',{ ServiceId: 2, ActionId: 1, PartnerTypeIds: '00e318b8-0000-0000-8000-a7988356b712',PartnerTypeIdsText: 'Shipper'})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('partner-editor',thisMatched)\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 2 and (PartnerTypeIdsText like N'%Shipper%'))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 2 and (PartnerTypeIdsText like N'%Shipper%'))\"\r\n}",
-                    "RefName": "Partner",
-                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
-                    "ShowHotKey": true,
-                    "TabGroup": "ShipperId"
-                }
-            ]
-        },
-        {
-            "Id": "007526dc-0000-0000-8000-de1012bccbad",
-            "FieldName": "Show More Container",
-            "Order": 6,
-            "ComponentType": "Section",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "00752638-0000-0000-8000-0a0987c61231",
-            "XxlOuterColumn": 3,
-            "Components": [
-                {
-                    "Id": "0075260c-0000-0000-8000-a9ba32688815",
-                    "FieldName": "EntityContainer",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 200,
-                    "ClassName": "sticky",
-                    "DefaultVal": "{\r\n    \"EntityId\": this.EditForm.Entity.Id,\r\n    \"TableName\": \"Quotation\"\r\n}",
-                    "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from EntityContainer as ds where EntityId = '{EntityId}'\",\r\n    \"total\": \"select count(ds.Id) as total from EntityContainer as ds where EntityId = '{EntityId}'\"\r\n}",
-                    "RefName": "EntityContainer",
-                    "PreQuery": "{ \"EntityId\": this.EditForm.Entity.Id}",
-                    "Editable": true
-                }
-            ]
-        },
-        {
-            "Id": "007526e8-0000-0000-8000-71eb17404372",
-            "FieldName": "Right",
-            "Order": 3,
-            "ComponentType": "Section",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "007426dc-0000-0000-8000-9a4afdb97265",
-            "XxlOuterColumn": 4,
-            "Components": [
-                {
-                    "Id": "00752620-0000-0000-8000-57d0a6b9e2e1",
-                    "FieldName": "Note",
-                    "Order": 7,
-                    "ComponentType": "Textarea",
-                    "Column": 6,
-                    "Row": 3,
-                    "Label": "Note",
-                    "ShowLabel": true
+                    "ComponentType": "Section",
+                    "Label": "Show More",
+                    "XxlCol": 12,
+                    "XxlOuterColumn": 12,
+                    "IsDropDown": true,
+                    "Children": [
+                        {
+                            "Id": "0075260c-0000-0000-8000-e8606ea5aee1",
+                            "FieldName": "Show More",
+                            "Order": 4,
+                            "ComponentType": "Section",
+                            "ClassName": "card-body",
+                            "XxlCol": 12,
+                            "XxlOuterColumn": 3,
+                            "Components": [
+                                {
+                                    "Id": "00752610-0000-0000-8000-030ef3e0de97",
+                                    "FieldName": "Subject",
+                                    "Order": 4,
+                                    "ComponentType": "Textarea",
+                                    "Column": 6,
+                                    "RowSpan": 3,
+                                    "Row": 6,
+                                    "Label": "Subject",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "00752650-0000-0000-8000-796ae52ba00b",
+                                    "FieldName": "Delivery",
+                                    "Order": 6,
+                                    "ComponentType": "Input",
+                                    "Column": 6,
+                                    "Label": "Delivery Address",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "00752658-0000-0000-8000-02b26ae3e9e6",
+                                    "FieldName": "Pickup",
+                                    "Order": 5,
+                                    "ComponentType": "Input",
+                                    "Column": 6,
+                                    "Row": 50,
+                                    "Label": "Pickup Address",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "00752680-0000-0000-8000-72469961a01f",
+                                    "FieldName": "DeminsionText",
+                                    "Order": 7,
+                                    "ComponentType": "Input",
+                                    "Column": 6,
+                                    "Label": "Dimension",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "00752694-0000-0000-8000-1bf05782a967",
+                                    "FieldName": "IncotermId",
+                                    "Order": 2,
+                                    "ComponentType": "Dropdown",
+                                    "FormatData": "{Name}",
+                                    "PlainText": "Select data",
+                                    "Column": 6,
+                                    "Row": 100,
+                                    "Label": "Incoterm",
+                                    "ShowLabel": true,
+                                    "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"DDP\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"CIP\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"CPT\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"CFR\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"FAS\"\r\n    },\r\n    {\r\n        \"Id\": 6,\r\n        \"Name\": \"FCA\"\r\n    },\r\n    {\r\n        \"Id\": 7,\r\n        \"Name\": \"EXW\"\r\n    },\r\n    {\r\n        \"Id\": 8,\r\n        \"Name\": \"CIF\"\r\n    },\r\n    {\r\n        \"Id\": 9,\r\n        \"Name\": \"DPU\"\r\n    },\r\n    {\r\n        \"Id\": 10,\r\n        \"Name\": \"DAP\"\r\n    },\r\n    {\r\n        \"Id\": 11,\r\n        \"Name\": \"FOB\"\r\n    }\r\n]",
+                                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
+                                },
+                                {
+                                    "Id": "007526b0-0000-0000-8000-afac26b5ae6d",
+                                    "FieldName": "DeliveryTerm",
+                                    "Order": 3,
+                                    "ComponentType": "Input",
+                                    "Column": 6,
+                                    "Label": "Delivery term",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "007526e0-0000-0000-8000-80d96ef877d0",
+                                    "FieldName": "ConsigneeIdText",
+                                    "Order": 1,
+                                    "ComponentType": "Dropdown",
+                                    "FormatData": "{Name}",
+                                    "PlainText": "Select data",
+                                    "Column": 12,
+                                    "Row": 100,
+                                    "Label": "Consignee",
+                                    "ShowLabel": true,
+                                    "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('partner-editor',{ ServiceId: 2, ActionId: 1, PartnerTypeIds: '00e51814-0000-0000-8000-4128ce0e4c14',PartnerTypeIdsText: 'Consignee'})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('partner-editor',this.Matched)\"\r\n}",
+                                    "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 2 and (PartnerTypeIdsText like N'%Consignee%'))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 2 and (PartnerTypeIdsText like N'%Consignee%'))\"\r\n}",
+                                    "RefName": "Partner",
+                                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
+                                    "ShowHotKey": true,
+                                    "TabGroup": "ConsigneeId"
+                                }
+                            ]
+                        },
+                        {
+                            "Id": "007526dc-0000-0000-8000-de1012bccbad",
+                            "FieldName": "Show More Container",
+                            "Order": 6,
+                            "ComponentType": "Section",
+                            "ClassName": "card-body",
+                            "XxlCol": 12,
+                            "XxlOuterColumn": 3,
+                            "Components": [
+                                {
+                                    "Id": "0075260c-0000-0000-8000-a9ba32688815",
+                                    "FieldName": "EntityContainer",
+                                    "Order": 1,
+                                    "ComponentType": "GridView",
+                                    "Column": 12,
+                                    "Row": 200,
+                                    "ClassName": "sticky",
+                                    "DefaultVal": "{\r\n    \"EntityId\": this.EditForm.Entity.Id,\r\n    \"TableName\": \"Quotation\"\r\n}",
+                                    "CanAdd": true,
+                                    "Query": "{\r\n    \"sql\": \"select * from EntityContainer as ds where EntityId = '{EntityId}'\",\r\n    \"total\": \"select count(ds.Id) as total from EntityContainer as ds where EntityId = '{EntityId}'\"\r\n}",
+                                    "RefName": "EntityContainer",
+                                    "PreQuery": "{ \"EntityId\": this.EditForm.Entity.Id}",
+                                    "Editable": true
+                                }
+                            ]
+                        },
+                        {
+                            "Id": "0076269c-0000-0000-8000-45b8cbdbb68b",
+                            "FieldName": "Show More Remark",
+                            "Order": 7,
+                            "ComponentType": "Section",
+                            "Label": "Remark",
+                            "ClassName": "card-body",
+                            "XxlCol": 12,
+                            "XxlOuterColumn": 6,
+                            "Components": [
+                                {
+                                    "Id": "007626b0-0000-0000-8000-54011e6629ec",
+                                    "FieldName": "Remark",
+                                    "Order": 1,
+                                    "ComponentType": "Word",
+                                    "Column": 12,
+                                    "Row": 1,
+                                    "Label": "Remark",
+                                    "Style": "max-height: 160px; overflow-y: auto;",
+                                    "DefaultVal": "return `Test default value`;"
+                                }
+                            ]
+                        }
+                    ]
                 },
                 {
-                    "Id": "00752640-0000-0000-8000-269e26978ffa",
-                    "FieldName": "ShipmentTypeId",
-                    "Order": 0,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 6,
-                    "Row": 100,
-                    "Label": "Shipment type",
-                    "ShowLabel": true,
-                    "Events": "{\r\n    \"change\": \"ShowHideDetail\"\r\n}",
-                    "DefaultVal": "0",
-                    "Query": "[\r\n    {\r\n        \"Id\": 0,\r\n        \"Name\": \"FREE-HAND\"\r\n    },\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"NOMINATE\"\r\n    }\r\n]",
-                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]"
+                    "Id": "00762600-0000-0000-8000-c9b5c84bce13",
+                    "Order": 9,
+                    "ComponentType": "Section",
+                    "Label": "Route",
+                    "ClassName": "card-body",
+                    "XxlCol": 12,
+                    "XxlOuterColumn": 12,
+                    "Components": [
+                        {
+                            "Id": "007626bc-0000-0000-8000-5a4fdc8c7408",
+                            "FieldName": "InquiryDetail",
+                            "Order": 1,
+                            "ComponentType": "GridView",
+                            "Column": 12,
+                            "Row": 200,
+                            "Label": "InquiryDetail",
+                            "ClassName": "sticky",
+                            "Events": "{\r\n    \"domcontentloaded\": \"ShowHideFreightFee\",\r\n    \"AfterEmptyRowCreated\": \"ShowHideFreightFee\",\r\n    \"change\": \"ReloadSummary\"\r\n}",
+                            "DefaultVal": "{\r\n    \"InquiryId\": this.EditForm.Entity.Id,\r\n    \"StatusId\": 1\r\n}",
+                            "CanAdd": true,
+                            "Query": "{\r\n    \"sql\": \"select * from InquiryDetail as ds where InquiryId = '{InquiryId}' and OtherFee = 0\",\r\n    \"total\": \"select count(ds.Id) as total from InquiryDetail as ds where InquiryId = '{InquiryId}' and OtherFee = 0\"\r\n}",
+                            "RefName": "InquiryDetail",
+                            "PreQuery": "{\r\n    \"InquiryId\": this.EditForm.Entity.Id,\r\n    \"OtherFee\": 0\r\n}",
+                            "IsSumary": true,
+                            "Editable": true
+                        }
+                    ]
                 },
                 {
-                    "Id": "00752660-0000-0000-8000-d62c058510ff",
-                    "FieldName": "CW",
-                    "Order": 5,
-                    "ComponentType": "Number",
-                    "Column": 6,
-                    "Precision": 2,
-                    "Label": "CW",
-                    "ShowLabel": true
+                    "Id": "0076263c-0000-0000-8000-48b0b7a4f3af",
+                    "FieldName": "Fee",
+                    "Order": 10,
+                    "ComponentType": "Section",
+                    "Label": "Price Details",
+                    "ClassName": "card-body",
+                    "XxlCol": 12,
+                    "TabGroup": "Other charges",
+                    "XxlOuterColumn": 12,
+                    "Components": [
+                        {
+                            "Id": "007626ac-0000-0000-8000-8820f6022d1b",
+                            "FieldName": "DefaultFee",
+                            "Order": 2,
+                            "ComponentType": "GridView",
+                            "Column": 12,
+                            "Row": 200,
+                            "GroupBy": "RouteId,UnitId",
+                            "GroupFormat": "'Route: ' + this.Entity.RouteId + ' CTNR: ' + (this.Entity.Unit ? this.Entity.Unit.Name : '')",
+                            "Label": "DefaultFee",
+                            "ClassName": "sticky",
+                            "Events": "{\r\n    \"domcontentloaded\": \"ShowHideFee\",\r\n    \"AfterCreated\": \"ShowHideFee\",\r\n    \"BeforeCreated\": \"BeforeCreated\",\r\n    \"change\": \"ReloadSummary\",\r\n    \"contextmenu\": \"AddDuplicateMenu\"\r\n}",
+                            "DefaultVal": "{\r\n    \"InquiryId\": this.EditForm.Entity.Id,\r\n    \"StatusId\": 1,\r\n    \"OtherFee\": true\r\n}",
+                            "CanAdd": true,
+                            "Query": "{\r\n    \"sql\": \"select * from InquiryDetail as ds where InquiryId = '{InquiryId}' and OtherFee = 1\",\r\n    \"total\": \"select count(ds.Id) as total from InquiryDetail as ds where InquiryId = '{InquiryId}' and OtherFee = 1\"\r\n}",
+                            "RefName": "InquiryDetail",
+                            "PreQuery": "{\r\n    \"InquiryId\": this.EditForm.Entity.Id,\r\n    \"OtherFee\": 1\r\n}",
+                            "IsSumary": true,
+                            "Editable": true,
+                            "OrderBy": "ds.[Order] asc"
+                        }
+                    ]
                 },
                 {
-                    "Id": "0075268c-0000-0000-8000-23816f74ceae",
-                    "FieldName": "GW",
-                    "Order": 4,
-                    "ComponentType": "Number",
-                    "Column": 6,
-                    "Precision": 2,
-                    "Label": "GW",
-                    "ShowLabel": true
+                    "Id": "007626e4-0000-0000-8000-fee06b32bf9e",
+                    "FieldName": "Summary",
+                    "Order": 10,
+                    "ComponentType": "Section",
+                    "Label": "Summary",
+                    "ClassName": "card-body",
+                    "XxlCol": 12,
+                    "TabGroup": "Other charges",
+                    "XxlOuterColumn": 12,
+                    "Components": [
+                        {
+                            "Id": "00762648-0000-0000-8000-bd8a6408c752",
+                            "FieldName": "Summary",
+                            "Order": 2,
+                            "ComponentType": "GridView",
+                            "Column": 12,
+                            "Row": 50,
+                            "Label": "Summary",
+                            "ClassName": "sticky",
+                            "Events": "{\r\n    \"FirstLoad\": \"ReloadSummary1\"\r\n}",
+                            "Query": "var detail = this.EditForm.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"InquiryDetail\");\r\nvar inquiryContainer = this.EditForm.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"EntityContainer\");\r\nvar fee = this.EditForm.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"DefaultFee\");\r\nvar listItem = fee.AllListViewItem.filter(x => !x.GroupRow && !x.Entity.IsObh).map(x => x.Entity);\r\nvar containers = inquiryContainer.AllListViewItem.map(x => x.Entity) || [];\r\nvar groupedItems = {};\r\nlistItem.forEach(item => {\r\n    var key = `${item.PolId}-${item.FinalDestinationId}`;\r\n    var sumDetail = detail.AllListViewItem.map(x => x.Entity).find(x => x.PolId == item.PolId && x.FinalDestinationId == item.FinalDestinationId);\r\n    var allUnitPrice = item.Unit.Name.includes('ALL') ? new this.Decimal(item.Rate || 0) : new this.Decimal(0);\r\n    if (containers.length > 0) {\r\n        var hasContainer = containers.some(x => x.ContainerTypeId == item.UnitId);\r\n        if (!hasContainer) {\r\n            allUnitPrice = new this.Decimal(0);\r\n        }\r\n    }\r\n    var newItem = {\r\n        PolId: sumDetail.PolId,\r\n        Pol: sumDetail.Pol,\r\n        PodId: sumDetail.PodId,\r\n        Pod: sumDetail.Pod,\r\n        VendorId: sumDetail.VendorId,\r\n        Vendor: sumDetail.Vendor,\r\n        PlaceReceiptId: sumDetail.PlaceReceiptId,\r\n        PlaceReceipt: sumDetail.PlaceReceipt,\r\n        PlaceDeliveryId: sumDetail.PlaceDeliveryId,\r\n        PlaceDelivery: sumDetail.PlaceDelivery,\r\n        FinalDestinationId: sumDetail.FinalDestinationId,\r\n        FinalDestination: sumDetail.FinalDestination,\r\n        Cont40: ((item.Unit.Name.includes('40') && !item.Unit.Name.includes(\"40'HC\") ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateVND || 1)).plus(allUnitPrice.times(item.ExchangeRateVND || 1)),\r\n        Cont20: ((item.Unit.Name.includes('20') ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateVND || 1)).plus(allUnitPrice.times(item.ExchangeRateVND || 1)),\r\n        Cont45: ((item.Unit.Name.includes('45') > 0 ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateVND || 1)).plus(allUnitPrice.times(item.ExchangeRateVND || 1)),\r\n        Cont40HC: ((item.Unit.Name.includes(\"40'HC\") ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateVND || 1)).plus(allUnitPrice.times(item.ExchangeRateVND || 1)),\r\n        MinLCL: ((new this.Decimal(item.MinLCLRate || 0)).times(item.ExchangeRateVND || 1)),\r\n        LCL: ((item.Unit.Name.includes(\"LCL\") ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateVND || 1)).plus(allUnitPrice.times(item.ExchangeRateVND || 1)),\r\n\r\n        Cont40USD: ((item.Unit.Name.includes('40') && !item.Unit.Name.includes(\"40'HC\") ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateUSD || 1)).plus(allUnitPrice.times(item.ExchangeRateUSD || 1)),\r\n        Cont20USD: ((item.Unit.Name.includes('20') ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateUSD || 1)).plus(allUnitPrice.times(item.ExchangeRateUSD || 1)),\r\n        Cont45USD: ((item.Unit.Name.includes('45') > 0 ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateUSD || 1)).plus(allUnitPrice.times(item.ExchangeRateUSD || 1)),\r\n        Cont40HCUSD: ((item.Unit.Name.includes(\"40'HC\") ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateUSD || 1)).plus(allUnitPrice.times(item.ExchangeRateUSD || 1)),\r\n        MinLCLUSD: ((new this.Decimal(item.MinLCLRate || 0)).times(item.ExchangeRateUSD || 1)),\r\n        LCLUSD: ((item.Unit.Name.includes(\"LCL\") ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateUSD || 1)).plus(allUnitPrice.times(item.ExchangeRateUSD || 1)),\r\n    }\r\n    if (!groupedItems[key]) {\r\n        groupedItems[key] = newItem;\r\n    }\r\n    else {\r\n        groupedItems[key].Cont40 = groupedItems[key].Cont40.plus(newItem.Cont40);\r\n        groupedItems[key].Cont20 = groupedItems[key].Cont20.plus(newItem.Cont20);\r\n        groupedItems[key].Cont45 = groupedItems[key].Cont45.plus(newItem.Cont45);\r\n        groupedItems[key].Cont40HC = groupedItems[key].Cont40HC.plus(newItem.Cont40HC);\r\n        groupedItems[key].MinLCL = groupedItems[key].MinLCL.plus(newItem.MinLCL);\r\n        groupedItems[key].LCL = groupedItems[key].LCL.plus(newItem.LCL);\r\n        groupedItems[key].Cont40USD = groupedItems[key].Cont40USD.plus(newItem.Cont40USD);\r\n        groupedItems[key].Cont20USD = groupedItems[key].Cont20USD.plus(newItem.Cont20USD);\r\n        groupedItems[key].Cont45USD = groupedItems[key].Cont45USD.plus(newItem.Cont45USD);\r\n        groupedItems[key].Cont40HCUSD = groupedItems[key].Cont40HCUSD.plus(newItem.Cont40HCUSD);\r\n        groupedItems[key].MinLCLUSD = groupedItems[key].MinLCLUSD.plus(newItem.MinLCLUSD);\r\n        groupedItems[key].LCLUSD = groupedItems[key].LCLUSD.plus(newItem.LCLUSD);\r\n    }\r\n\r\n});\r\nvar result = Object.values(groupedItems).map(item => {\r\n    return {\r\n        PolId: item.PolId,\r\n        Pol: item.Pol,\r\n        PodId: item.PodId,\r\n        Pod: item.Pod,\r\n        VendorId: item.VendorId,\r\n        Vendor: item.Vendor,\r\n        Cont40: item.Cont40,\r\n        Cont20: item.Cont20,\r\n        Cont45: item.Cont45,\r\n        Cont40HC: item.Cont40HC,\r\n        LCL: item.LCL,\r\n        MinLCL: item.MinLCL,\r\n        Cont40USD: item.Cont40USD,\r\n        Cont20USD: item.Cont20USD,\r\n        Cont45USD: item.Cont45USD,\r\n        Cont40HCUSD: item.Cont40HCUSD,\r\n        LCLUSD: item.LCLUSD,\r\n        MinLCLUSD: item.MinLCLUSD,\r\n        PlaceReceiptId: item.PlaceReceiptId,\r\n        PlaceReceipt: item.PlaceReceipt,\r\n        PlaceDeliveryId: item.PlaceDeliveryId,\r\n        PlaceDelivery: item.PlaceDelivery,\r\n        FinalDestinationId: item.FinalDestinationId,\r\n        FinalDestination: item.FinalDestination,\r\n    };\r\n});\r\n\r\nreturn result;",
+                            "IsSumary": true,
+                            "OrderBy": "ds.InsertedDate desc",
+                            "AddRowExp": "this.EditForm.Entity.StatusId == 1 || this.EditForm.Entity.StatusId == 4"
+                        }
+                    ]
                 },
                 {
-                    "Id": "007526b8-0000-0000-8000-e86853f75c9d",
-                    "FieldName": "Quantity",
-                    "Order": 2,
-                    "ComponentType": "Number",
-                    "Column": 6,
-                    "Precision": 2,
-                    "Label": "Quantity",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "007526c4-0000-0000-8000-9a0e83c7c09f",
-                    "FieldName": "UnitId",
-                    "Order": 3,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 6,
-                    "Row": 100,
-                    "Label": "Unit",
-                    "ShowLabel": true,
-                    "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where ds1.Name in (N'Unit Type','LTL Type','Container Type')\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where ds1.Name in (N'Unit Type','LTL Type','Container Type')\"\r\n}",
-                    "RefName": "MasterData",
-                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]"
-                },
-                {
-                    "Id": "007526c8-0000-0000-8000-eb296c040805",
-                    "FieldName": "CommodityId",
-                    "Order": 1,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 6,
-                    "Row": 100,
-                    "Label": "Commodity",
-                    "ShowLabel": true,
-                    "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Commodity Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Commodity Type'\"\r\n}",
-                    "RefName": "MasterData",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "007526dc-0000-0000-8000-cd614ef2337d",
-                    "FieldName": "CBM",
-                    "Order": 6,
-                    "ComponentType": "Number",
-                    "Column": 6,
-                    "Precision": 2,
-                    "Label": "CBM",
-                    "ShowLabel": true
-                }
-            ]
-        },
-        {
-            "Id": "00762600-0000-0000-8000-c9b5c84bce13",
-            "Order": 9,
-            "ComponentType": "Section",
-            "Label": "Route",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "007426dc-0000-0000-8000-9a4afdb97265",
-            "XxlOuterColumn": 12,
-            "Components": [
-                {
-                    "Id": "007626bc-0000-0000-8000-5a4fdc8c7408",
-                    "FieldName": "InquiryDetail",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 200,
-                    "Label": "InquiryDetail",
-                    "ClassName": "sticky",
-                    "Events": "{\r\n    \"domcontentloaded\": \"ShowHideFreightFee\",\r\n    \"AfterEmptyRowCreated\": \"ShowHideFreightFee\",\r\n    \"change\": \"ReloadSummary\"\r\n}",
-                    "DefaultVal": "{\r\n    \"InquiryId\": this.EditForm.Entity.Id,\r\n    \"StatusId\": 1\r\n}",
-                    "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from InquiryDetail as ds where InquiryId = '{InquiryId}' and OtherFee = 0\",\r\n    \"total\": \"select count(ds.Id) as total from InquiryDetail as ds where InquiryId = '{InquiryId}' and OtherFee = 0\"\r\n}",
-                    "RefName": "InquiryDetail",
-                    "PreQuery": "{\r\n    \"InquiryId\": this.EditForm.Entity.Id,\r\n    \"OtherFee\": 0\r\n}",
-                    "IsSumary": true,
-                    "Editable": true
+                    "Id": "004a30ec-0000-0000-8000-88008a33ead1",
+                    "FieldName": "Other infor shipment",
+                    "Order": 13,
+                    "ComponentType": "Section",
+                    "Label": "Estimate Profit",
+                    "ClassName": "card-body",
+                    "XxlCol": 12,
+                    "XxlOuterColumn": 12,
+                    "IsDropDown": true,
+                    "Components": [
+                        {
+                            "Id": "00593054-0000-0000-8000-b9fb1f7d6067",
+                            "FieldName": "Summary2",
+                            "Order": 3,
+                            "ComponentType": "GridView",
+                            "Column": 12,
+                            "Row": 50,
+                            "Label": "Summary",
+                            "ClassName": "sticky",
+                            "Events": "{\r\n    \"FirstLoad\": \"ReloadSummary2\"\r\n}",
+                            "Query": "var detail = this.EditForm.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"DefaultFee\");\r\nvar inquiryDetail = this.EditForm.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"InquiryDetail\");\r\nvar listItem = detail.AllListViewItem.filter(x => !x.GroupRow).map(x => x.Entity);\r\nvar sellingRates = listItem.filter(x => x.Rate && !x.IsObh);\r\nvar buyingRates = listItem.filter(x => x.Cost && !x.IsObh);\r\nvar routes = inquiryDetail.AllListViewItem.filter(x => !x.GroupRow).map(x => x.Entity);\r\nvar datas = [];\r\nroutes.forEach(item => {\r\n    var sellingRate = sellingRates.filter(x => x.PolId == item.PolId && x.PodId == item.PodId);\r\n    var buyingRate = buyingRates.filter(x => x.PolId == item.PolId && x.PodId == item.PodId);\r\n    var vnd = {\r\n        PolId: item.PolId,\r\n        Pol: item.Pol,\r\n        PodId: item.PodId,\r\n        Pod: item.Pod,\r\n        CurrencyText: \"VND\",\r\n        RevenueLCL: (sellingRate.filter(x => x.Unit.Name.includes('LCL')).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        CostLCL: (buyingRate.filter(x => x.Unit.Name.includes('LCL')).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        RevenueALL: (sellingRate.filter(x => !x.Unit.IsContainer && !x.Unit.Name.includes('LCL')).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        CostALL: (buyingRate.filter(x => !x.Unit.IsContainer && !x.Unit.Name.includes('LCL')).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Revenue20: (sellingRate.filter(x => x.Unit.Name.includes('20')).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Cost20: (buyingRate.filter(x => x.Unit.Name.includes('20')).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Revenue40: (sellingRate.filter(x => x.Unit.Name.includes('40') && !x.Unit.Name.includes(\"40'HC\")).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Cost40: (buyingRate.filter(x => x.Unit.Name.includes('40') && !x.Unit.Name.includes(\"40'HC\")).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Revenue40HC: (sellingRate.filter(x => x.Unit.Name.includes(\"40'HC\")).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Cost40HC: (buyingRate.filter(x => x.Unit.Name.includes(\"40'HC\")).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Revenue45: (sellingRate.filter(x => x.Unit.Name.includes('45')).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Cost45: (buyingRate.filter(x => x.Unit.Name.includes('45')).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateVND || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n    }\r\n    vnd.RevenueLCL = vnd.RevenueLCL.plus(vnd.RevenueALL);\r\n    vnd.CostLCL = vnd.CostLCL.plus(vnd.CostALL);\r\n    vnd.ProfitLCL = vnd.RevenueLCL.sub(vnd.CostLCL);\r\n    vnd.ProfitRateLCL = (vnd.ProfitLCL.div(vnd.RevenueLCL || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    vnd.Revenue20 = vnd.Revenue20.plus(vnd.RevenueALL);\r\n    vnd.Cost20 = vnd.Cost20.plus(vnd.CostALL);\r\n    vnd.Profit20 = vnd.Revenue20.sub(vnd.Cost20);\r\n    vnd.ProfitRate20 = (vnd.Profit20.div(vnd.Revenue20 || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    vnd.Revenue40 = vnd.Revenue40.plus(vnd.RevenueALL);\r\n    vnd.Cost40 = vnd.Cost40.plus(vnd.CostALL);\r\n    vnd.Profit40 = vnd.Revenue40.sub(vnd.Cost40);\r\n    vnd.ProfitRate40 = (vnd.Profit40.div(vnd.Revenue40 || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    vnd.Revenue40HC = vnd.Revenue40HC.plus(vnd.RevenueALL);\r\n    vnd.Cost40HC = vnd.Cost40HC.plus(vnd.CostALL);\r\n    vnd.Profit40HC = vnd.Revenue40HC.sub(vnd.Cost40HC);\r\n    vnd.ProfitRate40HC = (vnd.Profit40HC.div(vnd.Revenue40HC || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    vnd.Revenue45 = vnd.Revenue45.plus(vnd.RevenueALL);\r\n    vnd.Cost45 = vnd.Cost45.plus(vnd.CostALL);\r\n    vnd.Profit45 = vnd.Revenue45.sub(vnd.Cost45);\r\n    vnd.ProfitRate45 = (vnd.Profit45.div(vnd.Revenue45 || this.Decimal(1))).times(this.Decimal(100));\r\n    var usd = {\r\n        PolId: item.PolId,\r\n        Pol: item.Pol,\r\n        PodId: item.PodId,\r\n        Pod: item.Pod,\r\n        CurrencyText: \"USD\",\r\n        RevenueLCL: (sellingRate.filter(x => x.Unit.Name.includes('LCL')).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        CostLCL: (buyingRate.filter(x => x.Unit.Name.includes('LCL')).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        RevenueALL: (sellingRate.filter(x => !x.Unit.IsContainer && !x.Unit.Name.includes('LCL')).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        CostALL: (buyingRate.filter(x => !x.Unit.IsContainer && !x.Unit.Name.includes('LCL')).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Revenue20: (sellingRate.filter(x => x.Unit.Name.includes('20')).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Cost20: (buyingRate.filter(x => x.Unit.Name.includes('20')).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Revenue40: (sellingRate.filter(x => x.Unit.Name.includes('40') && !x.Unit.Name.includes(\"40'HC\")).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Cost40: (buyingRate.filter(x => x.Unit.Name.includes('40') && !x.Unit.Name.includes(\"40'HC\")).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Revenue40HC: (sellingRate.filter(x => x.Unit.Name.includes(\"40'HC\")).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Cost40HC: (buyingRate.filter(x => x.Unit.Name.includes(\"40'HC\")).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Revenue45: (sellingRate.filter(x => x.Unit.Name.includes('45')).reduce((a, b) => a.plus(this.Decimal(b.Rate).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n        Cost45: (buyingRate.filter(x => x.Unit.Name.includes('45')).reduce((a, b) => a.plus(this.Decimal(b.Cost).times(b.ExchangeRateUSD || 1).times(b.Quantity || 1) || 0), this.Decimal(0))),\r\n    }\r\n    usd.RevenueLCL = usd.RevenueLCL.plus(usd.RevenueALL);\r\n    usd.CostLCL = usd.CostLCL.plus(usd.CostALL);\r\n    usd.ProfitLCL = usd.RevenueLCL.sub(usd.CostLCL);\r\n    usd.ProfitRateLCL = (usd.ProfitLCL.div(usd.RevenueLCL || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    usd.Revenue20 = usd.Revenue20.plus(usd.RevenueALL);\r\n    usd.Cost20 = usd.Cost20.plus(usd.CostALL);\r\n    usd.Profit20 = usd.Revenue20.sub(usd.Cost20);\r\n    usd.ProfitRate20 = (usd.Profit20.div(usd.Revenue20 || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    usd.Revenue40 = usd.Revenue40.plus(usd.RevenueALL);\r\n    usd.Cost40 = usd.Cost40.plus(usd.CostALL);\r\n    usd.Profit40 = usd.Revenue40.sub(usd.Cost40);\r\n    usd.ProfitRate40 = (usd.Profit40.div(usd.Revenue40 || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    usd.Revenue40HC = usd.Revenue40HC.plus(usd.RevenueALL);\r\n    usd.Cost40HC = usd.Cost40HC.plus(usd.CostALL);\r\n    usd.Profit40HC = usd.Revenue40HC.sub(usd.Cost40HC);\r\n    usd.ProfitRate40HC = (usd.Profit40HC.div(usd.Revenue40HC || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    usd.Revenue45 = usd.Revenue45.plus(usd.RevenueALL);\r\n    usd.Cost45 = usd.Cost45.plus(usd.CostALL);\r\n    usd.Profit45 = usd.Revenue45.sub(usd.Cost45);\r\n    usd.ProfitRate45 = (usd.Profit45.div(usd.Revenue45 || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    var totalRevenueVND = this.Decimal(0);\r\n    var totalCostVND = this.Decimal(0);\r\n\r\n    var totalRevenueUSD = this.Decimal(0);\r\n    var totalCostUSD = this.Decimal(0);\r\n    var bookingDetail = this.EditForm.ChildCom.find(x => x.Meta.FieldName == \"DefaultFee\");\r\n    if (bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name.includes('20'))) {\r\n        totalRevenueVND = totalRevenueVND.plus(vnd.Revenue20);\r\n        totalCostVND = totalCostVND.plus(vnd.Cost20);\r\n\r\n        totalRevenueUSD = totalRevenueUSD.plus(usd.Revenue20);\r\n        totalCostUSD = totalCostUSD.plus(usd.Cost20);\r\n    }\r\n    if (bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name.includes('LCL'))) {\r\n        totalRevenueVND = totalRevenueVND.plus(vnd.RevenueLCL);\r\n        totalCostVND = totalCostVND.plus(vnd.CostLCL);\r\n\r\n        totalRevenueUSD = totalRevenueUSD.plus(usd.RevenueLCL);\r\n        totalCostUSD = totalCostUSD.plus(usd.CostLCL);\r\n    }\r\n    if (bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name.includes(\"40'HC\"))) {\r\n        totalRevenueVND = totalRevenueVND.plus(vnd.Revenue40HC);\r\n        totalCostVND = totalCostVND.plus(vnd.Cost40HC);\r\n\r\n        totalRevenueUSD = totalRevenueUSD.plus(usd.Revenue40HC);\r\n        totalCostUSD = totalCostUSD.plus(usd.Cost40HC);\r\n    }\r\n    if (bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name.includes(\"40\") && !x.Entity.Unit.Name.includes(\"40'HC\"))) {\r\n        totalRevenueVND = totalRevenueVND.plus(vnd.Revenue40);\r\n        totalCostVND = totalCostVND.plus(vnd.Cost40);\r\n\r\n        totalRevenueUSD = totalRevenueUSD.plus(usd.Revenue40);\r\n        totalCostUSD = totalCostUSD.plus(usd.Cost40);\r\n    }\r\n    if (bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name.includes(\"45\"))) {\r\n        totalRevenueVND = totalRevenueVND.plus(vnd.Revenue45);\r\n        totalCostVND = totalCostVND.plus(vnd.Cost45);\r\n\r\n        totalRevenueUSD = totalRevenueUSD.plus(usd.Revenue45);\r\n        totalCostUSD = totalCostUSD.plus(usd.Cost45);\r\n    }\r\n    vnd.RevenueTotal = totalRevenueVND;\r\n    vnd.CostTotal = totalCostVND;\r\n    vnd.ProfitTotal = vnd.RevenueTotal.sub(vnd.CostTotal);\r\n    vnd.ProfitRateTotal = (vnd.ProfitTotal.div(vnd.RevenueTotal || this.Decimal(1))).times(this.Decimal(100));\r\n\r\n    usd.RevenueTotal = totalRevenueUSD;\r\n    usd.CostTotal = totalCostUSD;\r\n    usd.ProfitTotal = usd.RevenueTotal.sub(usd.CostTotal);\r\n    usd.ProfitRateTotal = (usd.ProfitTotal.div(usd.RevenueTotal || this.Decimal(1))).times(this.Decimal(100));\r\n    datas.push(vnd);\r\n    datas.push(usd);\r\n})\r\nreturn datas;",
+                            "IsSumary": true,
+                            "OrderBy": "ds.InsertedDate desc",
+                            "AddRowExp": "this.EditForm.Entity.StatusId == 1 || this.EditForm.Entity.StatusId == 4"
+                        }
+                    ]
                 }
             ]
         },
@@ -515,41 +596,6 @@
                     "ShowLabel": true,
                     "Style": "display: flex;align-items: center;gap: 1rem;height: 33px;",
                     "Events": "{\r\n    \"change\": \"ShowHideDetail\"\r\n}"
-                }
-            ]
-        },
-        {
-            "Id": "0076263c-0000-0000-8000-48b0b7a4f3af",
-            "FieldName": "Fee",
-            "Order": 10,
-            "ComponentType": "Section",
-            "Label": "Price Details",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "007426dc-0000-0000-8000-9a4afdb97265",
-            "TabGroup": "Other charges",
-            "XxlOuterColumn": 12,
-            "Components": [
-                {
-                    "Id": "007626ac-0000-0000-8000-8820f6022d1b",
-                    "FieldName": "DefaultFee",
-                    "Order": 2,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 200,
-                    "GroupBy": "RouteId,UnitId",
-                    "GroupFormat": "'Route: ' + this.Entity.RouteId + ' CTNR: ' + (this.Entity.Unit ? this.Entity.Unit.Name : '')",
-                    "Label": "DefaultFee",
-                    "ClassName": "sticky",
-                    "Events": "{\r\n    \"domcontentloaded\": \"ShowHideFee\",\r\n    \"AfterCreated\": \"ShowHideFee\",\r\n    \"BeforeCreated\": \"BeforeCreated\",\r\n    \"change\": \"ReloadSummary\",\r\n    \"contextmenu\": \"AddDuplicateMenu\"\r\n}",
-                    "DefaultVal": "{\r\n    \"InquiryId\": this.EditForm.Entity.Id,\r\n    \"StatusId\": 1,\r\n    \"OtherFee\": true\r\n}",
-                    "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from InquiryDetail as ds where InquiryId = '{InquiryId}' and OtherFee = 1\",\r\n    \"total\": \"select count(ds.Id) as total from InquiryDetail as ds where InquiryId = '{InquiryId}' and OtherFee = 1\"\r\n}",
-                    "RefName": "InquiryDetail",
-                    "PreQuery": "{\r\n    \"InquiryId\": this.EditForm.Entity.Id,\r\n    \"OtherFee\": 1\r\n}",
-                    "IsSumary": true,
-                    "Editable": true,
-                    "OrderBy": "ds.[Order] asc"
                 }
             ]
         },
@@ -677,59 +723,6 @@
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }"
-                }
-            ]
-        },
-        {
-            "Id": "0076269c-0000-0000-8000-45b8cbdbb68b",
-            "FieldName": "Show More Remark",
-            "Order": 7,
-            "ComponentType": "Section",
-            "Label": "Remark",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "00752638-0000-0000-8000-0a0987c61231",
-            "XxlOuterColumn": 6,
-            "Components": [
-                {
-                    "Id": "007626b0-0000-0000-8000-54011e6629ec",
-                    "FieldName": "Remark",
-                    "Order": 1,
-                    "ComponentType": "Word",
-                    "Column": 12,
-                    "Row": 1,
-                    "Label": "Remark",
-                    "Style": "max-height: 160px; overflow-y: auto;",
-                    "DefaultVal": "return `Test default value`;"
-                }
-            ]
-        },
-        {
-            "Id": "007626e4-0000-0000-8000-fee06b32bf9e",
-            "FieldName": "Summary",
-            "Order": 10,
-            "ComponentType": "Section",
-            "Label": "Summary",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "007426dc-0000-0000-8000-9a4afdb97265",
-            "TabGroup": "Other charges",
-            "XxlOuterColumn": 12,
-            "Components": [
-                {
-                    "Id": "00762648-0000-0000-8000-bd8a6408c752",
-                    "FieldName": "Summary",
-                    "Order": 2,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "Label": "Summary",
-                    "ClassName": "sticky",
-                    "Events": "{\r\n    \"FirstLoad\": \"ReloadSummary1\"\r\n}",
-                    "Query": "var detail = this.EditForm.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"InquiryDetail\");\r\nvar inquiryContainer = this.EditForm.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"EntityContainer\");\r\nvar fee = this.EditForm.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"DefaultFee\");\r\nvar listItem = fee.AllListViewItem.filter(x => !x.GroupRow && !x.Entity.IsObh).map(x => x.Entity);\r\nvar containers = inquiryContainer.AllListViewItem.map(x => x.Entity) || [];\r\nvar groupedItems = {};\r\nlistItem.forEach(item => {\r\n    var key = `${item.PolId}-${item.FinalDestinationId}`;\r\n    var sumDetail = detail.AllListViewItem.map(x => x.Entity).find(x => x.PolId == item.PolId && x.FinalDestinationId == item.FinalDestinationId);\r\n    var allUnitPrice = item.Unit.Name.includes('ALL') ? new this.Decimal(item.Rate || 0) : new this.Decimal(0);\r\n    if (containers.length > 0) {\r\n        var hasContainer = containers.some(x => x.ContainerTypeId == item.UnitId);\r\n        if (!hasContainer) {\r\n            allUnitPrice = new this.Decimal(0);\r\n        }\r\n    }\r\n    var newItem = {\r\n        PolId: sumDetail.PolId,\r\n        Pol: sumDetail.Pol,\r\n        PodId: sumDetail.PodId,\r\n        Pod: sumDetail.Pod,\r\n        VendorId: sumDetail.VendorId,\r\n        Vendor: sumDetail.Vendor,\r\n        PlaceReceiptId: sumDetail.PlaceReceiptId,\r\n        PlaceReceipt: sumDetail.PlaceReceipt,\r\n        PlaceDeliveryId: sumDetail.PlaceDeliveryId,\r\n        PlaceDelivery: sumDetail.PlaceDelivery,\r\n        FinalDestinationId: sumDetail.FinalDestinationId,\r\n        FinalDestination: sumDetail.FinalDestination,\r\n        Cont40: ((item.Unit.Name.includes('40') && !item.Unit.Name.includes(\"40'HC\") ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateVND || 1)).plus(allUnitPrice.times(item.ExchangeRateVND || 1)),\r\n        Cont20: ((item.Unit.Name.includes('20') ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateVND || 1)).plus(allUnitPrice.times(item.ExchangeRateVND || 1)),\r\n        Cont45: ((item.Unit.Name.includes('45') > 0 ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateVND || 1)).plus(allUnitPrice.times(item.ExchangeRateVND || 1)),\r\n        Cont40HC: ((item.Unit.Name.includes(\"40'HC\") ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateVND || 1)).plus(allUnitPrice.times(item.ExchangeRateVND || 1)),\r\n        MinLCL: ((new this.Decimal(item.MinLCLRate || 0)).times(item.ExchangeRateVND || 1)),\r\n        LCL: ((item.Unit.Name.includes(\"LCL\") ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateVND || 1)).plus(allUnitPrice.times(item.ExchangeRateVND || 1)),\r\n\r\n        Cont40USD: ((item.Unit.Name.includes('40') && !item.Unit.Name.includes(\"40'HC\") ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateUSD || 1)).plus(allUnitPrice.times(item.ExchangeRateUSD || 1)),\r\n        Cont20USD: ((item.Unit.Name.includes('20') ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateUSD || 1)).plus(allUnitPrice.times(item.ExchangeRateUSD || 1)),\r\n        Cont45USD: ((item.Unit.Name.includes('45') > 0 ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateUSD || 1)).plus(allUnitPrice.times(item.ExchangeRateUSD || 1)),\r\n        Cont40HCUSD: ((item.Unit.Name.includes(\"40'HC\") ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateUSD || 1)).plus(allUnitPrice.times(item.ExchangeRateUSD || 1)),\r\n        MinLCLUSD: ((new this.Decimal(item.MinLCLRate || 0)).times(item.ExchangeRateUSD || 1)),\r\n        LCLUSD: ((item.Unit.Name.includes(\"LCL\") ? new this.Decimal(item.Rate || 0) : new this.Decimal(0)).times(item.ExchangeRateUSD || 1)).plus(allUnitPrice.times(item.ExchangeRateUSD || 1)),\r\n    }\r\n    if (!groupedItems[key]) {\r\n        groupedItems[key] = newItem;\r\n    }\r\n    else {\r\n        groupedItems[key].Cont40 = groupedItems[key].Cont40.plus(newItem.Cont40);\r\n        groupedItems[key].Cont20 = groupedItems[key].Cont20.plus(newItem.Cont20);\r\n        groupedItems[key].Cont45 = groupedItems[key].Cont45.plus(newItem.Cont45);\r\n        groupedItems[key].Cont40HC = groupedItems[key].Cont40HC.plus(newItem.Cont40HC);\r\n        groupedItems[key].MinLCL = groupedItems[key].MinLCL.plus(newItem.MinLCL);\r\n        groupedItems[key].LCL = groupedItems[key].LCL.plus(newItem.LCL);\r\n        groupedItems[key].Cont40USD = groupedItems[key].Cont40USD.plus(newItem.Cont40USD);\r\n        groupedItems[key].Cont20USD = groupedItems[key].Cont20USD.plus(newItem.Cont20USD);\r\n        groupedItems[key].Cont45USD = groupedItems[key].Cont45USD.plus(newItem.Cont45USD);\r\n        groupedItems[key].Cont40HCUSD = groupedItems[key].Cont40HCUSD.plus(newItem.Cont40HCUSD);\r\n        groupedItems[key].MinLCLUSD = groupedItems[key].MinLCLUSD.plus(newItem.MinLCLUSD);\r\n        groupedItems[key].LCLUSD = groupedItems[key].LCLUSD.plus(newItem.LCLUSD);\r\n    }\r\n\r\n});\r\nvar result = Object.values(groupedItems).map(item => {\r\n    return {\r\n        PolId: item.PolId,\r\n        Pol: item.Pol,\r\n        PodId: item.PodId,\r\n        Pod: item.Pod,\r\n        VendorId: item.VendorId,\r\n        Vendor: item.Vendor,\r\n        Cont40: item.Cont40,\r\n        Cont20: item.Cont20,\r\n        Cont45: item.Cont45,\r\n        Cont40HC: item.Cont40HC,\r\n        LCL: item.LCL,\r\n        MinLCL: item.MinLCL,\r\n        Cont40USD: item.Cont40USD,\r\n        Cont20USD: item.Cont20USD,\r\n        Cont45USD: item.Cont45USD,\r\n        Cont40HCUSD: item.Cont40HCUSD,\r\n        LCLUSD: item.LCLUSD,\r\n        MinLCLUSD: item.MinLCLUSD,\r\n        PlaceReceiptId: item.PlaceReceiptId,\r\n        PlaceReceipt: item.PlaceReceipt,\r\n        PlaceDeliveryId: item.PlaceDeliveryId,\r\n        PlaceDelivery: item.PlaceDelivery,\r\n        FinalDestinationId: item.FinalDestinationId,\r\n        FinalDestination: item.FinalDestination,\r\n    };\r\n});\r\n\r\nreturn result;",
-                    "IsSumary": true,
-                    "OrderBy": "ds.InsertedDate desc",
-                    "AddRowExp": "this.EditForm.Entity.StatusId == 1 || this.EditForm.Entity.StatusId == 4"
                 }
             ]
         }

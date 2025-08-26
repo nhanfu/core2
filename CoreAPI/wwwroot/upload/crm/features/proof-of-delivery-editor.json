@@ -13,256 +13,257 @@
             "Order": 3,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
-            "XxlCol": 12
-        },
-        {
-            "Id": "00523fc4-0000-0000-8000-7cae05a5681b",
-            "Order": 9,
-            "ComponentType": "Section",
-            "Icon": "fal fa-info mr-1",
-            "ClassName": "card-body",
             "XxlCol": 12,
-            "ParentId": "00523fc0-0000-0000-8000-0d0e2f3d8fd0",
-            "XxlOuterColumn": 12,
-            "Components": [
+            "Children": [
                 {
-                    "Id": "002b3f74-0000-0000-8000-89c1ff2d3d16",
-                    "FieldName": "Representative1",
-                    "Order": 11,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Representative",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00333fdc-0000-0000-8000-f47634f23524",
-                    "FieldName": "Representative2",
-                    "Order": 12,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Representative",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00353f24-0000-0000-8000-5671d15c5351",
-                    "FieldName": "Position1",
-                    "Order": 13,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Position",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00383f98-0000-0000-8000-051be3749613",
-                    "FieldName": "Position2",
-                    "Order": 14,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Position",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "003b3fc4-0000-0000-8000-bb7adcdb66b4",
-                    "FieldName": "IndentityCard1",
-                    "Order": 15,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Indentity Card",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00403f00-0000-0000-8000-843b2cadd505",
-                    "FieldName": "IndentityCard2",
-                    "Order": 16,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Indentity Card",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00443fc8-0000-0000-8000-694db52dea98",
-                    "FieldName": "Tel1",
-                    "Order": 17,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Tel",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00443fc8-0000-0000-8001-c9ed0e96db99",
-                    "FieldName": "Tel2",
-                    "Order": 18,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Tel",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00513f64-0000-0000-8000-f183f99ba168",
-                    "FieldName": "Reason",
-                    "Order": 19,
-                    "ComponentType": "Textarea",
-                    "Column": 4,
-                    "Row": 4,
-                    "Label": "Reason",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00523f08-0000-0000-8000-6ff84aaee34f",
-                    "FieldName": "Code",
-                    "Order": 1,
-                    "ComponentType": "Input",
-                    "Column": 2,
-                    "Label": "File No",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00523f20-0000-0000-8000-73644658a265",
-                    "FieldName": "DoDate",
-                    "Order": 4,
-                    "ComponentType": "Datepicker",
-                    "Column": 2,
-                    "Label": "DO Date",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00523f60-0000-0000-8000-9da2c36725cb",
-                    "FieldName": "DoNo",
-                    "Order": 3,
-                    "ComponentType": "Input",
-                    "Column": 2,
-                    "Label": "Do No",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00523fa4-0000-0000-8000-e0a927cd4647",
-                    "FieldName": "DeliveryPlaceId",
-                    "Order": 6,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 2,
-                    "Row": 100,
-                    "Label": "Delivery Place",
-                    "ShowLabel": true,
-                    "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
-                    "RefName": "Terminal",
-                    "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "00523fac-0000-0000-8000-d04588e89489",
-                    "FieldName": "HblNo",
-                    "Order": 2,
-                    "ComponentType": "Input",
-                    "Column": 2,
-                    "Label": "HBL No",
-                    "ShowLabel": true,
-                    "Disabled": true
-                },
-                {
-                    "Id": "00523fb0-0000-0000-8000-df91a19d4c18",
-                    "FieldName": "TimeDeliveryDate",
-                    "Order": 5,
-                    "ComponentType": "Datepicker",
-                    "Column": 2,
-                    "Label": "Time of Delivery",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00563f10-0000-0000-8000-6e7e792899d8",
-                    "FieldName": "Evidence",
-                    "Order": 20,
-                    "ComponentType": "Textarea",
-                    "Column": 4,
-                    "Row": 4,
-                    "Label": "Evidence",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00583f64-0000-0000-8000-29fa9fce8b1e",
-                    "FieldName": "SpecialNotes",
-                    "Order": 21,
-                    "ComponentType": "Textarea",
-                    "Column": 4,
-                    "Row": 4,
-                    "Label": "Special Notes",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00663ff8-0000-0000-8000-f1b1ae6f703e",
-                    "FieldName": "ConditionGoods",
-                    "Order": 22,
-                    "ComponentType": "Textarea",
-                    "Column": 6,
-                    "Row": 4,
-                    "Label": "Condition of goods upon delivery",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00663ff8-0000-0000-8001-592729934737",
-                    "FieldName": "DescriptionGoods",
-                    "Order": 23,
-                    "ComponentType": "Textarea",
-                    "Column": 6,
-                    "Row": 4,
-                    "Label": "Description of Goods",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00f53f6c-0000-0000-8000-1d73c6ce8f32",
-                    "FieldName": "ShipperIdText",
-                    "Order": 7,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 6,
-                    "Row": 100,
-                    "Label": "Shipper",
-                    "ShowLabel": true,
-                    "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('partner-editor',{ ServiceId: 2, ActionId: 1, PartnerTypeIds: '00e318b8-0000-0000-8000-a7988356b712',PartnerTypeIdsText: 'Shipper'}})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('partner-editor',thisMatched)\"\r\n}",
-                    "PopulateField": "let shipper = this.EditForm.Entity.Shipper;\r\nlet shipperText = \"\";\r\n\r\nif (shipper.CompanyName) shipperText += shipper.Name + \"\\n\";\r\nif (shipper.Address) shipperText += shipper.Address + \"\\n\";\r\nif (shipper.ContactName) shipperText += shipper.ContactName + \"\\n\";\r\nif (shipper.ContactPhoneNumber) shipperText += shipper.ContactPhoneNumber + \"\\n\";\r\n\r\nthis.EditForm.Entity.ShipperDes = shipperText.trim(); // Loại bỏ khoảng trắng thừa cuối chuỗi\r\nthis.EditForm.UpdateView(false, false, \"ShipperDes\");\r\nreturn null;",
-                    "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and (PartnerTypeIdsText like N'%Shipper%'))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and (PartnerTypeIdsText like N'%Shipper%'))\"\r\n}",
-                    "RefName": "Partner",
-                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
-                    "ShowHotKey": true,
-                    "TabGroup": "ShipperId"
-                },
-                {
-                    "Id": "00f53fd0-0000-0000-8000-34d0d615a947",
-                    "FieldName": "ConsigneeIdText",
-                    "Order": 8,
-                    "ComponentType": "Dropdown",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 6,
-                    "Row": 100,
-                    "Label": "Consignee",
-                    "ShowLabel": true,
-                    "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('partner-editor',{ ServiceId: 2, ActionId: 1, PartnerTypeIds: '00e51814-0000-0000-8000-4128ce0e4c14',PartnerTypeIdsText: 'Consignee'})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('partner-editor',this.Matched)\"\r\n}",
-                    "PopulateField": "let shipper = this.EditForm.Entity.Consignee;\r\nlet shipperText = \"\";\r\n\r\nif (shipper.CompanyName) shipperText += shipper.Name + \"\\n\";\r\nif (shipper.Address) shipperText += shipper.Address + \"\\n\";\r\nif (shipper.ContactName) shipperText += shipper.ContactName + \"\\n\";\r\nif (shipper.ContactPhoneNumber) shipperText += shipper.ContactPhoneNumber + \"\\n\";\r\n\r\nthis.EditForm.Entity.ConsigneeDes = shipperText.trim(); // Loại bỏ khoảng trắng thừa cuối chuỗi\r\nthis.EditForm.UpdateView(false, false, \"ConsigneeDes\");\r\nreturn null;",
-                    "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 2 and (PartnerTypeIdsText like N'%Consignee%'))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 2 and (PartnerTypeIdsText like N'%Consignee%'))\"\r\n}",
-                    "RefName": "Partner",
-                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
-                    "ShowHotKey": true,
-                    "TabGroup": "ConsigneeId"
-                },
-                {
-                    "Id": "00f53fd0-0000-0000-8001-f09c7d19567d",
-                    "FieldName": "ShipperDes",
+                    "Id": "00523fc4-0000-0000-8000-7cae05a5681b",
                     "Order": 9,
-                    "ComponentType": "Textarea",
-                    "Column": 6,
-                    "Row": 4,
-                    "Label": "Shipper"
-                },
-                {
-                    "Id": "00f53fd0-0000-0000-8002-93daa8fb8077",
-                    "FieldName": "ConsigneeDes",
-                    "Order": 10,
-                    "ComponentType": "Textarea",
-                    "Column": 6,
-                    "Row": 4,
-                    "Label": "Consignee"
+                    "ComponentType": "Section",
+                    "Icon": "fal fa-info mr-1",
+                    "ClassName": "card-body",
+                    "XxlCol": 12,
+                    "XxlOuterColumn": 12,
+                    "Components": [
+                        {
+                            "Id": "002b3f74-0000-0000-8000-89c1ff2d3d16",
+                            "FieldName": "Representative1",
+                            "Order": 11,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Label": "Representative",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00333fdc-0000-0000-8000-f47634f23524",
+                            "FieldName": "Representative2",
+                            "Order": 12,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Label": "Representative",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00353f24-0000-0000-8000-5671d15c5351",
+                            "FieldName": "Position1",
+                            "Order": 13,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Label": "Position",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00383f98-0000-0000-8000-051be3749613",
+                            "FieldName": "Position2",
+                            "Order": 14,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Label": "Position",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "003b3fc4-0000-0000-8000-bb7adcdb66b4",
+                            "FieldName": "IndentityCard1",
+                            "Order": 15,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Label": "Indentity Card",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00403f00-0000-0000-8000-843b2cadd505",
+                            "FieldName": "IndentityCard2",
+                            "Order": 16,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Label": "Indentity Card",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00443fc8-0000-0000-8000-694db52dea98",
+                            "FieldName": "Tel1",
+                            "Order": 17,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Label": "Tel",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00443fc8-0000-0000-8001-c9ed0e96db99",
+                            "FieldName": "Tel2",
+                            "Order": 18,
+                            "ComponentType": "Input",
+                            "Column": 6,
+                            "Label": "Tel",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00513f64-0000-0000-8000-f183f99ba168",
+                            "FieldName": "Reason",
+                            "Order": 19,
+                            "ComponentType": "Textarea",
+                            "Column": 4,
+                            "Row": 4,
+                            "Label": "Reason",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00523f08-0000-0000-8000-6ff84aaee34f",
+                            "FieldName": "Code",
+                            "Order": 1,
+                            "ComponentType": "Input",
+                            "Column": 2,
+                            "Label": "File No",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00523f20-0000-0000-8000-73644658a265",
+                            "FieldName": "DoDate",
+                            "Order": 4,
+                            "ComponentType": "Datepicker",
+                            "Column": 2,
+                            "Label": "DO Date",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00523f60-0000-0000-8000-9da2c36725cb",
+                            "FieldName": "DoNo",
+                            "Order": 3,
+                            "ComponentType": "Input",
+                            "Column": 2,
+                            "Label": "Do No",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00523fa4-0000-0000-8000-e0a927cd4647",
+                            "FieldName": "DeliveryPlaceId",
+                            "Order": 6,
+                            "ComponentType": "Dropdown",
+                            "FormatData": "{Name}",
+                            "PlainText": "Select data",
+                            "Column": 2,
+                            "Row": 100,
+                            "Label": "Delivery Place",
+                            "ShowLabel": true,
+                            "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
+                            "RefName": "Terminal",
+                            "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
+                        },
+                        {
+                            "Id": "00523fac-0000-0000-8000-d04588e89489",
+                            "FieldName": "HblNo",
+                            "Order": 2,
+                            "ComponentType": "Input",
+                            "Column": 2,
+                            "Label": "HBL No",
+                            "ShowLabel": true,
+                            "Disabled": true
+                        },
+                        {
+                            "Id": "00523fb0-0000-0000-8000-df91a19d4c18",
+                            "FieldName": "TimeDeliveryDate",
+                            "Order": 5,
+                            "ComponentType": "Datepicker",
+                            "Column": 2,
+                            "Label": "Time of Delivery",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00563f10-0000-0000-8000-6e7e792899d8",
+                            "FieldName": "Evidence",
+                            "Order": 20,
+                            "ComponentType": "Textarea",
+                            "Column": 4,
+                            "Row": 4,
+                            "Label": "Evidence",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00583f64-0000-0000-8000-29fa9fce8b1e",
+                            "FieldName": "SpecialNotes",
+                            "Order": 21,
+                            "ComponentType": "Textarea",
+                            "Column": 4,
+                            "Row": 4,
+                            "Label": "Special Notes",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00663ff8-0000-0000-8000-f1b1ae6f703e",
+                            "FieldName": "ConditionGoods",
+                            "Order": 22,
+                            "ComponentType": "Textarea",
+                            "Column": 6,
+                            "Row": 4,
+                            "Label": "Condition of goods upon delivery",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00663ff8-0000-0000-8001-592729934737",
+                            "FieldName": "DescriptionGoods",
+                            "Order": 23,
+                            "ComponentType": "Textarea",
+                            "Column": 6,
+                            "Row": 4,
+                            "Label": "Description of Goods",
+                            "ShowLabel": true
+                        },
+                        {
+                            "Id": "00f53f6c-0000-0000-8000-1d73c6ce8f32",
+                            "FieldName": "ShipperIdText",
+                            "Order": 7,
+                            "ComponentType": "Dropdown",
+                            "FormatData": "{Name}",
+                            "PlainText": "Select data",
+                            "Column": 6,
+                            "Row": 100,
+                            "Label": "Shipper",
+                            "ShowLabel": true,
+                            "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('partner-editor',{ ServiceId: 2, ActionId: 1, PartnerTypeIds: '00e318b8-0000-0000-8000-a7988356b712',PartnerTypeIdsText: 'Shipper'}})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('partner-editor',thisMatched)\"\r\n}",
+                            "PopulateField": "let shipper = this.EditForm.Entity.Shipper;\r\nlet shipperText = \"\";\r\n\r\nif (shipper.CompanyName) shipperText += shipper.Name + \"\\n\";\r\nif (shipper.Address) shipperText += shipper.Address + \"\\n\";\r\nif (shipper.ContactName) shipperText += shipper.ContactName + \"\\n\";\r\nif (shipper.ContactPhoneNumber) shipperText += shipper.ContactPhoneNumber + \"\\n\";\r\n\r\nthis.EditForm.Entity.ShipperDes = shipperText.trim(); // Loại bỏ khoảng trắng thừa cuối chuỗi\r\nthis.EditForm.UpdateView(false, false, \"ShipperDes\");\r\nreturn null;",
+                            "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and (PartnerTypeIdsText like N'%Shipper%'))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and (PartnerTypeIdsText like N'%Shipper%'))\"\r\n}",
+                            "RefName": "Partner",
+                            "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
+                            "ShowHotKey": true,
+                            "TabGroup": "ShipperId"
+                        },
+                        {
+                            "Id": "00f53fd0-0000-0000-8000-34d0d615a947",
+                            "FieldName": "ConsigneeIdText",
+                            "Order": 8,
+                            "ComponentType": "Dropdown",
+                            "FormatData": "{Name}",
+                            "PlainText": "Select data",
+                            "Column": 6,
+                            "Row": 100,
+                            "Label": "Consignee",
+                            "ShowLabel": true,
+                            "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('partner-editor',{ ServiceId: 2, ActionId: 1, PartnerTypeIds: '00e51814-0000-0000-8000-4128ce0e4c14',PartnerTypeIdsText: 'Consignee'})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('partner-editor',this.Matched)\"\r\n}",
+                            "PopulateField": "let shipper = this.EditForm.Entity.Consignee;\r\nlet shipperText = \"\";\r\n\r\nif (shipper.CompanyName) shipperText += shipper.Name + \"\\n\";\r\nif (shipper.Address) shipperText += shipper.Address + \"\\n\";\r\nif (shipper.ContactName) shipperText += shipper.ContactName + \"\\n\";\r\nif (shipper.ContactPhoneNumber) shipperText += shipper.ContactPhoneNumber + \"\\n\";\r\n\r\nthis.EditForm.Entity.ConsigneeDes = shipperText.trim(); // Loại bỏ khoảng trắng thừa cuối chuỗi\r\nthis.EditForm.UpdateView(false, false, \"ConsigneeDes\");\r\nreturn null;",
+                            "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 2 and (PartnerTypeIdsText like N'%Consignee%'))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 2 and (PartnerTypeIdsText like N'%Consignee%'))\"\r\n}",
+                            "RefName": "Partner",
+                            "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
+                            "ShowHotKey": true,
+                            "TabGroup": "ConsigneeId"
+                        },
+                        {
+                            "Id": "00f53fd0-0000-0000-8001-f09c7d19567d",
+                            "FieldName": "ShipperDes",
+                            "Order": 9,
+                            "ComponentType": "Textarea",
+                            "Column": 6,
+                            "Row": 4,
+                            "Label": "Shipper"
+                        },
+                        {
+                            "Id": "00f53fd0-0000-0000-8002-93daa8fb8077",
+                            "FieldName": "ConsigneeDes",
+                            "Order": 10,
+                            "ComponentType": "Textarea",
+                            "Column": 6,
+                            "Row": 4,
+                            "Label": "Consignee"
+                        }
+                    ]
                 }
             ]
         },

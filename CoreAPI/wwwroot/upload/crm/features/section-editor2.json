@@ -14,248 +14,247 @@
             "FieldName": "scroll-content",
             "Order": 1,
             "ComponentType": "Section",
-            "XxlCol": 12
-        },
-        {
-            "Id": "01960646-04cd-7705-a5ef-41d90bb88f2c",
-            "FieldName": "wrapper",
-            "Order": 2,
-            "ComponentType": "Section",
             "XxlCol": 12,
-            "ParentId": "01960646-0465-716d-96eb-c91a9c33cf5b"
-        },
-        {
-            "Id": "01960646-053c-7702-b93e-ef6622f9d6a0",
-            "FieldName": "box1",
-            "Order": 3,
-            "ComponentType": "Section",
-            "Label": "Common",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "01960646-04cd-7705-a5ef-41d90bb88f2c",
-            "XxlOuterColumn": 4,
-            "Components": [
+            "Children": [
                 {
-                    "Id": "01960646-0587-7221-99ba-1f9bcf4f0b9e",
-                    "FieldName": "IsTab",
-                    "Order": 0,
-                    "ComponentType": "Checkbox",
-                    "Column": 3,
-                    "Label": "Tab",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "01960646-05e0-728e-8348-40bc12bccafa",
-                    "FieldName": "Disabled",
-                    "Order": 1,
-                    "ComponentType": "Checkbox",
-                    "Column": 3,
-                    "Label": "Disabled",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "01960646-0628-7716-9262-267fd1eea904",
-                    "FieldName": "Active",
+                    "Id": "01960646-04cd-7705-a5ef-41d90bb88f2c",
+                    "FieldName": "wrapper",
                     "Order": 2,
-                    "ComponentType": "Checkbox",
-                    "Column": 3,
-                    "Label": "Active",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "01960646-0680-765b-ac58-c8b34178020e",
-                    "FieldName": "IsDropDown",
-                    "Order": 3,
-                    "ComponentType": "Checkbox",
-                    "Column": 3,
-                    "Label": "DropDown",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "01960646-06bf-712e-a8aa-67cb0813bdd4",
-                    "FieldName": "FieldName",
-                    "Order": 4,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "FieldName",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "01960646-0721-75b8-90af-d6f4dd02e477",
-                    "FieldName": "Order",
-                    "Order": 5,
-                    "ComponentType": "Number",
-                    "Column": 6,
-                    "Precision": 0,
-                    "Label": "Order",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "01960646-0796-73c5-a68a-a6b507317795",
-                    "FieldName": "ClassName",
-                    "Order": 6,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "ClassName",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "01960646-0819-769a-859f-360714a9d9a9",
-                    "FieldName": "Label",
-                    "Order": 7,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Label",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "01960646-08aa-76fe-8860-b972a42213eb",
-                    "FieldName": "Description",
-                    "Order": 8,
-                    "ComponentType": "Input",
-                    "Column": 12,
-                    "Label": "Description",
-                    "ShowLabel": true
+                    "ComponentType": "Section",
+                    "XxlCol": 12,
+                    "Children": [
+                        {
+                            "Id": "01960646-053c-7702-b93e-ef6622f9d6a0",
+                            "FieldName": "box1",
+                            "Order": 3,
+                            "ComponentType": "Section",
+                            "Label": "Common",
+                            "ClassName": "card-body",
+                            "XxlCol": 12,
+                            "XxlOuterColumn": 4,
+                            "Components": [
+                                {
+                                    "Id": "01960646-0587-7221-99ba-1f9bcf4f0b9e",
+                                    "FieldName": "IsTab",
+                                    "Order": 0,
+                                    "ComponentType": "Checkbox",
+                                    "Column": 3,
+                                    "Label": "Tab",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "01960646-05e0-728e-8348-40bc12bccafa",
+                                    "FieldName": "Disabled",
+                                    "Order": 1,
+                                    "ComponentType": "Checkbox",
+                                    "Column": 3,
+                                    "Label": "Disabled",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "01960646-0628-7716-9262-267fd1eea904",
+                                    "FieldName": "Active",
+                                    "Order": 2,
+                                    "ComponentType": "Checkbox",
+                                    "Column": 3,
+                                    "Label": "Active",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "01960646-0680-765b-ac58-c8b34178020e",
+                                    "FieldName": "IsDropDown",
+                                    "Order": 3,
+                                    "ComponentType": "Checkbox",
+                                    "Column": 3,
+                                    "Label": "DropDown",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "01960646-06bf-712e-a8aa-67cb0813bdd4",
+                                    "FieldName": "FieldName",
+                                    "Order": 4,
+                                    "ComponentType": "Input",
+                                    "Column": 6,
+                                    "Label": "FieldName",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "01960646-0721-75b8-90af-d6f4dd02e477",
+                                    "FieldName": "Order",
+                                    "Order": 5,
+                                    "ComponentType": "Number",
+                                    "Column": 6,
+                                    "Precision": 0,
+                                    "Label": "Order",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "01960646-0796-73c5-a68a-a6b507317795",
+                                    "FieldName": "ClassName",
+                                    "Order": 6,
+                                    "ComponentType": "Input",
+                                    "Column": 6,
+                                    "Label": "ClassName",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "01960646-0819-769a-859f-360714a9d9a9",
+                                    "FieldName": "Label",
+                                    "Order": 7,
+                                    "ComponentType": "Input",
+                                    "Column": 6,
+                                    "Label": "Label",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "01960646-08aa-76fe-8860-b972a42213eb",
+                                    "FieldName": "Description",
+                                    "Order": 8,
+                                    "ComponentType": "Input",
+                                    "Column": 12,
+                                    "Label": "Description",
+                                    "ShowLabel": true
+                                }
+                            ]
+                        },
+                        {
+                            "Id": "01960646-094b-749d-90fc-0d61356e3b02",
+                            "FieldName": "box2",
+                            "Order": 4,
+                            "ComponentType": "Section",
+                            "Label": "Outer",
+                            "ClassName": "card-body",
+                            "XxlCol": 12,
+                            "XxlOuterColumn": 4,
+                            "Components": [
+                                {
+                                    "Id": "01960646-0985-76c9-a3e8-5c37e5a32f7a",
+                                    "FieldName": "XxlOuterColumn",
+                                    "Order": 1,
+                                    "ComponentType": "Number",
+                                    "Column": 6,
+                                    "Precision": 0,
+                                    "Label": "Desktop",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "01960646-09cb-77bc-95fe-44124b81bf40",
+                                    "FieldName": "SmCol",
+                                    "Order": 2,
+                                    "ComponentType": "Number",
+                                    "Column": 6,
+                                    "Precision": 0,
+                                    "Label": "Mobile",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "01960646-0a0d-751a-93b9-a5bd633a08ba",
+                                    "FieldName": "Icon",
+                                    "Order": 7,
+                                    "ComponentType": "Input",
+                                    "Column": 6,
+                                    "Label": "Icon",
+                                    "ShowLabel": true,
+                                    "Disabled": true
+                                },
+                                {
+                                    "Id": "01960646-0a5a-728a-afd5-aba353474af5",
+                                    "FieldName": "TabGroup",
+                                    "Order": 8,
+                                    "ComponentType": "Input",
+                                    "Column": 6,
+                                    "Label": "TabGroup",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "01960646-0aa3-76fc-82fc-31c13b9673e4",
+                                    "FieldName": "DisabledExp",
+                                    "Order": 9,
+                                    "ComponentType": "CodeEditor",
+                                    "Column": 12,
+                                    "Label": "DisabledExp",
+                                    "ShowLabel": true,
+                                    "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
+                                    "RefName": "History",
+                                    "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
+                                    "Lang": "javascript"
+                                }
+                            ]
+                        },
+                        {
+                            "Id": "01960646-0af6-7403-8f9c-c9de96451921",
+                            "FieldName": "box3",
+                            "Order": 5,
+                            "ComponentType": "Section",
+                            "Label": "Inner",
+                            "ClassName": "card-body",
+                            "XxlCol": 12,
+                            "XxlOuterColumn": 4,
+                            "Components": [
+                                {
+                                    "Id": "01960646-0b42-732b-9252-982f30fe1d87",
+                                    "FieldName": "XxlCol",
+                                    "Order": 1,
+                                    "ComponentType": "Number",
+                                    "Column": 3,
+                                    "Precision": 0,
+                                    "Label": "Desktop",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "01960646-0b97-71be-8846-6d5720df8d4b",
+                                    "FieldName": "SmCol",
+                                    "Order": 2,
+                                    "ComponentType": "Number",
+                                    "Column": 3,
+                                    "Precision": 2,
+                                    "Label": "Mobile",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "01960646-0bef-73ad-98fe-a5b0a174b437",
+                                    "FieldName": "Editable",
+                                    "Order": 6,
+                                    "ComponentType": "Checkbox",
+                                    "Column": 3,
+                                    "Label": "Editable",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "01960646-0c35-7365-8c58-fe7fcd10bb12",
+                                    "FieldName": "DisplayBadge",
+                                    "Order": 6,
+                                    "ComponentType": "Checkbox",
+                                    "Column": 3,
+                                    "Label": "Badge",
+                                    "ShowLabel": true
+                                },
+                                {
+                                    "Id": "01960646-0c7e-753e-8da8-364bea74cda1",
+                                    "FieldName": "Javascript",
+                                    "Order": 9,
+                                    "ComponentType": "CodeEditor",
+                                    "Column": 12,
+                                    "Label": "Javascript",
+                                    "ShowLabel": true,
+                                    "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
+                                    "RefName": "History",
+                                    "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
+                                    "Lang": "css"
+                                }
+                            ]
+                        },
+                        {
+                            "Id": "01960646-0cd1-73cd-aedd-0cbc687dfde5",
+                            "FieldName": "wrapper",
+                            "Order": 111,
+                            "ComponentType": "Section",
+                            "ClassName": "grid-view",
+                            "XxlCol": 12
+                        }
+                    ]
                 }
             ]
-        },
-        {
-            "Id": "01960646-094b-749d-90fc-0d61356e3b02",
-            "FieldName": "box2",
-            "Order": 4,
-            "ComponentType": "Section",
-            "Label": "Outer",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "01960646-04cd-7705-a5ef-41d90bb88f2c",
-            "XxlOuterColumn": 4,
-            "Components": [
-                {
-                    "Id": "01960646-0985-76c9-a3e8-5c37e5a32f7a",
-                    "FieldName": "XxlOuterColumn",
-                    "Order": 1,
-                    "ComponentType": "Number",
-                    "Column": 6,
-                    "Precision": 0,
-                    "Label": "Desktop",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "01960646-09cb-77bc-95fe-44124b81bf40",
-                    "FieldName": "SmCol",
-                    "Order": 2,
-                    "ComponentType": "Number",
-                    "Column": 6,
-                    "Precision": 0,
-                    "Label": "Mobile",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "01960646-0a0d-751a-93b9-a5bd633a08ba",
-                    "FieldName": "Icon",
-                    "Order": 7,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Icon",
-                    "ShowLabel": true,
-                    "Disabled": true
-                },
-                {
-                    "Id": "01960646-0a5a-728a-afd5-aba353474af5",
-                    "FieldName": "TabGroup",
-                    "Order": 8,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "TabGroup",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "01960646-0aa3-76fc-82fc-31c13b9673e4",
-                    "FieldName": "DisabledExp",
-                    "Order": 9,
-                    "ComponentType": "CodeEditor",
-                    "Column": 12,
-                    "Label": "DisabledExp",
-                    "ShowLabel": true,
-                    "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
-                    "RefName": "History",
-                    "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
-                    "Lang": "javascript"
-                }
-            ]
-        },
-        {
-            "Id": "01960646-0af6-7403-8f9c-c9de96451921",
-            "FieldName": "box3",
-            "Order": 5,
-            "ComponentType": "Section",
-            "Label": "Inner",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "ParentId": "01960646-04cd-7705-a5ef-41d90bb88f2c",
-            "XxlOuterColumn": 4,
-            "Components": [
-                {
-                    "Id": "01960646-0b42-732b-9252-982f30fe1d87",
-                    "FieldName": "XxlCol",
-                    "Order": 1,
-                    "ComponentType": "Number",
-                    "Column": 3,
-                    "Precision": 0,
-                    "Label": "Desktop",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "01960646-0b97-71be-8846-6d5720df8d4b",
-                    "FieldName": "SmCol",
-                    "Order": 2,
-                    "ComponentType": "Number",
-                    "Column": 3,
-                    "Precision": 2,
-                    "Label": "Mobile",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "01960646-0bef-73ad-98fe-a5b0a174b437",
-                    "FieldName": "Editable",
-                    "Order": 6,
-                    "ComponentType": "Checkbox",
-                    "Column": 3,
-                    "Label": "Editable",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "01960646-0c35-7365-8c58-fe7fcd10bb12",
-                    "FieldName": "DisplayBadge",
-                    "Order": 6,
-                    "ComponentType": "Checkbox",
-                    "Column": 3,
-                    "Label": "Badge",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "01960646-0c7e-753e-8da8-364bea74cda1",
-                    "FieldName": "Javascript",
-                    "Order": 9,
-                    "ComponentType": "CodeEditor",
-                    "Column": 12,
-                    "Label": "Javascript",
-                    "ShowLabel": true,
-                    "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
-                    "RefName": "History",
-                    "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
-                    "Lang": "css"
-                }
-            ]
-        },
-        {
-            "Id": "01960646-0cd1-73cd-aedd-0cbc687dfde5",
-            "FieldName": "wrapper",
-            "Order": 111,
-            "ComponentType": "Section",
-            "ClassName": "grid-view",
-            "XxlCol": 12,
-            "ParentId": "01960646-04cd-7705-a5ef-41d90bb88f2c"
         },
         {
             "Id": "01960646-0ee7-752b-86f6-3d08e3ba9b09",
