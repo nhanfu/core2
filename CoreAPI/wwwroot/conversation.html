@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TMA - AI Conversation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0F172A;
+            color: #F8FAFC;
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #38BDF8, #A78BFA);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+        }
+        .message-user {
+            background: linear-gradient(90deg, #38BDF8, #818CF8);
+            border-radius: 1rem 1rem 0.25rem 1rem;
+        }
+        .message-ai {
+            background: #1E293B;
+            border: 1px solid #334155;
+            border-radius: 1rem 1rem 1rem 0.25rem;
+        }
+        .code-editor {
+            background: #0F172A;
+            border: 1px solid #334155;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        }
+        .preview-frame {
+            background: white;
+            border: 1px solid #334155;
+        }
+        .tab-active {
+            background: #334155;
+            color: #F8FAFC;
+        }
+        .tab-inactive {
+            background: #1E293B;
+            color: #94A3B8;
+        }
+        .tab-inactive:hover {
+            background: #334155;
+            color: #F8FAFC;
+        }
+        .chat-input {
+            background: #1E293B;
+            border: 1px solid #334155;
+        }
+        .chat-input:focus {
+            border-color: #38BDF8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.4);
+        }
+        .send-button {
+            background: linear-gradient(90deg, #38BDF8, #818CF8);
+        }
+        .send-button:hover {
+            transform: scale(1.05);
+        }
+        .send-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 6px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: #1E293B;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+<body class="antialiased h-screen overflow-hidden">
+
+    <!-- Header -->
+    <header class="bg-slate-900/90 backdrop-blur-lg border-b border-slate-700 px-6 py-3 flex justify-between items-center">
+        <div class="flex items-center space-x-4">
+            <a href="/" class="text-xl font-bold gradient-text">TMA</a>
+            <div class="text-sm text-slate-400">
+                <span id="project-name">AI Landing Page Generator</span>
+            </div>
+        </div>
+        <div class="flex items-center space-x-4">
+            <button id="save-btn" class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                Save Project
+            </button>
+            <button id="export-btn" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                Export Code
+            </button>
+            <a href="/" class="text-slate-400 hover:text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </a>
+        </div>
+    </header>
+
+    <div class="flex h-[calc(100vh-4rem)]">
+        <!-- Left Panel - Conversation -->
+        <div class="w-1/3 bg-slate-900 border-r border-slate-700 flex flex-col">
+            <!-- Chat Messages -->
+            <div id="chat-messages" class="flex-1 p-4 overflow-y-auto scrollbar-thin space-y-4">
+                <!-- Initial message will be added by JavaScript -->
+            </div>
+
+            <!-- Chat Input -->
+            <div class="p-4 border-t border-slate-700">
+                <div class="flex space-x-2">
+                    <textarea 
+                        id="chat-input"
+                        class="flex-1 chat-input rounded-lg px-4 py-3 resize-none focus:outline-none text-white placeholder-slate-500"
+                        placeholder="Ask for changes, improvements, or new features..."
+                        rows="2"
+                    ></textarea>
+                    <button id="send-btn" class="send-button text-white p-3 rounded-lg transition-all">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                        </svg>
+                    </button>
+                </div>
+                <p class="text-xs text-slate-500 mt-2">Press Enter to send, Shift+Enter for new line</p>
+            </div>
+        </div>
+
+        <!-- Right Panel - Code and Preview -->
+        <div class="flex-1 flex flex-col">
+            <!-- Tab Navigation -->
+            <div class="bg-slate-800 border-b border-slate-700 flex">
+                <button id="tab-code" class="tab-active px-6 py-3 text-sm font-medium border-r border-slate-700 transition-colors">
+                    Code Editor
+                </button>
+                <button id="tab-preview" class="tab-inactive px-6 py-3 text-sm font-medium border-r border-slate-700 transition-colors">
+                    Live Preview
+                </button>
+                <button id="tab-split" class="tab-inactive px-6 py-3 text-sm font-medium transition-colors">
+                    Split View
+                </button>
+            </div>
+
+            <!-- Content Area -->
+            <div class="flex-1 flex">
+                <!-- Code Editor -->
+                <div id="code-panel" class="flex-1 flex flex-col">
+                    <div class="bg-slate-800 px-4 py-2 border-b border-slate-700 flex justify-between items-center">
+                        <div class="flex space-x-2">
+                            <button class="file-tab active bg-slate-700 text-white px-3 py-1 rounded text-sm" data-file="index.html">
+                                index.html
+                            </button>
+                            <button class="file-tab bg-slate-600 text-slate-300 px-3 py-1 rounded text-sm" data-file="styles.css">
+                                styles.css
+                            </button>
+                            <button class="file-tab bg-slate-600 text-slate-300 px-3 py-1 rounded text-sm" data-file="script.js">
+                                script.js
+                            </button>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button id="copy-code-btn" class="text-slate-400 hover:text-white text-sm">
+                                Copy
+                            </button>
+                            <button id="download-file-btn" class="text-slate-400 hover:text-white text-sm">
+                                Download
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex-1 relative">
+                        <textarea 
+                            id="code-editor"
+                            class="code-editor w-full h-full p-4 resize-none focus:outline-none text-sm scrollbar-thin"
+                            spellcheck="false"
+                        ></textarea>
+                    </div>
+                </div>
+
+                <!-- Preview Panel -->
+                <div id="preview-panel" class="flex-1 hidden">
+                    <div class="bg-slate-800 px-4 py-2 border-b border-slate-700 flex justify-between items-center">
+                        <span class="text-sm text-slate-300">Live Preview</span>
+                        <div class="flex space-x-2">
+                            <button id="refresh-preview-btn" class="text-slate-400 hover:text-white text-sm">
+                                Refresh
+                            </button>
+                            <button id="fullscreen-btn" class="text-slate-400 hover:text-white text-sm">
+                                Fullscreen
+                            </button>
+                        </div>
+                    </div>
+                    <iframe 
+                        id="preview-frame"
+                        class="preview-frame w-full h-full"
+                        frameborder="0"
+                    ></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let currentFile = 'index.html';
+        let files = {
+            'index.html': `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generated Landing Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white">
+    <div class="container mx-auto px-6 py-20 text-center">
+        <h1 class="text-4xl font-bold mb-6">Your AI-Generated Landing Page</h1>
+        <p class="text-xl text-gray-300 mb-8">Content will be generated based on your requirements...</p>
+        <button class="bg-blue-600 hover:bg-blue-700 px-8 py-3 rounded-lg font-semibold">
+            Get Started
+        </button>
+    </div>
+</body>
+</html>`,
+            'styles.css': `/* Custom styles for your landing page */
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.cta-button {
+    transition: all 0.3s ease;
+}
+
+.cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}`,
+            'script.js': `// Interactive functionality for your landing page
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Landing page loaded successfully!');
+    
+    // Add smooth scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+});`
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProjectData();
+            setupEventListeners();
+            updateCodeEditor();
+            addInitialMessage();
+        });
+
+        function loadProjectData() {
+            const projectData = sessionStorage.getItem('currentProject');
+            if (projectData) {
+                const data = JSON.parse(projectData);
+                document.getElementById('project-name').textContent = 'Project: ' + (data.prompt.substring(0, 30) + '...');
+            }
+        }
+
+        function setupEventListeners() {
+            // Tab switching
+            document.getElementById('tab-code').addEventListener('click', () => switchTab('code'));
+            document.getElementById('tab-preview').addEventListener('click', () => switchTab('preview'));
+            document.getElementById('tab-split').addEventListener('click', () => switchTab('split'));
+
+            // File tabs
+            document.querySelectorAll('.file-tab').forEach(tab => {
+                tab.addEventListener('click', () => switchFile(tab.dataset.file));
+            });
+
+            // Chat functionality
+            document.getElementById('send-btn').addEventListener('click', sendMessage);
+            document.getElementById('chat-input').addEventListener('keydown', handleChatKeydown);
+
+            // Code editor
+            document.getElementById('code-editor').addEventListener('input', updatePreview);
+
+            // Utility buttons
+            document.getElementById('copy-code-btn').addEventListener('click', copyCode);
+            document.getElementById('refresh-preview-btn').addEventListener('click', updatePreview);
+            document.getElementById('save-btn').addEventListener('click', saveProject);
+            document.getElementById('export-btn').addEventListener('click', exportProject);
+        }
+
+        function switchTab(tab) {
+            const codePanel = document.getElementById('code-panel');
+            const previewPanel = document.getElementById('preview-panel');
+            const tabs = ['tab-code', 'tab-preview', 'tab-split'];
+
+            // Reset all tabs
+            tabs.forEach(id => {
+                document.getElementById(id).className = 'tab-inactive px-6 py-3 text-sm font-medium border-r border-slate-700 transition-colors';
+            });
+
+            switch(tab) {
+                case 'code':
+                    document.getElementById('tab-code').className = 'tab-active px-6 py-3 text-sm font-medium border-r border-slate-700 transition-colors';
+                    codePanel.className = 'flex-1 flex flex-col';
+                    previewPanel.className = 'flex-1 hidden';
+                    break;
+                case 'preview':
+                    document.getElementById('tab-preview').className = 'tab-active px-6 py-3 text-sm font-medium border-r border-slate-700 transition-colors';
+                    codePanel.className = 'flex-1 hidden';
+                    previewPanel.className = 'flex-1 flex flex-col';
+                    updatePreview();
+                    break;
+                case 'split':
+                    document.getElementById('tab-split').className = 'tab-active px-6 py-3 text-sm font-medium transition-colors';
+                    codePanel.className = 'flex-1 flex flex-col';
+                    previewPanel.className = 'flex-1 flex flex-col';
+                    updatePreview();
+                    break;
+            }
+        }
+
+        function switchFile(fileName) {
+            // Save current file
+            files[currentFile] = document.getElementById('code-editor').value;
+            
+            // Switch to new file
+            currentFile = fileName;
+            updateCodeEditor();
+            
+            // Update tab styling
+            document.querySelectorAll('.file-tab').forEach(tab => {
+                if (tab.dataset.file === fileName) {
+                    tab.className = 'file-tab active bg-slate-700 text-white px-3 py-1 rounded text-sm';
+                } else {
+                    tab.className = 'file-tab bg-slate-600 text-slate-300 px-3 py-1 rounded text-sm';
+                }
+            });
+        }
+
+        function updateCodeEditor() {
+            document.getElementById('code-editor').value = files[currentFile] || '';
+        }
+
+        function updatePreview() {
+            const iframe = document.getElementById('preview-frame');
+            const html = files['index.html'] || '';
+            
+            iframe.srcdoc = html;
+        }
+
+        function addInitialMessage() {
+            const projectData = sessionStorage.getItem('currentProject');
+            if (projectData) {
+                const data = JSON.parse(projectData);
+                addMessage('user', data.prompt);
+                addMessage('ai', `I'll help you create a landing page based on your requirements. I've generated a basic structure to start with. Let me know what changes you'd like to make!
+
+Key features I can help you with:
+• Modify the design and layout
+• Add or remove sections
+• Change colors and styling
+• Update content and copy
+• Add interactive elements
+• Optimize for mobile devices
+
+What would you like to adjust first?`);
+            }
+        }
+
+        function handleChatKeydown(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            addMessage('user', message);
+            input.value = '';
+            
+            // Simulate AI response (replace with actual API call)
+            setTimeout(() => {
+                const responses = [
+                    "I'll make those changes to your landing page. Let me update the code...",
+                    "Great idea! I'm implementing that feature now.",
+                    "I've updated the design based on your feedback. Check the preview!",
+                    "That's a smart optimization. I'll add that to your page."
+                ];
+                const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                addMessage('ai', randomResponse);
+                
+                // Simulate code update
+                if (message.toLowerCase().includes('color') || message.toLowerCase().includes('blue')) {
+                    updateCodeWithChanges();
+                }
+            }, 1000);
+        }
+
+        function addMessage(sender, content) {
+            const messagesContainer = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            
+            messageDiv.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
+            messageDiv.innerHTML = `
+                <div class="max-w-xs lg:max-w-md ${sender === 'user' ? 'message-user' : 'message-ai'} px-4 py-3">
+                    <p class="text-sm">${content}</p>
+                    <span class="text-xs opacity-70 mt-1 block">${new Date().toLocaleTimeString()}</span>
+                </div>
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function updateCodeWithChanges() {
+            // Simulate AI updating the code
+            files['index.html'] = files['index.html'].replace('bg-gray-900', 'bg-blue-900');
+            if (currentFile === 'index.html') {
+                updateCodeEditor();
+            }
+            updatePreview();
+        }
+
+        function copyCode() {
+            navigator.clipboard.writeText(files[currentFile]);
+            alert('Code copied to clipboard!');
+        }
+
+        function saveProject() {
+            const projectData = {
+                files: files,
+                timestamp: new Date().toISOString()
+            };
+            localStorage.setItem('savedProject', JSON.stringify(projectData));
+            alert('Project saved successfully!');
+        }
+
+        function exportProject() {
+            const zip = new JSZip();
+            Object.entries(files).forEach(([fileName, content]) => {
+                zip.file(fileName, content);
+            });
+            
+            zip.generateAsync({type: 'blob'}).then(function(content) {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(content);
+                link.download = 'landing-page.zip';
+                link.click();
+            });
+        }
+    </script>
+
+    <!-- Include JSZip for export functionality -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+</body>
+</html>

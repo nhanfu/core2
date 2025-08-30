@@ -1,48 +1,484 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Introduction</title>
-    <!-- Tailwind CSS CDN -->
+    <title>TMA - AI-Powered Landing Pages on Demand</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0F172A; /* Slate 900 */
+            color: #F8FAFC; /* Slate 50 */
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #38BDF8, #A78BFA);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+        }
+        .cta-button {
+            background: linear-gradient(90deg, #38BDF8, #818CF8);
+            transition: all 0.3s ease;
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(56, 189, 248, 0.3), 0 4px 6px -2px rgba(129, 140, 248, 0.2);
+        }
+        .feature-card, .template-card, .testimonial-card {
+            background-color: #1E293B; /* Slate 800 */
+            border: 1px solid #334155; /* Slate 700 */
+            border-radius: 1rem;
+            transition: all 0.3s ease;
+        }
+        .feature-card:hover, .template-card:hover {
+            transform: translateY(-5px);
+            border-color: #38BDF8;
+        }
+        .chat-input-container {
+            background: #1E293B;
+            border: 1px solid #334155;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-radius: 1rem;
+        }
+        .chat-input-container:focus-within {
+            border-color: #38BDF8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.4);
+        }
+        .file-upload-area {
+            border: 2px dashed #334155;
+            background: #0F172A;
+            transition: all 0.3s ease;
+        }
+        .file-upload-area:hover, .file-upload-area.dragover {
+            border-color: #38BDF8;
+            background: #1E293B;
+        }
+        .uploaded-file {
+            background: #334155;
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            margin: 0.25rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .nav-link:hover {
+            color: #38BDF8;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 font-sans leading-normal tracking-normal">
-    <header class="bg-blue-600 text-white p-6">
-        <h1 class="text-3xl font-bold">Welcome to My API</h1>
-        <p class="text-lg">Your gateway to seamless integration</p>
+<body class="antialiased">
+
+    <!-- Header -->
+    <header class="fixed w-full top-0 left-0 z-50 bg-slate-900/80 backdrop-blur-lg border-b border-slate-700">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold tracking-tighter">
+                <a href="#" class="gradient-text">TMA</a>
+            </h1>
+            <nav class="hidden md:flex space-x-8 items-center">
+                <a href="#how-it-works" class="nav-link text-slate-300 transition-colors">How It Works</a>
+                <a href="#features" class="nav-link text-slate-300 transition-colors">Features</a>
+                <a href="#templates" class="nav-link text-slate-300 transition-colors">Templates</a>
+                <a href="#" class="bg-slate-800 text-white py-2 px-4 rounded-lg hover:bg-slate-700 transition-colors">Login</a>
+            </nav>
+            <button class="md:hidden text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </div>
     </header>
 
-    <main class="max-w-4xl mx-auto mt-8 p-6 bg-white rounded shadow">
-        <section>
-            <h2 class="text-2xl font-semibold text-gray-800">Introduction</h2>
-            <p class="mt-4 text-gray-600">This API provides a set of powerful tools to enable developers to integrate and build amazing applications effortlessly. Whether you are looking to fetch data, manage resources, or build scalable services, this API has got you covered.</p>
+    <main>
+        <!-- Hero Section -->
+        <section class="pt-32 pb-20 md:pt-40 md:pb-28">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tighter mb-6">
+                    Go from <span class="gradient-text">Story</span> to <span class="gradient-text">Stunning Landing Page</span> in Seconds
+                </h2>
+                <p class="max-w-3xl mx-auto text-lg md:text-xl text-slate-400 mb-12">
+                    Just drop your story, content, or ideas. Our AI analyzes trends, generates content, and builds a high-converting landing page for you instantly.
+                </p>
+
+                <!-- AI Chat Input -->
+                <div class="max-w-4xl mx-auto">
+                    <div class="chat-input-container p-6 transition-all">
+                        <!-- Text Input Area -->
+                        <div class="mb-4">
+                            <textarea 
+                                id="ai-prompt" 
+                                class="w-full bg-transparent text-white px-4 py-3 border-0 focus:ring-0 placeholder-slate-500 resize-none min-h-[120px]" 
+                                placeholder="Describe your project in detail... 
+
+For example:
+• What product or service are you launching?
+• Who is your target audience?
+• What key features should be highlighted?
+• What's your brand style or tone?"
+                                rows="5"
+                            ></textarea>
+                        </div>
+
+                        <!-- File Upload Area -->
+                        <div class="mb-4">
+                            <div class="file-upload-area p-6 rounded-lg text-center cursor-pointer" id="file-upload-area">
+                                <input type="file" id="file-input" multiple accept="image/*,.pdf,.doc,.docx,.txt" class="hidden">
+                                <div class="upload-content">
+                                    <svg class="w-12 h-12 mx-auto mb-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                    </svg>
+                                    <p class="text-slate-300 font-medium">Drop files here or click to upload</p>
+                                    <p class="text-slate-500 text-sm mt-1">Support images, documents, videos (max 10MB each)</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Uploaded Files Display -->
+                            <div id="uploaded-files" class="mt-3 hidden">
+                                <p class="text-sm text-slate-400 mb-2">Uploaded files:</p>
+                                <div id="file-list" class="flex flex-wrap gap-2"></div>
+                            </div>
+                        </div>
+
+                        <!-- Generate Button -->
+                        <div class="flex justify-center">
+                            <button id="generate-btn" class="cta-button text-white font-semibold rounded-full px-12 py-4 text-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                                <span class="button-text">Generate Landing Page</span>
+                                <span class="loading-spinner hidden">
+                                    <svg class="animate-spin h-5 w-5 inline-block mr-2" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    Generating...
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-sm text-slate-500 mt-4 text-center">Provide as much detail as possible for better results. Include files like logos, content drafts, or reference images.</p>
+                </div>
+            </div>
         </section>
 
-        <section class="mt-8">
-            <h2 class="text-2xl font-semibold text-gray-800">Getting Started</h2>
-            <p class="mt-4 text-gray-600">To get started, follow these steps:</p>
-            <ul class="list-disc list-inside mt-4 text-gray-600">
-                <li>Sign up for an API key</li>
-                <li>Read the <a href="#documentation" class="text-blue-500 hover:underline">documentation</a></li>
-                <li>Start building your application</li>
-            </ul>
+        <!-- How It Works Section -->
+        <section id="how-it-works" class="py-20 bg-slate-800/50">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h3 class="text-3xl md:text-4xl font-bold tracking-tighter">Create in 3 Simple Steps</h3>
+                    <p class="text-slate-400 mt-3 max-w-2xl mx-auto">Our streamlined process makes website creation effortless and fast.</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8 text-center">
+                    <!-- Step 1 -->
+                    <div class="flex flex-col items-center">
+                        <div class="w-16 h-16 rounded-full bg-sky-500/10 text-sky-400 flex items-center justify-center text-2xl font-bold mb-4 border border-sky-500/30">1</div>
+                        <h4 class="text-xl font-semibold mb-2">Input Your Content</h4>
+                        <p class="text-slate-400">Provide your story, product details, images, or even just a video link. The more you give, the better the result.</p>
+                    </div>
+                    <!-- Step 2 -->
+                    <div class="flex flex-col items-center">
+                        <div class="w-16 h-16 rounded-full bg-purple-500/10 text-purple-400 flex items-center justify-center text-2xl font-bold mb-4 border border-purple-500/30">2</div>
+                        <h4 class="text-xl font-semibold mb-2">AI Magic Happens</h4>
+                        <p class="text-slate-400">Our AI analyzes your input, researches current market trends, writes compelling copy, and generates unique images.</p>
+                    </div>
+                    <!-- Step 3 -->
+                    <div class="flex flex-col items-center">
+                        <div class="w-16 h-16 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-2xl font-bold mb-4 border border-emerald-500/30">3</div>
+                        <h4 class="text-xl font-semibold mb-2">Launch Your Page</h4>
+                        <p class="text-slate-400">Review your professionally designed landing page. Make any final tweaks and launch it to the world with a single click.</p>
+                    </div>
+                </div>
+            </div>
         </section>
 
-        <section id="documentation" class="mt-8">
-            <h2 class="text-2xl font-semibold text-gray-800">Documentation</h2>
-            <p class="mt-4 text-gray-600">Comprehensive documentation is available to help you make the most of this API. It includes:</p>
-            <ul class="list-disc list-inside mt-4 text-gray-600">
-                <li>Endpoint descriptions</li>
-                <li>Authentication methods</li>
-                <li>Error handling</li>
-                <li>Example requests and responses</li>
-            </ul>
+        <!-- Features Section -->
+        <section id="features" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h3 class="text-3xl md:text-4xl font-bold tracking-tighter">A Powerful Toolkit for Growth</h3>
+                    <p class="text-slate-400 mt-3 max-w-2xl mx-auto">Everything you need to create marketing assets that capture attention and convert.</p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Feature 1 -->
+                    <div class="feature-card p-6">
+                        <div class="text-sky-400 mb-4">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+                        </div>
+                        <h4 class="text-xl font-semibold mb-2">AI Content Analysis</h4>
+                        <p class="text-slate-400 text-sm">Our AI reads and understands your story's context, tone, and key messages to create perfectly aligned copy.</p>
+                    </div>
+                    <!-- Feature 2 -->
+                    <div class="feature-card p-6">
+                         <div class="text-purple-400 mb-4">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                        </div>
+                        <h4 class="text-xl font-semibold mb-2">Live Trend Research</h4>
+                        <p class="text-slate-400 text-sm">We scan the internet for the latest trends related to your topic, ensuring your content is relevant and timely.</p>
+                    </div>
+                    <!-- Feature 3 -->
+                    <div class="feature-card p-6">
+                         <div class="text-emerald-400 mb-4">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        </div>
+                        <h4 class="text-xl font-semibold mb-2">AI Image Generation</h4>
+                        <p class="text-slate-400 text-sm">Don't have images? No problem. Our AI can create beautiful, custom visuals that match your brand and story.</p>
+                    </div>
+                    <!-- Feature 4 -->
+                    <div class="feature-card p-6">
+                         <div class="text-rose-400 mb-4">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                        </div>
+                        <h4 class="text-xl font-semibold mb-2">Trending Templates</h4>
+                        <p class="text-slate-400 text-sm">Choose from a curated library of templates based on today's hottest design and marketing trends.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Templates Section -->
+        <section id="templates" class="py-20 bg-slate-800/50">
+             <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h3 class="text-3xl md:text-4xl font-bold tracking-tighter">Start with a Trending Design</h3>
+                    <p class="text-slate-400 mt-3 max-w-2xl mx-auto">Explore templates inspired by top-performing landing pages across industries.</p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Template 1 -->
+                    <div class="template-card overflow-hidden">
+                        <img src="https://placehold.co/600x400/1E293B/A78BFA?text=SaaS+Launch" alt="SaaS Launch Template" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <h4 class="text-xl font-semibold">Neo-Brutalist SaaS</h4>
+                            <p class="text-slate-400 mt-2">Bold, high-contrast design perfect for tech startups.</p>
+                        </div>
+                    </div>
+                     <!-- Template 2 -->
+                    <div class="template-card overflow-hidden">
+                        <img src="https://placehold.co/600x400/1E293B/38BDF8?text=Creator+Course" alt="Creator Course Template" class="w-full h-48 object-cover">
+                         <div class="p-6">
+                            <h4 class="text-xl font-semibold">Creator's Gradient</h4>
+                            <p class="text-slate-400 mt-2">Vibrant and energetic, designed for personal brands and courses.</p>
+                        </div>
+                    </div>
+                     <!-- Template 3 -->
+                    <div class="template-card overflow-hidden">
+                        <img src="https://placehold.co/600x400/1E293B/F472B6?text=E-commerce+Drop" alt="E-commerce Drop Template" class="w-full h-48 object-cover">
+                         <div class="p-6">
+                            <h4 class="text-xl font-semibold">Minimalist Product Drop</h4>
+                            <p class="text-slate-400 mt-2">Clean and focused on imagery, ideal for e-commerce.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials -->
+        <section class="py-20">
+            <div class="container mx-auto px-6">
+                 <div class="text-center mb-16">
+                    <h3 class="text-3xl md:text-4xl font-bold tracking-tighter">Loved by Modern Marketers</h3>
+                    <p class="text-slate-400 mt-3 max-w-2xl mx-auto">See how TMA is transforming ideas into reality for our users.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                    <div class="testimonial-card p-8">
+                        <p class="text-slate-300 mb-6">"I went from a rough idea in a notepad to a fully-functional, beautiful landing page in less than an hour. The AI's ability to grasp my concept and research trends was mind-blowing."</p>
+                        <div class="flex items-center">
+                            <img src="https://i.pravatar.cc/40?u=a042581f4e29026704d" alt="Sarah L." class="w-10 h-10 rounded-full mr-4">
+                            <div>
+                                <p class="font-semibold text-white">Sarah L.</p>
+                                <p class="text-sm text-slate-400">Founder of 'Stellar SaaS'</p>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="testimonial-card p-8">
+                        <p class="text-slate-300 mb-6">"The AI-generated images were a game changer. I'm not a designer, but TMA gave me professional-quality assets that perfectly matched my brand's aesthetic. A must-have tool for creators."</p>
+                        <div class="flex items-center">
+                            <img src="https://i.pravatar.cc/40?u=a042581f4e29026704a" alt="Mike R." class="w-10 h-10 rounded-full mr-4">
+                            <div>
+                                <p class="font-semibold text-white">Mike R.</p>
+                                <p class="text-sm text-slate-400">Indie Hacker & Creator</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="py-20">
+            <div class="container mx-auto px-6 text-center">
+                 <h2 class="text-3xl md:text-5xl font-extrabold tracking-tighter mb-6">
+                    Ready to Build Your <span class="gradient-text">Next Big Thing</span>?
+                </h2>
+                <p class="max-w-2xl mx-auto text-lg text-slate-400 mb-12">
+                   Stop wrestling with builders and start creating with intelligence. Your next viral landing page is just one prompt away.
+                </p>
+                <a href="#" class="cta-button text-white font-bold rounded-full px-10 py-4 text-lg inline-block">
+                    Start Generating for Free
+                </a>
+            </div>
         </section>
     </main>
 
-    <footer class="bg-gray-800 text-white p-4 mt-8">
-        <p class="text-center">&copy; 2025 My API. All rights reserved.</p>
+    <!-- Footer -->
+    <footer class="border-t border-slate-800">
+        <div class="container mx-auto px-6 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+                <p class="text-slate-400">&copy; 2025 Trending Marketing Agency. All rights reserved.</p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-slate-400 hover:text-white"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd" /></svg></a>
+                    <a href="#" class="text-slate-400 hover:text-white"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.71v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" /></svg></a>
+                    <a href="#" class="text-slate-400 hover:text-white"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12.019c0 4.438 2.865 8.225 6.839 9.504.5.092.682-.217.682-.483 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.03 1.595 1.03 2.688 0 3.848-2.338 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.001 10.001 0 0022 12.019C22 6.477 17.523 2 12 2z" clip-rule="evenodd" /></svg></a>
+                </div>
+            </div>
+        </div>
     </footer>
+
+    <script>
+        // File upload functionality
+        const fileUploadArea = document.getElementById('file-upload-area');
+        const fileInput = document.getElementById('file-input');
+        const uploadedFilesDiv = document.getElementById('uploaded-files');
+        const fileListDiv = document.getElementById('file-list');
+        const generateBtn = document.getElementById('generate-btn');
+        const textArea = document.getElementById('ai-prompt');
+        
+        let uploadedFiles = [];
+
+        // Click to upload
+        fileUploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        // Drag and drop functionality
+        fileUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileUploadArea.classList.add('dragover');
+        });
+
+        fileUploadArea.addEventListener('dragleave', () => {
+            fileUploadArea.classList.remove('dragover');
+        });
+
+        fileUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileUploadArea.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        // File input change
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            for (let file of files) {
+                if (file.size > 10 * 1024 * 1024) { // 10MB limit
+                    alert(`File "${file.name}" is too large. Maximum size is 10MB.`);
+                    continue;
+                }
+                
+                if (!uploadedFiles.find(f => f.name === file.name && f.size === file.size)) {
+                    uploadedFiles.push(file);
+                    addFileToDisplay(file);
+                }
+            }
+            
+            if (uploadedFiles.length > 0) {
+                uploadedFilesDiv.classList.remove('hidden');
+            }
+        }
+
+        function addFileToDisplay(file) {
+            const fileDiv = document.createElement('div');
+            fileDiv.className = 'uploaded-file text-sm';
+            fileDiv.innerHTML = `
+                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                <span class="text-slate-300">${file.name}</span>
+                <button onclick="removeFile('${file.name}', ${file.size})" class="text-slate-500 hover:text-red-400 ml-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            `;
+            fileListDiv.appendChild(fileDiv);
+        }
+
+        function removeFile(fileName, fileSize) {
+            uploadedFiles = uploadedFiles.filter(f => !(f.name === fileName && f.size === fileSize));
+            
+            // Remove from display
+            const fileElements = fileListDiv.children;
+            for (let i = fileElements.length - 1; i >= 0; i--) {
+                if (fileElements[i].textContent.includes(fileName)) {
+                    fileElements[i].remove();
+                    break;
+                }
+            }
+            
+            if (uploadedFiles.length === 0) {
+                uploadedFilesDiv.classList.add('hidden');
+            }
+        }
+
+        // Generate button functionality
+        generateBtn.addEventListener('click', async () => {
+            const prompt = textArea.value.trim();
+            
+            if (!prompt) {
+                alert('Please enter a description of your project.');
+                return;
+            }
+
+            // Show loading state
+            generateBtn.disabled = true;
+            document.querySelector('.button-text').classList.add('hidden');
+            document.querySelector('.loading-spinner').classList.remove('hidden');
+
+            try {
+                // Prepare form data
+                const formData = new FormData();
+                formData.append('prompt', prompt);
+                
+                uploadedFiles.forEach((file, index) => {
+                    formData.append(`file_${index}`, file);
+                });
+
+                // Store data in sessionStorage for the conversation page
+                const projectData = {
+                    prompt: prompt,
+                    files: uploadedFiles.map(f => ({
+                        name: f.name,
+                        size: f.size,
+                        type: f.type
+                    })),
+                    timestamp: new Date().toISOString()
+                };
+                
+                sessionStorage.setItem('currentProject', JSON.stringify(projectData));
+                
+                // Simulate API call (replace with actual endpoint)
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // Redirect to conversation page
+                window.location.href = '/conversation.html';
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            } finally {
+                // Reset loading state
+                generateBtn.disabled = false;
+                document.querySelector('.button-text').classList.remove('hidden');
+                document.querySelector('.loading-spinner').classList.add('hidden');
+            }
+        });
+
+        // Auto-resize textarea
+        textArea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.max(120, this.scrollHeight) + 'px';
+        });
+    </script>
+
 </body>
 </html>
