@@ -14,7 +14,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Core.Controllers;
 
 [Authorize]
-public class UserController(UserService _userSvc, PdfService _pdfService, ExcelService _excelService, WebSocketService socketSvc, OpenAIHttpClientService _openAIHttpClientService) : ControllerBase
+public class UserController(UserService _userSvc, PdfService _pdfService,
+    ExcelService _excelService, OpenAIHttpClientService _openAIHttpClientService) : ControllerBase
 {
     [AllowAnonymous]
     [HttpPost("/api/auth/login")]
@@ -244,40 +245,10 @@ public class UserController(UserService _userSvc, PdfService _pdfService, ExcelS
         return await _userSvc.MoveHBL(entity);
     }
 
-    [HttpPost("/api/SplitFee")]
-    public async Task<bool> SplitFee([FromBody] FeeVM entity)
-    {
-        return await _userSvc.SplitFee(entity);
-    }
-
-    [HttpPost("/api/AddFee")]
-    public async Task<bool> AddFee([FromBody] FeeVM entity)
-    {
-        return await _userSvc.AddFee(entity);
-    }
-
-    [HttpPost("/api/LoadShipmentContainer")]
-    public async Task<bool> LoadShipmentContainer([FromBody] EntityVM entity)
-    {
-        return await _userSvc.LoadShipmentContainer(entity);
-    }
-
-    [HttpPost("/api/LoadShipmentDetailContainer")]
-    public async Task<bool> LoadShipmentDetailContainer([FromBody] EntityVM entity)
-    {
-        return await _userSvc.LoadShipmentDetailContainer(entity);
-    }
-
     [HttpPatch("/api/feature/run")]
     public Task<SqlResult> Run([FromBody] PatchVM entity)
     {
         return _userSvc.SavePatch2(entity);
-    }
-
-    [HttpPost("/api/feature/AsyncTo/{t}/{featureName}")]
-    public async Task<bool> AsyncTo([FromRoute] string t, [FromRoute] string featureName)
-    {
-        return await _userSvc.AsyncTo(t, featureName);
     }
 
     [HttpPatch("/api/feature/runs")]
@@ -382,40 +353,5 @@ public class UserController(UserService _userSvc, PdfService _pdfService, ExcelS
     public async Task<Dictionary<string, object>> GetMessageActive()
     {
         return await _userSvc.GetMessageActive();
-    }
-
-    [HttpPost("NotifyDevice")]
-    public Task<bool> NotifyDevice([FromBody] MQEvent e)
-    {
-        Task.Run(async () => await _userSvc.NotifyDevice(e));
-        return Task.FromResult(true);
-    }
-
-    [HttpPost("api/cluster/add")]
-    public Task AddCluster([FromBody] Node e)
-    {
-        return _userSvc.AddCluster(e);
-    }
-
-    [HttpPost("api/cluster/remove")]
-    public Task RemoveCluster([FromBody] Node e)
-    {
-        return _userSvc.RemoveCluster(e);
-    }
-
-    [HttpPost("api/cluster/action")]
-    public Task ClusterAction([FromBody] MQEvent e)
-    {
-        return socketSvc.MQAction(e);
-    }
-
-    [HttpPost("api/[Controller]/cmd")]
-    public string Cmdline([FromBody] Cmd cmd)
-    {
-        if (!_userSvc.TenantCode.Equals("System", StringComparison.OrdinalIgnoreCase)
-            || !_userSvc.RoleNames.Any(x => x.Equals("System", StringComparison.OrdinalIgnoreCase)))
-            throw new UnauthorizedAccessException("Must login with system tenant and system role");
-
-        return _userSvc.CommandOutput(cmd);
     }
 }

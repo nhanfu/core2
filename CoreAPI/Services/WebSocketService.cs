@@ -98,18 +98,6 @@ namespace Core.Services
             }
         }
 
-        public async Task SendMessageToSubscribers(string message, string queueName)
-        {
-            var connections = connManager.GetSocketByQueue(queueName);
-            foreach (var socket in connections)
-            {
-                if (socket.State == WebSocketState.Open)
-                {
-                    await SendMessageAsync(socket, message);
-                }
-            }
-        }
-
         public ConcurrentDictionary<string, WebSocket> GetAll(string TenantCode)
         {
             return connManager.GetDeviceSockets(TenantCode);
@@ -120,18 +108,6 @@ namespace Core.Services
             var userGroup = connManager.GetDeviceSockets(TenantCode)
                 .Where(x => userIds.Contains(x.Key.Split("/")[1]));
             return NotifyUserGroup(message, userGroup, fcm);
-        }
-
-        public async Task SendMessageToSocketAsync(string token, string message, string fcm, string TenantCode)
-        {
-            var pair = connManager.GetDeviceSockets(TenantCode)
-                .FirstOrDefault(x => x.Key == token);
-            var fcmTask = SendFCMNotfication(fcm);
-            if (pair.Value.State != WebSocketState.Open)
-            {
-                return;
-            }
-            await SendMessageAsync(pair.Value, message);
         }
 
         private async Task NotifyUserGroup(string message, IEnumerable<KeyValuePair<string, WebSocket>> userGroup, string fcm = null)

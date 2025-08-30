@@ -1,7 +1,6 @@
 ﻿using ClosedXML.Excel;
 using Core.Exceptions;
 using Core.Extensions;
-using Core.Middlewares;
 using Core.Models;
 using Core.ViewModels;
 using CoreAPI.BgService;
@@ -10,7 +9,6 @@ using CoreAPI.Services;
 using CoreAPI.Services.Sql;
 using CoreAPI.ViewModels;
 using Hangfire;
-using HtmlAgilityPack;
 using LinqKit;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Caching.Distributed;
@@ -396,139 +394,6 @@ public class UserService
         return true;
     }
 
-    public async Task<bool> LoadShipmentContainer(EntityVM entity)
-    {
-        return true;
-    }
-
-    public async Task<bool> LoadShipmentDetailContainer(EntityVM entity)
-    {
-        return true;
-    }
-
-    public async Task<bool> AddFee(FeeVM entity)
-    {
-        var update = $@"
-            UPDATE ShipmentInvoice set RevisedDate = GETDATE()
-            from ShipmentInvoice
-            where Id = '{entity.ShipmentInvoiceId}';
-            INSERT INTO [dbo].[ShipmentInvoiceDetail]
-           ([Id]
-           ,[TypeId]
-           ,[ShipmentInvoiceId]
-           ,[ShipmentId]
-           ,[VendorId]
-           ,[DescriptionId]
-           ,[TotalAmountTax]
-           ,[TotalAmount]
-           ,[AmountTax]
-           ,[Amount]
-           ,[Quantity]
-           ,[UnitId]
-           ,[Vat]
-           ,[CurrencyId]
-           ,[Tax]
-           ,[Notes]
-           ,[Docs]
-           ,[IsObh]
-           ,[ObhId]
-           ,[IsNoDocs]
-           ,[ExchangeRateVND]
-           ,[ExchangeRateUSD]
-           ,[ExchangeRateINV]
-           ,[ExchangeRateINV2]
-           ,[IsContainer]
-           ,[IsCBM]
-           ,[IsFreight]
-           ,[IsLogistics]
-           ,[IsTrucking]
-           ,[IsKGS]
-           ,[IsGW]
-           ,[Order]
-           ,[ExchangeRate]
-           ,[SettlementNo]
-           ,[Active]
-           ,[InsertedDate]
-           ,[InsertedBy]
-           ,[UpdatedDate]
-           ,[UpdatedBy]
-           ,[BasedId]
-           ,[PmTypeId]
-           ,[ShipmentFeeId]
-           ,[IsLock]
-           ,[Payable]
-           ,[ExAmount]
-           ,[ExAmountTax]
-           ,[ExTotalAmount]
-           ,[ExTotalAmountTax]
-           ,[Receivable])
-            select NEWID()
-           ,ds.[TypeId]
-           ,'{entity.ShipmentInvoiceId}'
-           ,ds.[ShipmentId]
-           ,ds.[VendorId]
-           ,ds.[DescriptionId]
-           ,ds.[TotalAmountTax]
-           ,ds.[TotalAmount]
-           ,ds.[AmountTax]
-           ,ds.[Amount]
-           ,ds.[Quantity]
-           ,ds.[UnitId]
-           ,ds.[Vat]
-           ,ds.[CurrencyId]
-           ,ds.[Tax]
-           ,ds.[Notes]
-           ,ds.[Docs]
-           ,ds.[IsObh]
-           ,ds.[ObhId]
-           ,ds.[IsNoDocs]
-           ,ds.[ExchangeRateVND]
-           ,ds.[ExchangeRateUSD]
-           ,ds.ExchangeRateINV
-           ,ds.[ExchangeRateUSD]
-           ,ds.[IsContainer]
-           ,ds.[IsCBM]
-           ,ds.[IsFreight]
-           ,ds.[IsLogistics]
-           ,ds.[IsTrucking]
-           ,ds.[IsKGS]
-           ,ds.[IsGW]
-           ,ds.[Order]
-           ,ds.[ExchangeRate]
-           ,ds.[SettlementNo]
-           ,ds.[Active]
-           , GETDATE()
-           ,'{UserId}'
-           ,ds.[UpdatedDate]
-           ,ds.[UpdatedBy]
-           ,ds.[BasedId]
-           ,ds.[PmTypeId]
-           ,ds.Id
-           ,ds.[IsLock]
-           ,case when ds.TypeId = 2 then ds.[ExTotalAmountTax] else null end
-		   ,ds.[ExAmount]
-           ,ds.[ExAmountTax]
-           ,ds.[ExTotalAmount]
-           ,ds.[ExTotalAmountTax]
-           ,case when ds.TypeId != 2 then ds.[ExTotalAmountTax] else null end
-        from ShipmentFee as ds 
-        left join ShipmentInvoice on ShipmentInvoice.Id = '{entity.ShipmentInvoiceId}'
-        where ds.Id in ({entity.ShipmentInvoiceDetailId.CombineStrings()})";
-        await _sql.RunSqlCmd(null, update);
-        return true;
-    }
-
-    public async Task<bool> SplitFee(FeeVM entity)
-    {
-        var update = $"" +
-            $"UPDATE ShipmentInvoice set RevisedDate = GETDATE() " +
-            $"from ShipmentInvoice " +
-            $"where Id = '{entity.ShipmentInvoiceId}';" +
-            $" DELETE [ShipmentInvoiceDetail] where Id in ({entity.ShipmentInvoiceDetailId.CombineStrings()})";
-        await _sql.RunSqlCmd(null, update);
-        return true;
-    }
-
     public async Task<Conversation> Conversation(Conversation entity)
     {
         var query = @$"select * from [Conversation] where RecordId = '{entity.RecordId}' and EntityId = '{entity.EntityId}'";
@@ -549,7 +414,6 @@ public class UserService
             return conversation;
         }
     }
-
 
     public async Task<Dictionary<string, object>[]> GetMenu()
     {
@@ -1941,64 +1805,62 @@ public class UserService
         if (!table.Duplicate.IsNullOrWhiteSpace())
         {
             var field = table.Duplicate.Split(",");
-            using (SqlConnection connection = new SqlConnection(BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics")))
+            using SqlConnection connection = new (BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
+            await connection.OpenAsync();
+            try
             {
-                await connection.OpenAsync();
-                try
+                using SqlCommand command = new SqlCommand();
                 {
-                    using (SqlCommand command = new SqlCommand())
+                    command.Connection = connection;
+                    var wheres = field.Select(x => $"[{x}] = @{x.ToLower()} and [{x}] is not null and @{x.ToLower()} is not null").ToList();
+                    if (Update)
                     {
-                        command.Connection = connection;
-                        var wheres = field.Select(x => $"[{x}] = @{x.ToLower()} and [{x}] is not null and @{x.ToLower()} is not null").ToList();
-                        if (Update)
+                        wheres.Add($"[Id] != @id");
+                    }
+                    command.CommandText += $"Select Top 1 * from [{patch.Table}] where {wheres.Combine(" and ")}";
+                    foreach (var item in field)
+                    {
+                        var val = patch.Changes.FirstOrDefault(x => x.Field == item);
+                        if (val is not null)
                         {
-                            wheres.Add($"[Id] != @id");
-                        }
-                        command.CommandText += $"Select Top 1 * from [{patch.Table}] where {wheres.Combine(" and ")}";
-                        foreach (var item in field)
-                        {
-                            var val = patch.Changes.FirstOrDefault(x => x.Field == item);
-                            if (val is not null)
-                            {
-                                command.Parameters.AddWithValue($"@{item.ToLower()}", val.Value is null ? DBNull.Value : val.Value);
-                            }
-                            else
-                            {
-                                command.Parameters.AddWithValue($"@{item.ToLower()}", DBNull.Value);
-                            }
-                        }
-                        if (Update)
-                        {
-                            var val = patch.Changes.FirstOrDefault(x => x.Field == "Id");
-                            if (val is not null)
-                            {
-                                command.Parameters.AddWithValue($"@id", val.Value is null ? DBNull.Value : val.Value);
-                            }
-                        }
-                        var reader = await command.ExecuteReaderAsync();
-                        Dictionary<string, object> lastRow = null;
-                        if (reader.HasRows)
-                        {
-                            while (await reader.ReadAsync())
-                            {
-                                lastRow = new Dictionary<string, object>();
-                                for (int i = 0; i < reader.FieldCount; i++)
-                                {
-                                    lastRow[reader.GetName(i)] = reader.IsDBNull(i) ? null : reader.GetValue(i);
-                                }
-                            }
-                            return (true, table.Description, lastRow);
+                            command.Parameters.AddWithValue($"@{item.ToLower()}", val.Value is null ? DBNull.Value : val.Value);
                         }
                         else
                         {
-                            return (false, table.Description, null);
+                            command.Parameters.AddWithValue($"@{item.ToLower()}", DBNull.Value);
                         }
                     }
+                    if (Update)
+                    {
+                        var val = patch.Changes.FirstOrDefault(x => x.Field == "Id");
+                        if (val is not null)
+                        {
+                            command.Parameters.AddWithValue($"@id", val.Value is null ? DBNull.Value : val.Value);
+                        }
+                    }
+                    var reader = await command.ExecuteReaderAsync();
+                    Dictionary<string, object> lastRow = null;
+                    if (reader.HasRows)
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            lastRow = new Dictionary<string, object>();
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                lastRow[reader.GetName(i)] = reader.IsDBNull(i) ? null : reader.GetValue(i);
+                            }
+                        }
+                        return (true, table.Description, lastRow);
+                    }
+                    else
+                    {
+                        return (false, table.Description, null);
+                    }
                 }
-                catch (Exception ex)
-                {
-                    return (true, table.Description, null);
-                }
+            }
+            catch (Exception)
+            {
+                return (true, table.Description, null);
             }
         }
         else
@@ -2041,47 +1903,45 @@ public class UserService
                 new PatchDetail { Field = "UpdatedBy", Value = null },
                 new PatchDetail { Field = "Active", Value = "1" }
             });
-            using (SqlConnection connection = new SqlConnection(BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics")))
+            using SqlConnection connection = new SqlConnection(BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
+            await connection.OpenAsync();
+            SqlTransaction transaction = connection.BeginTransaction();
+            try
             {
-                await connection.OpenAsync();
-                SqlTransaction transaction = connection.BeginTransaction();
-                try
+                using SqlCommand command = new SqlCommand();
+                command.Transaction = transaction;
+                command.Connection = connection;
+                var update = filteredChanges.Select(x => $"@{id.Replace("-", "") + x.Field.ToLower()}");
+                var cells = filteredChanges.Select(x => x.Field).ToList();
+                if (!vm.Delete.Nothing())
                 {
-                    using (SqlCommand command = new SqlCommand())
+                    command.CommandText += vm.Delete.Select(x => $"delete from [{x.Table}] where Id in ({x.Ids.CombineStrings()})").Combine(";");
+                }
+                command.CommandText += $"INSERT into [{vm.Table}]([{cells.Combine("],[")}]) values({update.Combine()})";
+                foreach (var item in filteredChanges)
+                {
+                    if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
                     {
-                        command.Transaction = transaction;
-                        command.Connection = connection;
-                        var update = filteredChanges.Select(x => $"@{id.Replace("-", "") + x.Field.ToLower()}");
-                        var cells = filteredChanges.Select(x => x.Field).ToList();
-                        if (!vm.Delete.Nothing())
+                        item.Value = item.Value.Substring(1);
+                    }
+                    command.Parameters.AddWithValue($"@{id.Replace("-", "") + item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
+                }
+                int index = 1;
+                await command.ExecuteNonQueryAsync();
+                command.Parameters.Clear();
+                command.CommandText = string.Empty;
+                if (!vm.Detail.Nothing())
+                {
+                    foreach (var detailArray in vm.Detail)
+                    {
+                        foreach (var detail in detailArray)
                         {
-                            command.CommandText += vm.Delete.Select(x => $"delete from [{x.Table}] where Id in ({x.Ids.CombineStrings()})").Combine(";");
-                        }
-                        command.CommandText += $"INSERT into [{vm.Table}]([{cells.Combine("],[")}]) values({update.Combine()})";
-                        foreach (var item in filteredChanges)
-                        {
-                            if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
+                            var tableDetailColumns = (await GetTableColumns(detail.Table))[0];
+                            var idDetail = detail.Changes.FirstOrDefault(x => x.Field == "Id").Value;
+                            var filteredDetailChanges = detail.Changes.Where(change => tableDetailColumns.SelectMany(x => x.Values).Contains(change.Field)).ToList();
+                            if (idDetail.StartsWith("-"))
                             {
-                                item.Value = item.Value.Substring(1);
-                            }
-                            command.Parameters.AddWithValue($"@{id.Replace("-", "") + item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
-                        }
-                        int index = 1;
-                        await command.ExecuteNonQueryAsync();
-                        command.Parameters.Clear();
-                        command.CommandText = string.Empty;
-                        if (!vm.Detail.Nothing())
-                        {
-                            foreach (var detailArray in vm.Detail)
-                            {
-                                foreach (var detail in detailArray)
-                                {
-                                    var tableDetailColumns = (await GetTableColumns(detail.Table))[0];
-                                    var idDetail = detail.Changes.FirstOrDefault(x => x.Field == "Id").Value;
-                                    var filteredDetailChanges = detail.Changes.Where(change => tableDetailColumns.SelectMany(x => x.Values).Contains(change.Field)).ToList();
-                                    if (idDetail.StartsWith("-"))
-                                    {
-                                        AddDefaultFields(filteredDetailChanges, new List<PatchDetail>()
+                                AddDefaultFields(filteredDetailChanges, new List<PatchDetail>()
                                         {
                                             new PatchDetail { Field = "InsertedDate", Value = DateTime.Now.ToISOFormat() },
                                             new PatchDetail { Field = "InsertedBy", Value = UserId },
@@ -2089,89 +1949,87 @@ public class UserService
                                             new PatchDetail { Field = "UpdatedBy", Value = null },
                                             new PatchDetail { Field = "Active", Value = "1" }
                                         });
-                                        var updateDetail = filteredDetailChanges.Select(x => $"@{idDetail.Replace("-", "") + x.Field.ToLower()}");
-                                        var cellsDetails = filteredDetailChanges.Select(x => x.Field).ToList();
-                                        command.CommandText += $";INSERT into [{detail.Table}]([{cellsDetails.Combine("],[")}]) values({updateDetail.Combine()})";
-                                        foreach (var item in filteredDetailChanges)
-                                        {
-                                            if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
-                                            {
-                                                item.Value = item.Value.Substring(1);
-                                            }
-                                            command.Parameters.AddWithValue($"@{idDetail.Replace("-", "") + item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
-                                        }
-                                    }
-                                    else
+                                var updateDetail = filteredDetailChanges.Select(x => $"@{idDetail.Replace("-", "") + x.Field.ToLower()}");
+                                var cellsDetails = filteredDetailChanges.Select(x => x.Field).ToList();
+                                command.CommandText += $";INSERT into [{detail.Table}]([{cellsDetails.Combine("],[")}]) values({updateDetail.Combine()})";
+                                foreach (var item in filteredDetailChanges)
+                                {
+                                    if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
                                     {
-                                        AddDefaultFields(filteredDetailChanges, new List<PatchDetail>()
+                                        item.Value = item.Value.Substring(1);
+                                    }
+                                    command.Parameters.AddWithValue($"@{idDetail.Replace("-", "") + item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
+                                }
+                            }
+                            else
+                            {
+                                AddDefaultFields(filteredDetailChanges, new List<PatchDetail>()
                                         {
                                             new PatchDetail { Field = "UpdatedDate", Value = DateTime.Now.ToISOFormat()},
                                             new PatchDetail { Field = "UpdatedBy", Value = UserId },
                                         });
-                                        filteredDetailChanges = filteredDetailChanges.Where(x => x.Field != "Id").ToList();
-                                        var updateDetail = filteredDetailChanges.Select(x => $"[{x.Field}] = @{idDetail.Replace("-", "") + x.Field.ToLower()}");
-                                        command.CommandText += $";UPDATE [{detail.Table}] SET {updateDetail.Combine()} WHERE Id = '{idDetail}';";
-                                        foreach (var item in filteredDetailChanges)
-                                        {
-                                            if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
-                                            {
-                                                item.Value = item.Value.Substring(1);
-                                            }
-                                            command.Parameters.AddWithValue($"@{idDetail.Replace("-", "") + item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
-                                        }
-                                    }
-                                    await command.ExecuteNonQueryAsync();
-                                    command.Parameters.Clear();
-                                    command.CommandText = string.Empty;
-                                }
-                                selectIds.Add(new DetailData()
+                                filteredDetailChanges = filteredDetailChanges.Where(x => x.Field != "Id").ToList();
+                                var updateDetail = filteredDetailChanges.Select(x => $"[{x.Field}] = @{idDetail.Replace("-", "") + x.Field.ToLower()}");
+                                command.CommandText += $";UPDATE [{detail.Table}] SET {updateDetail.Combine()} WHERE Id = '{idDetail}';";
+                                foreach (var item in filteredDetailChanges)
                                 {
-                                    Index = index,
-                                    Table = detailArray[0].Table,
-                                    ComId = detailArray[0].ComId,
-                                    Ids = detailArray.SelectMany(x => x.Changes).Where(x => x.Field == "Id").Select(x => { return x.Value.StartsWith("-") ? x.Value.Substring(1) : x.Value; }).ToList(),
-                                });
-                                index++;
+                                    if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
+                                    {
+                                        item.Value = item.Value.Substring(1);
+                                    }
+                                    command.Parameters.AddWithValue($"@{idDetail.Replace("-", "") + item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
+                                }
                             }
+                            await command.ExecuteNonQueryAsync();
+                            command.Parameters.Clear();
+                            command.CommandText = string.Empty;
                         }
-                        await transaction.CommitAsync();
-                        await connection.CloseAsync();
-                        var childs = new List<string>();
-                        var sql = $"SELECT * FROM [{vm.Table}] where Id = '{id}'";
-                        foreach (var item in selectIds)
+                        selectIds.Add(new DetailData()
                         {
-                            sql += $";SELECT * FROM [{item.Table}] where Id in ({item.Ids.CombineStrings()})";
-                        }
-                        var entity = await _sql.ReadDataSet(sql);
-                        selectIds.ForEach(x =>
-                        {
-                            x.Data = entity[x.Index];
+                            Index = index,
+                            Table = detailArray[0].Table,
+                            ComId = detailArray[0].ComId,
+                            Ids = detailArray.SelectMany(x => x.Changes).Where(x => x.Field == "Id").Select(x => { return x.Value.StartsWith("-") ? x.Value.Substring(1) : x.Value; }).ToList(),
                         });
-                        if (vm.Table == "ConversationDetail")
-                        {
-                            SendMessageAllUser(entity[0][0]);
-                        }
-                        await Notification(vm, id, filteredChanges, oldIsSend, receiverIds);
-                        return new SqlResult()
-                        {
-                            updatedItem = entity[0],
-                            Detail = selectIds,
-                            status = 200,
-                            message = "create successfull"
-                        };
+                        index++;
                     }
                 }
-                catch (Exception ex)
+                await transaction.CommitAsync();
+                await connection.CloseAsync();
+                var childs = new List<string>();
+                var sql = $"SELECT * FROM [{vm.Table}] where Id = '{id}'";
+                foreach (var item in selectIds)
                 {
-                    await transaction.RollbackAsync();
-                    var entity = await _sql.ReadDataSet($"SELECT * FROM [{vm.Table}] where Id = '{id}'");
-                    return new SqlResult()
-                    {
-                        updatedItem = entity[0],
-                        status = 500,
-                        message = ex.Message
-                    };
+                    sql += $";SELECT * FROM [{item.Table}] where Id in ({item.Ids.CombineStrings()})";
                 }
+                var entity = await _sql.ReadDataSet(sql);
+                selectIds.ForEach(x =>
+                {
+                    x.Data = entity[x.Index];
+                });
+                if (vm.Table == "ConversationDetail")
+                {
+                    SendMessageAllUser(entity[0][0]);
+                }
+                await Notification(vm, id, filteredChanges, oldIsSend, receiverIds);
+                return new SqlResult()
+                {
+                    updatedItem = entity[0],
+                    Detail = selectIds,
+                    status = 200,
+                    message = "create successfull"
+                };
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                var entity = await _sql.ReadDataSet($"SELECT * FROM [{vm.Table}] where Id = '{id}'");
+                return new SqlResult()
+                {
+                    updatedItem = entity[0],
+                    status = 500,
+                    message = ex.Message
+                };
             }
         }
         else
@@ -2358,27 +2216,25 @@ public class UserService
     public async Task<SqlResult> SavePatchs2(List<PatchVM> vms)
     {
         var selectIds = new List<DetailData>();
-        using (SqlConnection connection = new SqlConnection(BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics")))
+        using SqlConnection connection = new SqlConnection(BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
+        await connection.OpenAsync();
+        SqlTransaction transaction = connection.BeginTransaction();
+        try
         {
-            await connection.OpenAsync();
-            SqlTransaction transaction = connection.BeginTransaction();
-            try
+            using SqlCommand command = new SqlCommand();
+            command.Transaction = transaction;
+            command.Connection = connection;
+            foreach (var vm in vms)
             {
-                using (SqlCommand command = new SqlCommand())
+                var id = vm.Changes.FirstOrDefault(x => x.Field == "Id").Value;
+                var tableColumns = (await GetTableColumns(vm.Table))[0];
+                var filteredChanges = vm.Changes.Where(change => tableColumns.SelectMany(x => x.Values).Contains(change.Field)).ToList();
+                var isSend = filteredChanges.Find(x => x.Field == "IsSend");
+                var receiverIds = filteredChanges.Find(x => x.Field == "ReceiverIds");
+                if (id.StartsWith("-"))
                 {
-                    command.Transaction = transaction;
-                    command.Connection = connection;
-                    foreach (var vm in vms)
-                    {
-                        var id = vm.Changes.FirstOrDefault(x => x.Field == "Id").Value;
-                        var tableColumns = (await GetTableColumns(vm.Table))[0];
-                        var filteredChanges = vm.Changes.Where(change => tableColumns.SelectMany(x => x.Values).Contains(change.Field)).ToList();
-                        var isSend = filteredChanges.Find(x => x.Field == "IsSend");
-                        var receiverIds = filteredChanges.Find(x => x.Field == "ReceiverIds");
-                        if (id.StartsWith("-"))
-                        {
-                            id = id.Substring(1);
-                            AddDefaultFields(filteredChanges, new List<PatchDetail>()
+                    id = id.Substring(1);
+                    AddDefaultFields(filteredChanges, new List<PatchDetail>()
                             {
                                 new PatchDetail { Field = "InsertedDate", Value = DateTime.Now.ToISOFormat() },
                                 new PatchDetail { Field = "InsertedBy", Value = UserId },
@@ -2386,61 +2242,61 @@ public class UserService
                                 new PatchDetail { Field = "UpdatedBy", Value = null },
                                 new PatchDetail { Field = "Active", Value = "1" }
                             });
-                            var update = filteredChanges.Select(x => $"@{id.Replace("-", "") + x.Field.ToLower()}");
-                            var cells = filteredChanges.Select(x => x.Field).ToList();
-                            if (!vm.Delete.Nothing())
-                            {
-                                command.CommandText += vm.Delete.Select(x => $"delete from [{x.Table}] where Id in ({x.Ids.CombineStrings()})").Combine(";");
-                            }
-                            command.CommandText += $"INSERT into [{vm.Table}]([{cells.Combine("],[")}]) values({update.Combine()})";
-                            foreach (var item in filteredChanges)
-                            {
-                                if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
-                                {
-                                    item.Value = item.Value.Substring(1);
-                                }
-                                command.Parameters.AddWithValue($"@{id.Replace("-", "") + item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
-                            }
-                        }
-                        else
+                    var update = filteredChanges.Select(x => $"@{id.Replace("-", "") + x.Field.ToLower()}");
+                    var cells = filteredChanges.Select(x => x.Field).ToList();
+                    if (!vm.Delete.Nothing())
+                    {
+                        command.CommandText += vm.Delete.Select(x => $"delete from [{x.Table}] where Id in ({x.Ids.CombineStrings()})").Combine(";");
+                    }
+                    command.CommandText += $"INSERT into [{vm.Table}]([{cells.Combine("],[")}]) values({update.Combine()})";
+                    foreach (var item in filteredChanges)
+                    {
+                        if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
                         {
-                            AddDefaultFields(filteredChanges, new List<PatchDetail>()
+                            item.Value = item.Value.Substring(1);
+                        }
+                        command.Parameters.AddWithValue($"@{id.Replace("-", "") + item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
+                    }
+                }
+                else
+                {
+                    AddDefaultFields(filteredChanges, new List<PatchDetail>()
                             {
                                 new PatchDetail { Field = "UpdatedDate", Value = DateTime.Now.ToISOFormat()},
                                 new PatchDetail { Field = "UpdatedBy", Value = UserId },
                             });
-                            var updates = filteredChanges.Where(x => x.Field != "Id").ToList();
-                            var update = updates.Select(x => $"[{x.Field}] = @{id.Replace("-", "") + x.Field.ToLower()}");
-                            if (!vm.Delete.Nothing())
-                            {
-                                command.CommandText += vm.Delete.Select(x => $"delete from [{x.Table}] where Id in ({x.Ids.CombineStrings()})").Combine(";");
-                            }
-                            command.CommandText += $" UPDATE [{vm.Table}] SET {update.Combine()} WHERE Id = '{id}';";
-                            foreach (var item in updates)
-                            {
-                                if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
-                                {
-                                    item.Value = item.Value.Substring(1);
-                                }
-                                command.Parameters.AddWithValue($"@{id.Replace("-", "") + item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
-                            }
-                        }
-                        int index = 1;
-                        await command.ExecuteNonQueryAsync();
-                        command.Parameters.Clear();
-                        command.CommandText = string.Empty;
-                        if (!vm.Detail.Nothing())
+                    var updates = filteredChanges.Where(x => x.Field != "Id").ToList();
+                    var update = updates.Select(x => $"[{x.Field}] = @{id.Replace("-", "") + x.Field.ToLower()}");
+                    if (!vm.Delete.Nothing())
+                    {
+                        command.CommandText += vm.Delete.Select(x => $"delete from [{x.Table}] where Id in ({x.Ids.CombineStrings()})").Combine(";");
+                    }
+                    command.CommandText += $" UPDATE [{vm.Table}] SET {update.Combine()} WHERE Id = '{id}';";
+                    foreach (var item in updates)
+                    {
+                        if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
                         {
-                            foreach (var detailArray in vm.Detail)
+                            item.Value = item.Value.Substring(1);
+                        }
+                        command.Parameters.AddWithValue($"@{id.Replace("-", "") + item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
+                    }
+                }
+                int index = 1;
+                await command.ExecuteNonQueryAsync();
+                command.Parameters.Clear();
+                command.CommandText = string.Empty;
+                if (!vm.Detail.Nothing())
+                {
+                    foreach (var detailArray in vm.Detail)
+                    {
+                        foreach (var detail in detailArray)
+                        {
+                            var tableDetailColumns = (await GetTableColumns(detail.Table))[0];
+                            var idDetail = detail.Changes.FirstOrDefault(x => x.Field == "Id").Value;
+                            var filteredDetailChanges = detail.Changes.Where(change => tableDetailColumns.SelectMany(x => x.Values).Contains(change.Field)).ToList();
+                            if (idDetail.StartsWith("-"))
                             {
-                                foreach (var detail in detailArray)
-                                {
-                                    var tableDetailColumns = (await GetTableColumns(detail.Table))[0];
-                                    var idDetail = detail.Changes.FirstOrDefault(x => x.Field == "Id").Value;
-                                    var filteredDetailChanges = detail.Changes.Where(change => tableDetailColumns.SelectMany(x => x.Values).Contains(change.Field)).ToList();
-                                    if (idDetail.StartsWith("-"))
-                                    {
-                                        AddDefaultFields(filteredDetailChanges, new List<PatchDetail>()
+                                AddDefaultFields(filteredDetailChanges, new List<PatchDetail>()
                                         {
                                             new PatchDetail { Field = "InsertedDate", Value = DateTime.Now.ToISOFormat() },
                                             new PatchDetail { Field = "InsertedBy", Value = UserId },
@@ -2448,90 +2304,88 @@ public class UserService
                                             new PatchDetail { Field = "UpdatedBy", Value = null },
                                             new PatchDetail { Field = "Active", Value = "1" }
                                         });
-                                        var updateDetail = filteredDetailChanges.Select(x => $"@{idDetail.Replace("-", "") + x.Field.ToLower()}");
-                                        var cellsDetails = filteredDetailChanges.Select(x => x.Field).ToList();
-                                        command.CommandText += $";INSERT into [{detail.Table}]([{cellsDetails.Combine("],[")}]) values({updateDetail.Combine()})";
-                                        foreach (var item in filteredDetailChanges)
-                                        {
-                                            if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
-                                            {
-                                                item.Value = item.Value.Substring(1);
-                                            }
-                                            command.Parameters.AddWithValue($"@{idDetail.Replace("-", "") + item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
-                                        }
-                                    }
-                                    else
+                                var updateDetail = filteredDetailChanges.Select(x => $"@{idDetail.Replace("-", "") + x.Field.ToLower()}");
+                                var cellsDetails = filteredDetailChanges.Select(x => x.Field).ToList();
+                                command.CommandText += $";INSERT into [{detail.Table}]([{cellsDetails.Combine("],[")}]) values({updateDetail.Combine()})";
+                                foreach (var item in filteredDetailChanges)
+                                {
+                                    if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
                                     {
-                                        AddDefaultFields(filteredDetailChanges, new List<PatchDetail>()
+                                        item.Value = item.Value.Substring(1);
+                                    }
+                                    command.Parameters.AddWithValue($"@{idDetail.Replace("-", "") + item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
+                                }
+                            }
+                            else
+                            {
+                                AddDefaultFields(filteredDetailChanges, new List<PatchDetail>()
                                         {
                                             new PatchDetail { Field = "UpdatedDate", Value = DateTime.Now.ToISOFormat()},
                                             new PatchDetail { Field = "UpdatedBy", Value = UserId },
                                         });
-                                        filteredDetailChanges = filteredDetailChanges.Where(x => x.Field != "Id").ToList();
-                                        var updateDetail = filteredDetailChanges.Select(x => $"[{x.Field}] = @{idDetail.Replace("-", "") + x.Field.ToLower()}");
-                                        command.CommandText += $";UPDATE [{detail.Table}] SET {updateDetail.Combine()} WHERE Id = '{idDetail}';";
-                                        foreach (var item in filteredDetailChanges)
-                                        {
-                                            if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
-                                            {
-                                                item.Value = item.Value.Substring(1);
-                                            }
-                                            command.Parameters.AddWithValue($"@{idDetail.Replace("-", "") + item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
-                                        }
-                                    }
-                                    await command.ExecuteNonQueryAsync();
-                                    command.Parameters.Clear();
-                                    command.CommandText = string.Empty;
-                                }
-                                selectIds.Add(new DetailData()
+                                filteredDetailChanges = filteredDetailChanges.Where(x => x.Field != "Id").ToList();
+                                var updateDetail = filteredDetailChanges.Select(x => $"[{x.Field}] = @{idDetail.Replace("-", "") + x.Field.ToLower()}");
+                                command.CommandText += $";UPDATE [{detail.Table}] SET {updateDetail.Combine()} WHERE Id = '{idDetail}';";
+                                foreach (var item in filteredDetailChanges)
                                 {
-                                    Index = index,
-                                    Table = detailArray[0].Table,
-                                    ComId = detailArray[0].ComId,
-                                    Ids = detailArray.SelectMany(x => x.Changes).Where(x => x.Field == "Id").Select(x => { return x.Value.StartsWith("-") ? x.Value.Substring(1) : x.Value; }).ToList(),
-                                });
-                                index++;
+                                    if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
+                                    {
+                                        item.Value = item.Value.Substring(1);
+                                    }
+                                    command.Parameters.AddWithValue($"@{idDetail.Replace("-", "") + item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
+                                }
                             }
+                            await command.ExecuteNonQueryAsync();
+                            command.Parameters.Clear();
+                            command.CommandText = string.Empty;
                         }
+                        selectIds.Add(new DetailData()
+                        {
+                            Index = index,
+                            Table = detailArray[0].Table,
+                            ComId = detailArray[0].ComId,
+                            Ids = detailArray.SelectMany(x => x.Changes).Where(x => x.Field == "Id").Select(x => { return x.Value.StartsWith("-") ? x.Value.Substring(1) : x.Value; }).ToList(),
+                        });
+                        index++;
                     }
-                    await transaction.CommitAsync();
-                    await connection.CloseAsync();
-                    var sql = $"SELECT * FROM [{vms[0].Table}] where Id = '{vms[0].Changes.FirstOrDefault(x => x.Field == "Id").Value}'";
-                    foreach (var item in selectIds)
-                    {
-                        sql += $";SELECT * FROM [{item.Table}] where Id in ({item.Ids.CombineStrings()})";
-                    }
-                    var entity = await _sql.ReadDataSet(sql);
-                    selectIds.ForEach(x =>
-                    {
-                        x.Data = entity[x.Index];
-                    });
-                    if (vms[0].Table == "Component")
-                    {
-                        var featureId = vms[0].Changes.FirstOrDefault(x => x.Field == "FeatureId").Value;
-                        var feature = await _sql.ReadDsAs<Feature>($"SELECT * FROM Feature where Id = '{featureId}'");
-                        await PublishFeatureByName(feature.Name);
-                    }
-                    return new SqlResult()
-                    {
-                        updatedItem = entity[0],
-                        Detail = selectIds,
-                        status = 200,
-                        message = "All patches processed successfully"
-                    };
                 }
             }
-            catch (Exception ex)
+            await transaction.CommitAsync();
+            await connection.CloseAsync();
+            var sql = $"SELECT * FROM [{vms[0].Table}] where Id = '{vms[0].Changes.FirstOrDefault(x => x.Field == "Id").Value}'";
+            foreach (var item in selectIds)
             {
-                await transaction.RollbackAsync();
-                var entity = await _sql.ReadDataSet($"SELECT * FROM [{vms[0].Table}] where Id = '{vms[0].Changes.FirstOrDefault(x => x.Field == "Id").Value}'");
-                return new SqlResult()
-                {
-                    updatedItem = entity[0],
-                    status = 500,
-                    message = ex.Message
-                };
+                sql += $";SELECT * FROM [{item.Table}] where Id in ({item.Ids.CombineStrings()})";
             }
+            var entity = await _sql.ReadDataSet(sql);
+            selectIds.ForEach(x =>
+            {
+                x.Data = entity[x.Index];
+            });
+            if (vms[0].Table == "Component")
+            {
+                var featureId = vms[0].Changes.FirstOrDefault(x => x.Field == "FeatureId").Value;
+                var feature = await _sql.ReadDsAs<Feature>($"SELECT * FROM Feature where Id = '{featureId}'");
+                await PublishFeatureByName(feature.Name);
+            }
+            return new SqlResult()
+            {
+                updatedItem = entity[0],
+                Detail = selectIds,
+                status = 200,
+                message = "All patches processed successfully"
+            };
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+            var entity = await _sql.ReadDataSet($"SELECT * FROM [{vms[0].Table}] where Id = '{vms[0].Changes.FirstOrDefault(x => x.Field == "Id").Value}'");
+            return new SqlResult()
+            {
+                updatedItem = entity[0],
+                status = 500,
+                message = ex.Message
+            };
         }
     }
 
@@ -2624,114 +2478,6 @@ public class UserService
         }
     }
 
-    public async Task TryNotifyChanges(string action, string[] keys, params PatchVM[] patches)
-    {
-        if (patches.Nothing()) return;
-        keys ??= patches.Select(vm =>
-        {
-            if (vm.CacheName.IsNullOrWhiteSpace())
-            {
-                var id = vm.Id.OldVal ?? vm.Id.Value;
-                vm.CacheName = $"{vm.Table}{id}";
-            }
-            return vm.CacheName;
-        }).ToArray();
-        await TryInvalidCacheInternal(keys);
-        await patches.ForEachAsync(vm =>
-            vm.QueueName.IsNullOrWhiteSpace() ? null : TryNotifyDeviceInternal(new MQEvent
-            {
-                Id = Uuid7.Guid().ToString(),
-                Action = action,
-                Message = vm.ToJson(),
-                QueueName = vm.QueueName
-            }));
-    }
-
-    public async Task TryNotifyDeviceInternal(MQEvent e)
-    {
-        if (e is null || e.QueueName.IsNullOrWhiteSpace()) return;
-        await NotifyDevice(e);
-        var clusters = await GetClusters(role: "API");
-        try
-        {
-            await NotifyOtherClusters(clusters, nameof(NotifyDevice), e.ToJson());
-        }
-        catch
-        {
-        }
-    }
-
-    private Task<HttpResponseMessage[]> NotifyOtherClusters(Cluster[] clusters, string path, string json)
-    {
-        var request = _ctx.HttpContext.Request;
-        var client = _httpClientFactory.CreateClient();
-        var otherClusters = GetOtherClusters(clusters, _request.Host.Value, UserServiceHelpers.Port);
-        var tasks = otherClusters.Select(x =>
-        {
-            var uri = UserServiceHelpers.GetUri(x.Host, x.Port, x.Scheme, "/" + path);
-            var request = new HttpRequestMessage(HttpMethod.Post, uri)
-            {
-                Content = new StringContent(json, Encoding.UTF8, Utils.ApplicationJson)
-            };
-            CopyHeaders(request, HeaderNames.ContentLength, HeaderNames.ContentType);
-            client.Timeout = TimeSpan.FromSeconds(5);
-            return client.SendAsync(request);
-        });
-        return Task.WhenAll(tasks);
-    }
-
-    public void CopyHeaders(HttpRequestMessage request, params string[] excepts)
-    {
-        foreach (var headerKey in _ctx.HttpContext.Request.Headers.Keys.Except(excepts))
-        {
-            var headerValue = _ctx.HttpContext.Request.Headers[headerKey].ToArray();
-            if (!request.Headers.TryAddWithoutValidation(headerKey, headerValue) && request.Content != null)
-            {
-                request.Content?.Headers.TryAddWithoutValidation(headerKey, headerValue);
-            }
-        }
-    }
-
-    private async Task<Cluster[]> GetClusters(string role)
-    {
-        Cluster[] clusters = null;
-        var cachedCluster = await GetStringAsync(UserServiceHelpers.APIClusterKey);
-        if (cachedCluster is not null)
-        {
-            clusters = cachedCluster.TryParse<Cluster[]>();
-        }
-        if (clusters is not null) return clusters;
-        var clusterQuery = $"select * from [Cluster] where ClusterRole = '{role}'";
-        clusters = await _sql.ReadDsAsArr<Cluster>(clusterQuery, DefaultConnStr());
-        await SetStringAsync(UserServiceHelpers.APIClusterKey, clusters.ToJson(), Utils.CacheTTL);
-        return clusters;
-    }
-
-    public async Task TryInvalidCacheInternal(params string[] keys)
-    {
-        if (keys.Nothing()) return;
-        await Task.WhenAll(keys.Select(key => _cache.RemoveAsync(key)));
-        var clusters = await GetClusters(role: "API");
-        try
-        {
-            var mqEvent = new MQEvent { Action = "ClearCache", Message = keys }.ToJson();
-            await NotifyOtherClusters(clusters, "api/cluster/action", mqEvent);
-        }
-        catch
-        {
-        }
-    }
-
-    private static Cluster[] GetOtherClusters(Cluster[] clusters, string host, int port)
-    {
-        var res = new List<Cluster>();
-        for (int i = 0; i < clusters.Length; i++)
-        {
-            if (clusters[i].Host != host || clusters[i].Port != port) res.Add(clusters[i]);
-        }
-        return [.. res];
-    }
-
     private async Task<bool> HasWritePermission(PatchVM vm)
     {
         if (vm.ByPassPerm) return true;
@@ -2790,7 +2536,6 @@ public class UserService
         }
         var sql = patches.Select(_sql.GetCreateOrUpdateCmd).Where(x => x is not null).Combine(";\n");
         var result = await _sql.RunSqlCmd(patches[0].CachedDataConn, sql);
-        await TryNotifyChanges("Patch", null, patches);
         await patches.ForEachAsync(vm =>
         {
             vm.CachedDataConn ??= patches[0].CachedDataConn;
@@ -3601,87 +3346,6 @@ public class UserService
         return patches;
     }
 
-    public async Task<bool> AsyncTo(string t, string featureName)
-    {
-        var query = @$"select * from [Feature] where Name = '{featureName}'";
-        var currentCon = BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics", TenantCode);
-        var targetCon = BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics", t);
-        var features = await _sql.ReadDsAsArr<Feature>(query, currentCon);
-        var feature = features.FirstOrDefault();
-        var query2 = @$"select * from [Component] where FeatureId = '{feature.Id}'";
-        var childs = await _sql.ReadDataSet(query2, currentCon);
-        var components = childs.Length > 0 && childs[0].Length > 0 ? childs[0].Select(x => x.MapTo<Component>()).ToList() : new List<Component>();
-        // Get the table columns once
-        var featureColumns = await GetTableColumns("Feature");
-        var componentColumns = await GetTableColumns("Component");
-
-        using (SqlConnection connection = new SqlConnection(targetCon))
-        {
-            await connection.OpenAsync();
-            SqlTransaction transaction = connection.BeginTransaction();
-            try
-            {
-                using (SqlCommand command = new SqlCommand())
-                {
-                    command.Transaction = transaction;
-                    command.Connection = connection;
-                    var properties = featureColumns[0].SelectMany(x => x.Values).Select(x => $"[{x}]".ToString()).ToList();
-                    var columns = properties.Combine();
-                    var values = featureColumns[0].SelectMany(x => x.Values).Select(x => x.ToString()).Select(p => $"@{p}").Combine();
-                    var updateSet = featureColumns[0].SelectMany(x => x.Values).Select(x => x.ToString()).Select(p => $"[{p}] = @{p}").Combine();
-                    var mergeQuery = $@"
-                        DELETE FROM [Feature] WHERE Id = @Id;
-                        DELETE FROM [Component] WHERE FeatureId = @Id;
-                        INSERT INTO [Feature] ({columns}) VALUES ({values});";
-                    command.CommandText = mergeQuery;
-                    foreach (var item in featureColumns[0].SelectMany(x => x.Values).Select(x => x.ToString()))
-                    {
-                        command.Parameters.AddWithValue($"@{item.ToString()}", feature.GetPropValue(item.ToString()) ?? DBNull.Value);
-                    }
-                    await command.ExecuteNonQueryAsync();
-                    command.Parameters.Clear();
-                    command.CommandText = string.Empty;
-                    foreach (var component in components)
-                    {
-                        properties = componentColumns[0].SelectMany(x => x.Values).Select(x => $"[{x}]".ToString()).ToList();
-                        columns = properties.Combine();
-                        values = componentColumns[0].SelectMany(x => x.Values).Select(x => x.ToString()).Select(p => $"@{(component.Id.Replace("-", "") + p)}").Combine();
-                        updateSet = componentColumns[0].SelectMany(x => x.Values).Select(x => x.ToString()).Select(p => $"[{p}] = @{(component.Id.Replace("-", "") + p)}").Combine();
-                        mergeQuery = $@"INSERT INTO [Component] ({columns}) VALUES ({values});";
-                        command.CommandText += mergeQuery;
-                        foreach (var item in componentColumns[0].SelectMany(x => x.Values).Select(x => x.ToString()))
-                        {
-                            command.Parameters.AddWithValue($"@{(component.Id.Replace("-", "") + item.ToString())}", component.GetPropValue(item.ToString()) ?? DBNull.Value);
-                        }
-                        if (command.Parameters.Count > 1700)
-                        {
-                            await command.ExecuteNonQueryAsync();
-                            command.Parameters.Clear();
-                            command.CommandText = string.Empty;
-                        }
-                    }
-                    await command.ExecuteNonQueryAsync();
-                    await transaction.CommitAsync();
-                    await connection.CloseAsync();
-                    await PublishFeatureByName(featureName, t);
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                try
-                {
-                    await transaction.RollbackAsync();
-                }
-                catch
-                {
-                }
-
-                throw new Exception("Transaction failed", ex);
-            }
-        }
-    }
-
     private static List<PatchDetail> ParseCsvLine(string currentLine, int lineCount, string[] headers = null)
     {
         List<PatchDetail> res;
@@ -3989,83 +3653,6 @@ public class UserService
         return randomPassword;
     }
 
-    private static async Task WriteTemplateAsync(HttpResponse reponse, Tenant page, string env, string tenant)
-    {
-        var htmlDoc = new HtmlDocument();
-        htmlDoc.LoadHtml(page.Template);
-
-        var links = htmlDoc.DocumentNode.SelectNodes("//link | //script")
-            .SelectForEach((HtmlNode x, int i) =>
-            {
-                ShouldAddVersion(x, UserServiceHelpers.Href);
-                ShouldAddVersion(x, UserServiceHelpers.Src);
-            });
-        var meta = new HtmlNode(HtmlNodeType.Element, htmlDoc, 1)
-        {
-            Name = "meta"
-        };
-        meta.SetAttributeValue("name", "startupSvc");
-        meta.SetAttributeValue("content", page.SvcId);
-        htmlDoc.DocumentNode.SelectSingleNode("//head")?.AppendChild(meta);
-        reponse.Headers.TryAdd(HeaderNames.ContentType, Utils.GetMimeType("html"));
-        reponse.StatusCode = (int)HttpStatusCode.OK;
-        await reponse.WriteAsync(htmlDoc.DocumentNode.OuterHtml);
-    }
-
-    private static void ShouldAddVersion(HtmlNode x, string attr)
-    {
-        var shouldAdd = x.Attributes.Contains(attr)
-            && x.Attributes[attr].Value.IndexOf("?v=") < 0;
-        if (shouldAdd)
-        {
-            x.Attributes[attr].Value += "?v=" + Uuid7.Guid().ToString().ToString();
-        }
-    }
-
-    private async Task WriteDefaultFile(string file, string contentType
-        , HttpStatusCode code = HttpStatusCode.OK)
-    {
-        var response = _ctx.HttpContext.Response;
-        if (!response.HasStarted)
-        {
-            response.Headers.TryAdd(HeaderNames.ContentType, contentType);
-            response.Headers.TryAdd(HeaderNames.ContentEncoding, "gzip");
-            response.StatusCode = (int)code;
-        }
-        var html = await File.ReadAllTextAsync(file, encoding: Encoding.UTF8);
-        await response.WriteAsync(html);
-    }
-
-    public async Task Launch(string tenant, string area, string env, string path)
-    {
-        if (TenantCode != null && TenantCode != tenant)
-        {
-            throw new UnauthorizedAccessException($"Page not found for the tanent {tenant} due to the current user was signed in with the tenant {TenantCode}.");
-        }
-        var request = _ctx.HttpContext.Request;
-        var response = _ctx.HttpContext.Response;
-        var ext = Path.GetExtension(request.Path);
-        if (!ext.IsNullOrWhiteSpace())
-        {
-            await GetResource(tenant, path);
-            return;
-        }
-        var key = $"{tenant}_{env}_{area}";
-        var cache = await GetStringAsync(key);
-        if (cache != null && cache != "null")
-        {
-            var pageCached = JsonConvert.DeserializeObject<Tenant>(cache);
-            await WriteTemplateAsync(response, pageCached, env, tenant);
-            return;
-        }
-        var pageQuery = @$"select * from [Tenant] where TenantCode = '{tenant}' and Env = '{env}' and Area = '{area}'";
-        var connStr = DefaultConnStr();
-        var page = await _sql.ReadDsAs<Tenant>(pageQuery, connStr)
-            ?? throw new ApiException("Page not found") { StatusCode = HttpStatusCode.NotFound };
-        await SetStringAsync(key, JsonConvert.SerializeObject(page), Utils.CacheTTL);
-        await WriteTemplateAsync(response, page, env: env, tenant: tenant);
-    }
-
     public Task<Dictionary<string, object>[][]> ReadDs
         (string query, string connStr, bool shouldMapToConnStr = false)
         => _sql.ReadDataSet(query, connStr, shouldMapToConnStr);
@@ -4113,23 +3700,6 @@ public class UserService
             Message = data
         };
         BackgroundJob.Enqueue<WebSocketService>(x => x.SendMessageToAll(entity.ToJson(), TenantCode));
-    }
-
-    public async Task SendMessageSocket(string socket, TaskNotification task, string queueName)
-    {
-        var entity = new MQEvent
-        {
-            QueueName = queueName,
-            Id = Uuid7.Guid().ToString(),
-            Message = task
-        };
-        await _taskSocketSvc.SendMessageToSocketAsync(socket, entity.ToJson(), null, TenantCode);
-    }
-
-    public async Task NotifyDevice(MQEvent e)
-    {
-        if (e is null || e.QueueName is null) return;
-        await _taskSocketSvc.SendMessageToSubscribers(e.ToJson(), e.QueueName);
     }
 
     private static async Task<Chat> GetChatGPTResponse(Chat entity)
@@ -4211,119 +3781,8 @@ public class UserService
         return entity;
     }
 
-    private static bool _hasOpenClusterSocket = false;
-    private readonly ConnectionManager _conn;
-    public async Task OpenAPIClustersSocket(string role = "API")
-    {
-        if (_hasOpenClusterSocket) return;
-        _hasOpenClusterSocket = true;
-        var clusterQuery = $"select * from [Cluster] where [ClusterRole] = '{role}'";
-        var clusters = await _sql.ReadDsAsArr<Cluster>(clusterQuery, _cfg.GetConnectionString(Utils.ConnKey));
-        if (clusters.Nothing()) return;
-        var tasks = clusters.Select(Connect);
-        await Task.WhenAll(tasks);
-    }
-
-    private async Task Connect(Cluster cluster)
-    {
-        var ws = new ClientWebSocket();
-        ws.Options.KeepAliveInterval = TimeSpan.FromSeconds(1);
-        var wsScheme = string.Equals(cluster.Scheme, "https", StringComparison.OrdinalIgnoreCase) ? "wss" : "ws";
-        string url = UserServiceHelpers.GetUri(cluster.Host, cluster.Port, wsScheme, "/clusters");
-        try
-        {
-            await ws.ConnectAsync(new Uri(url), CancellationToken.None);
-            //await Listen(ws);
-            _conn.AddClusterSocket(ws, $"Balancer/{Uuid7.Guid().ToString()}");
-        }
-        catch
-        {
-        }
-    }
-
-    internal async Task AddCluster(Node node)
-    {
-        EnsureSystemRole();
-        var delCmd = @$"insert into Cluster (Id, TenantCode, Host, Env, Port, Scheme, ClusterRole, Active, InsertedDate, InsertedBy) values
-            ('{node.Id}', '{TenantCode}', '{node.Host}', '{Env}', '{node.Port}', '{node.Scheme}', '{node.Role}', 1, '{DateTime.UtcNow}', 1)";
-        await _sql.RunSqlCmd(DefaultConnStr(), delCmd);
-        Clusters.Data.Nodes.Add(node);
-    }
-
-    private void EnsureSystemRole()
-    {
-        if (!RoleNames.Any(x => x.Equals("ADMIN", StringComparison.OrdinalIgnoreCase)))
-            throw new ApiException("Unauthorize access") { StatusCode = Enums.HttpStatusCode.Unauthorized };
-    }
-
-    internal async Task RemoveCluster(Node node)
-    {
-        EnsureSystemRole();
-        var delCmd = $"delete from [Cluster] where Id = '{node.Id}'";
-        await _sql.RunSqlCmd(DefaultConnStr(), delCmd);
-        var node2Remove = Clusters.Data.Nodes.FirstOrDefault(x => x.Host == node.Host && x.Port == node.Port && x.Scheme == node.Scheme);
-        Clusters.Data.Nodes.Remove(node2Remove);
-    }
-
-    public Task<string> GetConnStrFromKey(string key, string tenantCode = null, string env = null)
-        => _sql.GetConnStrFromKey(key, tenantCode, env);
-
     public Task<string> GetStringAsync(string key) => _cache.GetStringAsync(key?.ToUpper());
     public Task SetStringAsync(string key, string val, DistributedCacheEntryOptions options) => _cache.SetStringAsync(key?.ToUpper(), val, options);
-
-    public async Task GetResource(string tenant, string path)
-    {
-        var query = @$"select [Content], [ContentType] from [Resource] where [Path] = '{path}' and (Active = 1 and TenantCode = '{tenant}' or Annonymous = 1)";
-        var rs = await _sql.ReadDsAs<Resource>(query, DefaultConnStr());
-        var response = _ctx.HttpContext.Response;
-        if (rs is null)
-        {
-            response.StatusCode = (int)HttpStatusCode.NotFound;
-            await response.WriteAsync("File not found");
-            return;
-        }
-        response.Headers.TryAdd(HeaderNames.ContentType, rs.ContentType);
-        response.StatusCode = (int)HttpStatusCode.OK;
-        await response.WriteAsync(rs.Content);
-    }
-
-    public string CommandOutput(Cmd cmd)
-    {
-        try
-        {
-            ProcessStartInfo procStartInfo = new(cmd.cmd, cmd.args);
-
-            procStartInfo.RedirectStandardError = procStartInfo.RedirectStandardInput = procStartInfo.RedirectStandardOutput = true;
-            procStartInfo.UseShellExecute = false;
-            procStartInfo.CreateNoWindow = true;
-            procStartInfo.WorkingDirectory = _host.WebRootPath;
-
-            Process proc = new()
-            {
-                StartInfo = procStartInfo
-            };
-
-            StringBuilder sb = new();
-            proc.OutputDataReceived += delegate (object sender, DataReceivedEventArgs e)
-            {
-                if (e is not null) sb.Append(e.Data);
-            };
-            proc.ErrorDataReceived += delegate (object sender, DataReceivedEventArgs e)
-            {
-                if (e is not null) sb.Append(e.Data);
-            };
-
-            proc.Start();
-            proc.BeginOutputReadLine();
-            proc.BeginErrorReadLine();
-            proc.WaitForExit();
-            return sb.ToString();
-        }
-        catch (Exception objException)
-        {
-            return $"Error in command: {cmd.cmd}, {objException.Message}";
-        }
-    }
 
     internal async Task<object> LoadComponent(SqlViewModel vm)
     {
