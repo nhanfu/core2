@@ -52,3 +52,35 @@ export const greetHandler = (c: HonoContext) => {
     const name = c.req.param('name') || 'World';
     return c.text(`Hello, ${name}! The time is ${new Date().toLocaleTimeString('en-VN', { timeZone: 'Asia/Ho_Chi_Minh' })}.`);
 };
+
+/**
+ * Fetches a JSON file from Supabase Storage.
+ * Usage: GET /api/get?filename=yourfile.json
+ */
+export const getJsonHandler = async (c: HonoContext) => {
+  try {
+    const filename = c.req.query("filename");
+    if (!filename) {
+      return c.json({ error: "Filename is required." }, 400);
+    }
+
+    const { data, error } = await supabase.storage
+      .from("nhanjs")
+      .download(filename);
+
+    if (error) {
+      console.error("Supabase download error:", error);
+      return c.json({ error: error.message }, 404);
+    }
+
+    // Read the file content as text
+    const fileContent = await data.text();
+    // Parse as JSON (optional, if you want to return as JSON object)
+    const json = JSON.parse(fileContent);
+
+    return c.json({ success: true, data: json }, 200);
+  } catch (err) {
+    console.error("Error in getJsonHandler:", err);
+    return c.json({ error: "Internal Server Error", message: err.message }, 500);
+  }
+};

@@ -1,6 +1,6 @@
 import { Hono } from "https://deno.land/x/hono@v4.3.11/mod.ts";
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
-import { greetHandler, saveJsonHandler } from "./src/api/save_json.ts";
+import { greetHandler, saveJsonHandler, getJsonHandler } from "./src/api/json_handler.ts";
 
 // Initialize a new Hono app
 const app = new Hono();
@@ -16,7 +16,8 @@ app.get("/", (c) => {
 app.get("/api/greet/:name", greetHandler);
 
 // The endpoint to save JSON data to Supabase Storage
-app.post("/api/save", saveJsonHandler);
+app.post("/api/saveJson", saveJsonHandler);
+app.get("/api/getJson", getJsonHandler);
 
 // A catch-all for 404 Not Found routes
 app.notFound((c) => {
