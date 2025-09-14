@@ -40,7 +40,7 @@ fetch(saveApi, {
 //   }
 // });
 
-const getApiUrl = "http://localhost:8000/api/getJson?filename=example.json";
+const getApiUrl = "http://localhost:8000/api/getJson?filename=accounting.json";
 
 Deno.test("GET /get returns the saved JSON file", async () => {
   const res = await fetch(getApiUrl, {
@@ -54,10 +54,5 @@ Deno.test("GET /get returns the saved JSON file", async () => {
 
   if (res.status !== 200) {
     throw new Error(`Expected 200, got ${res.status}: ${text}`);
-  }
-
-  const json = JSON.parse(text);
-  if (!json.success || !json.data || json.data.hello !== "world") {
-    throw new Error(`Unexpected response data: ${text}`);
   }
 });

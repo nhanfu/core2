@@ -19,27 +19,25 @@ export class Client {
     static token;
     static GuidLength = 36;
     // @ts-ignore
-    static Host = (document.head.host?.content || window.location.host).toLowerCase();
+    static Host = (import.meta.env?.VITE_API_HOST || window.location.host).toLowerCase();
     // @ts-ignore
-    static BaseUri = (document.head.baseUri?.content || window.location.origin).toLowerCase();
+    static BaseUri = (import.meta.env?.VITE_API_BASE_URI || window.location.origin).toLowerCase();
     // @ts-ignore
-    static IsPortal = document.head.startup?.content !== "admin";
+    static IsPortal = import.meta.env?.VITE_IS_PORTAL !== "admin";
     // @ts-ignore
-    static MetaConn = document.head.metaKey?.content || "default";
+    static MetaConn = import.meta.env?.VITE_META_CONN || "default";
     // @ts-ignore
-    static DataConn = document.head.dataConn?.content || "bl";
+    static DataConn = import.meta.env?.VITE_DATA_CONN || "bl";
     // @ts-ignore
-    static Tenant = document.head.tenant?.content || "System";
+    static Tenant = import.meta.env?.VITE_TENANT || "System";
     // @ts-ignore
-    static Env = document.head.env?.content || "test";
+    static Env = import.meta.env.VITE_ENV || "test";
     // @ts-ignore
-    static FileFTP = document.head.file?.content || "/user";
+    static FileFTP = import.meta.env.VITE_FILE_FTP || "/user";
     // @ts-ignore
     /** @type {string} */
-    static api = (() => {
-        const metaTag = Array.from(document.head.childNodes).find(x => x.name === "api");
-        return metaTag ? metaTag.content : "http://localhost:8005";
-    })();
+    static fallbackApi = import.meta.env.VITE_FALLBACK_API_URL;
+    static api = import.meta.env.VITE_API_URL;
     // @ts-ignore
     static Config = document.head.config?.content || "";
     static BadGatewayRequest = new BadGatewayQueue();
@@ -129,36 +127,45 @@ export class Client {
             headers.Authorization = `Bearer ${Client.Token?.AccessToken}`;
         }
 
-        const url = Client.api + (options.FinalUrl ?? options.Url);
-
-        try {
+        // Try fallbackApi first, then api if not found (404)
+        const tryFetch = async (baseUrl) => {
+            const url = baseUrl + (options.FinalUrl ?? options.Url);
             const response = await fetch(url, {
                 method: options.Method,
                 headers,
                 body: isFormData ? options.FormData : options.JsonData
             });
+            return response;
+        };
 
-            if (!response.ok) {
-                let error;
-                try {
-                    error = await response.json();
-                } catch {
-                    error = { status: response.status, statusText: response.statusText };
-                }
-                return Promise.reject(error);
+        let response;
+        if (Client.fallbackApi) {
+            response = await tryFetch(Client.fallbackApi);
+            if (response.status === 404) {
+                response = await tryFetch(Client.api);
             }
-
-            const contentType = response.headers.get("Content-Type") || "";
-            if (contentType.includes("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
-                return await response.blob();
-            }
-            if (contentType.includes("application/json")) {
-                return await response.json();
-            }
-            return await response.text();
-        } catch (error) {
-            return Promise.reject({ message: "Network error", error });
+        } else {
+            response = await tryFetch(Client.api);
         }
+
+        if (!response.ok) {
+            let error;
+            try {
+                error = await response.json();
+            } catch {
+                error = { status: response.status, statusText: response.statusText };
+            }
+            return Promise.reject(error);
+        }
+
+        const contentType = response.headers.get("Content-Type") || "";
+        if (contentType.includes("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
+            return await response.blob();
+        }
+        if (contentType.includes("application/json")) {
+            return await response.json();
+        }
+        return await response.text();
     }
     
     /**

@@ -59,14 +59,16 @@ export const greetHandler = (c: HonoContext) => {
  */
 export const getJsonHandler = async (c: HonoContext) => {
   try {
-    const filename = c.req.query("filename");
+    const { Name } = await c.req.json();
+    console.log("Get JSON request for:", Name);
+    const filename = Name;
     if (!filename) {
       return c.json({ error: "Filename is required." }, 400);
     }
 
     const { data, error } = await supabase.storage
       .from("nhanjs")
-      .download(filename);
+      .download(filename + '.json');
 
     if (error) {
       console.error("Supabase download error:", error);
@@ -75,10 +77,9 @@ export const getJsonHandler = async (c: HonoContext) => {
 
     // Read the file content as text
     const fileContent = await data.text();
-    // Parse as JSON (optional, if you want to return as JSON object)
     const json = JSON.parse(fileContent);
 
-    return c.json({ success: true, data: json }, 200);
+    return c.json(json, 200);
   } catch (err) {
     console.error("Error in getJsonHandler:", err);
     return c.json({ error: "Internal Server Error", message: err.message }, 500);
