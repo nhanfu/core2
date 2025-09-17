@@ -1771,7 +1771,7 @@
         },
         {
             "Id": "25BA1ED1-EF4E-46C7-95D0-E982E8C1CEF2",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
+            "RoleId": "SALES",
             "CanRead": true,
             "CanWrite": true,
             "CanDelete": true,
@@ -1779,7 +1779,7 @@
         },
         {
             "Id": "2CE97073-7CE6-4940-9E7B-B9582330A01E",
-            "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
+            "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
             "CanWrite": true,
@@ -1790,37 +1790,37 @@
         },
         {
             "Id": "3129771C-5344-4209-8503-E1F3607BD25C",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
+            "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
             "Id": "325A42B2-CD95-49B9-B26A-20F59D1C93C2",
-            "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
+            "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
             "Id": "5C944A3D-0838-41FA-936F-3DA5CF066DE7",
-            "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
+            "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
             "Id": "A9EECA02-1365-4BEB-99D8-4327DF3C81B4",
-            "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
+            "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
             "Id": "AAAB44AE-CEC8-4B9F-B780-A8E61293DD7F",
-            "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
+            "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
             "Id": "DC37F184-EB62-45DB-95D0-26357A9ABBB0",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
+            "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
             "Id": "E293D0F7-711C-4737-AEE2-CBCD8B37266E",
-            "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
+            "RoleId": "ACC",
             "TableName": "Feature"
         }
     ]

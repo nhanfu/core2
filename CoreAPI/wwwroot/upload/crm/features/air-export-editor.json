@@ -5099,17 +5099,17 @@
     "FeaturePolicies": [
         {
             "Id": "15A70D63-A70C-4B41-BCD6-8BEC1FCAC2C6",
-            "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
+            "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
             "Id": "22C1CE5A-2E65-4370-8DCF-EAAD46409299",
-            "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
+            "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
             "Id": "4CA723D0-89BE-44B5-9565-40A9079F3A66",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
+            "RoleId": "DOCS",
             "CanRead": true,
             "CanWrite": true,
             "CanDelete": true,
@@ -5117,28 +5117,28 @@
         },
         {
             "Id": "57A18389-A998-49E0-B569-B6295BFB0742",
-            "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
+            "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
             "Id": "A5C5AB27-B360-4E6A-B38F-82A59DD076F5",
-            "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
+            "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
             "Id": "ACA10ADD-BC90-4F1B-B1BB-7733393384D4",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
+            "RoleId": "SALES",
             "CanRead": true,
             "TableName": "Feature"
         },
         {
             "Id": "D06AD33B-5E1F-4ED1-9787-428871206594",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
+            "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
             "Id": "D979D5CF-E81F-4090-B0A0-469E36D3B534",
-            "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
+            "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
             "CanWrite": true,
@@ -5156,22 +5156,8 @@
         },
         {
             "Id": "F7D23767-4452-4B92-BBE9-976BFAF53471",
-            "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
+            "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
-        }
-    ],
-    "UserSettings": [
-        {
-            "Id": "0676d6e3-3e87-7bdc-8000-bf2dfc4b7d5b",
-            "ComponentId": "009b3cc8-0000-0000-8000-cae00dc1f1b5",
-            "UserId": "007d04ac-0000-0000-8000-5b0373c45e9b",
-            "Value": "[{\"Id\":\"009c3c7c-0000-0000-8000-a8b647ad6d6a\",\"FieldName\":\"VendorId\",\"Order\":0,\"Width\":\"118px\"},{\"Id\":\"009b3cd4-0000-0000-8000-9327d78dcc30\",\"FieldName\":\"DescriptionId\",\"Order\":1,\"Width\":\"195px\"},{\"Id\":\"009c3ca4-0000-0000-8000-b8e7b352ad23\",\"FieldName\":\"Quantity\",\"Order\":2,\"Width\":\"91px\"},{\"Id\":\"009b3c7c-0000-0000-8000-8f3e847131f7\",\"FieldName\":\"UnitId\",\"Order\":3,\"Width\":\"62px\"},{\"Id\":\"01937b88-5493-76fd-a454-3fcba7994403\",\"FieldName\":\"IsGrossWeight\",\"Order\":4,\"Width\":\"76px\"},{\"Id\":\"009c3c7c-0000-0000-8000-495eec920a08\",\"FieldName\":\"Amount\",\"Order\":5,\"Width\":\"85px\"},{\"Id\":\"009c3c00-0000-0000-8000-13aace135181\",\"FieldName\":\"Vat\",\"Order\":6,\"Width\":\"45px\"},{\"Id\":\"009b3c44-0000-0000-8000-7dab6e7e571d\",\"FieldName\":\"CurrencyId\",\"Order\":7,\"Width\":\"56px\"},{\"Id\":\"009c3ce0-0000-0000-8000-1ac17db4a9de\",\"FieldName\":\"TotalAmountTax\",\"Order\":8,\"Width\":\"140px\"},{\"Id\":\"009c3c78-0000-0000-8000-5ebad4d79e0c\",\"FieldName\":\"IsNoDocs\",\"Order\":9,\"Width\":\"76px\"},{\"Id\":\"0193398b-150c-76bc-b747-582cabb4d0dc\",\"FieldName\":\"ObhId\",\"Order\":10,\"Width\":\"118px\"},{\"Id\":\"009b3cc0-0000-0000-8000-628685e18342\",\"FieldName\":\"Notes\",\"Order\":11,\"Width\":\"143px\"},{\"Id\":\"009c3c34-0000-0000-8000-012eba24bc04\",\"FieldName\":\"Docs\",\"Order\":12,\"Width\":\"143px\"}]"
-        },
-        {
-            "Id": "0676d6e9-30ad-7c02-8000-1bf89ecc66fd",
-            "ComponentId": "009b3c68-0000-0000-8000-81f28485ab82",
-            "UserId": "007d04ac-0000-0000-8000-5b0373c45e9b",
-            "Value": "[{\"Id\":\"0193b562-a978-73fe-bea5-9c78d5e66031\",\"FieldName\":\"VendorId\",\"Order\":0,\"Width\":\"118px\"},{\"Id\":\"0193b562-a978-73fe-bea5-a3b30ca41a5e\",\"FieldName\":\"DescriptionId\",\"Order\":1,\"Width\":\"171px\"},{\"Id\":\"0193b562-a979-764b-8caa-3e3aafbbca94\",\"FieldName\":\"Quantity\",\"Order\":2,\"Width\":\"102px\"},{\"Id\":\"0193b562-a979-764b-8caa-41e3cec8bf89\",\"FieldName\":\"UnitId\",\"Order\":3,\"Width\":\"90px\"},{\"Id\":\"0193b562-a979-764b-8caa-49c73aed42b0\",\"FieldName\":\"Amount\",\"Order\":4,\"Width\":\"93px\"},{\"Id\":\"0193b562-a979-764b-8caa-4f68979b3858\",\"FieldName\":\"Vat\",\"Order\":5,\"Width\":\"74px\"},{\"Id\":\"0193b562-a97a-750d-95a6-2186d0a145dd\",\"FieldName\":\"CurrencyId\",\"Order\":6,\"Width\":\"74px\"},{\"Id\":\"0193b562-a979-764b-8caa-466854a33f3e\",\"FieldName\":\"IsGrossWeight\",\"Order\":7,\"Width\":\"76px\"},{\"Id\":\"0193b562-a97a-750d-95a6-275dab611194\",\"FieldName\":\"TotalAmountTax\",\"Order\":8,\"Width\":\"123px\"},{\"Id\":\"0193b562-a97a-750d-95a6-2b058921ed9d\",\"FieldName\":\"IsNoDocs\",\"Order\":9,\"Width\":\"76px\"},{\"Id\":\"0193b562-a97a-750d-95a6-2fa067b5e718\",\"FieldName\":\"ObhId\",\"Order\":10,\"Width\":\"118px\"},{\"Id\":\"0193b562-a97a-750d-95a6-30714b1b8d07\",\"FieldName\":\"Notes\",\"Order\":11,\"Width\":\"143px\"},{\"Id\":\"0193b562-a97b-70ab-863d-57afb8b78b5a\",\"FieldName\":\"Docs\",\"Order\":12,\"Width\":\"143px\"}]"
         }
     ]
 }

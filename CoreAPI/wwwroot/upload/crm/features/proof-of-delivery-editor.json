@@ -390,17 +390,17 @@
     "FeaturePolicies": [
         {
             "Id": "31FAA115-4DE1-4209-BBC0-135E78E25BA3",
-            "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
+            "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
             "Id": "44C98437-CF52-45D8-9AFE-050B4A645865",
-            "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
+            "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
             "Id": "7BFEBB4C-C4BE-4423-9F8B-920CDE68EEBA",
-            "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
+            "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
             "CanWrite": true,
@@ -411,18 +411,18 @@
         },
         {
             "Id": "A6F080D2-48D2-415C-9DA1-CEF951D90D05",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
+            "RoleId": "SALES",
             "CanRead": true,
             "TableName": "Feature"
         },
         {
             "Id": "B62F95EC-30B1-4105-8C02-728043744AA5",
-            "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
+            "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
             "Id": "C5B93ECC-CA8B-4BC3-B698-B5FFA9AF6F75",
-            "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
+            "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
@@ -432,17 +432,17 @@
         },
         {
             "Id": "E564B3DC-8D19-4473-B73C-1E317B94D7D9",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
+            "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
             "Id": "ED509CF1-4F10-4529-AC6B-7D71F2C8488F",
-            "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
+            "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
             "Id": "F42D4C06-4716-4F0E-A4C6-A107B8DC954E",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
+            "RoleId": "DOCS",
             "CanRead": true,
             "CanWrite": true,
             "TableName": "Feature"

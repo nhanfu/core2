@@ -5389,12 +5389,12 @@
     "FeaturePolicies": [
         {
             "Id": "28CDFA6D-61A7-4D52-A9D1-A71D57142C54",
-            "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
+            "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
             "Id": "46945F75-2C0B-4000-9DFA-EC871FD8AD14",
-            "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
+            "RoleId": "ADMIN",
             "CanRead": true,
             "CanReadAll": true,
             "CanWrite": true,
@@ -5405,7 +5405,7 @@
         },
         {
             "Id": "4CD5DD78-78EB-4F69-B3DE-A7C68B2053A3",
-            "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
+            "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
@@ -5415,7 +5415,7 @@
         },
         {
             "Id": "7201A387-8B0D-4AFB-A76C-37769B0F4D3A",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
+            "RoleId": "DOCS",
             "CanRead": true,
             "CanWrite": true,
             "CanDelete": true,
@@ -5423,17 +5423,17 @@
         },
         {
             "Id": "A3E289D1-C2C3-41B0-ACDE-EB8E303B23EC",
-            "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
+            "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
             "Id": "AEA8C85E-18BB-4111-A2FE-FFCA35D94625",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
+            "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
             "Id": "C4EB3129-8D8D-4318-B930-CAA384849B10",
-            "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
+            "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
             "CanWrite": true,
@@ -5444,12 +5444,12 @@
         },
         {
             "Id": "C8A36414-3708-495B-BAE0-279DA55FDE10",
-            "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
+            "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
             "Id": "FEFE2696-5492-428F-9CB6-BB7B72847CD3",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
+            "RoleId": "SALES",
             "CanRead": true,
             "TableName": "Feature"
         }

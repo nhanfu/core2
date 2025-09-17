@@ -116,22 +116,22 @@
     "FeaturePolicies": [
         {
             "Id": "01199B3D-5AE1-4711-B2D1-C00D95BFC2B7",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
+            "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
             "Id": "239436C1-CEBB-45D4-A8D7-DADBD0FB5B23",
-            "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
+            "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
             "Id": "618C991D-4539-47D8-8D6E-1D400FEE61DE",
-            "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
+            "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
             "Id": "9B3FA319-9712-4804-B9F7-9041F397C152",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
+            "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
@@ -141,27 +141,27 @@
         },
         {
             "Id": "A2E7D6C9-99E6-47AD-82C7-442769262C42",
-            "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
+            "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
             "Id": "BBD2FBA7-5E0C-411B-A259-7A5A4B041858",
-            "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
+            "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
             "Id": "BD032F5C-4B54-4320-9F7C-2B416D16DBA7",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
+            "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
             "Id": "DAB73399-FA57-4911-94D7-612D2ED8E935",
-            "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
+            "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
             "Id": "FB30D7EA-47EC-4669-9454-B4E5FAD3F227",
-            "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
+            "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
             "CanWrite": true,

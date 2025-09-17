@@ -251,17 +251,17 @@
     "FeaturePolicies": [
         {
             "Id": "03595B73-1A7D-4D24-9684-B55829C01020",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
+            "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
             "Id": "060799B4-3000-4B3D-B5C0-F4AA28C423A8",
-            "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
+            "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
             "Id": "59FEB4D9-59C5-4958-91F2-A435F267F981",
-            "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
+            "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
@@ -271,17 +271,17 @@
         },
         {
             "Id": "8412CD1F-C8F3-4D9B-9C34-AF12A1C39653",
-            "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
+            "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
             "Id": "86A41300-146A-442D-8C92-951CDA1CD333",
-            "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
+            "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
             "Id": "8FF5087A-6268-4499-B37E-9E577AAFBF96",
-            "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
+            "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
             "CanWrite": true,
@@ -292,17 +292,17 @@
         },
         {
             "Id": "A05E40C2-E726-4D67-803F-46FFBA49D3BC",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
+            "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
             "Id": "A4FB9587-1EC6-4C88-9752-6EDCE9DB0B41",
-            "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
+            "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
             "Id": "F35723E0-BBE4-4656-8CF1-41B5200C53EA",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
+            "RoleId": "SALES",
             "TableName": "Feature"
         }
     ]

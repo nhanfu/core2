@@ -8,6 +8,7 @@ import { Toast } from "../toast.js";
 import { Path } from "../utils/path.js";
 import { Entity } from "../models/enum.js";
 import { Action } from "../models/action.js";
+/** @typedef {import("../models/xhrWrapper.js").default} XHRWrapper */
 
 export class Client {
     /** @type {Entity[]} */
@@ -36,7 +37,7 @@ export class Client {
     static FileFTP = import.meta.env.VITE_FILE_FTP || "/user";
     // @ts-ignore
     /** @type {string} */
-    static fallbackApi = import.meta.env.VITE_FALLBACK_API_URL;
+    static apiV2 = import.meta.env.VITE_API_V2_URL;
     static api = import.meta.env.VITE_API_URL;
     // @ts-ignore
     static Config = document.head.config?.content || "";
@@ -111,6 +112,7 @@ export class Client {
         };
         return this.SubmitAsync(data);
     }
+
     /**
      * Submits an asynchronous request with authentication token.
      * @param {XHRWrapper} options Request options.
@@ -127,26 +129,12 @@ export class Client {
             headers.Authorization = `Bearer ${Client.Token?.AccessToken}`;
         }
 
-        // Try fallbackApi first, then api if not found (404)
-        const tryFetch = async (baseUrl) => {
-            const url = baseUrl + (options.FinalUrl ?? options.Url);
-            const response = await fetch(url, {
-                method: options.Method,
-                headers,
-                body: isFormData ? options.FormData : options.JsonData
-            });
-            return response;
-        };
-
-        let response;
-        if (Client.fallbackApi) {
-            response = await tryFetch(Client.fallbackApi);
-            if (response.status === 404) {
-                response = await tryFetch(Client.api);
-            }
-        } else {
-            response = await tryFetch(Client.api);
-        }
+        const url = Client.api + (options.FinalUrl ?? options.Url);
+        const response = await fetch(url, {
+            method: options.Method,
+            headers,
+            body: isFormData ? options.FormData : options.JsonData
+        });
 
         if (!response.ok) {
             let error;
@@ -167,7 +155,7 @@ export class Client {
         }
         return await response.text();
     }
-    
+
     /**
      * 
      * @param {XHRWrapper} options 

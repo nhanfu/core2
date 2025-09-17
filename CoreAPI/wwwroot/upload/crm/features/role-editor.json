@@ -406,32 +406,32 @@
         },
         {
             "Id": "5DDED553-6437-472A-8BD2-8D4DDD22E4A3",
-            "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
+            "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
             "Id": "867F3BA5-F77B-4419-AA09-E511E3CD3F90",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
+            "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
             "Id": "9CE4FC05-2E15-46C6-AE40-BDED06829F22",
-            "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
+            "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
             "Id": "B1DAD14C-6652-4BDD-9317-88291DFB627F",
-            "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
+            "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
             "Id": "BB386B56-CBD4-4276-9B34-7BCAF342BC7C",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
+            "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
             "Id": "C0848A27-5E0D-4433-B46B-9C056C116F16",
-            "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
+            "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
             "CanWrite": true,
@@ -440,7 +440,7 @@
         },
         {
             "Id": "C70DD2CB-3DE6-4F06-B18D-0156EEC0ACB7",
-            "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
+            "RoleId": "ADMIN",
             "CanRead": true,
             "CanReadAll": true,
             "CanWrite": true,
@@ -449,12 +449,12 @@
         },
         {
             "Id": "D440B397-49E7-46E9-8240-62A988C59294",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
+            "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
             "Id": "F9077CDF-3B81-4EA5-912A-D0F9817D0651",
-            "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
+            "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         }
     ]

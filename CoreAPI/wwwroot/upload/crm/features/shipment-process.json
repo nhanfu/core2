@@ -62,12 +62,12 @@
         },
         {
             "Id": "25D34DCD-B91B-4C82-9188-FEAA6AFBE076",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
+            "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
             "Id": "2C354769-388F-495A-9E29-935184079A4A",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
+            "RoleId": "DOCS",
             "CanRead": true,
             "CanReadAll": true,
             "CanWrite": true,
@@ -76,22 +76,22 @@
         },
         {
             "Id": "2FEB089E-F5A6-4CC7-A408-3711BCECFC5C",
-            "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
+            "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
             "Id": "58616588-0D73-495D-A5FD-866359F8F4BD",
-            "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
+            "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
             "Id": "8E49502A-7BF0-449D-AF09-191D87A9DCE3",
-            "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
+            "RoleId": "BOD",
             "TableName": "Feature"
         },
         {
             "Id": "965AA1B5-B903-4599-BC57-E7A2773FE1E2",
-            "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
+            "RoleId": "ADMIN",
             "CanRead": true,
             "CanReadAll": true,
             "CanWrite": true,
@@ -100,17 +100,17 @@
         },
         {
             "Id": "A03D1D7F-5B98-46E8-AE96-34733D714D2E",
-            "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
+            "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
             "Id": "C8BD008C-F257-4923-BA19-215211842A23",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
+            "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
             "Id": "F4A27B20-1B7C-4A6F-B26A-7BA042E6E342",
-            "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
+            "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         }
     ]

@@ -96,12 +96,12 @@
     "FeaturePolicies": [
         {
             "Id": "0C1A8EAA-08AD-41FC-A8A6-04F2DDBB83B7",
-            "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
+            "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
             "Id": "147F9C62-C896-4212-A4BF-2F7826CB94C6",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
+            "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
@@ -111,37 +111,37 @@
         },
         {
             "Id": "21919908-A2C7-4A54-ABC6-D2678CF0BF54",
-            "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
+            "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
             "Id": "5C7C97B7-80FD-47FC-AF3D-BD18C24EC0EB",
-            "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
+            "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
             "Id": "82BE449C-4C90-450F-9233-458A896ED7A1",
-            "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
+            "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
             "Id": "84577B91-69E0-467F-A07D-F204464BE555",
-            "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
+            "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
             "Id": "B6ADDBD2-F6C0-45AB-90E5-EE2FA7B15074",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
+            "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
             "Id": "DCDF2C67-6BC5-44B2-A77F-B22695B23307",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
+            "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
             "Id": "FEB8A73E-C83D-4DE9-A946-4E4F9DD26256",
-            "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
+            "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
             "CanWrite": true,

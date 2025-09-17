@@ -1095,12 +1095,12 @@
     "FeaturePolicies": [
         {
             "Id": "0E73766B-B7D4-4853-A4ED-A1A2BAA3DE46",
-            "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
+            "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
             "Id": "1424A634-90B7-43B3-8145-B1A8E64A2645",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
+            "RoleId": "DOCS",
             "CanRead": true,
             "CanWrite": true,
             "CanDelete": true,
@@ -1108,33 +1108,33 @@
         },
         {
             "Id": "3EE75127-8DF9-45FE-8C68-7ED3083D1FDF",
-            "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
+            "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
             "Id": "44E0D02E-D2BE-4A33-AF53-BC8990F00005",
-            "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
+            "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
             "Id": "704C5B55-D1BC-4AC7-9540-7D83D717B313",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
+            "RoleId": "SALES",
             "CanRead": true,
             "TableName": "Feature"
         },
         {
             "Id": "79DD9D88-9494-4548-BEA9-40089F54F437",
-            "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
+            "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
             "Id": "7B0CE739-89C2-4A36-A886-19D8C5695A03",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
+            "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
             "Id": "8B1F1797-4E88-4E0B-ACB3-D19E757BDD44",
-            "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
+            "RoleId": "ADMIN",
             "CanRead": true,
             "CanReadAll": true,
             "CanWrite": true,
@@ -1144,7 +1144,7 @@
         },
         {
             "Id": "DE386360-A290-4067-86BA-CD1D18138F01",
-            "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
+            "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
             "CanWrite": true,

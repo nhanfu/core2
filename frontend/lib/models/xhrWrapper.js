@@ -6,6 +6,7 @@
 * @property {boolean} AllowNested - Determines whether nested requests are allowed.
 * @property {boolean} NoQueue - Indicates whether the request should bypass the queue.
 * @property {boolean} Retry - Specifies whether the request should be retried on failure.
+* @property {boolean} APIv2 - Specifies whether the request should use the v2 API.
 * @property {boolean} ShowError - Determines whether errors should be displayed.
 * @property {boolean} AllowAnonymous - Indicates whether anonymous requests are allowed.
 * @property {boolean} AddTenant - Specifies whether the tenant information should be added to the request.
@@ -30,6 +31,7 @@
 export default class XHRWrapper {
     AllowNested = false;
     NoQueue = false;
+    APIv2 = false;
     /** @type {boolean?} */
     Retry = false;
     /** @type {boolean?} */

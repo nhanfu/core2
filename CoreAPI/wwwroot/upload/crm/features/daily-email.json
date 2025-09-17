@@ -163,32 +163,32 @@
     "FeaturePolicies": [
         {
             "Id": "07B23BF6-E59B-4551-BBB3-EB7940BE53F1",
-            "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
+            "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
             "Id": "2B7D3BD2-3C50-499D-85F2-ECF123905CB3",
-            "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
+            "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
             "Id": "843718A6-7705-4C17-963E-D043A15E6A2E",
-            "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
+            "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
             "Id": "A15D7930-C28A-4324-BA1C-2B8E2E82A2DC",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
+            "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
             "Id": "B5C57E28-CA2C-432B-87D9-75E2CF90A137",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
+            "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
             "Id": "BF84D2A6-B650-4BB9-BFE8-FA747E14DB7D",
-            "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
+            "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
             "CanWrite": true,
@@ -199,17 +199,17 @@
         },
         {
             "Id": "C267C7B9-7567-432C-AEC2-2814FDA736E3",
-            "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
+            "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
             "Id": "C3CB5269-34A2-43FE-80BE-F2F1DE1FDC50",
-            "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
+            "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
             "Id": "D1D48EB4-DB4D-4430-B3A2-68B4985C1ACE",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
+            "RoleId": "SALES",
             "TableName": "Feature"
         },
         {

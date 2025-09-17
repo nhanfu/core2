@@ -2213,38 +2213,6 @@ export class EditForm extends EditableComponent {
         this.AddChild(confirmDialog);
     }
 
-    /**
-     * Clones a feature by prompting the user for confirmation and then executing a clone operation.
-     * @param {Object} ev - The event object which should contain a feature to clone.
-     */
-    AsyncTo(ev) {
-        const confirmDialog = new ConfirmDialog();
-        confirmDialog.Title = "Are you sure you want to async to?";
-        confirmDialog.EditForm = this;
-        confirmDialog.IgnoreNoButton = false;
-        confirmDialog.NeedAnswer = true;
-        confirmDialog.Component = [];
-        confirmDialog.PElement = this.EditForm.Element;
-        confirmDialog.Render();
-        confirmDialog.YesConfirmed.add(async () => {
-            var com = this.ChildCom.find(x => x.Meta.FieldName == "ReasonOfChange");
-            if (Utils.isNullOrWhiteSpace(com.GetValue())) {
-                Toast.Warning("Please enter a reason for the change.");
-                return;
-            }
-            Spinner.AppendTo();
-            var res = await Client.Instance.PostAsync({}, `/api/feature/AsyncTo/${com.GetValue().trim()}/${this.Meta.Name}`);
-            if (res.status == 200) {
-                Toast.Success("Async to successful.")
-            }
-            else {
-                Toast.Warning(res.message)
-            }
-            Spinner.Hide();
-        });
-        confirmDialog.NoConfirmed.add(null);
-    }
-
     async OpenPopup(featureName, entity, loadEntity, entitys, element = null) {
         if (!entity) {
             entity = {

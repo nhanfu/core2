@@ -152,12 +152,12 @@
     "FeaturePolicies": [
         {
             "Id": "03620D6A-405B-4D97-B98D-913FEF5FA703",
-            "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
+            "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
             "Id": "060ED6A8-1571-4F99-85A4-96B7DCF517F1",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
+            "RoleId": "SALES",
             "CanRead": true,
             "CanWrite": true,
             "CanDelete": true,
@@ -165,17 +165,17 @@
         },
         {
             "Id": "3B9A9B09-A605-4742-BE05-80A2B68D7812",
-            "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
+            "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
             "Id": "49E7ED81-757C-4890-A78B-F7A25A0AF52F",
-            "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
+            "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
             "Id": "84A808D9-4919-44F6-9E6D-FB5F09BCC273",
-            "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
+            "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
@@ -185,22 +185,22 @@
         },
         {
             "Id": "AEAEF7FD-C7A5-4C66-95D3-2BEFDA256FD8",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
+            "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
             "Id": "B66B74FD-D8BE-4DB2-9916-85E69B574216",
-            "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
+            "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
             "Id": "BCCB1405-7FDF-4F4B-97DF-B38B464C173A",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
+            "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
             "Id": "E40C2D3B-53DF-47E9-9EE9-08E6EAAFD667",
-            "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
+            "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
             "CanWrite": true,

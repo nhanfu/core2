@@ -99,12 +99,12 @@
     "FeaturePolicies": [
         {
             "Id": "0627D3DA-47D6-46BE-8663-0BFC6E17A56D",
-            "RoleId": "0001f180-0000-0000-8000-13a7c7a23b11",
+            "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
             "Id": "2BBA39E0-5269-4227-9AF7-92B1BC7DCA2A",
-            "RoleId": "00012180-0000-0000-8000-13a7a7a23b11",
+            "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
             "CanWrite": true,
@@ -118,37 +118,37 @@
         },
         {
             "Id": "71E89335-690D-4047-B390-F347913F8BFD",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba2",
+            "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
             "Id": "741C2561-D2F0-46F3-A51B-B413A803A9F4",
-            "RoleId": "0001fd80-0000-0000-8000-23a7c7a43ba7",
+            "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
             "Id": "9245CB4C-31E0-4AB8-B16C-26475809D022",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba7",
+            "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
             "Id": "A85EE7E2-2D09-436C-B9DC-A10D8010B7FE",
-            "RoleId": "0001fd80-0000-0000-8000-e3a7c7a43ba1",
+            "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
             "Id": "B4B9EFDA-F5C7-4EDE-B19B-3B1BC47ADD08",
-            "RoleId": "0001f180-0000-0000-8000-13a7c7a43b11",
+            "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
             "Id": "D3B6AE99-4EC9-4027-9AFC-3C00304EF086",
-            "RoleId": "00012180-0000-0000-8000-13a7c7a23b11",
+            "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
             "Id": "F4DF28F0-99B0-40D8-8496-DAD1C6FE880A",
-            "RoleId": "0001fd80-0000-0000-8000-13a7c7a43b11",
+            "RoleId": "ACC",
             "TableName": "Feature"
         }
     ]
