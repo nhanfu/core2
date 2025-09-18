@@ -8,6 +8,7 @@ namespace Core.ViewModels
     public class SqlViewModel
     {
         public string SvcId { get; set; }
+        public string Feature { get; set; }
         public string ComId { get; set; }
         public string Action { get; set; }
         public string Params { get; set; }

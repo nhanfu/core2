@@ -480,6 +480,7 @@ export class ListView extends EditableComponent {
         /** @type {SqlViewModel} */
         // @ts-ignore
         var res = {
+            Feature: this.EditForm ? this.EditForm.FeatureName : "",
             ComId: this.Meta.Id,
             Params: submitEntity ? JSON.stringify(submitEntity) : null,
             WhereParams: JSON.stringify(operatorsValue),

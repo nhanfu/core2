@@ -235,7 +235,7 @@ public class UserService
             RoleIdsText = "CUSTOMER",
             CompanyId = entity.Id,
             TypeId = 2,
-            Avatar = "https://api.nguyenduyphong.id.vn/icons/default.jpg"
+            Avatar = ""
         };
         var save = user.MapToPatch();
         await SavePatch2(save);
@@ -271,14 +271,6 @@ public class UserService
         var ds = await _sql.ReadDataSet(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         return ds[0];
     }
-
-    public async Task<Dictionary<string, object>[]> GetExchangeRate()
-    {
-        var query = @$"select * from [ExchangeRate] where (FromDate <= GETDATE() or FromDate is null) and (GETDATE() <= ToDate or ToDate is null)";
-        var ds = await _sql.ReadDataSet(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
-        return ds[0];
-    }
-
     public async Task<Dictionary<string, object>[]> MyNotification()
     {
         var query = @$"select * from [TaskNotification] where AssignedId = '{UserId}' order by InsertedDate desc";
@@ -422,28 +414,12 @@ public class UserService
         return ds[0];
     }
 
-    public async Task<Feature> GetFeature(string name)
+    public Feature GetFeature(string name)
     {
-        var feature = await GetFeatureFromJson(name, TenantCode) ?? throw new ApiException("Feature not found")
+        var feature = GetFeatureFromJson(name, TenantCode) ?? throw new ApiException("Feature not found")
         {
             StatusCode = HttpStatusCode.NotFound
         };
-        var query1 = @$"
-            select Value as DefaultVal,Id as ComponentDefaultValueId from ComponentDefaultValue where UserId = '{UserId}'
-            select * from [UserSetting] where FeatureId = '{feature.Id}' and UserId = '{UserId}'";
-        var child2s = await _sql.ReadDataSet(query1, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
-        feature.UserSettings = child2s.Length > 1 && child2s[1].Length > 0 ? child2s[1].Select(x => x.MapTo<UserSetting>()).ToList() : new List<UserSetting>();
-        var componentDefaultValue = child2s.Length > 0 && child2s[0].Length > 0 ? child2s[0].Select(x => x.MapTo<CoreAPI.UIModels.ComponentDefaultValue>()).ToList() : new List<CoreAPI.UIModels.ComponentDefaultValue>();
-        var com2s = feature.ComponentGroup.SelectMany(x => x.Components);
-        componentDefaultValue.ForEach(item =>
-        {
-            var def = com2s.FirstOrDefault(c => c.ComponentId == item.Id);
-            if (def != null)
-            {
-                def.DefaultVal = item.Value;
-                def.ComponentDefaultValueId = item.Id;
-            }
-        });
         return feature;
     }
 
@@ -532,7 +508,7 @@ public class UserService
         await File.WriteAllTextAsync(filePath, json);
     }
 
-    private static async Task<Feature> GetFeatureFromJson(string featureName, string t)
+    private static Feature GetFeatureFromJson(string featureName, string t)
     {
         string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "upload", t, "features", featureName + ".json");
 
@@ -541,7 +517,7 @@ public class UserService
             return null;
         }
 
-        string json = await File.ReadAllTextAsync(filePath);
+        string json = File.ReadAllText(filePath);
         return JsonConvert.DeserializeObject<Feature>(json);
     }
 
@@ -1805,7 +1781,7 @@ public class UserService
         if (!table.Duplicate.IsNullOrWhiteSpace())
         {
             var field = table.Duplicate.Split(",");
-            using SqlConnection connection = new (BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
+            using SqlConnection connection = new(BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
             await connection.OpenAsync();
             try
             {
@@ -2821,11 +2797,50 @@ public class UserService
         }
         if (com is null)
         {
-            var query = @$"select top 1 * from [Component] where Id = '{vm.ComId}'";
-            com = await _sql.ReadDsAs<Component>(query, vm.CachedMetaConn);
+            var f = GetFeatureFromJson(vm.Feature, TenantCode);
+            _logger.LogInformation($"Feature from json: {JsonConvert.SerializeObject(f)}");
+            com = await FindComponentById(vm, f.ComponentGroup);
             if (com is null) return null;
             await SetStringAsync(comKey, JsonConvert.SerializeObject(com), Utils.CacheTTL);
         }
+        return com;
+    }
+
+    private async Task<Component> FindComponentById(SqlViewModel vm, IEnumerable<Component> components)
+    {
+        Component com = null;
+        foreach (var c in components)
+        {
+            if (c.Id == vm.ComId)
+            {
+                // If component is not private or user is an admin, it's a match.
+                if (!c.IsPrivate || RoleNames.Contains("ADMIN"))
+                {
+                    com = c;
+                    break;
+                }
+
+                // Otherwise, check for specific entity permissions.
+                var permissions = await GetEntityPerm(vm.Feature, recordId: null, vm.CachedMetaConn,
+                    x => x.CanReadAll || x.CanRead);
+
+                if (permissions.Length > 0)
+                {
+                    com = c;
+                }
+
+                // BUG FIX: Whether permissions were found or not, we have found the
+                // component we are looking for. We must stop searching.
+                break;
+            }
+            else if (c.Components != null && c.Components.Count > 0)
+            {
+                // Recursively search in child components.
+                com = await FindComponentById(vm, c.Components);
+                if (com != null) break;
+            }
+        }
+
         return com;
     }
 

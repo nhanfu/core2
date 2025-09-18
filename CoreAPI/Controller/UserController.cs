@@ -176,13 +176,6 @@ public class UserController(UserService _userSvc, PdfService _pdfService,
         return _userSvc.GetDictionary();
     }
 
-    [AllowAnonymous]
-    [HttpGet("api/exchangeRate")]
-    public Task<Dictionary<string, object>[]> ExchangeRate()
-    {
-        return _userSvc.GetExchangeRate();
-    }
-
     [HttpPost("api/feature/mynotification")]
     public Task<Dictionary<string, object>[]> MyNotification()
     {
@@ -320,7 +313,7 @@ public class UserController(UserService _userSvc, PdfService _pdfService,
     }
 
     [HttpPost("/api/feature/getFeature")]
-    public Task<Feature> GetFeature([FromBody] ServiceVM vm)
+    public Feature GetFeature([FromBody] ServiceVM vm)
     {
         return _userSvc.GetFeature(vm.Name);
     }
