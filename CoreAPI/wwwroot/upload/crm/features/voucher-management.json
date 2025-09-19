@@ -8,96 +8,6 @@
     "Icon": "fas fa-receipt",
     "IsMenu": true,
     "EntityId": "Voucher",
-    "ComponentGroup": [
-        {
-            "Id": "0194a015-89a9-70eb-95e4-d863aaad2aa0",
-            "FieldName": "A",
-            "Order": 1,
-            "ComponentType": "Section",
-            "Label": "Debt Accounting",
-            "Icon": "fal fa-border-all mr-1",
-            "ClassName": "scroll-content",
-            "XxlCol": 12,
-            "IsTab": true,
-            "TabGroup": "A",
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "0194a015-8a11-7061-b10d-e8bf0ff23550",
-                    "FieldName": "Voucher3",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "Label": "Voucher",
-                    "ClassName": "sticky",
-                    "Events": "{\r\n    \"dblclick\": \"EditVoucher3\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where (ds.TypeId in (3,4))\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where (ds.TypeId in (3,4))\"\r\n}",
-                    "RefName": "Voucher",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        },
-        {
-            "Id": "0194a015-8a8a-7291-821d-7bd1aa129ff0",
-            "Order": 2,
-            "ComponentType": "Section",
-            "Label": "Payment Acounting",
-            "Icon": "fal fa-border-all mr-1",
-            "ClassName": "scroll-content",
-            "XxlCol": 12,
-            "IsTab": true,
-            "TabGroup": "A",
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "0194a015-8b01-70f8-a730-97dae6699951",
-                    "FieldName": "Voucher4",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "Label": "Voucher",
-                    "ClassName": "sticky",
-                    "Events": "{\r\n    \"dblclick\": \"EditVoucher4\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where (ds.TypeId in (5,6))\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where (ds.TypeId in (5,6))\"\r\n}",
-                    "RefName": "Voucher",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        },
-        {
-            "Id": "0194a015-8b58-721c-8f7c-d8145f9d5c49",
-            "Order": 3,
-            "ComponentType": "Section",
-            "Label": "Opening Balance",
-            "Icon": "fal fa-border-all mr-1",
-            "ClassName": "scroll-content",
-            "XxlCol": 12,
-            "IsTab": true,
-            "TabGroup": "A",
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "0194a015-8bb0-70bf-88de-a3e726a3c6c5",
-                    "FieldName": "Voucher5",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "Label": "Voucher",
-                    "ClassName": "sticky",
-                    "Events": "{\r\n    \"dblclick\": \"EditSOA\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where (ds.TypeId = 7)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where (ds.TypeId = 7)\"\r\n}",
-                    "RefName": "Voucher",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "0194a015-8c08-743a-bcba-b2ac39a65094",
@@ -560,79 +470,92 @@
     ],
     "Components": [
         {
-            "Id": "0194a015-8e6c-761e-947e-5a5724870a70",
-            "FieldName": "btnEdit",
-            "Order": 0,
-            "ComponentType": "Button",
-            "Icon": "fal fa-expand",
-            "ClassName": "btn",
-            "Events": "{\r\n    \"click\": \"EditVoucher3\"\r\n}",
-            "Width": "38px",
-            "FocusSearch": true,
-            "MinWidth": "38px",
-            "MaxWidth": "38px",
-            "EntityId": "Voucher3"
-        },
-        {
-            "Id": "0194a027-fee8-765d-a02c-2b7147c0b1bb",
-            "FieldName": "btnAdd",
+            "Id": "0194a015-89a9-70eb-95e4-d863aaad2aa0",
+            "FieldName": "A",
             "Order": 1,
-            "ComponentType": "Button",
-            "Column": 1,
-            "Label": "Add",
-            "Icon": "fal fa-plus",
-            "ClassName": "btn",
-            "Events": "{\r\n    \"click\": \"AddVoucher3\"\r\n}"
+            "ComponentType": "Section",
+            "Label": "Debt Accounting",
+            "Icon": "fal fa-border-all mr-1",
+            "ClassName": "scroll-content",
+            "XxlCol": 12,
+            "IsTab": true,
+            "TabGroup": "A",
+            "DisplayBadge": true,
+            "Components": [
+                {
+                    "Id": "0194a015-8a11-7061-b10d-e8bf0ff23550",
+                    "FieldName": "Voucher3",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "Label": "Voucher",
+                    "ClassName": "sticky",
+                    "Events": "{\r\n    \"dblclick\": \"EditVoucher3\"\r\n}",
+                    "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where (ds.TypeId in (3,4))\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where (ds.TypeId in (3,4))\"\r\n}",
+                    "RefName": "Voucher",
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         },
         {
-            "Id": "0194a028-a1db-7308-80d8-7ef66421406c",
-            "FieldName": "btnAdd",
-            "Order": 1,
-            "ComponentType": "Button",
-            "Column": 1,
-            "Label": "Add",
-            "Icon": "fal fa-plus",
-            "ClassName": "btn",
-            "Events": "{\r\n    \"click\": \"AddVoucher4\"\r\n}"
+            "Id": "0194a015-8a8a-7291-821d-7bd1aa129ff0",
+            "Order": 2,
+            "ComponentType": "Section",
+            "Label": "Payment Acounting",
+            "Icon": "fal fa-border-all mr-1",
+            "ClassName": "scroll-content",
+            "XxlCol": 12,
+            "IsTab": true,
+            "TabGroup": "A",
+            "DisplayBadge": true,
+            "Components": [
+                {
+                    "Id": "0194a015-8b01-70f8-a730-97dae6699951",
+                    "FieldName": "Voucher4",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "Label": "Voucher",
+                    "ClassName": "sticky",
+                    "Events": "{\r\n    \"dblclick\": \"EditVoucher4\"\r\n}",
+                    "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where (ds.TypeId in (5,6))\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where (ds.TypeId in (5,6))\"\r\n}",
+                    "RefName": "Voucher",
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         },
         {
-            "Id": "0194a028-b18c-7583-8d11-1ea2128d8482",
-            "FieldName": "btnAdd",
-            "Order": 1,
-            "ComponentType": "Button",
-            "Column": 1,
-            "Label": "Add",
-            "Icon": "fal fa-plus",
-            "ClassName": "btn",
-            "Events": "{\r\n    \"click\": \"AddSOA\"\r\n}"
-        },
-        {
-            "Id": "0194ea3f-ab5c-75a8-9d92-eacafd414eae",
-            "FieldName": "btnEdit",
-            "Order": 0,
-            "ComponentType": "Button",
-            "Icon": "fal fa-expand",
-            "ClassName": "btn",
-            "Events": "{\r\n    \"click\": \"EditVoucher4\"\r\n}",
-            "Width": "34px",
-            "FocusSearch": true,
-            "MinWidth": "34px",
-            "MaxWidth": "34px",
-            "EntityId": "Voucher4"
-        },
-        {
-            "Id": "0194ea42-953a-732d-b589-5fb0aa3a2d7a",
-            "FieldName": "btnEdit",
-            "Order": 0,
-            "ComponentType": "Button",
-            "Icon": "fal fa-expand",
-            "ClassName": "btn",
-            "Events": "{\r\n    \"click\": \"EditVoucher3\"\r\n}",
-            "Width": "34px",
-            "FocusSearch": true,
-            "MinWidth": "34px",
-            "MaxWidth": "34px",
-            "EntityId": "Voucher5"
+            "Id": "0194a015-8b58-721c-8f7c-d8145f9d5c49",
+            "Order": 3,
+            "ComponentType": "Section",
+            "Label": "Opening Balance",
+            "Icon": "fal fa-border-all mr-1",
+            "ClassName": "scroll-content",
+            "XxlCol": 12,
+            "IsTab": true,
+            "TabGroup": "A",
+            "DisplayBadge": true,
+            "Components": [
+                {
+                    "Id": "0194a015-8bb0-70bf-88de-a3e726a3c6c5",
+                    "FieldName": "Voucher5",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "Label": "Voucher",
+                    "ClassName": "sticky",
+                    "Events": "{\r\n    \"dblclick\": \"EditSOA\"\r\n}",
+                    "Query": "{\r\n    \"sql\": \"select * from Voucher as ds where (ds.TypeId = 7)\",\r\n    \"total\": \"select count(ds.Id) as total from Voucher as ds where (ds.TypeId = 7)\"\r\n}",
+                    "RefName": "Voucher",
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         }
     ],
     "FeaturePolicies": [

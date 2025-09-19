@@ -2798,15 +2798,14 @@ public class UserService
         if (com is null)
         {
             var f = GetFeatureFromJson(vm.Feature, TenantCode);
-            _logger.LogInformation($"Feature from json: {JsonConvert.SerializeObject(f)}");
-            com = await FindComponentById(vm, f.ComponentGroup);
+            com = await FindComponentById(vm, f.Components, f);
             if (com is null) return null;
             await SetStringAsync(comKey, JsonConvert.SerializeObject(com), Utils.CacheTTL);
         }
         return com;
     }
 
-    private async Task<Component> FindComponentById(SqlViewModel vm, IEnumerable<Component> components)
+    private async Task<Component> FindComponentById(SqlViewModel vm, IEnumerable<Component> components, Feature feature)
     {
         Component com = null;
         foreach (var c in components)
@@ -2814,29 +2813,24 @@ public class UserService
             if (c.Id == vm.ComId)
             {
                 // If component is not private or user is an admin, it's a match.
-                if (!c.IsPrivate || RoleNames.Contains("ADMIN"))
+                if (!c.IsPrivate || RoleIds.Contains("ADMIN"))
                 {
                     com = c;
                     break;
                 }
 
-                // Otherwise, check for specific entity permissions.
-                var permissions = await GetEntityPerm(vm.Feature, recordId: null, vm.CachedMetaConn,
-                    x => x.CanReadAll || x.CanRead);
+                var permissions = feature.FeaturePolicies.Where(x => RoleIds.Contains(x.RoleId) && x.CanRead).ToArray();
 
                 if (permissions.Length > 0)
                 {
                     com = c;
                 }
 
-                // BUG FIX: Whether permissions were found or not, we have found the
-                // component we are looking for. We must stop searching.
                 break;
             }
             else if (c.Components != null && c.Components.Count > 0)
             {
-                // Recursively search in child components.
-                com = await FindComponentById(vm, c.Components);
+                com = await FindComponentById(vm, c.Components, feature);
                 if (com != null) break;
             }
         }

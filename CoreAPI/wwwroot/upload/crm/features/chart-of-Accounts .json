@@ -5,32 +5,6 @@
     "ParentId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
     "Order": 0,
     "Icon": "fal fa-code",
-    "ComponentGroup": [
-        {
-            "Id": "00b3ffd8-0000-0000-8000-2c9d9cfd3929",
-            "FieldName": "Container",
-            "Order": 1,
-            "ComponentType": "Section",
-            "Components": [
-                {
-                    "Id": "0001ffbc-0000-0000-8000-65e18bc65d4f",
-                    "FieldName": "AccountNo",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "ClassName": "sticky",
-                    "ChildStyle": "height: calc(100vh - 11rem)",
-                    "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds\"\r\n}",
-                    "IsRealtime": true,
-                    "RefName": "AccountNo",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "0021ff04-0000-0000-8000-e298f915cb46",
@@ -149,6 +123,32 @@
             "CanDelete": true,
             "CanDeleteAll": true,
             "TableName": "Feature"
+        }
+    ],
+    "Components": [
+        {
+            "Id": "00b3ffd8-0000-0000-8000-2c9d9cfd3929",
+            "FieldName": "Container",
+            "Order": 1,
+            "ComponentType": "Section",
+            "Components": [
+                {
+                    "Id": "0001ffbc-0000-0000-8000-65e18bc65d4f",
+                    "FieldName": "AccountNo",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "ClassName": "sticky",
+                    "ChildStyle": "height: calc(100vh - 11rem)",
+                    "CanAdd": true,
+                    "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds\"\r\n}",
+                    "IsRealtime": true,
+                    "RefName": "AccountNo",
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         }
     ]
 }

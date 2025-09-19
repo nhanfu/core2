@@ -8,35 +8,6 @@
     "Icon": "fal fa-tasks",
     "IsMenu": true,
     "EntityId": "ShipmentProcess",
-    "ComponentGroup": [
-        {
-            "Id": "01937b58-c477-720b-a065-631e016197c1",
-            "Order": 1,
-            "ComponentType": "Section",
-            "Icon": "fal fa-border-all mr-1",
-            "ClassName": "scroll-content",
-            "XxlCol": 12,
-            "Components": [
-                {
-                    "Id": "01937b58-c4f9-7428-a72b-466b968d4106",
-                    "FieldName": "ShipmentProcess",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "Label": "BookingALL",
-                    "ClassName": "sticky",
-                    "Events": "{\"dblclick\":\"Edit\"}",
-                    "Query": "{\r\n    \"sql\": \"select * from ShipmentProcess as ds\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentProcess as ds\"\r\n}",
-                    "IsRealtime": true,
-                    "RefName": "ShipmentProcess",
-                    "PreQuery": "{\r\n    \"UserId\": this.Token.UserId\r\n}",
-                    "OrderBy": "ds.TypeId asc"
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "01957ff5-e1de-724a-a0a6-e1a4749ad22c",
@@ -112,6 +83,35 @@
             "Id": "F4A27B20-1B7C-4A6F-B26A-7BA042E6E342",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
+        }
+    ],
+    "Components": [
+        {
+            "Id": "01937b58-c477-720b-a065-631e016197c1",
+            "Order": 1,
+            "ComponentType": "Section",
+            "Icon": "fal fa-border-all mr-1",
+            "ClassName": "scroll-content",
+            "XxlCol": 12,
+            "Components": [
+                {
+                    "Id": "01937b58-c4f9-7428-a72b-466b968d4106",
+                    "FieldName": "ShipmentProcess",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "Label": "BookingALL",
+                    "ClassName": "sticky",
+                    "Events": "{\"dblclick\":\"Edit\"}",
+                    "Query": "{\r\n    \"sql\": \"select * from ShipmentProcess as ds\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentProcess as ds\"\r\n}",
+                    "IsRealtime": true,
+                    "RefName": "ShipmentProcess",
+                    "PreQuery": "{\r\n    \"UserId\": this.Token.UserId\r\n}",
+                    "OrderBy": "ds.TypeId asc"
+                }
+            ]
         }
     ]
 }

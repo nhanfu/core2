@@ -8,95 +8,6 @@
     "Icon": "fal fa-receipt",
     "IsMenu": true,
     "EntityId": "ShipmentInvoice",
-    "ComponentGroup": [
-        {
-            "Id": "01945983-5f3c-7696-aa12-c9d5e7cc64ce",
-            "Order": 1,
-            "ComponentType": "Section",
-            "Label": "Invoice",
-            "Icon": "fal fa-border-all mr-1",
-            "ClassName": "scroll-content",
-            "XxlCol": 12,
-            "IsTab": true,
-            "TabGroup": "A",
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "01945964-0e42-758e-b4eb-e1bd1bb604f3",
-                    "FieldName": "ShipmentInvoice",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "Label": "BookingALL",
-                    "ClassName": "sticky",
-                    "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select * from ShipmentInvoice as ds where (ds.TypeId = 1 and ActionId in (2,3))\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentInvoice as ds where (ds.TypeId = 1 and ActionId in (2,3))\"\r\n}",
-                    "RefName": "ShipmentInvoice",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        },
-        {
-            "Id": "01945983-6e0f-77f9-911e-98b40de9949b",
-            "Order": 1,
-            "ComponentType": "Section",
-            "Label": "VAT Invoice",
-            "Icon": "fal fa-border-all mr-1",
-            "ClassName": "scroll-content",
-            "XxlCol": 12,
-            "IsTab": true,
-            "TabGroup": "A",
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "01945964-0f3b-761f-8d1b-ee6308eaac84",
-                    "FieldName": "ShipmentInvoice2",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "Label": "BookingALL",
-                    "ClassName": "sticky",
-                    "Events": "{\r\n    \"dblclick\": \"EditInvoice\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select * from ShipmentInvoice as ds where (ds.TypeId = 3)\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentInvoice as ds where (ds.TypeId = 3)\"\r\n}",
-                    "RefName": "ShipmentInvoice",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        },
-        {
-            "Id": "01945983-ae1a-773c-8283-0c3cc44eaf48",
-            "Order": 1,
-            "ComponentType": "Section",
-            "Label": "SOA",
-            "Icon": "fal fa-border-all mr-1",
-            "ClassName": "scroll-content",
-            "XxlCol": 12,
-            "IsTab": true,
-            "TabGroup": "A",
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "01945964-1109-745b-8998-3840687f705b",
-                    "FieldName": "ShipmentInvoice3",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "Label": "BookingALL",
-                    "ClassName": "sticky",
-                    "Events": "{\r\n    \"dblclick\": \"EditSOA\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select * from ShipmentInvoice as ds where (ds.TypeId = 4)\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentInvoice as ds where (ds.TypeId = 4)\"\r\n}",
-                    "RefName": "ShipmentInvoice",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "01945964-1470-72af-b8b9-90c5ebf8ec29",
@@ -690,57 +601,91 @@
     ],
     "Components": [
         {
-            "Id": "01945964-1a2c-7349-9798-54ddaaf91dc2",
-            "FieldName": "btnEdit",
-            "Order": 0,
-            "ComponentType": "Button",
-            "Icon": "fal fa-expand",
-            "ClassName": "btn",
-            "Events": "{\r\n    \"click\": \"EditDebit\"\r\n}",
-            "Width": "34px",
-            "FocusSearch": true,
-            "MinWidth": "34px",
-            "MaxWidth": "34px",
-            "EntityId": "ShipmentInvoice"
-        },
-        {
-            "Id": "01947485-fe29-778d-9ab6-7e00165c1301",
-            "FieldName": "btnEdit",
-            "Order": 0,
-            "ComponentType": "Button",
-            "Icon": "fal fa-expand",
-            "ClassName": "btn",
-            "Events": "{\r\n    \"click\": \"EditInvoice\"\r\n}",
-            "Width": "34px",
-            "FocusSearch": true,
-            "MinWidth": "34px",
-            "MaxWidth": "34px",
-            "EntityId": "ShipmentInvoice2"
-        },
-        {
-            "Id": "01947486-872c-77ad-ad39-1dfad6ec5bc9",
-            "FieldName": "btnEdit",
-            "Order": 0,
-            "ComponentType": "Button",
-            "Icon": "fal fa-expand",
-            "ClassName": "btn",
-            "Events": "{\r\n    \"click\": \"EditSOA\"\r\n}",
-            "Width": "34px",
-            "FocusSearch": true,
-            "MinWidth": "34px",
-            "MaxWidth": "34px",
-            "EntityId": "ShipmentInvoice3"
-        },
-        {
-            "Id": "0194962a-667e-773d-bce1-25954f4e0299",
-            "FieldName": "btnAdd",
+            "Id": "01945983-5f3c-7696-aa12-c9d5e7cc64ce",
             "Order": 1,
-            "ComponentType": "Button",
-            "Column": 1,
-            "Label": "Add",
-            "Icon": "fal fa-plus",
-            "ClassName": "btn",
-            "Events": "{\r\n    \"click\": \"AddSOA\"\r\n}"
+            "ComponentType": "Section",
+            "Label": "Invoice",
+            "Icon": "fal fa-border-all mr-1",
+            "ClassName": "scroll-content",
+            "XxlCol": 12,
+            "IsTab": true,
+            "TabGroup": "A",
+            "DisplayBadge": true,
+            "Components": [
+                {
+                    "Id": "01945964-0e42-758e-b4eb-e1bd1bb604f3",
+                    "FieldName": "ShipmentInvoice",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "Label": "BookingALL",
+                    "ClassName": "sticky",
+                    "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
+                    "Query": "{\r\n    \"sql\": \"select * from ShipmentInvoice as ds where (ds.TypeId = 1 and ActionId in (2,3))\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentInvoice as ds where (ds.TypeId = 1 and ActionId in (2,3))\"\r\n}",
+                    "RefName": "ShipmentInvoice",
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
+        },
+        {
+            "Id": "01945983-6e0f-77f9-911e-98b40de9949b",
+            "Order": 1,
+            "ComponentType": "Section",
+            "Label": "VAT Invoice",
+            "Icon": "fal fa-border-all mr-1",
+            "ClassName": "scroll-content",
+            "XxlCol": 12,
+            "IsTab": true,
+            "TabGroup": "A",
+            "DisplayBadge": true,
+            "Components": [
+                {
+                    "Id": "01945964-0f3b-761f-8d1b-ee6308eaac84",
+                    "FieldName": "ShipmentInvoice2",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "Label": "BookingALL",
+                    "ClassName": "sticky",
+                    "Events": "{\r\n    \"dblclick\": \"EditInvoice\"\r\n}",
+                    "Query": "{\r\n    \"sql\": \"select * from ShipmentInvoice as ds where (ds.TypeId = 3)\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentInvoice as ds where (ds.TypeId = 3)\"\r\n}",
+                    "RefName": "ShipmentInvoice",
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
+        },
+        {
+            "Id": "01945983-ae1a-773c-8283-0c3cc44eaf48",
+            "Order": 1,
+            "ComponentType": "Section",
+            "Label": "SOA",
+            "Icon": "fal fa-border-all mr-1",
+            "ClassName": "scroll-content",
+            "XxlCol": 12,
+            "IsTab": true,
+            "TabGroup": "A",
+            "DisplayBadge": true,
+            "Components": [
+                {
+                    "Id": "01945964-1109-745b-8998-3840687f705b",
+                    "FieldName": "ShipmentInvoice3",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "Label": "BookingALL",
+                    "ClassName": "sticky",
+                    "Events": "{\r\n    \"dblclick\": \"EditSOA\"\r\n}",
+                    "Query": "{\r\n    \"sql\": \"select * from ShipmentInvoice as ds where (ds.TypeId = 4)\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentInvoice as ds where (ds.TypeId = 4)\"\r\n}",
+                    "RefName": "ShipmentInvoice",
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         }
     ],
     "FeaturePolicies": [

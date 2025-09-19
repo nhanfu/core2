@@ -4,7 +4,7 @@
     "Label": "Send Mail",
     "Order": 0,
     "Script": "return {\r\n    SendMail: async () => {\r\n        var rs = await this.Client.PostAsync(this.Entity, \"/api/sendEmail\");\r\n        this.Toast.Success(\"Send mail success\");\r\n    }\r\n}",
-    "ComponentGroup": [
+    "Components": [
         {
             "Id": "00c701c0-0000-0000-8000-d630839fd487",
             "FieldName": "Container",
@@ -39,6 +39,17 @@
                     "Column": 12,
                     "Label": "Text",
                     "ShowLabel": true
+                },
+                {
+                    "Id": "000201e8-0000-0000-8000-229a37f69600",
+                    "FieldName": "btnSend",
+                    "Order": 1,
+                    "ComponentType": "Button",
+                    "Column": 1,
+                    "Label": "Send",
+                    "Icon": "fal fa-envelope",
+                    "ClassName": "btn detail-button primary",
+                    "Events": "{\"click\":\"SendMail\"}"
                 }
             ]
         },
@@ -62,19 +73,6 @@
                     "Events": "{\"click\":\"SendMail\"}"
                 }
             ]
-        }
-    ],
-    "Components": [
-        {
-            "Id": "000201e8-0000-0000-8000-229a37f69600",
-            "FieldName": "btnSend",
-            "Order": 1,
-            "ComponentType": "Button",
-            "Column": 1,
-            "Label": "Send",
-            "Icon": "fal fa-envelope",
-            "ClassName": "btn detail-button primary",
-            "Events": "{\"click\":\"SendMail\"}"
         }
     ],
     "FeaturePolicies": [

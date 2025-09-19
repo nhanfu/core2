@@ -8,33 +8,6 @@
     "Icon": "fal fa-user-tag",
     "IsMenu": true,
     "EntityId": "Role",
-    "ComponentGroup": [
-        {
-            "Id": "00ee1d18-0000-0000-8000-63b445fb3520",
-            "FieldName": "Container",
-            "Order": 1,
-            "ComponentType": "Section",
-            "XxlCol": 12,
-            "Components": [
-                {
-                    "Id": "00ee1dc0-0000-0000-8000-5219ff2d2399",
-                    "FieldName": "Role",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "Events": "{\r\n    \"dblclick\": \"EditUser\"\r\n}",
-                    "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from [Role] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [Role] as ds\"\r\n}",
-                    "IsRealtime": true,
-                    "RefName": "Role",
-                    "OrderBy": "ds.Hidden asc"
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "00ee1d64-0000-0000-8000-dc5b2fee225a",
@@ -92,18 +65,29 @@
     ],
     "Components": [
         {
-            "Id": "00ee1d64-0000-0000-8000-dc5b2fee225a",
-            "FieldName": "btnEdit",
+            "Id": "00ee1d18-0000-0000-8000-63b445fb3520",
+            "FieldName": "Container",
             "Order": 1,
-            "ComponentType": "Button",
-            "Icon": "fal fa-expand",
-            "ClassName": "btn",
-            "Events": "{\"click\":\"EditUser\"}",
-            "Width": "65px",
-            "FocusSearch": true,
-            "MinWidth": "65px",
-            "MaxWidth": "65px",
-            "EntityId": "Role"
+            "ComponentType": "Section",
+            "XxlCol": 12,
+            "Components": [
+                {
+                    "Id": "00ee1dc0-0000-0000-8000-5219ff2d2399",
+                    "FieldName": "Role",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "ChildStyle": "height: calc(100vh - 10.5rem)",
+                    "Events": "{\r\n    \"dblclick\": \"EditUser\"\r\n}",
+                    "CanAdd": true,
+                    "Query": "{\r\n    \"sql\": \"select * from [Role] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [Role] as ds\"\r\n}",
+                    "IsRealtime": true,
+                    "RefName": "Role",
+                    "OrderBy": "ds.Hidden asc"
+                }
+            ]
         }
     ],
     "FeaturePolicies": [

@@ -4,34 +4,6 @@
     "Label": "Table Manage",
     "Order": 111,
     "Script": "return {\r\n    EditTable: (entity) => {\r\n        this.OpenPopup(\"table-editor\", entity);\r\n    }\r\n}",
-    "ComponentGroup": [
-        {
-            "Id": "008ef864-0000-0000-8000-459845c14aa7",
-            "FieldName": "wrapper scroll-content",
-            "Order": 1,
-            "ComponentType": "Section",
-            "XxlCol": 12,
-            "Components": [
-                {
-                    "Id": "0022f784-0000-0000-8000-f877b189f411",
-                    "FieldName": "TableName",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "ClassName": "sticky",
-                    "DefaultVal": "{\r\n    \"TanentId\": this.EditForm.Entity.Id,\r\n}",
-                    "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from TableName as ds\",\r\n    \"total\": \"select count(ds.Id) as total from TableName as ds\"\r\n}",
-                    "IsRealtime": true,
-                    "RefName": "TableName",
-                    "TopEmpty": true,
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "0067f7f0-0000-0000-8000-e037d47f18c2",
@@ -101,16 +73,30 @@
     ],
     "Components": [
         {
-            "Id": "0084f73c-0000-0000-8000-9345a3b23d02",
-            "FieldName": "btnEdit",
-            "Order": 0,
-            "ComponentType": "Button",
-            "Icon": "fal fa-expand-alt",
-            "ClassName": "btn",
-            "Events": "{\"click\":\"EditTable\"}",
-            "Editable": true,
-            "created_by": "TableName",
-            "EntityId": "TableName"
+            "Id": "008ef864-0000-0000-8000-459845c14aa7",
+            "FieldName": "wrapper scroll-content",
+            "Order": 1,
+            "ComponentType": "Section",
+            "XxlCol": 12,
+            "Components": [
+                {
+                    "Id": "0022f784-0000-0000-8000-f877b189f411",
+                    "FieldName": "TableName",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "ClassName": "sticky",
+                    "DefaultVal": "{\r\n    \"TanentId\": this.EditForm.Entity.Id,\r\n}",
+                    "CanAdd": true,
+                    "Query": "{\r\n    \"sql\": \"select * from TableName as ds\",\r\n    \"total\": \"select count(ds.Id) as total from TableName as ds\"\r\n}",
+                    "IsRealtime": true,
+                    "RefName": "TableName",
+                    "TopEmpty": true,
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         }
     ],
     "FeaturePolicies": [

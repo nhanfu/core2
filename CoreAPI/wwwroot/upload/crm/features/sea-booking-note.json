@@ -8,146 +8,6 @@
     "Icon": "fal fa-ballot-check",
     "IsMenu": true,
     "EntityId": "Booking",
-    "ComponentGroup": [
-        {
-            "Id": "005b130c-0000-0000-8000-abb336f867f5",
-            "Order": 1,
-            "ComponentType": "Section",
-            "Label": "All",
-            "Icon": "fal fa-border-all mr-1",
-            "ClassName": "scroll-content",
-            "XxlCol": 12,
-            "IsTab": true,
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "005b1390-0000-0000-8000-955bd2ce053c",
-                    "FieldName": "Booking",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "Label": "BookingALL",
-                    "ClassName": "sticky",
-                    "Events": "{\"dblclick\":\"Edit\"}",
-                    "Query": "{\r\n    \"sql\": \"select * from Booking as ds where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and TypeId = 4)\",\r\n    \"total\": \"select count(ds.Id) as total from Booking as ds  where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and TypeId = 4)\"\r\n}",
-                    "RefName": "Booking",
-                    "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        },
-        {
-            "Id": "005b131c-0000-0000-8000-ace59072e86b",
-            "Order": 5,
-            "ComponentType": "Section",
-            "Label": "Decline",
-            "Icon": "fal fa-frown mr-1",
-            "ClassName": "scroll-content",
-            "IsTab": true,
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "005b1328-0000-0000-8000-f95b268e0941",
-                    "FieldName": "Booking",
-                    "Order": 5,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "ClassName": "sticky",
-                    "Events": "{\"dblclick\":\"Edit\"}",
-                    "Query": "{\r\n    \"sql\": \"select * from Booking as ds where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and StatusId = 4  and TypeId = 4)\",\r\n    \"total\": \"select count(ds.Id) as total from Booking as ds  where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and StatusId = 4  and TypeId = 4)\"\r\n}",
-                    "RefName": "Booking",
-                    "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        },
-        {
-            "Id": "005b1348-0000-0000-8000-0979d249f131",
-            "Order": 4,
-            "ComponentType": "Section",
-            "Label": "Approved",
-            "Icon": "fal fa-smile mr-1",
-            "ClassName": "scroll-content",
-            "IsTab": true,
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "005b1380-0000-0000-8000-cdaa51c006fa",
-                    "FieldName": "Booking",
-                    "Order": 4,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "ClassName": "sticky",
-                    "Events": "{\"dblclick\":\"Edit\"}",
-                    "Query": "{\r\n    \"sql\": \"select * from Booking as ds where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and StatusId = 3  and TypeId = 4)\",\r\n    \"total\": \"select count(ds.Id) as total from Booking as ds  where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and StatusId = 3  and TypeId = 4)\"\r\n}",
-                    "RefName": "Booking",
-                    "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        },
-        {
-            "Id": "005b13d8-0000-0000-8000-6d2861f5429b",
-            "Order": 3,
-            "ComponentType": "Section",
-            "Label": "Approving",
-            "Icon": "fal fa-ellipsis-h mr-1",
-            "ClassName": "scroll-content",
-            "IsTab": true,
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "005b13ac-0000-0000-8000-cf5b9495530e",
-                    "FieldName": "Booking",
-                    "Order": 3,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "ClassName": "sticky",
-                    "Events": "{\"dblclick\":\"Edit\"}",
-                    "Query": "{\r\n    \"sql\": \"select * from Booking as ds where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and StatusId = 2  and TypeId = 4)\",\r\n    \"total\": \"select count(ds.Id) as total from Booking as ds  where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and StatusId = 2  and TypeId = 4)\"\r\n}",
-                    "RefName": "Booking",
-                    "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        },
-        {
-            "Id": "005b13ec-0000-0000-8000-d3c2c148dc3e",
-            "Order": 2,
-            "ComponentType": "Section",
-            "Label": "New",
-            "Icon": "fal fa-plus mr-1",
-            "ClassName": "scroll-content",
-            "IsTab": true,
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "005b1310-0000-0000-8000-bdc53d0b9fe3",
-                    "FieldName": "Booking",
-                    "Order": 2,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "Label": "BookingNew",
-                    "ClassName": "sticky",
-                    "Events": "{\"dblclick\":\"Edit\"}",
-                    "Query": "{\r\n    \"sql\": \"select * from Booking as ds where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and StatusId = 1  and TypeId = 4)\",\r\n    \"total\": \"select count(ds.Id) as total from Booking as ds  where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and StatusId = 1  and TypeId = 4)\"\r\n}",
-                    "RefName": "Booking",
-                    "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "005b1308-0000-0000-8000-22e0deb7ac0e",
@@ -363,39 +223,142 @@
     ],
     "Components": [
         {
-            "Id": "00a413ac-0000-0000-8000-8c0b39f69423",
-            "FieldName": "btnEdit",
-            "Order": 0,
-            "ComponentType": "Button",
-            "Icon": "fal fa-expand",
-            "ClassName": "btn",
-            "Events": "{\"click\":\"Edit\"}",
-            "Width": "34px",
-            "MinWidth": "34px",
-            "MaxWidth": "34px",
-            "EntityId": "Booking"
+            "Id": "005b130c-0000-0000-8000-abb336f867f5",
+            "Order": 1,
+            "ComponentType": "Section",
+            "Label": "All",
+            "Icon": "fal fa-border-all mr-1",
+            "ClassName": "scroll-content",
+            "XxlCol": 12,
+            "IsTab": true,
+            "DisplayBadge": true,
+            "Components": [
+                {
+                    "Id": "005b1390-0000-0000-8000-955bd2ce053c",
+                    "FieldName": "Booking",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "Label": "BookingALL",
+                    "ClassName": "sticky",
+                    "Events": "{\"dblclick\":\"Edit\"}",
+                    "Query": "{\r\n    \"sql\": \"select * from Booking as ds where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and TypeId = 4)\",\r\n    \"total\": \"select count(ds.Id) as total from Booking as ds  where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and TypeId = 4)\"\r\n}",
+                    "RefName": "Booking",
+                    "PreQuery": "{ \"UserId\": this.Token.UserId }",
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         },
         {
-            "Id": "00bd1344-0000-0000-8000-4bcc3b913f8f",
-            "FieldName": "btnAdd",
-            "Order": 1,
-            "ComponentType": "Button",
-            "Column": 1,
-            "Label": "Add",
-            "Icon": "fal fa-plus",
-            "ClassName": "btn",
-            "Events": "{\"click\":\"Add\"}"
+            "Id": "005b131c-0000-0000-8000-ace59072e86b",
+            "Order": 5,
+            "ComponentType": "Section",
+            "Label": "Decline",
+            "Icon": "fal fa-frown mr-1",
+            "ClassName": "scroll-content",
+            "IsTab": true,
+            "DisplayBadge": true,
+            "Components": [
+                {
+                    "Id": "005b1328-0000-0000-8000-f95b268e0941",
+                    "FieldName": "Booking",
+                    "Order": 5,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "ClassName": "sticky",
+                    "Events": "{\"dblclick\":\"Edit\"}",
+                    "Query": "{\r\n    \"sql\": \"select * from Booking as ds where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and StatusId = 4  and TypeId = 4)\",\r\n    \"total\": \"select count(ds.Id) as total from Booking as ds  where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and StatusId = 4  and TypeId = 4)\"\r\n}",
+                    "RefName": "Booking",
+                    "PreQuery": "{ \"UserId\": this.Token.UserId }",
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         },
         {
-            "Id": "00bd1344-0000-0000-8001-1ab4ce1f23e6",
-            "FieldName": "btnAdd",
-            "Order": 1,
-            "ComponentType": "Button",
-            "Column": 1,
-            "Label": "Add",
-            "Icon": "fal fa-plus",
-            "ClassName": "btn",
-            "Events": "{\"click\":\"Add\"}"
+            "Id": "005b1348-0000-0000-8000-0979d249f131",
+            "Order": 4,
+            "ComponentType": "Section",
+            "Label": "Approved",
+            "Icon": "fal fa-smile mr-1",
+            "ClassName": "scroll-content",
+            "IsTab": true,
+            "DisplayBadge": true,
+            "Components": [
+                {
+                    "Id": "005b1380-0000-0000-8000-cdaa51c006fa",
+                    "FieldName": "Booking",
+                    "Order": 4,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "ClassName": "sticky",
+                    "Events": "{\"dblclick\":\"Edit\"}",
+                    "Query": "{\r\n    \"sql\": \"select * from Booking as ds where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and StatusId = 3  and TypeId = 4)\",\r\n    \"total\": \"select count(ds.Id) as total from Booking as ds  where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and StatusId = 3  and TypeId = 4)\"\r\n}",
+                    "RefName": "Booking",
+                    "PreQuery": "{ \"UserId\": this.Token.UserId }",
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
+        },
+        {
+            "Id": "005b13d8-0000-0000-8000-6d2861f5429b",
+            "Order": 3,
+            "ComponentType": "Section",
+            "Label": "Approving",
+            "Icon": "fal fa-ellipsis-h mr-1",
+            "ClassName": "scroll-content",
+            "IsTab": true,
+            "DisplayBadge": true,
+            "Components": [
+                {
+                    "Id": "005b13ac-0000-0000-8000-cf5b9495530e",
+                    "FieldName": "Booking",
+                    "Order": 3,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "ClassName": "sticky",
+                    "Events": "{\"dblclick\":\"Edit\"}",
+                    "Query": "{\r\n    \"sql\": \"select * from Booking as ds where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and StatusId = 2  and TypeId = 4)\",\r\n    \"total\": \"select count(ds.Id) as total from Booking as ds  where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and StatusId = 2  and TypeId = 4)\"\r\n}",
+                    "RefName": "Booking",
+                    "PreQuery": "{ \"UserId\": this.Token.UserId }",
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
+        },
+        {
+            "Id": "005b13ec-0000-0000-8000-d3c2c148dc3e",
+            "Order": 2,
+            "ComponentType": "Section",
+            "Label": "New",
+            "Icon": "fal fa-plus mr-1",
+            "ClassName": "scroll-content",
+            "IsTab": true,
+            "DisplayBadge": true,
+            "Components": [
+                {
+                    "Id": "005b1310-0000-0000-8000-bdc53d0b9fe3",
+                    "FieldName": "Booking",
+                    "Order": 2,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "Label": "BookingNew",
+                    "ClassName": "sticky",
+                    "Events": "{\"dblclick\":\"Edit\"}",
+                    "Query": "{\r\n    \"sql\": \"select * from Booking as ds where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and StatusId = 1  and TypeId = 4)\",\r\n    \"total\": \"select count(ds.Id) as total from Booking as ds  where ((ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}') and StatusId = 1  and TypeId = 4)\"\r\n}",
+                    "RefName": "Booking",
+                    "PreQuery": "{ \"UserId\": this.Token.UserId }",
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         }
     ],
     "FeaturePolicies": [

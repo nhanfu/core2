@@ -8,146 +8,6 @@
     "Icon": "fal fa-ship",
     "IsMenu": true,
     "EntityId": "Inquiry",
-    "ComponentGroup": [
-        {
-            "Id": "000204e8-0000-0000-8000-a5236350a90f",
-            "Order": 1,
-            "ComponentType": "Section",
-            "Label": "All",
-            "Icon": "fal fa-border-all mr-1",
-            "ClassName": "scroll-content",
-            "XxlCol": 12,
-            "IsTab": true,
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "002e0468-0000-0000-8000-d777fbccfdd5",
-                    "FieldName": "Quote",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "Label": "QuoteALL",
-                    "ClassName": "sticky",
-                    "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select * from Inquiry as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and TypeId = 2 and ServiceId in (3,4,5,6,11)\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and TypeId = 2 and ServiceId in (3,4,5,6,11)\"\r\n}",
-                    "RefName": "Inquiry",
-                    "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        },
-        {
-            "Id": "000404e4-0000-0000-8000-5ec7d8d2160f",
-            "Order": 2,
-            "ComponentType": "Section",
-            "Label": "New",
-            "Icon": "fal fa-plus mr-1",
-            "ClassName": "scroll-content",
-            "IsTab": true,
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "004104b0-0000-0000-8000-fc5faf4abc05",
-                    "FieldName": "Quote",
-                    "Order": 2,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "Label": "QuoteNew",
-                    "ClassName": "sticky",
-                    "Events": "{\"dblclick\":\"Edit\"}",
-                    "Query": "{\r\n    \"sql\": \"select * from Inquiry as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 1 and TypeId = 2 and ServiceId in (3,4,5,6,11)\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 1 and TypeId = 2 and ServiceId in (3,4,5,6,11)\"\r\n}",
-                    "RefName": "Inquiry",
-                    "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        },
-        {
-            "Id": "0006043c-0000-0000-8000-c739fde3daf6",
-            "Order": 3,
-            "ComponentType": "Section",
-            "Label": "Approving",
-            "Icon": "fal fa-ellipsis-h mr-1",
-            "ClassName": "scroll-content",
-            "IsTab": true,
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "004504ac-0000-0000-8000-198129def086",
-                    "FieldName": "Quote",
-                    "Order": 3,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "ClassName": "sticky",
-                    "Events": "{\"dblclick\":\"Edit\"}",
-                    "Query": "{\r\n    \"sql\": \"select * from Inquiry as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 2 and TypeId = 2 and ServiceId in (3,4,5,6,11)\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 2 and TypeId = 2 and ServiceId in (3,4,5,6,11)\"\r\n}",
-                    "RefName": "Inquiry",
-                    "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        },
-        {
-            "Id": "00150494-0000-0000-8000-bc064526eeb2",
-            "Order": 4,
-            "ComponentType": "Section",
-            "Label": "Approved",
-            "Icon": "fal fa-smile mr-1",
-            "ClassName": "scroll-content",
-            "IsTab": true,
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "004b04c4-0000-0000-8000-d45be8654d71",
-                    "FieldName": "Quote",
-                    "Order": 4,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "ClassName": "sticky",
-                    "Events": "{\"dblclick\":\"Edit\"}",
-                    "Query": "{\r\n    \"sql\": \"select * from Inquiry as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 3 and TypeId = 2 and ServiceId in (3,4,5,6,11)\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 3 and TypeId = 2 and ServiceId in (3,4,5,6,11)\"\r\n}",
-                    "RefName": "Inquiry",
-                    "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        },
-        {
-            "Id": "001e047c-0000-0000-8000-844952866bc6",
-            "Order": 5,
-            "ComponentType": "Section",
-            "Label": "Decline",
-            "Icon": "fal fa-frown mr-1",
-            "ClassName": "scroll-content",
-            "IsTab": true,
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "0051049c-0000-0000-8000-d2109435c893",
-                    "FieldName": "Quote",
-                    "Order": 5,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "ClassName": "sticky",
-                    "Events": "{\"dblclick\":\"Edit\"}",
-                    "Query": "{\r\n    \"sql\": \"select * from Inquiry as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 4 and TypeId = 2 and ServiceId in (3,4,5,6,11)\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 4 and TypeId = 2 and ServiceId in (3,4,5,6,11)\"\r\n}",
-                    "RefName": "Inquiry",
-                    "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "00092d04-0000-0000-8000-beae85813d1d",
@@ -362,41 +222,142 @@
     ],
     "Components": [
         {
-            "Id": "00060408-0000-0000-8000-6a129bc996e2",
-            "FieldName": "btnAdd",
+            "Id": "000204e8-0000-0000-8000-a5236350a90f",
             "Order": 1,
-            "ComponentType": "Button",
-            "Column": 1,
-            "Label": "Add",
-            "Icon": "fal fa-plus",
-            "ClassName": "btn",
-            "Events": "{\"click\":\"Add\"}"
+            "ComponentType": "Section",
+            "Label": "All",
+            "Icon": "fal fa-border-all mr-1",
+            "ClassName": "scroll-content",
+            "XxlCol": 12,
+            "IsTab": true,
+            "DisplayBadge": true,
+            "Components": [
+                {
+                    "Id": "002e0468-0000-0000-8000-d777fbccfdd5",
+                    "FieldName": "Quote",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "Label": "QuoteALL",
+                    "ClassName": "sticky",
+                    "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
+                    "Query": "{\r\n    \"sql\": \"select * from Inquiry as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and TypeId = 2 and ServiceId in (3,4,5,6,11)\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and TypeId = 2 and ServiceId in (3,4,5,6,11)\"\r\n}",
+                    "RefName": "Inquiry",
+                    "PreQuery": "{ \"UserId\": this.Token.UserId }",
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         },
         {
-            "Id": "00d206b0-0000-0000-8000-47e0a0898c25",
-            "FieldName": "btnEdit",
-            "Order": 0,
-            "ComponentType": "Button",
-            "Icon": "fal fa-expand",
-            "ClassName": "btn",
-            "Events": "{\"click\":\"Edit\"}",
-            "Width": "43px",
-            "FocusSearch": true,
-            "Frozen": true,
-            "MinWidth": "43px",
-            "MaxWidth": "43px",
-            "EntityId": "Quote"
+            "Id": "000404e4-0000-0000-8000-5ec7d8d2160f",
+            "Order": 2,
+            "ComponentType": "Section",
+            "Label": "New",
+            "Icon": "fal fa-plus mr-1",
+            "ClassName": "scroll-content",
+            "IsTab": true,
+            "DisplayBadge": true,
+            "Components": [
+                {
+                    "Id": "004104b0-0000-0000-8000-fc5faf4abc05",
+                    "FieldName": "Quote",
+                    "Order": 2,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "Label": "QuoteNew",
+                    "ClassName": "sticky",
+                    "Events": "{\"dblclick\":\"Edit\"}",
+                    "Query": "{\r\n    \"sql\": \"select * from Inquiry as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 1 and TypeId = 2 and ServiceId in (3,4,5,6,11)\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 1 and TypeId = 2 and ServiceId in (3,4,5,6,11)\"\r\n}",
+                    "RefName": "Inquiry",
+                    "PreQuery": "{ \"UserId\": this.Token.UserId }",
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         },
         {
-            "Id": "00e5044c-0000-0000-8000-b33d90e368c1",
-            "FieldName": "btnAdd",
-            "Order": 1,
-            "ComponentType": "Button",
-            "Column": 1,
-            "Label": "Add",
-            "Icon": "fal fa-plus",
-            "ClassName": "btn",
-            "Events": "{\"click\":\"Add\"}"
+            "Id": "0006043c-0000-0000-8000-c739fde3daf6",
+            "Order": 3,
+            "ComponentType": "Section",
+            "Label": "Approving",
+            "Icon": "fal fa-ellipsis-h mr-1",
+            "ClassName": "scroll-content",
+            "IsTab": true,
+            "DisplayBadge": true,
+            "Components": [
+                {
+                    "Id": "004504ac-0000-0000-8000-198129def086",
+                    "FieldName": "Quote",
+                    "Order": 3,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "ClassName": "sticky",
+                    "Events": "{\"dblclick\":\"Edit\"}",
+                    "Query": "{\r\n    \"sql\": \"select * from Inquiry as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 2 and TypeId = 2 and ServiceId in (3,4,5,6,11)\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 2 and TypeId = 2 and ServiceId in (3,4,5,6,11)\"\r\n}",
+                    "RefName": "Inquiry",
+                    "PreQuery": "{ \"UserId\": this.Token.UserId }",
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
+        },
+        {
+            "Id": "00150494-0000-0000-8000-bc064526eeb2",
+            "Order": 4,
+            "ComponentType": "Section",
+            "Label": "Approved",
+            "Icon": "fal fa-smile mr-1",
+            "ClassName": "scroll-content",
+            "IsTab": true,
+            "DisplayBadge": true,
+            "Components": [
+                {
+                    "Id": "004b04c4-0000-0000-8000-d45be8654d71",
+                    "FieldName": "Quote",
+                    "Order": 4,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "ClassName": "sticky",
+                    "Events": "{\"dblclick\":\"Edit\"}",
+                    "Query": "{\r\n    \"sql\": \"select * from Inquiry as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 3 and TypeId = 2 and ServiceId in (3,4,5,6,11)\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 3 and TypeId = 2 and ServiceId in (3,4,5,6,11)\"\r\n}",
+                    "RefName": "Inquiry",
+                    "PreQuery": "{ \"UserId\": this.Token.UserId }",
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
+        },
+        {
+            "Id": "001e047c-0000-0000-8000-844952866bc6",
+            "Order": 5,
+            "ComponentType": "Section",
+            "Label": "Decline",
+            "Icon": "fal fa-frown mr-1",
+            "ClassName": "scroll-content",
+            "IsTab": true,
+            "DisplayBadge": true,
+            "Components": [
+                {
+                    "Id": "0051049c-0000-0000-8000-d2109435c893",
+                    "FieldName": "Quote",
+                    "Order": 5,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "ClassName": "sticky",
+                    "Events": "{\"dblclick\":\"Edit\"}",
+                    "Query": "{\r\n    \"sql\": \"select * from Inquiry as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 4 and TypeId = 2 and ServiceId in (3,4,5,6,11)\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.UserApprovedIds like '%{TokenUserId}%' or ds.UserViewIds like '%{TokenUserId}%' or (ds.ForwardId = '{TokenUserId}' and ds.StatusId = 3)) and StatusId = 4 and TypeId = 2 and ServiceId in (3,4,5,6,11)\"\r\n}",
+                    "RefName": "Inquiry",
+                    "PreQuery": "{ \"UserId\": this.Token.UserId }",
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         }
     ],
     "FeaturePolicies": [

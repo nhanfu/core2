@@ -7,7 +7,88 @@
     "Script": "return {\r\n    OnSave: function (form, gridview) {\r\n        var detail = this.GET(\"InquiryDetail\");\r\n        if ((detail && detail.AllListViewItem.length > 0)) {\r\n            var firstRow = detail.AllListViewItem[0];\r\n            if (firstRow) {\r\n                this.Entity.PolId = firstRow.Entity.PolId;\r\n                this.Entity.PodId = firstRow.Entity.PodId;\r\n                this.Entity.Pol = firstRow.Entity.Pol;\r\n                this.Entity.Pod = firstRow.Entity.Pod;\r\n            }\r\n        }\r\n        var detailFee = this.GET(\"DefaultFee\");\r\n        if (detailFee && detailFee.AllListViewItem.length > 0) {\r\n            detailFee.AllListViewItem.filter(x => !x.GroupRow).forEach((item, index) => {\r\n                item.Entity.Order = index;\r\n            });\r\n        }\r\n    },\r\n    SaveAs: async function (btn) {\r\n        var newEntity = JSON.parse(JSON.stringify(this.Entity));\r\n        this.Entity = newEntity;\r\n        this.Entity.BookingNo = null;\r\n        this.Entity.StatusId = 3;\r\n        this.Entity.BookingLocalId = null;\r\n        this.Entity.BookingNoteId = null;\r\n        this.Entity.BookingOrderId = null;\r\n        this.Entity.CreatedOn = this.dayjs();\r\n        this.Entity.BookingDate = this.dayjs();\r\n        var inquiryDetail = this.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"InquiryDetail\");\r\n        if (inquiryDetail && inquiryDetail.AllListViewItem.length > 0) {\r\n            inquiryDetail.AllListViewItem.forEach(row => {\r\n                row.Entity.Id = this.Uuid7.NewGuid();\r\n                row.Entity.InquiryId = this.Entity.Id;\r\n                row.Entity.StatusId = 3;\r\n                row.Children.forEach(cell => {\r\n                    cell.Entity = row.Entity;\r\n                });\r\n                row.UpdateView(true);\r\n            });\r\n        }\r\n        var defaultFee = this.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"DefaultFee\");\r\n        if (defaultFee && defaultFee.AllListViewItem.length > 0) {\r\n            defaultFee.AllListViewItem.forEach(row => {\r\n                row.Entity.Id = this.Uuid7.NewGuid();\r\n                row.Entity.InquiryId = this.Entity.Id;\r\n                row.Entity.StatusId = 3;\r\n                row.Children.forEach(cell => {\r\n                    cell.Entity = row.Entity;\r\n                });\r\n                row.UpdateView(true);\r\n            });\r\n        }\r\n        this.UpdateView(true);\r\n        this.Dirty = true;\r\n        this.Toast.Success(\"Save as success\");\r\n    },\r\n    ReloadSummary: function () {\r\n        if (!this.EditForm.Entity.Service) {\r\n            return;\r\n        }\r\n        var detailFee = this.GET(\"DefaultFee\");\r\n        if (detailFee && detailFee.AllListViewItem.length > 0) {\r\n            detailFee.AllListViewItem.filter(x => !x.GroupRow).forEach((item, index) => {\r\n                item.Entity.Order = index;\r\n            });\r\n        }\r\n        window.setTimeout(() => {\r\n            var detail = this.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"Summary\");\r\n            detail.ReloadData();\r\n            var detail2 = this.GET(\"Summary\");\r\n            if (!detail2) {\r\n                return;\r\n            }\r\n            if (this.EditForm.Entity.Service.Name.includes('FCL')) {\r\n                detail2.HideColumn(\"MinLCL\", \"LCL\")\r\n            }\r\n            else if (this.EditForm.Entity.Service.Name.includes('LCL')) {\r\n                detail2.HideColumn(\"Cont20\", \"Cont40\", \"Cont40HC\", \"Cont45\")\r\n            }\r\n            else {\r\n                detail2.HideColumn(\"\");\r\n            }\r\n        }, 500);\r\n    },\r\n    UpdateGroupFee: function (data) {\r\n        data.Parent.Entity.GroupFee = data.Entity.Description.Group ? data.Entity.Description.Group.Name : 'Local charge';\r\n        data.Parent.UpdateView(false, false, \"GroupFee\");\r\n    },\r\n    ChangeContainer: function (dropdown) {\r\n        this.UpdateView(true, false, \"Cont20Id\", \"Cont40Id\", \"Cont45Id\", \"Cont40HCId\");\r\n    },\r\n    BeforeCreated: function (rowSection, entity) {\r\n        var inquiryDetail = this.GET(\"InquiryDetail\");\r\n        var detail = this.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"DefaultFee\");\r\n        var lastItem = detail.AllListViewItem[detail.AllListViewItem.length - 1]\r\n        var first = inquiryDetail.AllListViewItem[0];\r\n        if (first != null && !lastItem) {\r\n            if (!entity.RouteId) {\r\n                entity.RouteId = (first.Entity.Pol.Code) + \" - \" + (first.Entity.Pod.Code || '');\r\n                entity.Route = {\r\n                    Name: (first.Entity.Pol.Code) + \" - \" + (first.Entity.Pod.Code || ''),\r\n                    Id: (first.Entity.Pol.Code) + \" - \" + (first.Entity.Pod.Code || ''),\r\n                };\r\n                entity.PolId = first.Entity.PolId;\r\n                entity.Pol = first.Entity.Pol;\r\n                entity.PodId = first.Entity.PodId;\r\n                entity.Pod = first.Entity.Pod;\r\n                entity.VendorId = first.Entity.VendorId;\r\n            }\r\n        }\r\n        if (detail.AllListViewItem && detail.AllListViewItem.length == 0) {\r\n            return;\r\n        }\r\n        var lastItem = detail.AllListViewItem[detail.AllListViewItem.length - 1]\r\n        entity.GroupFee = entity.GroupFee == null ? lastItem.Entity.GroupFee || '' : entity.GroupFee;\r\n        entity.RouteId = entity.RouteId == null ? lastItem.Entity.RouteId || '' : entity.RouteId;\r\n        entity.PolId = entity.PolId == null ? lastItem.Entity.PolId || '' : entity.PolId;\r\n        entity.Pol = entity.Pol == null ? lastItem.Entity.Pol || '' : entity.Pol;\r\n        entity.PodId = entity.PodId == null ? lastItem.Entity.PodId || '' : entity.PodId;\r\n        entity.Pod = entity.Pod == null ? lastItem.Entity.Pod || '' : entity.Pod;\r\n        entity.VendorId = entity.VendorId == null ? lastItem.Entity.VendorId || '' : entity.VendorId;\r\n    },\r\n    CalcPrice: function (com, entity) {\r\n        entity.TotalAmount = this.Decimal(entity.Quantity || 0).times(this.Decimal(entity.Amount || 0));\r\n        entity.AmountTax = entity.TotalAmount.times(this.Decimal(entity.Vat || 0)).div(100);\r\n        entity.TotalAmountTax = entity.TotalAmount.plus(entity.AmountTax);\r\n        var totalAmount = this.ChildCom.filter(x => x.IsListView)[0].AllListViewItem\r\n            .flatMap(x => x.Entity)\r\n            .reduce((a, b) => a.plus(b.TotalAmountTax), this.Decimal(0));\r\n        this.Entity.TotalAmount = this.Decimal(totalAmount || 0);\r\n        this.UpdateView(false, false, \"TotalAmount\");\r\n        com.Parent.UpdateView(false);\r\n    },\r\n    CheckCurrency: function (com, entity) {\r\n        com.Parent.UpdateView(false);\r\n    },\r\n    OnSaveAdd: function (form, gridview) {\r\n        this.Entity = {\r\n            Id: this.Uuid7.NewGuid(),\r\n            BookingNo: null,\r\n            StatusId: 1\r\n        }\r\n    }\r\n}",
     "Events": "{\r\n    \"onsave\": \"OnSave\",\r\n    \"onsaveadd\": \"OnSaveAdd\",\r\n    \"saved\": \"UpdateParent\"\r\n}",
     "EntityId": "Booking",
-    "ComponentGroup": [
+    "GridPolicies": [
+        {
+            "Id": "00852d78-0000-0000-8000-3930d16e9006",
+            "FieldName": "PortTransitId",
+            "Order": 0,
+            "ComponentType": "Dropdown",
+            "FormatData": "{Name}",
+            "PlainText": "Select data",
+            "Row": 100,
+            "Label": "Port of Transit",
+            "Width": "224px",
+            "Query": "{\r\n    \"sql\": \"select ds.* from [Terminal] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds\"\r\n}",
+            "RefName": "Terminal",
+            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
+            "FocusSearch": true,
+            "Editable": true,
+            "MinWidth": "224px",
+            "MaxWidth": "224px",
+            "EntityId": "EntityTransit"
+        },
+        {
+            "Id": "00852d78-0000-0000-8001-aaec2fa6f0e6",
+            "FieldName": "EtaTsDate",
+            "Order": 1,
+            "ComponentType": "Datepicker",
+            "Precision": 2,
+            "Label": "ETA (TS)",
+            "Width": "206px",
+            "FocusSearch": true,
+            "Editable": true,
+            "MinWidth": "206px",
+            "MaxWidth": "206px",
+            "EntityId": "EntityTransit"
+        },
+        {
+            "Id": "00852d78-0000-0000-8002-2a860090d3b8",
+            "FieldName": "EtdTsDate",
+            "Order": 2,
+            "ComponentType": "Datepicker",
+            "Precision": 2,
+            "Label": "ETD (TS)",
+            "Width": "206px",
+            "FocusSearch": true,
+            "Editable": true,
+            "MinWidth": "206px",
+            "MaxWidth": "206px",
+            "EntityId": "EntityTransit"
+        },
+        {
+            "Id": "00f31308-0000-0000-8000-35baa97eca4b",
+            "FieldName": "Quantity",
+            "Order": 0,
+            "ComponentType": "Number",
+            "Label": "Quantity",
+            "Width": "206px",
+            "FocusSearch": true,
+            "Editable": true,
+            "MinWidth": "206px",
+            "MaxWidth": "206px",
+            "EntityId": "EntityContainer"
+        },
+        {
+            "Id": "00f31378-0000-0000-8000-c6bbd3a60d33",
+            "FieldName": "ContainerTypeId",
+            "Order": 1,
+            "ComponentType": "Dropdown",
+            "FormatData": "{Name}",
+            "PlainText": "Select data",
+            "Row": 100,
+            "Label": "Container Type",
+            "Width": "168px",
+            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Container Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Container Type'\"\r\n}",
+            "RefName": "MasterData",
+            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
+            "FocusSearch": true,
+            "Editable": true,
+            "MinWidth": "168px",
+            "MaxWidth": "168px",
+            "EntityId": "EntityContainer"
+        }
+    ],
+    "Components": [
         {
             "Id": "00f113cc-0000-0000-8000-c9afe2d0174e",
             "FieldName": "Container",
@@ -15,7 +96,7 @@
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 8,
-            "Children": [
+            "Components": [
                 {
                     "Id": "00f1131c-0000-0000-8000-6a5f697f41ab",
                     "FieldName": "Left",
@@ -549,6 +630,78 @@
                             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]"
                         }
                     ]
+                },
+                {
+                    "Id": "00f1130c-0000-0000-8000-36ea8e4b5567",
+                    "FieldName": "btnSaveAdd",
+                    "Order": 1,
+                    "ComponentType": "Button",
+                    "Column": 1,
+                    "GroupFormat": "Options",
+                    "Label": "Save & Add",
+                    "Icon": "fas fa-sliders-h-square",
+                    "ClassName": "btn detail-button secondary-outline",
+                    "Events": "{ \"click\" : \"SaveAdd\" }"
+                },
+                {
+                    "Id": "00f11324-0000-0000-8000-2ec645da0014",
+                    "FieldName": "btnDecline",
+                    "Order": 3,
+                    "ComponentType": "Button",
+                    "Column": 1,
+                    "Label": "Decline",
+                    "Icon": "fal fa-comment-alt-slash",
+                    "ClassName": "btn detail-button secondary-outline",
+                    "Events": "{ \"click\" : \"DeclineEntity\" }",
+                    "ShowExp": "this.Entity.StatusId == 2"
+                },
+                {
+                    "Id": "00f1133c-0000-0000-8000-f1fe5dc785c9",
+                    "FieldName": "btnApprove",
+                    "Order": 4,
+                    "ComponentType": "Button",
+                    "Column": 1,
+                    "Label": "Approve",
+                    "Icon": "fal fa-check-circle",
+                    "ClassName": "btn detail-button secondary-outline",
+                    "Events": "{ \"click\" : \"ApprovedEntity\" }",
+                    "ShowExp": "this.Entity.StatusId == 2"
+                },
+                {
+                    "Id": "00f1135c-0000-0000-8000-14b708bb35e0",
+                    "FieldName": "btnSendEntity",
+                    "Order": 2,
+                    "ComponentType": "Button",
+                    "Column": 1,
+                    "Label": "Send",
+                    "Icon": "far fa-share-all",
+                    "ClassName": "btn detail-button secondary-outline",
+                    "Events": "{ \"click\" : \"SendEntity\" }",
+                    "ShowExp": "this.Entity.StatusId == 1 || this.Entity.StatusId == 4"
+                },
+                {
+                    "Id": "00f113b0-0000-0000-8000-b7ddbeac2de0",
+                    "FieldName": "btnSaveAdd",
+                    "Order": 0,
+                    "ComponentType": "Button",
+                    "Column": 1,
+                    "GroupFormat": "Options",
+                    "Label": "Save As",
+                    "Icon": "fas fa-sliders-h-square",
+                    "ClassName": "btn detail-button secondary-outline",
+                    "Events": "{ \"click\" : \"SaveAs\" }"
+                },
+                {
+                    "Id": "00f113cc-0000-0000-8000-2fe85901b829",
+                    "FieldName": "btnSave",
+                    "Order": 5,
+                    "ComponentType": "Button",
+                    "Column": 1,
+                    "Label": "Save",
+                    "Icon": "fal fa-save",
+                    "ClassName": "btn detail-button primary",
+                    "HotKey": "Ctrl-S",
+                    "Events": "{ \"click\" : \"SavePatch\" }"
                 }
             ]
         },
@@ -677,161 +830,6 @@
                     "Template": "[{ \"FieldName\" : \"Description\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 }
             ]
-        }
-    ],
-    "GridPolicies": [
-        {
-            "Id": "00852d78-0000-0000-8000-3930d16e9006",
-            "FieldName": "PortTransitId",
-            "Order": 0,
-            "ComponentType": "Dropdown",
-            "FormatData": "{Name}",
-            "PlainText": "Select data",
-            "Row": 100,
-            "Label": "Port of Transit",
-            "Width": "224px",
-            "Query": "{\r\n    \"sql\": \"select ds.* from [Terminal] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds\"\r\n}",
-            "RefName": "Terminal",
-            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-            "FocusSearch": true,
-            "Editable": true,
-            "MinWidth": "224px",
-            "MaxWidth": "224px",
-            "EntityId": "EntityTransit"
-        },
-        {
-            "Id": "00852d78-0000-0000-8001-aaec2fa6f0e6",
-            "FieldName": "EtaTsDate",
-            "Order": 1,
-            "ComponentType": "Datepicker",
-            "Precision": 2,
-            "Label": "ETA (TS)",
-            "Width": "206px",
-            "FocusSearch": true,
-            "Editable": true,
-            "MinWidth": "206px",
-            "MaxWidth": "206px",
-            "EntityId": "EntityTransit"
-        },
-        {
-            "Id": "00852d78-0000-0000-8002-2a860090d3b8",
-            "FieldName": "EtdTsDate",
-            "Order": 2,
-            "ComponentType": "Datepicker",
-            "Precision": 2,
-            "Label": "ETD (TS)",
-            "Width": "206px",
-            "FocusSearch": true,
-            "Editable": true,
-            "MinWidth": "206px",
-            "MaxWidth": "206px",
-            "EntityId": "EntityTransit"
-        },
-        {
-            "Id": "00f31308-0000-0000-8000-35baa97eca4b",
-            "FieldName": "Quantity",
-            "Order": 0,
-            "ComponentType": "Number",
-            "Label": "Quantity",
-            "Width": "206px",
-            "FocusSearch": true,
-            "Editable": true,
-            "MinWidth": "206px",
-            "MaxWidth": "206px",
-            "EntityId": "EntityContainer"
-        },
-        {
-            "Id": "00f31378-0000-0000-8000-c6bbd3a60d33",
-            "FieldName": "ContainerTypeId",
-            "Order": 1,
-            "ComponentType": "Dropdown",
-            "FormatData": "{Name}",
-            "PlainText": "Select data",
-            "Row": 100,
-            "Label": "Container Type",
-            "Width": "168px",
-            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Container Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Container Type'\"\r\n}",
-            "RefName": "MasterData",
-            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-            "FocusSearch": true,
-            "Editable": true,
-            "MinWidth": "168px",
-            "MaxWidth": "168px",
-            "EntityId": "EntityContainer"
-        }
-    ],
-    "Components": [
-        {
-            "Id": "00f1130c-0000-0000-8000-36ea8e4b5567",
-            "FieldName": "btnSaveAdd",
-            "Order": 1,
-            "ComponentType": "Button",
-            "Column": 1,
-            "GroupFormat": "Options",
-            "Label": "Save & Add",
-            "Icon": "fas fa-sliders-h-square",
-            "ClassName": "btn detail-button secondary-outline",
-            "Events": "{ \"click\" : \"SaveAdd\" }"
-        },
-        {
-            "Id": "00f11324-0000-0000-8000-2ec645da0014",
-            "FieldName": "btnDecline",
-            "Order": 3,
-            "ComponentType": "Button",
-            "Column": 1,
-            "Label": "Decline",
-            "Icon": "fal fa-comment-alt-slash",
-            "ClassName": "btn detail-button secondary-outline",
-            "Events": "{ \"click\" : \"DeclineEntity\" }",
-            "ShowExp": "this.Entity.StatusId == 2"
-        },
-        {
-            "Id": "00f1133c-0000-0000-8000-f1fe5dc785c9",
-            "FieldName": "btnApprove",
-            "Order": 4,
-            "ComponentType": "Button",
-            "Column": 1,
-            "Label": "Approve",
-            "Icon": "fal fa-check-circle",
-            "ClassName": "btn detail-button secondary-outline",
-            "Events": "{ \"click\" : \"ApprovedEntity\" }",
-            "ShowExp": "this.Entity.StatusId == 2"
-        },
-        {
-            "Id": "00f1135c-0000-0000-8000-14b708bb35e0",
-            "FieldName": "btnSendEntity",
-            "Order": 2,
-            "ComponentType": "Button",
-            "Column": 1,
-            "Label": "Send",
-            "Icon": "far fa-share-all",
-            "ClassName": "btn detail-button secondary-outline",
-            "Events": "{ \"click\" : \"SendEntity\" }",
-            "ShowExp": "this.Entity.StatusId == 1 || this.Entity.StatusId == 4"
-        },
-        {
-            "Id": "00f113b0-0000-0000-8000-b7ddbeac2de0",
-            "FieldName": "btnSaveAdd",
-            "Order": 0,
-            "ComponentType": "Button",
-            "Column": 1,
-            "GroupFormat": "Options",
-            "Label": "Save As",
-            "Icon": "fas fa-sliders-h-square",
-            "ClassName": "btn detail-button secondary-outline",
-            "Events": "{ \"click\" : \"SaveAs\" }"
-        },
-        {
-            "Id": "00f113cc-0000-0000-8000-2fe85901b829",
-            "FieldName": "btnSave",
-            "Order": 5,
-            "ComponentType": "Button",
-            "Column": 1,
-            "Label": "Save",
-            "Icon": "fal fa-save",
-            "ClassName": "btn detail-button primary",
-            "HotKey": "Ctrl-S",
-            "Events": "{ \"click\" : \"SavePatch\" }"
         }
     ],
     "FeaturePolicies": [

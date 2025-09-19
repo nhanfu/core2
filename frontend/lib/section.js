@@ -335,17 +335,18 @@ export class Section extends EditableComponent {
      * @param {Component} group - The group of components to render.
      */
     RenderChildrenSection(group) {
-        if (!group.Children || group.Children.length === 0) {
+        if (!group.Components || group.Components.length === 0) {
             return;
         }
 
-        group.Children.sort((a, b) => a.Order - b.Order).forEach(child => {
-            if (child.IsTab) {
-                Section.RenderTabGroup(this, child);
-            } else {
-                Section.RenderSection(this, child);
-            }
-        });
+        group.Components.filter(x => x.ComponentType === "Section")
+            .sort((a, b) => a.Order - b.Order).forEach(child => {
+                if (child.IsTab) {
+                    Section.RenderTabGroup(this, child);
+                } else {
+                    Section.RenderSection(this, child);
+                }
+            });
     }
 
     /**
@@ -621,75 +622,8 @@ export class Section extends EditableComponent {
         }
         var lastElementButtonGroup = [];
         var seft = this;
-        if (Client.SystemRole) {
-            if (!group.IsConfig) {
-                new Sortable(Html.Context, {
-                    animation: 500,
-                    ghostClass: "blue-background-class",
-                    handle: ".header-label",
-                    swap: false,
-                    forceFallback: true,
-                    delay: 300,
-                    delayOnTouchOnly: true,
-                    easing: "cubic-bezier(0.2, 0.8, 0.2, 1)",
-                    onStart: function (evt) {
-                        let parentGroup = evt.from;
-                        parentGroup.querySelectorAll(".layout-item").forEach(item => {
-                            item.classList.add("same-group");
-                        });
-                        evt.item.classList.add("dragging");
-                    },
-                    group: {
-                        name: group.Id,
-                        pull: true,
-                        put: true
-                    },
-                    onEnd: async function (evt) {
-                        let parentGroup = evt.from;
-                        parentGroup.querySelectorAll(".layout-item").forEach(item => {
-                            item.classList.remove("same-group");
-                        });
-                        evt.item.classList.remove("dragging");
-                        await seft.RenderIndex2(Html.Context);
-                    }
-                });
-            }
-            else {
-                new Sortable(Html.Context, {
-                    animation: 500,
-                    ghostClass: "blue-background-class",
-                    handle: ".header-label",
-                    swap: false,
-                    forceFallback: true,
-                    delay: 300,
-                    delayOnTouchOnly: true,
-                    easing: "cubic-bezier(0.2, 0.8, 0.2, 1)",
-                    group: {
-                        name: group.Id,
-                        pull: "clone",
-                        put: false
-                    },
-                    onEnd: async function (evt) {
-                        var com = seft.EditForm.ChildCom.find(x => x.ParentElement.parentElement == evt.item);
-                        var sec = seft.EditForm.ChildSection.find(x => x.Element == evt.to.parentElement.parentElement);
-                        com.Meta.ComponentGroupId = sec.Meta.Id;
-                        com.Meta.FeatureId = sec.Meta.FeatureId;
-                        sec.Children.push(com);
-                        await sec.RenderIndex2(sec.Element);
-                        var patchModel = seft.EditForm.GetObjectPatchVM(com.Meta, "Component");
-                        const rs = await Client.Instance.PatchAsync(patchModel);
-                        com.Meta = rs.updatedItem[0];
-                        if (seft.EditForm.OpenFrom.ConfigEditor) {
-                            seft.EditForm.OpenFrom.ConfigEditor.Entity = com.Meta;
-                            seft.EditForm.OpenFrom.ConfigEditor.UpdateView(true);
-                        }
-                        seft.EditForm.UpdateConfig();
-                    },
-                    sort: false
-                });
-            }
-        }
-        group.Components.sort((a, b) => a.Order - b.Order).forEach((ui, index) => {
+        this.enableReordering(group, seft);
+        group.Components.filter(x => x.ComponentType != "Section").sort((a, b) => a.Order - b.Order).forEach((ui, index) => {
             if (ui.Hidden) {
                 return;
             }
@@ -784,6 +718,77 @@ export class Section extends EditableComponent {
         });
     }
 
+    enableReordering(group, seft) {
+        if (Client.SystemRole) {
+            if (!group.IsConfig) {
+                new Sortable(Html.Context, {
+                    animation: 500,
+                    ghostClass: "blue-background-class",
+                    handle: ".header-label",
+                    swap: false,
+                    forceFallback: true,
+                    delay: 300,
+                    delayOnTouchOnly: true,
+                    easing: "cubic-bezier(0.2, 0.8, 0.2, 1)",
+                    onStart: function (evt) {
+                        let parentGroup = evt.from;
+                        parentGroup.querySelectorAll(".layout-item").forEach(item => {
+                            item.classList.add("same-group");
+                        });
+                        evt.item.classList.add("dragging");
+                    },
+                    group: {
+                        name: group.Id,
+                        pull: true,
+                        put: true
+                    },
+                    onEnd: async function (evt) {
+                        let parentGroup = evt.from;
+                        parentGroup.querySelectorAll(".layout-item").forEach(item => {
+                            item.classList.remove("same-group");
+                        });
+                        evt.item.classList.remove("dragging");
+                        await seft.RenderIndex2(Html.Context);
+                    }
+                });
+            }
+            else {
+                new Sortable(Html.Context, {
+                    animation: 500,
+                    ghostClass: "blue-background-class",
+                    handle: ".header-label",
+                    swap: false,
+                    forceFallback: true,
+                    delay: 300,
+                    delayOnTouchOnly: true,
+                    easing: "cubic-bezier(0.2, 0.8, 0.2, 1)",
+                    group: {
+                        name: group.Id,
+                        pull: "clone",
+                        put: false
+                    },
+                    onEnd: async function (evt) {
+                        var com = seft.EditForm.ChildCom.find(x => x.ParentElement.parentElement == evt.item);
+                        var sec = seft.EditForm.ChildSection.find(x => x.Element == evt.to.parentElement.parentElement);
+                        com.Meta.ComponentGroupId = sec.Meta.Id;
+                        com.Meta.FeatureId = sec.Meta.FeatureId;
+                        sec.Children.push(com);
+                        await sec.RenderIndex2(sec.Element);
+                        var patchModel = seft.EditForm.GetObjectPatchVM(com.Meta, "Component");
+                        const rs = await Client.Instance.PatchAsync(patchModel);
+                        com.Meta = rs.updatedItem[0];
+                        if (seft.EditForm.OpenFrom.ConfigEditor) {
+                            seft.EditForm.OpenFrom.ConfigEditor.Entity = com.Meta;
+                            seft.EditForm.OpenFrom.ConfigEditor.UpdateView(true);
+                        }
+                        seft.EditForm.UpdateConfig();
+                    },
+                    sort: false
+                });
+            }
+        }
+    }
+
     RenderComponent2(group) {
         if (!group.Components || group.Components.length == 0) {
             return;
@@ -792,7 +797,7 @@ export class Section extends EditableComponent {
         let column = 0;
         group.Components = this.EditForm.GetComPolicies(group.Components);
         var lastElementButtonGroup = [];
-        group.Components.sort((a, b) => a.Order - b.Order).forEach(ui => {
+        group.Components.filter(x=> x.ComponentType != "Section").sort((a, b) => a.Order - b.Order).forEach(ui => {
             if (ui.Hidden) {
                 return;
             }

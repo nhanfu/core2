@@ -7,7 +7,7 @@
     "Icon": "fal fa-user",
     "IsMenu": true,
     "EntityId": "User",
-    "ComponentGroup": [
+    "Components": [
         {
             "Id": "0195500d-b581-73a8-a48a-28a4dfed4614",
             "FieldName": "FullPage",
@@ -17,7 +17,7 @@
             "Style": "width: 375px;margin: auto;padding-bottom:10rem;",
             "XxlCol": 12,
             "XxlOuterColumn": 12,
-            "Children": [
+            "Components": [
                 {
                     "Id": "01954fd8-5abe-748c-abb2-37613d65d232",
                     "FieldName": "General",
@@ -130,8 +130,7 @@
                             "SmCol": 12,
                             "VirtualScroll": true
                         }
-                    ],
-                    "Children": []
+                    ]
                 },
                 {
                     "Id": "01954fd8-4a7c-74e6-b724-80d6b340b237",
@@ -222,8 +221,7 @@
                             "ShowLabel": true,
                             "SmCol": 6
                         }
-                    ],
-                    "Children": []
+                    ]
                 },
                 {
                     "Id": "0195500b-9558-7269-8eac-6900e7bc3aff",
@@ -273,8 +271,7 @@
                             "ShowLabel": true,
                             "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                         }
-                    ],
-                    "Children": []
+                    ]
                 },
                 {
                     "Id": "0195500c-bf04-727c-a63e-55a89d39a465",
@@ -342,36 +339,33 @@
                             "HotKey": "Ctrl-S",
                             "Events": "{ \"click\" : \"SavePatch\" }"
                         }
-                    ],
-                    "Children": []
+                    ]
+                },
+                {
+                    "Id": "0195503e-3453-7723-9d7c-5df9cecfd46d",
+                    "FieldName": "btnChangePassword",
+                    "Order": 5,
+                    "ComponentType": "Button",
+                    "Column": 1,
+                    "Label": "Password",
+                    "Icon": "fal fa-edit",
+                    "ClassName": "btn btn-sm btn-secondary",
+                    "HotKey": "Ctrl-S",
+                    "Events": "{ \"click\" : \"ChangePassword\" }"
+                },
+                {
+                    "Id": "0195503e-3453-7723-9d7c-63f75767f075",
+                    "FieldName": "btnSave",
+                    "Order": 4,
+                    "ComponentType": "Button",
+                    "Column": 1,
+                    "Label": "Save",
+                    "Icon": "fal fa-save",
+                    "ClassName": "btn btn-sm btn-primary",
+                    "HotKey": "Ctrl-S",
+                    "Events": "{ \"click\" : \"SavePatch\" }"
                 }
             ]
-        }
-    ],
-    "Components": [
-        {
-            "Id": "0195503e-3453-7723-9d7c-5df9cecfd46d",
-            "FieldName": "btnChangePassword",
-            "Order": 5,
-            "ComponentType": "Button",
-            "Column": 1,
-            "Label": "Password",
-            "Icon": "fal fa-edit",
-            "ClassName": "btn btn-sm btn-secondary",
-            "HotKey": "Ctrl-S",
-            "Events": "{ \"click\" : \"ChangePassword\" }"
-        },
-        {
-            "Id": "0195503e-3453-7723-9d7c-63f75767f075",
-            "FieldName": "btnSave",
-            "Order": 4,
-            "ComponentType": "Button",
-            "Column": 1,
-            "Label": "Save",
-            "Icon": "fal fa-save",
-            "ClassName": "btn btn-sm btn-primary",
-            "HotKey": "Ctrl-S",
-            "Events": "{ \"click\" : \"SavePatch\" }"
         }
     ],
     "FeaturePolicies": [

@@ -7,7 +7,59 @@
     "Style": "width:700px;",
     "Script": "return {\r\n    SaveAs: function (btn) {\r\n        var newEntity = JSON.parse(JSON.stringify(this.Entity));\r\n        this.Entity = newEntity;\r\n        this.Entity.Id = this.Uuid7.NewGuid();\r\n        this.Entity.FromDate = null;\r\n        this.Entity.ToDate = null;\r\n        this.Entity.PostDate = this.dayjs();\r\n        var detailGrid = this.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"ExchangeRateHistoryDetail\");\r\n        if (detailGrid && detailGrid.AllListViewItem.length > 0) {\r\n            detailGrid.AllListViewItem.forEach(row => {\r\n                row.Entity.Id = this.Uuid7.NewGuid();\r\n                row.Entity.HistoryId = this.Entity.Id;\r\n                row.Children.forEach(cell => {\r\n                    cell.Entity = row.Entity;\r\n                });\r\n                row.UpdateView(true);\r\n            });\r\n        }\r\n        this.UpdateView(true);\r\n        this.Dirty = true;\r\n        this.Toast.Success(\"Save as success\");\r\n    },\r\n    CalcRateUSD: function (btn, entity) {\r\n        var exUSD = this.Decimal(this.Entity.RateVND);\r\n        var exVND = this.Decimal(1);\r\n        entity.RateUSD = this.Decimal(1).div(entity.RateVND);\r\n        var detailGrid = this.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"ExchangeRateHistoryDetail\");\r\n        detailGrid.Item.forEach(item => {\r\n            item.Entity.RateVND = this.Decimal(item.Entity.RateVND);\r\n            item.Entity.RateUSD = item.Entity.RateVND.div(exUSD);\r\n            item.UpdateView(false, false, \"RateUSD\");\r\n        });\r\n    },\r\n    UpdateExchangeRate: function (btn, entity) {\r\n        var exUSD = this.Decimal(this.EditForm.Entity.RateVND);\r\n        var exVND = this.Decimal(1);\r\n        entity.RateVND = this.Decimal(entity.RateVND);\r\n        entity.RateUSD = entity.RateVND.div(exUSD);\r\n        btn.Parent.UpdateView(false, false, \"RateUSD\");\r\n    },\r\n    UpdateExchangeRate2: function (btn, entity) {\r\n        debugger;\r\n        var exUSD = this.Decimal(this.EditForm.Entity.RateVND);\r\n        var exVND = this.Decimal(1);\r\n        entity.RateVND = this.Decimal(JSON.parse(localStorage.getItem(\"ExchangeRateVND\"))[entity.CurrencyCode]);\r\n        entity.RateUSD = entity.RateVND.div(exUSD);\r\n        btn.Parent.UpdateView(false, false, \"RateUSD\");\r\n    }\r\n}",
     "EntityId": "ExchangeRateHistory",
-    "ComponentGroup": [
+    "GridPolicies": [
+        {
+            "Id": "01958472-61cb-74fd-ba8c-50d07602dbcd",
+            "FieldName": "CurrencyId",
+            "Order": 0,
+            "ComponentType": "Dropdown",
+            "FormatData": "{Code}",
+            "PlainText": "Select data",
+            "Row": 100,
+            "Label": "Currency",
+            "Events": "{\r\n    \"change\":\"UpdateExchangeRate2\"\r\n}",
+            "Width": "158px",
+            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where (ds1.Name = N'Currency' and ds.Code not in ('USD','VND'))\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where (ds1.Name = N'Currency' and ds.Code not in ('USD','VND'))\"\r\n}",
+            "RefName": "MasterData",
+            "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
+            "FocusSearch": true,
+            "Editable": true,
+            "MinWidth": "158px",
+            "MaxWidth": "158px",
+            "OrderBy": "ds.Enum asc",
+            "EntityId": "ExchangeRateHistoryDetail"
+        },
+        {
+            "Id": "01958472-61cb-74fd-ba8c-5602bd7a5917",
+            "FieldName": "RateVND",
+            "Order": 2,
+            "ComponentType": "Number",
+            "Precision": 2,
+            "Label": "Rate VND",
+            "Events": "{\r\n    \"input\":\"UpdateExchangeRate\"\r\n}",
+            "Width": "186px",
+            "FocusSearch": true,
+            "Editable": true,
+            "MinWidth": "186px",
+            "MaxWidth": "186px",
+            "EntityId": "ExchangeRateHistoryDetail"
+        },
+        {
+            "Id": "01958472-61cb-74fd-ba8c-5a728a9ef313",
+            "FieldName": "RateUSD",
+            "Order": 1,
+            "ComponentType": "Number",
+            "Precision": 24,
+            "Label": "Rate USD",
+            "Width": "200px",
+            "FocusSearch": true,
+            "Editable": true,
+            "MinWidth": "200px",
+            "MaxWidth": "200px",
+            "EntityId": "ExchangeRateHistoryDetail"
+        }
+    ],
+    "Components": [
         {
             "Id": "0195846b-ef45-707d-b065-ef6ad49aa6e0",
             "FieldName": "Button",
@@ -16,6 +68,29 @@
             "ClassName": "ribbon-group",
             "XxlCol": 12,
             "Components": [
+                {
+                    "Id": "0195846b-ef86-72f4-a39e-5fced3f589b4",
+                    "FieldName": "btnSave",
+                    "Order": 1,
+                    "ComponentType": "Button",
+                    "Column": 1,
+                    "Label": "Save",
+                    "Icon": "fal fa-save",
+                    "ClassName": "btn detail-button primary",
+                    "HotKey": "Ctrl-S",
+                    "Events": "{ \"click\" : \"SavePatch\" }"
+                },
+                {
+                    "Id": "01958544-97b6-7506-a5c2-b88c0d38adc7",
+                    "FieldName": "btnSaveAdd",
+                    "Order": 0,
+                    "ComponentType": "Button",
+                    "Column": 1,
+                    "Label": "Save As",
+                    "Icon": "fas fa-sliders-h-square",
+                    "ClassName": "btn detail-button secondary-outline",
+                    "Events": "{\r\n    \"click\": \"SaveAs\"\r\n}"
+                },
                 {
                     "Id": "0195846b-ef86-72f4-a39e-5fced3f589b4",
                     "FieldName": "btnSave",
@@ -47,7 +122,7 @@
             "Order": 2,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Children": [
+            "Components": [
                 {
                     "Id": "0195846b-f00b-76e0-8e91-67205446602e",
                     "FieldName": "Right",
@@ -155,83 +230,6 @@
                     ]
                 }
             ]
-        }
-    ],
-    "GridPolicies": [
-        {
-            "Id": "01958472-61cb-74fd-ba8c-50d07602dbcd",
-            "FieldName": "CurrencyId",
-            "Order": 0,
-            "ComponentType": "Dropdown",
-            "FormatData": "{Code}",
-            "PlainText": "Select data",
-            "Row": 100,
-            "Label": "Currency",
-            "Events": "{\r\n    \"change\":\"UpdateExchangeRate2\"\r\n}",
-            "Width": "158px",
-            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where (ds1.Name = N'Currency' and ds.Code not in ('USD','VND'))\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where (ds1.Name = N'Currency' and ds.Code not in ('USD','VND'))\"\r\n}",
-            "RefName": "MasterData",
-            "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
-            "FocusSearch": true,
-            "Editable": true,
-            "MinWidth": "158px",
-            "MaxWidth": "158px",
-            "OrderBy": "ds.Enum asc",
-            "EntityId": "ExchangeRateHistoryDetail"
-        },
-        {
-            "Id": "01958472-61cb-74fd-ba8c-5602bd7a5917",
-            "FieldName": "RateVND",
-            "Order": 2,
-            "ComponentType": "Number",
-            "Precision": 2,
-            "Label": "Rate VND",
-            "Events": "{\r\n    \"input\":\"UpdateExchangeRate\"\r\n}",
-            "Width": "186px",
-            "FocusSearch": true,
-            "Editable": true,
-            "MinWidth": "186px",
-            "MaxWidth": "186px",
-            "EntityId": "ExchangeRateHistoryDetail"
-        },
-        {
-            "Id": "01958472-61cb-74fd-ba8c-5a728a9ef313",
-            "FieldName": "RateUSD",
-            "Order": 1,
-            "ComponentType": "Number",
-            "Precision": 24,
-            "Label": "Rate USD",
-            "Width": "200px",
-            "FocusSearch": true,
-            "Editable": true,
-            "MinWidth": "200px",
-            "MaxWidth": "200px",
-            "EntityId": "ExchangeRateHistoryDetail"
-        }
-    ],
-    "Components": [
-        {
-            "Id": "0195846b-ef86-72f4-a39e-5fced3f589b4",
-            "FieldName": "btnSave",
-            "Order": 1,
-            "ComponentType": "Button",
-            "Column": 1,
-            "Label": "Save",
-            "Icon": "fal fa-save",
-            "ClassName": "btn detail-button primary",
-            "HotKey": "Ctrl-S",
-            "Events": "{ \"click\" : \"SavePatch\" }"
-        },
-        {
-            "Id": "01958544-97b6-7506-a5c2-b88c0d38adc7",
-            "FieldName": "btnSaveAdd",
-            "Order": 0,
-            "ComponentType": "Button",
-            "Column": 1,
-            "Label": "Save As",
-            "Icon": "fas fa-sliders-h-square",
-            "ClassName": "btn detail-button secondary-outline",
-            "Events": "{\r\n    \"click\": \"SaveAs\"\r\n}"
         }
     ],
     "FeaturePolicies": [

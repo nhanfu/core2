@@ -8,34 +8,6 @@
     "IsMenu": true,
     "EntityId": "AccountTransferSetup",
     "IgnoreEncode": true,
-    "ComponentGroup": [
-        {
-            "Id": "01945a8b-acdf-729b-8d02-aee28dd69725",
-            "FieldName": "Container",
-            "Order": 1,
-            "ComponentType": "Section",
-            "ClassName": "scroll-content",
-            "XxlCol": 12,
-            "Components": [
-                {
-                    "Id": "01945a8b-ad11-748b-831b-b97409b897d7",
-                    "FieldName": "AccountTransferSetup",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "ClassName": "sticky",
-                    "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from AccountTransferSetup as ds\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds\"\r\n}",
-                    "IsRealtime": true,
-                    "RefName": "AccountTransferSetup",
-                    "OrderBy": "ds.InsertedDate asc"
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "01945a8b-ad69-7118-be29-c2a75d7e1750",
@@ -227,6 +199,34 @@
             "Id": "F8160492-29A4-4AC2-A8C7-A8171B680D87",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
+        }
+    ],
+    "Components": [
+        {
+            "Id": "01945a8b-acdf-729b-8d02-aee28dd69725",
+            "FieldName": "Container",
+            "Order": 1,
+            "ComponentType": "Section",
+            "ClassName": "scroll-content",
+            "XxlCol": 12,
+            "Components": [
+                {
+                    "Id": "01945a8b-ad11-748b-831b-b97409b897d7",
+                    "FieldName": "AccountTransferSetup",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "ClassName": "sticky",
+                    "ChildStyle": "height: calc(100vh - 10.5rem)",
+                    "CanAdd": true,
+                    "Query": "{\r\n    \"sql\": \"select * from AccountTransferSetup as ds\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds\"\r\n}",
+                    "IsRealtime": true,
+                    "RefName": "AccountTransferSetup",
+                    "OrderBy": "ds.InsertedDate asc"
+                }
+            ]
         }
     ]
 }

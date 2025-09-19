@@ -6,33 +6,6 @@
     "Order": 7,
     "Icon": "fal fa-solar-system",
     "IsMenu": true,
-    "ComponentGroup": [
-        {
-            "Id": "00c0142c-0000-0000-8000-4cc126f6efc6",
-            "FieldName": "Lang",
-            "Order": 1,
-            "ComponentType": "Section",
-            "XxlCol": 12,
-            "Components": [
-                {
-                    "Id": "00c01458-0000-0000-8000-2cce6e0b741c",
-                    "FieldName": "WebConfig",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from WebConfig as ds\",\r\n    \"total\": \"select count(ds.Id) as total from WebConfig as ds\"\r\n}",
-                    "IsRealtime": true,
-                    "RefName": "WebConfig",
-                    "TopEmpty": true,
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "00c014b0-0000-0000-8000-fcfecde08518",
@@ -113,6 +86,33 @@
             "Id": "E222228A-E2DC-4E5C-AAA1-966A6B4DBAEA",
             "RoleId": "DOCS",
             "TableName": "Feature"
+        }
+    ],
+    "Components": [
+        {
+            "Id": "00c0142c-0000-0000-8000-4cc126f6efc6",
+            "FieldName": "Lang",
+            "Order": 1,
+            "ComponentType": "Section",
+            "XxlCol": 12,
+            "Components": [
+                {
+                    "Id": "00c01458-0000-0000-8000-2cce6e0b741c",
+                    "FieldName": "WebConfig",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "ChildStyle": "height: calc(100vh - 10.5rem)",
+                    "CanAdd": true,
+                    "Query": "{\r\n    \"sql\": \"select * from WebConfig as ds\",\r\n    \"total\": \"select count(ds.Id) as total from WebConfig as ds\"\r\n}",
+                    "IsRealtime": true,
+                    "RefName": "WebConfig",
+                    "TopEmpty": true,
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         }
     ]
 }

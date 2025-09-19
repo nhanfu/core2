@@ -7,34 +7,6 @@
     "IsPublic": true,
     "EntityId": "Conversation",
     "IgnoreEncode": true,
-    "ComponentGroup": [
-        {
-            "Id": "00d91ac4-0000-0000-8000-ec6e0a7b6dcb",
-            "FieldName": "Container",
-            "Order": 1,
-            "ComponentType": "Section",
-            "XxlCol": 1,
-            "Components": [
-                {
-                    "Id": "00d91a40-0000-0000-8000-50658af9c6e8",
-                    "FieldName": "ChatEntity",
-                    "Order": 1,
-                    "ComponentType": "Chat",
-                    "FormatData": "{FormatChat}",
-                    "Column": 2,
-                    "Row": 200,
-                    "CanSearch": true,
-                    "ClassName": "sticky",
-                    "CanAdd": true,
-                    "Query": "select ds.* ,FORMAT(ds.InsertedDate,'dd/MM HH:mm') as Time\r\nfrom  ConversationDetail as ds\r\nwhere ds.ConversationId = '{RecordId}' and '{TokenRoleNames}' != 'CUSTOMER'\r\norder by ds.InsertedDate asc\r\n\r\nselect ds.*,FORMAT(ds1.UpdatedDate,'dd/MM HH:mm') as Time,ds1.[Read] as [Read],ds1.Id as ConversationReadId\r\nfrom ConversationRead as ds1\r\njoin [Conversation] ds on ds1.ConversationId = ds.Id and ds1.UserId = '{TokenUserId}'\r\nwhere ds1.UserId = '{TokenUserId}'\r\norder by ds.UpdatedDate desc\r\n\r\nselect [User].Id as UserId,[User].Avatar as Avatar\r\nfrom ConversationRead\r\njoin [User] on [User].Id = ConversationRead.UserId\r\nwhere ConversationRead.ConversationId = '{RecordId}'\r\norder by ConversationRead.InsertedDate asc",
-                    "IsRealtime": true,
-                    "RefName": "ChatEntity",
-                    "TopEmpty": true,
-                    "PreQuery": "{\r\n    \"RecordId\" : this.Entity.Id\r\n}"
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "00102698-0000-0000-8000-614534b65727",
@@ -219,6 +191,34 @@
             "Id": "D13A35EF-F4F2-4571-93C2-F334F3E62AC5",
             "RoleId": "SALES",
             "TableName": "Feature"
+        }
+    ],
+    "Components": [
+        {
+            "Id": "00d91ac4-0000-0000-8000-ec6e0a7b6dcb",
+            "FieldName": "Container",
+            "Order": 1,
+            "ComponentType": "Section",
+            "XxlCol": 1,
+            "Components": [
+                {
+                    "Id": "00d91a40-0000-0000-8000-50658af9c6e8",
+                    "FieldName": "ChatEntity",
+                    "Order": 1,
+                    "ComponentType": "Chat",
+                    "FormatData": "{FormatChat}",
+                    "Column": 2,
+                    "Row": 200,
+                    "CanSearch": true,
+                    "ClassName": "sticky",
+                    "CanAdd": true,
+                    "Query": "select ds.* ,FORMAT(ds.InsertedDate,'dd/MM HH:mm') as Time\r\nfrom  ConversationDetail as ds\r\nwhere ds.ConversationId = '{RecordId}' and '{TokenRoleNames}' != 'CUSTOMER'\r\norder by ds.InsertedDate asc\r\n\r\nselect ds.*,FORMAT(ds1.UpdatedDate,'dd/MM HH:mm') as Time,ds1.[Read] as [Read],ds1.Id as ConversationReadId\r\nfrom ConversationRead as ds1\r\njoin [Conversation] ds on ds1.ConversationId = ds.Id and ds1.UserId = '{TokenUserId}'\r\nwhere ds1.UserId = '{TokenUserId}'\r\norder by ds.UpdatedDate desc\r\n\r\nselect [User].Id as UserId,[User].Avatar as Avatar\r\nfrom ConversationRead\r\njoin [User] on [User].Id = ConversationRead.UserId\r\nwhere ConversationRead.ConversationId = '{RecordId}'\r\norder by ConversationRead.InsertedDate asc",
+                    "IsRealtime": true,
+                    "RefName": "ChatEntity",
+                    "TopEmpty": true,
+                    "PreQuery": "{\r\n    \"RecordId\" : this.Entity.Id\r\n}"
+                }
+            ]
         }
     ]
 }

@@ -7,33 +7,6 @@
     "Icon": "fal fa-table",
     "IsMenu": true,
     "EntityId": "ConfigUnique",
-    "ComponentGroup": [
-        {
-            "Id": "008c1f64-0000-0000-8000-6f3fb6497429",
-            "FieldName": "Lang",
-            "Order": 1,
-            "ComponentType": "Section",
-            "XxlCol": 12,
-            "Components": [
-                {
-                    "Id": "008c1fa4-0000-0000-8000-d4179cc23453",
-                    "FieldName": "ConfigUnique",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from ConfigUnique as ds\",\r\n    \"total\": \"select count(ds.Id) as total from ConfigUnique as ds\"\r\n}",
-                    "IsRealtime": true,
-                    "RefName": "ConfigUnique",
-                    "TopEmpty": true,
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "008c1f4c-0000-0000-8000-0ba440dfff02",
@@ -139,6 +112,33 @@
             "Id": "DCA7BBC4-611C-4811-9543-CEF26BA57CE1",
             "RoleId": "ADMIN",
             "TableName": "Feature"
+        }
+    ],
+    "Components": [
+        {
+            "Id": "008c1f64-0000-0000-8000-6f3fb6497429",
+            "FieldName": "Lang",
+            "Order": 1,
+            "ComponentType": "Section",
+            "XxlCol": 12,
+            "Components": [
+                {
+                    "Id": "008c1fa4-0000-0000-8000-d4179cc23453",
+                    "FieldName": "ConfigUnique",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "ChildStyle": "height: calc(100vh - 10.5rem)",
+                    "CanAdd": true,
+                    "Query": "{\r\n    \"sql\": \"select * from ConfigUnique as ds\",\r\n    \"total\": \"select count(ds.Id) as total from ConfigUnique as ds\"\r\n}",
+                    "IsRealtime": true,
+                    "RefName": "ConfigUnique",
+                    "TopEmpty": true,
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         }
     ]
 }

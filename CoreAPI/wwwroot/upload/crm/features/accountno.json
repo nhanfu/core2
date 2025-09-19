@@ -9,32 +9,6 @@
     "IsMenu": true,
     "EntityId": "AccountNo",
     "IgnoreEncode": true,
-    "ComponentGroup": [
-        {
-            "Id": "01945994-4276-70ca-ba33-051d6b41d9fc",
-            "FieldName": "Container",
-            "Order": 1,
-            "ComponentType": "Section",
-            "ClassName": "scroll-content",
-            "XxlCol": 12,
-            "Components": [
-                {
-                    "Id": "01945994-42ae-707d-89e2-d00ac0aac7e2",
-                    "FieldName": "AccountNo",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 500,
-                    "CanSearch": true,
-                    "ClassName": "sticky",
-                    "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds\"\r\n}",
-                    "RefName": "AccountNo",
-                    "OrderBy": "ds.[Code] asc"
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "01945994-4314-7029-a867-cb48cadde6e4",
@@ -200,29 +174,28 @@
     ],
     "Components": [
         {
-            "Id": "019459b3-667b-73c4-88ce-79a25ccd73f5",
-            "FieldName": "btnAdd",
+            "Id": "01945994-4276-70ca-ba33-051d6b41d9fc",
+            "FieldName": "Container",
             "Order": 1,
-            "ComponentType": "Button",
-            "Column": 1,
-            "Label": "Add",
-            "Icon": "fal fa-plus",
-            "ClassName": "btn",
-            "Events": "{\r\n    \"click\": \"Add\"\r\n}"
-        },
-        {
-            "Id": "01945a72-c48e-766f-b6c9-e84615ea7232",
-            "FieldName": "btnEdit",
-            "Order": 0,
-            "ComponentType": "Button",
-            "Icon": "fal fa-expand",
-            "ClassName": "btn",
-            "Events": "{\r\n    \"click\": \"Edit\"\r\n}",
-            "Width": "34px",
-            "FocusSearch": true,
-            "MinWidth": "34px",
-            "MaxWidth": "34px",
-            "EntityId": "AccountNo"
+            "ComponentType": "Section",
+            "ClassName": "scroll-content",
+            "XxlCol": 12,
+            "Components": [
+                {
+                    "Id": "01945994-42ae-707d-89e2-d00ac0aac7e2",
+                    "FieldName": "AccountNo",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 500,
+                    "CanSearch": true,
+                    "ClassName": "sticky",
+                    "ChildStyle": "height: calc(100vh - 10.5rem)",
+                    "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds\"\r\n}",
+                    "RefName": "AccountNo",
+                    "OrderBy": "ds.[Code] asc"
+                }
+            ]
         }
     ],
     "FeaturePolicies": [

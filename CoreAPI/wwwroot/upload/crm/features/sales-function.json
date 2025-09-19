@@ -7,37 +7,6 @@
     "Icon": "fal fa-function",
     "IsMenu": true,
     "IgnoreEncode": true,
-    "ComponentGroup": [
-        {
-            "Id": "009a251c-0000-0000-8000-51c389254ce3",
-            "FieldName": "Container",
-            "Order": 1,
-            "ComponentType": "Section",
-            "ClassName": "scroll-content",
-            "XxlCol": 12,
-            "Components": [
-                {
-                    "Id": "009a254c-0000-0000-8000-14f870be4af5",
-                    "FieldName": "SaleFunction",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "GroupBy": "GroupName",
-                    "GroupFormat": "this.Entity.GroupName",
-                    "ClassName": "sticky",
-                    "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from SaleFunction as ds\",\r\n    \"total\": \"select count(ds.Id) as total from SaleFunction as ds\"\r\n}",
-                    "IsRealtime": true,
-                    "RefName": "SaleFunction",
-                    "TopEmpty": true,
-                    "OrderBy": "ds.GroupName asc"
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "008d30c4-0000-0000-8000-5711ff012b21",
@@ -160,6 +129,37 @@
             "Id": "F3AEF7AA-624F-4188-ACF4-ADBF983D4490",
             "RoleId": "PRICING",
             "TableName": "Feature"
+        }
+    ],
+    "Components": [
+        {
+            "Id": "009a251c-0000-0000-8000-51c389254ce3",
+            "FieldName": "Container",
+            "Order": 1,
+            "ComponentType": "Section",
+            "ClassName": "scroll-content",
+            "XxlCol": 12,
+            "Components": [
+                {
+                    "Id": "009a254c-0000-0000-8000-14f870be4af5",
+                    "FieldName": "SaleFunction",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "GroupBy": "GroupName",
+                    "GroupFormat": "this.Entity.GroupName",
+                    "ClassName": "sticky",
+                    "ChildStyle": "height: calc(100vh - 10.5rem)",
+                    "CanAdd": true,
+                    "Query": "{\r\n    \"sql\": \"select * from SaleFunction as ds\",\r\n    \"total\": \"select count(ds.Id) as total from SaleFunction as ds\"\r\n}",
+                    "IsRealtime": true,
+                    "RefName": "SaleFunction",
+                    "TopEmpty": true,
+                    "OrderBy": "ds.GroupName asc"
+                }
+            ]
         }
     ]
 }

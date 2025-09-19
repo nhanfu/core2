@@ -613,7 +613,7 @@ export class EditForm extends EditableComponent {
         }
         this.GroupTree = [];
         this.SetCurrentUserProperties();
-        this.GroupTree = feature.ComponentGroup;
+        this.GroupTree = feature.Components;
         this.SetFeatureProperties(feature);
         this.SetFeatureStyleSheet(feature.StyleSheet);
         this.Policies = feature.FeaturePolicies;
@@ -1089,11 +1089,11 @@ export class EditForm extends EditableComponent {
         if (entity != null) {
             this.Entity = entity;
         }
-        if (!feature.ComponentGroup) {
+        if (!feature.Components) {
             this.GroupTree = [];
         }
         else {
-            this.GroupTree = feature.ComponentGroup;
+            this.GroupTree = feature.Components;
         }
         this.Element = this.RenderTemplate(null, feature);
         this.SetFeatureStyleSheet(feature.StyleSheet);
@@ -1500,8 +1500,8 @@ export class EditForm extends EditableComponent {
         if (!editForm.EditForm) {
             editForm.EditForm = editForm;
         }
-        componentGroup = this.GetComPolicies(componentGroup);
-        componentGroup.sort((a, b) => a.Order - b.Order).forEach(group => {
+        let visibleGroups = this.GetComPolicies(componentGroup);
+        visibleGroups.sort((a, b) => a.Order - b.Order).forEach(group => {
             group.Disabled = this.Disabled || group.Disabled;
             if (group.IsTab) {
                 this.SectionMd.Section.RenderTabGroup(editForm ?? this, group);
@@ -1934,7 +1934,6 @@ export class EditForm extends EditableComponent {
         if (Client.SystemRole) {
 
             ctxMenu.MenuItems.push({ Icon: "fal fa-clone", Text: "Clone Screen", Click: this.CloneFeature.bind(this) });
-            ctxMenu.MenuItems.push({ Icon: "fal fa-sync-alt", Text: "Async To", Line: true, Click: this.AsyncTo.bind(this) });
             if (group !== null) {
                 ctxMenu.MenuItems.push({ Icon: "fal fa-puzzle-piece", Text: "Inspect", Shortcut: "F12", Click: this.ConfigProperties.bind(this), Parameter: group });
             }

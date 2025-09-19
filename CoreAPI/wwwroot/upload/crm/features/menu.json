@@ -8,35 +8,6 @@
     "Icon": "fal fa-ellipsis-h-alt",
     "IsMenu": true,
     "IgnoreEncode": true,
-    "ComponentGroup": [
-        {
-            "Id": "006e13f0-0000-0000-8000-5c2318ec3160",
-            "FieldName": "Container",
-            "Order": 1,
-            "ComponentType": "Section",
-            "ClassName": "scroll-content",
-            "XxlCol": 12,
-            "Components": [
-                {
-                    "Id": "006e1330-0000-0000-8000-c4465acdf2b8",
-                    "FieldName": "Feature",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "ClassName": "sticky",
-                    "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from Feature as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Feature as ds\"\r\n}",
-                    "IsRealtime": true,
-                    "RefName": "Feature",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "001e1384-0000-0000-8000-b5ef5627bb33",
@@ -230,6 +201,35 @@
             "Id": "FF62338C-F8EE-4693-A57C-FE87403D63B6",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
+        }
+    ],
+    "Components": [
+        {
+            "Id": "006e13f0-0000-0000-8000-5c2318ec3160",
+            "FieldName": "Container",
+            "Order": 1,
+            "ComponentType": "Section",
+            "ClassName": "scroll-content",
+            "XxlCol": 12,
+            "Components": [
+                {
+                    "Id": "006e1330-0000-0000-8000-c4465acdf2b8",
+                    "FieldName": "Feature",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "ClassName": "sticky",
+                    "ChildStyle": "height: calc(100vh - 10.5rem)",
+                    "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
+                    "CanAdd": true,
+                    "Query": "{\r\n    \"sql\": \"select * from Feature as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Feature as ds\"\r\n}",
+                    "IsRealtime": true,
+                    "RefName": "Feature",
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         }
     ]
 }

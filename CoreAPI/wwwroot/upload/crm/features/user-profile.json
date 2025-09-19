@@ -7,15 +7,6 @@
     "IsPublic": true,
     "EntityId": "User",
     "IgnoreEncode": true,
-    "ComponentGroup": [
-        {
-            "Id": "007828b0-0000-0000-8000-06df68c76053",
-            "FieldName": "Main",
-            "Order": 1,
-            "ComponentType": "Section",
-            "ClassName": "scroll-content"
-        }
-    ],
     "FeaturePolicies": [
         {
             "Id": "243F6399-4A96-4483-8C51-3652B33328E8",
@@ -72,6 +63,15 @@
             "Id": "F01A4B5C-4839-48EF-9B07-65DCAF9AB0ED",
             "RoleId": "ACC",
             "TableName": "Feature"
+        }
+    ],
+    "Components": [
+        {
+            "Id": "007828b0-0000-0000-8000-06df68c76053",
+            "FieldName": "Main",
+            "Order": 1,
+            "ComponentType": "Section",
+            "ClassName": "scroll-content"
         }
     ]
 }

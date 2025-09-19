@@ -7,27 +7,6 @@
     "IsPublic": true,
     "EntityId": "Booking",
     "IgnoreEncode": true,
-    "ComponentGroup": [
-        {
-            "Id": "00570f54-0000-0000-8000-e526510de380",
-            "FieldName": "Container",
-            "Order": 1,
-            "ComponentType": "Section",
-            "XxlCol": 12,
-            "Components": [
-                {
-                    "Id": "00570f84-0000-0000-8000-6257490370f8",
-                    "FieldName": "Report1",
-                    "Order": 1,
-                    "ComponentType": "HtmlCode",
-                    "Column": 12,
-                    "Query": "select * from Partner as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.PicId = '{TokenUserId}')",
-                    "RefName": "Partner",
-                    "PreQuery": "{ \"UserId\": this.Token.UserId }"
-                }
-            ]
-        }
-    ],
     "FeaturePolicies": [
         {
             "Id": "0F23A9A1-C5AA-4E17-9A43-9372B5125173",
@@ -88,6 +67,27 @@
             "Id": "EE4CB595-12D8-4BC2-9876-7FCFA6FE5153",
             "RoleId": "ACC",
             "TableName": "Feature"
+        }
+    ],
+    "Components": [
+        {
+            "Id": "00570f54-0000-0000-8000-e526510de380",
+            "FieldName": "Container",
+            "Order": 1,
+            "ComponentType": "Section",
+            "XxlCol": 12,
+            "Components": [
+                {
+                    "Id": "00570f84-0000-0000-8000-6257490370f8",
+                    "FieldName": "Report1",
+                    "Order": 1,
+                    "ComponentType": "HtmlCode",
+                    "Column": 12,
+                    "Query": "select * from Partner as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.PicId = '{TokenUserId}')",
+                    "RefName": "Partner",
+                    "PreQuery": "{ \"UserId\": this.Token.UserId }"
+                }
+            ]
         }
     ]
 }

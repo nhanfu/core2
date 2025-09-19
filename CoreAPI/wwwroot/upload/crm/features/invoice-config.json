@@ -7,35 +7,6 @@
     "Icon": "fal fa-square",
     "EntityId": "Invoice Config",
     "IgnoreEncode": true,
-    "ComponentGroup": [
-        {
-            "Id": "01943bef-3b01-70b2-b7d0-4b8a0e82ed75",
-            "FieldName": "Container",
-            "Order": 1,
-            "ComponentType": "Section",
-            "ClassName": "scroll-content",
-            "XxlCol": 12,
-            "Components": [
-                {
-                    "Id": "01943bef-3b41-70c9-8147-06ddbce2a662",
-                    "FieldName": "InvoiceConfig",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "ClassName": "sticky",
-                    "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from InvoiceConfig as ds\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds\"\r\n}",
-                    "IsRealtime": true,
-                    "RefName": "InvoiceConfig",
-                    "TopEmpty": true,
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "01943bef-3b6c-706d-be2e-10d52e469330",
@@ -192,6 +163,35 @@
             "Id": "FEA1975F-5484-4CB8-B64F-31FD1D4C0574",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
+        }
+    ],
+    "Components": [
+        {
+            "Id": "01943bef-3b01-70b2-b7d0-4b8a0e82ed75",
+            "FieldName": "Container",
+            "Order": 1,
+            "ComponentType": "Section",
+            "ClassName": "scroll-content",
+            "XxlCol": 12,
+            "Components": [
+                {
+                    "Id": "01943bef-3b41-70c9-8147-06ddbce2a662",
+                    "FieldName": "InvoiceConfig",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "ClassName": "sticky",
+                    "ChildStyle": "height: calc(100vh - 10.5rem)",
+                    "CanAdd": true,
+                    "Query": "{\r\n    \"sql\": \"select * from InvoiceConfig as ds\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds\"\r\n}",
+                    "IsRealtime": true,
+                    "RefName": "InvoiceConfig",
+                    "TopEmpty": true,
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         }
     ]
 }

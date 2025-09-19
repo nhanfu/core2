@@ -7,35 +7,6 @@
     "Icon": "far fa-th-list",
     "IsMenu": true,
     "IgnoreEncode": true,
-    "ComponentGroup": [
-        {
-            "Id": "0096ff5c-0000-0000-8000-5c9fc03530ec",
-            "FieldName": "Container",
-            "Order": 1,
-            "ComponentType": "Section",
-            "ClassName": "scroll-content",
-            "XxlCol": 12,
-            "Components": [
-                {
-                    "Id": "00a5ff6c-0000-0000-8000-62c3579b714b",
-                    "FieldName": "MasterData",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 150,
-                    "CanSearch": true,
-                    "ClassName": "sticky",
-                    "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from MasterData as ds\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds\"\r\n}",
-                    "IsRealtime": true,
-                    "RefName": "MasterData",
-                    "TopEmpty": true,
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "0077ffbc-0000-0000-8000-0cb7fd208e28",
@@ -174,6 +145,35 @@
             "Id": "F071DE3A-C53D-45B3-9E83-F11A976935B2",
             "RoleId": "PRICING",
             "TableName": "Feature"
+        }
+    ],
+    "Components": [
+        {
+            "Id": "0096ff5c-0000-0000-8000-5c9fc03530ec",
+            "FieldName": "Container",
+            "Order": 1,
+            "ComponentType": "Section",
+            "ClassName": "scroll-content",
+            "XxlCol": 12,
+            "Components": [
+                {
+                    "Id": "00a5ff6c-0000-0000-8000-62c3579b714b",
+                    "FieldName": "MasterData",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 150,
+                    "CanSearch": true,
+                    "ClassName": "sticky",
+                    "ChildStyle": "height: calc(100vh - 10.5rem)",
+                    "CanAdd": true,
+                    "Query": "{\r\n    \"sql\": \"select * from MasterData as ds\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds\"\r\n}",
+                    "IsRealtime": true,
+                    "RefName": "MasterData",
+                    "TopEmpty": true,
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         }
     ]
 }

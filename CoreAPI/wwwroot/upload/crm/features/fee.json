@@ -5,33 +5,6 @@
     "ParentId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
     "Order": 0,
     "Icon": "fal fa-file-invoice-dollar",
-    "ComponentGroup": [
-        {
-            "Id": "005c0214-0000-0000-8000-8b66e6e5fee1",
-            "FieldName": "Container",
-            "Order": 1,
-            "ComponentType": "Section",
-            "XxlCol": 12,
-            "Components": [
-                {
-                    "Id": "00bf0268-0000-0000-8000-e6b136f588a5",
-                    "FieldName": "FeeType",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from FeeType as ds\",\r\n    \"total\": \"select count(ds.Id) as total from FeeType as ds\"\r\n}",
-                    "IsRealtime": true,
-                    "RefName": "FeeType",
-                    "TopEmpty": true,
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "00182c44-0000-0000-8000-409083f78351",
@@ -360,6 +333,33 @@
             "Id": "FEB7BFC9-D02F-460E-B560-CEE8C548BB2F",
             "RoleId": "ADMIN",
             "TableName": "Feature"
+        }
+    ],
+    "Components": [
+        {
+            "Id": "005c0214-0000-0000-8000-8b66e6e5fee1",
+            "FieldName": "Container",
+            "Order": 1,
+            "ComponentType": "Section",
+            "XxlCol": 12,
+            "Components": [
+                {
+                    "Id": "00bf0268-0000-0000-8000-e6b136f588a5",
+                    "FieldName": "FeeType",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "ChildStyle": "height: calc(100vh - 10.5rem)",
+                    "CanAdd": true,
+                    "Query": "{\r\n    \"sql\": \"select * from FeeType as ds\",\r\n    \"total\": \"select count(ds.Id) as total from FeeType as ds\"\r\n}",
+                    "IsRealtime": true,
+                    "RefName": "FeeType",
+                    "TopEmpty": true,
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         }
     ]
 }

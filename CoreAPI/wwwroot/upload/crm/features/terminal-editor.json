@@ -5,7 +5,27 @@
     "Order": 0,
     "Style": "width:500px",
     "EntityId": "Terminal",
-    "ComponentGroup": [
+    "GridPolicies": [
+        {
+            "Id": "003201d0-0000-0000-8000-80adefafe816",
+            "FieldName": "ServiceId",
+            "Order": 0,
+            "ComponentType": "Dropdown",
+            "FormatData": "{Name}",
+            "PlainText": "Select data",
+            "Row": 100,
+            "Label": "Service",
+            "Width": "357px",
+            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Terminal Service'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Terminal Service'\"\r\n}",
+            "RefName": "MasterData",
+            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
+            "Editable": true,
+            "MinWidth": "357px",
+            "MaxWidth": "357px",
+            "EntityId": "TerminalService"
+        }
+    ],
+    "Components": [
         {
             "Id": "00360118-0000-0000-8000-3baca9a90836",
             "FieldName": "Button",
@@ -14,6 +34,18 @@
             "ClassName": "ribbon-group",
             "XxlCol": 12,
             "Components": [
+                {
+                    "Id": "007b0164-0000-0000-8000-ba4b69718057",
+                    "FieldName": "btnSave",
+                    "Order": 1,
+                    "ComponentType": "Button",
+                    "Column": 1,
+                    "Label": "Save",
+                    "Icon": "fal fa-save",
+                    "ClassName": "btn detail-button primary",
+                    "HotKey": "Ctrl-S",
+                    "Events": "{ \"click\" : \"SavePatch\" }"
+                },
                 {
                     "Id": "007b0164-0000-0000-8000-ba4b69718057",
                     "FieldName": "btnSave",
@@ -35,7 +67,7 @@
             "ComponentType": "Section",
             "XxlCol": 12,
             "XxlOuterColumn": 0,
-            "Children": [
+            "Components": [
                 {
                     "Id": "00350168-0000-0000-8000-b5ad4f4a56d5",
                     "FieldName": "Left",
@@ -125,40 +157,6 @@
                     ]
                 }
             ]
-        }
-    ],
-    "GridPolicies": [
-        {
-            "Id": "003201d0-0000-0000-8000-80adefafe816",
-            "FieldName": "ServiceId",
-            "Order": 0,
-            "ComponentType": "Dropdown",
-            "FormatData": "{Name}",
-            "PlainText": "Select data",
-            "Row": 100,
-            "Label": "Service",
-            "Width": "357px",
-            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Terminal Service'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Terminal Service'\"\r\n}",
-            "RefName": "MasterData",
-            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-            "Editable": true,
-            "MinWidth": "357px",
-            "MaxWidth": "357px",
-            "EntityId": "TerminalService"
-        }
-    ],
-    "Components": [
-        {
-            "Id": "007b0164-0000-0000-8000-ba4b69718057",
-            "FieldName": "btnSave",
-            "Order": 1,
-            "ComponentType": "Button",
-            "Column": 1,
-            "Label": "Save",
-            "Icon": "fal fa-save",
-            "ClassName": "btn detail-button primary",
-            "HotKey": "Ctrl-S",
-            "Events": "{ \"click\" : \"SavePatch\" }"
         }
     ],
     "FeaturePolicies": [

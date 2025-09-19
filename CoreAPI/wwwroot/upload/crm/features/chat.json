@@ -3,36 +3,6 @@
     "Name": "chat",
     "Label": "Chat",
     "EntityId": "Terminal",
-    "ComponentGroup": [
-        {
-            "Id": "00bc19b0-0000-0000-8000-c7817636af49",
-            "FieldName": "Container",
-            "Order": 1,
-            "ComponentType": "Section",
-            "XxlCol": 12,
-            "XxlOuterColumn": 0,
-            "Children": [
-                {
-                    "Id": "00bc19ec-0000-0000-8000-8c7b8792d14e",
-                    "FieldName": "Left",
-                    "Order": 1,
-                    "ComponentType": "Section",
-                    "ClassName": "card-body",
-                    "XxlCol": 12,
-                    "XxlOuterColumn": 12
-                },
-                {
-                    "Id": "00bd191c-0000-0000-8000-0fd041172430",
-                    "FieldName": "Right",
-                    "Order": 2,
-                    "ComponentType": "Section",
-                    "ClassName": "card-body",
-                    "XxlCol": 12,
-                    "XxlOuterColumn": 12
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "00bd19bc-0000-0000-8000-5d98ae9f1b80",
@@ -110,6 +80,36 @@
             "Id": "9E9A474A-9A59-4DAC-ABEC-39133E1F28EE",
             "RoleId": "SALES",
             "TableName": "Feature"
+        }
+    ],
+    "Components": [
+        {
+            "Id": "00bc19b0-0000-0000-8000-c7817636af49",
+            "FieldName": "Container",
+            "Order": 1,
+            "ComponentType": "Section",
+            "XxlCol": 12,
+            "XxlOuterColumn": 0,
+            "Components": [
+                {
+                    "Id": "00bc19ec-0000-0000-8000-8c7b8792d14e",
+                    "FieldName": "Left",
+                    "Order": 1,
+                    "ComponentType": "Section",
+                    "ClassName": "card-body",
+                    "XxlCol": 12,
+                    "XxlOuterColumn": 12
+                },
+                {
+                    "Id": "00bd191c-0000-0000-8000-0fd041172430",
+                    "FieldName": "Right",
+                    "Order": 2,
+                    "ComponentType": "Section",
+                    "ClassName": "card-body",
+                    "XxlCol": 12,
+                    "XxlOuterColumn": 12
+                }
+            ]
         }
     ]
 }

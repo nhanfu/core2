@@ -7,61 +7,6 @@
     "Script": "return {\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"table-editor\", entity);\r\n    }\r\n}",
     "Icon": "fal fa-table",
     "IsMenu": true,
-    "ComponentGroup": [
-        {
-            "Id": "00b31914-0000-0000-8000-40990ace143f",
-            "FieldName": "WebConfig",
-            "Order": 3,
-            "ComponentType": "Section",
-            "Label": "WebConfig",
-            "XxlCol": 12,
-            "IsTab": true,
-            "Components": [
-                {
-                    "Id": "00b3199c-0000-0000-8000-4a901cf2d24a",
-                    "FieldName": "WebConfig",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from TableName as ds\",\r\n    \"total\": \"select count(ds.Id) as total from TableName as ds\"\r\n}",
-                    "IsRealtime": true,
-                    "RefName": "TableName",
-                    "TopEmpty": true,
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        },
-        {
-            "Id": "0195efa9-a4b5-77d8-80b3-af8a1048bfc8",
-            "FieldName": "Table",
-            "Order": 2,
-            "ComponentType": "Section",
-            "Label": "Table",
-            "XxlCol": 12,
-            "IsTab": true,
-            "Components": [
-                {
-                    "Id": "0195efa9-f3c3-7299-913a-5e614ce5556c",
-                    "FieldName": "TableName",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 150,
-                    "CanSearch": true,
-                    "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"SELECT * FROM INFORMATION_SCHEMA.TABLES as ds WHERE TABLE_TYPE = 'BASE TABLE'\",\r\n    \"total\": \"SELECT count(*) as total FROM INFORMATION_SCHEMA.TABLES as ds WHERE TABLE_TYPE = 'BASE TABLE'\"\r\n}",
-                    "RefName": "TABLES",
-                    "TopEmpty": true,
-                    "OrderBy": "ds.TABLE_NAME asc"
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "00b31918-0000-0000-8000-472ae10964ba",
@@ -198,6 +143,61 @@
             "Id": "FDB067EE-7D45-4598-AE67-BF93D220F6EC",
             "RoleId": "DOCS",
             "TableName": "Feature"
+        }
+    ],
+    "Components": [
+        {
+            "Id": "00b31914-0000-0000-8000-40990ace143f",
+            "FieldName": "WebConfig",
+            "Order": 3,
+            "ComponentType": "Section",
+            "Label": "WebConfig",
+            "XxlCol": 12,
+            "IsTab": true,
+            "Components": [
+                {
+                    "Id": "00b3199c-0000-0000-8000-4a901cf2d24a",
+                    "FieldName": "WebConfig",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "ChildStyle": "height: calc(100vh - 10.5rem)",
+                    "CanAdd": true,
+                    "Query": "{\r\n    \"sql\": \"select * from TableName as ds\",\r\n    \"total\": \"select count(ds.Id) as total from TableName as ds\"\r\n}",
+                    "IsRealtime": true,
+                    "RefName": "TableName",
+                    "TopEmpty": true,
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
+        },
+        {
+            "Id": "0195efa9-a4b5-77d8-80b3-af8a1048bfc8",
+            "FieldName": "Table",
+            "Order": 2,
+            "ComponentType": "Section",
+            "Label": "Table",
+            "XxlCol": 12,
+            "IsTab": true,
+            "Components": [
+                {
+                    "Id": "0195efa9-f3c3-7299-913a-5e614ce5556c",
+                    "FieldName": "TableName",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 150,
+                    "CanSearch": true,
+                    "ChildStyle": "height: calc(100vh - 10.5rem)",
+                    "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
+                    "Query": "{\r\n    \"sql\": \"SELECT * FROM INFORMATION_SCHEMA.TABLES as ds WHERE TABLE_TYPE = 'BASE TABLE'\",\r\n    \"total\": \"SELECT count(*) as total FROM INFORMATION_SCHEMA.TABLES as ds WHERE TABLE_TYPE = 'BASE TABLE'\"\r\n}",
+                    "RefName": "TABLES",
+                    "TopEmpty": true,
+                    "OrderBy": "ds.TABLE_NAME asc"
+                }
+            ]
         }
     ]
 }

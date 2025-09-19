@@ -7,36 +7,6 @@
     "Icon": "fal fa-university",
     "IsMenu": true,
     "IgnoreEncode": true,
-    "ComponentGroup": [
-        {
-            "Id": "00b105d4-0000-0000-8000-8c6601743041",
-            "FieldName": "Container",
-            "Order": 1,
-            "ComponentType": "Section",
-            "ClassName": "scroll-content",
-            "XxlCol": 12,
-            "Components": [
-                {
-                    "Id": "00b10550-0000-0000-8000-132cd2b430a4",
-                    "FieldName": "MasterData",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "ClassName": "sticky",
-                    "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "DefaultVal": "{\r\n    \"ParentId\":\"00770028-0000-0000-8000-65847b486d2b\"\r\n}",
-                    "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from MasterData as ds where ds.ParentId = '00770028-0000-0000-8000-65847b486d2b'\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds where ds.ParentId = '00770028-0000-0000-8000-65847b486d2b'\"\r\n}",
-                    "IsRealtime": true,
-                    "RefName": "MasterData",
-                    "TopEmpty": true,
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "00b10504-0000-0000-8000-d5c1f5f961c3",
@@ -131,6 +101,36 @@
             "Id": "C4D19D97-D492-4FA5-BB45-89653D786DC9",
             "RoleId": "DOCS",
             "TableName": "Feature"
+        }
+    ],
+    "Components": [
+        {
+            "Id": "00b105d4-0000-0000-8000-8c6601743041",
+            "FieldName": "Container",
+            "Order": 1,
+            "ComponentType": "Section",
+            "ClassName": "scroll-content",
+            "XxlCol": 12,
+            "Components": [
+                {
+                    "Id": "00b10550-0000-0000-8000-132cd2b430a4",
+                    "FieldName": "MasterData",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "ClassName": "sticky",
+                    "ChildStyle": "height: calc(100vh - 10.5rem)",
+                    "DefaultVal": "{\r\n    \"ParentId\":\"00770028-0000-0000-8000-65847b486d2b\"\r\n}",
+                    "CanAdd": true,
+                    "Query": "{\r\n    \"sql\": \"select * from MasterData as ds where ds.ParentId = '00770028-0000-0000-8000-65847b486d2b'\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds where ds.ParentId = '00770028-0000-0000-8000-65847b486d2b'\"\r\n}",
+                    "IsRealtime": true,
+                    "RefName": "MasterData",
+                    "TopEmpty": true,
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         }
     ]
 }

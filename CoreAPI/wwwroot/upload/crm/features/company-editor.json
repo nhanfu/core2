@@ -5,7 +5,107 @@
     "Order": 0,
     "Style": "width:220mm;",
     "EntityId": "Partner",
-    "ComponentGroup": [
+    "GridPolicies": [
+        {
+            "Id": "007636c0-0000-0000-8000-015c1506f9e2",
+            "FieldName": "BankId",
+            "Order": 0,
+            "ComponentType": "Dropdown",
+            "FormatData": "{Name}",
+            "PlainText": "Select data",
+            "Row": 100,
+            "Label": "Bank",
+            "Width": "112px",
+            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Bank'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Bank'\"\r\n}",
+            "RefName": "MasterData",
+            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
+            "FocusSearch": true,
+            "Editable": true,
+            "MinWidth": "112px",
+            "MaxWidth": "112px",
+            "EntityId": "PartnerBankAccount"
+        },
+        {
+            "Id": "00c33a24-0000-0000-8000-9c4a59c28505",
+            "FieldName": "AccountNumber",
+            "Order": 1,
+            "ComponentType": "Input",
+            "Row": 50,
+            "Label": "Number",
+            "Width": "102px",
+            "Query": "{\r\n    \"sql\": \"select * from Role as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Role as ds\"\r\n}",
+            "RefName": "Role",
+            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
+            "FocusSearch": true,
+            "Editable": true,
+            "MinWidth": "102px",
+            "MaxWidth": "102px",
+            "EntityId": "PartnerBankAccount"
+        },
+        {
+            "Id": "00cb3a38-0000-0000-8000-4f19866f70da",
+            "FieldName": "AccountName",
+            "Order": 2,
+            "ComponentType": "Input",
+            "Row": 50,
+            "Label": "Name",
+            "Width": "94px",
+            "Query": "{\r\n    \"sql\": \"select * from Role as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Role as ds\"\r\n}",
+            "RefName": "Role",
+            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
+            "FocusSearch": true,
+            "Editable": true,
+            "MinWidth": "94px",
+            "MaxWidth": "94px",
+            "EntityId": "PartnerBankAccount"
+        },
+        {
+            "Id": "00d03a0c-0000-0000-8000-6468f74c4629",
+            "FieldName": "SwiftCode",
+            "Order": 3,
+            "ComponentType": "Input",
+            "Row": 50,
+            "Label": "Swift Code",
+            "Width": "127px",
+            "RefName": "Role",
+            "FocusSearch": true,
+            "Editable": true,
+            "MinWidth": "127px",
+            "MaxWidth": "127px",
+            "EntityId": "PartnerBankAccount"
+        },
+        {
+            "Id": "0195ff8e-b139-72d2-82a7-4e065ab880b7",
+            "FieldName": "IsMain",
+            "Order": 4,
+            "ComponentType": "Checkbox",
+            "Row": 50,
+            "Label": "Main",
+            "Width": "94px",
+            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
+            "FocusSearch": true,
+            "Editable": true,
+            "MinWidth": "94px",
+            "MaxWidth": "94px",
+            "EntityId": "PartnerBankAccount"
+        },
+        {
+            "Id": "0195ff8e-b13a-737d-bf30-af594986dcd3",
+            "FieldName": "IsReceives",
+            "Order": 4,
+            "ComponentType": "Checkbox",
+            "Row": 50,
+            "Label": "Receives",
+            "Width": "94px",
+            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
+            "FocusSearch": true,
+            "Editable": true,
+            "MinWidth": "94px",
+            "MaxWidth": "94px",
+            "EntityId": "PartnerBankAccount"
+        }
+    ],
+    "Components": [
         {
             "Id": "00753694-0000-0000-8000-e42e66a912f9",
             "FieldName": "Container ",
@@ -13,7 +113,7 @@
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Children": [
+            "Components": [
                 {
                     "Id": "007536d8-0000-0000-8000-2ccef99f5e44",
                     "FieldName": "Right",
@@ -191,6 +291,18 @@
                             "Label": "Footer"
                         }
                     ]
+                },
+                {
+                    "Id": "00753650-0000-0000-8000-36863ea1e1d5",
+                    "FieldName": "btnSave",
+                    "Order": 1,
+                    "ComponentType": "Button",
+                    "Column": 1,
+                    "Label": "Save",
+                    "Icon": "fal fa-save",
+                    "ClassName": "btn detail-button primary",
+                    "HotKey": "Ctrl-S",
+                    "Events": "{ \"click\" : \"SavePatch\" }"
                 }
             ]
         },
@@ -215,120 +327,6 @@
                     "Events": "{ \"click\" : \"SavePatch\" }"
                 }
             ]
-        }
-    ],
-    "GridPolicies": [
-        {
-            "Id": "007636c0-0000-0000-8000-015c1506f9e2",
-            "FieldName": "BankId",
-            "Order": 0,
-            "ComponentType": "Dropdown",
-            "FormatData": "{Name}",
-            "PlainText": "Select data",
-            "Row": 100,
-            "Label": "Bank",
-            "Width": "112px",
-            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Bank'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Bank'\"\r\n}",
-            "RefName": "MasterData",
-            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-            "FocusSearch": true,
-            "Editable": true,
-            "MinWidth": "112px",
-            "MaxWidth": "112px",
-            "EntityId": "PartnerBankAccount"
-        },
-        {
-            "Id": "00c33a24-0000-0000-8000-9c4a59c28505",
-            "FieldName": "AccountNumber",
-            "Order": 1,
-            "ComponentType": "Input",
-            "Row": 50,
-            "Label": "Number",
-            "Width": "102px",
-            "Query": "{\r\n    \"sql\": \"select * from Role as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Role as ds\"\r\n}",
-            "RefName": "Role",
-            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-            "FocusSearch": true,
-            "Editable": true,
-            "MinWidth": "102px",
-            "MaxWidth": "102px",
-            "EntityId": "PartnerBankAccount"
-        },
-        {
-            "Id": "00cb3a38-0000-0000-8000-4f19866f70da",
-            "FieldName": "AccountName",
-            "Order": 2,
-            "ComponentType": "Input",
-            "Row": 50,
-            "Label": "Name",
-            "Width": "94px",
-            "Query": "{\r\n    \"sql\": \"select * from Role as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Role as ds\"\r\n}",
-            "RefName": "Role",
-            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-            "FocusSearch": true,
-            "Editable": true,
-            "MinWidth": "94px",
-            "MaxWidth": "94px",
-            "EntityId": "PartnerBankAccount"
-        },
-        {
-            "Id": "00d03a0c-0000-0000-8000-6468f74c4629",
-            "FieldName": "SwiftCode",
-            "Order": 3,
-            "ComponentType": "Input",
-            "Row": 50,
-            "Label": "Swift Code",
-            "Width": "127px",
-            "RefName": "Role",
-            "FocusSearch": true,
-            "Editable": true,
-            "MinWidth": "127px",
-            "MaxWidth": "127px",
-            "EntityId": "PartnerBankAccount"
-        },
-        {
-            "Id": "0195ff8e-b139-72d2-82a7-4e065ab880b7",
-            "FieldName": "IsMain",
-            "Order": 4,
-            "ComponentType": "Checkbox",
-            "Row": 50,
-            "Label": "Main",
-            "Width": "94px",
-            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-            "FocusSearch": true,
-            "Editable": true,
-            "MinWidth": "94px",
-            "MaxWidth": "94px",
-            "EntityId": "PartnerBankAccount"
-        },
-        {
-            "Id": "0195ff8e-b13a-737d-bf30-af594986dcd3",
-            "FieldName": "IsReceives",
-            "Order": 4,
-            "ComponentType": "Checkbox",
-            "Row": 50,
-            "Label": "Receives",
-            "Width": "94px",
-            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-            "FocusSearch": true,
-            "Editable": true,
-            "MinWidth": "94px",
-            "MaxWidth": "94px",
-            "EntityId": "PartnerBankAccount"
-        }
-    ],
-    "Components": [
-        {
-            "Id": "00753650-0000-0000-8000-36863ea1e1d5",
-            "FieldName": "btnSave",
-            "Order": 1,
-            "ComponentType": "Button",
-            "Column": 1,
-            "Label": "Save",
-            "Icon": "fal fa-save",
-            "ClassName": "btn detail-button primary",
-            "HotKey": "Ctrl-S",
-            "Events": "{ \"click\" : \"SavePatch\" }"
         }
     ],
     "FeaturePolicies": [

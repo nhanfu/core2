@@ -5,7 +5,27 @@
     "Order": 0,
     "Style": "width:99%;",
     "EntityId": "User",
-    "ComponentGroup": [
+    "GridPolicies": [
+        {
+            "Id": "00c40058-0000-0000-8000-9df93b2ee241",
+            "FieldName": "RoleId",
+            "Order": 0,
+            "ComponentType": "Dropdown",
+            "FormatData": "{Name}",
+            "PlainText": "Select data",
+            "Row": 100,
+            "Label": "Role",
+            "Width": "536px",
+            "Query": "{\r\n    \"sql\": \"select * from Role as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Role as ds\"\r\n}",
+            "RefName": "Role",
+            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
+            "Editable": true,
+            "MinWidth": "536px",
+            "MaxWidth": "536px",
+            "EntityId": "UserRole"
+        }
+    ],
+    "Components": [
         {
             "Id": "007c0050-0000-0000-8000-af1fe9c1c3cf",
             "FieldName": "Button",
@@ -14,6 +34,18 @@
             "ClassName": "ribbon-group",
             "XxlCol": 12,
             "Components": [
+                {
+                    "Id": "00d400dc-0000-0000-8000-7d5605c5bbfc",
+                    "FieldName": "btnSave",
+                    "Order": 1,
+                    "ComponentType": "Button",
+                    "Column": 1,
+                    "Label": "Save",
+                    "Icon": "fal fa-save",
+                    "ClassName": "btn detail-button primary",
+                    "HotKey": "Ctrl-S",
+                    "Events": "{ \"click\" : \"SavePatch\" }"
+                },
                 {
                     "Id": "00d400dc-0000-0000-8000-7d5605c5bbfc",
                     "FieldName": "btnSave",
@@ -34,7 +66,7 @@
             "Order": 3,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Children": [
+            "Components": [
                 {
                     "Id": "009e1dc4-0000-0000-8000-ffaa908b260d",
                     "FieldName": "Right",
@@ -521,40 +553,6 @@
                     ]
                 }
             ]
-        }
-    ],
-    "GridPolicies": [
-        {
-            "Id": "00c40058-0000-0000-8000-9df93b2ee241",
-            "FieldName": "RoleId",
-            "Order": 0,
-            "ComponentType": "Dropdown",
-            "FormatData": "{Name}",
-            "PlainText": "Select data",
-            "Row": 100,
-            "Label": "Role",
-            "Width": "536px",
-            "Query": "{\r\n    \"sql\": \"select * from Role as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Role as ds\"\r\n}",
-            "RefName": "Role",
-            "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-            "Editable": true,
-            "MinWidth": "536px",
-            "MaxWidth": "536px",
-            "EntityId": "UserRole"
-        }
-    ],
-    "Components": [
-        {
-            "Id": "00d400dc-0000-0000-8000-7d5605c5bbfc",
-            "FieldName": "btnSave",
-            "Order": 1,
-            "ComponentType": "Button",
-            "Column": 1,
-            "Label": "Save",
-            "Icon": "fal fa-save",
-            "ClassName": "btn detail-button primary",
-            "HotKey": "Ctrl-S",
-            "Events": "{ \"click\" : \"SavePatch\" }"
         }
     ],
     "FeaturePolicies": [

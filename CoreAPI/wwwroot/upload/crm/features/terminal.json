@@ -7,53 +7,6 @@
     "Script": "return {\r\n    Add: function () {\r\n        var entity = {}\r\n        this.OpenPopup(\"terminal-editor\", entity);\r\n    },\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"terminal-editor\", entity);\r\n    }\r\n}",
     "Icon": "fal fa-location",
     "EntityId": "Terminal",
-    "ComponentGroup": [
-        {
-            "Id": "009401f8-0000-0000-8000-02eda2fb138d",
-            "Order": 1,
-            "ComponentType": "Section",
-            "Label": "All",
-            "XxlCol": 12,
-            "IsTab": true,
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "00a6010c-0000-0000-8000-3036e27bb371",
-                    "FieldName": "Terminal",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "Label": "TerminalAll",
-                    "ClassName": "sticky",
-                    "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "Query": "{\r\n    \"sql\": \"select * from Terminal as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Terminal as ds\"\r\n}",
-                    "IsRealtime": true,
-                    "RefName": "Terminal",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        },
-        {
-            "Id": "00bf01a8-0000-0000-8000-a0b97dd928a7",
-            "Order": 2,
-            "ComponentType": "Section",
-            "Label": "Port",
-            "XxlCol": 12,
-            "IsTab": true,
-            "DisplayBadge": true
-        },
-        {
-            "Id": "00c00164-0000-0000-8000-6ad245955447",
-            "Order": 3,
-            "ComponentType": "Section",
-            "Label": "Warehouse",
-            "XxlCol": 12,
-            "IsTab": true,
-            "DisplayBadge": true
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "0040016c-0000-0000-8000-9f5ce8a62938",
@@ -223,29 +176,49 @@
     ],
     "Components": [
         {
-            "Id": "0040016c-0000-0000-8000-9f5ce8a62938",
-            "FieldName": "btnEdit",
-            "Order": 0,
-            "ComponentType": "Button",
-            "Column": 1,
-            "Icon": "fal fa-expand",
-            "ClassName": "btn",
-            "Events": "{\"click\":\"Edit\"}",
-            "Width": "35px",
-            "MinWidth": "35px",
-            "MaxWidth": "35px",
-            "EntityId": "Terminal"
+            "Id": "009401f8-0000-0000-8000-02eda2fb138d",
+            "Order": 1,
+            "ComponentType": "Section",
+            "Label": "All",
+            "XxlCol": 12,
+            "IsTab": true,
+            "DisplayBadge": true,
+            "Components": [
+                {
+                    "Id": "00a6010c-0000-0000-8000-3036e27bb371",
+                    "FieldName": "Terminal",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "Label": "TerminalAll",
+                    "ClassName": "sticky",
+                    "ChildStyle": "height: calc(100vh - 10.5rem)",
+                    "Query": "{\r\n    \"sql\": \"select * from Terminal as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Terminal as ds\"\r\n}",
+                    "IsRealtime": true,
+                    "RefName": "Terminal",
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         },
         {
-            "Id": "004301b8-0000-0000-8000-a74a8ab6b07a",
-            "FieldName": "btnAdd",
+            "Id": "00bf01a8-0000-0000-8000-a0b97dd928a7",
             "Order": 2,
-            "ComponentType": "Button",
-            "Column": 1,
-            "Label": "Add",
-            "Icon": "fal fa-plus",
-            "ClassName": "btn",
-            "Events": "{\"click\":\"Add\"}"
+            "ComponentType": "Section",
+            "Label": "Port",
+            "XxlCol": 12,
+            "IsTab": true,
+            "DisplayBadge": true
+        },
+        {
+            "Id": "00c00164-0000-0000-8000-6ad245955447",
+            "Order": 3,
+            "ComponentType": "Section",
+            "Label": "Warehouse",
+            "XxlCol": 12,
+            "IsTab": true,
+            "DisplayBadge": true
         }
     ],
     "FeaturePolicies": [

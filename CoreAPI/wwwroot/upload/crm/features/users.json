@@ -8,58 +8,6 @@
     "Icon": "fal fa-users-cog",
     "IsMenu": true,
     "EntityId": "User",
-    "ComponentGroup": [
-        {
-            "Id": "002c0084-0000-0000-8000-5feb661d536f",
-            "Order": 1,
-            "ComponentType": "Section",
-            "Label": "System User",
-            "XxlCol": 12,
-            "IsTab": true,
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "003a00e4-0000-0000-8000-83e45ed6f836",
-                    "FieldName": "User",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "Events": "{\"dblclick\":\"EditUser\"}",
-                    "Query": "{\r\n    \"sql\": \"select * from [User] as ds where (TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 1)\"\r\n}",
-                    "RefName": "User",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        },
-        {
-            "Id": "019517ca-6902-758d-8eab-033aeb29e857",
-            "Order": 1,
-            "ComponentType": "Section",
-            "Label": "Customer User",
-            "XxlCol": 12,
-            "IsTab": true,
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "019517d7-510a-74bc-a88b-b92fd72dac2b",
-                    "FieldName": "User",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "Events": "{\"dblclick\":\"EditUser\"}",
-                    "Query": "{\r\n    \"sql\": \"select * from [User] as ds where (TypeId = 2)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 2)\"\r\n}",
-                    "RefName": "User",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "001800b0-0000-0000-8000-acc56bb92de6",
@@ -198,28 +146,54 @@
     ],
     "Components": [
         {
-            "Id": "001a0020-0000-0000-8000-ed06fb9e4444",
-            "FieldName": "btnAdd",
+            "Id": "002c0084-0000-0000-8000-5feb661d536f",
             "Order": 1,
-            "ComponentType": "Button",
-            "Column": 1,
-            "Label": "Add",
-            "Icon": "fal fa-plus",
-            "ClassName": "btn btn-info",
-            "Events": "{\"click\":\"AddUser\"}"
+            "ComponentType": "Section",
+            "Label": "System User",
+            "XxlCol": 12,
+            "IsTab": true,
+            "DisplayBadge": true,
+            "Components": [
+                {
+                    "Id": "003a00e4-0000-0000-8000-83e45ed6f836",
+                    "FieldName": "User",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "ChildStyle": "height: calc(100vh - 10.5rem)",
+                    "Events": "{\"dblclick\":\"EditUser\"}",
+                    "Query": "{\r\n    \"sql\": \"select * from [User] as ds where (TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 1)\"\r\n}",
+                    "RefName": "User",
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         },
         {
-            "Id": "0075006c-0000-0000-8000-62568d9506c0",
-            "FieldName": "btnEdit",
-            "Order": 0,
-            "ComponentType": "Button",
-            "Icon": "fal fa-expand",
-            "ClassName": "btn",
-            "Events": "{\"click\":\"EditUser\"}",
-            "Width": "65px",
-            "MinWidth": "65px",
-            "MaxWidth": "65px",
-            "EntityId": "User"
+            "Id": "019517ca-6902-758d-8eab-033aeb29e857",
+            "Order": 1,
+            "ComponentType": "Section",
+            "Label": "Customer User",
+            "XxlCol": 12,
+            "IsTab": true,
+            "DisplayBadge": true,
+            "Components": [
+                {
+                    "Id": "019517d7-510a-74bc-a88b-b92fd72dac2b",
+                    "FieldName": "User",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "ChildStyle": "height: calc(100vh - 10.5rem)",
+                    "Events": "{\"dblclick\":\"EditUser\"}",
+                    "Query": "{\r\n    \"sql\": \"select * from [User] as ds where (TypeId = 2)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 2)\"\r\n}",
+                    "RefName": "User",
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         }
     ],
     "FeaturePolicies": [

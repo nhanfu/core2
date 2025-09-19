@@ -7,35 +7,6 @@
     "Icon": "fal fa-server",
     "IsMenu": true,
     "EntityId": "Config",
-    "ComponentGroup": [
-        {
-            "Id": "004607cc-0000-0000-8000-f92ae49e0dbc",
-            "FieldName": "Container",
-            "Order": 1,
-            "ComponentType": "Section",
-            "ClassName": "scroll-content",
-            "XxlCol": 12,
-            "Components": [
-                {
-                    "Id": "00470784-0000-0000-8000-c418799f689b",
-                    "FieldName": "Service",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "ClassName": "sticky",
-                    "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "DefaultVal": "{ \"ComponentType\": \"Service\" }",
-                    "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from Component as ds where ds.ComponentType = 'Service'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ds.ComponentType = 'Service'\"\r\n}",
-                    "IsRealtime": true,
-                    "RefName": "Component",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "00160864-0000-0000-8000-435fbaba0059",
@@ -178,6 +149,35 @@
             "Id": "E629321F-4659-4A53-BE54-3DBFE9899ECD",
             "RoleId": "ACC",
             "TableName": "Feature"
+        }
+    ],
+    "Components": [
+        {
+            "Id": "004607cc-0000-0000-8000-f92ae49e0dbc",
+            "FieldName": "Container",
+            "Order": 1,
+            "ComponentType": "Section",
+            "ClassName": "scroll-content",
+            "XxlCol": 12,
+            "Components": [
+                {
+                    "Id": "00470784-0000-0000-8000-c418799f689b",
+                    "FieldName": "Service",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "ClassName": "sticky",
+                    "ChildStyle": "height: calc(100vh - 10.5rem)",
+                    "DefaultVal": "{ \"ComponentType\": \"Service\" }",
+                    "CanAdd": true,
+                    "Query": "{\r\n    \"sql\": \"select * from Component as ds where ds.ComponentType = 'Service'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ds.ComponentType = 'Service'\"\r\n}",
+                    "IsRealtime": true,
+                    "RefName": "Component",
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         }
     ]
 }

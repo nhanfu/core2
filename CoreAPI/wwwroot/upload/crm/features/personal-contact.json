@@ -8,37 +8,6 @@
     "Icon": "fal fa-address-card",
     "IsMenu": true,
     "EntityId": "PartnerContact",
-    "ComponentGroup": [
-        {
-            "Id": "00a73764-0000-0000-8000-29459187d57f",
-            "Order": 1,
-            "ComponentType": "Section",
-            "Icon": "fal fa-border-all mr-1",
-            "ClassName": "scroll-content",
-            "XxlCol": 12,
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "00a73704-0000-0000-8000-7ab01e090d61",
-                    "FieldName": "PartnerContact",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "FormatData": "{Name}",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "ClassName": "sticky",
-                    "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "Events": "{\"dblclick\":\"Edit\"}",
-                    "Query": "{\r\n    \"sql\": \"select * from PartnerContact as ds\",\r\n    \"total\": \"select count(ds.Id) as total from PartnerContact as ds\"\r\n}",
-                    "IsRealtime": true,
-                    "RefName": "PartnerContact",
-                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "00353814-0000-0000-8000-bc5bfe0be5d6",
@@ -150,19 +119,33 @@
     ],
     "Components": [
         {
-            "Id": "00353814-0000-0000-8000-bc5bfe0be5d6",
-            "FieldName": "btnEdit",
-            "Order": 0,
-            "ComponentType": "Button",
-            "Icon": "fal fa-expand",
-            "ClassName": "btn",
-            "Events": "{\"click\":\"Edit\"}",
-            "Width": "56px",
-            "FocusSearch": true,
-            "MinWidth": "56px",
-            "MaxWidth": "56px",
-            "created_by": "Customer",
-            "EntityId": "PartnerContact"
+            "Id": "00a73764-0000-0000-8000-29459187d57f",
+            "Order": 1,
+            "ComponentType": "Section",
+            "Icon": "fal fa-border-all mr-1",
+            "ClassName": "scroll-content",
+            "XxlCol": 12,
+            "DisplayBadge": true,
+            "Components": [
+                {
+                    "Id": "00a73704-0000-0000-8000-7ab01e090d61",
+                    "FieldName": "PartnerContact",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "FormatData": "{Name}",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "ClassName": "sticky",
+                    "ChildStyle": "height: calc(100vh - 10.5rem)",
+                    "Events": "{\"dblclick\":\"Edit\"}",
+                    "Query": "{\r\n    \"sql\": \"select * from PartnerContact as ds\",\r\n    \"total\": \"select count(ds.Id) as total from PartnerContact as ds\"\r\n}",
+                    "IsRealtime": true,
+                    "RefName": "PartnerContact",
+                    "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         }
     ],
     "FeaturePolicies": [

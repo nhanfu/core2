@@ -6,33 +6,6 @@
     "Order": 8,
     "Icon": "fal fa-history",
     "IsMenu": true,
-    "ComponentGroup": [
-        {
-            "Id": "00ec11c0-0000-0000-8000-c4059002e1ad",
-            "FieldName": "Lang",
-            "Order": 1,
-            "ComponentType": "Section",
-            "XxlCol": 12,
-            "Components": [
-                {
-                    "Id": "00ec1130-0000-0000-8000-3baf9ead10a1",
-                    "FieldName": "History",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from History as ds where TableName is not null\",\r\n    \"total\": \"select count(ds.Id) as total from History as ds where TableName is not null\"\r\n}",
-                    "IsRealtime": true,
-                    "RefName": "History",
-                    "TopEmpty": true,
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "00291114-0000-0000-8000-939db97bb5cf",
@@ -146,6 +119,33 @@
             "Id": "F72F1DC7-30FE-4FD3-89EB-A88E1CA07752",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
+        }
+    ],
+    "Components": [
+        {
+            "Id": "00ec11c0-0000-0000-8000-c4059002e1ad",
+            "FieldName": "Lang",
+            "Order": 1,
+            "ComponentType": "Section",
+            "XxlCol": 12,
+            "Components": [
+                {
+                    "Id": "00ec1130-0000-0000-8000-3baf9ead10a1",
+                    "FieldName": "History",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "ChildStyle": "height: calc(100vh - 10.5rem)",
+                    "CanAdd": true,
+                    "Query": "{\r\n    \"sql\": \"select * from History as ds where TableName is not null\",\r\n    \"total\": \"select count(ds.Id) as total from History as ds where TableName is not null\"\r\n}",
+                    "IsRealtime": true,
+                    "RefName": "History",
+                    "TopEmpty": true,
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         }
     ]
 }

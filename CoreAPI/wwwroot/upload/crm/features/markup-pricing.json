@@ -8,34 +8,6 @@
     "Icon": "fal fa-wrench",
     "IsMenu": true,
     "EntityId": "MarkupPricing",
-    "ComponentGroup": [
-        {
-            "Id": "00aa15f8-0000-0000-8000-8df06ba28b87",
-            "Order": 1,
-            "ComponentType": "Section",
-            "ClassName": "scroll-content",
-            "XxlCol": 12,
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "00aa1504-0000-0000-8000-3fa260948026",
-                    "FieldName": "MarkupPricing",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "Label": "MarkupPricing",
-                    "ClassName": "sticky",
-                    "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from MarkupPricing as ds\",\r\n    \"total\": \"select count(ds.Id) as total from MarkupPricing as ds\"\r\n}",
-                    "IsRealtime": true,
-                    "RefName": "MarkupPricing",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "00332524-0000-0000-8000-3c10fd8126c2",
@@ -257,6 +229,34 @@
             "Id": "FCB9E359-5CFE-4976-ACEF-4B0B6A7ED994",
             "RoleId": "ADMIN",
             "TableName": "Feature"
+        }
+    ],
+    "Components": [
+        {
+            "Id": "00aa15f8-0000-0000-8000-8df06ba28b87",
+            "Order": 1,
+            "ComponentType": "Section",
+            "ClassName": "scroll-content",
+            "XxlCol": 12,
+            "DisplayBadge": true,
+            "Components": [
+                {
+                    "Id": "00aa1504-0000-0000-8000-3fa260948026",
+                    "FieldName": "MarkupPricing",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "Label": "MarkupPricing",
+                    "ClassName": "sticky",
+                    "CanAdd": true,
+                    "Query": "{\r\n    \"sql\": \"select * from MarkupPricing as ds\",\r\n    \"total\": \"select count(ds.Id) as total from MarkupPricing as ds\"\r\n}",
+                    "IsRealtime": true,
+                    "RefName": "MarkupPricing",
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         }
     ]
 }

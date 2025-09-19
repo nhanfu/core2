@@ -8,33 +8,6 @@
     "Icon": "fal fa-user-chart",
     "IsMenu": true,
     "EntityId": "Partner",
-    "ComponentGroup": [
-        {
-            "Id": "019391e3-ca62-70ca-b468-2a829f88960f",
-            "FieldName": " ",
-            "Order": 1,
-            "ComponentType": "Section",
-            "Icon": "fal fa-border-all mr-1",
-            "XxlCol": 1,
-            "Components": [
-                {
-                    "Id": "0193925a-c555-706c-aaf9-47d7e40529f1",
-                    "FieldName": "Customer",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 100,
-                    "CanSearch": true,
-                    "ClassName": "sticky",
-                    "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select * from [Partner] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [Partner] as ds\",\r\n    \"delete\": \"select top 1 CustomerId from Inquiry where CustomerId in ({EntityIds}) union select top 1 VendorId from DefaultFee where VendorId in ({EntityIds}) union select top 1 PayerId from InquiryDetail where PayerId in ({EntityIds}) union select top 1 PayerId from InquiryDetail where PayeeId in ({EntityIds}) union select top 1 CustomerId from Booking where CustomerId in ({EntityIds})\",\r\n    \"update\" : \"update Inquiry set CustomerId = '{NewId}' where CustomerId in ({EntityIds}); update DefaultFee set VendorId = '{NewId}' where VendorId in ({EntityIds}); update InquiryDetail set PayerId = '{NewId}' where PayerId in ({EntityIds}); update InquiryDetail set PayerId = '{NewId}' where PayeeId in ({EntityIds}); update Booking set  CustomerId = '{NewId}' where CustomerId in ({EntityIds});UPDATE p1 SET p1.History = CONCAT(ISNULL(p1.History, ''), '', N'The partner ', ISNULL(agg.PartnerNames, N''), N' was deleted by user {TokenUserName} on ', GETDATE() ) FROM [Partner] p1 CROSS APPLY ( SELECT STRING_AGG(CONCAT(p2.Name, N' (', p2.Id, ')'), N', ') AS PartnerNames FROM [Partner] p2 WHERE p2.Id IN ({EntityIds}) ) agg WHERE p1.Id = '{NewId}';\"\r\n}",
-                    "RefName": "Partner",
-                    "PreQuery": "{\r\n    \"Message\": \"Unable to delete issue data\"\r\n}",
-                    "OrderBy": "ServiceId desc"
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "0193c354-01a7-702b-9ac4-e23812c1f4d3",
@@ -178,18 +151,29 @@
     ],
     "Components": [
         {
-            "Id": "0193c354-01a7-702b-9ac4-e23812c1f4d3",
-            "FieldName": "btnEdit",
-            "Order": 0,
-            "ComponentType": "Button",
-            "Icon": "fal fa-expand",
-            "ClassName": "btn",
-            "Events": "{\r\n    \"click\": \"Edit\"\r\n}",
-            "Width": "56px",
-            "FocusSearch": true,
-            "MinWidth": "56px",
-            "MaxWidth": "56px",
-            "EntityId": "Customer"
+            "Id": "019391e3-ca62-70ca-b468-2a829f88960f",
+            "FieldName": " ",
+            "Order": 1,
+            "ComponentType": "Section",
+            "Icon": "fal fa-border-all mr-1",
+            "XxlCol": 1,
+            "Components": [
+                {
+                    "Id": "0193925a-c555-706c-aaf9-47d7e40529f1",
+                    "FieldName": "Customer",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 100,
+                    "CanSearch": true,
+                    "ClassName": "sticky",
+                    "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
+                    "Query": "{\r\n    \"sql\": \"select * from [Partner] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [Partner] as ds\",\r\n    \"delete\": \"select top 1 CustomerId from Inquiry where CustomerId in ({EntityIds}) union select top 1 VendorId from DefaultFee where VendorId in ({EntityIds}) union select top 1 PayerId from InquiryDetail where PayerId in ({EntityIds}) union select top 1 PayerId from InquiryDetail where PayeeId in ({EntityIds}) union select top 1 CustomerId from Booking where CustomerId in ({EntityIds})\",\r\n    \"update\" : \"update Inquiry set CustomerId = '{NewId}' where CustomerId in ({EntityIds}); update DefaultFee set VendorId = '{NewId}' where VendorId in ({EntityIds}); update InquiryDetail set PayerId = '{NewId}' where PayerId in ({EntityIds}); update InquiryDetail set PayerId = '{NewId}' where PayeeId in ({EntityIds}); update Booking set  CustomerId = '{NewId}' where CustomerId in ({EntityIds});UPDATE p1 SET p1.History = CONCAT(ISNULL(p1.History, ''), '', N'The partner ', ISNULL(agg.PartnerNames, N''), N' was deleted by user {TokenUserName} on ', GETDATE() ) FROM [Partner] p1 CROSS APPLY ( SELECT STRING_AGG(CONCAT(p2.Name, N' (', p2.Id, ')'), N', ') AS PartnerNames FROM [Partner] p2 WHERE p2.Id IN ({EntityIds}) ) agg WHERE p1.Id = '{NewId}';\"\r\n}",
+                    "RefName": "Partner",
+                    "PreQuery": "{\r\n    \"Message\": \"Unable to delete issue data\"\r\n}",
+                    "OrderBy": "ServiceId desc"
+                }
+            ]
         }
     ],
     "FeaturePolicies": [

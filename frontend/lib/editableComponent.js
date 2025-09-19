@@ -279,7 +279,6 @@ export class EditableComponent {
         this.DOMContentLoaded.add(() => {
             this.UpdateValidation();
             this.SetRequired();
-            this.SendQueueAction("Subscribe");
             if (meta != null && meta.Events) {
                 this.DispatchEvent(meta.Events, EventType.DOMContentLoaded, this, this.Entity).then();
             }
@@ -858,7 +857,6 @@ export class EditableComponent {
     }
 
     Dispose() {
-        this.SendQueueAction("Unsubscribe");
         this.DisposeChildren();
         this.RemoveDOM();
         this.Children = [];
@@ -879,20 +877,6 @@ export class EditableComponent {
             this.Element.remove();
             this.Element = null;
         }
-    }
-
-    SendQueueAction(action) {
-        var queueName = this.QueueName;
-        if (!queueName) return;
-        const param = { QueueName: queueName, Action: action };
-        // @ts-ignore
-        this.EditForm?.NotificationClient?.Send(JSON.stringify(param));
-        if (action == "Subscribe")
-            // @ts-ignore
-            window.addEventListener(queueName, this.QueueHandler);
-        else
-            // @ts-ignore
-            window.removeEventListener(queueName, this.QueueHandler);
     }
 
     GetValueText() {

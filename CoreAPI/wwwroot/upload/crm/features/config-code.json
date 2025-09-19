@@ -7,35 +7,6 @@
     "Icon": "fal fa-cog",
     "IsMenu": true,
     "EntityId": "Config",
-    "ComponentGroup": [
-        {
-            "Id": "00b40064-0000-0000-8000-a45d926c75bf",
-            "FieldName": "Container",
-            "Order": 1,
-            "ComponentType": "Section",
-            "ClassName": "scroll-content",
-            "XxlCol": 12,
-            "Components": [
-                {
-                    "Id": "00c20024-0000-0000-8000-20b5fce098ee",
-                    "FieldName": "Config",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "GroupBy": "TableName",
-                    "ClassName": "sticky",
-                    "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from Config as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Config as ds\"\r\n}",
-                    "IsRealtime": true,
-                    "RefName": "Config",
-                    "OrderBy": "ds.TableName asc,ds.RecordId asc"
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "000d0048-0000-0000-8000-5ef75291e34a",
@@ -225,6 +196,35 @@
             "Id": "DDD2A7F5-B7B4-4643-9392-75E5075BEF8C",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
+        }
+    ],
+    "Components": [
+        {
+            "Id": "00b40064-0000-0000-8000-a45d926c75bf",
+            "FieldName": "Container",
+            "Order": 1,
+            "ComponentType": "Section",
+            "ClassName": "scroll-content",
+            "XxlCol": 12,
+            "Components": [
+                {
+                    "Id": "00c20024-0000-0000-8000-20b5fce098ee",
+                    "FieldName": "Config",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "GroupBy": "TableName",
+                    "ClassName": "sticky",
+                    "ChildStyle": "height: calc(100vh - 10.5rem)",
+                    "CanAdd": true,
+                    "Query": "{\r\n    \"sql\": \"select * from Config as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Config as ds\"\r\n}",
+                    "IsRealtime": true,
+                    "RefName": "Config",
+                    "OrderBy": "ds.TableName asc,ds.RecordId asc"
+                }
+            ]
         }
     ]
 }

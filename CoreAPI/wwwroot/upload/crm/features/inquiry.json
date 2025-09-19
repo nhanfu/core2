@@ -7,149 +7,6 @@
     "Script": "return {\r\n    Add: function () {\r\n        var entity = {\r\n            StatusId: 1,\r\n            VoucherTypeId: 1,\r\n            TypeId: 1,\r\n            SaleId: this.Token.UserId\r\n        }\r\n        this.OpenPopup(\"inquiry-editor\", entity);\r\n    },\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"inquiry-editor\", entity);\r\n    }\r\n}",
     "Icon": "fal fa-comment-exclamation",
     "EntityId": "Inquiry",
-    "ComponentGroup": [
-        {
-            "Id": "00420138-0000-0000-8000-8518a9e869a5",
-            "Order": 3,
-            "ComponentType": "Section",
-            "Label": "Approved",
-            "Icon": "fal fa-smile mr-1",
-            "XxlCol": 12,
-            "IsTab": true,
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "008b01ec-0000-0000-8000-c32190370534",
-                    "FieldName": "Inquiry",
-                    "Order": 3,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "Label": "ApprovedGrid",
-                    "ClassName": "sticky",
-                    "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "Query": "{\r\n    \"sql\": \"select *,(select Max(StatusId) from InquiryDetail ds1 where ds1.InquiryId = ds.Id and (ds1.InsertedBy = '{TokenUserId}' or (ds1.IsSend = 1 and (ds1.UserReceiverId = '{TokenUserId}' or ds1.GroupReceiverId = '{TokenGroupId}')))) as MaxStatusId  from Inquiry as ds where (ds.InsertedBy = '{TokenUserId}' or exists (select Id from InquiryDetail ds2 where ds2.InquiryId = ds.Id and (ds2.IsSend = 1 and (ds2.UserReceiverId = '{TokenUserId}' or ds2.GroupReceiverId = '{TokenGroupId}')))) and ds.TypeId = 1 and ds.StatusId = 3\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.InsertedBy = '{TokenUserId}' or exists (select Id from InquiryDetail ds2 where ds2.InquiryId = ds.Id and (ds2.IsSend = 1 and (ds2.UserReceiverId = '{TokenUserId}' or ds2.GroupReceiverId = '{TokenGroupId}')))) and ds.TypeId = 1 and ds.StatusId = 3\"\r\n}",
-                    "RefName": "Inquiry",
-                    "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        },
-        {
-            "Id": "004a014c-0000-0000-8000-6a461a5ac2ed",
-            "Order": 4,
-            "ComponentType": "Section",
-            "Label": "Decline",
-            "Icon": "fal fa-frown mr-1",
-            "XxlCol": 12,
-            "IsTab": true,
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "008b0100-0000-0000-8000-73bc6a46f5a5",
-                    "FieldName": "Inquiry",
-                    "Order": 4,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "Label": "RejectGrid",
-                    "ClassName": "sticky",
-                    "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "Query": "{\r\n    \"sql\": \"select *,(select Max(StatusId) from InquiryDetail ds1 where ds1.InquiryId = ds.Id and (ds1.InsertedBy = '{TokenUserId}' or (ds1.IsSend = 1 and (ds1.UserReceiverId = '{TokenUserId}' or ds1.GroupReceiverId = '{TokenGroupId}')))) as MaxStatusId  from Inquiry as ds where (ds.InsertedBy = '{TokenUserId}' or exists (select Id from InquiryDetail ds2 where ds2.InquiryId = ds.Id and (ds2.IsSend = 1 and (ds2.UserReceiverId = '{TokenUserId}' or ds2.GroupReceiverId = '{TokenGroupId}')))) and ds.TypeId = 1 and ds.StatusId = 4\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.InsertedBy = '{TokenUserId}' or exists (select Id from InquiryDetail ds2 where ds2.InquiryId = ds.Id and (ds2.IsSend = 1 and (ds2.UserReceiverId = '{TokenUserId}' or ds2.GroupReceiverId = '{TokenGroupId}')))) and ds.TypeId = 1 and ds.StatusId = 4\"\r\n}",
-                    "RefName": "Inquiry",
-                    "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        },
-        {
-            "Id": "0091026c-0000-0000-8000-28dfd0580c04",
-            "Order": 0,
-            "ComponentType": "Section",
-            "Label": "All",
-            "Icon": "fal fa-border-all mr-1",
-            "ClassName": "scroll-content",
-            "XxlCol": 12,
-            "IsTab": true,
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "00a202a4-0000-0000-8000-bcd24ae89118",
-                    "FieldName": "Inquiry",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "Label": "AllGrid",
-                    "ClassName": "sticky",
-                    "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select *,(select min(StatusId) from InquiryDetail ds1 where ds1.InquiryId = ds.Id and (ds1.InsertedBy = '{TokenUserId}' or (ds1.IsSend = 1 and (ds1.UserReceiverId = '{TokenUserId}' or ds1.GroupReceiverId = '{TokenGroupId}')))) as MaxStatusId  from Inquiry as ds where (ds.InsertedBy = '{TokenUserId}' or exists (select Id from InquiryDetail ds2 where ds2.InquiryId = ds.Id and (ds2.IsSend = 1 and (ds2.UserReceiverId = '{TokenUserId}' or ds2.GroupReceiverId = '{TokenGroupId}')))) and ds.TypeId = 1\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.InsertedBy = '{TokenUserId}' or exists (select Id from InquiryDetail ds2 where ds2.InquiryId = ds.Id and (ds2.IsSend = 1 and (ds2.UserReceiverId = '{TokenUserId}' or ds2.GroupReceiverId = '{TokenGroupId}')))) and ds.TypeId = 1\"\r\n}",
-                    "RefName": "Inquiry",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        },
-        {
-            "Id": "00cc0198-0000-0000-8000-60321423faea",
-            "Order": 1,
-            "ComponentType": "Section",
-            "Label": "New",
-            "Icon": "fal fa-plus mr-1",
-            "XxlCol": 12,
-            "IsTab": true,
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "007d0140-0000-0000-8000-c59461a8e317",
-                    "FieldName": "Inquiry",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "Label": "NewGrid",
-                    "ClassName": "sticky",
-                    "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "Events": "{\"dblclick\":\"Edit\"}",
-                    "Query": "{\r\n    \"sql\": \"select *,(select Max(StatusId) from InquiryDetail ds1 where ds1.InquiryId = ds.Id and (ds1.InsertedBy = '{TokenUserId}' or (ds1.IsSend = 1 and (ds1.UserReceiverId = '{TokenUserId}' or ds1.GroupReceiverId = '{TokenGroupId}')))) as MaxStatusId  from Inquiry as ds where (ds.InsertedBy = '{TokenUserId}' or exists (select Id from InquiryDetail ds2 where ds2.InquiryId = ds.Id and (ds2.IsSend = 1 and (ds2.UserReceiverId = '{TokenUserId}' or ds2.GroupReceiverId = '{TokenGroupId}')))) and ds.TypeId = 1 and ds.StatusId = 1\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.InsertedBy = '{TokenUserId}' or exists (select Id from InquiryDetail ds2 where ds2.InquiryId = ds.Id and (ds2.IsSend = 1 and (ds2.UserReceiverId = '{TokenUserId}' or ds2.GroupReceiverId = '{TokenGroupId}')))) and ds.TypeId = 1 and ds.StatusId = 1\"\r\n}",
-                    "RefName": "Inquiry",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        },
-        {
-            "Id": "00cd01ec-0000-0000-8000-4495ff9038da",
-            "Order": 2,
-            "ComponentType": "Section",
-            "Label": "Approving",
-            "Icon": "fal fa-ellipsis-h mr-1",
-            "XxlCol": 12,
-            "IsTab": true,
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "008a0198-0000-0000-8000-0cd5dcdbf05a",
-                    "FieldName": "Inquiry",
-                    "Order": 2,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "Label": "ApprovingGrid",
-                    "ClassName": "sticky",
-                    "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "Query": "{\r\n    \"sql\": \"select *,(select Max(StatusId) from InquiryDetail ds1 where ds1.InquiryId = ds.Id and (ds1.InsertedBy = '{TokenUserId}' or (ds1.IsSend = 1 and (ds1.UserReceiverId = '{TokenUserId}' or ds1.GroupReceiverId = '{TokenGroupId}')))) as MaxStatusId  from Inquiry as ds where (ds.InsertedBy = '{TokenUserId}' or exists (select Id from InquiryDetail ds2 where ds2.InquiryId = ds.Id and (ds2.IsSend = 1 and (ds2.UserReceiverId = '{TokenUserId}' or ds2.GroupReceiverId = '{TokenGroupId}')))) and ds.TypeId = 1 and ds.StatusId = 2\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.InsertedBy = '{TokenUserId}' or exists (select Id from InquiryDetail ds2 where ds2.InquiryId = ds.Id and (ds2.IsSend = 1 and (ds2.UserReceiverId = '{TokenUserId}' or ds2.GroupReceiverId = '{TokenGroupId}')))) and ds.TypeId = 1 and ds.StatusId = 2\"\r\n}",
-                    "RefName": "Inquiry",
-                    "PreQuery": "{ \"UserId\": this.Token.UserId }",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "000801dc-0000-0000-8000-f7338694587e",
@@ -328,39 +185,145 @@
     ],
     "Components": [
         {
-            "Id": "001c01e8-0000-0000-8000-8a4799182fdd",
-            "FieldName": "btnEdit",
+            "Id": "00420138-0000-0000-8000-8518a9e869a5",
+            "Order": 3,
+            "ComponentType": "Section",
+            "Label": "Approved",
+            "Icon": "fal fa-smile mr-1",
+            "XxlCol": 12,
+            "IsTab": true,
+            "DisplayBadge": true,
+            "Components": [
+                {
+                    "Id": "008b01ec-0000-0000-8000-c32190370534",
+                    "FieldName": "Inquiry",
+                    "Order": 3,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "Label": "ApprovedGrid",
+                    "ClassName": "sticky",
+                    "ChildStyle": "height: calc(100vh - 10.5rem)",
+                    "Query": "{\r\n    \"sql\": \"select *,(select Max(StatusId) from InquiryDetail ds1 where ds1.InquiryId = ds.Id and (ds1.InsertedBy = '{TokenUserId}' or (ds1.IsSend = 1 and (ds1.UserReceiverId = '{TokenUserId}' or ds1.GroupReceiverId = '{TokenGroupId}')))) as MaxStatusId  from Inquiry as ds where (ds.InsertedBy = '{TokenUserId}' or exists (select Id from InquiryDetail ds2 where ds2.InquiryId = ds.Id and (ds2.IsSend = 1 and (ds2.UserReceiverId = '{TokenUserId}' or ds2.GroupReceiverId = '{TokenGroupId}')))) and ds.TypeId = 1 and ds.StatusId = 3\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.InsertedBy = '{TokenUserId}' or exists (select Id from InquiryDetail ds2 where ds2.InquiryId = ds.Id and (ds2.IsSend = 1 and (ds2.UserReceiverId = '{TokenUserId}' or ds2.GroupReceiverId = '{TokenGroupId}')))) and ds.TypeId = 1 and ds.StatusId = 3\"\r\n}",
+                    "RefName": "Inquiry",
+                    "PreQuery": "{ \"UserId\": this.Token.UserId }",
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
+        },
+        {
+            "Id": "004a014c-0000-0000-8000-6a461a5ac2ed",
+            "Order": 4,
+            "ComponentType": "Section",
+            "Label": "Decline",
+            "Icon": "fal fa-frown mr-1",
+            "XxlCol": 12,
+            "IsTab": true,
+            "DisplayBadge": true,
+            "Components": [
+                {
+                    "Id": "008b0100-0000-0000-8000-73bc6a46f5a5",
+                    "FieldName": "Inquiry",
+                    "Order": 4,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "Label": "RejectGrid",
+                    "ClassName": "sticky",
+                    "ChildStyle": "height: calc(100vh - 10.5rem)",
+                    "Query": "{\r\n    \"sql\": \"select *,(select Max(StatusId) from InquiryDetail ds1 where ds1.InquiryId = ds.Id and (ds1.InsertedBy = '{TokenUserId}' or (ds1.IsSend = 1 and (ds1.UserReceiverId = '{TokenUserId}' or ds1.GroupReceiverId = '{TokenGroupId}')))) as MaxStatusId  from Inquiry as ds where (ds.InsertedBy = '{TokenUserId}' or exists (select Id from InquiryDetail ds2 where ds2.InquiryId = ds.Id and (ds2.IsSend = 1 and (ds2.UserReceiverId = '{TokenUserId}' or ds2.GroupReceiverId = '{TokenGroupId}')))) and ds.TypeId = 1 and ds.StatusId = 4\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.InsertedBy = '{TokenUserId}' or exists (select Id from InquiryDetail ds2 where ds2.InquiryId = ds.Id and (ds2.IsSend = 1 and (ds2.UserReceiverId = '{TokenUserId}' or ds2.GroupReceiverId = '{TokenGroupId}')))) and ds.TypeId = 1 and ds.StatusId = 4\"\r\n}",
+                    "RefName": "Inquiry",
+                    "PreQuery": "{ \"UserId\": this.Token.UserId }",
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
+        },
+        {
+            "Id": "0091026c-0000-0000-8000-28dfd0580c04",
             "Order": 0,
-            "ComponentType": "Button",
-            "Icon": "fal fa-expand",
-            "ClassName": "btn",
-            "Events": "{\"click\":\"Edit\"}",
-            "Width": "35px",
-            "MinWidth": "35px",
-            "MaxWidth": "35px",
-            "EntityId": "Inquiry"
+            "ComponentType": "Section",
+            "Label": "All",
+            "Icon": "fal fa-border-all mr-1",
+            "ClassName": "scroll-content",
+            "XxlCol": 12,
+            "IsTab": true,
+            "DisplayBadge": true,
+            "Components": [
+                {
+                    "Id": "00a202a4-0000-0000-8000-bcd24ae89118",
+                    "FieldName": "Inquiry",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "Label": "AllGrid",
+                    "ClassName": "sticky",
+                    "ChildStyle": "height: calc(100vh - 10.5rem)",
+                    "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
+                    "Query": "{\r\n    \"sql\": \"select *,(select min(StatusId) from InquiryDetail ds1 where ds1.InquiryId = ds.Id and (ds1.InsertedBy = '{TokenUserId}' or (ds1.IsSend = 1 and (ds1.UserReceiverId = '{TokenUserId}' or ds1.GroupReceiverId = '{TokenGroupId}')))) as MaxStatusId  from Inquiry as ds where (ds.InsertedBy = '{TokenUserId}' or exists (select Id from InquiryDetail ds2 where ds2.InquiryId = ds.Id and (ds2.IsSend = 1 and (ds2.UserReceiverId = '{TokenUserId}' or ds2.GroupReceiverId = '{TokenGroupId}')))) and ds.TypeId = 1\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.InsertedBy = '{TokenUserId}' or exists (select Id from InquiryDetail ds2 where ds2.InquiryId = ds.Id and (ds2.IsSend = 1 and (ds2.UserReceiverId = '{TokenUserId}' or ds2.GroupReceiverId = '{TokenGroupId}')))) and ds.TypeId = 1\"\r\n}",
+                    "RefName": "Inquiry",
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         },
         {
-            "Id": "00c70164-0000-0000-8000-c46ed19505b3",
-            "FieldName": "btnAdd",
+            "Id": "00cc0198-0000-0000-8000-60321423faea",
             "Order": 1,
-            "ComponentType": "Button",
-            "Column": 1,
-            "Label": "Add",
-            "Icon": "fal fa-plus",
-            "ClassName": "btn",
-            "Events": "{\"click\":\"Add\"}"
+            "ComponentType": "Section",
+            "Label": "New",
+            "Icon": "fal fa-plus mr-1",
+            "XxlCol": 12,
+            "IsTab": true,
+            "DisplayBadge": true,
+            "Components": [
+                {
+                    "Id": "007d0140-0000-0000-8000-c59461a8e317",
+                    "FieldName": "Inquiry",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "Label": "NewGrid",
+                    "ClassName": "sticky",
+                    "ChildStyle": "height: calc(100vh - 10.5rem)",
+                    "Events": "{\"dblclick\":\"Edit\"}",
+                    "Query": "{\r\n    \"sql\": \"select *,(select Max(StatusId) from InquiryDetail ds1 where ds1.InquiryId = ds.Id and (ds1.InsertedBy = '{TokenUserId}' or (ds1.IsSend = 1 and (ds1.UserReceiverId = '{TokenUserId}' or ds1.GroupReceiverId = '{TokenGroupId}')))) as MaxStatusId  from Inquiry as ds where (ds.InsertedBy = '{TokenUserId}' or exists (select Id from InquiryDetail ds2 where ds2.InquiryId = ds.Id and (ds2.IsSend = 1 and (ds2.UserReceiverId = '{TokenUserId}' or ds2.GroupReceiverId = '{TokenGroupId}')))) and ds.TypeId = 1 and ds.StatusId = 1\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.InsertedBy = '{TokenUserId}' or exists (select Id from InquiryDetail ds2 where ds2.InquiryId = ds.Id and (ds2.IsSend = 1 and (ds2.UserReceiverId = '{TokenUserId}' or ds2.GroupReceiverId = '{TokenGroupId}')))) and ds.TypeId = 1 and ds.StatusId = 1\"\r\n}",
+                    "RefName": "Inquiry",
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         },
         {
-            "Id": "00d30228-0000-0000-8000-34cd626f88d1",
-            "FieldName": "btnAdd",
-            "Order": 1,
-            "ComponentType": "Button",
-            "Column": 1,
-            "Label": "Add",
-            "Icon": "fal fa-plus",
-            "ClassName": "btn",
-            "Events": "{\"click\":\"Add\"}"
+            "Id": "00cd01ec-0000-0000-8000-4495ff9038da",
+            "Order": 2,
+            "ComponentType": "Section",
+            "Label": "Approving",
+            "Icon": "fal fa-ellipsis-h mr-1",
+            "XxlCol": 12,
+            "IsTab": true,
+            "DisplayBadge": true,
+            "Components": [
+                {
+                    "Id": "008a0198-0000-0000-8000-0cd5dcdbf05a",
+                    "FieldName": "Inquiry",
+                    "Order": 2,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "Label": "ApprovingGrid",
+                    "ClassName": "sticky",
+                    "ChildStyle": "height: calc(100vh - 10.5rem)",
+                    "Query": "{\r\n    \"sql\": \"select *,(select Max(StatusId) from InquiryDetail ds1 where ds1.InquiryId = ds.Id and (ds1.InsertedBy = '{TokenUserId}' or (ds1.IsSend = 1 and (ds1.UserReceiverId = '{TokenUserId}' or ds1.GroupReceiverId = '{TokenGroupId}')))) as MaxStatusId  from Inquiry as ds where (ds.InsertedBy = '{TokenUserId}' or exists (select Id from InquiryDetail ds2 where ds2.InquiryId = ds.Id and (ds2.IsSend = 1 and (ds2.UserReceiverId = '{TokenUserId}' or ds2.GroupReceiverId = '{TokenGroupId}')))) and ds.TypeId = 1 and ds.StatusId = 2\",\r\n    \"total\": \"select count(ds.Id) as total from Inquiry as ds  where (ds.InsertedBy = '{TokenUserId}' or exists (select Id from InquiryDetail ds2 where ds2.InquiryId = ds.Id and (ds2.IsSend = 1 and (ds2.UserReceiverId = '{TokenUserId}' or ds2.GroupReceiverId = '{TokenGroupId}')))) and ds.TypeId = 1 and ds.StatusId = 2\"\r\n}",
+                    "RefName": "Inquiry",
+                    "PreQuery": "{ \"UserId\": this.Token.UserId }",
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         }
     ],
     "FeaturePolicies": [

@@ -6,27 +6,6 @@
     "Icon": "fal fa-quote-left",
     "IsPublic": true,
     "IgnoreEncode": true,
-    "ComponentGroup": [
-        {
-            "Id": "00a901b4-0000-0000-8000-b9db612bb4bc",
-            "FieldName": "Container",
-            "Order": 1,
-            "ComponentType": "Section",
-            "XxlCol": 12,
-            "Components": [
-                {
-                    "Id": "00e50144-0000-0000-8000-5efc0026bd16",
-                    "FieldName": "Report1",
-                    "Order": 1,
-                    "ComponentType": "HtmlCode",
-                    "Column": 12,
-                    "Query": "select * from Partner as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.PicId = '{TokenUserId}')",
-                    "RefName": "Partner",
-                    "PreQuery": "{ \"UserId\": this.Token.UserId }"
-                }
-            ]
-        }
-    ],
     "FeaturePolicies": [
         {
             "Id": "06D5F2FB-4DEE-42E8-871E-EA97AA9B3BC9",
@@ -86,6 +65,27 @@
             "CanDelete": true,
             "CanDeleteAll": true,
             "TableName": "Feature"
+        }
+    ],
+    "Components": [
+        {
+            "Id": "00a901b4-0000-0000-8000-b9db612bb4bc",
+            "FieldName": "Container",
+            "Order": 1,
+            "ComponentType": "Section",
+            "XxlCol": 12,
+            "Components": [
+                {
+                    "Id": "00e50144-0000-0000-8000-5efc0026bd16",
+                    "FieldName": "Report1",
+                    "Order": 1,
+                    "ComponentType": "HtmlCode",
+                    "Column": 12,
+                    "Query": "select * from Partner as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.PicId = '{TokenUserId}')",
+                    "RefName": "Partner",
+                    "PreQuery": "{ \"UserId\": this.Token.UserId }"
+                }
+            ]
         }
     ]
 }

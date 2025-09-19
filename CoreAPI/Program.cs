@@ -1,16 +1,12 @@
 ﻿using Core.Extensions;
 using Core.Middlewares;
 using Core.Services;
-using CoreAPI.BgService;
 using CoreAPI.Services;
 using CoreAPI.Services.Sql;
-using Hangfire;
-using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using System.IdentityModel.Tokens.Jwt;
 using System.IO.Compression;
 using System.Text;
 
@@ -37,16 +33,6 @@ services.AddLogging(config =>
     config.AddConsole();
     config.AddEventSourceLogger();
 });
-services.AddHangfire(configuration => configuration
-       .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
-       .UseSimpleAssemblyNameTypeSerializer()
-       .UseRecommendedSerializerSettings()
-       .UseSqlServerStorage(conf.GetConnectionString("logistics"), new SqlServerStorageOptions
-       {
-           QueuePollInterval = TimeSpan.FromSeconds(15), // Kiểm tra job mới mỗi 15s
-           JobExpirationCheckInterval = TimeSpan.FromHours(1)
-       }));
-services.AddHangfireServer();
 services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);
 services.AddResponseCompression(options =>
 {
@@ -104,19 +90,6 @@ services.AddScoped<PdfService>();
 services.AddScoped<ExcelService>();
 services.AddScoped<OpenAIHttpClientService>();
 var app = builder.Build();
-app.UseHangfireDashboard();
-#if !DEBUG
-RecurringJob.AddOrUpdate<DailyFunction>("CoreAPI.BgService.DailyFunction",
-x => x.StatisticsProcesses(), Cron.Daily(06, 00), new RecurringJobOptions()
-{
-    TimeZone = TimeZoneInfo.Local,
-});
-RecurringJob.AddOrUpdate<CustomerFunction>("CoreAPI.BgService.CustomerFunction",
-x => x.StatisticsProcesses(), Cron.Daily(00, 00), new RecurringJobOptions()
-{
-    TimeZone = TimeZoneInfo.Local,
-});
-#endif
 app.UseCors("MyPolicy");
 app.UseAuthentication();
 app.UseWebSockets();

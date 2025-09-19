@@ -8,33 +8,6 @@
     "Icon": "fal fa-smile",
     "IsMenu": true,
     "EntityId": "ApprovalConfig",
-    "ComponentGroup": [
-        {
-            "Id": "003f0868-0000-0000-8000-0e89bc655d0a",
-            "FieldName": "Lang",
-            "Order": 1,
-            "ComponentType": "Section",
-            "XxlCol": 12,
-            "Components": [
-                {
-                    "Id": "003f08e4-0000-0000-8000-e0d0c4fe4d8d",
-                    "FieldName": "ApprovalConfig",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select * from ApprovalConfig as ds where ParentId is null\",\r\n    \"total\": \"select count(ds.Id) as total from ApprovalConfig as ds where ParentId is null\"\r\n}",
-                    "IsRealtime": true,
-                    "RefName": "ApprovalConfig",
-                    "TopEmpty": true,
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "004508d8-0000-0000-8000-fa5f3c75c561",
@@ -71,29 +44,29 @@
     ],
     "Components": [
         {
-            "Id": "008218a4-0000-0000-8000-b16daa1a0e53",
-            "FieldName": "btnEdit",
-            "Order": 0,
-            "ComponentType": "Button",
-            "Icon": "fal fa-expand",
-            "ClassName": "btn",
-            "Events": "{\r\n    \"click\": \"Edit\"\r\n}",
-            "Width": "52px",
-            "FocusSearch": true,
-            "MinWidth": "52px",
-            "MaxWidth": "52px",
-            "EntityId": "ApprovalConfig"
-        },
-        {
-            "Id": "00af1870-0000-0000-8000-dbf274e6e5f2",
-            "FieldName": "btnAdd",
+            "Id": "003f0868-0000-0000-8000-0e89bc655d0a",
+            "FieldName": "Lang",
             "Order": 1,
-            "ComponentType": "Button",
-            "Column": 1,
-            "Label": "Add",
-            "Icon": "fal fa-plus",
-            "ClassName": "btn",
-            "Events": "{\"click\":\"Add\"}"
+            "ComponentType": "Section",
+            "XxlCol": 12,
+            "Components": [
+                {
+                    "Id": "003f08e4-0000-0000-8000-e0d0c4fe4d8d",
+                    "FieldName": "ApprovalConfig",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "ChildStyle": "height: calc(100vh - 10.5rem)",
+                    "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
+                    "Query": "{\r\n    \"sql\": \"select * from ApprovalConfig as ds where ParentId is null\",\r\n    \"total\": \"select count(ds.Id) as total from ApprovalConfig as ds where ParentId is null\"\r\n}",
+                    "IsRealtime": true,
+                    "RefName": "ApprovalConfig",
+                    "TopEmpty": true,
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         }
     ],
     "FeaturePolicies": [

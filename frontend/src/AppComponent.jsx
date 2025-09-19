@@ -28,13 +28,6 @@ const AppComponent = ({ editForm }) => {
     checkIsMobile();
     setTimeout(() => {
       updateBadge();
-      EditForm.NotificationClient.AddListener(
-        "ChatBadge",
-        updateBadge.bind(this)
-      );
-      return () => {
-        EditForm.NotificationClient.RemoveListener("ChatBadge");
-      };
     }, 5000);
     window.addEventListener("resize", checkIsMobile);
     return () => window.removeEventListener("resize", checkIsMobile);

@@ -6,33 +6,6 @@
     "Order": 5,
     "Icon": "fal fa-globe-americas",
     "IsMenu": true,
-    "ComponentGroup": [
-        {
-            "Id": "00d403b0-0000-0000-8000-c2fb94a5cc41",
-            "FieldName": "Lang",
-            "Order": 1,
-            "ComponentType": "Section",
-            "XxlCol": 12,
-            "Components": [
-                {
-                    "Id": "00d5039c-0000-0000-8000-861979a5e56e",
-                    "FieldName": "Dictionary",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from Dictionary as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Dictionary as ds\"\r\n}",
-                    "IsRealtime": true,
-                    "RefName": "Dictionary",
-                    "TopEmpty": true,
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "00fa0354-0000-0000-8000-1b19f9d06ca9",
@@ -127,6 +100,33 @@
             "Id": "F00C6A47-C45A-4FD2-B98E-D1360C1F6AD0",
             "RoleId": "DOCS",
             "TableName": "Feature"
+        }
+    ],
+    "Components": [
+        {
+            "Id": "00d403b0-0000-0000-8000-c2fb94a5cc41",
+            "FieldName": "Lang",
+            "Order": 1,
+            "ComponentType": "Section",
+            "XxlCol": 12,
+            "Components": [
+                {
+                    "Id": "00d5039c-0000-0000-8000-861979a5e56e",
+                    "FieldName": "Dictionary",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "ChildStyle": "height: calc(100vh - 10.5rem)",
+                    "CanAdd": true,
+                    "Query": "{\r\n    \"sql\": \"select * from Dictionary as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Dictionary as ds\"\r\n}",
+                    "IsRealtime": true,
+                    "RefName": "Dictionary",
+                    "TopEmpty": true,
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         }
     ]
 }

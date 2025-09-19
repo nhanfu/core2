@@ -7,31 +7,6 @@
     "Icon": "fal fa-user",
     "EntityId": "Feature",
     "IgnoreEncode": true,
-    "ComponentGroup": [
-        {
-            "Id": "00db307c-0000-0000-8000-a669cd3a7e06",
-            "FieldName": "Main",
-            "Order": 1,
-            "ComponentType": "Section",
-            "ClassName": "scroll-content",
-            "XxlCol": 12,
-            "Children": [
-                {
-                    "Id": "00cd3098-0000-0000-8000-589ff2110afc",
-                    "FieldName": "Container",
-                    "Order": 2,
-                    "ComponentType": "Section",
-                    "ClassName": "card-body",
-                    "XxlOuterColumn": 12,
-                    "Components": [
-                        {
-                            "Id": "00dd30f0-0000-0000-8000-0721fd09f366"
-                        }
-                    ]
-                }
-            ]
-        }
-    ],
     "FeaturePolicies": [
         {
             "Id": "141D7491-7C5F-4868-BAD6-BB6128C0DCE5",
@@ -88,6 +63,31 @@
             "Id": "FD9163F8-A942-4E49-8775-F3F8A2DCC514",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
+        }
+    ],
+    "Components": [
+        {
+            "Id": "00db307c-0000-0000-8000-a669cd3a7e06",
+            "FieldName": "Main",
+            "Order": 1,
+            "ComponentType": "Section",
+            "ClassName": "scroll-content",
+            "XxlCol": 12,
+            "Components": [
+                {
+                    "Id": "00cd3098-0000-0000-8000-589ff2110afc",
+                    "FieldName": "Container",
+                    "Order": 2,
+                    "ComponentType": "Section",
+                    "ClassName": "card-body",
+                    "XxlOuterColumn": 12,
+                    "Components": [
+                        {
+                            "Id": "00dd30f0-0000-0000-8000-0721fd09f366"
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }

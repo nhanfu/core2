@@ -8,99 +8,6 @@
     "Icon": "fal fa-table",
     "IsMenu": true,
     "EntityId": "ShipmentFee",
-    "ComponentGroup": [
-        {
-            "Id": "01946a26-801e-73da-90b0-ac67ce771164",
-            "Order": 2,
-            "ComponentType": "Section",
-            "Icon": "fal fa-border-all mr-1",
-            "ClassName": "scroll-content",
-            "XxlCol": 12,
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "01946a26-8096-707e-b156-f7a1cf70e31f",
-                    "FieldName": "ShipmentFee",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "Label": "ShipmentFee",
-                    "ClassName": "sticky",
-                    "Query": "{\r\n    \"sql\": \"select * from ShipmentFee as ds where (ds.Active = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentFee as ds where (ds.Active = 1)\"\r\n}",
-                    "IsRealtime": true,
-                    "RefName": "ShipmentFee",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        },
-        {
-            "Id": "01956b33-cfd6-74ae-9eb3-e2af861d4bfe",
-            "FieldName": "SearchForm",
-            "Order": 1,
-            "ComponentType": "Section",
-            "Label": "SearchForm",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "TabGroup": "SearchForm",
-            "Components": [
-                {
-                    "Id": "01956b35-5cda-710e-98c3-a57ab2738d82",
-                    "FieldName": "FromDate",
-                    "Order": 1,
-                    "ComponentType": "Datepicker",
-                    "Column": 3,
-                    "Row": 50,
-                    "Label": "From Date",
-                    "ShowLabel": true,
-                    "Events": "{    \"change\": \"ChangeDataFee\"}",
-                    "SmCol": 5
-                },
-                {
-                    "Id": "01956b35-5cda-710e-98c3-a8761e8c2099",
-                    "FieldName": "ExchangeRateVND",
-                    "Order": 4,
-                    "ComponentType": "Number",
-                    "Column": 3,
-                    "Row": 50,
-                    "Label": "Exchange Rate",
-                    "ShowLabel": true,
-                    "Events": "{    \"change\": \"ChangeDataFee\"}",
-                    "SmCol": 5
-                },
-                {
-                    "Id": "01956b35-5cdb-7035-85a3-8def208c4423",
-                    "FieldName": "DateFieldId",
-                    "Order": 3,
-                    "ComponentType": "Select",
-                    "FormatData": "{Name}",
-                    "PlainText": "Select data",
-                    "Column": 12,
-                    "Row": 50,
-                    "Label": "Date mode",
-                    "ShowLabel": true,
-                    "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
-                    "SmCol": 5,
-                    "DefaultVal": "ShipmentDate",
-                    "Query": "[\r\n    {\r\n        \"Id\": \"ShipmentDate\",\r\n        \"Name\": \"Shipment\"\r\n    },\r\n    {\r\n        \"Id\": \"EtdDate\",\r\n        \"Name\": \"ETD\"\r\n    },\r\n    {\r\n        \"Id\": \"EtaDate\",\r\n        \"Name\": \"ETA\"\r\n    }\r\n]",
-                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
-                },
-                {
-                    "Id": "01956b36-9b8b-75ec-a715-99efbe16506a",
-                    "FieldName": "ToDate",
-                    "Order": 2,
-                    "ComponentType": "Datepicker",
-                    "Column": 3,
-                    "Row": 50,
-                    "Label": "To Date",
-                    "ShowLabel": true,
-                    "Events": "{    \"change\": \"ChangeDataFee\"}",
-                    "SmCol": 5
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "01946a2a-a6b1-7094-b60e-1e03b1ac9433",
@@ -560,6 +467,99 @@
             "ComponentId": "01946a26-8096-707e-b156-f7a1cf70e31f",
             "UserId": "00781eb8-0000-0000-8000-52bf71dcaef7",
             "Value": "[{\"Id\":\"01946a2a-a6b1-7094-b60e-1e03b1ac9433\",\"FieldName\":\"VendorId\",\"Order\":0,\"Width\":\"118px\"},{\"Id\":\"01946a2b-8e9d-7358-a7db-30d7233dcad6\",\"FieldName\":\"FileId\",\"Order\":1,\"Width\":\"102px\"},{\"Id\":\"01946a2f-e536-7419-b7a6-3dc96810e8ff\",\"FieldName\":\"EtaDate\",\"Order\":2,\"Width\":\"132px\"},{\"Id\":\"01946a2f-edcc-709a-8db3-5c2600e66cf7\",\"FieldName\":\"EtdDate\",\"Order\":3,\"Width\":\"102px\"},{\"Id\":\"01946a2f-6081-74c8-bac0-340ef268e3f2\",\"FieldName\":\"ShipmentId\",\"Order\":4,\"Width\":\"102px\"},{\"Id\":\"01946a2a-a6b1-7094-b60e-22c6726333c9\",\"FieldName\":\"DescriptionId\",\"Order\":5,\"Width\":\"165px\"},{\"Id\":\"01946a2a-a6b1-7094-b60e-240184a79720\",\"FieldName\":\"Quantity\",\"Order\":6,\"Width\":\"102px\"},{\"Id\":\"01946a2a-a6b2-75c0-8362-d7ac2b73f162\",\"FieldName\":\"UnitId\",\"Order\":7,\"Width\":\"90px\"},{\"Id\":\"01946a2a-a6b2-75c0-8362-d9297d49cc1d\",\"FieldName\":\"Amount\",\"Order\":8,\"Width\":\"93px\"},{\"Id\":\"01946a2a-a6b2-75c0-8362-dfd794a85076\",\"FieldName\":\"Vat\",\"Order\":9,\"Width\":\"74px\"},{\"Id\":\"01946a2a-a6b2-75c0-8362-e17ee8c33e28\",\"FieldName\":\"CurrencyId\",\"Order\":10,\"Width\":\"124px\"},{\"Id\":\"01946a2a-a6b3-7208-930e-8efbedc0c2a4\",\"FieldName\":\"TotalAmountTax\",\"Order\":11,\"Width\":\"95px\"},{\"Id\":\"01946a2a-a6b3-7208-930e-929637c4c186\",\"FieldName\":\"ObhId\",\"Order\":12,\"Width\":\"98px\"},{\"Id\":\"01946a2a-a6b3-7208-930e-9630f32066e7\",\"FieldName\":\"ShipmentInvoiceId\",\"Order\":13,\"Width\":\"109px\"},{\"Id\":\"01946a2a-a6b4-72bc-8fd7-46e2b3cbd9d9\",\"FieldName\":\"PaymentRequestId\",\"Order\":14,\"Width\":\"114px\"},{\"Id\":\"01946a2a-a6b4-72bc-8fd7-4a026cc3cb56\",\"FieldName\":\"InvoiceId\",\"Order\":15,\"Width\":\"86px\"}]"
+        }
+    ],
+    "Components": [
+        {
+            "Id": "01946a26-801e-73da-90b0-ac67ce771164",
+            "Order": 2,
+            "ComponentType": "Section",
+            "Icon": "fal fa-border-all mr-1",
+            "ClassName": "scroll-content",
+            "XxlCol": 12,
+            "DisplayBadge": true,
+            "Components": [
+                {
+                    "Id": "01946a26-8096-707e-b156-f7a1cf70e31f",
+                    "FieldName": "ShipmentFee",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "Label": "ShipmentFee",
+                    "ClassName": "sticky",
+                    "Query": "{\r\n    \"sql\": \"select * from ShipmentFee as ds where (ds.Active = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentFee as ds where (ds.Active = 1)\"\r\n}",
+                    "IsRealtime": true,
+                    "RefName": "ShipmentFee",
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
+        },
+        {
+            "Id": "01956b33-cfd6-74ae-9eb3-e2af861d4bfe",
+            "FieldName": "SearchForm",
+            "Order": 1,
+            "ComponentType": "Section",
+            "Label": "SearchForm",
+            "ClassName": "card-body",
+            "XxlCol": 12,
+            "TabGroup": "SearchForm",
+            "Components": [
+                {
+                    "Id": "01956b35-5cda-710e-98c3-a57ab2738d82",
+                    "FieldName": "FromDate",
+                    "Order": 1,
+                    "ComponentType": "Datepicker",
+                    "Column": 3,
+                    "Row": 50,
+                    "Label": "From Date",
+                    "ShowLabel": true,
+                    "Events": "{    \"change\": \"ChangeDataFee\"}",
+                    "SmCol": 5
+                },
+                {
+                    "Id": "01956b35-5cda-710e-98c3-a8761e8c2099",
+                    "FieldName": "ExchangeRateVND",
+                    "Order": 4,
+                    "ComponentType": "Number",
+                    "Column": 3,
+                    "Row": 50,
+                    "Label": "Exchange Rate",
+                    "ShowLabel": true,
+                    "Events": "{    \"change\": \"ChangeDataFee\"}",
+                    "SmCol": 5
+                },
+                {
+                    "Id": "01956b35-5cdb-7035-85a3-8def208c4423",
+                    "FieldName": "DateFieldId",
+                    "Order": 3,
+                    "ComponentType": "Select",
+                    "FormatData": "{Name}",
+                    "PlainText": "Select data",
+                    "Column": 12,
+                    "Row": 50,
+                    "Label": "Date mode",
+                    "ShowLabel": true,
+                    "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
+                    "SmCol": 5,
+                    "DefaultVal": "ShipmentDate",
+                    "Query": "[\r\n    {\r\n        \"Id\": \"ShipmentDate\",\r\n        \"Name\": \"Shipment\"\r\n    },\r\n    {\r\n        \"Id\": \"EtdDate\",\r\n        \"Name\": \"ETD\"\r\n    },\r\n    {\r\n        \"Id\": \"EtaDate\",\r\n        \"Name\": \"ETA\"\r\n    }\r\n]",
+                    "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
+                },
+                {
+                    "Id": "01956b36-9b8b-75ec-a715-99efbe16506a",
+                    "FieldName": "ToDate",
+                    "Order": 2,
+                    "ComponentType": "Datepicker",
+                    "Column": 3,
+                    "Row": 50,
+                    "Label": "To Date",
+                    "ShowLabel": true,
+                    "Events": "{    \"change\": \"ChangeDataFee\"}",
+                    "SmCol": 5
+                }
+            ]
         }
     ]
 }

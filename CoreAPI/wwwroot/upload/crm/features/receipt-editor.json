@@ -4,14 +4,90 @@
     "Label": "Receipt Editor",
     "Order": 0,
     "EntityId": "Voucher",
-    "ComponentGroup": [
+    "GridPolicies": [
+        {
+            "Id": "005fff9c-0000-0000-8000-f65e39ead67b",
+            "FieldName": "ItemName",
+            "Order": 1,
+            "ComponentType": "Input",
+            "Label": "Item Name",
+            "Editable": true,
+            "EntityId": "VoucherDetail"
+        },
+        {
+            "Id": "0062ff70-0000-0000-8000-0c2e873f9a38",
+            "FieldName": "DebitAccountId",
+            "Order": 2,
+            "ComponentType": "Dropdown",
+            "FormatData": "{Code}",
+            "PlainText": "Select data",
+            "Row": 100,
+            "Label": "Debit Account",
+            "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds where (ParentId is null)\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds  where (ParentId is null)\"\r\n}",
+            "RefName": "AccountNo",
+            "Template": "[{ \"FieldName\" : \"Id\", \"Label\" : \"Id\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\"\r\n: \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\"\r\n: \"Input\" }]",
+            "Editable": true,
+            "OrderBy": "ds.No asc",
+            "EntityId": "VoucherDetail"
+        },
+        {
+            "Id": "0063ff34-0000-0000-8000-5de6a1ac2051",
+            "FieldName": "SubjectId",
+            "Order": 4,
+            "ComponentType": "Dropdown",
+            "FormatData": "{Name}",
+            "PlainText": "Select data",
+            "Row": 100,
+            "Label": "Subject",
+            "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\"\r\n}",
+            "RefName": "Partner",
+            "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
+            "Editable": true,
+            "EntityId": "VoucherDetail"
+        },
+        {
+            "Id": "0063ff64-0000-0000-8000-c363832b694e",
+            "FieldName": "CreditAccountId",
+            "Order": 3,
+            "ComponentType": "Dropdown",
+            "FormatData": "{Code}",
+            "PlainText": "Select data",
+            "Row": 100,
+            "Label": "Credit Account",
+            "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds\"\r\n}",
+            "RefName": "AccountNo",
+            "Template": "[{ \"FieldName\" : \"Id\", \"Label\" : \"Id\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\"\r\n: \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\"\r\n: \"Input\" }]",
+            "Editable": true,
+            "OrderBy": "ds.No asc",
+            "EntityId": "VoucherDetail"
+        },
+        {
+            "Id": "0064ff1c-0000-0000-8000-ee065da3285d",
+            "FieldName": "SubjectName",
+            "Order": 5,
+            "ComponentType": "Input",
+            "Label": "SubjectName",
+            "Editable": true,
+            "EntityId": "VoucherDetail"
+        },
+        {
+            "Id": "0064ff90-0000-0000-8000-9680818ae7c1",
+            "FieldName": "Amount",
+            "Order": 6,
+            "ComponentType": "Number",
+            "Label": "Amount",
+            "Editable": true,
+            "EntityId": "VoucherDetail"
+        }
+    ],
+    "Components": [
         {
             "Id": "0006ff00-0000-0000-8000-a3d7da86a5bd",
             "FieldName": "Container",
             "Order": 0,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Children": [
+            "Components": [
                 {
                     "Id": "0016ff84-0000-0000-8000-d6d5be76a8c4",
                     "FieldName": "Center1",
@@ -162,6 +238,18 @@
                             "Editable": true
                         }
                     ]
+                },
+                {
+                    "Id": "00d7ffcc-0000-0000-8000-3eca7bc05c5d",
+                    "FieldName": "btnSave",
+                    "Order": 1,
+                    "ComponentType": "Button",
+                    "Column": 1,
+                    "Label": "Save",
+                    "Icon": "fal fa-save",
+                    "ClassName": "btn detail-button primary",
+                    "HotKey": "Ctrl-S",
+                    "Events": "{ \"click\" : \"SavePatch\" }"
                 }
             ]
         },
@@ -186,96 +274,6 @@
                     "Events": "{ \"click\" : \"SavePatch\" }"
                 }
             ]
-        }
-    ],
-    "GridPolicies": [
-        {
-            "Id": "005fff9c-0000-0000-8000-f65e39ead67b",
-            "FieldName": "ItemName",
-            "Order": 1,
-            "ComponentType": "Input",
-            "Label": "Item Name",
-            "Editable": true,
-            "EntityId": "VoucherDetail"
-        },
-        {
-            "Id": "0062ff70-0000-0000-8000-0c2e873f9a38",
-            "FieldName": "DebitAccountId",
-            "Order": 2,
-            "ComponentType": "Dropdown",
-            "FormatData": "{Code}",
-            "PlainText": "Select data",
-            "Row": 100,
-            "Label": "Debit Account",
-            "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds where (ParentId is null)\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds  where (ParentId is null)\"\r\n}",
-            "RefName": "AccountNo",
-            "Template": "[{ \"FieldName\" : \"Id\", \"Label\" : \"Id\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\"\r\n: \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\"\r\n: \"Input\" }]",
-            "Editable": true,
-            "OrderBy": "ds.No asc",
-            "EntityId": "VoucherDetail"
-        },
-        {
-            "Id": "0063ff34-0000-0000-8000-5de6a1ac2051",
-            "FieldName": "SubjectId",
-            "Order": 4,
-            "ComponentType": "Dropdown",
-            "FormatData": "{Name}",
-            "PlainText": "Select data",
-            "Row": 100,
-            "Label": "Subject",
-            "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\"\r\n}",
-            "RefName": "Partner",
-            "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
-            "Editable": true,
-            "EntityId": "VoucherDetail"
-        },
-        {
-            "Id": "0063ff64-0000-0000-8000-c363832b694e",
-            "FieldName": "CreditAccountId",
-            "Order": 3,
-            "ComponentType": "Dropdown",
-            "FormatData": "{Code}",
-            "PlainText": "Select data",
-            "Row": 100,
-            "Label": "Credit Account",
-            "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds\"\r\n}",
-            "RefName": "AccountNo",
-            "Template": "[{ \"FieldName\" : \"Id\", \"Label\" : \"Id\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\"\r\n: \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\"\r\n: \"Input\" }]",
-            "Editable": true,
-            "OrderBy": "ds.No asc",
-            "EntityId": "VoucherDetail"
-        },
-        {
-            "Id": "0064ff1c-0000-0000-8000-ee065da3285d",
-            "FieldName": "SubjectName",
-            "Order": 5,
-            "ComponentType": "Input",
-            "Label": "SubjectName",
-            "Editable": true,
-            "EntityId": "VoucherDetail"
-        },
-        {
-            "Id": "0064ff90-0000-0000-8000-9680818ae7c1",
-            "FieldName": "Amount",
-            "Order": 6,
-            "ComponentType": "Number",
-            "Label": "Amount",
-            "Editable": true,
-            "EntityId": "VoucherDetail"
-        }
-    ],
-    "Components": [
-        {
-            "Id": "00d7ffcc-0000-0000-8000-3eca7bc05c5d",
-            "FieldName": "btnSave",
-            "Order": 1,
-            "ComponentType": "Button",
-            "Column": 1,
-            "Label": "Save",
-            "Icon": "fal fa-save",
-            "ClassName": "btn detail-button primary",
-            "HotKey": "Ctrl-S",
-            "Events": "{ \"click\" : \"SavePatch\" }"
         }
     ],
     "FeaturePolicies": [

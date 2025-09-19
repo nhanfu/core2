@@ -8,34 +8,6 @@
     "Icon": "fal fa-ellipsis-h-alt",
     "IsMenu": true,
     "IgnoreEncode": true,
-    "ComponentGroup": [
-        {
-            "Id": "01947706-b276-73fa-92e4-657838af44e9",
-            "FieldName": "Container",
-            "Order": 1,
-            "ComponentType": "Section",
-            "ClassName": "scroll-content",
-            "XxlCol": 12,
-            "Components": [
-                {
-                    "Id": "01947706-b312-7449-9579-c788fd7bef80",
-                    "FieldName": "Feature",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "CanSearch": true,
-                    "ClassName": "sticky",
-                    "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "Events": "{\"dblclick\":\"Edit\"}",
-                    "Query": "{\r\n    \"sql\": \"select * from Feature as ds where IsFlow = 1\",\r\n    \"total\": \"select count(ds.Id) as total from Feature as ds where IsFlow = 1\"\r\n}",
-                    "IsRealtime": true,
-                    "RefName": "Feature",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "01947706-b358-71fa-b02e-d8d96a6c6605",
@@ -89,15 +61,30 @@
     ],
     "Components": [
         {
-            "Id": "0194e85f-5414-7403-b320-c41b666a20bb",
-            "FieldName": "btnAdd",
+            "Id": "01947706-b276-73fa-92e4-657838af44e9",
+            "FieldName": "Container",
             "Order": 1,
-            "ComponentType": "Button",
-            "Column": 1,
-            "Label": "Add",
-            "Icon": "fal fa-plus",
-            "ClassName": "btn",
-            "Events": "{\r\n    \"click\": \"Add\"\r\n}"
+            "ComponentType": "Section",
+            "ClassName": "scroll-content",
+            "XxlCol": 12,
+            "Components": [
+                {
+                    "Id": "01947706-b312-7449-9579-c788fd7bef80",
+                    "FieldName": "Feature",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "CanSearch": true,
+                    "ClassName": "sticky",
+                    "ChildStyle": "height: calc(100vh - 10.5rem)",
+                    "Events": "{\"dblclick\":\"Edit\"}",
+                    "Query": "{\r\n    \"sql\": \"select * from Feature as ds where IsFlow = 1\",\r\n    \"total\": \"select count(ds.Id) as total from Feature as ds where IsFlow = 1\"\r\n}",
+                    "IsRealtime": true,
+                    "RefName": "Feature",
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         }
     ],
     "FeaturePolicies": [

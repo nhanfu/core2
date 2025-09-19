@@ -5,115 +5,6 @@
     "Order": 0,
     "Style": "width:99%;",
     "EntityId": "Role",
-    "ComponentGroup": [
-        {
-            "Id": "00e81d50-0000-0000-8000-0172354eb2ff",
-            "Order": 3,
-            "ComponentType": "Section",
-            "Label": "Policy",
-            "Icon": "fal fa-user-tag mr-1",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "IsTab": true,
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "00571d34-0000-0000-8000-05d6e9501dcd",
-                    "FieldName": "FeaturePolicy",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 500,
-                    "GroupBy": "GroupFeatureId",
-                    "ClassName": "sticky",
-                    "ChildStyle": "height: calc(100vh - 20.5rem)",
-                    "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select ds.*,ds1.ParentId,seq.Id as GroupFeatureId from FeaturePolicy as ds left join Feature ds1 on ds.FeatureId = ds1.Id left join Feature ds2 on ds1.ParentId = ds2.Id outer apply (select top 1 * from FeaturePolicy where FeatureId = ds1.ParentId and RoleId = ds.RoleId) seq where ds.RoleId = '{RoleId}' and ds1.ParentId is not null and seq.Id is not null\",\r\n    \"total\": \"select count(ds.Id) as total from FeaturePolicy as ds left join Feature ds1 on ds.FeatureId = ds1.Id left join Feature ds2 on ds1.ParentId = ds2.Id outer apply (select top 1 * from FeaturePolicy where FeatureId = ds1.ParentId and RoleId = ds.RoleId) seq where ds.RoleId = '{RoleId}' and ds1.ParentId is not null and seq.Id is not null\"\r\n}",
-                    "IsRealtime": true,
-                    "RefName": "FeaturePolicy",
-                    "PreQuery": "{\r\n    \"RoleId\" : this.EditForm.Entity.Id\r\n}",
-                    "OrderBy": "ds2.[Order] asc,seq.Id asc",
-                    "IsMultiple": true
-                }
-            ]
-        },
-        {
-            "Id": "00e81d54-0000-0000-8000-50b600abf5e6",
-            "FieldName": "Button",
-            "Order": 1,
-            "ComponentType": "Section",
-            "ClassName": "ribbon-group",
-            "XxlCol": 12,
-            "Components": [
-                {
-                    "Id": "00e81d78-0000-0000-8000-1119be5e63ca",
-                    "FieldName": "btnSave",
-                    "Order": 1,
-                    "ComponentType": "Button",
-                    "Column": 1,
-                    "Label": "Save",
-                    "Icon": "fal fa-save",
-                    "ClassName": "btn detail-button primary",
-                    "HotKey": "Ctrl-S",
-                    "Events": "{ \"click\" : \"SavePatch\" }"
-                }
-            ]
-        },
-        {
-            "Id": "00e81d64-0000-0000-8000-09235dc9aac6",
-            "FieldName": "Container",
-            "Order": 2,
-            "ComponentType": "Section",
-            "ClassName": "card-body",
-            "XxlCol": 12,
-            "Components": [
-                {
-                    "Id": "00e81d18-0000-0000-8000-a10cb7c309fb",
-                    "FieldName": "Name",
-                    "Order": 1,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Name",
-                    "ShowLabel": true
-                },
-                {
-                    "Id": "00e81d94-0000-0000-8000-4d59860b92d1",
-                    "FieldName": "Description",
-                    "Order": 2,
-                    "ComponentType": "Input",
-                    "Column": 6,
-                    "Label": "Description",
-                    "ShowLabel": true
-                }
-            ]
-        },
-        {
-            "Id": "00e81dbc-0000-0000-8000-9098ed1b9a99",
-            "Order": 4,
-            "ComponentType": "Section",
-            "Label": "Users",
-            "Icon": "fal fa-users mr-1",
-            "XxlCol": 12,
-            "IsTab": true,
-            "DisplayBadge": true,
-            "Components": [
-                {
-                    "Id": "003b1d2c-0000-0000-8000-4815d2e6c4c0",
-                    "FieldName": "User",
-                    "Order": 1,
-                    "ComponentType": "GridView",
-                    "Column": 12,
-                    "Row": 50,
-                    "ChildStyle": "height: calc(100vh - 10.5rem)",
-                    "Events": "{\"dblclick\":\"EditUser\"}",
-                    "Query": "{\r\n    \"sql\": \"select * from [User] as ds where RoleIds like N'%{RoleId}%'\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where RoleIds like N'%{RoleId}%'\"\r\n}",
-                    "RefName": "User",
-                    "PreQuery": "{\r\n    \"RoleId\" : this.EditForm.Entity.Id\r\n}",
-                    "OrderBy": "ds.InsertedDate desc"
-                }
-            ]
-        }
-    ],
     "GridPolicies": [
         {
             "Id": "00451d1c-0000-0000-8000-d2070cf472b6",
@@ -373,29 +264,111 @@
     ],
     "Components": [
         {
-            "Id": "00451db8-0000-0000-8000-2be92e48d6de",
-            "FieldName": "btnEdit",
-            "Order": 0,
-            "ComponentType": "Button",
-            "Icon": "fal fa-expand",
-            "ClassName": "btn",
-            "Events": "{\"click\":\"EditUser\"}",
-            "Width": "65px",
-            "MinWidth": "65px",
-            "MaxWidth": "65px",
-            "EntityId": "User"
+            "Id": "00e81d50-0000-0000-8000-0172354eb2ff",
+            "Order": 3,
+            "ComponentType": "Section",
+            "Label": "Policy",
+            "Icon": "fal fa-user-tag mr-1",
+            "ClassName": "card-body",
+            "XxlCol": 12,
+            "IsTab": true,
+            "DisplayBadge": true,
+            "Components": [
+                {
+                    "Id": "00571d34-0000-0000-8000-05d6e9501dcd",
+                    "FieldName": "FeaturePolicy",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 500,
+                    "GroupBy": "GroupFeatureId",
+                    "ClassName": "sticky",
+                    "ChildStyle": "height: calc(100vh - 20.5rem)",
+                    "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
+                    "Query": "{\r\n    \"sql\": \"select ds.*,ds1.ParentId,seq.Id as GroupFeatureId from FeaturePolicy as ds left join Feature ds1 on ds.FeatureId = ds1.Id left join Feature ds2 on ds1.ParentId = ds2.Id outer apply (select top 1 * from FeaturePolicy where FeatureId = ds1.ParentId and RoleId = ds.RoleId) seq where ds.RoleId = '{RoleId}' and ds1.ParentId is not null and seq.Id is not null\",\r\n    \"total\": \"select count(ds.Id) as total from FeaturePolicy as ds left join Feature ds1 on ds.FeatureId = ds1.Id left join Feature ds2 on ds1.ParentId = ds2.Id outer apply (select top 1 * from FeaturePolicy where FeatureId = ds1.ParentId and RoleId = ds.RoleId) seq where ds.RoleId = '{RoleId}' and ds1.ParentId is not null and seq.Id is not null\"\r\n}",
+                    "IsRealtime": true,
+                    "RefName": "FeaturePolicy",
+                    "PreQuery": "{\r\n    \"RoleId\" : this.EditForm.Entity.Id\r\n}",
+                    "OrderBy": "ds2.[Order] asc,seq.Id asc",
+                    "IsMultiple": true
+                }
+            ]
         },
         {
-            "Id": "00e81d78-0000-0000-8000-1119be5e63ca",
-            "FieldName": "btnSave",
+            "Id": "00e81d54-0000-0000-8000-50b600abf5e6",
+            "FieldName": "Button",
             "Order": 1,
-            "ComponentType": "Button",
-            "Column": 1,
-            "Label": "Save",
-            "Icon": "fal fa-save",
-            "ClassName": "btn detail-button primary",
-            "HotKey": "Ctrl-S",
-            "Events": "{ \"click\" : \"SavePatch\" }"
+            "ComponentType": "Section",
+            "ClassName": "ribbon-group",
+            "XxlCol": 12,
+            "Components": [
+                {
+                    "Id": "00e81d78-0000-0000-8000-1119be5e63ca",
+                    "FieldName": "btnSave",
+                    "Order": 1,
+                    "ComponentType": "Button",
+                    "Column": 1,
+                    "Label": "Save",
+                    "Icon": "fal fa-save",
+                    "ClassName": "btn detail-button primary",
+                    "HotKey": "Ctrl-S",
+                    "Events": "{ \"click\" : \"SavePatch\" }"
+                }
+            ]
+        },
+        {
+            "Id": "00e81d64-0000-0000-8000-09235dc9aac6",
+            "FieldName": "Container",
+            "Order": 2,
+            "ComponentType": "Section",
+            "ClassName": "card-body",
+            "XxlCol": 12,
+            "Components": [
+                {
+                    "Id": "00e81d18-0000-0000-8000-a10cb7c309fb",
+                    "FieldName": "Name",
+                    "Order": 1,
+                    "ComponentType": "Input",
+                    "Column": 6,
+                    "Label": "Name",
+                    "ShowLabel": true
+                },
+                {
+                    "Id": "00e81d94-0000-0000-8000-4d59860b92d1",
+                    "FieldName": "Description",
+                    "Order": 2,
+                    "ComponentType": "Input",
+                    "Column": 6,
+                    "Label": "Description",
+                    "ShowLabel": true
+                }
+            ]
+        },
+        {
+            "Id": "00e81dbc-0000-0000-8000-9098ed1b9a99",
+            "Order": 4,
+            "ComponentType": "Section",
+            "Label": "Users",
+            "Icon": "fal fa-users mr-1",
+            "XxlCol": 12,
+            "IsTab": true,
+            "DisplayBadge": true,
+            "Components": [
+                {
+                    "Id": "003b1d2c-0000-0000-8000-4815d2e6c4c0",
+                    "FieldName": "User",
+                    "Order": 1,
+                    "ComponentType": "GridView",
+                    "Column": 12,
+                    "Row": 50,
+                    "ChildStyle": "height: calc(100vh - 10.5rem)",
+                    "Events": "{\"dblclick\":\"EditUser\"}",
+                    "Query": "{\r\n    \"sql\": \"select * from [User] as ds where RoleIds like N'%{RoleId}%'\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where RoleIds like N'%{RoleId}%'\"\r\n}",
+                    "RefName": "User",
+                    "PreQuery": "{\r\n    \"RoleId\" : this.EditForm.Entity.Id\r\n}",
+                    "OrderBy": "ds.InsertedDate desc"
+                }
+            ]
         }
     ],
     "FeaturePolicies": [
