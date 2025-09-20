@@ -85,21 +85,6 @@ export class Client {
     static get BodRole() {
         return Client.Token.RoleNames.some(x => x.toLowerCase() == "bod");
     }
-    /**
-     * @param {SqlViewModel} vm
-     */
-    async UserSvc(vm, annonymous = false) {
-        /** @type {XHRWrapper} */
-        // @ts-ignore
-        const data = {
-            Value: JSON.stringify(vm),
-            Url: Utils.UserSvc,
-            IsRawString: true,
-            Method: "POST",
-            AllowAnonymous: annonymous
-        };
-        return this.SubmitAsync(data);
-    }
 
     async ComQuery(vm) {
         /** @type {XHRWrapper} */
@@ -364,16 +349,6 @@ export class Client {
             Headers: {
                 "Content-type": "application/json"
             }
-        });
-    }
-
-    async GetConfig(name, scope = 'global') {
-        return Client.Instance.UserSvc({
-            MetaConn: this.MetaConn,
-            DataConn: this.DataConn,
-            ComId: "UserSetting",
-            Action: "GetConfig",
-            Params: JSON.stringify({ name: name, scope: scope })
         });
     }
 

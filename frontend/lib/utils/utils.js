@@ -2,7 +2,6 @@ import Decimal from "decimal.js";
 import { Component } from "../models/component.js";
 import { Client } from '../clients/client.js';
 import { HttpMethod } from '../models/enum.js';
-import { LangSelect } from "./langSelect.js";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone.js";
 import customParseFormat from "dayjs/plugin/customParseFormat.js";
@@ -45,7 +44,6 @@ export class Utils {
     static PatchSvc = "/api/feature/run";
     static PatchSvcs = "/api/feature/runs";
     static PatchesSvc = "user/SavePatches";
-    static UserSvc = "/user/svc";
     static DeleteSvc = "/api/feature/delete";
     static DeactivateSvc = "/user/Deactivate";
     static ExportExcel = "/user/excel";

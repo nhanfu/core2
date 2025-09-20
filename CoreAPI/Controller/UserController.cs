@@ -48,18 +48,6 @@ public class UserController(UserService _userSvc, PdfService _pdfService,
         return _userSvc.SignOutAsync(token);
     }
 
-    [HttpPost("api/StartSchedule")]
-    public async Task<PlanEmail> StartSchedule([FromBody] PlanEmail token)
-    {
-        return await _userSvc.CreateSchedule(token);
-    }
-
-    [HttpPost("api/PauseSchedule")]
-    public async Task<PlanEmail> PauseSchedule([FromBody] PlanEmail token)
-    {
-        return await _userSvc.PauseSchedule(token);
-    }
-
     [HttpPost("api/CreateHtml")]
     public async Task<string> CreateHtml([FromBody] CreateHtmlVM token, [FromServices] IServiceProvider iServiceProvider, [FromServices] IConfiguration configuration)
     {
@@ -113,22 +101,6 @@ public class UserController(UserService _userSvc, PdfService _pdfService,
     public Task<string> ReSendUser(SqlViewModel vm)
     {
         return _userSvc.ResendUser(vm);
-    }
-
-    [AllowAnonymous]
-    [HttpPost("api/[Controller]/svc")]
-    public async Task<object> ExecUserSvc([FromBody] SqlViewModel vm)
-    {
-        var res = await _userSvc.RunUserSvc(vm);
-        return res;
-    }
-
-    [AllowAnonymous]
-    [HttpPost("api/[Controller]/comp")]
-    public async Task<object> LoadComponent([FromBody] SqlViewModel vm)
-    {
-        var res = await _userSvc.LoadComponent(vm);
-        return res;
     }
 
     [HttpPatch("api/[Controller]/SavePatches", Order = 0)]
@@ -292,12 +264,6 @@ public class UserController(UserService _userSvc, PdfService _pdfService,
         return _userSvc.ComQuery(entity);
     }
 
-    [HttpPost("/api/feature/getService")]
-    public Task<Dictionary<string, object>[][]> GetService([FromBody] ServiceVM vm)
-    {
-        return _userSvc.ReadDs($"Select * from Component where FieldName = N'{vm.Name}' and ComponentType = 'Service'", null);
-    }
-
     [AllowAnonymous]
     [HttpGet("/api/feature/getMenu")]
     public Task<Dictionary<string, object>[]> GetMenu()
@@ -316,12 +282,6 @@ public class UserController(UserService _userSvc, PdfService _pdfService,
     public Feature GetFeature([FromBody] ServiceVM vm)
     {
         return _userSvc.GetFeature(vm.Name);
-    }
-
-    [HttpPost("/api/chat")]
-    public Task<Chat> CreateAsync([FromBody] Chat entity)
-    {
-        return _userSvc.Chat(entity);
     }
 
     [HttpPost("/api/feature/report")]

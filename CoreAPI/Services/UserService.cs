@@ -2428,32 +2428,6 @@ public class UserService
         return await _sql.ReadDataSet(query);
     }
 
-
-    private async Task AfterActionSvc(PatchVM vm, string action)
-    {
-        var sql = new SqlViewModel
-        {
-            CachedDataConn = vm.CachedDataConn,
-            CachedMetaConn = vm.CachedMetaConn,
-            QueueName = vm.QueueName,
-            ComId = vm.Table,
-            Action = action,
-        };
-        var sv = await GetService(sql);
-        if (sv is not null)
-        {
-            sql.JsScript = sv.Content;
-            try
-            {
-                await RunJs(sql);
-            }
-            catch
-            {
-
-            }
-        }
-    }
-
     private async Task<bool> HasWritePermission(PatchVM vm)
     {
         if (vm.ByPassPerm) return true;
@@ -2512,12 +2486,6 @@ public class UserService
         }
         var sql = patches.Select(_sql.GetCreateOrUpdateCmd).Where(x => x is not null).Combine(";\n");
         var result = await _sql.RunSqlCmd(patches[0].CachedDataConn, sql);
-        await patches.ForEachAsync(vm =>
-        {
-            vm.CachedDataConn ??= patches[0].CachedDataConn;
-            vm.CachedMetaConn ??= patches[0].CachedMetaConn;
-            return AfterActionSvc(vm, "AfterPatch");
-        });
         return result;
     }
 
@@ -2864,19 +2832,6 @@ public class UserService
         return permissions;
     }
 
-    public async Task<SqlComResult> RunUserSvc(SqlViewModel vm)
-    {
-        vm.CachedDataConn ??= await _sql.GetConnStrFromKey(vm.DataConn, vm.AnnonymousTenant, vm.AnnonymousEnv);
-        vm.CachedMetaConn ??= await _sql.GetConnStrFromKey(vm.MetaConn, vm.AnnonymousTenant, vm.AnnonymousEnv);
-        var sv = await GetService(vm)
-            ?? throw new ApiException($"Service Id - \"{vm.SvcId}\", ComId \"{vm.ComId}\" - Action \"{vm.Action}\" NOT found")
-            {
-                StatusCode = HttpStatusCode.NotFound
-            };
-        vm.JsScript = sv.Content;
-        return await RunjsWrap(vm);
-    }
-
     public async Task<User[]> GetUserActive()
     {
         var socket = _taskSocketSvc.GetAll(TenantCode);
@@ -2945,48 +2900,6 @@ public class UserService
             count = ds.Length > 1 && ds[1].Length > 0 ? Convert.ToInt32(ds[1][0]["total"]) : null,
             value = ds[0]
         };
-    }
-
-    private async Task<Models.Services> GetService(SqlViewModel vm)
-    {
-        if (vm is null || vm.SvcId.IsNullOrWhiteSpace() && (vm.Action.IsNullOrWhiteSpace() || vm.ComId.IsNullOrWhiteSpace()))
-            throw new ApiException("Service can NOT be identified due to lack of Id or action")
-            {
-                StatusCode = HttpStatusCode.BadRequest
-            };
-        var tenant = TenantCode ?? vm.AnnonymousTenant;
-        var key = $"{nameof(Services)}{vm.ComId}_{vm.Action}_{tenant}";
-        var cacheSv = await GetStringAsync(key);
-        if (cacheSv != null)
-        {
-            var res = cacheSv.TryParse<Models.Services>();
-            if (res is not null)
-            {
-                EnsureSvPermission(res);
-                return res;
-            }
-        }
-        var query = @$"select * from [Services]
-                where Active = 1 and (ComId = '{vm.ComId}' and Action = '{vm.Action}' or Id = '{vm.SvcId}') 
-                and (TenantCode = '{TenantCode}' or Annonymous = 1 and TenantCode = '{vm.AnnonymousTenant}')";
-        var sv = await _sql.ReadDsAs<Models.Services>(query, vm.CachedMetaConn);
-        if (sv is null) return null;
-        await SetStringAsync(key, sv.ToJson(), Utils.CacheTTL);
-        EnsureSvPermission(sv);
-        return sv;
-    }
-
-    private void EnsureSvPermission(Models.Services sv)
-    {
-        if (TenantCode is null && !sv.Annonymous)
-        {
-            throw new UnauthorizedAccessException("The service is required login");
-        }
-        var isValidRole = sv.IsPublicInTenant ||
-                    (from svRole in sv.RoleIds.Split(',')
-                     join usrRole in RoleIds on svRole equals usrRole
-                     select svRole).Any();
-        if (!isValidRole) throw new UnauthorizedAccessException("The service is not accessible by your roles");
     }
 
     public string ConvertHtmlToPlainText(string htmlContent)
@@ -3431,160 +3344,6 @@ public class UserService
         return true;
     }
 
-    public async Task<PlanEmail> CreateSchedule(PlanEmail plan)
-    {
-        var conn = BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics");
-        var hour = plan.DailyDate.Value.Hour;
-        var minute = plan.DailyDate.Value.Minute;
-        var dayOfWeekNumber = (int)plan.DailyDate.Value.DayOfWeek;
-        var dayOfMonth = plan.DailyDate.Value.Day;
-        var month = plan.DailyDate.Value.Month;
-        var nextStartDate = DateTime.Now;
-        plan.IsStart = true;
-        plan.IsPause = false;
-        plan.StartDate = nextStartDate;
-        if (!plan.ComponentId.IsNullOrWhiteSpace() && plan.Component.ComponentGroupId.IsNullOrWhiteSpace())
-        {
-            var query2 = $"select top 1 * from [{nameof(Component)}] where EntityId = '{plan.Component.EntityId}' and FeatureId  = '{plan.FeatureId}'";
-            plan.Component = await BgExt.ReadDsAs<Component>(query2, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
-            plan.Feature.EntityId = plan.Component.RefName;
-        }
-        var templates = await _sendMailService.ReadTemplate(plan, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
-        if (templates is null)
-        {
-            return plan;
-        }
-        foreach (var item in templates)
-        {
-            var dailyDate = item.Item3;
-            hour = plan.DailyDate.Value.Hour;
-            minute = plan.DailyDate.Value.Minute;
-            dayOfWeekNumber = (int)item.Item3.DayOfWeek;
-            dayOfMonth = item.Item3.Day;
-            month = item.Item3.Month;
-            nextStartDate = DateTime.Now;
-            var id = Uuid7.Guid().ToString();
-            var planDetail = new PlanEmailDetail()
-            {
-                Id = "-" + id,
-                PlanEmailId = plan.Id,
-                Email = item.Item1,
-                Template = item.Item2,
-                TableName = plan.Feature is null ? "" : plan.Feature.EntityId,
-                RecordId = item.Item5,
-                NextStartDate = plan.NextStartDate,
-                Active = true,
-                InsertedBy = UserId,
-                InsertedDate = DateTime.Now
-            };
-            switch (item.Item4)
-            {
-                case 1:
-                    planDetail.NextStartDate = DateTime.Today.AddHours(hour).AddMinutes(minute);
-                    if (planDetail.NextStartDate < DateTime.Now)
-                        planDetail.NextStartDate = plan.NextStartDate.Value.AddDays(1);
-                    var patch2 = planDetail.MapToPatch();
-                    await BgExt.SavePatch2(patch2, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
-                    RecurringJob.RemoveIfExists($"Daily-{item.Item5}");
-                    RecurringJob.AddOrUpdate(
-                        $"Daily-{item.Item5}",
-                        () => _sendMailService.ActionSendMail(conn, _host.WebRootPath, plan, planDetail, item),
-                        Cron.Daily(hour, minute),
-                        new RecurringJobOptions() { TimeZone = TimeZoneInfo.Local }
-                    );
-                    break;
-                case 2:
-                    planDetail.NextStartDate = DateTime.Today.AddDays((dayOfWeekNumber + 7 - (int)DateTime.Now.DayOfWeek) % 7).AddHours(hour).AddMinutes(minute);
-                    if (planDetail.NextStartDate < DateTime.Now)
-                        planDetail.NextStartDate = planDetail.NextStartDate.Value.AddDays(7);
-                    patch2 = planDetail.MapToPatch();
-                    await BgExt.SavePatch2(patch2, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
-                    RecurringJob.RemoveIfExists($"Week-{item.Item5}");
-                    RecurringJob.AddOrUpdate(
-                        $"Week-{item.Item5}",
-                        () => _sendMailService.ActionSendMail(conn, _host.WebRootPath, plan, planDetail, item),
-                        $"0 {minute} {hour} * * {dayOfWeekNumber}",
-                        new RecurringJobOptions() { TimeZone = TimeZoneInfo.Local }
-                    );
-                    break;
-                case 3:
-                    planDetail.NextStartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, dayOfMonth, hour, minute, 0);
-                    if (planDetail.NextStartDate < DateTime.Now)
-                        planDetail.NextStartDate = planDetail.NextStartDate.Value.AddMonths(1); // Schedule for next month if time has passed this month
-                    patch2 = planDetail.MapToPatch();
-                    await BgExt.SavePatch2(patch2, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
-                    RecurringJob.RemoveIfExists($"Month-{item.Item5}");
-                    RecurringJob.AddOrUpdate(
-                        $"Month-{item.Item5}",
-                        () => _sendMailService.ActionSendMail(conn, _host.WebRootPath, plan, planDetail, item),
-                        $"0 {minute} {hour} {dayOfMonth} *", // At specified hour and minute on the day of the month
-                        new RecurringJobOptions() { TimeZone = TimeZoneInfo.Local }
-                    );
-                    break;
-                case 4://yearly
-                    planDetail.NextStartDate = new DateTime(DateTime.Now.Year, month, dayOfMonth, hour, minute, 0);
-                    if (planDetail.NextStartDate < DateTime.Now)
-                        planDetail.NextStartDate = planDetail.NextStartDate.Value.AddYears(1); // Schedule for next year if time has passed this year
-                    patch2 = planDetail.MapToPatch();
-                    await BgExt.SavePatch2(patch2, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
-                    RecurringJob.RemoveIfExists($"Year-{item.Item5}");
-                    RecurringJob.AddOrUpdate(
-                        $"Year-{item.Item5}",
-                        () => _sendMailService.ActionSendMail(conn, _host.WebRootPath, plan, planDetail, item),
-                        $"0 {minute} {hour} {dayOfMonth} {month} *",
-                        new RecurringJobOptions() { TimeZone = TimeZoneInfo.Local }
-                    );
-                    break;
-                default:
-                    break;
-            }
-        }
-        var patch = plan.MapToPatch();
-        await BgExt.SavePatch2(patch, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
-        return plan;
-    }
-
-    public async Task<PlanEmail> PauseSchedule(PlanEmail plan)
-    {
-        plan.IsStart = false;
-        plan.IsPause = true;
-        var conn = BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics");
-        if (!plan.ToEmail.IsNullOrWhiteSpace())
-        {
-            RecurringJob.RemoveIfExists(plan.Id);
-        }
-        else
-        {
-            var query2 = $"select * from [{nameof(PlanEmailDetail)}] where PlanEmailId = '{plan.Id}'";
-            var planEmailDetail = await BgExt.ReadDsAsArr<PlanEmailDetail>(query2, conn);
-            foreach (var item in planEmailDetail)
-            {
-                switch (plan.ReminderSettingId)
-                {
-                    case 1:
-                        RecurringJob.RemoveIfExists($"Daily-{item.RecordId}");
-                        break;
-                    case 2:
-                        RecurringJob.RemoveIfExists($"Week-{item.RecordId}");
-                        break;
-                    case 3:
-                        RecurringJob.RemoveIfExists($"Month-{item.RecordId}");
-                        break;
-                    case 4:
-                        RecurringJob.RemoveIfExists($"Year-{item.RecordId}");
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-        var query3 = $"DELETE [{nameof(PlanEmailDetail)}] where PlanEmailId = '{plan.Id}'";
-        await _sql.RunSqlCmd(conn, query3);
-        var patch = plan.MapToPatch();
-        await BgExt.SavePatch2(patch, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
-        return plan;
-    }
-
     public async Task<bool> ForgotPassword(LoginVM login)
     {
         var user = await _sql.ReadDsAs<User>($"select * from [User] where UserName = '{login.UserName}'");
@@ -3711,93 +3470,6 @@ public class UserService
         BackgroundJob.Enqueue<WebSocketService>(x => x.SendMessageToAll(entity.ToJson(), TenantCode));
     }
 
-    private static async Task<Chat> GetChatGPTResponse(Chat entity)
-    {
-        var languageRules = new[]
-        {
-            new { Language = "javascript", Regex = @"```javascript([\s\S]+?)```", Replacement = "<pre><code class=\"language-javascript\">$1</code></pre>" },
-            new { Language = "html", Regex = @"```html([\s\S]+?)```", Replacement = "<pre><code class=\"language-html\">$1</code></pre>" },
-            new { Language = "csharp", Regex = @"```csharp([\s\S]+?)```", Replacement = "<pre><code class=\"language-csharp\">$1</code></pre>" },
-            new { Language = "code", Regex = @"```([\s\S]+?)```", Replacement = "<pre><code>$1</code></pre>" }
-        };
-
-        var apiKey = "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";
-        var endpoint = "https://api.openai.com/v1/chat/completions";
-        using var httpClient = new HttpClient();
-        httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
-        var requestData = new ChatGptVM
-        {
-            model = "gpt-3.5-turbo",
-            messages =
-            [
-                new ChatGptMessVM
-                {
-                    role = "user",
-                    content = entity.Context,
-                    name = entity.FromId.ToString(),
-                }
-            ]
-        };
-        var jsonRequestData = JsonConvert.SerializeObject(requestData);
-        var response = await httpClient.PostAsync(endpoint, new StringContent(jsonRequestData, Encoding.UTF8, "application/json"));
-        var jsonResponseData = await response.Content.ReadAsStringAsync();
-        var rs = JsonConvert.DeserializeObject<RsChatGpt>(jsonResponseData);
-        var text = rs.choices.FirstOrDefault().message.content;
-        foreach (var rule in languageRules)
-        {
-            var language = rule.Language;
-            var regex = new Regex(rule.Regex);
-            var replacement = rule.Replacement;
-            text = regex.Replace(text, replacement);
-        }
-
-        return new Chat()
-        {
-            FromId = entity.ToId,
-            ToId = entity.FromId,
-            Context = text,
-            ConversationId = entity.ConversationId,
-            IsSeft = true,
-        };
-    }
-
-    internal async Task<Chat> Chat(Chat entity)
-    {
-        var patchMV = entity.MapToPatch();
-        await SavePatch(patchMV);
-        if (entity.ToId == 552.ToString())
-        {
-            var rs1 = await GetChatGPTResponse(entity);
-            await SavePatch(rs1.MapToPatch());
-            var chat = new MQEvent
-            {
-                QueueName = entity.QueueName,
-                Message = rs1,
-                Id = Uuid7.Guid().ToString(),
-            };
-            SendMessageToUser(chat);
-        }
-        else
-        {
-            var chat = new MQEvent
-            {
-                QueueName = entity.QueueName,
-                Message = entity,
-                Id = Uuid7.Guid().ToString(),
-            };
-            SendMessageToUser(chat);
-        }
-        return entity;
-    }
-
     public Task<string> GetStringAsync(string key) => _cache.GetStringAsync(key?.ToUpper());
     public Task SetStringAsync(string key, string val, DistributedCacheEntryOptions options) => _cache.SetStringAsync(key?.ToUpper(), val, options);
-
-    internal async Task<object> LoadComponent(SqlViewModel vm)
-    {
-        var query = $"select c.* from Component c " +
-            $"join Feature f on c.FeatureId = f.Id " +
-            $"where f.TenantCode = '{vm.AnnonymousTenant}' and f.Env = '{vm.AnnonymousEnv}' and f.Name = '{vm.Action}' and f.IsPublic = 1";
-        return await ReadDs(query, DefaultConnStr());
-    }
 }

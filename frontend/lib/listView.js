@@ -2083,17 +2083,6 @@ export class ListView extends EditableComponent {
         }
     }
 
-    GetUserSetting(prefix) {
-        // @ts-ignore
-        return Client.Instance.UserSvc({
-            MetaConn: this.MetaConn,
-            DataConn: this.DataConn,
-            ComId: "UserSetting",
-            Action: "GetByComId",
-            Params: JSON.stringify({ ComId: this.Meta.Id, Prefix: prefix })
-        });
-    }
-
     /**
      * Updates a specific row in the ListView.
      * @param {ListViewItem} rowData The data object that represents the row to update.
