@@ -1,8 +1,7 @@
 {
-    "Id": "00490e80-0000-0000-8000-f74c2f441973",
+    "Id": "air_quote_editor",
     "Name": "air-quote-editor",
     "Label": "Air Quote Editor",
-    "ParentId": "6e63c20d-2788-4776-9da0-4cfe7c982can",
     "Style": "width:99.5%;",
     "Script": "return {\r\n    OnSave: function (form, gridview) {\r\n        var detail = this.GET(\"InquiryDetail\");\r\n        if ((detail && detail.AllListViewItem.length > 0)) {\r\n            var firstRow = detail.AllListViewItem[0];\r\n            if (firstRow) {\r\n                this.Entity.PolId = firstRow.Entity.PolId;\r\n                this.Entity.PodId = firstRow.Entity.PodId;\r\n                this.Entity.Pol = firstRow.Entity.Pol;\r\n                this.Entity.Pod = firstRow.Entity.Pod;\r\n            }\r\n        }\r\n        var detailFee = this.GET(\"DefaultFee\");\r\n        if (detailFee && detailFee.AllListViewItem.length > 0) {\r\n            detailFee.AllListViewItem.filter(x => !x.GroupRow).forEach((item, index) => {\r\n                item.Entity.Order = index;\r\n            });\r\n        }\r\n    },\r\n    ShowHideColumn2: function () {\r\n        var summary = this.GET(\"Summary\");\r\n        if (!summary) {\r\n            return;\r\n        }\r\n        var bookingDetail = this.GET(\"DefaultFee\");\r\n        var hide = [];\r\n        if (!bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name.includes('Min'))) {\r\n            [\"MinSub10\"].forEach(x => hide.push(x));\r\n        }\r\n        if (!bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name.includes(\"-45\"))) {\r\n            [\"Sub45\"].forEach(x => hide.push(x));\r\n        }\r\n        if (!bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name.includes(\"+45\"))) {\r\n            [\"Add45\"].forEach(x => hide.push(x));\r\n        }\r\n        if (!bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name == \"+100\")) {\r\n            [\"Add100\"].forEach(x => hide.push(x));\r\n        }\r\n        if (!bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name == \"+300\")) {\r\n            [\"Add300\"].forEach(x => hide.push(x));\r\n        }\r\n        if (!bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name == \"+500\")) {\r\n            [\"Add500\"].forEach(x => hide.push(x));\r\n        }\r\n        if (!bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name == \"+1000\")) {\r\n            [\"Add1000\"].forEach(x => hide.push(x));\r\n        }\r\n        summary.HideColumn(...hide);\r\n    },\r\n    ShowHideColumn: function () {\r\n        var summary = this.GET(\"Summary2\");\r\n        if (!summary) {\r\n            return;\r\n        }\r\n        var bookingDetail = this.GET(\"DefaultFee\");\r\n        var hide = [];\r\n        if (!bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name.includes('Min'))) {\r\n            [\"CostMinSub10\", \"RevenueMinSub10\", \"ProfitMinSub10\", \"ProfitRateMinSub10\"].forEach(x => hide.push(x));\r\n        }\r\n        if (!bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name.includes(\"-45\"))) {\r\n            [\"CostSub45\", \"RevenueSub45\", \"ProfitSub45\", \"ProfitRateSub45\"].forEach(x => hide.push(x));\r\n        }\r\n        if (!bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name.includes(\"+45\"))) {\r\n            [\"CostAdd45\", \"RevenueAdd45\", \"ProfitAdd45\", \"ProfitRateAdd45\"].forEach(x => hide.push(x));\r\n        }\r\n        if (!bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name == \"+100\")) {\r\n            [\"CostAdd100\", \"RevenueAdd100\", \"ProfitAdd100\", \"ProfitRateAdd100\"].forEach(x => hide.push(x));\r\n        }\r\n        if (!bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name == \"+300\")) {\r\n            [\"CostAdd300\", \"RevenueAdd300\", \"ProfitAdd300\", \"ProfitRateAdd300\"].forEach(x => hide.push(x));\r\n        }\r\n        if (!bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name == \"+500\")) {\r\n            [\"CostAdd500\", \"RevenueAdd500\", \"ProfitAdd500\", \"ProfitRateAdd500\"].forEach(x => hide.push(x));\r\n        }\r\n        if (!bookingDetail.AllListViewItem.some(x => x.Entity.Unit && x.Entity.Unit.Name == \"+1000\")) {\r\n            [\"CostAdd1000\", \"RevenueAdd1000\", \"ProfitAdd1000\", \"ProfitRateAdd1000\"].forEach(x => hide.push(x));\r\n        }\r\n        summary.HideColumn(...hide);\r\n    },\r\n    CalcWeight: function (form, gridview) {\r\n        var detail = this.GET(\"EntityDimension\");\r\n        if ((detail && detail.AllListViewItem.length > 0)) {\r\n            var rowData = detail.AllListViewItem.map(x => x.Entity);\r\n            var volumeWeight = rowData.reduce((a, b) => a.plus(((new this.Decimal(b.Width || 0)).times(new this.Decimal(b.Height || 0)).times(new this.Decimal(b.Length || 0))).times((new this.Decimal(b.Quantity || 0))).div(new this.Decimal(6000))), new this.Decimal(0));\r\n            var kgs = rowData.reduce((a, b) => a.plus(((new this.Decimal(b.Width || 0)).times(new this.Decimal(b.Height || 0)).times(new this.Decimal(b.Length || 0))).times((new this.Decimal(b.Quantity || 0))).div(new this.Decimal(1000000))), new this.Decimal(0));\r\n            this.EditForm.Entity.VolumeWeight = volumeWeight || new this.Decimal(0);\r\n            this.EditForm.Entity.Kgs = kgs || new this.Decimal(0);\r\n            this.EditForm.UpdateView(false, false, \"VolumeWeight\", \"Kgs\");\r\n        }\r\n    },\r\n    SetDefaultCW: function (form, gridview) {\r\n        var cw = this.Decimal(this.EditForm.Entity.VolumeWeight).greaterThan(this.Decimal(this.EditForm.Entity.GW)) ? this.EditForm.Entity.VolumeWeight : this.EditForm.Entity.GW;\r\n        this.EditForm.Entity.CW = this.EditForm.Entity.CW || cw;\r\n        this.EditForm.Entity.CBM = this.EditForm.Entity.CBM || this.EditForm.Entity.Kgs;\r\n        this.EditForm.UpdateView(false, false, \"CBM\", \"CW\");\r\n        this.EditForm.Dirty = true;\r\n    },\r\n    ShowHideDetail: function () {\r\n        var detail1 = this.GET(\"DefaultFee\");\r\n        if (!detail1) {\r\n            return;\r\n        }\r\n        if (this.EditForm.Entity.IsSimple) {\r\n            detail1.HideColumn(\"Cost\", \"MinQuantityCost\", \"PayeeId\");\r\n        }\r\n        else {\r\n            detail1.HideColumn(\"\");\r\n        }\r\n    },\r\n    DuplicateFee: function (form, gridview) {\r\n        var inquiryDetail = this.GET(\"InquiryDetail\");\r\n        var defaultFee = this.GET(\"DefaultFee\");\r\n        var newItem = JSON.parse(JSON.stringify(defaultFee.Header.filter(x => x.FieldName == \"UnitId\" || x.FieldName == \"RouteId\")));\r\n        newItem.forEach(item => {\r\n            item.FieldName = \"View\" + item.FieldName;\r\n            if (item.FieldName == \"ViewRouteId\") {\r\n                item.Order = 0;\r\n                this.Entity.ViewRouteId = this.Entity.ViewRouteId || (inquiryDetail.AllListViewItem[0] ? `${(inquiryDetail.AllListViewItem[0].Entity.Pol.Code || '')} => ${(inquiryDetail.AllListViewItem[0].Entity.Pod.Code || '')}` : this.Entity.ViewRouteId);\r\n            }\r\n        })\r\n        var form = this.EditForm.OpenConfig(\"Select group weight level!\", () => {\r\n            var selecteds = defaultFee.AllListViewItem.filter(x => !x.GroupRow && x.Selected);\r\n            var otherGroup = inquiryDetail.AllListViewItem.find(x => form.Entity.ViewRouteId == `${(x.Entity.Pol.Code || '')} => ${(x.Entity.Pod.Code || '')}`);\r\n            var newFees = JSON.parse(JSON.stringify(selecteds.map(x => x.Entity)));\r\n            newFees.forEach(item => {\r\n                item.Id = this.Uuid7.NewGuid();\r\n                item.RouteId = (otherGroup.Entity.Pol.Code) + \" - \" + (otherGroup.Entity.Pod.Code || '');\r\n                item.PolId = otherGroup.Entity.PolId;\r\n                item.UnitId = form.Entity.ViewUnitId;\r\n                item.RouteId = form.Entity.ViewRouteId;\r\n                item.Unit = null;\r\n                item.DisableRow = false;\r\n                item.Pol = otherGroup.Entity.Pol;\r\n                item.PodId = otherGroup.Entity.PodId;\r\n                item.Pod = otherGroup.Entity.Pod;\r\n                item.VendorId = otherGroup.Entity.VendorId;\r\n            });\r\n            defaultFee.LoadMasterData(newFees).then(() => {\r\n                defaultFee.ClearSelected();\r\n                defaultFee.AddRows(newFees).then(rows => {\r\n                    rows.forEach(row => {\r\n                        row.Selected = true;\r\n                    });\r\n                    rows[0].Element.focus();\r\n                    this.ReloadSummary();\r\n                });\r\n            });\r\n        }, () => { }, true, newItem.reverse());\r\n    },\r\n    CreateBookingLocal: function (btn) {\r\n        var defaultFee = this.GET(\"DefaultFee\");\r\n        var inquiryDetail = this.GET(\"InquiryDetail\");\r\n        var units = [...new Set(defaultFee.AllListViewItem.map(x => x.Entity.Unit))];\r\n        var components = [];\r\n        var routes = inquiryDetail.AllListViewItem.filter(x => !x.GroupRow);\r\n        var route = inquiryDetail.AllListViewItem.find(x => !x.GroupRow);\r\n        if (routes.length > 1) {\r\n            var routeCom = JSON.parse(JSON.stringify(defaultFee.Header.find(x => x.FieldName == \"RouteId\")));\r\n            routeCom.FieldName = \"ViewRouteId\";\r\n            routeCom.Id = null;\r\n            routeCom.Events = `{\"change\":\"UpdateViewForm\"}`;\r\n            components.push(routeCom);\r\n        }\r\n        else {\r\n            this.Entity.ViewRouteId = `${(route.Entity.Pol.Code || '')} => ${(route.Entity.Pod.Code || '')}`;\r\n        }\r\n        var listFreight = [];\r\n        if (defaultFee.AllListViewItem.some(x => x.Entity.IsFreight)) {\r\n            listFreight.push({\r\n                Id: \"1\",\r\n                Name: \"FREGIHT\"\r\n            });\r\n        }\r\n        if (defaultFee.AllListViewItem.some(x => x.Entity.IsLogistics)) {\r\n            listFreight.push({\r\n                Id: \"2\",\r\n                Name: \"LOGISTICS\"\r\n            });\r\n        }\r\n        if (defaultFee.AllListViewItem.some(x => x.Entity.IsTrucking)) {\r\n            listFreight.push({\r\n                Id: \"3\",\r\n                Name: \"TRUCKING\"\r\n            });\r\n        }\r\n        var freightCom = {\r\n            FieldName: \"FreightIds\",\r\n            ComponentType: \"Dropdown\",\r\n            Query: JSON.stringify(listFreight),\r\n            FormatData: \"{Name}\",\r\n            Label: \"Service\",\r\n            IsMultiple: true,\r\n            PlainText: \"Select service\",\r\n            Template: JSON.stringify([{ \"FieldName\": \"Name\", \"Label\": \"Name\", \"ComponentType\": \"Input\" }])\r\n        }\r\n        components.push(freightCom);\r\n        var cwCom = JSON.parse(JSON.stringify(this.EditForm.ChildCom.find(x => x.Meta.FieldName == \"CW\").Meta));\r\n        cwCom.FieldName = \"View\" + cwCom.FieldName;\r\n        components.push(cwCom);\r\n        var gwCom = JSON.parse(JSON.stringify(this.EditForm.ChildCom.find(x => x.Meta.FieldName == \"GW\").Meta));\r\n        components.push(gwCom);\r\n        gwCom.FieldName = \"View\" + gwCom.FieldName;\r\n        this.EditForm.Entity.ViewGW = this.EditForm.Entity.GW;\r\n        this.EditForm.Entity.ViewCW = this.EditForm.Entity.CW;\r\n        this.UpdateViewForm();\r\n        var form = this.EditForm.OpenConfig(\"Please double check async booking local!\", () => {\r\n            if (!this.EditForm.Entity.ViewCW) {\r\n                return;\r\n            }\r\n            if (routes.length > 1) {\r\n                route = inquiryDetail.AllListViewItem.find(x => !x.GroupRow && x.Entity.PolId == this.Entity.ViewRoute.PolId && x.Entity.PodId == this.Entity.ViewRoute.PodId);\r\n            }\r\n            if (!route) {\r\n                return;\r\n            }\r\n            var featureName = \"air-booking-local-editor\";\r\n            var config = JSON.parse(localStorage.getItem(\"SalesFunction\"));\r\n            var booking = JSON.parse(JSON.stringify(this.EditForm.Entity));\r\n            let consigneText = \"\";\r\n            let consignee = this.EditForm.Entity.Consignee;\r\n            if (consignee) {\r\n                consigneText += `${(consignee.CompanyName || '')}\\n`;\r\n                consigneText += `${(consignee.Address || '')}\\n`;\r\n                consigneText += `Tell: ${(consignee.PhoneNumber || '')} Fax: ${(consignee.Fax || '')}\\n`;\r\n                consigneText += `Contact person: ${(consignee.ContactName || '')}`;\r\n            }\r\n            let customerText = \"\";\r\n            let customer = this.EditForm.Entity.Customer;\r\n            if (customer) {\r\n                customerText += `${(customer.CompanyName || '')}\\n`;\r\n                customerText += `${(customer.Address || '')}\\n`;\r\n                customerText += `Tell: ${(customer.PhoneNumber || '')} Fax: ${(customer.Fax || '')}\\n`;\r\n                customerText += `Contact person: ${(customer.ContactName || '')}`;\r\n            }\r\n            let shipper = this.EditForm.Entity.Shipper;\r\n            let shipperText = \"\";\r\n            if (shipper) {\r\n                shipperText += `${(shipper.CompanyName || '')}\\n`;\r\n                shipperText += `${(shipper.Address || '')}\\n`;\r\n                shipperText += `Tell: ${(shipper.PhoneNumber || '')} Fax: ${(shipper.Fax || '')}\\n`;\r\n                shipperText += `Contact person: ${(shipper.ContactName || '')}`;\r\n            }\r\n            booking.ConsigneeDes = consigneText != \"\" ? consigneText : this.EditForm.Entity.ConsigneeIdText;\r\n            if (booking.Service.Name.includes(\"Import\")) {\r\n                booking.ConsigneeDes = customerText != \"\" ? customerText : customerText;\r\n                booking.ConsigneeId = booking.CustomerId;\r\n            }\r\n            else {\r\n                booking.ConsigneeDes = consigneText != \"\" ? consigneText : this.EditForm.Entity.ConsigneeIdText;\r\n            }\r\n            if (booking.Service.Name.includes(\"Export\")) {\r\n                booking.ShipperDes = shipperText != \"\" ? shipperText : customerText;\r\n                booking.ShipperId = booking.CustomerId;\r\n            }\r\n            else {\r\n                booking.ShipperDes = shipperText != \"\" ? shipperText : this.EditForm.Entity.ShipperIdText;\r\n            }\r\n            booking.Id = this.Uuid7.NewGuid();\r\n            booking.QuotationCode = this.EditForm.Entity.Code;\r\n            booking.QuotationId = this.EditForm.Entity.Id;\r\n            booking.CreatedOn = this.dayjs().format('YYYY-MM-DD');\r\n            booking.SaleId = this.EditForm.Entity.Customer ? this.EditForm.Entity.Customer.SaleId : null;\r\n            booking.PolId = route.Entity.PolId;\r\n            booking.PodId = route.Entity.PodId;\r\n            booking.PickupAddress = route.Entity.Pickup;\r\n            booking.DeliveryAddress = route.Entity.Delivery;\r\n            booking.PortTransitId = route.Entity.ViaId;\r\n            booking.FinalDestinationId = route.Entity.FinalDestinationId;\r\n            booking.PlaceDeliveryId = route.Entity.PlaceDeliveryId;\r\n            booking.SpecialRequest = this.EditForm.Entity.Subject;\r\n            booking.StatusId = config[\"APPROVE_BOOKINGLOCAL\"] ? 3 : 1;\r\n            booking.NoApproved = config[\"APPROVE_BOOKINGLOCAL\"] ? true : false;\r\n            booking.ContPickupAtId = this.EditForm.Entity.PkEmptyId;\r\n            booking.InsertedBy = this.Token.UserId;\r\n            booking.TypeId = 7;\r\n            booking.VoucherTypeId = 3;\r\n            if (route.Entity.Vendor && route.Entity.Vendor.PartnerTypeIdsText && route.Entity.Vendor.PartnerTypeIdsText.toUpperCase().includes('AGENT')\r\n                && route.Entity.Vendor.ResidenceTypeIdText && route.Entity.Vendor.ResidenceTypeIdText.toUpperCase().includes('OVERSEA')) {\r\n                booking.AgentId = route.Entity.VendorId;\r\n                booking.VendorId = route.Entity.CarrierId;\r\n            }\r\n            else {\r\n                booking.AgentId = null;\r\n                booking.VendorId = route.Entity.VendorId;\r\n                booking.CarrierId = route.Entity.CarrierId;\r\n            }\r\n            var bookingDetail = [];\r\n            var sellingRate = JSON.parse(JSON.stringify(defaultFee.AllListViewItem.filter(x => x.Entity.PolId == route.Entity.PolId && x.Entity.PodId == route.Entity.PodId && !x.GroupRow && x.Entity.Rate && this.Decimal(x.Entity.Rate).greaterThan(0)).map(x => x.Entity)));\r\n            var buyingRate = JSON.parse(JSON.stringify(defaultFee.AllListViewItem.filter(x => x.Entity.PolId == route.Entity.PolId && x.Entity.PodId == route.Entity.PodId && !x.GroupRow && x.Entity.Cost && this.Decimal(x.Entity.Cost).greaterThan(0)).map(x => x.Entity)));\r\n            if (this.Decimal(this.EditForm.Entity.ViewCW).lessThan(this.Decimal(10))) {\r\n                sellingRate = sellingRate.filter(x => x.Unit.Name.includes('-10') || x.Unit.Name.includes('ALL'));\r\n                buyingRate = buyingRate.filter(x => x.Unit.Name.includes('-10') || x.Unit.Name.includes('ALL'));\r\n            }\r\n            else if (this.Decimal(this.EditForm.Entity.ViewCW).greaterThanOrEqualTo(this.Decimal(10)) &&\r\n                this.Decimal(this.EditForm.Entity.ViewCW).lessThan(this.Decimal(45))) {\r\n                sellingRate = sellingRate.filter(x => x.Unit.Name.includes('-45') || x.Unit.Name.includes('ALL'));\r\n                buyingRate = buyingRate.filter(x => x.Unit.Name.includes('-45') || x.Unit.Name.includes('ALL'));\r\n            }\r\n            else if (this.Decimal(this.EditForm.Entity.ViewCW).greaterThanOrEqualTo(this.Decimal(45)) &&\r\n                this.Decimal(this.EditForm.Entity.ViewCW).lessThan(this.Decimal(100))) {\r\n                sellingRate = sellingRate.filter(x => x.Unit.Name.includes('+45') || x.Unit.Name.includes('ALL'));\r\n                buyingRate = buyingRate.filter(x => x.Unit.Name.includes('+45') || x.Unit.Name.includes('ALL'));\r\n            }\r\n            else if (this.Decimal(this.EditForm.Entity.ViewCW).greaterThanOrEqualTo(this.Decimal(100)) &&\r\n                this.Decimal(this.EditForm.Entity.ViewCW).lessThan(this.Decimal(300))) {\r\n                sellingRate = sellingRate.filter(x => x.Unit.Name == '+100' || x.Unit.Name.includes('ALL'));\r\n                buyingRate = buyingRate.filter(x => x.Unit.Name == '+100' || x.Unit.Name.includes('ALL'));\r\n            }\r\n            else if (this.Decimal(this.EditForm.Entity.ViewCW).greaterThanOrEqualTo(this.Decimal(300)) &&\r\n                this.Decimal(this.EditForm.Entity.ViewCW).lessThan(this.Decimal(500))) {\r\n                sellingRate = sellingRate.filter(x => x.Unit.Name == '+300' || x.Unit.Name.includes('ALL'));\r\n                buyingRate = buyingRate.filter(x => x.Unit.Name == '+300' || x.Unit.Name.includes('ALL'));\r\n            }\r\n            else if (this.Decimal(this.EditForm.Entity.ViewCW).greaterThanOrEqualTo(this.Decimal(500)) &&\r\n                this.Decimal(this.EditForm.Entity.ViewCW).lessThan(this.Decimal(1000))) {\r\n                sellingRate = sellingRate.filter(x => x.Unit.Name == '+500' || x.Unit.Name.includes('ALL'));\r\n                buyingRate = buyingRate.filter(x => x.Unit.Name == '+500' || x.Unit.Name.includes('ALL'));\r\n            }\r\n            else if (this.Decimal(this.EditForm.Entity.ViewCW).greaterThanOrEqualTo(this.Decimal(1000))) {\r\n                sellingRate = sellingRate.filter(x => x.Unit.Name == '+1000' || x.Unit.Name.includes('ALL'));\r\n                buyingRate = buyingRate.filter(x => x.Unit.Name == '+1000' || x.Unit.Name.includes('ALL'));\r\n            }\r\n\r\n            if (!this.EditForm.Entity.FreightIds.includes('1')) {\r\n                sellingRate = sellingRate.filter(x => !x.IsFreight && (!x.IsLogistics || !x.IsTrucking));\r\n                buyingRate = buyingRate.filter(x => !x.IsFreight && (!x.IsLogistics || !x.IsTrucking));\r\n                if (this.EditForm.Entity.FreightIds.includes('2')) {\r\n                    booking.TypeId = 9;\r\n                    featureName = \"logistics-booking-local-editor\";\r\n                    if (this.EditForm.Entity.Service.Name.includes('Sea Import')) {\r\n                        booking.ServiceId = 4;\r\n                    }\r\n                    else if (this.EditForm.Entity.Service.Name.includes('Sea Export')) {\r\n                        booking.ServiceId = 3;\r\n                    }\r\n                    else if (this.EditForm.Entity.Service.Name.includes('Air Export')) {\r\n                        booking.ServiceId = 1;\r\n                    }\r\n                    else if (this.EditForm.Entity.Service.Name.includes('Air Import')) {\r\n                        booking.ServiceId = 2;\r\n                    }\r\n                }\r\n            }\r\n            if (!this.EditForm.Entity.FreightIds.includes('2')) {\r\n                sellingRate = sellingRate.filter(x => !x.IsLogistics);\r\n                buyingRate = buyingRate.filter(x => !x.IsLogistics);\r\n            }\r\n            if (!this.EditForm.Entity.FreightIds.includes('3')) {\r\n                sellingRate = sellingRate.filter(x => !x.IsTrucking);\r\n                buyingRate = buyingRate.filter(x => !x.IsTrucking);\r\n            }\r\n            if (this.EditForm.Entity.FreightIds == '3') {\r\n                booking.ServiceId = 13;\r\n                booking.TypeId = 8;\r\n                featureName = \"trucking-booking-local-editor\";\r\n            }\r\n            buyingRate.forEach(item => {\r\n                var route = inquiryDetail.AllListViewItem.find(x => !x.GroupRow && x.Entity.PolId == item.PolId && x.Entity.PodId == item.PodId);\r\n                item.Id = this.Uuid7.NewGuid();\r\n                item.BookingId = booking.Id;\r\n                if (!item.IsContainer) {\r\n                    item.UnitId = item.OtherUnitId;\r\n                }\r\n                item.Amount = this.Decimal(item.Cost || 0);\r\n                item.VendorId = item.PayeeId || route.Entity.VendorId;\r\n                item.IsBuying = true;\r\n                if (item.IsKGS) {\r\n                    item.Quantity = !item.Quantity ? this.Decimal.max(this.Decimal(this.EditForm.Entity.ViewCW || 1), this.Decimal(item.MinQuantityCost || 1)) : this.Decimal(item.Quantity);\r\n                }\r\n                if (item.IsGrossWeight) {\r\n                    item.Quantity = this.Decimal(this.EditForm.Entity.ViewGW || 1);\r\n                }\r\n                if (!item.Quantity) {\r\n                    item.Quantity = item.Quantity ? this.Decimal(item.Quantity) : this.Decimal(1);\r\n                }\r\n                else {\r\n                    item.Quantity = this.Decimal(item.Quantity);\r\n                }\r\n                item.TotalAmount = (item.Quantity || this.Decimal(0)).times(item.Amount || new this.Decimal(0));\r\n                item.AmountTax = (item.TotalAmount).times(this.Decimal(item.Vat || 0)).div(100);\r\n                item.TotalAmountTax = item.TotalAmount.plus(item.AmountTax);\r\n                bookingDetail.push(item);\r\n            });\r\n            sellingRate.forEach(item => {\r\n                item.Id = this.Uuid7.NewGuid();\r\n                item.BookingId = booking.Id;\r\n                if (!item.IsContainer) {\r\n                    item.UnitId = item.OtherUnitId;\r\n                }\r\n                item.Amount = this.Decimal(item.Rate || 0);\r\n                item.VendorId = item.PayerId || this.EditForm.Entity.CustomerId;\r\n                if (item.IsKGS) {\r\n                    item.Quantity = !item.Quantity ? this.Decimal.max(this.Decimal(this.EditForm.Entity.ViewCW || 1), this.Decimal(item.MinQuantityRate || 1)) : this.Decimal(item.Quantity);\r\n                }\r\n                if (item.IsGrossWeight) {\r\n                    item.Quantity = this.Decimal(this.EditForm.Entity.ViewGW || 1);\r\n                }\r\n                if (!item.Quantity) {\r\n                    item.Quantity = item.Quantity ? this.Decimal(item.Quantity) : this.Decimal(1);\r\n                }\r\n                else {\r\n                    item.Quantity = this.Decimal(item.Quantity);\r\n                }\r\n                item.TotalAmount = (item.Quantity || this.Decimal(0)).times(item.Amount || new this.Decimal(0));\r\n                item.AmountTax = (item.TotalAmount).times(this.Decimal(item.Vat || 0)).div(100);\r\n                item.TotalAmountTax = item.TotalAmount.plus(item.AmountTax);\r\n                bookingDetail.push(item);\r\n            });\r\n            booking.BookingDetail = bookingDetail.sort((a, b) => {\r\n                const vendorCompare = a.VendorId.localeCompare(b.VendorId);\r\n                if (vendorCompare !== 0) {\r\n                    return vendorCompare;\r\n                }\r\n                return b.Amount - a.Amount;\r\n            });\r\n            this.OpenPopup(featureName, booking);\r\n        }, () => { }, true, components);\r\n    }\r\n}",
     "Events": "{\r\n    \"onsave\": \"OnSave\",\r\n    \"onsaveadd\": \"OnSaveAdd\",\r\n    \"saved\": \"UpdateParent\"\r\n}",
@@ -10,7 +9,7 @@
     "CodeId": "00742604-0000-0000-8000-adb936a690dd",
     "GridPolicies": [
         {
-            "Id": "001331b0-0000-0000-8000-22d9787d445b",
+            "Id": "air_quote_editor.PolId.0",
             "FieldName": "PolId",
             "Order": 0,
             "ComponentType": "Dropdown",
@@ -29,7 +28,7 @@
             "EntityId": "Summary2"
         },
         {
-            "Id": "001331b0-0000-0000-8001-a0c9c7ca86db",
+            "Id": "air_quote_editor.PodId.1",
             "FieldName": "PodId",
             "Order": 1,
             "ComponentType": "Dropdown",
@@ -48,7 +47,7 @@
             "EntityId": "Summary2"
         },
         {
-            "Id": "001b3138-0000-0000-8000-3ac540d839c3",
+            "Id": "air_quote_editor.RevenueAdd1000.60",
             "FieldName": "RevenueAdd1000",
             "Order": 60,
             "ComponentType": "Number",
@@ -62,7 +61,7 @@
             "EntityId": "Summary2"
         },
         {
-            "Id": "001b3138-0000-0000-8001-0e273da6f4d5",
+            "Id": "air_quote_editor.CostAdd1000.61",
             "FieldName": "CostAdd1000",
             "Order": 61,
             "ComponentType": "Number",
@@ -76,7 +75,7 @@
             "EntityId": "Summary2"
         },
         {
-            "Id": "001b3138-0000-0000-8002-6f10217c6fdf",
+            "Id": "air_quote_editor.ProfitAdd1000.62",
             "FieldName": "ProfitAdd1000",
             "Order": 62,
             "ComponentType": "Number",
@@ -91,7 +90,7 @@
             "EntityId": "Summary2"
         },
         {
-            "Id": "001b319c-0000-0000-8000-012c8df27a7a",
+            "Id": "air_quote_editor.ProfitRateAdd1000.63",
             "FieldName": "ProfitRateAdd1000",
             "Order": 63,
             "ComponentType": "Number",
@@ -106,7 +105,7 @@
             "EntityId": "Summary2"
         },
         {
-            "Id": "004b0e08-0000-0000-8000-a017cac7ed9b",
+            "Id": "air_quote_editor.GroupFee.1",
             "FieldName": "GroupFee",
             "Order": 1,
             "ComponentType": "Input",
@@ -120,7 +119,7 @@
             "EntityId": "DefaultFee"
         },
         {
-            "Id": "004b0e18-0000-0000-8000-72c8c71d0dcc",
+            "Id": "air_quote_editor.Quantity.1",
             "FieldName": "Quantity",
             "Order": 1,
             "ComponentType": "Number",
@@ -130,7 +129,7 @@
             "EntityId": "EntityContainer"
         },
         {
-            "Id": "004b0e34-0000-0000-8000-3e4e5676ad01",
+            "Id": "air_quote_editor.Add300.7",
             "FieldName": "Add300",
             "Order": 7,
             "ComponentType": "Number",
@@ -145,7 +144,7 @@
             "EntityId": "Summary"
         },
         {
-            "Id": "004b0e5c-0000-0000-8000-00232cc3b0c0",
+            "Id": "air_quote_editor.ContainerTypeId.2",
             "FieldName": "ContainerTypeId",
             "Order": 2,
             "ComponentType": "Dropdown",
@@ -161,7 +160,7 @@
             "EntityId": "EntityContainer"
         },
         {
-            "Id": "004b0e6c-0000-0000-8000-39eaecbf9663",
+            "Id": "air_quote_editor.RouteId.2",
             "FieldName": "RouteId",
             "Order": 2,
             "ComponentType": "Dropdown",
@@ -181,7 +180,7 @@
             "EntityId": "DefaultFee"
         },
         {
-            "Id": "004b0e74-0000-0000-8000-52c0d7e768e5",
+            "Id": "air_quote_editor.VendorId.2",
             "FieldName": "VendorId",
             "Order": 2,
             "ComponentType": "Dropdown",
@@ -201,7 +200,7 @@
             "EntityId": "Summary"
         },
         {
-            "Id": "004b0e7c-0000-0000-8000-342e366229a1",
+            "Id": "air_quote_editor.UnitId.3",
             "FieldName": "UnitId",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -221,7 +220,7 @@
             "EntityId": "DefaultFee"
         },
         {
-            "Id": "004b0e80-0000-0000-8000-a54bf7efa452",
+            "Id": "air_quote_editor.Add100.6",
             "FieldName": "Add100",
             "Order": 6,
             "ComponentType": "Number",
@@ -236,7 +235,7 @@
             "EntityId": "Summary"
         },
         {
-            "Id": "004b0e88-0000-0000-8000-7e1c1993dad6",
+            "Id": "air_quote_editor.Add45.5",
             "FieldName": "Add45",
             "Order": 5,
             "ComponentType": "Number",
@@ -251,7 +250,7 @@
             "EntityId": "Summary"
         },
         {
-            "Id": "004b0ea0-0000-0000-8000-261d80181f43",
+            "Id": "air_quote_editor.Quantity.49",
             "FieldName": "Quantity",
             "Order": 49,
             "ComponentType": "Number",
@@ -266,7 +265,7 @@
             "EntityId": "DefaultFee"
         },
         {
-            "Id": "004b0eb0-0000-0000-8000-ed23a619068e",
+            "Id": "air_quote_editor.Add500.8",
             "FieldName": "Add500",
             "Order": 8,
             "ComponentType": "Number",
@@ -281,7 +280,7 @@
             "EntityId": "Summary"
         },
         {
-            "Id": "004b0ed8-0000-0000-8000-1b2c93fdeeab",
+            "Id": "air_quote_editor.VendorId.2_1",
             "FieldName": "VendorId",
             "Order": 2,
             "ComponentType": "Dropdown",
@@ -303,7 +302,7 @@
             "EntityId": "InquiryDetail"
         },
         {
-            "Id": "004b0edc-0000-0000-8000-d9e608a83272",
+            "Id": "air_quote_editor.ScheduleIds.4",
             "FieldName": "ScheduleIds",
             "Order": 4,
             "ComponentType": "Dropdown",
@@ -325,7 +324,7 @@
             "IsMultiple": true
         },
         {
-            "Id": "004c0e1c-0000-0000-8000-d3037dadfa67",
+            "Id": "air_quote_editor.PolId.0_1",
             "FieldName": "PolId",
             "Order": 0,
             "ComponentType": "Dropdown",
@@ -346,7 +345,7 @@
             "EntityId": "InquiryDetail"
         },
         {
-            "Id": "004c0e24-0000-0000-8000-0952c39d663c",
+            "Id": "air_quote_editor.Note.52",
             "FieldName": "Note",
             "Order": 52,
             "ComponentType": "Input",
@@ -360,7 +359,7 @@
             "EntityId": "DefaultFee"
         },
         {
-            "Id": "004c0e24-0000-0000-8000-d12dd3839ebe",
+            "Id": "air_quote_editor.CutOff.5",
             "FieldName": "CutOff",
             "Order": 5,
             "ComponentType": "Datepicker",
@@ -376,7 +375,7 @@
             "EntityId": "InquiryDetail"
         },
         {
-            "Id": "004c0e70-0000-0000-8000-d444c3ffea33",
+            "Id": "air_quote_editor.CurrencyId.5",
             "FieldName": "CurrencyId",
             "Order": 5,
             "ComponentType": "Dropdown",
@@ -398,7 +397,7 @@
             "EntityId": "DefaultFee"
         },
         {
-            "Id": "004c0e74-0000-0000-8000-26f110c56a00",
+            "Id": "air_quote_editor.IsObh.51",
             "FieldName": "IsObh",
             "Order": 51,
             "ComponentType": "Checkbox",
@@ -416,7 +415,7 @@
             "EntityId": "DefaultFee"
         },
         {
-            "Id": "004c0e94-0000-0000-8000-dfa413d0f032",
+            "Id": "air_quote_editor.PayeeId.54",
             "FieldName": "PayeeId",
             "Order": 54,
             "ComponentType": "Dropdown",
@@ -436,7 +435,7 @@
             "EntityId": "DefaultFee"
         },
         {
-            "Id": "004c0eb8-0000-0000-8000-2b4ef7f0158a",
+            "Id": "air_quote_editor.Sub45.4",
             "FieldName": "Sub45",
             "Order": 4,
             "ComponentType": "Number",
@@ -451,7 +450,7 @@
             "EntityId": "Summary"
         },
         {
-            "Id": "004c0eb8-0000-0000-8000-a01ff1d4b2ce",
+            "Id": "air_quote_editor.PodId.1_1",
             "FieldName": "PodId",
             "Order": 1,
             "ComponentType": "Dropdown",
@@ -472,7 +471,7 @@
             "EntityId": "InquiryDetail"
         },
         {
-            "Id": "004c0ec0-0000-0000-8000-cc6af28626aa",
+            "Id": "air_quote_editor.Vat.50",
             "FieldName": "Vat",
             "Order": 50,
             "ComponentType": "Number",
@@ -486,7 +485,7 @@
             "EntityId": "DefaultFee"
         },
         {
-            "Id": "004c0ed0-0000-0000-8000-a2e5b3153299",
+            "Id": "air_quote_editor.DescriptionId.4",
             "FieldName": "DescriptionId",
             "Order": 4,
             "ComponentType": "Dropdown",
@@ -509,7 +508,7 @@
             "EntityId": "DefaultFee"
         },
         {
-            "Id": "004c0ed8-0000-0000-8000-2178cabe6641",
+            "Id": "air_quote_editor.PayerId.53",
             "FieldName": "PayerId",
             "Order": 53,
             "ComponentType": "Dropdown",
@@ -530,7 +529,7 @@
             "EntityId": "DefaultFee"
         },
         {
-            "Id": "004c0ed8-0000-0000-8000-bd7ae4d50fbd",
+            "Id": "air_quote_editor.TransitTime.3",
             "FieldName": "TransitTime",
             "Order": 3,
             "ComponentType": "Input",
@@ -544,7 +543,7 @@
             "EntityId": "InquiryDetail"
         },
         {
-            "Id": "004d0eac-0000-0000-8000-1ab20ce3ee25",
+            "Id": "air_quote_editor.PolId.0_2",
             "FieldName": "PolId",
             "Order": 0,
             "ComponentType": "Dropdown",
@@ -563,7 +562,7 @@
             "EntityId": "Summary"
         },
         {
-            "Id": "004d0eb8-0000-0000-8000-c8176753cdf6",
+            "Id": "air_quote_editor.PodId.1_2",
             "FieldName": "PodId",
             "Order": 1,
             "ComponentType": "Dropdown",
@@ -582,7 +581,7 @@
             "EntityId": "Summary"
         },
         {
-            "Id": "004d0ec4-0000-0000-8000-d9f6b6f937ac",
+            "Id": "air_quote_editor.MinSub10.3",
             "FieldName": "MinSub10",
             "Order": 3,
             "ComponentType": "Number",
@@ -597,7 +596,7 @@
             "EntityId": "Summary"
         },
         {
-            "Id": "00743114-0000-0000-8000-746de217b85c",
+            "Id": "air_quote_editor.ProfitAdd300.32",
             "FieldName": "ProfitAdd300",
             "Order": 32,
             "ComponentType": "Number",
@@ -612,7 +611,7 @@
             "EntityId": "Summary2"
         },
         {
-            "Id": "00743114-0000-0000-8001-e20df6172d20",
+            "Id": "air_quote_editor.ProfitRateAdd300.33",
             "FieldName": "ProfitRateAdd300",
             "Order": 33,
             "ComponentType": "Number",
@@ -627,7 +626,7 @@
             "EntityId": "Summary2"
         },
         {
-            "Id": "00743114-0000-0000-8002-a00d288221f2",
+            "Id": "air_quote_editor.RevenueAdd500.50",
             "FieldName": "RevenueAdd500",
             "Order": 50,
             "ComponentType": "Number",
@@ -641,7 +640,7 @@
             "EntityId": "Summary2"
         },
         {
-            "Id": "00743114-0000-0000-8003-c2f230f4b2c5",
+            "Id": "air_quote_editor.CostAdd500.51",
             "FieldName": "CostAdd500",
             "Order": 51,
             "ComponentType": "Number",
@@ -655,7 +654,7 @@
             "EntityId": "Summary2"
         },
         {
-            "Id": "00743114-0000-0000-8004-cabe37fbea96",
+            "Id": "air_quote_editor.ProfitAdd500.52",
             "FieldName": "ProfitAdd500",
             "Order": 52,
             "ComponentType": "Number",
@@ -670,7 +669,7 @@
             "EntityId": "Summary2"
         },
         {
-            "Id": "0074314c-0000-0000-8000-1c70ab6ce379",
+            "Id": "air_quote_editor.RevenueAdd100.19",
             "FieldName": "RevenueAdd100",
             "Order": 19,
             "ComponentType": "Number",
@@ -684,7 +683,7 @@
             "EntityId": "Summary2"
         },
         {
-            "Id": "0074314c-0000-0000-8001-159e9136753b",
+            "Id": "air_quote_editor.CostAdd100.21",
             "FieldName": "CostAdd100",
             "Order": 21,
             "ComponentType": "Number",
@@ -698,7 +697,7 @@
             "EntityId": "Summary2"
         },
         {
-            "Id": "0074314c-0000-0000-8002-056e8e0cafd6",
+            "Id": "air_quote_editor.ProfitAdd100.22",
             "FieldName": "ProfitAdd100",
             "Order": 22,
             "ComponentType": "Number",
@@ -713,7 +712,7 @@
             "EntityId": "Summary2"
         },
         {
-            "Id": "00743178-0000-0000-8000-b0be31b428e4",
+            "Id": "air_quote_editor.ProfitRateAdd500.53",
             "FieldName": "ProfitRateAdd500",
             "Order": 53,
             "ComponentType": "Number",
@@ -728,7 +727,7 @@
             "EntityId": "Summary2"
         },
         {
-            "Id": "00743184-0000-0000-8000-f19980a427d5",
+            "Id": "air_quote_editor.CurrencyText.1",
             "FieldName": "CurrencyText",
             "Order": 1,
             "ComponentType": "Input",
@@ -741,7 +740,7 @@
             "EntityId": "Summary2"
         },
         {
-            "Id": "00743184-0000-0000-8001-cd2909de5376",
+            "Id": "air_quote_editor.RevenueSub45.9",
             "FieldName": "RevenueSub45",
             "Order": 9,
             "ComponentType": "Number",
@@ -755,7 +754,7 @@
             "EntityId": "Summary2"
         },
         {
-            "Id": "00743184-0000-0000-8002-09a419db4892",
+            "Id": "air_quote_editor.CostSub45.10",
             "FieldName": "CostSub45",
             "Order": 10,
             "ComponentType": "Number",
@@ -769,7 +768,7 @@
             "EntityId": "Summary2"
         },
         {
-            "Id": "00743184-0000-0000-8003-e0601fdbd39d",
+            "Id": "air_quote_editor.ProfitSub45.12",
             "FieldName": "ProfitSub45",
             "Order": 12,
             "ComponentType": "Number",
@@ -784,7 +783,7 @@
             "EntityId": "Summary2"
         },
         {
-            "Id": "007431b0-0000-0000-8000-b161bca488b1",
+            "Id": "air_quote_editor.ProfitRateAdd100.23",
             "FieldName": "ProfitRateAdd100",
             "Order": 23,
             "ComponentType": "Number",
@@ -799,7 +798,7 @@
             "EntityId": "Summary2"
         },
         {
-            "Id": "007431b0-0000-0000-8001-e0e660f28f85",
+            "Id": "air_quote_editor.RevenueAdd300.29",
             "FieldName": "RevenueAdd300",
             "Order": 29,
             "ComponentType": "Number",
@@ -813,7 +812,7 @@
             "EntityId": "Summary2"
         },
         {
-            "Id": "007431b0-0000-0000-8002-4397d90eb879",
+            "Id": "air_quote_editor.CostAdd300.30",
             "FieldName": "CostAdd300",
             "Order": 30,
             "ComponentType": "Number",
@@ -827,7 +826,7 @@
             "EntityId": "Summary2"
         },
         {
-            "Id": "007431e8-0000-0000-8000-ca54e2a72b3f",
+            "Id": "air_quote_editor.ProfitRateSub45.13",
             "FieldName": "ProfitRateSub45",
             "Order": 13,
             "ComponentType": "Number",
@@ -842,7 +841,7 @@
             "EntityId": "Summary2"
         },
         {
-            "Id": "007431e8-0000-0000-8001-7761a8f7c496",
+            "Id": "air_quote_editor.RevenueAdd45.14",
             "FieldName": "RevenueAdd45",
             "Order": 14,
             "ComponentType": "Number",
@@ -856,7 +855,7 @@
             "EntityId": "Summary2"
         },
         {
-            "Id": "007431e8-0000-0000-8002-8933122097e1",
+            "Id": "air_quote_editor.CostAdd45.15",
             "FieldName": "CostAdd45",
             "Order": 15,
             "ComponentType": "Number",
@@ -870,7 +869,7 @@
             "EntityId": "Summary2"
         },
         {
-            "Id": "007431e8-0000-0000-8003-1aec59ac044e",
+            "Id": "air_quote_editor.ProfitAdd45.17",
             "FieldName": "ProfitAdd45",
             "Order": 17,
             "ComponentType": "Number",
@@ -885,7 +884,7 @@
             "EntityId": "Summary2"
         },
         {
-            "Id": "007431e8-0000-0000-8004-be5560a0d0fb",
+            "Id": "air_quote_editor.ProfitRateAdd45.18",
             "FieldName": "ProfitRateAdd45",
             "Order": 18,
             "ComponentType": "Number",
@@ -900,7 +899,7 @@
             "EntityId": "Summary2"
         },
         {
-            "Id": "009a200c-0000-0000-8000-7869234fc7ec",
+            "Id": "air_quote_editor.MinQuantityRate.19",
             "FieldName": "MinQuantityRate",
             "Order": 19,
             "ComponentType": "Number",
@@ -920,7 +919,7 @@
             "EntityId": "DefaultFee"
         },
         {
-            "Id": "009a20a8-0000-0000-8000-71052f8e7ee8",
+            "Id": "air_quote_editor.MinQuantityCost.18",
             "FieldName": "MinQuantityCost",
             "Order": 18,
             "ComponentType": "Number",
@@ -939,7 +938,7 @@
             "EntityId": "DefaultFee"
         },
         {
-            "Id": "00a41618-0000-0000-8000-cc3782738b86",
+            "Id": "air_quote_editor.Cost.20",
             "FieldName": "Cost",
             "Order": 20,
             "ComponentType": "Number",
@@ -958,7 +957,7 @@
             "EntityId": "DefaultFee"
         },
         {
-            "Id": "00a4167c-0000-0000-8000-580ad20520fd",
+            "Id": "air_quote_editor.Rate.21",
             "FieldName": "Rate",
             "Order": 21,
             "ComponentType": "Number",
@@ -978,7 +977,7 @@
             "EntityId": "DefaultFee"
         },
         {
-            "Id": "00aa1010-0000-0000-8000-d9568fca0350",
+            "Id": "air_quote_editor.Length.0",
             "FieldName": "Length",
             "Order": 0,
             "ComponentType": "Number",
@@ -991,7 +990,7 @@
             "EntityId": "EntityDimension"
         },
         {
-            "Id": "00ab10dc-0000-0000-8000-ab8844b2effc",
+            "Id": "air_quote_editor.Width.1",
             "FieldName": "Width",
             "Order": 1,
             "ComponentType": "Number",
@@ -1004,7 +1003,7 @@
             "EntityId": "EntityDimension"
         },
         {
-            "Id": "00ac10c8-0000-0000-8000-f924ef9034b6",
+            "Id": "air_quote_editor.Height.2",
             "FieldName": "Height",
             "Order": 2,
             "ComponentType": "Number",
@@ -1017,7 +1016,7 @@
             "EntityId": "EntityDimension"
         },
         {
-            "Id": "00ac26b0-0000-0000-8000-d78054ed884c",
+            "Id": "air_quote_editor.OtherUnitId.6",
             "FieldName": "OtherUnitId",
             "Order": 6,
             "ComponentType": "Dropdown",
@@ -1037,7 +1036,7 @@
             "EntityId": "DefaultFee"
         },
         {
-            "Id": "00bf1050-0000-0000-8000-1e6db536aeee",
+            "Id": "air_quote_editor.Quantity.3",
             "FieldName": "Quantity",
             "Order": 3,
             "ComponentType": "Number",
@@ -1050,7 +1049,7 @@
             "EntityId": "EntityDimension"
         },
         {
-            "Id": "00c60f78-0000-0000-8000-c01b5e132452",
+            "Id": "air_quote_editor.CarrierId.6",
             "FieldName": "CarrierId",
             "Order": 6,
             "ComponentType": "Dropdown",
@@ -1072,7 +1071,7 @@
             "EntityId": "InquiryDetail"
         },
         {
-            "Id": "00e10e78-0000-0000-8000-a1c2ee9492c4",
+            "Id": "air_quote_editor.Add1000.9",
             "FieldName": "Add1000",
             "Order": 9,
             "ComponentType": "Number",
@@ -1087,7 +1086,7 @@
             "EntityId": "Summary"
         },
         {
-            "Id": "00f126c8-0000-0000-8000-0cfb166c5de2",
+            "Id": "air_quote_editor.IsGrossWeight.48",
             "FieldName": "IsGrossWeight",
             "Order": 48,
             "ComponentType": "Checkbox",
@@ -1104,7 +1103,7 @@
             "EntityId": "DefaultFee"
         },
         {
-            "Id": "00f20f94-0000-0000-8000-0d2a7de2a8ad",
+            "Id": "air_quote_editor.Note.7",
             "FieldName": "Note",
             "Order": 7,
             "ComponentType": "Input",
@@ -1118,7 +1117,7 @@
             "EntityId": "InquiryDetail"
         },
         {
-            "Id": "00f6311c-0000-0000-8000-2b7ddea18333",
+            "Id": "air_quote_editor.RevenueTotal.70",
             "FieldName": "RevenueTotal",
             "Order": 70,
             "ComponentType": "Number",
@@ -1132,7 +1131,7 @@
             "EntityId": "Summary2"
         },
         {
-            "Id": "00f63180-0000-0000-8000-b79b5b8158ed",
+            "Id": "air_quote_editor.CostTotal.71",
             "FieldName": "CostTotal",
             "Order": 71,
             "ComponentType": "Number",
@@ -1146,7 +1145,7 @@
             "EntityId": "Summary2"
         },
         {
-            "Id": "00f631e4-0000-0000-8000-34ea51a677e9",
+            "Id": "air_quote_editor.ProfitTotal.72",
             "FieldName": "ProfitTotal",
             "Order": 72,
             "ComponentType": "Number",
@@ -1161,7 +1160,7 @@
             "EntityId": "Summary2"
         },
         {
-            "Id": "00f631e4-0000-0000-8001-dc04fccf9636",
+            "Id": "air_quote_editor.ProfitRateTotal.73",
             "FieldName": "ProfitRateTotal",
             "Order": 73,
             "ComponentType": "Number",
@@ -1178,7 +1177,7 @@
     ],
     "Components": [
         {
-            "Id": "00490e00-0000-0000-8000-79e6657c6fea",
+            "Id": "air_quote_editor.Container.1",
             "FieldName": "Container",
             "Order": 1,
             "ComponentType": "Section",
@@ -1186,7 +1185,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "00490e8c-0000-0000-8000-43cd97867994",
+                    "Id": "Container.Left.1_5",
                     "FieldName": "Left",
                     "Order": 1,
                     "ComponentType": "Section",
@@ -1195,7 +1194,7 @@
                     "XxlOuterColumn": 4,
                     "Components": [
                         {
-                            "Id": "00490e10-0000-0000-8000-537a8c5a376d",
+                            "Id": "Left.Pic.3",
                             "FieldName": "Pic",
                             "Order": 3,
                             "ComponentType": "Input",
@@ -1205,7 +1204,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00490e14-0000-0000-8000-8cad1eda40e3",
+                            "Id": "Left.CustomerId.2",
                             "FieldName": "CustomerId",
                             "Order": 2,
                             "ComponentType": "Dropdown",
@@ -1225,7 +1224,7 @@
                             "ShowHotKey": true
                         },
                         {
-                            "Id": "00490e58-0000-0000-8000-9d15674a189a",
+                            "Id": "Left.ServiceText.5",
                             "FieldName": "ServiceText",
                             "Order": 5,
                             "ComponentType": "Input",
@@ -1234,7 +1233,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00490edc-0000-0000-8000-59231a8a8d85",
+                            "Id": "Left.ServiceDate.1",
                             "FieldName": "ServiceDate",
                             "Order": 1,
                             "ComponentType": "Datepicker",
@@ -1243,7 +1242,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00490edc-0000-0000-8000-639e60ca8b32",
+                            "Id": "Left.Code.0",
                             "FieldName": "Code",
                             "Order": 0,
                             "ComponentType": "Input",
@@ -1252,7 +1251,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00490ef4-0000-0000-8000-2d02c746b527",
+                            "Id": "Left.PhoneNumber.4",
                             "FieldName": "PhoneNumber",
                             "Order": 4,
                             "ComponentType": "Input",
@@ -1263,7 +1262,7 @@
                     ]
                 },
                 {
-                    "Id": "00490ee8-0000-0000-8000-0af0d57015ee",
+                    "Id": "Container.Main.2_5",
                     "FieldName": "Main",
                     "Order": 2,
                     "ComponentType": "Section",
@@ -1272,7 +1271,7 @@
                     "XxlOuterColumn": 4,
                     "Components": [
                         {
-                            "Id": "00490e28-0000-0000-8000-2ba0c96711c0",
+                            "Id": "Main.FromDate.0",
                             "FieldName": "FromDate",
                             "Order": 0,
                             "ComponentType": "Datepicker",
@@ -1282,7 +1281,7 @@
                             "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                         },
                         {
-                            "Id": "00490e48-0000-0000-8000-152538f98851",
+                            "Id": "Main.ShipperIdText.5",
                             "FieldName": "ShipperIdText",
                             "Order": 5,
                             "ComponentType": "Dropdown",
@@ -1300,7 +1299,7 @@
                             "TabGroup": "ShipperId"
                         },
                         {
-                            "Id": "00490e80-0000-0000-8000-0a240d4b2acf",
+                            "Id": "Main.ToDate.1",
                             "FieldName": "ToDate",
                             "Order": 1,
                             "ComponentType": "Datepicker",
@@ -1310,7 +1309,7 @@
                             "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                         },
                         {
-                            "Id": "00490ea4-0000-0000-8000-6f91a82e0a94",
+                            "Id": "Main.EtdDate.2",
                             "FieldName": "EtdDate",
                             "Order": 2,
                             "ComponentType": "Datepicker",
@@ -1319,7 +1318,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00490eb8-0000-0000-8000-66d3146cbabf",
+                            "Id": "Main.EtaDate.3",
                             "FieldName": "EtaDate",
                             "Order": 3,
                             "ComponentType": "Datepicker",
@@ -1328,7 +1327,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00490ee0-0000-0000-8000-978f6141d58e",
+                            "Id": "Main.AgentIdText.4",
                             "FieldName": "AgentIdText",
                             "Order": 4,
                             "ComponentType": "Dropdown",
@@ -1348,7 +1347,7 @@
                     ]
                 },
                 {
-                    "Id": "00490ec8-0000-0000-8000-942ef2bb4988",
+                    "Id": "Container.Right.3",
                     "FieldName": "Right",
                     "Order": 3,
                     "ComponentType": "Section",
@@ -1357,7 +1356,7 @@
                     "XxlOuterColumn": 4,
                     "Components": [
                         {
-                            "Id": "00490e78-0000-0000-8000-71f15f5650a4",
+                            "Id": "Right.Quantity.2",
                             "FieldName": "Quantity",
                             "Order": 2,
                             "ComponentType": "Number",
@@ -1366,7 +1365,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00490e9c-0000-0000-8000-7aa5a7d7f5d1",
+                            "Id": "Right.UnitId.5",
                             "FieldName": "UnitId",
                             "Order": 5,
                             "ComponentType": "Dropdown",
@@ -1381,7 +1380,7 @@
                             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]"
                         },
                         {
-                            "Id": "00490ea8-0000-0000-8000-e3b24e66efcc",
+                            "Id": "Right.CW.6",
                             "FieldName": "CW",
                             "Order": 6,
                             "ComponentType": "Number",
@@ -1391,7 +1390,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00490eb4-0000-0000-8000-600343dadb76",
+                            "Id": "Right.CBM.4",
                             "FieldName": "CBM",
                             "Order": 4,
                             "ComponentType": "Number",
@@ -1400,7 +1399,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00490ed4-0000-0000-8000-23d0e7fc4394",
+                            "Id": "Right.GW.3",
                             "FieldName": "GW",
                             "Order": 3,
                             "ComponentType": "Number",
@@ -1409,7 +1408,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00490ee0-0000-0000-8000-42a729be81fd",
+                            "Id": "Right.CommodityId.0",
                             "FieldName": "CommodityId",
                             "Order": 0,
                             "ComponentType": "Dropdown",
@@ -1424,7 +1423,7 @@
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
-                            "Id": "00490eec-0000-0000-8000-5522711e538d",
+                            "Id": "Right.Note.7",
                             "FieldName": "Note",
                             "Order": 7,
                             "ComponentType": "Textarea",
@@ -1434,7 +1433,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00490ef4-0000-0000-8000-14bdaec3acb4",
+                            "Id": "Right.ShipmentTypeId.1",
                             "FieldName": "ShipmentTypeId",
                             "Order": 1,
                             "ComponentType": "Dropdown",
@@ -1451,7 +1450,7 @@
                     ]
                 },
                 {
-                    "Id": "00490ea8-0000-0000-8000-aceb187c5674",
+                    "Id": "Container.Show_More_All.4",
                     "FieldName": "Show More All",
                     "Order": 4,
                     "ComponentType": "Section",
@@ -1461,7 +1460,7 @@
                     "IsDropDown": true,
                     "Components": [
                         {
-                            "Id": "00490e00-0000-0000-8000-517f54d3b223",
+                            "Id": "Show_More_All.Show_More.4",
                             "FieldName": "Show More",
                             "Order": 4,
                             "ComponentType": "Section",
@@ -1470,7 +1469,7 @@
                             "XxlOuterColumn": 3,
                             "Components": [
                                 {
-                                    "Id": "00490e78-0000-0000-8000-296e2e88956f",
+                                    "Id": "Show_More.ConsigneeIdText.1",
                                     "FieldName": "ConsigneeIdText",
                                     "Order": 1,
                                     "ComponentType": "Dropdown",
@@ -1488,7 +1487,7 @@
                                     "TabGroup": "ConsigneeId"
                                 },
                                 {
-                                    "Id": "004a0e14-0000-0000-8000-a81599bba763",
+                                    "Id": "Show_More.Delivery.5",
                                     "FieldName": "Delivery",
                                     "Order": 5,
                                     "ComponentType": "Input",
@@ -1497,7 +1496,7 @@
                                     "ShowLabel": true
                                 },
                                 {
-                                    "Id": "004a0e1c-0000-0000-8000-f7702a17961f",
+                                    "Id": "Show_More.IncotermId.2",
                                     "FieldName": "IncotermId",
                                     "Order": 2,
                                     "ComponentType": "Dropdown",
@@ -1511,7 +1510,7 @@
                                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "004a0e60-0000-0000-8000-0b7854b77078",
+                                    "Id": "Show_More.Pickup.4",
                                     "FieldName": "Pickup ",
                                     "Order": 4,
                                     "ComponentType": "Input",
@@ -1521,7 +1520,7 @@
                                     "ShowLabel": true
                                 },
                                 {
-                                    "Id": "004a0eb8-0000-0000-8000-61f0159a1017",
+                                    "Id": "Show_More.Subject.8",
                                     "FieldName": "Subject",
                                     "Order": 8,
                                     "ComponentType": "Textarea",
@@ -1531,7 +1530,7 @@
                                     "ShowLabel": true
                                 },
                                 {
-                                    "Id": "004a0eb8-0000-0000-8000-e7a18a194133",
+                                    "Id": "Show_More.DeliveryTerm.3",
                                     "FieldName": "DeliveryTerm",
                                     "Order": 3,
                                     "ComponentType": "Input",
@@ -1542,7 +1541,7 @@
                             ]
                         },
                         {
-                            "Id": "002f1014-0000-0000-8000-55c4173ae4fb",
+                            "Id": "Show_More_All.Show_More_Remark.7",
                             "FieldName": "Show More Remark",
                             "Order": 7,
                             "ComponentType": "Section",
@@ -1552,7 +1551,7 @@
                             "XxlOuterColumn": 3,
                             "Components": [
                                 {
-                                    "Id": "00451004-0000-0000-8000-5aaaf83a25d1",
+                                    "Id": "Show_More_Remark.EntityDimension.2",
                                     "FieldName": "EntityDimension",
                                     "Order": 2,
                                     "ComponentType": "GridView",
@@ -1569,7 +1568,7 @@
                                     "Editable": true
                                 },
                                 {
-                                    "Id": "00ec10cc-0000-0000-8000-1f184f571163",
+                                    "Id": "Show_More_Remark.btnSetCW.3",
                                     "FieldName": "btnSetCW",
                                     "Order": 3,
                                     "ComponentType": "Button",
@@ -1579,7 +1578,7 @@
                                     "Events": "{\"click\":\"SetDefaultCW\"}"
                                 },
                                 {
-                                    "Id": "00fb10fc-0000-0000-8000-7bcbb6e48158",
+                                    "Id": "Show_More_Remark.DimensionTypeId.1",
                                     "FieldName": "DimensionTypeId",
                                     "Order": 1,
                                     "ComponentType": "Dropdown",
@@ -1594,7 +1593,7 @@
                                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "00fb10fc-0000-0000-8001-11aca54a000f",
+                                    "Id": "Show_More_Remark.VolumeWeight.4",
                                     "FieldName": "VolumeWeight",
                                     "Order": 4,
                                     "ComponentType": "Number",
@@ -1604,7 +1603,7 @@
                                     "Style": "display: flex; flex-flow: row-reverse; white-space: nowrap; align-items: center;gap: 8px;"
                                 },
                                 {
-                                    "Id": "00fb10fc-0000-0000-8002-4673aa0d5e29",
+                                    "Id": "Show_More_Remark.Kgs.5",
                                     "FieldName": "Kgs",
                                     "Order": 5,
                                     "ComponentType": "Number",
@@ -1617,7 +1616,7 @@
                             ]
                         },
                         {
-                            "Id": "004a0ed0-0000-0000-8000-707082a6854c",
+                            "Id": "Show_More_All.Show_More_Remark.8",
                             "FieldName": "Show More Remark",
                             "Order": 8,
                             "ComponentType": "Section",
@@ -1627,7 +1626,7 @@
                             "XxlOuterColumn": 6,
                             "Components": [
                                 {
-                                    "Id": "004a0ed8-0000-0000-8000-f0d4c2a04647",
+                                    "Id": "Show_More_Remark.Remark.1",
                                     "FieldName": "Remark",
                                     "Order": 1,
                                     "ComponentType": "Word",
@@ -1642,7 +1641,7 @@
                     ]
                 },
                 {
-                    "Id": "004a0ef8-0000-0000-8000-a94f0ceef6e3",
+                    "Id": "Container.Section.9_1",
                     "Order": 9,
                     "ComponentType": "Section",
                     "Label": "Route",
@@ -1651,7 +1650,7 @@
                     "XxlOuterColumn": 12,
                     "Components": [
                         {
-                            "Id": "004a0edc-0000-0000-8000-f8df4a8a6e82",
+                            "Id": "Section.InquiryDetail.1",
                             "FieldName": "InquiryDetail",
                             "Order": 1,
                             "ComponentType": "GridView",
@@ -1671,7 +1670,7 @@
                     ]
                 },
                 {
-                    "Id": "004a0e28-0000-0000-8000-e05780d6da2d",
+                    "Id": "Container.Fee.10_1",
                     "FieldName": "Fee",
                     "Order": 10,
                     "ComponentType": "Section",
@@ -1682,7 +1681,7 @@
                     "XxlOuterColumn": 12,
                     "Components": [
                         {
-                            "Id": "004a0edc-0000-0000-8000-3ea186c6e08d",
+                            "Id": "Fee.DefaultFee.2",
                             "FieldName": "DefaultFee",
                             "Order": 2,
                             "ComponentType": "GridView",
@@ -1705,7 +1704,7 @@
                     ]
                 },
                 {
-                    "Id": "004a0e80-0000-0000-8000-6cc58c94bfdb",
+                    "Id": "Container.Summary.10",
                     "FieldName": "Summary",
                     "Order": 10,
                     "ComponentType": "Section",
@@ -1716,7 +1715,7 @@
                     "XxlOuterColumn": 12,
                     "Components": [
                         {
-                            "Id": "004a0e24-0000-0000-8000-8970356d3639",
+                            "Id": "Summary.Summary.2",
                             "FieldName": "Summary",
                             "Order": 2,
                             "ComponentType": "GridView",
@@ -1733,7 +1732,7 @@
                     ]
                 },
                 {
-                    "Id": "006a319c-0000-0000-8000-90acf0ade72b",
+                    "Id": "Container.Other_infor_shipment.13_1",
                     "FieldName": "Other infor shipment",
                     "Order": 13,
                     "ComponentType": "Section",
@@ -1744,7 +1743,7 @@
                     "IsDropDown": true,
                     "Components": [
                         {
-                            "Id": "0085314c-0000-0000-8000-c455356051e8",
+                            "Id": "Other_infor_shipment.Summary2.3",
                             "FieldName": "Summary2",
                             "Order": 3,
                             "ComponentType": "GridView",
@@ -1761,7 +1760,7 @@
                     ]
                 },
                 {
-                    "Id": "004a0e2c-0000-0000-8000-f36d59703f29",
+                    "Id": "Container.btnSaveAdd.9",
                     "FieldName": "btnSaveAdd",
                     "Order": 9,
                     "ComponentType": "Button",
@@ -1773,7 +1772,7 @@
                     "Events": "{ \"click\" : \"SaveAs\" }"
                 },
                 {
-                    "Id": "004a0e30-0000-0000-8000-72abf2ede027",
+                    "Id": "Container.btnSendEntity.2_4",
                     "FieldName": "btnSendEntity",
                     "Order": 2,
                     "ComponentType": "Button",
@@ -1785,7 +1784,7 @@
                     "ShowExp": "(this.Entity.StatusId == 1 || this.Entity.StatusId == 4)  && this.Entity.InsertedBy == this.Token.UserId && !this.Entity.Id.startsWith('-')"
                 },
                 {
-                    "Id": "004a0e34-0000-0000-8000-3d5cc8755d16",
+                    "Id": "Container.btnSave.14",
                     "FieldName": "btnSave",
                     "Order": 14,
                     "ComponentType": "Button",
@@ -1797,7 +1796,7 @@
                     "Events": "{ \"click\" : \"SavePatch\" }"
                 },
                 {
-                    "Id": "004a0e44-0000-0000-8000-a27455451fa1",
+                    "Id": "Container.btnSaveAdd.10",
                     "FieldName": "btnSaveAdd",
                     "Order": 10,
                     "ComponentType": "Button",
@@ -1809,7 +1808,7 @@
                     "Events": "{ \"click\" : \"SaveAdd\" }"
                 },
                 {
-                    "Id": "004a0eb4-0000-0000-8000-8c00491b05bc",
+                    "Id": "Container.btnDecline.3_4",
                     "FieldName": "btnDecline",
                     "Order": 3,
                     "ComponentType": "Button",
@@ -1821,7 +1820,7 @@
                     "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserApprovedIds.includes(this.Token.UserId) && !this.Entity.Id.startsWith('-')"
                 },
                 {
-                    "Id": "004a0ef8-0000-0000-8000-51a3bb37dd2c",
+                    "Id": "Container.btnApprove.4_4",
                     "FieldName": "btnApprove",
                     "Order": 4,
                     "ComponentType": "Button",
@@ -1833,7 +1832,7 @@
                     "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserApprovedIds.includes(this.Token.UserId) && !this.Entity.Id.startsWith('-')"
                 },
                 {
-                    "Id": "006d2dd4-0000-0000-8000-96dd33480193",
+                    "Id": "Container.btnCreateBookingLocal.11",
                     "FieldName": "btnCreateBookingLocal",
                     "Order": 11,
                     "ComponentType": "Button",
@@ -1846,7 +1845,7 @@
                     "ShowExp": "(this.dayjs(this.Entity.FromDate) < this.dayjs() && (!this.Entity.ToDate || (this.Entity.ToDate &&  this.dayjs(this.Entity.ToDate ) > this.dayjs())))  && this.Entity.StatusId == 3"
                 },
                 {
-                    "Id": "00ec10cc-0000-0000-8000-1f184f571163",
+                    "Id": "Container.btnSetCW.3",
                     "FieldName": "btnSetCW",
                     "Order": 3,
                     "ComponentType": "Button",
@@ -1858,7 +1857,7 @@
             ]
         },
         {
-            "Id": "004a0e30-0000-0000-8000-a7d3dd830038",
+            "Id": "air_quote_editor.Center.1",
             "FieldName": "Center",
             "Order": 1,
             "ComponentType": "Section",
@@ -1867,7 +1866,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "004a0e44-0000-0000-8000-4c8a858dbcea",
+                    "Id": "Center.IsSimple.2",
                     "FieldName": "IsSimple",
                     "Order": 2,
                     "ComponentType": "Checkbox",
@@ -1879,7 +1878,7 @@
                     "Events": "{\"change\":\"ShowHideDetail\"}"
                 },
                 {
-                    "Id": "004a0ecc-0000-0000-8000-dc8faf1a1d34",
+                    "Id": "Center.ServiceId.1_3",
                     "FieldName": "ServiceId",
                     "Order": 1,
                     "ComponentType": "Select",
@@ -1899,7 +1898,7 @@
             ]
         },
         {
-            "Id": "004a0ee0-0000-0000-8000-2439f20fc776",
+            "Id": "air_quote_editor.Button.1",
             "FieldName": "Button",
             "Order": 1,
             "ComponentType": "Section",
@@ -1908,7 +1907,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "004a0e2c-0000-0000-8000-f36d59703f29",
+                    "Id": "Button.btnSaveAdd.9",
                     "FieldName": "btnSaveAdd",
                     "Order": 9,
                     "ComponentType": "Button",
@@ -1920,7 +1919,7 @@
                     "Events": "{ \"click\" : \"SaveAs\" }"
                 },
                 {
-                    "Id": "004a0e30-0000-0000-8000-72abf2ede027",
+                    "Id": "Button.btnSendEntity.2_4",
                     "FieldName": "btnSendEntity",
                     "Order": 2,
                     "ComponentType": "Button",
@@ -1932,7 +1931,7 @@
                     "ShowExp": "(this.Entity.StatusId == 1 || this.Entity.StatusId == 4)  && this.Entity.InsertedBy == this.Token.UserId && !this.Entity.Id.startsWith('-')"
                 },
                 {
-                    "Id": "004a0e34-0000-0000-8000-3d5cc8755d16",
+                    "Id": "Button.btnSave.14",
                     "FieldName": "btnSave",
                     "Order": 14,
                     "ComponentType": "Button",
@@ -1944,7 +1943,7 @@
                     "Events": "{ \"click\" : \"SavePatch\" }"
                 },
                 {
-                    "Id": "004a0e44-0000-0000-8000-a27455451fa1",
+                    "Id": "Button.btnSaveAdd.10",
                     "FieldName": "btnSaveAdd",
                     "Order": 10,
                     "ComponentType": "Button",
@@ -1956,7 +1955,7 @@
                     "Events": "{ \"click\" : \"SaveAdd\" }"
                 },
                 {
-                    "Id": "004a0eb4-0000-0000-8000-8c00491b05bc",
+                    "Id": "Button.btnDecline.3_4",
                     "FieldName": "btnDecline",
                     "Order": 3,
                     "ComponentType": "Button",
@@ -1968,7 +1967,7 @@
                     "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserApprovedIds.includes(this.Token.UserId) && !this.Entity.Id.startsWith('-')"
                 },
                 {
-                    "Id": "004a0ef8-0000-0000-8000-51a3bb37dd2c",
+                    "Id": "Button.btnApprove.4_4",
                     "FieldName": "btnApprove",
                     "Order": 4,
                     "ComponentType": "Button",
@@ -1980,7 +1979,7 @@
                     "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserApprovedIds.includes(this.Token.UserId) && !this.Entity.Id.startsWith('-')"
                 },
                 {
-                    "Id": "006d2dd4-0000-0000-8000-96dd33480193",
+                    "Id": "Button.btnCreateBookingLocal.11",
                     "FieldName": "btnCreateBookingLocal",
                     "Order": 11,
                     "ComponentType": "Button",
@@ -1993,7 +1992,7 @@
                     "ShowExp": "(this.dayjs(this.Entity.FromDate) < this.dayjs() && (!this.Entity.ToDate || (this.Entity.ToDate &&  this.dayjs(this.Entity.ToDate ) > this.dayjs())))  && this.Entity.StatusId == 3"
                 },
                 {
-                    "Id": "00793994-0000-0000-8000-5fb81082b6e4",
+                    "Id": "Button.btnPrint.12",
                     "FieldName": "btnPrint",
                     "Order": 12,
                     "ComponentType": "Pdf",
@@ -2008,7 +2007,7 @@
                     "ShowExp": "var config = JSON.parse(localStorage.getItem(\"SalesFunction\"));\r\nif (!config[\"APPROVE_QUOTATION_FILE\"]) {\r\n    return this.Entity.StatusId == 3;\r\n}\r\nelse {\r\n    return !this.Entity.Id.startsWith('-');\r\n}"
                 },
                 {
-                    "Id": "00c83388-0000-0000-8000-b374eae8773b",
+                    "Id": "Button.btnPrint.13",
                     "FieldName": "btnPrint",
                     "Order": 13,
                     "ComponentType": "Pdf",
@@ -2027,27 +2026,22 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "00091D42-DAE7-4348-BABE-83629353D1FE",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "3253FE27-3D6B-4356-A9CA-9C196A8067DF",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "35823925-D172-47F4-92B9-7E789E09E2E1",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "4B47259E-7B03-436A-A570-F085E57A218F",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "7C70F18F-7271-4F5A-8FCD-1A1D7AE72A0C",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -2058,7 +2052,6 @@
             "TableName": "Feature"
         },
         {
-            "Id": "8538D96D-527A-4542-A021-60049BB62686",
             "RoleId": "SALES",
             "CanRead": true,
             "CanWrite": true,
@@ -2066,22 +2059,18 @@
             "TableName": "Feature"
         },
         {
-            "Id": "88FC1AE7-69E0-4B85-8C29-49B97C2AE42F",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "B651C7B7-ECB0-4364-B9AD-31432EDC6F70",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "DEC46D7E-9473-42B4-B3F6-8A7B6D143F70",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "E45D412E-690E-4326-A9B2-17948F16A586",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         }

@@ -1,5 +1,5 @@
 {
-    "Id": "01947703-9cf6-75f5-84cf-c23fadbfb38b",
+    "Id": "flows",
     "Name": "flows",
     "Label": "Flows",
     "Order": -1,
@@ -8,56 +8,46 @@
     "IgnoreEncode": true,
     "FeaturePolicies": [
         {
-            "Id": "05880302-FE2C-4FB3-890D-52CF5C31E418",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "12CA6CBC-45A0-4ECE-B4CD-F9CF6553CB6B",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "3C0E4E5A-DF62-4FDA-BEBE-DDE0F548FA5F",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "6B86AFE7-18D7-4E41-91CD-6C87333F05E1",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "B25EB954-1E82-4F8A-A6E9-5524AA951EC0",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "B2A5D832-34AF-4D80-AF24-A8752C1EA17E",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
             "TableName": "Feature"
         },
         {
-            "Id": "BD5B5AC4-2F1F-4846-A6A1-40C5F453C962",
             "RoleId": "ADMIN",
             "CanRead": true,
             "CanReadAll": true,
             "TableName": "Feature"
         },
         {
-            "Id": "D108D8DE-D98A-421E-9933-FA27DCE804EB",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "DD1F2840-48C8-4C6A-A210-533A4334722F",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "F2144802-716C-47C6-B832-A11D4F17C0BB",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         }

@@ -1,8 +1,7 @@
 {
-    "Id": "00fa10e4-0000-0000-8000-f497b6b8dfd3",
+    "Id": "trucking_quote",
     "Name": "trucking-quote",
     "Label": "Trucking Quote",
-    "ParentId": "6e63c20d-2788-4776-9da0-4cfe7c982can",
     "Order": 2,
     "Script": "return {\r\n    Add: function () {\r\n        var entity = {\r\n            StatusId: this.SalesFunction[\"APPROVE_QUOTATION\"] ? 3 : 1,\r\n            NoApproved: this.SalesFunction[\"APPROVE_QUOTATION\"] ? true : false,\r\n            TypeId: 4,\r\n            InsertedBy: this.Token.UserId,\r\n            ShipmentTypeId: \"00f60c98-0000-0000-8000-43ed4d1e672c\",\r\n            ServiceId: 13,\r\n            VoucherTypeId: 2,\r\n            IsSimple: true,\r\n            ServiceDate: this.dayjs().format('YYYY-MM-DD')\r\n        }\r\n        this.OpenPopup(\"trucking-quote-editor\", entity);\r\n    },\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"trucking-quote-editor\", entity);\r\n    }\r\n}",
     "Icon": "fal fa-truck",
@@ -10,7 +9,7 @@
     "EntityId": "Inquiry",
     "GridPolicies": [
         {
-            "Id": "00142d44-0000-0000-8000-83d38ee0453b",
+            "Id": "trucking_quote.Valid.1",
             "FieldName": "Valid",
             "Order": 1,
             "ComponentType": "Label",
@@ -23,7 +22,7 @@
             "EntityId": "Quote"
         },
         {
-            "Id": "00d52560-0000-0000-8000-13354ce6a373",
+            "Id": "trucking_quote.InsertedBy.13",
             "FieldName": "InsertedBy",
             "Order": 13,
             "ComponentType": "Dropdown",
@@ -41,7 +40,7 @@
             "EntityId": "Quote"
         },
         {
-            "Id": "00fb100c-0000-0000-8000-d522d32254c2",
+            "Id": "trucking_quote.ToDate.10",
             "FieldName": "ToDate",
             "Order": 10,
             "ComponentType": "Datepicker",
@@ -53,7 +52,7 @@
             "EntityId": "Quote"
         },
         {
-            "Id": "00fb105c-0000-0000-8000-393a5042c00b",
+            "Id": "trucking_quote.StatusId.11",
             "FieldName": "StatusId",
             "Order": 11,
             "ComponentType": "Dropdown",
@@ -70,7 +69,7 @@
             "EntityId": "Quote"
         },
         {
-            "Id": "00fb1064-0000-0000-8000-7a6a8991bde4",
+            "Id": "trucking_quote.CommodityId.8",
             "FieldName": "CommodityId",
             "Order": 8,
             "ComponentType": "Dropdown",
@@ -86,7 +85,7 @@
             "EntityId": "Quote"
         },
         {
-            "Id": "00fb1068-0000-0000-8000-20d639fae3ae",
+            "Id": "trucking_quote.ServiceId.2",
             "FieldName": "ServiceId",
             "Order": 2,
             "ComponentType": "Dropdown",
@@ -102,7 +101,7 @@
             "EntityId": "Quote"
         },
         {
-            "Id": "00fb1068-0000-0000-8000-8fe8ae0c7508",
+            "Id": "trucking_quote.PodId.7",
             "FieldName": "PodId",
             "Order": 7,
             "ComponentType": "Dropdown",
@@ -119,7 +118,7 @@
             "EntityId": "Quote"
         },
         {
-            "Id": "00fb1078-0000-0000-8000-a806ef02b4b6",
+            "Id": "trucking_quote.ShipmentTypeId.12",
             "FieldName": "ShipmentTypeId",
             "Order": 12,
             "ComponentType": "Dropdown",
@@ -135,7 +134,7 @@
             "EntityId": "Quote"
         },
         {
-            "Id": "00fb107c-0000-0000-8000-842394bd9a24",
+            "Id": "trucking_quote.CustomerId.5",
             "FieldName": "CustomerId",
             "Order": 5,
             "ComponentType": "Dropdown",
@@ -152,7 +151,7 @@
             "EntityId": "Quote"
         },
         {
-            "Id": "00fb1098-0000-0000-8000-5cc536f72904",
+            "Id": "trucking_quote.Code.3",
             "FieldName": "Code",
             "Order": 3,
             "ComponentType": "Input",
@@ -164,7 +163,7 @@
             "EntityId": "Quote"
         },
         {
-            "Id": "00fb10a8-0000-0000-8000-2c944c926ca8",
+            "Id": "trucking_quote.PolId.6",
             "FieldName": "PolId",
             "Order": 6,
             "ComponentType": "Dropdown",
@@ -181,7 +180,7 @@
             "EntityId": "Quote"
         },
         {
-            "Id": "00fb10c4-0000-0000-8000-75877842b619",
+            "Id": "trucking_quote.InsertedDate.4",
             "FieldName": "InsertedDate",
             "Order": 4,
             "ComponentType": "Datepicker",
@@ -193,7 +192,7 @@
             "EntityId": "Quote"
         },
         {
-            "Id": "00fb10f4-0000-0000-8000-635a331e3f66",
+            "Id": "trucking_quote.btnEdit.0",
             "FieldName": "btnEdit",
             "Order": 0,
             "ComponentType": "Button",
@@ -207,7 +206,7 @@
             "EntityId": "Quote"
         },
         {
-            "Id": "00fb10f8-0000-0000-8000-b58f1c55519d",
+            "Id": "trucking_quote.FromDate.9",
             "FieldName": "FromDate",
             "Order": 9,
             "ComponentType": "Datepicker",
@@ -221,7 +220,7 @@
     ],
     "Components": [
         {
-            "Id": "00fa1000-0000-0000-8000-15a1a500f0c6",
+            "Id": "trucking_quote.Section.4",
             "Order": 4,
             "ComponentType": "Section",
             "Label": "Approved",
@@ -231,7 +230,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "00fb1004-0000-0000-8000-1e2fdd325a90",
+                    "Id": "Section.Quote.4_3",
                     "FieldName": "Quote",
                     "Order": 4,
                     "ComponentType": "GridView",
@@ -248,7 +247,7 @@
             ]
         },
         {
-            "Id": "00fa1010-0000-0000-8000-5247899c1dfe",
+            "Id": "trucking_quote.Section.3",
             "Order": 3,
             "ComponentType": "Section",
             "Label": "Approving",
@@ -258,7 +257,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "00fa104c-0000-0000-8000-d20e60c7212f",
+                    "Id": "Section.Quote.3_3",
                     "FieldName": "Quote",
                     "Order": 3,
                     "ComponentType": "GridView",
@@ -275,7 +274,7 @@
             ]
         },
         {
-            "Id": "00fa105c-0000-0000-8000-1c5942be0651",
+            "Id": "trucking_quote.Section.1",
             "Order": 1,
             "ComponentType": "Section",
             "Label": "All",
@@ -286,7 +285,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "00fa103c-0000-0000-8000-79dac992f699",
+                    "Id": "Section.Quote.1_3",
                     "FieldName": "Quote",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -304,7 +303,7 @@
             ]
         },
         {
-            "Id": "00fa1078-0000-0000-8000-b3b58fbff760",
+            "Id": "trucking_quote.Section.2",
             "Order": 2,
             "ComponentType": "Section",
             "Label": "New",
@@ -314,7 +313,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "00fa10a8-0000-0000-8000-c7be51f41d04",
+                    "Id": "Section.Quote.2_3",
                     "FieldName": "Quote",
                     "Order": 2,
                     "ComponentType": "GridView",
@@ -332,7 +331,7 @@
             ]
         },
         {
-            "Id": "00fb1080-0000-0000-8000-f864759488c6",
+            "Id": "trucking_quote.Section.5",
             "Order": 5,
             "ComponentType": "Section",
             "Label": "Decline",
@@ -342,7 +341,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "00fb10a4-0000-0000-8000-a4388ecd13bd",
+                    "Id": "Section.Quote.5_3",
                     "FieldName": "Quote",
                     "Order": 5,
                     "ComponentType": "GridView",
@@ -361,12 +360,10 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "2D01AB19-6CB6-4EFB-917A-90B096397E0E",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "3524765D-17F5-4BEC-90C1-0889F33758EB",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -377,17 +374,14 @@
             "TableName": "Feature"
         },
         {
-            "Id": "36B96965-434A-42FA-99C4-5C40B55CE287",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "5FC4EDB0-8B7F-426E-B2F7-A1F66CBBFB02",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "6A1A5B89-75D4-4F3B-B5AE-353C2EED7D54",
             "RoleId": "SALES",
             "CanRead": true,
             "CanWrite": true,
@@ -395,27 +389,22 @@
             "TableName": "Feature"
         },
         {
-            "Id": "A2D11A76-9C82-471D-A2B9-8E4394DCB13F",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "C07D0419-EC81-445E-96D9-FE9AF6E89F54",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "E4A5B0E5-94AF-4F6B-B501-1F87974D2D02",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "E766D5F3-BCD2-4CD0-98D0-1BB0F24E1D9D",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "ED4A4E47-C670-4AE1-9043-0514BAC202B3",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         }

@@ -1,14 +1,13 @@
 {
-    "Id": "00513f2c-0000-0000-8000-bb5563d679d0",
+    "Id": "proof_of_delivery_editor",
     "Name": "proof-of-delivery-editor",
     "Label": "Proof of Delivery Editor",
-    "ParentId": "009b3b78-0000-0000-8000-38a9f8f617fc",
     "Order": 0,
     "Style": "width:1200px;",
     "EntityId": "ShipmentDO",
     "GridPolicies": [
         {
-            "Id": "00523f10-0000-0000-8000-dfd8c7b00251",
+            "Id": "proof_of_delivery_editor.AccountName.2",
             "FieldName": "AccountName",
             "Order": 2,
             "ComponentType": "Input",
@@ -25,7 +24,7 @@
             "EntityId": "PartnerBankAccount"
         },
         {
-            "Id": "00523f8c-0000-0000-8000-78a6197e4682",
+            "Id": "proof_of_delivery_editor.SwiftCode.3",
             "FieldName": "SwiftCode",
             "Order": 3,
             "ComponentType": "Input",
@@ -40,7 +39,7 @@
             "EntityId": "PartnerBankAccount"
         },
         {
-            "Id": "00523ff0-0000-0000-8000-d1a9e87061ea",
+            "Id": "proof_of_delivery_editor.AccountNumber.1",
             "FieldName": "AccountNumber",
             "Order": 1,
             "ComponentType": "Input",
@@ -57,7 +56,7 @@
             "EntityId": "PartnerBankAccount"
         },
         {
-            "Id": "00523ffc-0000-0000-8000-5c67619ee2a7",
+            "Id": "proof_of_delivery_editor.BankId.0",
             "FieldName": "BankId",
             "Order": 0,
             "ComponentType": "Dropdown",
@@ -78,7 +77,7 @@
     ],
     "Components": [
         {
-            "Id": "00523fc0-0000-0000-8000-0d0e2f3d8fd0",
+            "Id": "proof_of_delivery_editor.Container.3",
             "FieldName": "Container ",
             "Order": 3,
             "ComponentType": "Section",
@@ -86,7 +85,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "00523fc4-0000-0000-8000-7cae05a5681b",
+                    "Id": "Container.Section.9_2",
                     "Order": 9,
                     "ComponentType": "Section",
                     "Icon": "fal fa-info mr-1",
@@ -95,7 +94,7 @@
                     "XxlOuterColumn": 12,
                     "Components": [
                         {
-                            "Id": "002b3f74-0000-0000-8000-89c1ff2d3d16",
+                            "Id": "Section.Representative1.11",
                             "FieldName": "Representative1",
                             "Order": 11,
                             "ComponentType": "Input",
@@ -104,7 +103,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00333fdc-0000-0000-8000-f47634f23524",
+                            "Id": "Section.Representative2.12",
                             "FieldName": "Representative2",
                             "Order": 12,
                             "ComponentType": "Input",
@@ -113,7 +112,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00353f24-0000-0000-8000-5671d15c5351",
+                            "Id": "Section.Position1.13",
                             "FieldName": "Position1",
                             "Order": 13,
                             "ComponentType": "Input",
@@ -122,7 +121,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00383f98-0000-0000-8000-051be3749613",
+                            "Id": "Section.Position2.14",
                             "FieldName": "Position2",
                             "Order": 14,
                             "ComponentType": "Input",
@@ -131,7 +130,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "003b3fc4-0000-0000-8000-bb7adcdb66b4",
+                            "Id": "Section.IndentityCard1.15",
                             "FieldName": "IndentityCard1",
                             "Order": 15,
                             "ComponentType": "Input",
@@ -140,7 +139,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00403f00-0000-0000-8000-843b2cadd505",
+                            "Id": "Section.IndentityCard2.16",
                             "FieldName": "IndentityCard2",
                             "Order": 16,
                             "ComponentType": "Input",
@@ -149,7 +148,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00443fc8-0000-0000-8000-694db52dea98",
+                            "Id": "Section.Tel1.17",
                             "FieldName": "Tel1",
                             "Order": 17,
                             "ComponentType": "Input",
@@ -158,7 +157,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00443fc8-0000-0000-8001-c9ed0e96db99",
+                            "Id": "Section.Tel2.18",
                             "FieldName": "Tel2",
                             "Order": 18,
                             "ComponentType": "Input",
@@ -167,7 +166,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00513f64-0000-0000-8000-f183f99ba168",
+                            "Id": "Section.Reason.19",
                             "FieldName": "Reason",
                             "Order": 19,
                             "ComponentType": "Textarea",
@@ -177,7 +176,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00523f08-0000-0000-8000-6ff84aaee34f",
+                            "Id": "Section.Code.1_5",
                             "FieldName": "Code",
                             "Order": 1,
                             "ComponentType": "Input",
@@ -186,7 +185,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00523f20-0000-0000-8000-73644658a265",
+                            "Id": "Section.DoDate.4",
                             "FieldName": "DoDate",
                             "Order": 4,
                             "ComponentType": "Datepicker",
@@ -195,7 +194,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00523f60-0000-0000-8000-9da2c36725cb",
+                            "Id": "Section.DoNo.3",
                             "FieldName": "DoNo",
                             "Order": 3,
                             "ComponentType": "Input",
@@ -204,7 +203,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00523fa4-0000-0000-8000-e0a927cd4647",
+                            "Id": "Section.DeliveryPlaceId.6",
                             "FieldName": "DeliveryPlaceId",
                             "Order": 6,
                             "ComponentType": "Dropdown",
@@ -219,7 +218,7 @@
                             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
-                            "Id": "00523fac-0000-0000-8000-d04588e89489",
+                            "Id": "Section.HblNo.2",
                             "FieldName": "HblNo",
                             "Order": 2,
                             "ComponentType": "Input",
@@ -229,7 +228,7 @@
                             "Disabled": true
                         },
                         {
-                            "Id": "00523fb0-0000-0000-8000-df91a19d4c18",
+                            "Id": "Section.TimeDeliveryDate.5",
                             "FieldName": "TimeDeliveryDate",
                             "Order": 5,
                             "ComponentType": "Datepicker",
@@ -238,7 +237,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00563f10-0000-0000-8000-6e7e792899d8",
+                            "Id": "Section.Evidence.20",
                             "FieldName": "Evidence",
                             "Order": 20,
                             "ComponentType": "Textarea",
@@ -248,7 +247,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00583f64-0000-0000-8000-29fa9fce8b1e",
+                            "Id": "Section.SpecialNotes.21",
                             "FieldName": "SpecialNotes",
                             "Order": 21,
                             "ComponentType": "Textarea",
@@ -258,7 +257,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00663ff8-0000-0000-8000-f1b1ae6f703e",
+                            "Id": "Section.ConditionGoods.22",
                             "FieldName": "ConditionGoods",
                             "Order": 22,
                             "ComponentType": "Textarea",
@@ -268,7 +267,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00663ff8-0000-0000-8001-592729934737",
+                            "Id": "Section.DescriptionGoods.23",
                             "FieldName": "DescriptionGoods",
                             "Order": 23,
                             "ComponentType": "Textarea",
@@ -278,7 +277,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00f53f6c-0000-0000-8000-1d73c6ce8f32",
+                            "Id": "Section.ShipperIdText.7",
                             "FieldName": "ShipperIdText",
                             "Order": 7,
                             "ComponentType": "Dropdown",
@@ -297,7 +296,7 @@
                             "TabGroup": "ShipperId"
                         },
                         {
-                            "Id": "00f53fd0-0000-0000-8000-34d0d615a947",
+                            "Id": "Section.ConsigneeIdText.8",
                             "FieldName": "ConsigneeIdText",
                             "Order": 8,
                             "ComponentType": "Dropdown",
@@ -316,7 +315,7 @@
                             "TabGroup": "ConsigneeId"
                         },
                         {
-                            "Id": "00f53fd0-0000-0000-8001-f09c7d19567d",
+                            "Id": "Section.ShipperDes.9",
                             "FieldName": "ShipperDes",
                             "Order": 9,
                             "ComponentType": "Textarea",
@@ -325,7 +324,7 @@
                             "Label": "Shipper"
                         },
                         {
-                            "Id": "00f53fd0-0000-0000-8002-93daa8fb8077",
+                            "Id": "Section.ConsigneeDes.10",
                             "FieldName": "ConsigneeDes",
                             "Order": 10,
                             "ComponentType": "Textarea",
@@ -336,7 +335,7 @@
                     ]
                 },
                 {
-                    "Id": "00523f30-0000-0000-8000-c1fb4cdb0e2b",
+                    "Id": "Container.btnSave.2",
                     "FieldName": "btnSave",
                     "Order": 2,
                     "ComponentType": "Button",
@@ -350,7 +349,7 @@
             ]
         },
         {
-            "Id": "00523fe4-0000-0000-8000-c3d807e3c40e",
+            "Id": "proof_of_delivery_editor.Button.1",
             "FieldName": "Button",
             "Order": 1,
             "ComponentType": "Section",
@@ -358,7 +357,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "00523f30-0000-0000-8000-c1fb4cdb0e2b",
+                    "Id": "Button.btnSave.2_2",
                     "FieldName": "btnSave",
                     "Order": 2,
                     "ComponentType": "Button",
@@ -370,7 +369,7 @@
                     "Events": "{ \"click\" : \"SavePatch\" }"
                 },
                 {
-                    "Id": "00fd3fac-0000-0000-8000-dc2c53129633",
+                    "Id": "Button.btnPrint.1_4",
                     "FieldName": "btnPrint",
                     "Order": 1,
                     "ComponentType": "Pdf",
@@ -387,17 +386,14 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "31FAA115-4DE1-4209-BBC0-135E78E25BA3",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "44C98437-CF52-45D8-9AFE-050B4A645865",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "7BFEBB4C-C4BE-4423-9F8B-920CDE68EEBA",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -408,38 +404,31 @@
             "TableName": "Feature"
         },
         {
-            "Id": "A6F080D2-48D2-415C-9DA1-CEF951D90D05",
             "RoleId": "SALES",
             "CanRead": true,
             "TableName": "Feature"
         },
         {
-            "Id": "B62F95EC-30B1-4105-8C02-728043744AA5",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "C5B93ECC-CA8B-4BC3-B698-B5FFA9AF6F75",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "D03C8C45-B1B1-4A20-BECA-61C90BED2C35",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "E564B3DC-8D19-4473-B73C-1E317B94D7D9",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "ED509CF1-4F10-4529-AC6B-7D71F2C8488F",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "F42D4C06-4716-4F0E-A4C6-A107B8DC954E",
             "RoleId": "DOCS",
             "CanRead": true,
             "CanWrite": true,

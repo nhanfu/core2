@@ -1,5 +1,5 @@
 {
-    "Id": "6e63c21d-2782-4124-3132-4cfe2c982can1",
+    "Id": "loan_connection",
     "Name": "loan-connection",
     "Label": "Loan connection",
     "Order": 13,
@@ -8,7 +8,6 @@
     "IgnoreEncode": true,
     "FeaturePolicies": [
         {
-            "Id": "0739F8D1-5528-43B0-BB83-200D3B8FD079",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -19,47 +18,38 @@
             "TableName": "Feature"
         },
         {
-            "Id": "2052BA43-0E40-4373-B566-AF1646E7961B",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "25931CC8-0921-4210-89B6-49BAE6A87A5B",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "4A949FE2-6CB0-4024-8D53-2C158137043C",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "64336881-B302-41B6-A036-A8895A2005E8",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "6DBC1DF7-BE66-4F4A-8ED1-F3078CA43258",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "B39AB0E6-0A55-4C39-9446-BB82C8593C98",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "B989A508-692D-4550-B8DD-1B2183688701",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "C7457F5C-FE6E-41A6-B1C2-2C322C22F20E",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "FF1AA01C-FCC9-494B-9CFD-43B5E2A439D0",
             "RoleId": "DOCS",
             "TableName": "Feature"
         }

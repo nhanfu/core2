@@ -1,8 +1,7 @@
 {
-    "Id": "019391e1-95d2-74c6-88f9-b32c67055ef2",
+    "Id": "all_partner",
     "Name": "all-partner",
     "Label": "All Partner",
-    "ParentId": "006b1850-0000-0000-8000-1fdb95f8d1dc",
     "Order": 18,
     "Script": "return {\r\n    Add: function () {\r\n        var config = JSON.parse(localStorage.getItem(\"SalesFunction\"));\r\n        var cus = {\r\n            ServiceId: 2,\r\n            ActionId: config[\"DEFAULT_CREATE_OBJECTS_APPROVE\"] ? 1 : 3,\r\n        }\r\n        this.OpenPopup(\"partner-editor\", cus);\r\n    },\r\n    Edit: function (btn, entity) {\r\n        if (entity.ServiceId == 1) {\r\n            this.OpenPopup(\"customer-editor\", entity);\r\n        }\r\n        else {\r\n            this.OpenPopup(\"partner-editor\", entity);\r\n        }\r\n    }\r\n}",
     "Icon": "fal fa-user-chart",
@@ -10,7 +9,7 @@
     "EntityId": "Partner",
     "GridPolicies": [
         {
-            "Id": "0193c354-01a7-702b-9ac4-e23812c1f4d3",
+            "Id": "all_partner.btnEdit.0",
             "FieldName": "btnEdit",
             "Order": 0,
             "ComponentType": "Button",
@@ -24,7 +23,7 @@
             "EntityId": "Customer"
         },
         {
-            "Id": "0193c354-01a7-702b-9ac4-e6abc30a5559",
+            "Id": "all_partner.Code.1",
             "FieldName": "Code",
             "Order": 1,
             "ComponentType": "Input",
@@ -36,7 +35,7 @@
             "EntityId": "Customer"
         },
         {
-            "Id": "0193c354-01a8-710a-9ab6-5a34bb1ff210",
+            "Id": "all_partner.Name.2",
             "FieldName": "Name",
             "Order": 2,
             "ComponentType": "Input",
@@ -48,7 +47,7 @@
             "EntityId": "Customer"
         },
         {
-            "Id": "0193c354-01a8-710a-9ab6-5c422922f4ad",
+            "Id": "all_partner.PhoneNumber.3",
             "FieldName": "PhoneNumber",
             "Order": 3,
             "ComponentType": "Input",
@@ -60,7 +59,7 @@
             "EntityId": "Customer"
         },
         {
-            "Id": "0193c354-01a8-710a-9ab6-63f47804adf8",
+            "Id": "all_partner.Email.4",
             "FieldName": "Email",
             "Order": 4,
             "ComponentType": "Input",
@@ -72,7 +71,7 @@
             "EntityId": "Customer"
         },
         {
-            "Id": "0193c354-01a8-710a-9ab6-648d591494ee",
+            "Id": "all_partner.TaxCode.5",
             "FieldName": "TaxCode",
             "Order": 5,
             "ComponentType": "Input",
@@ -84,7 +83,7 @@
             "EntityId": "Customer"
         },
         {
-            "Id": "0193c354-01a8-710a-9ab6-6a1cd9b31c38",
+            "Id": "all_partner.SourseId.6",
             "FieldName": "SourseId",
             "Order": 6,
             "ComponentType": "Dropdown",
@@ -100,7 +99,7 @@
             "EntityId": "Customer"
         },
         {
-            "Id": "0193c354-01a8-710a-9ab6-6e7e4ac8b83e",
+            "Id": "all_partner.PartnerTypeIdsText.7",
             "FieldName": "PartnerTypeIdsText",
             "Order": 7,
             "ComponentType": "Input",
@@ -113,7 +112,7 @@
             "IsMultiple": true
         },
         {
-            "Id": "0193c354-01a8-710a-9ab6-73807b33f450",
+            "Id": "all_partner.ActionId.8",
             "FieldName": "ActionId",
             "Order": 8,
             "ComponentType": "Dropdown",
@@ -132,7 +131,7 @@
             "EntityId": "Customer"
         },
         {
-            "Id": "0193c354-01a8-710a-9ab6-777e586a9297",
+            "Id": "all_partner.InsertedBy.9",
             "FieldName": "InsertedBy",
             "Order": 9,
             "ComponentType": "Dropdown",
@@ -151,7 +150,7 @@
     ],
     "Components": [
         {
-            "Id": "019391e3-ca62-70ca-b468-2a829f88960f",
+            "Id": "all_partner.Section.1",
             "FieldName": " ",
             "Order": 1,
             "ComponentType": "Section",
@@ -159,7 +158,7 @@
             "XxlCol": 1,
             "Components": [
                 {
-                    "Id": "0193925a-c555-706c-aaf9-47d7e40529f1",
+                    "Id": "Section.Customer.1",
                     "FieldName": "Customer",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -178,12 +177,10 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "08677938-5227-43EB-ABA2-A85DF3B8A8BB",
             "RoleId": "BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "09404D24-E788-4C05-B475-DB693E79FE43",
             "RoleId": "ADMIN",
             "CanRead": true,
             "CanReadAll": true,
@@ -194,42 +191,34 @@
             "TableName": "Feature"
         },
         {
-            "Id": "3675BE67-B4EA-4D33-BF36-A30E91B6E4CF",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "5B9BA225-D766-43DB-990C-A2A3D16D1CFC",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "988B1E39-16EA-4E3D-A791-FB8FB465D712",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "9C22DC86-0DFC-4B21-81E0-1150FF3195E9",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "9E524F72-CDA2-4F63-A894-2C66B0FAAF1E",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "ABA28913-5507-4E2E-BF17-451FCA4C3560",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "B3AB5630-AFCB-4A01-87F0-5819CB44B418",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "FC629897-E3FE-4CBD-BD71-5C4D4E617F6D",
             "RoleId": "SALES",
             "TableName": "Feature"
         }

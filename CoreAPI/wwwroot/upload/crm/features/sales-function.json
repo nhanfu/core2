@@ -1,15 +1,14 @@
 {
-    "Id": "009a2594-0000-0000-8000-744ae4f34401",
+    "Id": "sales_function",
     "Name": "sales-function",
     "Label": "Sales Function",
-    "ParentId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
     "Order": 6,
     "Icon": "fal fa-function",
     "IsMenu": true,
     "IgnoreEncode": true,
     "GridPolicies": [
         {
-            "Id": "008d30c4-0000-0000-8000-5711ff012b21",
+            "Id": "sales_function.Description.1",
             "FieldName": "Description",
             "Order": 1,
             "ComponentType": "Input",
@@ -22,7 +21,7 @@
             "EntityId": "SaleFunction"
         },
         {
-            "Id": "009a2544-0000-0000-8000-7e80c67ac1b1",
+            "Id": "sales_function.Value.3",
             "FieldName": "Value",
             "Order": 3,
             "ComponentType": "Input",
@@ -35,7 +34,7 @@
             "EntityId": "SaleFunction"
         },
         {
-            "Id": "009a25f0-0000-0000-8000-0cbc95efeaf1",
+            "Id": "sales_function.Code.0",
             "FieldName": "Code",
             "Order": 0,
             "ComponentType": "Input",
@@ -48,7 +47,7 @@
             "EntityId": "SaleFunction"
         },
         {
-            "Id": "00e53088-0000-0000-8000-29f280ad91bc",
+            "Id": "sales_function.IsYes.2",
             "FieldName": "IsYes",
             "Order": 2,
             "ComponentType": "Checkbox",
@@ -61,7 +60,7 @@
             "EntityId": "SaleFunction"
         },
         {
-            "Id": "01934200-1c60-7171-bd5e-47bbc361fd6c",
+            "Id": "sales_function.GroupName.3",
             "FieldName": "GroupName",
             "Order": 3,
             "ComponentType": "Input",
@@ -75,32 +74,26 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "1484E2CA-EF15-4B5D-B1EE-F6D8C06CD55D",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "32FBAACE-8145-407D-BBDF-C2397D277B6B",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "3FB79E3E-230A-46F2-9CF0-49DF8E7357FF",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "57E8C02F-59A7-4979-84EE-B7D2BE28688C",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "96FE2482-5D24-4DE5-8444-5212BEA35E36",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "AED63E48-715D-4840-A443-40AF100E537D",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -111,29 +104,25 @@
             "TableName": "Feature"
         },
         {
-            "Id": "BE58C99C-A902-446E-8555-E1B3FD801055",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "C51B56FA-E786-4A44-95EC-87286F57C595",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "C921AAF9-2551-44BB-83A8-D2A355F7E3DF",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "F3AEF7AA-624F-4188-ACF4-ADBF983D4490",
             "RoleId": "PRICING",
             "TableName": "Feature"
         }
     ],
     "Components": [
         {
-            "Id": "009a251c-0000-0000-8000-51c389254ce3",
+            "Id": "sales_function.Container.1",
             "FieldName": "Container",
             "Order": 1,
             "ComponentType": "Section",
@@ -141,7 +130,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "009a254c-0000-0000-8000-14f870be4af5",
+                    "Id": "Container.SaleFunction.1",
                     "FieldName": "SaleFunction",
                     "Order": 1,
                     "ComponentType": "GridView",

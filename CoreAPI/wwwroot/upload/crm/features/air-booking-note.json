@@ -1,8 +1,7 @@
 {
-    "Id": "002714f4-0000-0000-8000-94d02d567cb1",
+    "Id": "air_booking_note",
     "Name": "air-booking-note",
     "Label": "Air BK Note",
-    "ParentId": "004113d4-0000-0000-8000-aa1c366891fa",
     "Order": 10,
     "Script": "return {\r\n    Add: function () {\r\n        var entity = {\r\n            StatusId: 3,\r\n            VoucherTypeId: 4,\r\n            TypeId: 5,\r\n            BookingDate: this.dayjs().format('YYYY-MM-DD')\r\n        }\r\n        this.OpenPopup(\"air-booking-note-editor\", entity);\r\n    },\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"air-booking-note-editor\", entity);\r\n    }\r\n}",
     "Icon": "fal fa-file-signature",
@@ -10,7 +9,7 @@
     "EntityId": "Booking",
     "GridPolicies": [
         {
-            "Id": "00271410-0000-0000-8000-60069145d2cd",
+            "Id": "air_booking_note.CustomerId.8",
             "FieldName": "CustomerId",
             "Order": 8,
             "ComponentType": "Dropdown",
@@ -27,7 +26,7 @@
             "EntityId": "Booking"
         },
         {
-            "Id": "00271414-0000-0000-8000-39aeb371eecd",
+            "Id": "air_booking_note.PolId.7",
             "FieldName": "PolId",
             "Order": 7,
             "ComponentType": "Dropdown",
@@ -44,7 +43,7 @@
             "EntityId": "Booking"
         },
         {
-            "Id": "00271440-0000-0000-8000-335d3854d71c",
+            "Id": "air_booking_note.ServiceId.1",
             "FieldName": "ServiceId",
             "Order": 1,
             "ComponentType": "Dropdown",
@@ -60,7 +59,7 @@
             "EntityId": "Booking"
         },
         {
-            "Id": "00271444-0000-0000-8000-ba04b4655abb",
+            "Id": "air_booking_note.BookingNo.2",
             "FieldName": "BookingNo",
             "Order": 2,
             "ComponentType": "Input",
@@ -72,7 +71,7 @@
             "EntityId": "Booking"
         },
         {
-            "Id": "00271450-0000-0000-8000-57ead2276961",
+            "Id": "air_booking_note.StatusId.10",
             "FieldName": "StatusId",
             "Order": 10,
             "ComponentType": "Dropdown",
@@ -88,7 +87,7 @@
             "EntityId": "Booking"
         },
         {
-            "Id": "00271470-0000-0000-8000-5c207dfe3033",
+            "Id": "air_booking_note.Quantity.9",
             "FieldName": "Quantity",
             "Order": 9,
             "ComponentType": "Number",
@@ -101,7 +100,7 @@
             "EntityId": "Booking"
         },
         {
-            "Id": "00271474-0000-0000-8000-1af646ef7a07",
+            "Id": "air_booking_note.BookingDate.4",
             "FieldName": "BookingDate",
             "Order": 4,
             "ComponentType": "Datepicker",
@@ -113,7 +112,7 @@
             "EntityId": "Booking"
         },
         {
-            "Id": "00271480-0000-0000-8000-eaa3ef279a4e",
+            "Id": "air_booking_note.VendorId.5",
             "FieldName": "VendorId",
             "Order": 5,
             "ComponentType": "Dropdown",
@@ -129,7 +128,7 @@
             "EntityId": "Booking"
         },
         {
-            "Id": "002714b4-0000-0000-8000-2eb0e5055033",
+            "Id": "air_booking_note.PodId.6",
             "FieldName": "PodId",
             "Order": 6,
             "ComponentType": "Dropdown",
@@ -146,7 +145,7 @@
             "EntityId": "Booking"
         },
         {
-            "Id": "002714bc-0000-0000-8000-70f172827dd3",
+            "Id": "air_booking_note.btnEdit.0",
             "FieldName": "btnEdit",
             "Order": 0,
             "ComponentType": "Button",
@@ -159,7 +158,7 @@
             "EntityId": "Booking"
         },
         {
-            "Id": "002714c8-0000-0000-8000-367fede11621",
+            "Id": "air_booking_note.InsertedDate.3",
             "FieldName": "InsertedDate",
             "Order": 3,
             "ComponentType": "Datepicker",
@@ -171,7 +170,7 @@
             "EntityId": "Booking"
         },
         {
-            "Id": "00f925b4-0000-0000-8000-4ecb63e58b5d",
+            "Id": "air_booking_note.InsertedBy.11",
             "FieldName": "InsertedBy",
             "Order": 11,
             "ComponentType": "Dropdown",
@@ -191,7 +190,7 @@
     ],
     "Components": [
         {
-            "Id": "00271400-0000-0000-8000-e4a528eedb7e",
+            "Id": "air_booking_note.Section.1",
             "Order": 1,
             "ComponentType": "Section",
             "Label": "All",
@@ -202,7 +201,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "0027140c-0000-0000-8000-c880109556cd",
+                    "Id": "Section.Booking.1_1",
                     "FieldName": "Booking",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -220,7 +219,7 @@
             ]
         },
         {
-            "Id": "0027143c-0000-0000-8000-f3ddec0f1cbf",
+            "Id": "air_booking_note.Section.5",
             "Order": 5,
             "ComponentType": "Section",
             "Label": "Decline",
@@ -230,7 +229,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "0027141c-0000-0000-8000-48e65a1527a0",
+                    "Id": "Section.Booking.5_1",
                     "FieldName": "Booking",
                     "Order": 5,
                     "ComponentType": "GridView",
@@ -247,7 +246,7 @@
             ]
         },
         {
-            "Id": "00271468-0000-0000-8000-aedb939ddaa3",
+            "Id": "air_booking_note.Section.3",
             "Order": 3,
             "ComponentType": "Section",
             "Label": "Approving",
@@ -257,7 +256,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "0027141c-0000-0000-8000-93dc53fe6d93",
+                    "Id": "Section.Booking.3_1",
                     "FieldName": "Booking",
                     "Order": 3,
                     "ComponentType": "GridView",
@@ -274,7 +273,7 @@
             ]
         },
         {
-            "Id": "00271488-0000-0000-8000-d7cf3987d5a4",
+            "Id": "air_booking_note.Section.4",
             "Order": 4,
             "ComponentType": "Section",
             "Label": "Approved",
@@ -284,7 +283,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "00271430-0000-0000-8000-f475bc2b2ab9",
+                    "Id": "Section.Booking.4_1",
                     "FieldName": "Booking",
                     "Order": 4,
                     "ComponentType": "GridView",
@@ -301,7 +300,7 @@
             ]
         },
         {
-            "Id": "00271488-0000-0000-8000-f06dd52f9d1d",
+            "Id": "air_booking_note.Section.2",
             "Order": 2,
             "ComponentType": "Section",
             "Label": "New",
@@ -311,7 +310,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "00271488-0000-0000-8000-55304e117abb",
+                    "Id": "Section.Booking.2_1",
                     "FieldName": "Booking",
                     "Order": 2,
                     "ComponentType": "GridView",
@@ -331,12 +330,10 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "031A0207-416E-4867-B086-5EF47B01A401",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "3525862B-4F7F-4BB9-B7EE-8B8C54A4AACE",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -347,34 +344,28 @@
             "TableName": "Feature"
         },
         {
-            "Id": "62284349-C745-4C66-B60C-128C664B99FB",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "680F6C29-0250-43FA-9662-2935B5E8E859",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "6F7D313F-8830-4126-A8AB-D2AD6A39B925",
             "RoleId": "DOCS",
             "CanRead": true,
             "CanWrite": true,
             "TableName": "Feature"
         },
         {
-            "Id": "9652FBEE-38BD-4CCE-9CC1-5F185F86C4C1",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "A6E227E9-5947-4569-8C4E-180D99AD1525",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "BF33AA7B-845E-426B-9275-84D05CDC1944",
             "RoleId": "PRICING",
             "CanRead": true,
             "CanWrite": true,
@@ -382,12 +373,10 @@
             "TableName": "Feature"
         },
         {
-            "Id": "CFF21125-9A23-42D8-8C12-80AB46D7716C",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "F0DE3FAA-2C74-4CF2-80A4-2E982DF6B7E3",
             "RoleId": "SALES",
             "TableName": "Feature"
         }

@@ -1,8 +1,7 @@
 {
-    "Id": "01940838-8804-719e-bbf6-ff713de09384",
+    "Id": "payment_request",
     "Name": "payment-request",
     "Label": "Payment Request",
-    "ParentId": "01939222-2f5a-747a-bb15-606fb55edf4c",
     "Order": 2,
     "Script": "return {\r\n    Add: function () {\r\n        var entity = {\r\n            StatusId: this.SalesFunction[\"APPROVE_PAYMENT_REQUEST\"] ? 3 : 1,\r\n            NoApproved: this.SalesFunction[\"APPROVE_PAYMENT_REQUEST\"] ? true : false,\r\n            VoucherTypeId: 11,\r\n            InsertedBy: this.Token.UserId,\r\n            FeeTypeId: \"ds.TypeId in (1,2,3,4)\",\r\n            TypeId: 2,\r\n            ObhTypeId: 1,\r\n            PostDate: this.dayjs().format('YYYY-MM-DDTHH:mm:ss'),\r\n            InvoiceDate: this.dayjs().format('YYYY-MM-DDTHH:mm:ss'),\r\n            ExchangeRateINV: this.Decimal(JSON.parse(localStorage.getItem(\"ExchangeRateVND\"))[\"USD\"]),\r\n        }\r\n        this.OpenPopup(\"payment-request-editor\", entity);\r\n    },\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"payment-request-editor\", { Id: entity.Id }, true);\r\n    }\r\n}",
     "Icon": "fal fa-ballot-check",
@@ -10,7 +9,7 @@
     "EntityId": "ShipmentInvoice",
     "GridPolicies": [
         {
-            "Id": "01940838-8b80-7097-8918-cf9d9ed5266c",
+            "Id": "payment_request.InsertedBy.9",
             "FieldName": "InsertedBy",
             "Order": 9,
             "ComponentType": "Dropdown",
@@ -28,7 +27,7 @@
             "EntityId": "ShipmentInvoice"
         },
         {
-            "Id": "01940838-8c64-7457-9958-d948efe83558",
+            "Id": "payment_request.DebitAmount.10",
             "FieldName": "DebitAmount",
             "Order": 10,
             "ComponentType": "Number",
@@ -41,7 +40,7 @@
             "EntityId": "ShipmentInvoice"
         },
         {
-            "Id": "01940838-8cb3-72cf-879a-14daa7425aca",
+            "Id": "payment_request.InsertedDate.4",
             "FieldName": "InsertedDate",
             "Order": 4,
             "ComponentType": "Datepicker",
@@ -53,7 +52,7 @@
             "EntityId": "ShipmentInvoice"
         },
         {
-            "Id": "01940838-8d5c-750b-a3f9-99e159ec265a",
+            "Id": "payment_request.ActionId.2",
             "FieldName": "ActionId",
             "Order": 2,
             "ComponentType": "Dropdown",
@@ -69,7 +68,7 @@
             "EntityId": "ShipmentInvoice"
         },
         {
-            "Id": "01940838-8da3-7509-a761-6fb6f8472f9c",
+            "Id": "payment_request.Code.1",
             "FieldName": "Code",
             "Order": 1,
             "ComponentType": "Input",
@@ -81,7 +80,7 @@
             "EntityId": "ShipmentInvoice"
         },
         {
-            "Id": "01940838-8dfa-71af-9887-cf914b1a7b50",
+            "Id": "payment_request.VendorIds.6",
             "FieldName": "VendorIds",
             "Order": 6,
             "ComponentType": "Dropdown",
@@ -97,7 +96,7 @@
             "EntityId": "ShipmentInvoice"
         },
         {
-            "Id": "01940838-8e87-7693-8f3c-4c7a9fc39482",
+            "Id": "payment_request.btnEdit.0",
             "FieldName": "btnEdit",
             "Order": 0,
             "ComponentType": "Button",
@@ -111,7 +110,7 @@
             "EntityId": "ShipmentInvoice"
         },
         {
-            "Id": "0194318b-556e-71e9-b1f4-b866de607b17",
+            "Id": "payment_request.PostDate.5",
             "FieldName": "PostDate",
             "Order": 5,
             "ComponentType": "Datepicker",
@@ -126,7 +125,7 @@
             "EntityId": "ShipmentInvoice"
         },
         {
-            "Id": "0194318b-556e-71e9-b1f4-bd5fcd790488",
+            "Id": "payment_request.CurrencyId.7",
             "FieldName": "CurrencyId",
             "Order": 7,
             "ComponentType": "Dropdown",
@@ -146,7 +145,7 @@
             "EntityId": "ShipmentInvoice"
         },
         {
-            "Id": "0194318b-556e-71e9-b1f4-c09415042fcf",
+            "Id": "payment_request.ExchangeRateINV.8",
             "FieldName": "ExchangeRateINV",
             "Order": 8,
             "ComponentType": "Number",
@@ -160,7 +159,7 @@
             "EntityId": "ShipmentInvoice"
         },
         {
-            "Id": "01943b5e-8073-73c8-88cf-605862342af3",
+            "Id": "payment_request.ProgressId.3",
             "FieldName": "ProgressId",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -179,7 +178,7 @@
             "EntityId": "ShipmentInvoice"
         },
         {
-            "Id": "01943b60-d2ef-713a-8775-aac1e2ad914f",
+            "Id": "payment_request.StatusId.11",
             "FieldName": "StatusId",
             "Order": 11,
             "ComponentType": "Dropdown",
@@ -198,7 +197,7 @@
     ],
     "Components": [
         {
-            "Id": "01940838-889c-71ec-93cd-fb423f79f5a4",
+            "Id": "payment_request.Section.1",
             "Order": 1,
             "ComponentType": "Section",
             "Label": "ALL",
@@ -209,7 +208,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "01940838-88fd-76ff-865f-2d11e2a711f0",
+                    "Id": "Section.ShipmentInvoice.1_2",
                     "FieldName": "ShipmentInvoice",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -226,7 +225,7 @@
             ]
         },
         {
-            "Id": "01943b73-fcbf-77fe-96ec-6e0c3ddd1432",
+            "Id": "payment_request.Section.2",
             "Order": 2,
             "ComponentType": "Section",
             "Label": "New",
@@ -236,7 +235,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "01943b74-67a2-73ea-ae15-1985dbac3316",
+                    "Id": "Section.ShipmentInvoice.1_3",
                     "FieldName": "ShipmentInvoice",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -253,7 +252,7 @@
             ]
         },
         {
-            "Id": "01943b73-fcbf-77fe-96ec-717ebeed01fb",
+            "Id": "payment_request.Section.3",
             "Order": 3,
             "ComponentType": "Section",
             "Label": "Approving",
@@ -263,7 +262,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "01943b74-6c8f-746f-9afb-3ce0a023b1b7",
+                    "Id": "Section.ShipmentInvoice.1_4",
                     "FieldName": "ShipmentInvoice",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -280,7 +279,7 @@
             ]
         },
         {
-            "Id": "01943b73-fcbf-77fe-96ec-769a4d807b00",
+            "Id": "payment_request.Section.4",
             "Order": 4,
             "ComponentType": "Section",
             "Label": "Approved",
@@ -290,7 +289,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "01943b74-7178-7032-8396-d26144f7a555",
+                    "Id": "Section.ShipmentInvoice.1_5",
                     "FieldName": "ShipmentInvoice",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -307,7 +306,7 @@
             ]
         },
         {
-            "Id": "01943b73-fcc0-76ca-9e82-02a628a2bbea",
+            "Id": "payment_request.Section.5",
             "Order": 5,
             "ComponentType": "Section",
             "Label": "Decline",
@@ -317,7 +316,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "01943b74-76f0-7698-8f66-fd14c32972b9",
+                    "Id": "Section.ShipmentInvoice.1_6",
                     "FieldName": "ShipmentInvoice",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -336,34 +335,28 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "4D0E126C-1668-4EBA-8212-CD9FA604BD50",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "53104920-9244-45FB-8BEA-4853A1A92ED3",
             "RoleId": "BOD",
             "CanRead": true,
             "CanWrite": true,
             "TableName": "Feature"
         },
         {
-            "Id": "7BDC2DC5-E170-4FEA-9A09-10469621706A",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "856B9C68-6ABA-4F2C-A5A3-44B26904A559",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "862DFFD4-8FEC-46A7-9C4C-1507D2778F7D",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "8EAEF11D-0EB6-41E7-BD7C-564588643A7C",
             "RoleId": "ADMIN",
             "CanRead": true,
             "CanReadAll": true,
@@ -372,24 +365,20 @@
             "TableName": "Feature"
         },
         {
-            "Id": "9F7E22D5-8C3A-4394-A128-4A5366B64D59",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "B0722166-18F0-4E5B-B1EE-AF54AFD67F37",
             "RoleId": "DOCS",
             "CanRead": true,
             "CanWrite": true,
             "TableName": "Feature"
         },
         {
-            "Id": "C3AC8E64-637E-4C01-A724-19642A5F953D",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "FA43A94E-21C7-4B9A-91DA-1DAE5B535B2A",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         }

@@ -1,14 +1,13 @@
 {
-    "Id": "00ec1130-0000-0000-8000-659df640ec9d",
+    "Id": "history",
     "Name": "history",
     "Label": "History",
-    "ParentId": "000a0514-0000-0000-8000-1f67beb1bcef",
     "Order": 8,
     "Icon": "fal fa-history",
     "IsMenu": true,
     "GridPolicies": [
         {
-            "Id": "00291114-0000-0000-8000-939db97bb5cf",
+            "Id": "history.InsertedBy.3",
             "FieldName": "InsertedBy",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -26,7 +25,7 @@
             "EntityId": "History"
         },
         {
-            "Id": "00ec1154-0000-0000-8000-23fdcf1d4103",
+            "Id": "history.TextContent.0",
             "FieldName": "TextContent",
             "Order": 0,
             "ComponentType": "Input",
@@ -38,7 +37,7 @@
             "EntityId": "History"
         },
         {
-            "Id": "00ec1154-0000-0000-8000-4df71507978b",
+            "Id": "history.InsertedDate.2",
             "FieldName": "InsertedDate",
             "Order": 2,
             "ComponentType": "Datepicker",
@@ -51,7 +50,7 @@
             "EntityId": "History"
         },
         {
-            "Id": "00ec11a0-0000-0000-8000-1f6d140709c4",
+            "Id": "history.TableName.1",
             "FieldName": "TableName",
             "Order": 1,
             "ComponentType": "Input",
@@ -65,42 +64,34 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "10A29608-427B-4E11-9E71-5D8674641B3A",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "17163956-6BF5-47A2-B9DB-398545465184",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "1BC0932A-6AB3-45B8-85A1-E5FBA806543A",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "311478DC-D267-49CA-8299-ECAE9472EDAD",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "4DBB353A-A0D1-4866-BB81-AED221556467",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "63667050-648C-44D6-9DAB-8517E06640E0",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "8D213873-3E8E-4630-9FC2-38BC2A842DBB",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "BC0334D5-0C82-484C-A164-D0174F505465",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -111,26 +102,24 @@
             "TableName": "Feature"
         },
         {
-            "Id": "EBF0D41F-026B-4C1D-A7E4-6C5BB5D92668",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "F72F1DC7-30FE-4FD3-89EB-A88E1CA07752",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         }
     ],
     "Components": [
         {
-            "Id": "00ec11c0-0000-0000-8000-c4059002e1ad",
+            "Id": "history.Lang.1",
             "FieldName": "Lang",
             "Order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "00ec1130-0000-0000-8000-3baf9ead10a1",
+                    "Id": "Lang.History.1",
                     "FieldName": "History",
                     "Order": 1,
                     "ComponentType": "GridView",

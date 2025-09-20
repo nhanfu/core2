@@ -1,15 +1,14 @@
 {
-    "Id": "0195846b-eec2-731c-a42d-8b5352227845",
+    "Id": "update_exchangerate_editor",
     "Name": "update-exchangerate-editor",
     "Label": "Update ExchangeRate Editor",
-    "ParentId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
     "Order": 0,
     "Style": "width:700px;",
     "Script": "return {\r\n    SaveAs: function (btn) {\r\n        var newEntity = JSON.parse(JSON.stringify(this.Entity));\r\n        this.Entity = newEntity;\r\n        this.Entity.Id = this.Uuid7.NewGuid();\r\n        this.Entity.FromDate = null;\r\n        this.Entity.ToDate = null;\r\n        this.Entity.PostDate = this.dayjs();\r\n        var detailGrid = this.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"ExchangeRateHistoryDetail\");\r\n        if (detailGrid && detailGrid.AllListViewItem.length > 0) {\r\n            detailGrid.AllListViewItem.forEach(row => {\r\n                row.Entity.Id = this.Uuid7.NewGuid();\r\n                row.Entity.HistoryId = this.Entity.Id;\r\n                row.Children.forEach(cell => {\r\n                    cell.Entity = row.Entity;\r\n                });\r\n                row.UpdateView(true);\r\n            });\r\n        }\r\n        this.UpdateView(true);\r\n        this.Dirty = true;\r\n        this.Toast.Success(\"Save as success\");\r\n    },\r\n    CalcRateUSD: function (btn, entity) {\r\n        var exUSD = this.Decimal(this.Entity.RateVND);\r\n        var exVND = this.Decimal(1);\r\n        entity.RateUSD = this.Decimal(1).div(entity.RateVND);\r\n        var detailGrid = this.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"ExchangeRateHistoryDetail\");\r\n        detailGrid.Item.forEach(item => {\r\n            item.Entity.RateVND = this.Decimal(item.Entity.RateVND);\r\n            item.Entity.RateUSD = item.Entity.RateVND.div(exUSD);\r\n            item.UpdateView(false, false, \"RateUSD\");\r\n        });\r\n    },\r\n    UpdateExchangeRate: function (btn, entity) {\r\n        var exUSD = this.Decimal(this.EditForm.Entity.RateVND);\r\n        var exVND = this.Decimal(1);\r\n        entity.RateVND = this.Decimal(entity.RateVND);\r\n        entity.RateUSD = entity.RateVND.div(exUSD);\r\n        btn.Parent.UpdateView(false, false, \"RateUSD\");\r\n    },\r\n    UpdateExchangeRate2: function (btn, entity) {\r\n        debugger;\r\n        var exUSD = this.Decimal(this.EditForm.Entity.RateVND);\r\n        var exVND = this.Decimal(1);\r\n        entity.RateVND = this.Decimal(JSON.parse(localStorage.getItem(\"ExchangeRateVND\"))[entity.CurrencyCode]);\r\n        entity.RateUSD = entity.RateVND.div(exUSD);\r\n        btn.Parent.UpdateView(false, false, \"RateUSD\");\r\n    }\r\n}",
     "EntityId": "ExchangeRateHistory",
     "GridPolicies": [
         {
-            "Id": "01958472-61cb-74fd-ba8c-50d07602dbcd",
+            "Id": "update_exchangerate_editor.CurrencyId.0",
             "FieldName": "CurrencyId",
             "Order": 0,
             "ComponentType": "Dropdown",
@@ -30,7 +29,7 @@
             "EntityId": "ExchangeRateHistoryDetail"
         },
         {
-            "Id": "01958472-61cb-74fd-ba8c-5602bd7a5917",
+            "Id": "update_exchangerate_editor.RateVND.2",
             "FieldName": "RateVND",
             "Order": 2,
             "ComponentType": "Number",
@@ -45,7 +44,7 @@
             "EntityId": "ExchangeRateHistoryDetail"
         },
         {
-            "Id": "01958472-61cb-74fd-ba8c-5a728a9ef313",
+            "Id": "update_exchangerate_editor.RateUSD.1",
             "FieldName": "RateUSD",
             "Order": 1,
             "ComponentType": "Number",
@@ -61,7 +60,7 @@
     ],
     "Components": [
         {
-            "Id": "0195846b-ef45-707d-b065-ef6ad49aa6e0",
+            "Id": "update_exchangerate_editor.Button.1",
             "FieldName": "Button",
             "Order": 1,
             "ComponentType": "Section",
@@ -69,7 +68,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "0195846b-ef86-72f4-a39e-5fced3f589b4",
+                    "Id": "Button.btnSave.1_10",
                     "FieldName": "btnSave",
                     "Order": 1,
                     "ComponentType": "Button",
@@ -81,7 +80,7 @@
                     "Events": "{ \"click\" : \"SavePatch\" }"
                 },
                 {
-                    "Id": "01958544-97b6-7506-a5c2-b88c0d38adc7",
+                    "Id": "Button.btnSaveAdd.0_20",
                     "FieldName": "btnSaveAdd",
                     "Order": 0,
                     "ComponentType": "Button",
@@ -92,7 +91,7 @@
                     "Events": "{\r\n    \"click\": \"SaveAs\"\r\n}"
                 },
                 {
-                    "Id": "0195846b-ef86-72f4-a39e-5fced3f589b4",
+                    "Id": "Button.btnSave.1_11",
                     "FieldName": "btnSave",
                     "Order": 1,
                     "ComponentType": "Button",
@@ -104,7 +103,7 @@
                     "Events": "{ \"click\" : \"SavePatch\" }"
                 },
                 {
-                    "Id": "01958544-97b6-7506-a5c2-b88c0d38adc7",
+                    "Id": "Button.btnSaveAdd.0_21",
                     "FieldName": "btnSaveAdd",
                     "Order": 0,
                     "ComponentType": "Button",
@@ -117,14 +116,14 @@
             ]
         },
         {
-            "Id": "0195846b-efc6-754c-a5c8-a7c50c2c320d",
+            "Id": "update_exchangerate_editor.Container.2",
             "FieldName": "Container ",
             "Order": 2,
             "ComponentType": "Section",
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "0195846b-f00b-76e0-8e91-67205446602e",
+                    "Id": "Container.Right.3_5",
                     "FieldName": "Right",
                     "Order": 3,
                     "ComponentType": "Section",
@@ -134,7 +133,7 @@
                     "XxlOuterColumn": 12,
                     "Components": [
                         {
-                            "Id": "0195846b-f06b-716a-b0f1-c9a7185ffa5a",
+                            "Id": "Right.ExchangeRateHistoryDetail.7",
                             "FieldName": "ExchangeRateHistoryDetail",
                             "Order": 7,
                             "ComponentType": "GridView",
@@ -151,7 +150,7 @@
                             "Editable": true
                         },
                         {
-                            "Id": "0195846f-ec86-72be-bdba-e7f6245a6358",
+                            "Id": "Right.FromDate.1",
                             "FieldName": "FromDate",
                             "Order": 1,
                             "ComponentType": "Datepicker",
@@ -163,7 +162,7 @@
                             "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                         },
                         {
-                            "Id": "0195846f-ec87-747d-9f56-a51f8d1d5cc6",
+                            "Id": "Right.PostDate.4",
                             "FieldName": "PostDate",
                             "Order": 4,
                             "ComponentType": "Datepicker",
@@ -175,7 +174,7 @@
                             "Disabled": true
                         },
                         {
-                            "Id": "01958470-318a-75b1-824a-c45fd5a0bb57",
+                            "Id": "Right.ToDate.2",
                             "FieldName": "ToDate",
                             "Order": 2,
                             "ComponentType": "Datepicker",
@@ -187,7 +186,7 @@
                             "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                         },
                         {
-                            "Id": "01958470-3bec-731e-9cba-564aa28d0c7c",
+                            "Id": "Right.Id.3",
                             "FieldName": "Id",
                             "Order": 3,
                             "ComponentType": "Input",
@@ -199,7 +198,7 @@
                             "Disabled": true
                         },
                         {
-                            "Id": "0195854b-722d-7788-b422-0e6c05cf1a77",
+                            "Id": "Right.FileIds.6",
                             "FieldName": "FileIds",
                             "Order": 6,
                             "ComponentType": "Dropdown",
@@ -217,7 +216,7 @@
                             "IsMultiple": true
                         },
                         {
-                            "Id": "01958aa7-55a3-768a-88a7-11ea2f51b1bd",
+                            "Id": "Right.RateVND.5",
                             "FieldName": "RateVND",
                             "Order": 5,
                             "ComponentType": "Number",
@@ -234,12 +233,10 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "0F4F40BF-672C-4A31-B902-0B19396FFB4A",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "148311D9-5A22-450B-ACDC-710AF52C2355",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -250,32 +247,26 @@
             "TableName": "Feature"
         },
         {
-            "Id": "1754032C-A1B5-4D5F-95F3-1DD61937081A",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "1DE61D7A-B97E-4480-A67F-C5951652219B",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "34205D19-55CE-4503-97A6-1C86910B6C12",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "7551AFEE-F212-47EF-AEB0-DEC404B95A5C",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "8D79756E-3D0B-41F1-800C-3AC9683EB733",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "8FFC3DA3-C99F-4C72-8EE9-411936B394D8",
             "RoleId": "ADMIN",
             "CanRead": true,
             "CanReadAll": true,
@@ -286,7 +277,6 @@
             "TableName": "Feature"
         },
         {
-            "Id": "A2B34B6B-5490-4947-8B11-9D63879FDC71",
             "RoleId": "ACC",
             "CanRead": true,
             "CanReadAll": true,
@@ -296,7 +286,6 @@
             "TableName": "Feature"
         },
         {
-            "Id": "FAF14471-CB3E-482B-B7C7-7CC46502E773",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         }

@@ -1,5 +1,5 @@
 {
-    "Id": "001cef8c-0000-0000-8000-284b6a5defc8",
+    "Id": "component_editor",
     "Name": "component-editor",
     "Label": "Component Editor",
     "Order": 111,
@@ -10,7 +10,7 @@
     "IgnoreEncode": true,
     "GridPolicies": [
         {
-            "Id": "0195665b-567c-7416-9722-bdcb99c5d198",
+            "Id": "component_editor.Id.0",
             "FieldName": "Id",
             "Order": 0,
             "ComponentType": "Input",
@@ -24,7 +24,7 @@
             "EntityId": "GridPolicy"
         },
         {
-            "Id": "0195665b-567c-7416-9722-c0fae13a1936",
+            "Id": "component_editor.EntityId.1",
             "FieldName": "EntityId",
             "Order": 1,
             "ComponentType": "Input",
@@ -39,7 +39,7 @@
             "EntityId": "GridPolicy"
         },
         {
-            "Id": "0195665b-567c-7416-9722-c5480cd21d2c",
+            "Id": "component_editor.Order.2",
             "FieldName": "Order",
             "Order": 2,
             "ComponentType": "Number",
@@ -55,7 +55,7 @@
             "EntityId": "GridPolicy"
         },
         {
-            "Id": "0195665b-567c-7416-9722-ca73f2980967",
+            "Id": "component_editor.Editable.3",
             "FieldName": "Editable",
             "Order": 3,
             "ComponentType": "Checkbox",
@@ -70,7 +70,7 @@
             "EntityId": "GridPolicy"
         },
         {
-            "Id": "0195665b-567d-7302-8f0f-3eafdd384e38",
+            "Id": "component_editor.FieldName.4",
             "FieldName": "FieldName",
             "Order": 4,
             "ComponentType": "Input",
@@ -84,7 +84,7 @@
             "EntityId": "GridPolicy"
         },
         {
-            "Id": "0195665b-567d-7302-8f0f-41da0be71ec4",
+            "Id": "component_editor.Label.5",
             "FieldName": "Label",
             "Order": 5,
             "ComponentType": "Input",
@@ -98,7 +98,7 @@
             "EntityId": "GridPolicy"
         },
         {
-            "Id": "0195665b-567d-7302-8f0f-4674f673b043",
+            "Id": "component_editor.ComponentType.6",
             "FieldName": "ComponentType",
             "Order": 6,
             "ComponentType": "Select",
@@ -115,7 +115,7 @@
             "EntityId": "GridPolicy"
         },
         {
-            "Id": "0195665b-567d-7302-8f0f-4bec1b6d1fc6",
+            "Id": "component_editor.GroupName.7",
             "FieldName": "GroupName",
             "Order": 7,
             "ComponentType": "Input",
@@ -131,7 +131,7 @@
             "EntityId": "GridPolicy"
         },
         {
-            "Id": "0195665b-567d-7302-8f0f-4e1b4152ed11",
+            "Id": "component_editor.Summary.8",
             "FieldName": "Summary",
             "Order": 8,
             "ComponentType": "Input",
@@ -145,7 +145,7 @@
             "EntityId": "GridPolicy"
         },
         {
-            "Id": "0195665b-567d-7302-8f0f-51ca1f183494",
+            "Id": "component_editor.SummaryColSpan.9",
             "FieldName": "SummaryColSpan",
             "Order": 9,
             "ComponentType": "Number",
@@ -160,7 +160,7 @@
             "EntityId": "GridPolicy"
         },
         {
-            "Id": "0195665b-567d-7302-8f0f-5762d3c26ab9",
+            "Id": "component_editor.Precision.10",
             "FieldName": "Precision",
             "Order": 10,
             "ComponentType": "Number",
@@ -175,7 +175,7 @@
             "EntityId": "GridPolicy"
         },
         {
-            "Id": "0195665b-567d-7302-8f0f-58c141c971d8",
+            "Id": "component_editor.Query.11",
             "FieldName": "Query",
             "Order": 11,
             "ComponentType": "Input",
@@ -190,7 +190,7 @@
             "EntityId": "GridPolicy"
         },
         {
-            "Id": "0195665b-567d-7302-8f0f-5ed6156319f1",
+            "Id": "component_editor.RefName.12",
             "FieldName": "RefName",
             "Order": 12,
             "ComponentType": "Input",
@@ -204,7 +204,7 @@
             "EntityId": "GridPolicy"
         },
         {
-            "Id": "0195665b-567e-7688-97b2-41bd8c7d220d",
+            "Id": "component_editor.DisabledExp.13",
             "FieldName": "DisabledExp",
             "Order": 13,
             "ComponentType": "Input",
@@ -218,7 +218,7 @@
             "EntityId": "GridPolicy"
         },
         {
-            "Id": "0195665b-567e-7688-97b2-4511dfba8609",
+            "Id": "component_editor.Validation.14",
             "FieldName": "Validation",
             "Order": 14,
             "ComponentType": "Input",
@@ -232,7 +232,7 @@
             "EntityId": "GridPolicy"
         },
         {
-            "Id": "0195665b-567e-7688-97b2-49768f82099a",
+            "Id": "component_editor.FeatureId.15",
             "FieldName": "FeatureId",
             "Order": 15,
             "ComponentType": "Dropdown",
@@ -252,7 +252,7 @@
             "EntityId": "GridPolicy"
         },
         {
-            "Id": "0195665b-567e-7688-97b2-4e27ea708274",
+            "Id": "component_editor.ComponentGroupId.16",
             "FieldName": "ComponentGroupId",
             "Order": 16,
             "ComponentType": "Dropdown",
@@ -273,7 +273,7 @@
             "EntityId": "GridPolicy"
         },
         {
-            "Id": "0195665b-567e-7688-97b2-521933c625a9",
+            "Id": "component_editor.MinWidth.17",
             "FieldName": "MinWidth",
             "Order": 17,
             "ComponentType": "Input",
@@ -287,7 +287,7 @@
             "EntityId": "GridPolicy"
         },
         {
-            "Id": "0195665b-567e-7688-97b2-577832c8f8a1",
+            "Id": "component_editor.Width.18",
             "FieldName": "Width",
             "Order": 18,
             "ComponentType": "Input",
@@ -301,7 +301,7 @@
             "EntityId": "GridPolicy"
         },
         {
-            "Id": "0195665b-567e-7688-97b2-586514b8e7db",
+            "Id": "component_editor.MaxWidth.19",
             "FieldName": "MaxWidth",
             "Order": 19,
             "ComponentType": "Input",
@@ -315,7 +315,7 @@
             "EntityId": "GridPolicy"
         },
         {
-            "Id": "0195665b-567e-7688-97b2-5d15ea7f69f2",
+            "Id": "component_editor.ClassName.20",
             "FieldName": "ClassName",
             "Order": 20,
             "ComponentType": "Input",
@@ -329,7 +329,7 @@
             "EntityId": "GridPolicy"
         },
         {
-            "Id": "0195665b-567e-7688-97b2-6081e666b998",
+            "Id": "component_editor.Teamplate.21",
             "FieldName": "Teamplate",
             "Order": 21,
             "ComponentType": "Input",
@@ -344,7 +344,7 @@
             "EntityId": "GridPolicy"
         },
         {
-            "Id": "0195665b-567f-745e-a70b-4cfd16de6618",
+            "Id": "component_editor.Summary.22",
             "FieldName": "Summary",
             "Order": 22,
             "ComponentType": "Input",
@@ -358,7 +358,7 @@
             "EntityId": "GridPolicy"
         },
         {
-            "Id": "0195665b-567f-745e-a70b-528ec8c859c6",
+            "Id": "component_editor.TextAlign.23",
             "FieldName": "TextAlign",
             "Order": 23,
             "ComponentType": "Input",
@@ -372,7 +372,7 @@
             "EntityId": "GridPolicy"
         },
         {
-            "Id": "0195665b-567f-745e-a70b-57afc9091757",
+            "Id": "component_editor.SummaryColSpan.24",
             "FieldName": "SummaryColSpan",
             "Order": 24,
             "ComponentType": "Number",
@@ -386,7 +386,7 @@
             "EntityId": "GridPolicy"
         },
         {
-            "Id": "0195665b-567f-745e-a70b-59608e5ef543",
+            "Id": "component_editor.Style.25",
             "FieldName": "Style",
             "Order": 25,
             "ComponentType": "Input",
@@ -402,7 +402,7 @@
     ],
     "Components": [
         {
-            "Id": "0038efc0-0000-0000-8000-dfedae8ad582",
+            "Id": "component_editor.Section.2",
             "Order": 2,
             "ComponentType": "Section",
             "Label": "Template",
@@ -412,7 +412,7 @@
             "XxlOuterColumn": 6,
             "Components": [
                 {
-                    "Id": "00feef40-0000-0000-8000-7c7be2fd5562",
+                    "Id": "Section.Template.4",
                     "FieldName": "Template",
                     "Order": 4,
                     "ComponentType": "CodeEditor",
@@ -425,7 +425,7 @@
                     "Lang": "json"
                 },
                 {
-                    "Id": "0018ef40-0000-0000-8000-0b9677af484f",
+                    "Id": "Section.btnSave.2",
                     "FieldName": "btnSave",
                     "Order": 2,
                     "ComponentType": "Button",
@@ -438,7 +438,7 @@
             ]
         },
         {
-            "Id": "0063323c-0000-0000-8000-28b7931b0a77",
+            "Id": "component_editor.Section.4",
             "Order": 4,
             "ComponentType": "Section",
             "Label": "Query",
@@ -447,7 +447,7 @@
             "IsTab": true,
             "Components": [
                 {
-                    "Id": "01934473-3519-73ed-9e8a-ad6de37c777b",
+                    "Id": "Section.Query.4",
                     "FieldName": "Query",
                     "Order": 4,
                     "ComponentType": "CodeEditor",
@@ -462,14 +462,14 @@
             ]
         },
         {
-            "Id": "0099efb8-0000-0000-8000-77beae284f22",
+            "Id": "component_editor.Section.1",
             "Order": 1,
             "ComponentType": "Section",
             "ClassName": "ribbon-group",
             "XxlCol": 10,
             "Components": [
                 {
-                    "Id": "0018ef40-0000-0000-8000-0b9677af484f",
+                    "Id": "Section.btnSave.2_1",
                     "FieldName": "btnSave",
                     "Order": 2,
                     "ComponentType": "Button",
@@ -482,7 +482,7 @@
             ]
         },
         {
-            "Id": "00ac3280-0000-0000-8000-b3137c6d2c4b",
+            "Id": "component_editor.Section.5",
             "Order": 5,
             "ComponentType": "Section",
             "Label": "A4",
@@ -491,7 +491,7 @@
             "IsTab": true,
             "Components": [
                 {
-                    "Id": "00b032cc-0000-0000-8000-2fcf6c7fca27",
+                    "Id": "Section.Section.2_6",
                     "Order": 2,
                     "ComponentType": "Section",
                     "Style": "width:217mm;",
@@ -499,7 +499,7 @@
                     "XxlOuterColumn": 4,
                     "Components": [
                         {
-                            "Id": "00e83228-0000-0000-8000-7dd11b2b23c5",
+                            "Id": "Section.Template.4_1",
                             "FieldName": "Template",
                             "Order": 4,
                             "ComponentType": "Word",
@@ -518,7 +518,7 @@
             ]
         },
         {
-            "Id": "00e0ef38-0000-0000-8000-047c39ecc428",
+            "Id": "component_editor.Section.1_1",
             "Order": 1,
             "ComponentType": "Section",
             "Label": "Propreties",
@@ -527,7 +527,7 @@
             "IsTab": true,
             "Components": [
                 {
-                    "Id": "00edef20-0000-0000-8000-33733994cc30",
+                    "Id": "Section.Common.2",
                     "FieldName": "Common",
                     "Order": 2,
                     "ComponentType": "Section",
@@ -537,7 +537,7 @@
                     "XxlOuterColumn": 3,
                     "Components": [
                         {
-                            "Id": "0005efac-0000-0000-8000-0486eaedac7e",
+                            "Id": "Common.FormatData.10",
                             "FieldName": "FormatData",
                             "Order": 10,
                             "ComponentType": "CodeEditor",
@@ -546,7 +546,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "002a141c-0000-0000-8000-044b2d41ed3f",
+                            "Id": "Common.GroupTypeId.6",
                             "FieldName": "GroupTypeId",
                             "Order": 6,
                             "ComponentType": "Dropdown",
@@ -561,7 +561,7 @@
                             "Template": "[{ \"FieldName\" : \"Key\", \"Label\" : \"Key\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Value\", \"Label\" : \"Value\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
-                            "Id": "004e0f6c-0000-0000-8000-5978497aec15",
+                            "Id": "Common.TabGroup.1",
                             "FieldName": "TabGroup",
                             "Order": 1,
                             "ComponentType": "Input",
@@ -570,7 +570,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "006bef34-0000-0000-8000-7a8019d98175",
+                            "Id": "Common.GroupBy.7",
                             "FieldName": "GroupBy",
                             "Order": 7,
                             "ComponentType": "Input",
@@ -579,7 +579,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "0074efac-0000-0000-8000-19fed86bee26",
+                            "Id": "Common.GroupFormat.11",
                             "FieldName": "GroupFormat",
                             "Order": 11,
                             "ComponentType": "CodeEditor",
@@ -592,7 +592,7 @@
                             "Lang": "javascript"
                         },
                         {
-                            "Id": "00b3ff68-0000-0000-8000-5a262977abaf",
+                            "Id": "Common.Icon.8",
                             "FieldName": "Icon",
                             "Order": 8,
                             "ComponentType": "Input",
@@ -601,7 +601,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00c7efb8-0000-0000-8000-844e92f4110e",
+                            "Id": "Common.Validation.12",
                             "FieldName": "Validation",
                             "Order": 12,
                             "ComponentType": "CodeEditor",
@@ -611,7 +611,7 @@
                             "Lang": "javascript"
                         },
                         {
-                            "Id": "00ddef30-0000-0000-8000-1840d9b2b77d",
+                            "Id": "Common.FieldName.0",
                             "FieldName": "FieldName",
                             "Order": 0,
                             "ComponentType": "Input",
@@ -620,7 +620,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00f0efbc-0000-0000-8000-9dc000c52978",
+                            "Id": "Common.ComponentType.3",
                             "FieldName": "ComponentType",
                             "Order": 3,
                             "ComponentType": "Select",
@@ -633,7 +633,7 @@
                             "Template": "[\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]"
                         },
                         {
-                            "Id": "00f0efe8-0000-0000-8000-526e50d2c19c",
+                            "Id": "Common.Label.2",
                             "FieldName": "Label",
                             "Order": 2,
                             "ComponentType": "Input",
@@ -642,7 +642,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00f1ef78-0000-0000-8000-a54719e0aac4",
+                            "Id": "Common.ComponentGroupId.5",
                             "FieldName": "ComponentGroupId",
                             "Order": 5,
                             "ComponentType": "Dropdown",
@@ -658,7 +658,7 @@
                             "PreQuery": "{\r\n    \"FeatureId\": this.Entity.FeatureId\r\n}"
                         },
                         {
-                            "Id": "01938cbe-7873-756e-bc6d-4521ae4cce13",
+                            "Id": "Common.ExcelUrl.13",
                             "FieldName": "ExcelUrl",
                             "Order": 13,
                             "ComponentType": "FileUpload",
@@ -668,7 +668,7 @@
                             "Lang": "json"
                         },
                         {
-                            "Id": "01954c10-5636-71ca-9f90-1b86ac5e8f84",
+                            "Id": "Common.ReportTypeId.4",
                             "FieldName": "ReportTypeId",
                             "Order": 4,
                             "ComponentType": "Select",
@@ -681,7 +681,7 @@
                             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]"
                         },
                         {
-                            "Id": "0195e771-73dd-722a-8641-d163f8e25690",
+                            "Id": "Common.CodeId.9",
                             "FieldName": "CodeId",
                             "Order": 9,
                             "ComponentType": "Dropdown",
@@ -700,7 +700,7 @@
                     ]
                 },
                 {
-                    "Id": "00f8ef8c-0000-0000-8000-5e75f7d5f134",
+                    "Id": "Section.Section.3_2",
                     "Order": 3,
                     "ComponentType": "Section",
                     "Label": "Config",
@@ -709,7 +709,7 @@
                     "XxlOuterColumn": 4,
                     "Components": [
                         {
-                            "Id": "00261888-0000-0000-8000-96bfadd7f219",
+                            "Id": "Section.Frozen.16",
                             "FieldName": "Frozen",
                             "Order": 16,
                             "ComponentType": "Checkbox",
@@ -719,7 +719,7 @@
                             "Style": "display: flex; justify-content: space-between;"
                         },
                         {
-                            "Id": "002718bc-0000-0000-8000-3c6c42c11847",
+                            "Id": "Section.IsPrivate.11",
                             "FieldName": "IsPrivate",
                             "Order": 11,
                             "ComponentType": "Checkbox",
@@ -729,7 +729,7 @@
                             "Style": "display: flex; justify-content: space-between;"
                         },
                         {
-                            "Id": "00281830-0000-0000-8000-87ac5892060b",
+                            "Id": "Section.CanCache.3",
                             "FieldName": "CanCache",
                             "Order": 3,
                             "ComponentType": "Checkbox",
@@ -739,7 +739,7 @@
                             "Style": "display: flex; justify-content: space-between;"
                         },
                         {
-                            "Id": "00311e20-0000-0000-8000-3254e8f52cec",
+                            "Id": "Section.TextAlign.22",
                             "FieldName": "TextAlign",
                             "Order": 22,
                             "ComponentType": "Input",
@@ -748,7 +748,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00410190-0000-0000-8000-35199ba4ee1f",
+                            "Id": "Section.IsMultiple.6",
                             "FieldName": "IsMultiple",
                             "Order": 6,
                             "ComponentType": "Checkbox",
@@ -758,7 +758,7 @@
                             "Style": "display: flex; justify-content: space-between;"
                         },
                         {
-                            "Id": "00501694-0000-0000-8001-3c702efceddc",
+                            "Id": "Section.Lang.18",
                             "FieldName": "Lang",
                             "Order": 18,
                             "ComponentType": "Input",
@@ -767,7 +767,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00501694-0000-0000-8002-2d752db8dfb0",
+                            "Id": "Section.MinWidth.20",
                             "FieldName": "MinWidth",
                             "Order": 20,
                             "ComponentType": "Input",
@@ -776,7 +776,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00501694-0000-0000-8003-01834dba3cee",
+                            "Id": "Section.Width.21",
                             "FieldName": "Width",
                             "Order": 21,
                             "ComponentType": "Input",
@@ -785,7 +785,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00501694-0000-0000-8004-fefd028c1ed8",
+                            "Id": "Section.ClassName.23",
                             "FieldName": "ClassName",
                             "Order": 23,
                             "ComponentType": "Input",
@@ -794,7 +794,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00501694-0000-0000-8005-7fa727ac2f5a",
+                            "Id": "Section.OrderBy.27",
                             "FieldName": "OrderBy",
                             "Order": 27,
                             "ComponentType": "Input",
@@ -803,7 +803,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "0058ef9c-0000-0000-8000-0e0be87866e6",
+                            "Id": "Section.Editable.2",
                             "FieldName": "Editable",
                             "Order": 2,
                             "ComponentType": "Checkbox",
@@ -813,7 +813,7 @@
                             "Style": "display: flex; justify-content: space-between;"
                         },
                         {
-                            "Id": "006cef50-0000-0000-8000-5834191c8457",
+                            "Id": "Section.IsRealtime.15",
                             "FieldName": "IsRealtime",
                             "Order": 15,
                             "ComponentType": "Checkbox",
@@ -823,7 +823,7 @@
                             "Style": "display: flex; justify-content: space-between;"
                         },
                         {
-                            "Id": "007eefec-0000-0000-8000-9614a01ac8ae",
+                            "Id": "Section.TopEmpty.12",
                             "FieldName": "TopEmpty",
                             "Order": 12,
                             "ComponentType": "Checkbox",
@@ -833,7 +833,7 @@
                             "Style": "display: flex; justify-content: space-between;"
                         },
                         {
-                            "Id": "0091ef60-0000-0000-8000-d5fd9bd4c1ec",
+                            "Id": "Section.Disabled.1",
                             "FieldName": "Disabled",
                             "Order": 1,
                             "ComponentType": "Checkbox",
@@ -843,7 +843,7 @@
                             "Style": "display: flex; justify-content: space-between;"
                         },
                         {
-                            "Id": "00932738-0000-0000-8001-66f5825c1559",
+                            "Id": "Section.AddRowExp.31",
                             "FieldName": "AddRowExp",
                             "Order": 31,
                             "ComponentType": "CodeEditor",
@@ -852,7 +852,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "009327d4-0000-0000-8000-9e8cd4ab7d30",
+                            "Id": "Section.DisabledExp.29",
                             "FieldName": "DisabledExp",
                             "Order": 29,
                             "ComponentType": "CodeEditor",
@@ -861,7 +861,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "009327d4-0000-0000-8001-21335bfc5257",
+                            "Id": "Section.ShowExp.30",
                             "FieldName": "ShowExp",
                             "Order": 30,
                             "ComponentType": "CodeEditor",
@@ -870,7 +870,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "0093ef60-0000-0000-8000-ea52d3be72f2",
+                            "Id": "Section.Focus.10",
                             "FieldName": "Focus",
                             "Order": 10,
                             "ComponentType": "Checkbox",
@@ -880,7 +880,7 @@
                             "Style": "display: flex; justify-content: space-between;"
                         },
                         {
-                            "Id": "0096efdc-0000-0000-8000-0d16e8a51561",
+                            "Id": "Section.IsSumary.7",
                             "FieldName": "IsSumary",
                             "Order": 7,
                             "ComponentType": "Checkbox",
@@ -892,7 +892,7 @@
                             "SummaryColSpan": 2
                         },
                         {
-                            "Id": "00aaefac-0000-0000-8000-e73a3fd1bba4",
+                            "Id": "Section.VirtualScroll.8",
                             "FieldName": "VirtualScroll",
                             "Order": 8,
                             "ComponentType": "Checkbox",
@@ -902,7 +902,7 @@
                             "Style": "display: flex; justify-content: space-between;"
                         },
                         {
-                            "Id": "00b0efa4-0000-0000-8000-72881fac2528",
+                            "Id": "Section.CanAdd.5",
                             "FieldName": "CanAdd",
                             "Order": 5,
                             "ComponentType": "Checkbox",
@@ -912,7 +912,7 @@
                             "Style": "display: flex; justify-content: space-between;"
                         },
                         {
-                            "Id": "00b3ef94-0000-0000-8000-71bf1dd9c684",
+                            "Id": "Section.CanSearch.4",
                             "FieldName": "CanSearch",
                             "Order": 4,
                             "ComponentType": "Checkbox",
@@ -922,7 +922,7 @@
                             "Style": "display: flex; justify-content: space-between;"
                         },
                         {
-                            "Id": "00b6ef80-0000-0000-8000-86c263fb20d8",
+                            "Id": "Section.ShowHotKey.17",
                             "FieldName": "ShowHotKey",
                             "Order": 17,
                             "ComponentType": "Checkbox",
@@ -932,7 +932,7 @@
                             "Style": "display: flex; justify-content: space-between;"
                         },
                         {
-                            "Id": "00b8ef64-0000-0000-8000-84d6930906e1",
+                            "Id": "Section.Active.14",
                             "FieldName": "Active",
                             "Order": 14,
                             "ComponentType": "Checkbox",
@@ -942,7 +942,7 @@
                             "Style": "display: flex; justify-content: space-between;"
                         },
                         {
-                            "Id": "00bc2744-0000-0000-8000-07d56c8adc7f",
+                            "Id": "Section.GroupName.24",
                             "FieldName": "GroupName",
                             "Order": 24,
                             "ComponentType": "Input",
@@ -951,7 +951,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00c0eff8-0000-0000-8000-6d038b90143a",
+                            "Id": "Section.Visibility.13",
                             "FieldName": "Visibility",
                             "Order": 13,
                             "ComponentType": "Checkbox",
@@ -961,7 +961,7 @@
                             "Style": "display: flex; justify-content: space-between;"
                         },
                         {
-                            "Id": "00cbf8bc-0000-0000-8000-b2492f24ceab",
+                            "Id": "Section.ShowLabel.0",
                             "FieldName": "ShowLabel",
                             "Order": 0,
                             "ComponentType": "Checkbox",
@@ -971,7 +971,7 @@
                             "Style": "display: flex; justify-content: space-between;"
                         },
                         {
-                            "Id": "019372f8-b197-7101-b39d-1a7aa582afc3",
+                            "Id": "Section.FocusSearch.9",
                             "FieldName": "FocusSearch",
                             "Order": 9,
                             "ComponentType": "Checkbox",
@@ -981,7 +981,7 @@
                             "Style": "display: flex; justify-content: space-between;"
                         },
                         {
-                            "Id": "01959c82-5d03-70ae-9fee-715914753257",
+                            "Id": "Section.MaxWidth.19",
                             "FieldName": "MaxWidth",
                             "Order": 19,
                             "ComponentType": "Input",
@@ -990,7 +990,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "01959c85-a973-732b-aa03-6ee486d038c4",
+                            "Id": "Section.Summary.25",
                             "FieldName": "Summary",
                             "Order": 25,
                             "ComponentType": "Input",
@@ -999,7 +999,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "01959c85-a973-732b-aa03-73e016c2759c",
+                            "Id": "Section.SummaryColSpan.26",
                             "FieldName": "SummaryColSpan",
                             "Order": 26,
                             "ComponentType": "Number",
@@ -1008,7 +1008,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "01959c8c-6302-76f9-8f6c-373781a9fb3b",
+                            "Id": "Section.Events.28",
                             "FieldName": "Events",
                             "Order": 28,
                             "ComponentType": "CodeEditor",
@@ -1024,7 +1024,7 @@
                     ]
                 },
                 {
-                    "Id": "0088ef48-0000-0000-8000-685548ee3c67",
+                    "Id": "Section.Style.4",
                     "FieldName": "Style",
                     "Order": 4,
                     "ComponentType": "Section",
@@ -1034,7 +1034,7 @@
                     "XxlOuterColumn": 5,
                     "Components": [
                         {
-                            "Id": "00003c84-0000-0000-8000-966f653c80ba",
+                            "Id": "Style.EntityName.11",
                             "FieldName": "EntityName",
                             "Order": 11,
                             "ComponentType": "Input",
@@ -1044,7 +1044,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "000eefac-0000-0000-8000-6bafe5f36bb4",
+                            "Id": "Style.Row.2",
                             "FieldName": "Row",
                             "Order": 2,
                             "ComponentType": "Number",
@@ -1053,7 +1053,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "0013ef7c-0000-0000-8000-9a827adb48a8",
+                            "Id": "Style.RefName.9",
                             "FieldName": "RefName",
                             "Order": 9,
                             "ComponentType": "Input",
@@ -1062,7 +1062,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "001aef48-0000-0000-8000-4b1c8de256c1",
+                            "Id": "Style.Precision.5",
                             "FieldName": "Precision",
                             "Order": 5,
                             "ComponentType": "Number",
@@ -1071,7 +1071,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "001b0760-0000-0000-8000-7a75e14d379e",
+                            "Id": "Style.PlainText.12",
                             "FieldName": "PlainText",
                             "Order": 12,
                             "ComponentType": "Input",
@@ -1080,7 +1080,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00590740-0000-0000-8000-83e1be97bae8",
+                            "Id": "Style.HotKey.8",
                             "FieldName": "HotKey",
                             "Order": 8,
                             "ComponentType": "Input",
@@ -1089,7 +1089,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00723ba0-0000-0000-8000-4e9b6e23af1b",
+                            "Id": "Style.RowSpan.1",
                             "FieldName": "RowSpan",
                             "Order": 1,
                             "ComponentType": "Number",
@@ -1098,7 +1098,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "0084ffb0-0000-0000-8000-e403087f97a9",
+                            "Id": "Style.ChildStyle.7",
                             "FieldName": "ChildStyle",
                             "Order": 7,
                             "ComponentType": "Input",
@@ -1107,7 +1107,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00e9ef90-0000-0000-8000-19dee5d55bc5",
+                            "Id": "Style.Style.6",
                             "FieldName": "Style",
                             "Order": 6,
                             "ComponentType": "Input",
@@ -1116,7 +1116,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00ec3fc0-0000-0000-8000-05cd465381ba",
+                            "Id": "Style.TableName.10",
                             "FieldName": "TableName",
                             "Order": 10,
                             "ComponentType": "Input",
@@ -1126,7 +1126,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00fcef74-0000-0000-8000-473d21655b1e",
+                            "Id": "Style.Order.4",
                             "FieldName": "Order",
                             "Order": 4,
                             "ComponentType": "Number",
@@ -1135,7 +1135,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00fd37c0-0000-0000-8000-9769a150e3bd",
+                            "Id": "Style.DefaultVal.13",
                             "FieldName": "DefaultVal",
                             "Order": 13,
                             "ComponentType": "CodeEditor",
@@ -1148,7 +1148,7 @@
                             "Lang": "json"
                         },
                         {
-                            "Id": "00fff840-0000-0000-8000-6297f3d61e08",
+                            "Id": "Style.Column.0",
                             "FieldName": "Column",
                             "Order": 0,
                             "ComponentType": "Number",
@@ -1157,7 +1157,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "01933aab-5390-70f3-84e9-5ef662855eca",
+                            "Id": "Style.PopulateField.15",
                             "FieldName": "PopulateField",
                             "Order": 15,
                             "ComponentType": "CodeEditor",
@@ -1170,7 +1170,7 @@
                             "Lang": "javascript"
                         },
                         {
-                            "Id": "01933ab3-852b-70f3-a934-a89b49e8a9fd",
+                            "Id": "Style.PreQuery.14",
                             "FieldName": "PreQuery",
                             "Order": 14,
                             "ComponentType": "CodeEditor",
@@ -1183,7 +1183,7 @@
                             "Lang": "json"
                         },
                         {
-                            "Id": "01933ab6-8114-7195-9938-20913c6a9626",
+                            "Id": "Style.Offset.3",
                             "FieldName": "Offset",
                             "Order": 3,
                             "ComponentType": "Number",
@@ -1196,7 +1196,7 @@
             ]
         },
         {
-            "Id": "01954abb-6bc3-7689-ad16-6683002526fb",
+            "Id": "component_editor.Section.6",
             "Order": 6,
             "ComponentType": "Section",
             "Label": "Landscape A4",
@@ -1205,7 +1205,7 @@
             "IsTab": true,
             "Components": [
                 {
-                    "Id": "01954abd-4a93-7658-a687-335ff7e7b629",
+                    "Id": "Section.Section.2_7",
                     "Order": 2,
                     "ComponentType": "Section",
                     "Style": "width:1134px;",
@@ -1213,7 +1213,7 @@
                     "XxlOuterColumn": 4,
                     "Components": [
                         {
-                            "Id": "01954abd-9121-720e-809c-1ae6466ed04c",
+                            "Id": "Section.Template.4_2",
                             "FieldName": "Template",
                             "Order": 4,
                             "ComponentType": "Word",
@@ -1231,7 +1231,7 @@
             ]
         },
         {
-            "Id": "01954ada-cab8-71be-b304-8be35a063293",
+            "Id": "component_editor.Section.7",
             "Order": 7,
             "ComponentType": "Section",
             "Label": "A5",
@@ -1240,7 +1240,7 @@
             "IsTab": true,
             "Components": [
                 {
-                    "Id": "01954adb-b72a-77ff-b8c8-7d1d5fd2ade3",
+                    "Id": "Section.Section.2_8",
                     "Order": 2,
                     "ComponentType": "Section",
                     "Style": "width:155mm;",
@@ -1248,7 +1248,7 @@
                     "XxlOuterColumn": 4,
                     "Components": [
                         {
-                            "Id": "01954adc-75cb-746f-ac69-58b1c5dd2e9c",
+                            "Id": "Section.Template.4_3",
                             "FieldName": "Template",
                             "Order": 4,
                             "ComponentType": "Word",
@@ -1266,7 +1266,7 @@
             ]
         },
         {
-            "Id": "01954adb-1ec6-73cd-b5ed-ca0893ba8795",
+            "Id": "component_editor.Section.8",
             "Order": 8,
             "ComponentType": "Section",
             "Label": "Landscape A5",
@@ -1275,7 +1275,7 @@
             "IsTab": true,
             "Components": [
                 {
-                    "Id": "01954adb-b72a-77ff-b8c8-81e7515ff51b",
+                    "Id": "Section.Section.2_9",
                     "Order": 2,
                     "ComponentType": "Section",
                     "Style": "width:791px;",
@@ -1283,7 +1283,7 @@
                     "XxlOuterColumn": 4,
                     "Components": [
                         {
-                            "Id": "01954adc-44e6-756c-a8c0-e8ab5b6f5c7a",
+                            "Id": "Section.Template.4_4",
                             "FieldName": "Template",
                             "Order": 4,
                             "ComponentType": "Word",
@@ -1301,7 +1301,7 @@
             ]
         },
         {
-            "Id": "01956659-2b0a-742d-bf75-a3b842cf19ab",
+            "Id": "component_editor.Section.1_2",
             "Order": 1,
             "ComponentType": "Section",
             "Label": "Column",
@@ -1313,7 +1313,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "01956659-c87f-77e9-b77e-8f66596c0d5a",
+                    "Id": "Section.GridPolicy.0",
                     "FieldName": "GridPolicy",
                     "Order": 0,
                     "ComponentType": "GridView",
@@ -1338,37 +1338,30 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "099C20E7-42E3-4B06-962A-6586028A870C",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "0BE00274-3341-4FD9-991F-5BD355B947AB",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "1E87253F-1816-4616-AF2C-724784056D72",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "3EE66677-62F7-4496-AF14-23FBA0A5BB2B",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "4034DA14-D611-4314-B679-8A3E23718CA2",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "40A51D49-906A-49E6-966E-8D6A1C390662",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "5EBA2043-CAE8-49A1-9C5A-0389D0521879",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -1379,7 +1372,6 @@
             "TableName": "Feature"
         },
         {
-            "Id": "89F9A2F2-932E-44DB-887A-D383F8834F5A",
             "RoleId": "ADMIN",
             "CanRead": true,
             "CanReadAll": true,
@@ -1390,12 +1382,10 @@
             "TableName": "Feature"
         },
         {
-            "Id": "8E8EF05A-43F8-49FD-9C8B-2F1A2309CA93",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "BC23CDDC-7138-47E1-9132-500F54B55A4C",
             "RoleId": "OPS",
             "TableName": "Feature"
         }

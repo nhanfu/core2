@@ -1,14 +1,13 @@
 {
-    "Id": "00ae4400-0000-0000-8000-e6d51c8b6195",
+    "Id": "allocation_cost_editor",
     "Name": "allocation-cost-editor",
     "Label": "Allocation Cost Editor",
-    "ParentId": "009b3b78-0000-0000-8000-38a9f8f617fc",
     "Order": 0,
     "Style": "width:1200px;",
     "EntityId": "ShipmentAllocation",
     "GridPolicies": [
         {
-            "Id": "00294470-0000-0000-8000-655c7163a960",
+            "Id": "allocation_cost_editor.VendorId.0",
             "FieldName": "VendorId",
             "Order": 0,
             "ComponentType": "Dropdown",
@@ -30,7 +29,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "00294470-0000-0000-8001-295f9088cec2",
+            "Id": "allocation_cost_editor.DescriptionId.1",
             "FieldName": "DescriptionId",
             "Order": 1,
             "ComponentType": "Dropdown",
@@ -51,7 +50,7 @@
             "EntityId": "ShipmentFee"
         },
         {
-            "Id": "00294470-0000-0000-8002-8ef8240868f6",
+            "Id": "allocation_cost_editor.Quantity.2",
             "FieldName": "Quantity",
             "Order": 2,
             "ComponentType": "Number",
@@ -68,7 +67,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "00294470-0000-0000-8003-c10c1fde83a4",
+            "Id": "allocation_cost_editor.UnitId.3",
             "FieldName": "UnitId",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -87,7 +86,7 @@
             "EntityId": "ShipmentFee"
         },
         {
-            "Id": "00294470-0000-0000-8004-be7f86a0e420",
+            "Id": "allocation_cost_editor.Amount.4",
             "FieldName": "Amount",
             "Order": 4,
             "ComponentType": "Number",
@@ -103,7 +102,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "00294470-0000-0000-8005-9ce022b301f5",
+            "Id": "allocation_cost_editor.Vat.5",
             "FieldName": "Vat",
             "Order": 5,
             "ComponentType": "Number",
@@ -118,7 +117,7 @@
             "EntityId": "ShipmentFee"
         },
         {
-            "Id": "002944d4-0000-0000-8000-b4ae223cffcd",
+            "Id": "allocation_cost_editor.CurrencyId.6",
             "FieldName": "CurrencyId",
             "Order": 6,
             "ComponentType": "Dropdown",
@@ -139,7 +138,7 @@
             "EntityId": "ShipmentFee"
         },
         {
-            "Id": "002944d4-0000-0000-8001-976a318da2ff",
+            "Id": "allocation_cost_editor.TotalAmountTax.7",
             "FieldName": "TotalAmountTax",
             "Order": 7,
             "ComponentType": "Number",
@@ -156,7 +155,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "002944d4-0000-0000-8002-60be26c0fb10",
+            "Id": "allocation_cost_editor.IsNoDocs.9",
             "FieldName": "IsNoDocs",
             "Order": 9,
             "ComponentType": "Checkbox",
@@ -170,7 +169,7 @@
             "EntityId": "ShipmentFee"
         },
         {
-            "Id": "002944d4-0000-0000-8003-ad5280232433",
+            "Id": "allocation_cost_editor.Notes.10",
             "FieldName": "Notes",
             "Order": 10,
             "ComponentType": "Input",
@@ -184,7 +183,7 @@
             "EntityId": "ShipmentFee"
         },
         {
-            "Id": "002944d4-0000-0000-8004-5a572efa7fc5",
+            "Id": "allocation_cost_editor.Docs.11",
             "FieldName": "Docs",
             "Order": 11,
             "ComponentType": "Input",
@@ -200,7 +199,7 @@
     ],
     "Components": [
         {
-            "Id": "00ae4430-0000-0000-8000-50ec2da6039e",
+            "Id": "allocation_cost_editor.Button.1",
             "FieldName": "Button",
             "Order": 1,
             "ComponentType": "Section",
@@ -208,7 +207,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "00ae44a8-0000-0000-8000-c4458a2cb325",
+                    "Id": "Button.btnSave.2",
                     "FieldName": "btnSave",
                     "Order": 2,
                     "ComponentType": "Button",
@@ -220,7 +219,7 @@
                     "Events": "{ \"click\" : \"SavePatch\" }"
                 },
                 {
-                    "Id": "00ae44a8-0000-0000-8000-c4458a2cb325",
+                    "Id": "Button.btnSave.2_1",
                     "FieldName": "btnSave",
                     "Order": 2,
                     "ComponentType": "Button",
@@ -234,7 +233,7 @@
             ]
         },
         {
-            "Id": "00ae44f8-0000-0000-8000-1e36c17d9cb2",
+            "Id": "allocation_cost_editor.Container.3",
             "FieldName": "Container ",
             "Order": 3,
             "ComponentType": "Section",
@@ -242,7 +241,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "009844d8-0000-0000-8000-65bc4feecec8",
+                    "Id": "Container.Section.1",
                     "Order": 1,
                     "ComponentType": "Section",
                     "Label": "Allocation History",
@@ -252,7 +251,7 @@
                     "XxlOuterColumn": 12,
                     "Components": [
                         {
-                            "Id": "00284498-0000-0000-8000-86817832d9bd",
+                            "Id": "Section.Notes.2",
                             "FieldName": "Notes",
                             "Order": 2,
                             "ComponentType": "Textarea",
@@ -262,7 +261,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00b74470-0000-0000-8000-9cced0515902",
+                            "Id": "Section.Code.1_1",
                             "FieldName": "Code",
                             "Order": 1,
                             "ComponentType": "Input",
@@ -271,7 +270,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00b744d4-0000-0000-8000-ecb698f7a9ce",
+                            "Id": "Section.Cost.3",
                             "FieldName": "Cost",
                             "Order": 3,
                             "ComponentType": "Checkbox",
@@ -282,7 +281,7 @@
                     ]
                 },
                 {
-                    "Id": "00ae4424-0000-0000-8000-d05791ceecd5",
+                    "Id": "Container.Section.2",
                     "Order": 2,
                     "ComponentType": "Section",
                     "Label": "Fee",
@@ -292,7 +291,7 @@
                     "XxlOuterColumn": 12,
                     "Components": [
                         {
-                            "Id": "00e444fc-0000-0000-8000-cbed0de63631",
+                            "Id": "Section.ShipmentFee.2_2",
                             "FieldName": "ShipmentFee",
                             "Order": 2,
                             "ComponentType": "GridView",
@@ -317,7 +316,7 @@
                     ]
                 },
                 {
-                    "Id": "00824444-0000-0000-8000-08290b7a48c8",
+                    "Id": "Container.Section.3",
                     "Order": 3,
                     "ComponentType": "Section",
                     "Icon": "fal fa-info mr-1",
@@ -330,52 +329,42 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "050053AD-4390-4618-B7C2-75A9C4029AF7",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "127797DA-0F11-431C-9632-9BB3C840853A",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "1CCF27C8-89F5-43F5-AAA8-FB7B24F401CF",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "1FE5CD0E-511B-4944-A2B9-D1D88EC46E54",
             "RoleId": "BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "41727C38-2E4C-4E88-9CAF-0A2EA5799403",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "4C3D9341-22CF-4DB0-B48C-905AEEA6FCA9",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "72CDE46D-8689-4BD6-98A4-C44DD51691FE",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "A1854931-A73A-468C-B17B-DE5633745895",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "B9A32616-128B-42C4-AC59-29B28A9B4B84",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "D3516000-BA59-4FB2-A463-A9A3D21FF0F5",
             "RoleId": "SALES",
             "TableName": "Feature"
         }

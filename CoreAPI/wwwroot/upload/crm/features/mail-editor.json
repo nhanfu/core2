@@ -1,5 +1,5 @@
 {
-    "Id": "00ae308c-0000-0000-8000-f43b38b2cb13",
+    "Id": "mail_editor",
     "Name": "mail-editor",
     "Label": "Mail Editor",
     "Order": 111,
@@ -9,7 +9,6 @@
     "IgnoreEncode": true,
     "FeaturePolicies": [
         {
-            "Id": "141D7491-7C5F-4868-BAD6-BB6128C0DCE5",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -20,54 +19,45 @@
             "TableName": "Feature"
         },
         {
-            "Id": "1F111D33-71FD-4A6C-8EB5-EA3777EBFA69",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "1FD92180-4FD1-4A25-8380-894396991034",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "5651EE6F-51E3-40EB-8F86-2CA4B4079419",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "7B123F60-D6F0-4A72-B452-AE1308A34E83",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "7E1A89C3-04C6-4901-81A1-203513AB653E",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "8BDE53B8-59AF-4187-8BF2-4719AA41514E",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "B215CE3D-284D-4D5F-9D6D-99F5F51FE5B8",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "DCAE0D43-3F7E-417A-BC0C-7AC2EE5F6CB7",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "FD9163F8-A942-4E49-8775-F3F8A2DCC514",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         }
     ],
     "Components": [
         {
-            "Id": "00db307c-0000-0000-8000-a669cd3a7e06",
+            "Id": "mail_editor.Main.1",
             "FieldName": "Main",
             "Order": 1,
             "ComponentType": "Section",
@@ -75,7 +65,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "00cd3098-0000-0000-8000-589ff2110afc",
+                    "Id": "Main.Container.2_1",
                     "FieldName": "Container",
                     "Order": 2,
                     "ComponentType": "Section",
@@ -83,7 +73,7 @@
                     "XxlOuterColumn": 12,
                     "Components": [
                         {
-                            "Id": "00dd30f0-0000-0000-8000-0721fd09f366"
+                            "Id": "Container.node"
                         }
                     ]
                 }

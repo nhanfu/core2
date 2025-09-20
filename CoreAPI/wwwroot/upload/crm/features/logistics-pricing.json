@@ -1,8 +1,7 @@
 {
-    "Id": "00e31b68-0000-0000-8000-2264c9e5fe88",
+    "Id": "logistics_pricing",
     "Name": "logistics-pricing",
     "Label": "Logistics Pricing",
-    "ParentId": "00af15f0-0000-0000-8000-8cb1dddb1613",
     "Order": 3,
     "Script": "return {\r\n    Add: function () {\r\n        var entity = {\r\n            StatusId: 1,\r\n            TypeId: 4,\r\n            CreatedOn: this.dayjs().format('YYYY-MM-DD'),\r\n            FromDate: this.dayjs().format('YYYY-MM-DD'),\r\n            InsertedBy: this.Token.UserId\r\n        }\r\n        this.OpenPopup(\"logistics-pricing-editor\", entity);\r\n    },\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"logistics-pricing-editor\", entity);\r\n    }\r\n}",
     "Icon": "fal fa-shipping-fast",
@@ -10,7 +9,7 @@
     "EntityId": "Pricing",
     "GridPolicies": [
         {
-            "Id": "002925d8-0000-0000-8000-69c97d0a8a8c",
+            "Id": "logistics_pricing.ModeId.4",
             "FieldName": "ModeId",
             "Order": 4,
             "ComponentType": "Dropdown",
@@ -26,7 +25,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00e41b28-0000-0000-8000-eff81525e476",
+            "Id": "logistics_pricing.ToDate.11",
             "FieldName": "ToDate",
             "Order": 11,
             "ComponentType": "Datepicker",
@@ -39,7 +38,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00e41b34-0000-0000-8000-3431b81e154b",
+            "Id": "logistics_pricing.AmountText.7",
             "FieldName": "AmountText",
             "Order": 7,
             "ComponentType": "Input",
@@ -53,7 +52,7 @@
             "IsMultiple": true
         },
         {
-            "Id": "00e41b3c-0000-0000-8000-07e1781c1ffc",
+            "Id": "logistics_pricing.CarrierId.3",
             "FieldName": "CarrierId",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -69,7 +68,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00e41b3c-0000-0000-8000-876e37418146",
+            "Id": "logistics_pricing.InsertedBy.12",
             "FieldName": "InsertedBy",
             "Order": 12,
             "ComponentType": "Dropdown",
@@ -86,7 +85,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00e41b4c-0000-0000-8000-f1a8430c7dcd",
+            "Id": "logistics_pricing.FromDate.10",
             "FieldName": "FromDate",
             "Order": 10,
             "ComponentType": "Datepicker",
@@ -99,7 +98,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00e41b78-0000-0000-8000-2b2c5cbe22f1",
+            "Id": "logistics_pricing.ReturnsId.9",
             "FieldName": "ReturnsId",
             "Order": 9,
             "ComponentType": "Dropdown",
@@ -116,7 +115,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00e41b7c-0000-0000-8000-5c5313f7ff34",
+            "Id": "logistics_pricing.VendorId.2",
             "FieldName": "VendorId",
             "Order": 2,
             "ComponentType": "Dropdown",
@@ -132,7 +131,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00e41b88-0000-0000-8000-d49e258b38ab",
+            "Id": "logistics_pricing.PkEmptyId.8",
             "FieldName": "PkEmptyId",
             "Order": 8,
             "ComponentType": "Dropdown",
@@ -150,7 +149,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00e41bac-0000-0000-8000-b30482e4f63e",
+            "Id": "logistics_pricing.PolId.5",
             "FieldName": "PolId",
             "Order": 5,
             "ComponentType": "Dropdown",
@@ -167,7 +166,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00e41be4-0000-0000-8000-5473ba1295f7",
+            "Id": "logistics_pricing.btnEdit.0",
             "FieldName": "btnEdit",
             "Order": 0,
             "ComponentType": "Button",
@@ -181,7 +180,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00e41bf0-0000-0000-8000-8a8e1cb97676",
+            "Id": "logistics_pricing.PodId.6",
             "FieldName": "PodId",
             "Order": 6,
             "ComponentType": "Dropdown",
@@ -198,7 +197,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00e52d64-0000-0000-8000-2f3c9678c34f",
+            "Id": "logistics_pricing.Valid.1",
             "FieldName": "Valid",
             "Order": 1,
             "ComponentType": "Label",
@@ -213,7 +212,7 @@
     ],
     "Components": [
         {
-            "Id": "00e31b54-0000-0000-8000-5aa6bb4fd513",
+            "Id": "logistics_pricing.Section.1",
             "Order": 1,
             "ComponentType": "Section",
             "Label": "All",
@@ -224,7 +223,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "00e31bb8-0000-0000-8000-d00253432af2",
+                    "Id": "Section.Pricing.1_1",
                     "FieldName": "Pricing",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -242,7 +241,7 @@
             ]
         },
         {
-            "Id": "00e31b98-0000-0000-8000-74c43c7f8eab",
+            "Id": "logistics_pricing.Section.2",
             "Order": 2,
             "ComponentType": "Section",
             "Label": "Public",
@@ -251,7 +250,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "00e31bb0-0000-0000-8000-f871cd928bc7",
+                    "Id": "Section.Pricing.2_1",
                     "FieldName": "Pricing",
                     "Order": 2,
                     "ComponentType": "GridView",
@@ -269,7 +268,7 @@
             ]
         },
         {
-            "Id": "00e31bdc-0000-0000-8000-396edf939cb8",
+            "Id": "logistics_pricing.Section.3",
             "Order": 3,
             "ComponentType": "Section",
             "Label": "Private",
@@ -278,7 +277,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "00e31b38-0000-0000-8000-f0d073eaa3bb",
+                    "Id": "Section.Pricing.3_1",
                     "FieldName": "Pricing",
                     "Order": 3,
                     "ComponentType": "GridView",
@@ -297,12 +296,10 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "0E430EB1-A616-4734-A4A6-CE02AF4C33FD",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "11F7C8D5-3A22-4CE0-9D5B-038CBE44B893",
             "RoleId": "DOCS",
             "CanRead": true,
             "CanWrite": true,
@@ -310,7 +307,6 @@
             "TableName": "Feature"
         },
         {
-            "Id": "16C30BCC-3732-4783-BFCC-7EBAFF98AEF8",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -321,37 +317,30 @@
             "TableName": "Feature"
         },
         {
-            "Id": "2526E5B6-350A-40C6-94D6-92E6FCBF8BEC",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "3863C234-A267-4971-A152-3631D8FF10B3",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "58A751E5-F452-4CF6-A481-0C4497910AC9",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "8C9B06C5-A645-406E-9212-615067D404BB",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "B10E7309-39B2-473B-853B-002C4A5CD2DD",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "CFC9D63F-BC6F-4836-9ECC-F038C62C54A1",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "E05D7BFE-70B3-4F19-8514-9E1D7EF63A20",
             "RoleId": "SALES",
             "CanRead": true,
             "CanReadAll": true,

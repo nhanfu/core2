@@ -1,5 +1,5 @@
 {
-    "Id": "00570fb0-0000-0000-8000-eccd0a0c88f5",
+    "Id": "booking_order",
     "Name": "booking-order",
     "Label": "Booking Order",
     "Order": 10,
@@ -9,7 +9,6 @@
     "IgnoreEncode": true,
     "FeaturePolicies": [
         {
-            "Id": "0F23A9A1-C5AA-4E17-9A43-9372B5125173",
             "RoleId": "PRICING",
             "CanRead": true,
             "CanWrite": true,
@@ -17,23 +16,19 @@
             "TableName": "Feature"
         },
         {
-            "Id": "2BF907CD-C6EF-4568-A5D2-DF1E5A59B6CA",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "2D2CF638-EE89-4AED-882B-795DC940A9DC",
             "RoleId": "DOCS",
             "CanRead": true,
             "TableName": "Feature"
         },
         {
-            "Id": "43D042AB-8B83-4CF3-8C1C-7CACA025F112",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "98E9C1B9-1B0A-4BC9-A4CB-3070B30A47F2",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -44,41 +39,36 @@
             "TableName": "Feature"
         },
         {
-            "Id": "B618AE6F-6B78-425F-B62E-32AE1AE76265",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "C0B5C5F6-0690-4749-BE7A-2D768ACB3567",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "C5D936DA-73A1-4388-A959-3D6BC69BCEF6",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "E0B4F835-D46E-42AB-8BD5-5898C89AA622",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "EE4CB595-12D8-4BC2-9876-7FCFA6FE5153",
             "RoleId": "ACC",
             "TableName": "Feature"
         }
     ],
     "Components": [
         {
-            "Id": "00570f54-0000-0000-8000-e526510de380",
+            "Id": "booking_order.Container.1",
             "FieldName": "Container",
             "Order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "00570f84-0000-0000-8000-6257490370f8",
+                    "Id": "Container.Report1.1",
                     "FieldName": "Report1",
                     "Order": 1,
                     "ComponentType": "HtmlCode",

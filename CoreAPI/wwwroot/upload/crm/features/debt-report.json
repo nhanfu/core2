@@ -1,5 +1,5 @@
 {
-    "Id": "0195382d-9ad9-7161-b32d-60a2ea742041",
+    "Id": "debt_report",
     "Name": "debt-report",
     "Label": "Debt Report",
     "Order": 2,
@@ -8,7 +8,7 @@
     "IgnoreEncode": true,
     "GridPolicies": [
         {
-            "Id": "01954283-f7c4-7797-bec0-11455e7842b0",
+            "Id": "debt_report.HblNo.1",
             "FieldName": "HblNo",
             "Order": 1,
             "ComponentType": "Input",
@@ -20,7 +20,7 @@
             "EntityId": "HBL"
         },
         {
-            "Id": "01954283-f7c4-7797-bec0-238df3eaf26d",
+            "Id": "debt_report.AROG.5",
             "FieldName": "AROG",
             "Order": 5,
             "ComponentType": "Number",
@@ -34,7 +34,7 @@
             "EntityId": "HBL"
         },
         {
-            "Id": "01954283-f7c5-728a-969a-1919f52d8500",
+            "Id": "debt_report.Balance.9",
             "FieldName": "Balance",
             "Order": 9,
             "ComponentType": "Number",
@@ -49,7 +49,7 @@
             "EntityId": "HBL"
         },
         {
-            "Id": "01954745-08d0-7375-9ce0-502d1413f546",
+            "Id": "debt_report.VendorId.0",
             "FieldName": "VendorId",
             "Order": 0,
             "ComponentType": "Dropdown",
@@ -68,7 +68,7 @@
             "EntityId": "HBL"
         },
         {
-            "Id": "01954752-cf25-75b9-995b-bbb0f35841ab",
+            "Id": "debt_report.FileId.2",
             "FieldName": "FileId",
             "Order": 2,
             "ComponentType": "Dropdown",
@@ -83,7 +83,7 @@
             "EntityId": "HBL"
         },
         {
-            "Id": "01954766-8f3c-747b-8b18-274018e54ad4",
+            "Id": "debt_report.MblNo.3",
             "FieldName": "MblNo",
             "Order": 3,
             "ComponentType": "Input",
@@ -95,7 +95,7 @@
             "EntityId": "HBL"
         },
         {
-            "Id": "01954768-07c1-707a-9a1c-9330e2132f08",
+            "Id": "debt_report.CurrencyId.4",
             "FieldName": "CurrencyId",
             "Order": 4,
             "ComponentType": "Dropdown",
@@ -116,7 +116,7 @@
             "EntityId": "HBL"
         },
         {
-            "Id": "0195476a-1e46-76b5-98cc-51c59aadd48b",
+            "Id": "debt_report.AR.6",
             "FieldName": "AR",
             "Order": 6,
             "ComponentType": "Number",
@@ -131,7 +131,7 @@
             "EntityId": "HBL"
         },
         {
-            "Id": "0195476a-7d63-736c-b136-1b2a62331f3e",
+            "Id": "debt_report.AP.8",
             "FieldName": "AP",
             "Order": 8,
             "ComponentType": "Number",
@@ -146,7 +146,7 @@
             "EntityId": "HBL"
         },
         {
-            "Id": "0195476a-7d63-736c-b136-1efe5f4ae0ab",
+            "Id": "debt_report.APOG.7",
             "FieldName": "APOG",
             "Order": 7,
             "ComponentType": "Number",
@@ -162,7 +162,7 @@
     ],
     "Components": [
         {
-            "Id": "0195382d-9bab-751d-a73c-82ea72661ea3",
+            "Id": "debt_report.SearchForm.2",
             "FieldName": "SearchForm",
             "Order": 2,
             "ComponentType": "Section",
@@ -171,7 +171,7 @@
             "SmOuterColumn": 20,
             "Components": [
                 {
-                    "Id": "01953830-abcb-76ee-aefa-efe7139543db",
+                    "Id": "SearchForm.Option1.5",
                     "FieldName": "Option1",
                     "Order": 5,
                     "ComponentType": "Section",
@@ -180,7 +180,7 @@
                     "XxlCol": 14,
                     "Components": [
                         {
-                            "Id": "01953833-eef9-709a-8b80-4d71c9f0922a",
+                            "Id": "Option1.FromDate.1",
                             "FieldName": "FromDate",
                             "Order": 1,
                             "ComponentType": "Datepicker",
@@ -192,7 +192,7 @@
                             "SmCol": 7
                         },
                         {
-                            "Id": "01953833-eef9-709a-8b80-50d76983965d",
+                            "Id": "Option1.ToDate.2",
                             "FieldName": "ToDate",
                             "Order": 2,
                             "ComponentType": "Datepicker",
@@ -204,7 +204,7 @@
                             "SmCol": 7
                         },
                         {
-                            "Id": "01953835-3fb7-774f-bdcf-71d90bedf1fd",
+                            "Id": "Option1.DateFieldId.3",
                             "FieldName": "DateFieldId",
                             "Order": 3,
                             "ComponentType": "Select",
@@ -221,7 +221,7 @@
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
-                            "Id": "01953836-cdaf-76e6-ad5f-6541dd678dec",
+                            "Id": "Option1.ServiceIds.5",
                             "FieldName": "ServiceIds",
                             "Order": 5,
                             "ComponentType": "Dropdown",
@@ -238,7 +238,7 @@
                             "IsMultiple": true
                         },
                         {
-                            "Id": "01953837-8296-7039-8c71-9e8e90100035",
+                            "Id": "Option1.Paid.6",
                             "FieldName": "Paid",
                             "Order": 6,
                             "ComponentType": "Select",
@@ -255,7 +255,7 @@
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
-                            "Id": "01953837-dc19-740c-be68-0cca13175ab1",
+                            "Id": "Option1.Currency.7",
                             "FieldName": "Currency",
                             "Order": 7,
                             "ComponentType": "Select",
@@ -273,7 +273,7 @@
                             "EntityId": "ShipmentFee1"
                         },
                         {
-                            "Id": "019542c7-c07f-764e-ac62-67eeb1763e0d",
+                            "Id": "Option1.Complete.4",
                             "FieldName": "Complete",
                             "Order": 4,
                             "ComponentType": "Select",
@@ -290,7 +290,7 @@
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
-                            "Id": "0195479e-93db-7704-9d4b-7541952fc622",
+                            "Id": "Option1.GroupBy.8",
                             "FieldName": "GroupBy",
                             "Order": 8,
                             "ComponentType": "Select",
@@ -309,7 +309,7 @@
                     ]
                 },
                 {
-                    "Id": "01953831-99e7-75d5-923e-ff750b83b6e1",
+                    "Id": "SearchForm.Option2.6",
                     "FieldName": "Option2",
                     "Order": 6,
                     "ComponentType": "Section",
@@ -320,7 +320,7 @@
                     "XxlOuterColumn": 1,
                     "Components": [
                         {
-                            "Id": "0195383d-2c6c-7588-b001-2bd3b35a0f92",
+                            "Id": "Option2.DepartmentId.1",
                             "FieldName": "DepartmentId",
                             "Order": 1,
                             "ComponentType": "Dropdown",
@@ -336,7 +336,7 @@
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
-                            "Id": "0195383d-bde4-7480-8125-e6f54bc9015d",
+                            "Id": "Option2.SaleIds.2",
                             "FieldName": "SaleIds",
                             "Order": 2,
                             "ComponentType": "Dropdown",
@@ -354,7 +354,7 @@
                             "TableName": "Shipment"
                         },
                         {
-                            "Id": "0195383e-5ab3-74db-8bbe-22b3508a36e6",
+                            "Id": "Option2.VendorIds.3",
                             "FieldName": "VendorIds",
                             "Order": 3,
                             "ComponentType": "Dropdown",
@@ -374,7 +374,7 @@
                             "IsMultiple": true
                         },
                         {
-                            "Id": "0195383e-f4c3-736d-b2ac-19319e06d3ec",
+                            "Id": "Option2.IsMainDebit.4",
                             "FieldName": "IsMainDebit",
                             "Order": 4,
                             "ComponentType": "Checkbox",
@@ -388,7 +388,7 @@
                     ]
                 },
                 {
-                    "Id": "01953831-fc69-701a-a1a0-e1623733c87b",
+                    "Id": "SearchForm.Option4.7",
                     "FieldName": "Option4",
                     "Order": 7,
                     "ComponentType": "Section",
@@ -399,7 +399,7 @@
                     "XxlOuterColumn": 1,
                     "Components": [
                         {
-                            "Id": "01954230-22b9-742a-8de9-682e720cc670",
+                            "Id": "Option4.Vat.3",
                             "FieldName": "Vat",
                             "Order": 3,
                             "ComponentType": "Number",
@@ -413,7 +413,7 @@
                             "EntityId": "AddCharge"
                         },
                         {
-                            "Id": "01954230-22b9-742a-8de9-6fa7cb3c64d3",
+                            "Id": "Option4.Lock.7",
                             "FieldName": "Lock",
                             "Order": 7,
                             "ComponentType": "Select",
@@ -431,7 +431,7 @@
                             "EntityId": "AddCharge"
                         },
                         {
-                            "Id": "01954230-22ba-74fd-bbe6-16e2c87a6e50",
+                            "Id": "Option4.Invoice.4",
                             "FieldName": "Invoice",
                             "Order": 4,
                             "ComponentType": "Select",
@@ -448,7 +448,7 @@
                             "EntityId": "AddCharge"
                         },
                         {
-                            "Id": "01954230-22ba-74fd-bbe6-1b98831b6f6d",
+                            "Id": "Option4.PaymentAcc.6",
                             "FieldName": "PaymentAcc",
                             "Order": 6,
                             "ComponentType": "Select",
@@ -466,7 +466,7 @@
                             "EntityId": "AddCharge"
                         },
                         {
-                            "Id": "01954230-22ba-74fd-bbe6-1f29f5a2d6be",
+                            "Id": "Option4.DebtAcc.5",
                             "FieldName": "DebtAcc",
                             "Order": 5,
                             "ComponentType": "Select",
@@ -484,7 +484,7 @@
                             "EntityId": "AddCharge"
                         },
                         {
-                            "Id": "01954230-22bb-75c3-bb9e-25c44ee4936d",
+                            "Id": "Option4.FeeTypeId.1",
                             "FieldName": "FeeTypeId",
                             "Order": 1,
                             "ComponentType": "Select",
@@ -502,7 +502,7 @@
                             "EntityId": "AddCharge"
                         },
                         {
-                            "Id": "01954230-22bb-75c3-bb9e-29034952c879",
+                            "Id": "Option4.PaymentIds.11",
                             "FieldName": "PaymentIds",
                             "Order": 11,
                             "ComponentType": "Dropdown",
@@ -520,7 +520,7 @@
                             "IsMultiple": true
                         },
                         {
-                            "Id": "01954231-475d-7758-a79e-2d718eac908f",
+                            "Id": "Option4.Obh.2",
                             "FieldName": "Obh",
                             "Order": 2,
                             "ComponentType": "Select",
@@ -537,7 +537,7 @@
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
-                            "Id": "01954232-6043-740e-8224-a9e60b0b0529",
+                            "Id": "Option4.NoDocs.8",
                             "FieldName": "NoDocs",
                             "Order": 8,
                             "ComponentType": "Select",
@@ -555,7 +555,7 @@
                             "EntityId": "AddCharge"
                         },
                         {
-                            "Id": "01954232-bed8-7242-beec-e4b52a56217b",
+                            "Id": "Option4.DebtIds.10",
                             "FieldName": "DebtIds",
                             "Order": 10,
                             "ComponentType": "Dropdown",
@@ -573,7 +573,7 @@
                             "IsMultiple": true
                         },
                         {
-                            "Id": "01954233-1f71-74ed-bfe3-ce627b774cc8",
+                            "Id": "Option4.DescriptionIds.12",
                             "FieldName": "DescriptionIds",
                             "Order": 12,
                             "ComponentType": "Dropdown",
@@ -592,7 +592,7 @@
                             "IsMultiple": true
                         },
                         {
-                            "Id": "01954233-861b-77c1-80d0-6d1a1432867e",
+                            "Id": "Option4.RefNo.13",
                             "FieldName": "RefNo",
                             "Order": 13,
                             "ComponentType": "Input",
@@ -606,7 +606,7 @@
                     ]
                 },
                 {
-                    "Id": "01953831-9e7e-705d-b80b-fa043d211521",
+                    "Id": "SearchForm.Option3.8",
                     "FieldName": "Option3",
                     "Order": 8,
                     "ComponentType": "Section",
@@ -617,7 +617,7 @@
                     "XxlOuterColumn": 1,
                     "Components": [
                         {
-                            "Id": "01954227-709e-746e-af00-033bff73ff7a",
+                            "Id": "Option3.TypeIds.1",
                             "FieldName": "TypeIds",
                             "Order": 1,
                             "ComponentType": "Dropdown",
@@ -635,7 +635,7 @@
                             "IsMultiple": true
                         },
                         {
-                            "Id": "01954229-0353-75ba-9812-3aa54fb4e9cd",
+                            "Id": "Option3.FileIds.2",
                             "FieldName": "FileIds",
                             "Order": 2,
                             "ComponentType": "Dropdown",
@@ -654,7 +654,7 @@
                             "IsMultiple": true
                         },
                         {
-                            "Id": "01954229-6ad6-75d2-b243-33ea11fd6bd1",
+                            "Id": "Option3.ShipmentTypeId.4",
                             "FieldName": "ShipmentTypeId",
                             "Order": 4,
                             "ComponentType": "Select",
@@ -669,7 +669,7 @@
                             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]"
                         },
                         {
-                            "Id": "01954229-a180-7480-97c9-a644caf18d92",
+                            "Id": "Option3.PortId.5",
                             "FieldName": "PortId",
                             "Order": 5,
                             "ComponentType": "Dropdown",
@@ -686,7 +686,7 @@
                             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
-                            "Id": "0195422a-6348-7303-a3a3-923c83308980",
+                            "Id": "Option3.PortTypeId.6",
                             "FieldName": "PortTypeId",
                             "Order": 6,
                             "ComponentType": "Dropdown",
@@ -703,7 +703,7 @@
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
-                            "Id": "01955577-6ad2-758a-9a22-0e38438568f7",
+                            "Id": "Option3.HblIds.3",
                             "FieldName": "HblIds",
                             "Order": 3,
                             "ComponentType": "Dropdown",
@@ -726,7 +726,7 @@
             ]
         },
         {
-            "Id": "0195382d-9c01-72ed-aee1-6aca96bfbc5d",
+            "Id": "debt_report.Section.3",
             "Order": 3,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
@@ -735,7 +735,7 @@
             "XxlOuterColumn": 12,
             "Components": [
                 {
-                    "Id": "01954283-c44a-743a-89ac-6498473c7c5d",
+                    "Id": "Section.HBL.1",
                     "FieldName": "HBL",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -757,12 +757,10 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "0404660B-E90C-45C8-99A4-2052E12FB553",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "07B5A6D3-667C-4261-BD4C-71C82CA950EA",
             "RoleId": "ADMIN",
             "CanRead": true,
             "CanReadAll": true,
@@ -771,42 +769,34 @@
             "TableName": "Feature"
         },
         {
-            "Id": "234FCF5B-AE08-4A03-9C78-525042AE849B",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "28BF7C22-9135-455D-BEDE-C02AF08ED41F",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "51D84090-7E71-4AE7-8214-6BA7D492A981",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "B4230D3D-24A3-47A7-9BE6-875BF79E5ACB",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "B64DA865-EC99-4BB7-A690-5F140FD8D90D",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "E55CB5E3-EF51-4933-97BD-A806D24F09B8",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "F33FAF2C-580D-4160-AFD4-1F2B9DCB3161",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "FA65EBD5-28DA-4889-8142-3F1A54986EB2",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,

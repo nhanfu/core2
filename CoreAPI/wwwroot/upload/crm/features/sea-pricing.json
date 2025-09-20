@@ -1,8 +1,7 @@
 {
-    "Id": "00df1590-0000-0000-8000-5fb0ff0255e3",
+    "Id": "sea_pricing",
     "Name": "sea-pricing",
     "Label": "Sea Pricing",
-    "ParentId": "00af15f0-0000-0000-8000-8cb1dddb1613",
     "Order": 0,
     "Script": "return {\r\n    Add: function () {\r\n        var entity = {\r\n            StatusId: 1,\r\n            TypeId: 1,\r\n            CreatedOn: this.dayjs().format('YYYY-MM-DD'),\r\n            FromDate: this.dayjs().format('YYYY-MM-DD'),\r\n            InsertedBy: this.Token.UserId,\r\n        }\r\n        this.OpenPopup(\"sea-pricing-editor\", entity);\r\n    },\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"sea-pricing-editor\", entity);\r\n    }\r\n}",
     "Icon": "fal fa-ship",
@@ -10,7 +9,7 @@
     "EntityId": "Pricing",
     "GridPolicies": [
         {
-            "Id": "00182d0c-0000-0000-8000-92f32a1582a4",
+            "Id": "sea_pricing.Valid.1",
             "FieldName": "Valid",
             "Order": 1,
             "ComponentType": "Label",
@@ -23,7 +22,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00a615e0-0000-0000-8000-e34e0fa68c1b",
+            "Id": "sea_pricing.ScheduleIdsText.12",
             "FieldName": "ScheduleIdsText",
             "Order": 12,
             "ComponentType": "Input",
@@ -37,7 +36,7 @@
             "IsMultiple": true
         },
         {
-            "Id": "00a91524-0000-0000-8000-04d8525f32b7",
+            "Id": "sea_pricing.FromDate.13",
             "FieldName": "FromDate",
             "Order": 13,
             "ComponentType": "Datepicker",
@@ -50,7 +49,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00ab15b0-0000-0000-8000-1d7d33d09c5b",
+            "Id": "sea_pricing.ToDate.14",
             "FieldName": "ToDate",
             "Order": 14,
             "ComponentType": "Datepicker",
@@ -63,7 +62,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00ad15e8-0000-0000-8000-e3edc76b0595",
+            "Id": "sea_pricing.InsertedBy.15",
             "FieldName": "InsertedBy",
             "Order": 15,
             "ComponentType": "Dropdown",
@@ -81,7 +80,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00df1588-0000-0000-8000-d1d6bcf4f3c9",
+            "Id": "sea_pricing.ViaId.6",
             "FieldName": "ViaId",
             "Order": 6,
             "ComponentType": "Dropdown",
@@ -98,7 +97,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00df1598-0000-0000-8000-6c090307afc5",
+            "Id": "sea_pricing.PkEmptyId.10",
             "FieldName": "PkEmptyId",
             "Order": 10,
             "ComponentType": "Dropdown",
@@ -116,7 +115,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00e01580-0000-0000-8000-7fefcd85bac1",
+            "Id": "sea_pricing.CarrierId.3",
             "FieldName": "CarrierId",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -132,7 +131,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00e01584-0000-0000-8000-80e29c90640b",
+            "Id": "sea_pricing.Cont20Text.7",
             "FieldName": "Cont20Text",
             "Order": 7,
             "ComponentType": "Input",
@@ -146,7 +145,7 @@
             "IsMultiple": true
         },
         {
-            "Id": "00e01594-0000-0000-8000-302d90832a5c",
+            "Id": "sea_pricing.VendorId.2",
             "FieldName": "VendorId",
             "Order": 2,
             "ComponentType": "Dropdown",
@@ -162,7 +161,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00e01594-0000-0000-8000-d418d79634a3",
+            "Id": "sea_pricing.PolId.4",
             "FieldName": "PolId",
             "Order": 4,
             "ComponentType": "Dropdown",
@@ -179,7 +178,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00e015b4-0000-0000-8000-e45fb37f32cf",
+            "Id": "sea_pricing.btnEdit.0",
             "FieldName": "btnEdit",
             "Order": 0,
             "ComponentType": "Button",
@@ -193,7 +192,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00e015d4-0000-0000-8000-8198532b8583",
+            "Id": "sea_pricing.ReturnsId.11",
             "FieldName": "ReturnsId",
             "Order": 11,
             "ComponentType": "Dropdown",
@@ -210,7 +209,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00e015e0-0000-0000-8000-eab766ff80b6",
+            "Id": "sea_pricing.PodId.5",
             "FieldName": "PodId",
             "Order": 5,
             "ComponentType": "Dropdown",
@@ -227,7 +226,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00e015e8-0000-0000-8000-819c74d4f91d",
+            "Id": "sea_pricing.Cont40Text.8",
             "FieldName": "Cont40Text",
             "Order": 8,
             "ComponentType": "Input",
@@ -241,7 +240,7 @@
             "IsMultiple": true
         },
         {
-            "Id": "00e315d8-0000-0000-8000-1b89cfcc503b",
+            "Id": "sea_pricing.ContText.9",
             "FieldName": "ContText",
             "Order": 9,
             "ComponentType": "Input",
@@ -257,7 +256,7 @@
     ],
     "Components": [
         {
-            "Id": "00df1520-0000-0000-8000-f19fbd28c97c",
+            "Id": "sea_pricing.Section.3",
             "Order": 3,
             "ComponentType": "Section",
             "Label": "Private",
@@ -266,7 +265,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "00df1594-0000-0000-8000-1b19334229c7",
+                    "Id": "Section.Pricing.3_2",
                     "FieldName": "Pricing",
                     "Order": 3,
                     "ComponentType": "GridView",
@@ -283,7 +282,7 @@
             ]
         },
         {
-            "Id": "00df1580-0000-0000-8000-12450cbb7df8",
+            "Id": "sea_pricing.Section.2",
             "Order": 2,
             "ComponentType": "Section",
             "Label": "Public",
@@ -292,7 +291,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "00df154c-0000-0000-8000-1375869e9399",
+                    "Id": "Section.Pricing.2_2",
                     "FieldName": "Pricing",
                     "Order": 2,
                     "ComponentType": "GridView",
@@ -310,7 +309,7 @@
             ]
         },
         {
-            "Id": "00df15ec-0000-0000-8000-a6ede65b411e",
+            "Id": "sea_pricing.Section.1",
             "Order": 1,
             "ComponentType": "Section",
             "Label": "All 2",
@@ -321,7 +320,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "00df1594-0000-0000-8000-a299b832015a",
+                    "Id": "Section.Pricing.1_2",
                     "FieldName": "Pricing",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -340,24 +339,20 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "10F1541B-4926-426A-AA9D-C90C06FF51FE",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "33468AF0-CE36-482D-B3B9-1F484E24C753",
             "RoleId": "SALES",
             "CanRead": true,
             "CanReadAll": true,
             "TableName": "Feature"
         },
         {
-            "Id": "65338E9A-AAB7-4002-B00E-D575BA842B0E",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "8BD70960-B587-4023-9D97-1434A79D0B16",
             "RoleId": "DOCS",
             "CanRead": true,
             "CanWrite": true,
@@ -365,32 +360,26 @@
             "TableName": "Feature"
         },
         {
-            "Id": "961F4A1F-F686-4B8C-AB8C-877F33C3B604",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "B33666DE-7CF6-400D-A2F3-9CEAB93119F4",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "B86E9DC3-AB67-4CC3-A18C-853385AE1246",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "D847FF3B-C5CB-45CB-B7E3-5DDF9DC9B4A8",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "F65BAFE5-B984-4AE1-847B-7B3400F6D0DB",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "F6C5A195-D9F5-4FAD-99E0-58A1A373EC06",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,

@@ -1,14 +1,13 @@
 {
-    "Id": "00c01448-0000-0000-8000-56828f42f48c",
+    "Id": "web_config",
     "Name": "web-config",
     "Label": "Web Config",
-    "ParentId": "000a0514-0000-0000-8000-1f67beb1bcef",
     "Order": 7,
     "Icon": "fal fa-solar-system",
     "IsMenu": true,
     "GridPolicies": [
         {
-            "Id": "00c014b0-0000-0000-8000-fcfecde08518",
+            "Id": "web_config.Value.1",
             "FieldName": "Value",
             "Order": 1,
             "ComponentType": "Input",
@@ -20,7 +19,7 @@
             "EntityId": "WebConfig"
         },
         {
-            "Id": "00c014f8-0000-0000-8000-087596a6e825",
+            "Id": "web_config.Key.0",
             "FieldName": "Key",
             "Order": 0,
             "ComponentType": "Input",
@@ -34,47 +33,38 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "0162BBE3-1D09-406F-8E34-D3C7E5F57095",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "04AAC48B-6D7A-4A20-ABD4-0E7D92918606",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "314F8E3F-7D35-4D55-8928-52D8EC94FE84",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "413A1FBA-B2B2-4503-9C86-B697F2C03653",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "547A21D5-2E57-482C-8D0B-BB4F6A4AB5FB",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "9A4D8227-F878-46E5-B7E7-FEFB6FFFEDEE",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "A3C4F41D-E1B1-4F34-A0F0-A2EDA23D9FA4",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "AC85087F-2459-4717-9538-8570D86C24D8",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "CF1C93D7-C12F-451D-80DE-A1CFCF3CDE95",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -83,21 +73,20 @@
             "TableName": "Feature"
         },
         {
-            "Id": "E222228A-E2DC-4E5C-AAA1-966A6B4DBAEA",
             "RoleId": "DOCS",
             "TableName": "Feature"
         }
     ],
     "Components": [
         {
-            "Id": "00c0142c-0000-0000-8000-4cc126f6efc6",
+            "Id": "web_config.Lang.1",
             "FieldName": "Lang",
             "Order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "00c01458-0000-0000-8000-2cce6e0b741c",
+                    "Id": "Lang.WebConfig.1",
                     "FieldName": "WebConfig",
                     "Order": 1,
                     "ComponentType": "GridView",

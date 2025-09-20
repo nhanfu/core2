@@ -1,15 +1,14 @@
 {
-    "Id": "00460708-0000-0000-8000-25d02b86a07d",
+    "Id": "service",
     "Name": "service",
     "Label": "Service",
-    "ParentId": "000a0514-0000-0000-8000-1f67beb1bcef",
     "Order": 9,
     "Icon": "fal fa-server",
     "IsMenu": true,
     "EntityId": "Config",
     "GridPolicies": [
         {
-            "Id": "00160864-0000-0000-8000-435fbaba0059",
+            "Id": "service.Style.3",
             "FieldName": "Style",
             "Order": 3,
             "ComponentType": "Input",
@@ -21,7 +20,7 @@
             "EntityId": "Service"
         },
         {
-            "Id": "00470758-0000-0000-8000-c6c5780bcbde",
+            "Id": "service.RefName.1",
             "FieldName": "RefName",
             "Order": 1,
             "ComponentType": "Input",
@@ -33,7 +32,7 @@
             "EntityId": "Service"
         },
         {
-            "Id": "00470788-0000-0000-8000-eac3001d615e",
+            "Id": "service.Query.2",
             "FieldName": "Query",
             "Order": 2,
             "ComponentType": "Input",
@@ -45,7 +44,7 @@
             "EntityId": "Service"
         },
         {
-            "Id": "004707a4-0000-0000-8000-3d64edf3f47a",
+            "Id": "service.FieldName.0",
             "FieldName": "FieldName",
             "Order": 0,
             "ComponentType": "Input",
@@ -57,7 +56,7 @@
             "EntityId": "Service"
         },
         {
-            "Id": "004707b8-0000-0000-8000-18f405ed704a",
+            "Id": "service.PreQuery.4",
             "FieldName": "PreQuery",
             "Order": 4,
             "ComponentType": "Input",
@@ -69,7 +68,7 @@
             "EntityId": "Service"
         },
         {
-            "Id": "019605fe-b174-75cc-a622-1070bb0c4ba2",
+            "Id": "service.Template.5",
             "FieldName": "Template",
             "Order": 5,
             "ComponentType": "Input",
@@ -81,7 +80,7 @@
             "EntityId": "Service"
         },
         {
-            "Id": "019605fe-cf66-74db-aec6-51038be163cc",
+            "Id": "service.FormatData.6",
             "FieldName": "FormatData",
             "Order": 6,
             "ComponentType": "Input",
@@ -95,47 +94,38 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "361C17EE-8063-4759-817F-9EEA9A03716F",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "3657064F-99DC-4585-A89C-36387E7817F5",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "49174CC7-42FD-46C2-B7D8-5850E776EC9B",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "50E0D9AC-8FE6-48E3-9D5B-12B5CC136186",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "7899A7DD-629E-486E-9234-0CC097A3B7FA",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "7F0EE462-7DE3-46FF-9D81-34A3FB6C1015",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "97001605-0E11-46B5-B6E8-6463E039AEF0",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "AD3EA0DC-7A72-4753-B368-43B3FF62DF61",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "BD093261-364C-495E-BE52-711F1795B757",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -146,14 +136,13 @@
             "TableName": "Feature"
         },
         {
-            "Id": "E629321F-4659-4A53-BE54-3DBFE9899ECD",
             "RoleId": "ACC",
             "TableName": "Feature"
         }
     ],
     "Components": [
         {
-            "Id": "004607cc-0000-0000-8000-f92ae49e0dbc",
+            "Id": "service.Container.1",
             "FieldName": "Container",
             "Order": 1,
             "ComponentType": "Section",
@@ -161,7 +150,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "00470784-0000-0000-8000-c418799f689b",
+                    "Id": "Container.Service.1",
                     "FieldName": "Service",
                     "Order": 1,
                     "ComponentType": "GridView",

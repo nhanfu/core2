@@ -1,8 +1,7 @@
 {
-    "Id": "01945a8b-ac86-70ad-8a34-c909da8d763b",
+    "Id": "account_transfer_setup",
     "Name": "account-transfer-setup",
     "Label": "Account Transfer",
-    "ParentId": "01939222-2f5a-747a-bb15-606fb55edf4c",
     "Order": 12,
     "Icon": "fal fa-square",
     "IsMenu": true,
@@ -10,7 +9,7 @@
     "IgnoreEncode": true,
     "GridPolicies": [
         {
-            "Id": "01945a8b-ad69-7118-be29-c2a75d7e1750",
+            "Id": "account_transfer_setup.Description.5",
             "FieldName": "Description",
             "Order": 5,
             "ComponentType": "Input",
@@ -23,7 +22,7 @@
             "EntityId": "AccountTransferSetup"
         },
         {
-            "Id": "01945a8b-ada7-7499-874a-a0c6f1806d0d",
+            "Id": "account_transfer_setup.Priority.0",
             "FieldName": "Priority",
             "Order": 0,
             "ComponentType": "Input",
@@ -36,7 +35,7 @@
             "EntityId": "AccountTransferSetup"
         },
         {
-            "Id": "01945a8b-add7-764c-8169-581d39fb2907",
+            "Id": "account_transfer_setup.Code.1",
             "FieldName": "Code",
             "Order": 1,
             "ComponentType": "Input",
@@ -49,7 +48,7 @@
             "EntityId": "AccountTransferSetup"
         },
         {
-            "Id": "01945a95-eb20-7038-9480-043f4d0edf2c",
+            "Id": "account_transfer_setup.FromAccountNoId.2",
             "FieldName": "FromAccountNoId",
             "Order": 2,
             "ComponentType": "Dropdown",
@@ -67,7 +66,7 @@
             "EntityId": "AccountTransferSetup"
         },
         {
-            "Id": "01945a96-b17a-716c-8bae-853e3bb722ca",
+            "Id": "account_transfer_setup.ToAccountNoId.3",
             "FieldName": "ToAccountNoId",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -85,7 +84,7 @@
             "EntityId": "AccountTransferSetup"
         },
         {
-            "Id": "01945a97-254f-75cd-9635-fb22d80b72c9",
+            "Id": "account_transfer_setup.Active.8",
             "FieldName": "Active",
             "Order": 8,
             "ComponentType": "Checkbox",
@@ -98,7 +97,7 @@
             "EntityId": "AccountTransferSetup"
         },
         {
-            "Id": "01945a97-8bbb-73f3-8aab-86cc472b9672",
+            "Id": "account_transfer_setup.TransferSideId.4",
             "FieldName": "TransferSideId",
             "Order": 4,
             "ComponentType": "Dropdown",
@@ -116,7 +115,7 @@
             "EntityId": "AccountTransferSetup"
         },
         {
-            "Id": "01945a99-4057-772c-9b22-1e19f5dfa6f7",
+            "Id": "account_transfer_setup.CompanyId.7",
             "FieldName": "CompanyId",
             "Order": 7,
             "ComponentType": "Dropdown",
@@ -139,12 +138,10 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "1811A9C6-B572-4C1F-B161-4AED90621932",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "1FB776AF-3925-4EE0-8EC2-43DF0B645485",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -155,12 +152,10 @@
             "TableName": "Feature"
         },
         {
-            "Id": "579B086B-42B7-4096-9290-B6124728BE66",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "6F478FF0-F1D3-460D-A6F0-2B003A4C7D8C",
             "RoleId": "ADMIN",
             "CanRead": true,
             "CanReadAll": true,
@@ -171,39 +166,33 @@
             "TableName": "Feature"
         },
         {
-            "Id": "795B8B71-82F7-4C91-889D-000554CF9923",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "A3EA0D87-386B-4C0C-BB2A-D06FC9F91BFB",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "AF5EEFD5-2A40-4F0B-8DDB-0EA9AEC38B20",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "BFCC1529-CBE2-4E75-A6B5-E345959796D6",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "F5663AAE-5C47-4D8C-A62D-885060630606",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "F8160492-29A4-4AC2-A8C7-A8171B680D87",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         }
     ],
     "Components": [
         {
-            "Id": "01945a8b-acdf-729b-8d02-aee28dd69725",
+            "Id": "account_transfer_setup.Container.1",
             "FieldName": "Container",
             "Order": 1,
             "ComponentType": "Section",
@@ -211,7 +200,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "01945a8b-ad11-748b-831b-b97409b897d7",
+                    "Id": "Container.AccountTransferSetup.1",
                     "FieldName": "AccountTransferSetup",
                     "Order": 1,
                     "ComponentType": "GridView",

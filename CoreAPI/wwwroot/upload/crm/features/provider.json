@@ -1,15 +1,14 @@
 {
-    "Id": "00c00574-0000-0000-8000-ff5c6b2e1310",
+    "Id": "provider",
     "Name": "provider",
     "Label": "Provider",
-    "ParentId": "006b1850-0000-0000-8000-1fdb95f8d1dc",
     "Order": 18,
     "Script": "return {\r\n    Add: function () {\r\n        var config = JSON.parse(localStorage.getItem(\"SalesFunction\"));\r\n        var cus = {\r\n            ServiceId: 3,\r\n            ActionId: config[\"DEFAULT_CREATE_OBJECTS_APPROVE\"] ? 1 : 3,\r\n            SaleId: this.Token.UserId\r\n        }\r\n        this.OpenPopup(\"provider-editor\", cus);\r\n    },\r\n    AddCarrier: function () {\r\n        var config = JSON.parse(localStorage.getItem(\"SalesFunction\"));\r\n        var cus = {\r\n            ServiceId: 3,\r\n            ActionId: config[\"DEFAULT_CREATE_OBJECTS_APPROVE\"] ? 1 : 3,\r\n            PartnerTypeIds: \"00671858-0000-0000-8000-d917e69b0ea0\",\r\n            SaleId: this.Token.UserId\r\n        }\r\n        this.OpenPopup(\"provider-editor\", cus);\r\n    },\r\n    AddTruckVendor: function () {\r\n        var config = JSON.parse(localStorage.getItem(\"SalesFunction\"));\r\n        var cus = {\r\n            ServiceId: 3,\r\n            ActionId: config[\"DEFAULT_CREATE_OBJECTS_APPROVE\"] ? 1 : 3,\r\n            PartnerTypeIds: \"006f180c-0000-0000-8000-cffef0f90f93\",\r\n            SaleId: this.Token.UserId\r\n        }\r\n        this.OpenPopup(\"provider-editor\", cus);\r\n    },\r\n    AddOtherVendor: function () {\r\n        var config = JSON.parse(localStorage.getItem(\"SalesFunction\"));\r\n        var cus = {\r\n            ServiceId: 3,\r\n            ActionId: config[\"DEFAULT_CREATE_OBJECTS_APPROVE\"] ? 1 : 3,\r\n            PartnerTypeIds: \"0071182c-0000-0000-8000-9525ecff9240\",\r\n            SaleId: this.Token.UserId\r\n        }\r\n        this.OpenPopup(\"provider-editor\", cus);\r\n    },\r\n    AddAirLine: function () {\r\n        var config = JSON.parse(localStorage.getItem(\"SalesFunction\"));\r\n        var cus = {\r\n            ServiceId: 3,\r\n            ActionId: config[\"DEFAULT_CREATE_OBJECTS_APPROVE\"] ? 1 : 3,\r\n            PartnerTypeIds: \"006d1888-0000-0000-8000-62c8a767bd28\",\r\n            SaleId: this.Token.UserId\r\n        }\r\n        this.OpenPopup(\"provider-editor\", cus);\r\n    },\r\n    AddCoLoader: function () {\r\n        var config = JSON.parse(localStorage.getItem(\"SalesFunction\"));\r\n        var cus = {\r\n            ServiceId: 3,\r\n            ActionId: config[\"DEFAULT_CREATE_OBJECTS_APPROVE\"] ? 1 : 3,\r\n            PartnerTypeIds: \"006d18c0-0000-0000-8000-8e2ef3e0f4c4\",\r\n            SaleId: this.Token.UserId\r\n        }\r\n        this.OpenPopup(\"provider-editor\", cus);\r\n    },\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"provider-editor\", entity);\r\n    }\r\n}",
     "Icon": "fal fa-user-friends",
     "IsMenu": true,
     "GridPolicies": [
         {
-            "Id": "00341834-0000-0000-8000-6cedd7a8f185",
+            "Id": "provider.PartnerTypeIdsText.7",
             "FieldName": "PartnerTypeIdsText",
             "Order": 7,
             "ComponentType": "Input",
@@ -24,7 +23,7 @@
             "IsMultiple": true
         },
         {
-            "Id": "00341834-0000-0000-8001-315d54f06338",
+            "Id": "provider.ActionId.8",
             "FieldName": "ActionId",
             "Order": 8,
             "ComponentType": "Dropdown",
@@ -42,7 +41,7 @@
             "EntityId": "Customer"
         },
         {
-            "Id": "0034186c-0000-0000-8000-ec608bb1b453",
+            "Id": "provider.btnEdit.0",
             "FieldName": "btnEdit",
             "Order": 0,
             "ComponentType": "Button",
@@ -57,7 +56,7 @@
             "EntityId": "Customer"
         },
         {
-            "Id": "003418d0-0000-0000-8000-7db145df89e6",
+            "Id": "provider.Code.1",
             "FieldName": "Code",
             "Order": 1,
             "ComponentType": "Input",
@@ -69,7 +68,7 @@
             "EntityId": "Customer"
         },
         {
-            "Id": "003418d0-0000-0000-8001-518201d0b592",
+            "Id": "provider.Name.2",
             "FieldName": "Name",
             "Order": 2,
             "ComponentType": "Input",
@@ -81,7 +80,7 @@
             "EntityId": "Customer"
         },
         {
-            "Id": "003418d0-0000-0000-8002-a180bd2ad87a",
+            "Id": "provider.PhoneNumber.3",
             "FieldName": "PhoneNumber",
             "Order": 3,
             "ComponentType": "Input",
@@ -93,7 +92,7 @@
             "EntityId": "Customer"
         },
         {
-            "Id": "003418d0-0000-0000-8003-6c24a00a1d46",
+            "Id": "provider.Email.4",
             "FieldName": "Email",
             "Order": 4,
             "ComponentType": "Input",
@@ -105,7 +104,7 @@
             "EntityId": "Customer"
         },
         {
-            "Id": "003418d0-0000-0000-8004-475c9badaaf4",
+            "Id": "provider.TaxCode.5",
             "FieldName": "TaxCode",
             "Order": 5,
             "ComponentType": "Input",
@@ -117,7 +116,7 @@
             "EntityId": "Customer"
         },
         {
-            "Id": "003418d0-0000-0000-8005-a740ea9988da",
+            "Id": "provider.SourseId.6",
             "FieldName": "SourseId",
             "Order": 6,
             "ComponentType": "Dropdown",
@@ -134,7 +133,7 @@
             "EntityId": "Customer"
         },
         {
-            "Id": "003e2564-0000-0000-8000-6ca230db66f8",
+            "Id": "provider.InsertedBy.9",
             "FieldName": "InsertedBy",
             "Order": 9,
             "ComponentType": "Dropdown",
@@ -153,7 +152,7 @@
     ],
     "Components": [
         {
-            "Id": "000d1894-0000-0000-8000-12cec36ece71",
+            "Id": "provider.Section.5",
             "Order": 5,
             "ComponentType": "Section",
             "Label": "Truck Vendor",
@@ -163,7 +162,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "00e5187c-0000-0000-8000-f65205e81c74",
+                    "Id": "Section.Customer.2_1",
                     "FieldName": "Customer",
                     "Order": 2,
                     "ComponentType": "GridView",
@@ -183,7 +182,7 @@
             ]
         },
         {
-            "Id": "000d1894-0000-0000-8001-bf22c92a4689",
+            "Id": "provider.Section.6",
             "Order": 6,
             "ComponentType": "Section",
             "Label": "Other Vendor",
@@ -193,7 +192,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "00e61890-0000-0000-8000-0aa373491105",
+                    "Id": "Section.Customer.2_2",
                     "FieldName": "Customer",
                     "Order": 2,
                     "ComponentType": "GridView",
@@ -213,7 +212,7 @@
             ]
         },
         {
-            "Id": "005918e8-0000-0000-8000-9025f0f9e91d",
+            "Id": "provider.Section.4",
             "Order": 4,
             "ComponentType": "Section",
             "Label": "Air-line",
@@ -223,7 +222,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "009718d0-0000-0000-8000-82401a18b58f",
+                    "Id": "Section.Customer.3_2",
                     "FieldName": "Customer",
                     "Order": 3,
                     "ComponentType": "GridView",
@@ -243,7 +242,7 @@
             ]
         },
         {
-            "Id": "00c0051c-0000-0000-8000-b52c76796a9b",
+            "Id": "provider.Section.2",
             "Order": 2,
             "ComponentType": "Section",
             "Label": "Carrier",
@@ -253,7 +252,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "00c00590-0000-0000-8000-bf6e7524559b",
+                    "Id": "Section.Customer.2_3",
                     "FieldName": "Customer",
                     "Order": 2,
                     "ComponentType": "GridView",
@@ -273,7 +272,7 @@
             ]
         },
         {
-            "Id": "00c005c8-0000-0000-8000-5618b57b4cfd",
+            "Id": "provider.Section.1",
             "Order": 1,
             "ComponentType": "Section",
             "Label": "All",
@@ -284,7 +283,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "00c005c0-0000-0000-8000-afe2d621cfd5",
+                    "Id": "Section.Customer.1_16",
                     "FieldName": "Customer",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -304,7 +303,7 @@
             ]
         },
         {
-            "Id": "00c005cc-0000-0000-8000-a9dff1066e08",
+            "Id": "provider.Section.3",
             "Order": 3,
             "ComponentType": "Section",
             "Label": "Co-Loader",
@@ -314,7 +313,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "00c005fc-0000-0000-8000-1a07e8e3c3a4",
+                    "Id": "Section.Customer.3_3",
                     "FieldName": "Customer",
                     "Order": 3,
                     "ComponentType": "GridView",
@@ -336,22 +335,18 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "1F7D749C-35AD-42DF-8F9C-22C529613D79",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "20CE0D14-F2FB-4D64-BB5E-A7287CEA0A1E",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "351BFC17-86BF-4CA9-A33E-48CF09122B47",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "416388FC-F829-4960-B972-52ECCF7B0C78",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -362,36 +357,30 @@
             "TableName": "Feature"
         },
         {
-            "Id": "5997C82C-810C-41B0-8351-0E46192E69E5",
             "RoleId": "SALES",
             "CanRead": true,
             "CanReadAll": true,
             "TableName": "Feature"
         },
         {
-            "Id": "63653E43-F49A-4BBB-9F3F-221C8B2AA7F8",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "8F19A7DB-2B56-434D-8CA8-661C66599CA3",
             "RoleId": "DOCS",
             "CanRead": true,
             "CanWrite": true,
             "TableName": "Feature"
         },
         {
-            "Id": "DAC7C154-609A-4AD8-B99E-B5605E59ADE9",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "E5D1B30D-BCD7-4672-862E-29F803AFBE86",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "FABD9350-46B4-42E9-9AB4-2B7034E01A7D",
             "RoleId": "PRICING",
             "CanRead": true,
             "CanReadAll": true,

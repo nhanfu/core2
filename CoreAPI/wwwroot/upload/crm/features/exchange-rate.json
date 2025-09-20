@@ -1,8 +1,7 @@
 {
-    "Id": "00fd0f4c-0000-0000-8000-0f4dccb484bb",
+    "Id": "exchange_rate",
     "Name": "exchange-rate",
     "Label": "Exchange Rate",
-    "ParentId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
     "Order": 10,
     "Script": "return {\r\n    Add: function () {\r\n        var entity = {\r\n            PostDate: this.dayjs(),\r\n            RateVND: this.Decimal(JSON.parse(localStorage.getItem(\"ExchangeRateVND\")).USD),\r\n            RateUSD: this.Decimal(JSON.parse(localStorage.getItem(\"ExchangeRateUSD\")).VND)\r\n        }\r\n        this.OpenPopup(\"update-exchangerate-editor\", entity);\r\n    },\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"update-exchangerate-editor\", entity);\r\n    }\r\n}",
     "Icon": "fal fa-exchange-alt",
@@ -10,7 +9,7 @@
     "IgnoreEncode": true,
     "GridPolicies": [
         {
-            "Id": "00b90f90-0000-0000-8000-fcd9d7534b72",
+            "Id": "exchange_rate.ToDate.1",
             "FieldName": "ToDate",
             "Order": 1,
             "ComponentType": "Datepicker",
@@ -23,7 +22,7 @@
             "EntityId": "ExchangeRate"
         },
         {
-            "Id": "00fe0f28-0000-0000-8000-f5487f07a3e9",
+            "Id": "exchange_rate.FromDate.0",
             "FieldName": "FromDate",
             "Order": 0,
             "ComponentType": "Datepicker",
@@ -36,7 +35,7 @@
             "EntityId": "ExchangeRate"
         },
         {
-            "Id": "00fe0f30-0000-0000-8000-c80a42c96007",
+            "Id": "exchange_rate.CurrencyId.2",
             "FieldName": "CurrencyId",
             "Order": 2,
             "ComponentType": "Dropdown",
@@ -56,7 +55,7 @@
             "EntityId": "ExchangeRate"
         },
         {
-            "Id": "01942b84-6e82-707c-8c2e-0a46d1fd4f48",
+            "Id": "exchange_rate.RateSaleUSD.4",
             "FieldName": "RateSaleUSD",
             "Order": 4,
             "ComponentType": "Number",
@@ -70,7 +69,7 @@
             "EntityId": "ExchangeRate"
         },
         {
-            "Id": "01942c1d-98ed-7438-adfa-7a06920c86e3",
+            "Id": "exchange_rate.RateSaleVND.3",
             "FieldName": "RateSaleVND",
             "Order": 3,
             "ComponentType": "Number",
@@ -84,7 +83,7 @@
             "EntityId": "ExchangeRate"
         },
         {
-            "Id": "0195845b-0e7b-7399-9a77-a2677f4d055b",
+            "Id": "exchange_rate.FromDate.2",
             "FieldName": "FromDate",
             "Order": 2,
             "ComponentType": "Datepicker",
@@ -96,7 +95,7 @@
             "EntityId": "ExchangeRateHistory"
         },
         {
-            "Id": "0195845b-0e7b-7399-9a77-a7dc8f21f80d",
+            "Id": "exchange_rate.ToDate.3",
             "FieldName": "ToDate",
             "Order": 3,
             "ComponentType": "Datepicker",
@@ -108,7 +107,7 @@
             "EntityId": "ExchangeRateHistory"
         },
         {
-            "Id": "01958466-9d73-7489-aae7-7d816cfb5db8",
+            "Id": "exchange_rate.Id.1",
             "FieldName": "Id",
             "Order": 1,
             "ComponentType": "Input",
@@ -120,7 +119,7 @@
             "EntityId": "ExchangeRateHistory"
         },
         {
-            "Id": "01958467-70ae-770f-b54f-d7dd2a16e951",
+            "Id": "exchange_rate.CompanyId.5",
             "FieldName": "CompanyId",
             "Order": 5,
             "ComponentType": "Dropdown",
@@ -136,7 +135,7 @@
             "EntityId": "ExchangeRateHistory"
         },
         {
-            "Id": "01958468-043a-7293-a27a-b199997654c9",
+            "Id": "exchange_rate.InsertedDate.4",
             "FieldName": "InsertedDate",
             "Order": 4,
             "ComponentType": "Datepicker",
@@ -148,7 +147,7 @@
             "EntityId": "ExchangeRateHistory"
         },
         {
-            "Id": "01958504-be65-764c-9805-ea9e59368ac5",
+            "Id": "exchange_rate.btnEdit.0",
             "FieldName": "btnEdit",
             "Order": 0,
             "ComponentType": "Button",
@@ -164,7 +163,7 @@
     ],
     "Components": [
         {
-            "Id": "00fe0f9c-0000-0000-8000-d84602c2a548",
+            "Id": "exchange_rate.Container.2",
             "FieldName": "Container",
             "Order": 2,
             "ComponentType": "Section",
@@ -175,7 +174,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "00fe0f70-0000-0000-8000-3dea7c925e0d",
+                    "Id": "Container.ExchangeRate.1",
                     "FieldName": "ExchangeRate",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -195,7 +194,7 @@
             ]
         },
         {
-            "Id": "01956b3e-b67b-751b-88f1-ec7387678a5d",
+            "Id": "exchange_rate.SearchForm.1",
             "FieldName": "SearchForm",
             "Order": 1,
             "ComponentType": "Section",
@@ -205,7 +204,7 @@
             "TabGroup": "SearchForm",
             "Components": [
                 {
-                    "Id": "01956b3e-e2fa-7088-a7e2-411d8dd88e01",
+                    "Id": "SearchForm.FromDate.1",
                     "FieldName": "FromDate",
                     "Order": 1,
                     "ComponentType": "Datepicker",
@@ -217,7 +216,7 @@
                     "SmCol": 5
                 },
                 {
-                    "Id": "01956b3e-e2fb-7188-b684-3212a1093211",
+                    "Id": "SearchForm.ToDate.2",
                     "FieldName": "ToDate",
                     "Order": 2,
                     "ComponentType": "Datepicker",
@@ -229,7 +228,7 @@
                     "SmCol": 5
                 },
                 {
-                    "Id": "01956b3e-e2fb-7188-b684-367a366774d5",
+                    "Id": "SearchForm.DateFieldId.3",
                     "FieldName": "DateFieldId",
                     "Order": 3,
                     "ComponentType": "Select",
@@ -246,7 +245,7 @@
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
-                    "Id": "01956b3e-e2fb-7188-b684-39f87bba0077",
+                    "Id": "SearchForm.ExchangeRateVND.4",
                     "FieldName": "ExchangeRateVND",
                     "Order": 4,
                     "ComponentType": "Number",
@@ -260,7 +259,7 @@
             ]
         },
         {
-            "Id": "01958455-533d-739e-a072-a64cb1623df5",
+            "Id": "exchange_rate.Section.3",
             "Order": 3,
             "ComponentType": "Section",
             "Label": "Update Profit Ext",
@@ -270,7 +269,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "0195845a-9930-77ac-9de2-828210e5364a",
+                    "Id": "Section.ExchangeRateHistory.1",
                     "FieldName": "ExchangeRateHistory",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -291,17 +290,14 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "07F37363-23F2-4A0F-A28A-D8EF6BB7F97B",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "0DE094C0-ABEF-445D-A0DE-58E1071F0EA3",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "2CF1E0A8-C08F-4846-9B46-698B4BD68BEE",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -312,37 +308,30 @@
             "TableName": "Feature"
         },
         {
-            "Id": "3A753F56-0204-41BD-90AD-7F25AF70324C",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "854358E5-3E82-4531-ACF8-1C1445241D54",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "B228B105-D7A7-46F3-BED1-F503B6D49AC7",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "C46781ED-8EBE-4054-9A0D-2342E96AF508",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "C796375F-C0D2-419B-AFE7-72BE16352441",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "DB5D2430-E209-496B-9702-45B518176B03",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "FD231EB0-47FA-4700-AB58-2DC301FBEEED",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         }

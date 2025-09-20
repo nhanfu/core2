@@ -1,8 +1,7 @@
 {
-    "Id": "01945994-422a-77c5-a2be-a03e633ab183",
+    "Id": "accountno",
     "Name": "accountno",
     "Label": "Account No",
-    "ParentId": "01939222-2f5a-747a-bb15-606fb55edf4c",
     "Order": 11,
     "Script": "return {\r\n    Add: function () {\r\n        var entity = {\r\n            InsertedBy: this.Token.UserId\r\n        }\r\n        this.OpenPopup(\"accountno-editor\", entity);\r\n    },\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"accountno-editor\", entity);\r\n    }\r\n}",
     "Icon": "far fa-th-list",
@@ -11,7 +10,7 @@
     "IgnoreEncode": true,
     "GridPolicies": [
         {
-            "Id": "01945994-4314-7029-a867-cb48cadde6e4",
+            "Id": "accountno.Name.2",
             "FieldName": "Name",
             "Order": 2,
             "ComponentType": "Input",
@@ -23,7 +22,7 @@
             "EntityId": "AccountNo"
         },
         {
-            "Id": "01945994-434b-7564-afa1-f00a5830f71e",
+            "Id": "accountno.Code.1",
             "FieldName": "Code",
             "Order": 1,
             "ComponentType": "Input",
@@ -36,7 +35,7 @@
             "EntityId": "AccountNo"
         },
         {
-            "Id": "01945994-4398-70c3-a388-ae6fd05a2890",
+            "Id": "accountno.No.8",
             "FieldName": "No",
             "Order": 8,
             "ComponentType": "Number",
@@ -48,7 +47,7 @@
             "EntityId": "AccountNo"
         },
         {
-            "Id": "01945994-4431-75a8-9e42-a26a92744eb6",
+            "Id": "accountno.Description.5",
             "FieldName": "Description",
             "Order": 5,
             "ComponentType": "Input",
@@ -60,7 +59,7 @@
             "EntityId": "AccountNo"
         },
         {
-            "Id": "01945994-447d-743a-acbe-96c7b798ce6b",
+            "Id": "accountno.ParentId.9",
             "FieldName": "ParentId",
             "Order": 9,
             "ComponentType": "Dropdown",
@@ -78,7 +77,7 @@
             "EntityId": "AccountNo"
         },
         {
-            "Id": "01945999-a3af-7356-b340-54f7f8a7a819",
+            "Id": "accountno.NameEnglish.4",
             "FieldName": "NameEnglish",
             "Order": 4,
             "ComponentType": "Input",
@@ -90,7 +89,7 @@
             "EntityId": "AccountNo"
         },
         {
-            "Id": "0194599a-5b9c-762c-ac6f-b800447d682f",
+            "Id": "accountno.CurrencyId.6",
             "FieldName": "CurrencyId",
             "Order": 6,
             "ComponentType": "Dropdown",
@@ -110,7 +109,7 @@
             "EntityId": "AccountNo"
         },
         {
-            "Id": "0194599a-86e6-7608-8f12-6b0bff2a197a",
+            "Id": "accountno.OgCurrencyId.7",
             "FieldName": "OgCurrencyId",
             "Order": 7,
             "ComponentType": "Dropdown",
@@ -130,7 +129,7 @@
             "EntityId": "AccountNo"
         },
         {
-            "Id": "0194599d-f6ff-73ce-8c4d-9c51c032341e",
+            "Id": "accountno.TypeId.3",
             "FieldName": "TypeId",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -146,7 +145,7 @@
             "EntityId": "AccountNo"
         },
         {
-            "Id": "0194599f-6312-734c-8e1e-263afb475e01",
+            "Id": "accountno.Active.10",
             "FieldName": "Active",
             "Order": 10,
             "ComponentType": "Checkbox",
@@ -158,7 +157,7 @@
             "EntityId": "AccountNo"
         },
         {
-            "Id": "01945a72-c48e-766f-b6c9-e84615ea7232",
+            "Id": "accountno.btnEdit.0",
             "FieldName": "btnEdit",
             "Order": 0,
             "ComponentType": "Button",
@@ -174,7 +173,7 @@
     ],
     "Components": [
         {
-            "Id": "01945994-4276-70ca-ba33-051d6b41d9fc",
+            "Id": "accountno.Container.1",
             "FieldName": "Container",
             "Order": 1,
             "ComponentType": "Section",
@@ -182,7 +181,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "01945994-42ae-707d-89e2-d00ac0aac7e2",
+                    "Id": "Container.AccountNo.1",
                     "FieldName": "AccountNo",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -200,7 +199,6 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "1D8071E7-F6CE-41CF-A9E2-6C01598CFFF2",
             "RoleId": "ACC",
             "CanRead": true,
             "CanReadAll": true,
@@ -209,12 +207,10 @@
             "TableName": "Feature"
         },
         {
-            "Id": "26CDBFA5-D300-491E-857D-F75A40863379",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "2801B63F-85CB-46A3-8EE8-2C6BA9860B22",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -225,22 +221,18 @@
             "TableName": "Feature"
         },
         {
-            "Id": "5A1D1A6C-81FE-4CD4-8A74-868E56AF09E7",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "5A2C945F-0D80-4351-B1E9-F82B02DCE49E",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "8FAB1456-184A-4BB2-B2D9-80F1682999D2",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "9549CEE8-1128-4894-9951-61A1EAF6A572",
             "RoleId": "ADMIN",
             "CanRead": true,
             "CanReadAll": true,
@@ -251,17 +243,14 @@
             "TableName": "Feature"
         },
         {
-            "Id": "9B33701F-5012-41DB-942E-9848712A65DF",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "9DEE82FE-C883-4C74-83B3-38445BE702E8",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "BCBA30E8-AAA9-40F9-9F2E-C0E46DAA968D",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         }

@@ -1,15 +1,14 @@
 {
-    "Id": "008815b4-0000-0000-8000-38a76564c124",
+    "Id": "sea_pricing_editor",
     "Name": "sea-pricing-editor",
     "Label": "Sea Pricing Editor",
-    "ParentId": "00af15f0-0000-0000-8000-8cb1dddb1613",
     "Style": "width:99%;",
     "Script": "return {\r\n    OnSave: function (form, gridview) {\r\n        var detailFee = this.GET(\"PricingDetail\");\r\n        if (detailFee && detailFee.AllListViewItem.length > 0) {\r\n            detailFee.AllListViewItem.filter(x => !x.GroupRow).forEach((item, index) => {\r\n                item.Entity.Order = index;\r\n            });\r\n            var text20 = [];\r\n            var text40 = [];\r\n            var textOther = [];\r\n            detailFee.AllListViewItem.filter(x => x.GroupRow).forEach((item, index) => {\r\n                if (item.GroupText.textContent.includes('2')) {\r\n                    text20.push(item.GroupText.textContent + ' : ' + item.Children.find(x => x.Element.textContent != \"\").Element.textContent)\r\n                }\r\n                else if (item.GroupText.textContent.includes('4')) {\r\n                    text40.push(item.GroupText.textContent + ' : ' + item.Children.find(x => x.Element.textContent != \"\").Element.textContent)\r\n                } else {\r\n                    textOther.push(item.GroupText.textContent + ' : ' + item.Children.find(x => x.Element.textContent != \"\").Element.textContent)\r\n                }\r\n            });\r\n            this.Entity.Cont20Text = text20.join(';');\r\n            this.Entity.Cont40Text = text40.join(';');\r\n            this.Entity.ContText = textOther.join(';');\r\n        }\r\n    },\r\n    UpdateParent: function (form, gridview) {\r\n        if (this.OpenFrom.Meta.Name == \"sea-inquiry-detail-editor\") {\r\n            var pricing = this.OpenFrom.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"Pricing\");\r\n            pricing.ClearSelected();\r\n            pricing.ActionFilter();\r\n        }\r\n    },\r\n    SaveAs: async function (btn) {\r\n        var newEntity = JSON.parse(JSON.stringify(this.Entity));\r\n        this.Entity = newEntity;\r\n        this.Entity.Id = this.Uuid7.NewGuid();\r\n        this.Entity.Code = null;\r\n        this.Entity.InsertedBy = this.Token.UserId;\r\n        this.Entity.InsertedByMasterData = null;\r\n        this.Entity.StatusId = 1;\r\n        var inquiryDetail = this.GET(\"PricingDetail\");\r\n        if (inquiryDetail && inquiryDetail.AllListViewItem.length > 0) {\r\n            inquiryDetail.AllListViewItem.forEach(row => {\r\n                row.Entity.Id = this.Uuid7.NewGuid();\r\n                row.Entity.PricingId = this.Entity.Id;\r\n                row.Children.forEach(cell => {\r\n                    cell.Entity = row.Entity;\r\n                });\r\n                row.UpdateView(true);\r\n            });\r\n        }\r\n        this.UpdateView(true);\r\n        this.Dirty = true;\r\n        this.Toast.Success(\"Save as success\");\r\n    },\r\n    CheckCurrency: function (com, entity) {\r\n        com.Parent.UpdateView(false);\r\n    },\r\n    OnSaveAdd: function (form, gridview) {\r\n        this.Entity = {\r\n            Id: this.Uuid7.NewGuid(),\r\n            Code: null,\r\n            StatusId: 1\r\n        }\r\n    },\r\n    BeforeCreated: function (rowSection, entity) {\r\n        var inquiryDetail = this.GET(\"PricingDetail\");\r\n        var first = inquiryDetail.AllListViewItem[0];\r\n        if (inquiryDetail.AllListViewItem && inquiryDetail.AllListViewItem.length == 0) {\r\n            return;\r\n        }\r\n        var lastItem = inquiryDetail.AllListViewItem[inquiryDetail.AllListViewItem.length - 1]\r\n        entity.UnitId = entity.UnitId == null ? lastItem.Entity.UnitId || '' : entity.UnitId;\r\n    },\r\n    AddDuplicateMenu: function (form, gridview) {\r\n        gridview.MenuItems.push({\r\n            Icon: \"fal fa-folders\",\r\n            Text: \"Duplicate\",\r\n            Click: () => this.DuplicateFee(form, gridview)\r\n        });\r\n    },\r\n    DuplicateFee: function (form, gridview) {\r\n        var pricingDetail = this.GET(\"PricingDetail\");\r\n        var form = this.EditForm.OpenConfig(\"Select group unit type!\", () => {\r\n            var selecteds = pricingDetail.AllListViewItem.filter(x => !x.GroupRow && x.Selected);\r\n            var newFees = JSON.parse(JSON.stringify(selecteds.map(x => x.Entity)));\r\n            newFees.forEach(item => {\r\n                item.Id = this.Uuid7.NewGuid();\r\n                item.PricingId = this.Entity.Id;\r\n                item.UnitId = form.Entity.UnitId;\r\n                item.__groupkey__ = form.Entity.UnitId;\r\n            });\r\n            pricingDetail.LoadMasterData(newFees).then(() => {\r\n                pricingDetail.ClearSelected();\r\n                pricingDetail.AddRows(newFees).then(rows => {\r\n                    rows.forEach(row => {\r\n                        row.Selected = true;\r\n                    });\r\n                    rows[0].Element.focus();\r\n                });\r\n            });\r\n        }, () => { }, true, pricingDetail.Header.filter(x => x.FieldName == \"UnitId\"));\r\n    },\r\n    UpdateGroupFee: function (data) {\r\n        data.Parent.Entity.GroupFee = (data.Entity.Description.Group ? data.Entity.Description.Group.Name : 'Local charge');\r\n        var pricingDetail = this.GET(\"PricingDetail\");\r\n        if (data.Matched) {\r\n            data.Parent.Entity.IsFreight = data.Matched.IsFreight;\r\n            data.Parent.Entity.OtherUnitId = data.Matched.OtherUnitId;\r\n            data.Parent.Entity.CurrencyId = data.Matched.CurrencyId;\r\n            data.Parent.Entity.IsObh = data.Matched.IsObh;\r\n        }\r\n        pricingDetail.LoadMasterData([data.Parent.Entity]).then(() => {\r\n            data.Parent.UpdateView(false, false, \"GroupFee\", \"OtherUnitId\", \"CurrencyId\", \"IsObh\");\r\n        });\r\n    },\r\n    CreateQuote: async function (com, entity) {\r\n        var gridView = this.GET(\"PricingDetail\");\r\n        if (gridView.AllListViewItem.length == 0) {\r\n            this.Toast.Warning(\"Please add pricing fee details!\");\r\n            return;\r\n        }\r\n        var pricing = this.Entity;\r\n        if (!pricing.Pol || !pricing.Pod) {\r\n            this.Toast.Warning(\"Please choose termial!\");\r\n            return;\r\n        }\r\n        var selecteds = gridView.AllListViewItem.filter(x => !x.GroupRow).map(x => x.Entity);\r\n        var newFees = JSON.parse(JSON.stringify(selecteds));\r\n        var typeId = 2;\r\n        var name = \"sea-quote-editor\";\r\n        typeId = 2;\r\n        var quote = {\r\n            Id: this.Uuid7.NewGuid(),\r\n            PricingId: pricing.Id,\r\n            InquiryDetailId: pricing.Id,\r\n            StatusId: this.SalesFunction[\"APPROVE_QUOTATION\"] ? 3 : 1,\r\n            NoApproved: this.SalesFunction[\"APPROVE_QUOTATION\"] ? true : false,\r\n            TypeId: typeId,\r\n            VoucherTypeId: 2,\r\n            FromDate: pricing ? pricing.FromDate : null,\r\n            ToDate: pricing ? pricing.ToDate : null,\r\n            ServiceDate: this.dayjs().format('YYYY-MM-DD'),\r\n            AgentId: (pricing && pricing.Vendor) ? (pricing.Vendor.PartnerTypeIdsText && pricing.Vendor.PartnerTypeIdsText.includes('Agent')\r\n                && pricing.Vendor.ResidenceTypeIdText && pricing.Vendor.ResidenceTypeIdText.toUpperCase().includes('OVERSEA') ? pricing.VendorId : null) : null,\r\n            CustomerId: null,\r\n            CommodityId: pricing.CommodityId,\r\n            IncotermId: pricing.IncotermId,\r\n            DeliveryTerm: pricing.DeliveryTerm,\r\n            Quantity: pricing.Quantity,\r\n            Note: pricing.Note,\r\n            UnitId: pricing.UnitId,\r\n            DeminsionText: pricing.DeminsionText,\r\n            CW: pricing.CW,\r\n            GW: pricing.GW,\r\n            CBM: pricing.CBM,\r\n            Note: pricing.Note,\r\n            ServiceId: 11,\r\n            PolId: pricing.PolId,\r\n            PodId: pricing.PodId,\r\n            DemFree: pricing.DemFree,\r\n            DetFree: pricing.DetFree,\r\n            PkEmptyId: pricing.PkEmptyId,\r\n            ReturnsId: pricing.ReturnsId,\r\n            IsSimple: false\r\n        };\r\n        var config = JSON.parse(localStorage.getItem(\"SalesFunction\"));\r\n        var containerGrid = this.OpenFrom.GET(\"EntityContainer\");\r\n        newFees.forEach(item => {\r\n            item.Id = this.Uuid7.NewGuid();\r\n            item.DescriptionId = item.DescriptionId;\r\n            item.InquiryId = quote.Id;\r\n            item.RouteId = `${(pricing.Pol.Code || '')} => ${(pricing.Pod.Code || '')}`;\r\n            item.Route = {\r\n                Name: item.RouteId,\r\n                Id: item.RouteId,\r\n            };\r\n            item.Cost = item.UnitPrice;\r\n            item.MinLCLCost = item.MinUnitPrice;\r\n            item.MinQuantityCost = item.MinUnitPrice;\r\n            if (item.IsObh) {\r\n                item.MinLCLRate = item.MinLCLCost;\r\n                item.Rate = item.Cost;\r\n                item.MinQuantityRate = item.MinQuantityCost;\r\n            }\r\n            item.PolId = pricing.PolId;\r\n            item.PodId = pricing.PodId;\r\n            item.FinalDestinationId = pricing.PodId;\r\n            item.PlaceDeliveryId = pricing.PodId;\r\n            item.PlaceReceiptId = pricing.PolId;\r\n            item.PayerId = item.VendorId != pricing.VendorId ? item.VendorId : null;\r\n            item.DisableRow = true;\r\n            item.OtherFee = true;\r\n        });\r\n        quote.InquiryDetail = [{\r\n            Id: this.Uuid7.NewGuid(),\r\n            InquiryId: quote.Id,\r\n            OtherFee: false,\r\n            PolId: pricing.PolId,\r\n            PodId: pricing.PodId,\r\n            FinalDestinationId: pricing.PodId,\r\n            PlaceDeliveryId: pricing.PodId,\r\n            PlaceDeliveryId: pricing.PodId,\r\n            ScheduleIds: pricing ? pricing.ScheduleIds : null,\r\n            VendorId: pricing ? pricing.VendorId : null,\r\n            TransitTime: pricing ? pricing.TransitTime : null,\r\n            ViaId: pricing ? pricing.ViaId : null,\r\n            CarrierId: pricing ? pricing.CarrierId : null,\r\n            PlaceReceiptId: pricing.PolId,\r\n            DisableRow: true,\r\n        }];\r\n        quote.DefaultFee = newFees;\r\n        this.OpenPopup(name, quote);\r\n    }\r\n}",
     "Events": "{\r\n    \"onsave\": \"OnSave\",\r\n    \"onsaveadd\": \"OnSaveAdd\",\r\n    \"saved\": \"UpdateParent\"\r\n}",
     "EntityId": "Pricing",
     "GridPolicies": [
         {
-            "Id": "00891578-0000-0000-8000-f8a6c1114a86",
+            "Id": "sea_pricing_editor.Vat.6",
             "FieldName": "Vat",
             "Order": 6,
             "ComponentType": "Number",
@@ -23,7 +22,7 @@
             "EntityId": "PricingDetail"
         },
         {
-            "Id": "008915a4-0000-0000-8000-29261f9c2afd",
+            "Id": "sea_pricing_editor.CurrencyId.2",
             "FieldName": "CurrencyId",
             "Order": 2,
             "ComponentType": "Dropdown",
@@ -44,7 +43,7 @@
             "EntityId": "PricingDetail"
         },
         {
-            "Id": "008915ac-0000-0000-8000-480764b32f79",
+            "Id": "sea_pricing_editor.Note.9",
             "FieldName": "Note",
             "Order": 9,
             "ComponentType": "Input",
@@ -58,7 +57,7 @@
             "EntityId": "PricingDetail"
         },
         {
-            "Id": "008915e4-0000-0000-8000-58359dd33ece",
+            "Id": "sea_pricing_editor.UnitId.0",
             "FieldName": "UnitId",
             "Order": 0,
             "ComponentType": "Dropdown",
@@ -78,7 +77,7 @@
             "EntityId": "PricingDetail"
         },
         {
-            "Id": "008a1518-0000-0000-8000-3352edeb4115",
+            "Id": "sea_pricing_editor.UnitPrice.4",
             "FieldName": "UnitPrice",
             "Order": 4,
             "ComponentType": "Number",
@@ -93,7 +92,7 @@
             "EntityId": "PricingDetail"
         },
         {
-            "Id": "008a15f4-0000-0000-8000-96dc06f66dfa",
+            "Id": "sea_pricing_editor.DescriptionId.1",
             "FieldName": "DescriptionId",
             "Order": 1,
             "ComponentType": "Dropdown",
@@ -114,7 +113,7 @@
             "EntityId": "PricingDetail"
         },
         {
-            "Id": "00911ec8-0000-0000-8000-ef1b73ca4741",
+            "Id": "sea_pricing_editor.MinUnitPrice.5",
             "FieldName": "MinUnitPrice",
             "Order": 5,
             "ComponentType": "Number",
@@ -128,7 +127,7 @@
             "EntityId": "PricingDetail"
         },
         {
-            "Id": "00dd156c-0000-0000-8000-f553056c0408",
+            "Id": "sea_pricing_editor.OtherUnitId.3",
             "FieldName": "OtherUnitId",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -147,7 +146,7 @@
             "EntityId": "PricingDetail"
         },
         {
-            "Id": "00fd1510-0000-0000-8000-50b3ae10fd73",
+            "Id": "sea_pricing_editor.IsObh.8",
             "FieldName": "IsObh",
             "Order": 8,
             "ComponentType": "Checkbox",
@@ -161,7 +160,7 @@
             "EntityId": "PricingDetail"
         },
         {
-            "Id": "00fd1510-0000-0000-8001-af7b378bde49",
+            "Id": "sea_pricing_editor.VendorId.7",
             "FieldName": "VendorId",
             "Order": 7,
             "ComponentType": "Dropdown",
@@ -182,7 +181,7 @@
     ],
     "Components": [
         {
-            "Id": "008815c4-0000-0000-8000-2b6b8c852139",
+            "Id": "sea_pricing_editor.Container.1",
             "FieldName": "Container",
             "Order": 1,
             "ComponentType": "Section",
@@ -190,7 +189,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "00881588-0000-0000-8000-b3cb9890a053",
+                    "Id": "Container.Left.1_16",
                     "FieldName": "Left",
                     "Order": 1,
                     "ComponentType": "Section",
@@ -199,7 +198,7 @@
                     "XxlOuterColumn": 6,
                     "Components": [
                         {
-                            "Id": "000015c4-0000-0000-8000-bae261b6a165",
+                            "Id": "Left.PodId.4_1",
                             "FieldName": "PodId",
                             "Order": 4,
                             "ComponentType": "Dropdown",
@@ -214,7 +213,7 @@
                             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
-                            "Id": "002a15f4-0000-0000-8000-ceddfb06190b",
+                            "Id": "Left.VendorId.5",
                             "FieldName": "VendorId",
                             "Order": 5,
                             "ComponentType": "Dropdown",
@@ -231,7 +230,7 @@
                             "ShowHotKey": true
                         },
                         {
-                            "Id": "003f1520-0000-0000-8000-073ecab0fd08",
+                            "Id": "Left.CarrierId.6",
                             "FieldName": "CarrierId",
                             "Order": 6,
                             "ComponentType": "Dropdown",
@@ -249,7 +248,7 @@
                             "ShowHotKey": true
                         },
                         {
-                            "Id": "006c1544-0000-0000-8000-d4dc68ce1511",
+                            "Id": "Left.DemFree.7",
                             "FieldName": "DemFree",
                             "Order": 7,
                             "ComponentType": "Number",
@@ -259,7 +258,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "006c15a8-0000-0000-8000-3f2779ae80c1",
+                            "Id": "Left.DetFree.8",
                             "FieldName": "DetFree",
                             "Order": 8,
                             "ComponentType": "Number",
@@ -269,7 +268,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00881544-0000-0000-8000-5a5d573ac40a",
+                            "Id": "Left.Id.0",
                             "FieldName": "Id",
                             "Order": 0,
                             "ComponentType": "Input",
@@ -279,7 +278,7 @@
                             "Disabled": true
                         },
                         {
-                            "Id": "00881594-0000-0000-8000-a15c8f8f00b6",
+                            "Id": "Left.UpdatedDate.1",
                             "FieldName": "UpdatedDate",
                             "Order": 1,
                             "ComponentType": "Datepicker",
@@ -289,7 +288,7 @@
                             "Disabled": true
                         },
                         {
-                            "Id": "00991514-0000-0000-8000-b8695d54c068",
+                            "Id": "Left.FreeTime.9",
                             "FieldName": "FreeTime",
                             "Order": 9,
                             "ComponentType": "Number",
@@ -299,7 +298,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00991578-0000-0000-8000-776f1d661ba5",
+                            "Id": "Left.Sto.10",
                             "FieldName": "Sto",
                             "Order": 10,
                             "ComponentType": "Number",
@@ -309,7 +308,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00ab1528-0000-0000-8000-0acd211d3721",
+                            "Id": "Left.FromDate.11",
                             "FieldName": "FromDate",
                             "Order": 11,
                             "ComponentType": "Datepicker",
@@ -319,7 +318,7 @@
                             "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                         },
                         {
-                            "Id": "00ab1528-0000-0000-8001-b77fd4df35cc",
+                            "Id": "Left.ToDate.12",
                             "FieldName": "ToDate",
                             "Order": 12,
                             "ComponentType": "Datepicker",
@@ -329,7 +328,7 @@
                             "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                         },
                         {
-                            "Id": "00bc1574-0000-0000-8000-32f9878d3ac3",
+                            "Id": "Left.CutOff.13",
                             "FieldName": "CutOff",
                             "Order": 13,
                             "ComponentType": "Input",
@@ -338,7 +337,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00cc15d8-0000-0000-8000-f25252d1e972",
+                            "Id": "Left.MakeupLevel.14",
                             "FieldName": "MakeupLevel",
                             "Order": 14,
                             "ComponentType": "Dropdown",
@@ -354,7 +353,7 @@
                             "PreQuery": "{\r\n    \"PolId\": this.EditForm.Entity.PolId,\r\n    \"PodId\": this.EditForm.Entity.PodId,\r\n    \"VendorId\": this.EditForm.Entity.VendorId\r\n}"
                         },
                         {
-                            "Id": "00ec1534-0000-0000-8000-fec067d9fa90",
+                            "Id": "Left.ViaId.3",
                             "FieldName": "ViaId",
                             "Order": 3,
                             "ComponentType": "Dropdown",
@@ -369,7 +368,7 @@
                             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
-                            "Id": "00ec15d0-0000-0000-8000-9f6f13219597",
+                            "Id": "Left.PolId.2",
                             "FieldName": "PolId",
                             "Order": 2,
                             "ComponentType": "Dropdown",
@@ -386,7 +385,7 @@
                     ]
                 },
                 {
-                    "Id": "0088151c-0000-0000-8000-9becc2073254",
+                    "Id": "Container.Main.2_13",
                     "FieldName": "Main",
                     "Order": 2,
                     "ComponentType": "Section",
@@ -396,7 +395,7 @@
                     "XxlOuterColumn": 6,
                     "Components": [
                         {
-                            "Id": "00081540-0000-0000-8000-6d2e1a14d251",
+                            "Id": "Main.ReturnsId.3",
                             "FieldName": "ReturnsId",
                             "Order": 3,
                             "ComponentType": "Dropdown",
@@ -411,7 +410,7 @@
                             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
-                            "Id": "00081540-0000-0000-8001-62d8718efeb0",
+                            "Id": "Main.PkEmptyId.2",
                             "FieldName": "PkEmptyId",
                             "Order": 2,
                             "ComponentType": "Dropdown",
@@ -426,7 +425,7 @@
                             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
-                            "Id": "00321568-0000-0000-8000-dcff1510e55b",
+                            "Id": "Main.CommodityId.4",
                             "FieldName": "CommodityId",
                             "Order": 4,
                             "ComponentType": "Dropdown",
@@ -441,7 +440,7 @@
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
-                            "Id": "003215cc-0000-0000-8000-d1bdd6a6baa2",
+                            "Id": "Main.ServiceText.5",
                             "FieldName": "ServiceText",
                             "Order": 5,
                             "ComponentType": "Input",
@@ -450,7 +449,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "003d15b4-0000-0000-8000-0d42e754b3cf",
+                            "Id": "Main.Note.7",
                             "FieldName": "Note",
                             "Order": 7,
                             "ComponentType": "Textarea",
@@ -460,7 +459,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "005e15e4-0000-0000-8000-d076ecd573ff",
+                            "Id": "Main.InsertedBy.6",
                             "FieldName": "InsertedBy",
                             "Order": 6,
                             "ComponentType": "Dropdown",
@@ -476,7 +475,7 @@
                             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]"
                         },
                         {
-                            "Id": "006c1bf4-0000-0000-8000-3cdfdf2914f0",
+                            "Id": "Main.TransitTime.0",
                             "FieldName": "TransitTime",
                             "Order": 0,
                             "ComponentType": "Input",
@@ -485,7 +484,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "006c1bf4-0000-0000-8001-de5befecc467",
+                            "Id": "Main.ScheduleIds.1",
                             "FieldName": "ScheduleIds",
                             "Order": 1,
                             "ComponentType": "Dropdown",
@@ -502,7 +501,7 @@
                             "IsMultiple": true
                         },
                         {
-                            "Id": "007915f8-0000-0000-8000-f71b71c72fdf",
+                            "Id": "Main.AttachedFile.8",
                             "FieldName": "AttachedFile",
                             "Order": 8,
                             "ComponentType": "FileUpload",
@@ -514,7 +513,7 @@
                     ]
                 },
                 {
-                    "Id": "00891564-0000-0000-8000-a040742fe2d5",
+                    "Id": "Container.Fee.10_4",
                     "FieldName": "Fee",
                     "Order": 10,
                     "ComponentType": "Section",
@@ -525,7 +524,7 @@
                     "XxlOuterColumn": 12,
                     "Components": [
                         {
-                            "Id": "00891518-0000-0000-8000-bd6fce7557de",
+                            "Id": "Fee.PricingDetail.2_2",
                             "FieldName": "PricingDetail",
                             "Order": 2,
                             "ComponentType": "GridView",
@@ -550,7 +549,7 @@
                     ]
                 },
                 {
-                    "Id": "004b29c8-0000-0000-8000-b5c6d6feeb4e",
+                    "Id": "Container.btnCreateQuotation.3_1",
                     "FieldName": "btnCreateQuotation",
                     "Order": 3,
                     "ComponentType": "Button",
@@ -565,7 +564,7 @@
                     "ShowExp": "!this.EditForm.Entity.Id.startsWith(\"-\") && (this.dayjs(this.Entity.FromDate) < this.dayjs() && (!this.Entity.ToDate || (this.Entity.ToDate && this.dayjs(this.Entity.ToDate) > this.dayjs())))"
                 },
                 {
-                    "Id": "00891508-0000-0000-8000-07d881c74d3b",
+                    "Id": "Container.btnSaveAdd.1_8",
                     "FieldName": "btnSaveAdd",
                     "Order": 1,
                     "ComponentType": "Button",
@@ -577,7 +576,7 @@
                     "Events": "{ \"click\" : \"SaveAdd\" }"
                 },
                 {
-                    "Id": "00891514-0000-0000-8000-d1f5c8c75702",
+                    "Id": "Container.btnSaveAs.0",
                     "FieldName": "btnSaveAs",
                     "Order": 0,
                     "ComponentType": "Button",
@@ -589,7 +588,7 @@
                     "Events": "{ \"click\" : \"SaveAs\" }"
                 },
                 {
-                    "Id": "00891560-0000-0000-8000-3903b36664e2",
+                    "Id": "Container.btnSave.5_9",
                     "FieldName": "btnSave",
                     "Order": 5,
                     "ComponentType": "Button",
@@ -603,7 +602,7 @@
             ]
         },
         {
-            "Id": "0089151c-0000-0000-8000-546dab19c0c4",
+            "Id": "sea_pricing_editor.Center.1",
             "FieldName": "Center",
             "Order": 1,
             "ComponentType": "Section",
@@ -612,7 +611,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "0052153c-0000-0000-8000-0c718d4ad80c",
+                    "Id": "Center.IsPublic.3_1",
                     "FieldName": "IsPublic",
                     "Order": 3,
                     "ComponentType": "Checkbox",
@@ -624,7 +623,7 @@
             ]
         },
         {
-            "Id": "008915f0-0000-0000-8000-f9d656351427",
+            "Id": "sea_pricing_editor.Button.1",
             "FieldName": "Button",
             "Order": 1,
             "ComponentType": "Section",
@@ -633,7 +632,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "004b29c8-0000-0000-8000-b5c6d6feeb4e",
+                    "Id": "Button.btnCreateQuotation.3_4",
                     "FieldName": "btnCreateQuotation",
                     "Order": 3,
                     "ComponentType": "Button",
@@ -648,7 +647,7 @@
                     "ShowExp": "!this.EditForm.Entity.Id.startsWith(\"-\") && (this.dayjs(this.Entity.FromDate) < this.dayjs() && (!this.Entity.ToDate || (this.Entity.ToDate && this.dayjs(this.Entity.ToDate) > this.dayjs())))"
                 },
                 {
-                    "Id": "00891508-0000-0000-8000-07d881c74d3b",
+                    "Id": "Button.btnSaveAdd.1_15",
                     "FieldName": "btnSaveAdd",
                     "Order": 1,
                     "ComponentType": "Button",
@@ -660,7 +659,7 @@
                     "Events": "{ \"click\" : \"SaveAdd\" }"
                 },
                 {
-                    "Id": "00891514-0000-0000-8000-d1f5c8c75702",
+                    "Id": "Button.btnSaveAs.0",
                     "FieldName": "btnSaveAs",
                     "Order": 0,
                     "ComponentType": "Button",
@@ -672,7 +671,7 @@
                     "Events": "{ \"click\" : \"SaveAs\" }"
                 },
                 {
-                    "Id": "00891560-0000-0000-8000-3903b36664e2",
+                    "Id": "Button.btnSave.5_14",
                     "FieldName": "btnSave",
                     "Order": 5,
                     "ComponentType": "Button",
@@ -688,7 +687,6 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "28AD36DA-EEF0-486F-8A3D-C4F86BD99591",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -699,39 +697,32 @@
             "TableName": "Feature"
         },
         {
-            "Id": "2941DF86-5D88-4AC4-8913-CCE1CDD8DBA0",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "57A27D1A-CFB1-4851-A484-46BECBF399CD",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "59440A2F-9D7F-42A5-91BE-160277752897",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "5CCBC25C-02C5-4F92-8410-881C8EDC2B22",
             "RoleId": "SALES",
             "CanRead": true,
             "CanReadAll": true,
             "TableName": "Feature"
         },
         {
-            "Id": "684C7DE8-1E15-4D65-948E-237B4AA38276",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "A76FFEF3-5EE0-4FF3-8573-47B10FFC096F",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "D04B76CA-801C-41A0-8511-6A54314D8216",
             "RoleId": "DOCS",
             "CanRead": true,
             "CanWrite": true,
@@ -739,12 +730,10 @@
             "TableName": "Feature"
         },
         {
-            "Id": "F8DE367D-9E1C-4689-BC05-F07736374259",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "FBD4F532-17D0-4F5F-B1DC-18C4D61B83CC",
             "RoleId": "ACC",
             "TableName": "Feature"
         }

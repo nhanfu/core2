@@ -1,8 +1,7 @@
 {
-    "Id": "01937b58-c35c-76f7-9d6e-c33c761aea51",
+    "Id": "shipment_process",
     "Name": "shipment-process",
     "Label": "Shipment Proces",
-    "ParentId": "009b3b78-0000-0000-8000-38a9f8f617fc",
     "Order": 9,
     "Script": "return {\r\n    Add: function () {\r\n        this.OpenPopup(\"shipment-process-editor\", {});\r\n    },\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"shipment-process-editor\", entity);\r\n    }\r\n}",
     "Icon": "fal fa-tasks",
@@ -10,7 +9,7 @@
     "EntityId": "ShipmentProcess",
     "GridPolicies": [
         {
-            "Id": "01957ff5-e1de-724a-a0a6-e1a4749ad22c",
+            "Id": "shipment_process.TypeId.0",
             "FieldName": "TypeId",
             "Order": 0,
             "ComponentType": "Dropdown",
@@ -27,17 +26,14 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "20845713-B4BA-46EF-BA38-6315926AFB7C",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "25D34DCD-B91B-4C82-9188-FEAA6AFBE076",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "2C354769-388F-495A-9E29-935184079A4A",
             "RoleId": "DOCS",
             "CanRead": true,
             "CanReadAll": true,
@@ -46,22 +42,18 @@
             "TableName": "Feature"
         },
         {
-            "Id": "2FEB089E-F5A6-4CC7-A408-3711BCECFC5C",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "58616588-0D73-495D-A5FD-866359F8F4BD",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "8E49502A-7BF0-449D-AF09-191D87A9DCE3",
             "RoleId": "BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "965AA1B5-B903-4599-BC57-E7A2773FE1E2",
             "RoleId": "ADMIN",
             "CanRead": true,
             "CanReadAll": true,
@@ -70,24 +62,21 @@
             "TableName": "Feature"
         },
         {
-            "Id": "A03D1D7F-5B98-46E8-AE96-34733D714D2E",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "C8BD008C-F257-4923-BA19-215211842A23",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "F4A27B20-1B7C-4A6F-B26A-7BA042E6E342",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         }
     ],
     "Components": [
         {
-            "Id": "01937b58-c477-720b-a065-631e016197c1",
+            "Id": "shipment_process.Section.1",
             "Order": 1,
             "ComponentType": "Section",
             "Icon": "fal fa-border-all mr-1",
@@ -95,7 +84,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "01937b58-c4f9-7428-a72b-466b968d4106",
+                    "Id": "Section.ShipmentProcess.1",
                     "FieldName": "ShipmentProcess",
                     "Order": 1,
                     "ComponentType": "GridView",

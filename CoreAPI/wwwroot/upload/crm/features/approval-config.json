@@ -1,8 +1,7 @@
 {
-    "Id": "003e0814-0000-0000-8000-863f10025afc",
+    "Id": "approval_config",
     "Name": "approval-config",
     "Label": "Approval Config",
-    "ParentId": "000a0514-0000-0000-8000-1f67beb1bcef",
     "Order": 3,
     "Script": "return {\r\n    Add: function () {\r\n        var entity = {}\r\n        this.OpenPopup(\"approval-editor\", entity);\r\n    },\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"approval-editor\", entity);\r\n    }\r\n}",
     "Icon": "fal fa-smile",
@@ -10,7 +9,7 @@
     "EntityId": "ApprovalConfig",
     "GridPolicies": [
         {
-            "Id": "004508d8-0000-0000-8000-fa5f3c75c561",
+            "Id": "approval_config.NameId.2",
             "FieldName": "NameId",
             "Order": 2,
             "ComponentType": "Dropdown",
@@ -28,7 +27,7 @@
             "EntityId": "ApprovalConfig"
         },
         {
-            "Id": "008218a4-0000-0000-8000-b16daa1a0e53",
+            "Id": "approval_config.btnEdit.0",
             "FieldName": "btnEdit",
             "Order": 0,
             "ComponentType": "Button",
@@ -44,14 +43,14 @@
     ],
     "Components": [
         {
-            "Id": "003f0868-0000-0000-8000-0e89bc655d0a",
+            "Id": "approval_config.Lang.1",
             "FieldName": "Lang",
             "Order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "003f08e4-0000-0000-8000-e0d0c4fe4d8d",
+                    "Id": "Lang.ApprovalConfig.1",
                     "FieldName": "ApprovalConfig",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -71,12 +70,10 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "0627D3DA-47D6-46BE-8663-0BFC6E17A56D",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "2BBA39E0-5269-4227-9AF7-92B1BC7DCA2A",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -85,42 +82,34 @@
             "TableName": "Feature"
         },
         {
-            "Id": "70BABFC6-31D1-4E83-B279-C0DC956B8B5A",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "71E89335-690D-4047-B390-F347913F8BFD",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "741C2561-D2F0-46F3-A51B-B413A803A9F4",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "9245CB4C-31E0-4AB8-B16C-26475809D022",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "A85EE7E2-2D09-436C-B9DC-A10D8010B7FE",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "B4B9EFDA-F5C7-4EDE-B19B-3B1BC47ADD08",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "D3B6AE99-4EC9-4027-9AFC-3C00304EF086",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "F4DF28F0-99B0-40D8-8496-DAD1C6FE880A",
             "RoleId": "ACC",
             "TableName": "Feature"
         }

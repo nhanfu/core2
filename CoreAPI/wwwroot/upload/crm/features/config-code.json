@@ -1,15 +1,14 @@
 {
-    "Id": "007900a8-0000-0000-8000-2185b27e47d3",
+    "Id": "config_code",
     "Name": "config-code",
     "Label": "Config Code",
-    "ParentId": "000a0514-0000-0000-8000-1f67beb1bcef",
     "Order": 10,
     "Icon": "fal fa-cog",
     "IsMenu": true,
     "EntityId": "Config",
     "GridPolicies": [
         {
-            "Id": "000d0048-0000-0000-8000-5ef75291e34a",
+            "Id": "config_code.P1.2",
             "FieldName": "P1",
             "Order": 2,
             "ComponentType": "Input",
@@ -21,7 +20,7 @@
             "EntityId": "Config"
         },
         {
-            "Id": "000f0064-0000-0000-8000-512715cc98b7",
+            "Id": "config_code.P2.3",
             "FieldName": "P2",
             "Order": 3,
             "ComponentType": "Input",
@@ -33,7 +32,7 @@
             "EntityId": "Config"
         },
         {
-            "Id": "00100048-0000-0000-8000-fe00b189fa68",
+            "Id": "config_code.P3.4",
             "FieldName": "P3",
             "Order": 4,
             "ComponentType": "Input",
@@ -45,7 +44,7 @@
             "EntityId": "Config"
         },
         {
-            "Id": "00100094-0000-0000-8000-a8e5bc30a970",
+            "Id": "config_code.P4.5",
             "FieldName": "P4",
             "Order": 5,
             "ComponentType": "Input",
@@ -57,7 +56,7 @@
             "EntityId": "Config"
         },
         {
-            "Id": "00110010-0000-0000-8000-8018e2ae56e7",
+            "Id": "config_code.Increment.7",
             "FieldName": "Increment",
             "Order": 7,
             "ComponentType": "Number",
@@ -70,7 +69,7 @@
             "EntityId": "Config"
         },
         {
-            "Id": "001100b4-0000-0000-8000-ff43b28560ed",
+            "Id": "config_code.P5.6",
             "FieldName": "P5",
             "Order": 6,
             "ComponentType": "Input",
@@ -82,7 +81,7 @@
             "EntityId": "Config"
         },
         {
-            "Id": "001d004c-0000-0000-8000-eaf6fca80363",
+            "Id": "config_code.RecordId.9",
             "FieldName": "RecordId",
             "Order": 9,
             "ComponentType": "Input",
@@ -96,7 +95,7 @@
             "EntityId": "Config"
         },
         {
-            "Id": "005e00bc-0000-0000-8000-3dc189bbbb56",
+            "Id": "config_code.ResetTypeId.8",
             "FieldName": "ResetTypeId",
             "Order": 8,
             "ComponentType": "Input",
@@ -108,7 +107,7 @@
             "EntityId": "Config"
         },
         {
-            "Id": "00d20040-0000-0000-8000-d2f1a5fcf11d",
+            "Id": "config_code.TableName.0",
             "FieldName": "TableName",
             "Order": 0,
             "ComponentType": "Input",
@@ -120,7 +119,7 @@
             "EntityId": "Config"
         },
         {
-            "Id": "01943537-39df-7368-915a-8260748d1989",
+            "Id": "config_code.EnumId.1",
             "FieldName": "EnumId",
             "Order": 1,
             "ComponentType": "Dropdown",
@@ -144,7 +143,6 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "2E9E9DBF-8769-4BD5-8537-34FFCC3F7730",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -153,54 +151,45 @@
             "TableName": "Feature"
         },
         {
-            "Id": "5531CC40-A2F5-4827-A62F-C5DF02E44BAF",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "5C1BF080-0975-41C3-9016-ECE845B9594F",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "6B6137B2-1B07-4893-9F3B-5962E3A24FD2",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "787F6AC6-8639-401E-BBEB-A7331E0644E8",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "8A9013FB-29AB-4914-8E63-B3F60E8AA479",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "8BFB615A-27C0-47F6-B1F8-81608958CEB7",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "ADA64304-9BBF-4EC2-8073-2D2497076B36",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "CB985E68-95FC-4554-9105-AD86AC5C7C5C",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "DDD2A7F5-B7B4-4643-9392-75E5075BEF8C",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         }
     ],
     "Components": [
         {
-            "Id": "00b40064-0000-0000-8000-a45d926c75bf",
+            "Id": "config_code.Container.1",
             "FieldName": "Container",
             "Order": 1,
             "ComponentType": "Section",
@@ -208,7 +197,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "00c20024-0000-0000-8000-20b5fce098ee",
+                    "Id": "Container.Config.1",
                     "FieldName": "Config",
                     "Order": 1,
                     "ComponentType": "GridView",

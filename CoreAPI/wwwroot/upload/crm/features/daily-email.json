@@ -1,8 +1,7 @@
 {
-    "Id": "00133010-0000-0000-8000-971751a5edb8",
+    "Id": "daily_email",
     "Name": "daily-email",
     "Label": "Daily Email",
-    "ParentId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
     "Order": 12,
     "Script": "return {\r\n    Add: function () {\r\n        var entity = {\r\n            UserId: this.Token.UserId\r\n        }\r\n        this.OpenPopup(\"email-template-editor\", entity);\r\n    },\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"email-template-editor\", entity);\r\n    }\r\n}",
     "Icon": "fas fa-at",
@@ -10,7 +9,7 @@
     "EntityId": "PlanEmail",
     "GridPolicies": [
         {
-            "Id": "0003305c-0000-0000-8000-75fa740555b9",
+            "Id": "daily_email.InsertedBy.5",
             "FieldName": "InsertedBy",
             "Order": 5,
             "ComponentType": "Dropdown",
@@ -25,7 +24,7 @@
             "EntityId": "EmailTemplate"
         },
         {
-            "Id": "00033064-0000-0000-8000-b82fa8b2b297",
+            "Id": "daily_email.FeatureId.4",
             "FieldName": "FeatureId",
             "Order": 4,
             "ComponentType": "Dropdown",
@@ -40,7 +39,7 @@
             "EntityId": "EmailTemplate"
         },
         {
-            "Id": "00113470-0000-0000-8000-dbd1f0b4bc07",
+            "Id": "daily_email.SubjectMail.3",
             "FieldName": "SubjectMail",
             "Order": 3,
             "ComponentType": "Input",
@@ -52,7 +51,7 @@
             "EntityId": "EmailTemplate"
         },
         {
-            "Id": "0014302c-0000-0000-8000-fe8749cd866f",
+            "Id": "daily_email.Name.2",
             "FieldName": "Name",
             "Order": 2,
             "ComponentType": "Input",
@@ -64,7 +63,7 @@
             "EntityId": "EmailTemplate"
         },
         {
-            "Id": "0014304c-0000-0000-8000-4ce154161a6a",
+            "Id": "daily_email.btnEdit.0",
             "FieldName": "btnEdit",
             "Order": 0,
             "ComponentType": "Button",
@@ -79,7 +78,7 @@
             "EntityId": "EmailTemplate"
         },
         {
-            "Id": "001430d0-0000-0000-8000-f0cbf85dc331",
+            "Id": "daily_email.DailyDate.6",
             "FieldName": "DailyDate",
             "Order": 6,
             "ComponentType": "Datepicker",
@@ -91,7 +90,7 @@
             "EntityId": "EmailTemplate"
         },
         {
-            "Id": "00ee32b4-0000-0000-8000-8439404ac8b6",
+            "Id": "daily_email.IsPause.1",
             "FieldName": "IsPause",
             "Order": 1,
             "ComponentType": "Checkbox",
@@ -107,14 +106,14 @@
     ],
     "Components": [
         {
-            "Id": "00133068-0000-0000-8000-243170fdae5a",
+            "Id": "daily_email.Section.1",
             "Order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "001430e4-0000-0000-8000-c49c5932ddf4",
+                    "Id": "Section.EmailTemplate.1",
                     "FieldName": "EmailTemplate",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -134,32 +133,26 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "07B23BF6-E59B-4551-BBB3-EB7940BE53F1",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "2B7D3BD2-3C50-499D-85F2-ECF123905CB3",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "843718A6-7705-4C17-963E-D043A15E6A2E",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "A15D7930-C28A-4324-BA1C-2B8E2E82A2DC",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "B5C57E28-CA2C-432B-87D9-75E2CF90A137",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "BF84D2A6-B650-4BB9-BFE8-FA747E14DB7D",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -170,22 +163,18 @@
             "TableName": "Feature"
         },
         {
-            "Id": "C267C7B9-7567-432C-AEC2-2814FDA736E3",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "C3CB5269-34A2-43FE-80BE-F2F1DE1FDC50",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "D1D48EB4-DB4D-4430-B3A2-68B4985C1ACE",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "DC7E0C04-D391-412C-80F6-6AFC08C30781",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         }

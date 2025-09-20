@@ -1,15 +1,14 @@
 {
-    "Id": "008c1fa8-0000-0000-8000-385761a6006d",
+    "Id": "config_unique",
     "Name": "config-unique",
     "Label": "Config Unique",
-    "ParentId": "000a0514-0000-0000-8000-1f67beb1bcef",
     "Order": 4,
     "Icon": "fal fa-table",
     "IsMenu": true,
     "EntityId": "ConfigUnique",
     "GridPolicies": [
         {
-            "Id": "008c1f4c-0000-0000-8000-0ba440dfff02",
+            "Id": "config_unique.ObjectId.1",
             "FieldName": "ObjectId",
             "Order": 1,
             "ComponentType": "Dropdown",
@@ -27,7 +26,7 @@
             "EntityId": "ConfigUnique"
         },
         {
-            "Id": "008c1f64-0000-0000-8000-315deceaa3c7",
+            "Id": "config_unique.IsSave.0",
             "FieldName": "IsSave",
             "Order": 0,
             "ComponentType": "Checkbox",
@@ -40,7 +39,7 @@
             "EntityId": "ConfigUnique"
         },
         {
-            "Id": "00ad1f34-0000-0000-8000-e180ecc37ba9",
+            "Id": "config_unique.ComponentIds.1",
             "FieldName": "ComponentIds",
             "Order": 1,
             "ComponentType": "Dropdown",
@@ -58,17 +57,14 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "20AF3948-E942-4701-AB8C-F4D23A2CB4F8",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "21FDF96A-40BD-4ECE-81FC-8F3340808267",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "28544C3D-FBD6-4700-9D76-6CB19CEC47FC",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -79,51 +75,44 @@
             "TableName": "Feature"
         },
         {
-            "Id": "679891C1-99DD-42A2-B773-15FCA5A80F20",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "75EED31A-7DA3-4C83-A7DA-4E203A15AD04",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "8F78E589-4FB1-4AD6-8864-B77D69704D9A",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "98F99C37-279A-475F-A236-E5276265F328",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "A03DC3DF-20DB-40D5-8CD1-84A7AE4E01BD",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "A7351B0F-D2CD-4A5C-ACB8-7662A3496A91",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "DCA7BBC4-611C-4811-9543-CEF26BA57CE1",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         }
     ],
     "Components": [
         {
-            "Id": "008c1f64-0000-0000-8000-6f3fb6497429",
+            "Id": "config_unique.Lang.1",
             "FieldName": "Lang",
             "Order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "008c1fa4-0000-0000-8000-d4179cc23453",
+                    "Id": "Lang.ConfigUnique.1",
                     "FieldName": "ConfigUnique",
                     "Order": 1,
                     "ComponentType": "GridView",

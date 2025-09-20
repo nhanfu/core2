@@ -1,8 +1,7 @@
 {
-    "Id": "00661674-0000-0000-8000-33423db86c7f",
+    "Id": "leads_editor",
     "Name": "leads-editor",
     "Label": "Leads Editor",
-    "ParentId": "6e63c20d-2788-4776-3332-4cfe7c982can2",
     "Order": 111,
     "Style": "width:99%;",
     "Script": "return {\r\n    Prospect: function (form, gridview) {\r\n        this.EditForm.OpenConfig(\"Move to prospect customer!\", () => {\r\n            this.EditForm.Entity.TypeId = 2;\r\n            this.EditForm.Entity.SaleId = this.Token.UserId;\r\n            this.EditForm.Dirty = true;\r\n            this.EditForm.SavePatch(true).then(() => {\r\n                this.EditForm.Dispose();\r\n                this.OpenFrom.OpenPopup(\"prospect-editor\", this.EditForm.Entity);\r\n            });\r\n        });\r\n    }\r\n}",
@@ -11,7 +10,7 @@
     "CodeId": "0066f8fc-0000-0000-8000-902fce3743cc",
     "GridPolicies": [
         {
-            "Id": "000e4388-0000-0000-8000-7c1c83532910",
+            "Id": "leads_editor.IsMain.5",
             "FieldName": "IsMain",
             "Order": 5,
             "ComponentType": "Checkbox",
@@ -23,7 +22,7 @@
             "EntityId": "PartnerContact"
         },
         {
-            "Id": "00671614-0000-0000-8000-5b6f095a5606",
+            "Id": "leads_editor.ActionId.4",
             "FieldName": "ActionId",
             "Order": 4,
             "ComponentType": "Dropdown",
@@ -42,7 +41,7 @@
             "EntityId": "PartnerCare"
         },
         {
-            "Id": "00671648-0000-0000-8000-33a8c9781131",
+            "Id": "leads_editor.Notes.8",
             "FieldName": "Notes",
             "Order": 8,
             "ComponentType": "Input",
@@ -54,7 +53,7 @@
             "EntityId": "PartnerCare"
         },
         {
-            "Id": "00671658-0000-0000-8000-782e9448790f",
+            "Id": "leads_editor.TaskName.1",
             "FieldName": "TaskName",
             "Order": 1,
             "ComponentType": "Input",
@@ -66,7 +65,7 @@
             "EntityId": "PartnerCare"
         },
         {
-            "Id": "0067165c-0000-0000-8000-3480d46c3dec",
+            "Id": "leads_editor.AssigneeId.6",
             "FieldName": "AssigneeId",
             "Order": 6,
             "ComponentType": "Dropdown",
@@ -85,7 +84,7 @@
             "EntityId": "PartnerCare"
         },
         {
-            "Id": "00671660-0000-0000-8000-e9f178342656",
+            "Id": "leads_editor.Note.6",
             "FieldName": "Note",
             "Order": 6,
             "ComponentType": "Input",
@@ -97,7 +96,7 @@
             "EntityId": "PartnerContact"
         },
         {
-            "Id": "00671664-0000-0000-8000-d638849d3ef8",
+            "Id": "leads_editor.ContactEmail.1",
             "FieldName": "ContactEmail",
             "Order": 1,
             "ComponentType": "Input",
@@ -109,7 +108,7 @@
             "EntityId": "PartnerContact"
         },
         {
-            "Id": "00671674-0000-0000-8000-8545fb3be207",
+            "Id": "leads_editor.NotificationNumber.7",
             "FieldName": "NotificationNumber",
             "Order": 7,
             "ComponentType": "Number",
@@ -122,7 +121,7 @@
             "EntityId": "PartnerCare"
         },
         {
-            "Id": "00671680-0000-0000-8000-c43f92223764",
+            "Id": "leads_editor.Birthday.3",
             "FieldName": "Birthday",
             "Order": 3,
             "ComponentType": "Datepicker",
@@ -134,7 +133,7 @@
             "EntityId": "PartnerContact"
         },
         {
-            "Id": "00671688-0000-0000-8000-6d17d76cc051",
+            "Id": "leads_editor.Deadline.5",
             "FieldName": "Deadline",
             "Order": 5,
             "ComponentType": "Datepicker",
@@ -147,7 +146,7 @@
             "EntityId": "PartnerCare"
         },
         {
-            "Id": "0067168c-0000-0000-8000-87b1f6ef96b2",
+            "Id": "leads_editor.ContactName.0",
             "FieldName": "ContactName",
             "Order": 0,
             "ComponentType": "Input",
@@ -159,7 +158,7 @@
             "EntityId": "PartnerContact"
         },
         {
-            "Id": "006716a8-0000-0000-8000-e3c845568aa1",
+            "Id": "leads_editor.CategoryId.3",
             "FieldName": "CategoryId",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -178,7 +177,7 @@
             "EntityId": "PartnerCare"
         },
         {
-            "Id": "006716d0-0000-0000-8000-f7eb2b6d8b77",
+            "Id": "leads_editor.Attachment.9",
             "FieldName": "Attachment",
             "Order": 9,
             "ComponentType": "FileUpload",
@@ -192,7 +191,7 @@
             "VirtualScroll": true
         },
         {
-            "Id": "006716e4-0000-0000-8000-4fef25713019",
+            "Id": "leads_editor.JobTitles.4",
             "FieldName": "JobTitles",
             "Order": 4,
             "ComponentType": "Input",
@@ -204,7 +203,7 @@
             "EntityId": "PartnerContact"
         },
         {
-            "Id": "006716ec-0000-0000-8000-2302731471a7",
+            "Id": "leads_editor.PriorityId.2",
             "FieldName": "PriorityId",
             "Order": 2,
             "ComponentType": "Dropdown",
@@ -223,7 +222,7 @@
             "EntityId": "PartnerCare"
         },
         {
-            "Id": "006716f4-0000-0000-8000-aead044b875a",
+            "Id": "leads_editor.InsertedDate.0",
             "FieldName": "InsertedDate",
             "Order": 0,
             "ComponentType": "Datepicker",
@@ -236,7 +235,7 @@
             "EntityId": "PartnerCare"
         },
         {
-            "Id": "006716f8-0000-0000-8000-1fcb352e3ca5",
+            "Id": "leads_editor.ContactPhoneNumber.2",
             "FieldName": "ContactPhoneNumber",
             "Order": 2,
             "ComponentType": "Input",
@@ -250,7 +249,7 @@
     ],
     "Components": [
         {
-            "Id": "00661608-0000-0000-8000-3b2f2b0a7cb6",
+            "Id": "leads_editor.Full.1",
             "FieldName": "Full",
             "Order": 1,
             "ComponentType": "Section",
@@ -260,7 +259,7 @@
             "DisabledExp": "this.Entity.ActionId == 2",
             "Components": [
                 {
-                    "Id": "006616b0-0000-0000-8000-d652f4dbd03f",
+                    "Id": "Full.Common.1_2",
                     "FieldName": "Common",
                     "Order": 1,
                     "ComponentType": "Section",
@@ -269,7 +268,7 @@
                     "XxlOuterColumn": 12,
                     "Components": [
                         {
-                            "Id": "00004310-0000-0000-8000-be42ec36ab45",
+                            "Id": "Common.IsPublic.11",
                             "FieldName": "IsPublic",
                             "Order": 11,
                             "ComponentType": "Checkbox",
@@ -279,7 +278,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "000416d4-0000-0000-8000-c14f16622d27",
+                            "Id": "Common.GroupId.12_1",
                             "FieldName": "GroupId",
                             "Order": 12,
                             "ComponentType": "Dropdown",
@@ -294,7 +293,7 @@
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
-                            "Id": "0028161c-0000-0000-8000-313cd49bb133",
+                            "Id": "Common.Raiting.10",
                             "FieldName": "Raiting",
                             "Order": 10,
                             "ComponentType": "Number",
@@ -304,7 +303,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00331668-0000-0000-8000-c01bb24fdb3e",
+                            "Id": "Common.Note.14",
                             "FieldName": "Note",
                             "Order": 14,
                             "ComponentType": "Textarea",
@@ -314,7 +313,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00661630-0000-0000-8000-49c9dfb53bfe",
+                            "Id": "Common.Industry.9",
                             "FieldName": "Industry",
                             "Order": 9,
                             "ComponentType": "Input",
@@ -325,7 +324,7 @@
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
-                            "Id": "00661634-0000-0000-8000-38c438eefaac",
+                            "Id": "Common.CompanyName.6",
                             "FieldName": "CompanyName",
                             "Order": 6,
                             "ComponentType": "Input",
@@ -336,7 +335,7 @@
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
-                            "Id": "00661644-0000-0000-8000-18b12360979c",
+                            "Id": "Common.Email.4",
                             "FieldName": "Email",
                             "Order": 4,
                             "ComponentType": "Input",
@@ -345,7 +344,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00661658-0000-0000-8000-afc2bbb2119a",
+                            "Id": "Common.Address.13",
                             "FieldName": "Address",
                             "Order": 13,
                             "ComponentType": "Textarea",
@@ -355,7 +354,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "0066169c-0000-0000-8000-7edf2cb2ac4c",
+                            "Id": "Common.ResidenceTypeId.7",
                             "FieldName": "ResidenceTypeId",
                             "Order": 7,
                             "ComponentType": "Dropdown",
@@ -370,7 +369,7 @@
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
-                            "Id": "006616d4-0000-0000-8000-54db268108f9",
+                            "Id": "Common.TaxCode.0",
                             "FieldName": "TaxCode",
                             "Order": 0,
                             "ComponentType": "Input",
@@ -381,7 +380,7 @@
                             "Events": "{\"change\":\"GetInfo\"}"
                         },
                         {
-                            "Id": "006616dc-0000-0000-8000-68e1e0931855",
+                            "Id": "Common.Name.3",
                             "FieldName": "Name",
                             "Order": 3,
                             "ComponentType": "Input",
@@ -391,7 +390,7 @@
                             "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                         },
                         {
-                            "Id": "006616ec-0000-0000-8000-261e4b149457",
+                            "Id": "Common.PhoneNumber.1",
                             "FieldName": "PhoneNumber",
                             "Order": 1,
                             "ComponentType": "Input",
@@ -400,7 +399,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "006616fc-0000-0000-8000-edb7b48103c9",
+                            "Id": "Common.SourseId.5",
                             "FieldName": "SourseId",
                             "Order": 5,
                             "ComponentType": "Dropdown",
@@ -415,7 +414,7 @@
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
-                            "Id": "009a1630-0000-0000-8000-10dbd5acb0b2",
+                            "Id": "Common.RegularShippingFrom.2",
                             "FieldName": "RegularShippingFrom",
                             "Order": 2,
                             "ComponentType": "Input",
@@ -424,7 +423,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00de168c-0000-0000-8000-eb913d60dbe0",
+                            "Id": "Common.AssignId.8",
                             "FieldName": "AssignId",
                             "Order": 8,
                             "ComponentType": "Dropdown",
@@ -441,7 +440,7 @@
                     ]
                 },
                 {
-                    "Id": "0067167c-0000-0000-8000-869ecb9571fa",
+                    "Id": "Full.Section.5_2",
                     "Order": 5,
                     "ComponentType": "Section",
                     "Label": "Contact details",
@@ -452,7 +451,7 @@
                     "DisplayBadge": true,
                     "Components": [
                         {
-                            "Id": "006716a8-0000-0000-8000-6614a55f50fc",
+                            "Id": "Section.PartnerContact.1_1",
                             "FieldName": "PartnerContact",
                             "Order": 1,
                             "ComponentType": "GridView",
@@ -469,7 +468,7 @@
                     ]
                 },
                 {
-                    "Id": "00421778-0000-0000-8000-dca2f312da09",
+                    "Id": "Full.btnSaveAdd.0_1",
                     "FieldName": "btnSaveAdd",
                     "Order": 0,
                     "ComponentType": "Button",
@@ -481,7 +480,7 @@
                     "Events": "{ \"click\" : \"SaveAs\" }"
                 },
                 {
-                    "Id": "00671624-0000-0000-8000-297eacb67f2b",
+                    "Id": "Full.btnSaveAdd.2_2",
                     "FieldName": "btnSaveAdd",
                     "Order": 2,
                     "ComponentType": "Button",
@@ -492,7 +491,7 @@
                     "Events": "{ \"click\" : \"SaveAdd\" }"
                 },
                 {
-                    "Id": "0067163c-0000-0000-8000-34d3f313d5f9",
+                    "Id": "Full.btnSave.3_1",
                     "FieldName": "btnSave",
                     "Order": 3,
                     "ComponentType": "Button",
@@ -503,7 +502,7 @@
                     "Events": "{ \"click\" : \"SavePatch\" }"
                 },
                 {
-                    "Id": "00ec1810-0000-0000-8000-e8a2f2d8d552",
+                    "Id": "Full.btnProspect.1_1",
                     "FieldName": "btnProspect",
                     "Order": 1,
                     "ComponentType": "Button",
@@ -516,7 +515,7 @@
             ]
         },
         {
-            "Id": "0067164c-0000-0000-8000-d665e8765899",
+            "Id": "leads_editor.Center.5",
             "FieldName": "Center",
             "Order": 5,
             "ComponentType": "Section",
@@ -526,7 +525,7 @@
             "DisabledExp": "this.Entity.ActionId == 2",
             "Components": [
                 {
-                    "Id": "00671614-0000-0000-8000-e4c116f87419",
+                    "Id": "Center.ActionId.5",
                     "FieldName": "ActionId",
                     "Order": 5,
                     "ComponentType": "Select",
@@ -542,7 +541,7 @@
                     "DisabledExp": "!this.Token.RoleNames.some(x => x.toUpperCase() == \"APPROVE PARTNER\")"
                 },
                 {
-                    "Id": "00671698-0000-0000-8000-22ed4329c645",
+                    "Id": "Center.Code.1_2",
                     "FieldName": "Code",
                     "Order": 1,
                     "ComponentType": "Input",
@@ -552,7 +551,7 @@
                     "Style": "display: flex;align-items: center;gap: 1rem;"
                 },
                 {
-                    "Id": "006716e8-0000-0000-8000-613243f39ae2",
+                    "Id": "Center.SaleId.3_1",
                     "FieldName": "SaleId",
                     "Order": 3,
                     "ComponentType": "Dropdown",
@@ -571,7 +570,7 @@
             ]
         },
         {
-            "Id": "00671670-0000-0000-8000-c868d997b40f",
+            "Id": "leads_editor.Button.8",
             "FieldName": "Button",
             "Order": 8,
             "ComponentType": "Section",
@@ -580,7 +579,7 @@
             "XxlOuterColumn": 12,
             "Components": [
                 {
-                    "Id": "00421778-0000-0000-8000-dca2f312da09",
+                    "Id": "Button.btnSaveAdd.0_5",
                     "FieldName": "btnSaveAdd",
                     "Order": 0,
                     "ComponentType": "Button",
@@ -592,7 +591,7 @@
                     "Events": "{ \"click\" : \"SaveAs\" }"
                 },
                 {
-                    "Id": "00671624-0000-0000-8000-297eacb67f2b",
+                    "Id": "Button.btnSaveAdd.2_3",
                     "FieldName": "btnSaveAdd",
                     "Order": 2,
                     "ComponentType": "Button",
@@ -603,7 +602,7 @@
                     "Events": "{ \"click\" : \"SaveAdd\" }"
                 },
                 {
-                    "Id": "0067163c-0000-0000-8000-34d3f313d5f9",
+                    "Id": "Button.btnSave.3_2",
                     "FieldName": "btnSave",
                     "Order": 3,
                     "ComponentType": "Button",
@@ -614,7 +613,7 @@
                     "Events": "{ \"click\" : \"SavePatch\" }"
                 },
                 {
-                    "Id": "00ec1810-0000-0000-8000-e8a2f2d8d552",
+                    "Id": "Button.btnProspect.1_1",
                     "FieldName": "btnProspect",
                     "Order": 1,
                     "ComponentType": "Button",
@@ -629,7 +628,6 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "3B2EC4B9-75AC-46B9-993F-0E6F28960F5D",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -640,32 +638,26 @@
             "TableName": "Feature"
         },
         {
-            "Id": "55FAC86D-0B00-4835-9497-6ED83C11FA09",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "7853A9D8-2F28-4295-9DFA-BCAAF706E293",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "98DE4844-0553-4EF6-9ECB-93C4A01C6380",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "B0A59000-F0F3-438A-88CE-2FED443CA4DF",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "C4ABB090-1F4B-4A55-9927-D30154A5F0C0",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "CED52EA5-D5BE-4306-98BF-251D41C88A5A",
             "RoleId": "SALES",
             "CanRead": true,
             "CanWrite": true,
@@ -673,17 +665,14 @@
             "TableName": "Feature"
         },
         {
-            "Id": "E2BC861D-732C-449C-B2CA-B88569E06B78",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "F76D7796-317D-4E01-B859-52F9EB6F4AD0",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "FA5D255A-3352-4BDA-9DC5-E962337A6EA2",
             "RoleId": "ACC",
             "TableName": "Feature"
         }

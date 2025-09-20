@@ -1,5 +1,5 @@
 {
-    "Id": "01952338-48b4-75ac-a794-8b4597dc3e50",
+    "Id": "my_shipment",
     "Name": "my-shipment",
     "Label": "My Shipment",
     "Order": 5,
@@ -8,7 +8,7 @@
     "EntityId": "Shipment",
     "GridPolicies": [
         {
-            "Id": "01952338-4d30-754d-9236-27bdc115382b",
+            "Id": "my_shipment.btnEdit.0",
             "FieldName": "btnEdit",
             "Order": 0,
             "ComponentType": "Button",
@@ -22,7 +22,7 @@
             "EntityId": "ShipmentSI"
         },
         {
-            "Id": "01952338-4d6c-713f-bdb4-70e865da109c",
+            "Id": "my_shipment.CustomerId.3",
             "FieldName": "CustomerId",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -39,7 +39,7 @@
             "EntityId": "ShipmentSI"
         },
         {
-            "Id": "01952338-4dac-71b9-8a57-d1853c579dd1",
+            "Id": "my_shipment.ProgressId.1",
             "FieldName": "ProgressId",
             "Order": 1,
             "ComponentType": "Dropdown",
@@ -57,7 +57,7 @@
             "EntityId": "ShipmentSI"
         },
         {
-            "Id": "01952338-4df1-7554-a18f-04094cb360b6",
+            "Id": "my_shipment.PolId.4",
             "FieldName": "PolId",
             "Order": 4,
             "ComponentType": "Dropdown",
@@ -74,7 +74,7 @@
             "EntityId": "ShipmentSI"
         },
         {
-            "Id": "01952338-4e2e-74de-9cc2-e4022c36e5a5",
+            "Id": "my_shipment.PodId.5",
             "FieldName": "PodId",
             "Order": 5,
             "ComponentType": "Dropdown",
@@ -91,7 +91,7 @@
             "EntityId": "ShipmentSI"
         },
         {
-            "Id": "01952338-4e69-7708-8759-410efcbef072",
+            "Id": "my_shipment.BookingNo.2",
             "FieldName": "BookingNo",
             "Order": 2,
             "ComponentType": "Input",
@@ -103,7 +103,7 @@
             "EntityId": "ShipmentSI"
         },
         {
-            "Id": "01952359-efad-773e-aa74-dd9c66bf1403",
+            "Id": "my_shipment.Quantity.0",
             "FieldName": "Quantity",
             "Order": 0,
             "ComponentType": "Number",
@@ -117,7 +117,7 @@
             "EntityId": "EntityContainer"
         },
         {
-            "Id": "01952359-efad-773e-aa74-e2823b197bac",
+            "Id": "my_shipment.ContainerTypeId.1",
             "FieldName": "ContainerTypeId",
             "Order": 1,
             "ComponentType": "Dropdown",
@@ -135,7 +135,7 @@
             "EntityId": "EntityContainer"
         },
         {
-            "Id": "01952359-efad-773e-aa74-e5ba7153605d",
+            "Id": "my_shipment.ContainerNo.2",
             "FieldName": "ContainerNo",
             "Order": 2,
             "ComponentType": "Input",
@@ -149,7 +149,7 @@
             "EntityId": "EntityContainer"
         },
         {
-            "Id": "01952359-efad-773e-aa74-ea0b2b9a4d28",
+            "Id": "my_shipment.SealNo.3",
             "FieldName": "SealNo",
             "Order": 3,
             "ComponentType": "Input",
@@ -162,7 +162,7 @@
             "EntityId": "EntityContainer"
         },
         {
-            "Id": "01952359-efae-7054-b34d-29316dc3019b",
+            "Id": "my_shipment.PKG.4",
             "FieldName": "PKG",
             "Order": 4,
             "ComponentType": "Number",
@@ -175,7 +175,7 @@
             "EntityId": "EntityContainer"
         },
         {
-            "Id": "01952359-efae-7054-b34d-2dcc1b723bd1",
+            "Id": "my_shipment.UnitId.5",
             "FieldName": "UnitId",
             "Order": 5,
             "ComponentType": "Dropdown",
@@ -192,7 +192,7 @@
             "EntityId": "EntityContainer"
         },
         {
-            "Id": "01952359-efae-7054-b34d-317b88851b25",
+            "Id": "my_shipment.Weight.6",
             "FieldName": "Weight",
             "Order": 6,
             "ComponentType": "Number",
@@ -205,7 +205,7 @@
             "EntityId": "EntityContainer"
         },
         {
-            "Id": "01952359-efae-7054-b34d-34858140ea6d",
+            "Id": "my_shipment.CBM.7",
             "FieldName": "CBM",
             "Order": 7,
             "ComponentType": "Number",
@@ -218,7 +218,7 @@
             "EntityId": "EntityContainer"
         },
         {
-            "Id": "01952359-efae-7054-b34d-3b88469ae38f",
+            "Id": "my_shipment.Tare.8",
             "FieldName": "Tare",
             "Order": 8,
             "ComponentType": "Number",
@@ -231,7 +231,7 @@
             "EntityId": "EntityContainer"
         },
         {
-            "Id": "01952359-efae-7054-b34d-3f518b7e7278",
+            "Id": "my_shipment.Description.9",
             "FieldName": "Description",
             "Order": 9,
             "ComponentType": "Input",
@@ -244,7 +244,7 @@
             "EntityId": "EntityContainer"
         },
         {
-            "Id": "0195235c-bf99-7118-8fe6-dd88ba7bafa9",
+            "Id": "my_shipment.JobName.0",
             "FieldName": "JobName",
             "Order": 0,
             "ComponentType": "Input",
@@ -257,7 +257,7 @@
             "EntityId": "ShipmentTask"
         },
         {
-            "Id": "0195235c-bf9b-731d-9860-620ee716d01c",
+            "Id": "my_shipment.FinishDate.1",
             "FieldName": "FinishDate",
             "Order": 1,
             "ComponentType": "Datepicker",
@@ -270,7 +270,7 @@
             "EntityId": "ShipmentTask"
         },
         {
-            "Id": "0195235c-bf9c-710d-a13f-407258c56cf2",
+            "Id": "my_shipment.Notes.2",
             "FieldName": "Notes",
             "Order": 2,
             "ComponentType": "Input",
@@ -283,7 +283,7 @@
             "EntityId": "ShipmentTask"
         },
         {
-            "Id": "019526c7-f3ea-75cb-b8f0-2c3e021d03b6",
+            "Id": "my_shipment.HblNo.1",
             "FieldName": "HblNo",
             "Order": 1,
             "ComponentType": "Input",
@@ -295,7 +295,7 @@
             "EntityId": "Shipment1"
         },
         {
-            "Id": "019526c7-f3eb-70ed-aba0-9ea67dae65d4",
+            "Id": "my_shipment.Quantity.7",
             "FieldName": "Quantity",
             "Order": 7,
             "ComponentType": "Number",
@@ -313,7 +313,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "019526c7-f3eb-70ed-aba0-a21c3e88e7d7",
+            "Id": "my_shipment.GW.9",
             "FieldName": "GW",
             "Order": 9,
             "ComponentType": "Number",
@@ -331,7 +331,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "019526c7-f3eb-70ed-aba0-a40595cec9a3",
+            "Id": "my_shipment.CW.10",
             "FieldName": "CW",
             "Order": 10,
             "ComponentType": "Number",
@@ -349,7 +349,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "019526c7-f3eb-70ed-aba0-ab56ec6ce7f4",
+            "Id": "my_shipment.ContainerText.8",
             "FieldName": "ContainerText",
             "Order": 8,
             "ComponentType": "Input",
@@ -366,7 +366,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "019526c7-f3eb-70ed-aba0-afe74c44e638",
+            "Id": "my_shipment.BookingNo.2_1",
             "FieldName": "BookingNo",
             "Order": 2,
             "ComponentType": "Input",
@@ -381,7 +381,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "019526c7-f3ec-7758-85a5-3fce303bda82",
+            "Id": "my_shipment.EtdDate.5",
             "FieldName": "EtdDate",
             "Order": 5,
             "ComponentType": "Datepicker",
@@ -396,7 +396,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "019526c7-f3ec-7758-85a5-4100c4fb4b15",
+            "Id": "my_shipment.PodId.3",
             "FieldName": "PodId",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -413,7 +413,7 @@
             "EntityId": "Shipment1"
         },
         {
-            "Id": "019526c7-f3ec-7758-85a5-4603812a8c68",
+            "Id": "my_shipment.EtaDate.6",
             "FieldName": "EtaDate",
             "Order": 6,
             "ComponentType": "Datepicker",
@@ -425,7 +425,7 @@
             "EntityId": "Shipment1"
         },
         {
-            "Id": "019526c7-f3ec-7758-85a5-49334729b9b8",
+            "Id": "my_shipment.PolId.4_1",
             "FieldName": "PolId",
             "Order": 4,
             "ComponentType": "Dropdown",
@@ -442,7 +442,7 @@
             "EntityId": "Shipment1"
         },
         {
-            "Id": "019526c9-27df-716f-b5f2-b24281c91d1b",
+            "Id": "my_shipment.TypeId.0",
             "FieldName": "TypeId",
             "Order": 0,
             "ComponentType": "Dropdown",
@@ -457,7 +457,7 @@
             "EntityId": "Shipment1"
         },
         {
-            "Id": "019526df-cc02-70e5-b446-db5b6e6fd527",
+            "Id": "my_shipment.btnEdit.0_1",
             "FieldName": "btnEdit",
             "Order": 0,
             "ComponentType": "Button",
@@ -471,7 +471,7 @@
             "EntityId": "Shipment1"
         },
         {
-            "Id": "01952bf7-ff02-7063-95ee-4abc1174f863",
+            "Id": "my_shipment.Length.0",
             "FieldName": "Length",
             "Order": 0,
             "ComponentType": "Number",
@@ -483,7 +483,7 @@
             "EntityId": "EntityDimension"
         },
         {
-            "Id": "01952bf7-ff03-706c-9df8-f0a57fb33432",
+            "Id": "my_shipment.Width.1",
             "FieldName": "Width",
             "Order": 1,
             "ComponentType": "Number",
@@ -495,7 +495,7 @@
             "EntityId": "EntityDimension"
         },
         {
-            "Id": "01952bf7-ff03-706c-9df8-f49b83ec4b7f",
+            "Id": "my_shipment.Height.2",
             "FieldName": "Height",
             "Order": 2,
             "ComponentType": "Number",
@@ -507,7 +507,7 @@
             "EntityId": "EntityDimension"
         },
         {
-            "Id": "01952bf7-ff04-7094-bf6c-9324af02ab51",
+            "Id": "my_shipment.Quantity.3",
             "FieldName": "Quantity",
             "Order": 3,
             "ComponentType": "Number",
@@ -523,7 +523,7 @@
     ],
     "Components": [
         {
-            "Id": "01952345-bbd6-70b7-bc43-0ab510392619",
+            "Id": "my_shipment.Section.1",
             "Order": 1,
             "ComponentType": "Section",
             "Label": "Track & Trace",
@@ -531,7 +531,7 @@
             "IsTab": true,
             "Components": [
                 {
-                    "Id": "01952338-49de-732d-b7d1-07515d6142ea",
+                    "Id": "Section.1.1",
                     "FieldName": "1",
                     "Order": 1,
                     "ComponentType": "Section",
@@ -540,7 +540,7 @@
                     "XxlCol": 12,
                     "Components": [
                         {
-                            "Id": "0195233d-9004-774c-86c5-b2bf5f4ef7f9",
+                            "Id": "1.btnSearch.2",
                             "FieldName": "btnSearch",
                             "Order": 2,
                             "ComponentType": "Button",
@@ -553,7 +553,7 @@
                             "PreQuery": "{\r\n    \"SearchNo\" : this.Entity.SearchNo\r\n}"
                         },
                         {
-                            "Id": "0195233e-858f-75b9-b94e-1b4a8c1bb127",
+                            "Id": "1.SearchNo.1",
                             "FieldName": "SearchNo",
                             "Order": 1,
                             "ComponentType": "Input",
@@ -565,7 +565,7 @@
                     ]
                 },
                 {
-                    "Id": "01952345-7bc4-726a-a1da-24220580d41b",
+                    "Id": "Section.search_body_sea.2",
                     "FieldName": "search-body-sea",
                     "Order": 2,
                     "ComponentType": "Section",
@@ -574,7 +574,7 @@
                     "XxlCol": 12,
                     "Components": [
                         {
-                            "Id": "0195235e-987a-757a-8877-7e7a1147e08a",
+                            "Id": "search_body_sea.Shipment_Detail_Sea.2",
                             "FieldName": "Shipment Detail Sea",
                             "Order": 2,
                             "ComponentType": "Section",
@@ -583,7 +583,7 @@
                             "XxlCol": 12,
                             "Components": [
                                 {
-                                    "Id": "01952be8-ca47-700f-9a0a-48cda19a7365",
+                                    "Id": "Shipment_Detail_Sea.polName.4",
                                     "FieldName": "polName",
                                     "Order": 4,
                                     "ComponentType": "Label",
@@ -595,7 +595,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952be8-ca47-700f-9a0a-4fc91b4c9b75",
+                                    "Id": "Shipment_Detail_Sea.ptName.5",
                                     "FieldName": "ptName",
                                     "Order": 5,
                                     "ComponentType": "Label",
@@ -607,7 +607,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952be8-ca47-700f-9a0a-535e8008ea2b",
+                                    "Id": "Shipment_Detail_Sea.podName.6",
                                     "FieldName": "podName",
                                     "Order": 6,
                                     "ComponentType": "Label",
@@ -618,7 +618,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952be8-ca47-700f-9a0a-57e3e11ef286",
+                                    "Id": "Shipment_Detail_Sea.etdDate.7",
                                     "FieldName": "etdDate",
                                     "Order": 7,
                                     "ComponentType": "Label",
@@ -630,7 +630,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952be8-ca47-700f-9a0a-58da65149cc0",
+                                    "Id": "Shipment_Detail_Sea.etaTsDate.8",
                                     "FieldName": "etaTsDate",
                                     "Order": 8,
                                     "ComponentType": "Label",
@@ -642,7 +642,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952be8-ca47-700f-9a0a-5f8f2f9c9884",
+                                    "Id": "Shipment_Detail_Sea.etaDate.9",
                                     "FieldName": "etaDate",
                                     "Order": 9,
                                     "ComponentType": "Label",
@@ -654,7 +654,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952be8-ca47-700f-9a0a-61c262ab4ae9",
+                                    "Id": "Shipment_Detail_Sea.PlaceofReceipt.10",
                                     "FieldName": "PlaceofReceipt",
                                     "Order": 10,
                                     "ComponentType": "Label",
@@ -666,7 +666,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952be8-ca48-75fe-b562-5be5a873d495",
+                                    "Id": "Shipment_Detail_Sea.Label.11",
                                     "Order": 11,
                                     "ComponentType": "Label",
                                     "PlainText": "Select data",
@@ -676,7 +676,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952be8-ca48-75fe-b562-5d484527b1a4",
+                                    "Id": "Shipment_Detail_Sea.Destination.12",
                                     "FieldName": "Destination",
                                     "Order": 12,
                                     "ComponentType": "Label",
@@ -688,7 +688,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952be8-ca48-75fe-b562-63f0a1ac8df7",
+                                    "Id": "Shipment_Detail_Sea.TermOfDelivery.14",
                                     "FieldName": "TermOfDelivery",
                                     "Order": 14,
                                     "ComponentType": "Label",
@@ -700,7 +700,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952be8-ca48-75fe-b562-66d920639645",
+                                    "Id": "Shipment_Detail_Sea.Label.15",
                                     "Order": 15,
                                     "ComponentType": "Label",
                                     "PlainText": "Select data",
@@ -710,7 +710,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952be8-ca48-75fe-b562-6b4a50f8677b",
+                                    "Id": "Shipment_Detail_Sea.Commodity.16",
                                     "FieldName": "Commodity",
                                     "Order": 16,
                                     "ComponentType": "Label",
@@ -722,7 +722,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952be8-ca48-75fe-b562-6c27acd72f8e",
+                                    "Id": "Shipment_Detail_Sea.Pieces.17",
                                     "FieldName": "Pieces",
                                     "Order": 17,
                                     "ComponentType": "Label",
@@ -734,7 +734,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952be8-ca48-75fe-b562-729ebba95f9a",
+                                    "Id": "Shipment_Detail_Sea.Measuament.18",
                                     "FieldName": "Measuament",
                                     "Order": 18,
                                     "ComponentType": "Label",
@@ -746,7 +746,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952be8-ca48-75fe-b562-77ff3d5aada9",
+                                    "Id": "Shipment_Detail_Sea.GW.19",
                                     "FieldName": "GW",
                                     "Order": 19,
                                     "ComponentType": "Label",
@@ -760,7 +760,7 @@
                             ]
                         },
                         {
-                            "Id": "0195235e-9e53-775b-abf7-c3130afd715d",
+                            "Id": "search_body_sea.1.2",
                             "FieldName": "1",
                             "Order": 2,
                             "ComponentType": "Section",
@@ -769,7 +769,7 @@
                             "XxlCol": 12,
                             "Components": [
                                 {
-                                    "Id": "01952357-3295-713d-9715-0df9932146b6",
+                                    "Id": "1.Vessel.23",
                                     "FieldName": "Vessel",
                                     "Order": 23,
                                     "ComponentType": "Label",
@@ -781,7 +781,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952357-3295-713d-9715-12bb6374f480",
+                                    "Id": "1.Voyage.24",
                                     "FieldName": "Voyage",
                                     "Order": 24,
                                     "ComponentType": "Label",
@@ -793,7 +793,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952357-3296-733c-8615-8c7a1ab36b27",
+                                    "Id": "1.polName.25",
                                     "FieldName": "polName",
                                     "Order": 25,
                                     "ComponentType": "Label",
@@ -805,7 +805,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952357-3296-733c-8615-938b8ddecf70",
+                                    "Id": "1.podName.26",
                                     "FieldName": "podName",
                                     "Order": 26,
                                     "ComponentType": "Label",
@@ -819,7 +819,7 @@
                             ]
                         },
                         {
-                            "Id": "0195235f-67a8-74df-9f56-4201dfcaade6",
+                            "Id": "search_body_sea.3.2",
                             "FieldName": "3",
                             "Order": 2,
                             "ComponentType": "Section",
@@ -828,7 +828,7 @@
                             "XxlCol": 12,
                             "Components": [
                                 {
-                                    "Id": "01952359-7a24-742b-aecd-d4e8d2d97e94",
+                                    "Id": "3.ContainerText.27",
                                     "FieldName": "ContainerText",
                                     "Order": 27,
                                     "ComponentType": "Label",
@@ -838,7 +838,7 @@
                                     "Disabled": true
                                 },
                                 {
-                                    "Id": "01952359-7a24-742b-aecd-dba8cee35f13",
+                                    "Id": "3.EntityContainer.28",
                                     "FieldName": "EntityContainer",
                                     "Order": 28,
                                     "ComponentType": "GridView",
@@ -855,7 +855,7 @@
                             ]
                         },
                         {
-                            "Id": "0195235f-8ba5-725b-ab8f-69b029b91955",
+                            "Id": "search_body_sea.4.2",
                             "FieldName": "4",
                             "Order": 2,
                             "ComponentType": "Section",
@@ -864,7 +864,7 @@
                             "XxlCol": 12,
                             "Components": [
                                 {
-                                    "Id": "0195235b-fdf7-70f2-80ca-a8a9ee0c6257",
+                                    "Id": "4.ShipmentTask.29",
                                     "FieldName": "ShipmentTask",
                                     "Order": 29,
                                     "ComponentType": "GridView",
@@ -880,7 +880,7 @@
                             ]
                         },
                         {
-                            "Id": "0195235f-90ea-7629-ae4b-2985104e872b",
+                            "Id": "search_body_sea.5.2",
                             "FieldName": "5",
                             "Order": 2,
                             "ComponentType": "Section",
@@ -889,7 +889,7 @@
                             "XxlCol": 12,
                             "Components": [
                                 {
-                                    "Id": "01952365-acff-761e-a9c3-cb184ef45f85",
+                                    "Id": "5.DEP.1",
                                     "FieldName": "DEP",
                                     "Order": 1,
                                     "ComponentType": "Label",
@@ -901,7 +901,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952365-acff-761e-a9c3-ccecca392c21",
+                                    "Id": "5.phone.2",
                                     "FieldName": "phone",
                                     "Order": 2,
                                     "ComponentType": "Label",
@@ -913,7 +913,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952365-ad00-7194-ac14-c19445981013",
+                                    "Id": "5.NickName.3",
                                     "FieldName": "NickName",
                                     "Order": 3,
                                     "ComponentType": "Label",
@@ -926,7 +926,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952365-ad00-7194-ac14-c42640ad7ef4",
+                                    "Id": "5.email.4",
                                     "FieldName": "email",
                                     "Order": 4,
                                     "ComponentType": "Label",
@@ -942,7 +942,7 @@
                     ]
                 },
                 {
-                    "Id": "01952bce-d761-70d1-8f9f-a0a2fc168c39",
+                    "Id": "Section.search_body_air.2",
                     "FieldName": "search-body-air",
                     "Order": 2,
                     "ComponentType": "Section",
@@ -951,7 +951,7 @@
                     "XxlCol": 12,
                     "Components": [
                         {
-                            "Id": "01952bd6-87f6-715d-b8be-211d07ecd549",
+                            "Id": "search_body_air.Shipment_Detail_Air.1",
                             "FieldName": "Shipment Detail Air",
                             "Order": 1,
                             "ComponentType": "Section",
@@ -960,7 +960,7 @@
                             "XxlCol": 12,
                             "Components": [
                                 {
-                                    "Id": "01952bf0-2642-7760-ba4e-8d82b9d7f98b",
+                                    "Id": "Shipment_Detail_Air.polName.4",
                                     "FieldName": "polName",
                                     "Order": 4,
                                     "ComponentType": "Label",
@@ -972,7 +972,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952bf0-2642-7760-ba4e-9175ec9767fd",
+                                    "Id": "Shipment_Detail_Air.ptName.5",
                                     "FieldName": "ptName",
                                     "Order": 5,
                                     "ComponentType": "Label",
@@ -984,7 +984,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952bf0-2642-7760-ba4e-950acf93761e",
+                                    "Id": "Shipment_Detail_Air.podName.6",
                                     "FieldName": "podName",
                                     "Order": 6,
                                     "ComponentType": "Label",
@@ -996,7 +996,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952bf0-2643-72d1-b857-92652b18d1f2",
+                                    "Id": "Shipment_Detail_Air.etdDate.7",
                                     "FieldName": "etdDate",
                                     "Order": 7,
                                     "ComponentType": "Label",
@@ -1008,7 +1008,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952bf0-2643-72d1-b857-953934d437c0",
+                                    "Id": "Shipment_Detail_Air.etaTsDate.8",
                                     "FieldName": "etaTsDate",
                                     "Order": 8,
                                     "ComponentType": "Label",
@@ -1020,7 +1020,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952bf0-2643-72d1-b857-9924a80329b6",
+                                    "Id": "Shipment_Detail_Air.etaDate.9",
                                     "FieldName": "etaDate",
                                     "Order": 9,
                                     "ComponentType": "Label",
@@ -1032,7 +1032,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952bf0-2643-72d1-b857-9c9a03dec1af",
+                                    "Id": "Shipment_Detail_Air.TermOfDelivery.14",
                                     "FieldName": "TermOfDelivery",
                                     "Order": 14,
                                     "ComponentType": "Label",
@@ -1044,7 +1044,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952bf0-2643-72d1-b857-a34d672cff91",
+                                    "Id": "Shipment_Detail_Air.Label.15",
                                     "Order": 15,
                                     "ComponentType": "Label",
                                     "PlainText": "Select data",
@@ -1054,7 +1054,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952bf0-2643-72d1-b857-a4dd7c107085",
+                                    "Id": "Shipment_Detail_Air.Commodity.16",
                                     "FieldName": "Commodity",
                                     "Order": 16,
                                     "ComponentType": "Label",
@@ -1066,7 +1066,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952bf0-2643-72d1-b857-a97679e3da9c",
+                                    "Id": "Shipment_Detail_Air.Pieces.17",
                                     "FieldName": "Pieces",
                                     "Order": 17,
                                     "ComponentType": "Label",
@@ -1078,7 +1078,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952bf0-2643-72d1-b857-ace81fee4fdf",
+                                    "Id": "Shipment_Detail_Air.GW.18",
                                     "FieldName": "GW",
                                     "Order": 18,
                                     "ComponentType": "Label",
@@ -1090,7 +1090,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952bf0-2643-72d1-b857-b0734cf87a61",
+                                    "Id": "Shipment_Detail_Air.CW.19",
                                     "FieldName": "CW",
                                     "Order": 19,
                                     "ComponentType": "Label",
@@ -1104,7 +1104,7 @@
                             ]
                         },
                         {
-                            "Id": "01952bd6-87f6-715d-b8be-1dd6a0bc25b1",
+                            "Id": "search_body_air.1.2",
                             "FieldName": "1",
                             "Order": 2,
                             "ComponentType": "Section",
@@ -1113,7 +1113,7 @@
                             "XxlCol": 12,
                             "Components": [
                                 {
-                                    "Id": "01952bf1-6d21-77dc-a9b5-70a057f0a9b9",
+                                    "Id": "1.VesselVoy.23",
                                     "FieldName": "VesselVoy",
                                     "Order": 23,
                                     "ComponentType": "Label",
@@ -1125,7 +1125,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952bf1-6d21-77dc-a9b5-752d7bc8c5d1",
+                                    "Id": "1.polName.24",
                                     "FieldName": "polName",
                                     "Order": 24,
                                     "ComponentType": "Label",
@@ -1137,7 +1137,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952bf1-6d21-77dc-a9b5-7a8461150fa6",
+                                    "Id": "1.ptName.25",
                                     "FieldName": "ptName",
                                     "Order": 25,
                                     "ComponentType": "Label",
@@ -1149,7 +1149,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952bf1-6d22-761b-9348-fd06510db310",
+                                    "Id": "1.podName.26_1",
                                     "FieldName": "podName",
                                     "Order": 26,
                                     "ComponentType": "Label",
@@ -1163,7 +1163,7 @@
                             ]
                         },
                         {
-                            "Id": "01952bd6-87f6-715d-b8be-1ad9cc4ffef7",
+                            "Id": "search_body_air.3.3",
                             "FieldName": "3",
                             "Order": 3,
                             "ComponentType": "Section",
@@ -1172,7 +1172,7 @@
                             "XxlCol": 12,
                             "Components": [
                                 {
-                                    "Id": "01952bf7-35de-71c8-8fcb-c32dd0594a8c",
+                                    "Id": "3.EntityDimension.1",
                                     "FieldName": "EntityDimension",
                                     "Order": 1,
                                     "ComponentType": "GridView",
@@ -1191,7 +1191,7 @@
                             ]
                         },
                         {
-                            "Id": "01952bd6-87f5-71cc-ac58-e3608cd1fa62",
+                            "Id": "search_body_air.4.4",
                             "FieldName": "4",
                             "Order": 4,
                             "ComponentType": "Section",
@@ -1200,7 +1200,7 @@
                             "XxlCol": 12,
                             "Components": [
                                 {
-                                    "Id": "01952bf9-6f1d-7628-8017-8ef5bba557c1",
+                                    "Id": "4.ShipmentTask.29_1",
                                     "FieldName": "ShipmentTask",
                                     "Order": 29,
                                     "ComponentType": "GridView",
@@ -1216,7 +1216,7 @@
                             ]
                         },
                         {
-                            "Id": "01952bd6-87f5-71cc-ac58-de6a441c7097",
+                            "Id": "search_body_air.5.5",
                             "FieldName": "5",
                             "Order": 5,
                             "ComponentType": "Section",
@@ -1225,7 +1225,7 @@
                             "XxlCol": 12,
                             "Components": [
                                 {
-                                    "Id": "01952bfa-0bad-723a-b9b7-17c3994ac3dc",
+                                    "Id": "5.DEP.1_1",
                                     "FieldName": "DEP",
                                     "Order": 1,
                                     "ComponentType": "Label",
@@ -1237,7 +1237,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952bfa-0bad-723a-b9b7-1b80a3d229df",
+                                    "Id": "5.phone.2_1",
                                     "FieldName": "phone",
                                     "Order": 2,
                                     "ComponentType": "Label",
@@ -1249,7 +1249,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952bfa-0bad-723a-b9b7-1e27fd1c3bc4",
+                                    "Id": "5.NickName.3_1",
                                     "FieldName": "NickName",
                                     "Order": 3,
                                     "ComponentType": "Label",
@@ -1262,7 +1262,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01952bfa-0bad-723a-b9b7-205a133724d2",
+                                    "Id": "5.email.4_1",
                                     "FieldName": "email",
                                     "Order": 4,
                                     "ComponentType": "Label",
@@ -1280,7 +1280,7 @@
             ]
         },
         {
-            "Id": "019526a7-9cf1-71eb-8e54-a3c768db15c9",
+            "Id": "my_shipment.Section.1_1",
             "Order": 1,
             "ComponentType": "Section",
             "Label": "My Shipment",
@@ -1289,7 +1289,7 @@
             "IsTab": true,
             "Components": [
                 {
-                    "Id": "019526a9-978c-773f-87a6-a5e6164ae6f4",
+                    "Id": "Section.A.1",
                     "FieldName": "A",
                     "Order": 1,
                     "ComponentType": "Section",
@@ -1301,7 +1301,7 @@
                     "DisplayBadge": true,
                     "Components": [
                         {
-                            "Id": "019526c6-a9d8-7029-a348-939d38c442d6",
+                            "Id": "A.Shipment1.2",
                             "FieldName": "Shipment1",
                             "Order": 2,
                             "ComponentType": "GridView",
@@ -1319,7 +1319,7 @@
                     ]
                 },
                 {
-                    "Id": "019526a9-9e14-7760-a8f5-5ee279ce25ef",
+                    "Id": "Section.Section.1_2",
                     "Order": 1,
                     "ComponentType": "Section",
                     "Label": "Sea",
@@ -1330,7 +1330,7 @@
                     "DisplayBadge": true,
                     "Components": [
                         {
-                            "Id": "019526c6-e10f-7555-be79-d122af1a81db",
+                            "Id": "Section.Shipment1.2_1",
                             "FieldName": "Shipment1",
                             "Order": 2,
                             "ComponentType": "GridView",
@@ -1348,7 +1348,7 @@
                     ]
                 },
                 {
-                    "Id": "019526a9-cdaa-73b9-a219-5c4ad97c4e7b",
+                    "Id": "Section.Section.1_3",
                     "Order": 1,
                     "ComponentType": "Section",
                     "Label": "Air",
@@ -1359,7 +1359,7 @@
                     "DisplayBadge": true,
                     "Components": [
                         {
-                            "Id": "019526c6-fbb5-7479-8321-4cd31a73f24b",
+                            "Id": "Section.Shipment1.2_2",
                             "FieldName": "Shipment1",
                             "Order": 2,
                             "ComponentType": "GridView",
@@ -1381,17 +1381,14 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "03BCFC5B-8B5B-486E-B0C0-71C05713E837",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "08A6D527-AA60-4E9D-B8D7-104A0E676134",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "09EACB7D-BCAC-4DA5-AFCB-0559609E6B3C",
             "RoleId": "CUSTOMER",
             "CanRead": true,
             "CanReadAll": true,
@@ -1400,7 +1397,6 @@
             "TableName": "Feature"
         },
         {
-            "Id": "221607B2-F2E3-4959-9918-384FCD104F00",
             "RoleId": "ADMIN",
             "CanRead": true,
             "CanReadAll": true,
@@ -1409,7 +1405,6 @@
             "TableName": "Feature"
         },
         {
-            "Id": "22E3AB80-17C7-4A80-B989-12A8E94292F9",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -1418,27 +1413,22 @@
             "TableName": "Feature"
         },
         {
-            "Id": "44696939-EF59-4F6C-9EA1-D187890BD7DF",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "9DB64F8A-5B11-4402-9A9B-2E58DA7BE2C3",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "A3BF3134-FB30-4A19-8B79-30FBBB11F966",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "E176A735-7D2B-4CAF-B653-ADDA8CAF26CE",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "E56324B1-FFF6-4BD0-A751-7D369CADDB90",
             "RoleId": "SALES",
             "TableName": "Feature"
         }

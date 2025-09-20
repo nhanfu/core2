@@ -1,15 +1,14 @@
 {
-    "Id": "01943bef-3a70-759d-bb83-a8a906937059",
+    "Id": "invoice_config",
     "Name": "invoice-config",
     "Label": "Invoice Config",
-    "ParentId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
     "Order": 11,
     "Icon": "fal fa-square",
     "EntityId": "Invoice Config",
     "IgnoreEncode": true,
     "GridPolicies": [
         {
-            "Id": "01943bef-3b6c-706d-be2e-10d52e469330",
+            "Id": "invoice_config.StartNumer.3",
             "FieldName": "StartNumer",
             "Order": 3,
             "ComponentType": "Number",
@@ -22,7 +21,7 @@
             "EntityId": "InvoiceConfig"
         },
         {
-            "Id": "01943bef-3ba8-717a-8b0f-317de85f3490",
+            "Id": "invoice_config.Description.0",
             "FieldName": "Description",
             "Order": 0,
             "ComponentType": "Input",
@@ -35,7 +34,7 @@
             "EntityId": "InvoiceConfig"
         },
         {
-            "Id": "01943bef-3be2-761b-850f-e44605601ff1",
+            "Id": "invoice_config.Form.1",
             "FieldName": "Form",
             "Order": 1,
             "ComponentType": "Input",
@@ -48,7 +47,7 @@
             "EntityId": "InvoiceConfig"
         },
         {
-            "Id": "01943bef-3c0e-704d-a469-7bb93ccdadc1",
+            "Id": "invoice_config.EndNumer.4",
             "FieldName": "EndNumer",
             "Order": 4,
             "ComponentType": "Number",
@@ -61,7 +60,7 @@
             "EntityId": "InvoiceConfig"
         },
         {
-            "Id": "01943bef-3cb7-76d9-b636-117d8b3f274d",
+            "Id": "invoice_config.SeriNo.2",
             "FieldName": "SeriNo",
             "Order": 2,
             "ComponentType": "Input",
@@ -74,7 +73,7 @@
             "EntityId": "InvoiceConfig"
         },
         {
-            "Id": "01943bef-3cf2-76b6-86a6-d7186a0f2c3e",
+            "Id": "invoice_config.IsMultiple.5",
             "FieldName": "IsMultiple",
             "Order": 5,
             "ComponentType": "Checkbox",
@@ -87,7 +86,7 @@
             "EntityId": "InvoiceConfig"
         },
         {
-            "Id": "01943bf2-6f83-72c3-8315-eeae016c3c55",
+            "Id": "invoice_config.CompanyId.6",
             "FieldName": "CompanyId",
             "Order": 6,
             "ComponentType": "Dropdown",
@@ -109,12 +108,10 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "3146B685-FF84-4D21-B222-4289068740CD",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "52058327-F206-4CE8-A6D0-AD041A8DBDA2",
             "RoleId": "ADMIN",
             "CanRead": true,
             "CanReadAll": true,
@@ -125,49 +122,41 @@
             "TableName": "Feature"
         },
         {
-            "Id": "952F2677-D328-4AEF-BF6E-684D25160386",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "A31CEA21-EBAE-48A0-8410-1692200995D6",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "B5DAF988-8858-4215-B554-945712B38CB1",
             "RoleId": "BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "C873A99B-A324-4828-BB28-C43912B43029",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "EA68EF2C-6A09-408F-BF26-4069E5EC0D9A",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "F37E6584-F102-4CAC-B45E-C313C04703C4",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "FA0E9FF2-35F9-4F7E-B992-C3D5BA0A8D43",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "FEA1975F-5484-4CB8-B64F-31FD1D4C0574",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         }
     ],
     "Components": [
         {
-            "Id": "01943bef-3b01-70b2-b7d0-4b8a0e82ed75",
+            "Id": "invoice_config.Container.1",
             "FieldName": "Container",
             "Order": 1,
             "ComponentType": "Section",
@@ -175,7 +164,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "01943bef-3b41-70c9-8147-06ddbce2a662",
+                    "Id": "Container.InvoiceConfig.1",
                     "FieldName": "InvoiceConfig",
                     "Order": 1,
                     "ComponentType": "GridView",

@@ -1,8 +1,7 @@
 {
-    "Id": "007a36f8-0000-0000-8000-8cbd02d320e1",
+    "Id": "company",
     "Name": "company",
     "Label": "Company",
-    "ParentId": "000a0514-0000-0000-8000-1f67beb1bcef",
     "Order": 0,
     "Script": "return {\r\n    EditCompany: function (btn, entity) {\r\n        entity.Logo = entity.Logo || \"https://api.nguyenduyphong.id.vn/icons/default-avatar.webp\";\r\n        this.OpenPopup(\"company-editor\", entity);\r\n    }\r\n}",
     "Icon": "fal fa-building",
@@ -10,7 +9,7 @@
     "EntityId": "User",
     "GridPolicies": [
         {
-            "Id": "007b3608-0000-0000-8000-1198451558b6",
+            "Id": "company.Name.1",
             "FieldName": "Name",
             "Order": 1,
             "ComponentType": "Input",
@@ -22,7 +21,7 @@
             "EntityId": "Partner"
         },
         {
-            "Id": "007b3638-0000-0000-8000-d7c54bb08b8c",
+            "Id": "company.btnEdit.0",
             "FieldName": "btnEdit",
             "Order": 0,
             "ComponentType": "Button",
@@ -36,7 +35,7 @@
             "EntityId": "Partner"
         },
         {
-            "Id": "007b3640-0000-0000-8000-36b969d8dca0",
+            "Id": "company.Address.3",
             "FieldName": "Address",
             "Order": 3,
             "ComponentType": "Input",
@@ -48,7 +47,7 @@
             "EntityId": "Partner"
         },
         {
-            "Id": "007b36cc-0000-0000-8000-abda784bd934",
+            "Id": "company.CompanyName.2",
             "FieldName": "CompanyName",
             "Order": 2,
             "ComponentType": "Input",
@@ -60,7 +59,7 @@
             "EntityId": "Partner"
         },
         {
-            "Id": "007b36e0-0000-0000-8000-9f7081c3f9ee",
+            "Id": "company.PhoneNumber.4",
             "FieldName": "PhoneNumber",
             "Order": 4,
             "ComponentType": "Input",
@@ -74,14 +73,14 @@
     ],
     "Components": [
         {
-            "Id": "007b3614-0000-0000-8000-a0ce7dabbc84",
+            "Id": "company.Container.1",
             "FieldName": "Container",
             "Order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "007b3620-0000-0000-8000-141120505fec",
+                    "Id": "Container.Partner.1",
                     "FieldName": "Partner",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -99,47 +98,38 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "0104B182-5E4D-469A-833D-EB943C9216F4",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "0F0D870F-B668-45E8-B0B5-E1346DF19C5B",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "4BB18886-7772-4167-99FE-5E408A9D07DB",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "6BB649F5-E5E1-49F0-9E58-27FE825E3B92",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "6E21F307-D717-4047-923B-AD368330B6E0",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "9045247E-FDA6-476F-BFD0-3D033942AA6E",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "9EDDF30B-A8C0-402B-98C5-887B5F0D4BE0",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "B5C51697-B5FC-4659-9DC7-ADC88ED152B4",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "BB1D01C7-3D89-4E33-AA47-E9844AD5FA5A",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -148,7 +138,6 @@
             "TableName": "Feature"
         },
         {
-            "Id": "E0486557-DE14-40D2-91D8-C0BF4CEE4321",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         }

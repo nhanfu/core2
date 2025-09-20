@@ -1,8 +1,7 @@
 {
-    "Id": "0194e865-fe96-7689-a7d3-9dcfe792bef3",
+    "Id": "flows_editor",
     "Name": "flows-editor",
     "Label": "Flows Editor",
-    "ParentId": "01947703-9cf6-75f5-84cf-c23fadbfb38b",
     "Order": 111,
     "Style": "width:1100px;",
     "Script": "return {\r\n    GetInfo: async function (component, entity) {\r\n        if (this.Entity.TaxCode == null || this.Entity.TaxCode == \"\") {\r\n            this.Toast.Warning(\"Not find taxcode\");\r\n            return;\r\n        }\r\n        this.Toast.Warning(\"Waiting search infomation by taxcode\");\r\n        const response = await fetch('https://api.vietqr.io/v2/business/' + this.Entity.TaxCode);\r\n        const data = await response.json();\r\n        if (data.data == null) {\r\n            this.Toast.Warning(\"Not find taxcode\");\r\n            return;\r\n        }\r\n        this.Entity.Name = data.data.shortName || data.data.internationalName;\r\n        this.Entity.CompanyName = data.data.internationalName;\r\n        this.Entity.CompanyNameInv = data.data.name;\r\n        this.Entity.Address = data.data.address;\r\n        this.Entity.AddressInv = data.data.address;\r\n        this.UpdateView(false, false, \"Name\", \"CompanyName\", \"CompanyNameInv\", \"Address\", \"AddressInv\");\r\n        this.Toast.Success(\"Update taxcode success\");\r\n    },\r\n    ToastInfo: function (component) {\r\n        this.Toast.Success(\"Input search tax code\")\r\n    },\r\n    SendMail: function () {\r\n        if (!this.Entity.Email || this.Entity.Email == \"\") {\r\n            this.Toast.Warning(\"Email is requied\");\r\n            return;\r\n        }\r\n        var entity = {\r\n            To: this.Entity.Email,\r\n            Text: \"\",\r\n            Subject: \"\"\r\n        }\r\n        this.OpenPopup(\"sendmail-editor\", entity);\r\n    },\r\n    OnSave: function (form, gridview) {\r\n        var detail = gridview.find(x => x.IsListView && x.Meta.FieldName == \"PartnerContact\");\r\n        if ((detail && detail.AllListViewItem.length > 0)) {\r\n            var mainRow = detail.AllListViewItem.find(item => item.Entity.IsMain) || detail.AllListViewItem[0];\r\n            if (mainRow) {\r\n                this.Entity.ContactName = mainRow.Entity.ContactName;\r\n                this.Entity.ContactPhoneNumber = mainRow.Entity.ContactPhoneNumber;\r\n                this.Entity.ContactEmail = mainRow.Entity.ContactEmail;\r\n            }\r\n        }\r\n    },\r\n    Prospect: function (form, gridview) {\r\n        this.EditForm.OpenConfig(\"Move to prospect customer!\", () => {\r\n            this.EditForm.Entity.TypeId = 2;\r\n            this.EditForm.Entity.SaleId = this.Token.UserId;\r\n            this.EditForm.Dirty = true;\r\n            this.EditForm.SavePatch(true).then(() => {\r\n                this.EditForm.Dispose();\r\n                this.OpenFrom.OpenPopup(\"prospect-editor\", this.EditForm.Entity);\r\n            });\r\n        });\r\n    },\r\n    SaveAs: async function (btn) {\r\n        var newEntity = JSON.parse(JSON.stringify(this.Entity));\r\n        this.Entity = newEntity;\r\n        this.Entity.Id = this.Uuid7.NewGuid();\r\n        this.Entity.Code = null;\r\n        this.Entity.TypeId = 1;\r\n        this.Entity.ServiceId = 1;\r\n        this.Entity.SaleId = this.Token.UserId;\r\n        this.UpdateView(true);\r\n        this.Dirty = true;\r\n        this.Toast.Success(\"Save as success\");\r\n    },\r\n    OnSaveAdd: function (form, gridview) {\r\n        this.Entity = {\r\n            Id: this.Uuid7.NewGuid(),\r\n            Code: null,\r\n            ServiceId: 1,\r\n            TypeId: 1,\r\n            ActionId: 1,\r\n            SaleId: this.Token.UserId\r\n        }\r\n    }\r\n}",
@@ -10,7 +9,7 @@
     "EntityId": "Feature",
     "GridPolicies": [
         {
-            "Id": "0194e866-1dc1-704a-b759-021bb439729c",
+            "Id": "flows_editor.IsMain.5",
             "FieldName": "IsMain",
             "Order": 5,
             "ComponentType": "Checkbox",
@@ -23,7 +22,7 @@
             "EntityId": "ComponentGroup"
         },
         {
-            "Id": "0194e866-1ef0-7529-856c-c95142f74243",
+            "Id": "flows_editor.Note.6",
             "FieldName": "Note",
             "Order": 6,
             "ComponentType": "Input",
@@ -36,7 +35,7 @@
             "EntityId": "ComponentGroup"
         },
         {
-            "Id": "0194e866-1f29-764d-bede-e62a36f476c0",
+            "Id": "flows_editor.ContactEmail.1",
             "FieldName": "ContactEmail",
             "Order": 1,
             "ComponentType": "Input",
@@ -49,7 +48,7 @@
             "EntityId": "ComponentGroup"
         },
         {
-            "Id": "0194e866-1f93-705a-bb26-5c87f56afd49",
+            "Id": "flows_editor.Birthday.3",
             "FieldName": "Birthday",
             "Order": 3,
             "ComponentType": "Datepicker",
@@ -62,7 +61,7 @@
             "EntityId": "ComponentGroup"
         },
         {
-            "Id": "0194e866-1ff1-7425-b723-aba19bbf158c",
+            "Id": "flows_editor.Label.0",
             "FieldName": "Label",
             "Order": 0,
             "ComponentType": "Input",
@@ -75,7 +74,7 @@
             "EntityId": "ComponentGroup"
         },
         {
-            "Id": "0194e866-20aa-73ca-a9bd-7ab8ca8e7686",
+            "Id": "flows_editor.JobTitles.4",
             "FieldName": "JobTitles",
             "Order": 4,
             "ComponentType": "Input",
@@ -88,7 +87,7 @@
             "EntityId": "ComponentGroup"
         },
         {
-            "Id": "0194e866-2145-7511-8fcd-05a5d87fcccb",
+            "Id": "flows_editor.ContactPhoneNumber.2",
             "FieldName": "ContactPhoneNumber",
             "Order": 2,
             "ComponentType": "Input",
@@ -103,7 +102,7 @@
     ],
     "Components": [
         {
-            "Id": "0194e866-16ce-7493-8598-6649808d0985",
+            "Id": "flows_editor.Full.1",
             "FieldName": "Full",
             "Order": 1,
             "ComponentType": "Section",
@@ -113,7 +112,7 @@
             "DisabledExp": "this.Entity.ActionId == 2",
             "Components": [
                 {
-                    "Id": "0194e866-1701-744b-82f6-8bf07af3edbc",
+                    "Id": "Full.Common.1_1",
                     "FieldName": "Common",
                     "Order": 1,
                     "ComponentType": "Section",
@@ -122,7 +121,7 @@
                     "XxlOuterColumn": 12,
                     "Components": [
                         {
-                            "Id": "0194e866-1735-72bc-999a-2d36bad940f3",
+                            "Id": "Common.Label.1",
                             "FieldName": "Label",
                             "Order": 1,
                             "ComponentType": "Input",
@@ -133,7 +132,7 @@
                             "Events": "{\"change\":\"GetInfo\"}"
                         },
                         {
-                            "Id": "0194e866-1782-7078-9f84-2e4be790ae57",
+                            "Id": "Common.Description.2",
                             "FieldName": "Description",
                             "Order": 2,
                             "ComponentType": "Input",
@@ -144,7 +143,7 @@
                     ]
                 },
                 {
-                    "Id": "0194e866-1b05-73aa-91fb-1c6bfea3eb26",
+                    "Id": "Full.Section.5_1",
                     "Order": 5,
                     "ComponentType": "Section",
                     "Label": "Steps",
@@ -155,7 +154,7 @@
                     "DisplayBadge": true,
                     "Components": [
                         {
-                            "Id": "0194e866-1b42-72a3-86c8-c9927b6d2bfb",
+                            "Id": "Section.ComponentGroup.1",
                             "FieldName": "ComponentGroup",
                             "Order": 1,
                             "ComponentType": "GridView",
@@ -172,7 +171,7 @@
                     ]
                 },
                 {
-                    "Id": "0194e866-1cdd-710d-a743-023ba5ba8b37",
+                    "Id": "Full.btnSaveAdd.0",
                     "FieldName": "btnSaveAdd",
                     "Order": 0,
                     "ComponentType": "Button",
@@ -184,7 +183,7 @@
                     "Events": "{ \"click\" : \"SaveAs\" }"
                 },
                 {
-                    "Id": "0194e866-1d16-70cb-b7b1-6e74a4477996",
+                    "Id": "Full.btnProspect.1",
                     "FieldName": "btnProspect",
                     "Order": 1,
                     "ComponentType": "Button",
@@ -195,7 +194,7 @@
                     "ShowExp": "this.Entity.ActionId == 1"
                 },
                 {
-                    "Id": "0194e866-1d52-7569-a53b-a62cf1db52e6",
+                    "Id": "Full.btnSaveAdd.2_1",
                     "FieldName": "btnSaveAdd",
                     "Order": 2,
                     "ComponentType": "Button",
@@ -206,7 +205,7 @@
                     "Events": "{ \"click\" : \"SaveAdd\" }"
                 },
                 {
-                    "Id": "0194e866-1d84-7676-9cfb-85e0452d1d10",
+                    "Id": "Full.btnSave.3",
                     "FieldName": "btnSave",
                     "Order": 3,
                     "ComponentType": "Button",
@@ -219,7 +218,7 @@
             ]
         },
         {
-            "Id": "0194e866-1b85-750e-a48c-d2acc037efb9",
+            "Id": "flows_editor.Center.5",
             "FieldName": "Center",
             "Order": 5,
             "ComponentType": "Section",
@@ -229,7 +228,7 @@
             "DisabledExp": "this.Entity.ActionId == 2"
         },
         {
-            "Id": "0194e866-1c93-76d5-878e-4bc699b8f141",
+            "Id": "flows_editor.Button.8",
             "FieldName": "Button",
             "Order": 8,
             "ComponentType": "Section",
@@ -238,7 +237,7 @@
             "XxlOuterColumn": 12,
             "Components": [
                 {
-                    "Id": "0194e866-1cdd-710d-a743-023ba5ba8b37",
+                    "Id": "Button.btnSaveAdd.0_4",
                     "FieldName": "btnSaveAdd",
                     "Order": 0,
                     "ComponentType": "Button",
@@ -250,7 +249,7 @@
                     "Events": "{ \"click\" : \"SaveAs\" }"
                 },
                 {
-                    "Id": "0194e866-1d16-70cb-b7b1-6e74a4477996",
+                    "Id": "Button.btnProspect.1",
                     "FieldName": "btnProspect",
                     "Order": 1,
                     "ComponentType": "Button",
@@ -261,7 +260,7 @@
                     "ShowExp": "this.Entity.ActionId == 1"
                 },
                 {
-                    "Id": "0194e866-1d52-7569-a53b-a62cf1db52e6",
+                    "Id": "Button.btnSaveAdd.2_1",
                     "FieldName": "btnSaveAdd",
                     "Order": 2,
                     "ComponentType": "Button",
@@ -272,7 +271,7 @@
                     "Events": "{ \"click\" : \"SaveAdd\" }"
                 },
                 {
-                    "Id": "0194e866-1d84-7676-9cfb-85e0452d1d10",
+                    "Id": "Button.btnSave.3_1",
                     "FieldName": "btnSave",
                     "Order": 3,
                     "ComponentType": "Button",
@@ -287,17 +286,14 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "0A94BDCC-E1EC-42B0-9618-B639525F3816",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "14A04D89-B8A9-4B55-8964-8C24D5DB2ADF",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "381EC7EB-A9E0-46A8-AFB2-CA3BD9CEC7A6",
             "RoleId": "ADMIN",
             "CanRead": true,
             "CanReadAll": true,
@@ -308,27 +304,22 @@
             "TableName": "Feature"
         },
         {
-            "Id": "3AE6CCE6-8675-47F1-952F-49E1849461EB",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "4E9E152B-A210-45F3-9EAD-D67DC90B2BF6",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "5C034FEA-B9E9-4AC0-A91E-7F553F655B69",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "688EF4EC-8182-4B98-8FA0-74A00EF3772F",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "834341F9-3828-4398-B072-0178979555F6",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -339,12 +330,10 @@
             "TableName": "Feature"
         },
         {
-            "Id": "DE35C855-CCC4-484A-8C6F-ED95703153F8",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "F7E77F97-E23D-4898-A572-81404018EBB4",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         }

@@ -1,8 +1,7 @@
 {
-    "Id": "000b1534-0000-0000-8000-a6167c0e6ac8",
+    "Id": "trucking_booking_local",
     "Name": "trucking-booking-local",
     "Label": "Trucking BK Local",
-    "ParentId": "003b1404-0000-0000-8000-b490ad0d1f26",
     "Order": 2,
     "Script": "return {\r\n    Add: function () {\r\n        var entity = {\r\n            StatusId: this.SalesFunction[\"APPROVE_BOOKINGLOCAL\"] ? 3 : 1,\r\n            NoApproved: this.SalesFunction[\"APPROVE_BOOKINGLOCAL\"] ? true : false,\r\n            ServiceId: 13,\r\n            InsertedBy: this.Token.UserId,\r\n            VoucherTypeId: 3,\r\n            TypeId: 8,\r\n            CreatedOn: this.dayjs().format('YYYY-MM-DD')\r\n        }\r\n        this.OpenPopup(\"trucking-booking-local-editor\", entity);\r\n    },\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"trucking-booking-local-editor\", entity);\r\n    }\r\n}",
     "Icon": "fal fa-truck",
@@ -10,7 +9,7 @@
     "EntityId": "Booking",
     "GridPolicies": [
         {
-            "Id": "000a25b4-0000-0000-8000-a5a607b7d665",
+            "Id": "trucking_booking_local.InsertedBy.15",
             "FieldName": "InsertedBy",
             "Order": 15,
             "ComponentType": "Dropdown",
@@ -28,7 +27,7 @@
             "EntityId": "Booking"
         },
         {
-            "Id": "000b1520-0000-0000-8000-6b1a686a3df3",
+            "Id": "trucking_booking_local.InsertedDate.3",
             "FieldName": "InsertedDate",
             "Order": 3,
             "ComponentType": "Datepicker",
@@ -40,7 +39,7 @@
             "EntityId": "Booking"
         },
         {
-            "Id": "000b1528-0000-0000-8000-38c68acd9203",
+            "Id": "trucking_booking_local.StatusId.14",
             "FieldName": "StatusId",
             "Order": 14,
             "ComponentType": "Dropdown",
@@ -56,7 +55,7 @@
             "EntityId": "Booking"
         },
         {
-            "Id": "000b155c-0000-0000-8000-2d25e30bc2b8",
+            "Id": "trucking_booking_local.BookingNo.2",
             "FieldName": "BookingNo",
             "Order": 2,
             "ComponentType": "Input",
@@ -68,7 +67,7 @@
             "EntityId": "Booking"
         },
         {
-            "Id": "000b1560-0000-0000-8000-88553dc5bbff",
+            "Id": "trucking_booking_local.DeliveryId.8",
             "FieldName": "DeliveryId",
             "Order": 8,
             "ComponentType": "Dropdown",
@@ -85,7 +84,7 @@
             "EntityId": "Booking"
         },
         {
-            "Id": "000b1564-0000-0000-8000-cac8dcc4b6f0",
+            "Id": "trucking_booking_local.CustomerId.4",
             "FieldName": "CustomerId",
             "Order": 4,
             "ComponentType": "Dropdown",
@@ -102,7 +101,7 @@
             "EntityId": "Booking"
         },
         {
-            "Id": "000b158c-0000-0000-8000-3623c8db8f3f",
+            "Id": "trucking_booking_local.PickupId.6",
             "FieldName": "PickupId",
             "Order": 6,
             "ComponentType": "Dropdown",
@@ -119,7 +118,7 @@
             "EntityId": "Booking"
         },
         {
-            "Id": "000b1598-0000-0000-8000-508abac6d706",
+            "Id": "trucking_booking_local.btnEdit.0",
             "FieldName": "btnEdit",
             "Order": 0,
             "ComponentType": "Button",
@@ -133,7 +132,7 @@
             "EntityId": "Booking"
         },
         {
-            "Id": "000c1518-0000-0000-8000-6c4ef46cbb4c",
+            "Id": "trucking_booking_local.ServiceId.1",
             "FieldName": "ServiceId",
             "Order": 1,
             "ComponentType": "Dropdown",
@@ -149,7 +148,7 @@
             "EntityId": "Booking"
         },
         {
-            "Id": "000c1574-0000-0000-8000-9717c944720b",
+            "Id": "trucking_booking_local.VendorId.5",
             "FieldName": "VendorId",
             "Order": 5,
             "ComponentType": "Dropdown",
@@ -165,7 +164,7 @@
             "EntityId": "Booking"
         },
         {
-            "Id": "007b15cc-0000-0000-8000-9442206de836",
+            "Id": "trucking_booking_local.DeliveryDate.9",
             "FieldName": "DeliveryDate",
             "Order": 9,
             "ComponentType": "Datepicker",
@@ -177,7 +176,7 @@
             "EntityId": "Booking"
         },
         {
-            "Id": "008a1534-0000-0000-8000-0120fbd1826a",
+            "Id": "trucking_booking_local.PickupDate.7",
             "FieldName": "PickupDate",
             "Order": 7,
             "ComponentType": "Datepicker",
@@ -189,7 +188,7 @@
             "EntityId": "Booking"
         },
         {
-            "Id": "00b7158c-0000-0000-8000-0d17c7371d9a",
+            "Id": "trucking_booking_local.CommodityId.10",
             "FieldName": "CommodityId",
             "Order": 10,
             "ComponentType": "Dropdown",
@@ -205,7 +204,7 @@
             "EntityId": "Booking"
         },
         {
-            "Id": "00d91524-0000-0000-8000-8a0191f850d8",
+            "Id": "trucking_booking_local.InvNo.11",
             "FieldName": "InvNo",
             "Order": 11,
             "ComponentType": "Input",
@@ -217,7 +216,7 @@
             "EntityId": "Booking"
         },
         {
-            "Id": "00de1510-0000-0000-8000-ad6eb5f311a2",
+            "Id": "trucking_booking_local.ServiceText.12",
             "FieldName": "ServiceText",
             "Order": 12,
             "ComponentType": "Input",
@@ -229,7 +228,7 @@
             "EntityId": "Booking"
         },
         {
-            "Id": "00f01564-0000-0000-8000-39b56feca233",
+            "Id": "trucking_booking_local.ShipmentTypeId.13",
             "FieldName": "ShipmentTypeId",
             "Order": 13,
             "ComponentType": "Dropdown",
@@ -247,7 +246,7 @@
     ],
     "Components": [
         {
-            "Id": "000b1538-0000-0000-8000-e7fbda0cd5a6",
+            "Id": "trucking_booking_local.Section.2",
             "Order": 2,
             "ComponentType": "Section",
             "Label": "New",
@@ -257,7 +256,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "000b1578-0000-0000-8000-c84a25b87499",
+                    "Id": "Section.Booking.2_8",
                     "FieldName": "Booking",
                     "Order": 2,
                     "ComponentType": "GridView",
@@ -275,7 +274,7 @@
             ]
         },
         {
-            "Id": "000b1558-0000-0000-8000-cf718ae1f03a",
+            "Id": "trucking_booking_local.Section.1",
             "Order": 1,
             "ComponentType": "Section",
             "Label": "All",
@@ -286,7 +285,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "000b15ec-0000-0000-8000-27864e45c488",
+                    "Id": "Section.Booking.1_8",
                     "FieldName": "Booking",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -304,7 +303,7 @@
             ]
         },
         {
-            "Id": "000b1580-0000-0000-8000-8d2ddc6e3622",
+            "Id": "trucking_booking_local.Section.3",
             "Order": 3,
             "ComponentType": "Section",
             "Label": "Approving",
@@ -314,7 +313,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "000b1510-0000-0000-8000-3f05277809fd",
+                    "Id": "Section.Booking.3_8",
                     "FieldName": "Booking",
                     "Order": 3,
                     "ComponentType": "GridView",
@@ -331,7 +330,7 @@
             ]
         },
         {
-            "Id": "000b1580-0000-0000-8000-ab43bdabbc53",
+            "Id": "trucking_booking_local.Section.4",
             "Order": 4,
             "ComponentType": "Section",
             "Label": "Approved",
@@ -341,7 +340,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "000b1528-0000-0000-8000-04f9a8b80098",
+                    "Id": "Section.Booking.4_8",
                     "FieldName": "Booking",
                     "Order": 4,
                     "ComponentType": "GridView",
@@ -358,7 +357,7 @@
             ]
         },
         {
-            "Id": "000b15fc-0000-0000-8000-775bcabdcefa",
+            "Id": "trucking_booking_local.Section.5",
             "Order": 5,
             "ComponentType": "Section",
             "Label": "Decline",
@@ -368,7 +367,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "000b1520-0000-0000-8000-73df29d45fa9",
+                    "Id": "Section.Booking.5_8",
                     "FieldName": "Booking",
                     "Order": 5,
                     "ComponentType": "GridView",
@@ -387,27 +386,22 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "25B92BB6-E8EB-4028-B036-D5E7C051F56D",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "38CB6A78-860E-42B9-B680-0B1B2979CDC1",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "4ACA61B6-1378-415F-99AE-9D40CF454145",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "4B21F9A3-F6D6-4CF9-B38B-457D9375EF93",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "4E621F84-817B-49D6-B247-631FB79CCFB1",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -418,17 +412,14 @@
             "TableName": "Feature"
         },
         {
-            "Id": "5F89D5D1-DC68-4844-85E1-81F704710FE5",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "97C96DF5-809D-4E5B-B1EA-6CE77CEC6639",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "9F47E176-8E1E-47B8-BD79-B76C97A2347C",
             "RoleId": "SALES",
             "CanRead": true,
             "CanWrite": true,
@@ -436,12 +427,10 @@
             "TableName": "Feature"
         },
         {
-            "Id": "A341DE2D-9742-4738-B9D8-DC88C50DE717",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "F0AC0542-69E3-465D-8D40-9170B2E08638",
             "RoleId": "DOCS",
             "CanRead": true,
             "CanWrite": true,

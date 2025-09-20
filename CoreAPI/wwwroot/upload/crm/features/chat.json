@@ -1,11 +1,11 @@
 {
-    "Id": "00bc19bc-0000-0000-8000-780f2293461a",
+    "Id": "chat",
     "Name": "chat",
     "Label": "Chat",
     "EntityId": "Terminal",
     "GridPolicies": [
         {
-            "Id": "00bd19bc-0000-0000-8000-5d98ae9f1b80",
+            "Id": "chat.ServiceId.0",
             "FieldName": "ServiceId",
             "Order": 0,
             "ComponentType": "Dropdown",
@@ -26,37 +26,30 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "2BBBC2C2-A5B5-4A2E-A07F-4F4A44E6F4BF",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "48A8B95A-A172-4637-9203-28428F2E8B00",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "4FF4EE40-073E-423A-B3EF-7521ED04E19D",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "64FBAF23-6EDD-4EB7-AEB3-CC73570E844E",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "67B0F011-0802-4F51-B23E-84D015AEDC2D",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "7E6A294E-6B70-4987-A0C8-2476177C843A",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "7E846852-3CAF-4A9C-9B04-DC909F7A80F4",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -67,24 +60,21 @@
             "TableName": "Feature"
         },
         {
-            "Id": "8BCF85D6-2DF4-4102-90E7-466B785B6D15",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "9C2D6DB5-8B23-446E-B5B7-7C32E64E60C0",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "9E9A474A-9A59-4DAC-ABEC-39133E1F28EE",
             "RoleId": "SALES",
             "TableName": "Feature"
         }
     ],
     "Components": [
         {
-            "Id": "00bc19b0-0000-0000-8000-c7817636af49",
+            "Id": "chat.Container.1",
             "FieldName": "Container",
             "Order": 1,
             "ComponentType": "Section",
@@ -92,7 +82,7 @@
             "XxlOuterColumn": 0,
             "Components": [
                 {
-                    "Id": "00bc19ec-0000-0000-8000-8c7b8792d14e",
+                    "Id": "Container.Left.1_7",
                     "FieldName": "Left",
                     "Order": 1,
                     "ComponentType": "Section",
@@ -101,7 +91,7 @@
                     "XxlOuterColumn": 12
                 },
                 {
-                    "Id": "00bd191c-0000-0000-8000-0fd041172430",
+                    "Id": "Container.Right.2_1",
                     "FieldName": "Right",
                     "Order": 2,
                     "ComponentType": "Section",

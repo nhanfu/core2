@@ -1,14 +1,13 @@
 {
-    "Id": "00060520-0000-0000-8000-3c421ffcb020",
+    "Id": "unit",
     "Name": "unit",
     "Label": "Unit",
-    "ParentId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
     "Order": 1,
     "Icon": "fal fa-square",
     "IgnoreEncode": true,
     "GridPolicies": [
         {
-            "Id": "00070534-0000-0000-8000-0bfbab1ae3ee",
+            "Id": "unit.Description.3",
             "FieldName": "Description",
             "Order": 3,
             "ComponentType": "Input",
@@ -20,7 +19,7 @@
             "EntityId": "MasterData"
         },
         {
-            "Id": "0007056c-0000-0000-8000-a3efb2951ab8",
+            "Id": "unit.Code.1",
             "FieldName": "Code",
             "Order": 1,
             "ComponentType": "Input",
@@ -32,7 +31,7 @@
             "EntityId": "MasterData"
         },
         {
-            "Id": "00070590-0000-0000-8000-1c0ad9132f0d",
+            "Id": "unit.Name.2",
             "FieldName": "Name",
             "Order": 2,
             "ComponentType": "Input",
@@ -44,7 +43,7 @@
             "EntityId": "MasterData"
         },
         {
-            "Id": "00a529dc-0000-0000-8000-cbc1e3090c78",
+            "Id": "unit.IsKGS.6",
             "FieldName": "IsKGS",
             "Order": 6,
             "ComponentType": "Checkbox",
@@ -56,7 +55,7 @@
             "EntityId": "MasterData"
         },
         {
-            "Id": "00ed29cc-0000-0000-8000-38edcbfa6faa",
+            "Id": "unit.IsContainer.4",
             "FieldName": "IsContainer",
             "Order": 4,
             "ComponentType": "Checkbox",
@@ -68,7 +67,7 @@
             "EntityId": "MasterData"
         },
         {
-            "Id": "00ee2938-0000-0000-8000-a7c10634870c",
+            "Id": "unit.IsCBM.5",
             "FieldName": "IsCBM",
             "Order": 5,
             "ComponentType": "Checkbox",
@@ -82,12 +81,10 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "238D194C-8D34-4490-AD3A-788198F52900",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "46C84D9B-4394-42FA-94A5-8473AB7799E0",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -98,49 +95,41 @@
             "TableName": "Feature"
         },
         {
-            "Id": "575EF7AE-E8D3-4FF8-B9E3-4D8207C883BF",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "6863A17E-532E-44D0-8BD6-A8E662204C22",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "68E82D81-3E65-4223-B38D-2C6532FA08CF",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "69D9945A-121D-4B43-AC94-01DBB0C3C918",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "96DC7929-5A75-4845-A184-F303151FC9BC",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "9CFF19EC-631E-43EA-B8B9-5F3BB3B46785",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "D5F536FB-BBF5-4B36-9C80-AE9726BE0E71",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "F2A53685-C34B-4B86-838E-80E20AF5AFDC",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         }
     ],
     "Components": [
         {
-            "Id": "000705d4-0000-0000-8000-7e445a533eec",
+            "Id": "unit.Container.1",
             "FieldName": "Container",
             "Order": 1,
             "ComponentType": "Section",
@@ -148,7 +137,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "000705a4-0000-0000-8000-bfd5b3a16a17",
+                    "Id": "Container.MasterData.1_8",
                     "FieldName": "MasterData",
                     "Order": 1,
                     "ComponentType": "GridView",

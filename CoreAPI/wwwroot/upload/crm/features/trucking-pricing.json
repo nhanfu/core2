@@ -1,8 +1,7 @@
 {
-    "Id": "00de1bf8-0000-0000-8000-e457d5f0a8e6",
+    "Id": "trucking_pricing",
     "Name": "trucking-pricing",
     "Label": "Trucking Pricing",
-    "ParentId": "00af15f0-0000-0000-8000-8cb1dddb1613",
     "Order": 2,
     "Script": "return {\r\n    Add: function () {\r\n        var entity = {\r\n            StatusId: 1,\r\n            TypeId: 3,\r\n            ServiceId: 1,\r\n            CreatedOn: this.dayjs().format('YYYY-MM-DD'),\r\n            FromDate: this.dayjs().format('YYYY-MM-DD'),\r\n            InsertedBy: this.Token.UserId\r\n        }\r\n        this.OpenPopup(\"trucking-pricing-editor\", entity);\r\n    },\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"trucking-pricing-editor\", entity);\r\n    }\r\n}",
     "Icon": "fal fa-truck",
@@ -10,7 +9,7 @@
     "EntityId": "Pricing",
     "GridPolicies": [
         {
-            "Id": "00b41b5c-0000-0000-8000-f9a6fcb85737",
+            "Id": "trucking_pricing.ServiceId.4",
             "FieldName": "ServiceId",
             "Order": 4,
             "ComponentType": "Dropdown",
@@ -26,7 +25,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00c61b70-0000-0000-8000-0a4fae06e98c",
+            "Id": "trucking_pricing.ModeId.5",
             "FieldName": "ModeId",
             "Order": 5,
             "ComponentType": "Dropdown",
@@ -42,7 +41,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00df1b24-0000-0000-8000-f95e0ac3ab8a",
+            "Id": "trucking_pricing.ToDate.12",
             "FieldName": "ToDate",
             "Order": 12,
             "ComponentType": "Datepicker",
@@ -55,7 +54,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00df1b2c-0000-0000-8000-b146ed959169",
+            "Id": "trucking_pricing.ReturnsId.10",
             "FieldName": "ReturnsId",
             "Order": 10,
             "ComponentType": "Dropdown",
@@ -72,7 +71,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00df1b2c-0000-0000-8000-b40c38e34194",
+            "Id": "trucking_pricing.btnEdit.0",
             "FieldName": "btnEdit",
             "Order": 0,
             "ComponentType": "Button",
@@ -86,7 +85,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00df1b44-0000-0000-8000-4434db1a9d85",
+            "Id": "trucking_pricing.AmountText.8",
             "FieldName": "AmountText",
             "Order": 8,
             "ComponentType": "Input",
@@ -100,7 +99,7 @@
             "IsMultiple": true
         },
         {
-            "Id": "00df1b44-0000-0000-8000-cd22acb3f6af",
+            "Id": "trucking_pricing.PkEmptyId.9",
             "FieldName": "PkEmptyId",
             "Order": 9,
             "ComponentType": "Dropdown",
@@ -118,7 +117,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00df1b68-0000-0000-8000-98bb2dc4bf43",
+            "Id": "trucking_pricing.PodId.7",
             "FieldName": "PodId",
             "Order": 7,
             "ComponentType": "Dropdown",
@@ -135,7 +134,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00df1b80-0000-0000-8000-44cd57f94017",
+            "Id": "trucking_pricing.FromDate.11",
             "FieldName": "FromDate",
             "Order": 11,
             "ComponentType": "Datepicker",
@@ -148,7 +147,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00df1b88-0000-0000-8000-4ee318457e43",
+            "Id": "trucking_pricing.VendorId.2",
             "FieldName": "VendorId",
             "Order": 2,
             "ComponentType": "Dropdown",
@@ -164,7 +163,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00df1bb8-0000-0000-8000-f012eb4175bc",
+            "Id": "trucking_pricing.PolId.6",
             "FieldName": "PolId",
             "Order": 6,
             "ComponentType": "Dropdown",
@@ -181,7 +180,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00df1bd4-0000-0000-8000-8cf249606132",
+            "Id": "trucking_pricing.CarrierId.3",
             "FieldName": "CarrierId",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -197,7 +196,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00df1bd8-0000-0000-8000-dce1420fe781",
+            "Id": "trucking_pricing.InsertedBy.13",
             "FieldName": "InsertedBy",
             "Order": 13,
             "ComponentType": "Dropdown",
@@ -214,7 +213,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00df2ddc-0000-0000-8000-0f8d31ff2b4d",
+            "Id": "trucking_pricing.Valid.1",
             "FieldName": "Valid",
             "Order": 1,
             "ComponentType": "Label",
@@ -229,7 +228,7 @@
     ],
     "Components": [
         {
-            "Id": "00de1b70-0000-0000-8000-c137b591593a",
+            "Id": "trucking_pricing.Section.1",
             "Order": 1,
             "ComponentType": "Section",
             "Label": "All",
@@ -240,7 +239,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "00df1b28-0000-0000-8000-078ee6e023c1",
+                    "Id": "Section.Pricing.1_3",
                     "FieldName": "Pricing",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -258,7 +257,7 @@
             ]
         },
         {
-            "Id": "00df1b2c-0000-0000-8000-4917c1e8ac53",
+            "Id": "trucking_pricing.Section.3",
             "Order": 3,
             "ComponentType": "Section",
             "Label": "Private",
@@ -267,7 +266,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "00df1b0c-0000-0000-8000-11b0aa27d4b3",
+                    "Id": "Section.Pricing.3_3",
                     "FieldName": "Pricing",
                     "Order": 3,
                     "ComponentType": "GridView",
@@ -284,7 +283,7 @@
             ]
         },
         {
-            "Id": "00df1b98-0000-0000-8000-ce275b23b488",
+            "Id": "trucking_pricing.Section.2",
             "Order": 2,
             "ComponentType": "Section",
             "Label": "Public",
@@ -293,7 +292,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "00df1bb0-0000-0000-8000-e974558823ff",
+                    "Id": "Section.Pricing.2_3",
                     "FieldName": "Pricing",
                     "Order": 2,
                     "ComponentType": "GridView",
@@ -313,17 +312,14 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "05DCA1CE-F52B-40F3-A3CD-BD902EB5ECFC",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "432B20CD-2EB0-4AC5-9E9D-D7BA22D38CA2",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "7B43CB7F-5643-4ADD-97B5-01D37C3563B0",
             "RoleId": "DOCS",
             "CanRead": true,
             "CanWrite": true,
@@ -331,27 +327,22 @@
             "TableName": "Feature"
         },
         {
-            "Id": "91FC4568-8511-4D5E-B1F9-8EAD79B680C8",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "AEB53143-6AEC-4292-9F78-557DE7D8CB01",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "BC4D1DCF-C7B8-4F60-BCBD-3E7B748B1F96",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "BCBE6FB7-6FAC-4196-B9F2-B25F864EFD7F",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "C40AD331-D265-4C79-B944-B3F18EB2B85D",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -362,12 +353,10 @@
             "TableName": "Feature"
         },
         {
-            "Id": "CA5BBC79-A1A3-465C-89AD-9DAF5D03093E",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "E5349F5E-38CA-4B9E-80D4-496B217A91C5",
             "RoleId": "SALES",
             "CanRead": true,
             "CanReadAll": true,

@@ -1,5 +1,5 @@
 {
-    "Id": "01939222-2f5a-747a-bb15-606fb55edf4c",
+    "Id": "accounting",
     "Name": "accounting",
     "Label": "Accounting",
     "Order": 13,
@@ -8,7 +8,6 @@
     "IgnoreEncode": true,
     "FeaturePolicies": [
         {
-            "Id": "14EC6869-3C51-48E1-B111-06C61CB4C0FD",
             "RoleId": "ADMIN",
             "CanRead": true,
             "CanReadAll": true,
@@ -19,7 +18,6 @@
             "TableName": "Feature"
         },
         {
-            "Id": "23FF63DC-85F1-4F9B-B3B3-839D3B81F22F",
             "RoleId": "SALES",
             "CanRead": true,
             "CanWrite": true,
@@ -27,17 +25,14 @@
             "TableName": "Feature"
         },
         {
-            "Id": "54BA67B8-A738-492D-8BA3-3F8480D8B5FA",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "703C8553-31FF-48E5-AF1C-84B02F9C0C0B",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "8D8A27EE-995A-4CA7-B67C-9403254977CB",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -48,22 +43,18 @@
             "TableName": "Feature"
         },
         {
-            "Id": "93789F8C-3FD9-418B-A914-A145FB034D24",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "A748E500-3A8D-4F92-975A-87A3BDE16EAA",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "AA79D9BE-217E-475A-81BF-8168118C69C5",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "C00F4746-547F-457C-A7B4-E64586A46F5E",
             "RoleId": "DOCS",
             "CanRead": true,
             "CanWrite": true,
@@ -71,7 +62,6 @@
             "TableName": "Feature"
         },
         {
-            "Id": "E67B5761-B55A-4C50-9C70-344ED6818C29",
             "RoleId": "PRICING",
             "TableName": "Feature"
         }

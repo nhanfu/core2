@@ -1,8 +1,7 @@
 {
-    "Id": "006e1360-0000-0000-8000-3505aa406146",
+    "Id": "menu",
     "Name": "menu",
     "Label": "Menu",
-    "ParentId": "000a0514-0000-0000-8000-1f67beb1bcef",
     "Order": 12,
     "Script": "return {\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"feature-editor\", entity);\r\n    }\r\n}",
     "Icon": "fal fa-ellipsis-h-alt",
@@ -10,7 +9,7 @@
     "IgnoreEncode": true,
     "GridPolicies": [
         {
-            "Id": "001e1384-0000-0000-8000-b5ef5627bb33",
+            "Id": "menu.Order.2",
             "FieldName": "Order",
             "Order": 2,
             "ComponentType": "Number",
@@ -23,7 +22,7 @@
             "EntityId": "Feature"
         },
         {
-            "Id": "002213dc-0000-0000-8000-8538a9a76c15",
+            "Id": "menu.Active.8",
             "FieldName": "Active",
             "Order": 8,
             "ComponentType": "Checkbox",
@@ -36,7 +35,7 @@
             "EntityId": "Feature"
         },
         {
-            "Id": "002e2718-0000-0000-8000-a91c33d59b0b",
+            "Id": "menu.EntityId.4",
             "FieldName": "EntityId",
             "Order": 4,
             "ComponentType": "Input",
@@ -49,7 +48,7 @@
             "EntityId": "Feature"
         },
         {
-            "Id": "006e136c-0000-0000-8000-583ba4252722",
+            "Id": "menu.IsMenu.1",
             "FieldName": "IsMenu",
             "Order": 1,
             "ComponentType": "Checkbox",
@@ -62,7 +61,7 @@
             "EntityId": "Feature"
         },
         {
-            "Id": "006e13b0-0000-0000-8000-bcab93201cba",
+            "Id": "menu.Icon.6",
             "FieldName": "Icon",
             "Order": 6,
             "ComponentType": "Input",
@@ -75,7 +74,7 @@
             "EntityId": "Feature"
         },
         {
-            "Id": "006e13d0-0000-0000-8000-c6a4fdca9b1e",
+            "Id": "menu.ParentId.7",
             "FieldName": "ParentId",
             "Order": 7,
             "ComponentType": "Dropdown",
@@ -94,7 +93,7 @@
             "EntityId": "Feature"
         },
         {
-            "Id": "006e13e4-0000-0000-8000-d6839fc219a8",
+            "Id": "menu.Name.5",
             "FieldName": "Name",
             "Order": 5,
             "ComponentType": "Input",
@@ -107,7 +106,7 @@
             "EntityId": "Feature"
         },
         {
-            "Id": "006e13f0-0000-0000-8000-45e2048861a2",
+            "Id": "menu.Id.0",
             "FieldName": "Id",
             "Order": 0,
             "ComponentType": "Input",
@@ -119,7 +118,7 @@
             "EntityId": "Feature"
         },
         {
-            "Id": "00d513f8-0000-0000-8000-9a1e387d084b",
+            "Id": "menu.Label.3",
             "FieldName": "Label",
             "Order": 3,
             "ComponentType": "Input",
@@ -132,7 +131,7 @@
             "EntityId": "Feature"
         },
         {
-            "Id": "0195145a-7b9b-75fc-a807-f527dd021603",
+            "Id": "menu.IsLock.1",
             "FieldName": "IsLock",
             "Order": 1,
             "ComponentType": "Checkbox",
@@ -147,12 +146,10 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "1B5A9F51-E6C8-4F1A-8005-467638808D0F",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "21A95728-824B-4633-ABB9-B71E33BF068A",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -163,49 +160,41 @@
             "TableName": "Feature"
         },
         {
-            "Id": "37787095-3573-4B45-B964-74230A359DC9",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "3CDB467E-238D-4EAE-9B99-09B9FD1DEC7A",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "6ACD3867-0A90-4F7C-95D0-6761E25E04F9",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "7B7CCF91-7E17-4525-B23F-8A013C0B3B7D",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "8BBB843C-6E1B-4639-B079-828E82F641A9",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "B20E4C96-60B4-4EF9-B6EC-39574DA654DC",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "C671C75A-5EA5-413A-B9FE-79954D955F18",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "FF62338C-F8EE-4693-A57C-FE87403D63B6",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         }
     ],
     "Components": [
         {
-            "Id": "006e13f0-0000-0000-8000-5c2318ec3160",
+            "Id": "menu.Container.1",
             "FieldName": "Container",
             "Order": 1,
             "ComponentType": "Section",
@@ -213,7 +202,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "006e1330-0000-0000-8000-c4465acdf2b8",
+                    "Id": "Container.Feature.1_1",
                     "FieldName": "Feature",
                     "Order": 1,
                     "ComponentType": "GridView",

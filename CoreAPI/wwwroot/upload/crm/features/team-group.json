@@ -1,15 +1,14 @@
 {
-    "Id": "0044057c-0000-0000-8000-ace74752780d",
+    "Id": "team_group",
     "Name": "team-group",
     "Label": "Team Group",
-    "ParentId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
     "Order": 3,
     "Icon": "fal fa-users-class",
     "IsMenu": true,
     "IgnoreEncode": true,
     "GridPolicies": [
         {
-            "Id": "0044052c-0000-0000-8000-359fdf5e1eb8",
+            "Id": "team_group.Name.1",
             "FieldName": "Name",
             "Order": 1,
             "ComponentType": "Input",
@@ -21,7 +20,7 @@
             "EntityId": "MasterData"
         },
         {
-            "Id": "0044053c-0000-0000-8000-eedd9291392c",
+            "Id": "team_group.Code.0",
             "FieldName": "Code",
             "Order": 0,
             "ComponentType": "Input",
@@ -33,7 +32,7 @@
             "EntityId": "MasterData"
         },
         {
-            "Id": "00440554-0000-0000-8000-4a5cd2ea8603",
+            "Id": "team_group.Description.2",
             "FieldName": "Description",
             "Order": 2,
             "ComponentType": "Input",
@@ -47,42 +46,34 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "14828596-6B62-42A3-9BF2-A28FF050BB58",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "1C48AAB8-671E-4163-9D1C-6E42E8305B01",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "387C8E91-A924-417F-8042-EF1A0A4DD0C9",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "55BD5B50-67FC-46F6-A23C-6D778D31259F",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "63148C9E-1349-4CC8-9F64-7195A4BDDBD9",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "72A2B2BF-346E-46BC-970C-B60FC77A4A1C",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "84C2A571-B26D-4B51-B168-F9D7808AFF75",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "93B69B3D-4201-420E-97DD-13C691AB034B",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -93,19 +84,17 @@
             "TableName": "Feature"
         },
         {
-            "Id": "947759FD-C0DD-4ADB-9B1E-DF8638958F4F",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "AAD8D777-2BB8-4098-AFF6-43C79915C607",
             "RoleId": "SALES",
             "TableName": "Feature"
         }
     ],
     "Components": [
         {
-            "Id": "00440538-0000-0000-8000-1db044e58d0e",
+            "Id": "team_group.Container.1",
             "FieldName": "Container",
             "Order": 1,
             "ComponentType": "Section",
@@ -113,7 +102,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "004405cc-0000-0000-8000-a25462db75e4",
+                    "Id": "Container.MasterData.1_7",
                     "FieldName": "MasterData",
                     "Order": 1,
                     "ComponentType": "GridView",

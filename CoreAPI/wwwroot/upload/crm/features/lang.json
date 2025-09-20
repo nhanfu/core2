@@ -1,14 +1,13 @@
 {
-    "Id": "0093037c-0000-0000-8000-1435d768292f",
+    "Id": "lang",
     "Name": "lang",
     "Label": "Lang",
-    "ParentId": "000a0514-0000-0000-8000-1f67beb1bcef",
     "Order": 5,
     "Icon": "fal fa-globe-americas",
     "IsMenu": true,
     "GridPolicies": [
         {
-            "Id": "00fa0354-0000-0000-8000-1b19f9d06ca9",
+            "Id": "lang.LangCode.0",
             "FieldName": "LangCode",
             "Order": 0,
             "ComponentType": "Input",
@@ -20,7 +19,7 @@
             "EntityId": "Dictionary"
         },
         {
-            "Id": "00fb0378-0000-0000-8000-7ffb73fac6e4",
+            "Id": "lang.Key.1",
             "FieldName": "Key",
             "Order": 1,
             "ComponentType": "Input",
@@ -32,7 +31,7 @@
             "EntityId": "Dictionary"
         },
         {
-            "Id": "00fb03bc-0000-0000-8000-711cf90e1b94",
+            "Id": "lang.Value.2",
             "FieldName": "Value",
             "Order": 2,
             "ComponentType": "Input",
@@ -46,42 +45,34 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "2106173A-4CE1-46CB-B15E-3E17614FDA87",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "257E8AC8-1F3B-4D20-981E-6F81D6FD8519",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "2C8CA094-7B86-4A34-B1B5-91E4C5090F53",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "3E01A6B1-BB38-440D-8634-740E24F4E4B5",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "79E5C1D7-5E62-4342-BAD7-AC0EDFB78C5F",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "8DF41D28-2AA3-47DD-B70D-C1963240AAE4",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "ADC5285D-5A54-482D-B1B4-444A8A294788",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "DECB2734-DF97-419E-8687-1486276582BE",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -92,26 +83,24 @@
             "TableName": "Feature"
         },
         {
-            "Id": "EAE0B524-9F99-4768-BDA2-21102744BDBA",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "F00C6A47-C45A-4FD2-B98E-D1360C1F6AD0",
             "RoleId": "DOCS",
             "TableName": "Feature"
         }
     ],
     "Components": [
         {
-            "Id": "00d403b0-0000-0000-8000-c2fb94a5cc41",
+            "Id": "lang.Lang.1",
             "FieldName": "Lang",
             "Order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "00d5039c-0000-0000-8000-861979a5e56e",
+                    "Id": "Lang.Dictionary.1",
                     "FieldName": "Dictionary",
                     "Order": 1,
                     "ComponentType": "GridView",

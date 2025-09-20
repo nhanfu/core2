@@ -1,14 +1,13 @@
 {
-    "Id": "00800e48-0000-0000-8000-fbdb31d5b4a4",
+    "Id": "group_fee",
     "Name": "group-fee",
     "Label": "Group Fee",
-    "ParentId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
     "Order": 5,
     "Icon": "fal fa-ball-pile",
     "IgnoreEncode": true,
     "GridPolicies": [
         {
-            "Id": "00800e10-0000-0000-8000-477e47f303d6",
+            "Id": "group_fee.Name.1",
             "FieldName": "Name",
             "Order": 1,
             "ComponentType": "Input",
@@ -20,7 +19,7 @@
             "EntityId": "MasterData"
         },
         {
-            "Id": "00800e34-0000-0000-8000-1594992ba569",
+            "Id": "group_fee.Description.2",
             "FieldName": "Description",
             "Order": 2,
             "ComponentType": "Input",
@@ -32,7 +31,7 @@
             "EntityId": "MasterData"
         },
         {
-            "Id": "00800ed4-0000-0000-8000-4e22b05d7611",
+            "Id": "group_fee.Code.0",
             "FieldName": "Code",
             "Order": 0,
             "ComponentType": "Input",
@@ -44,7 +43,7 @@
             "EntityId": "MasterData"
         },
         {
-            "Id": "00953480-0000-0000-8000-3699e9eb3e89",
+            "Id": "group_fee.Enum.3",
             "FieldName": "Enum",
             "Order": 3,
             "ComponentType": "Number",
@@ -58,12 +57,10 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "044855B9-0F6E-4EBE-9BF7-14C03EC1BEAC",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "5B87D1D2-6B95-4E95-9755-E1DF32F79276",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -74,49 +71,41 @@
             "TableName": "Feature"
         },
         {
-            "Id": "A3537C6D-4043-4723-A386-2419E4BB0157",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "A3B70054-7523-4E73-8B2D-61AD8F2C325B",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "AB1DD113-1177-4AAD-95D8-C17CA8396251",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "B634D75F-5FBB-4F09-AD55-797E56213159",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "C3E10226-1173-435A-9D84-D6D83656D969",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "D4B20477-8DA0-4E02-A73C-327660306F88",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "E0FE3F4F-3B23-45AF-9BEC-CD62755C890D",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "E61925BA-92FB-4832-BB15-056989A48D6D",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         }
     ],
     "Components": [
         {
-            "Id": "00800ee0-0000-0000-8000-3b0dc296c693",
+            "Id": "group_fee.Container.1",
             "FieldName": "Container",
             "Order": 1,
             "ComponentType": "Section",
@@ -124,7 +113,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "00800e10-0000-0000-8000-06092a1abf46",
+                    "Id": "Container.MasterData.1_5",
                     "FieldName": "MasterData",
                     "Order": 1,
                     "ComponentType": "GridView",

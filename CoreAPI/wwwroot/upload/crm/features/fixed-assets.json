@@ -1,5 +1,5 @@
 {
-    "Id": "6e63c20d-2788-4124-3332-4cfe2c982can1",
+    "Id": "fixed_assets",
     "Name": "fixed-assets",
     "Label": "Fixed Assets",
     "Order": 10,
@@ -8,17 +8,14 @@
     "IgnoreEncode": true,
     "FeaturePolicies": [
         {
-            "Id": "033196F2-77E7-44BF-9C98-C35308F3B5AF",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "1A50D9A2-307D-4B97-8E75-1FD2A1ACC39F",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "2DD17F85-1B35-4331-94F4-D62A814DD2C8",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -29,37 +26,30 @@
             "TableName": "Feature"
         },
         {
-            "Id": "41FE606B-7234-412E-AEFD-05027F995A00",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "796B8DE8-7A39-4C86-B5AA-FC9460638A4A",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "88E1BFEB-2FB3-48A0-8394-42995E222EFF",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "942F5A31-B54C-4A0F-9C80-262159CBAE41",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "9643F1E3-8FED-4465-B06D-DC8C27850CE7",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "A04E0AB4-1E24-4E5A-A3E2-DDC4D0EB967E",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "CD20EE55-B67C-4845-933D-838B8AB30519",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         }

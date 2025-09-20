@@ -1,15 +1,14 @@
 {
-    "Id": "00c713d0-0000-0000-8000-f7a6a882d8e0",
+    "Id": "other_booking_order_editor",
     "Name": "other-booking-order-editor",
     "Label": "Other Booking Order Editor",
-    "ParentId": "00570fb0-0000-0000-8000-eccd0a0c88f5",
     "Style": "width:99%;",
     "Events": "{\r\n    \"onsave\": \"OnSave\",\r\n    \"onsaveadd\": \"OnSaveAdd\",\r\n    \"saved\": \"UpdateParent\"\r\n}",
     "EntityId": "Booking",
     "CodeId": "00770f40-0000-0000-8000-4f8bbf3e44b5",
     "GridPolicies": [
         {
-            "Id": "00c81320-0000-0000-8000-eede53d96fe2",
+            "Id": "other_booking_order_editor.FromId.0",
             "FieldName": "FromId",
             "Order": 0,
             "ComponentType": "Dropdown",
@@ -28,7 +27,7 @@
             "EntityId": "BookingDetail"
         },
         {
-            "Id": "00c81324-0000-0000-8000-dbb26771c01e",
+            "Id": "other_booking_order_editor.Flight.2",
             "FieldName": "Flight",
             "Order": 2,
             "ComponentType": "Input",
@@ -41,7 +40,7 @@
             "EntityId": "BookingDetail"
         },
         {
-            "Id": "00c81338-0000-0000-8000-a5e8800ae4cb",
+            "Id": "other_booking_order_editor.ToId.1",
             "FieldName": "ToId",
             "Order": 1,
             "ComponentType": "Dropdown",
@@ -60,7 +59,7 @@
             "EntityId": "BookingDetail"
         },
         {
-            "Id": "00c81354-0000-0000-8000-3f9cbcb6e5df",
+            "Id": "other_booking_order_editor.ContainerTypeId.1",
             "FieldName": "ContainerTypeId",
             "Order": 1,
             "ComponentType": "Dropdown",
@@ -79,7 +78,7 @@
             "EntityId": "EntityContainer"
         },
         {
-            "Id": "00c8135c-0000-0000-8000-56d22a79e233",
+            "Id": "other_booking_order_editor.EtdDate.3",
             "FieldName": "EtdDate",
             "Order": 3,
             "ComponentType": "Datepicker",
@@ -92,7 +91,7 @@
             "EntityId": "BookingDetail"
         },
         {
-            "Id": "00c813b8-0000-0000-8000-3db92203bc94",
+            "Id": "other_booking_order_editor.EtaDate.4",
             "FieldName": "EtaDate",
             "Order": 4,
             "ComponentType": "Datepicker",
@@ -105,7 +104,7 @@
             "EntityId": "BookingDetail"
         },
         {
-            "Id": "00c813dc-0000-0000-8000-2776a7091976",
+            "Id": "other_booking_order_editor.Quantity.0",
             "FieldName": "Quantity",
             "Order": 0,
             "ComponentType": "Number",
@@ -120,7 +119,7 @@
     ],
     "Components": [
         {
-            "Id": "00c71330-0000-0000-8000-da3169bddeca",
+            "Id": "other_booking_order_editor.Button.1",
             "FieldName": "Button",
             "Order": 1,
             "ComponentType": "Section",
@@ -129,7 +128,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "00c71320-0000-0000-8000-6303fec02ba5",
+                    "Id": "Button.btnDecline.3_7",
                     "FieldName": "btnDecline",
                     "Order": 3,
                     "ComponentType": "Button",
@@ -141,7 +140,7 @@
                     "ShowExp": "this.Entity.StatusId == 2"
                 },
                 {
-                    "Id": "00c71338-0000-0000-8000-9c736a63de6f",
+                    "Id": "Button.btnApprove.4_7",
                     "FieldName": "btnApprove",
                     "Order": 4,
                     "ComponentType": "Button",
@@ -153,7 +152,7 @@
                     "ShowExp": "this.Entity.StatusId == 2"
                 },
                 {
-                    "Id": "00c71374-0000-0000-8000-0a1340c6a22a",
+                    "Id": "Button.btnSaveAdd.0_9",
                     "FieldName": "btnSaveAdd",
                     "Order": 0,
                     "ComponentType": "Button",
@@ -165,7 +164,7 @@
                     "Events": "{ \"click\" : \"SaveAs\" }"
                 },
                 {
-                    "Id": "00c7138c-0000-0000-8000-38344e155269",
+                    "Id": "Button.btnSaveAdd.1_9",
                     "FieldName": "btnSaveAdd",
                     "Order": 1,
                     "ComponentType": "Button",
@@ -177,7 +176,7 @@
                     "Events": "{ \"click\" : \"SaveAdd\" }"
                 },
                 {
-                    "Id": "00c71394-0000-0000-8000-1096a23cb8bd",
+                    "Id": "Button.btnSave.5_8",
                     "FieldName": "btnSave",
                     "Order": 5,
                     "ComponentType": "Button",
@@ -189,7 +188,7 @@
                     "Events": "{ \"click\" : \"SavePatch\" }"
                 },
                 {
-                    "Id": "00c713b0-0000-0000-8000-7e6ee59724a7",
+                    "Id": "Button.btnSendEntity.2_7",
                     "FieldName": "btnSendEntity",
                     "Order": 2,
                     "ComponentType": "Button",
@@ -201,7 +200,7 @@
                     "ShowExp": "this.Entity.StatusId == 1 || this.Entity.StatusId == 4"
                 },
                 {
-                    "Id": "00c71320-0000-0000-8000-6303fec02ba5",
+                    "Id": "Button.btnDecline.3_8",
                     "FieldName": "btnDecline",
                     "Order": 3,
                     "ComponentType": "Button",
@@ -213,7 +212,7 @@
                     "ShowExp": "this.Entity.StatusId == 2"
                 },
                 {
-                    "Id": "00c71338-0000-0000-8000-9c736a63de6f",
+                    "Id": "Button.btnApprove.4_8",
                     "FieldName": "btnApprove",
                     "Order": 4,
                     "ComponentType": "Button",
@@ -225,7 +224,7 @@
                     "ShowExp": "this.Entity.StatusId == 2"
                 },
                 {
-                    "Id": "00c71374-0000-0000-8000-0a1340c6a22a",
+                    "Id": "Button.btnSaveAdd.0_10",
                     "FieldName": "btnSaveAdd",
                     "Order": 0,
                     "ComponentType": "Button",
@@ -237,7 +236,7 @@
                     "Events": "{ \"click\" : \"SaveAs\" }"
                 },
                 {
-                    "Id": "00c7138c-0000-0000-8000-38344e155269",
+                    "Id": "Button.btnSaveAdd.1_10",
                     "FieldName": "btnSaveAdd",
                     "Order": 1,
                     "ComponentType": "Button",
@@ -249,7 +248,7 @@
                     "Events": "{ \"click\" : \"SaveAdd\" }"
                 },
                 {
-                    "Id": "00c71394-0000-0000-8000-1096a23cb8bd",
+                    "Id": "Button.btnSave.5_9",
                     "FieldName": "btnSave",
                     "Order": 5,
                     "ComponentType": "Button",
@@ -261,7 +260,7 @@
                     "Events": "{ \"click\" : \"SavePatch\" }"
                 },
                 {
-                    "Id": "00c713b0-0000-0000-8000-7e6ee59724a7",
+                    "Id": "Button.btnSendEntity.2_8",
                     "FieldName": "btnSendEntity",
                     "Order": 2,
                     "ComponentType": "Button",
@@ -275,7 +274,7 @@
             ]
         },
         {
-            "Id": "00c71398-0000-0000-8000-0668f63574c2",
+            "Id": "other_booking_order_editor.Container.2",
             "FieldName": "Container",
             "Order": 2,
             "ComponentType": "Section",
@@ -283,7 +282,7 @@
             "XxlCol": 8,
             "Components": [
                 {
-                    "Id": "00c71314-0000-0000-8000-e8b79e6e8708",
+                    "Id": "Container.Left.1_11",
                     "FieldName": "Left",
                     "Order": 1,
                     "ComponentType": "Section",
@@ -292,7 +291,7 @@
                     "XxlOuterColumn": 4,
                     "Components": [
                         {
-                            "Id": "00c71310-0000-0000-8000-8c533a393dc4",
+                            "Id": "Left.CustomerId.3_4",
                             "FieldName": "CustomerId",
                             "Order": 3,
                             "ComponentType": "Dropdown",
@@ -312,7 +311,7 @@
                             "ShowHotKey": true
                         },
                         {
-                            "Id": "00c71344-0000-0000-8000-ea1efd793510",
+                            "Id": "Left.DeliveryTerm.9_1",
                             "FieldName": "DeliveryTerm",
                             "Order": 9,
                             "ComponentType": "Input",
@@ -321,7 +320,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00c71350-0000-0000-8000-a0d475df3ae0",
+                            "Id": "Left.BookingDate.2_2",
                             "FieldName": "BookingDate",
                             "Order": 2,
                             "ComponentType": "Datepicker",
@@ -330,7 +329,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00c71354-0000-0000-8000-f483fcf51cf0",
+                            "Id": "Left.PicVendor.4_1",
                             "FieldName": "PicVendor",
                             "Order": 4,
                             "ComponentType": "Input",
@@ -340,7 +339,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00c71378-0000-0000-8000-fcf6893ad1cc",
+                            "Id": "Left.IncotermId.8_1",
                             "FieldName": "IncotermId",
                             "Order": 8,
                             "ComponentType": "Dropdown",
@@ -354,7 +353,7 @@
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
-                            "Id": "00c71384-0000-0000-8000-7fcfd9cb604b",
+                            "Id": "Left.Code.1_1",
                             "FieldName": "Code",
                             "Order": 1,
                             "ComponentType": "Input",
@@ -365,7 +364,7 @@
                     ]
                 },
                 {
-                    "Id": "00c71304-0000-0000-8000-b5003abc2425",
+                    "Id": "Container.Main.2_9",
                     "FieldName": "Main",
                     "Order": 2,
                     "ComponentType": "Section",
@@ -374,7 +373,7 @@
                     "XxlOuterColumn": 4,
                     "Components": [
                         {
-                            "Id": "00c7133c-0000-0000-8000-afb522dddcbd",
+                            "Id": "Main.ShipmentTypeId.5_4",
                             "FieldName": "ShipmentTypeId",
                             "Order": 5,
                             "ComponentType": "Dropdown",
@@ -389,7 +388,7 @@
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
-                            "Id": "00c713a8-0000-0000-8000-2a0d688e4a02",
+                            "Id": "Main.ServiceText.4_4",
                             "FieldName": "ServiceText",
                             "Order": 4,
                             "ComponentType": "Input",
@@ -398,7 +397,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00c713ac-0000-0000-8000-d9e83b41800c",
+                            "Id": "Main.SaleId.6_2",
                             "FieldName": "SaleId",
                             "Order": 6,
                             "ComponentType": "Dropdown",
@@ -413,7 +412,7 @@
                             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]"
                         },
                         {
-                            "Id": "00c713b8-0000-0000-8000-fc19c6ac57d0",
+                            "Id": "Main.HblNo.1_2",
                             "FieldName": "HblNo",
                             "Order": 1,
                             "ComponentType": "Input",
@@ -422,7 +421,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00c713e8-0000-0000-8000-f8e011c310ca",
+                            "Id": "Main.CommodityId.3_4",
                             "FieldName": "CommodityId",
                             "Order": 3,
                             "ComponentType": "Dropdown",
@@ -439,7 +438,7 @@
                     ]
                 },
                 {
-                    "Id": "00c71380-0000-0000-8000-55253b48ebad",
+                    "Id": "Container.Left1.5_4",
                     "FieldName": "Left1",
                     "Order": 5,
                     "ComponentType": "Section",
@@ -449,7 +448,7 @@
                     "XxlOuterColumn": 4,
                     "Components": [
                         {
-                            "Id": "003b131c-0000-0000-8000-99ee33cc9955",
+                            "Id": "Left1.VendorId.5",
                             "FieldName": "VendorId",
                             "Order": 5,
                             "ComponentType": "Dropdown",
@@ -466,7 +465,7 @@
                             "ShowHotKey": true
                         },
                         {
-                            "Id": "005b1350-0000-0000-8000-bf7c00ba8ea7",
+                            "Id": "Left1.DetailsGoods.8",
                             "FieldName": "DetailsGoods",
                             "Order": 8,
                             "ComponentType": "Textarea",
@@ -477,7 +476,7 @@
                             "RefName": "Terminal"
                         },
                         {
-                            "Id": "006f1390-0000-0000-8000-dab02303e2c2",
+                            "Id": "Left1.WareHouseId.6",
                             "FieldName": "WareHouseId",
                             "Order": 6,
                             "ComponentType": "Dropdown",
@@ -492,7 +491,7 @@
                             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
-                            "Id": "00bb13a8-0000-0000-8000-17d5320f9252",
+                            "Id": "Left1.Note.8",
                             "FieldName": "Note",
                             "Order": 8,
                             "ComponentType": "Textarea",
@@ -503,7 +502,7 @@
                             "RefName": "Terminal"
                         },
                         {
-                            "Id": "00c71390-0000-0000-8000-a0d37ebfa2fe",
+                            "Id": "Left1.EtdDate.4",
                             "FieldName": "EtdDate",
                             "Order": 4,
                             "ComponentType": "Datepicker",
@@ -512,7 +511,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00c713b8-0000-0000-8000-88080efc3532",
+                            "Id": "Left1.EtaDate.3",
                             "FieldName": "EtaDate",
                             "Order": 3,
                             "ComponentType": "Datepicker",
@@ -521,7 +520,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00c713f0-0000-0000-8000-651078f5d2d4",
+                            "Id": "Left1.PickupId.1",
                             "FieldName": "PickupId",
                             "Order": 1,
                             "ComponentType": "Dropdown",
@@ -536,7 +535,7 @@
                             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
-                            "Id": "00c713fc-0000-0000-8000-66000388744f",
+                            "Id": "Left1.DropOffId.2",
                             "FieldName": "DropOffId",
                             "Order": 2,
                             "ComponentType": "Dropdown",
@@ -553,7 +552,7 @@
                     ]
                 },
                 {
-                    "Id": "00c71308-0000-0000-8000-bcd2af030c09",
+                    "Id": "Container.Sea_Container.8_2",
                     "FieldName": "Sea Container",
                     "Order": 8,
                     "ComponentType": "Section",
@@ -562,7 +561,7 @@
                     "XxlOuterColumn": 4,
                     "Components": [
                         {
-                            "Id": "00c71308-0000-0000-8000-77b024e1bdd4",
+                            "Id": "Sea_Container.CBM.5_2",
                             "FieldName": "CBM",
                             "Order": 5,
                             "ComponentType": "Number",
@@ -571,7 +570,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00c71374-0000-0000-8000-510d92203a09",
+                            "Id": "Sea_Container.GW.3_2",
                             "FieldName": "GW",
                             "Order": 3,
                             "ComponentType": "Number",
@@ -580,7 +579,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "00c71394-0000-0000-8000-26e6a3a60181",
+                            "Id": "Sea_Container.UnitId.2_2",
                             "FieldName": "UnitId",
                             "Order": 2,
                             "ComponentType": "Dropdown",
@@ -595,7 +594,7 @@
                             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]"
                         },
                         {
-                            "Id": "00c713b0-0000-0000-8000-e136a1b48a20",
+                            "Id": "Sea_Container.Quantity.1_2",
                             "FieldName": "Quantity",
                             "Order": 1,
                             "ComponentType": "Number",
@@ -609,7 +608,7 @@
             ]
         },
         {
-            "Id": "00c81374-0000-0000-8000-d781ed6a0846",
+            "Id": "other_booking_order_editor.Center.4",
             "FieldName": "Center",
             "Order": 4,
             "ComponentType": "Section",
@@ -618,7 +617,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "00c81398-0000-0000-8000-7445a4efa56b",
+                    "Id": "Center.ServiceId.1_6",
                     "FieldName": "ServiceId",
                     "Order": 1,
                     "ComponentType": "Dropdown",
@@ -639,27 +638,22 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "081BF8E4-B4CF-4F9E-917E-F582D3DE2985",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "3820C2A3-AE97-4866-AC0C-A1E7CCDB8C3B",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "4BB042D2-4C6D-4357-9912-196F02D270B3",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "637F7569-8C45-4FCF-8D34-0F0EFB2DD83C",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "93A6BE2C-4229-4983-BAD1-76808E0D08E2",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -670,29 +664,24 @@
             "TableName": "Feature"
         },
         {
-            "Id": "9D0CCB76-267A-4D0D-B66C-C56218D897DC",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "A0476109-A8F7-42B5-9D4F-DEBA9DE48112",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "C112402F-A472-4AC9-83A9-C1A1E215612D",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "E91AAF61-1FAE-42DC-88ED-409D4D2A047F",
             "RoleId": "DOCS",
             "CanRead": true,
             "CanWrite": true,
             "TableName": "Feature"
         },
         {
-            "Id": "F902F6F7-4A4B-4B9B-85EF-D42453AE6B4D",
             "RoleId": "PRICING",
             "CanRead": true,
             "CanWrite": true,

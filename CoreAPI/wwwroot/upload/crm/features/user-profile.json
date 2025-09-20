@@ -1,5 +1,5 @@
 {
-    "Id": "00f02818-0000-0000-8000-31a79d1d5dbe",
+    "Id": "user_profile",
     "Name": "user-profile",
     "Label": "User Profile",
     "Script": "return {\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"feature-editor\", entity);\r\n    },\r\n    EditComponent: function (btn, entity) {\r\n        this.OpenPopup(\"component-editor\", entity);\r\n    }\r\n}",
@@ -9,37 +9,30 @@
     "IgnoreEncode": true,
     "FeaturePolicies": [
         {
-            "Id": "243F6399-4A96-4483-8C51-3652B33328E8",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "6753ED02-6CF2-45BB-96A1-7FED42C05DF6",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "A3AE2195-1C59-49F7-8B39-B62A4633A9EE",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "A7F83820-5068-49C0-BC6E-6BA92CDDC8B6",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "BF9373E0-AFA5-4703-9E84-A5BE30494AC4",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "C1E45BA4-4099-4713-9883-D93FEB8DF0DC",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "D6A6BA88-80D9-4904-AFC3-8F78C754C5C0",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -50,24 +43,21 @@
             "TableName": "Feature"
         },
         {
-            "Id": "DCB0BD2D-C444-433C-82B8-010E939B5C2A",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "EC6006F0-5C57-41B6-B898-AC996C940A61",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "F01A4B5C-4839-48EF-9B07-65DCAF9AB0ED",
             "RoleId": "ACC",
             "TableName": "Feature"
         }
     ],
     "Components": [
         {
-            "Id": "007828b0-0000-0000-8000-06df68c76053",
+            "Id": "user_profile.Main.1",
             "FieldName": "Main",
             "Order": 1,
             "ComponentType": "Section",

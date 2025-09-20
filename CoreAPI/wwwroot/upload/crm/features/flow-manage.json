@@ -1,8 +1,7 @@
 {
-    "Id": "01947706-b215-7229-a8d7-e43e74d14052",
+    "Id": "flow_manage",
     "Name": "flow-manage",
     "Label": "Flows Manage",
-    "ParentId": "01947703-9cf6-75f5-84cf-c23fadbfb38b",
     "Order": 1,
     "Script": "return {\r\n    Add: function () {\r\n        var entity = {\r\n            IsFlow: true,\r\n            IsMenu: true,\r\n            Order: -999,\r\n            ParentId: this.EditForm.Meta.ParentId\r\n        }\r\n        this.OpenPopup(\"flows-editor\", entity);\r\n    },\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"flows-editor\", entity);\r\n    }\r\n}",
     "Icon": "fal fa-ellipsis-h-alt",
@@ -10,7 +9,7 @@
     "IgnoreEncode": true,
     "GridPolicies": [
         {
-            "Id": "01947706-b358-71fa-b02e-d8d96a6c6605",
+            "Id": "flow_manage.Name.1",
             "FieldName": "Name",
             "Order": 1,
             "ComponentType": "Number",
@@ -23,7 +22,7 @@
             "EntityId": "Feature"
         },
         {
-            "Id": "01947706-b3a1-702b-b668-ede2a7c5f93e",
+            "Id": "flow_manage.Active.3",
             "FieldName": "Active",
             "Order": 3,
             "ComponentType": "Checkbox",
@@ -35,7 +34,7 @@
             "EntityId": "Feature"
         },
         {
-            "Id": "01947706-b543-74c4-8597-e49d0d062b76",
+            "Id": "flow_manage.Id.0",
             "FieldName": "Id",
             "Order": 0,
             "ComponentType": "Input",
@@ -47,7 +46,7 @@
             "EntityId": "Feature"
         },
         {
-            "Id": "01947706-b591-776a-b8f5-42745488bbaf",
+            "Id": "flow_manage.Label.2",
             "FieldName": "Label",
             "Order": 2,
             "ComponentType": "Input",
@@ -61,7 +60,7 @@
     ],
     "Components": [
         {
-            "Id": "01947706-b276-73fa-92e4-657838af44e9",
+            "Id": "flow_manage.Container.1",
             "FieldName": "Container",
             "Order": 1,
             "ComponentType": "Section",
@@ -69,7 +68,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "01947706-b312-7449-9579-c788fd7bef80",
+                    "Id": "Container.Feature.1",
                     "FieldName": "Feature",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -89,22 +88,18 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "02CBCFA8-2C3F-48C3-9AB8-DAAFFFD962C0",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "38083A1F-C34C-4074-9CA8-61518CAC4C5E",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "431FC47C-C9EF-4B1D-B1A4-A89E4BC7AAC7",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "594AC1A8-75E2-4849-B568-1F881F4AA4DB",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -114,32 +109,26 @@
             "TableName": "Feature"
         },
         {
-            "Id": "79414D4C-22AA-40E0-A829-58B7CEE583A9",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "A4530F9B-38CB-40CA-94F2-07B32E50F763",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "B8C1AB40-6BC8-4D03-A912-3A8AA7EC1E90",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "CBD94A69-D201-4EC3-A6CF-66FAAC013D5B",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "DA900CBF-76D5-4A9C-A091-C24769D8A72F",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "EE598F9F-4929-4066-8187-39A5E9CBBD9F",
             "RoleId": "ADMIN",
             "CanRead": true,
             "CanReadAll": true,

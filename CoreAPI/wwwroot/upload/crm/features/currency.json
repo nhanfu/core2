@@ -1,15 +1,14 @@
 {
-    "Id": "00df0f74-0000-0000-8000-af05a8b601bd",
+    "Id": "currency",
     "Name": "currency",
     "Label": "Currency",
-    "ParentId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
     "Order": 9,
     "Icon": "fal fa-usd-circle",
     "IsMenu": true,
     "IgnoreEncode": true,
     "GridPolicies": [
         {
-            "Id": "006e3658-0000-0000-8000-1391d2eb650d",
+            "Id": "currency.IsLocal.4",
             "FieldName": "IsLocal",
             "Order": 4,
             "ComponentType": "Checkbox",
@@ -22,7 +21,7 @@
             "EntityId": "MasterData"
         },
         {
-            "Id": "007e1bc8-0000-0000-8000-8b95cebfa6d8",
+            "Id": "currency.Enum.2",
             "FieldName": "Enum",
             "Order": 2,
             "ComponentType": "Number",
@@ -35,7 +34,7 @@
             "EntityId": "MasterData"
         },
         {
-            "Id": "00df0f58-0000-0000-8000-24b40759b1bc",
+            "Id": "currency.Description.3",
             "FieldName": "Description",
             "Order": 3,
             "ComponentType": "Input",
@@ -48,7 +47,7 @@
             "EntityId": "MasterData"
         },
         {
-            "Id": "00df0f88-0000-0000-8000-01c301121481",
+            "Id": "currency.Code.0",
             "FieldName": "Code",
             "Order": 0,
             "ComponentType": "Input",
@@ -61,7 +60,7 @@
             "EntityId": "MasterData"
         },
         {
-            "Id": "00df0ffc-0000-0000-8000-7dc0f81ac0d9",
+            "Id": "currency.Name.1",
             "FieldName": "Name",
             "Order": 1,
             "ComponentType": "Input",
@@ -76,42 +75,34 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "176BF21B-AF5A-4022-9002-0E328607C3F8",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "1CDD8FFB-BCA3-4C4D-B623-A979EB6CC8BD",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "48FFD008-799D-4E03-8DD9-16521A2C2F9A",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "4D8D88EC-265F-4FA2-8990-26D8B7106755",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "733CFF0B-75D0-4C15-A2B0-19722C6DE572",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "A99FB84C-3101-49CF-9C2D-9CC71BFB21A6",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "B6D089B1-433F-46EF-B930-2E8BB7C37400",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "BCD515EE-8545-4984-8BF6-680F096F7B7B",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -122,19 +113,17 @@
             "TableName": "Feature"
         },
         {
-            "Id": "C3A5D2C2-9016-4ED9-BCF8-01EBFD93422A",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "EAA38182-9F9B-4556-B851-330271AFB18E",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         }
     ],
     "Components": [
         {
-            "Id": "00df0fd8-0000-0000-8000-f977e91deac1",
+            "Id": "currency.Container.1",
             "FieldName": "Container",
             "Order": 1,
             "ComponentType": "Section",
@@ -142,7 +131,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "00df0fa0-0000-0000-8000-99d171eb0c75",
+                    "Id": "Container.MasterData.1_4",
                     "FieldName": "MasterData",
                     "Order": 1,
                     "ComponentType": "GridView",

@@ -1,8 +1,7 @@
 {
-    "Id": "01953bd2-69bc-77ca-8205-4dcb9e8601d0",
+    "Id": "sea_export_lcl",
     "Name": "sea-export-lcl",
     "Label": "Sea Export LCL",
-    "ParentId": "009b3b78-0000-0000-8000-38a9f8f617fc",
     "Order": 2,
     "Script": "return {\r\n    Add: function () {\r\n        var entity = {\r\n            StatusId: 1,\r\n            TypeId: 5,\r\n            VoucherTypeId: 6,\r\n            InsertedBy: this.Token.UserId,\r\n            ShipmentDate: this.dayjs().format('YYYY-MM-DD'),\r\n        }\r\n        this.OpenPopup(\"sea-export-lcl-editor\", entity);\r\n    },\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"sea-export-lcl-editor\", entity);\r\n    },\r\n    EditHbl: function (btn, entity) {\r\n        this.OpenPopup(\"sea-export-lcl-editor\", { Id: entity.ParentId }, true, { HblEntity: entity });\r\n    }\r\n}",
     "Icon": "fal fa-box-open",
@@ -10,7 +9,7 @@
     "EntityId": "Shipment",
     "GridPolicies": [
         {
-            "Id": "01953bd2-6bb1-75e8-b15f-003029f7460b",
+            "Id": "sea_export_lcl.EtdDate.9",
             "FieldName": "EtdDate",
             "Order": 9,
             "ComponentType": "Datepicker",
@@ -22,7 +21,7 @@
             "EntityId": "Shipment"
         },
         {
-            "Id": "01953bd2-6bfc-74bc-8918-bb6df4c204b2",
+            "Id": "sea_export_lcl.btnEdit.0",
             "FieldName": "btnEdit",
             "Order": 0,
             "ComponentType": "Button",
@@ -36,7 +35,7 @@
             "EntityId": "Shipment"
         },
         {
-            "Id": "01953bd2-6c38-759d-aa08-d80a53acccc1",
+            "Id": "sea_export_lcl.InsertedDate.2",
             "FieldName": "InsertedDate",
             "Order": 2,
             "ComponentType": "Datepicker",
@@ -48,7 +47,7 @@
             "EntityId": "Shipment"
         },
         {
-            "Id": "01953bd2-6c6d-714e-978e-b74fdbed97c4",
+            "Id": "sea_export_lcl.Vessel.4",
             "FieldName": "Vessel",
             "Order": 4,
             "ComponentType": "Input",
@@ -60,7 +59,7 @@
             "EntityId": "Shipment"
         },
         {
-            "Id": "01953bd2-6c9e-738b-96bc-de22f59f1a8c",
+            "Id": "sea_export_lcl.VesselVoy.5",
             "FieldName": "VesselVoy",
             "Order": 5,
             "ComponentType": "Input",
@@ -72,7 +71,7 @@
             "EntityId": "Shipment"
         },
         {
-            "Id": "01953bd2-6d08-7235-843a-52ee7ed29e3a",
+            "Id": "sea_export_lcl.InsertedBy.10",
             "FieldName": "InsertedBy",
             "Order": 10,
             "ComponentType": "Dropdown",
@@ -90,7 +89,7 @@
             "EntityId": "Shipment"
         },
         {
-            "Id": "01953bd2-6d49-76f1-b5c5-cc10db5632b0",
+            "Id": "sea_export_lcl.PodId.6",
             "FieldName": "PodId",
             "Order": 6,
             "ComponentType": "Dropdown",
@@ -107,7 +106,7 @@
             "EntityId": "Shipment"
         },
         {
-            "Id": "01953bd2-6d7f-7039-af7c-83e8ee382cc8",
+            "Id": "sea_export_lcl.PolId.8",
             "FieldName": "PolId",
             "Order": 8,
             "ComponentType": "Dropdown",
@@ -124,7 +123,7 @@
             "EntityId": "Shipment"
         },
         {
-            "Id": "01953bd2-6dad-7241-9c76-b74aa1b8c86d",
+            "Id": "sea_export_lcl.Code.1",
             "FieldName": "Code",
             "Order": 1,
             "ComponentType": "Input",
@@ -136,7 +135,7 @@
             "EntityId": "Shipment"
         },
         {
-            "Id": "01953bd2-6de2-7126-9020-08305b83bc65",
+            "Id": "sea_export_lcl.VendorId.3",
             "FieldName": "VendorId",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -152,7 +151,7 @@
             "EntityId": "Shipment"
         },
         {
-            "Id": "01953bd2-6e1b-701c-99cf-4ca54adefd77",
+            "Id": "sea_export_lcl.EtaDate.7",
             "FieldName": "EtaDate",
             "Order": 7,
             "ComponentType": "Datepicker",
@@ -164,7 +163,7 @@
             "EntityId": "Shipment"
         },
         {
-            "Id": "01953bd2-6e4f-729b-94d1-93071839c676",
+            "Id": "sea_export_lcl.btnEdit.0_1",
             "FieldName": "btnEdit",
             "Order": 0,
             "ComponentType": "Button",
@@ -178,7 +177,7 @@
             "EntityId": "Shipment1"
         },
         {
-            "Id": "01953bd2-6e81-75ae-85b7-3e390f0535e5",
+            "Id": "sea_export_lcl.HblNo.1",
             "FieldName": "HblNo",
             "Order": 1,
             "ComponentType": "Input",
@@ -190,7 +189,7 @@
             "EntityId": "Shipment1"
         },
         {
-            "Id": "01953bd2-6eb0-73ce-aef4-dbaebcd49aaa",
+            "Id": "sea_export_lcl.InsertedDate.4",
             "FieldName": "InsertedDate",
             "Order": 4,
             "ComponentType": "Datepicker",
@@ -202,7 +201,7 @@
             "EntityId": "Shipment1"
         },
         {
-            "Id": "01953bd2-6eea-742c-a576-bb5c883bccd7",
+            "Id": "sea_export_lcl.Vessel.29",
             "FieldName": "Vessel",
             "Order": 29,
             "ComponentType": "Input",
@@ -214,7 +213,7 @@
             "EntityId": "Shipment1"
         },
         {
-            "Id": "01953bd2-6f2c-721c-a8cd-7ce8c5a4d0ae",
+            "Id": "sea_export_lcl.PodId.38",
             "FieldName": "PodId",
             "Order": 38,
             "ComponentType": "Dropdown",
@@ -231,7 +230,7 @@
             "EntityId": "Shipment1"
         },
         {
-            "Id": "01953bd2-6f92-73d8-a069-66ed8b69119b",
+            "Id": "sea_export_lcl.EtaDate.39",
             "FieldName": "EtaDate",
             "Order": 39,
             "ComponentType": "Datepicker",
@@ -243,7 +242,7 @@
             "EntityId": "Shipment1"
         },
         {
-            "Id": "01953bd2-6fd7-77e3-b9e5-59b5c7303f22",
+            "Id": "sea_export_lcl.PolId.41",
             "FieldName": "PolId",
             "Order": 41,
             "ComponentType": "Dropdown",
@@ -260,7 +259,7 @@
             "EntityId": "Shipment1"
         },
         {
-            "Id": "01953bd2-700f-7748-8d4b-ddbce130c050",
+            "Id": "sea_export_lcl.Code.3",
             "FieldName": "Code",
             "Order": 3,
             "ComponentType": "Input",
@@ -272,7 +271,7 @@
             "EntityId": "Shipment1"
         },
         {
-            "Id": "01953bd2-704b-763f-ab9c-e0e1edae5f35",
+            "Id": "sea_export_lcl.EtdDate.37",
             "FieldName": "EtdDate",
             "Order": 37,
             "ComponentType": "Datepicker",
@@ -287,7 +286,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-70ab-7214-859f-43a588120d92",
+            "Id": "sea_export_lcl.SaillingDate.20",
             "FieldName": "SaillingDate",
             "Order": 20,
             "ComponentType": "Datepicker",
@@ -303,7 +302,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-70ed-7649-9000-3f34ccee945a",
+            "Id": "sea_export_lcl.PortTransitId.40",
             "FieldName": "PortTransitId",
             "Order": 40,
             "ComponentType": "Dropdown",
@@ -324,7 +323,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-7124-771e-97ec-682d58d5b64a",
+            "Id": "sea_export_lcl.PlaceDeliveryId.42",
             "FieldName": "PlaceDeliveryId",
             "Order": 42,
             "ComponentType": "Dropdown",
@@ -345,7 +344,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-7162-76ac-a315-e2378fca67a9",
+            "Id": "sea_export_lcl.FinalDestinationId.44",
             "FieldName": "FinalDestinationId",
             "Order": 44,
             "ComponentType": "Dropdown",
@@ -366,7 +365,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-719d-7195-89ab-1db4c73705f0",
+            "Id": "sea_export_lcl.OceanVessel.30",
             "FieldName": "OceanVessel",
             "Order": 30,
             "ComponentType": "Input",
@@ -382,7 +381,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-71db-77c9-96a4-bd6c9b7ab1b8",
+            "Id": "sea_export_lcl.ClosingDate.21",
             "FieldName": "ClosingDate",
             "Order": 21,
             "ComponentType": "Datepicker",
@@ -398,7 +397,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-7217-774c-a0e0-051c92d1a7cb",
+            "Id": "sea_export_lcl.ShipperId.22",
             "FieldName": "ShipperId",
             "Order": 22,
             "ComponentType": "Dropdown",
@@ -422,7 +421,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-7250-745e-9365-21926a9a6173",
+            "Id": "sea_export_lcl.ConsigneeId.23",
             "FieldName": "ConsigneeId",
             "Order": 23,
             "ComponentType": "Dropdown",
@@ -446,7 +445,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-7294-708c-989b-5296e150083a",
+            "Id": "sea_export_lcl.NotifyPartyId.24",
             "FieldName": "NotifyPartyId",
             "Order": 24,
             "ComponentType": "Dropdown",
@@ -470,7 +469,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-72e7-767b-b93e-f13f0190dac9",
+            "Id": "sea_export_lcl.ForDeliveryGoodsId.43",
             "FieldName": "ForDeliveryGoodsId",
             "Order": 43,
             "ComponentType": "Dropdown",
@@ -494,7 +493,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-7320-76dd-ae4e-943d484769d3",
+            "Id": "sea_export_lcl.CustomerId.2",
             "FieldName": "CustomerId",
             "Order": 2,
             "ComponentType": "Dropdown",
@@ -519,7 +518,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-7357-756a-a3b9-b95ddea14832",
+            "Id": "sea_export_lcl.HblTypeId.5",
             "FieldName": "HblTypeId",
             "Order": 5,
             "ComponentType": "Dropdown",
@@ -540,7 +539,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-73a6-756a-aba5-1a57d1a5bc23",
+            "Id": "sea_export_lcl.NumberOriginalId.7",
             "FieldName": "NumberOriginalId",
             "Order": 7,
             "ComponentType": "Dropdown",
@@ -560,7 +559,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-73ec-75cd-8d78-ae0d048a3546",
+            "Id": "sea_export_lcl.SaleId.8",
             "FieldName": "SaleId",
             "Order": 8,
             "ComponentType": "Dropdown",
@@ -581,7 +580,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-7436-77be-82c6-9a234515320c",
+            "Id": "sea_export_lcl.QuotationId.15",
             "FieldName": "QuotationId",
             "Order": 15,
             "ComponentType": "Input",
@@ -600,7 +599,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-7476-754d-9ab2-94d6b2171dfa",
+            "Id": "sea_export_lcl.BookingNo.16",
             "FieldName": "BookingNo",
             "Order": 16,
             "ComponentType": "Input",
@@ -615,7 +614,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-74c5-76bc-a774-65f851661459",
+            "Id": "sea_export_lcl.Deadline.17",
             "FieldName": "Deadline",
             "Order": 17,
             "ComponentType": "Datepicker",
@@ -630,7 +629,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-74ff-72f5-8455-f62a07ba917b",
+            "Id": "sea_export_lcl.PoNo.18",
             "FieldName": "PoNo",
             "Order": 18,
             "ComponentType": "Input",
@@ -645,7 +644,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-7564-768c-b507-ba678f1b80a5",
+            "Id": "sea_export_lcl.HSCode.19",
             "FieldName": "HSCode",
             "Order": 19,
             "ComponentType": "Input",
@@ -660,7 +659,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-75b0-74e0-9c2b-00ffc38cc119",
+            "Id": "sea_export_lcl.TypeMoveId.25",
             "FieldName": "TypeMoveId",
             "Order": 25,
             "ComponentType": "Dropdown",
@@ -680,7 +679,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-75ea-7342-8dff-996b55c6ced4",
+            "Id": "sea_export_lcl.PlaceIssueId.26",
             "FieldName": "PlaceIssueId",
             "Order": 26,
             "ComponentType": "Dropdown",
@@ -701,7 +700,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-761f-7247-b49d-d31c2c512da7",
+            "Id": "sea_export_lcl.PaymentTermId.6",
             "FieldName": "PaymentTermId",
             "Order": 6,
             "ComponentType": "Dropdown",
@@ -722,7 +721,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-7659-7653-bc69-801e479017f1",
+            "Id": "sea_export_lcl.DemFree.34",
             "FieldName": "DemFree",
             "Order": 34,
             "ComponentType": "Number",
@@ -738,7 +737,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-7691-71db-b1ae-c2520cb572a3",
+            "Id": "sea_export_lcl.DetFree.35",
             "FieldName": "DetFree",
             "Order": 35,
             "ComponentType": "Number",
@@ -754,7 +753,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-76c4-77a9-95fa-ff90f72d38ab",
+            "Id": "sea_export_lcl.Storage.36",
             "FieldName": "Storage",
             "Order": 36,
             "ComponentType": "Number",
@@ -770,7 +769,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-7701-708f-ad2c-d444804575b5",
+            "Id": "sea_export_lcl.Freetime.31",
             "FieldName": "Freetime",
             "Order": 31,
             "ComponentType": "Number",
@@ -786,7 +785,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-7733-71b8-b984-ef12380374e3",
+            "Id": "sea_export_lcl.CommodityId.27",
             "FieldName": "CommodityId",
             "Order": 27,
             "ComponentType": "Dropdown",
@@ -807,7 +806,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-77a1-714a-91f2-c1676a3bb206",
+            "Id": "sea_export_lcl.CyId.32",
             "FieldName": "CyId",
             "Order": 32,
             "ComponentType": "Dropdown",
@@ -828,7 +827,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-77d4-7788-a295-8b773b474242",
+            "Id": "sea_export_lcl.WarehouseId.33",
             "FieldName": "WarehouseId",
             "Order": 33,
             "ComponentType": "Dropdown",
@@ -849,7 +848,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-7809-70f1-99b0-947b7611bf03",
+            "Id": "sea_export_lcl.Quantity.9",
             "FieldName": "Quantity",
             "Order": 9,
             "ComponentType": "Number",
@@ -867,7 +866,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-783a-75fb-8453-7c60e7ccc84c",
+            "Id": "sea_export_lcl.UnitId.10",
             "FieldName": "UnitId",
             "Order": 10,
             "ComponentType": "Dropdown",
@@ -889,7 +888,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-786d-770b-ac44-de7009ed1722",
+            "Id": "sea_export_lcl.CBM.11",
             "FieldName": "CBM",
             "Order": 11,
             "ComponentType": "Number",
@@ -907,7 +906,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-78a3-7158-bb68-3dc767ba38be",
+            "Id": "sea_export_lcl.ContainerText.14",
             "FieldName": "ContainerText",
             "Order": 14,
             "ComponentType": "Input",
@@ -924,7 +923,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-78db-7769-ae8c-a96b16a8b505",
+            "Id": "sea_export_lcl.GW.12",
             "FieldName": "GW",
             "Order": 12,
             "ComponentType": "Number",
@@ -942,7 +941,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-791a-7359-8cb4-8df5a5937385",
+            "Id": "sea_export_lcl.CW.13",
             "FieldName": "CW",
             "Order": 13,
             "ComponentType": "Number",
@@ -960,7 +959,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953bd2-7958-74ac-98d8-444b2e9c1df1",
+            "Id": "sea_export_lcl.IncotermId.28",
             "FieldName": "IncotermId",
             "Order": 28,
             "ComponentType": "Dropdown",
@@ -982,7 +981,7 @@
     ],
     "Components": [
         {
-            "Id": "01953bd2-6a2b-712f-b27a-1b29913aa016",
+            "Id": "sea_export_lcl.Section.1",
             "Order": 1,
             "ComponentType": "Section",
             "Label": "Shipment List",
@@ -993,7 +992,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "01953bd2-6a70-77f5-9e9e-f8725170b542",
+                    "Id": "Section.Shipment.1_5",
                     "FieldName": "Shipment",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -1011,7 +1010,7 @@
             ]
         },
         {
-            "Id": "01953bd2-6af5-7087-9836-0fd8613ec6a8",
+            "Id": "sea_export_lcl.Section.2",
             "Order": 2,
             "ComponentType": "Section",
             "Label": "House B/L List",
@@ -1022,7 +1021,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "01953bd2-6b28-75ee-813b-6fee3766eee3",
+                    "Id": "Section.Shipment1.2_5",
                     "FieldName": "Shipment1",
                     "Order": 2,
                     "ComponentType": "GridView",
@@ -1042,33 +1041,27 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "1EE50D63-0E4F-4A34-AA7F-42FD586411AB",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "215E0122-54BE-4596-B139-D58EF908B459",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "4400B93F-1BA5-401F-92B6-014A3EE5ED25",
             "RoleId": "SALES",
             "CanRead": true,
             "TableName": "Feature"
         },
         {
-            "Id": "4792D6D6-A0BE-489B-9EB1-D1B4AFC68206",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "77EE20D6-E473-4160-815D-B15E83EFA36D",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "980C236B-53D8-4EA7-BF83-AC0C1E2F90D5",
             "RoleId": "ADMIN",
             "CanRead": true,
             "CanReadAll": true,
@@ -1079,12 +1072,10 @@
             "TableName": "Feature"
         },
         {
-            "Id": "A5BD33EB-C7C8-462E-994E-D4DC3D13F11E",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "DD9C7E21-9B33-4B73-B805-1905A8A743A6",
             "RoleId": "DOCS",
             "CanRead": true,
             "CanWrite": true,
@@ -1092,12 +1083,10 @@
             "TableName": "Feature"
         },
         {
-            "Id": "EE3ACE03-7842-4B2C-87ED-C28FF00ADE58",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "EF6FDFAF-98DE-49F3-9B4D-A5BC59C6D616",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,

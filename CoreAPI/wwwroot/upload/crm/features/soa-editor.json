@@ -1,8 +1,7 @@
 {
-    "Id": "01949631-08e5-737d-9ef8-5832596ff6f4",
+    "Id": "soa_editor",
     "Name": "soa-editor",
     "Label": "SOA Editor",
-    "ParentId": "01939222-2f5a-747a-bb15-606fb55edf4c",
     "Order": 0,
     "Style": "width:90%;",
     "Script": "return {\r\n    OnSave: function (form, gridview) {\r\n        this.Entity.FormatChat = `PR`;\r\n        if (this.Entity.ActionId == 1) {\r\n            this.Entity.ActionId = 2;\r\n        }\r\n    },\r\n    CalcPrice: function (com, entity) {\r\n        entity.Quantity = this.Decimal(entity.Quantity || 0);\r\n        entity.Amount = this.Decimal(entity.Amount || 0);\r\n        entity.TotalAmount = (entity.Quantity || this.Decimal(0)).times(entity.Amount || this.Decimal(0));\r\n        if ((entity.Vat || this.Decimal(0)).isNegative()) {\r\n            entity.AmountTax = this.Decimal(entity.Vat).abs();\r\n        } else {\r\n            entity.AmountTax = (entity.TotalAmount).times(entity.Vat || this.Decimal(0)).div(100);\r\n        }\r\n        entity.TotalAmountTax = entity.TotalAmount.plus(entity.AmountTax);\r\n        if (entity.TypeId == 2) {\r\n            entity.Payable = entity.TotalAmountTax.times(this.Decimal(entity.ExchangeRateINV));\r\n        }\r\n        else {\r\n            entity.Receivable = entity.TotalAmountTax.times(this.Decimal(entity.ExchangeRateINV));\r\n        }\r\n        com.Parent.UpdateView(false);\r\n    },\r\n    ChangeFileNo: function (com, entity) {\r\n        this.Entity.MblNos = com.MatchedItems.map(x => x.MblNo).filter(x => x).join(',')\r\n        this.EditForm.UpdateView(false, false, \"MblNos\");\r\n    },\r\n    InvoiceSOA: async function (com, entity) {\r\n        this.EditForm.Entity.FormatChat = `SOA`;\r\n        if (this.Entity.Id.startsWith(\"-\")) {\r\n            var grid = this.EditForm.ChildCom.find(x => x.Meta.FieldName == \"SOADetail\");\r\n            var data = grid.AllListViewItem.filter(x => x.Selected && !x.Entity.ShipmentInvoiceId);\r\n            if (!data || data.length == 0) {\r\n                this.Toast.Warning(\"Please selected invoice\");\r\n            }\r\n            else {\r\n                await this.EditForm.SavePatch()\r\n                for (var item of data) {\r\n                    let patchVM = {\r\n                        Table: \"ShipmentInvoice\",\r\n                        Changes: [\r\n                            { Field: \"Id\", Value: item.Entity.Id },\r\n                            { Field: \"ShipmentInvoiceId\", Value: this.EditForm.Entity.Id }\r\n                        ]\r\n                    };\r\n                    await this.Client.PatchAsync(patchVM);\r\n                }\r\n                grid.ReloadData();\r\n            }\r\n        }\r\n        else {\r\n            this.EditForm.SavePatch();\r\n        }\r\n    },\r\n    AddInvoiceSOA: function (com, entity) {\r\n        var issueInvoice = JSON.parse(JSON.stringify(this.Entity));\r\n        issueInvoice.Id = this.Uuid7.NewGuid();\r\n        issueInvoice.StatusId = this.SalesFunction[\"APPROVE_SOA\"] ? 3 : 1;\r\n        issueInvoice.NoApproved = this.SalesFunction[\"APPROVE_SOA\"] ? true : false;\r\n        issueInvoice.Code = null;\r\n        issueInvoice.FeeTypeId = 0;\r\n        issueInvoice.UserApprovedIds = null;\r\n        issueInvoice.ProgressId = 1;\r\n        issueInvoice.UserViewIds = null;\r\n        issueInvoice.InsertedBy = this.UserId;\r\n        issueInvoice.PostDate = this.dayjs().format('YYYY-MM-DDTHH:mm:ss');\r\n        issueInvoice.InvoiceDate = this.dayjs().format('YYYY-MM-DDTHH:mm:ss');\r\n        this.EditForm.Entity = issueInvoice;\r\n        this.EditForm.UpdateView(true, false);\r\n        var grid = this.EditForm.FirstCom(\"SOADetail\");\r\n        grid.ReloadData();\r\n    },\r\n    IntUpdateFee: 0,\r\n    ChangeDataFee: function () {\r\n        window.clearTimeout(this.EditForm.IntUpdateFee);\r\n        this.EditForm.IntUpdateFee = window.setTimeout(() => {\r\n            var component = this.EditForm.ChildCom.find(x => x.Meta.FieldName == \"SOADetail\");\r\n            component.ReloadData().then(() => {\r\n                component.Dirty = true;\r\n                component.Item.forEach(item => {\r\n                    if (!item.Entity.IsPayment) {\r\n                        item.Selected = true;\r\n                    }\r\n                    else {\r\n                        item.Selected = false;\r\n                    }\r\n                });\r\n                this.EditForm.LoadTotal(component);\r\n            });\r\n        }, 200);\r\n    },\r\n    ViewDetail: function (grid, entity) {\r\n        this.Entity = entity;\r\n        this.EditForm.UpdateView(true, true);\r\n    },\r\n    AddContextMenu: function (gridview, context) {\r\n        if ([2, 3].includes(this.EditForm.Entity.ProgressId)) {\r\n            return;\r\n        }\r\n        if (this.Entity.ActionId == 2) {\r\n            var data = gridview.AllListViewItem.filter(x => x.Selected && x.Entity.IsSOA);\r\n            if (data && data.length > 0) {\r\n                context.MenuItems.push({\r\n                    Icon: \"fas fa-page-break\",\r\n                    Text: \"Split SOA\",\r\n                    Click: () => this.SplitFee(data.map(x => x.Entity.Id), gridview)\r\n                });\r\n            }\r\n        }\r\n        if (this.Entity.Id.startsWith('-')) {\r\n            var data2 = gridview.AllListViewItem.filter(x => x.Selected && !x.Entity.IsSOA);\r\n            if (data2 && data2.length > 0) {\r\n                context.MenuItems.push({\r\n                    Icon: \"fas fa-plus\",\r\n                    Text: \"Add SOA\",\r\n                    Click: () => this.AddFee(data2.map(x => x.Entity.Id), gridview)\r\n                });\r\n            }\r\n        }\r\n    },\r\n    SplitFee: function (data, gridview) {\r\n        var form = gridview.EditForm.OpenConfig(\"Do do want split invoice!\", async () => {\r\n            for (var item of data) {\r\n                let patchVM = {\r\n                    Table: \"ShipmentInvoice\",\r\n                    Changes: [\r\n                        { Field: \"Id\", Value: item },\r\n                        { Field: \"ShipmentInvoiceId\", Value: null }\r\n                    ]\r\n                };\r\n                await this.Client.PatchAsync(patchVM);\r\n            }\r\n            gridview.ApplyFilter().then(() => {\r\n                this.EditForm.Dirty = false;\r\n            });\r\n        }, () => { }, false, []);\r\n    },\r\n    AddFee: function (data, gridview) {\r\n        var shipment = gridview.EditForm.Meta.GridPolicies.find(x => x.FieldName == \"ViewSOAId\");\r\n        var form = gridview.EditForm.OpenConfig(\"Do do want add invoice!\", async () => {\r\n            for (const item of data) {\r\n                let patchVM = {\r\n                    Table: \"ShipmentInvoice\",\r\n                    Changes: [\r\n                        { Field: \"Id\", Value: item },\r\n                        { Field: \"ShipmentInvoiceId\", Value: gridview.Entity.ViewSOAId }\r\n                    ]\r\n                };\r\n                await this.Client.PatchAsync(patchVM);\r\n            }\r\n            gridview.ApplyFilter().then();\r\n        }, () => { }, true, [shipment]);\r\n    },\r\n    ChangeCurrency: function () {\r\n        this.EditForm.Entity.ExchangeRateINV = this.Decimal(1).div(this.Decimal(JSON.parse(localStorage.getItem(\"ExchangeRateUSD\"))[this.EditForm.Entity.Currency.Code]));\r\n        this.EditForm.UpdateView(true, false, \"ExchangeRateINV\", \"ExchangeRateINV2\");\r\n        this.ChangeDataFee();\r\n    }\r\n}",
@@ -10,7 +9,7 @@
     "EntityId": "ShipmentInvoice",
     "GridPolicies": [
         {
-            "Id": "01949631-1e73-73ef-9954-faeaa4abcebc",
+            "Id": "soa_editor.TotalAmount.6",
             "FieldName": "TotalAmount",
             "Order": 6,
             "ComponentType": "Number",
@@ -24,7 +23,7 @@
             "EntityId": "SOADetail"
         },
         {
-            "Id": "01949631-1f35-75b8-84e7-dd7d9f3e0203",
+            "Id": "soa_editor.FileIds.3",
             "FieldName": "FileIds",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -42,7 +41,7 @@
             "IsMultiple": true
         },
         {
-            "Id": "01949631-208f-706f-ac57-0d6f7790e3c0",
+            "Id": "soa_editor.ViewSOAId.1",
             "FieldName": "ViewSOAId",
             "Order": 1,
             "ComponentType": "Dropdown",
@@ -61,7 +60,7 @@
             "EntityId": "Options"
         },
         {
-            "Id": "01949631-2110-7388-b271-bd2fe82427c9",
+            "Id": "soa_editor.Approved.0",
             "FieldName": "Approved",
             "Order": 0,
             "ComponentType": "Checkbox",
@@ -73,7 +72,7 @@
             "EntityId": "Approvement"
         },
         {
-            "Id": "01949631-2168-74bd-b7d0-cf94704d9dec",
+            "Id": "soa_editor.ReasonOfChange.1",
             "FieldName": "ReasonOfChange",
             "Order": 1,
             "ComponentType": "Input",
@@ -85,7 +84,7 @@
             "EntityId": "Approvement"
         },
         {
-            "Id": "01949631-21df-70c0-9335-8e73b3ade4af",
+            "Id": "soa_editor.ApprovedDate.2",
             "FieldName": "ApprovedDate",
             "Order": 2,
             "ComponentType": "Datepicker",
@@ -98,7 +97,7 @@
             "EntityId": "Approvement"
         },
         {
-            "Id": "01949631-2246-725b-bc8a-47e5f4a4b5c7",
+            "Id": "soa_editor.ApprovedBy.3",
             "FieldName": "ApprovedBy",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -115,7 +114,7 @@
             "EntityId": "Approvement"
         },
         {
-            "Id": "0194971e-e6d9-73ea-ac7b-88017705b1b8",
+            "Id": "soa_editor.HblIds.4",
             "FieldName": "HblIds",
             "Order": 4,
             "ComponentType": "Dropdown",
@@ -133,7 +132,7 @@
             "IsMultiple": true
         },
         {
-            "Id": "0194971f-f1b1-76cd-b676-2cc86a2ac1cc",
+            "Id": "soa_editor.AmountTax.7",
             "FieldName": "AmountTax",
             "Order": 7,
             "ComponentType": "Number",
@@ -147,7 +146,7 @@
             "EntityId": "SOADetail"
         },
         {
-            "Id": "01949720-6015-7634-b991-b103cb97b175",
+            "Id": "soa_editor.TotalAmountTax.8",
             "FieldName": "TotalAmountTax",
             "Order": 8,
             "ComponentType": "Number",
@@ -163,7 +162,7 @@
             "EntityId": "SOADetail"
         },
         {
-            "Id": "01949721-95fd-77fc-8d36-efe6b3c90932",
+            "Id": "soa_editor.InvoiceCode.0",
             "FieldName": "InvoiceCode",
             "Order": 0,
             "ComponentType": "Input",
@@ -175,7 +174,7 @@
             "EntityId": "SOADetail"
         },
         {
-            "Id": "01949721-d25b-715f-ada2-9d69c03afb03",
+            "Id": "soa_editor.InvoiceDate.1",
             "FieldName": "InvoiceDate",
             "Order": 1,
             "ComponentType": "Datepicker",
@@ -187,7 +186,7 @@
             "EntityId": "SOADetail"
         },
         {
-            "Id": "01949722-d294-70c8-a121-af0eaae3e31b",
+            "Id": "soa_editor.IsPaid.5",
             "FieldName": "IsPaid",
             "Order": 5,
             "ComponentType": "Checkbox",
@@ -201,7 +200,7 @@
             "EntityId": "SOADetail"
         },
         {
-            "Id": "019497c7-68f2-70fd-b41d-b105b5363973",
+            "Id": "soa_editor.IsSOA.2",
             "FieldName": "IsSOA",
             "Order": 2,
             "ComponentType": "Checkbox",
@@ -214,7 +213,7 @@
             "EntityId": "SOADetail"
         },
         {
-            "Id": "01949b01-7eba-750e-90f1-ba033cf7cdb8",
+            "Id": "soa_editor.Code.1",
             "FieldName": "Code",
             "Order": 1,
             "ComponentType": "Input",
@@ -226,7 +225,7 @@
             "EntityId": "ShipmentInvoice"
         },
         {
-            "Id": "01949b01-7ebb-709a-9a5a-382367c73f07",
+            "Id": "soa_editor.PostDate.2",
             "FieldName": "PostDate",
             "Order": 2,
             "ComponentType": "Datepicker",
@@ -241,7 +240,7 @@
             "EntityId": "ShipmentInvoice"
         },
         {
-            "Id": "01949b01-7ebb-709a-9a5a-3ff8213ed97e",
+            "Id": "soa_editor.VendorIds.3",
             "FieldName": "VendorIds",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -257,7 +256,7 @@
             "EntityId": "ShipmentInvoice"
         },
         {
-            "Id": "01949b01-7ebb-709a-9a5a-42e7774a73c6",
+            "Id": "soa_editor.FromDate.4",
             "FieldName": "FromDate",
             "Order": 4,
             "ComponentType": "Datepicker",
@@ -270,7 +269,7 @@
             "EntityId": "ShipmentInvoice"
         },
         {
-            "Id": "01949b01-7ebb-709a-9a5a-44ead78f1244",
+            "Id": "soa_editor.ToDate.4",
             "FieldName": "ToDate",
             "Order": 4,
             "ComponentType": "Datepicker",
@@ -283,7 +282,7 @@
             "EntityId": "ShipmentInvoice"
         },
         {
-            "Id": "01949b01-7ebb-709a-9a5a-489a4a71c11c",
+            "Id": "soa_editor.InvoiceDate.5",
             "FieldName": "InvoiceDate",
             "Order": 5,
             "ComponentType": "Datepicker",
@@ -296,7 +295,7 @@
             "EntityId": "ShipmentInvoice"
         },
         {
-            "Id": "01949b01-7ebb-709a-9a5a-4f6d9a3eeb8e",
+            "Id": "soa_editor.InvoiceTypeId.6",
             "FieldName": "InvoiceTypeId",
             "Order": 6,
             "ComponentType": "Dropdown",
@@ -312,7 +311,7 @@
             "EntityId": "ShipmentInvoice"
         },
         {
-            "Id": "01949b01-7ebb-709a-9a5a-5355ff4e4c5d",
+            "Id": "soa_editor.InsertedBy.13",
             "FieldName": "InsertedBy",
             "Order": 13,
             "ComponentType": "Dropdown",
@@ -330,7 +329,7 @@
             "EntityId": "ShipmentInvoice"
         },
         {
-            "Id": "01949b1d-61b8-7177-a29b-9ae92b636179",
+            "Id": "soa_editor.TotalAmountTax.11",
             "FieldName": "TotalAmountTax",
             "Order": 11,
             "ComponentType": "Number",
@@ -344,7 +343,7 @@
     ],
     "Components": [
         {
-            "Id": "01949631-099c-7357-987b-14b007652149",
+            "Id": "soa_editor.Button.1",
             "FieldName": "Button",
             "Order": 1,
             "ComponentType": "Section",
@@ -352,7 +351,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "01949631-0a04-75b8-a9ed-166ba5e6d259",
+                    "Id": "Button.btnPrint.1_5",
                     "FieldName": "btnPrint",
                     "Order": 1,
                     "ComponentType": "Pdf",
@@ -367,7 +366,7 @@
                     "ShowExp": "!this.EditForm.Entity.Id.startsWith(\"-\")"
                 },
                 {
-                    "Id": "01949631-0a6c-711c-9ffd-da250b529d45",
+                    "Id": "Button.btnPrint.2_5",
                     "FieldName": "btnPrint",
                     "Order": 2,
                     "ComponentType": "Pdf",
@@ -382,7 +381,7 @@
                     "ShowExp": "!this.EditForm.Entity.Id.startsWith(\"-\") "
                 },
                 {
-                    "Id": "01949631-0ad2-738b-bef5-21df6ef54121",
+                    "Id": "Button.btnAddInvoice.3_2",
                     "FieldName": "btnAddInvoice",
                     "Order": 3,
                     "ComponentType": "Button",
@@ -395,7 +394,7 @@
                     "DisabledExp": "this.EditForm.Entity.InsertedBy != this.Token.UserId || this.EditForm.Entity.StatusId == 2 || (this.EditForm.Entity.StatusId == 3 && this.EditForm.Entity.UserApprovedIds) || [2, 3].includes(this.EditForm.Entity.ProgressId)"
                 },
                 {
-                    "Id": "01949631-0b2b-75c9-bd48-c3dea89eb5cc",
+                    "Id": "Button.btnSendEntity.4_2",
                     "FieldName": "btnSendEntity",
                     "Order": 4,
                     "ComponentType": "Button",
@@ -407,7 +406,7 @@
                     "ShowExp": "(this.Entity.StatusId == 1 || this.Entity.StatusId == 4) && this.Token.UserId == this.Entity.InsertedBy && !this.Entity.Id.startsWith('-')"
                 },
                 {
-                    "Id": "01949631-0b8d-718f-b29a-06a1e0590d6a",
+                    "Id": "Button.btnDecline.5_2",
                     "FieldName": "btnDecline",
                     "Order": 5,
                     "ComponentType": "Button",
@@ -419,7 +418,7 @@
                     "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserApprovedIds.includes(this.Token.UserId)"
                 },
                 {
-                    "Id": "01949631-0beb-724e-a46c-ebecdd9a5ff3",
+                    "Id": "Button.btnApprove.6_2",
                     "FieldName": "btnApprove",
                     "Order": 6,
                     "ComponentType": "Button",
@@ -431,7 +430,7 @@
                     "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserApprovedIds.includes(this.Token.UserId);"
                 },
                 {
-                    "Id": "01949631-0c44-77bb-a844-3989e4fdc8bc",
+                    "Id": "Button.btnSave.7_7",
                     "FieldName": "btnSave",
                     "Order": 7,
                     "ComponentType": "Button",
@@ -443,7 +442,7 @@
                     "Events": "{\r\n    \"click\": \"InvoiceSOA\"\r\n}"
                 },
                 {
-                    "Id": "01949631-0ad2-738b-bef5-21df6ef54121",
+                    "Id": "Button.btnAddInvoice.3_3",
                     "FieldName": "btnAddInvoice",
                     "Order": 3,
                     "ComponentType": "Button",
@@ -456,7 +455,7 @@
                     "DisabledExp": "this.EditForm.Entity.InsertedBy != this.Token.UserId || this.EditForm.Entity.StatusId == 2 || (this.EditForm.Entity.StatusId == 3 && this.EditForm.Entity.UserApprovedIds) || [2, 3].includes(this.EditForm.Entity.ProgressId)"
                 },
                 {
-                    "Id": "01949631-0b2b-75c9-bd48-c3dea89eb5cc",
+                    "Id": "Button.btnSendEntity.4_3",
                     "FieldName": "btnSendEntity",
                     "Order": 4,
                     "ComponentType": "Button",
@@ -468,7 +467,7 @@
                     "ShowExp": "(this.Entity.StatusId == 1 || this.Entity.StatusId == 4) && this.Token.UserId == this.Entity.InsertedBy && !this.Entity.Id.startsWith('-')"
                 },
                 {
-                    "Id": "01949631-0b8d-718f-b29a-06a1e0590d6a",
+                    "Id": "Button.btnDecline.5_3",
                     "FieldName": "btnDecline",
                     "Order": 5,
                     "ComponentType": "Button",
@@ -480,7 +479,7 @@
                     "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserApprovedIds.includes(this.Token.UserId)"
                 },
                 {
-                    "Id": "01949631-0beb-724e-a46c-ebecdd9a5ff3",
+                    "Id": "Button.btnApprove.6_3",
                     "FieldName": "btnApprove",
                     "Order": 6,
                     "ComponentType": "Button",
@@ -492,7 +491,7 @@
                     "ShowExp": "this.Entity.StatusId == 2 && this.Entity.UserApprovedIds.includes(this.Token.UserId);"
                 },
                 {
-                    "Id": "01949631-0c44-77bb-a844-3989e4fdc8bc",
+                    "Id": "Button.btnSave.7_8",
                     "FieldName": "btnSave",
                     "Order": 7,
                     "ComponentType": "Button",
@@ -506,7 +505,7 @@
             ]
         },
         {
-            "Id": "01949631-0cae-749d-b752-449a97591e55",
+            "Id": "soa_editor.Container.3",
             "FieldName": "Container ",
             "Order": 3,
             "ComponentType": "Section",
@@ -514,7 +513,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "01949631-0d10-709e-a61e-928a4c922f19",
+                    "Id": "Container.Section.1_6",
                     "Order": 1,
                     "ComponentType": "Section",
                     "Label": "Invoice Infor",
@@ -523,7 +522,7 @@
                     "XxlOuterColumn": 12,
                     "Components": [
                         {
-                            "Id": "01949634-0428-71ed-9fcb-eca8c002b5d6",
+                            "Id": "Section.VendorIds.0",
                             "FieldName": "VendorIds",
                             "Order": 0,
                             "ComponentType": "Dropdown",
@@ -542,7 +541,7 @@
                             "ShowHotKey": true
                         },
                         {
-                            "Id": "0194963e-c5b6-70c9-86fc-6ecb2b57d6bb",
+                            "Id": "Section.Code.1_7",
                             "FieldName": "Code",
                             "Order": 1,
                             "ComponentType": "Input",
@@ -552,7 +551,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "0194963e-c5b6-70c9-86fc-73a5872f2ec6",
+                            "Id": "Section.InvoiceTypeId.6",
                             "FieldName": "InvoiceTypeId",
                             "Order": 6,
                             "ComponentType": "Dropdown",
@@ -569,7 +568,7 @@
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
-                            "Id": "0194963e-c5b6-70c9-86fc-7680e4ce526b",
+                            "Id": "Section.PostDate.5_2",
                             "FieldName": "PostDate",
                             "Order": 5,
                             "ComponentType": "Datepicker",
@@ -581,7 +580,7 @@
                             "DisabledExp": "!this.Entity.Id.startsWith('-')"
                         },
                         {
-                            "Id": "0194963e-c5b7-74db-bb07-c9429c8aa97b",
+                            "Id": "Section.OtherCode.3",
                             "FieldName": "OtherCode",
                             "Order": 3,
                             "ComponentType": "Input",
@@ -591,7 +590,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "01949653-e996-771a-8f7c-2916cfb8553f",
+                            "Id": "Section.IsSendPartner.4_1",
                             "FieldName": "IsSendPartner",
                             "Order": 4,
                             "ComponentType": "Checkbox",
@@ -601,7 +600,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "019496ff-b6e8-76dd-b60c-2cdb84fb5cbc",
+                            "Id": "Section.RequestTypeId.8",
                             "FieldName": "RequestTypeId",
                             "Order": 8,
                             "ComponentType": "Dropdown",
@@ -615,7 +614,7 @@
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
-                            "Id": "019496ff-b6e9-7252-befd-25aa07b95523",
+                            "Id": "Section.ReceiverIds.9",
                             "FieldName": "ReceiverIds",
                             "Order": 9,
                             "ComponentType": "Dropdown",
@@ -631,7 +630,7 @@
                             "IsMultiple": true
                         },
                         {
-                            "Id": "01949709-666c-771c-b16f-9af813d98f4f",
+                            "Id": "Section.ChargePaidId.7",
                             "FieldName": "ChargePaidId",
                             "Order": 7,
                             "ComponentType": "Dropdown",
@@ -646,7 +645,7 @@
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
-                            "Id": "01949710-73c9-7092-9899-1d3378329589",
+                            "Id": "Section.DateFieldId.12",
                             "FieldName": "DateFieldId",
                             "Order": 12,
                             "ComponentType": "Dropdown",
@@ -661,7 +660,7 @@
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
-                            "Id": "01949710-73c9-7092-9899-22e0a5c69643",
+                            "Id": "Section.FromDate.10",
                             "FieldName": "FromDate",
                             "Order": 10,
                             "ComponentType": "Datepicker",
@@ -672,7 +671,7 @@
                             "Events": "{    \"change\": \"ChangeDataFee\"}"
                         },
                         {
-                            "Id": "01949710-73c9-7092-9899-257663d7f109",
+                            "Id": "Section.ToDate.11",
                             "FieldName": "ToDate",
                             "Order": 11,
                             "ComponentType": "Datepicker",
@@ -683,7 +682,7 @@
                             "Events": "{    \"change\": \"ChangeDataFee\"}"
                         },
                         {
-                            "Id": "01949711-7c50-7020-934b-cdc73a5bb29f",
+                            "Id": "Section.IsSendToPartner.14",
                             "FieldName": "IsSendToPartner",
                             "Order": 14,
                             "ComponentType": "Checkbox",
@@ -693,7 +692,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "01949711-7c50-7020-934b-d2f27bbb5448",
+                            "Id": "Section.RevisedDate.13",
                             "FieldName": "RevisedDate",
                             "Order": 13,
                             "ComponentType": "Datepicker",
@@ -707,7 +706,7 @@
                     ]
                 },
                 {
-                    "Id": "01949631-1998-7307-a112-1c4b72f95475",
+                    "Id": "Container.Section.5_2",
                     "Order": 5,
                     "ComponentType": "Section",
                     "Label": "Details ",
@@ -716,7 +715,7 @@
                     "XxlOuterColumn": 12,
                     "Components": [
                         {
-                            "Id": "01949631-19ef-76c9-b688-89fdf32540c2",
+                            "Id": "Section.SOADetail.2",
                             "FieldName": "SOADetail",
                             "Order": 2,
                             "ComponentType": "GridView",
@@ -739,7 +738,7 @@
                     ]
                 },
                 {
-                    "Id": "01949631-1a57-75b9-a695-808ed6560546",
+                    "Id": "Container.Section.6_5",
                     "Order": 6,
                     "ComponentType": "Section",
                     "Label": "SOA List",
@@ -749,7 +748,7 @@
                     "IsDropDown": true,
                     "Components": [
                         {
-                            "Id": "01949631-1ab6-7743-9511-c1303ef75697",
+                            "Id": "Section.ShipmentInvoice.1_7",
                             "FieldName": "ShipmentInvoice",
                             "Order": 1,
                             "ComponentType": "GridView",
@@ -766,7 +765,7 @@
                     ]
                 },
                 {
-                    "Id": "01949631-1b1e-7538-85cf-02797f268d0a",
+                    "Id": "Container.Section.7_1",
                     "Order": 7,
                     "ComponentType": "Section",
                     "Label": "Approve History",
@@ -776,7 +775,7 @@
                     "IsDropDown": true,
                     "Components": [
                         {
-                            "Id": "01949631-1b72-7642-a6e0-8e4144d554e6",
+                            "Id": "Section.Approvement.1_1",
                             "FieldName": "Approvement",
                             "Order": 1,
                             "ComponentType": "GridView",
@@ -798,7 +797,6 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "06297CA3-D593-4EB3-824B-EA4E2AA8EEAA",
             "RoleId": "ACC",
             "CanRead": true,
             "CanReadAll": true,
@@ -807,17 +805,14 @@
             "TableName": "Feature"
         },
         {
-            "Id": "485BC8AB-878F-4A41-B326-F45E5496BF4C",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "57D7A124-F8C9-483C-A935-9BA05B619953",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "6994E082-49F6-4032-B410-2693AB8A6B9F",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -826,12 +821,10 @@
             "TableName": "Feature"
         },
         {
-            "Id": "6EA47C84-A3CE-4006-B341-4543024E93E7",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "8937E776-BF0A-4003-BB89-CB8834A75E9C",
             "RoleId": "ADMIN",
             "CanRead": true,
             "CanReadAll": true,
@@ -840,22 +833,18 @@
             "TableName": "Feature"
         },
         {
-            "Id": "AFD52B59-A004-424A-AAC3-99FB7654A508",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "BA279EAB-F91A-482F-B948-613CFC9DD739",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "CAE9A658-83A1-465B-A3FC-1D69B2F8D44F",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "E1BCDC46-7253-4473-BE70-5213926A3C7F",
             "RoleId": "SALES",
             "TableName": "Feature"
         }

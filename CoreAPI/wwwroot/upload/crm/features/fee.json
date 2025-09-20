@@ -1,13 +1,12 @@
 {
-    "Id": "00b5022c-0000-0000-8000-d126fc9b7e5b",
+    "Id": "fee",
     "Name": "fee",
     "Label": "Fee",
-    "ParentId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
     "Order": 0,
     "Icon": "fal fa-file-invoice-dollar",
     "GridPolicies": [
         {
-            "Id": "00182c44-0000-0000-8000-409083f78351",
+            "Id": "fee.IsTrucking.4",
             "FieldName": "IsTrucking",
             "Order": 4,
             "ComponentType": "Checkbox",
@@ -23,7 +22,7 @@
             "EntityId": "FeeType"
         },
         {
-            "Id": "00192c98-0000-0000-8000-d582a5fe3771",
+            "Id": "fee.IsLogistics.5",
             "FieldName": "IsLogistics",
             "Order": 5,
             "ComponentType": "Checkbox",
@@ -39,7 +38,7 @@
             "EntityId": "FeeType"
         },
         {
-            "Id": "004d0204-0000-0000-8000-8244c3e72b32",
+            "Id": "fee.Name.1",
             "FieldName": "Name",
             "Order": 1,
             "ComponentType": "Input",
@@ -51,7 +50,7 @@
             "EntityId": "FeeType"
         },
         {
-            "Id": "00510248-0000-0000-8000-3feae9466b61",
+            "Id": "fee.Description.2",
             "FieldName": "Description",
             "Order": 2,
             "ComponentType": "Input",
@@ -63,7 +62,7 @@
             "EntityId": "FeeType"
         },
         {
-            "Id": "00510264-0000-0000-8000-83a17a4076be",
+            "Id": "fee.GroupId.10",
             "FieldName": "GroupId",
             "Order": 10,
             "ComponentType": "Dropdown",
@@ -81,7 +80,7 @@
             "EntityId": "FeeType"
         },
         {
-            "Id": "008f2624-0000-0000-8000-12a54335dc03",
+            "Id": "fee.CurrencyId.11",
             "FieldName": "CurrencyId",
             "Order": 11,
             "ComponentType": "Dropdown",
@@ -102,7 +101,7 @@
             "EntityId": "FeeType"
         },
         {
-            "Id": "009a26bc-0000-0000-8000-da2fe7cf8685",
+            "Id": "fee.OtherUnitId.12",
             "FieldName": "OtherUnitId",
             "Order": 12,
             "ComponentType": "Dropdown",
@@ -121,7 +120,7 @@
             "EntityId": "FeeType"
         },
         {
-            "Id": "00a62634-0000-0000-8001-e712eaafc838",
+            "Id": "fee.IsObh.6",
             "FieldName": "IsObh",
             "Order": 6,
             "ComponentType": "Checkbox",
@@ -136,7 +135,7 @@
             "EntityId": "FeeType"
         },
         {
-            "Id": "00aa154c-0000-0000-8000-b24f4549e3eb",
+            "Id": "fee.IsFreight.3",
             "FieldName": "IsFreight",
             "Order": 3,
             "ComponentType": "Checkbox",
@@ -151,7 +150,7 @@
             "EntityId": "FeeType"
         },
         {
-            "Id": "00c531fc-0000-0000-8000-fa084f7050ed",
+            "Id": "fee.Code.0",
             "FieldName": "Code",
             "Order": 0,
             "ComponentType": "Input",
@@ -163,7 +162,7 @@
             "EntityId": "FeeType"
         },
         {
-            "Id": "0193da1a-5afe-713e-80bf-4cf0c803dec8",
+            "Id": "fee.IsAdv.7",
             "FieldName": "IsAdv",
             "Order": 7,
             "ComponentType": "Checkbox",
@@ -178,7 +177,7 @@
             "EntityId": "FeeType"
         },
         {
-            "Id": "0193da1a-62a6-7754-b915-764eb239dc09",
+            "Id": "fee.IsCom.8",
             "FieldName": "IsCom",
             "Order": 8,
             "ComponentType": "Checkbox",
@@ -193,7 +192,7 @@
             "EntityId": "FeeType"
         },
         {
-            "Id": "0194f52e-afc4-766f-8f3d-0a3492a65ee8",
+            "Id": "fee.CostAccId.14",
             "FieldName": "CostAccId",
             "Order": 14,
             "ComponentType": "Dropdown",
@@ -214,7 +213,7 @@
             "EntityId": "FeeType"
         },
         {
-            "Id": "0194f52e-afc5-75ba-a66f-2037e4d2d70a",
+            "Id": "fee.DebitAccId.15",
             "FieldName": "DebitAccId",
             "Order": 15,
             "ComponentType": "Dropdown",
@@ -235,7 +234,7 @@
             "EntityId": "FeeType"
         },
         {
-            "Id": "0194f52e-e772-7025-8ce1-7b9699835d7e",
+            "Id": "fee.CreditAccId.16",
             "FieldName": "CreditAccId",
             "Order": 16,
             "ComponentType": "Dropdown",
@@ -256,7 +255,7 @@
             "EntityId": "FeeType"
         },
         {
-            "Id": "0194f52f-ce25-721a-8556-ae4eebe9d2a3",
+            "Id": "fee.RevenueAccId.13",
             "FieldName": "RevenueAccId",
             "Order": 13,
             "ComponentType": "Dropdown",
@@ -279,7 +278,6 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "05BB7D1A-D484-4592-B93A-2E7A470E44F7",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -290,61 +288,52 @@
             "TableName": "Feature"
         },
         {
-            "Id": "289072AA-B15C-4585-8F32-274F8E4A4202",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "2F078153-F89B-44A4-B94D-66BFDD70409D",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "4C83CD7F-5710-4CE5-BA19-ECDF29BEB591",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "620629F7-FFD0-412A-B7D1-1E96DFAF2826",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "629A1D2A-6486-4D05-9B61-2F9817367E80",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "8000DD5A-5A89-4AE7-9334-7DCEF9A2CC17",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "977CD0E2-E79D-43CD-8B4F-5A2B97206C27",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "B4863B26-AAC4-48BF-A372-95B46EDFA541",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "FEB7BFC9-D02F-460E-B560-CEE8C548BB2F",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         }
     ],
     "Components": [
         {
-            "Id": "005c0214-0000-0000-8000-8b66e6e5fee1",
+            "Id": "fee.Container.1",
             "FieldName": "Container",
             "Order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "00bf0268-0000-0000-8000-e6b136f588a5",
+                    "Id": "Container.FeeType.1",
                     "FieldName": "FeeType",
                     "Order": 1,
                     "ComponentType": "GridView",

@@ -1,8 +1,7 @@
 {
-    "Id": "0194a02d-538c-74d9-afd2-ef0ab33b32f1",
+    "Id": "debt_accounting_editor",
     "Name": "debt-accounting-editor",
     "Label": "Debt Accouting Editor",
-    "ParentId": "01939222-2f5a-747a-bb15-606fb55edf4c",
     "Order": 0,
     "Style": "width:99%;",
     "Script": "return {\r\n    Init: function () {\r\n        window.setTimeout(() => {\r\n            this.Entity.InternalRefId = this.Entity.AdvId || this.Entity.ReId;\r\n            this.UpdateView(false, false, \"InternalRefId\");\r\n        }, 500);\r\n    },\r\n    OnSave: function (form, gridview) {\r\n        if (this.Entity.ActionId == 1) {\r\n            this.Entity.ActionId = 2;\r\n        }\r\n    },\r\n    CalcPrice: function (com, entity) {\r\n        entity.IsManual = true;\r\n        entity.Quantity = this.Decimal(entity.Quantity || 0);\r\n        entity.TotalAmount = this.Decimal(entity.Quantity || 0).times(this.Decimal(entity.Amount || 0));\r\n        entity.ExAmount = this.Decimal(entity.Amount || 0).times(this.Decimal(entity.ExchangeRateINV || 0)).toDP(0);\r\n        entity.ExTotalAmount = (entity.Quantity || this.Decimal(0)).times(entity.ExAmount || this.Decimal(0)).toDP(0);\r\n        var vat = this.Decimal(entity.Vat || 0);\r\n        if (vat.isNegative()) {\r\n            if (entity.ExAmount.isNegative()) {\r\n                entity.ExAmountTax = vat.times(entity.ExchangeRateINV).toDP(0);\r\n                entity.AmountTax = this.Decimal(entity.Vat);\r\n            }\r\n            else {\r\n                entity.ExAmountTax = vat.abs().times(entity.ExchangeRateINV).toDP(0);\r\n                entity.AmountTax = this.Decimal(entity.Vat).abs();\r\n            }\r\n        } else {\r\n            entity.ExAmountTax = (entity.ExTotalAmount).times(vat).div(100).toDP(0);\r\n            entity.AmountTax = (entity.TotalAmount).times(vat).div(100);\r\n        }\r\n        entity.ExTotalAmountTax = entity.ExTotalAmount.plus(entity.ExAmountTax || this.Decimal(0));\r\n        entity.TotalAmountTax = entity.TotalAmount.plus(entity.AmountTax || this.Decimal(0));\r\n        com.Parent.UpdateView(false);\r\n    },\r\n    CalcUnitPrice: function (com, entity) {\r\n        entity.IsManual = true;\r\n        entity.Quantity = this.Decimal(entity.Quantity || 0);\r\n        entity.ExTotalAmountTax = this.Decimal(entity.ExTotalAmountTax || 0);\r\n        if ((entity.Vat || this.Decimal(0)).isNegative()) {\r\n            entity.ExAmountTax = this.Decimal(entity.Vat).abs();\r\n            entity.ExTotalAmount = entity.ExTotalAmountTax.minus(entity.ExAmountTax);\r\n        } else {\r\n            entity.ExTotalAmount = entity.ExTotalAmountTax.div(this.Decimal(1).plus((entity.Vat || this.Decimal(0)).div(100)));\r\n            entity.ExAmountTax = entity.ExTotalAmount.times(entity.Vat || this.Decimal(0)).div(100);\r\n        }\r\n        entity.ExAmount = entity.ExTotalAmount.div(entity.Quantity || this.Decimal(1));\r\n        com.Parent.UpdateView(false);\r\n    },\r\n    ChangeFileNo: function (com, entity) {\r\n        this.Entity.MblNos = com.MatchedItems.map(x => x.MblNo).filter(x => x).join(',')\r\n        this.EditForm.UpdateView(false, false, \"MblNos\");\r\n    },\r\n    Invoice: function (com, entity) {\r\n        if (this.Entity.Id.startsWith(\"-\")) {\r\n            var grid = this.GET(\"VoucherDetail\");\r\n            var data = grid.AllListViewItem.filter(x => x.Selected && !x.Entity.NoSubmit);\r\n            if (!data || data.length == 0) {\r\n                this.Toast.Warning(\"Please selected fee issued\");\r\n            }\r\n            else {\r\n                this.EditForm.SaveSelectedDetail().then(() => {\r\n                    if (this.OpenFrom) {\r\n                        var pricing = this.OpenFrom.ChildCom.find(x => x.IsListView);\r\n                        if (pricing) {\r\n                            pricing.ClearSelected();\r\n                            pricing.ActionFilter();\r\n                        }\r\n                    }\r\n                });\r\n            }\r\n        }\r\n        else {\r\n            if (this.Entity.ActionId == 3) {\r\n                this.EditForm.OpenConfig(\"Are you sure you want to void this invoice?\", () => {\r\n                    this.SavePatch();\r\n                }, () => { }, false, [], true);\r\n            }\r\n            else {\r\n                this.EditForm.SavePatch();\r\n            }\r\n        }\r\n    },\r\n    AddInvoice: function (com, entity) {\r\n        var issueInvoice = JSON.parse(JSON.stringify(this.Entity));\r\n        issueInvoice.Id = this.Uuid7.NewGuid();\r\n        issueInvoice.StatusId = this.SalesFunction[\"APPROVE_VAT_INV\"] ? 3 : 1;\r\n        issueInvoice.NoApproved = this.SalesFunction[\"APPROVE_VAT_INV\"] ? true : false;\r\n        issueInvoice.Code = null;\r\n        issueInvoice.FeeTypeId = \"1\";\r\n        issueInvoice.VoucherTypeId = 12;\r\n        issueInvoice.ProgressId = 1;\r\n        issueInvoice.TypeId = 3;\r\n        issueInvoice.UserApprovedIds = null;\r\n        issueInvoice.UserViewIds = null;\r\n        issueInvoice.InsertedBy = this.Token.UserId;\r\n        issueInvoice.PostDate = this.dayjs().format('YYYY-MM-DDTHH:mm:ss');\r\n        issueInvoice.InvoiceDate = this.dayjs().format('YYYY-MM-DDTHH:mm:ss');\r\n        this.EditForm.Entity = issueInvoice;\r\n        this.EditForm.UpdateView(true, false);\r\n        var comShipmentInvoiceDetail = this.GET(\"VoucherDetail\");\r\n        comShipmentInvoiceDetail.ReloadData();\r\n    },\r\n    IntUpdateFee: 0,\r\n    ChangeExchangeRate: function () {\r\n        this.EditForm.Entity.ExchangeRateINV = this.Decimal(JSON.parse(localStorage.getItem(\"ExchangeRateVND\"))[this.EditForm.Entity.Currency.Code]);\r\n        this.EditForm.Entity.ExchangeRateINV2 = this.Decimal(1).div(this.EditForm.Entity.ExchangeRateINV);\r\n        this.EditForm.UpdateView(true, false, \"ExchangeRateINV\", \"ExchangeRateINV2\");\r\n    },\r\n    ChangeExchangeRate2: function (com, entity) {\r\n        entity.ExchangeRateINV = this.Decimal(entity.ExchangeRateINV);\r\n        if (entity.CurrencyCode == \"USD\") {\r\n            this.EditForm.Entity.ExchangeRateINV = entity.ExchangeRateINV;\r\n            this.EditForm.Entity.ExchangeRateINV2 = this.Decimal(1).div(this.EditForm.Entity.ExchangeRateINV);\r\n            this.EditForm.UpdateView(true, false, \"ExchangeRateINV\");\r\n        }\r\n        var component = this.GET(\"VoucherDetail\");\r\n        component.Item.filter(x => x.Entity.CurrencyId == entity.CurrencyId && x.Entity.InvoiceNo == entity.InvoiceNo).forEach(item => {\r\n            item.Entity.ExchangeRateINV = this.Decimal(entity.ExchangeRateINV);\r\n            item.Entity.ExchangeRateINV2 = item.Entity.ExchangeRateINV.div(this.EditForm.Entity.ExchangeRateINV);\r\n            item.Entity.Quantity = this.Decimal(item.Entity.Quantity || 0);\r\n            item.Entity.TotalAmount = this.Decimal(item.Entity.Quantity || 0).times(this.Decimal(item.Entity.Amount || 0));\r\n            item.Entity.ExAmount = this.Decimal(item.Entity.Amount || 0).times(this.Decimal(item.Entity.ExchangeRateINV || 0)).toDP(0);\r\n            item.Entity.ExTotalAmount = (item.Entity.Quantity || this.Decimal(0)).times(item.Entity.ExAmount || this.Decimal(0)).toDP(0);\r\n            if (this.Decimal(item.Entity.Vat || 0).isNegative()) {\r\n                if (item.ExAmount.isNegative()) {\r\n                    item.Entity.ExAmountTax = this.Decimal(item.Entity.Vat).toDP(0);\r\n                    item.Entity.AmountTax = this.Decimal(item.Entity.Vat);\r\n                }\r\n                else {\r\n                    item.Entity.ExAmountTax = this.Decimal(item.Entity.Vat).abs().toDP(0);\r\n                    item.Entity.AmountTax = this.Decimal(item.Entity.Vat).abs();\r\n                }\r\n            } else {\r\n                item.Entity.ExAmountTax = (item.Entity.ExTotalAmount).times(item.Entity.Vat || this.Decimal(0)).div(100).toDP(0);\r\n                item.Entity.AmountTax = (item.Entity.TotalAmount).times(item.Entity.Vat || this.Decimal(0)).div(100);\r\n            }\r\n            item.Entity.ExTotalAmountTax = item.Entity.ExTotalAmount.plus(item.Entity.ExAmountTax || this.Decimal(0));\r\n            item.Entity.TotalAmountTax = item.Entity.TotalAmount.plus(item.Entity.AmountTax || this.Decimal(0));\r\n            item.UpdateView(false);\r\n        });\r\n    },\r\n    ChangeDocsType: function () {\r\n        var gridParent = this.GET(\"VoucherDetail\");\r\n        if (gridParent.AllListViewItem && gridParent.AllListViewItem.length > 0) {\r\n            gridParent.AllListViewItem.forEach(item => {\r\n                if (this.EditForm.Entity.DocsTypeId != 2) {\r\n                    item.Entity.Docs = item.Entity.HblNo;\r\n                }\r\n                else {\r\n                    item.Entity.Docs = item.Entity.ShipmentInvoiceCode;\r\n                }\r\n                item.UpdateView(true);\r\n            });\r\n        }\r\n    },\r\n    CheckCurrency: function (com, entity) {\r\n        if (entity.CurrencyId == this.EditForm.Entity.CurrencyId) {\r\n            entity.ExchangeRateINV = this.Decimal(1);\r\n        }\r\n        else {\r\n            entity.ExchangeRateINV = this.EditForm.Entity.ExchangeRateINV;\r\n        }\r\n        this.CalcPrice(com, entity);\r\n    },\r\n    ViewDetail: function (grid, entity) {\r\n        this.Entity = entity;\r\n        this.EditForm.UpdateView(false, false);\r\n    },\r\n    AddContextMenu: function (gridview, context) {\r\n        if (this.Entity.ActionId == 2) {\r\n            var data = gridview.AllListViewItem.filter(x => x.Selected && x.Entity.IsInvoice);\r\n            if (data && data.length > 0) {\r\n                context.MenuItems.push({\r\n                    Icon: \"fas fa-page-break\",\r\n                    Text: \"Split Fee\",\r\n                    Click: () => this.SplitFee(data.map(x => x.Entity.Id), gridview)\r\n                });\r\n            }\r\n        }\r\n        if (this.Entity.Id.startsWith('-')) {\r\n            var data2 = gridview.AllListViewItem.filter(x => x.Selected && !x.Entity.IsInvoice);\r\n            if (data2 && data2.length > 0) {\r\n                context.MenuItems.push({\r\n                    Icon: \"fas fa-plus\",\r\n                    Text: \"Add Fee\",\r\n                    Click: () => this.AddFee(data2, gridview)\r\n                });\r\n            }\r\n        }\r\n    },\r\n    SplitFee: function (data, gridview) {\r\n        var form = gridview.EditForm.OpenConfig(\"Do do want split fee!\", async () => {\r\n            var rs = await gridview.EditForm.Client.PostAsync({ ShipmentInvoiceDetailId: data, ShipmentInvoiceId: this.EditForm.Entity.Id }, \"/api/SplitFee\");\r\n            if (rs) {\r\n                gridview.ApplyFilter();\r\n                var comShipmentInvoice = this.EditForm.FirstCom(\"ShipmentInvoice\");\r\n                comShipmentInvoice.ReloadData().then(() => {\r\n                    if (this.EditForm.Entity.Id) {\r\n                        var item = comShipmentInvoice.Item.find(x => x.Entity.Id == this.EditForm.Entity.Id);\r\n                        if (comShipmentInvoice && comShipmentInvoice.Item && item) {\r\n                            item.Element.click();\r\n                        }\r\n                    }\r\n                    else {\r\n                        if (comShipmentInvoice && comShipmentInvoice.Item && comShipmentInvoice.Item[0]) {\r\n                            comShipmentInvoice.Item[0].Element.click();\r\n                        }\r\n                    }\r\n                });\r\n            }\r\n        }, () => { }, false, []);\r\n    },\r\n    AddFee: function (data, gridview) {\r\n        var shipment = gridview.EditForm.Meta.GridPolicies.find(x => x.FieldName == \"ViewShipmentInvoiceId\");\r\n        var form = gridview.EditForm.OpenConfig(\"Do do want add fee!\", async () => {\r\n            for (const element of data) {\r\n                let patchVM = {\r\n                    Table: \"ShipmentFee\",\r\n                    Changes: [\r\n                        { Field: \"Id\", Value: element.Entity.ShipmentFeeId },\r\n                        { Field: \"DescriptionId\", Value: element.Entity.DescriptionId },\r\n                        { Field: \"TotalAmountTax\", Value: element.Entity.TotalAmountTax },\r\n                        { Field: \"TotalAmount\", Value: element.Entity.TotalAmount },\r\n                        { Field: \"AmountTax\", Value: element.Entity.AmountTax },\r\n                        { Field: \"Amount\", Value: element.Entity.Amount },\r\n                        { Field: \"Quantity\", Value: element.Entity.Quantity },\r\n                        { Field: \"UnitId\", Value: element.Entity.UnitId },\r\n                        { Field: \"Vat\", Value: element.Entity.Vat },\r\n                        { Field: \"Tax\", Value: element.Entity.Tax },\r\n                        { Field: \"ExchangeRateINV\", Value: element.Entity.ExchangeRateINV }\r\n                    ]\r\n                };\r\n                await this.Client.PatchAsync(patchVM);\r\n            }\r\n            var rs = await gridview.EditForm.Client.PostAsync({ ShipmentInvoiceId: gridview.Entity.ViewShipmentInvoiceId, ShipmentInvoiceDetailId: data.map(x => x.Entity.ShipmentFeeId) }, \"/api/AddFee\");\r\n            if (rs) {\r\n                gridview.ApplyFilter();\r\n                var comShipmentInvoice = this.EditForm.FirstCom(\"ShipmentInvoice\");\r\n                comShipmentInvoice.ReloadData().then(() => {\r\n                    if (this.EditForm.Entity.Id) {\r\n                        var item = comShipmentInvoice.Item.find(x => x.Entity.Id == this.EditForm.Entity.Id);\r\n                        if (comShipmentInvoice && comShipmentInvoice.Item && item) {\r\n                            item.Element.click();\r\n                        }\r\n                    }\r\n                    else {\r\n                        if (comShipmentInvoice && comShipmentInvoice.Item && comShipmentInvoice.Item[0]) {\r\n                            comShipmentInvoice.Item[0].Element.click();\r\n                        }\r\n                    }\r\n                });\r\n            }\r\n        }, () => { }, true, [shipment]);\r\n    },\r\n    ChangeCurrency: function () {\r\n        this.EditForm.Entity.ExchangeRateINV = this.Decimal(1).div(this.Decimal(JSON.parse(localStorage.getItem(\"ExchangeRateUSD\"))[this.EditForm.Entity.Currency.Code]));\r\n        this.EditForm.UpdateView(true, false, \"ExchangeRateINV\", \"ExchangeRateINV2\");\r\n        this.ChangeExchangeRate();\r\n    },\r\n    AddDetail: function () {\r\n        var newItem = JSON.parse(JSON.stringify(this.EditForm.Meta.GridPolicies.filter(x => x.EntityId == \"AddCharge\")));\r\n        this.EditForm.Entity.SearchData = null;\r\n        this.EditForm.Entity.VendorIds = this.EditForm.Entity.VendorIds || this.EditForm.Entity.CompanyId;\r\n        if (!this.EditForm.Entity.TypeId) {\r\n            this.Toast.Warning(\"Please choose voucher type!\");\r\n            return;\r\n        }\r\n        var form = this.EditForm.OpenConfig(\"Please select fee!\", async () => {\r\n            var grid = this.GET(\"SearchData\");\r\n            var gridParent = this.GET(\"VoucherDetail\");\r\n            var feeIds = gridParent.Item.map(x => x.Entity.ShipmentFeeId);\r\n            var datas = grid.AllListViewItem\r\n                .filter(x => x.Selected && !x.Entity.IsDebtAcc && !feeIds.includes(x.Entity.Id))\r\n                .map(x => x.Entity);\r\n            var exUSD = this.Decimal(this.EditForm.Entity.ExchangeRateINV);\r\n            form.DisposeAfterYes = true;\r\n            if (!datas || datas.length == 0) {\r\n                this.Toast.Warning(\"Please select fee VAT Invoice\");\r\n                form.DisposeAfterYes = false;\r\n                return;\r\n            }\r\n            if (!this.EditForm.Entity.IsMultiple) {\r\n                const vats = new Set(datas.map(x => x.Vat));\r\n                if (vats.size > 1) {\r\n                    this.Toast.Warning(\"There are multiple VAT types. Please select only one VAT type.\");\r\n                    form.DisposeAfterYes = false;\r\n                    return;\r\n                }\r\n                this.EditForm.Entity.VatInv = datas[0].Vat;\r\n            }\r\n            const exchangeRateINVs = new Set(\r\n                datas.filter(x => x.CurrencyCode == \"USD\").map(x => x.ExchangeRateINV).filter(x => x && Number(x) !== 1)\r\n            );\r\n            if (exchangeRateINVs.size > 1) {\r\n                this.EditForm.OpenConfig(\"There are multiple ExchangeRate types. Please select only one ExchangeRate.\", () => {\r\n                }, () => { }, false, [], true);\r\n            }\r\n            const firstExchangeRateINV = Array.from(exchangeRateINVs)[0] || null;\r\n            this.EditForm.Entity.ExchangeRateINV = firstExchangeRateINV || this.Decimal(1).div(this.Decimal(JSON.parse(localStorage.getItem(\"ExchangeRateUSD\"))[\"VND\"]));\r\n            this.EditForm.UpdateView(false, false, \"VatInv\", \"ExchangeRateINV\");\r\n            datas.forEach(item => {\r\n                item.ShipmentFeeId = item.Id;\r\n                item.Id = this.Uuid7.NewGuid();\r\n                item.VoucherId = this.EditForm.Entity.Id;\r\n                item.IsManual = true;\r\n                item.IsLock = false;\r\n                item.NoSubmit = false;\r\n                item.IsInvoice = false;\r\n                item.IsPayment = false;\r\n                item.IsInvoice = false;\r\n                item.IsPaymentAcc = false;\r\n                item.IsDebtAcc = false;\r\n                item.IsPaid = false;\r\n                item.FileNo = item.File.Code;\r\n                item.HblNo = item.Shipment.HblNo;\r\n                item.DescriptionIdText = item.Description ? item.Description.Name : null;\r\n                if (item.CurrencyId == this.EditForm.Entity.CurrencyId) {\r\n                    item.ExchangeRateINV = this.Decimal(1);\r\n                }\r\n                else {\r\n                    item.ExchangeRateINV = this.Decimal(item.ExchangeRateINV || this.Decimal(JSON.parse(localStorage.getItem(\"ExchangeRateVND\"))[item.CurrencyCode])) || this.EditForm.Entity.ExchangeRateINV;\r\n                }\r\n                item.ExchangeRateINV2 = item.ExchangeRateINV.div(exUSD);\r\n                var vat = this.Decimal(item.Vat || 0);\r\n                item.ExTotalPaid = this.Decimal(item.ExTotalPaid || 0);\r\n                if (item.TotalPaid > 0) {\r\n                    item.ExTotalAmount = this.Decimal(item.ExTotalRemain).toDP(0);\r\n                    item.ExTotalAmountTax = this.Decimal(item.ExTotalRemain).toDP(0);\r\n                    item.Quantity = this.Decimal(1);\r\n                    item.Vat = null;\r\n                    item.TotalAmount = item.ExTotalAmount.div(item.ExchangeRateINV);\r\n                    item.Amount = item.TotalAmount.div(item.Quantity);\r\n                    item.ExAmount = item.Amount.times(item.ExchangeRateINV).toDP(0);\r\n                    item.ExAmountTax = this.Decimal(0);\r\n                    item.AmountTax = this.Decimal(0);\r\n                    item.TotalAmountTax = item.TotalAmount;\r\n                }\r\n                else {\r\n                    item.Quantity = this.Decimal(item.Quantity);\r\n                    item.ExAmount = this.Decimal(item.Amount).times(item.ExchangeRateINV).toDP(0);\r\n                    item.ExTotalAmount = this.Decimal(item.ExAmount).times(item.Quantity).toDP(0);\r\n                    if (vat.isNegative()) {\r\n                        if (item.ExAmount.isNegative()) {\r\n                            item.ExAmountTax = vat.times(item.ExchangeRateINV).toDP(0);\r\n                        }\r\n                        else {\r\n                            item.ExAmountTax = vat.abs().times(item.ExchangeRateINV).toDP(0);\r\n                        }\r\n                    } else {\r\n                        item.ExAmountTax = this.Decimal(item.ExTotalAmount).times(vat.div(this.Decimal(100))).toDP(0);\r\n                    }\r\n                }\r\n                item.ExTotalAmountTax = this.Decimal(item.ExTotalAmount).plus(item.ExAmountTax).toDP(0);\r\n                item.InvoiceNo = item.InvoiceCode || item.InvoiceNo || item.ShipmentInvoiceCode || this.EditForm.Entity.InvoiceNo;\r\n                item.InvoiceCode = item.InvoiceCode || this.EditForm.Entity.InvoiceNo;\r\n                item.InvoiceDate = this.EditForm.Entity.InvoiceDate;\r\n                item.SeriNo = this.EditForm.Entity.SeriNo;\r\n                item.Form = this.EditForm.Entity.Form;\r\n                item.PartnerId = this.EditForm.Entity.PartnerId;\r\n                item.EinvoiceLink = this.EditForm.Entity.EinvoiceLink;\r\n                item.EinvoiceCode = this.EditForm.Entity.EinvoiceCode;\r\n            });\r\n            gridParent.LoadMasterData(datas).then(() => {\r\n                gridParent.ClearSelected();\r\n                gridParent.AddRows(datas).then(() => {\r\n                    this.EditForm.Dirty = true;\r\n                    if (!this.EditForm.Entity.IsMultiple) {\r\n                        this.EditForm.UpdateOneVat();\r\n                    }\r\n                    else {\r\n                        this.EditForm.ShowSimple();\r\n                    }\r\n                });\r\n            });\r\n        }, () => { }, true, newItem, false, { Column: 24 });\r\n    },\r\n    ToWords: function () {\r\n        function convertNumberToWords(number) {\r\n            if (isNaN(number)) return \"Dữ liệu nhập không hợp lệ\";\r\n            const units = [\"\", \"nghìn\", \"triệu\", \"tỷ\", \"nghìn tỷ\", \"triệu tỷ\", \"tỷ tỷ\"];\r\n            const numbers = [\"không\", \"một\", \"hai\", \"ba\", \"bốn\", \"năm\", \"sáu\", \"bảy\", \"tám\", \"chín\"];\r\n            function readThreeDigits(num) {\r\n                let result = \"\";\r\n                const hundred = Math.floor(num / 100);\r\n                const ten = Math.floor((num % 100) / 10);\r\n                const unit = num % 10;\r\n                if (hundred > 0) {\r\n                    result += numbers[hundred] + \" trăm \";\r\n                    if (ten === 0 && unit > 0) {\r\n                        result += \"lẻ \";\r\n                    }\r\n                }\r\n                if (ten > 1) {\r\n                    result += numbers[ten] + \" mươi \";\r\n                    if (unit === 1) {\r\n                        result += \"mốt \";\r\n                    } else if (unit === 5) {\r\n                        result += \"lăm \";\r\n                    } else if (unit > 0) {\r\n                        result += numbers[unit] + \" \";\r\n                    }\r\n                } else if (ten === 1) {\r\n                    result += \"mười \";\r\n                    if (unit === 1) {\r\n                        result += \"một \";\r\n                    } else if (unit === 5) {\r\n                        result += \"lăm \";\r\n                    } else if (unit > 0) {\r\n                        result += numbers[unit] + \" \";\r\n                    }\r\n                } else if (ten === 0 && unit > 0) {\r\n                    result += numbers[unit] + \" \";\r\n                }\r\n                return result.trim();\r\n            }\r\n            function readNumber(num) {\r\n                if (num === 0) return numbers[0];\r\n                let result = \"\";\r\n                let i = 0;\r\n                while (num > 0) {\r\n                    const segment = num % 1000;\r\n                    if (segment > 0) {\r\n                        const segmentInWords = readThreeDigits(segment);\r\n                        result = segmentInWords + \" \" + units[i] + \" \" + result;\r\n                    }\r\n                    num = Math.floor(num / 1000);\r\n                    i++;\r\n                }\r\n                return result.trim();\r\n            }\r\n            if (number == 0) return \"Không đồng\";\r\n            return readNumber(number) + \" đồng\";\r\n        }\r\n        let amount = this.EditForm.Entity.TotalAmountTax;\r\n        if (amount !== undefined && amount !== null) {\r\n            let amountText = convertNumberToWords(amount);\r\n            amountText = amountText.charAt(0).toUpperCase() + amountText.slice(1);\r\n            this.EditForm.Entity.AmountText = amountText.trim();\r\n        } else {\r\n            this.EditForm.Entity.AmountText = \"\";\r\n        }\r\n        this.EditForm.UpdateView(false, false, \"AmountText\");\r\n        return null;\r\n    },\r\n    CalcTotal: function () {\r\n        var com = this.GET(\"VoucherDetail\");\r\n        if (com.Item && com.Item.length > 0) {\r\n            const calculateTotal = (field) => com.Item.filter(x => !x.Entity.IsAbs).reduce((acc, x) => acc.plus(this.Decimal(x.Entity[field] || 0)), this.Decimal(0));\r\n            if (this.EditForm.Entity.IsMultiple) {\r\n                const totalAmount = calculateTotal(\"ExTotalAmount\");\r\n                const amountTax = calculateTotal(\"ExAmountTax\");\r\n                this.EditForm.Entity.TotalAmountTax = totalAmount.plus(amountTax).toDP(0);\r\n                this.EditForm.Entity.TotalAmount = totalAmount;\r\n                this.EditForm.Entity.AmountTax = amountTax;\r\n            }\r\n            else {\r\n                const totalAmount = calculateTotal(\"ExTotalAmount\").toDP(0);\r\n                this.EditForm.Entity.TotalAmountTax = totalAmount;\r\n                this.EditForm.Entity.TotalAmount = totalAmount;\r\n                this.EditForm.Entity.AmountTax = null;\r\n            }\r\n            this.EditForm.UpdateView(false, false, \"TotalAmountTax\", \"TotalAmount\", \"AmountTax\");\r\n            this.ToWords();\r\n        }\r\n        else {\r\n            this.EditForm.Entity.TotalAmountTax = this.Decimal(0);\r\n            this.EditForm.Entity.TotalAmount = this.Decimal(0);\r\n            this.EditForm.Entity.AmountTax = this.Decimal(0);\r\n            this.EditForm.UpdateView(false, false, \"TotalAmountTax\", \"TotalAmount\", \"AmountTax\");\r\n            this.ToWords();\r\n        }\r\n        var check = [...new Set(com.Item.map(x => x.Entity.InvoiceNo).filter(x => x != null))];\r\n        if (check.length > 1) {\r\n            this.EditForm.Entity.InvoiceNo = null;\r\n            this.EditForm.Entity.InvoiceDate = null;\r\n            this.EditForm.Entity.SeriNo = null;\r\n            this.EditForm.Entity.Form = null;\r\n            this.EditForm.Entity.PartnerId = null;\r\n            this.EditForm.Entity.EinvoiceLink = null;\r\n            this.EditForm.Entity.EinvoiceCode = null;\r\n        }\r\n        else {\r\n            var detail = com.Item.find(x => x.Entity.InvoiceNo);\r\n            if (detail) {\r\n                this.EditForm.Entity.InvoiceNo = detail.Entity.InvoiceNo;\r\n                this.EditForm.Entity.InvoiceDate = detail.Entity.InvoiceDate;\r\n                this.EditForm.Entity.SeriNo = detail.Entity.SeriNo;\r\n                this.EditForm.Entity.Form = detail.Entity.Form;\r\n                this.EditForm.Entity.PartnerId = detail.Entity.PartnerId;\r\n                this.EditForm.Entity.EinvoiceLink = detail.Entity.EinvoiceLink;\r\n                this.EditForm.Entity.EinvoiceCode = detail.Entity.EinvoiceCode;\r\n            }\r\n        }\r\n        this.EditForm.Entity.ReferencesIds = check.join(\",\") || this.EditForm.Entity.ReferencesIds;\r\n        this.EditForm.UpdateView(false, false, \"InvoiceNo\", \"InvoiceDate\", \"SeriNo\", \"Form\", \"PartnerId\", \"EinvoiceLink\", \"ReferencesIds\");\r\n        if (!this.EditForm.Entity.IsDescription) {\r\n            const grouped = com.Item.filter(x => x.Entity.DescriptionId && x.Entity.FileNo).reduce((acc, x) => {\r\n                const key = `${x.Entity.FileNo}_${x.Entity.HblNo}`;\r\n                if (!acc[key]) acc[key] = [];\r\n                acc[key].push(x.Entity.Description ? x.Entity.Description.Description : null);\r\n                return acc;\r\n            }, {});\r\n            const descriptions = Object.entries(grouped)\r\n                .map(([key, names]) => {\r\n                    const [fileNo, hblNo] = key.split(\"_\");\r\n                    const nameString = names.length > 1 ? `${names.join(\", \")}` : names[0];\r\n                    return `${nameString} (Số lô: ${fileNo}, Số HBL: ${hblNo})`;\r\n                })\r\n                .join(\"; \");\r\n\r\n            this.EditForm.Entity.Description = descriptions;\r\n        }\r\n        this.EditForm.UpdateView(false, false, \"Description\");\r\n    },\r\n    IntUpdateFee: 0,\r\n    UpdateDetail: function () {\r\n        var exUSD = this.Decimal(this.Entity.ExchangeRateINV);\r\n        var exVND = this.Decimal(1);\r\n        window.clearTimeout(this.EditForm.IntUpdateFee);\r\n        this.EditForm.IntUpdateFee = window.setTimeout(() => {\r\n            var component = this.GET(\"VoucherDetail\");\r\n            component.Dirty = true;\r\n            component.Item.forEach(item => {\r\n                if (item.Entity.CurrencyCode == \"USD\") {\r\n                    item.Entity.ExchangeRateINV = exUSD;\r\n                }\r\n                else {\r\n                    item.Entity.ExchangeRateINV = this.Decimal(item.Entity.ExchangeRateINV || this.Decimal(JSON.parse(localStorage.getItem(\"ExchangeRateVND\"))[item.Entity.CurrencyCode]));\r\n                }\r\n                item.Entity.ExchangeRateINV2 = item.Entity.ExchangeRateINV.div(exUSD);\r\n                item.Entity.Quantity = this.Decimal(item.Entity.Quantity || 0);\r\n                item.Entity.TotalAmount = this.Decimal(item.Entity.Quantity || 0).times(this.Decimal(item.Entity.Amount || 0));\r\n                item.Entity.ExAmount = this.Decimal(item.Entity.Amount || 0).times(this.Decimal(item.Entity.ExchangeRateINV || 0)).toDP(0);\r\n                item.Entity.ExTotalAmount = (item.Entity.Quantity || this.Decimal(0)).times(item.Entity.ExAmount || this.Decimal(0)).toDP(0);\r\n                if ((item.Entity.Vat || this.Decimal(0)).isNegative()) {\r\n                    if (item.ExAmount.isNegative()) {\r\n                        item.Entity.ExAmountTax = this.Decimal(item.Entity.Vat).toDP(0);\r\n                        item.Entity.AmountTax = this.Decimal(item.Entity.Vat);\r\n                    }\r\n                    else {\r\n                        item.Entity.ExAmountTax = this.Decimal(item.Entity.Vat).abs().toDP(0);\r\n                        item.Entity.AmountTax = this.Decimal(item.Entity.Vat).abs();\r\n                    }\r\n                } else {\r\n                    item.Entity.ExAmountTax = (item.Entity.ExTotalAmount).times(item.Entity.Vat || this.Decimal(0)).div(100).toDP(0);\r\n                    item.Entity.AmountTax = (item.Entity.TotalAmount).times(item.Entity.Vat || this.Decimal(0)).div(100).toDP(0);\r\n                }\r\n                item.Entity.ExTotalAmountTax = item.Entity.ExTotalAmount.plus(item.Entity.ExAmountTax).toDP(0);\r\n                item.Entity.TotalAmountTax = item.Entity.TotalAmount.plus(item.Entity.AmountTax);\r\n                item.UpdateView(false);\r\n            });\r\n        }, 100);\r\n    },\r\n    ChangeDataFee: function () {\r\n        var component = this.EditForm.ChildCom.find(x => x.Meta.FieldName == \"SearchData\");\r\n        component.ReloadData();\r\n    },\r\n    UpdateTable: function () {\r\n        window.clearTimeout(this.EditForm.IntUpdateFee);\r\n        this.EditForm.IntUpdateFee = window.setTimeout(() => {\r\n            var component = this.EditForm.ChildCom.find(x => x.Meta.FieldName == \"SearchData\");\r\n            component.Item.forEach(item => {\r\n                if (item.Entity.TotalRemain > 0) {\r\n                    item.Selected = true;\r\n                }\r\n                if (((item.Entity.TypeId === 1 || ([3, 4].includes(item.Entity.TypeId) && item.Entity.IsAdvCustomer)) && [4, 6].includes(this.EditForm.Entity.TypeId))\r\n                    || ((item.Entity.TypeId === 2 || ([3, 4].includes(item.Entity.TypeId) && !item.Entity.IsAdvCustomer)) && [3, 5].includes(this.EditForm.Entity.TypeId))) {\r\n                    item.Entity.Amount = - item.Entity.Amount;\r\n                    item.Entity.AmountTax = - item.Entity.AmountTax;\r\n                    item.Entity.TotalAmountTax = - item.Entity.TotalAmountTax;\r\n                    item.Entity.ExAmountTax = - item.Entity.ExAmountTax;\r\n                    item.Entity.ExAmount = - item.Entity.ExAmount;\r\n                    item.Entity.ExTotalAmountTax = - item.Entity.ExTotalAmountTax;\r\n                    item.Entity.ExTotalRemain = - item.Entity.ExTotalRemain;\r\n                    item.Entity.TotalRemain = - item.Entity.TotalRemain;\r\n                }\r\n                item.UpdateView(false);\r\n            });\r\n        }, 200);\r\n    },\r\n    FirstLoadGrid: function () {\r\n        window.clearTimeout(this.EditForm.IntUpdateFee);\r\n        this.EditForm.IntUpdateFee = window.setTimeout(() => {\r\n            var component = this.EditForm.ChildCom.find(x => x.Meta.FieldName == \"SearchData\");\r\n            component.Item.forEach(item => {\r\n                if (item.Entity.TotalRemain > 0) {\r\n                    item.Selected = true;\r\n                }\r\n            });\r\n        }, 200);\r\n    },\r\n    ShowSimple: function () {\r\n        var grid = this.GET(\"VoucherDetail\");\r\n        if (!this.EditForm.Entity.IsMultiple) {\r\n            if (this.EditForm.Entity.IsSimple) {\r\n                grid.HideColumn(\"Vat\", \"ExAmountTax\", \"ExTotalAmountTax\", \"AmountTax\", \"VatAccId\", \"InvoiceNo\", \"InvoiceDate\", \"SeriNo\", \"AmountDifference\", \"DifferenceAccId\", \"OBHAccId\", \"InvoiceConfigId\", \"EinvoiceLink\", \"FileNo\", \"HblNo\", \"Form\", \"EinvoiceCode\");\r\n            }\r\n            else {\r\n                grid.HideColumn(\"Vat\", \"ExAmountTax\", \"ExTotalAmountTax\", \"AmountTax\", \"VatAccId\");\r\n            }\r\n        }\r\n        else {\r\n            if (this.EditForm.Entity.IsSimple) {\r\n                grid.HideColumn(\"InvoiceNo\", \"InvoiceDate\", \"SeriNo\", \"AmountDifference\", \"DifferenceAccId\", \"OBHAccId\", \"InvoiceConfigId\", \"EinvoiceLink\", \"FileNo\", \"HblNo\", \"Form\", \"EinvoiceCode\");\r\n            }\r\n            else {\r\n                grid.HideColumn();\r\n            }\r\n        }\r\n        this.EditForm.UpdateView(false, false, \"VatInv\");\r\n    },\r\n    FirstShowSimple: function () {\r\n        window.clearTimeout(this.EditForm.IntUpdateFee);\r\n        this.EditForm.IntUpdateFee = window.setTimeout(() => {\r\n            this.EditForm.ShowSimple();\r\n        }, 200);\r\n    },\r\n    UpdateINV: function () {\r\n        if (!this.EditForm.Entity.PartnerId && this.EditForm.Entity) {\r\n            this.EditForm.Entity.PartnerId = this.EditForm.Entity.VendorId;\r\n            this.EditForm.UpdateView(false, false, \"PartnerId\");\r\n        }\r\n        var grid = this.GET(\"VoucherDetail\");\r\n        grid.Item.forEach(item => {\r\n            if (this.EditForm.Entity.TypeId == 5) {\r\n                item.Entity.DebitAccId = this.EditForm.Entity.AccId || item.Entity.DebitAccId;\r\n            }\r\n            else {\r\n                item.Entity.CreditAccId = this.EditForm.Entity.AccId || item.Entity.CreditAccId;\r\n            }\r\n            item.Entity.InvoiceNo = this.EditForm.Entity.InvoiceNo || item.Entity.InvoiceNo;\r\n            item.Entity.InvoiceDate = this.EditForm.Entity.InvoiceDate || item.Entity.InvoiceDate;\r\n            item.Entity.SeriNo = this.EditForm.Entity.SeriNo || item.Entity.SeriNo;\r\n            item.Entity.Form = this.EditForm.Entity.Form || item.Entity.Form;\r\n            item.Entity.PartnerId = this.EditForm.Entity.PartnerId || item.Entity.PartnerId;\r\n            item.Entity.EinvoiceLink = this.EditForm.Entity.EinvoiceLink || item.Entity.EinvoiceLink;\r\n            item.Entity.EinvoiceCode = this.EditForm.Entity.EinvoiceCode || item.Entity.EinvoiceCode;\r\n            item.UpdateView();\r\n        });\r\n    },\r\n    ChangePaid: function () {\r\n        if (this.EditForm.Entity.IsPaid) {\r\n            this.EditForm.Entity.PaidDate = this.EditForm.Entity.PaidDate || this.dayjs().format('YYYY-MM-DDTHH:mm:ss');\r\n        }\r\n        else {\r\n            this.EditForm.Entity.PaidDate = null;\r\n        }\r\n        this.EditForm.UpdateView(false, false, \"PaidDate\");\r\n    },\r\n    UpdateTotalAmout: function () {\r\n        var total = this.Decimal(this.EditForm.Entity.TotalAmountTax);\r\n        var gridParent = this.GET(\"VoucherDetail\");\r\n\r\n        if (gridParent && gridParent.Item && gridParent.Item.length > 0) {\r\n            var lastItem = gridParent.Item[gridParent.Item.length - 1];\r\n            const calculateTotal = (field) => gridParent.Item.filter(x => !x.Entity.IsAbs)\r\n                .reduce((acc, x) => acc.plus(this.Decimal(x.Entity[field] || 0)), this.Decimal(0));\r\n            if (this.EditForm.Entity.IsMultiple) {\r\n                const totalAmount = calculateTotal(\"ExTotalAmount\");\r\n                const amountTax = calculateTotal(\"ExAmountTax\");\r\n                var totalAmountTax = totalAmount.plus(amountTax).toDP(0);\r\n\r\n                if (totalAmountTax > total) {\r\n                    var abs = totalAmountTax.sub(total);\r\n                    var subAmount = this.Decimal(lastItem.Entity.ExTotalAmountTax).sub(abs);\r\n                    lastItem.Entity.ExTotalAmount = subAmount;\r\n                    lastItem.Entity.ExTotalAmountTax = subAmount;\r\n                    lastItem.Entity.Quantity = this.Decimal(1);\r\n                    lastItem.Entity.Vat = null;\r\n                    lastItem.Entity.TotalAmount = lastItem.Entity.ExTotalAmount.div(lastItem.Entity.ExchangeRateINV || lastItem.Entity.ExchangeRateVND || 1);\r\n                    lastItem.Entity.Amount = lastItem.Entity.TotalAmount.div(lastItem.Entity.Quantity);\r\n                    lastItem.Entity.ExAmount = lastItem.Entity.Amount.times(lastItem.Entity.ExchangeRateINV || lastItem.Entity.ExchangeRateVND || 1);\r\n                    lastItem.Entity.ExAmountTax = this.Decimal(0);\r\n                    lastItem.Entity.AmountTax = this.Decimal(0);\r\n                    lastItem.Entity.TotalAmountTax = lastItem.Entity.TotalAmount;\r\n                    lastItem.UpdateView(false);\r\n                    this.EditForm.CalcTotal();\r\n                } else {\r\n                    this.EditForm.Entity.TotalAmountTax = totalAmountTax;\r\n                    this.EditForm.Entity.TotalAmount = totalAmount;\r\n                    this.EditForm.Entity.AmountTax = amountTax;\r\n                }\r\n                this.EditForm.UpdateView(false, false, \"TotalAmountTax\", \"TotalAmount\", \"AmountTax\");\r\n            } else {\r\n                const totalAmount = calculateTotal(\"ExTotalAmount\").toDP(0);\r\n                const amountTax = (totalAmount.times(this.EditForm.Entity.VatInv || this.Decimal(0)).div(100)).toDP(0);\r\n                const totalAmountTax = totalAmount.plus(amountTax).toDP(0);\r\n\r\n                if (totalAmountTax > total) {\r\n                    var abs = totalAmountTax.sub(total);\r\n                    var subAmount = this.Decimal(lastItem.Entity.ExTotalAmountTax).sub(abs);\r\n                    lastItem.Entity.ExTotalAmount = subAmount;\r\n                    lastItem.Entity.ExTotalAmountTax = subAmount;\r\n                    lastItem.Entity.Quantity = this.Decimal(1);\r\n                    lastItem.Entity.Vat = null;\r\n                    lastItem.Entity.TotalAmount = lastItem.Entity.ExTotalAmount.div(lastItem.Entity.ExchangeRateINV || lastItem.Entity.ExchangeRateVND || 1);\r\n                    lastItem.Entity.Amount = lastItem.Entity.TotalAmount.div(lastItem.Entity.Quantity);\r\n                    lastItem.Entity.ExAmount = lastItem.Entity.Amount.times(lastItem.Entity.ExchangeRateINV || lastItem.Entity.ExchangeRateVND || 1);\r\n                    lastItem.Entity.ExAmountTax = this.Decimal(0);\r\n                    lastItem.Entity.AmountTax = this.Decimal(0);\r\n                    lastItem.Entity.TotalAmountTax = lastItem.Entity.TotalAmount;\r\n                    lastItem.UpdateView(false);\r\n                    this.EditForm.CalcTotal();\r\n                } else {\r\n                    this.EditForm.Entity.TotalAmountTax = totalAmountTax;\r\n                    this.EditForm.Entity.TotalAmount = totalAmount;\r\n                    this.EditForm.Entity.AmountTax = amountTax;\r\n                }\r\n                this.EditForm.UpdateView(false, false, \"TotalAmountTax\", \"TotalAmount\", \"AmountTax\");\r\n            }\r\n        } else {\r\n            console.log(\"Không có phần tử nào trong Item.\");\r\n        }\r\n    },\r\n    UpdateOneVat: function () {\r\n        debugger;\r\n        if (this.EditForm.Entity.IsMultiple) {\r\n            this.EditForm.ShowSimple();\r\n        }\r\n        else {\r\n            var gridParent = this.GET(\"VoucherDetail\");\r\n            if (gridParent && gridParent.Item && gridParent.Item.length > 0) {\r\n                var items = gridParent.Item.map(x => x.Entity);\r\n                const groupedData = items.reduce((acc, item) => {\r\n                    const vat = item.Vat !== null ? item.Vat : \"NoVat\";\r\n                    const key = `${item.InvoiceNo || \"NoInvoice\"}-${vat}`;\r\n\r\n                    if (!acc[key]) {\r\n                        acc[key] = {\r\n                            InvoiceNo: item.InvoiceNo || null,\r\n                            Vat: item.Vat,\r\n                            ExTotalAmount: this.Decimal(0),\r\n                            TaxAmount: this.Decimal(0)\r\n                        };\r\n                    }\r\n\r\n                    acc[key].ExTotalAmount = acc[key].ExTotalAmount.plus(this.Decimal(item.ExTotalAmount || 0));\r\n\r\n                    if (item.Vat) {\r\n                        acc[key].TaxAmount = acc[key].TaxAmount.plus(this.Decimal(item.ExAmountTax || 0));\r\n                    }\r\n\r\n                    return acc;\r\n                }, {});\r\n\r\n                gridParent.Item.forEach(item => {\r\n                    item.Entity.Vat = null;\r\n                    item.Entity.AmountTax = null;\r\n                    item.Entity.ExAmountTax = null;\r\n                    item.Entity.VatAccId = null;\r\n                    item.Entity.ExTotalAmountTax = (item.ExTotalAmount || this.Decimal(0)).toDP(0);\r\n                    item.Entity.TotalAmountTax = item.TotalAmount;\r\n                    item.UpdateView(false);\r\n                })\r\n                const result = Object.values(groupedData).filter(item => item.TaxAmount.gt(0));\r\n                const result2 = Object.values(groupedData).filter(item => item.TaxAmount.lt(0));\r\n                var newItems = result.map(x => ({\r\n                    Id: this.Uuid7.NewGuid(),\r\n                    DescriptionIdText: x.InvoiceNo ? `Thuế GTGT HĐ:${x.InvoiceNo}` : `Thuế GTGT ${x.Vat}%`,\r\n                    Amount: x.TaxAmount.toDP(0),\r\n                    Quantity: this.Decimal(1),\r\n                    TotalAmount: x.TaxAmount.toDP(0),\r\n                    CurrencyId: \"00e70228-0000-0000-8000-af9d4b995deb\",\r\n                    CurrencyCode: \"VND\",\r\n                    AmountTax: null,\r\n                    ExTotalAmount: x.TaxAmount.toDP(0),\r\n                    ExTotalAmountTax: x.TaxAmount.toDP(0),\r\n                    TotalAmountTax: x.TaxAmount.toDP(0),\r\n                    ExAmountTax: null,\r\n                    VatAccId: null,\r\n                    IsVat: true\r\n                }));\r\n                var newItems2 = result2.map(x => ({\r\n                    Id: this.Uuid7.NewGuid(),\r\n                    DescriptionIdText: `Thuế GTGT `,\r\n                    Amount: x.TaxAmount.toDP(0),\r\n                    Quantity: this.Decimal(1),\r\n                    TotalAmount: x.TaxAmount.toDP(0),\r\n                    CurrencyId: \"00e70228-0000-0000-8000-af9d4b995deb\",\r\n                    CurrencyCode: \"VND\",\r\n                    AmountTax: null,\r\n                    ExTotalAmount: x.TaxAmount.toDP(0),\r\n                    ExTotalAmountTax: x.TaxAmount.toDP(0),\r\n                    TotalAmountTax: x.TaxAmount.toDP(0),\r\n                    ExAmountTax: null,\r\n                    VatAccId: null,\r\n                    IsVat: true\r\n                }));\r\n                var mergedItems = [...newItems, ...newItems2];\r\n                gridParent.AddRows(mergedItems).then(() => {\r\n                    this.EditForm.ShowSimple();\r\n                });\r\n            } else {\r\n                this.EditForm.ShowSimple();\r\n            }\r\n        }\r\n    }\r\n}",
@@ -10,7 +9,7 @@
     "EntityId": "Voucher",
     "GridPolicies": [
         {
-            "Id": "0194a02d-6672-755e-a3e5-9c935bc4ac84",
+            "Id": "debt_accounting_editor.AmountTax.8",
             "FieldName": "AmountTax",
             "Order": 8,
             "ComponentType": "Number",
@@ -25,7 +24,7 @@
             "EntityId": "VoucherDetail"
         },
         {
-            "Id": "0194a02d-66c9-775d-b66f-be7a2fa2b06b",
+            "Id": "debt_accounting_editor.CurrencyId.9",
             "FieldName": "CurrencyId",
             "Order": 9,
             "ComponentType": "Dropdown",
@@ -46,7 +45,7 @@
             "EntityId": "VoucherDetail"
         },
         {
-            "Id": "0194a02d-6727-70e0-9736-f48b9523cb2f",
+            "Id": "debt_accounting_editor.ExchangeRateINV.10",
             "FieldName": "ExchangeRateINV",
             "Order": 10,
             "ComponentType": "Number",
@@ -61,7 +60,7 @@
             "EntityId": "VoucherDetail"
         },
         {
-            "Id": "0194a02d-677e-73c0-9d85-619919a09c43",
+            "Id": "debt_accounting_editor.DescriptionIdText.0",
             "FieldName": "DescriptionIdText",
             "Order": 0,
             "ComponentType": "Dropdown",
@@ -83,7 +82,7 @@
             "EntityId": "VoucherDetail"
         },
         {
-            "Id": "0194a02d-67e2-70e7-9968-0e6d7dfaa7ff",
+            "Id": "debt_accounting_editor.Quantity.5",
             "FieldName": "Quantity",
             "Order": 5,
             "ComponentType": "Number",
@@ -98,7 +97,7 @@
             "EntityId": "VoucherDetail"
         },
         {
-            "Id": "0194a02d-6846-7088-a0fd-cbd1c9f7f125",
+            "Id": "debt_accounting_editor.UnitId.3",
             "FieldName": "UnitId",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -117,7 +116,7 @@
             "EntityId": "VoucherDetail"
         },
         {
-            "Id": "0194a02d-68fa-7399-9b17-97aa15423fdb",
+            "Id": "debt_accounting_editor.Vat.7",
             "FieldName": "Vat",
             "Order": 7,
             "ComponentType": "Number",
@@ -132,7 +131,7 @@
             "EntityId": "VoucherDetail"
         },
         {
-            "Id": "0194a02d-69a8-76ae-b1b8-1f5941d44866",
+            "Id": "debt_accounting_editor.ViewShipmentInvoiceId.1",
             "FieldName": "ViewShipmentInvoiceId",
             "Order": 1,
             "ComponentType": "Dropdown",
@@ -150,7 +149,7 @@
             "EntityId": "Options"
         },
         {
-            "Id": "0194a02d-6a0a-749f-aa7c-1fd4f20da286",
+            "Id": "debt_accounting_editor.Approved.0",
             "FieldName": "Approved",
             "Order": 0,
             "ComponentType": "Checkbox",
@@ -162,7 +161,7 @@
             "EntityId": "Approvement"
         },
         {
-            "Id": "0194a02d-6a5d-72c4-a77b-73540fd345ea",
+            "Id": "debt_accounting_editor.ReasonOfChange.1",
             "FieldName": "ReasonOfChange",
             "Order": 1,
             "ComponentType": "Input",
@@ -174,7 +173,7 @@
             "EntityId": "Approvement"
         },
         {
-            "Id": "0194a02d-6ab4-7491-b79c-5c8be4243cfa",
+            "Id": "debt_accounting_editor.ApprovedDate.2",
             "FieldName": "ApprovedDate",
             "Order": 2,
             "ComponentType": "Datepicker",
@@ -187,7 +186,7 @@
             "EntityId": "Approvement"
         },
         {
-            "Id": "0194a02d-6b23-74ba-9ac0-569dafb78895",
+            "Id": "debt_accounting_editor.ApprovedBy.3",
             "FieldName": "ApprovedBy",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -204,7 +203,7 @@
             "EntityId": "Approvement"
         },
         {
-            "Id": "0194a02d-6b98-759b-86de-b26631a2b139",
+            "Id": "debt_accounting_editor.VendorIds.1",
             "FieldName": "VendorIds",
             "Order": 1,
             "ComponentType": "Dropdown",
@@ -224,7 +223,7 @@
             "EntityId": "AddCharge"
         },
         {
-            "Id": "0194a02d-6bfe-75ec-b1c6-d9b118aba4df",
+            "Id": "debt_accounting_editor.FromDate.2",
             "FieldName": "FromDate",
             "Order": 2,
             "ComponentType": "Datepicker",
@@ -236,7 +235,7 @@
             "EntityId": "AddCharge"
         },
         {
-            "Id": "0194a02d-6c5e-7679-9555-231dd72bccd8",
+            "Id": "debt_accounting_editor.ToDate.3",
             "FieldName": "ToDate",
             "Order": 3,
             "ComponentType": "Datepicker",
@@ -248,7 +247,7 @@
             "EntityId": "AddCharge"
         },
         {
-            "Id": "0194a02d-6ce3-766e-9b8c-f55b48d07785",
+            "Id": "debt_accounting_editor.DateFieldId.4",
             "FieldName": "DateFieldId",
             "Order": 4,
             "ComponentType": "Dropdown",
@@ -264,7 +263,7 @@
             "EntityId": "AddCharge"
         },
         {
-            "Id": "0194a02d-6d47-722f-b8a4-8cdde504f8c0",
+            "Id": "debt_accounting_editor.InvoiceIds.5",
             "FieldName": "InvoiceIds",
             "Order": 5,
             "ComponentType": "Dropdown",
@@ -283,7 +282,7 @@
             "IsMultiple": true
         },
         {
-            "Id": "0194a02d-6da3-72ce-8b29-992b2ed8c3a0",
+            "Id": "debt_accounting_editor.FileIds.16",
             "FieldName": "FileIds",
             "Order": 16,
             "ComponentType": "Dropdown",
@@ -302,7 +301,7 @@
             "IsMultiple": true
         },
         {
-            "Id": "0194a02d-6e0d-708b-8429-50441e19cb23",
+            "Id": "debt_accounting_editor.ServiceIds.7",
             "FieldName": "ServiceIds",
             "Order": 7,
             "ComponentType": "Dropdown",
@@ -319,7 +318,7 @@
             "IsMultiple": true
         },
         {
-            "Id": "0194a02d-6e67-75ad-972c-ad2037a5346c",
+            "Id": "debt_accounting_editor.DescriptionIds.16",
             "FieldName": "DescriptionIds",
             "Order": 16,
             "ComponentType": "Dropdown",
@@ -337,7 +336,7 @@
             "IsMultiple": true
         },
         {
-            "Id": "0194a02d-6eca-7459-93f5-6948486e4c64",
+            "Id": "debt_accounting_editor.FileIds.9",
             "FieldName": "FileIds",
             "Order": 9,
             "ComponentType": "Dropdown",
@@ -356,7 +355,7 @@
             "IsMultiple": true
         },
         {
-            "Id": "0194a02d-6f29-760c-befb-0fb52945609c",
+            "Id": "debt_accounting_editor.Vat.11",
             "FieldName": "Vat",
             "Order": 11,
             "ComponentType": "Number",
@@ -369,7 +368,7 @@
             "EntityId": "AddCharge"
         },
         {
-            "Id": "0194a02d-6f8f-740f-8897-d2968dd34273",
+            "Id": "debt_accounting_editor.ShipmentStatusId.12",
             "FieldName": "ShipmentStatusId",
             "Order": 12,
             "ComponentType": "Select",
@@ -385,7 +384,7 @@
             "EntityId": "AddCharge"
         },
         {
-            "Id": "0194a02d-6fe5-711b-ba37-56c32a800fcd",
+            "Id": "debt_accounting_editor.TaxInvoiceId.13",
             "FieldName": "TaxInvoiceId",
             "Order": 13,
             "ComponentType": "Select",
@@ -402,7 +401,7 @@
             "EntityId": "AddCharge"
         },
         {
-            "Id": "0194a02d-703a-737e-9499-12ce91b35f5f",
+            "Id": "debt_accounting_editor.ChargePaidId.14",
             "FieldName": "ChargePaidId",
             "Order": 14,
             "ComponentType": "Select",
@@ -419,7 +418,7 @@
             "EntityId": "AddCharge"
         },
         {
-            "Id": "0194a02d-708e-76ba-8014-b4b21beef7cc",
+            "Id": "debt_accounting_editor.SearchData.19",
             "FieldName": "SearchData",
             "Order": 19,
             "ComponentType": "GridView",
@@ -439,7 +438,7 @@
             "IsMultiple": true
         },
         {
-            "Id": "0194a02d-70e4-72de-991c-b23c4c9d4f2c",
+            "Id": "debt_accounting_editor.ShipmentId.0",
             "FieldName": "ShipmentId",
             "Order": 0,
             "ComponentType": "Dropdown",
@@ -456,7 +455,7 @@
             "EntityId": "SearchData"
         },
         {
-            "Id": "0194a02d-7142-7480-91de-0a43d4d815c6",
+            "Id": "debt_accounting_editor.DescriptionId.6",
             "FieldName": "DescriptionId",
             "Order": 6,
             "ComponentType": "Dropdown",
@@ -476,7 +475,7 @@
             "EntityId": "SearchData"
         },
         {
-            "Id": "0194a02d-7197-7539-9a5e-624c1ad2bf4a",
+            "Id": "debt_accounting_editor.Quantity.7",
             "FieldName": "Quantity",
             "Order": 7,
             "ComponentType": "Number",
@@ -490,7 +489,7 @@
             "EntityId": "SearchData"
         },
         {
-            "Id": "0194a02d-71ea-718d-a989-4649470534a5",
+            "Id": "debt_accounting_editor.UnitId.8",
             "FieldName": "UnitId",
             "Order": 8,
             "ComponentType": "Dropdown",
@@ -508,7 +507,7 @@
             "EntityId": "SearchData"
         },
         {
-            "Id": "0194a02d-7248-76ae-8f88-37b843811fa7",
+            "Id": "debt_accounting_editor.Amount.9",
             "FieldName": "Amount",
             "Order": 9,
             "ComponentType": "Number",
@@ -522,7 +521,7 @@
             "EntityId": "SearchData"
         },
         {
-            "Id": "0194a02d-729b-77e4-b11d-6ad7def530df",
+            "Id": "debt_accounting_editor.CurrencyId.10",
             "FieldName": "CurrencyId",
             "Order": 10,
             "ComponentType": "Dropdown",
@@ -542,7 +541,7 @@
             "EntityId": "SearchData"
         },
         {
-            "Id": "0194a02d-72f8-702a-a8e5-6361f8ba10a8",
+            "Id": "debt_accounting_editor.ExchangeRateINV.11",
             "FieldName": "ExchangeRateINV",
             "Order": 11,
             "ComponentType": "Number",
@@ -556,7 +555,7 @@
             "EntityId": "SearchData"
         },
         {
-            "Id": "0194a02d-7348-7554-9179-7ce2228879bb",
+            "Id": "debt_accounting_editor.Vat.13",
             "FieldName": "Vat",
             "Order": 13,
             "ComponentType": "Number",
@@ -570,7 +569,7 @@
             "EntityId": "SearchData"
         },
         {
-            "Id": "0194a02d-739c-71c5-a01d-2094ef9073fc",
+            "Id": "debt_accounting_editor.AmountTax.14",
             "FieldName": "AmountTax",
             "Order": 14,
             "ComponentType": "Number",
@@ -586,7 +585,7 @@
             "EntityId": "SearchData"
         },
         {
-            "Id": "0194a02d-73ee-75da-a8e1-cd432bfc02b6",
+            "Id": "debt_accounting_editor.TotalRemain.15",
             "FieldName": "TotalRemain",
             "Order": 15,
             "ComponentType": "Number",
@@ -602,7 +601,7 @@
             "EntityId": "SearchData"
         },
         {
-            "Id": "0194a02d-7442-709d-96bc-4da1887dfba8",
+            "Id": "debt_accounting_editor.HblIds.17",
             "FieldName": "HblIds",
             "Order": 17,
             "ComponentType": "Dropdown",
@@ -621,7 +620,7 @@
             "IsMultiple": true
         },
         {
-            "Id": "0194a02d-74b1-71af-aaee-e895ee54f7c1",
+            "Id": "debt_accounting_editor.TotalAmount.12",
             "FieldName": "TotalAmount",
             "Order": 12,
             "ComponentType": "Number",
@@ -637,7 +636,7 @@
             "EntityId": "SearchData"
         },
         {
-            "Id": "0194a02d-7505-77be-95f4-8985e36a3246",
+            "Id": "debt_accounting_editor.TotalAmount.6",
             "FieldName": "TotalAmount",
             "Order": 6,
             "ComponentType": "Number",
@@ -653,7 +652,7 @@
             "EntityId": "VoucherDetail"
         },
         {
-            "Id": "0194a02d-755a-7088-b86f-da7cc1f6b0a0",
+            "Id": "debt_accounting_editor.ShipmentInvoiceCode.2",
             "FieldName": "ShipmentInvoiceCode",
             "Order": 2,
             "ComponentType": "Input",
@@ -668,7 +667,7 @@
             "EntityId": "SearchData"
         },
         {
-            "Id": "0194a02d-75a6-73ca-aff7-af6d602bc8bf",
+            "Id": "debt_accounting_editor.PaymentCode.3",
             "FieldName": "PaymentCode",
             "Order": 3,
             "ComponentType": "Input",
@@ -683,7 +682,7 @@
             "EntityId": "SearchData"
         },
         {
-            "Id": "0194a02d-75fb-720c-81aa-20074d613217",
+            "Id": "debt_accounting_editor.InvoiceCode.4",
             "FieldName": "InvoiceCode",
             "Order": 4,
             "ComponentType": "Input",
@@ -698,7 +697,7 @@
             "EntityId": "SearchData"
         },
         {
-            "Id": "0194a02d-765c-70ed-a782-13cb3639e109",
+            "Id": "debt_accounting_editor.Amount.4",
             "FieldName": "Amount",
             "Order": 4,
             "ComponentType": "Number",
@@ -713,7 +712,7 @@
             "EntityId": "VoucherDetail"
         },
         {
-            "Id": "0194a02d-76b7-7312-841c-6dc6b3a40a56",
+            "Id": "debt_accounting_editor.DebitTypeId.12",
             "FieldName": "DebitTypeId",
             "Order": 12,
             "ComponentType": "Select",
@@ -730,7 +729,7 @@
             "EntityId": "AddCharge"
         },
         {
-            "Id": "0194a0b8-d202-7151-b7c9-8fce9e5f639d",
+            "Id": "debt_accounting_editor.DebitAccId.1",
             "FieldName": "DebitAccId",
             "Order": 1,
             "ComponentType": "Dropdown",
@@ -751,7 +750,7 @@
             "EntityId": "VoucherDetail"
         },
         {
-            "Id": "0194a0b9-6cf8-71f6-9796-c01206cb4347",
+            "Id": "debt_accounting_editor.CreditAccId.2",
             "FieldName": "CreditAccId",
             "Order": 2,
             "ComponentType": "Dropdown",
@@ -772,7 +771,7 @@
             "EntityId": "VoucherDetail"
         },
         {
-            "Id": "0194a0c3-4a98-7048-8506-b45f4f38011e",
+            "Id": "debt_accounting_editor.ExTotalAmount.11",
             "FieldName": "ExTotalAmount",
             "Order": 11,
             "ComponentType": "Number",
@@ -787,7 +786,7 @@
             "EntityId": "VoucherDetail"
         },
         {
-            "Id": "0194a0c3-8a07-7308-af79-0b01b8b7a2cc",
+            "Id": "debt_accounting_editor.ExAmountTax.12",
             "FieldName": "ExAmountTax",
             "Order": 12,
             "ComponentType": "Number",
@@ -802,7 +801,7 @@
             "EntityId": "VoucherDetail"
         },
         {
-            "Id": "0194a0c4-37aa-754a-84bd-a8d8d8d691b1",
+            "Id": "debt_accounting_editor.VatAccId.13",
             "FieldName": "VatAccId",
             "Order": 13,
             "ComponentType": "Dropdown",
@@ -823,7 +822,7 @@
             "EntityId": "VoucherDetail"
         },
         {
-            "Id": "0194a231-e486-75cc-9348-bc9dad5bf6f7",
+            "Id": "debt_accounting_editor.DebtId.5",
             "FieldName": "DebtId",
             "Order": 5,
             "ComponentType": "Dropdown",
@@ -840,7 +839,7 @@
             "EntityId": "SearchData"
         },
         {
-            "Id": "0194a524-b2da-70c2-98a3-92c7c24f34bb",
+            "Id": "debt_accounting_editor.FeeTypeId.15",
             "FieldName": "FeeTypeId",
             "Order": 15,
             "ComponentType": "Select",
@@ -857,7 +856,7 @@
             "EntityId": "AddCharge"
         },
         {
-            "Id": "0194c1cb-e065-75c9-bf67-41b4177037d6",
+            "Id": "debt_accounting_editor.AmountDifference.14",
             "FieldName": "AmountDifference",
             "Order": 14,
             "ComponentType": "Number",
@@ -872,7 +871,7 @@
             "EntityId": "VoucherDetail"
         },
         {
-            "Id": "0194c1cc-573e-72c6-806d-e5683ecf911a",
+            "Id": "debt_accounting_editor.DifferenceAccId.15",
             "FieldName": "DifferenceAccId",
             "Order": 15,
             "ComponentType": "Dropdown",
@@ -892,7 +891,7 @@
             "EntityId": "VoucherDetail"
         },
         {
-            "Id": "0194c1cc-8262-762a-817f-3b085a3b5298",
+            "Id": "debt_accounting_editor.OBHAccId.16",
             "FieldName": "OBHAccId",
             "Order": 16,
             "ComponentType": "Dropdown",
@@ -910,7 +909,7 @@
             "EntityId": "VoucherDetail"
         },
         {
-            "Id": "0194c1cd-2da6-7724-bb26-39c636e5b1e8",
+            "Id": "debt_accounting_editor.PartnerId.17",
             "FieldName": "PartnerId",
             "Order": 17,
             "ComponentType": "Dropdown",
@@ -934,7 +933,7 @@
             "EntityId": "VoucherDetail"
         },
         {
-            "Id": "0194c1ce-9ca0-70fe-a136-735c491b1a3d",
+            "Id": "debt_accounting_editor.InvoiceNo.18",
             "FieldName": "InvoiceNo",
             "Order": 18,
             "ComponentType": "Input",
@@ -950,7 +949,7 @@
             "EntityId": "VoucherDetail"
         },
         {
-            "Id": "0194c1cf-4049-7259-881a-6e6b8f13b64f",
+            "Id": "debt_accounting_editor.InvoiceDate.19",
             "FieldName": "InvoiceDate",
             "Order": 19,
             "ComponentType": "Datepicker",
@@ -965,7 +964,7 @@
             "EntityId": "VoucherDetail"
         },
         {
-            "Id": "0194c1cf-ffbe-721a-9218-b21f4dcb2783",
+            "Id": "debt_accounting_editor.SeriNo.20",
             "FieldName": "SeriNo",
             "Order": 20,
             "ComponentType": "Input",
@@ -980,7 +979,7 @@
             "EntityId": "VoucherDetail"
         },
         {
-            "Id": "0194c1d1-f2ec-77ff-9905-78658e20aafe",
+            "Id": "debt_accounting_editor.EinvoiceLink.21",
             "FieldName": "EinvoiceLink",
             "Order": 21,
             "ComponentType": "Input",
@@ -995,7 +994,7 @@
             "EntityId": "VoucherDetail"
         },
         {
-            "Id": "0194c1d1-fa75-7408-8e91-c8d995293980",
+            "Id": "debt_accounting_editor.FileNo.24",
             "FieldName": "FileNo",
             "Order": 24,
             "ComponentType": "Input",
@@ -1010,7 +1009,7 @@
             "EntityId": "VoucherDetail"
         },
         {
-            "Id": "0194c1d2-0317-715b-b1c6-d34b0364d804",
+            "Id": "debt_accounting_editor.HblNo.25",
             "FieldName": "HblNo",
             "Order": 25,
             "ComponentType": "Input",
@@ -1025,7 +1024,7 @@
             "EntityId": "VoucherDetail"
         },
         {
-            "Id": "0194c1d2-8c51-7219-8445-90c25ba45b3c",
+            "Id": "debt_accounting_editor.Form.22",
             "FieldName": "Form",
             "Order": 22,
             "ComponentType": "Input",
@@ -1042,7 +1041,7 @@
             "EntityId": "VoucherDetail"
         },
         {
-            "Id": "0194c65c-28e6-71df-9075-e7aa2a1431de",
+            "Id": "debt_accounting_editor.IsPayable.17",
             "FieldName": "IsPayable",
             "Order": 17,
             "ComponentType": "Checkbox",
@@ -1057,7 +1056,7 @@
             "EntityId": "SearchData"
         },
         {
-            "Id": "0194e048-8072-760d-beeb-b10c6b85a008",
+            "Id": "debt_accounting_editor.FileId.1",
             "FieldName": "FileId",
             "Order": 1,
             "ComponentType": "Dropdown",
@@ -1074,7 +1073,7 @@
             "EntityId": "SearchData"
         },
         {
-            "Id": "0194e068-8f6b-772a-990e-951d74147ff3",
+            "Id": "debt_accounting_editor.EinvoiceCode.23",
             "FieldName": "EinvoiceCode",
             "Order": 23,
             "ComponentType": "Input",
@@ -1089,7 +1088,7 @@
             "EntityId": "VoucherDetail"
         },
         {
-            "Id": "0194f9e0-b2b8-7529-9471-eef182cc257a",
+            "Id": "debt_accounting_editor.DebtTypeId.14",
             "FieldName": "DebtTypeId",
             "Order": 14,
             "ComponentType": "Select",
@@ -1106,7 +1105,7 @@
             "EntityId": "AddCharge"
         },
         {
-            "Id": "0195983c-66a8-71f9-ac5b-50ef3a98fe8c",
+            "Id": "debt_accounting_editor.ExTotalRemain.16",
             "FieldName": "ExTotalRemain",
             "Order": 16,
             "ComponentType": "Number",
@@ -1126,7 +1125,7 @@
     ],
     "Components": [
         {
-            "Id": "0194a02d-541a-745e-8367-9485ba64657f",
+            "Id": "debt_accounting_editor.Button.1",
             "FieldName": "Button",
             "Order": 1,
             "ComponentType": "Section",
@@ -1134,7 +1133,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "0194a02d-548b-76ee-b2d0-77d28805311a",
+                    "Id": "Button.btnPrint.1",
                     "FieldName": "btnPrint",
                     "Order": 1,
                     "ComponentType": "Pdf",
@@ -1149,7 +1148,7 @@
                     "ShowExp": "!this.EditForm.Entity.Id.startsWith(\"-\")"
                 },
                 {
-                    "Id": "0194a02d-5504-75ac-91ee-98b7b55be234",
+                    "Id": "Button.btnPrint.2",
                     "FieldName": "btnPrint",
                     "Order": 2,
                     "ComponentType": "Pdf",
@@ -1164,7 +1163,7 @@
                     "ShowExp": "!this.EditForm.Entity.Id.startsWith(\"-\")"
                 },
                 {
-                    "Id": "0194a02d-567f-7308-b045-70e3ecfa2a21",
+                    "Id": "Button.btnSave.7",
                     "FieldName": "btnSave",
                     "Order": 7,
                     "ComponentType": "Button",
@@ -1176,7 +1175,7 @@
                     "Events": "{\r\n    \"click\": \"SavePatch\"\r\n}"
                 },
                 {
-                    "Id": "0194a02d-567f-7308-b045-70e3ecfa2a21",
+                    "Id": "Button.btnSave.7_1",
                     "FieldName": "btnSave",
                     "Order": 7,
                     "ComponentType": "Button",
@@ -1188,7 +1187,7 @@
                     "Events": "{\r\n    \"click\": \"SavePatch\"\r\n}"
                 },
                 {
-                    "Id": "0194a0c7-b83f-754f-8e1b-f544547090e3",
+                    "Id": "Button.btnAddAdv.1",
                     "FieldName": "btnAddAdv",
                     "Order": 1,
                     "ComponentType": "Button",
@@ -1201,7 +1200,7 @@
             ]
         },
         {
-            "Id": "0194a02d-56d7-77bd-a623-a15c3eae8475",
+            "Id": "debt_accounting_editor.Container.3",
             "FieldName": "Container ",
             "Order": 3,
             "ComponentType": "Section",
@@ -1209,7 +1208,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "0194a02d-5747-7281-87f5-6f5459f315e2",
+                    "Id": "Container.Section.1_1",
                     "Order": 1,
                     "ComponentType": "Section",
                     "ClassName": "card-body",
@@ -1218,7 +1217,7 @@
                     "XxlOuterColumn": 8,
                     "Components": [
                         {
-                            "Id": "0194a07e-2694-7740-aeff-b10e193dbdf9",
+                            "Id": "Section.CompanyId.1",
                             "FieldName": "CompanyId",
                             "Order": 1,
                             "ComponentType": "Dropdown",
@@ -1236,7 +1235,7 @@
                             "ShowHotKey": true
                         },
                         {
-                            "Id": "0194a086-b084-76da-905a-0b8a7e8d7b7d",
+                            "Id": "Section.Description.2",
                             "FieldName": "Description",
                             "Order": 2,
                             "ComponentType": "Textarea",
@@ -1247,7 +1246,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "0194a08d-adbd-75ec-90fe-e80d54a90cf2",
+                            "Id": "Section.CompanyAddress.3",
                             "FieldName": "CompanyAddress",
                             "Order": 3,
                             "ComponentType": "Textarea",
@@ -1257,7 +1256,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "0194a08e-54e4-748e-8ac3-b357bbecc4d0",
+                            "Id": "Section.Person.4",
                             "FieldName": "Person",
                             "Order": 4,
                             "ComponentType": "Input",
@@ -1267,7 +1266,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "0194a08e-f6b6-76e9-b17d-61381b50c9f3",
+                            "Id": "Section.Notes.5",
                             "FieldName": "Notes",
                             "Order": 5,
                             "ComponentType": "Textarea",
@@ -1278,7 +1277,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "0194a08f-d940-7365-bb77-0f406947e8cb",
+                            "Id": "Section.VendorName.7",
                             "FieldName": "VendorName",
                             "Order": 7,
                             "ComponentType": "Input",
@@ -1288,7 +1287,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "0194a090-4c3a-7519-acbe-9e3aaa356115",
+                            "Id": "Section.VendorId.6",
                             "FieldName": "VendorId",
                             "Order": 6,
                             "ComponentType": "Dropdown",
@@ -1306,7 +1305,7 @@
                             "ShowHotKey": true
                         },
                         {
-                            "Id": "0194a093-4213-720a-b74d-bc05f856096e",
+                            "Id": "Section.ReferencesIds.12",
                             "FieldName": "ReferencesIds",
                             "Order": 12,
                             "ComponentType": "Input",
@@ -1319,7 +1318,7 @@
                     ]
                 },
                 {
-                    "Id": "0194a02d-5aef-72bc-99cc-2c153b7cc07a",
+                    "Id": "Container.Section.2_1",
                     "Order": 2,
                     "ComponentType": "Section",
                     "ClassName": "card-body",
@@ -1328,7 +1327,7 @@
                     "XxlOuterColumn": 4,
                     "Components": [
                         {
-                            "Id": "0194a050-e3a5-732b-b478-fc146fa77246",
+                            "Id": "Section.Code.1_2",
                             "FieldName": "Code",
                             "Order": 1,
                             "ComponentType": "Input",
@@ -1337,7 +1336,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "0194a050-e3a6-75ed-9eca-4c4d8cb5637a",
+                            "Id": "Section.PostDate.4",
                             "FieldName": "PostDate",
                             "Order": 4,
                             "ComponentType": "Datepicker",
@@ -1346,7 +1345,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "0194a055-69c6-77f8-a34a-9148102206b4",
+                            "Id": "Section.ActionId.3",
                             "FieldName": "ActionId",
                             "Order": 3,
                             "ComponentType": "Select",
@@ -1361,7 +1360,7 @@
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
-                            "Id": "0194a058-4d05-7239-97e2-5a1eddbe7a88",
+                            "Id": "Section.VoucherDate.2",
                             "FieldName": "VoucherDate",
                             "Order": 2,
                             "ComponentType": "Datepicker",
@@ -1370,7 +1369,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "0194a05c-ae3d-70db-90df-b8b9cfb3e78a",
+                            "Id": "Section.IsGL.5",
                             "FieldName": "IsGL",
                             "Order": 5,
                             "ComponentType": "Checkbox",
@@ -1380,7 +1379,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "0194a05f-2312-720c-84c6-3ed218340b08",
+                            "Id": "Section.MblTypeId.6",
                             "FieldName": "MblTypeId",
                             "Order": 6,
                             "ComponentType": "Dropdown",
@@ -1394,7 +1393,7 @@
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
-                            "Id": "0194a05f-cf98-7153-a190-adca10fe51c7",
+                            "Id": "Section.PaymentMethodId.7",
                             "FieldName": "PaymentMethodId",
                             "Order": 7,
                             "ComponentType": "Dropdown",
@@ -1409,7 +1408,7 @@
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
-                            "Id": "0194a060-474f-771f-b051-4f41c6849f25",
+                            "Id": "Section.PayDay.8",
                             "FieldName": "PayDay",
                             "Order": 8,
                             "ComponentType": "Input",
@@ -1419,7 +1418,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "0194a060-474f-771f-b051-524a0d837cab",
+                            "Id": "Section.DueDate.9",
                             "FieldName": "DueDate",
                             "Order": 9,
                             "ComponentType": "Datepicker",
@@ -1429,7 +1428,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "0194a060-f27a-7393-9a92-b8a160f8d74e",
+                            "Id": "Section.IsPaid.10",
                             "FieldName": "IsPaid",
                             "Order": 10,
                             "ComponentType": "Checkbox",
@@ -1440,7 +1439,7 @@
                             "Events": "{\r\n    \"change\": \"ChangePaid\"\r\n}"
                         },
                         {
-                            "Id": "0194a060-fa08-770a-b06f-4f0ecf52a10e",
+                            "Id": "Section.IsLock.12",
                             "FieldName": "IsLock",
                             "Order": 12,
                             "ComponentType": "Checkbox",
@@ -1450,7 +1449,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "0194a062-2c10-7051-9e9b-e1a5c5d93538",
+                            "Id": "Section.PaidDate.11",
                             "FieldName": "PaidDate",
                             "Order": 11,
                             "ComponentType": "Datepicker",
@@ -1460,7 +1459,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "0194a063-9ef5-76bd-9955-eb74ae5949be",
+                            "Id": "Section.IsInvoice.13",
                             "FieldName": "IsInvoice",
                             "Order": 13,
                             "ComponentType": "Checkbox",
@@ -1472,7 +1471,7 @@
                     ]
                 },
                 {
-                    "Id": "0194a02d-6289-775c-8993-c7ec09bfe27a",
+                    "Id": "Container.Section.6_1",
                     "Order": 6,
                     "ComponentType": "Section",
                     "Label": "Voucher Detail",
@@ -1482,7 +1481,7 @@
                     "XxlOuterColumn": 12,
                     "Components": [
                         {
-                            "Id": "0194a07b-663d-712c-9c2f-3702a98e74bc",
+                            "Id": "Section.VoucherDetail.1",
                             "FieldName": "VoucherDetail",
                             "Order": 1,
                             "ComponentType": "GridView",
@@ -1502,7 +1501,7 @@
                             "EntityId": "ShipmentInvoice"
                         },
                         {
-                            "Id": "0194a07b-663e-74ca-930b-b410ece02d7f",
+                            "Id": "Section.InvoiceNo.2",
                             "FieldName": "InvoiceNo",
                             "Order": 2,
                             "ComponentType": "Input",
@@ -1513,7 +1512,7 @@
                             "Events": "{\r\n    \"change\": \"UpdateINV\"\r\n}"
                         },
                         {
-                            "Id": "0194a07b-663e-74ca-930b-b9b1530f2fe2",
+                            "Id": "Section.InvoiceDate.3",
                             "FieldName": "InvoiceDate",
                             "Order": 3,
                             "ComponentType": "Datepicker",
@@ -1524,7 +1523,7 @@
                             "Events": "{\r\n    \"change\": \"UpdateINV\"\r\n}"
                         },
                         {
-                            "Id": "0194a07b-663e-74ca-930b-bc68786319d9",
+                            "Id": "Section.SeriNo.4",
                             "FieldName": "SeriNo",
                             "Order": 4,
                             "ComponentType": "Input",
@@ -1535,7 +1534,7 @@
                             "Events": "{\r\n    \"change\": \"UpdateINV\"\r\n}"
                         },
                         {
-                            "Id": "0194a07b-663e-74ca-930b-c285f26b3c5f",
+                            "Id": "Section.Form.5",
                             "FieldName": "Form",
                             "Order": 5,
                             "ComponentType": "Input",
@@ -1547,7 +1546,7 @@
                             "Events": "{\r\n    \"change\": \"UpdateINV\"\r\n}"
                         },
                         {
-                            "Id": "0194a07b-663f-736a-ba03-0013bbf34e58",
+                            "Id": "Section.TotalAmount.6",
                             "FieldName": "TotalAmount",
                             "Order": 6,
                             "ComponentType": "Number",
@@ -1557,7 +1556,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "0194a07b-663f-736a-ba03-058af8553162",
+                            "Id": "Section.EinvoiceCode.7",
                             "FieldName": "EinvoiceCode",
                             "Order": 7,
                             "ComponentType": "Input",
@@ -1568,7 +1567,7 @@
                             "Events": "{\r\n    \"change\": \"UpdateINV\"\r\n}"
                         },
                         {
-                            "Id": "0194a07b-663f-736a-ba03-09b10a5fea87",
+                            "Id": "Section.EinvoiceLink.8",
                             "FieldName": "EinvoiceLink",
                             "Order": 8,
                             "ComponentType": "Input",
@@ -1580,7 +1579,7 @@
                             "Events": "{\r\n    \"change\": \"UpdateINV\"\r\n}"
                         },
                         {
-                            "Id": "0194a07b-6640-7066-a32f-3822e0f14726",
+                            "Id": "Section.AmountTax.11",
                             "FieldName": "AmountTax",
                             "Order": 11,
                             "ComponentType": "Number",
@@ -1590,7 +1589,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "0194a07c-6562-7207-900e-c2783f6e2787",
+                            "Id": "Section.TotalAmountTax.15",
                             "FieldName": "TotalAmountTax",
                             "Order": 15,
                             "ComponentType": "Number",
@@ -1600,7 +1599,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "0194a081-ad26-71f6-a258-d94aeb8b22e5",
+                            "Id": "Section.PartnerId.12",
                             "FieldName": "PartnerId",
                             "Order": 12,
                             "ComponentType": "Dropdown",
@@ -1617,7 +1616,7 @@
                             "ShowHotKey": true
                         },
                         {
-                            "Id": "0194a084-bdbd-74f9-a6ff-c50c78bcc743",
+                            "Id": "Section.InvNotes.13",
                             "FieldName": "InvNotes",
                             "Order": 13,
                             "ComponentType": "Input",
@@ -1628,7 +1627,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "0194a5ef-0bef-71d6-87a2-1b508bececbf",
+                            "Id": "Section.IsMultiple.5",
                             "FieldName": "IsMultiple",
                             "Order": 5,
                             "ComponentType": "Checkbox",
@@ -1643,7 +1642,7 @@
             ]
         },
         {
-            "Id": "0194a0a9-ebf2-71e0-982e-4a510942f13d",
+            "Id": "debt_accounting_editor.Center.1",
             "FieldName": "Center",
             "Order": 1,
             "ComponentType": "Section",
@@ -1653,7 +1652,7 @@
             "DisabledExp": "this.EditForm.Entity.InsertedBy != this.Token.UserId || this.EditForm.Entity.StatusId == 2 || (this.EditForm.Entity.StatusId == 3 && this.EditForm.Entity.UserApprovedIds) || [2, 3].includes(this.EditForm.Entity.ProgressId) || this.EditForm.Entity.IsLock || this.EditForm.Entity.ActionId == 3",
             "Components": [
                 {
-                    "Id": "0194a0aa-69dc-7041-b854-3055c6faa51c",
+                    "Id": "Center.TypeId.1",
                     "FieldName": "TypeId",
                     "Order": 1,
                     "ComponentType": "Dropdown",
@@ -1670,7 +1669,7 @@
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]"
                 },
                 {
-                    "Id": "0194a0aa-69dd-74cd-aa97-16c1abba30cb",
+                    "Id": "Center.IsSimple.2_1",
                     "FieldName": "IsSimple",
                     "Order": 2,
                     "ComponentType": "Checkbox",
@@ -1687,22 +1686,18 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "04601645-92EE-4CEF-8022-DA2AA83E2166",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "2265DD36-DECD-4B30-9AE9-9CFC17CADF10",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "22F96881-EE78-4B56-8DCF-E44433E9AB86",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "39727FDF-91F1-4A62-9B95-428FE22E3360",
             "RoleId": "ACC",
             "CanRead": true,
             "CanWrite": true,
@@ -1710,12 +1705,10 @@
             "TableName": "Feature"
         },
         {
-            "Id": "40847EBE-2CB3-412E-9624-8B6EA92A7EB9",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "52C53035-3760-4E94-8E32-B9205999D15E",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -1726,7 +1719,6 @@
             "TableName": "Feature"
         },
         {
-            "Id": "720F1C7F-DBB7-46C7-8862-6AAE7002DC65",
             "RoleId": "ADMIN",
             "CanRead": true,
             "CanReadAll": true,
@@ -1737,17 +1729,14 @@
             "TableName": "Feature"
         },
         {
-            "Id": "B9AEDB29-26F5-496D-B56E-2305026C69B8",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "E4378D44-3D3E-41EA-81D0-E57CD0548197",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "FEBFA019-EF1D-486C-9D7D-4058D8B22286",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         }

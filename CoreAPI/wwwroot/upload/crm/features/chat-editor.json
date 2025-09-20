@@ -1,5 +1,5 @@
 {
-    "Id": "00d91af4-0000-0000-8000-ae98b5c7f966",
+    "Id": "chat_editor",
     "Name": "chat-editor",
     "Label": "Chat Editor",
     "Script": "return {\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"feature-editor\", entity);\r\n    },\r\n    EditComponent: function (btn, entity) {\r\n        this.OpenPopup(\"component-editor\", entity);\r\n    }\r\n}",
@@ -9,7 +9,7 @@
     "IgnoreEncode": true,
     "GridPolicies": [
         {
-            "Id": "00102698-0000-0000-8000-614534b65727",
+            "Id": "chat_editor.ReceiverIds.15",
             "FieldName": "ReceiverIds",
             "Order": 15,
             "ComponentType": "Dropdown",
@@ -25,7 +25,7 @@
             "IsMultiple": true
         },
         {
-            "Id": "00d91a28-0000-0000-8000-07f349c1c7e9",
+            "Id": "chat_editor.Name.4",
             "FieldName": "Name",
             "Order": 4,
             "ComponentType": "Input",
@@ -38,7 +38,7 @@
             "EntityId": "Feature"
         },
         {
-            "Id": "00d91a2c-0000-0000-8000-061a134ae2c5",
+            "Id": "chat_editor.IsMenu.1",
             "FieldName": "IsMenu",
             "Order": 1,
             "ComponentType": "Checkbox",
@@ -51,7 +51,7 @@
             "EntityId": "Feature"
         },
         {
-            "Id": "00d91a54-0000-0000-8000-79b429f5338c",
+            "Id": "chat_editor.Icon.5",
             "FieldName": "Icon",
             "Order": 5,
             "ComponentType": "Input",
@@ -64,7 +64,7 @@
             "EntityId": "Feature"
         },
         {
-            "Id": "00d91a68-0000-0000-8000-a5889c57f66b",
+            "Id": "chat_editor.Label.3",
             "FieldName": "Label",
             "Order": 3,
             "ComponentType": "Input",
@@ -77,7 +77,7 @@
             "EntityId": "Feature"
         },
         {
-            "Id": "00d91a80-0000-0000-8000-ec7e5601b508",
+            "Id": "chat_editor.ParentId.6",
             "FieldName": "ParentId",
             "Order": 6,
             "ComponentType": "Dropdown",
@@ -96,7 +96,7 @@
             "EntityId": "Feature"
         },
         {
-            "Id": "00d91a9c-0000-0000-8000-215cf9d57635",
+            "Id": "chat_editor.Order.2",
             "FieldName": "Order",
             "Order": 2,
             "ComponentType": "Number",
@@ -110,7 +110,7 @@
             "EntityId": "Feature"
         },
         {
-            "Id": "00d91ad4-0000-0000-8000-8b625ed8986d",
+            "Id": "chat_editor.Active.7",
             "FieldName": "Active",
             "Order": 7,
             "ComponentType": "Checkbox",
@@ -123,7 +123,7 @@
             "EntityId": "Feature"
         },
         {
-            "Id": "00d91ad8-0000-0000-8000-0ece52fcad5d",
+            "Id": "chat_editor.Id.0",
             "FieldName": "Id",
             "Order": 0,
             "ComponentType": "Input",
@@ -137,7 +137,6 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "44A5350A-D76D-4DFE-AFAD-419D28622354",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -148,61 +147,52 @@
             "TableName": "Feature"
         },
         {
-            "Id": "5AEFDC71-4051-44C6-9235-B8D6813A1598",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "6FCB49CC-18FF-47D3-9E77-5106EE939020",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "7708163F-4663-4CDD-898C-0EDE1B4FAEC4",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "899FE359-CECC-45A3-9909-AF0831A810AF",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "9BB82AB3-5194-41F9-BCCC-D56CC9A6AA42",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "AEE97E17-F848-4165-85DB-1619CE9B98E5",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "C0773315-991F-49E5-A05C-78CE1CC2BD62",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "CB3CCFE5-6580-436C-879D-F5A4556A0A57",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "D13A35EF-F4F2-4571-93C2-F334F3E62AC5",
             "RoleId": "SALES",
             "TableName": "Feature"
         }
     ],
     "Components": [
         {
-            "Id": "00d91ac4-0000-0000-8000-ec6e0a7b6dcb",
+            "Id": "chat_editor.Container.1",
             "FieldName": "Container",
             "Order": 1,
             "ComponentType": "Section",
             "XxlCol": 1,
             "Components": [
                 {
-                    "Id": "00d91a40-0000-0000-8000-50658af9c6e8",
+                    "Id": "Container.ChatEntity.1",
                     "FieldName": "ChatEntity",
                     "Order": 1,
                     "ComponentType": "Chat",

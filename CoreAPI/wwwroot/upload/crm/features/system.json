@@ -1,5 +1,5 @@
 {
-    "Id": "000a0514-0000-0000-8000-1f67beb1bcef",
+    "Id": "system",
     "Name": "system",
     "Label": "System",
     "Order": 3,
@@ -9,47 +9,38 @@
     "IgnoreEncode": true,
     "FeaturePolicies": [
         {
-            "Id": "0499F61A-3CD1-4D5F-9897-DF8B9810B854",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "41831CCC-A3D2-4BBB-8C9A-DCB802386DB8",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "5BB00530-0C52-431A-819F-DBB48A2A2CAF",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "62BB3D62-D3B8-411D-AE07-E102C842D9D5",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "6BD277AE-726D-44C0-A7D4-E17B12D34629",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "752E325C-B952-4EEB-8D5E-8277F6AE1B10",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "84ED8A3B-C32B-4FD3-A4D3-EFF5D65EA725",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "8BC667CF-2586-4463-B0E2-D6EC311E9D55",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "CF14358D-21B3-4602-BB7D-D256B93CECC2",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -60,21 +51,20 @@
             "TableName": "Feature"
         },
         {
-            "Id": "D7BC74A5-D322-48EE-A799-DDDB1F26C449",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         }
     ],
     "Components": [
         {
-            "Id": "000a0504-0000-0000-8000-1d0ed2d820e3",
+            "Id": "system.Container.1",
             "FieldName": "Container",
             "Order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "000b05e0-0000-0000-8000-a7f7a4d4982e",
+                    "Id": "Container.Report1.1_2",
                     "FieldName": "Report1",
                     "Order": 1,
                     "ComponentType": "HtmlCode",

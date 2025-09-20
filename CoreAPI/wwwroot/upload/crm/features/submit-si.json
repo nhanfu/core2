@@ -1,5 +1,5 @@
 {
-    "Id": "01951459-cafb-703c-adb4-013d47351beb",
+    "Id": "submit_si",
     "Name": "submit-si",
     "Label": "Submit SI",
     "Order": 1,
@@ -8,7 +8,7 @@
     "EntityId": "ShipmentSI",
     "GridPolicies": [
         {
-            "Id": "01951463-408c-73f8-8386-5f8405bf328e",
+            "Id": "submit_si.btnEdit.0",
             "FieldName": "btnEdit",
             "Order": 0,
             "ComponentType": "Button",
@@ -23,7 +23,7 @@
             "EntityId": "ShipmentSI"
         },
         {
-            "Id": "01951464-2f82-74df-a991-33c6f2972217",
+            "Id": "submit_si.CustomerId.3",
             "FieldName": "CustomerId",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -40,7 +40,7 @@
             "EntityId": "ShipmentSI"
         },
         {
-            "Id": "01951464-8ff6-777f-875f-17b9a1dc3164",
+            "Id": "submit_si.ProgressId.1",
             "FieldName": "ProgressId",
             "Order": 1,
             "ComponentType": "Dropdown",
@@ -58,7 +58,7 @@
             "EntityId": "ShipmentSI"
         },
         {
-            "Id": "01951464-c50a-72e4-b521-4befae0d6ee0",
+            "Id": "submit_si.PolId.4",
             "FieldName": "PolId",
             "Order": 4,
             "ComponentType": "Dropdown",
@@ -75,7 +75,7 @@
             "EntityId": "ShipmentSI"
         },
         {
-            "Id": "01951464-c50a-72e4-b521-4d72b3a4f0e2",
+            "Id": "submit_si.PodId.5",
             "FieldName": "PodId",
             "Order": 5,
             "ComponentType": "Dropdown",
@@ -92,7 +92,7 @@
             "EntityId": "ShipmentSI"
         },
         {
-            "Id": "01951465-48b5-7796-a486-7f50792356e6",
+            "Id": "submit_si.BookingNo.2",
             "FieldName": "BookingNo",
             "Order": 2,
             "ComponentType": "Input",
@@ -107,7 +107,7 @@
     ],
     "Components": [
         {
-            "Id": "0195145e-8156-7115-9f2e-26689fcfc0df",
+            "Id": "submit_si.Section.1",
             "Order": 1,
             "ComponentType": "Section",
             "Label": "All",
@@ -118,7 +118,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "01951460-c3a0-7370-b710-6c7bc9080562",
+                    "Id": "Section.ShipmentSI.1",
                     "FieldName": "ShipmentSI",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -136,7 +136,7 @@
             ]
         },
         {
-            "Id": "0195145e-8157-7317-890f-9627a6dd8354",
+            "Id": "submit_si.Section.2",
             "Order": 2,
             "ComponentType": "Section",
             "Label": "New",
@@ -146,7 +146,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "01951460-de8e-70fb-86c4-4e3d00ff2b1a",
+                    "Id": "Section.ShipmentSI.1_1",
                     "FieldName": "ShipmentSI",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -164,7 +164,7 @@
             ]
         },
         {
-            "Id": "0195145e-8157-7317-890f-99e1c2a79123",
+            "Id": "submit_si.Section.3",
             "Order": 3,
             "ComponentType": "Section",
             "Label": "Approving",
@@ -174,7 +174,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "01951460-e4dc-763b-ae43-a3d94dbaeec6",
+                    "Id": "Section.ShipmentSI.1_2",
                     "FieldName": "ShipmentSI",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -192,7 +192,7 @@
             ]
         },
         {
-            "Id": "0195145e-8157-7317-890f-9ce010020f3d",
+            "Id": "submit_si.Section.4",
             "Order": 4,
             "ComponentType": "Section",
             "Label": "Confirm",
@@ -202,7 +202,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "01951460-ea17-75cb-a0d3-9956fd7686ea",
+                    "Id": "Section.ShipmentSI.1_3",
                     "FieldName": "ShipmentSI",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -220,7 +220,7 @@
             ]
         },
         {
-            "Id": "0195145f-eaa5-75ce-b059-24ee0d509a71",
+            "Id": "submit_si.Section.5",
             "Order": 5,
             "ComponentType": "Section",
             "Label": "Approved 1",
@@ -230,7 +230,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "01951461-24a4-7319-955b-0aef82215586",
+                    "Id": "Section.ShipmentSI.1_4",
                     "FieldName": "ShipmentSI",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -248,7 +248,7 @@
             ]
         },
         {
-            "Id": "0195145f-fcd7-75a9-92d0-ec7431a27d0d",
+            "Id": "submit_si.Section.6",
             "Order": 6,
             "ComponentType": "Section",
             "Label": "Decline",
@@ -258,7 +258,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "01951460-f02a-7008-8f87-6f080de7b53d",
+                    "Id": "Section.ShipmentSI.1_5",
                     "FieldName": "ShipmentSI",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -278,32 +278,26 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "12A5A25B-A39E-4150-B4A4-DAB38A258FC6",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "14EE1FB5-47B8-4F9E-BACB-57BD14C934D4",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "14F5AF8B-9344-4DCE-B350-8F8E621F7914",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "20324A31-3719-4DC4-B3DB-41DAE9B1E16A",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "400BAA31-A709-4B0B-B0F0-40E714D448F4",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "6B724FB9-C267-41F1-8272-0D04675C18A2",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -312,7 +306,6 @@
             "TableName": "Feature"
         },
         {
-            "Id": "8B3437D7-2045-452C-B651-F77AF3DBDD70",
             "RoleId": "ADMIN",
             "CanRead": true,
             "CanReadAll": true,
@@ -321,17 +314,14 @@
             "TableName": "Feature"
         },
         {
-            "Id": "B21B0B2B-E757-4B4C-96B6-E391CE33100A",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "D74519B8-8960-4A93-855D-FB08B8253983",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "D9AE14D9-8B0F-43A3-8D83-EAC052EC9EFB",
             "RoleId": "CUSTOMER",
             "CanRead": true,
             "CanWrite": true,

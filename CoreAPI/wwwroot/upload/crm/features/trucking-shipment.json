@@ -1,8 +1,7 @@
 {
-    "Id": "01953d45-65f2-77dd-ba60-0e71a54cbf43",
+    "Id": "trucking_shipment",
     "Name": "trucking-shipment",
     "Label": "Trucking",
-    "ParentId": "009b3b78-0000-0000-8000-38a9f8f617fc",
     "Order": 8,
     "Script": "return {\r\n    Add: function () {\r\n        var entity = {\r\n            StatusId: 1,\r\n            TypeId: 13,\r\n            VoucherTypeId: 6,\r\n            InsertedBy: this.Token.UserId,\r\n            ShipmentDate: this.dayjs().format('YYYY-MM-DD'),\r\n        }\r\n        this.OpenPopup(\"trucking-shipment-editor\", entity);\r\n    },\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"trucking-shipment-editor\", entity);\r\n    },\r\n    EditHbl: function (btn, entity) {\r\n        this.OpenPopup(\"trucking-shipment-editor\", { Id: entity.ParentId }, true, { HblEntity: entity });\r\n    }\r\n}",
     "Icon": "fal fa-truck",
@@ -10,7 +9,7 @@
     "EntityId": "Shipment",
     "GridPolicies": [
         {
-            "Id": "01953d45-6857-7151-aa27-5519801fca89",
+            "Id": "trucking_shipment.EtdDate.9",
             "FieldName": "EtdDate",
             "Order": 9,
             "ComponentType": "Datepicker",
@@ -22,7 +21,7 @@
             "EntityId": "Shipment"
         },
         {
-            "Id": "01953d45-689b-742b-8727-d7cc894e9b43",
+            "Id": "trucking_shipment.btnEdit.0",
             "FieldName": "btnEdit",
             "Order": 0,
             "ComponentType": "Button",
@@ -36,7 +35,7 @@
             "EntityId": "Shipment"
         },
         {
-            "Id": "01953d45-68d9-7587-ad83-9ae6dec45cf3",
+            "Id": "trucking_shipment.InsertedDate.2",
             "FieldName": "InsertedDate",
             "Order": 2,
             "ComponentType": "Datepicker",
@@ -48,7 +47,7 @@
             "EntityId": "Shipment"
         },
         {
-            "Id": "01953d45-690f-76c6-bf60-d7a46a36662b",
+            "Id": "trucking_shipment.Vessel.4",
             "FieldName": "Vessel",
             "Order": 4,
             "ComponentType": "Input",
@@ -60,7 +59,7 @@
             "EntityId": "Shipment"
         },
         {
-            "Id": "01953d45-6947-7045-9c85-1bfa588dbce9",
+            "Id": "trucking_shipment.VesselVoy.5",
             "FieldName": "VesselVoy",
             "Order": 5,
             "ComponentType": "Input",
@@ -72,7 +71,7 @@
             "EntityId": "Shipment"
         },
         {
-            "Id": "01953d45-6983-7739-bb1a-713da0f533b7",
+            "Id": "trucking_shipment.InsertedBy.10",
             "FieldName": "InsertedBy",
             "Order": 10,
             "ComponentType": "Dropdown",
@@ -90,7 +89,7 @@
             "EntityId": "Shipment"
         },
         {
-            "Id": "01953d45-69bc-735e-a2f1-c778158115d6",
+            "Id": "trucking_shipment.PodId.6",
             "FieldName": "PodId",
             "Order": 6,
             "ComponentType": "Dropdown",
@@ -107,7 +106,7 @@
             "EntityId": "Shipment"
         },
         {
-            "Id": "01953d45-69f2-759d-a3b9-133563b57e50",
+            "Id": "trucking_shipment.PolId.8",
             "FieldName": "PolId",
             "Order": 8,
             "ComponentType": "Dropdown",
@@ -124,7 +123,7 @@
             "EntityId": "Shipment"
         },
         {
-            "Id": "01953d45-6a47-75e8-a378-71cb4eca8fc3",
+            "Id": "trucking_shipment.Code.1",
             "FieldName": "Code",
             "Order": 1,
             "ComponentType": "Input",
@@ -136,7 +135,7 @@
             "EntityId": "Shipment"
         },
         {
-            "Id": "01953d45-6a82-7763-9887-dc13933bf509",
+            "Id": "trucking_shipment.VendorId.3",
             "FieldName": "VendorId",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -152,7 +151,7 @@
             "EntityId": "Shipment"
         },
         {
-            "Id": "01953d45-6ac6-771d-89a1-919f0556db06",
+            "Id": "trucking_shipment.EtaDate.7",
             "FieldName": "EtaDate",
             "Order": 7,
             "ComponentType": "Datepicker",
@@ -164,7 +163,7 @@
             "EntityId": "Shipment"
         },
         {
-            "Id": "01953d45-6afc-77e9-894d-5f7d01857d76",
+            "Id": "trucking_shipment.btnEdit.0_1",
             "FieldName": "btnEdit",
             "Order": 0,
             "ComponentType": "Button",
@@ -178,7 +177,7 @@
             "EntityId": "Shipment1"
         },
         {
-            "Id": "01953d45-6b41-71ce-b26c-3f557fec12a9",
+            "Id": "trucking_shipment.HblNo.1",
             "FieldName": "HblNo",
             "Order": 1,
             "ComponentType": "Input",
@@ -190,7 +189,7 @@
             "EntityId": "Shipment1"
         },
         {
-            "Id": "01953d45-6b88-734c-b355-19534725d76b",
+            "Id": "trucking_shipment.InsertedDate.4",
             "FieldName": "InsertedDate",
             "Order": 4,
             "ComponentType": "Datepicker",
@@ -202,7 +201,7 @@
             "EntityId": "Shipment1"
         },
         {
-            "Id": "01953d45-6bc6-76bc-bf7b-da6861bd58df",
+            "Id": "trucking_shipment.Vessel.29",
             "FieldName": "Vessel",
             "Order": 29,
             "ComponentType": "Input",
@@ -214,7 +213,7 @@
             "EntityId": "Shipment1"
         },
         {
-            "Id": "01953d45-6c02-7349-a3c8-0c2e34f9d1eb",
+            "Id": "trucking_shipment.PodId.38",
             "FieldName": "PodId",
             "Order": 38,
             "ComponentType": "Dropdown",
@@ -231,7 +230,7 @@
             "EntityId": "Shipment1"
         },
         {
-            "Id": "01953d45-6c50-731b-990e-eafe92812f6e",
+            "Id": "trucking_shipment.EtaDate.39",
             "FieldName": "EtaDate",
             "Order": 39,
             "ComponentType": "Datepicker",
@@ -243,7 +242,7 @@
             "EntityId": "Shipment1"
         },
         {
-            "Id": "01953d45-6c8a-71df-ae6f-286eaad1d48d",
+            "Id": "trucking_shipment.PolId.41",
             "FieldName": "PolId",
             "Order": 41,
             "ComponentType": "Dropdown",
@@ -260,7 +259,7 @@
             "EntityId": "Shipment1"
         },
         {
-            "Id": "01953d45-6cc6-735a-b803-ceea3cac152f",
+            "Id": "trucking_shipment.Code.3",
             "FieldName": "Code",
             "Order": 3,
             "ComponentType": "Input",
@@ -272,7 +271,7 @@
             "EntityId": "Shipment1"
         },
         {
-            "Id": "01953d45-6d37-72da-9e60-6089c817ce04",
+            "Id": "trucking_shipment.EtdDate.37",
             "FieldName": "EtdDate",
             "Order": 37,
             "ComponentType": "Datepicker",
@@ -287,7 +286,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-6d80-7342-9ffa-5acb4d832f6b",
+            "Id": "trucking_shipment.SaillingDate.20",
             "FieldName": "SaillingDate",
             "Order": 20,
             "ComponentType": "Datepicker",
@@ -303,7 +302,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-6db9-725b-8a43-a3ee60b854e4",
+            "Id": "trucking_shipment.PortTransitId.40",
             "FieldName": "PortTransitId",
             "Order": 40,
             "ComponentType": "Dropdown",
@@ -324,7 +323,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-6dea-742d-8c24-f11a65e7bf45",
+            "Id": "trucking_shipment.PlaceDeliveryId.42",
             "FieldName": "PlaceDeliveryId",
             "Order": 42,
             "ComponentType": "Dropdown",
@@ -345,7 +344,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-6e25-77d3-a4ca-465360ea7dfc",
+            "Id": "trucking_shipment.FinalDestinationId.44",
             "FieldName": "FinalDestinationId",
             "Order": 44,
             "ComponentType": "Dropdown",
@@ -366,7 +365,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-6e62-757e-9185-f0f1eec4fc06",
+            "Id": "trucking_shipment.OceanVessel.30",
             "FieldName": "OceanVessel",
             "Order": 30,
             "ComponentType": "Input",
@@ -382,7 +381,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-6ea8-7387-a6a3-349b627c3587",
+            "Id": "trucking_shipment.ClosingDate.21",
             "FieldName": "ClosingDate",
             "Order": 21,
             "ComponentType": "Datepicker",
@@ -398,7 +397,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-6ee4-7148-b127-dfcfa88e9ad3",
+            "Id": "trucking_shipment.ShipperId.22",
             "FieldName": "ShipperId",
             "Order": 22,
             "ComponentType": "Dropdown",
@@ -422,7 +421,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-6f4e-74ce-818a-7fe7dc799412",
+            "Id": "trucking_shipment.ConsigneeId.23",
             "FieldName": "ConsigneeId",
             "Order": 23,
             "ComponentType": "Dropdown",
@@ -446,7 +445,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-6f96-7409-84c9-a1add81afa17",
+            "Id": "trucking_shipment.NotifyPartyId.24",
             "FieldName": "NotifyPartyId",
             "Order": 24,
             "ComponentType": "Dropdown",
@@ -470,7 +469,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-6fd2-70cb-a4a2-474f3d7a7893",
+            "Id": "trucking_shipment.ForDeliveryGoodsId.43",
             "FieldName": "ForDeliveryGoodsId",
             "Order": 43,
             "ComponentType": "Dropdown",
@@ -494,7 +493,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-7009-76b0-848a-6034309ee96d",
+            "Id": "trucking_shipment.CustomerId.2",
             "FieldName": "CustomerId",
             "Order": 2,
             "ComponentType": "Dropdown",
@@ -519,7 +518,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-7088-7101-bc77-0b88a36df19c",
+            "Id": "trucking_shipment.HblTypeId.5",
             "FieldName": "HblTypeId",
             "Order": 5,
             "ComponentType": "Dropdown",
@@ -540,7 +539,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-70fc-76b5-ac8f-7811a98a88ac",
+            "Id": "trucking_shipment.NumberOriginalId.7",
             "FieldName": "NumberOriginalId",
             "Order": 7,
             "ComponentType": "Dropdown",
@@ -560,7 +559,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-7141-72fe-a148-e8084e8d4216",
+            "Id": "trucking_shipment.SaleId.8",
             "FieldName": "SaleId",
             "Order": 8,
             "ComponentType": "Dropdown",
@@ -581,7 +580,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-7189-770a-bde5-1ed5482b6745",
+            "Id": "trucking_shipment.QuotationId.15",
             "FieldName": "QuotationId",
             "Order": 15,
             "ComponentType": "Input",
@@ -600,7 +599,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-71d2-713f-8652-2450ad0ca525",
+            "Id": "trucking_shipment.BookingNo.16",
             "FieldName": "BookingNo",
             "Order": 16,
             "ComponentType": "Input",
@@ -615,7 +614,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-720b-77ac-8254-0a5bcb0abd18",
+            "Id": "trucking_shipment.Deadline.17",
             "FieldName": "Deadline",
             "Order": 17,
             "ComponentType": "Datepicker",
@@ -630,7 +629,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-7259-7221-8ad0-1699af76a195",
+            "Id": "trucking_shipment.PoNo.18",
             "FieldName": "PoNo",
             "Order": 18,
             "ComponentType": "Input",
@@ -645,7 +644,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-7293-755b-989f-50e7255deb5a",
+            "Id": "trucking_shipment.HSCode.19",
             "FieldName": "HSCode",
             "Order": 19,
             "ComponentType": "Input",
@@ -660,7 +659,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-72c4-7492-8309-df17def1b31a",
+            "Id": "trucking_shipment.TypeMoveId.25",
             "FieldName": "TypeMoveId",
             "Order": 25,
             "ComponentType": "Dropdown",
@@ -680,7 +679,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-72fe-75ac-bde3-c9a661eeb058",
+            "Id": "trucking_shipment.PlaceIssueId.26",
             "FieldName": "PlaceIssueId",
             "Order": 26,
             "ComponentType": "Dropdown",
@@ -701,7 +700,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-7342-71e6-bf7e-cbb4025d2141",
+            "Id": "trucking_shipment.PaymentTermId.6",
             "FieldName": "PaymentTermId",
             "Order": 6,
             "ComponentType": "Dropdown",
@@ -722,7 +721,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-73bc-7248-b243-787e0e4d6e30",
+            "Id": "trucking_shipment.DemFree.34",
             "FieldName": "DemFree",
             "Order": 34,
             "ComponentType": "Number",
@@ -738,7 +737,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-73ff-7117-861e-6aa8e973b612",
+            "Id": "trucking_shipment.DetFree.35",
             "FieldName": "DetFree",
             "Order": 35,
             "ComponentType": "Number",
@@ -754,7 +753,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-7472-70be-9f25-7b21c5a44017",
+            "Id": "trucking_shipment.Storage.36",
             "FieldName": "Storage",
             "Order": 36,
             "ComponentType": "Number",
@@ -770,7 +769,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-750f-728b-9ed2-b690a7ddd6cd",
+            "Id": "trucking_shipment.Freetime.31",
             "FieldName": "Freetime",
             "Order": 31,
             "ComponentType": "Number",
@@ -786,7 +785,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-754a-77d8-af47-2bc894b94fd4",
+            "Id": "trucking_shipment.CommodityId.27",
             "FieldName": "CommodityId",
             "Order": 27,
             "ComponentType": "Dropdown",
@@ -807,7 +806,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-7585-70d4-911d-458a105e688b",
+            "Id": "trucking_shipment.CyId.32",
             "FieldName": "CyId",
             "Order": 32,
             "ComponentType": "Dropdown",
@@ -828,7 +827,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-75b9-721a-94cf-140997c798e9",
+            "Id": "trucking_shipment.WarehouseId.33",
             "FieldName": "WarehouseId",
             "Order": 33,
             "ComponentType": "Dropdown",
@@ -849,7 +848,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-7605-7582-8087-0b9a755cd164",
+            "Id": "trucking_shipment.Quantity.9",
             "FieldName": "Quantity",
             "Order": 9,
             "ComponentType": "Number",
@@ -867,7 +866,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-7639-778a-aad7-fa2de62a334c",
+            "Id": "trucking_shipment.UnitId.10",
             "FieldName": "UnitId",
             "Order": 10,
             "ComponentType": "Dropdown",
@@ -889,7 +888,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-7681-77d2-a013-e0716d0d86e6",
+            "Id": "trucking_shipment.CBM.11",
             "FieldName": "CBM",
             "Order": 11,
             "ComponentType": "Number",
@@ -907,7 +906,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-76be-7659-acb1-f16f4c7cffc4",
+            "Id": "trucking_shipment.ContainerText.14",
             "FieldName": "ContainerText",
             "Order": 14,
             "ComponentType": "Input",
@@ -924,7 +923,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-76f8-76f2-b249-b897bbecc53d",
+            "Id": "trucking_shipment.GW.12",
             "FieldName": "GW",
             "Order": 12,
             "ComponentType": "Number",
@@ -942,7 +941,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-7733-715f-942e-707be2d831f5",
+            "Id": "trucking_shipment.CW.13",
             "FieldName": "CW",
             "Order": 13,
             "ComponentType": "Number",
@@ -960,7 +959,7 @@
             "TableName": "Shipment"
         },
         {
-            "Id": "01953d45-776d-753f-bff2-2b1e820bc9b0",
+            "Id": "trucking_shipment.IncotermId.28",
             "FieldName": "IncotermId",
             "Order": 28,
             "ComponentType": "Dropdown",
@@ -982,7 +981,7 @@
     ],
     "Components": [
         {
-            "Id": "01953d45-6689-718a-999b-d6ee8e1fe773",
+            "Id": "trucking_shipment.Section.1",
             "Order": 1,
             "ComponentType": "Section",
             "Label": "Shipment List",
@@ -993,7 +992,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "01953d45-66ea-70ca-abab-fb8d44d57ce0",
+                    "Id": "Section.Shipment.1_9",
                     "FieldName": "Shipment",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -1011,7 +1010,7 @@
             ]
         },
         {
-            "Id": "01953d45-675b-74de-9f7b-cc1be1febccb",
+            "Id": "trucking_shipment.Section.2",
             "Order": 2,
             "ComponentType": "Section",
             "Label": "House B/L List",
@@ -1022,7 +1021,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "01953d45-679a-70fb-bb82-81d932907842",
+                    "Id": "Section.Shipment1.2_9",
                     "FieldName": "Shipment1",
                     "Order": 2,
                     "ComponentType": "GridView",
@@ -1042,7 +1041,6 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "13C11AC8-14DE-4367-A22F-532043D5B75F",
             "RoleId": "ADMIN",
             "CanRead": true,
             "CanReadAll": true,
@@ -1053,17 +1051,14 @@
             "TableName": "Feature"
         },
         {
-            "Id": "141C7BDA-CFB9-4B0A-AA30-79AFD16D3335",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "182954DA-671B-4735-9D21-9772F07278F6",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "26DE6FF3-9956-4ED7-9D00-3C41E56BA506",
             "RoleId": "DOCS",
             "CanRead": true,
             "CanWrite": true,
@@ -1071,33 +1066,27 @@
             "TableName": "Feature"
         },
         {
-            "Id": "40A2BB5C-2682-4CBA-81DC-35173FBE29AC",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "6AC76016-3064-44F1-A66D-757EF468169D",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "C6C4BF46-B002-4208-A400-AA41A3B67B5A",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "CEBA306C-33DE-453E-9351-DAD5BED77F53",
             "RoleId": "SALES",
             "CanRead": true,
             "TableName": "Feature"
         },
         {
-            "Id": "D3BBB66B-0E0A-4CD4-BDF0-8209673CE25B",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "DBE5EFB4-6FD1-403D-83FE-0AE6C76E1B62",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,

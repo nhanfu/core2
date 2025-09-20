@@ -1,5 +1,5 @@
 {
-    "Id": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
+    "Id": "category",
     "Name": "category",
     "Label": "Category",
     "Order": 2,
@@ -9,7 +9,7 @@
     "IgnoreEncode": true,
     "GridPolicies": [
         {
-            "Id": "0035eedc-0000-0000-8000-1c1748d4407f",
+            "Id": "category.Name.3",
             "FieldName": "Name",
             "Order": 3,
             "ComponentType": "Input",
@@ -19,7 +19,7 @@
             "EntityId": "GridView"
         },
         {
-            "Id": "003aee28-0000-0000-8000-10b07b89e899",
+            "Id": "category.Label.3",
             "FieldName": "Label",
             "Order": 3,
             "ComponentType": "Input",
@@ -29,7 +29,7 @@
             "EntityId": "GridView"
         },
         {
-            "Id": "003deee8-0000-0000-8000-003b4e1333a6",
+            "Id": "category.IsPublic.3",
             "FieldName": "IsPublic",
             "Order": 3,
             "ComponentType": "Checkbox",
@@ -39,7 +39,7 @@
             "EntityId": "GridView"
         },
         {
-            "Id": "0054eed0-0000-0000-8000-86cb6f73c32c",
+            "Id": "category.LoadEntity.3",
             "FieldName": "LoadEntity",
             "Order": 3,
             "ComponentType": "Checkbox",
@@ -49,7 +49,7 @@
             "EntityId": "GridView"
         },
         {
-            "Id": "00b6ee70-0000-0000-8000-3d1dcd28e974",
+            "Id": "category.EntityName.3",
             "FieldName": "EntityName",
             "Order": 3,
             "ComponentType": "Input",
@@ -59,7 +59,7 @@
             "EntityId": "GridView"
         },
         {
-            "Id": "00c4ef44-0000-0000-8000-25c19d939985",
+            "Id": "category.IsPublic.3_1",
             "FieldName": "IsPublic",
             "Order": 3,
             "ComponentType": "Checkbox",
@@ -69,7 +69,7 @@
             "EntityId": "GridView"
         },
         {
-            "Id": "00c6ee5c-0000-0000-8000-941c029c202d",
+            "Id": "category.Style.3",
             "FieldName": "Style",
             "Order": 3,
             "ComponentType": "Input",
@@ -91,7 +91,7 @@
     ],
     "Components": [
         {
-            "Id": "6e63c20d-2788-4776-9da0-4cfe7c982ca1",
+            "Id": "category.Section.8",
             "Order": 8,
             "ComponentType": "Section",
             "ClassName": "wrapper scroll-content",
@@ -99,7 +99,7 @@
             "XxlCol": 3,
             "Components": [
                 {
-                    "Id": "6e63c20d-2788-4776-9da0-4cfe7c982ca2",
+                    "Id": "Section.Section.9_1",
                     "Order": 9,
                     "ComponentType": "Section",
                     "Label": "Component",
@@ -108,7 +108,7 @@
                     "XxlOuterColumn": 3,
                     "Components": [
                         {
-                            "Id": "001ef2bc-0000-0000-8000-197aa5870cc9",
+                            "Id": "Section.GridView.1",
                             "FieldName": "GridView",
                             "Order": 1,
                             "ComponentType": "GridView",
@@ -127,32 +127,26 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "0304C04A-D479-47DF-B334-6482BC3CF997",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "1B3CF15A-7E01-4AD3-9431-8C2FD794FD31",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "30A2EE8C-631D-4662-BA45-BB58D1A311FA",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "67263FD5-1822-4999-83AF-1AB57B352DF1",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "83224F40-C626-4DCC-807F-BDF6597750B7",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "86862121-5EE1-4CC4-AE73-550994692676",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -163,22 +157,18 @@
             "TableName": "Feature"
         },
         {
-            "Id": "9E11B70F-69D7-439D-B9F8-B40C7FC5C879",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "A8DB81E6-C5F4-49D8-9362-61E2F715D668",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "ED1E741E-4938-405E-B45F-26A8E51C389D",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "ED431BEB-A8AA-4131-A402-71FB68164BD0",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         }

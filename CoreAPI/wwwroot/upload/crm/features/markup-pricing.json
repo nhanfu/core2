@@ -1,8 +1,7 @@
 {
-    "Id": "00aa1560-0000-0000-8000-737cc8b290a1",
+    "Id": "markup_pricing",
     "Name": "markup-pricing",
     "Label": "Markup Pricing",
-    "ParentId": "00af15f0-0000-0000-8000-8cb1dddb1613",
     "Order": 4,
     "Script": "return {\r\n    Add: function () {\r\n        var entity = {\r\n            StatusId: 1,\r\n            TypeId: 1,\r\n            CreatedOn: this.dayjs().format('YYYY-MM-DD'),\r\n        }\r\n        this.OpenPopup(\"sea-pricing-editor\", entity);\r\n    },\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"sea-pricing-editor\", entity);\r\n    }\r\n}",
     "Icon": "fal fa-wrench",
@@ -10,7 +9,7 @@
     "EntityId": "MarkupPricing",
     "GridPolicies": [
         {
-            "Id": "00332524-0000-0000-8000-3c10fd8126c2",
+            "Id": "markup_pricing.InsertedBy.11",
             "FieldName": "InsertedBy",
             "Order": 11,
             "ComponentType": "Dropdown",
@@ -27,7 +26,7 @@
             "EntityId": "MarkupPricing"
         },
         {
-            "Id": "00aa1554-0000-0000-8000-9cf185b1681b",
+            "Id": "markup_pricing.PartnerId.3",
             "FieldName": "PartnerId",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -48,7 +47,7 @@
             "EntityId": "MarkupPricing"
         },
         {
-            "Id": "00aa156c-0000-0000-8000-73004bab1979",
+            "Id": "markup_pricing.PolId.4",
             "FieldName": "PolId",
             "Order": 4,
             "ComponentType": "Dropdown",
@@ -67,7 +66,7 @@
             "EntityId": "MarkupPricing"
         },
         {
-            "Id": "00aa15f4-0000-0000-8000-d4df203115b6",
+            "Id": "markup_pricing.PodId.5",
             "FieldName": "PodId",
             "Order": 5,
             "ComponentType": "Dropdown",
@@ -86,7 +85,7 @@
             "EntityId": "MarkupPricing"
         },
         {
-            "Id": "00bc15b8-0000-0000-8000-c3013c1aac3a",
+            "Id": "markup_pricing.PriceTypeId.6",
             "FieldName": "PriceTypeId",
             "Order": 6,
             "ComponentType": "Dropdown",
@@ -105,7 +104,7 @@
             "EntityId": "MarkupPricing"
         },
         {
-            "Id": "00df1550-0000-0000-8000-5b54783c389f",
+            "Id": "markup_pricing.Description.1",
             "FieldName": "Description",
             "Order": 1,
             "ComponentType": "Input",
@@ -118,7 +117,7 @@
             "EntityId": "MarkupPricing"
         },
         {
-            "Id": "00e815b8-0000-0000-8000-01e63154a178",
+            "Id": "markup_pricing.ServiceId.2",
             "FieldName": "ServiceId",
             "Order": 2,
             "ComponentType": "Dropdown",
@@ -136,7 +135,7 @@
             "EntityId": "MarkupPricing"
         },
         {
-            "Id": "00f515a8-0000-0000-8000-721eaa779269",
+            "Id": "markup_pricing.TypeId.0",
             "FieldName": "TypeId",
             "Order": 0,
             "ComponentType": "Dropdown",
@@ -155,7 +154,7 @@
             "EntityId": "MarkupPricing"
         },
         {
-            "Id": "00fc15a4-0000-0000-8000-1c99137480f8",
+            "Id": "markup_pricing.MarkupLevel.7",
             "FieldName": "MarkupLevel",
             "Order": 7,
             "ComponentType": "Number",
@@ -170,17 +169,14 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "3549E113-5996-4F57-972A-E377F77884C4",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "62B54387-9B0F-4800-AC77-B64A3CB8F1B3",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "744555CF-8671-4176-B66B-0D99938652F9",
             "RoleId": "DOCS",
             "CanRead": true,
             "CanWrite": true,
@@ -188,29 +184,24 @@
             "TableName": "Feature"
         },
         {
-            "Id": "961F40CD-20F4-46EE-AAD7-E28F83011449",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "9650F45D-8FEA-487A-82C4-B68E71440213",
             "RoleId": "SALES",
             "CanRead": true,
             "CanReadAll": true,
             "TableName": "Feature"
         },
         {
-            "Id": "9AB428B7-DC32-4D03-A2EF-3F9E77100C50",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "C3BCA685-B782-4A4D-A5E8-F709EFD9D5AB",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "DF559AED-A2F8-4023-A953-50AD94BC3280",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -221,19 +212,17 @@
             "TableName": "Feature"
         },
         {
-            "Id": "E5A30EC1-F714-4A0D-9643-822428B3C8B1",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "FCB9E359-5CFE-4976-ACEF-4B0B6A7ED994",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         }
     ],
     "Components": [
         {
-            "Id": "00aa15f8-0000-0000-8000-8df06ba28b87",
+            "Id": "markup_pricing.Section.1",
             "Order": 1,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
@@ -241,7 +230,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "00aa1504-0000-0000-8000-3fa260948026",
+                    "Id": "Section.MarkupPricing.1",
                     "FieldName": "MarkupPricing",
                     "Order": 1,
                     "ComponentType": "GridView",

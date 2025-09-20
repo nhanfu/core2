@@ -1,8 +1,7 @@
 {
-    "Id": "00270414-0000-0000-8000-1a0ec1f74c1c",
+    "Id": "sea_quote",
     "Name": "sea-quote",
     "Label": "Sea Quote",
-    "ParentId": "6e63c20d-2788-4776-9da0-4cfe7c982can",
     "Order": 0,
     "Script": "return {\r\n    Add: function () {\r\n        var entity = {\r\n            StatusId: this.SalesFunction[\"APPROVE_QUOTATION\"] ? 3 : 1,\r\n            NoApproved: this.SalesFunction[\"APPROVE_QUOTATION\"] ? true : false,\r\n            ServiceId: 11,\r\n            VoucherTypeId: 2,\r\n            TypeId: 2,\r\n            InsertedBy: this.Token.UserId,\r\n            ShipmentDate: this.dayjs().format('YYYY-MM-DD')\r\n        }\r\n        this.OpenPopup(\"sea-quote-editor\", entity);\r\n    },\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"sea-quote-editor\", entity);\r\n    }\r\n}",
     "Icon": "fal fa-ship",
@@ -10,7 +9,7 @@
     "EntityId": "Inquiry",
     "GridPolicies": [
         {
-            "Id": "00092d04-0000-0000-8000-beae85813d1d",
+            "Id": "sea_quote.Valid.1",
             "FieldName": "Valid",
             "Order": 1,
             "ComponentType": "Label",
@@ -24,7 +23,7 @@
             "EntityId": "Quote"
         },
         {
-            "Id": "002604bc-0000-0000-8000-13202a91c71f",
+            "Id": "sea_quote.ServiceId.2",
             "FieldName": "ServiceId",
             "Order": 2,
             "ComponentType": "Dropdown",
@@ -42,7 +41,7 @@
             "EntityId": "Quote"
         },
         {
-            "Id": "00310480-0000-0000-8000-89725c9f06aa",
+            "Id": "sea_quote.FromDate.9",
             "FieldName": "FromDate",
             "Order": 9,
             "ComponentType": "Datepicker",
@@ -53,7 +52,7 @@
             "EntityId": "Quote"
         },
         {
-            "Id": "0043049c-0000-0000-8000-eeaed046af06",
+            "Id": "sea_quote.ToDate.10",
             "FieldName": "ToDate",
             "Order": 10,
             "ComponentType": "Datepicker",
@@ -64,7 +63,7 @@
             "EntityId": "Quote"
         },
         {
-            "Id": "00440418-0000-0000-8000-75420163056e",
+            "Id": "sea_quote.StatusId.11",
             "FieldName": "StatusId",
             "Order": 11,
             "ComponentType": "Dropdown",
@@ -81,7 +80,7 @@
             "EntityId": "Quote"
         },
         {
-            "Id": "00560400-0000-0000-8000-eae930d64c5e",
+            "Id": "sea_quote.ShipmentTypeId.12",
             "FieldName": "ShipmentTypeId",
             "Order": 12,
             "ComponentType": "Dropdown",
@@ -97,7 +96,7 @@
             "EntityId": "Quote"
         },
         {
-            "Id": "00ba0450-0000-0000-8000-eaddcf690d9d",
+            "Id": "sea_quote.Code.3",
             "FieldName": "Code",
             "Order": 3,
             "ComponentType": "Input",
@@ -109,7 +108,7 @@
             "EntityId": "Quote"
         },
         {
-            "Id": "00c1043c-0000-0000-8000-5e2ba9a3bf4e",
+            "Id": "sea_quote.InsertedDate.4",
             "FieldName": "InsertedDate",
             "Order": 4,
             "ComponentType": "Datepicker",
@@ -121,7 +120,7 @@
             "EntityId": "Quote"
         },
         {
-            "Id": "00c20488-0000-0000-8000-59d156edcb3d",
+            "Id": "sea_quote.CustomerId.5",
             "FieldName": "CustomerId",
             "Order": 5,
             "ComponentType": "Dropdown",
@@ -137,7 +136,7 @@
             "EntityId": "Quote"
         },
         {
-            "Id": "00c204e0-0000-0000-8000-966b80b6f554",
+            "Id": "sea_quote.PolId.6",
             "FieldName": "PolId",
             "Order": 6,
             "ComponentType": "Dropdown",
@@ -155,7 +154,7 @@
             "EntityId": "Quote"
         },
         {
-            "Id": "00c204e4-0000-0000-8000-113a4d263f47",
+            "Id": "sea_quote.PodId.7",
             "FieldName": "PodId",
             "Order": 7,
             "ComponentType": "Dropdown",
@@ -172,7 +171,7 @@
             "EntityId": "Quote"
         },
         {
-            "Id": "00c30440-0000-0000-8000-01c7804b20aa",
+            "Id": "sea_quote.CommodityId.8",
             "FieldName": "CommodityId",
             "Order": 8,
             "ComponentType": "Dropdown",
@@ -187,7 +186,7 @@
             "EntityId": "Quote"
         },
         {
-            "Id": "00ce25c4-0000-0000-8000-22c405bb9c5e",
+            "Id": "sea_quote.InsertedBy.13",
             "FieldName": "InsertedBy",
             "Order": 13,
             "ComponentType": "Dropdown",
@@ -205,7 +204,7 @@
             "EntityId": "Quote"
         },
         {
-            "Id": "00d206b0-0000-0000-8000-47e0a0898c25",
+            "Id": "sea_quote.btnEdit.0",
             "FieldName": "btnEdit",
             "Order": 0,
             "ComponentType": "Button",
@@ -222,7 +221,7 @@
     ],
     "Components": [
         {
-            "Id": "000204e8-0000-0000-8000-a5236350a90f",
+            "Id": "sea_quote.Section.1",
             "Order": 1,
             "ComponentType": "Section",
             "Label": "All",
@@ -233,7 +232,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "002e0468-0000-0000-8000-d777fbccfdd5",
+                    "Id": "Section.Quote.1_2",
                     "FieldName": "Quote",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -251,7 +250,7 @@
             ]
         },
         {
-            "Id": "000404e4-0000-0000-8000-5ec7d8d2160f",
+            "Id": "sea_quote.Section.2",
             "Order": 2,
             "ComponentType": "Section",
             "Label": "New",
@@ -261,7 +260,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "004104b0-0000-0000-8000-fc5faf4abc05",
+                    "Id": "Section.Quote.2_2",
                     "FieldName": "Quote",
                     "Order": 2,
                     "ComponentType": "GridView",
@@ -279,7 +278,7 @@
             ]
         },
         {
-            "Id": "0006043c-0000-0000-8000-c739fde3daf6",
+            "Id": "sea_quote.Section.3",
             "Order": 3,
             "ComponentType": "Section",
             "Label": "Approving",
@@ -289,7 +288,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "004504ac-0000-0000-8000-198129def086",
+                    "Id": "Section.Quote.3_2",
                     "FieldName": "Quote",
                     "Order": 3,
                     "ComponentType": "GridView",
@@ -306,7 +305,7 @@
             ]
         },
         {
-            "Id": "00150494-0000-0000-8000-bc064526eeb2",
+            "Id": "sea_quote.Section.4",
             "Order": 4,
             "ComponentType": "Section",
             "Label": "Approved",
@@ -316,7 +315,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "004b04c4-0000-0000-8000-d45be8654d71",
+                    "Id": "Section.Quote.4_2",
                     "FieldName": "Quote",
                     "Order": 4,
                     "ComponentType": "GridView",
@@ -333,7 +332,7 @@
             ]
         },
         {
-            "Id": "001e047c-0000-0000-8000-844952866bc6",
+            "Id": "sea_quote.Section.5",
             "Order": 5,
             "ComponentType": "Section",
             "Label": "Decline",
@@ -343,7 +342,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "0051049c-0000-0000-8000-d2109435c893",
+                    "Id": "Section.Quote.5_2",
                     "FieldName": "Quote",
                     "Order": 5,
                     "ComponentType": "GridView",
@@ -362,17 +361,14 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "3A97DF1A-E2D0-4484-B430-AD43B2AE49F9",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "50E20095-02AE-482D-9EC9-FE4C1888B27A",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "54F7A709-1918-4F67-8B1D-E8A1BF8A695E",
             "RoleId": "SALES",
             "CanRead": true,
             "CanWrite": true,
@@ -380,27 +376,22 @@
             "TableName": "Feature"
         },
         {
-            "Id": "8A2EF3BA-8B7C-4EE5-824A-115AD18E2B94",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "97248621-08BB-438C-A24F-BD342ECE2747",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "993D99AA-8488-41FB-9966-908B50B3FC5F",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "AB2705D0-C7E8-4E9F-A856-FCB1338932A6",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "C100927C-D7AA-461A-9ED1-417279BEF46D",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -411,12 +402,10 @@
             "TableName": "Feature"
         },
         {
-            "Id": "CFE743F7-D606-4491-8C0E-863F07E88F95",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "D6F190E8-CE44-4D26-ACC4-219CA21B2F9A",
             "RoleId": "DOCS",
             "TableName": "Feature"
         }

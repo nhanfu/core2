@@ -1,8 +1,7 @@
 {
-    "Id": "01946a26-7f63-721d-be41-85adbd456d84",
+    "Id": "payment_manage",
     "Name": "payment-manage",
     "Label": "Payment Manage",
-    "ParentId": "01939222-2f5a-747a-bb15-606fb55edf4c",
     "Order": 3,
     "Script": "return {\r\n    Add: function () {\r\n        var entity = {\r\n            StatusId: 1,\r\n            ActionId: 2,\r\n            VoucherTypeId: 11,\r\n            InsertedBy: this.Token.UserId,\r\n            FeeTypeId: 0,\r\n            TypeId: 2,\r\n            ObhTypeId: 1,\r\n            PostDate: this.dayjs().format('YYYY-MM-DDTHH:mm:ss'),\r\n            InvoiceDate: this.dayjs().format('YYYY-MM-DDTHH:mm:ss'),\r\n            ExchangeRateINV: this.Decimal(1).div(this.Decimal(JSON.parse(localStorage.getItem(\"ExchangeRateUSD\"))[\"VND\"])),\r\n        }\r\n        this.OpenPopup(\"payment-request-editor\", entity);\r\n    },\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"payment-request-editor\", { Id: entity.Id }, true);\r\n    },\r\n    OpenFilter: function () {\r\n        var newItem = this.EditForm.GroupTree.find(x => x.FieldName == \"SearchForm\");\r\n        var form = this.EditForm.OpenConfig(\"Update ExchangeRate!\", async () => {\r\n        }, () => { }, true, newItem.Components);\r\n    }\r\n}",
     "Icon": "fal fa-table",
@@ -10,7 +9,7 @@
     "EntityId": "ShipmentFee",
     "GridPolicies": [
         {
-            "Id": "01946a2a-a6b1-7094-b60e-1e03b1ac9433",
+            "Id": "payment_manage.VendorId.4",
             "FieldName": "VendorId",
             "Order": 4,
             "ComponentType": "Dropdown",
@@ -31,7 +30,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01946a2a-a6b1-7094-b60e-22c6726333c9",
+            "Id": "payment_manage.DescriptionId.13",
             "FieldName": "DescriptionId",
             "Order": 13,
             "ComponentType": "Dropdown",
@@ -51,7 +50,7 @@
             "EntityId": "ShipmentFee"
         },
         {
-            "Id": "01946a2a-a6b1-7094-b60e-240184a79720",
+            "Id": "payment_manage.Quantity.14",
             "FieldName": "Quantity",
             "Order": 14,
             "ComponentType": "Number",
@@ -66,7 +65,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01946a2a-a6b2-75c0-8362-d7ac2b73f162",
+            "Id": "payment_manage.UnitId.15",
             "FieldName": "UnitId",
             "Order": 15,
             "ComponentType": "Dropdown",
@@ -86,7 +85,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01946a2a-a6b2-75c0-8362-d9297d49cc1d",
+            "Id": "payment_manage.Amount.16",
             "FieldName": "Amount",
             "Order": 16,
             "ComponentType": "Number",
@@ -101,7 +100,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01946a2a-a6b2-75c0-8362-dfd794a85076",
+            "Id": "payment_manage.Vat.19",
             "FieldName": "Vat",
             "Order": 19,
             "ComponentType": "Number",
@@ -115,7 +114,7 @@
             "EntityId": "ShipmentFee"
         },
         {
-            "Id": "01946a2a-a6b2-75c0-8362-e17ee8c33e28",
+            "Id": "payment_manage.CurrencyId.21",
             "FieldName": "CurrencyId",
             "Order": 21,
             "ComponentType": "Dropdown",
@@ -135,7 +134,7 @@
             "EntityId": "ShipmentFee"
         },
         {
-            "Id": "01946a2a-a6b3-7208-930e-8efbedc0c2a4",
+            "Id": "payment_manage.TotalAmount.22",
             "FieldName": "TotalAmount",
             "Order": 22,
             "ComponentType": "Number",
@@ -149,7 +148,7 @@
             "EntityId": "ShipmentFee"
         },
         {
-            "Id": "01946a2a-a6b3-7208-930e-929637c4c186",
+            "Id": "payment_manage.ObhId.23",
             "FieldName": "ObhId",
             "Order": 23,
             "ComponentType": "Dropdown",
@@ -170,7 +169,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01946a2a-a6b3-7208-930e-9630f32066e7",
+            "Id": "payment_manage.ShipmentInvoiceId.24",
             "FieldName": "ShipmentInvoiceId",
             "Order": 24,
             "ComponentType": "Dropdown",
@@ -185,7 +184,7 @@
             "EntityId": "ShipmentFee"
         },
         {
-            "Id": "01946a2a-a6b4-72bc-8fd7-46e2b3cbd9d9",
+            "Id": "payment_manage.PaymentRequestId.25",
             "FieldName": "PaymentRequestId",
             "Order": 25,
             "ComponentType": "Dropdown",
@@ -200,7 +199,7 @@
             "EntityId": "ShipmentFee"
         },
         {
-            "Id": "01946a2a-a6b4-72bc-8fd7-4a026cc3cb56",
+            "Id": "payment_manage.InvoiceCode.20",
             "FieldName": "InvoiceCode",
             "Order": 20,
             "ComponentType": "Input",
@@ -213,7 +212,7 @@
             "EntityId": "ShipmentFee"
         },
         {
-            "Id": "01946a2b-8e9d-7358-a7db-30d7233dcad6",
+            "Id": "payment_manage.FileId.5",
             "FieldName": "FileId",
             "Order": 5,
             "ComponentType": "Dropdown",
@@ -229,7 +228,7 @@
             "EntityId": "ShipmentFee"
         },
         {
-            "Id": "01946a2f-6081-74c8-bac0-340ef268e3f2",
+            "Id": "payment_manage.ShipmentId.6",
             "FieldName": "ShipmentId",
             "Order": 6,
             "ComponentType": "Dropdown",
@@ -245,7 +244,7 @@
             "EntityId": "ShipmentFee"
         },
         {
-            "Id": "01946a2f-e536-7419-b7a6-3dc96810e8ff",
+            "Id": "payment_manage.EtaDate.7",
             "FieldName": "EtaDate",
             "Order": 7,
             "ComponentType": "Datepicker",
@@ -257,7 +256,7 @@
             "EntityId": "ShipmentFee"
         },
         {
-            "Id": "01946a2f-edcc-709a-8db3-5c2600e66cf7",
+            "Id": "payment_manage.EtdDate.12",
             "FieldName": "EtdDate",
             "Order": 12,
             "ComponentType": "Datepicker",
@@ -269,7 +268,7 @@
             "EntityId": "ShipmentFee"
         },
         {
-            "Id": "0194e837-caf0-77e9-87c8-cb98c862e44a",
+            "Id": "payment_manage.IsPaid.0",
             "FieldName": "IsPaid",
             "Order": 0,
             "ComponentType": "Checkbox",
@@ -285,7 +284,7 @@
             "EntityId": "ShipmentFee"
         },
         {
-            "Id": "0194e9d4-a449-70a4-8beb-edf235dda5f4",
+            "Id": "payment_manage.DebtCode.8",
             "FieldName": "DebtCode",
             "Order": 8,
             "ComponentType": "Input",
@@ -297,7 +296,7 @@
             "EntityId": "ShipmentFee"
         },
         {
-            "Id": "0194fdda-e1cd-7699-8b34-aad4c4f4a921",
+            "Id": "payment_manage.SettlementNo.9",
             "FieldName": "SettlementNo",
             "Order": 9,
             "ComponentType": "Input",
@@ -309,7 +308,7 @@
             "EntityId": "ShipmentFee"
         },
         {
-            "Id": "0194fddb-a85f-76a2-9f20-817c3c73674a",
+            "Id": "payment_manage.PaymentAccCode.10",
             "FieldName": "PaymentAccCode",
             "Order": 10,
             "ComponentType": "Input",
@@ -321,7 +320,7 @@
             "EntityId": "ShipmentFee"
         },
         {
-            "Id": "0194fddc-1494-70ec-bdee-e875d4e6be23",
+            "Id": "payment_manage.PaymentAccDate.11",
             "FieldName": "PaymentAccDate",
             "Order": 11,
             "ComponentType": "Datepicker",
@@ -333,7 +332,7 @@
             "EntityId": "ShipmentFee"
         },
         {
-            "Id": "0194fddc-8619-7084-ae5b-f984412d56b3",
+            "Id": "payment_manage.ExchangeRateINV.17",
             "FieldName": "ExchangeRateINV",
             "Order": 17,
             "ComponentType": "Number",
@@ -347,7 +346,7 @@
             "EntityId": "ShipmentFee"
         },
         {
-            "Id": "0194fddd-3a9c-73e3-8657-948d270d3760",
+            "Id": "payment_manage.ExchangeRateVND.18",
             "FieldName": "ExchangeRateVND",
             "Order": 18,
             "ComponentType": "Number",
@@ -361,7 +360,7 @@
             "EntityId": "ShipmentFee"
         },
         {
-            "Id": "0194ff1c-289d-7554-bcdf-745c1f8f210e",
+            "Id": "payment_manage.PaidDate.3",
             "FieldName": "PaidDate",
             "Order": 3,
             "ComponentType": "Datepicker",
@@ -376,7 +375,7 @@
             "EntityId": "ShipmentFee"
         },
         {
-            "Id": "0195d2c8-cc9e-7273-bfad-4b2545e6605d",
+            "Id": "payment_manage.TotalPaid.1",
             "FieldName": "TotalPaid",
             "Order": 1,
             "ComponentType": "Number",
@@ -390,7 +389,7 @@
             "EntityId": "ShipmentFee"
         },
         {
-            "Id": "0195d2c9-8013-7389-ab78-fdc6aeefe1a6",
+            "Id": "payment_manage.TotalRemain.2",
             "FieldName": "TotalRemain",
             "Order": 2,
             "ComponentType": "Number",
@@ -405,56 +404,46 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "2B89B60F-815B-4F0D-85C6-A51E54F3A623",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "34C72ABF-5D48-41AA-8D49-34241884BD0B",
             "RoleId": "ACC",
             "CanRead": true,
             "CanReadAll": true,
             "TableName": "Feature"
         },
         {
-            "Id": "41EDF2B5-A848-48AC-9799-414E4A44196B",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "A2C513A2-E1E8-4A69-A5C7-C50D0BBF71F8",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "A9DFD5D5-FD28-4A67-B6D7-B03628DEB234",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "AA25F9EB-BD05-4E5C-BFFB-1B7D70612A6F",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "DAEE91D1-AAA5-4E21-8BD1-149B8E252AEE",
             "RoleId": "ADMIN",
             "CanRead": true,
             "CanReadAll": true,
             "TableName": "Feature"
         },
         {
-            "Id": "E0C41287-563E-43DE-9841-660DC60E4465",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "ED6379AD-3D14-4CF2-86BD-FC5DB943D64D",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "F67511E0-A088-407A-B010-3520557D2431",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -471,7 +460,7 @@
     ],
     "Components": [
         {
-            "Id": "01946a26-801e-73da-90b0-ac67ce771164",
+            "Id": "payment_manage.Section.2",
             "Order": 2,
             "ComponentType": "Section",
             "Icon": "fal fa-border-all mr-1",
@@ -480,7 +469,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "01946a26-8096-707e-b156-f7a1cf70e31f",
+                    "Id": "Section.ShipmentFee.1",
                     "FieldName": "ShipmentFee",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -497,7 +486,7 @@
             ]
         },
         {
-            "Id": "01956b33-cfd6-74ae-9eb3-e2af861d4bfe",
+            "Id": "payment_manage.SearchForm.1",
             "FieldName": "SearchForm",
             "Order": 1,
             "ComponentType": "Section",
@@ -507,7 +496,7 @@
             "TabGroup": "SearchForm",
             "Components": [
                 {
-                    "Id": "01956b35-5cda-710e-98c3-a57ab2738d82",
+                    "Id": "SearchForm.FromDate.1_1",
                     "FieldName": "FromDate",
                     "Order": 1,
                     "ComponentType": "Datepicker",
@@ -519,7 +508,7 @@
                     "SmCol": 5
                 },
                 {
-                    "Id": "01956b35-5cda-710e-98c3-a8761e8c2099",
+                    "Id": "SearchForm.ExchangeRateVND.4_1",
                     "FieldName": "ExchangeRateVND",
                     "Order": 4,
                     "ComponentType": "Number",
@@ -531,7 +520,7 @@
                     "SmCol": 5
                 },
                 {
-                    "Id": "01956b35-5cdb-7035-85a3-8def208c4423",
+                    "Id": "SearchForm.DateFieldId.3_1",
                     "FieldName": "DateFieldId",
                     "Order": 3,
                     "ComponentType": "Select",
@@ -548,7 +537,7 @@
                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
-                    "Id": "01956b36-9b8b-75ec-a715-99efbe16506a",
+                    "Id": "SearchForm.ToDate.2_1",
                     "FieldName": "ToDate",
                     "Order": 2,
                     "ComponentType": "Datepicker",

@@ -1,5 +1,5 @@
 {
-    "Id": "005e3078-0000-0000-8000-cefe2373e461",
+    "Id": "email_template_editor",
     "Name": "email-template-editor",
     "Label": "Email Template Editor",
     "Order": 0,
@@ -8,7 +8,7 @@
     "EntityId": "PlanEmail",
     "ComponentGroup": [
         {
-            "Id": "00413414-0000-0000-8000-a73a715ad91f",
+            "Id": "email_template_editor.Center.4",
             "FieldName": "Center",
             "Order": 4,
             "ComponentType": "Section",
@@ -17,7 +17,7 @@
             "XxlCol": 12
         },
         {
-            "Id": "005e308c-0000-0000-8000-d861caa27084",
+            "Id": "email_template_editor.Main.1",
             "FieldName": "Main",
             "Order": 1,
             "ComponentType": "Section",
@@ -25,7 +25,7 @@
             "XxlCol": 12,
             "Children": [
                 {
-                    "Id": "007534cc-0000-0000-8000-279e17c3807c",
+                    "Id": "Main.Container.1",
                     "FieldName": "Container",
                     "Order": 1,
                     "ComponentType": "Section",
@@ -33,7 +33,7 @@
                     "XxlOuterColumn": 8,
                     "Children": [
                         {
-                            "Id": "003e344c-0000-0000-8000-f717e170e780",
+                            "Id": "Container.Bottom.1",
                             "FieldName": "Bottom",
                             "Order": 1,
                             "ComponentType": "Section",
@@ -43,7 +43,7 @@
                             "XxlOuterColumn": 6,
                             "Components": [
                                 {
-                                    "Id": "000132e4-0000-0000-8000-96bb93936ba5",
+                                    "Id": "Bottom.PassEmail.4",
                                     "FieldName": "PassEmail",
                                     "Order": 4,
                                     "ComponentType": "Input",
@@ -52,7 +52,7 @@
                                     "ShowLabel": true
                                 },
                                 {
-                                    "Id": "000634c4-0000-0000-8000-0309c13c6bae",
+                                    "Id": "Bottom.Name.1",
                                     "FieldName": "Name",
                                     "Order": 1,
                                     "ComponentType": "Input",
@@ -62,7 +62,7 @@
                                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                                 },
                                 {
-                                    "Id": "00473970-0000-0000-8000-1bef8720cdd4",
+                                    "Id": "Bottom.DailyDate.6",
                                     "FieldName": "DailyDate",
                                     "Order": 6,
                                     "ComponentType": "Datepicker",
@@ -73,7 +73,7 @@
                                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                                 },
                                 {
-                                    "Id": "004739d4-0000-0000-8000-d6ef80216df3",
+                                    "Id": "Bottom.ReminderSettingId.7",
                                     "FieldName": "ReminderSettingId",
                                     "Order": 7,
                                     "ComponentType": "Dropdown",
@@ -87,7 +87,7 @@
                                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "00513230-0000-0000-8000-9fa981364c5f",
+                                    "Id": "Bottom.SubjectMail.5",
                                     "FieldName": "SubjectMail",
                                     "Order": 5,
                                     "ComponentType": "Input",
@@ -97,7 +97,7 @@
                                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                                 },
                                 {
-                                    "Id": "006c3240-0000-0000-8000-8b43b447198a",
+                                    "Id": "Bottom.FromName.2",
                                     "FieldName": "FromName",
                                     "Order": 2,
                                     "ComponentType": "Input",
@@ -107,7 +107,7 @@
                                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                                 },
                                 {
-                                    "Id": "00e63238-0000-0000-8000-012a89ce2996",
+                                    "Id": "Bottom.FromEmail.3",
                                     "FieldName": "FromEmail",
                                     "Order": 3,
                                     "ComponentType": "Input",
@@ -118,7 +118,7 @@
                             ]
                         },
                         {
-                            "Id": "00b23484-0000-0000-8000-8e1eaea7c57f",
+                            "Id": "Container.Bottom.3",
                             "FieldName": "Bottom",
                             "Order": 3,
                             "ComponentType": "Section",
@@ -128,7 +128,7 @@
                             "XxlOuterColumn": 6,
                             "Components": [
                                 {
-                                    "Id": "001d38e0-0000-0000-8000-4aeaa810570b",
+                                    "Id": "Bottom.ComponentId.5",
                                     "FieldName": "ComponentId",
                                     "Order": 5,
                                     "ComponentType": "Dropdown",
@@ -145,7 +145,7 @@
                                     "OrderBy": "ds.EntityId desc"
                                 },
                                 {
-                                    "Id": "0023385c-0000-0000-8000-c45d15b9c68e",
+                                    "Id": "Bottom.EmailFieldId.4",
                                     "FieldName": "EmailFieldId",
                                     "Order": 4,
                                     "ComponentType": "Dropdown",
@@ -163,7 +163,7 @@
                                     "OrderBy": "ds.EntityId desc"
                                 },
                                 {
-                                    "Id": "006b3094-0000-0000-8000-b390c69c8ff4",
+                                    "Id": "Bottom.FeatureId.3",
                                     "FieldName": "FeatureId",
                                     "Order": 3,
                                     "ComponentType": "Dropdown",
@@ -179,7 +179,7 @@
                                     "OrderBy": "ds.EntityId desc"
                                 },
                                 {
-                                    "Id": "00c23918-0000-0000-8000-9dfc49101a25",
+                                    "Id": "Bottom.Field1Id.6",
                                     "FieldName": "Field1Id",
                                     "Order": 6,
                                     "ComponentType": "Dropdown",
@@ -196,7 +196,7 @@
                                     "OrderBy": "ds.EntityId desc"
                                 },
                                 {
-                                    "Id": "00c939e0-0000-0000-8000-7c637a38f7c4",
+                                    "Id": "Bottom.Value1.7",
                                     "FieldName": "Value1",
                                     "Order": 7,
                                     "ComponentType": "Input",
@@ -210,7 +210,7 @@
                                     "OrderBy": "ds.EntityId desc"
                                 },
                                 {
-                                    "Id": "00cd3944-0000-0000-8000-445fab91abf0",
+                                    "Id": "Bottom.Field2Id.8",
                                     "FieldName": "Field2Id",
                                     "Order": 8,
                                     "ComponentType": "Dropdown",
@@ -227,7 +227,7 @@
                                     "OrderBy": "ds.EntityId desc"
                                 },
                                 {
-                                    "Id": "00d1396c-0000-0000-8000-4dde31fdd7be",
+                                    "Id": "Bottom.Value2.9",
                                     "FieldName": "Value2",
                                     "Order": 9,
                                     "ComponentType": "Input",
@@ -240,7 +240,7 @@
                                     "OrderBy": "ds.EntityId desc"
                                 },
                                 {
-                                    "Id": "00d939d4-0000-0000-8000-34af2e5d9732",
+                                    "Id": "Bottom.Field3Id.10",
                                     "FieldName": "Field3Id",
                                     "Order": 10,
                                     "ComponentType": "Dropdown",
@@ -257,7 +257,7 @@
                                     "OrderBy": "ds.EntityId desc"
                                 },
                                 {
-                                    "Id": "00d939d4-0000-0000-8001-f1df358dbfe2",
+                                    "Id": "Bottom.Value3.11",
                                     "FieldName": "Value3",
                                     "Order": 11,
                                     "ComponentType": "Input",
@@ -272,7 +272,7 @@
                             ]
                         },
                         {
-                            "Id": "00813158-0000-0000-8000-93cf459c8774",
+                            "Id": "Container.Bottom.4",
                             "FieldName": "Bottom",
                             "Order": 4,
                             "ComponentType": "Section",
@@ -282,7 +282,7 @@
                             "XxlOuterColumn": 12,
                             "Components": [
                                 {
-                                    "Id": "009132b4-0000-0000-8000-0fa22c01fb91",
+                                    "Id": "Bottom.PlanEmailDetail.6",
                                     "FieldName": "PlanEmailDetail",
                                     "Order": 6,
                                     "ComponentType": "GridView",
@@ -302,7 +302,7 @@
                     ]
                 },
                 {
-                    "Id": "007c3480-0000-0000-8000-2115b353ce2e",
+                    "Id": "Main.Container.2",
                     "FieldName": "Container",
                     "Order": 2,
                     "ComponentType": "Section",
@@ -310,7 +310,7 @@
                     "XxlOuterColumn": 4,
                     "Children": [
                         {
-                            "Id": "000132fc-0000-0000-8000-e370e45c3891",
+                            "Id": "Container.Bottom.3_1",
                             "FieldName": "Bottom",
                             "Order": 3,
                             "ComponentType": "Section",
@@ -318,7 +318,7 @@
                             "DisabledExp": "this.Entity.IsStart",
                             "Components": [
                                 {
-                                    "Id": "007530e4-0000-0000-8000-71a965f557e2",
+                                    "Id": "Bottom.Template.10",
                                     "FieldName": "Template",
                                     "Order": 10,
                                     "ComponentType": "Word",
@@ -334,7 +334,7 @@
             ]
         },
         {
-            "Id": "005f3048-0000-0000-8000-8a4aad227bc2",
+            "Id": "email_template_editor.Button.3",
             "FieldName": "Button",
             "Order": 3,
             "ComponentType": "Section",
@@ -342,7 +342,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "000f31a0-0000-0000-8000-671026ad5872",
+                    "Id": "Button.btnFinish.2",
                     "FieldName": "btnFinish",
                     "Order": 2,
                     "ComponentType": "Button",
@@ -354,7 +354,7 @@
                     "ShowExp": "this.Entity.IsStart"
                 },
                 {
-                    "Id": "00223110-0000-0000-8000-fb8b0d419b72",
+                    "Id": "Button.btnStart.1",
                     "FieldName": "btnStart",
                     "Order": 1,
                     "ComponentType": "Button",
@@ -366,7 +366,7 @@
                     "ShowExp": "(this.Entity.IsPause || (!this.Entity.IsPause && !this.Entity.IsStart)) && !this.Entity.Id.startsWith('-')"
                 },
                 {
-                    "Id": "005f3004-0000-0000-8000-61bb5cb5544f",
+                    "Id": "Button.btnSave.3",
                     "FieldName": "btnSave",
                     "Order": 3,
                     "ComponentType": "Button",
@@ -379,7 +379,7 @@
             ]
         },
         {
-            "Id": "008f34b0-0000-0000-8000-9f26dcfb14cc",
+            "Id": "email_template_editor.Center1.1",
             "FieldName": "Center1",
             "Order": 1,
             "ComponentType": "Section",
@@ -390,7 +390,7 @@
     ],
     "GridPolicies": [
         {
-            "Id": "0012345c-0000-0000-8000-7ec272cd4116",
+            "Id": "email_template_editor.Email.3",
             "FieldName": "Email",
             "Order": 3,
             "ComponentType": "Input",
@@ -403,7 +403,7 @@
             "EntityId": "PlanEmailDetail"
         },
         {
-            "Id": "00143458-0000-0000-8000-07155ae827a9",
+            "Id": "email_template_editor.TableName.1",
             "FieldName": "TableName",
             "Order": 1,
             "ComponentType": "Input",
@@ -416,7 +416,7 @@
             "EntityId": "PlanEmailDetail"
         },
         {
-            "Id": "00163454-0000-0000-8000-bfaecf3ef34c",
+            "Id": "email_template_editor.RecordId.2",
             "FieldName": "RecordId",
             "Order": 2,
             "ComponentType": "Input",
@@ -429,7 +429,7 @@
             "EntityId": "PlanEmailDetail"
         },
         {
-            "Id": "00ce312c-0000-0000-8000-44e4edca7ba6",
+            "Id": "email_template_editor.Id.0",
             "FieldName": "Id",
             "Order": 0,
             "ComponentType": "Input",
@@ -442,7 +442,7 @@
             "EntityId": "PlanEmailDetail"
         },
         {
-            "Id": "00ce312c-0000-0000-8001-76a4a83823d8",
+            "Id": "email_template_editor.InsertedDate.5",
             "FieldName": "InsertedDate",
             "Order": 5,
             "ComponentType": "Datepicker",
@@ -456,7 +456,7 @@
             "EntityId": "PlanEmailDetail"
         },
         {
-            "Id": "00ce312c-0000-0000-8002-f2f09951ee0b",
+            "Id": "email_template_editor.NextStartDate.4",
             "FieldName": "NextStartDate",
             "Order": 4,
             "ComponentType": "Datepicker",
@@ -472,7 +472,7 @@
     ],
     "Components": [
         {
-            "Id": "000f31a0-0000-0000-8000-671026ad5872",
+            "Id": "email_template_editor.btnFinish.2",
             "FieldName": "btnFinish",
             "Order": 2,
             "ComponentType": "Button",
@@ -484,7 +484,7 @@
             "ShowExp": "this.Entity.IsStart"
         },
         {
-            "Id": "00223110-0000-0000-8000-fb8b0d419b72",
+            "Id": "email_template_editor.btnStart.1",
             "FieldName": "btnStart",
             "Order": 1,
             "ComponentType": "Button",
@@ -496,7 +496,7 @@
             "ShowExp": "(this.Entity.IsPause || (!this.Entity.IsPause && !this.Entity.IsStart)) && !this.Entity.Id.startsWith('-')"
         },
         {
-            "Id": "005f3004-0000-0000-8000-61bb5cb5544f",
+            "Id": "email_template_editor.btnSave.3",
             "FieldName": "btnSave",
             "Order": 3,
             "ComponentType": "Button",
@@ -509,7 +509,6 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "0D37D3C7-F38F-422C-AD51-FFA5D0594D3A",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -520,47 +519,38 @@
             "TableName": "Feature"
         },
         {
-            "Id": "430A8D22-FEF3-43FA-A91E-346979811BB6",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "62452ACB-6A7B-4CA6-ADE6-4375AC9B4C56",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "70B7ECFC-2C8B-4855-9F07-8FB2A4611937",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "7284EFFD-F248-463F-9AE6-8135ED69D558",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "8B178AE8-70F5-4BE9-A189-A1B84E9743F5",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "9D20A092-0994-4B0A-B33C-4D1545878A44",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "A1124F05-6C70-4DC3-84C2-DCDEEA59890B",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "AB6EC74B-A960-4058-A019-63828FB74B05",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "DBD29D25-1245-4AE8-AAE1-7C66F43C43D9",
             "RoleId": "DOCS",
             "TableName": "Feature"
         }

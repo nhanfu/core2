@@ -1,5 +1,5 @@
 {
-    "Id": "6e63c20d-2782-4124-3332-4cfe2c982can1",
+    "Id": "payroll",
     "Name": "payroll",
     "Label": "Payroll",
     "Order": 9,
@@ -8,22 +8,18 @@
     "IgnoreEncode": true,
     "FeaturePolicies": [
         {
-            "Id": "0D96942C-F4AE-4378-A74F-C94C680C0C30",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "0F71BB22-7D69-4825-8CEF-08471D33DDB5",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "48F77A9B-391C-41C8-8836-C5DB8CE02AD1",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "821B6DB9-DD07-440E-B07C-A13CCC9861A0",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -34,32 +30,26 @@
             "TableName": "Feature"
         },
         {
-            "Id": "9AFB14A1-7B8B-4361-869C-EB8893347AC3",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "BFE7BF87-2982-4E26-B067-1D7434D665E6",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "C8A562E9-2652-4CB6-82B1-1C8A1E8FE619",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "CF956D45-DCA2-40A4-BFDB-23BABAC7C602",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "EB4D3D57-4001-45B2-840C-3EFAC47679ED",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "EE8705B0-2D79-4C37-BEFB-A42EC56EFE43",
             "RoleId": "ACC",
             "TableName": "Feature"
         }

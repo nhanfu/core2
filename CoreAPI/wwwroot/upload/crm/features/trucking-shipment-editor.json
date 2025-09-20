@@ -1,8 +1,7 @@
 {
-    "Id": "01953d47-f6a2-75d3-a1cc-ce379a79fc99",
+    "Id": "trucking_shipment_editor",
     "Name": "trucking-shipment-editor",
     "Label": "Trucking Shipment Editor",
-    "ParentId": "009b3b78-0000-0000-8000-38a9f8f617fc",
     "Style": "width:99%;",
     "Script": "return {\r\n    ChangeShipment1: function (com) {\r\n        if (!this.EditForm.Entity.Id.startsWith(\"-\")) {\r\n            var hblGrid = this.EditForm.FirstCom(\"ShipmentDetail\");\r\n            hblGrid.ReloadData();\r\n        }\r\n    },\r\n    Init: function () {\r\n    },\r\n    OnSaved: async function () {\r\n        this.ShipmentDetail.ParentId = this.Entity.Id;\r\n        this.ShipmentDetail.TypeId = this.Entity.TypeId;\r\n        await this.SaveEntity(\"ShipmentDetail\", \"Shipment\");\r\n        var hblGrid = this.EditForm.FirstCom(\"ShipmentDetail\");\r\n        hblGrid.ReloadData();\r\n    }\r\n}",
     "Events": "{\r\n    \"onsave\": \"OnSave\",\r\n    \"saved\": \"OnSaved\",\r\n    \"onsaveadd\": \"OnSaveAdd\"\r\n}",
@@ -10,7 +9,7 @@
     "CodeId": "00103be8-0000-0000-8000-ffc4305d72c6",
     "GridPolicies": [
         {
-            "Id": "01953d48-22bb-76f9-9240-d25f92f8e106",
+            "Id": "trucking_shipment_editor.Notes.5",
             "FieldName": "Notes",
             "Order": 5,
             "ComponentType": "Input",
@@ -24,7 +23,7 @@
             "EntityId": "ShipmentTask"
         },
         {
-            "Id": "01953d48-2313-7659-bc9d-b1cc64a3606b",
+            "Id": "trucking_shipment_editor.CustomsOfficeId.4",
             "FieldName": "CustomsOfficeId",
             "Order": 4,
             "ComponentType": "Dropdown",
@@ -43,7 +42,7 @@
             "EntityId": "ShipmentCustoms"
         },
         {
-            "Id": "01953d48-2353-73bf-a92b-be5e9ca86c3d",
+            "Id": "trucking_shipment_editor.IsFinish.4",
             "FieldName": "IsFinish",
             "Order": 4,
             "ComponentType": "Checkbox",
@@ -58,7 +57,7 @@
             "EntityId": "ShipmentTask"
         },
         {
-            "Id": "01953d48-2383-7165-ab32-4f7e16d77001",
+            "Id": "trucking_shipment_editor.Notes.10",
             "FieldName": "Notes",
             "Order": 10,
             "ComponentType": "Input",
@@ -73,7 +72,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-23b5-75cc-869f-77eeb2ec86cc",
+            "Id": "trucking_shipment_editor.CsdEdit.9",
             "FieldName": "CsdEdit",
             "Order": 9,
             "ComponentType": "Number",
@@ -87,7 +86,7 @@
             "EntityId": "ShipmentCustoms"
         },
         {
-            "Id": "01953d48-23f0-76b8-b545-90337a456681",
+            "Id": "trucking_shipment_editor.DescriptionId.1",
             "FieldName": "DescriptionId",
             "Order": 1,
             "ComponentType": "Dropdown",
@@ -110,7 +109,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-2424-7782-aece-fc7564e1bd94",
+            "Id": "trucking_shipment_editor.CurrencyId.6",
             "FieldName": "CurrencyId",
             "Order": 6,
             "ComponentType": "Dropdown",
@@ -133,7 +132,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-2454-755b-8f1b-78d514f0ece4",
+            "Id": "trucking_shipment_editor.UnitId.3",
             "FieldName": "UnitId",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -155,7 +154,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-2488-74a0-ad1c-d51d4f24120a",
+            "Id": "trucking_shipment_editor.Amount.4",
             "FieldName": "Amount",
             "Order": 4,
             "ComponentType": "Number",
@@ -172,7 +171,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-24c5-75a9-b97c-53102e0d715c",
+            "Id": "trucking_shipment_editor.Vat.5",
             "FieldName": "Vat",
             "Order": 5,
             "ComponentType": "Number",
@@ -188,7 +187,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-24fa-7445-93e0-47432f7eaff3",
+            "Id": "trucking_shipment_editor.VendorId.0",
             "FieldName": "VendorId",
             "Order": 0,
             "ComponentType": "Dropdown",
@@ -210,7 +209,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-253d-7793-9484-53275537098d",
+            "Id": "trucking_shipment_editor.Packages.17",
             "FieldName": "Packages",
             "Order": 17,
             "ComponentType": "Number",
@@ -224,7 +223,7 @@
             "EntityId": "ShipmentDetail1"
         },
         {
-            "Id": "01953d48-2570-713f-834b-edbee0753c64",
+            "Id": "trucking_shipment_editor.CoQuantity.12",
             "FieldName": "CoQuantity",
             "Order": 12,
             "ComponentType": "Number",
@@ -238,7 +237,7 @@
             "EntityId": "ShipmentCustoms"
         },
         {
-            "Id": "01953d48-25bd-735f-9238-d6b7de4296c1",
+            "Id": "trucking_shipment_editor.GrossWeight.18",
             "FieldName": "GrossWeight",
             "Order": 18,
             "ComponentType": "Number",
@@ -252,7 +251,7 @@
             "EntityId": "ShipmentDetail1"
         },
         {
-            "Id": "01953d48-25fb-77b8-9f36-d74669efd29a",
+            "Id": "trucking_shipment_editor.CBM.19",
             "FieldName": "CBM",
             "Order": 19,
             "ComponentType": "Number",
@@ -266,7 +265,7 @@
             "EntityId": "ShipmentDetail1"
         },
         {
-            "Id": "01953d48-265c-749a-bbbd-aa12839517b6",
+            "Id": "trucking_shipment_editor.NumberDaysTruck.21",
             "FieldName": "NumberDaysTruck",
             "Order": 21,
             "ComponentType": "Number",
@@ -280,7 +279,7 @@
             "EntityId": "ShipmentDetail1"
         },
         {
-            "Id": "01953d48-2689-75dd-b1b6-987e20b7c24c",
+            "Id": "trucking_shipment_editor.ClearanceDate.1",
             "FieldName": "ClearanceDate",
             "Order": 1,
             "ComponentType": "Datepicker",
@@ -295,7 +294,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-26c3-71d6-9b05-b56112de77ab",
+            "Id": "trucking_shipment_editor.NumberDaysMooc.23",
             "FieldName": "NumberDaysMooc",
             "Order": 23,
             "ComponentType": "Number",
@@ -309,7 +308,7 @@
             "EntityId": "ShipmentDetail1"
         },
         {
-            "Id": "01953d48-2702-7169-81ee-4b6880f0bdb2",
+            "Id": "trucking_shipment_editor.CdsTypeId.2",
             "FieldName": "CdsTypeId",
             "Order": 2,
             "ComponentType": "Dropdown",
@@ -328,7 +327,7 @@
             "EntityId": "ShipmentCustoms"
         },
         {
-            "Id": "01953d48-2737-764f-a501-0cf710371051",
+            "Id": "trucking_shipment_editor.ThreadingCdsId.3",
             "FieldName": "ThreadingCdsId",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -347,7 +346,7 @@
             "EntityId": "ShipmentCustoms"
         },
         {
-            "Id": "01953d48-2799-7376-a12c-b7602cdc19a5",
+            "Id": "trucking_shipment_editor.Amount.4_1",
             "FieldName": "Amount",
             "Order": 4,
             "ComponentType": "Number",
@@ -364,7 +363,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-27d1-72ad-beca-6cbd9df75e2a",
+            "Id": "trucking_shipment_editor.Vat.5_1",
             "FieldName": "Vat",
             "Order": 5,
             "ComponentType": "Number",
@@ -380,7 +379,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-2804-71f2-8029-864cb3190bac",
+            "Id": "trucking_shipment_editor.CurrencyId.6_1",
             "FieldName": "CurrencyId",
             "Order": 6,
             "ComponentType": "Dropdown",
@@ -403,7 +402,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-283a-70e4-b120-ed450a02ee79",
+            "Id": "trucking_shipment_editor.TotalAmountTax.7",
             "FieldName": "TotalAmountTax",
             "Order": 7,
             "ComponentType": "Number",
@@ -420,7 +419,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-287b-75ef-9164-345fef1d5a37",
+            "Id": "trucking_shipment_editor.IsNoDocs.9",
             "FieldName": "IsNoDocs",
             "Order": 9,
             "ComponentType": "Checkbox",
@@ -435,7 +434,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-28b3-719b-ac62-c7bd27cb89bc",
+            "Id": "trucking_shipment_editor.Notes.12",
             "FieldName": "Notes",
             "Order": 12,
             "ComponentType": "Input",
@@ -450,7 +449,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-28e2-701b-93a1-1b23fb5debda",
+            "Id": "trucking_shipment_editor.InvoiceNo.13",
             "FieldName": "InvoiceNo",
             "Order": 13,
             "ComponentType": "Input",
@@ -465,7 +464,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-2918-728f-bf57-45fd47de6bac",
+            "Id": "trucking_shipment_editor.SettlementNo.14",
             "FieldName": "SettlementNo",
             "Order": 14,
             "ComponentType": "Input",
@@ -480,7 +479,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-2951-7211-a10f-4935b612efdc",
+            "Id": "trucking_shipment_editor.VendorId.0_1",
             "FieldName": "VendorId",
             "Order": 0,
             "ComponentType": "Dropdown",
@@ -502,7 +501,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-2985-769a-b58f-53cf5fccf5b0",
+            "Id": "trucking_shipment_editor.DescriptionId.1_1",
             "FieldName": "DescriptionId",
             "Order": 1,
             "ComponentType": "Dropdown",
@@ -525,7 +524,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-29c0-7206-9761-8bd34b5217bd",
+            "Id": "trucking_shipment_editor.Quantity.2",
             "FieldName": "Quantity",
             "Order": 2,
             "ComponentType": "Number",
@@ -542,7 +541,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-29f4-7558-b731-b766e7de38dd",
+            "Id": "trucking_shipment_editor.UnitId.3_1",
             "FieldName": "UnitId",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -564,7 +563,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-2a2c-77d9-872a-c0e378ff4503",
+            "Id": "trucking_shipment_editor.EmtyPickupId.16",
             "FieldName": "EmtyPickupId",
             "Order": 16,
             "ComponentType": "Dropdown",
@@ -583,7 +582,7 @@
             "EntityId": "ShipmentDetail1"
         },
         {
-            "Id": "01953d48-2aa2-72f0-b85a-c4114433c8eb",
+            "Id": "trucking_shipment_editor.DeliveryId.10",
             "FieldName": "DeliveryId",
             "Order": 10,
             "ComponentType": "Dropdown",
@@ -602,7 +601,7 @@
             "EntityId": "ShipmentDetail1"
         },
         {
-            "Id": "01953d48-2ae5-75b8-878e-cef8da92200b",
+            "Id": "trucking_shipment_editor.PickupId.7",
             "FieldName": "PickupId",
             "Order": 7,
             "ComponentType": "Dropdown",
@@ -621,7 +620,7 @@
             "EntityId": "ShipmentDetail1"
         },
         {
-            "Id": "01953d48-2b2b-7608-9cfc-ce496eb5adb1",
+            "Id": "trucking_shipment_editor.TotalAmountTax.7_1",
             "FieldName": "TotalAmountTax",
             "Order": 7,
             "ComponentType": "Number",
@@ -638,7 +637,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-2b61-7497-b201-40f6a19f7530",
+            "Id": "trucking_shipment_editor.InsertedBy.6",
             "FieldName": "InsertedBy",
             "Order": 6,
             "ComponentType": "Dropdown",
@@ -656,7 +655,7 @@
             "EntityId": "ShipmentTask"
         },
         {
-            "Id": "01953d48-2baf-74fa-adcd-b150e6518293",
+            "Id": "trucking_shipment_editor.IsNoDocs.9_1",
             "FieldName": "IsNoDocs",
             "Order": 9,
             "ComponentType": "Checkbox",
@@ -672,7 +671,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-2beb-716b-80f0-0fbab88913f9",
+            "Id": "trucking_shipment_editor.PickupDate.6",
             "FieldName": "PickupDate",
             "Order": 6,
             "ComponentType": "Datepicker",
@@ -686,7 +685,7 @@
             "EntityId": "ShipmentDetail1"
         },
         {
-            "Id": "01953d48-2c23-73f1-9061-acd6617f7f8e",
+            "Id": "trucking_shipment_editor.EtaTsDate.1",
             "FieldName": "EtaTsDate",
             "Order": 1,
             "ComponentType": "Datepicker",
@@ -699,7 +698,7 @@
             "EntityId": "EntityTransit"
         },
         {
-            "Id": "01953d48-2c52-74c8-8393-37e5a7362e82",
+            "Id": "trucking_shipment_editor.EtdTsDate.2",
             "FieldName": "EtdTsDate",
             "Order": 2,
             "ComponentType": "Datepicker",
@@ -712,7 +711,7 @@
             "EntityId": "EntityTransit"
         },
         {
-            "Id": "01953d48-2c88-74c3-9d60-33874da3fbe6",
+            "Id": "trucking_shipment_editor.PortTransitId.0",
             "FieldName": "PortTransitId",
             "Order": 0,
             "ComponentType": "Dropdown",
@@ -732,7 +731,7 @@
             "EntityId": "EntityTransit"
         },
         {
-            "Id": "01953d48-2cb5-7461-abe7-d70ea340c4d2",
+            "Id": "trucking_shipment_editor.DeliveryDate.11",
             "FieldName": "DeliveryDate",
             "Order": 11,
             "ComponentType": "Datepicker",
@@ -746,7 +745,7 @@
             "EntityId": "ShipmentDetail1"
         },
         {
-            "Id": "01953d48-2cf3-7171-8b2b-aed214dfa1df",
+            "Id": "trucking_shipment_editor.TruckStorageDate.20",
             "FieldName": "TruckStorageDate",
             "Order": 20,
             "ComponentType": "Datepicker",
@@ -760,7 +759,7 @@
             "EntityId": "ShipmentDetail1"
         },
         {
-            "Id": "01953d48-2d22-776f-8eae-902c4b0a0cdc",
+            "Id": "trucking_shipment_editor.MoocStorageDate.22",
             "FieldName": "MoocStorageDate",
             "Order": 22,
             "ComponentType": "Datepicker",
@@ -774,7 +773,7 @@
             "EntityId": "ShipmentDetail1"
         },
         {
-            "Id": "01953d48-2d53-72af-9e50-b801308ec013",
+            "Id": "trucking_shipment_editor.InvoiceNo.11",
             "FieldName": "InvoiceNo",
             "Order": 11,
             "ComponentType": "Input",
@@ -789,7 +788,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-2d82-7168-b679-c37bc28fc6c8",
+            "Id": "trucking_shipment_editor.ShipmentTypeId.5",
             "FieldName": "ShipmentTypeId",
             "Order": 5,
             "ComponentType": "Dropdown",
@@ -808,7 +807,7 @@
             "EntityId": "ShipmentCustoms"
         },
         {
-            "Id": "01953d48-2dae-731a-8960-41a76e1fe4f3",
+            "Id": "trucking_shipment_editor.ClosingTime.24",
             "FieldName": "ClosingTime",
             "Order": 24,
             "ComponentType": "Datepicker",
@@ -822,7 +821,7 @@
             "EntityId": "ShipmentDetail1"
         },
         {
-            "Id": "01953d48-2ddf-73dc-abdb-65fb9b42ed34",
+            "Id": "trucking_shipment_editor.Deadline.25",
             "FieldName": "Deadline",
             "Order": 25,
             "ComponentType": "Datepicker",
@@ -836,7 +835,7 @@
             "EntityId": "ShipmentDetail1"
         },
         {
-            "Id": "01953d48-2e4e-747d-9884-f96c6bfca93b",
+            "Id": "trucking_shipment_editor.ContainerTypeId.0",
             "FieldName": "ContainerTypeId",
             "Order": 0,
             "ComponentType": "Dropdown",
@@ -855,7 +854,7 @@
             "EntityId": "EntityContainer"
         },
         {
-            "Id": "01953d48-2e7f-73de-919e-6cfdefae101e",
+            "Id": "trucking_shipment_editor.TruckerId.3",
             "FieldName": "TruckerId",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -876,7 +875,7 @@
             "EntityId": "ShipmentDetail1"
         },
         {
-            "Id": "01953d48-2eb9-741d-a44c-f7be9d750155",
+            "Id": "trucking_shipment_editor.CoFormId.5",
             "FieldName": "CoFormId",
             "Order": 5,
             "ComponentType": "Dropdown",
@@ -895,7 +894,7 @@
             "EntityId": "ShipmentCustoms"
         },
         {
-            "Id": "01953d48-2ef3-7369-bfd5-5195cdfadd4e",
+            "Id": "trucking_shipment_editor.ContainerTypeId.1",
             "FieldName": "ContainerTypeId",
             "Order": 1,
             "ComponentType": "Dropdown",
@@ -914,7 +913,7 @@
             "EntityId": "ShipmentDetail1"
         },
         {
-            "Id": "01953d48-2f31-711e-bdbf-698625e4ec38",
+            "Id": "trucking_shipment_editor.ContainerNo.1",
             "FieldName": "ContainerNo",
             "Order": 1,
             "ComponentType": "Input",
@@ -929,7 +928,7 @@
             "EntityId": "EntityContainer"
         },
         {
-            "Id": "01953d48-2f65-752f-bfbb-e7337745e1c4",
+            "Id": "trucking_shipment_editor.SealNo.2",
             "FieldName": "SealNo",
             "Order": 2,
             "ComponentType": "Input",
@@ -943,7 +942,7 @@
             "EntityId": "EntityContainer"
         },
         {
-            "Id": "01953d48-2f97-701d-8ccc-64d9cbfb6a6e",
+            "Id": "trucking_shipment_editor.PKG.3",
             "FieldName": "PKG",
             "Order": 3,
             "ComponentType": "Number",
@@ -957,7 +956,7 @@
             "EntityId": "EntityContainer"
         },
         {
-            "Id": "01953d48-2fc7-760b-b55d-a42df6ad998f",
+            "Id": "trucking_shipment_editor.Weight.5",
             "FieldName": "Weight",
             "Order": 5,
             "ComponentType": "Number",
@@ -971,7 +970,7 @@
             "EntityId": "EntityContainer"
         },
         {
-            "Id": "01953d48-3002-7662-b638-fff23255f078",
+            "Id": "trucking_shipment_editor.CBM.6",
             "FieldName": "CBM",
             "Order": 6,
             "ComponentType": "Number",
@@ -985,7 +984,7 @@
             "EntityId": "EntityContainer"
         },
         {
-            "Id": "01953d48-302e-741e-8778-0154426a6c45",
+            "Id": "trucking_shipment_editor.Name.0",
             "FieldName": "Name",
             "Order": 0,
             "ComponentType": "Input",
@@ -1001,7 +1000,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-3066-7340-87da-ff79c65645c2",
+            "Id": "trucking_shipment_editor.IsPublic.1",
             "FieldName": "IsPublic",
             "Order": 1,
             "ComponentType": "Checkbox",
@@ -1016,7 +1015,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-30d5-77e8-96d7-bc23f5c6d023",
+            "Id": "trucking_shipment_editor.File.2",
             "FieldName": "File",
             "Order": 2,
             "ComponentType": "FileUpload",
@@ -1034,7 +1033,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-3104-71c4-9c8a-38dce113d8af",
+            "Id": "trucking_shipment_editor.InsertedDate.3",
             "FieldName": "InsertedDate",
             "Order": 3,
             "ComponentType": "Datepicker",
@@ -1049,7 +1048,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-3137-727d-82a9-780d0a6c95b2",
+            "Id": "trucking_shipment_editor.Name.0_1",
             "FieldName": "Name",
             "Order": 0,
             "ComponentType": "Input",
@@ -1065,7 +1064,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-316d-702b-8af3-da0475d4f039",
+            "Id": "trucking_shipment_editor.IsPublic.1_1",
             "FieldName": "IsPublic",
             "Order": 1,
             "ComponentType": "Checkbox",
@@ -1080,7 +1079,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-319c-710d-b145-5662d481bdc1",
+            "Id": "trucking_shipment_editor.File.2_1",
             "FieldName": "File",
             "Order": 2,
             "ComponentType": "FileUpload",
@@ -1098,7 +1097,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-31d9-74f8-91af-1fc92c82f1b1",
+            "Id": "trucking_shipment_editor.InsertedDate.3_1",
             "FieldName": "InsertedDate",
             "Order": 3,
             "ComponentType": "Datepicker",
@@ -1113,7 +1112,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-3213-72ad-afef-fd9f834858a0",
+            "Id": "trucking_shipment_editor.ObhId.8",
             "FieldName": "ObhId",
             "Order": 8,
             "ComponentType": "Dropdown",
@@ -1135,7 +1134,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-3246-70e1-b368-729a2f2d8360",
+            "Id": "trucking_shipment_editor.ObhId.8_1",
             "FieldName": "ObhId",
             "Order": 8,
             "ComponentType": "Dropdown",
@@ -1157,7 +1156,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-32bc-743d-9499-a2cecb96228e",
+            "Id": "trucking_shipment_editor.Tare.7",
             "FieldName": "Tare",
             "Order": 7,
             "ComponentType": "Number",
@@ -1171,7 +1170,7 @@
             "EntityId": "EntityContainer"
         },
         {
-            "Id": "01953d48-330a-763b-afcd-e8f1b611bdb8",
+            "Id": "trucking_shipment_editor.Description.8",
             "FieldName": "Description",
             "Order": 8,
             "ComponentType": "Input",
@@ -1185,7 +1184,7 @@
             "EntityId": "EntityContainer"
         },
         {
-            "Id": "01953d48-3352-76bc-8cfb-9f1b579a821a",
+            "Id": "trucking_shipment_editor.HSCode.9",
             "FieldName": "HSCode",
             "Order": 9,
             "ComponentType": "Input",
@@ -1199,7 +1198,7 @@
             "EntityId": "EntityContainer"
         },
         {
-            "Id": "01953d48-3387-76aa-aa17-3e23045a392b",
+            "Id": "trucking_shipment_editor.ClearanceNo.0",
             "FieldName": "ClearanceNo",
             "Order": 0,
             "ComponentType": "Input",
@@ -1214,7 +1213,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-33b9-70bc-987d-07bcab3a60a0",
+            "Id": "trucking_shipment_editor.CommercialInvoiceNo.7",
             "FieldName": "CommercialInvoiceNo",
             "Order": 7,
             "ComponentType": "Input",
@@ -1228,7 +1227,7 @@
             "EntityId": "ShipmentCustoms"
         },
         {
-            "Id": "01953d48-33fb-75fb-9385-fcee7467eab4",
+            "Id": "trucking_shipment_editor.SubService.10",
             "FieldName": "SubService",
             "Order": 10,
             "ComponentType": "Input",
@@ -1242,7 +1241,7 @@
             "EntityId": "ShipmentCustoms"
         },
         {
-            "Id": "01953d48-3434-7200-ac95-41514c94c6df",
+            "Id": "trucking_shipment_editor.HblSeaNo.8",
             "FieldName": "HblSeaNo",
             "Order": 8,
             "ComponentType": "Input",
@@ -1256,7 +1255,7 @@
             "EntityId": "ShipmentCustoms"
         },
         {
-            "Id": "01953d48-346d-759b-9667-fe281c30db9d",
+            "Id": "trucking_shipment_editor.CommodityId.14",
             "FieldName": "CommodityId",
             "Order": 14,
             "ComponentType": "Dropdown",
@@ -1275,7 +1274,7 @@
             "EntityId": "ShipmentDetail1"
         },
         {
-            "Id": "01953d48-349c-720e-b0a6-83dbb91cf07f",
+            "Id": "trucking_shipment_editor.ContainerNo.2",
             "FieldName": "ContainerNo",
             "Order": 2,
             "ComponentType": "Input",
@@ -1289,7 +1288,7 @@
             "EntityId": "ShipmentDetail1"
         },
         {
-            "Id": "01953d48-34cc-70da-b06d-e71550ea829b",
+            "Id": "trucking_shipment_editor.JobDate.1",
             "FieldName": "JobDate",
             "Order": 1,
             "ComponentType": "Datepicker",
@@ -1303,7 +1302,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-34f9-76bc-b2cd-23ab403198e7",
+            "Id": "trucking_shipment_editor.ServiceId.15",
             "FieldName": "ServiceId",
             "Order": 15,
             "ComponentType": "Dropdown",
@@ -1322,7 +1321,7 @@
             "EntityId": "ShipmentDetail1"
         },
         {
-            "Id": "01953d48-3535-712c-a750-3cc05f0f759f",
+            "Id": "trucking_shipment_editor.TruckNo.4",
             "FieldName": "TruckNo",
             "Order": 4,
             "ComponentType": "Input",
@@ -1336,7 +1335,7 @@
             "EntityId": "ShipmentDetail1"
         },
         {
-            "Id": "01953d48-356b-73ea-9aba-30dfa6e85315",
+            "Id": "trucking_shipment_editor.PickupContact.9",
             "FieldName": "PickupContact",
             "Order": 9,
             "ComponentType": "Input",
@@ -1350,7 +1349,7 @@
             "EntityId": "ShipmentDetail1"
         },
         {
-            "Id": "01953d48-35b1-779a-adb9-bcb274433bdf",
+            "Id": "trucking_shipment_editor.EstimateFinishDate.2",
             "FieldName": "EstimateFinishDate",
             "Order": 2,
             "ComponentType": "Datepicker",
@@ -1364,7 +1363,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-35ee-75dd-9507-9be2ad6f11a1",
+            "Id": "trucking_shipment_editor.Driver.5",
             "FieldName": "Driver",
             "Order": 5,
             "ComponentType": "Input",
@@ -1378,7 +1377,7 @@
             "EntityId": "ShipmentDetail1"
         },
         {
-            "Id": "01953d48-361b-7180-aad8-746dd70d3cae",
+            "Id": "trucking_shipment_editor.FinishDate.3",
             "FieldName": "FinishDate",
             "Order": 3,
             "ComponentType": "Datepicker",
@@ -1392,7 +1391,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-3654-738b-b622-77311e9c41bf",
+            "Id": "trucking_shipment_editor.PickupAddress.8",
             "FieldName": "PickupAddress",
             "Order": 8,
             "ComponentType": "Input",
@@ -1406,7 +1405,7 @@
             "EntityId": "ShipmentDetail1"
         },
         {
-            "Id": "01953d48-368a-7432-8837-2ed34e9f8796",
+            "Id": "trucking_shipment_editor.JobName.0",
             "FieldName": "JobName",
             "Order": 0,
             "ComponentType": "Input",
@@ -1420,7 +1419,7 @@
             "EntityId": "ShipmentTask"
         },
         {
-            "Id": "01953d48-36f9-7570-8ad2-ddfdbb7cebfc",
+            "Id": "trucking_shipment_editor.DeliveryAddress.12",
             "FieldName": "DeliveryAddress",
             "Order": 12,
             "ComponentType": "Input",
@@ -1434,7 +1433,7 @@
             "EntityId": "ShipmentDetail1"
         },
         {
-            "Id": "01953d48-3737-742e-aedc-26facdd3cecf",
+            "Id": "trucking_shipment_editor.WarehouseId.6",
             "FieldName": "WarehouseId",
             "Order": 6,
             "ComponentType": "Dropdown",
@@ -1453,7 +1452,7 @@
             "EntityId": "ShipmentCustoms"
         },
         {
-            "Id": "01953d48-3776-74f5-bdf1-76e21b1f12a3",
+            "Id": "trucking_shipment_editor.DeliveryContact.13",
             "FieldName": "DeliveryContact",
             "Order": 13,
             "ComponentType": "Input",
@@ -1467,7 +1466,7 @@
             "EntityId": "ShipmentDetail1"
         },
         {
-            "Id": "01953d48-37b2-70da-8393-bb67383b4075",
+            "Id": "trucking_shipment_editor.ContainerTypeId.0_1",
             "FieldName": "ContainerTypeId",
             "Order": 0,
             "ComponentType": "Dropdown",
@@ -1487,7 +1486,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-37f0-705f-b72b-636fa717738f",
+            "Id": "trucking_shipment_editor.ContainerNo.1_1",
             "FieldName": "ContainerNo",
             "Order": 1,
             "ComponentType": "Input",
@@ -1503,7 +1502,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-3820-72d9-b4ad-71fc84296dba",
+            "Id": "trucking_shipment_editor.SealNo.2_1",
             "FieldName": "SealNo",
             "Order": 2,
             "ComponentType": "Input",
@@ -1518,7 +1517,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-3857-7450-a351-60c47c0188d0",
+            "Id": "trucking_shipment_editor.IsPartial.3",
             "FieldName": "IsPartial",
             "Order": 3,
             "ComponentType": "Checkbox",
@@ -1533,7 +1532,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-388e-708e-a59a-12626c38ace1",
+            "Id": "trucking_shipment_editor.PKG.4",
             "FieldName": "PKG",
             "Order": 4,
             "ComponentType": "Number",
@@ -1548,7 +1547,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-38c5-7448-afaa-5d9e196ca39f",
+            "Id": "trucking_shipment_editor.Weight.6",
             "FieldName": "Weight",
             "Order": 6,
             "ComponentType": "Number",
@@ -1563,7 +1562,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-38ff-7088-ab87-6af2bbae5af2",
+            "Id": "trucking_shipment_editor.CBM.7",
             "FieldName": "CBM",
             "Order": 7,
             "ComponentType": "Number",
@@ -1578,7 +1577,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-3931-720f-bae9-2982573fd086",
+            "Id": "trucking_shipment_editor.Tare.8",
             "FieldName": "Tare",
             "Order": 8,
             "ComponentType": "Number",
@@ -1593,7 +1592,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-3979-753a-b12a-472c7d4e5779",
+            "Id": "trucking_shipment_editor.Description.9",
             "FieldName": "Description",
             "Order": 9,
             "ComponentType": "Input",
@@ -1608,7 +1607,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-39ac-716b-8d65-13cd63a50d70",
+            "Id": "trucking_shipment_editor.HSCode.10",
             "FieldName": "HSCode",
             "Order": 10,
             "ComponentType": "Input",
@@ -1623,7 +1622,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-39dc-752a-95fe-17916bdfe5eb",
+            "Id": "trucking_shipment_editor.UnitId.4",
             "FieldName": "UnitId",
             "Order": 4,
             "ComponentType": "Dropdown",
@@ -1642,7 +1641,7 @@
             "EntityId": "EntityContainer"
         },
         {
-            "Id": "01953d48-3a09-77a9-a975-a141d8b38ba9",
+            "Id": "trucking_shipment_editor.UnitId.5",
             "FieldName": "UnitId",
             "Order": 5,
             "ComponentType": "Dropdown",
@@ -1662,7 +1661,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-3a49-7184-9506-4ee6d7ab3dd5",
+            "Id": "trucking_shipment_editor.NewShipmentId.2",
             "FieldName": "NewShipmentId",
             "Order": 2,
             "ComponentType": "Dropdown",
@@ -1679,7 +1678,7 @@
             "EntityId": "SplitHbl"
         },
         {
-            "Id": "01953d48-3a81-7069-b960-41a8649b34b9",
+            "Id": "trucking_shipment_editor.Quantity.2_1",
             "FieldName": "Quantity",
             "Order": 2,
             "ComponentType": "Number",
@@ -1696,7 +1695,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-3ab0-709c-9def-dd7dfa65af2a",
+            "Id": "trucking_shipment_editor.HblIds.1",
             "FieldName": "HblIds",
             "Order": 1,
             "ComponentType": "Dropdown",
@@ -1714,7 +1713,7 @@
             "IsMultiple": true
         },
         {
-            "Id": "01953d48-3ae4-73cf-be57-11ac7cf3013b",
+            "Id": "trucking_shipment_editor.OptionIds.2",
             "FieldName": "OptionIds",
             "Order": 2,
             "ComponentType": "Dropdown",
@@ -1730,7 +1729,7 @@
             "IsMultiple": true
         },
         {
-            "Id": "01953d48-3b20-7742-a5f2-da66fe07cf25",
+            "Id": "trucking_shipment_editor.HblIds.1_1",
             "FieldName": "HblIds",
             "Order": 1,
             "ComponentType": "Dropdown",
@@ -1749,7 +1748,7 @@
             "IsMultiple": true
         },
         {
-            "Id": "01953d48-3b53-771e-a58d-9230bf21588a",
+            "Id": "trucking_shipment_editor.IsNew.3",
             "FieldName": "IsNew",
             "Order": 3,
             "ComponentType": "Checkbox",
@@ -1763,7 +1762,7 @@
             "EntityId": "SplitHbl"
         },
         {
-            "Id": "01953d48-3b92-736e-a9b8-e60f5deed1e1",
+            "Id": "trucking_shipment_editor.OptionIds.4",
             "FieldName": "OptionIds",
             "Order": 4,
             "ComponentType": "Dropdown",
@@ -1780,7 +1779,7 @@
             "IsMultiple": true
         },
         {
-            "Id": "01953d48-3bc7-72fd-8935-ccb091627d40",
+            "Id": "trucking_shipment_editor.OptionIds.4_1",
             "FieldName": "OptionIds",
             "Order": 4,
             "ComponentType": "Dropdown",
@@ -1797,7 +1796,7 @@
             "IsMultiple": true
         },
         {
-            "Id": "01953d48-3bfb-777a-b01a-000cf2791120",
+            "Id": "trucking_shipment_editor.ServiceCopyFee.1",
             "FieldName": "ServiceCopyFee",
             "Order": 1,
             "ComponentType": "Label",
@@ -1813,7 +1812,7 @@
             "IsMultiple": true
         },
         {
-            "Id": "01953d48-3c6c-726e-b7fd-fd372a7f530e",
+            "Id": "trucking_shipment_editor.ServiceCopyFee1.1",
             "FieldName": "ServiceCopyFee1",
             "Order": 1,
             "ComponentType": "Label",
@@ -1829,7 +1828,7 @@
             "IsMultiple": true
         },
         {
-            "Id": "01953d48-3c9e-77b0-b346-fc86bb85f17e",
+            "Id": "trucking_shipment_editor.HblId.3",
             "FieldName": "HblId",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -1847,7 +1846,7 @@
             "EntityId": "CopyFeeFromHBL1"
         },
         {
-            "Id": "01953d48-3cd1-716e-a72a-183c2bbe6aa4",
+            "Id": "trucking_shipment_editor.HblId.3_1",
             "FieldName": "HblId",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -1865,7 +1864,7 @@
             "EntityId": "CopyFeeFromHBL"
         },
         {
-            "Id": "01953d48-3d03-7288-8466-2a4ad955e2d4",
+            "Id": "trucking_shipment_editor.VendorId.0_2",
             "FieldName": "VendorId",
             "Order": 0,
             "ComponentType": "Dropdown",
@@ -1887,7 +1886,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-3d3b-73e8-b26c-3ea41af144a8",
+            "Id": "trucking_shipment_editor.DescriptionId.1_2",
             "FieldName": "DescriptionId",
             "Order": 1,
             "ComponentType": "Dropdown",
@@ -1910,7 +1909,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-3d6e-7072-a6f7-506c5d730f1b",
+            "Id": "trucking_shipment_editor.Quantity.2_2",
             "FieldName": "Quantity",
             "Order": 2,
             "ComponentType": "Number",
@@ -1927,7 +1926,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-3da0-7291-8ec3-ef4de81abf1d",
+            "Id": "trucking_shipment_editor.UnitId.3_2",
             "FieldName": "UnitId",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -1949,7 +1948,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-3dcf-77b9-be97-6b863020d31b",
+            "Id": "trucking_shipment_editor.Amount.4_2",
             "FieldName": "Amount",
             "Order": 4,
             "ComponentType": "Number",
@@ -1966,7 +1965,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-3dfe-71d2-9642-4e627e6b475c",
+            "Id": "trucking_shipment_editor.Vat.5_2",
             "FieldName": "Vat",
             "Order": 5,
             "ComponentType": "Number",
@@ -1982,7 +1981,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-3e30-75d6-b412-cd3caa8eb24c",
+            "Id": "trucking_shipment_editor.CurrencyId.6_2",
             "FieldName": "CurrencyId",
             "Order": 6,
             "ComponentType": "Dropdown",
@@ -2005,7 +2004,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-3e6e-719f-a0e1-4f1544147494",
+            "Id": "trucking_shipment_editor.TotalAmountTax.7_2",
             "FieldName": "TotalAmountTax",
             "Order": 7,
             "ComponentType": "Number",
@@ -2022,7 +2021,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-3ea1-72f7-8963-f722d08fe7b7",
+            "Id": "trucking_shipment_editor.ObhId.8_2",
             "FieldName": "ObhId",
             "Order": 8,
             "ComponentType": "Dropdown",
@@ -2044,7 +2043,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-3ee7-7311-8308-c34123849a31",
+            "Id": "trucking_shipment_editor.IsNoDocs.9_2",
             "FieldName": "IsNoDocs",
             "Order": 9,
             "ComponentType": "Checkbox",
@@ -2060,7 +2059,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-3f23-73a1-8a44-9c811252dec0",
+            "Id": "trucking_shipment_editor.Notes.10_1",
             "FieldName": "Notes",
             "Order": 10,
             "ComponentType": "Input",
@@ -2075,7 +2074,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-3f53-730a-8832-c020ff5f1ce7",
+            "Id": "trucking_shipment_editor.InvoiceNo.11_1",
             "FieldName": "InvoiceNo",
             "Order": 11,
             "ComponentType": "Input",
@@ -2090,7 +2089,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-3f88-764c-b713-432cfb068da0",
+            "Id": "trucking_shipment_editor.DescriptionId.1_3",
             "FieldName": "DescriptionId",
             "Order": 1,
             "ComponentType": "Dropdown",
@@ -2110,7 +2109,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-3fc1-7089-b1b6-d369243527cb",
+            "Id": "trucking_shipment_editor.EstimateRevenue.4",
             "FieldName": "EstimateRevenue",
             "Order": 4,
             "ComponentType": "Number",
@@ -2127,7 +2126,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-400b-72b8-bf5d-8d771d8b580e",
+            "Id": "trucking_shipment_editor.ActualRevenue.5",
             "FieldName": "ActualRevenue",
             "Order": 5,
             "ComponentType": "Number",
@@ -2145,7 +2144,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-403f-7368-9802-4b1e4506c0c0",
+            "Id": "trucking_shipment_editor.EstimateCost.2",
             "FieldName": "EstimateCost",
             "Order": 2,
             "ComponentType": "Number",
@@ -2162,7 +2161,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-4079-7178-92aa-7695896a973e",
+            "Id": "trucking_shipment_editor.ActualCost.3",
             "FieldName": "ActualCost",
             "Order": 3,
             "ComponentType": "Number",
@@ -2179,7 +2178,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-40af-74a3-9306-09d7789cf8ec",
+            "Id": "trucking_shipment_editor.EstimateProfit.6",
             "FieldName": "EstimateProfit",
             "Order": 6,
             "ComponentType": "Number",
@@ -2196,7 +2195,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-40e6-7535-bdf6-2f7ce5905031",
+            "Id": "trucking_shipment_editor.EstimatePerProfit.7",
             "FieldName": "EstimatePerProfit",
             "Order": 7,
             "ComponentType": "Number",
@@ -2211,7 +2210,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-4114-7203-9501-90afce6f9a0f",
+            "Id": "trucking_shipment_editor.ActualProfit.8",
             "FieldName": "ActualProfit",
             "Order": 8,
             "ComponentType": "Number",
@@ -2228,7 +2227,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-4146-7550-86f7-190fe2b964d8",
+            "Id": "trucking_shipment_editor.ActualPerProfit.9",
             "FieldName": "ActualPerProfit",
             "Order": 9,
             "ComponentType": "Number",
@@ -2243,7 +2242,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-4172-7444-9183-9358fe7f4a4b",
+            "Id": "trucking_shipment_editor.CurrencyId.1",
             "FieldName": "CurrencyId",
             "Order": 1,
             "ComponentType": "Input",
@@ -2260,7 +2259,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-41a4-748e-b815-3f787daca586",
+            "Id": "trucking_shipment_editor.EstimateRevenue.4_1",
             "FieldName": "EstimateRevenue",
             "Order": 4,
             "ComponentType": "Number",
@@ -2275,7 +2274,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-41d4-7423-8180-0c48b0102f45",
+            "Id": "trucking_shipment_editor.ActualRevenue.5_1",
             "FieldName": "ActualRevenue",
             "Order": 5,
             "ComponentType": "Number",
@@ -2290,7 +2289,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-4213-76ee-98d3-2420f07aedc0",
+            "Id": "trucking_shipment_editor.EstimateCost.2_1",
             "FieldName": "EstimateCost",
             "Order": 2,
             "ComponentType": "Number",
@@ -2305,7 +2304,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-4243-7279-b107-03c92242d3e2",
+            "Id": "trucking_shipment_editor.ActualCost.3_1",
             "FieldName": "ActualCost",
             "Order": 3,
             "ComponentType": "Number",
@@ -2320,7 +2319,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-4291-715d-89d9-a0909ba4ede4",
+            "Id": "trucking_shipment_editor.EstimateProfit.6_1",
             "FieldName": "EstimateProfit",
             "Order": 6,
             "ComponentType": "Number",
@@ -2335,7 +2334,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-42c2-7556-ba81-1c6b371f5894",
+            "Id": "trucking_shipment_editor.EstimatePerProfit.7_1",
             "FieldName": "EstimatePerProfit",
             "Order": 7,
             "ComponentType": "Number",
@@ -2350,7 +2349,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-42f3-7479-aa92-b248dbf38ee9",
+            "Id": "trucking_shipment_editor.ActualProfit.8_1",
             "FieldName": "ActualProfit",
             "Order": 8,
             "ComponentType": "Number",
@@ -2365,7 +2364,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-431f-7560-a46b-22e8f20879ca",
+            "Id": "trucking_shipment_editor.ActualPerProfit.9_1",
             "FieldName": "ActualPerProfit",
             "Order": 9,
             "ComponentType": "Number",
@@ -2380,7 +2379,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-434f-73ee-891b-b5571e4a3578",
+            "Id": "trucking_shipment_editor.IsAll.5",
             "FieldName": "IsAll",
             "Order": 5,
             "ComponentType": "Checkbox",
@@ -2396,7 +2395,7 @@
             "IsMultiple": true
         },
         {
-            "Id": "01953d48-437d-731c-bda7-8915ea6afb5e",
+            "Id": "trucking_shipment_editor.IsAll.5_1",
             "FieldName": "IsAll",
             "Order": 5,
             "ComponentType": "Checkbox",
@@ -2411,7 +2410,7 @@
             "IsMultiple": true
         },
         {
-            "Id": "01953d48-43ba-775b-8d27-a8ecd355302c",
+            "Id": "trucking_shipment_editor.IsAdvCustomer.10",
             "FieldName": "IsAdvCustomer",
             "Order": 10,
             "ComponentType": "Checkbox",
@@ -2426,7 +2425,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-43f9-7309-bb35-71bf40e4d041",
+            "Id": "trucking_shipment_editor.IsAdvProvider.11",
             "FieldName": "IsAdvProvider",
             "Order": 11,
             "ComponentType": "Checkbox",
@@ -2441,7 +2440,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d48-442a-74af-a1ec-c9f6a26a4080",
+            "Id": "trucking_shipment_editor.HblIds.1_2",
             "FieldName": "HblIds",
             "Order": 1,
             "ComponentType": "Dropdown",
@@ -2460,7 +2459,7 @@
             "IsMultiple": true
         },
         {
-            "Id": "01953d48-4457-731c-b265-3d7f3ac001fe",
+            "Id": "trucking_shipment_editor.OptionPLIds.2",
             "FieldName": "OptionPLIds",
             "Order": 2,
             "ComponentType": "Dropdown",
@@ -2477,7 +2476,7 @@
             "IsMultiple": true
         },
         {
-            "Id": "01953d48-448e-71fd-8505-c18efa7317b3",
+            "Id": "trucking_shipment_editor.CurrencyId.6_3",
             "FieldName": "CurrencyId",
             "Order": 6,
             "ComponentType": "Dropdown",
@@ -2497,7 +2496,7 @@
             "EntityId": "PrintPL"
         },
         {
-            "Id": "01953d48-44c2-74d8-bd2a-9af58f67d692",
+            "Id": "trucking_shipment_editor.IsAdv.9",
             "FieldName": "IsAdv",
             "Order": 9,
             "ComponentType": "Checkbox",
@@ -2512,7 +2511,7 @@
             "EntityName": "ShipmentDetail"
         },
         {
-            "Id": "01953d62-1b06-7159-8273-cc8b89aa9a03",
+            "Id": "trucking_shipment_editor.HblNo.0",
             "FieldName": "HblNo",
             "Order": 0,
             "ComponentType": "Input",
@@ -2525,7 +2524,7 @@
             "EntityId": "ShipmentDetail"
         },
         {
-            "Id": "01953d62-1b06-7159-8273-d3fe2b62fb07",
+            "Id": "trucking_shipment_editor.CustomerId.1",
             "FieldName": "CustomerId",
             "Order": 1,
             "ComponentType": "Dropdown",
@@ -2545,7 +2544,7 @@
             "EntityId": "ShipmentDetail"
         },
         {
-            "Id": "01953d71-68c8-73f1-95ad-334259ae672f",
+            "Id": "trucking_shipment_editor.CustomerId.0",
             "FieldName": "CustomerId",
             "Order": 0,
             "ComponentType": "Dropdown",
@@ -2569,7 +2568,7 @@
     ],
     "Components": [
         {
-            "Id": "01953d47-f748-725b-a020-f2af9358b7d2",
+            "Id": "trucking_shipment_editor.Container.0",
             "FieldName": "Container",
             "Order": 0,
             "ComponentType": "Section",
@@ -2578,7 +2577,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "01953d47-f7a7-7464-92c6-671f7c753f71",
+                    "Id": "Container.Container1.0_8",
                     "FieldName": "Container1",
                     "Order": 0,
                     "ComponentType": "Section",
@@ -2587,7 +2586,7 @@
                     "XxlOuterColumn": 12,
                     "Components": [
                         {
-                            "Id": "01953d47-f7d7-76bd-a41d-8b68424aaf9e",
+                            "Id": "Container1.Child1Container1.1_8",
                             "FieldName": "Child1Container1",
                             "Order": 1,
                             "ComponentType": "Section",
@@ -2596,7 +2595,7 @@
                             "XxlOuterColumn": 2,
                             "Components": [
                                 {
-                                    "Id": "01953d47-f809-704a-b9d2-43e8911dbf14",
+                                    "Id": "Child1Container1.Code.1_7",
                                     "FieldName": "Code",
                                     "Order": 1,
                                     "ComponentType": "Input",
@@ -2607,7 +2606,7 @@
                                     "Events": "{\"change\":\"GetInfo\"}"
                                 },
                                 {
-                                    "Id": "01953d47-f844-738e-82f2-ba95861983bd",
+                                    "Id": "Child1Container1.ShipmentDate.2_7",
                                     "FieldName": "ShipmentDate",
                                     "Order": 2,
                                     "ComponentType": "Datepicker",
@@ -2616,7 +2615,7 @@
                                     "ShowLabel": true
                                 },
                                 {
-                                    "Id": "01953d47-f874-754a-ac95-0f8073dc87f8",
+                                    "Id": "Child1Container1.VendorId.3_7",
                                     "FieldName": "VendorId",
                                     "Order": 3,
                                     "ComponentType": "Dropdown",
@@ -2633,7 +2632,7 @@
                                     "ShowHotKey": true
                                 },
                                 {
-                                    "Id": "01953d47-f8a6-70bd-b447-723ee1290720",
+                                    "Id": "Child1Container1.AgentId.4_7",
                                     "FieldName": "AgentId",
                                     "Order": 4,
                                     "ComponentType": "Dropdown",
@@ -2652,7 +2651,7 @@
                             ]
                         },
                         {
-                            "Id": "01953d47-f8de-7566-92f3-fe6e6f18fff5",
+                            "Id": "Container1.Child2Container1.2_8",
                             "FieldName": "Child2Container1",
                             "Order": 2,
                             "ComponentType": "Section",
@@ -2661,7 +2660,7 @@
                             "XxlOuterColumn": 4,
                             "Components": [
                                 {
-                                    "Id": "01953d47-f919-7332-9a54-d94da6280c23",
+                                    "Id": "Child2Container1.PolId.1_7",
                                     "FieldName": "PolId",
                                     "Order": 1,
                                     "ComponentType": "Dropdown",
@@ -2678,7 +2677,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01953d47-f949-71f4-80eb-74f772ce5d2f",
+                                    "Id": "Child2Container1.EtdDate.2_7",
                                     "FieldName": "EtdDate",
                                     "Order": 2,
                                     "ComponentType": "Datepicker",
@@ -2689,7 +2688,7 @@
                                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                                 },
                                 {
-                                    "Id": "01953d47-f97b-7428-9783-5ad5d78ad55b",
+                                    "Id": "Child2Container1.PodId.3_5",
                                     "FieldName": "PodId",
                                     "Order": 3,
                                     "ComponentType": "Dropdown",
@@ -2706,7 +2705,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01953d47-f9ae-75c6-9210-731bd744b1c5",
+                                    "Id": "Child2Container1.EtaDate.4_5",
                                     "FieldName": "EtaDate",
                                     "Order": 4,
                                     "ComponentType": "Datepicker",
@@ -2717,7 +2716,7 @@
                                     "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                                 },
                                 {
-                                    "Id": "01953d47-f9e5-7098-998a-542b057fd140",
+                                    "Id": "Child2Container1.EntityTransit.5_5",
                                     "FieldName": "EntityTransit",
                                     "Order": 5,
                                     "ComponentType": "GridView",
@@ -2739,7 +2738,7 @@
                             ]
                         },
                         {
-                            "Id": "01953d47-fa28-73ae-a5fa-6bfc98581a85",
+                            "Id": "Container1.Child3Container1.3_8",
                             "FieldName": "Child3Container1",
                             "Order": 3,
                             "ComponentType": "Section",
@@ -2748,7 +2747,7 @@
                             "XxlOuterColumn": 3,
                             "Components": [
                                 {
-                                    "Id": "01953d47-fa72-74f9-af87-9b961f42d6a4",
+                                    "Id": "Child3Container1.Vessel.1_5",
                                     "FieldName": "Vessel",
                                     "Order": 1,
                                     "ComponentType": "Input",
@@ -2759,7 +2758,7 @@
                                     "Events": "{    \"change\": \"DefaultDetail\"}"
                                 },
                                 {
-                                    "Id": "01953d47-faae-7566-97b8-76ae9342c6c6",
+                                    "Id": "Child3Container1.VesselVoy.2_5",
                                     "FieldName": "VesselVoy",
                                     "Order": 2,
                                     "ComponentType": "Input",
@@ -2770,7 +2769,7 @@
                                     "Events": "{    \"change\": \"DefaultDetail\"}"
                                 },
                                 {
-                                    "Id": "01953d47-faee-735c-8d9d-dc58e1a01366",
+                                    "Id": "Child3Container1.OceanVessel.3_5",
                                     "FieldName": "OceanVessel",
                                     "Order": 3,
                                     "ComponentType": "Input",
@@ -2781,7 +2780,7 @@
                                     "Events": "{    \"change\": \"DefaultDetail\"}"
                                 },
                                 {
-                                    "Id": "01953d47-fb1d-72ee-a47f-8fd43bda2065",
+                                    "Id": "Child3Container1.OceanVesselVoy.4_5",
                                     "FieldName": "OceanVesselVoy",
                                     "Order": 4,
                                     "ComponentType": "Input",
@@ -2792,7 +2791,7 @@
                                     "Events": "{    \"change\": \"DefaultDetail\"}"
                                 },
                                 {
-                                    "Id": "01953d47-fb4b-76ef-b459-1650500180f0",
+                                    "Id": "Child3Container1.MblNo.5_5",
                                     "FieldName": "MblNo",
                                     "Order": 5,
                                     "ComponentType": "Input",
@@ -2801,7 +2800,7 @@
                                     "ShowLabel": true
                                 },
                                 {
-                                    "Id": "01953d47-fb7d-71b2-a3f6-a132565167d1",
+                                    "Id": "Child3Container1.MblTypeId.6_5",
                                     "FieldName": "MblTypeId",
                                     "Order": 6,
                                     "ComponentType": "Dropdown",
@@ -2815,7 +2814,7 @@
                                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01953d47-fbb1-768b-9c29-859d787649d0",
+                                    "Id": "Child3Container1.BookingNo.7_5",
                                     "FieldName": "BookingNo",
                                     "Order": 7,
                                     "ComponentType": "Input",
@@ -2825,7 +2824,7 @@
                                     "ShowLabel": true
                                 },
                                 {
-                                    "Id": "01953d47-fbe0-72fd-90b3-22fb34a64e3b",
+                                    "Id": "Child3Container1.IsDirectMaster.8_5",
                                     "FieldName": "IsDirectMaster",
                                     "Order": 8,
                                     "ComponentType": "Checkbox",
@@ -2836,7 +2835,7 @@
                                     "Events": "{\r\n    \"change\": \"CalcDirectMaster\"\r\n}"
                                 },
                                 {
-                                    "Id": "01953d47-fc12-769e-8db6-c628053a00b4",
+                                    "Id": "Child3Container1.ContainerText.8_6",
                                     "FieldName": "ContainerText",
                                     "Order": 8,
                                     "ComponentType": "Label",
@@ -2848,7 +2847,7 @@
                             ]
                         },
                         {
-                            "Id": "01953d47-fc50-763e-b552-769b042b7a3d",
+                            "Id": "Container1.Child4Container1.4_8",
                             "FieldName": "Child4Container1",
                             "Order": 4,
                             "ComponentType": "Section",
@@ -2857,7 +2856,7 @@
                             "XxlOuterColumn": 5,
                             "Components": [
                                 {
-                                    "Id": "01953d47-fc87-7468-b61b-a206a499eb2e",
+                                    "Id": "Child4Container1.CommodityId.1_7",
                                     "FieldName": "CommodityId",
                                     "Order": 1,
                                     "ComponentType": "Dropdown",
@@ -2873,7 +2872,7 @@
                                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01953d47-fccd-72c7-842e-2c0b8a5c941f",
+                                    "Id": "Child4Container1.ShipmentTypeId.2_7",
                                     "FieldName": "ShipmentTypeId",
                                     "Order": 2,
                                     "ComponentType": "Dropdown",
@@ -2889,7 +2888,7 @@
                                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]"
                                 },
                                 {
-                                    "Id": "01953d47-fd13-709b-9509-38fdd9162793",
+                                    "Id": "Child4Container1.PoNo.3_5",
                                     "FieldName": "PoNo",
                                     "Order": 3,
                                     "ComponentType": "Input",
@@ -2898,7 +2897,7 @@
                                     "ShowLabel": true
                                 },
                                 {
-                                    "Id": "01953d47-fd53-7379-8e7a-c6d86eb02f11",
+                                    "Id": "Child4Container1.EntityContainer.4_5",
                                     "FieldName": "EntityContainer",
                                     "Order": 4,
                                     "ComponentType": "GridView",
@@ -2917,7 +2916,7 @@
                                     "Editable": true
                                 },
                                 {
-                                    "Id": "01953d47-fe6e-71d8-8f6b-e20a21fd476f",
+                                    "Id": "Child4Container1.Quantity.6_5",
                                     "FieldName": "Quantity",
                                     "Order": 6,
                                     "ComponentType": "Number",
@@ -2928,7 +2927,7 @@
                                     "ShowLabel": true
                                 },
                                 {
-                                    "Id": "01953d47-fea1-72ab-bd1a-0408a25c74b0",
+                                    "Id": "Child4Container1.UnitId.7_5",
                                     "FieldName": "UnitId",
                                     "Order": 7,
                                     "ComponentType": "Dropdown",
@@ -2943,7 +2942,7 @@
                                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]"
                                 },
                                 {
-                                    "Id": "01953d47-fee4-7310-ae55-6b65e1b6ee47",
+                                    "Id": "Child4Container1.GW.8_5",
                                     "FieldName": "GW",
                                     "Order": 8,
                                     "ComponentType": "Number",
@@ -2954,7 +2953,7 @@
                                     "ShowLabel": true
                                 },
                                 {
-                                    "Id": "01953d47-ff15-7629-8500-07c23135f657",
+                                    "Id": "Child4Container1.CW.9_5",
                                     "FieldName": "CW",
                                     "Order": 9,
                                     "ComponentType": "Number",
@@ -2965,7 +2964,7 @@
                                     "ShowLabel": true
                                 },
                                 {
-                                    "Id": "01953d47-ff55-741d-b872-80aff837a754",
+                                    "Id": "Child4Container1.CBM.10_5",
                                     "FieldName": "CBM",
                                     "Order": 10,
                                     "ComponentType": "Number",
@@ -2978,7 +2977,7 @@
                             ]
                         },
                         {
-                            "Id": "01953d47-ff8a-72bf-bafb-d4645c882936",
+                            "Id": "Container1.Child5Container1.5_8",
                             "FieldName": "Child5Container1",
                             "Order": 5,
                             "ComponentType": "Section",
@@ -2990,7 +2989,7 @@
                             "IsDropDown": true,
                             "Components": [
                                 {
-                                    "Id": "01953d47-ffc5-75f9-af93-49e3d9934b0f",
+                                    "Id": "Child5Container1.CarrierId.1_8",
                                     "FieldName": "CarrierId",
                                     "Order": 1,
                                     "ComponentType": "Dropdown",
@@ -3008,7 +3007,7 @@
                                     "ShowHotKey": true
                                 },
                                 {
-                                    "Id": "01953d48-0000-7205-8b8c-b180dc2cfa89",
+                                    "Id": "Child5Container1.FromDate.2_8",
                                     "FieldName": "FromDate",
                                     "Order": 2,
                                     "ComponentType": "Datepicker",
@@ -3017,7 +3016,7 @@
                                     "ShowLabel": true
                                 },
                                 {
-                                    "Id": "01953d48-0030-7654-85a6-ab87d1cc0d99",
+                                    "Id": "Child5Container1.ToDate.3_6",
                                     "FieldName": "ToDate",
                                     "Order": 3,
                                     "ComponentType": "Datepicker",
@@ -3026,7 +3025,7 @@
                                     "ShowLabel": true
                                 },
                                 {
-                                    "Id": "01953d48-0075-72db-b094-68bdf08a63b7",
+                                    "Id": "Child5Container1.OtherRefno.4_6",
                                     "FieldName": "OtherRefno",
                                     "Order": 4,
                                     "ComponentType": "Input",
@@ -3035,7 +3034,7 @@
                                     "ShowLabel": true
                                 },
                                 {
-                                    "Id": "01953d48-00b5-74c6-83b1-87b637ba561a",
+                                    "Id": "Child5Container1.Notes.5_8",
                                     "FieldName": "Notes",
                                     "Order": 5,
                                     "ComponentType": "Textarea",
@@ -3047,7 +3046,7 @@
                                     "ShowLabel": true
                                 },
                                 {
-                                    "Id": "01953d48-00ee-7203-92f9-461a9bfb5649",
+                                    "Id": "Child5Container1.DeliveryTermId.6_6",
                                     "FieldName": "DeliveryTermId",
                                     "Order": 6,
                                     "ComponentType": "Dropdown",
@@ -3061,7 +3060,7 @@
                                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01953d48-012e-74ff-a28e-a4febdf74b30",
+                                    "Id": "Child5Container1.CyId.7_6",
                                     "FieldName": "CyId",
                                     "Order": 7,
                                     "ComponentType": "Dropdown",
@@ -3076,7 +3075,7 @@
                                     "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01953d48-0162-74ec-98fc-efca2697ec05",
+                                    "Id": "Child5Container1.IncotermId.8_6",
                                     "FieldName": "IncotermId",
                                     "Order": 8,
                                     "ComponentType": "Dropdown",
@@ -3090,7 +3089,7 @@
                                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01953d48-0198-7059-b0f6-92cffc934c77",
+                                    "Id": "Child5Container1.ServiceId.9_6",
                                     "FieldName": "ServiceId",
                                     "Order": 9,
                                     "ComponentType": "Dropdown",
@@ -3105,7 +3104,7 @@
                                     "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                                 },
                                 {
-                                    "Id": "01953d48-01c9-7651-ab7c-50fc526b32e2",
+                                    "Id": "Child5Container1.SubscribersIds.10_8",
                                     "FieldName": "SubscribersIds",
                                     "Order": 10,
                                     "ComponentType": "Dropdown",
@@ -3121,7 +3120,7 @@
                                     "IsMultiple": true
                                 },
                                 {
-                                    "Id": "01953d48-0209-72eb-a261-0dfb37df6477",
+                                    "Id": "Child5Container1.InsertedBy.11_6",
                                     "FieldName": "InsertedBy",
                                     "Order": 11,
                                     "ComponentType": "Dropdown",
@@ -3137,7 +3136,7 @@
                                     "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]"
                                 },
                                 {
-                                    "Id": "01953d48-0240-72fc-a08b-7c116a1b65dc",
+                                    "Id": "Child5Container1.IsComplete.12_6",
                                     "FieldName": "IsComplete",
                                     "Order": 12,
                                     "ComponentType": "Checkbox",
@@ -3147,7 +3146,7 @@
                                     "PopulateField": "if (this.Entity.IsComplete) {\r\n    this.Entity.CompleteDate = this.dayjs();\r\n}"
                                 },
                                 {
-                                    "Id": "01953d48-0272-700c-9989-28a4227ea314",
+                                    "Id": "Child5Container1.PriorityDate.13_5",
                                     "FieldName": "PriorityDate",
                                     "Order": 13,
                                     "ComponentType": "Datepicker",
@@ -3160,7 +3159,7 @@
                     ]
                 },
                 {
-                    "Id": "01953d48-02a2-7368-8187-257e864d5762",
+                    "Id": "Container.Container2.1_8",
                     "FieldName": "Container2",
                     "Order": 1,
                     "ComponentType": "Section",
@@ -3170,7 +3169,7 @@
                     "XxlOuterColumn": 12,
                     "Components": [
                         {
-                            "Id": "01953d48-02df-710f-b66a-fe982b57cb72",
+                            "Id": "Container2.Container2Left.1_8",
                             "FieldName": "Container2Left",
                             "Order": 1,
                             "ComponentType": "Section",
@@ -3179,7 +3178,7 @@
                             "XxlOuterColumn": 10,
                             "Components": [
                                 {
-                                    "Id": "01953d60-d670-7587-827b-58d0476e40d6",
+                                    "Id": "Container2Left.Section.10_7",
                                     "Order": 10,
                                     "ComponentType": "Section",
                                     "Label": "Details",
@@ -3189,7 +3188,7 @@
                                     "XxlOuterColumn": 14,
                                     "Components": [
                                         {
-                                            "Id": "01953d61-7653-7587-a76c-2b5654564727",
+                                            "Id": "Section.ShipmentDetail1.1",
                                             "FieldName": "ShipmentDetail1",
                                             "Order": 1,
                                             "ComponentType": "GridView",
@@ -3208,7 +3207,7 @@
                                     ]
                                 },
                                 {
-                                    "Id": "01953d48-16b2-7752-b78a-ba059891fe15",
+                                    "Id": "Container2Left.Section.11_8",
                                     "Order": 11,
                                     "ComponentType": "Section",
                                     "Label": "Pricing",
@@ -3218,7 +3217,7 @@
                                     "DisplayBadge": true,
                                     "Components": [
                                         {
-                                            "Id": "01953d48-16e2-76e9-bd96-7502dd99e257",
+                                            "Id": "Section.B.1_8",
                                             "FieldName": "B",
                                             "Order": 1,
                                             "ComponentType": "Section",
@@ -3232,7 +3231,7 @@
                                             "TableName": "Shipment",
                                             "Components": [
                                                 {
-                                                    "Id": "01953d48-171d-772c-9665-ad6fd039bd0e",
+                                                    "Id": "B.ShipmentFee2.2_8",
                                                     "FieldName": "ShipmentFee2",
                                                     "Order": 2,
                                                     "ComponentType": "GridView",
@@ -3260,7 +3259,7 @@
                                             ]
                                         },
                                         {
-                                            "Id": "01953d48-1764-7024-b059-5f1f57f19678",
+                                            "Id": "Section.B.2",
                                             "FieldName": "B",
                                             "Order": 2,
                                             "ComponentType": "Section",
@@ -3274,7 +3273,7 @@
                                             "TableName": "Shipment",
                                             "Components": [
                                                 {
-                                                    "Id": "01953d48-179c-73bf-85b0-9d356e3672a8",
+                                                    "Id": "B.ShipmentFee.2",
                                                     "FieldName": "ShipmentFee",
                                                     "Order": 2,
                                                     "ComponentType": "GridView",
@@ -3302,7 +3301,7 @@
                                             ]
                                         },
                                         {
-                                            "Id": "01953d48-17df-748b-badf-d4daefc4162c",
+                                            "Id": "Section.Section.3_11",
                                             "Order": 3,
                                             "ComponentType": "Section",
                                             "Label": "Advance & Reibursiment",
@@ -3316,7 +3315,7 @@
                                             "TableName": "Shipment",
                                             "Components": [
                                                 {
-                                                    "Id": "01953d48-1833-7410-b15f-302dd750e7ea",
+                                                    "Id": "Section.ShipmentFee3.2_8",
                                                     "FieldName": "ShipmentFee3",
                                                     "Order": 2,
                                                     "ComponentType": "GridView",
@@ -3342,7 +3341,7 @@
                                             ]
                                         },
                                         {
-                                            "Id": "01953d48-1878-7088-868e-cd1c75e82e7b",
+                                            "Id": "Section.Section.4_10",
                                             "Order": 4,
                                             "ComponentType": "Section",
                                             "Label": "Profit & Loss",
@@ -3355,7 +3354,7 @@
                                             "TableName": "Shipment",
                                             "Components": [
                                                 {
-                                                    "Id": "01953d48-18b2-7549-9ccf-18773c8f26eb",
+                                                    "Id": "Section.C.1_5",
                                                     "FieldName": "C",
                                                     "Order": 1,
                                                     "ComponentType": "Section",
@@ -3368,7 +3367,7 @@
                                                     "TableName": "Shipment",
                                                     "Components": [
                                                         {
-                                                            "Id": "01953d48-18f0-7705-9c7b-5570d604f9e6",
+                                                            "Id": "C.ProfitLoss.2_5",
                                                             "FieldName": "ProfitLoss",
                                                             "Order": 2,
                                                             "ComponentType": "GridView",
@@ -3386,7 +3385,7 @@
                                                     ]
                                                 },
                                                 {
-                                                    "Id": "01953d48-192e-7098-949c-4d7e6d57e3b0",
+                                                    "Id": "Section.Section.2_28",
                                                     "Order": 2,
                                                     "ComponentType": "Section",
                                                     "Label": "Summary",
@@ -3399,7 +3398,7 @@
                                                     "TableName": "Shipment",
                                                     "Components": [
                                                         {
-                                                            "Id": "01953d48-196b-7011-b06a-06271a79ff7d",
+                                                            "Id": "Section.ProfitLoss2.2_6",
                                                             "FieldName": "ProfitLoss2",
                                                             "Order": 2,
                                                             "ComponentType": "GridView",
@@ -3421,7 +3420,7 @@
                                     ]
                                 },
                                 {
-                                    "Id": "01953d48-19ab-710e-94a0-a051e46ae6ce",
+                                    "Id": "Container2Left.Section.12_8",
                                     "Order": 12,
                                     "ComponentType": "Section",
                                     "Label": "Document",
@@ -3432,7 +3431,7 @@
                                     "DisplayBadge": true,
                                     "Components": [
                                         {
-                                            "Id": "01953d48-19ed-712f-9516-88a934d5f8d7",
+                                            "Id": "Section.BB.1_8",
                                             "FieldName": "BB",
                                             "Order": 1,
                                             "ComponentType": "Section",
@@ -3444,7 +3443,7 @@
                                             "DisplayBadge": true,
                                             "Components": [
                                                 {
-                                                    "Id": "01953d48-1a2a-711e-bc75-654d35662396",
+                                                    "Id": "BB.EntityAttachedIn.9_8",
                                                     "FieldName": "EntityAttachedIn",
                                                     "Order": 9,
                                                     "ComponentType": "GridView",
@@ -3465,7 +3464,7 @@
                                             ]
                                         },
                                         {
-                                            "Id": "01953d48-1a6d-7345-82be-3d31436499cf",
+                                            "Id": "Section.Section.2_29",
                                             "Order": 2,
                                             "ComponentType": "Section",
                                             "Label": "Out",
@@ -3476,7 +3475,7 @@
                                             "XxlOuterColumn": 12,
                                             "Components": [
                                                 {
-                                                    "Id": "01953d48-1ab1-708c-aef9-e118545d634f",
+                                                    "Id": "Section.EntityAttachedOut.9_8",
                                                     "FieldName": "EntityAttachedOut",
                                                     "Order": 9,
                                                     "ComponentType": "GridView",
@@ -3499,7 +3498,7 @@
                                     ]
                                 },
                                 {
-                                    "Id": "01953d48-1ae6-779f-85a3-10fcdab4b4ed",
+                                    "Id": "Container2Left.Section.13_8",
                                     "Order": 13,
                                     "ComponentType": "Section",
                                     "Label": "Activities",
@@ -3510,7 +3509,7 @@
                                     "TableName": "Shipment",
                                     "Components": [
                                         {
-                                            "Id": "01953d48-1b4a-77ea-87b6-14e778bac635",
+                                            "Id": "Section.ShipmentTask.1_8",
                                             "FieldName": "ShipmentTask",
                                             "Order": 1,
                                             "ComponentType": "GridView",
@@ -3532,7 +3531,7 @@
                             ]
                         },
                         {
-                            "Id": "01953d48-1b8c-761e-ba2b-ef1b0344bc7e",
+                            "Id": "Container2.Container2Right.10",
                             "FieldName": "Container2Right",
                             "Order": 10,
                             "ComponentType": "Section",
@@ -3542,7 +3541,7 @@
                             "XxlOuterColumn": 2,
                             "Components": [
                                 {
-                                    "Id": "01953d48-1bc5-7037-a029-1730fb021cb5",
+                                    "Id": "Container2Right.ShipmentDetail.1_6",
                                     "FieldName": "ShipmentDetail",
                                     "Order": 1,
                                     "ComponentType": "GridView",
@@ -3560,7 +3559,7 @@
                                     "OrderBy": "ds.InsertedDate desc"
                                 },
                                 {
-                                    "Id": "01953d48-1c32-774c-8722-f9ce7b09acb6",
+                                    "Id": "Container2Right.ServiceBookingLocal.2_8",
                                     "FieldName": "ServiceBookingLocal",
                                     "Order": 2,
                                     "ComponentType": "Label",
@@ -3577,7 +3576,7 @@
             ]
         },
         {
-            "Id": "01953d48-1c64-72ea-a3a1-6c34b52a88a5",
+            "Id": "trucking_shipment_editor.Center.5",
             "FieldName": "Center",
             "Order": 5,
             "ComponentType": "Section",
@@ -3586,7 +3585,7 @@
             "XxlCol": 12
         },
         {
-            "Id": "01953d48-1c97-77fe-99ba-7e69704da4b7",
+            "Id": "trucking_shipment_editor.Button.8",
             "FieldName": "Button",
             "Order": 8,
             "ComponentType": "Section",
@@ -3595,7 +3594,7 @@
             "XxlOuterColumn": 12,
             "Components": [
                 {
-                    "Id": "01953d48-1cc6-773f-8578-3456befd0e1c",
+                    "Id": "Button.btnCopyJob.1_9",
                     "FieldName": "btnCopyJob",
                     "Order": 1,
                     "ComponentType": "Button",
@@ -3609,7 +3608,7 @@
                     "PreQuery": "{\r\n    \"Id\": this.Entity.Id,\r\n    \"HblIds\": this.Entity.HblIds ? this.Entity.HblIds.split(',').map(id => `'${id}'`).join(',') : '',\r\n    \"TypeIds\": this.Entity.OptionIds ? this.Entity.OptionIds.split(',').map(id => `${id}`).join(',') : '-1',\r\n    \"IsObh\": this.Entity.OptionIds && this.Entity.OptionIds.includes('5') ? 1 : 0\r\n}"
                 },
                 {
-                    "Id": "01953d48-1d00-716d-a9a3-cf670ab03664",
+                    "Id": "Button.btnCopyHbl.2_9",
                     "FieldName": "btnCopyHbl",
                     "Order": 2,
                     "ComponentType": "Button",
@@ -3623,7 +3622,7 @@
                     "PreQuery": "{\r\n    \"Id\": this.Entity.Id,\r\n    \"HblIds\": this.Entity.HblIds ? this.Entity.HblIds.split(',').map(id => `'${id}'`).join(',') : '',\r\n    \"TypeIds\": this.Entity.OptionIds ? this.Entity.OptionIds.split(',').map(id => `${id}`).join(',') : '-1',\r\n    \"IsObh\": this.Entity.OptionIds && this.Entity.OptionIds.includes('5') ? 1 : 0\r\n}"
                 },
                 {
-                    "Id": "01953d48-1d3e-71de-89dc-442dff13c36d",
+                    "Id": "Button.btnChangeService.3_9",
                     "FieldName": "btnChangeService",
                     "Order": 3,
                     "ComponentType": "Button",
@@ -3635,7 +3634,7 @@
                     "Events": "{\r\n    \"click\": \"ChangeService\"\r\n}"
                 },
                 {
-                    "Id": "01953d48-1d74-73cd-9c6c-e478dbf8c6af",
+                    "Id": "Button.btnSplitSHbl.4_9",
                     "FieldName": "btnSplitSHbl",
                     "Order": 4,
                     "ComponentType": "Button",
@@ -3649,7 +3648,7 @@
                     "PreQuery": "{\r\n    \"Id\": this.Entity.Id,\r\n    \"HblIds\": this.Entity.HblIds ? this.Entity.HblIds.split(',').map(id => `'${id}'`).join(',') : '',\r\n    \"TypeIds\": this.Entity.OptionIds ? this.Entity.OptionIds.split(',').map(id => `${id}`).join(',') : '-1',\r\n    \"IsObh\": this.Entity.OptionIds && this.Entity.OptionIds.includes('5') ? 1 : 0\r\n}"
                 },
                 {
-                    "Id": "01953d48-1da8-7291-a886-8305e35d7460",
+                    "Id": "Button.btnPrint.5_6",
                     "FieldName": "btnPrint",
                     "Order": 5,
                     "ComponentType": "Pdf",
@@ -3665,7 +3664,7 @@
                     "TableName": "Shipment"
                 },
                 {
-                    "Id": "01953d48-1e2a-766c-810c-a15d5c829680",
+                    "Id": "Button.btnPrint.6_6",
                     "FieldName": "btnPrint",
                     "Order": 6,
                     "ComponentType": "Pdf",
@@ -3683,7 +3682,7 @@
                     "ExcelUrl": "https://localhost:7002/upload/DEV/U1/TEMPLATE_KHAI_MNF (1)-0674f1db-aa48-79b0-8000-aef4e8748934-0674f1f6-a94e-7924-8000-c52ca3a254f6.xlsx"
                 },
                 {
-                    "Id": "01953d48-1e7b-7055-937f-48db14e80aae",
+                    "Id": "Button.btnPrint.7_18",
                     "FieldName": "btnPrint",
                     "Order": 7,
                     "ComponentType": "Pdf",
@@ -3700,7 +3699,7 @@
                     "TableName": "Shipment"
                 },
                 {
-                    "Id": "01953d48-1ebf-7476-b9bb-8e2a77378c75",
+                    "Id": "Button.btnPL.7_5",
                     "FieldName": "btnPL",
                     "Order": 7,
                     "ComponentType": "Pdf",
@@ -3716,7 +3715,7 @@
                     "PreQuery": "{\r\n    \"HblIds\": this.Entity.HblIds ? this.Entity.HblIds.split(',').map(id => `'${id}'`).join(',') : '',\r\n}"
                 },
                 {
-                    "Id": "01953d48-1f0e-73e8-bd43-e4d5f64c4d3f",
+                    "Id": "Button.btnPrint.7_19",
                     "FieldName": "btnPrint",
                     "Order": 7,
                     "ComponentType": "Pdf",
@@ -3733,7 +3732,7 @@
                     "TableName": "Shipment"
                 },
                 {
-                    "Id": "01953d48-1fa5-7704-8c13-b18987670bad",
+                    "Id": "Button.btnPrint.7_20",
                     "FieldName": "btnPrint",
                     "Order": 7,
                     "ComponentType": "Pdf",
@@ -3750,7 +3749,7 @@
                     "TableName": "Shipment"
                 },
                 {
-                    "Id": "01953d48-2008-750e-b491-dd4bb3a29d42",
+                    "Id": "Button.btnProofDelivery.8_5",
                     "FieldName": "btnProofDelivery",
                     "Order": 8,
                     "ComponentType": "Button",
@@ -3765,7 +3764,7 @@
                     "TableName": "Shipment"
                 },
                 {
-                    "Id": "01953d48-2059-74af-9d28-b4a8c21d8ef4",
+                    "Id": "Button.btnManifest.8_5",
                     "FieldName": "btnManifest",
                     "Order": 8,
                     "ComponentType": "Excel",
@@ -3782,7 +3781,7 @@
                     "ExcelUrl": "https://api.nguyenduyphong.id.vn/upload/DEV/U1/MANIFEST-067555b7-5042-73a3-8000-bb9d2c8fb290.xlsx"
                 },
                 {
-                    "Id": "01953d48-2096-744f-8e64-e15ef7d44133",
+                    "Id": "Button.btnShippingInstruction.9_5",
                     "FieldName": "btnShippingInstruction",
                     "Order": 9,
                     "ComponentType": "Button",
@@ -3795,7 +3794,7 @@
                     "ShowExp": "!this.EditForm.Entity.Id.startsWith(\"-\")"
                 },
                 {
-                    "Id": "01953d48-20d2-777e-8b15-62ab41201ffa",
+                    "Id": "Button.btnManifest2.9_5",
                     "FieldName": "btnManifest2",
                     "Order": 9,
                     "ComponentType": "Excel",
@@ -3812,7 +3811,7 @@
                     "ExcelUrl": "https://api.nguyenduyphong.id.vn/upload/DEV/U1/MANIFEST-067555b7-5042-73a3-8000-bb9d2c8fb290.xlsx"
                 },
                 {
-                    "Id": "01953d48-2139-725d-b9cf-8efc75add89f",
+                    "Id": "Button.btnSubmitSI.9_14",
                     "FieldName": "btnSubmitSI",
                     "Order": 9,
                     "ComponentType": "Button",
@@ -3827,7 +3826,7 @@
                     "TableName": "Shipment"
                 },
                 {
-                    "Id": "01953d48-2174-71be-be94-40d2506080b4",
+                    "Id": "Button.btnSubmitSI.9_15",
                     "FieldName": "btnSubmitSI",
                     "Order": 9,
                     "ComponentType": "Button",
@@ -3842,7 +3841,7 @@
                     "TableName": "Shipment"
                 },
                 {
-                    "Id": "01953d48-21ac-750f-955d-3b2161461d4a",
+                    "Id": "Button.btnIssueInvoice.10_7",
                     "FieldName": "btnIssueInvoice",
                     "Order": 10,
                     "ComponentType": "Button",
@@ -3855,7 +3854,7 @@
                     "ShowExp": "!this.EditForm.Entity.Id.startsWith(\"-\")"
                 },
                 {
-                    "Id": "01953d48-21e6-7267-a71c-aca78aed1aca",
+                    "Id": "Button.btnPaymentRequest.10_7",
                     "FieldName": "btnPaymentRequest",
                     "Order": 10,
                     "ComponentType": "Button",
@@ -3868,7 +3867,7 @@
                     "ShowExp": "!this.EditForm.Entity.Id.startsWith(\"-\")"
                 },
                 {
-                    "Id": "01953d48-221f-750a-b57b-3681ddc54e5f",
+                    "Id": "Button.btnAllocationCost.11_5",
                     "FieldName": "btnAllocationCost",
                     "Order": 11,
                     "ComponentType": "Button",
@@ -3881,7 +3880,7 @@
                     "ShowExp": "!this.EditForm.Entity.Id.startsWith(\"-\")"
                 },
                 {
-                    "Id": "01953d48-225d-70f3-b487-742783ec6de7",
+                    "Id": "Button.btnSave.12_5",
                     "FieldName": "btnSave",
                     "Order": 12,
                     "ComponentType": "Button",
@@ -3897,22 +3896,18 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "13A4D4F3-2D24-4C7F-8189-EBA844DD9469",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "14484835-94EE-4D26-A3EC-FDBF65DE6017",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "1EFCC1DF-65D9-41A8-8E59-481BD294A932",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "3563F5EA-B105-4892-8B40-9E8C6ED04B4B",
             "RoleId": "ADMIN",
             "CanRead": true,
             "CanReadAll": true,
@@ -3923,23 +3918,19 @@
             "TableName": "Feature"
         },
         {
-            "Id": "38048E85-1D8E-427B-B22F-25C860E540C1",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "38A0C101-6326-4341-9359-676D91D7118F",
             "RoleId": "SALES",
             "CanRead": true,
             "TableName": "Feature"
         },
         {
-            "Id": "3E4B1002-17C2-496A-B9C8-D8F0FF4A998A",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "4818141C-6B34-4E09-A0C3-B9F011E39C68",
             "RoleId": "DOCS",
             "CanRead": true,
             "CanWrite": true,
@@ -3947,7 +3938,6 @@
             "TableName": "Feature"
         },
         {
-            "Id": "77FB36F9-C9E4-4F5E-87AD-46977516CDDC",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -3958,7 +3948,6 @@
             "TableName": "Feature"
         },
         {
-            "Id": "EEC09950-B465-4B85-8884-CFC077EA7121",
             "RoleId": "PRICING",
             "TableName": "Feature"
         }

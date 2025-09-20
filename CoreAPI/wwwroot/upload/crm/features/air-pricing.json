@@ -1,8 +1,7 @@
 {
-    "Id": "00ba161c-0000-0000-8000-7e2d2167d61c",
+    "Id": "air_pricing",
     "Name": "air-pricing",
     "Label": "Air Pricing",
-    "ParentId": "00af15f0-0000-0000-8000-8cb1dddb1613",
     "Order": 1,
     "Script": "return {\r\n    Add: function () {\r\n        var entity = {\r\n            StatusId: 1,\r\n            TypeId: 2,\r\n            CreatedOn: this.dayjs().format('YYYY-MM-DD'),\r\n            FromDate: this.dayjs().format('YYYY-MM-DD'),\r\n            InsertedBy: this.Token.UserId\r\n        }\r\n        this.OpenPopup(\"air-pricing-editor\", entity);\r\n    },\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"air-pricing-editor\", entity);\r\n    }\r\n}",
     "Icon": "fal fa-plane",
@@ -10,7 +9,7 @@
     "EntityId": "Pricing",
     "GridPolicies": [
         {
-            "Id": "00ba1618-0000-0000-8000-be66f6cb22a6",
+            "Id": "air_pricing.PodId.5",
             "FieldName": "PodId",
             "Order": 5,
             "ComponentType": "Dropdown",
@@ -27,7 +26,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00ba1630-0000-0000-8000-15f9397cce3a",
+            "Id": "air_pricing.CarrierId.3",
             "FieldName": "CarrierId",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -43,7 +42,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00ba1630-0000-0000-8000-c91e1734ded3",
+            "Id": "air_pricing.VendorId.2",
             "FieldName": "VendorId",
             "Order": 2,
             "ComponentType": "Dropdown",
@@ -59,7 +58,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00ba1664-0000-0000-8000-16c1ee68b2e2",
+            "Id": "air_pricing.PolId.4",
             "FieldName": "PolId",
             "Order": 4,
             "ComponentType": "Dropdown",
@@ -76,7 +75,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00ba169c-0000-0000-8000-209793b498e8",
+            "Id": "air_pricing.ScheduleIdsText.10",
             "FieldName": "ScheduleIdsText",
             "Order": 10,
             "ComponentType": "Input",
@@ -90,7 +89,7 @@
             "IsMultiple": true
         },
         {
-            "Id": "00ba16a0-0000-0000-8000-8f05b43ccb55",
+            "Id": "air_pricing.AmountText.7",
             "FieldName": "AmountText",
             "Order": 7,
             "ComponentType": "Input",
@@ -104,7 +103,7 @@
             "IsMultiple": true
         },
         {
-            "Id": "00ba16ac-0000-0000-8000-c314b61254c5",
+            "Id": "air_pricing.ToDate.9",
             "FieldName": "ToDate",
             "Order": 9,
             "ComponentType": "Datepicker",
@@ -117,7 +116,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00ba16bc-0000-0000-8000-5544b168c7d1",
+            "Id": "air_pricing.FromDate.8",
             "FieldName": "FromDate",
             "Order": 8,
             "ComponentType": "Datepicker",
@@ -130,7 +129,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00ba16e0-0000-0000-8000-b97a6ae9766f",
+            "Id": "air_pricing.btnEdit.0",
             "FieldName": "btnEdit",
             "Order": 0,
             "ComponentType": "Button",
@@ -144,7 +143,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00ba16e8-0000-0000-8000-2d34882f2f64",
+            "Id": "air_pricing.InsertedBy.11",
             "FieldName": "InsertedBy",
             "Order": 11,
             "ComponentType": "Dropdown",
@@ -161,7 +160,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00ba16f4-0000-0000-8000-2ec4dc8fa9fa",
+            "Id": "air_pricing.ViaId.6",
             "FieldName": "ViaId",
             "Order": 6,
             "ComponentType": "Dropdown",
@@ -178,7 +177,7 @@
             "EntityId": "Pricing"
         },
         {
-            "Id": "00da2da8-0000-0000-8000-a66b8cf5b8e3",
+            "Id": "air_pricing.Valid.1",
             "FieldName": "Valid",
             "Order": 1,
             "ComponentType": "Label",
@@ -193,7 +192,7 @@
     ],
     "Components": [
         {
-            "Id": "00ba1618-0000-0000-8000-9d4678136e09",
+            "Id": "air_pricing.Section.2",
             "Order": 2,
             "ComponentType": "Section",
             "Label": "Public",
@@ -202,7 +201,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "00ba16c0-0000-0000-8000-7def5f13eabe",
+                    "Id": "Section.Pricing.2",
                     "FieldName": "Pricing",
                     "Order": 2,
                     "ComponentType": "GridView",
@@ -220,7 +219,7 @@
             ]
         },
         {
-            "Id": "00ba16d4-0000-0000-8000-32ad51c72e38",
+            "Id": "air_pricing.Section.3",
             "Order": 3,
             "ComponentType": "Section",
             "Label": "Private",
@@ -229,7 +228,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "00ba1644-0000-0000-8000-d863b0d73d77",
+                    "Id": "Section.Pricing.3",
                     "FieldName": "Pricing",
                     "Order": 3,
                     "ComponentType": "GridView",
@@ -246,7 +245,7 @@
             ]
         },
         {
-            "Id": "00ba16f4-0000-0000-8000-e5ffbaa96949",
+            "Id": "air_pricing.Section.1",
             "Order": 1,
             "ComponentType": "Section",
             "Label": "All",
@@ -257,7 +256,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "00ba16fc-0000-0000-8000-90d8747d2425",
+                    "Id": "Section.Pricing.1",
                     "FieldName": "Pricing",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -277,29 +276,24 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "03E8A8A4-5956-42F9-9009-27E8ADA55A0A",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "1A1D7038-0CED-4772-836E-296A12E36455",
             "RoleId": "SALES",
             "CanRead": true,
             "CanReadAll": true,
             "TableName": "Feature"
         },
         {
-            "Id": "3E1B0D70-607D-4D3D-B48F-AEBE0534B554",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "40C0140E-248A-4920-99E7-E3E41537B3C7",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "60FB42E9-9F3B-4DFC-8381-5507EC5177A1",
             "RoleId": "DOCS",
             "CanRead": true,
             "CanWrite": true,
@@ -307,22 +301,18 @@
             "TableName": "Feature"
         },
         {
-            "Id": "7138F264-735B-44C0-8ED5-5364CC53D4D6",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "785BD4DF-69A7-40AB-B58B-CDD2E7FA366E",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "8C904975-F824-45A3-9D84-CDEDA1B5341D",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "BB4E5E7D-0F7E-4CD6-AE2C-43078430D7C2",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -333,7 +323,6 @@
             "TableName": "Feature"
         },
         {
-            "Id": "C9F8D657-B73F-4D52-8779-03DC711ABDE9",
             "RoleId": "PRICING",
             "TableName": "Feature"
         }

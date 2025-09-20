@@ -1,15 +1,14 @@
 {
-    "Id": "6e63c20d-2788-4776-9da0-4cfe7c982c1",
+    "Id": "master_data",
     "Name": "master-data",
     "Label": "Master Data",
-    "ParentId": "000a0514-0000-0000-8000-1f67beb1bcef",
     "Order": 11,
     "Icon": "far fa-th-list",
     "IsMenu": true,
     "IgnoreEncode": true,
     "GridPolicies": [
         {
-            "Id": "0077ffbc-0000-0000-8000-0cb7fd208e28",
+            "Id": "master_data.Name.1",
             "FieldName": "Name",
             "Order": 1,
             "ComponentType": "Input",
@@ -21,7 +20,7 @@
             "EntityId": "MasterData"
         },
         {
-            "Id": "00870170-0000-0000-8000-a2b5eb7eeae8",
+            "Id": "master_data.Code.0",
             "FieldName": "Code",
             "Order": 0,
             "ComponentType": "Input",
@@ -33,7 +32,7 @@
             "EntityId": "MasterData"
         },
         {
-            "Id": "009407dc-0000-0000-8000-cfbb197f5087",
+            "Id": "master_data.Enum.3",
             "FieldName": "Enum",
             "Order": 3,
             "ComponentType": "Number",
@@ -46,7 +45,7 @@
             "EntityId": "MasterData"
         },
         {
-            "Id": "00ce18dc-0000-0000-8000-e3da27135f07",
+            "Id": "master_data.GroupEnum.4",
             "FieldName": "GroupEnum",
             "Order": 4,
             "ComponentType": "Number",
@@ -59,7 +58,7 @@
             "EntityId": "MasterData"
         },
         {
-            "Id": "00ddff0c-0000-0000-8000-ea77d0f354c7",
+            "Id": "master_data.Description.2",
             "FieldName": "Description",
             "Order": 2,
             "ComponentType": "Input",
@@ -71,7 +70,7 @@
             "EntityId": "MasterData"
         },
         {
-            "Id": "00e1ffec-0000-0000-8000-1864b21e0a35",
+            "Id": "master_data.ParentId.5",
             "FieldName": "ParentId",
             "Order": 5,
             "ComponentType": "Dropdown",
@@ -91,37 +90,30 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "1A781BBB-C970-434B-9D01-0DB3BC3E3DF5",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "3CDD2CEC-C223-45F6-B39B-99E410A89B86",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "41C5E1BE-6C15-44E8-825B-E33E01636360",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "83E8FE2D-5B42-4318-9213-0C6253ADF33C",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "9DEC4F34-D2F2-42DC-86F0-1F286F70832D",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "A3E00F89-1070-4A40-ABE9-74A8D2364F93",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "B2F56A20-D14C-44D5-A1D9-01244DE290E2",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -132,24 +124,21 @@
             "TableName": "Feature"
         },
         {
-            "Id": "B9FCC541-F9BD-484C-B19D-9C75D49412C1",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "DC907A57-CC54-430E-8E5C-3C3C7F02A07A",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "F071DE3A-C53D-45B3-9E83-F11A976935B2",
             "RoleId": "PRICING",
             "TableName": "Feature"
         }
     ],
     "Components": [
         {
-            "Id": "0096ff5c-0000-0000-8000-5c9fc03530ec",
+            "Id": "master_data.Container.1",
             "FieldName": "Container",
             "Order": 1,
             "ComponentType": "Section",
@@ -157,7 +146,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "00a5ff6c-0000-0000-8000-62c3579b714b",
+                    "Id": "Container.MasterData.1_6",
                     "FieldName": "MasterData",
                     "Order": 1,
                     "ComponentType": "GridView",

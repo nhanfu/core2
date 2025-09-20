@@ -1,5 +1,5 @@
 {
-    "Id": "009b3b78-0000-0000-8000-38a9f8f617fc",
+    "Id": "shipment",
     "Name": "shipment",
     "Label": "Shipment",
     "Order": 12,
@@ -9,55 +9,45 @@
     "IgnoreEncode": true,
     "FeaturePolicies": [
         {
-            "Id": "17E73E7C-3899-4D8B-89B5-3D19A5D413FC",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "264C2E84-F036-481F-A416-E113B96F1AA1",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "33A0B006-BC4A-433A-BEA2-87609903A28E",
             "RoleId": "DOCS",
             "CanRead": true,
             "CanWrite": true,
             "TableName": "Feature"
         },
         {
-            "Id": "37FCD0AC-2FA3-46E9-B5B5-31E8059C2F1B",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "38BA4CB8-3DBF-4BC7-94B9-DCD46BB3C9E2",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "3FA6FD34-114F-4D3B-86B6-B911A81F385B",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "53742B14-BC8C-48CE-BF45-237CF327B513",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "95E69D38-0ED9-4B6A-8B33-3CB98C16AD99",
             "RoleId": "SALES",
             "CanRead": true,
             "TableName": "Feature"
         },
         {
-            "Id": "9786F0FC-8FFA-4EB2-98AF-DE74F2EF639B",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "9A6644BE-2D30-486B-AD7E-22B2B59E18E8",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,

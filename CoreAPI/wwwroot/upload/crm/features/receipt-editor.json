@@ -1,12 +1,12 @@
 {
-    "Id": "00e2ffac-0000-0000-8000-4bd8f576b0dd",
+    "Id": "receipt_editor",
     "Name": "receipt-editor",
     "Label": "Receipt Editor",
     "Order": 0,
     "EntityId": "Voucher",
     "GridPolicies": [
         {
-            "Id": "005fff9c-0000-0000-8000-f65e39ead67b",
+            "Id": "receipt_editor.ItemName.1",
             "FieldName": "ItemName",
             "Order": 1,
             "ComponentType": "Input",
@@ -15,7 +15,7 @@
             "EntityId": "VoucherDetail"
         },
         {
-            "Id": "0062ff70-0000-0000-8000-0c2e873f9a38",
+            "Id": "receipt_editor.DebitAccountId.2",
             "FieldName": "DebitAccountId",
             "Order": 2,
             "ComponentType": "Dropdown",
@@ -31,7 +31,7 @@
             "EntityId": "VoucherDetail"
         },
         {
-            "Id": "0063ff34-0000-0000-8000-5de6a1ac2051",
+            "Id": "receipt_editor.SubjectId.4",
             "FieldName": "SubjectId",
             "Order": 4,
             "ComponentType": "Dropdown",
@@ -46,7 +46,7 @@
             "EntityId": "VoucherDetail"
         },
         {
-            "Id": "0063ff64-0000-0000-8000-c363832b694e",
+            "Id": "receipt_editor.CreditAccountId.3",
             "FieldName": "CreditAccountId",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -62,7 +62,7 @@
             "EntityId": "VoucherDetail"
         },
         {
-            "Id": "0064ff1c-0000-0000-8000-ee065da3285d",
+            "Id": "receipt_editor.SubjectName.5",
             "FieldName": "SubjectName",
             "Order": 5,
             "ComponentType": "Input",
@@ -71,7 +71,7 @@
             "EntityId": "VoucherDetail"
         },
         {
-            "Id": "0064ff90-0000-0000-8000-9680818ae7c1",
+            "Id": "receipt_editor.Amount.6",
             "FieldName": "Amount",
             "Order": 6,
             "ComponentType": "Number",
@@ -82,14 +82,14 @@
     ],
     "Components": [
         {
-            "Id": "0006ff00-0000-0000-8000-a3d7da86a5bd",
+            "Id": "receipt_editor.Container.0",
             "FieldName": "Container",
             "Order": 0,
             "ComponentType": "Section",
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "0016ff84-0000-0000-8000-d6d5be76a8c4",
+                    "Id": "Container.Center1.1",
                     "FieldName": "Center1",
                     "Order": 1,
                     "ComponentType": "Section",
@@ -97,7 +97,7 @@
                     "XxlOuterColumn": 12,
                     "Components": [
                         {
-                            "Id": "0042ff24-0000-0000-8000-c34dd6eab33e",
+                            "Id": "Center1.SubjectId.1",
                             "FieldName": "SubjectId",
                             "Order": 1,
                             "ComponentType": "Dropdown",
@@ -113,7 +113,7 @@
                             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]"
                         },
                         {
-                            "Id": "004dff98-0000-0000-8000-333ef106a8b3",
+                            "Id": "Center1.SubjectName.2",
                             "FieldName": "SubjectName",
                             "Order": 2,
                             "ComponentType": "Input",
@@ -122,7 +122,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "004eff20-0000-0000-8000-91b34fd7830d",
+                            "Id": "Center1.PostedDate.3",
                             "FieldName": "PostedDate",
                             "Order": 3,
                             "ComponentType": "Datepicker",
@@ -131,7 +131,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "0050ff74-0000-0000-8000-a30996ddb320",
+                            "Id": "Center1.VoucherDate.6",
                             "FieldName": "VoucherDate",
                             "Order": 6,
                             "ComponentType": "Datepicker",
@@ -140,7 +140,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "0051ff20-0000-0000-8000-e3b8df633937",
+                            "Id": "Center1.VoucherNo.9",
                             "FieldName": "VoucherNo",
                             "Order": 9,
                             "ComponentType": "Input",
@@ -149,7 +149,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "0052ffd4-0000-0000-8000-6aa93715d162",
+                            "Id": "Center1.Payer.4",
                             "FieldName": "Payer",
                             "Order": 4,
                             "ComponentType": "Input",
@@ -159,7 +159,7 @@
                             "Events": "{\r\n    \"sql\": \"select * from Partner as ds where ServiceId in (1,2,3) and (TypeId not in (1,2) or TypeId is null)\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where ServiceId in (1,2,3) and (TypeId not in (1,2) or TypeId is null)\"\r\n}"
                         },
                         {
-                            "Id": "0054ff28-0000-0000-8000-30832af58a5b",
+                            "Id": "Center1.Address.5",
                             "FieldName": "Address",
                             "Order": 5,
                             "ComponentType": "Input",
@@ -168,7 +168,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "0055ff5c-0000-0000-8000-a66b6adb261c",
+                            "Id": "Center1.EmployeeId.7",
                             "FieldName": "EmployeeId",
                             "Order": 7,
                             "ComponentType": "Dropdown",
@@ -183,7 +183,7 @@
                             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]"
                         },
                         {
-                            "Id": "0056ff24-0000-0000-8000-9cdaf3126f4b",
+                            "Id": "Center1.Reason.11",
                             "FieldName": "Reason",
                             "Order": 11,
                             "ComponentType": "Textarea",
@@ -193,7 +193,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "0057ff1c-0000-0000-8000-8d654cc66414",
+                            "Id": "Center1.Attached.10",
                             "FieldName": "Attached",
                             "Order": 10,
                             "ComponentType": "FileUpload",
@@ -201,7 +201,7 @@
                             "Label": "Attached"
                         },
                         {
-                            "Id": "00c2ff24-0000-0000-8000-4189abb1ea8f",
+                            "Id": "Center1.Amount.9",
                             "FieldName": "Amount",
                             "Order": 9,
                             "ComponentType": "Number",
@@ -212,7 +212,7 @@
                     ]
                 },
                 {
-                    "Id": "0009ff04-0000-0000-8000-800623167b0a",
+                    "Id": "Container.Center.3",
                     "FieldName": "Center",
                     "Order": 3,
                     "ComponentType": "Section",
@@ -222,7 +222,7 @@
                     "XxlOuterColumn": 12,
                     "Components": [
                         {
-                            "Id": "001dffb0-0000-0000-8000-64697cd847db",
+                            "Id": "Center.VoucherDetail.1",
                             "FieldName": "VoucherDetail",
                             "Order": 1,
                             "ComponentType": "GridView",
@@ -240,7 +240,7 @@
                     ]
                 },
                 {
-                    "Id": "00d7ffcc-0000-0000-8000-3eca7bc05c5d",
+                    "Id": "Container.btnSave.1_2",
                     "FieldName": "btnSave",
                     "Order": 1,
                     "ComponentType": "Button",
@@ -254,7 +254,7 @@
             ]
         },
         {
-            "Id": "00aeff94-0000-0000-8000-2b8909409874",
+            "Id": "receipt_editor.Button.9",
             "FieldName": "Button",
             "Order": 9,
             "ComponentType": "Section",
@@ -262,7 +262,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "00d7ffcc-0000-0000-8000-3eca7bc05c5d",
+                    "Id": "Button.btnSave.1_4",
                     "FieldName": "btnSave",
                     "Order": 1,
                     "ComponentType": "Button",
@@ -278,37 +278,30 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "0062EAFD-C573-4582-A69C-1B6EB13A4DEF",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "1E897B7A-C87B-406D-8E0A-DF94387A5DD1",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "713A9A4C-4849-436A-9189-06326BB26A12",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "7A78D879-7053-4B98-AE58-AFC4B978996E",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "A27343FC-50E4-4DB1-A94E-3A37EE07A15A",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "D5211E1B-6EC8-439D-807B-0C640CEBD207",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "E0C44FF3-A174-4D16-BA78-78AC24E91401",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -319,17 +312,14 @@
             "TableName": "Feature"
         },
         {
-            "Id": "EFA5571F-62AF-4D3D-9055-4DB5392B557B",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "F261A5CE-276B-4DF7-A57D-7DBBB4810B4F",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "FB84692D-F319-4C7F-ABD7-939418AC0636",
             "RoleId": "OPS",
             "TableName": "Feature"
         }

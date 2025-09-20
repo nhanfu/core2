@@ -1,5 +1,5 @@
 {
-    "Id": "00e81d00-0000-0000-8000-86b4c65580a9",
+    "Id": "role_editor",
     "Name": "role-editor",
     "Label": "Role Editor",
     "Order": 0,
@@ -7,7 +7,7 @@
     "EntityId": "Role",
     "GridPolicies": [
         {
-            "Id": "00451d1c-0000-0000-8000-d2070cf472b6",
+            "Id": "role_editor.TeamId.10",
             "FieldName": "TeamId",
             "Order": 10,
             "ComponentType": "Dropdown",
@@ -22,7 +22,7 @@
             "EntityId": "User"
         },
         {
-            "Id": "00451db8-0000-0000-8000-2be92e48d6de",
+            "Id": "role_editor.btnEdit.0",
             "FieldName": "btnEdit",
             "Order": 0,
             "ComponentType": "Button",
@@ -35,7 +35,7 @@
             "EntityId": "User"
         },
         {
-            "Id": "00451db8-0000-0000-8001-acf0063a94ec",
+            "Id": "role_editor.Code.1",
             "FieldName": "Code",
             "Order": 1,
             "ComponentType": "Input",
@@ -47,7 +47,7 @@
             "EntityId": "User"
         },
         {
-            "Id": "00451db8-0000-0000-8002-799e4b7e5be7",
+            "Id": "role_editor.NickName.2",
             "FieldName": "NickName",
             "Order": 2,
             "ComponentType": "Input",
@@ -58,7 +58,7 @@
             "EntityId": "User"
         },
         {
-            "Id": "00451db8-0000-0000-8003-b6da9b60b388",
+            "Id": "role_editor.FullName.3",
             "FieldName": "FullName",
             "Order": 3,
             "ComponentType": "Input",
@@ -69,7 +69,7 @@
             "EntityId": "User"
         },
         {
-            "Id": "00451db8-0000-0000-8004-3b636c58e351",
+            "Id": "role_editor.Brithday.4",
             "FieldName": "Brithday",
             "Order": 4,
             "ComponentType": "Input",
@@ -80,7 +80,7 @@
             "EntityId": "User"
         },
         {
-            "Id": "00451db8-0000-0000-8005-f0a09cc6def9",
+            "Id": "role_editor.GenderId.5",
             "FieldName": "GenderId",
             "Order": 5,
             "ComponentType": "Dropdown",
@@ -95,7 +95,7 @@
             "EntityId": "User"
         },
         {
-            "Id": "00451db8-0000-0000-8006-d1a90a19357c",
+            "Id": "role_editor.IdentityCard.6",
             "FieldName": "IdentityCard",
             "Order": 6,
             "ComponentType": "Input",
@@ -106,7 +106,7 @@
             "EntityId": "User"
         },
         {
-            "Id": "00451db8-0000-0000-8007-7663ee0fffab",
+            "Id": "role_editor.Address.7",
             "FieldName": "Address",
             "Order": 7,
             "ComponentType": "Input",
@@ -117,7 +117,7 @@
             "EntityId": "User"
         },
         {
-            "Id": "00451db8-0000-0000-8008-e847260600f2",
+            "Id": "role_editor.PhoneNumber.8",
             "FieldName": "PhoneNumber",
             "Order": 8,
             "ComponentType": "Input",
@@ -128,7 +128,7 @@
             "EntityId": "User"
         },
         {
-            "Id": "00451db8-0000-0000-8009-2a0fc6f16333",
+            "Id": "role_editor.RoleIdsText.9",
             "FieldName": "RoleIdsText",
             "Order": 9,
             "ComponentType": "Input",
@@ -139,7 +139,7 @@
             "EntityId": "User"
         },
         {
-            "Id": "00711d18-0000-0000-8000-6db4690e995f",
+            "Id": "role_editor.GroupFeatureId.7",
             "FieldName": "GroupFeatureId",
             "Order": 7,
             "ComponentType": "Dropdown",
@@ -156,7 +156,7 @@
             "EntityId": "FeaturePolicy"
         },
         {
-            "Id": "007a1d6c-0000-0000-8000-6ec7b916cf83",
+            "Id": "role_editor.Label.0",
             "FieldName": "Label",
             "Order": 0,
             "ComponentType": "Input",
@@ -171,7 +171,7 @@
             "EntityId": "FeaturePolicy"
         },
         {
-            "Id": "007a1dd0-0000-0000-8001-3982e5f335ca",
+            "Id": "role_editor.CanRead.1",
             "FieldName": "CanRead",
             "Order": 1,
             "ComponentType": "Checkbox",
@@ -186,7 +186,7 @@
             "EntityId": "FeaturePolicy"
         },
         {
-            "Id": "007a1dd0-0000-0000-8002-5cd2d0a6ea86",
+            "Id": "role_editor.CanReadAll.2",
             "FieldName": "CanReadAll",
             "Order": 2,
             "ComponentType": "Checkbox",
@@ -202,7 +202,7 @@
             "EntityId": "FeaturePolicy"
         },
         {
-            "Id": "007a1dd0-0000-0000-8003-604a55ec4d96",
+            "Id": "role_editor.CanWrite.3",
             "FieldName": "CanWrite",
             "Order": 3,
             "ComponentType": "Checkbox",
@@ -217,7 +217,7 @@
             "EntityId": "FeaturePolicy"
         },
         {
-            "Id": "007a1dd0-0000-0000-8004-6343aaf8046b",
+            "Id": "role_editor.CanWriteAll.4",
             "FieldName": "CanWriteAll",
             "Order": 4,
             "ComponentType": "Checkbox",
@@ -232,7 +232,7 @@
             "EntityId": "FeaturePolicy"
         },
         {
-            "Id": "007a1dd0-0000-0000-8005-c0c9d1b8807e",
+            "Id": "role_editor.CanDelete.5",
             "FieldName": "CanDelete",
             "Order": 5,
             "ComponentType": "Checkbox",
@@ -247,7 +247,7 @@
             "EntityId": "FeaturePolicy"
         },
         {
-            "Id": "007a1dd0-0000-0000-8006-5e11f9794db2",
+            "Id": "role_editor.CanDeleteAll.6",
             "FieldName": "CanDeleteAll",
             "Order": 6,
             "ComponentType": "Checkbox",
@@ -264,7 +264,7 @@
     ],
     "Components": [
         {
-            "Id": "00e81d50-0000-0000-8000-0172354eb2ff",
+            "Id": "role_editor.Section.3",
             "Order": 3,
             "ComponentType": "Section",
             "Label": "Policy",
@@ -275,7 +275,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "00571d34-0000-0000-8000-05d6e9501dcd",
+                    "Id": "Section.FeaturePolicy.1",
                     "FieldName": "FeaturePolicy",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -295,7 +295,7 @@
             ]
         },
         {
-            "Id": "00e81d54-0000-0000-8000-50b600abf5e6",
+            "Id": "role_editor.Button.1",
             "FieldName": "Button",
             "Order": 1,
             "ComponentType": "Section",
@@ -303,7 +303,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "00e81d78-0000-0000-8000-1119be5e63ca",
+                    "Id": "Button.btnSave.1_5",
                     "FieldName": "btnSave",
                     "Order": 1,
                     "ComponentType": "Button",
@@ -317,7 +317,7 @@
             ]
         },
         {
-            "Id": "00e81d64-0000-0000-8000-09235dc9aac6",
+            "Id": "role_editor.Container.2",
             "FieldName": "Container",
             "Order": 2,
             "ComponentType": "Section",
@@ -325,7 +325,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "00e81d18-0000-0000-8000-a10cb7c309fb",
+                    "Id": "Container.Name.1",
                     "FieldName": "Name",
                     "Order": 1,
                     "ComponentType": "Input",
@@ -334,7 +334,7 @@
                     "ShowLabel": true
                 },
                 {
-                    "Id": "00e81d94-0000-0000-8000-4d59860b92d1",
+                    "Id": "Container.Description.2",
                     "FieldName": "Description",
                     "Order": 2,
                     "ComponentType": "Input",
@@ -345,7 +345,7 @@
             ]
         },
         {
-            "Id": "00e81dbc-0000-0000-8000-9098ed1b9a99",
+            "Id": "role_editor.Section.4",
             "Order": 4,
             "ComponentType": "Section",
             "Label": "Users",
@@ -355,7 +355,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "003b1d2c-0000-0000-8000-4815d2e6c4c0",
+                    "Id": "Section.User.1",
                     "FieldName": "User",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -373,37 +373,30 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "283E2B51-6FFD-4DE0-80FC-B666B086D622",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "5DDED553-6437-472A-8BD2-8D4DDD22E4A3",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "867F3BA5-F77B-4419-AA09-E511E3CD3F90",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "9CE4FC05-2E15-46C6-AE40-BDED06829F22",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "B1DAD14C-6652-4BDD-9317-88291DFB627F",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "BB386B56-CBD4-4276-9B34-7BCAF342BC7C",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "C0848A27-5E0D-4433-B46B-9C056C116F16",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -412,7 +405,6 @@
             "TableName": "Feature"
         },
         {
-            "Id": "C70DD2CB-3DE6-4F06-B18D-0156EEC0ACB7",
             "RoleId": "ADMIN",
             "CanRead": true,
             "CanReadAll": true,
@@ -421,12 +413,10 @@
             "TableName": "Feature"
         },
         {
-            "Id": "D440B397-49E7-46E9-8240-62A988C59294",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "F9077CDF-3B81-4EA5-912A-D0F9817D0651",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         }

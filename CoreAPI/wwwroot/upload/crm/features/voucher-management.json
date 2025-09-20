@@ -1,8 +1,7 @@
 {
-    "Id": "0194a015-8844-721f-bd70-8b54688c67d6",
+    "Id": "voucher_management",
     "Name": "voucher-management",
     "Label": "Voucher Manage",
-    "ParentId": "01939222-2f5a-747a-bb15-606fb55edf4c",
     "Order": 2,
     "Script": "return {\r\n    AddVoucher3: function () {\r\n        var entity = {\r\n            VoucherTypeId: 14,\r\n            InsertedBy: this.Token.UserId,\r\n            DebtAccTypeId: 1,\r\n            FeeTypeId: \"ds.TypeId in (1,2,3,4)\",\r\n            DebtTypeId: 1,\r\n            IsMultiple: true,\r\n            PostDate: this.dayjs().format('YYYY-MM-DDTHH:mm:ss'),\r\n            VoucherDate: this.dayjs().format('YYYY-MM-DDTHH:mm:ss'),\r\n            ExchangeRateINV: this.Decimal(1).div(this.Decimal(JSON.parse(localStorage.getItem(\"ExchangeRateUSD\"))[\"VND\"]))\r\n        }\r\n        this.OpenPopup(\"debt-accounting-editor\", entity);\r\n    },\r\n    EditVoucher3: function (btn, entity) {\r\n        this.OpenPopup(\"debt-accounting-editor\", entity);\r\n    },\r\n    AddVoucher4: function () {\r\n        var entity = {\r\n            VoucherTypeId: 15,\r\n            PaymentAccTypeId: 1,\r\n            FeeTypeId: \"ds.TypeId in (1,2,3,4)\",\r\n            InsertedBy: this.Token.UserId,\r\n            IsMultiple: true,\r\n            PostDate: this.dayjs().format('YYYY-MM-DDTHH:mm:ss'),\r\n            VoucherDate: this.dayjs().format('YYYY-MM-DDTHH:mm:ss'),\r\n            ExchangeRateINV: this.Decimal(1).div(this.Decimal(JSON.parse(localStorage.getItem(\"ExchangeRateUSD\"))[\"VND\"]))\r\n        }\r\n        this.OpenPopup(\"payment-accounting-editor\", entity);\r\n    },\r\n    EditVoucher4: function (btn, entity) {\r\n        this.OpenPopup(\"payment-accounting-editor\", entity);\r\n    }\r\n}",
     "Icon": "fas fa-receipt",
@@ -10,7 +9,7 @@
     "EntityId": "Voucher",
     "GridPolicies": [
         {
-            "Id": "0194a015-8c08-743a-bcba-b2ac39a65094",
+            "Id": "voucher_management.InsertedBy.10",
             "FieldName": "InsertedBy",
             "Order": 10,
             "ComponentType": "Dropdown",
@@ -28,7 +27,7 @@
             "EntityId": "Voucher3"
         },
         {
-            "Id": "0194a015-8cce-777f-9e73-2cb526dd7f2b",
+            "Id": "voucher_management.VoucherDate.7",
             "FieldName": "VoucherDate",
             "Order": 7,
             "ComponentType": "Datepicker",
@@ -40,7 +39,7 @@
             "EntityId": "Voucher3"
         },
         {
-            "Id": "0194a015-8d3f-721d-8645-05d6b6c1319f",
+            "Id": "voucher_management.ActionId.9",
             "FieldName": "ActionId",
             "Order": 9,
             "ComponentType": "Dropdown",
@@ -56,7 +55,7 @@
             "EntityId": "Voucher3"
         },
         {
-            "Id": "0194a015-8d96-752f-ab0a-4524a93323b7",
+            "Id": "voucher_management.Code.1",
             "FieldName": "Code",
             "Order": 1,
             "ComponentType": "Input",
@@ -68,7 +67,7 @@
             "EntityId": "Voucher3"
         },
         {
-            "Id": "0194a015-8e04-705e-92e6-8838cd972d85",
+            "Id": "voucher_management.CompanyId.3",
             "FieldName": "CompanyId",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -84,7 +83,7 @@
             "EntityId": "Voucher3"
         },
         {
-            "Id": "0194a015-8e6c-761e-947e-5a5724870a70",
+            "Id": "voucher_management.btnEdit.0",
             "FieldName": "btnEdit",
             "Order": 0,
             "ComponentType": "Button",
@@ -98,7 +97,7 @@
             "EntityId": "Voucher3"
         },
         {
-            "Id": "0194a015-8ed5-706a-b85b-f8ed28f5c413",
+            "Id": "voucher_management.PostDate.4",
             "FieldName": "PostDate",
             "Order": 4,
             "ComponentType": "Datepicker",
@@ -113,7 +112,7 @@
             "EntityId": "Voucher3"
         },
         {
-            "Id": "0194a015-8f42-76da-ad09-4799648b2ef3",
+            "Id": "voucher_management.IsPaid.5",
             "FieldName": "IsPaid",
             "Order": 5,
             "ComponentType": "Checkbox",
@@ -126,7 +125,7 @@
             "EntityId": "Voucher3"
         },
         {
-            "Id": "0194a015-8f98-74ae-b51b-40b1aef8f567",
+            "Id": "voucher_management.TypeId.2",
             "FieldName": "TypeId",
             "Order": 2,
             "ComponentType": "Dropdown",
@@ -142,7 +141,7 @@
             "EntityId": "Voucher3"
         },
         {
-            "Id": "0194a015-90be-74cf-abb4-4e6c440b9dbe",
+            "Id": "voucher_management.TotalAmountTax.8",
             "FieldName": "TotalAmountTax",
             "Order": 8,
             "ComponentType": "Number",
@@ -154,7 +153,7 @@
             "EntityId": "Voucher3"
         },
         {
-            "Id": "0194a015-912b-722e-b659-8cc78a5ee061",
+            "Id": "voucher_management.InvoiceDate.6",
             "FieldName": "InvoiceDate",
             "Order": 6,
             "ComponentType": "Datepicker",
@@ -167,7 +166,7 @@
             "EntityId": "Voucher3"
         },
         {
-            "Id": "0194ea3f-ab5c-75a8-9d92-eacafd414eae",
+            "Id": "voucher_management.btnEdit.0_1",
             "FieldName": "btnEdit",
             "Order": 0,
             "ComponentType": "Button",
@@ -181,7 +180,7 @@
             "EntityId": "Voucher4"
         },
         {
-            "Id": "0194ea3f-ab5d-760d-9b13-a30d8b532d29",
+            "Id": "voucher_management.Code.1_1",
             "FieldName": "Code",
             "Order": 1,
             "ComponentType": "Input",
@@ -193,7 +192,7 @@
             "EntityId": "Voucher4"
         },
         {
-            "Id": "0194ea3f-ab5d-760d-9b13-a4877a1e6217",
+            "Id": "voucher_management.TypeId.2_1",
             "FieldName": "TypeId",
             "Order": 2,
             "ComponentType": "Dropdown",
@@ -209,7 +208,7 @@
             "EntityId": "Voucher4"
         },
         {
-            "Id": "0194ea3f-ab5d-760d-9b13-abe8465b70a4",
+            "Id": "voucher_management.CompanyId.3_1",
             "FieldName": "CompanyId",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -225,7 +224,7 @@
             "EntityId": "Voucher4"
         },
         {
-            "Id": "0194ea3f-ab5d-760d-9b13-ad228efa2f76",
+            "Id": "voucher_management.PostDate.4_1",
             "FieldName": "PostDate",
             "Order": 4,
             "ComponentType": "Datepicker",
@@ -240,7 +239,7 @@
             "EntityId": "Voucher4"
         },
         {
-            "Id": "0194ea3f-ab5e-721d-8739-f647ffe725a1",
+            "Id": "voucher_management.InvoiceDate.6_1",
             "FieldName": "InvoiceDate",
             "Order": 6,
             "ComponentType": "Datepicker",
@@ -253,7 +252,7 @@
             "EntityId": "Voucher4"
         },
         {
-            "Id": "0194ea3f-ab5e-721d-8739-fbb6c08610de",
+            "Id": "voucher_management.VoucherDate.7_1",
             "FieldName": "VoucherDate",
             "Order": 7,
             "ComponentType": "Datepicker",
@@ -265,7 +264,7 @@
             "EntityId": "Voucher4"
         },
         {
-            "Id": "0194ea3f-ab5e-721d-8739-fc0f052499f6",
+            "Id": "voucher_management.TotalAmountTax.8_1",
             "FieldName": "TotalAmountTax",
             "Order": 8,
             "ComponentType": "Number",
@@ -277,7 +276,7 @@
             "EntityId": "Voucher4"
         },
         {
-            "Id": "0194ea3f-ab5e-721d-873a-032552b7abf4",
+            "Id": "voucher_management.ActionId.9_1",
             "FieldName": "ActionId",
             "Order": 9,
             "ComponentType": "Dropdown",
@@ -293,7 +292,7 @@
             "EntityId": "Voucher4"
         },
         {
-            "Id": "0194ea3f-ab5e-721d-873a-053997a1cf27",
+            "Id": "voucher_management.InsertedBy.10_1",
             "FieldName": "InsertedBy",
             "Order": 10,
             "ComponentType": "Dropdown",
@@ -311,7 +310,7 @@
             "EntityId": "Voucher4"
         },
         {
-            "Id": "0194ea42-953a-732d-b589-5fb0aa3a2d7a",
+            "Id": "voucher_management.btnEdit.0_2",
             "FieldName": "btnEdit",
             "Order": 0,
             "ComponentType": "Button",
@@ -325,7 +324,7 @@
             "EntityId": "Voucher5"
         },
         {
-            "Id": "0194ea42-953a-732d-b589-62b9731e9951",
+            "Id": "voucher_management.Code.1_2",
             "FieldName": "Code",
             "Order": 1,
             "ComponentType": "Input",
@@ -337,7 +336,7 @@
             "EntityId": "Voucher5"
         },
         {
-            "Id": "0194ea42-953a-732d-b589-64ed5b2785d3",
+            "Id": "voucher_management.TypeId.2_2",
             "FieldName": "TypeId",
             "Order": 2,
             "ComponentType": "Dropdown",
@@ -353,7 +352,7 @@
             "EntityId": "Voucher5"
         },
         {
-            "Id": "0194ea42-953b-7621-9dc9-55ca9ce14b1c",
+            "Id": "voucher_management.CompanyId.3_2",
             "FieldName": "CompanyId",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -369,7 +368,7 @@
             "EntityId": "Voucher5"
         },
         {
-            "Id": "0194ea42-953b-7621-9dc9-5baed8693c81",
+            "Id": "voucher_management.PostDate.4_2",
             "FieldName": "PostDate",
             "Order": 4,
             "ComponentType": "Datepicker",
@@ -384,7 +383,7 @@
             "EntityId": "Voucher5"
         },
         {
-            "Id": "0194ea42-953b-7621-9dc9-5dcece0aec3a",
+            "Id": "voucher_management.IsPaid.5_1",
             "FieldName": "IsPaid",
             "Order": 5,
             "ComponentType": "Checkbox",
@@ -397,7 +396,7 @@
             "EntityId": "Voucher5"
         },
         {
-            "Id": "0194ea42-953b-7621-9dc9-6284482cf9d0",
+            "Id": "voucher_management.InvoiceDate.6_2",
             "FieldName": "InvoiceDate",
             "Order": 6,
             "ComponentType": "Datepicker",
@@ -410,7 +409,7 @@
             "EntityId": "Voucher5"
         },
         {
-            "Id": "0194ea42-953b-7621-9dc9-65ee6cabf7b4",
+            "Id": "voucher_management.VoucherDate.7_2",
             "FieldName": "VoucherDate",
             "Order": 7,
             "ComponentType": "Datepicker",
@@ -422,7 +421,7 @@
             "EntityId": "Voucher5"
         },
         {
-            "Id": "0194ea42-953b-7621-9dc9-6aa6f21d370a",
+            "Id": "voucher_management.TotalAmountTax.8_2",
             "FieldName": "TotalAmountTax",
             "Order": 8,
             "ComponentType": "Number",
@@ -434,7 +433,7 @@
             "EntityId": "Voucher5"
         },
         {
-            "Id": "0194ea42-953b-7621-9dc9-6cdad7bc7abb",
+            "Id": "voucher_management.ActionId.9_2",
             "FieldName": "ActionId",
             "Order": 9,
             "ComponentType": "Dropdown",
@@ -450,7 +449,7 @@
             "EntityId": "Voucher5"
         },
         {
-            "Id": "0194ea42-953c-76b8-9b3d-81643154a9f8",
+            "Id": "voucher_management.InsertedBy.10_2",
             "FieldName": "InsertedBy",
             "Order": 10,
             "ComponentType": "Dropdown",
@@ -470,7 +469,7 @@
     ],
     "Components": [
         {
-            "Id": "0194a015-89a9-70eb-95e4-d863aaad2aa0",
+            "Id": "voucher_management.A.1",
             "FieldName": "A",
             "Order": 1,
             "ComponentType": "Section",
@@ -483,7 +482,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "0194a015-8a11-7061-b10d-e8bf0ff23550",
+                    "Id": "A.Voucher3.1",
                     "FieldName": "Voucher3",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -500,7 +499,7 @@
             ]
         },
         {
-            "Id": "0194a015-8a8a-7291-821d-7bd1aa129ff0",
+            "Id": "voucher_management.Section.2",
             "Order": 2,
             "ComponentType": "Section",
             "Label": "Payment Acounting",
@@ -512,7 +511,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "0194a015-8b01-70f8-a730-97dae6699951",
+                    "Id": "Section.Voucher4.1",
                     "FieldName": "Voucher4",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -529,7 +528,7 @@
             ]
         },
         {
-            "Id": "0194a015-8b58-721c-8f7c-d8145f9d5c49",
+            "Id": "voucher_management.Section.3",
             "Order": 3,
             "ComponentType": "Section",
             "Label": "Opening Balance",
@@ -541,7 +540,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "0194a015-8bb0-70bf-88de-a3e726a3c6c5",
+                    "Id": "Section.Voucher5.1",
                     "FieldName": "Voucher5",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -560,27 +559,22 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "12381421-4D46-4EE4-899D-B009DA0AC722",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "3DDD31C3-4DCB-4D32-A6E7-A749EE89EED7",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "46202EF8-E66A-4D4C-9CD3-29639F739BAA",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "7B73F95B-0F07-40C2-A0AF-18B9E4E858C8",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "9549BB22-9D5E-42D6-93AB-D1003D8EF5E1",
             "RoleId": "ADMIN",
             "CanRead": true,
             "CanReadAll": true,
@@ -590,24 +584,20 @@
             "TableName": "Feature"
         },
         {
-            "Id": "9F6F1F47-66FB-4287-AA2D-4CB59E635ED1",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "A115767C-731F-4740-B77C-03E153B29636",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "A4BAF99B-EB5E-4AEE-907E-2BA3B7BE7069",
             "RoleId": "ACC",
             "CanRead": true,
             "CanWrite": true,
             "TableName": "Feature"
         },
         {
-            "Id": "B2A70E45-3344-4C98-B93F-9745AC6347F3",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -616,7 +606,6 @@
             "TableName": "Feature"
         },
         {
-            "Id": "D7FA86AF-FE21-46EA-B8B6-BE1493FAF8B8",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         }

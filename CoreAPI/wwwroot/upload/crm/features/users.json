@@ -1,8 +1,7 @@
 {
-    "Id": "00e90004-0000-0000-8000-f864f10a3cbc",
+    "Id": "users",
     "Name": "users",
     "Label": "Users",
-    "ParentId": "000a0514-0000-0000-8000-1f67beb1bcef",
     "Order": 1,
     "Script": "return {\r\n    AddUser: function () {\r\n        var entity = {\r\n            Password: \"977c9c433f8e0bd9d948982f9c4b3430ff2ba08a5bd36d1da32a17ceb9717762\",\r\n            Salt: \"KMDBMXNJMANYKNXBWBRNSKZEPYUJOEFV\",\r\n            Avatar: \"https://api.nguyenduyphong.id.vn/icons/default-avatar.webp\",\r\n            TypeId: 1,\r\n        };\r\n        this.OpenPopup(\"user-editor\", entity);\r\n    },\r\n    EditUser: function (btn, entity) {\r\n        entity.Avatar = entity.Avatar || \"https://api.nguyenduyphong.id.vn/icons/default-avatar.webp\";\r\n        this.OpenPopup(\"user-editor\", entity);\r\n    }\r\n}",
     "Icon": "fal fa-users-cog",
@@ -10,7 +9,7 @@
     "EntityId": "User",
     "GridPolicies": [
         {
-            "Id": "001800b0-0000-0000-8000-acc56bb92de6",
+            "Id": "users.TeamId.10",
             "FieldName": "TeamId",
             "Order": 10,
             "ComponentType": "Dropdown",
@@ -25,7 +24,7 @@
             "EntityId": "User"
         },
         {
-            "Id": "00521d58-0000-0000-8000-f6ad933a0087",
+            "Id": "users.IdentityCard.6",
             "FieldName": "IdentityCard",
             "Order": 6,
             "ComponentType": "Input",
@@ -36,7 +35,7 @@
             "EntityId": "User"
         },
         {
-            "Id": "005c0078-0000-0000-8000-70509600921e",
+            "Id": "users.FullName.3",
             "FieldName": "FullName",
             "Order": 3,
             "ComponentType": "Input",
@@ -47,7 +46,7 @@
             "EntityId": "User"
         },
         {
-            "Id": "005c00b0-0000-0000-8000-85b56e77dcc4",
+            "Id": "users.Address.7",
             "FieldName": "Address",
             "Order": 7,
             "ComponentType": "Input",
@@ -58,7 +57,7 @@
             "EntityId": "User"
         },
         {
-            "Id": "005d0038-0000-0000-8000-fe98a58818fa",
+            "Id": "users.PhoneNumber.8",
             "FieldName": "PhoneNumber",
             "Order": 8,
             "ComponentType": "Input",
@@ -69,7 +68,7 @@
             "EntityId": "User"
         },
         {
-            "Id": "005d0074-0000-0000-8000-fc5f2953ae96",
+            "Id": "users.GenderId.5",
             "FieldName": "GenderId",
             "Order": 5,
             "ComponentType": "Dropdown",
@@ -84,7 +83,7 @@
             "EntityId": "User"
         },
         {
-            "Id": "005e0014-0000-0000-8000-241eb87fa392",
+            "Id": "users.Code.1",
             "FieldName": "Code",
             "Order": 1,
             "ComponentType": "Input",
@@ -96,7 +95,7 @@
             "EntityId": "User"
         },
         {
-            "Id": "0075006c-0000-0000-8000-62568d9506c0",
+            "Id": "users.btnEdit.0",
             "FieldName": "btnEdit",
             "Order": 0,
             "ComponentType": "Button",
@@ -109,7 +108,7 @@
             "EntityId": "User"
         },
         {
-            "Id": "00e81d78-0000-0000-8000-e1c6e276a999",
+            "Id": "users.NickName.2",
             "FieldName": "NickName",
             "Order": 2,
             "ComponentType": "Input",
@@ -120,7 +119,7 @@
             "EntityId": "User"
         },
         {
-            "Id": "00e90044-0000-0000-8000-5caa628dc832",
+            "Id": "users.RoleIdsText.9",
             "FieldName": "RoleIdsText",
             "Order": 9,
             "ComponentType": "Input",
@@ -133,7 +132,7 @@
             "IsMultiple": true
         },
         {
-            "Id": "00fa1df8-0000-0000-8000-eb55958aa08c",
+            "Id": "users.Brithday.4",
             "FieldName": "Brithday",
             "Order": 4,
             "ComponentType": "Input",
@@ -146,7 +145,7 @@
     ],
     "Components": [
         {
-            "Id": "002c0084-0000-0000-8000-5feb661d536f",
+            "Id": "users.Section.1",
             "Order": 1,
             "ComponentType": "Section",
             "Label": "System User",
@@ -155,7 +154,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "003a00e4-0000-0000-8000-83e45ed6f836",
+                    "Id": "Section.User.1_1",
                     "FieldName": "User",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -171,7 +170,7 @@
             ]
         },
         {
-            "Id": "019517ca-6902-758d-8eab-033aeb29e857",
+            "Id": "users.Section.1_1",
             "Order": 1,
             "ComponentType": "Section",
             "Label": "Customer User",
@@ -180,7 +179,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "019517d7-510a-74bc-a88b-b92fd72dac2b",
+                    "Id": "Section.User.1_2",
                     "FieldName": "User",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -198,12 +197,10 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "22D3CDF1-F4C2-403A-9267-999650D592FB",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "33C2AC90-85AB-4513-B48C-4B653CF74DB7",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -214,42 +211,34 @@
             "TableName": "Feature"
         },
         {
-            "Id": "47D0B5A7-09E5-4E6C-BF1E-2164AEBE9AD1",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "77E4A362-9984-4F57-83EE-484A51B92764",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "8AD5A432-6B33-4530-BE9B-C01B4EC36F0F",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "947BFA6D-0D69-44F1-8C40-19F754DCFF73",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "A28379E8-426B-4380-B4D3-1C64B471022C",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "AE206E18-C70B-4494-940E-722AE22AAED7",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "DAA154B4-7AAC-4CF3-8063-185266E64888",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "F02D3A05-320D-4B1A-BC2C-35B3106009E3",
             "RoleId": "SALES",
             "TableName": "Feature"
         }

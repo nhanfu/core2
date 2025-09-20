@@ -1,5 +1,5 @@
 {
-    "Id": "00ba06dc-0000-0000-8000-1bed612230b7",
+    "Id": "overview_sales",
     "Name": "overview-sales",
     "Label": "Overview Sales",
     "Order": 0,
@@ -9,7 +9,7 @@
     "IgnoreEncode": true,
     "GridPolicies": [
         {
-            "Id": "01952df8-85a0-776e-af6d-0016904f7763",
+            "Id": "overview_sales.TypeId.0",
             "FieldName": "TypeId",
             "Order": 0,
             "ComponentType": "Dropdown",
@@ -24,7 +24,7 @@
             "EntityId": "Shipment"
         },
         {
-            "Id": "01952df8-85a0-776e-af6d-058ded017d44",
+            "Id": "overview_sales.HblNo.1",
             "FieldName": "HblNo",
             "Order": 1,
             "ComponentType": "Input",
@@ -36,7 +36,7 @@
             "EntityId": "Shipment"
         },
         {
-            "Id": "01952df8-85a0-776e-af6d-094f30a749c2",
+            "Id": "overview_sales.PodId.3",
             "FieldName": "PodId",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -53,7 +53,7 @@
             "EntityId": "Shipment"
         },
         {
-            "Id": "01952df8-85a0-776e-af6d-0e30bb97a413",
+            "Id": "overview_sales.PolId.4",
             "FieldName": "PolId",
             "Order": 4,
             "ComponentType": "Dropdown",
@@ -70,7 +70,7 @@
             "EntityId": "Shipment"
         },
         {
-            "Id": "01952dfa-2526-70fe-8bb4-1e3e9f0861b1",
+            "Id": "overview_sales.ShipmentDate.2",
             "FieldName": "ShipmentDate",
             "Order": 2,
             "ComponentType": "Datepicker",
@@ -82,7 +82,7 @@
             "EntityId": "Shipment"
         },
         {
-            "Id": "01952dfb-132f-74c7-a280-1fead7c848a6",
+            "Id": "overview_sales.IsComplete.5",
             "FieldName": "IsComplete",
             "Order": 5,
             "ComponentType": "Checkbox",
@@ -94,7 +94,7 @@
             "EntityId": "Shipment"
         },
         {
-            "Id": "01952dfb-e068-776b-9a04-04ce051fb0b2",
+            "Id": "overview_sales.ActualCostUSD.7",
             "FieldName": "ActualCostUSD",
             "Order": 7,
             "ComponentType": "Number",
@@ -106,7 +106,7 @@
             "EntityId": "Shipment"
         },
         {
-            "Id": "01952dfb-e62b-71e9-ace1-090cb227e0a7",
+            "Id": "overview_sales.ActualRevenueUSD.6",
             "FieldName": "ActualRevenueUSD",
             "Order": 6,
             "ComponentType": "Number",
@@ -118,7 +118,7 @@
             "EntityId": "Shipment"
         },
         {
-            "Id": "01952dfc-223c-777a-9c3a-a5d904c9234e",
+            "Id": "overview_sales.ActualProfitUSD.8",
             "FieldName": "ActualProfitUSD",
             "Order": 8,
             "ComponentType": "Number",
@@ -132,65 +132,55 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "10F27AA9-DBD7-46C4-A991-1527902ECB08",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "273AE548-86D9-4FA9-A068-DFE18A1D6AB9",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "4F1A154A-0160-4207-AF07-12ADFA42CE86",
             "RoleId": "ADMIN",
             "CanRead": true,
             "CanReadAll": true,
             "TableName": "Feature"
         },
         {
-            "Id": "5A9DFD3A-918A-429C-B0C8-330F225E630A",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "7AEE99EA-4C03-4309-8032-C79539DB1C28",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "8D6AE53E-AE7C-409F-8FA5-34DC2CE7D880",
             "RoleId": "SALES",
             "CanRead": true,
             "CanReadAll": true,
             "TableName": "Feature"
         },
         {
-            "Id": "A3CCE9A8-EB6A-4200-980D-CC7594D1C8A2",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
             "TableName": "Feature"
         },
         {
-            "Id": "AE96136C-0F7F-4593-8B42-447EF2C37431",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "F8CB9291-115A-4094-99E1-C29C1D062183",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "FAA656B7-112E-44BC-AAB9-28CFE86A82E3",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         }
     ],
     "Components": [
         {
-            "Id": "00641604-0000-0000-8000-18acb54c8cc7",
+            "Id": "overview_sales.Container.0",
             "FieldName": "Container",
             "Order": 0,
             "ComponentType": "Section",
@@ -198,7 +188,7 @@
             "XxlCol": 20,
             "Components": [
                 {
-                    "Id": "01952d9f-fb45-74ec-ad04-d3a570a08f06",
+                    "Id": "Container.Container1.1_1",
                     "FieldName": "Container1",
                     "Order": 1,
                     "ComponentType": "Section",
@@ -209,7 +199,7 @@
                     "XxlOuterColumn": 4,
                     "Components": [
                         {
-                            "Id": "01952da3-8c15-7038-b1c8-6340ee4ee765",
+                            "Id": "Container1.Label",
                             "ComponentType": "Label",
                             "FormatData": "<div class=\"report-box shipment\">\r\n\t<h3 class=\"report-number\">{CompletedTotal}/{Total}</h3>\r\n\t<p class=\"report-title\">SHIPMENT</p>\r\n</div>",
                             "Column": 12,
@@ -221,7 +211,7 @@
                     ]
                 },
                 {
-                    "Id": "01952d9f-fb46-75ff-832d-807ae2b29462",
+                    "Id": "Container.Container2.2_1",
                     "FieldName": "Container2",
                     "Order": 2,
                     "ComponentType": "Section",
@@ -232,7 +222,7 @@
                     "XxlOuterColumn": 4,
                     "Components": [
                         {
-                            "Id": "01952db4-d4ef-73c5-b069-21f147681f56",
+                            "Id": "Container2.Label",
                             "ComponentType": "Label",
                             "FormatData": "<div class=\"report-box lead\">\r\n\t<h3 class=\"report-number\">{Total}</h3>\r\n\t<p class=\"report-title\">LEAD</p>\r\n</div>",
                             "Column": 12,
@@ -244,7 +234,7 @@
                     ]
                 },
                 {
-                    "Id": "01952d9f-fb46-75ff-832d-85fa3210ddf1",
+                    "Id": "Container.Container2.3",
                     "FieldName": "Container2",
                     "Order": 3,
                     "ComponentType": "Section",
@@ -255,7 +245,7 @@
                     "XxlOuterColumn": 4,
                     "Components": [
                         {
-                            "Id": "01952db4-feec-77da-bcd8-82bbd9ce7e30",
+                            "Id": "Container2.Label_1",
                             "ComponentType": "Label",
                             "FormatData": "<div class=\"report-box shipment prospect\">\r\n\t<h3 class=\"report-number\">{Total}</h3>\r\n\t<p class=\"report-title\">PROSPECT</p>\r\n</div>",
                             "Column": 12,
@@ -267,7 +257,7 @@
                     ]
                 },
                 {
-                    "Id": "01952d9f-fb47-738c-b577-e8a75d3c13cb",
+                    "Id": "Container.Container2.3_1",
                     "FieldName": "Container2",
                     "Order": 3,
                     "ComponentType": "Section",
@@ -278,7 +268,7 @@
                     "XxlOuterColumn": 4,
                     "Components": [
                         {
-                            "Id": "01952db5-184d-7404-a722-2d220fdbe321",
+                            "Id": "Container2.Label_2",
                             "ComponentType": "Label",
                             "FormatData": "<div class=\"report-box shipment customers\">\r\n\t<h3 class=\"report-number\">{Total}</h3>\r\n\t<p class=\"report-title\">CUSTOMERS</p>\r\n</div>",
                             "Column": 12,
@@ -290,7 +280,7 @@
                     ]
                 },
                 {
-                    "Id": "01952d9f-fb47-738c-b577-ef8239b5a8b8",
+                    "Id": "Container.Container2.4",
                     "FieldName": "Container2",
                     "Order": 4,
                     "ComponentType": "Section",
@@ -301,7 +291,7 @@
                     "XxlOuterColumn": 4,
                     "Components": [
                         {
-                            "Id": "01952db5-35fe-769c-92e8-e9f02a849760",
+                            "Id": "Container2.Label_3",
                             "ComponentType": "Label",
                             "FormatData": "<div class=\"report-box clock\">\r\n\t<h3 class=\"report-number\">{Total}</h3>\r\n\t<p class=\"report-title\">LOCK</p>\r\n</div>",
                             "Column": 12,
@@ -313,7 +303,7 @@
                     ]
                 },
                 {
-                    "Id": "00ba0684-0000-0000-8000-adaeb734d7f5",
+                    "Id": "Container.Container1.5",
                     "FieldName": "Container1",
                     "Order": 5,
                     "ComponentType": "Section",
@@ -324,7 +314,7 @@
                     "XxlOuterColumn": 4,
                     "Components": [
                         {
-                            "Id": "00ba062c-0000-0000-8000-117771549045",
+                            "Id": "Container1.Report.2_1",
                             "FieldName": "Report",
                             "Order": 2,
                             "ComponentType": "Chart",
@@ -337,7 +327,7 @@
                     ]
                 },
                 {
-                    "Id": "0055162c-0000-0000-8000-e2b5824e8752",
+                    "Id": "Container.Container2.6",
                     "FieldName": "Container2",
                     "Order": 6,
                     "ComponentType": "Section",
@@ -348,7 +338,7 @@
                     "XxlOuterColumn": 4,
                     "Components": [
                         {
-                            "Id": "007d1690-0000-0000-8000-13c2eeccce29",
+                            "Id": "Container2.Report.2_1",
                             "FieldName": "Report",
                             "Order": 2,
                             "ComponentType": "Chart",
@@ -363,7 +353,7 @@
                     ]
                 },
                 {
-                    "Id": "00bf3a88-0000-0000-8000-0a830e8c4330",
+                    "Id": "Container.Container2.7",
                     "FieldName": "Container2",
                     "Order": 7,
                     "ComponentType": "Section",
@@ -374,7 +364,7 @@
                     "XxlOuterColumn": 4,
                     "Components": [
                         {
-                            "Id": "01952dd3-345d-7618-b512-c000e9bc6cc2",
+                            "Id": "Container2.Report.2_2",
                             "FieldName": "Report",
                             "Order": 2,
                             "ComponentType": "Chart",
@@ -389,7 +379,7 @@
                     ]
                 },
                 {
-                    "Id": "00b43a70-0000-0000-8000-f82348241596",
+                    "Id": "Container.Container2.8",
                     "FieldName": "Container2",
                     "Order": 8,
                     "ComponentType": "Section",
@@ -400,7 +390,7 @@
                     "XxlOuterColumn": 8,
                     "Components": [
                         {
-                            "Id": "01952de6-1864-778b-8f75-c7579894eaa6",
+                            "Id": "Container2.Shipment.2",
                             "FieldName": "Shipment",
                             "Order": 2,
                             "ComponentType": "GridView",
@@ -418,7 +408,7 @@
                     ]
                 },
                 {
-                    "Id": "009c3a24-0000-0000-8000-292cc3be4a44",
+                    "Id": "Container.Container2.9",
                     "FieldName": "Container2",
                     "Order": 9,
                     "ComponentType": "Section",
@@ -427,7 +417,7 @@
                     "XxlOuterColumn": 20,
                     "Components": [
                         {
-                            "Id": "00cc3a64-0000-0000-8000-66f6fa282976",
+                            "Id": "Container2.Report.2_3",
                             "FieldName": "Report",
                             "Order": 2,
                             "ComponentType": "Chart",

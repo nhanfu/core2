@@ -1,15 +1,14 @@
 {
-    "Id": "00b605d0-0000-0000-8000-2d616cb81c86",
+    "Id": "commodity",
     "Name": "commodity",
     "Label": "Commodity",
-    "ParentId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
     "Order": 8,
     "Icon": "fal fa-box-open",
     "IsMenu": true,
     "IgnoreEncode": true,
     "GridPolicies": [
         {
-            "Id": "00b70514-0000-0000-8000-871409a4c332",
+            "Id": "commodity.Code.0",
             "FieldName": "Code",
             "Order": 0,
             "ComponentType": "Input",
@@ -21,7 +20,7 @@
             "EntityId": "MasterData"
         },
         {
-            "Id": "00b70574-0000-0000-8000-6ad789eb2f47",
+            "Id": "commodity.Name.1",
             "FieldName": "Name",
             "Order": 1,
             "ComponentType": "Input",
@@ -33,7 +32,7 @@
             "EntityId": "MasterData"
         },
         {
-            "Id": "00b705bc-0000-0000-8000-1d8d92db3bc8",
+            "Id": "commodity.Description.2",
             "FieldName": "Description",
             "Order": 2,
             "ComponentType": "Input",
@@ -47,12 +46,10 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "06ED0B44-215A-4EA7-BCC3-8533F9D7A532",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "08916CA7-13C9-473C-A963-DE465DEADFD9",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -63,49 +60,41 @@
             "TableName": "Feature"
         },
         {
-            "Id": "1A40C1EC-520E-4F4D-B51A-97F778B53C7F",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "651B396D-8FAE-4C8B-9EC4-005D87178202",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "731270AF-16C5-42F5-A517-C7E2EC00799A",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "7D0D35E7-2ED2-42BB-82DC-723B946EE9C3",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "9A4925BD-7C62-4F23-B565-D7FE5B5B9401",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "B0B33854-C600-4F2C-84E4-20BFFAF90C19",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "CC982573-0867-4D5F-AE81-FB2CAB6AB5E1",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "D4B93C98-9047-47CB-987B-8F6AFDD27083",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         }
     ],
     "Components": [
         {
-            "Id": "00b70594-0000-0000-8000-5b512d9960d2",
+            "Id": "commodity.Container.1",
             "FieldName": "Container",
             "Order": 1,
             "ComponentType": "Section",
@@ -113,7 +102,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "00b7056c-0000-0000-8000-6ef7a3b32f25",
+                    "Id": "Container.MasterData.1_1",
                     "FieldName": "MasterData",
                     "Order": 1,
                     "ComponentType": "GridView",

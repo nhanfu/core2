@@ -1,14 +1,13 @@
 {
-    "Id": "006505e8-0000-0000-8000-ddeaf2599b4e",
+    "Id": "container_type",
     "Name": "container-type",
     "Label": "Container Type",
-    "ParentId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
     "Order": 4,
     "Icon": "fal fa-container-storage",
     "IgnoreEncode": true,
     "GridPolicies": [
         {
-            "Id": "000130c0-0000-0000-8000-234375010082",
+            "Id": "container_type.IsContainer.4",
             "FieldName": "IsContainer",
             "Order": 4,
             "ComponentType": "Checkbox",
@@ -20,7 +19,7 @@
             "EntityId": "MasterData"
         },
         {
-            "Id": "00650500-0000-0000-8000-013f52d48955",
+            "Id": "container_type.Description.2",
             "FieldName": "Description",
             "Order": 2,
             "ComponentType": "Input",
@@ -32,7 +31,7 @@
             "EntityId": "MasterData"
         },
         {
-            "Id": "006505b8-0000-0000-8000-bc370849e7ae",
+            "Id": "container_type.Code.0",
             "FieldName": "Code",
             "Order": 0,
             "ComponentType": "Input",
@@ -44,7 +43,7 @@
             "EntityId": "MasterData"
         },
         {
-            "Id": "006505d0-0000-0000-8000-5d666a88e002",
+            "Id": "container_type.Name.1",
             "FieldName": "Name",
             "Order": 1,
             "ComponentType": "Input",
@@ -56,7 +55,7 @@
             "EntityId": "MasterData"
         },
         {
-            "Id": "0195523b-7c50-7202-b0b2-65964c9c4316",
+            "Id": "container_type.Active.4",
             "FieldName": "Active",
             "Order": 4,
             "ComponentType": "Checkbox",
@@ -68,7 +67,7 @@
             "EntityId": "MasterData"
         },
         {
-            "Id": "01955453-9467-74d9-869c-7f06ad7d9645",
+            "Id": "container_type.CodeMn.4",
             "FieldName": "CodeMn",
             "Order": 4,
             "ComponentType": "Input",
@@ -82,47 +81,38 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "04A262D7-C9CD-4E9F-A9BC-B9C0674D8BA9",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "1EA8D719-F70C-4E81-853F-082597AE12C6",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "24598734-18EB-4D5F-B6CF-769A54EDCB59",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "259C7C55-2CBE-4851-BA15-6635DCE3857A",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "5A11B797-3C23-43B9-A40D-D3DFCD19CEC1",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "5AE482CE-30BD-47C6-9844-B877215878D9",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "72C65340-2D5E-4782-B99B-62737E83F41D",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "811C9CDF-4B01-4831-9DF0-1324A49D22D6",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "824D0359-C97B-4E6D-93A4-3796290D2FDD",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -133,14 +123,13 @@
             "TableName": "Feature"
         },
         {
-            "Id": "AD02DA77-88C2-4D11-96C7-A59D2790D5BB",
             "RoleId": "PRICING",
             "TableName": "Feature"
         }
     ],
     "Components": [
         {
-            "Id": "00650538-0000-0000-8000-1e644e13b110",
+            "Id": "container_type.Container.1",
             "FieldName": "Container",
             "Order": 1,
             "ComponentType": "Section",
@@ -148,7 +137,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "00650558-0000-0000-8000-f6178a7b4f19",
+                    "Id": "Container.MasterData.1_2",
                     "FieldName": "MasterData",
                     "Order": 1,
                     "ComponentType": "GridView",

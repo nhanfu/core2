@@ -1,13 +1,12 @@
 {
-    "Id": "0054ff24-0000-0000-8000-4fb9b5ecea88",
+    "Id": "chart_of_Accounts",
     "Name": "chart-of-Accounts ",
     "Label": "Chart of Accounts ",
-    "ParentId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
     "Order": 0,
     "Icon": "fal fa-code",
     "GridPolicies": [
         {
-            "Id": "0021ff04-0000-0000-8000-e298f915cb46",
+            "Id": "chart_of_Accounts.No.1",
             "FieldName": "No",
             "Order": 1,
             "ComponentType": "Number",
@@ -16,7 +15,7 @@
             "EntityId": "AccountNo"
         },
         {
-            "Id": "0022ff08-0000-0000-8000-e3c832262478",
+            "Id": "chart_of_Accounts.Code.2",
             "FieldName": "Code",
             "Order": 2,
             "ComponentType": "Input",
@@ -25,7 +24,7 @@
             "EntityId": "AccountNo"
         },
         {
-            "Id": "0023ff44-0000-0000-8000-9c032a57eec4",
+            "Id": "chart_of_Accounts.Name.3",
             "FieldName": "Name",
             "Order": 3,
             "ComponentType": "Input",
@@ -34,7 +33,7 @@
             "EntityId": "AccountNo"
         },
         {
-            "Id": "0024ff58-0000-0000-8000-104f18c32612",
+            "Id": "chart_of_Accounts.NameEnglish.4",
             "FieldName": "NameEnglish",
             "Order": 4,
             "ComponentType": "Input",
@@ -43,7 +42,7 @@
             "EntityId": "AccountNo"
         },
         {
-            "Id": "0040ffe4-0000-0000-8000-ac4a5dea5285",
+            "Id": "chart_of_Accounts.TypeId.5",
             "FieldName": "TypeId",
             "Order": 5,
             "ComponentType": "Dropdown",
@@ -58,7 +57,7 @@
             "EntityId": "AccountNo"
         },
         {
-            "Id": "0042ff48-0000-0000-8000-d7ad9bd12757",
+            "Id": "chart_of_Accounts.Reason.6",
             "FieldName": "Reason",
             "Order": 6,
             "ComponentType": "Input",
@@ -69,52 +68,42 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "0C1A8EAA-08AD-41FC-A8A6-04F2DDBB83B7",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "147F9C62-C896-4212-A4BF-2F7826CB94C6",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "17CD428E-0CF0-46BC-92B8-F753798E8922",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "21919908-A2C7-4A54-ABC6-D2678CF0BF54",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "5C7C97B7-80FD-47FC-AF3D-BD18C24EC0EB",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "82BE449C-4C90-450F-9233-458A896ED7A1",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "84577B91-69E0-467F-A07D-F204464BE555",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "B6ADDBD2-F6C0-45AB-90E5-EE2FA7B15074",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "DCDF2C67-6BC5-44B2-A77F-B22695B23307",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "FEB8A73E-C83D-4DE9-A946-4E4F9DD26256",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -127,13 +116,13 @@
     ],
     "Components": [
         {
-            "Id": "00b3ffd8-0000-0000-8000-2c9d9cfd3929",
+            "Id": "chart_of_Accounts.Container.1",
             "FieldName": "Container",
             "Order": 1,
             "ComponentType": "Section",
             "Components": [
                 {
-                    "Id": "0001ffbc-0000-0000-8000-65e18bc65d4f",
+                    "Id": "Container.AccountNo.1_1",
                     "FieldName": "AccountNo",
                     "Order": 1,
                     "ComponentType": "GridView",

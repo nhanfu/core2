@@ -1,5 +1,5 @@
 {
-    "Id": "006b1850-0000-0000-8000-1fdb95f8d1dc",
+    "Id": "partners",
     "Name": "partners",
     "Label": "Partners",
     "Order": 3,
@@ -7,19 +7,16 @@
     "Icon": "far fa-users-crown",
     "FeaturePolicies": [
         {
-            "Id": "3423BCC6-A649-4785-B37D-6D812BB24262",
             "RoleId": "DOCS",
             "CanRead": true,
             "CanWrite": true,
             "TableName": "Feature"
         },
         {
-            "Id": "43D0197A-3CF5-4B3D-8873-C0DFA81E89D3",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "59E0DB89-AEAA-4388-9CC8-7C0FF443A359",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -30,24 +27,20 @@
             "TableName": "Feature"
         },
         {
-            "Id": "6F056A64-8EA4-4950-992F-EC3D17E0DAFA",
             "RoleId": "SALES",
             "CanRead": true,
             "CanReadAll": true,
             "TableName": "Feature"
         },
         {
-            "Id": "90E83336-D4C1-463D-A24F-98324E37C66F",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "92950868-4DD1-4CF4-94C1-B20F1D552196",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "9A75FA89-6B14-4D64-BB53-0E470CFEC3F4",
             "RoleId": "PRICING",
             "CanRead": true,
             "CanReadAll": true,
@@ -57,17 +50,14 @@
             "TableName": "Feature"
         },
         {
-            "Id": "BB7FF59F-DB9F-4C09-83D8-DAE4231950D0",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "D3265DB6-889F-4A41-84A2-A59994256202",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "DDB38AA8-4220-4E21-AC25-6797FF0E1D74",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         }

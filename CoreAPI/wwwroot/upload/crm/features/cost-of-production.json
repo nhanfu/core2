@@ -1,5 +1,5 @@
 {
-    "Id": "6e63c21d-2782-4124-3232-4cfe2c982can1",
+    "Id": "cost_of_production",
     "Name": "cost-of-production",
     "Label": "Cost of Production",
     "Order": 12,
@@ -8,7 +8,6 @@
     "IgnoreEncode": true,
     "FeaturePolicies": [
         {
-            "Id": "299FB387-0C69-41A4-8B2B-302D086F71E3",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -19,47 +18,38 @@
             "TableName": "Feature"
         },
         {
-            "Id": "314D52AC-12BD-4595-AD33-A1BE007A4769",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "58E80B13-9369-4D1A-A9B5-BB31DA5D06CE",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "A1CE4972-763F-40C0-B1BC-383F73E4C7F0",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "ABC59D2B-4984-4657-A216-E98007881962",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "AF4AE4FD-53C1-4024-BB82-AF11E93D1102",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "B277832A-7BF1-4385-8E64-AB51031E7BDF",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "C65A1356-F153-43D7-81D6-859EB83A9951",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "D337A301-15B7-469D-9CB9-CD7CD0DEB211",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "D47E2809-CB2B-4E82-B5AC-E5FF279B78E8",
             "RoleId": "PRICING",
             "TableName": "Feature"
         }

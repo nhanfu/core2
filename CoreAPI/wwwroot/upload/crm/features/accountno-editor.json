@@ -1,14 +1,13 @@
 {
-    "Id": "01945a5a-b42b-7309-8a6b-3ae211cefa38",
+    "Id": "accountno_editor",
     "Name": "accountno-editor",
     "Label": "Account No Editor",
-    "ParentId": "01939222-2f5a-747a-bb15-606fb55edf4c",
     "Order": 0,
     "Style": "width:800px;",
     "EntityId": "AccountNo",
     "GridPolicies": [
         {
-            "Id": "01945a5a-b8e2-7564-bf58-5fa55b970e6d",
+            "Id": "accountno_editor.BankId.0",
             "FieldName": "BankId",
             "Order": 0,
             "ComponentType": "Dropdown",
@@ -27,7 +26,7 @@
             "EntityId": "PartnerBankAccount"
         },
         {
-            "Id": "01945a5a-b92e-739e-9f0a-cc4d746bc3b0",
+            "Id": "accountno_editor.AccountNumber.1",
             "FieldName": "AccountNumber",
             "Order": 1,
             "ComponentType": "Input",
@@ -44,7 +43,7 @@
             "EntityId": "PartnerBankAccount"
         },
         {
-            "Id": "01945a5a-b968-740a-a3c7-f1fbc7f614f1",
+            "Id": "accountno_editor.AccountName.2",
             "FieldName": "AccountName",
             "Order": 2,
             "ComponentType": "Input",
@@ -61,7 +60,7 @@
             "EntityId": "PartnerBankAccount"
         },
         {
-            "Id": "01945a5a-b9b7-7108-b144-1982a9e30b16",
+            "Id": "accountno_editor.SwiftCode.3",
             "FieldName": "SwiftCode",
             "Order": 3,
             "ComponentType": "Input",
@@ -78,7 +77,7 @@
     ],
     "Components": [
         {
-            "Id": "01945a5a-b4c4-7477-9052-11b5a592e698",
+            "Id": "accountno_editor.Button.1",
             "FieldName": "Button",
             "Order": 1,
             "ComponentType": "Section",
@@ -86,7 +85,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "01945a5a-b510-7750-83d7-1166f4fd7485",
+                    "Id": "Button.btnSave.1",
                     "FieldName": "btnSave",
                     "Order": 1,
                     "ComponentType": "Button",
@@ -98,7 +97,7 @@
                     "Events": "{ \"click\" : \"SavePatch\" }"
                 },
                 {
-                    "Id": "01945a5a-b510-7750-83d7-1166f4fd7485",
+                    "Id": "Button.btnSave.1_1",
                     "FieldName": "btnSave",
                     "Order": 1,
                     "ComponentType": "Button",
@@ -112,14 +111,14 @@
             ]
         },
         {
-            "Id": "01945a5a-b54b-745e-8815-12c32abc8965",
+            "Id": "accountno_editor.Container.3",
             "FieldName": "Container ",
             "Order": 3,
             "ComponentType": "Section",
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "01945a5a-b659-7219-becd-bbb1f66d030a",
+                    "Id": "Container.Section.9",
                     "Order": 9,
                     "ComponentType": "Section",
                     "Icon": "fal fa-info mr-1",
@@ -128,7 +127,7 @@
                     "XxlOuterColumn": 12,
                     "Components": [
                         {
-                            "Id": "01945a5a-b688-74bd-b770-1ba6ec7cb37f",
+                            "Id": "Section.Code.1",
                             "FieldName": "Code",
                             "Order": 1,
                             "ComponentType": "Input",
@@ -137,7 +136,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "01945a5a-b6d5-716f-aebf-60c7f054704d",
+                            "Id": "Section.Name.2",
                             "FieldName": "Name",
                             "Order": 2,
                             "ComponentType": "Input",
@@ -146,7 +145,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "01945a5a-b703-7502-8556-c4daea14b3d4",
+                            "Id": "Section.NameEnglish.3",
                             "FieldName": "NameEnglish",
                             "Order": 3,
                             "ComponentType": "Input",
@@ -155,7 +154,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "01945a5a-b74c-75d3-8e05-8f7e623606e1",
+                            "Id": "Section.Description.4",
                             "FieldName": "Description",
                             "Order": 4,
                             "ComponentType": "Input",
@@ -164,7 +163,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "01945a5a-b77c-718e-b9d5-31bce10ce181",
+                            "Id": "Section.PhoneNumber.5",
                             "FieldName": "PhoneNumber",
                             "Order": 5,
                             "ComponentType": "Checkbox",
@@ -173,7 +172,7 @@
                             "ShowLabel": true
                         },
                         {
-                            "Id": "01945a6e-5300-733c-b950-77f618067794",
+                            "Id": "Section.TypeId.6",
                             "FieldName": "TypeId",
                             "Order": 6,
                             "ComponentType": "Dropdown",
@@ -188,7 +187,7 @@
                             "EntityId": "AccountNo"
                         },
                         {
-                            "Id": "01945a6e-5300-733c-b950-78f1c10e3345",
+                            "Id": "Section.CurrencyId.15",
                             "FieldName": "CurrencyId",
                             "Order": 15,
                             "ComponentType": "Dropdown",
@@ -206,7 +205,7 @@
                             "EntityId": "AccountNo"
                         },
                         {
-                            "Id": "01945a6e-5300-733c-b950-7dfcdfa02c3a",
+                            "Id": "Section.OgCurrencyId.16",
                             "FieldName": "OgCurrencyId",
                             "Order": 16,
                             "ComponentType": "Dropdown",
@@ -224,7 +223,7 @@
                             "EntityId": "AccountNo"
                         },
                         {
-                            "Id": "01945a6e-5300-733c-b950-806f543c7977",
+                            "Id": "Section.ParentId.8",
                             "FieldName": "ParentId",
                             "Order": 8,
                             "ComponentType": "Dropdown",
@@ -246,7 +245,6 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "1FCAFFAA-B496-4383-97BF-BDC6897703CF",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -255,42 +253,34 @@
             "TableName": "Feature"
         },
         {
-            "Id": "21699771-F5A2-43C0-B4C3-E9F490BBCBC9",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "27CC6FE7-800E-4C5E-B8AC-C32CCE0E7B9A",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "3D119519-AF18-4F48-B2EE-9F99273405E4",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "545948CB-E4DD-43F8-98A4-0E7FFAC09B88",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "6EA6438E-CA28-41E2-A04F-6C94E0E18636",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "72033854-ECBD-4E5A-AF2C-091769631041",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "8DDC0673-5EFB-4375-A425-2FAB0A4A70E3",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "B85586D7-3FB8-4300-8472-9DA780D41CBE",
             "RoleId": "ADMIN",
             "CanRead": true,
             "CanReadAll": true,
@@ -299,7 +289,6 @@
             "TableName": "Feature"
         },
         {
-            "Id": "D984B433-9BD8-4ACC-BEAD-A38054689DBA",
             "RoleId": "ACC",
             "CanRead": true,
             "CanReadAll": true,

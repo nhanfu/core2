@@ -1,15 +1,14 @@
 {
-    "Id": "0195737e-e124-77b8-b40c-f6dc5c93b98a",
+    "Id": "workflow_manage",
     "Name": "workflow-manage",
     "Label": "Workflow Manage",
-    "ParentId": "000a0514-0000-0000-8000-1f67beb1bcef",
     "Order": 112,
     "Script": "return {\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"feature-editor\", entity);\r\n    }\r\n}",
     "Icon": "fas fa-columns",
     "IgnoreEncode": true,
     "GridPolicies": [
         {
-            "Id": "0195737e-e264-7237-98eb-2a4c3e9d2915",
+            "Id": "workflow_manage.Order.3",
             "FieldName": "Order",
             "Order": 3,
             "ComponentType": "Number",
@@ -22,7 +21,7 @@
             "EntityId": "Feature"
         },
         {
-            "Id": "0195737e-e2b4-7258-ab69-8330318e8f9c",
+            "Id": "workflow_manage.Active.9",
             "FieldName": "Active",
             "Order": 9,
             "ComponentType": "Checkbox",
@@ -34,7 +33,7 @@
             "EntityId": "Feature"
         },
         {
-            "Id": "0195737e-e2e9-7194-9655-5b70bf23410b",
+            "Id": "workflow_manage.EntityId.5",
             "FieldName": "EntityId",
             "Order": 5,
             "ComponentType": "Input",
@@ -46,7 +45,7 @@
             "EntityId": "Feature"
         },
         {
-            "Id": "0195737e-e369-71a0-9bd2-65c337ee95cb",
+            "Id": "workflow_manage.Icon.7",
             "FieldName": "Icon",
             "Order": 7,
             "ComponentType": "Input",
@@ -58,7 +57,7 @@
             "EntityId": "Feature"
         },
         {
-            "Id": "0195737e-e3a3-7011-94c1-8b2034c9cb0a",
+            "Id": "workflow_manage.ParentId.8",
             "FieldName": "ParentId",
             "Order": 8,
             "ComponentType": "Dropdown",
@@ -76,7 +75,7 @@
             "EntityId": "Feature"
         },
         {
-            "Id": "0195737e-e3d8-7269-8e16-f03c471fd8be",
+            "Id": "workflow_manage.Name.6",
             "FieldName": "Name",
             "Order": 6,
             "ComponentType": "Input",
@@ -88,7 +87,7 @@
             "EntityId": "Feature"
         },
         {
-            "Id": "0195737e-e450-7523-af25-a485c8a7f76c",
+            "Id": "workflow_manage.Label.4",
             "FieldName": "Label",
             "Order": 4,
             "ComponentType": "Input",
@@ -102,37 +101,30 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "1D0ADE2B-5742-4E45-A95D-0363A700A30F",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "3F192B1C-881C-4C63-B3BD-6CE113A3C61B",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "6CC363C0-0739-4003-8F32-1EF3AC7A33EF",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "7680705E-13FA-4A48-97F0-C7E424FB50E2",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "80B118C6-0C30-4202-B9B4-87E5B7E4F739",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "963A47B1-777E-4D82-B55C-5EA191D7DDF4",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "9E428E99-E750-4F51-869B-03C80F54F572",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -143,7 +135,6 @@
             "TableName": "Feature"
         },
         {
-            "Id": "A182E9E6-C932-42C7-A3A8-1B1463E25812",
             "RoleId": "ADMIN",
             "CanRead": true,
             "CanReadAll": true,
@@ -154,19 +145,17 @@
             "TableName": "Feature"
         },
         {
-            "Id": "BEBBF94B-CF48-4EF7-9A74-4D1A8A640D6E",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "EEF5F28C-1911-4AA3-8DF8-B37362AB44BF",
             "RoleId": "OPS",
             "TableName": "Feature"
         }
     ],
     "Components": [
         {
-            "Id": "0195737e-e1bf-70e5-aed8-46905531f790",
+            "Id": "workflow_manage.Container.1",
             "FieldName": "Container",
             "Order": 1,
             "ComponentType": "Section",
@@ -174,7 +163,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "0195737e-e210-764f-ab67-aa633ae47d5b",
+                    "Id": "Container.Feature.1_2",
                     "FieldName": "Feature",
                     "Order": 1,
                     "ComponentType": "GridView",

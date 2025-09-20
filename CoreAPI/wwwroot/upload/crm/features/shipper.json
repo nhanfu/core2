@@ -1,14 +1,13 @@
 {
-    "Id": "00d8185c-0000-0000-8000-3fbaa96b6b89",
+    "Id": "shipper",
     "Name": "shipper",
     "Label": "Shipper",
-    "ParentId": "00901838-0000-0000-8000-3de9bef91c3a",
     "Order": 0,
     "Script": "return {\r\n    Add: function () {\r\n        var cus = {\r\n            ServiceId: 2\r\n        }\r\n        this.OpenPopup(\"partner-editor\", cus);\r\n    },\r\n    EditSubjects: function (btn, entity) {\r\n        debugger;\r\n        this.OpenPopup(\"partner-editor\", entity);\r\n    }\r\n}",
     "Icon": "fal fa-shipping-timed",
     "GridPolicies": [
         {
-            "Id": "00d91824-0000-0000-8000-fdf6ce41e8b1",
+            "Id": "shipper.Address.4",
             "FieldName": "Address",
             "Order": 4,
             "ComponentType": "Input",
@@ -20,7 +19,7 @@
             "EntityId": "Customer"
         },
         {
-            "Id": "00d9182c-0000-0000-8000-fb72edebd389",
+            "Id": "shipper.Code.2",
             "FieldName": "Code",
             "Order": 2,
             "ComponentType": "Input",
@@ -32,7 +31,7 @@
             "EntityId": "Customer"
         },
         {
-            "Id": "00d91834-0000-0000-8000-8c1685b2ac27",
+            "Id": "shipper.btnEdit.1",
             "FieldName": "btnEdit",
             "Order": 1,
             "ComponentType": "Button",
@@ -46,7 +45,7 @@
             "EntityId": "Customer"
         },
         {
-            "Id": "00d9183c-0000-0000-8000-8f95b7bc8f40",
+            "Id": "shipper.InsertedBy.10",
             "FieldName": "InsertedBy",
             "Order": 10,
             "ComponentType": "Dropdown",
@@ -63,7 +62,7 @@
             "EntityId": "Customer"
         },
         {
-            "Id": "00d9185c-0000-0000-8000-ae9881178d50",
+            "Id": "shipper.Name.3",
             "FieldName": "Name",
             "Order": 3,
             "ComponentType": "Input",
@@ -75,7 +74,7 @@
             "EntityId": "Customer"
         },
         {
-            "Id": "00d91888-0000-0000-8000-cec12d7ed3d3",
+            "Id": "shipper.PhoneNumber.5",
             "FieldName": "PhoneNumber",
             "Order": 5,
             "ComponentType": "Input",
@@ -87,7 +86,7 @@
             "EntityId": "Customer"
         },
         {
-            "Id": "00d918c4-0000-0000-8000-dcc65060b868",
+            "Id": "shipper.PicId.7",
             "FieldName": "PicId",
             "Order": 7,
             "ComponentType": "Dropdown",
@@ -104,7 +103,7 @@
             "EntityId": "Customer"
         },
         {
-            "Id": "00d918d0-0000-0000-8000-47aadd240226",
+            "Id": "shipper.Active.9",
             "FieldName": "Active",
             "Order": 9,
             "ComponentType": "Checkbox",
@@ -116,7 +115,7 @@
             "EntityId": "Customer"
         },
         {
-            "Id": "00d918e0-0000-0000-8000-a53534df91bc",
+            "Id": "shipper.InsertedDate.11",
             "FieldName": "InsertedDate",
             "Order": 11,
             "ComponentType": "Datepicker",
@@ -128,7 +127,7 @@
             "EntityId": "Customer"
         },
         {
-            "Id": "00d918f4-0000-0000-8000-22ef21415f6e",
+            "Id": "shipper.TaxCode.6",
             "FieldName": "TaxCode",
             "Order": 6,
             "ComponentType": "Input",
@@ -142,7 +141,7 @@
     ],
     "Components": [
         {
-            "Id": "00d81864-0000-0000-8000-987305218cda",
+            "Id": "shipper.Section.1",
             "Order": 1,
             "ComponentType": "Section",
             "Label": "All",
@@ -152,7 +151,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "00d91880-0000-0000-8000-ff0877ec1dfe",
+                    "Id": "Section.Customer.1_17",
                     "FieldName": "Customer",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -172,7 +171,7 @@
             ]
         },
         {
-            "Id": "00d91800-0000-0000-8000-7be8f18a1ed8",
+            "Id": "shipper.Section.3",
             "Order": 3,
             "ComponentType": "Section",
             "Label": "Agent",
@@ -182,7 +181,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "00d918ec-0000-0000-8000-739ccdb50957",
+                    "Id": "Section.Customer.3_4",
                     "FieldName": "Customer",
                     "Order": 3,
                     "ComponentType": "GridView",
@@ -202,7 +201,7 @@
             ]
         },
         {
-            "Id": "00d918d0-0000-0000-8000-2099888b2dd0",
+            "Id": "shipper.Section.2",
             "Order": 2,
             "ComponentType": "Section",
             "Label": "Shipper",
@@ -212,7 +211,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "00d918b0-0000-0000-8000-638aa64733cd",
+                    "Id": "Section.Customer.2_4",
                     "FieldName": "Customer",
                     "Order": 2,
                     "ComponentType": "GridView",
@@ -234,37 +233,30 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "2C7F04DC-4661-45B8-A997-068F77EF984A",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "319BCE62-60D5-4E8A-9751-70AE67DAF0F4",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "57F982EC-92D0-43CC-9B13-8F1A6654312F",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "57FE4E46-7764-48A2-9F3C-5B68105CABA1",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "5E382E46-56E8-41B9-9494-ECEFA26AA9F4",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "7C93D13E-70F9-4B42-9CF2-9B41C2B81CF4",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "9594A857-2FD2-442C-90D2-58E2AFBE8A6E",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -275,17 +267,14 @@
             "TableName": "Feature"
         },
         {
-            "Id": "A9C9DC9D-1B64-433B-A5EE-F4518FD386A8",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "CB34D0AA-2742-4B18-8E23-ACF3E9C283E9",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "FA68FECD-E81D-4F1A-AEBE-4C4A0460914B",
             "RoleId": "SALES",
             "TableName": "Feature"
         }

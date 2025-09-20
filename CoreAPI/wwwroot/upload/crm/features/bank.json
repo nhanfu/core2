@@ -1,15 +1,14 @@
 {
-    "Id": "00b005ac-0000-0000-8000-3b89fe61c80d",
+    "Id": "bank",
     "Name": "bank",
     "Label": "Bank",
-    "ParentId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
     "Order": 7,
     "Icon": "fal fa-university",
     "IsMenu": true,
     "IgnoreEncode": true,
     "GridPolicies": [
         {
-            "Id": "00b10504-0000-0000-8000-d5c1f5f961c3",
+            "Id": "bank.Name.1",
             "FieldName": "Name",
             "Order": 1,
             "ComponentType": "Input",
@@ -21,7 +20,7 @@
             "EntityId": "MasterData"
         },
         {
-            "Id": "00b10520-0000-0000-8000-0f4767fc96e5",
+            "Id": "bank.Description.2",
             "FieldName": "Description",
             "Order": 2,
             "ComponentType": "Input",
@@ -33,7 +32,7 @@
             "EntityId": "MasterData"
         },
         {
-            "Id": "00b10558-0000-0000-8000-345369f05f3a",
+            "Id": "bank.Code.0",
             "FieldName": "Code",
             "Order": 0,
             "ComponentType": "Input",
@@ -47,12 +46,10 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "148F8013-E3E1-4EF5-A594-171344293E8B",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "4E47C50C-AFE6-458E-B78A-B406DC620837",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -63,49 +60,41 @@
             "TableName": "Feature"
         },
         {
-            "Id": "5A5C4DA8-24D4-49F3-BB42-B5A78D25CDCD",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "6B79F9FF-EFFA-48D4-9484-3950E7143FAA",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "76022E5A-71F5-4523-9A4B-579375D476D2",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "7A734033-3768-4B54-A869-6DC4C51E104C",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "83251B81-1729-411E-882B-75BE1E8520EA",
             "RoleId": "SALES",
             "TableName": "Feature"
         },
         {
-            "Id": "A4748CD6-035E-47B2-BD8A-87C9EFACA16C",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "BE7452E1-F7B2-4297-A23D-AD63D36FB458",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "C4D19D97-D492-4FA5-BB45-89653D786DC9",
             "RoleId": "DOCS",
             "TableName": "Feature"
         }
     ],
     "Components": [
         {
-            "Id": "00b105d4-0000-0000-8000-8c6601743041",
+            "Id": "bank.Container.1",
             "FieldName": "Container",
             "Order": 1,
             "ComponentType": "Section",
@@ -113,7 +102,7 @@
             "XxlCol": 12,
             "Components": [
                 {
-                    "Id": "00b10550-0000-0000-8000-132cd2b430a4",
+                    "Id": "Container.MasterData.1",
                     "FieldName": "MasterData",
                     "Order": 1,
                     "ComponentType": "GridView",

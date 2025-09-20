@@ -1,15 +1,14 @@
 {
-    "Id": "006f0138-0000-0000-8000-7b44fe51f718",
+    "Id": "terminal",
     "Name": "terminal",
     "Label": "Terminal",
-    "ParentId": "6e63c20d-2788-4776-9da0-4cfe7c982cad",
     "Order": 13,
     "Script": "return {\r\n    Add: function () {\r\n        var entity = {}\r\n        this.OpenPopup(\"terminal-editor\", entity);\r\n    },\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"terminal-editor\", entity);\r\n    }\r\n}",
     "Icon": "fal fa-location",
     "EntityId": "Terminal",
     "GridPolicies": [
         {
-            "Id": "0040016c-0000-0000-8000-9f5ce8a62938",
+            "Id": "terminal.btnEdit.0",
             "FieldName": "btnEdit",
             "Order": 0,
             "ComponentType": "Button",
@@ -23,7 +22,7 @@
             "EntityId": "Terminal"
         },
         {
-            "Id": "004d2bec-0000-0000-8000-f138d451e755",
+            "Id": "terminal.CountryId.3",
             "FieldName": "CountryId",
             "Order": 3,
             "ComponentType": "Dropdown",
@@ -41,7 +40,7 @@
             "EntityId": "Terminal"
         },
         {
-            "Id": "00d30104-0000-0000-8000-a078404528b4",
+            "Id": "terminal.Code.1",
             "FieldName": "Code",
             "Order": 1,
             "ComponentType": "Input",
@@ -52,7 +51,7 @@
             "EntityId": "Terminal"
         },
         {
-            "Id": "00d601ec-0000-0000-8000-63d67a9d3828",
+            "Id": "terminal.Name.2",
             "FieldName": "Name",
             "Order": 2,
             "ComponentType": "Input",
@@ -63,7 +62,7 @@
             "EntityId": "Terminal"
         },
         {
-            "Id": "00df0168-0000-0000-8000-66e77ab414c4",
+            "Id": "terminal.Active.7",
             "FieldName": "Active",
             "Order": 7,
             "ComponentType": "Checkbox",
@@ -74,7 +73,7 @@
             "EntityId": "Terminal"
         },
         {
-            "Id": "00df018c-0000-0000-8000-ec70673c3e60",
+            "Id": "terminal.Address.6",
             "FieldName": "Address",
             "Order": 6,
             "ComponentType": "Input",
@@ -85,7 +84,7 @@
             "EntityId": "Terminal"
         },
         {
-            "Id": "00e001ec-0000-0000-8000-b2f8889bd756",
+            "Id": "terminal.InsertedBy.8",
             "FieldName": "InsertedBy",
             "Order": 8,
             "ComponentType": "Dropdown",
@@ -100,7 +99,7 @@
             "EntityId": "Terminal"
         },
         {
-            "Id": "00e401d0-0000-0000-8000-6784df52e2c5",
+            "Id": "terminal.InsertedDate.9",
             "FieldName": "InsertedDate",
             "Order": 9,
             "ComponentType": "Datepicker",
@@ -111,7 +110,7 @@
             "EntityId": "Terminal"
         },
         {
-            "Id": "00e50120-0000-0000-8000-208c0ed13c04",
+            "Id": "terminal.UpdatedBy.10",
             "FieldName": "UpdatedBy",
             "Order": 10,
             "ComponentType": "Dropdown",
@@ -126,7 +125,7 @@
             "EntityId": "Terminal"
         },
         {
-            "Id": "00e60178-0000-0000-8000-79f6e5e65dbd",
+            "Id": "terminal.UpdatedDate.11",
             "FieldName": "UpdatedDate",
             "Order": 11,
             "ComponentType": "Datepicker",
@@ -137,7 +136,7 @@
             "EntityId": "Terminal"
         },
         {
-            "Id": "01950269-739d-77b2-9a12-516aa705549e",
+            "Id": "terminal.ZoneId.4",
             "FieldName": "ZoneId",
             "Order": 4,
             "ComponentType": "Dropdown",
@@ -155,7 +154,7 @@
             "EntityId": "Terminal"
         },
         {
-            "Id": "01950274-fcba-750e-a21e-9293923537df",
+            "Id": "terminal.ServiceIds.5",
             "FieldName": "ServiceIds",
             "Order": 5,
             "ComponentType": "Dropdown",
@@ -176,7 +175,7 @@
     ],
     "Components": [
         {
-            "Id": "009401f8-0000-0000-8000-02eda2fb138d",
+            "Id": "terminal.Section.1",
             "Order": 1,
             "ComponentType": "Section",
             "Label": "All",
@@ -185,7 +184,7 @@
             "DisplayBadge": true,
             "Components": [
                 {
-                    "Id": "00a6010c-0000-0000-8000-3036e27bb371",
+                    "Id": "Section.Terminal.1",
                     "FieldName": "Terminal",
                     "Order": 1,
                     "ComponentType": "GridView",
@@ -203,7 +202,7 @@
             ]
         },
         {
-            "Id": "00bf01a8-0000-0000-8000-a0b97dd928a7",
+            "Id": "terminal.Section.2",
             "Order": 2,
             "ComponentType": "Section",
             "Label": "Port",
@@ -212,7 +211,7 @@
             "DisplayBadge": true
         },
         {
-            "Id": "00c00164-0000-0000-8000-6ad245955447",
+            "Id": "terminal.Section.3",
             "Order": 3,
             "ComponentType": "Section",
             "Label": "Warehouse",
@@ -223,37 +222,30 @@
     ],
     "FeaturePolicies": [
         {
-            "Id": "03595B73-1A7D-4D24-9684-B55829C01020",
             "RoleId": "DOCS",
             "TableName": "Feature"
         },
         {
-            "Id": "060799B4-3000-4B3D-B5C0-F4AA28C423A8",
             "RoleId": "ADMIN",
             "TableName": "Feature"
         },
         {
-            "Id": "59FEB4D9-59C5-4958-91F2-A435F267F981",
             "RoleId": "DEPUTY BOD",
             "TableName": "Feature"
         },
         {
-            "Id": "5E5CEF10-CCC7-4A82-B72C-C19D1D9BDB80",
             "RoleId": "CUSTOMER",
             "TableName": "Feature"
         },
         {
-            "Id": "8412CD1F-C8F3-4D9B-9C34-AF12A1C39653",
             "RoleId": "OPS",
             "TableName": "Feature"
         },
         {
-            "Id": "86A41300-146A-442D-8C92-951CDA1CD333",
             "RoleId": "ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "8FF5087A-6268-4499-B37E-9E577AAFBF96",
             "RoleId": "BOD",
             "CanRead": true,
             "CanReadAll": true,
@@ -264,17 +256,14 @@
             "TableName": "Feature"
         },
         {
-            "Id": "A05E40C2-E726-4D67-803F-46FFBA49D3BC",
             "RoleId": "PRICING",
             "TableName": "Feature"
         },
         {
-            "Id": "A4FB9587-1EC6-4C88-9752-6EDCE9DB0B41",
             "RoleId": "CHIEF ACC",
             "TableName": "Feature"
         },
         {
-            "Id": "F35723E0-BBE4-4656-8CF1-41B5200C53EA",
             "RoleId": "SALES",
             "TableName": "Feature"
         }
