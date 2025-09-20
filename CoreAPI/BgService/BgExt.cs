@@ -372,41 +372,6 @@ namespace CoreAPI.BgService
             }
         }
 
-        public static Task NotifyDevices(IEnumerable<TaskNotification> tasks, string queueName, WebSocketService _socket, string tenantCode)
-        {
-            return tasks
-                .Where(x => x.AssignedId.HasAnyChar())
-                .Select(x => new MQEvent
-                {
-                    QueueName = queueName,
-                    Id = "-" + Uuid7.Guid().ToString(),
-                    Message = x,
-                    AssignedId = x.AssignedId
-                })
-            .ForEachAsync(x => SendMessageToUser(x, _socket, tenantCode));
-        }
-
-        private static async Task SendMessageToUser(MQEvent task, WebSocketService _socket, string tenantCode)
-        {
-            var env = "dev";
-            var fcm = new FCMWrapper
-            {
-                To = $"/topics/{tenantCode}/{env}/U{task.AssignedId:0000000}",
-                Data = new FCMData
-                {
-                    Title = task.Message.Title,
-                    Body = task.Message.Description,
-                },
-                Notification = new FCMNotification
-                {
-                    Title = task.Message.Title,
-                    Body = task.Message.Description,
-                    ClickAction = "com.softek.tms.push.background.MESSAGING_EVENT"
-                },
-            };
-            await _socket.SendMessageToUsersAsync([task.Message.AssignedId], task.ToJson(), fcm.ToJson(), tenantCode);
-        }
-
         public static async Task<T> ReadDsAs<T>(string query, string connInfo = null) where T : class
         {
             var ds = await ReadDataSet(query, connInfo);

@@ -7,14 +7,6 @@ namespace Core.Extensions
 {
     public static class ServerExt
     {
-        public static IApplicationBuilder UseTaskSocket(this IApplicationBuilder app)
-        {
-            var factory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
-            var provider = factory.CreateScope().ServiceProvider;
-            app.Map("/task", app => app.UseMiddleware<WebSocketManagerMiddleware>(provider.GetService<WebSocketService>()));
-            return app;
-        }
-
         public static object GetPropValue(this object obj, string propName)
         {
             if (obj is null)

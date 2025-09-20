@@ -14,8 +14,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Core.Controllers;
 
 [Authorize]
-public class UserController(UserService _userSvc, PdfService _pdfService,
-    ExcelService _excelService, OpenAIHttpClientService _openAIHttpClientService) : ControllerBase
+public class UserController(UserService _userSvc, AuthService _authSvc, PdfService _pdfService,
+    ExcelService _excelService, OpenAIHttpClientService _openAIHttpClientService, AuthService _auth) : ControllerBase
 {
     [AllowAnonymous]
     [HttpPost("/api/auth/login")]
@@ -25,7 +25,7 @@ public class UserController(UserService _userSvc, PdfService _pdfService,
         {
             return BadRequest(ModelState);
         }
-        return await _userSvc.SignInAsync(login);
+        return await _auth.SignInAsync(login);
     }
 
     [AllowAnonymous]
@@ -38,14 +38,14 @@ public class UserController(UserService _userSvc, PdfService _pdfService,
     [HttpPost("/api/CreateUser")]
     public async Task<Partner> CreateUser([FromBody] Partner entity)
     {
-        return await _userSvc.CreateUser(entity);
+        return await _authSvc.CreateUser(entity);
     }
 
     [AllowAnonymous]
     [HttpPost("api/[Controller]/SignOut")]
     public Task<bool> SignOutAsync([FromBody] Token token)
     {
-        return _userSvc.SignOutAsync(token);
+        return _auth.SignOutAsync(token);
     }
 
     [HttpPost("api/CreateHtml")]
@@ -75,20 +75,20 @@ public class UserController(UserService _userSvc, PdfService _pdfService,
         {
             throw new ApiException("Token is required");
         }
-        return await _userSvc.RefreshAsync(token);
+        return await _auth.RefreshAsync(token);
     }
 
     [AllowAnonymous]
     [HttpPost("api/[Controller]/ForgotPassword")]
     public Task<bool> ForgotPassword([FromBody] LoginVM login)
     {
-        return _userSvc.ForgotPassword(login);
+        return _auth.ForgotPassword(login);
     }
 
     [HttpPost("api/[Controller]/UpdatePassword")]
     public Task<bool> UpdatePassword([FromBody] UpdatePasswordVM login)
     {
-        return _userSvc.UpdatePassword(login);
+        return _auth.UpdatePassword(login);
     }
 
     [HttpPost("/api/GenPdf")]
@@ -100,7 +100,7 @@ public class UserController(UserService _userSvc, PdfService _pdfService,
     [HttpGet("api/User/ReSendUser/")]
     public Task<string> ReSendUser(SqlViewModel vm)
     {
-        return _userSvc.ResendUser(vm);
+        return _authSvc.ResendUser(vm);
     }
 
     [HttpPatch("api/[Controller]/SavePatches", Order = 0)]
@@ -168,16 +168,10 @@ public class UserController(UserService _userSvc, PdfService _pdfService,
         return _userSvc.SalesFunction();
     }
 
-    [HttpPost("api/userSetting")]
+    [HttpPost("api/[Controller]/userSetting")]
     public Task<bool> Dictionary([FromBody] UserSetting userSetting)
     {
         return _userSvc.PostUserSetting(userSetting);
-    }
-
-    [HttpPost("/api/feature/notificationuser")]
-    public Task<bool> NotificationUser([FromBody] NotificationVM entity)
-    {
-        return _userSvc.NotificationUser(entity);
     }
 
     [HttpPost("/api/feature/go")]
@@ -294,12 +288,6 @@ public class UserController(UserService _userSvc, PdfService _pdfService,
     public Task<Dictionary<string, object>[][]> Sql([FromBody] SqlViewModel entity)
     {
         return _userSvc.Sql(entity);
-    }
-
-    [HttpPost("api/GetUserActive")]
-    public async Task<User[]> GetUserActive()
-    {
-        return await _userSvc.GetUserActive();
     }
 
     [HttpPost("api/GetMessageActive")]

@@ -41,7 +41,6 @@ public class UserService
     private readonly IWebHostEnvironment _host;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IServiceProvider iServiceProvider;
-    private readonly WebSocketService _taskSocketSvc;
     private readonly SendMailService _sendMailService;
     private readonly IConfiguration _configuration;
     public readonly ISqlProvider _sql;
@@ -65,11 +64,8 @@ public class UserService
     public string TenantCode { get; set; }
     public List<string> RoleIds { get; set; }
     public List<string> RoleNames { get; set; }
-
-    private bool _debug;
-
     public UserService(IHttpContextAccessor ctx, IConfiguration conf, IDistributedCache cache, IWebHostEnvironment host,
-        IHttpClientFactory httpClientFactory, WebSocketService taskSocket, ISqlProvider sql, IConfiguration configuration,
+        IHttpClientFactory httpClientFactory, ISqlProvider sql, IConfiguration configuration,
         SendMailService sendMailService, IServiceProvider serviceProvider, ILogger<UserService> logger)
     {
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
@@ -78,7 +74,6 @@ public class UserService
         _host = host ?? throw new ArgumentNullException(nameof(host));
         _ctx = ctx ?? throw new ArgumentNullException(nameof(ctx));
         _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
-        _taskSocketSvc = taskSocket ?? throw new ArgumentNullException(nameof(taskSocket));
         _request = _ctx.HttpContext.Request;
         _sendMailService = sendMailService;
         iServiceProvider = serviceProvider;
@@ -86,11 +81,6 @@ public class UserService
         ExtractMeta();
         _sql = sql;
         SetMetaToSqlProvider(_sql);
-#if DEBUG
-        _debug = true;
-#else
-        _debug = false;
-#endif
     }
 
     public void SetMetaToSqlProvider(ISqlProvider _sql)
@@ -129,141 +119,7 @@ public class UserService
         CEmail = claims.FirstOrDefault(x => x.Type == "CEmail")?.Value;
     }
 
-    public string GenerateRandomToken(int? maxLength = 32)
-    {
-        var builder = new StringBuilder();
-        var random = new Random();
-        char ch;
-        for (int i = 0; i < maxLength; i++)
-        {
-            ch = Convert.ToChar(Convert.ToInt32(Math.Floor(26 * random.NextDouble() + 65)));
-            builder.Append(ch);
-        }
-        return builder.ToString();
-    }
-
-    public string GetHash(HashAlgorithm hashAlgorithm, string input)
-    {
-        byte[] data = hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(input));
-        var sBuilder = new StringBuilder();
-        for (int i = 0; i < data.Length; i++)
-        {
-            sBuilder.Append(data[i].ToString("x2"));
-        }
-        return sBuilder.ToString();
-    }
-
-    public static string GetRemoteIpAddress(HttpContext context)
-    {
-        return context.Request.Headers.TryGetValue(UserServiceHelpers.ForwardedIP, out var value)
-            ? value.ToString().Split(',')[0].Trim()
-            : context.Connection.RemoteIpAddress.ToString();
-    }
-
     private string DefaultConnStr() => _cfg.GetConnectionString(Utils.ConnKey);
-
-    public async Task<Token> SignInAsync(LoginVM login)
-    {
-        if (login.TanentCode.HasAnyChar())
-        {
-            login.TanentCode = login.TanentCode.Trim();
-        }
-        var matchedUser = await GetUserByLogin(login) ?? throw new ApiException($"Sai mật khẩu hoặc tên đăng nhập.<br /> Vui lòng đăng nhập lại!")
-        {
-            StatusCode = HttpStatusCode.BadRequest
-        };
-        var hashedPassword = GetHash(Utils.SHA256, login.Password + matchedUser.Salt);
-        var matchPassword = matchedUser.Password == hashedPassword;
-        List<PatchDetail> changes = [new PatchDetail { Field = UserServiceHelpers.IdField, OldVal = matchedUser.Id }];
-        if (!matchPassword && !_debug)
-        {
-            var loginFailedCount = matchedUser.LoginFailedCount.HasValue ? matchedUser.LoginFailedCount + 1 : 1;
-            changes.Add(new PatchDetail { Field = nameof(User.LastFailedLogin), Value = DateTime.Now.ToISOFormat() });
-            changes.Add(new PatchDetail { Field = nameof(User.LoginFailedCount), Value = loginFailedCount.ToString() });
-        }
-        else
-        {
-            matchedUser.LastLogin = DateTime.Now;
-            matchedUser.LoginFailedCount = 0;
-            changes.Add(new PatchDetail { Field = nameof(User.LastLogin), Value = DateTime.Now.ToISOFormat() });
-            changes.Add(new PatchDetail { Field = nameof(User.LoginFailedCount), Value = 0.ToString() });
-            if (_debug)
-            {
-                matchPassword = true;
-                changes.Add(new PatchDetail { Field = nameof(User.Password), Value = hashedPassword });
-            }
-        }
-        await SavePatch(new PatchVM
-        {
-            Table = nameof(User),
-            TenantCode = login.TanentCode,
-            Changes = changes
-        });
-        if (!matchPassword)
-        {
-            throw new ApiException($"Wrong username or password. Please try again!")
-            {
-                StatusCode = HttpStatusCode.BadRequest
-            };
-        }
-        return await GetUserToken(matchedUser, login);
-    }
-
-    public async Task<Partner> CreateUser(Partner entity)
-    {
-        var ramdomPass = GenerateRandomToken(8);
-        var randomSalt = GenerateRandomToken(8);
-        var old = $"select * from [User] where Id = '{entity.Id}'";
-        var oldUser = await _sql.ReadDsAs<User>(old);
-        var id = "-" + entity.Id;
-        if (oldUser != null)
-        {
-            id = entity.Id;
-        }
-        var user = new User()
-        {
-            Id = id,
-            UserName = entity.Email,
-            FullName = entity.CompanyName,
-            Email = entity.Email,
-            Password = GetHash(Utils.SHA256, ramdomPass + randomSalt),
-            Salt = randomSalt,
-            Active = true,
-            InsertedBy = entity.InsertedBy,
-            InsertedDate = DateTime.Now,
-            RoleIds = "CUSTOMER",
-            RoleIdsText = "CUSTOMER",
-            CompanyId = entity.Id,
-            TypeId = 2,
-            Avatar = ""
-        };
-        var save = user.MapToPatch();
-        await SavePatch2(save);
-        var email = new EmailVM
-        {
-            ToAddresses = [user.Email],
-            Subject = "Email recovery",
-            Body = $"<p>Dear {user.FullName},</p><p>Your account has been created successfully. Please use the following information to login:</p><p>Username: {user.UserName}</p><p>Password: {ramdomPass}</p><p>Thank you!</p>"
-        };
-        await SendMail(email);
-        return entity;
-    }
-
-    private async Task<User> GetUserByLogin(LoginVM login)
-    {
-        _logger.LogDebug("Begin query user");
-        var query = @$"
-        declare @username varchar(100) = '{login.UserName}';
-        select u.* from [User] u 
-        where u.Active = 1 and u.Username = @username;
-        select top 1 p.* from [Partner] p 
-        left join [User] u on p.Id = u.CompanyId
-        where u.Active = 1 and u.Username = @username;";
-        var ds = await _sql.ReadDataSet(query);
-        var userDb = ds.Length > 0 && ds[0].Length > 0 ? ds[0][0].MapTo<User>() : null;
-        userDb.Company = ds.Length > 1 && ds[1].Length > 0 ? ds[1][0].MapTo<Partner>() : null;
-        return userDb;
-    }
 
     public async Task<Dictionary<string, object>[]> GetDictionary()
     {
@@ -290,27 +146,6 @@ public class UserService
         var query = @$"select * from [SaleFunction]";
         var ds = await _sql.ReadDataSet(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         return ds[0];
-    }
-
-    public async Task<bool> NotificationUser(NotificationVM entity)
-    {
-        var tasks = entity.Rule.Select(item =>
-        {
-            var task = new TaskNotification();
-            task.CopyPropFrom(entity.Entity);
-            task.Id = Uuid7.Guid().ToString();
-            task.AssignedId = item;
-            task.InsertedDate = DateTime.Now;
-            task.InsertedBy = UserId;
-            return task;
-        });
-        foreach (var item in tasks)
-        {
-            var patch = item.MapToPatch();
-            await SavePatch(patch);
-        }
-        NotifyDevices(tasks, "MessageNotification");
-        return true;
     }
 
     public async Task<bool> PostUserSetting(UserSetting userSetting)
@@ -519,180 +354,6 @@ public class UserService
 
         string json = File.ReadAllText(filePath);
         return JsonConvert.DeserializeObject<Feature>(json);
-    }
-
-    protected async Task<Token> GetUserToken(User user, LoginVM login, string refreshToken = null)
-    {
-        if (user is null)
-        {
-            return null;
-        }
-        var roleIds = user.RoleIds.Split(",").ToList();
-        var roleNames = user.RoleIdsText.Split(",").ToList();
-        var signinDate = DateTime.Now;
-        var jit = Uuid7.Guid().ToString();
-        List<Claim> claims =
-        [
-            new("PartnerId", user.PartnerId is null ? string.Empty : user.PartnerId),
-            new ("UserId", user.Id),
-            new ("Avatar", user.Avatar ?? "/icons/default-avatar.jpg"),
-            new ("TeamId", user.TeamId ?? string.Empty),
-            new ("DepartmentId", user.DepartmentId ?? string.Empty),
-            new ("UserName", user.UserName),
-            new ("FullName", user.FullName),
-            new ("CName", user.Company.CompanyName ?? string.Empty),
-            new ("CLogo", user.Company.Logo ?? string.Empty),
-            new ("CIcon", user.Company.Icon ?? string.Empty),
-            new ("CAddress", user.Company.Address ?? string.Empty),
-            new ("CPhoneNumber", user.Company.PhoneNumber ?? string.Empty),
-            new ("CEmail",user.Company.Email ?? string.Empty),
-            new (UserServiceHelpers.TenantClaim,login.TanentCode),
-            new ("Email", user.Email ?? string.Empty),
-            new ("Dob", user.Dob?.ToString() ?? string.Empty),
-        ];
-        claims.AddRange(roleIds.Select(x => new Claim("RoleIds", x.ToString())));
-        claims.AddRange(roleNames.Select(x => new Claim(UserServiceHelpers.RoleNameClaim, x.ToString())));
-        var newLogin = refreshToken is null;
-        refreshToken ??= GenerateRandomToken();
-        var (token, exp) = AccessToken(claims);
-        var res = JsonToken(user, login.TanentCode, roleIds, roleNames, refreshToken, token, exp, signinDate);
-        if (!newLogin || !login.AutoSignIn)
-        {
-            return res;
-        }
-        var userLogin = new UserLogin
-        {
-            Id = jit,
-            UserId = user.Id,
-            IpAddress = GetRemoteIpAddress(_ctx.HttpContext),
-            RefreshToken = refreshToken,
-            RefreshTokenExp = res.RefreshTokenExp,
-            InsertedDate = signinDate,
-            Active = true
-        };
-        var patch = userLogin.MapToPatch();
-        patch.TenantCode = login.TanentCode;
-        await SavePatch(patch);
-        return res;
-    }
-
-    public (JwtSecurityToken, DateTime) AccessToken(IEnumerable<Claim> claims, DateTime? expire = null)
-    {
-        var exp = expire ?? DateTime.Now.AddDays(1);
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_cfg["Tokens:Key"]));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-        var token = new JwtSecurityToken(
-            _cfg["Tokens:Issuer"],
-            _cfg["Tokens:Issuer"],
-            claims,
-            expires: exp,
-            signingCredentials: creds);
-        return (token, exp);
-    }
-
-    private static Token JsonToken(User user, string tanent, List<string> rolesIds, List<string> rolesNames, string refreshToken,
-        JwtSecurityToken token, DateTime exp, DateTime signinDate)
-    {
-        return new Token
-        {
-            UserId = user.Id,
-            FullName = user.FullName,
-            DepartmentId = user.DepartmentId,
-            Code = user.Code,
-            PositionId = user.PositionId,
-            TeamId = user.TeamId,
-            UserName = user.UserName,
-            Address = user.Address,
-            Avatar = user.Avatar,
-            PhoneNumber = user.PhoneNumber,
-            Ssn = user.Ssn,
-            AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
-            AccessTokenExp = exp,
-            RefreshTokenExp = DateTime.Now.AddYears(1),
-            RefreshToken = refreshToken,
-            RoleIds = rolesIds,
-            RoleNames = rolesNames,
-            Vendor = user.Company,
-            TenantCode = tanent,
-            SigninDate = signinDate,
-        };
-    }
-
-    private static void EnsureTokenParam(params string[] claims)
-    {
-        foreach (var claim in claims)
-        {
-            if (claim.IsNullOrWhiteSpace()) throw new ApiException("Invalid access token")
-            {
-                StatusCode = HttpStatusCode.BadRequest
-            };
-        }
-    }
-    public async Task<Token> RefreshAsync(RefreshVM token)
-    {
-        var principal = Utils.GetPrincipalFromAccessToken(token.AccessToken, _cfg);
-        var userId = principal.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
-        var userName = principal.Claims.FirstOrDefault(x => x.Type == "UserName")?.Value;
-        var tenant = principal.Claims.FirstOrDefault(x => x.Type == UserServiceHelpers.TenantClaim)?.Value;
-        EnsureTokenParam(userId, userName, tenant);
-        var query =
-            @$"select * from UserLogin 
-            where UserId = '{userId}' and RefreshToken = '{token.RefreshToken}'
-            and RefreshTokenExp > '{DateTime.Now}' and Active = 1 order by InsertedDate desc";
-        var userLogin = await _sql.ReadDsAs<UserLogin>(query);
-
-        if (userLogin == null)
-        {
-            return null;
-        }
-        var login = new LoginVM
-        {
-            TanentCode = tenant,
-            UserName = userName,
-        };
-        var updatedUser = await GetUserByLogin(login);
-        return await GetUserToken(updatedUser, login, token.RefreshToken);
-    }
-
-    public async Task<SqlQueryResult> RunJs(SqlViewModel vm)
-    {
-        SqlQueryResult result = new();
-        var engine = new TopazEngine();
-        engine.SetValue("JSON", new JSONObject());
-        engine.AddType<HttpClient>("HttpClient");
-        engine.AddNamespace("System");
-        engine.AddNamespace("Core.ViewModels");
-        engine.AddNamespace("Core.Models");
-        engine.AddExtensionMethods(typeof(Enumerable));
-        engine.AddExtensionMethods(typeof(IEnumerableCore));
-        var claims = _ctx.HttpContext.User?.Claims;
-        if (claims != null)
-        {
-            var map = new { UserId, RoleIds, TenantCode, Env, CenterIds, BranchId, VendorId };
-            engine.SetValue("claims", JsonConvert.SerializeObject(map));
-        }
-        engine.SetValue("args", vm.Params);
-        engine.SetValue("sv", this);
-        engine.SetValue("vm", vm);
-
-        await engine.ExecuteScriptAsync(vm.JsScript);
-        var res = engine.GetValue("result");
-        if (res is SqlQueryResult final) return final;
-        if (res is not string strRes)
-        {
-            result.Result = res;
-            return result;
-        }
-        try
-        {
-
-            result = JsonConvert.DeserializeObject<SqlQueryResult>(strRes);
-        }
-        catch (Exception)
-        {
-            result.Query = strRes;
-        }
-        return result;
     }
 
     public async Task<bool> HardDelete(PatchVM vm)
@@ -933,7 +594,6 @@ public class UserService
                     };
                     var patch = taskUser.MapToPatch();
                     await SavePatch(patch);
-                    NotifyDevices(new List<TaskNotification>() { taskUser }, "MessageNotification");
                 }
                 else
                 {
@@ -958,7 +618,6 @@ public class UserService
                     };
                     var patch = taskUser.MapToPatch();
                     await SavePatch(patch);
-                    NotifyDevices(new List<TaskNotification>() { taskUser }, "MessageNotification");
                 }
             }
             if (groupReceiverId != null && !groupReceiverId.Value.IsNullOrWhiteSpace())
@@ -989,7 +648,6 @@ public class UserService
                     var patch = item.MapToPatch();
                     await SavePatch(patch);
                 }
-                NotifyDevices(taskUser, "MessageNotification");
             }
             return new SqlResult()
             {
@@ -1065,7 +723,6 @@ public class UserService
                 Value = user.Combine()
             });
         }
-        NotifyDevices(task, "MessageNotification");
         var rs2 = await SavePatch2(vm);
         foreach (var item in task)
         {
@@ -1138,7 +795,6 @@ public class UserService
                 };
                 var patch = taskUser.MapToPatch();
                 await SavePatch(patch);
-                NotifyDevices(new List<TaskNotification>() { taskUser }, "MessageNotification");
             }
             if (groupReceiverId != null && !groupReceiverId.Value.IsNullOrWhiteSpace())
             {
@@ -1180,7 +836,6 @@ public class UserService
                         Active = true,
                         AssignedId = userCreateId != null ? userCreateId.Value : insertedBy.Value
                     };
-                    NotifyDevices(new List<TaskNotification>() { taskUser }, "MessageNotification");
                 }
                 else
                 {
@@ -1380,7 +1035,6 @@ public class UserService
                 var patch = item.MapToPatch();
                 await SavePatch(patch);
             }
-            NotifyDevices(task, "MessageNotification");
             return new SqlResult()
             {
                 status = 200,
@@ -1441,7 +1095,6 @@ public class UserService
                 await SavePatch(patch);
             }
             var rs2 = await SavePatch2(vm);
-            NotifyDevices(task, "MessageNotification");
             return new SqlResult()
             {
                 status = 200,
@@ -1487,7 +1140,6 @@ public class UserService
         };
         var patch = task.MapToPatch();
         await SavePatch(patch);
-        NotifyDevices(new List<TaskNotification>() { task }, "MessageNotification");
         return new SqlResult()
         {
             status = 200,
@@ -1561,7 +1213,6 @@ public class UserService
                 };
                 var patch1 = taskUser.MapToPatch();
                 await SavePatch(patch1);
-                NotifyDevices(new List<TaskNotification>() { taskUser }, "MessageNotification");
             }
             if (groupReceiverId != null && !groupReceiverId.Value.IsNullOrWhiteSpace())
             {
@@ -1606,7 +1257,6 @@ public class UserService
                         Active = true,
                         AssignedId = userCreateId != null ? userCreateId.Value : insertedBy.Value
                     };
-                    NotifyDevices(new List<TaskNotification>() { taskUser }, "MessageNotification");
                 }
                 else
                 {
@@ -1661,7 +1311,6 @@ public class UserService
                         Active = true,
                         AssignedId = userCreateId != null ? userCreateId.Value : insertedBy.Value
                     };
-                    NotifyDevices(new List<TaskNotification>() { taskUser }, "MessageNotification");
                 }
                 else
                 {
@@ -1763,7 +1412,6 @@ public class UserService
         var rs1 = await SavePatch2(vm);
         var update = $"Update Approvement set IsEnd = 1 where Name = '{name}' and RecordId = '{id}'";
         await _sql.RunSqlCmd(null, update);
-        NotifyDevices(new List<TaskNotification>() { task }, "MessageNotification");
         return new SqlResult()
         {
             status = 200,
@@ -1983,10 +1631,6 @@ public class UserService
                 {
                     x.Data = entity[x.Index];
                 });
-                if (vm.Table == "ConversationDetail")
-                {
-                    SendMessageAllUser(entity[0][0]);
-                }
                 await Notification(vm, id, filteredChanges, oldIsSend, receiverIds);
                 return new SqlResult()
                 {
@@ -2159,10 +1803,6 @@ public class UserService
                             var featureId = filteredChanges.FirstOrDefault(x => x.Field == "FeatureId").Value;
                             var feature = await _sql.ReadDsAs<Feature>($"SELECT * FROM Feature where Id = '{featureId}'");
                             await PublishFeatureByName(feature.Name);
-                        }
-                        if (vm.Table == "ConversationDetail")
-                        {
-                            SendMessageAllUser(entity[0][0]);
                         }
                         await Notification(vm, id, filteredChanges, oldIsSend, receiverIds);
                         return new SqlResult()
@@ -2411,7 +2051,6 @@ public class UserService
                 var patch = item.MapToPatch();
                 await SavePatch(patch);
             }
-            NotifyDevices(task, "MessageNotification");
         }
     }
 
@@ -2832,47 +2471,6 @@ public class UserService
         return permissions;
     }
 
-    public async Task<User[]> GetUserActive()
-    {
-        var socket = _taskSocketSvc.GetAll(TenantCode);
-        var usersVM = socket.Select(x => new UserActiveVM { UserId = x.Key.Split("/")[1], Ip = x.Key.Split("/")[3] }).DistinctBy(x => new { x.UserId, x.Ip }).ToList();
-        var userIds = usersVM.Select(x => x.UserId).Distinct().ToList();
-        if (RoleNames.Contains("CUSTOMER"))
-        {
-            var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] WHERE ID IN ({UserId})", BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
-            var newUsers = usersVM.Select(x =>
-            {
-                var userNew = users.FirstOrDefault(y => y.Id == x.UserId);
-                if (userNew != null)
-                {
-                    userNew.Ip = x.Ip;
-                }
-                return userNew;
-            }).Where(x => x != null) // Loại bỏ null
-            .OrderBy(x => x.FullName)
-            .DistinctBy(x => (x.Id, x.Ip)) // Loại bỏ trùng theo cả Id và Ip
-            .ToArray();
-            return newUsers;
-        }
-        else
-        {
-            var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] WHERE ID IN ({userIds.CombineStrings()})", BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
-            var newUsers = usersVM.Select(x =>
-            {
-                var userNew = users.FirstOrDefault(y => y.Id == x.UserId);
-                if (userNew != null)
-                {
-                    userNew.Ip = x.Ip;
-                }
-                return userNew;
-            }).Where(x => x != null) // Loại bỏ null
-            .OrderBy(x => x.FullName)
-            .DistinctBy(x => (x.Id, x.Ip)) // Loại bỏ trùng theo cả Id và Ip
-            .ToArray();
-            return newUsers;
-        }
-    }
-
     public async Task<Dictionary<string, object>> GetMessageActive()
     {
         var users = await _sql.ReadDataSet($"SELECT COUNT(Id) as Total FROM [ConversationRead] WHERE UserId = '{UserId}' and [Read] = 0", BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
@@ -2923,186 +2521,6 @@ public class UserService
             "nbsp" => " ",
             _ => entity,
         };
-
-    private string ExportExcel(string refName, List<Component> headers, IEnumerable<Dictionary<string, object>> dataSet)
-    {
-        headers = headers.Where(x => x.Active && x.ShortDesc.HasNonSpaceChar()).ToList();
-        XLWorkbook workbook;
-        bool anyGroup = headers.Any(x => !string.IsNullOrEmpty(x.GroupName));
-        workbook = new XLWorkbook();
-        var worksheet = workbook.Worksheets.Add("Data");
-        worksheet.Cell("A1").Value = refName;
-        worksheet.Cell("A1").Style.Font.Bold = true;
-        worksheet.Cell("A1").Style.Font.FontSize = 14;
-        worksheet.Cell("A1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-        worksheet.Cell("A1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-        worksheet.Range(1, 1, headers.Count() + 1, headers.Count + 1).Row(1).Merge();
-        worksheet.Style.Font.SetFontName("Times New Roman");
-        var i = 2;
-        worksheet.Cell(2, 1).SetValue("STT");
-        worksheet.Cell(2, 1).Style.Font.Bold = true;
-        worksheet.Cell(2, 1).Style.Border.RightBorder = XLBorderStyleValues.Thin;
-        worksheet.Cell(2, 1).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-        worksheet.Cell(2, 1).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-        worksheet.Cell(2, 1).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-        if (anyGroup)
-        {
-            worksheet.Range(2, 1, 3, 1).Merge();
-        }
-        foreach (var header in headers)
-        {
-            if (anyGroup && !string.IsNullOrEmpty(header.GroupName))
-            {
-                var colspan = headers.Count(x => x.GroupName == header.GroupName);
-                if (header != headers.FirstOrDefault(x => x.GroupName == header.GroupName))
-                {
-                    i++;
-                    continue;
-                }
-                worksheet.Cell(2, i).SetValue(ConvertHtmlToPlainText(header.GroupName));
-                worksheet.Range(2, i, 2, i + colspan - 1).Merge();
-                worksheet.Range(2, i, 2, i + colspan - 1).Style.Font.Bold = true;
-                worksheet.Range(2, i, 2, i + colspan - 1).Style.Border.RightBorder = XLBorderStyleValues.Thin;
-                worksheet.Range(2, i, 2, i + colspan - 1).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                worksheet.Range(2, i, 2, i + colspan - 1).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-                worksheet.Range(2, i, 2, i + colspan - 1).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-                worksheet.Range(2, i, 2, i + colspan - 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                worksheet.Range(2, i, 2, i + colspan - 1).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-                i++;
-                continue;
-            }
-            worksheet.Cell(2, i).SetValue(ConvertHtmlToPlainText(header.ShortDesc));
-            worksheet.Cell(2, i).Style.Font.Bold = true;
-            worksheet.Cell(2, i).Style.Border.RightBorder = XLBorderStyleValues.Thin;
-            worksheet.Cell(2, i).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-            worksheet.Cell(2, i).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-            worksheet.Cell(2, i).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-            worksheet.Cell(2, i).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            worksheet.Cell(2, i).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            if (anyGroup && string.IsNullOrEmpty(header.GroupName))
-            {
-                worksheet.Range(2, i, 3, i).Merge();
-                worksheet.Cell(3, i).Style.Font.Bold = true;
-                worksheet.Cell(3, i).Style.Border.RightBorder = XLBorderStyleValues.Thin;
-                worksheet.Cell(3, i).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                worksheet.Cell(3, i).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-                worksheet.Cell(3, i).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-                worksheet.Cell(3, i).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                worksheet.Cell(3, i).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            }
-            i++;
-        }
-        var h = 2;
-        if (anyGroup)
-        {
-            foreach (var item in headers)
-            {
-                if (anyGroup && !string.IsNullOrEmpty(item.GroupName))
-                {
-                    worksheet.Cell(3, h).SetValue(ConvertHtmlToPlainText(item.ShortDesc));
-                    worksheet.Cell(3, h).Style.Font.Bold = true;
-                    worksheet.Cell(3, h).Style.Border.RightBorder = XLBorderStyleValues.Thin;
-                    worksheet.Cell(3, h).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                    worksheet.Cell(3, h).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-                    worksheet.Cell(3, h).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-                    worksheet.Cell(3, h).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                    worksheet.Cell(3, h).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-                }
-                h++;
-            }
-        }
-        var x = 3;
-        if (anyGroup)
-        {
-            x++;
-        }
-        var j = 1;
-        foreach (var item in dataSet)
-        {
-            var y = 2;
-            worksheet.Cell(x, 1).SetValue(j);
-            worksheet.Cell(x, 1).Style.Border.RightBorder = XLBorderStyleValues.Thin;
-            worksheet.Cell(x, 1).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-            worksheet.Cell(x, 1).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-            worksheet.Cell(x, 1).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-            foreach (var header in headers)
-            {
-                var field = header.FieldName;
-                var vl = item.GetValueOrDefault(field);
-                switch (header.ComponentType)
-                {
-                    case "Input":
-                    case "Textarea":
-                    case "Label":
-                    case "SearchEntry":
-                        worksheet.Cell(x, y).SetValue(vl?.ToString().DecodeSpecialChar());
-                        break;
-                    case "Datepicker":
-                        worksheet.Cell(x, y).SetValue((DateTime?)vl);
-                        break;
-                    case "Number":
-                        if (vl is int v)
-                        {
-                            worksheet.Cell(x, y).SetValue(vl is null ? default : v);
-                        }
-                        else
-                        {
-                            worksheet.Cell(x, y).SetValue(vl is null ? default : (decimal)vl);
-                            worksheet.Cell(x, y).Style.NumberFormat.Format = "#,##";
-                        }
-                        break;
-                    case "Checkbox":
-                        worksheet.Cell(x, y).SetValue(vl.ToString() == "False" ? default : 1);
-                        break;
-                    default:
-                        break;
-                }
-                worksheet.Cell(x, y).Style.Border.RightBorder = XLBorderStyleValues.Thin;
-                worksheet.Cell(x, y).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                worksheet.Cell(x, y).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-                worksheet.Cell(x, y).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-                y++;
-            }
-            j++;
-            x++;
-        }
-        var k = 2;
-        var last = dataSet.Count() + 3;
-        worksheet.Cell(last, 1).Value = "Total";
-        worksheet.Cell(last, 1).Style.Border.RightBorder = XLBorderStyleValues.Thin;
-        worksheet.Cell(last, 1).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-        worksheet.Cell(last, 1).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-        worksheet.Cell(last, 1).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-        foreach (var item in headers)
-        {
-            if (item.ComponentType == "Number")
-            {
-                var value = dataSet.Select(x => x[item.FieldName]).Where(x => x != null).Sum(x =>
-                {
-                    if (x is int v)
-                    {
-                        return x is null ? default : v;
-                    }
-                    else
-                    {
-                        return x is null ? default : (decimal)x;
-                    }
-                });
-                worksheet.Cell(last, k).SetValue(value);
-                worksheet.Cell(last, k).Style.Font.Bold = true;
-                worksheet.Cell(last, k).Style.NumberFormat.Format = "#,##";
-            }
-            worksheet.Cell(last, k).Style.Border.RightBorder = XLBorderStyleValues.Thin;
-            worksheet.Cell(last, k).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-            worksheet.Cell(last, k).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-            worksheet.Cell(last, k).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-            k++;
-        }
-        var url = $"{refName}{DateTime.Now:ddMMyyyyhhmm}.xlsx";
-        worksheet.Columns().AdjustToContents();
-        workbook.SaveAs($"wwwroot\\excel\\Download\\{url}");
-        return url;
-    }
 
     public async Task<string> PostImageAsync(IWebHostEnvironment host,
             string name = "Captured", bool reup = false)
@@ -3297,18 +2715,6 @@ public class UserService
         return res;
     }
 
-
-    public async Task SendMail(EmailVM email, string connStr = null, string webRoot = null)
-    {
-        var query = $"select top 1 * from [User] m where Id = '{UserId}'";
-        var user = await _sql.ReadDsAs<User>(query, connStr);
-        var fromName = user.FullName;
-        var fromAddress = user.Email;
-        var password = user.PassEmail;
-        var server = "smtp.gmail.com";
-        await email.SendMailAsync(fromName, fromAddress, password, server, 587, false, webRoot);
-    }
-
     public ValueTask<bool> DeleteFile(string path)
     {
         var absolutePath = Path.Combine(_host.WebRootPath, path);
@@ -3319,156 +2725,9 @@ public class UserService
         return new ValueTask<bool>(true);
     }
 
-    public async Task<bool> SignOutAsync(Token token)
-    {
-        if (token is null)
-        {
-            throw new ApiException("Token is required");
-        }
-        var principal = Utils.GetPrincipalFromAccessToken(token.AccessToken, _cfg);
-        var sessionId = principal.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti).Value;
-        var ipAddress = GetRemoteIpAddress(_ctx.HttpContext);
-        var query = $"select * from [UserLogin] where Id = '{sessionId}'";
-        var connStr = await _sql.GetConnStrFromKey(token.ConnKey);
-        var userLogin = await _sql.ReadDsAs<UserLogin>(query, connStr);
-        if (userLogin is null) return true;
-        await SavePatch(new PatchVM
-        {
-            Table = nameof(UserLogin),
-            Changes =
-            [
-                new PatchDetail { Field = nameof(UserLogin.Id), OldVal = userLogin.Id },
-                new PatchDetail { Field = nameof(UserLogin.AccessTokenExp), Value = DateTime.Now.ToISOFormat() },
-            ]
-        });
-        return true;
-    }
-
-    public async Task<bool> ForgotPassword(LoginVM login)
-    {
-        var user = await _sql.ReadDsAs<User>($"select * from [User] where UserName = '{login.UserName}'");
-        var span = DateTime.Now - (user.UpdatedDate ?? DateTime.Now);
-        if (user.LoginFailedCount >= UserServiceHelpers.MAX_LOGIN && span.TotalMinutes < 5)
-        {
-            throw new ApiException($"The account {login.UserName} has been locked for a while! Please contact your administrator to unlock.");
-        }
-        // Send mail
-        var emailTemplate = await _sql.ReadDsAs<MasterData>($"select * from [MasterData] where Name = 'ForgotPassEmail'")
-            ?? throw new InvalidOperationException("Cannot find recovery email template!");
-        var oneClickLink = GenerateRandomToken();
-        user.Recover = oneClickLink;
-        await SavePatch(new PatchVM
-        {
-            Table = nameof(User),
-            Changes = [new PatchDetail { Field = nameof(User.Recover), Value = oneClickLink }],
-        });
-        var email = new EmailVM
-        {
-            ToAddresses = [user.Email],
-            Subject = "Email recovery",
-        };
-        await SendMail(email);
-        return true;
-    }
-
-    public async Task<bool> UpdatePassword(UpdatePasswordVM vm)
-    {
-        var user = await _sql.ReadDsAs<User>($"select * from [User] where Id in ('{UserId}')");
-        var hashedPassword = GetHash(Utils.SHA256, vm.Password + user.Salt);
-        var matchPassword = user.Password == hashedPassword;
-        if (!matchPassword)
-        {
-            return false;
-        }
-        user.Salt = GenerateRandomToken();
-        user.Password = GetHash(Utils.SHA256, vm.NewPassword + user.Salt);
-        List<PatchDetail> changes =
-        [
-            new PatchDetail { Field = nameof(User.Id), OldVal = user.Id },
-            new PatchDetail { Field = nameof(User.Salt), Value = user.Salt },
-            new PatchDetail { Field = nameof(User.Password), Value = user.Password },
-        ];
-        await SavePatch(new PatchVM
-        {
-            Table = nameof(User),
-            Changes = changes,
-        });
-        await _sql.RunSqlCmd(null, $"update [UserLogin] set Active = 0 where UserId in ('{UserId}')");
-        return true;
-    }
-
-    public async Task<string> ResendUser(SqlViewModel vm)
-    {
-        vm.CachedMetaConn ??= await _sql.GetConnStrFromKey(vm.MetaConn);
-        vm.CachedDataConn ??= await _sql.GetConnStrFromKey(vm.DataConn);
-        var user = await _sql.ReadDsAs<User>($"select * from [User] where Id in ({vm.Id.CombineStrings()})", vm.CachedMetaConn);
-        user.Salt = GenerateRandomToken();
-        var randomPassword = GenerateRandomToken(10);
-        user.Password = GetHash(Utils.SHA256, randomPassword + user.Salt);
-        List<PatchDetail> changes =
-        [
-            new PatchDetail { Field = nameof(User.Id), OldVal = user.Id },
-            new PatchDetail { Field = nameof(User.Salt), Value = user.Salt },
-            new PatchDetail { Field = nameof(User.Password), Value = user.Password },
-        ];
-        await SavePatch(new PatchVM
-        {
-            CachedDataConn = vm.CachedDataConn,
-            CachedMetaConn = vm.CachedMetaConn,
-            Table = nameof(User),
-            Changes = changes,
-        });
-        return randomPassword;
-    }
-
     public Task<Dictionary<string, object>[][]> ReadDs
         (string query, string connStr, bool shouldMapToConnStr = false)
         => _sql.ReadDataSet(query, connStr, shouldMapToConnStr);
-
-    public void NotifyDevices(IEnumerable<TaskNotification> tasks, string queueName)
-    {
-        tasks.Where(x => x.AssignedId.HasAnyChar())
-            .Select(x => new MQEvent
-            {
-                QueueName = queueName,
-                Id = Uuid7.Guid().ToString(),
-                Message = x,
-                AssignedId = x.AssignedId
-            }).ForEach(SendMessageToUser);
-    }
-
-    private void SendMessageToUser(MQEvent task)
-    {
-        var tenantCode = TenantCode;
-        var env = Env;
-        var fcm = new FCMWrapper
-        {
-            To = $"/topics/{tenantCode}/{env}/U{task.AssignedId:0000000}",
-            Data = new FCMData
-            {
-                Title = task.Message.Title,
-                Body = task.Message.Description,
-            },
-            Notification = new FCMNotification
-            {
-                Title = task.Message.Title,
-                Body = task.Message.Description,
-                ClickAction = "com.softek.tms.push.background.MESSAGING_EVENT"
-            },
-        };
-        BackgroundJob.Enqueue<WebSocketService>(x => x.SendMessageToUsersAsync(new List<string>() { task.AssignedId }, task.ToJson(), fcm.ToJson(), TenantCode));
-    }
-
-    private void SendMessageAllUser(Dictionary<string, object> data)
-    {
-        var entity = new MQEvent
-        {
-            QueueName = "UpdateViewEntity" + (data.GetValueOrDefault("ConversationId") is null ? data.GetValueOrDefault("Id")?.ToString().Replace("-", "") : data.GetValueOrDefault("ConversationId")?.ToString().Replace("-", "")),
-            Id = Uuid7.Guid().ToString(),
-            Message = data
-        };
-        BackgroundJob.Enqueue<WebSocketService>(x => x.SendMessageToAll(entity.ToJson(), TenantCode));
-    }
 
     public Task<string> GetStringAsync(string key) => _cache.GetStringAsync(key?.ToUpper());
     public Task SetStringAsync(string key, string val, DistributedCacheEntryOptions options) => _cache.SetStringAsync(key?.ToUpper(), val, options);
