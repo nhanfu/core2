@@ -53,7 +53,7 @@ build_frontend:
         --build-arg NODE_ENV=production \
         -f frontend/Dockerfile frontend
   rules:
-    - if: '$CI_COMMIT_BRANCH == "staging"'
+    - if: '$CI_COMMIT_BRANCH == "nodejs"'
 
 # Deploy to remote server by SSH (uses SSH_PRIVATE_KEY variable)
 deploy:
