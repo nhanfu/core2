@@ -113,17 +113,20 @@ export class ListViewSearch extends EditableComponent {
 
     Render() {
         if (!this.Meta.CanSearch) {
-            var coms = this.EditForm.Meta.ComponentOptions && this.EditForm.Meta.ComponentOptions.filter(x => x.ComponentId == this.Meta.Id);
+            var coms = this.EditForm.Meta.ComponentOptions && this.EditForm.Meta.ComponentOptions.filter(x => x.ComponentId == this.Meta.Id && x.TypeId == 1);
             if (coms && coms.length > 0) {
                 Html.Take(this.Parent.Element.firstChild.firstChild).TabIndex(-1).Event(EventType.KeyPress, this.EnterSearch.bind(this));
                 this.Element = Html.Context;
-                Html.Take(this.Element).Div.ClassName('searching-block')
-                    .Button.ClassName("btn btn-light btn-sm mr-1").Event(EventType.Click, (e) => {
-                        this.ExcelOptions(e, 1);
-                    }).Icon('fal fa-file-excel mr-1').End.End
-                    .Button.ClassName("btn btn-light btn-sm").Event(EventType.Click, (e) => {
-                        this.ExcelOptions(e, 2);
-                    }).Icon('fal fal fa-print mr-1').End.End.Render();
+                Html.Take(this.Element).Div.ClassName('searching-block');
+                Html.Button.ClassName("btn btn-light btn-sm mr-1").Event(EventType.Click, (e) => {
+                    this.ExcelOptions(e, coms);
+                }).Icon('fal fa-file-excel mr-1').End.End.Render();
+            }
+            var coms2 = this.EditForm.Meta.ComponentOptions && this.EditForm.Meta.ComponentOptions.filter(x => x.ComponentId == this.Meta.Id && x.TypeId == 2);
+            if (coms2 && coms2.length > 0) {
+                Html.Button.ClassName("btn btn-light btn-sm").Event(EventType.Click, (e) => {
+                    this.ExcelOptions(e, coms2);
+                }).Icon('fal fal fa-print mr-1').End.End.Render();
             }
             return;
         }
@@ -132,47 +135,6 @@ export class ListViewSearch extends EditableComponent {
         this.Element = Html.Context;
         this.RenderImportBtn();
         Html.Take(this.Element).Div.Render();
-        var txtSearch = new Textbox({
-            FieldName: 'SearchTerm',
-            Label: 'Search',
-            PlainText: 'Search',
-            ShowLabel: false,
-        });
-        txtSearch.ParentElement = Html.Context;
-        txtSearch.UserInput = null;
-        this.AddChild(txtSearch);
-        Html.End.Render();
-        var startDate = new Datepicker({
-            FieldName: 'StartDate',
-            Label: 'From date',
-            PlainText: 'From date',
-            ShowLabel: false,
-        });
-        startDate.ParentElement = this.Element;
-        startDate.UserInput = null;
-        this.AddChild(startDate);
-        var endDate = new Datepicker({
-            FieldName: 'EndDate',
-            Label: 'To date',
-            PlainText: 'To date',
-            ShowLabel: false,
-        });
-        endDate.ParentElement = this.Element;
-        endDate.UserInput = null;
-        this.AddChild(endDate);
-        if (this.Parent.Meta.ShowDatetimeField) {
-            // @ts-ignore
-            var dateType = new SearchEntry({
-                FieldName: 'DateTimeField',
-                PlainText: 'DateTime field',
-                FormatData: '{ShortDesc}',
-                ShowLabel: false,
-                RefName: 'Component',
-            });
-            dateType.ParentElement = this.Element;
-            dateType.UserInput = null;
-            this.AddChild(dateType);
-        }
         Html.Take(this.Element).Div.ClassName('searching-block')
             .Button.ClassName("btn btn-light btn-sm mr-1").Event(EventType.Click, () => {
                 this.Parent.ClearSelected();
@@ -180,15 +142,19 @@ export class ListViewSearch extends EditableComponent {
             }).Icon('fal fa-search')
             .End.End
             .Button.ClassName("btn btn-light btn-sm mr-1").Event(EventType.Click, this.RefreshListView.bind(this)).Icon('fal fa-undo').End.End
+            .Button.ClassName("btn btn-light btn-sm mr-1").Event(EventType.Click, this.ExportExcel.bind(this)).Icon('fal fa-file-excel').End.End
             .Render();
-        var coms = this.EditForm.Meta.ComponentOptions && this.EditForm.Meta.ComponentOptions.filter(x => x.ComponentId == this.Meta.Id);
+        var coms = this.EditForm.Meta.ComponentOptions && this.EditForm.Meta.ComponentOptions.filter(x => x.ComponentId == this.Meta.Id && x.TypeId == 1);
         if (coms && coms.length > 0) {
             Html.Button.ClassName("btn btn-light btn-sm mr-1").Event(EventType.Click, (e) => {
-                this.ExcelOptions(e, 1);
-            }).Icon('fal fa-file-excel mr-1').End.End
-                .Button.ClassName("btn btn-light btn-sm").Event(EventType.Click, (e) => {
-                    this.ExcelOptions(e, 2);
-                }).Icon('fal fal fa-print mr-1').End.End.Render();
+                this.ExcelOptions(e, coms2);
+            }).Icon('fal fa-file-excel mr-1').End.End.Render();
+        }
+        var coms2 = this.EditForm.Meta.ComponentOptions && this.EditForm.Meta.ComponentOptions.filter(x => x.ComponentId == this.Meta.Id && x.TypeId == 2);
+        if (coms2 && coms2.length > 0) {
+            Html.Button.ClassName("btn btn-light btn-sm").Event(EventType.Click, (e) => {
+                this.ExcelOptions(e, coms2);
+            }).Icon('fal fal fa-print mr-1').End.End.Render();
         }
     }
 
@@ -215,34 +181,16 @@ export class ListViewSearch extends EditableComponent {
         this.Parent.SearchSection.Children.forEach(x => x.IsOrderBy = false);
         this.Parent.SearchSection.Children.forEach(txtSearch => {
             txtSearch.Entity = this.Entity;
-            switch (txtSearch.Meta.ComponentType) {
-                case "Dropdown":
-                case "Input":
-                    txtSearch.SearchIcon = "fal fa-search";
-                    txtSearch.SearchMethod = SearchMethodEnum.Contain;
-                    txtSearch.OrderMethod = "asc";
-                    txtSearch.IsOrderBy = false;
-                    txtSearch.Entity = this.ListViewSearch.EntityVM;
-                    break;
-                case "Datepicker":
-                    txtSearch.SearchMethod = SearchMethodEnum.Range;
-                    txtSearch.OrderMethod = "asc";
-                    txtSearch.SearchIcon = "fal fa-arrows-alt-h";
-                    txtSearch.Entity = this.ListViewSearch.EntityVM;
-                    break;
-                case "Checkbox":
-                    txtSearch.SearchMethod = SearchMethodEnum.Contain;
-                    break;
-                default:
-                    txtSearch.SearchMethod = SearchMethodEnum.Contain;
-                    break;
-            }
-            if (txtSearch.SearchIconElement && txtSearch.SearchIcon) {
-                txtSearch.SearchIconElement.className = txtSearch.SearchIcon;
-            }
+            txtSearch.MultipleData = null;
             txtSearch.UpdateView();
         });
         listView.ApplyFilter();
+    }
+
+
+    ExportExcel() {
+        const listView = this.Parent;
+        listView.ExcelData(false, 0, 100, true).then();
     }
 
     FilterListView() {
@@ -337,7 +285,7 @@ export class ListViewSearch extends EditableComponent {
     /**
      * @param {Event} e
      */
-    ExcelOptions(e, type) {
+    ExcelOptions(e, coms) {
         /** @type {HTMLElement} */
         const ele = e.target;
         var buttonRect = ele.getBoundingClientRect();
@@ -345,14 +293,11 @@ export class ListViewSearch extends EditableComponent {
         ctxMenu.Top = buttonRect.bottom;
         ctxMenu.Left = buttonRect.left;
         ctxMenu.EditForm = this.EditForm;
-        var coms = this.EditForm.Meta.ComponentOptions.filter(x => x.ComponentId == this.Meta.Id && x.TypeId == type);
-        if (coms) {
-            ctxMenu.MenuItems = coms.map(x => ({
-                Icon: 'fa fa-download mr-1',
-                Text: x.Title || 'Dowload',
-                Click: this.DispatchClickAsync.bind(this, x)
-            }));
-        }
+        ctxMenu.MenuItems = coms.map(x => ({
+            Icon: 'fa fa-download mr-1',
+            Text: x.Title || 'Dowload',
+            Click: this.DispatchClickAsync.bind(this, x)
+        }));
         ctxMenu.Render();
     }
     MetaData;
@@ -427,7 +372,8 @@ export class ListViewSearch extends EditableComponent {
                                     table > tr > td {
                                         vertical-align: top;
                                     }
-    
+
+                                    td,
                                     td>span,
                                     td>p,
                                     td>div,
@@ -435,6 +381,7 @@ export class ListViewSearch extends EditableComponent {
                                         padding-left: 2px;
                                         vertical-align: top;
                                         white-space: pre-wrap;
+                                        word-break: break-word;
                                     }
     
                                     .logo {
@@ -625,6 +572,7 @@ export class ListViewSearch extends EditableComponent {
                         padding-left: 2px;
                         vertical-align: top;
                         white-space: pre-wrap;
+                        word-break: break-word;
                     }
                     .logo { width: 100%; height: 100%; }
                     .dashed tbody tr:not(:last-child) td {
@@ -838,23 +786,41 @@ export class ListViewSearch extends EditableComponent {
         if (this.EntityVM.DateTimeField) {
             this.DateTimeField = this.Parent.Header.find(x => x.Id === this.EntityVM.DateTimeField).FieldName;
         }
-        var headers = this.Parent.Header.filter(x => ["Dropdown", "Textarea", "Input", "Datepicker", "Checkbox"].includes(x.ComponentType));
+        var headers = this.Parent.Header.filter(x => ["Dropdown", "Textarea", "Input", "Datepicker", "Checkbox", "Number"].includes(x.ComponentType));
         const searchTerm = this.EntityVM.SearchTerm ? this.EntityVM.SearchTerm.trim() : '';
         var operators = headers.map(x => {
             /**
              * @type {Textbox}
              */
-            var mapCom = this.Parent.SearchSection.Children.find(y => y.Meta.FieldName == x.FieldName);
+            var mapCom = this.Parent.SearchSection.Children.find(y => y.Meta && y.Meta.Id && y.Meta.Id == x.Id);
             var textFilter = ComponentExt.MapToFilterOperator(x, searchTerm, mapCom);
             var val = null;
             var operator = " OR ";
+            if (this.Parent.ComponentType != "Dropdown") {
+                operator = " AND ";
+            }
             if (mapCom && !Utils.isNullOrWhiteSpace(mapCom.GetValueText() ? mapCom.GetValueText().trim() : '')) {
                 if (mapCom instanceof Datepicker) {
-                    const fromDate = new Date(mapCom.Entity[mapCom.Meta.FieldName]);
-                    fromDate.setHours(0, 0, 0, 0);
-                    const toDate = new Date(mapCom.Entity[mapCom.Meta.FieldName + "To"]);
-                    toDate.setHours(23, 59, 59, 999);
-                    textFilter = `(ds.[${mapCom.Meta.FieldName}] >= '${this.dayjs(fromDate).format("YYYY-MM-DD HH:mm")}' and ds.[${(mapCom.Meta.FieldName)}] <= '${this.dayjs(toDate).format("YYYY-MM-DD HH:mm")}')`;
+                    if (mapCom.SearchMethod == SearchMethodEnum.Filled) {
+                        textFilter = mapCom.Meta.SearchFieldName ? `${(mapCom.Meta.SearchFieldName)} is not null` : `ds.[${(mapCom.Meta.FieldName)}] is not null`;
+                    }
+                    else if (mapCom.SearchMethod == SearchMethodEnum.Empty) {
+                        textFilter = mapCom.Meta.SearchFieldName ? `${(mapCom.Meta.SearchFieldName)} is not null` : `ds.[${(mapCom.Meta.FieldName)}] is null`;
+                    }
+                    else {
+                        var fromDate = new Date(mapCom.Entity[mapCom.Meta.FieldName]);
+                        fromDate.setHours(0, 0, 0, 0);
+                        var toDate = new Date(mapCom.Entity[mapCom.Meta.FieldName + "To"]);
+                        if (!mapCom.Entity[mapCom.Meta.FieldName + "To"]) {
+                            toDate = new Date(mapCom.Entity[mapCom.Meta.FieldName]);
+                            toDate.setHours(23, 59, 59, 999);
+                        }
+                        textFilter =
+                            textFilter = mapCom.Meta.SearchFieldName
+                                ? `(${(mapCom.Meta.SearchFieldName)} >= '${this.dayjs(fromDate).format("YYYY-MM-DD HH:mm")}' and ${((mapCom.Meta.SearchFieldName))} <= '${this.dayjs(toDate).format("YYYY-MM-DD HH:mm")}')`
+                                :
+                                `(ds.[${(mapCom.Meta.FieldName)}] >= '${this.dayjs(fromDate).format("YYYY-MM-DD HH:mm")}' and ds.[${((mapCom.Meta.FieldName))}] <= '${this.dayjs(toDate).format("YYYY-MM-DD HH:mm")}')`;
+                    }
                 }
                 else if (mapCom instanceof Select) {
                     textFilter = ComponentExt.MapToFilterOperator(x, mapCom.GetValue() || "", mapCom);
@@ -868,22 +834,47 @@ export class ListViewSearch extends EditableComponent {
                 return {
                     Where: textFilter,
                     Value: val,
-                    FieldName: `@${x.FieldName.toLocaleLowerCase()}search`,
+                    FieldName: x.SearchFieldName ? `@${x.SearchFieldName.replaceAll(".", "").toLocaleLowerCase()}search` : `@${x.FieldName.toLocaleLowerCase()}search`,
                     Operator: operator
                 };
             }
             else {
-                if (mapCom instanceof Datepicker) {
-                    textFilter = null;
+                if (mapCom && mapCom.MultipleData) {
+                    const esc = s => s.replace(/'/g, "''");
+                    const values = (mapCom.MultipleData.toString())
+                        .split(/\r?\n/)
+                        .map(s => s.trim())
+                        .filter(Boolean);
+
+                    if (values.length === 0) {
+                    } else if (x.ComponentType !== "Dropdown") {
+                        const inList = values.map(v => `N'${esc(v)}'`).join(", ");
+                        textFilter = x.SearchFieldName ? `${x.FieldName} IN (${inList})` : `ds.[${x.FieldName}] IN (${inList})`;
+                    } else {
+                        const refName = (x.RefName || '').trim();
+                        if (refName) {
+                            const cols = ComponentExt.ExtractStrings(x.FormatData) || [];
+                            const inList = values.map(v => `N'${esc(v)}'`).join(", ");
+                            const matchCols = (cols.length > 0 ? cols : ["Name"]).map(c => `ds2.[${c}] IN (${inList})`);
+                            const fieldName = x.SearchFieldName ? `${x.SearchFieldName}` : `ds.[${x.FieldName}]`;
+                            textFilter = `EXISTS (SELECT 1 FROM [${refName}] ds2 WHERE ds2.Id = ${fieldName} AND (${matchCols.join(" OR ")}))`;
+                        }
+                    }
                 }
-                else if (mapCom instanceof Select) {
-                    textFilter = null;
+                else {
+                    if (mapCom && mapCom.SearchMethod == SearchMethodEnum.Filled) {
+                        textFilter = x.SearchFieldName ? `${x.FieldName} is not null` : `ds.[${x.FieldName}] is not null`;
+                    }
+                    else if (mapCom && mapCom.SearchMethod == SearchMethodEnum.Empty) {
+                        textFilter = x.SearchFieldName ? `${x.FieldName} is null` : `ds.[${x.FieldName}] is null`;
+                    }
                 }
+
             }
             return {
                 Where: textFilter,
                 Value: searchTerm,
-                FieldName: `@${x.FieldName.toLocaleLowerCase()}search`,
+                FieldName: x.SearchFieldName ? `@${x.SearchFieldName.replaceAll(".", "").toLocaleLowerCase()}search` : `@${x.FieldName.toLocaleLowerCase()}search`,
                 Operator: operator
             };
 

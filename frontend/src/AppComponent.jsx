@@ -8,6 +8,7 @@ import store from "./redux/store.js";
 import { Provider } from "react-redux";
 import UserActive from "./components/userActive.jsx";
 import ChatBot from "./components/ChatBot.jsx";
+import ExchangeRate from "./components/ExchangeRate.jsx";
 import { EditForm } from "../lib";
 const AppComponent = ({ editForm }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
@@ -28,6 +29,13 @@ const AppComponent = ({ editForm }) => {
     checkIsMobile();
     setTimeout(() => {
       updateBadge();
+      EditForm.NotificationClient.AddListener(
+        "ChatBadge",
+        updateBadge.bind(this)
+      );
+      return () => {
+        EditForm.NotificationClient.RemoveListener("ChatBadge");
+      };
     }, 5000);
     window.addEventListener("resize", checkIsMobile);
     return () => window.removeEventListener("resize", checkIsMobile);
@@ -78,8 +86,7 @@ const AppComponent = ({ editForm }) => {
 
   return (
     <Provider store={store}>
-      <div className="shadow-header"></div>
-      <header className="header-navbar fixed">
+      <header className="header-navbar">
         <div className="header-wrapper">
           <div className="header-left">
             <div
@@ -143,7 +150,7 @@ const AppComponent = ({ editForm }) => {
                           (x) => x.content.Meta.Name == "chat-editor"
                         );
                         if (tab1) {
-                          tab1.content.Dispose();
+                          tab1.content.DirtyCheckAndCancel();
                           editForm.OpenTab("chat-editor", createConvert);
                         } else {
                           editForm.OpenTab("chat-editor", createConvert);
@@ -174,7 +181,7 @@ const AppComponent = ({ editForm }) => {
                           (x) => x.content.Meta.Name == "chat-editor"
                         );
                         if (tab1) {
-                          tab1.content.Dispose();
+                          tab1.content.DirtyCheckAndCancel();
                           editForm.OpenTab("chat-editor", createConvert);
                         } else {
                           editForm.OpenTab("chat-editor", createConvert);
@@ -210,7 +217,7 @@ const AppComponent = ({ editForm }) => {
       </nav>
       <div className="main-content" id="tab-content"></div>
       <ToastContainer />
-      <ChatBot />
+      <ExchangeRate />
     </Provider>
   );
 };

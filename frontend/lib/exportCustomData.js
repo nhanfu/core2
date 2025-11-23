@@ -181,6 +181,7 @@ export class ExportCustomData extends PopupEditor {
 
     LocalRender() {
         if (this.ParentListView instanceof ListView) {
+            this.ParentListView.GetUserSetting(ExportCustomData.Prefix).then(x => this.UserSettingLoaded(x, true));
         }
     }
 

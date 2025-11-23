@@ -4,6 +4,7 @@ import { EditForm } from "./editForm";
 import React from "react";
 import { createRoot } from 'react-dom/client';
 import { Feature } from "./models";
+import { flushSync } from "react-dom";
 
 export class Page {
     /**
@@ -38,7 +39,6 @@ export class Page {
         this.Element = Html.Context;
         let root = createRoot(this.Element);
         let reactElement = React.createElement(this.Meta.Layout);
-        root.render(reactElement);
-        await new Promise(resolve => setTimeout(resolve, 0));
+        flushSync(() => root.render(reactElement))
     }
 }

@@ -33,7 +33,6 @@ export class Datepicker extends EditableComponent {
         super(ui, ele);
         this.DefaultValue = dayjs();
         /** @type {Component} */
-        this.Meta = ui;
         this.InitFormat = this.Meta.FormatData?.includes("{0:") ? this.Meta.FormatData.replace("{0:", "").replace("}", "") : (this.Meta.Precision === 7 ? "DD/MM/YYYY HH:mm" : "DD/MM/YYYY");
         this.currentFormat = this.InitFormat;
         if (ele != null) {
@@ -200,6 +199,7 @@ export class Datepicker extends EditableComponent {
         if (this.Meta.Precision !== 7 && this.value) {
             this.Entity[this.Name] = this.dayjs(this.value.format('YYYY-MM-DD'), 'YYYY-MM-DD').format('YYYY-MM-DDTHH:mm:ss');
         }
+        this.DOMContentLoaded?.Invoke();
     }
 
     RepositionFlatpickr() {
@@ -461,14 +461,13 @@ export class Datepicker extends EditableComponent {
         }
     }
 
-    ValidateAsync() {
+    async ValidateAsync() {
         if (this.ValidationRules.length == 0) {
-            return Promise.resolve(true);
+            return true;
         }
-        const tcs = new Promise((resolve, reject) => {
-            resolve(this.ValidateRequired(this.value));
-        });
-        return tcs;
+        this.ValidationResult = [];
+        this.ValidateRequired(this.value);
+        return this.IsValid;
     }
 
     /**

@@ -179,6 +179,10 @@ export class ChromeTabs {
     }
 
     static addTab(tabProperties, { animate = true, background = false } = {}) {
+        const existingIndex = this.tabs.findIndex(t => t.content.Meta.Id === tabProperties.content.Meta.Id);
+        if (existingIndex !== -1) {
+            this.tabs.splice(existingIndex, 1);
+        }
         const tabEl = this.createNewTabEl()
 
         if (animate) {
@@ -244,7 +248,7 @@ export class ChromeTabs {
                     tabEl.parentNode.removeChild(tabEl)
                     this.emit('tabRemove', { tabEl })
                 }
-                elementToFind.content.Dispose();
+                elementToFind.content.ForceDispose();
                 if (elementToFind.content.IsRender) {
                     this.tabs.splice(existingTabIndex, 1);
                 }

@@ -1,10 +1,9 @@
 import { EditableComponent } from "./editableComponent.js";
 import {
     ObservableArgs, EventType, SqlViewModel, PatchVM, FeaturePolicy,
-    CustomEventType, Component, Action, ElementType, EntityRef,
-    ComponentType
+    CustomEventType, Component, Action, ElementType, EntityRef
 } from "./models/";
-import { ActiveStateEnum, AdvSearchVM, CellSelected, MQEvent, OperatorEnum, OrderBy, Where } from "./models/enum.js";
+import { ActiveStateEnum, AdvSearchVM, CellSelected, OperatorEnum, OrderBy, Where } from "./models/enum.js";
 import { Paginator } from "./paginator.js";
 import { Utils } from "./utils/utils.js";
 import { ObservableList } from './models/observableList.js';
@@ -17,11 +16,12 @@ import { ListViewItem } from "./listViewItem.js";
 import { Toast } from "./toast.js";
 import { Uuid7 } from "./structs/uuidv7.js";
 import { ConfirmDialog } from "./confirmDialog.js";
-import { ComponentExt } from "./index.js";
+import { ComponentExt, LangSelect } from "./index.js";
 import { Datepicker } from "./index.js";
 import * as XLSX from 'xlsx';
 import { Select } from "./select.js";
 import { Label } from "./label.js";
+import { Spinner } from "./spinner.js";
 /**
  * Represents a list view component that allows editable features and other interactions like sorting and pagination.
  * @typedef {import('./searchEntry.js').SearchEntry} SearchEntry
@@ -47,7 +47,6 @@ export class ListView extends EditableComponent {
     DataLoaded = new Action();
     DblClick = new Action();
     RowClick = new Action();
-    VirtualScroll = false;
     _groupKey = "__groupkey__";
     GroupRowClass = "group-row";
     /** @type {string} */
@@ -146,7 +145,7 @@ export class ListView extends EditableComponent {
      */
     LocalRender() {
         // Setting the header from the local metadata configuration
-        this.Header = this.Header ?? this.Meta.LocalHeader;
+        this.Header = this.Header ?? this.Meta.LocalHeader ?? this.Meta.Columns;
 
         if (this.Meta.LocalRender) {
             // If local rendering is enabled, re-render the view
@@ -170,18 +169,24 @@ export class ListView extends EditableComponent {
      * @returns {Promise<any[]>} A promise that resolves to the list of reloaded data objects.
      */
     async ReloadData(cacheHeader = false, skip = null, pageSize = null) {
+        if (this.Meta.ComponentType == "GridView" && !Utils.isNullOrWhiteSpace(this.Meta.RefName)) {
+            Spinner.AppendTo();
+        }
         if (Utils.isNullOrWhiteSpace(this.Meta.RefName)) {
-            var data = Utils.IsFunction(this.Meta.Query, false, this);
-            await this.LoadMasterData(data);
-            this.SetRowData(data);
-            this.Paginator.Show = false;
+            const data = await new Promise((resolve) => {
+                window.setTimeout(async () => {
+                    var raw = Utils.IsFunction(this.Meta.Query, false, this);
+                    await this.LoadMasterData(raw);
+                    this.SetRowData(raw);
+                    this.Paginator.Show = false;
+                    resolve(raw);
+                }, 500);
+            });
+
             return data;
         }
         if (this.Meta.Editable && this.Entity[this.Meta.FieldName] && this.Entity[this.Meta.FieldName] instanceof Array && this.Entity[this.Meta.FieldName].length > 0) {
             var rows = this.Entity[this.Meta.FieldName];
-            /**
-             * @type {[]}
-             */
             var rows = this.Entity[this.Meta.FieldName];
             if (!Utils.isNullOrWhiteSpace(this.Meta.DefaultVal)) {
                 var rsObj = Utils.IsFunction(this.Meta.DefaultVal, false, this);
@@ -202,6 +207,7 @@ export class ListView extends EditableComponent {
             await this.LoadMasterData(rows);
             this.SetRowData(rows);
             this.Paginator.Show = false;
+            Spinner.Hide();
             return rows;
         }
         if (this.Paginator != null) {
@@ -210,7 +216,27 @@ export class ListView extends EditableComponent {
         pageSize = (pageSize ?? this.Paginator?.Options?.PageSize ?? this.Meta.Row) ?? 20;
         skip = !skip ? (this.Paginator?.Options?.PageIndex * pageSize) : 0;
         let sql = this.GetSql(skip, pageSize, cacheHeader);
-        return await this.CustomQuery(sql);
+        var rsLoad = await this.CustomQuery(sql);
+        Spinner.Hide();
+        return rsLoad;
+    }
+
+    async ExcelData() {
+        let sql = this.GetSql(0, 10000, false);
+        sql.ExportExcel = true;
+        const data = await Client.Instance.SubmitAsync({
+            NoQueue: true,
+            Url: `/api/feature/com`,
+            Method: "POST",
+            JsonData: JSON.stringify(sql),
+        });
+        if (this.FindClosest(x => x.IsTabComponent)) {
+            Client.Download(data.Url, LangSelect.Get(this.EditForm.Meta.Label, this.Meta.Name) + "-" + LangSelect.Get(this.Parent.Meta.Label) + ".xlsx");
+
+        }
+        else {
+            Client.Download(data.Url, LangSelect.Get(this.EditForm.Meta.Label, this.Meta.Name) + ".xlsx");
+        }
     }
 
     CalcFilterQuery() {
@@ -443,8 +469,8 @@ export class ListView extends EditableComponent {
             };
             reader.readAsArrayBuffer(file);
         } catch (error) {
-            console.error("Import Error:", error.message);
-            alert("Failed to import file: " + error.message);
+            console.error("Import Error:", error.Message);
+            alert("Failed to import file: " + error.Message);
         }
     }
 
@@ -478,13 +504,11 @@ export class ListView extends EditableComponent {
             .join(" ");
         var orderby = this.SearchSection.Children.filter(x => x.IsOrderBy).map(x => "ds." + x.Meta.FieldName + " " + x.OrderMethod).Combine(x => x, ", ");
         /** @type {SqlViewModel} */
-        // @ts-ignore
         var res = {
-            Feature: this.EditForm ? this.EditForm.FeatureName : "",
             ComId: this.Meta.Id,
             Params: submitEntity ? JSON.stringify(submitEntity) : null,
             WhereParams: JSON.stringify(operatorsValue),
-            OrderBy: !orderby ? (!this.Meta.OrderBy ? (this.Meta.Editable ? "ds.InsertedDate asc" : "ds.InsertedDate desc") : this.Meta.OrderBy) : orderby,
+            OrderBy: !orderby ? (!this.Meta.OrderBy ? ((!this.Meta.Editable || this.Meta.ComponentType == "Dropdown") ? "ds.InsertedDate desc" : "ds.InsertedDate asc") : this.Meta.OrderBy) : orderby,
             Where: finalCon,
             Count: count,
             Skip: skip,
@@ -771,7 +795,6 @@ export class ListView extends EditableComponent {
         if (this.FormattedRowData.length == 0) {
             return;
         }
-
         this.FormattedRowData.forEach((rowData, index) => {
             this.RenderRowData(this.Header, rowData, this.MainSection);
         });
@@ -1002,16 +1025,28 @@ export class ListView extends EditableComponent {
     BodyContextMenuHandler(e) {
         e.preventDefault();
         e.stopPropagation();
+        this.SetSelected(e);
         ContextMenu.Instance.MenuItems.Clear();
-        var some = this.AllListViewItem.some(x => x.Selected && (x.Entity["AssignId"] == this.Token.UserId || x.Entity["InsertedBy"] == this.Token.UserId)) || (this.Meta.Editable && this.EditForm.EntityId && this.EditForm.EntityId.startsWith("-"));
-        if ((this.Disabled || (!this.Meta.CanWrite && !some)) || (this.Meta.CanWrite && !this.Meta.CanWriteAll && !some)) {
+        let ctxMenu = ContextMenu.Instance;
+        var addFn = Utils.IsFunction(this.Meta.AddRowExp, false, this);
+        var some = this.AllListViewItem.some(x => x.Selected && (x.Entity["AssignId"] == this.Token.UserId || x.Entity["InsertedBy"] == this.Token.UserId)) || (this.Meta.Editable && this.EditForm.EntityId && this.EditForm.EntityId.startsWith("-")) || e.target.closest('.tb-empty') != null || addFn;
+        if ((this.Disabled || (!this.Meta.CanWrite && !some)) || (this.Meta.CanWrite && !this.Meta.CanWriteAll && !some) && this.EditForm.EntityId) {
+            ContextMenu.Instance.MenuItems.push({
+                Icon: "fal fa-undo",
+                Text: "Reload",
+                Shortcut: "Ctrl+R",
+                Line: true,
+                Click: () => this.ActionFilter()
+            });
+            ctxMenu.Top = e.Top();
+            ctxMenu.Left = e.Left();
+            ctxMenu.EditForm = this.EditForm;
+            ctxMenu.Render();
+            document.body.appendChild(ctxMenu.Element);
+            ctxMenu.Element.style.position = "absolute";
             return;
         }
         this.BodyContextMenuShow?.invoke();
-        if (!this.Meta.IsMultiple) {
-            this.SetSelected(e);
-        }
-        let ctxMenu = ContextMenu.Instance;
         this.DispatchEvent(this.Meta.Events, EventType.ContextMenu, this, ctxMenu).then(() => {
             this.RenderCopyPasteMenu(this.Editable);
             this.RenderEditMenu();
@@ -1121,7 +1156,7 @@ export class ListView extends EditableComponent {
     Dropdown = "Dropdown";
 
     async LoadHeader() {
-        var columns = this.LoadGridPolicy();
+        var columns = this.LoadGridPolicy().length > 0 ? this.LoadGridPolicy() : (this.Meta.Columns ?? []);
         var pivotRow = columns.find(x => x.ComponentType == "Number" && x.IsMultiple && x.GroupFormat);
         if (pivotRow) {
             var index = columns.indexOf(pivotRow);
@@ -1175,7 +1210,9 @@ export class ListView extends EditableComponent {
             columns.splice(index, 1, ...headers);
         }
         this.DispatchCustomEvent(this.Meta.Events, CustomEventType.UpdateHeader, columns);
-        columns = this.FilterColumns(columns);
+        if (!this.Meta.Columns) {
+            columns = this.FilterColumns(columns);
+        }
         this.Header = columns;
     }
 
@@ -1194,7 +1231,11 @@ export class ListView extends EditableComponent {
         else {
             if (!Utils.isNullOrWhiteSpace(this.Meta.Template) && ["Dropdown", "Select"].some(x => x == this.Meta.ComponentType)) {
                 sysSetting = JSON.parse(this.Meta.Template, null, 2);
-                sysSetting.forEach(x => x.Active = true);
+                sysSetting.forEach((x, index) => {
+                    x.Active = true;
+                    x.VirtualScroll = true;
+                    x.Order = index + 1;
+                });
             }
             else {
                 sysSetting = this.EditForm.Meta.GridPolicies.filter(x => x.EntityId == this.Meta.FieldName);
@@ -1210,7 +1251,7 @@ export class ListView extends EditableComponent {
                         item.Width = map.Width;
                         item.MinWidth = map.Width;
                         item.MaxWidth = map.Width;
-                        item.Order = map.Order;
+                        item.Order = map.Order || item.Order;
                     }
                 });
             }
@@ -1293,41 +1334,7 @@ export class ListView extends EditableComponent {
             if (res["NoSubmit"] != undefined || res["NoSubmit"] != null) {
                 this.setPropValue(res, "ParentId", null);
             }
-            this.setPropValue(res, "TariffChargeId", null);
-            this.setPropValue(res, "HblNo", null);
-            this.setPropValue(res, "Code", null);
-            this.setPropValue(res, "AllocationId", null);
-            this.setPropValue(res, "NoSubmit", false);
-            this.setPropValue(res, "EntityContainerId", null);
-            this.setPropValue(res, "IsAllocation", false);
-            this.setPropValue(res, "AllocationId", null);
-            this.setPropValue(res, "IsLock", false);
-            this.setPropValue(res, "ShipmentRequestId", null);
-            this.setPropValue(res, "IsLockExchange", false);
-            this.setPropValue(res, "ShipmentInvoiceDetailId", null);
-            this.setPropValue(res, "ShipmentInvoiceId", null);
-            this.setPropValue(res, "ShipmentInvoiceCode", null);
-            this.setPropValue(res, "ShipmentInvoiceDate", null);
-            this.setPropValue(res, "PaymentRequestId", null);
-            this.setPropValue(res, "PaymentRequestDetailId", null);
-            this.setPropValue(res, "PaymentCode", null);
-            this.setPropValue(res, "PaymentDate", null);
-            this.setPropValue(res, "IsPayment", false);
-            this.setPropValue(res, "InvoiceId", null);
-            this.setPropValue(res, "InvoiceDetailId", null);
-            this.setPropValue(res, "InvoiceCode", null);
-            this.setPropValue(res, "InvoiceDate", null);
-            this.setPropValue(res, "IsPaid", false);
-            this.setPropValue(res, "PaidDate", null);
-            this.setPropValue(res, "DebtCode", null);
-            this.setPropValue(res, "DebtDate", null);
-            this.setPropValue(res, "DebtId", null);
-            this.setPropValue(res, "IsDebtAcc", false);
-            this.setPropValue(res, "PaymentAccId", null);
-            this.setPropValue(res, "PaymentAccCode", null);
-            this.setPropValue(res, "PaymentAccDate", null);
-            this.setPropValue(res, "IsPaymentAcc", false);
-            this.setPropValue(res, "InsertedBy", this.Token.UserId);
+            this.resetObject(res);
             this.processObjectRecursive(res, obj => {
                 let id = this.getPropValue(obj, this.IdField);
                 if (id && id > 0) {
@@ -1443,7 +1450,7 @@ export class ListView extends EditableComponent {
             });
         }
         var selected = this.GetSelectedRows();
-        var check = selected.some(x => (x["StatusId"] && !x["ProgressId"] && [3, 4].includes(x["StatusId"])) || (x["ProgressId"] && [2, 3].includes(x["ProgressId"])) || x["NoSubmit"] || x["IsLock"] || x["IsPayment"] || x["IsInvoice"] || x["IsPaymentAcc"] || x["IsDebtAcc"]);
+        var check = selected.some(x => (x["StatusId"] && !x["ProgressId"] && [2, 3].includes(x["StatusId"]) && !x["NoApproved"] && !x["IsUse"]) || (x["ProgressId"] && [2, 3].includes(x["ProgressId"])) || x["NoSubmit"] || x["IsLock"] || x["IsPayment"] || x["IsInvoice"] || x["IsPaymentAcc"] || x["IsDebtAcc"]);
         if (this.Meta.CanDelete && !check) {
             if (this.Meta.CanDeleteAll) {
                 ContextMenu.Instance.MenuItems.push({
@@ -1493,50 +1500,71 @@ export class ListView extends EditableComponent {
         Html.Take(this.TabEditor.Element).Div.ClassName("backdrop").TabIndex(-1).Trigger(EventType.Focus)
             .Style("align-items: baseline;");
         this._history = Html.Context;
-        Html.Instance.Div.Escape((e) => this.DisposeViewHistory.bind(this)).ClassName("popup-content confirm-dialog").Style("top: 0;")
+        Html.Instance.Div.Escape((e) => this.DisposeViewHistory.bind(this)).ClassName("popup-content confirm-dialog history-view")
             .Div.ClassName("popup-title").InnerHTML("View history change")
             .Div.ClassName("icon-box").Span.ClassName("fal fa-times")
             .Event(EventType.Click, () => this._history.remove())
             .EndOf(".popup-title")
-            .Div.ClassName("card-body panel group").Width("1000px");
+            .Div.ClassName("card-body panel group");
         const body = Html.Context;
         var coms = await Client.Instance.GetService("History Change");
         var com = coms[0][0];
         com.Row = 50;
         var params = {
             RecordId: currentItem.Id,
-            TableName: this.Meta.RefName
+            TableName: this.Meta.RefName,
         }
         com.Columns = [
+            {
+                StatusBar: true,
+                Order: 0,
+                Label: '',
+                Frozen: true
+            },
             {
                 FieldName: "TextContent",
                 Order: 1,
                 ComponentType: "Input",
                 Label: "History",
-                Width: "70%",
-                MinWidth: "400px",
-                MaxWidth: "70%",
+                CanRead: true,
+                CanWrite: true,
+                CanReadAll: true,
+                CanWriteAll: true,
+                Width: "80%",
+                MinWidth: "80%",
+                MaxWidth: "80%",
             },
             {
                 FieldName: "InsertedBy",
                 ComponentType: "Dropdown",
                 RefName: "User",
                 Order: 2,
-                FormatData: "{FullName}",
+                CanRead: true,
+                CanWrite: true,
+                CanReadAll: true,
+                CanWriteAll: true,
+                FormatData: `<div class="user-avatar">
+                    <img src="{Avatar}" alt="{FullName}" class="avatar">
+                    <a class="full-name">{FullName}</a>
+                </div>`,
                 Label: "Inserted By",
-                Width: "15%",
-                MinWidth: "15%",
-                MaxWidth: "15%",
+                Width: "10%",
+                MinWidth: "10%",
+                MaxWidth: "10%",
             },
             {
                 FieldName: "InsertedDate",
                 Order: 3,
+                CanRead: true,
+                CanWrite: true,
+                CanReadAll: true,
+                CanWriteAll: true,
                 ComponentType: "Datepicker",
                 FormatData: "DD/MM/YYYY HH:mm",
                 Label: "Inserted Date",
-                Width: "15%",
-                MinWidth: "15%",
-                MaxWidth: "15%",
+                Width: "10%",
+                MinWidth: "10%",
+                MaxWidth: "10%",
             }
         ]
         com.PreQuery = JSON.stringify(params);
@@ -1547,6 +1575,7 @@ export class ListView extends EditableComponent {
         _filterGrid.ParentElement = body;
         this.TabEditor.AddChild(_filterGrid);
         _filterGrid.Element.style.width = "100%";
+        _filterGrid.Element.style.height = "calc(100vh - 22rem)";
     }
 
     /** @type {FeaturePolicy[]} */
@@ -1586,7 +1615,7 @@ export class ListView extends EditableComponent {
     async HardDeleteSelected() {
         var deletedItems = [];
         deletedItems = this.GetSelectedRows();
-        var check = deletedItems.some(x => (x["StatusId"] && [3, 4].includes(x["StatusId"])) || x["NoSubmit"] || x["IsLock"] || x["IsPayment"] || x["IsInvoice"] || x["IsPaymentAcc"] || x["IsDebtAcc"]);
+        var check = deletedItems.some(x => (x["StatusId"] && [2, 3].includes(x["StatusId"]) && !x["NoApproved"] && !x["IsUse"]) || x["NoSubmit"] || x["IsLock"] || x["IsPayment"] || x["IsInvoice"] || x["IsPaymentAcc"] || x["IsDebtAcc"]);
         if (deletedItems.length == 0 || check || this.Meta.IsMultiple || !this.Meta.CanDelete) {
             return;
         }
@@ -1616,8 +1645,8 @@ export class ListView extends EditableComponent {
                             });
                         }
                         else {
-                            if (rs.message) {
-                                this.EditForm.OpenConfig(rs.message, () => {
+                            if (rs.Message) {
+                                this.EditForm.OpenConfig(rs.Message, () => {
                                 }, () => { }, false, [], true)
                             }
                             else {
@@ -1745,7 +1774,7 @@ export class ListView extends EditableComponent {
      * Updates pagination details based on the current data state.
      */
     RenderIndex() {
-        if (this.MainSection.Children.length === 0 || this.Meta.IsMultiple) {
+        if (this.MainSection.Children.length === 0 || (this.Meta.VirtualScroll && this.IsMobile())) {
             return;
         }
         this.AllListViewItem.forEach((row, rowIndex) => {
@@ -1766,8 +1795,10 @@ export class ListView extends EditableComponent {
                 return;
             }
             const index = this.Paginator.Options.StartIndex + rowIndex;
-            previous.innerHTML = index.toString();
-            row.Selected = this.SelectedIds.includes(row.Entity[this.IdField]);
+            if (!this.Meta.IsMultiple) {
+                previous.innerHTML = index.toString();
+                row.Selected = this.SelectedIds.some(x => x == row.Entity[this.IdField]);
+            }
             row.RowNo = index;
         });
     }
@@ -2081,6 +2112,17 @@ export class ListView extends EditableComponent {
                 this.SelectedIndex = indexCurrent + 1;
             }
         }
+    }
+
+    GetUserSetting(prefix) {
+        // @ts-ignore
+        return Client.Instance.UserSvc({
+            MetaConn: this.MetaConn,
+            DataConn: this.DataConn,
+            ComId: "UserSetting",
+            Action: "GetByComId",
+            Params: JSON.stringify({ ComId: this.Meta.Id, Prefix: prefix })
+        });
     }
 
     /**

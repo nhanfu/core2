@@ -22,7 +22,7 @@ export class Textbox extends EditableComponent {
             this.TextArea = ele;
         }
         this._value = null;
-        this.Password = false;
+        this.Password = this.Meta.ClassName && this.Meta.ClassName.toLowerCase().includes("password");
         this._text = "";
         this._oldText = "";
         this.SearchMethod = SearchMethodEnum.Contain;
@@ -161,11 +161,11 @@ export class Textbox extends EditableComponent {
         if (newValue != this._value) {
             this.Value = newValue;
             this.SetRequired();
-            if (!this.Dirty) {
-                this.OriginalText = this._text;
-                this.DOMContentLoaded?.Invoke();
-                this.OldValue = this._text;
-            }
+        }
+        if (!this.Dirty) {
+            this.OriginalText = this._text;
+            this.DOMContentLoaded?.Invoke();
+            this.OldValue = this._text;
         }
     }
 

@@ -16,7 +16,6 @@ export class Button extends EditableComponent {
     constructor(ui, ele = null) {
         super(ui);
         /** @type {Component} */
-        this.Meta = ui;
         this.ButtonEle = ele;
         this._textEle = null;
     }
@@ -63,15 +62,12 @@ export class Button extends EditableComponent {
         }
         this.Disabled = true;
         try {
-            Spinner.AppendTo();
             this.DispatchEvent(this.Meta.Events, "click", this, this.Entity).then(() => {
-                this.Disabled = false;
-                Spinner.Hide();
             });
         } finally {
             window.setTimeout(() => {
                 this.Disabled = false;
-            }, 2000);
+            }, 500);
         }
     }
 

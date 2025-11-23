@@ -141,6 +141,7 @@ export class DevTools extends EditableComponent {
             FieldName: "Button",
             Label: "Button",
             ShowLabel: true,
+            Visibility: true,
             ClassName: "btn detail-button primary",
             Icon: "fal fa-plus",
             ComponentType: "Button",
@@ -150,6 +151,7 @@ export class DevTools extends EditableComponent {
             FieldName: "Input",
             Label: "Input",
             ShowLabel: true,
+            Visibility: true,
             ComponentType: "Input",
             Column: 12
         },
@@ -159,6 +161,7 @@ export class DevTools extends EditableComponent {
             Query: "[{Id:1,Name:'Test'},{Id:2,Name:'Test2'}]",
             FormData: "{Name}",
             ShowLabel: true,
+            Visibility: true,
             ComponentType: "Select",
             Column: 12
         },
@@ -166,6 +169,7 @@ export class DevTools extends EditableComponent {
             FieldName: "Textarea",
             Label: "Textarea",
             ShowLabel: true,
+            Visibility: true,
             ComponentType: "Textarea",
             Column: 12
         },
@@ -173,6 +177,7 @@ export class DevTools extends EditableComponent {
             FieldName: "Number",
             Label: "Number",
             ShowLabel: true,
+            Visibility: true,
             ComponentType: "Number",
             Column: 12
         },
@@ -180,6 +185,7 @@ export class DevTools extends EditableComponent {
             FieldName: "Checkbox",
             Label: "Checkbox",
             ShowLabel: true,
+            Visibility: true,
             ComponentType: "Checkbox",
             Column: 12
         },
@@ -187,6 +193,7 @@ export class DevTools extends EditableComponent {
             FieldName: "Dropdown",
             Label: "Dropdown",
             ShowLabel: true,
+            Visibility: true,
             Query: "[{Id:1,Name:'Test'},{Id:2,Name:'Test2'}]",
             FormData: "{Name}",
             Template: `[{ "FieldName" : "Name", "Label" : "Name", "ComponentType" : "Input" }]`,
@@ -198,6 +205,7 @@ export class DevTools extends EditableComponent {
             FieldName: "Datepicker",
             Label: "Datepicker",
             ShowLabel: true,
+            Visibility: true,
             ComponentType: "Datepicker",
             Column: 12
         },
@@ -205,6 +213,7 @@ export class DevTools extends EditableComponent {
             FieldName: "FileUpload",
             Label: "FileUpload",
             ShowLabel: true,
+            Visibility: true,
             ComponentType: "FileUpload",
             Column: 12
         },
@@ -212,6 +221,7 @@ export class DevTools extends EditableComponent {
             FieldName: "GridView",
             Label: "GridView",
             ShowLabel: true,
+            Visibility: true,
             ComponentType: "GridView",
             Column: 12
         },
@@ -219,6 +229,7 @@ export class DevTools extends EditableComponent {
             FieldName: "Word",
             Label: "Word",
             ShowLabel: true,
+            Visibility: true,
             ComponentType: "Word",
             Column: 12
         },
@@ -226,6 +237,7 @@ export class DevTools extends EditableComponent {
             FieldName: "CodeEditor",
             Label: "CodeEditor",
             ShowLabel: true,
+            Visibility: true,
             ComponentType: "CodeEditor",
             Column: 12
         },
@@ -233,6 +245,7 @@ export class DevTools extends EditableComponent {
             FieldName: "Label",
             Label: "Label",
             ShowLabel: true,
+            Visibility: true,
             ComponentType: "Label",
             Column: 12
         },
@@ -240,6 +253,7 @@ export class DevTools extends EditableComponent {
             FieldName: "Pdf",
             Label: "Pdf",
             ShowLabel: true,
+            Visibility: true,
             ClassName: "btn detail-button primary",
             ComponentType: "Pdf",
             Column: 12
@@ -248,6 +262,7 @@ export class DevTools extends EditableComponent {
             FieldName: "Excel",
             Label: "Excel",
             ShowLabel: true,
+            Visibility: true,
             ClassName: "btn detail-button primary",
             ComponentType: "Excel",
             Column: 12

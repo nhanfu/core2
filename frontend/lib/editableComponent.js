@@ -67,6 +67,10 @@ export class EditableComponent {
     /**
      * @type {boolean}
      */
+    IsAction = false;
+    /**
+     * @type {boolean}
+     */
     IsInput = false;
     /**
      * @type {boolean}
@@ -279,6 +283,7 @@ export class EditableComponent {
         this.DOMContentLoaded.add(() => {
             this.UpdateValidation();
             this.SetRequired();
+            this.SendQueueAction("Subscribe");
             if (meta != null && meta.Events) {
                 this.DispatchEvent(meta.Events, EventType.DOMContentLoaded, this, this.Entity).then();
             }
@@ -487,7 +492,7 @@ export class EditableComponent {
         }
     }
 
-    ValidateRequired(value) {
+    async ValidateRequired(value) {
         if (this.Element === null || Object.keys(this.ValidationRules).length === 0 || this.EmptyRow || this.AlwaysValid) {
             return true;
         }
@@ -692,7 +697,7 @@ export class EditableComponent {
         }
         var shown = Utils.IsFunction(showExp, false, this);
         this.Show = shown;
-        if (["Button", "Pdf", "Excel", "Email"].some(x => x == this.Meta.ComponentType) && this.Meta.GroupFormat) {
+        if (this.Element.parentElement && this.Element.parentElement.parentElement && ["Button", "Pdf", "Excel", "Email"].some(x => x == this.Meta.ComponentType) && this.Meta.GroupFormat) {
             var parentElement = this.Element.parentElement;
             var child = parentElement.querySelectorAll(".dropdown-content button");
             var parentArray = Array.from(child);
@@ -709,12 +714,17 @@ export class EditableComponent {
      * @param {Boolean | String | Function} disabled 
      */
     ToggleDisabled(disabled) {
+        if (this.Entity && this.Entity.IsLockEdit && this.Meta && !["Button", "Pdf", "Excel", "Email"].includes(this.Meta.ComponentType)) {
+            return;
+        }
         if (disabled instanceof Boolean) {
             this.Disabled = disabled;
             return;
         }
         if (!["IsPaid", "PaidDate", "btnEdit"].includes(this.Meta.FieldName)
-            && !this.Entity["IsLock"] && ((this.Parent && this.Parent.IsListViewItem && !this.Entity["NoSubmit"] && !this.Entity["IsPayment"] && !this.Entity["IsInvoice"]) || (this.Parent && !this.Parent.IsListViewItem)) && !this.Meta.Disabled) {
+            && !this.Entity["IsLock"] && ((this.Parent && this.Parent.IsListViewItem
+                && !this.Entity["NoSubmit"] && !this.Entity["IsPayment"] && !this.Entity["IsInvoice"])
+                || (this.Parent && !this.Parent.IsListViewItem)) && !this.Meta.Disabled || this.Meta.CanWriteAll) {
             var disabledFn = Utils.IsFunction(disabled, false, this);
             this.Disabled = disabledFn || false;
         }
@@ -751,6 +761,54 @@ export class EditableComponent {
         }
     }
 
+    setPropValue(obj, propName, value) {
+        obj[propName] = value;
+    }
+
+    resetObject(res) {
+        this.setPropValue(res, this.StatusIdField, 1);
+        if (res["NoSubmit"] != undefined || res["NoSubmit"] != null) {
+            this.setPropValue(res, "ParentId", null);
+        }
+        this.setPropValue(res, "TariffChargeId", null);
+        this.setPropValue(res, "HblNo", null);
+        this.setPropValue(res, "Code", null);
+        this.setPropValue(res, "AllocationId", null);
+        this.setPropValue(res, "NoSubmit", false);
+        this.setPropValue(res, "EntityContainerId", null);
+        this.setPropValue(res, "IsAllocation", false);
+        this.setPropValue(res, "AllocationId", null);
+        this.setPropValue(res, "IsLock", false);
+        this.setPropValue(res, "IsSend", false);
+        this.setPropValue(res, "IsObh", false);
+        this.setPropValue(res, "IsLockEdit", false);
+        this.setPropValue(res, "ShipmentRequestId", null);
+        this.setPropValue(res, "IsLockExchange", false);
+        this.setPropValue(res, "ShipmentInvoiceDetailId", null);
+        this.setPropValue(res, "ShipmentInvoiceId", null);
+        this.setPropValue(res, "ShipmentInvoiceCode", null);
+        this.setPropValue(res, "ShipmentInvoiceDate", null);
+        this.setPropValue(res, "PaymentRequestId", null);
+        this.setPropValue(res, "PaymentRequestDetailId", null);
+        this.setPropValue(res, "PaymentCode", null);
+        this.setPropValue(res, "PaymentDate", null);
+        this.setPropValue(res, "IsPayment", false);
+        this.setPropValue(res, "InvoiceId", null);
+        this.setPropValue(res, "InvoiceDetailId", null);
+        this.setPropValue(res, "InvoiceCode", null);
+        this.setPropValue(res, "InvoiceDate", null);
+        this.setPropValue(res, "IsPaid", false);
+        this.setPropValue(res, "PaidDate", null);
+        this.setPropValue(res, "DebtCode", null);
+        this.setPropValue(res, "DebtDate", null);
+        this.setPropValue(res, "DebtId", null);
+        this.setPropValue(res, "IsDebtAcc", false);
+        this.setPropValue(res, "PaymentAccId", null);
+        this.setPropValue(res, "PaymentAccCode", null);
+        this.setPropValue(res, "PaymentAccDate", null);
+        this.setPropValue(res, "IsPaymentAcc", false);
+    }
+
     U(force = false, dirty = null, ...componentNames) {
         this.UpdateView(force, dirty, componentNames);
     }
@@ -771,9 +829,10 @@ export class EditableComponent {
             && this.Entity && this.EntityId && !this.EntityId.startsWith("-")
             && !this.IsTabComponent
             && !this.Meta.CanWriteAll
+            && !this.Meta.Editable
             && !this.IsButton
             && !["IsPaid", "PaidDate", "btnEdit"].includes(this.Meta.FieldName)
-            && ((this.Entity["InsertedBy"] != this.Token.UserId && this.Entity["AssignId"] != this.Token.UserId)
+            && ((this.EditForm && this.EditForm.Entity && this.EditForm.Entity["InsertedBy"] != this.Token.UserId && this.EditForm.Entity["AssignId"] != this.Token.UserId && !this.Parent.IsListViewItem)
                 || this.Entity["NoSubmit"] || this.Entity["IsLock"] || this.Entity["IsPayment"] || this.Entity["IsInvoice"] || (this.Entity["IsPaid"] && this.Parent.IsListViewItem))) {
             this.Disabled = true;
         }
@@ -794,7 +853,7 @@ export class EditableComponent {
             && userAuthentication.includes(this.Entity["InsertedBy"])) {
             this.Disabled = false;
         }
-        if (this.Meta && this.Meta.DisabledExp && (this.Meta.DisabledExp.includes("InsertedBy") || this.Meta.DisabledExp.includes("StatusId") || this.Meta.DisabledExp.includes("this.Token"))) {
+        if (this.Meta && this.Meta.DisabledExp && (this.Meta.DisabledExp.includes("CanWrite") || this.Meta.DisabledExp.includes("InsertedBy") || this.Meta.DisabledExp.includes("StatusId") || this.Meta.DisabledExp.includes("ProgressId") || this.Meta.DisabledExp.includes("ActionId") || this.Meta.DisabledExp.includes("this.Token"))) {
             this.ToggleDisabled(this.Meta.DisabledExp);
         }
         if (force) {
@@ -811,6 +870,9 @@ export class EditableComponent {
         }
         if (dirty) {
             this._setDirty = dirty;
+        }
+        if (this.Entity && this.Entity.IsLockEdit && this.Meta && !["Button", "Pdf", "Excel", "Email"].includes(this.Meta.ComponentType)) {
+            this.Disabled = true;
         }
     }
 
@@ -857,6 +919,7 @@ export class EditableComponent {
     }
 
     Dispose() {
+        this.SendQueueAction("Unsubscribe");
         this.DisposeChildren();
         this.RemoveDOM();
         this.Children = [];
@@ -877,6 +940,20 @@ export class EditableComponent {
             this.Element.remove();
             this.Element = null;
         }
+    }
+
+    SendQueueAction(action) {
+        var queueName = this.QueueName;
+        if (!queueName) return;
+        const param = { QueueName: queueName, Action: action };
+        // @ts-ignore
+        this.EditForm?.NotificationClient?.Send(JSON.stringify(param));
+        if (action == "Subscribe")
+            // @ts-ignore
+            window.addEventListener(queueName, this.QueueHandler);
+        else
+            // @ts-ignore
+            window.removeEventListener(queueName, this.QueueHandler);
     }
 
     GetValueText() {
@@ -1032,9 +1109,12 @@ export class EditableComponent {
             && !child.Meta.CanWriteAll
             && !child.IsButton
             && !["IsPaid", "PaidDate", "btnEdit"].includes(child.Meta.FieldName)
-            && ((child.Entity["InsertedBy"] != this.Token.UserId && child.Entity["AssignId"] != this.Token.UserId)
+            && ((child.EditForm && child.EditForm.Entity && child.EditForm.Entity["InsertedBy"] != this.Token.UserId && child.EditForm.Entity["AssignId"] != this.Token.UserId && !child.Parent.IsListViewItem)
                 || child.Entity["NoSubmit"] || child.Entity["IsLock"] || child.Entity["IsPayment"] || child.Entity["IsInvoice"] || (child.Entity["IsPaid"] && child.Parent.IsListViewItem))) {
             child.Disabled = true;
+        }
+        if (child.Parent && child.Parent.Meta && child.Parent.Meta.IsPublic) {
+            child.Disabled = false;
         }
         var userAuthentication = this.Token.UserAuthorization && this.Token.UserAuthorization.length > 0 ? this.Token.UserAuthorization.filter(x => x.CanWrite).map(x => x.UserId) : [];
         if (child.Meta
@@ -1052,12 +1132,15 @@ export class EditableComponent {
             && userAuthentication.includes(child.Entity["InsertedBy"])) {
             child.Disabled = false;
         }
-        if (child.Meta && child.Meta.DisabledExp && (child.Meta.DisabledExp.includes("InsertedBy") || child.Meta.DisabledExp.includes("StatusId") || child.Meta.DisabledExp.includes("this.Token"))) {
+        if (child.Meta && child.Meta.DisabledExp && (child.Meta.DisabledExp.includes("CanWrite") || child.Meta.DisabledExp.includes("InsertedBy") || child.Meta.DisabledExp.includes("StatusId") || child.Meta.DisabledExp.includes("this.Token"))) {
             child.ToggleDisabled(disabledExp || child.Meta.DisabledExp);
         }
         // @ts-ignore
         if (showExp || (child.Meta && child.Meta.ShowExp)) {
             child.ToggleShow(showExp || child.Meta.ShowExp);
+        }
+        if (child.Entity.IsLockEdit && child.Meta && !["Button", "Pdf", "Excel", "Email"].includes(child.Meta.ComponentType)) {
+            child.Disabled = true;
         }
     }
 
@@ -1151,6 +1234,10 @@ export class EditableComponent {
     }
 
     async SubmitObject(component, tablename) {
+        Spinner.AppendTo();
+        if (component.Id && component.Id.startsWith("-")) {
+            this.resetObject(component);
+        }
         let componentPatch = [];
         Object.getOwnPropertyNames(component).forEach(cell => {
             if (component[cell] instanceof Array || (component[cell] instanceof Object && !(component[cell] instanceof Decimal))) {
@@ -1174,6 +1261,53 @@ export class EditableComponent {
             Table: tablename
         };
         await Client.Instance.PatchAsync(componentModel);
+        Spinner.Hide();
+    }
+
+    ReadObject(component, tableName) {
+        if (component.Id && component.Id.startsWith("-")) {
+            this.resetObject(component);
+        }
+        const changes = [];
+        Object.getOwnPropertyNames(component).forEach((key) => {
+            const v = component[key];
+
+            if (Array.isArray(v) || (v instanceof Object && !(v instanceof Decimal))) return;
+
+            changes.push({
+                Label: key,
+                Field: key,
+                Value: (typeof v === "boolean") ? (v ? "1" : "0") : v
+            });
+        });
+
+        return { Changes: changes, Table: tableName };
+    }
+
+    async ReadObjects(components, tableName, pre) {
+        if (!Array.isArray(components) || components.length === 0) return;
+        const client = this.EditForm.Client;
+        const batchSize = 200;
+        const chunks = (arr, size) => {
+            const out = [];
+            for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
+            return out;
+        };
+
+        const prepared = components.map((obj, i) => {
+            if (typeof pre === "function") {
+                const r = pre(obj, i);
+                return r ?? obj;
+            }
+            return obj;
+        });
+
+        const models = prepared.map(o => this.ReadObject(o, tableName));
+        for (const batch of chunks(models, batchSize)) {
+            Spinner.AppendTo();
+            await client.PatchAsync2(batch);
+        }
+        Spinner.Hide();
     }
 
     GET(fieldName) {

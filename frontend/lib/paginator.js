@@ -71,28 +71,24 @@ export class Paginator extends EditableComponent {
         var pageNum = new Numbox({ FieldName: "PageNumber" });
         pageNum.AlwaysValid = true;
         pageNum.SetSeclection = false;
-        if (!this.Parent.VirtualScroll) {
-            var pageSize = new Numbox({ FieldName: "PageSize" })
-            pageSize.SetSeclection = false;
-            this.AddChild(pageSize);
-            pageSize.Element.addEventListener("change", this.ReloadListView);
-            Html.Instance.End.Render();
-        }
+        var pageSize = new Numbox({ FieldName: "PageSize" })
+        pageSize.SetSeclection = false;
+        this.AddChild(pageSize);
+        pageSize.Element.addEventListener("change", this.ReloadListView);
+        Html.Instance.End.Render();
         Html.Instance.Div.Style("display: flex;").Render();
         this.AddChild(startIndex);
         Html.Instance.Text("-");
         this.AddChild(endIndex);
         Html.Instance.IText(" of ");
         this.AddChild(total);
-        if (!this.Parent.VirtualScroll) {
-            Html.Take(this.Element).Ul.ClassName("pagination").Li.Text("❮").Event("click", this.PrevPage.bind(this)).End.Render();
-            this.AddChild(pageNum);
-            pageNum.Element.addEventListener("change", () => {
-                this.Options.PageIndex = this.Options.PageNumber - 1;
-                this.ReloadListView();
-            });
-            Html.Instance.End.Li.Text("❯").Event("click", this.NextPage.bind(this)).End.Render();
-        }
+        Html.Take(this.Element).Ul.ClassName("pagination").Li.Text("❮").Event("click", this.PrevPage.bind(this)).End.Render();
+        this.AddChild(pageNum);
+        pageNum.Element.addEventListener("change", () => {
+            this.Options.PageIndex = this.Options.PageNumber - 1;
+            this.ReloadListView();
+        });
+        Html.Instance.End.Li.Text("❯").Event("click", this.NextPage.bind(this)).End.Render();
     }
 
     /**

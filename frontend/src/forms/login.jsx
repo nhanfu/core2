@@ -1,3 +1,4 @@
+import React from "react";
 import { ToastContainer } from "react-toastify";
 import { Client, Html, EditForm } from "../../lib";
 import { KeyCodeEnum, RoleEnum } from "../../lib/models/enum.js";
@@ -6,7 +7,10 @@ import { MenuComponent } from "../components/menu.js";
 import { RegisterBL } from "./register.jsx";
 import "../../lib/css/login.css";
 import { App } from "../app.jsx";
+import { WebSocketClient } from "../../lib/clients/index.js";
 import { LangSelect } from "../../lib";
+import { EditableComponent } from "../../lib";
+import Decimal from "decimal.js";
 import { ComponentExt } from "../../lib";
 
 export class LoginBL extends EditForm {
@@ -27,6 +31,10 @@ export class LoginBL extends EditForm {
     };
     this.Name = "Login";
     this.Title = "Đăng nhập";
+    window.addEventListener("beforeunload", () =>
+      this.NotificationClient?.Close()
+    );
+    this.Login = true;
     this.Meta.IsPublic = true;
     this.Meta.Label = "Login";
     this.Title = "Login";
@@ -353,11 +361,106 @@ export class LoginBL extends EditForm {
         return acc;
       }, {});
       localStorage.setItem("SalesFunction", JSON.stringify(mapSaleFunction));
+      localStorage.setItem("SalesFunction2", JSON.stringify(rsSaleFunction));
     } catch {}
     this.LoadByFromUrl();
 
+    await this.getExchangeRate();
+    const json3 = {
+      Value: null,
+      Url: "/api/exchangeRate",
+      IsRawString: true,
+      Method: "GET",
+    };
+    var rsExt = await Client.Instance.SubmitAsync(json3);
+    const ext2 = rsExt.reduce((acc, cur) => {
+      acc[cur.CurrencyCode] = Decimal(cur.RateSaleVND || 0);
+      return acc;
+    }, {});
+    const ext3 = rsExt.reduce((acc, cur) => {
+      acc[cur.CurrencyCode] = Decimal(cur.RateSaleUSD || 0);
+      return acc;
+    }, {});
+    EditableComponent.ExchangeRateSaleVND = ext2;
+    EditableComponent.ExchangeRateSaleUSD = ext3;
+    localStorage.setItem("ExchangeRateSaleVND", JSON.stringify(ext2));
+    localStorage.setItem("ExchangeRateSaleUSD", JSON.stringify(ext3));
+    //
+    const ext4 = rsExt.reduce((acc, cur) => {
+      acc[cur.CurrencyCode] = Decimal(cur.RateProfitVND || 0);
+      return acc;
+    }, {});
+    const ext5 = rsExt.reduce((acc, cur) => {
+      acc[cur.CurrencyCode] = Decimal(cur.RateProfitUSD || 0);
+      return acc;
+    }, {});
+    EditableComponent.ExchangeRateProfitVND = ext4;
+    EditableComponent.ExchangeRateProfitUSD = ext5;
+    localStorage.setItem("ExchangeRateProfitVND", JSON.stringify(ext4));
+    localStorage.setItem("ExchangeRateProfitUSD", JSON.stringify(ext5));
+    window.setInterval(async () => {
+      await this.getExchangeRate();
+    }, 60 * 60 * 1000);
     this.InitAppHanlder?.(Client.Token);
     MenuComponent.Instance.Render();
+    EditForm.NotificationClient = new WebSocketClient("apiv2.forwardx.vn/task");
+  }
+
+  async getExchangeRate() {
+    try {
+      const json3 = {
+        Value: null,
+        Url: "/api/VCBExchangeRate",
+        IsRawString: true,
+        Method: "GET",
+      };
+      var xmlString = await Client.Instance.SubmitAsync(json3);
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(xmlString, "text/xml");
+      const json = this.extractExchangeRates(xmlDoc);
+      json.push({
+        CurrencyCode: "VND",
+        CurrencyName: "VND",
+        Buy: "1",
+        Transfer: "1",
+        Sell: "1",
+      });
+      const ext = json.reduce((acc, cur) => {
+        acc[cur.CurrencyCode] = Decimal(cur.Sell.replace(/,/g, ""));
+        return acc;
+      }, {});
+      var exUSD = Decimal(
+        json.find((x) => x.CurrencyCode == "USD").Sell.replace(/,/g, "")
+      );
+      const ext1 = json.reduce((acc, cur) => {
+        const eurToUsdRate = Decimal(cur.Sell.replace(/,/g, "")).div(exUSD);
+        acc[cur.CurrencyCode] = eurToUsdRate;
+        return acc;
+      }, {});
+      EditableComponent.ExchangeRateVND = ext;
+      localStorage.setItem("ExchangeRateVND", JSON.stringify(ext));
+      EditableComponent.ExchangeRateUSD = ext1;
+      localStorage.setItem("ExchangeRateUSD", JSON.stringify(ext1));
+    } catch {}
+  }
+
+  extractExchangeRates(xmlDoc) {
+    const exchangeRates = [];
+    const exrateElements = xmlDoc.getElementsByTagName("Exrate");
+
+    for (let i = 0; i < exrateElements.length; i++) {
+      const exrate = exrateElements[i];
+      const rate = {
+        CurrencyCode: exrate.getAttribute("CurrencyCode"),
+        CurrencyName: exrate.getAttribute("CurrencyName").trim(),
+        Buy: exrate.getAttribute("Buy"),
+        Transfer: exrate.getAttribute("Transfer"),
+        Sell: exrate.getAttribute("Sell"),
+      };
+      exchangeRates.push(rate);
+    }
+
+    return exchangeRates;
   }
 
   LoadByFromUrl() {

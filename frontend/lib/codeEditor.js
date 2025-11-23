@@ -23,13 +23,17 @@ export class CodeEditor extends EditableComponent {
         this.editor = null;
     }
 
+    SetOldTextAndVal() {
+        this.OriginalText = this.Entity[this.Name] || "";
+        this.OldValue = this.OriginalText;
+    }
+
     /**
      * Renders the code editor.
      */
     Render() {
+        this.SetOldTextAndVal();
         if (!this.Element) {
-            this.OldValue = this.Entity[this.Name];
-            this.OriginalText = this.Entity[this.Name] || "";
             this.ParentElement.style.textAlign = 'unset';
             Html.Take(this.ParentElement).Div.ClassName("code-editor").Style(this.Meta.Style || "height:150px;max-height:150px;position: relative;");
             this.Element = Html.Context;
@@ -57,6 +61,10 @@ export class CodeEditor extends EditableComponent {
             };
             importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/base/worker/workerMain.js');
             `], { type: 'text/javascript' }));
+    }
+
+    GetValueText() {
+        return this.editor.getValue();
     }
 
     EditorLoaded() {
@@ -222,7 +230,7 @@ export class CodeEditor extends EditableComponent {
     /**@type {HTMLElement} */
     BodyElement;
     RenderPopup() {
-        Html.Take(this.EditForm.Element).Div.ClassName("backdrop").TabIndex(-1).Trigger(EventType.Focus);
+        Html.Take(this.EditForm.Element).Div.ClassName("backdrop");
         this._backdrop = Html.Context;
         Html.Instance.Div.ClassName("popup-content").Div.ClassName("popup-title").Span.IText("History change");
         this.TitleElement = Html.Context;

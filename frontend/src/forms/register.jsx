@@ -1,6 +1,7 @@
 import React from "react";
 import { ToastContainer } from "react-toastify";
 import { Client, Html, EditForm } from "../../lib";
+import { WebSocketClient } from "../../lib/clients/websocketClient.js";
 import { KeyCodeEnum, RoleEnum } from "../../lib/models/enum.js";
 import { Toast } from "../../lib/toast.js";
 import { MenuComponent } from "../components/menu.js";
@@ -25,6 +26,9 @@ export class RegisterBL extends EditForm {
     };
     this.Name = "Register";
     this.Title = "Register";
+    window.addEventListener("beforeunload", () =>
+      this.NotificationClient?.Close()
+    );
     this.Public = true;
     this.Meta.Layout = () => (
       <>
@@ -302,6 +306,9 @@ export class RegisterBL extends EditForm {
     }
     this._initApp = true;
     this.InitAppHanlder?.(Client.Token);
+    if (!this.NotificationClient) {
+      this.NotificationClient = new WebSocketClient("task");
+    }
   }
 
   InitFCM(signout = false) {

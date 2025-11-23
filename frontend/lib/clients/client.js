@@ -8,7 +8,7 @@ import { Toast } from "../toast.js";
 import { Path } from "../utils/path.js";
 import { Entity } from "../models/enum.js";
 import { Action } from "../models/action.js";
-/** @typedef {import("../models/xhrWrapper.js").default} XHRWrapper */
+import { encode, decode } from "@msgpack/msgpack";
 
 export class Client {
     /** @type {Entity[]} */
@@ -85,6 +85,21 @@ export class Client {
     static get BodRole() {
         return Client.Token.RoleNames.some(x => x.toLowerCase() == "bod");
     }
+    /**
+     * @param {SqlViewModel} vm
+     */
+    async UserSvc(vm, annonymous = false) {
+        /** @type {XHRWrapper} */
+        // @ts-ignore
+        const data = {
+            Value: JSON.stringify(vm),
+            Url: Utils.UserSvc,
+            IsRawString: true,
+            Method: "POST",
+            AllowAnonymous: annonymous
+        };
+        return this.SubmitAsync(data);
+    }
 
     async ComQuery(vm) {
         /** @type {XHRWrapper} */
@@ -98,49 +113,64 @@ export class Client {
         return this.SubmitAsync(data);
     }
 
-    /**
-     * Submits an asynchronous request with authentication token.
-     * @param {XHRWrapper} options Request options.
-     * @returns {Promise<any>} Response data.
-     */
     async SubmitAsyncWithToken(options) {
         const isFormData = !!options.FormData;
-        const headers = {
-            "User-Agent": "Mozilla/5.0",
-            ...(isFormData ? {} : { "Content-Type": "application/json" }),
+        const useMsgPack = false;
+        options.Headers = {
+            ...(!options.Headers && !isFormData && !useMsgPack && { "Content-Type": "application/json" }),
+            ...(!options.Headers && !isFormData && useMsgPack && { "Content-Type": "application/msgpack" }),
             ...(options.Headers || {}),
+            ...(!options.AllowAnonymous && { Authorization: `Bearer ${Client.Token?.AccessToken}` }),
+            ...(useMsgPack ? { Accept: "application/msgpack, application/json" } : {}),
+            "User-Agent": "Mozilla/5.0"
         };
-        if (!options.AllowAnonymous) {
-            headers.Authorization = `Bearer ${Client.Token?.AccessToken}`;
-        }
 
         const url = Client.api + (options.FinalUrl ?? options.Url);
-        const response = await fetch(url, {
-            method: options.Method,
-            headers,
-            body: isFormData ? options.FormData : options.JsonData
-        });
 
-        if (!response.ok) {
-            let error;
-            try {
-                error = await response.json();
-            } catch {
-                error = { status: response.status, statusText: response.statusText };
+        try {
+            const response = await fetch(url, {
+                method: options.Method,
+                headers: options.Headers,
+                body: isFormData ? options.FormData : options.JsonData
+            });
+
+            const contentType = (response.headers.get("Content-Type") || "").toLowerCase();
+            const disposition = response.headers.get("Content-Disposition") || "";
+
+            if (!response.ok) {
+                if (contentType.includes("application/msgpack") || contentType.includes("application/x-msgpack")) {
+                    const buf = await response.arrayBuffer();
+                    const err = decode(new Uint8Array(buf));
+                    return Promise.reject(err);
+                }
+                try {
+                    const errJson = await response.json();
+                    return Promise.reject(errJson);
+                } catch {
+                    const errText = await response.text();
+                    return Promise.reject(errText);
+                }
             }
+
+            if (contentType.includes("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
+                const blob = await response.blob();
+                return blob;
+            }
+
+            if (contentType.includes("application/msgpack") || contentType.includes("application/x-msgpack")) {
+                const buf = await response.arrayBuffer();
+                return decode(new Uint8Array(buf));
+            }
+
+            if (contentType.includes("application/json")) {
+                return response.json();
+            }
+
+            return response.text();
+        } catch (error) {
             return Promise.reject(error);
         }
-
-        const contentType = response.headers.get("Content-Type") || "";
-        if (contentType.includes("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
-            return await response.blob();
-        }
-        if (contentType.includes("application/json")) {
-            return await response.json();
-        }
-        return await response.text();
     }
-
     /**
      * 
      * @param {XHRWrapper} options 
@@ -352,6 +382,16 @@ export class Client {
         });
     }
 
+    async GetConfig(name, scope = 'global') {
+        return Client.Instance.UserSvc({
+            MetaConn: this.MetaConn,
+            DataConn: this.DataConn,
+            ComId: "UserSetting",
+            Action: "GetConfig",
+            Params: JSON.stringify({ name: name, scope: scope })
+        });
+    }
+
     static async LoadScript(src) {
         const scriptExists = Array.from(document.body.children).some(x => x instanceof HTMLScriptElement && x.src.split("/").pop() === src.split("/").pop());
         if (scriptExists) return true;
@@ -417,7 +457,7 @@ export class Client {
     /**
      * @param {string} path
      */
-    static async Download(path) {
+    static async Download(path, fileName = null) {
         const removePath = this.RemoveGuid(path);
         const url = path.includes("http") ? path : Path.Combine(Client.Origin, path);
         try {
@@ -427,7 +467,7 @@ export class Client {
             const objectUrl = URL.createObjectURL(blob);
             const a = document.createElement("a");
             a.href = objectUrl;
-            a.setAttribute("download", removePath);
+            a.setAttribute("download", fileName || removePath);
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);

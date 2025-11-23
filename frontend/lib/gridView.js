@@ -6,13 +6,14 @@ import { Uuid7 } from './structs/uuidv7.js';
 import { ContextMenu } from './contextMenu.js';
 import { Client } from "./clients/";
 import { SearchEntry } from './searchEntry.js';
-import { EditableComponent, LangSelect } from './index.js';
+import { EditableComponent, LangSelect, Numbox } from './index.js';
 import {
     EventType, ElementType, HotKeyModel, CustomEventType, Component,
     OperatorEnum, KeyCodeEnum, OrderbyDirection, AdvSearchOperation, LogicOperation
 } from './models/';
 import { SearchMethodEnum } from './models/enum.js';
 import { GridViewItem } from './gridViewItem.js';
+import { ListRowItem } from './listRowItem.js';
 import { ConfirmDialog } from './confirmDialog.js';
 import { Direction, Html } from "./utils/html.js";
 import { Section } from './section.js';
@@ -80,18 +81,31 @@ export class GridView extends ListView {
         this.RenderContent();
         this.UpdateStickyColumns();
     }
+
+    IsMobile() {
+        return /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
+    }
+
     AddSections() {
         if (this.HeaderSection && this.HeaderSection.Element != null) {
             return;
         }
         Html.Take(this.ParentElement);
-        Html.Instance.Div.Style(this.Meta.ChildStyle).ClassName("grid-wrapper").ClassName(this.Meta.ClassName).ClassName(this.Editable ? "editable" : "");
+        Html.Instance.Div.Style(this.Meta.ChildStyle).ClassName("grid-wrapper").ClassName(this.Meta.VirtualScroll && this.IsMobile() ? "" : this.Meta.ClassName).ClassName(this.Editable ? "editable" : "");
         this.Element = Html.Context;
+        if (this.Meta.VirtualScroll && this.IsMobile()) {
+            const style = this.Element.style.height;
+            const newHeight = style.replace(/calc\(\s*([-+]?\d*\.?\d+)rem\s*\+\s*100vh\s*\)/, (match, p1) => {
+                const number = parseFloat(p1);
+                return `calc(${number - 2}rem + 100vh)`;
+            });
+            this.Element.style.height = newHeight;
+        }
         Html.Instance.Div.ClassName("d-grid").Style("grid-template-columns: repeat(12, 1fr)").Div.Style("grid-area: span 1 / span 10;").ClassName("grid-toolbar search").End.Render();
         Html.Instance.Div.Style("grid-area: span 1 / span 2;").ClassName("button-toolbar").Render();
         this.MenuGridView = Html.Context;
         Html.Instance.End.Render();
-        var child = (this.EditForm.Meta.Components || []).filter(x => x.ComponentGroupId == this.Meta.Id && (x.ComponentType == "Button" || x.ComponentType == "ImportExcel"));
+        var child = (this.EditForm.Meta.Components || []).filter(x => x.ComponentGroupId == this.Meta.Id && (x.ComponentType == "Button" || x.ComponentType == "ImportExcel")).sort((a, b) => (a.Order || 0) - (b.Order || 0));;
         child.forEach(ui => {
             const com = ComponentFactory.GetComponent(ui, this.EditForm);
             if (com == null) return;
@@ -129,51 +143,92 @@ export class GridView extends ListView {
             this.ListViewSearch.EntityVM.EndDate = new Date(lTo);
         }
         this.AddChild(this.ListViewSearch);
-        Html.Take(this.Element).Div.ClassName("table-wrapper").Table.ClassName("table").Event('keydown', e => this.HotKeyF6Handler(e, e.KeyCodeEnum()))
-        this.DataTable = Html.Context;
-        Html.Instance.Thead.TabIndex(-1).ClassName("tb-header").Render();
-        this.HeaderSection = new ListViewSection(null, Html.Context);
-        this.HeaderSection.ParentElement = this.DataTable;
-        this.AddChild(this.HeaderSection);
-        Html.Take(this.DataTable).Thead.ClassName("tb-search").Render();
-        this.SearchSection = new ListViewSection(null, Html.Context);
-        this.SearchSection.Entity = {
-            Id: Uuid7.Guid()
+        if (this.Meta.VirtualScroll && this.IsMobile()) {
+            Html.Take(this.Element)
+                .Div.ClassName("list-wrapper")
+                .Div.ClassName("list-container").Render();
+            this.DataTable = Html.Context;
+            Html.Instance.Div.ClassName("list-header").TabIndex(-1).Render();
+            this.HeaderSection = new ListViewSection(null, Html.Context);
+            this.HeaderSection.ParentElement = this.DataTable;
+            this.AddChild(this.HeaderSection);
+
+            Html.Take(this.DataTable).Div.ClassName("list-search").Render();
+            this.SearchSection = new ListViewSection(null, Html.Context);
+            this.SearchSection.Entity = { Id: Uuid7.Guid() };
+            this.SearchSection.ParentElement = this.DataTable;
+            this.AddChild(this.SearchSection);
+
+            Html.Take(this.DataTable).Div.ClassName("list-empty").Render();
+            this.EmptySection = new ListViewSection(null, Html.Context);
+            this.EmptySection.ParentElement = this.DataTable;
+            this.AddChild(this.EmptySection);
+
+            Html.Take(this.DataTable).Ul.ClassName("list-body").Render();
+            this.MainSection = new ListViewSection(null, Html.Context);
+            this.MainSection.ParentElement = this.DataTable;
+            this.AddChild(this.MainSection);
+
+            if (!this.AddContentRendered) {
+                this.MainSection.Element.addEventListener('contextmenu', this.BodyContextMenuHandler.bind(this));
+                this.EmptySection.Element.addEventListener('contextmenu', this.BodyContextMenuHandler.bind(this));
+                this.AddContentRendered = true;
+            }
+
+            Html.Take(this.DataTable).Div.ClassName("list-footer").Render();
+            this.FooterSection = new ListViewSection(null, Html.Context);
+            this.FooterSection.ParentElement = this.DataTable;
+            this.AddChild(this.FooterSection);
+
+            Html.Instance.EndOf(".list-wrapper");
         }
-        this.SearchSection.ParentElement = this.DataTable;
-        this.AddChild(this.SearchSection);
-        Html.Take(this.DataTable).TBody.ClassName("tb-empty").Render();
-        this.EmptySection = new ListViewSection(null, Html.Context);
-        this.EmptySection.ParentElement = this.DataTable;
-        this.AddChild(this.EmptySection);
-        Html.Take(this.DataTable).TBody.ClassName("tb-body").Render();
-        this.MainSection = new ListViewSection(null, Html.Context);
-        this.MainSection.ParentElement = this.DataTable;
-        this.AddChild(this.MainSection);
-        if (this.Meta.ShowHotKey) {
-            var seft = this;
-            new Sortable(this.MainSection.Element, {
-                animation: 150,
-                ghostClass: 'blue-background-class',
-                handle: '.status-bar',
-                autoScroll: true,
-                scrollSensitivity: 30,
-                scrollSpeed: 10,
-                onEnd: async function (evt) {
-                    await seft.RenderIndex2();
-                }
-            });
+        else {
+            Html.Take(this.Element).Div.ClassName("table-wrapper").Table.ClassName("table").Event('keydown', e => this.HotKeyF6Handler(e, e.KeyCodeEnum()))
+            this.DataTable = Html.Context;
+            Html.Instance.Thead.TabIndex(-1).ClassName("tb-header").Render();
+            this.HeaderSection = new ListViewSection(null, Html.Context);
+            this.HeaderSection.ParentElement = this.DataTable;
+            this.AddChild(this.HeaderSection);
+            Html.Take(this.DataTable).Thead.ClassName("tb-search").Render();
+            this.SearchSection = new ListViewSection(null, Html.Context);
+            this.SearchSection.Entity = {
+                Id: Uuid7.Guid()
+            }
+            this.SearchSection.ParentElement = this.DataTable;
+            this.AddChild(this.SearchSection);
+            Html.Take(this.DataTable).TBody.ClassName("tb-empty").Render();
+            this.EmptySection = new ListViewSection(null, Html.Context);
+            this.EmptySection.ParentElement = this.DataTable;
+            this.AddChild(this.EmptySection);
+            Html.Take(this.DataTable).TBody.ClassName("tb-body").Render();
+            this.MainSection = new ListViewSection(null, Html.Context);
+            this.MainSection.ParentElement = this.DataTable;
+            this.AddChild(this.MainSection);
+            if (this.Meta.ShowHotKey) {
+                var seft = this;
+                new Sortable(this.MainSection.Element, {
+                    animation: 150,
+                    ghostClass: 'blue-background-class',
+                    handle: '.status-bar',
+                    autoScroll: true,
+                    scrollSensitivity: 30,
+                    scrollSpeed: 10,
+                    onEnd: async function (evt) {
+                        await seft.RenderIndex2();
+                    }
+                });
+            }
+            if (!this.AddContentRendered) {
+                this.MainSection.Element.addEventListener('contextmenu', this.BodyContextMenuHandler.bind(this));
+                this.EmptySection.Element.addEventListener('contextmenu', this.BodyContextMenuHandler.bind(this));
+                this.AddContentRendered = true;
+            }
+            Html.Take(this.DataTable).TFooter.ClassName("tb-footer").Render();
+            this.FooterSection = new ListViewSection(null, Html.Context);
+            this.FooterSection.ParentElement = this.DataTable;
+            this.AddChild(this.FooterSection);
+            Html.Instance.EndOf(".table-wrapper");
         }
-        if (!this.AddContentRendered) {
-            this.MainSection.Element.addEventListener('contextmenu', this.BodyContextMenuHandler.bind(this));
-            this.EmptySection.Element.addEventListener('contextmenu', this.BodyContextMenuHandler.bind(this));
-            this.AddContentRendered = true;
-        }
-        Html.Take(this.DataTable).TFooter.ClassName("tb-footer").Render();
-        this.FooterSection = new ListViewSection(null, Html.Context);
-        this.FooterSection.ParentElement = this.DataTable;
-        this.AddChild(this.FooterSection);
-        Html.Instance.EndOf(".table-wrapper");
         Html.Take(this.Element);
         this.RenderPaginator();
     }
@@ -380,8 +435,9 @@ export class GridView extends ListView {
             case KeyCodeEnum.C:
                 if (e.ctrlKey) {
                     const selected = Array.from(this.Element.querySelectorAll('td.cell-matrix'));
-                    if (selected.length === 0) return;
-
+                    if (selected.length === 0) {
+                        return;
+                    }
                     const selectedData = selected.map(td => ({
                         row: parseInt(td.dataset.row),
                         col: parseInt(td.dataset.col),
@@ -734,9 +790,6 @@ export class GridView extends ListView {
             this.DomLoaded();
             return;
         }
-        if (this.VirtualScroll && this.FormattedRowData.length > viewPort) {
-            this.FormattedRowData = this.FormattedRowData.slice(0, viewPort);
-        }
         if (this.MainSection.Children.length > 0) {
             if (this._hasFirstLoad) {
                 this.UpdateExistRowsWrapper(false, 0, viewPort);
@@ -819,36 +872,75 @@ export class GridView extends ListView {
     RenderRowData(headers, row, section, index = null, emptyRow = false) {
         const tbody = section.Element;
         Html.Take(tbody);
-        const rowSection = new GridViewItem(ElementType.tr);
-        rowSection.EmptyRow = emptyRow;
-        rowSection.Entity = row;
-        rowSection.ParentElement = tbody;
-        rowSection.PreQueryFn = this._preQueryFn;
-        rowSection.ListView = this;
-        rowSection.Meta = this.Meta
-        section.AddChild(rowSection, index);
-        var tr = Html.Context;
-        tr.tabIndex = -1;
-        if (index) {
-            if (index >= tr.parentElement.children.length || index < 0) {
-                index = 0;
+        if (this.Meta.VirtualScroll && this.IsMobile()) {
+            var rowSection = new ListRowItem(ElementType.li);
+            rowSection.EmptyRow = emptyRow;
+            rowSection.Entity = row;
+            rowSection.ParentElement = tbody;
+            rowSection.PreQueryFn = this._preQueryFn;
+            rowSection.ListView = this;
+            rowSection.Meta = this.Meta
+            section.AddChild(rowSection, index);
+            var tr = Html.Context;
+            tr.tabIndex = -1;
+            if (index) {
+                if (index >= tr.parentElement.children.length || index < 0) {
+                    index = 0;
+                }
+                tr.parentElement.insertBefore(tr, tr.parentElement.children[index]);
             }
-            tr.parentElement.insertBefore(tr, tr.parentElement.children[index]);
-        }
-        if (headers.length > 0) {
-            for (let index2 = 0; index2 < headers.length; index2++) {
-                const header = headers[index2];
-                rowSection.RenderTableCell(row, header, null, index, index2);
+            var newHeaders = headers.filter(x => x.VirtualScroll).sort((a, b) => (a.Order ?? 0) - (b.Order ?? 0));
+            if (newHeaders.length > 0) {
+                for (let index2 = 0; index2 < newHeaders.length; index2++) {
+                    const header = newHeaders[index2];
+                    rowSection.RenderTableCell(row, header, null, index, index2);
+                }
             }
+            if (emptyRow) {
+                this.Children.forEach(x => x.AlwaysLogHistory = true);
+            }
+            rowSection.Children.forEach(x => {
+                x.PrepareUpdateView();
+            });
+            return rowSection;
         }
-        if (emptyRow) {
-            this.Children.forEach(x => x.AlwaysLogHistory = true);
+        else {
+            var rowSection = new GridViewItem(ElementType.tr);
+            rowSection.EmptyRow = emptyRow;
+            rowSection.Entity = row;
+            rowSection.ParentElement = tbody;
+            rowSection.PreQueryFn = this._preQueryFn;
+            rowSection.ListView = this;
+            rowSection.Meta = this.Meta
+            section.AddChild(rowSection, index);
+            var tr = Html.Context;
+            tr.tabIndex = -1;
+            if (index) {
+                if (index >= tr.parentElement.children.length || index < 0) {
+                    index = 0;
+                }
+                tr.parentElement.insertBefore(tr, tr.parentElement.children[index]);
+            }
+            if (headers.length > 0) {
+                for (let index2 = 0; index2 < headers.length; index2++) {
+                    const header = headers[index2];
+                    rowSection.RenderTableCell(row, header, null, index, index2);
+                }
+            }
+            if (emptyRow) {
+                this.Children.forEach(x => x.AlwaysLogHistory = true);
+            }
+            rowSection.Children.forEach(x => {
+                x.PrepareUpdateView();
+            });
+            return rowSection;
         }
-        rowSection.Children.forEach(x => {
-            x.PrepareUpdateView();
-        });
-        return rowSection;
     }
+
+    UpdateValidation() {
+        return;
+    }
+
     intWaitingSticky = 0;
     intWaitingSticky = 0;
     UpdateStickyColumns() {
@@ -856,7 +948,7 @@ export class GridView extends ListView {
             .map((item, index) => item.Frozen ? index : -1)
             .filter(index => index !== -1);
         stickyColumns.sort((a, b) => a - b);
-        this.DataTable.querySelectorAll("th, td").forEach((cell) => {
+        this.DataTable && this.DataTable.querySelectorAll("th, td").forEach((cell) => {
             cell.classList.remove("sticky-column");
             cell.style.left = "";
             cell.classList.remove("sticky-column-right"); // reset phải
@@ -1079,30 +1171,33 @@ export class GridView extends ListView {
         }
         if (header.IsTotal) {
             const sum = this.TotalHeaders.reduce((a, b) => a.plus(b), new Decimal(0));
+            var pre = header.GroupTypeId ? parseInt(LangSelect._webConfig[header.GroupTypeId]) : header.Precision;
             if (this.Meta.Frozen) {
-                cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toDP(0).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toDP(0).toFixed(pre || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
             }
             else {
-                cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toFixed(pre || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
             }
         }
         else {
             if (this.Meta.IsMultiple) {
                 const sum = this.GetSelectedRows().reduce((a, b) => a.plus(new Decimal(b[header.FieldName] || 0)), new Decimal(0))
+                var pre = header.GroupTypeId ? parseInt(LangSelect._webConfig[header.GroupTypeId]) : header.Precision;
                 if (this.Meta.Frozen) {
-                    cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toDP(0).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                    cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toDP(0).toFixed(pre || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
                 }
                 else {
-                    cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                    cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toFixed(pre || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                 }
             }
             else {
                 const sum = this.AllListViewItem.filter(x => !x.GroupRow).map(x => x.Entity).reduce((a, b) => a.plus(new Decimal(b[header.FieldName] || 0)), new Decimal(0))
+                var pre = header.GroupTypeId ? parseInt(LangSelect._webConfig[header.GroupTypeId]) : header.Precision;
                 if (this.Meta.Frozen) {
-                    cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toDP(0).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                    cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toDP(0).toFixed(pre || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
                 }
                 else {
-                    cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                    cellVal.textContent = this.Decimal(0).eq(sum) ? "" : sum.toFixed(pre || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                 }
             }
         }
@@ -1172,11 +1267,6 @@ export class GridView extends ListView {
             this.LastListViewItem = rowSection;
             this.RenderIndex();
             await this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterCreated, rowSection, rowData, this);
-            if (this.LastComponentFocus.ComponentType != "Select") {
-                window.setTimeout(() => {
-                    this.LastElementFocus.focus();
-                }, 100);
-            }
         }
         else {
             if (!Utils.isNullOrWhiteSpace(this.Meta.GroupBy)) {
@@ -1205,6 +1295,20 @@ export class GridView extends ListView {
                 }
                 this.RenderIndex();
             }
+        }
+        if (this.LastComponentFocus.ComponentType == "Dropdown" && rowData[this.LastComponentFocus.FieldName]) {
+            window.setTimeout(() => {
+                const headers = this.Header.filter(x => x.VirtualScroll).OrderBy(x => x.Order);
+                const currentComponent = headers.find(y => y.Id === this.LastComponentFocus.Id);
+                const index = headers.indexOf(currentComponent);
+                if (headers.length > index + 1) {
+                    const nextGrid = headers[index + 1];
+                    const nextComponent = rowSection.Children.find(y => y.Meta.Id === nextGrid.Id);
+                    if (nextComponent) {
+                        nextComponent.Focus();
+                    }
+                }
+            }, 200);
         }
         if (component && component.ComponentType == "GridView") {
             await this.DispatchEvent(component.Meta.Events, observableArgs.EvType, this, rowSection, rowData);
@@ -1362,6 +1466,9 @@ export class GridView extends ListView {
         }
         if (this.AllListViewItem) {
             this.AllListViewItem.forEach(row => {
+                if (!row.Element) {
+                    return;
+                }
                 row.Element.childNodes.forEach(column => {
                     if (param.includes(column.getAttribute("data-field"))) {
                         column.style.display = "none";
@@ -1394,6 +1501,9 @@ export class GridView extends ListView {
 
     ThGroup = [];
     RenderTableHeader(headers) {
+        if (this.Meta.VirtualScroll && this.IsMobile()) {
+            return;
+        }
         if (!headers || headers.length == 0) {
             headers = this.Header;
         }
@@ -1521,8 +1631,11 @@ export class GridView extends ListView {
                         case "Input":
                             var txtSearch = new Textbox({
                                 FieldName: header.FieldName,
+                                Visibility: true,
                                 PlainText: 'Input search...',
-                                ShowLabel: false
+                                ShowLabel: false,
+                                Id: header.Id,
+                                SearchFieldName: header.SearchFieldName
                             });
                             txtSearch.SearchIcon = "fal fa-search";
                             txtSearch.SearchMethod = SearchMethodEnum.Contain;
@@ -1543,16 +1656,20 @@ export class GridView extends ListView {
                             }).Span.ClassName(txtSearch.SearchIcon);
                             txtSearch.SearchIconElement = Html.Context;
                             break;
-                        case "Datepicker":
-                            var txtSearch = new Datepicker({
+                        case "Number":
+                            var txtSearch = new Textbox({
                                 FieldName: header.FieldName,
+                                Visibility: true,
+                                PlainText: 'Input search...',
                                 ShowLabel: false,
-                                Precision: 2,
-                                ShowHotKey: true
+                                Id: header.Id,
+                                SearchFieldName: header.SearchFieldName
                             });
-                            txtSearch.SearchMethod = SearchMethodEnum.Range;
+                            txtSearch.SearchIcon = "fal fa-search";
+                            txtSearch.SearchMethod = SearchMethodEnum.Equal;
                             txtSearch.OrderMethod = "asc";
-                            txtSearch.SearchIcon = "fal fa-arrows-alt-h";
+                            txtSearch.IsOrderBy = false;
+                            txtSearch.Entity = this.ListViewSearch.EntityVM;
                             this.SearchSection.AddChild(txtSearch);
                             txtSearch.Element.addEventListener("keydown", (e) => {
                                 let code = e.KeyCodeEnum();
@@ -1567,10 +1684,39 @@ export class GridView extends ListView {
                             }).Span.ClassName(txtSearch.SearchIcon);
                             txtSearch.SearchIconElement = Html.Context;
                             break;
+                        case "Datepicker":
+                            var txtSearch = new Datepicker({
+                                FieldName: header.FieldName,
+                                Visibility: true,
+                                ShowLabel: false,
+                                Precision: 2,
+                                ShowHotKey: true,
+                                Id: header.Id,
+                                SearchFieldName: header.SearchFieldName
+                            });
+                            txtSearch.SearchMethod = SearchMethodEnum.Range;
+                            txtSearch.OrderMethod = "asc";
+                            txtSearch.SearchIcon = "fal fa-arrows-alt-h";
+                            this.SearchSection.AddChild(txtSearch);
+                            txtSearch.Element.addEventListener("keydown", (e) => {
+                                let code = e.KeyCodeEnum();
+                                if (code == KeyCodeEnum.Enter) {
+                                    e.preventDefault();
+                                    this.ActionFilter();
+                                }
+                            });
+                            Html.End.Div.ClassName("btn-group").Button.TabIndex(-1).Event("click", (e) => {
+                                this.SearchTypeMenu(e, header, txtSearch);
+                            }).Span.ClassName(txtSearch.SearchIcon);
+                            txtSearch.SearchIconElement = Html.Context;
+                            break;
                         case "Checkbox":
                             var txtSearch = new Select({
                                 FieldName: header.FieldName,
+                                Visibility: true,
                                 ShowLabel: false,
+                                Id: header.Id,
+                                SearchFieldName: header.SearchFieldName,
                                 Query: `[{
                                             "Id": "1,0",
                                             "Name": "All"
@@ -1623,6 +1769,11 @@ export class GridView extends ListView {
                 Click: () => this.ActionSearch(header, "OrderBy", txtSearch, className)
             });
             ctxMenu.MenuItems.push({
+                Icon: "fal fa-list",
+                Text: "Multiple data",
+                Click: () => this.ActionSearch(header, SearchMethodEnum.Equal, txtSearch, "fal fa-list", true)
+            });
+            ctxMenu.MenuItems.push({
                 Icon: "fal fa-search",
                 Text: "Contains",
                 Click: () => this.ActionSearch(header, SearchMethodEnum.Contain, txtSearch, "fal fa-search")
@@ -1653,7 +1804,7 @@ export class GridView extends ListView {
                 Click: () => this.ActionSearch(header, SearchMethodEnum.Filled, txtSearch, "fal fa-check-circle")
             });
         }
-        else if (header.ComponentType == "Datepicker" || header.ComponentType == "Number") {
+        else if (header.ComponentType == "Datepicker") {
             var className = txtSearch.OrderMethod == "asc" ? "fas fa-sort-amount-up" : "fas fa-sort-amount-down";
             ctxMenu.MenuItems.push({
                 Icon: className,
@@ -1666,34 +1817,22 @@ export class GridView extends ListView {
                 Click: () => this.ActionSearch(header, SearchMethodEnum.Range, txtSearch, "fal fa-arrows-alt-h")
             });
             ctxMenu.MenuItems.push({
-                Icon: "fal fa-equals",
-                Text: "Equals",
-                Click: () => this.ActionSearch(header, SearchMethodEnum.Equal, txtSearch, "fal fa-equals")
+                Icon: "fal fa-minus-circle",
+                Text: "Empty",
+                Click: () => this.ActionSearch(header, SearchMethodEnum.Empty, txtSearch, "fal fa-minus-circle")
             });
             ctxMenu.MenuItems.push({
-                Icon: "fal fa-not-equal",
-                Text: "Not Equals",
-                Click: () => this.ActionSearch(header, SearchMethodEnum.NotEqual, txtSearch, "fal fa-not-equal")
+                Icon: "fal fa-check-circle",
+                Text: "Not Empty",
+                Click: () => this.ActionSearch(header, SearchMethodEnum.Filled, txtSearch, "fal fa-check-circle")
             });
+        }
+        else {
+            var className = txtSearch.OrderMethod == "asc" ? "fas fa-sort-amount-up" : "fas fa-sort-amount-down";
             ctxMenu.MenuItems.push({
-                Icon: "fal fa-greater-than",
-                Text: "Greater Than",
-                Click: () => this.ActionSearch(header, SearchMethodEnum.Greater, txtSearch, "fal fa-greater-than")
-            });
-            ctxMenu.MenuItems.push({
-                Icon: "fal fa-less-than",
-                Text: "Less Than",
-                Click: () => this.ActionSearch(header, SearchMethodEnum.Smaller, txtSearch, "fal fa-less-than")
-            });
-            ctxMenu.MenuItems.push({
-                Icon: "fal fa-greater-than-equal",
-                Text: "Greater Than or Equal",
-                Click: () => this.ActionSearch(header, SearchMethodEnum.GreaterEqual, txtSearch, "fal fa-greater-than-equal")
-            });
-            ctxMenu.MenuItems.push({
-                Icon: "fal fa-less-than-equal",
-                Text: "Less Than or Equal",
-                Click: () => this.ActionSearch(header, SearchMethodEnum.SmallerEqual, txtSearch, "fal fa-less-than-equal")
+                Icon: className,
+                Text: "Order By",
+                Click: () => this.ActionSearch(header, "OrderBy", txtSearch, className)
             });
             ctxMenu.MenuItems.push({
                 Icon: "fal fa-minus-circle",
@@ -1710,7 +1849,7 @@ export class GridView extends ListView {
         ctxMenu.Render();
     }
 
-    ActionSearch(header, type, txtSearch, className) {
+    ActionSearch(header, type, txtSearch, className, multiple) {
         txtSearch.SearchMethod = type;
         if (type == "OrderBy") {
             this.SearchSection.Children.forEach(x => x.IsOrderBy = false);
@@ -1719,7 +1858,22 @@ export class GridView extends ListView {
             txtSearch.IsOrderBy = true;
         }
         txtSearch.SearchIconElement.className = className;
-        this.ApplyFilter();
+        if (multiple) {
+            var com = JSON.parse(JSON.stringify(header));
+            com.ComponentType = "Textarea";
+            com.FieldName = com.FieldName + "Search";
+            com.FormatData = null;
+            com.Row = 7;
+            var name = com.EntityName || "Entity";
+            this.EditForm.OpenConfig("Search multiple data", async () => {
+                txtSearch.MultipleData = this.EditForm[name][com.FieldName];
+                this.ApplyFilter();
+            }, () => { }, true, [com], null, null, null, true);
+        }
+        else {
+            txtSearch.MultipleData = null;
+            this.ApplyFilter();
+        }
     }
     /**
      * @param {HTMLElement} col
@@ -1847,7 +2001,7 @@ export class GridView extends ListView {
                     return null;
                 }).filter(x => x != null);
                 var userSetting = new UserSetting();
-                userSetting.FeatureId = this.EditForm.Meta.Label;
+                userSetting.FeatureId = this.EditForm.Meta.Id;
                 userSetting.ComponentId = this.Meta.Id;
                 userSetting.Active = true;
                 userSetting.Value = JSON.stringify(columns);
@@ -1898,11 +2052,13 @@ export class GridView extends ListView {
         const anySelected = this.AllListViewItem.some(x => x.Selected);
         if (anySelected) {
             this.ClearSelected();
+            this.DispatchEvent(this.Meta.Events, EventType.Click, this, this.Entity).then();
             return;
         }
         this.AllListViewItem.forEach(x => {
             x.Selected = true;
         });
+        this.DispatchEvent(this.Meta.Events, EventType.Click, this, this.Entity).then();
     }
 
     HeaderContextMenu(e, header) {
@@ -2085,6 +2241,7 @@ export class GridView extends ListView {
             this.RowAction(row => !row.EmptyRow, row => row.UpdateView(force, dirty, componentNames));
         }
     }
+
     async RowChangeHandlerGrid(rowData, rowSection, observableArgs, component = null) {
         await new Promise(resolve => setTimeout(resolve, this.CellCountNoSticky));
         if (rowSection.EmptyRow && observableArgs.EvType === EventType.Change) {
@@ -2108,6 +2265,7 @@ export class GridView extends ListView {
         this.AddSummaries();
         await this.DispatchEvent(this.Meta.Events, EventType.Change, rowSection, rowData);
     }
+
     GetViewPortItem() {
         if (!this.Element || !this.Element.classList.contains('sticky')) {
             return this.RowData.Data.length;

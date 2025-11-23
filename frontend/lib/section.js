@@ -273,7 +273,7 @@ export class Section extends EditableComponent {
             Parent.EditForm.TabGroup = [];
         }
 
-        var TabG = Parent.EditForm.TabGroup.find(x => x.Name === Group.TabGroup);
+        var TabG = Parent.EditForm.TabGroup.find(x => x.Name === (Group.TabGroup || "Default"));
         if (!TabG) {
             var group = {
                 TabGroup: Group.TabGroup,
@@ -282,7 +282,7 @@ export class Section extends EditableComponent {
                 IsTab: true,
             };
             TabG = new TabGroup(group);
-            TabG.Name = group.TabGroup,
+            TabG.Name = group.TabGroup || "Default",
                 TabG.Parent = Parent,
                 TabG.ParentElement = Parent.Element,
                 TabG.Entity = entity ?? Parent.Entity,
@@ -335,18 +335,17 @@ export class Section extends EditableComponent {
      * @param {Component} group - The group of components to render.
      */
     RenderChildrenSection(group) {
-        if (!group.Components || group.Components.length === 0) {
+        if (!group.Children || group.Children.length === 0) {
             return;
         }
 
-        group.Components.filter(x => x.ComponentType === "Section")
-            .sort((a, b) => a.Order - b.Order).forEach(child => {
-                if (child.IsTab) {
-                    Section.RenderTabGroup(this, child);
-                } else {
-                    Section.RenderSection(this, child);
-                }
-            });
+        group.Children.sort((a, b) => a.Order - b.Order).forEach(child => {
+            if (child.IsTab) {
+                Section.RenderTabGroup(this, child);
+            } else {
+                Section.RenderSection(this, child);
+            }
+        });
     }
 
     /**
@@ -448,7 +447,7 @@ export class Section extends EditableComponent {
         }
 
         if (childCom.Element) {
-            if (ui.ChildStyle) {
+            if (ui.ChildStyle && ui.ComponentType != "GridView") {
                 const current = Html.Context;
                 Html.Take(childCom.Element).Style(ui.ChildStyle);
                 Html.Take(current);
@@ -622,104 +621,7 @@ export class Section extends EditableComponent {
         }
         var lastElementButtonGroup = [];
         var seft = this;
-        this.enableReordering(group, seft);
-        group.Components.filter(x => x.ComponentType != "Section").sort((a, b) => a.Order - b.Order).forEach((ui, index) => {
-            if (ui.Hidden) {
-                return;
-            }
-            if (!ui.CanRead) {
-                return;
-            }
-            var inner = this.EditForm.GetInnerColumn(ui);
-            const colSpan = inner || 1;
-            const rowSpan = ui.RowSpan || 1;
-            ui.Label = ui.Label || '';
-            Html.Div.ClassName("layout-item").Style(`grid-column: span ${colSpan};grid-row: span ${rowSpan}`);
-            if (ui.ShowLabel) {
-                var required = "";
-                if (!Utils.isNullOrWhiteSpace(ui.Validation)) {
-                    required = ui.Validation.includes("required") ? " (*)" : "";
-                }
-                Html.Instance.Div.ClassName("group-control")
-                    .Style(ui.ChildStyle)
-                    .Div.ClassName('header-label');
-                if (Client.SystemRole) {
-                    Html.Instance.ClassName("moved");
-                }
-                Html.Instance.IText(ui.Label, this.EditForm.Meta.Label)
-                    .Span.Text(required).End.End.Render();
-            }
-            if (ui.Style && ui.ComponentType !== "Word") {
-                Html.Style(ui.Style);
-            }
-            if (ui.Width) {
-                Html.Width(ui.Width);
-            }
-            if (!Utils.isNullOrWhiteSpace(ui.GroupFormat) && ["Button", "Pdf", "Excel"].some(x => x == ui.ComponentType)) {
-                if (!lastElementButtonGroup.find(x => x.Com.GroupFormat == ui.GroupFormat)) {
-                    Html.Instance.Div.ClassName("dropdown-btn")
-                        .Button.ClassName(ui.ClassName).Icon("mr-1 " + ui.Icon).End.IText(ui.GroupFormat, this.EditForm.Meta.Label)
-                        .End
-                        .Div.ClassName("dropdown-content dropdown-top");
-                    lastElementButtonGroup.push({ Com: ui, Ele: Html.Context })
-                }
-            }
-            const childCom = ComponentFactory.GetComponent(ui, this.EditForm);
-            if (!Utils.isNullOrWhiteSpace(ui.GroupFormat) && ["Button", "Pdf", "Excel"].some(x => x == ui.ComponentType)) {
-                childCom.ParentElement = lastElementButtonGroup.find(x => x.Com.GroupFormat == ui.GroupFormat).Ele;
-            }
-            if (childCom === null) return;
-            this.AddChild(childCom);
-            this.EditForm.ChildCom.push(childCom);
-            if (childCom) {
-                childCom.Disabled = ui.Disabled || ui.Write || childCom.Disabled;
-            }
-            if (childCom.Element) {
-                if (ui.ChildStyle) {
-                    const Current = Html.Context;
-                    Html.Take(childCom.Element).Style(ui.ChildStyle);
-                    Html.Take(Current);
-                }
-                if (Client.SystemRole) {
-                    Html.Take(childCom.Element).Event(EventType.Click, (e) => {
-                        if (this.EditForm.DevToolsElement) {
-                            this.EditForm.UpdateMetaData(childCom.Meta);
-                        }
-                    })
-                }
-
-                if (ui.Row === 1) {
-                    childCom.ParentElement.parentElement.classList.add("inline-label");
-                }
-
-                if (["Input", "Dropdown", "Word", "Number", "Textarea"].some(x => x == ui.ComponentType)) {
-                    if (ui.ComponentType == "Word") {
-                        childCom.Element.parentElement.addEventListener("contextmenu", e => this.EditForm.SysConfigMenu(e, ui, group, childCom));
-                    }
-                    else {
-                        childCom.Element.addEventListener("contextmenu", e => this.EditForm.SysConfigMenu(e, ui, group, childCom));
-                    }
-                }
-                else {
-                    if (Client.SystemRole && ui.ComponentType != "CodeEditor" || Client.BodRole && ui.ComponentType == "Pdf") {
-                        childCom.Element.addEventListener("contextmenu", e => this.EditForm.SysConfigMenu(e, ui, group, childCom));
-                    }
-                }
-            }
-            if (ui.Focus) {
-                childCom.Focus();
-            }
-            Html.EndOf(".layout-item");
-            if (ui.Offset != null && ui.Offset > 0) {
-                Html.Div.ClassName("layout-item").Style(`grid-column: span ${ui.Offset}`).End.Render();
-                column += ui.Offset;
-            }
-            column += colSpan;
-        });
-    }
-
-    enableReordering(group, seft) {
-        if (Client.SystemRole) {
+        if (Client.SystemRole && Client.Token.TenantCode === "forwardx" && this.Token.UserId == "1") {
             if (!group.IsConfig) {
                 new Sortable(Html.Context, {
                     animation: 500,
@@ -787,6 +689,98 @@ export class Section extends EditableComponent {
                 });
             }
         }
+        group.Components.sort((a, b) => a.Order - b.Order).forEach((ui, index) => {
+            if (ui.Hidden) {
+                return;
+            }
+            if (!ui.CanRead) {
+                return;
+            }
+            var inner = this.EditForm.GetInnerColumn(ui);
+            const colSpan = inner || 1;
+            const rowSpan = ui.RowSpan || 1;
+            ui.Label = ui.Label || '';
+            Html.Div.ClassName("layout-item").Style(`grid-column: span ${colSpan};grid-row: span ${rowSpan}`).Visibility(ui.Visibility);
+            if (ui.ShowLabel) {
+                var required = "";
+                if (!Utils.isNullOrWhiteSpace(ui.Validation)) {
+                    required = ui.Validation.includes("required") ? " (*)" : "";
+                }
+                Html.Instance.Div.ClassName("group-control").Style(ui.ChildStyle)
+                    .Div.ClassName('header-label');
+                if (Client.SystemRole) {
+                    Html.Instance.ClassName("moved");
+                }
+                Html.Instance.IText(ui.Label, this.EditForm.Meta.Label)
+                    .Span.Text(required).End.End.Render();
+            }
+            if (ui.Style && ui.ComponentType !== "Word") {
+                Html.Style(ui.Style);
+            }
+            if (ui.Width) {
+                Html.Width(ui.Width);
+            }
+            if (!Utils.isNullOrWhiteSpace(ui.GroupFormat) && ["Button", "Pdf", "Excel"].some(x => x == ui.ComponentType)) {
+                if (!lastElementButtonGroup.find(x => x.Com.GroupFormat == ui.GroupFormat)) {
+                    Html.Instance.Div.ClassName("dropdown-btn")
+                        .Button.ClassName(ui.ClassName).Icon("mr-1 " + ui.Icon).End.IText(ui.GroupFormat, this.EditForm.Meta.Label)
+                        .End
+                        .Div.ClassName("dropdown-content dropdown-top");
+                    lastElementButtonGroup.push({ Com: ui, Ele: Html.Context })
+                }
+            }
+            const childCom = ComponentFactory.GetComponent(ui, this.EditForm);
+            if (!Utils.isNullOrWhiteSpace(ui.GroupFormat) && ["Button", "Pdf", "Excel"].some(x => x == ui.ComponentType)) {
+                childCom.ParentElement = lastElementButtonGroup.find(x => x.Com.GroupFormat == ui.GroupFormat).Ele;
+            }
+            if (childCom === null) return;
+            this.AddChild(childCom);
+            this.EditForm.ChildCom.push(childCom);
+            if (childCom) {
+                childCom.Disabled = ui.Disabled || ui.Write || childCom.Disabled;
+            }
+            if (childCom.Element) {
+                if (ui.ChildStyle && ui.ComponentType != "GridView") {
+                    const Current = Html.Context;
+                    Html.Take(childCom.Element).Style(ui.ChildStyle);
+                    Html.Take(Current);
+                }
+                if (Client.SystemRole) {
+                    Html.Take(childCom.Element).Event(EventType.Click, (e) => {
+                        if (this.EditForm.DevToolsElement) {
+                            this.EditForm.UpdateMetaData(childCom.Meta);
+                        }
+                    })
+                }
+
+                if (ui.Row === 1) {
+                    childCom.ParentElement.parentElement.classList.add("inline-label");
+                }
+
+                if (["Input", "Dropdown", "Word", "Number", "Textarea"].some(x => x == ui.ComponentType)) {
+                    if (ui.ComponentType == "Word") {
+                        childCom.Element.parentElement.addEventListener("contextmenu", e => this.EditForm.SysConfigMenu(e, ui, group, childCom));
+                    }
+                    else {
+                        childCom.Element.addEventListener("contextmenu", e => this.EditForm.SysConfigMenu(e, ui, group, childCom));
+                    }
+                }
+                else {
+                    if (Client.SystemRole && ui.ComponentType != "CodeEditor" || Client.BodRole && ui.ComponentType == "Pdf") {
+                        childCom.Element.addEventListener("contextmenu", e => this.EditForm.SysConfigMenu(e, ui, group, childCom));
+                    }
+                }
+            }
+            if (ui.Focus) {
+                childCom.Focus();
+            }
+            Html.EndOf(".layout-item");
+            if (ui.Offset != null && ui.Offset > 0) {
+                Html.Div.ClassName("layout-item").Style(`grid-column: span ${ui.Offset}`).End.Render();
+                column += ui.Offset;
+            }
+            column += colSpan;
+        });
     }
 
     RenderComponent2(group) {
@@ -797,7 +791,7 @@ export class Section extends EditableComponent {
         let column = 0;
         group.Components = this.EditForm.GetComPolicies(group.Components);
         var lastElementButtonGroup = [];
-        group.Components.filter(x=> x.ComponentType != "Section").sort((a, b) => a.Order - b.Order).forEach(ui => {
+        group.Components.sort((a, b) => a.Order - b.Order).forEach(ui => {
             if (ui.Hidden) {
                 return;
             }
@@ -807,7 +801,7 @@ export class Section extends EditableComponent {
             var inner = this.EditForm.GetInnerColumn(ui);
             const colSpan = inner || 1;
             ui.Label = ui.Label || '';
-            Html.TData.ColSpan(colSpan);
+            Html.TData.ColSpan(colSpan).Visibility(ui.Visibility);
             if (ui.ShowLabel) {
                 Html.Instance.Div.ClassName("group-control").Style(ui.ChildStyle).Div.ClassName('header-label').IText(ui.Label, this.EditForm.Meta.Label).End.Render();
             }
@@ -837,7 +831,7 @@ export class Section extends EditableComponent {
                 childCom.Disabled = ui.Disabled || ui.Write || childCom.Disabled;
             }
             if (childCom.Element) {
-                if (ui.ChildStyle) {
+                if (ui.ChildStyle && ui.ComponentType != "GridView") {
                     const Current = Html.Context;
                     Html.Take(childCom.Element).Style(ui.ChildStyle);
                     Html.Take(Current);

@@ -100,10 +100,51 @@ export class ButtonImportExcel extends EditableComponent {
             return;
         }
         Spinner.AppendTo();
-        await Client.Instance.PostFilesAsync(file, this.Meta.FormatData);
-        Spinner.Hide();
-        var grid = this.EditForm.ChildCom.find(c => c.Meta.ComponentType === "GridView");
-        Toast.Success("Excel file imported successfully.", 5000);
-        await grid.ActionFilter();
+        try {
+            var rs = await Client.Instance.PostFilesAsync(file, this.Meta.FormatData);
+            Spinner.Hide();
+            if (this.isBlob(rs)) {
+                const ext = this.inferExtByType(rs.type);
+                const fileName =
+                    (this.Meta && this.Meta.FileName ? this.Meta.FileName : "download") +
+                    (ext || "");
+                this.downloadBlob(rs, fileName);
+            }
+            else {
+                var grid = this.EditForm.ChildCom.find(c => c.Meta.ComponentType === "GridView");
+                Toast.Success("Excel file imported successfully.", 5000);
+                await grid.ActionFilter();
+            }
+        } catch (error) {
+            Spinner.Hide();
+            this.EditForm.OpenConfig(error.detail, () => {
+            }, () => { }, false, [], true)
+        }
+
+    }
+
+    downloadBlob(blob, fileName) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = fileName || "download";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+    }
+
+    isBlob(x) {
+        return x && typeof x === "object" && typeof x.arrayBuffer === "function" && typeof x.type === "string";
+    }
+
+    inferExtByType(type) {
+        if (/spreadsheetml/i.test(type)) return ".xlsx";
+        if (/pdf/i.test(type)) return ".pdf";
+        if (/msword/i.test(type)) return ".doc";
+        if (/wordprocessingml/i.test(type)) return ".docx";
+        if (/zip/i.test(type)) return ".zip";
+        if (/json/i.test(type)) return ".json";
+        return ""; // fallback
     }
 }

@@ -54,7 +54,7 @@ const Profile = () => {
                   <div className=" flex user-infor">
                     <div className="header-center">
                       <div className="full-name">
-                        {!Client.Token ? "" : Client.Token.FullName}{" "}
+                        {!Client.Token ? "" : Client.Token.UserName}{" "}
                       </div>
                       <div className="infor-account">
                         {!Client.Token ? "" : Client.Token.Email}

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import DropdownComponent from "./DropdownComponent";
 import { ChromeTabs, ComponentExt } from "../../lib";
@@ -24,8 +24,11 @@ const NotificationDropdown = () => {
     (state) => state.generic[NOTIFICATION_KEY] || []
   );
 
+  const itemsRef = useRef(taskNotification);
   useEffect(() => {
-    // Fetch notifications data on component mount
+    itemsRef.current = taskNotification;
+  }, [taskNotification]);
+  useEffect(() => {
     const fetchNotificationsData = async () => {
       const response = await Client.Instance.PostAsync(
         {},
@@ -36,10 +39,16 @@ const NotificationDropdown = () => {
 
     fetchNotificationsData();
 
-    // Event listener for message notifications
     const handleMessage = (data) => {
+      if (
+        data.detail.TenantCode.toLowerCase() !==
+        Client.Token.TenantCode.toLowerCase()
+      )
+        return;
       const message = data.detail.Message;
       const index = 0;
+      const exists = itemsRef.current.some((x) => x.Id === message.Id);
+      if (exists) return;
       dispatch(addData({ key: NOTIFICATION_KEY, item: message, index }));
       if (
         typeof Notification !== "undefined" &&
@@ -102,6 +111,28 @@ const NotificationDropdown = () => {
       pathname: pathname || null,
       params: Object.fromEntries(params.entries()),
     };
+  };
+
+  const handleClickView = async () => {
+    var tasks = taskNotification.filter((x) => !x.IsView);
+    var patchs = tasks.map((task) => {
+      const changes = [
+        { Field: "Id", Value: task.Id },
+        { Field: "IsView", Value: "1" },
+      ];
+      return {
+        Table: "TaskNotification",
+        Changes: changes,
+      };
+    });
+    document.querySelector(".notification1 .badge").innerHTML = "";
+    await Client.Instance.PatchAsync2(patchs);
+    dispatch(
+      updateData({
+        key: NOTIFICATION_KEY,
+        item: taskNotification.map((x) => ({ ...x, IsView: true })),
+      })
+    );
   };
 
   const handleClick = async (taskNotifi) => {
@@ -181,10 +212,10 @@ const NotificationDropdown = () => {
         Toast.Warning("Record not exists!");
       } else {
         var tabChrome = ChromeTabs.tabs.find(
-          (x) => x.content.Meta.Name == "advance-request"
+          (x) => x.content.Meta.Name == "reimbursement-form"
         );
         if (!tabChrome) {
-          ComponentExt.InitFeatureByName("advance-request", true).then(
+          ComponentExt.InitFeatureByName("reimbursement-form", true).then(
             (tab) => {
               window.setTimeout(() => {
                 tab.OpenPopup(
@@ -204,6 +235,40 @@ const NotificationDropdown = () => {
             }
             tabChrome.content.OpenPopup(
               "reimbursement-form-editor",
+              inquiryDetail.data[0]
+            );
+          }
+        }
+      }
+    } else if (taskNotifi.VoucherTypeId == 11) {
+      var inquiryDetail = await Client.Instance.GetByIdAsync(
+        taskNotifi.EntityId,
+        [taskNotifi.RecordId]
+      );
+      if (!inquiryDetail.data) {
+        Toast.Warning("Record not exists!");
+      } else {
+        var tabChrome = ChromeTabs.tabs.find(
+          (x) => x.content.Meta.Name == "payment-request"
+        );
+        if (!tabChrome) {
+          ComponentExt.InitFeatureByName("payment-request", true).then(
+            (tab) => {
+              window.setTimeout(() => {
+                tab.OpenPopup("payment-request-editor", inquiryDetail.data[0]);
+              }, 1000);
+            }
+          );
+        } else {
+          if (prams.params.Id != inquiryDetail.data[0].Id) {
+            tabChrome.content.Focus();
+            var popup = tabChrome.content.Children.find((x) => x.Popup);
+            if (popup) {
+              popup.Dirty = false;
+              popup.Dispose();
+            }
+            tabChrome.content.OpenPopup(
+              "payment-request-editor",
               inquiryDetail.data[0]
             );
           }
@@ -238,16 +303,6 @@ const NotificationDropdown = () => {
             tabChrome.content.OpenPopup(featureDetailName, entity.data[0]);
           }
         }
-      }
-    } else if (taskNotifi.VoucherTypeId == 20) {
-      var featureName = taskNotifi.FeatureName2;
-      var tabChrome = ChromeTabs.tabs.find(
-        (x) => x.content.Meta.Name == featureName
-      );
-      if (!tabChrome) {
-        ComponentExt.InitFeatureByName(featureName, true).then();
-      } else {
-        tabChrome.content.Focus();
       }
     } else {
       var entity = await Client.Instance.GetByIdAsync(taskNotifi.EntityId, [
@@ -302,9 +357,15 @@ const NotificationDropdown = () => {
 
   const toggleContent = (
     <>
-      <i className="far fa-bell"></i>
+      <i
+        className="far fa-bell"
+        onClick={(e) => {
+          e.preventDefault();
+          handleClickView();
+        }}
+      ></i>
       <span className="badge">
-        {taskNotification?.filter((x) => !x.Read).length || ""}
+        {taskNotification?.filter((x) => !x.IsView).length || ""}
       </span>
     </>
   );
@@ -327,7 +388,13 @@ const NotificationDropdown = () => {
             }}
           >
             <div className="text-info">
-              <img className="img-notifi" src={item.Avatar || "https://forwardx.vn/wp-content/uploads/2025/03/cropped-Icon-Logo-180x180.png" } />
+              <img
+                className="img-notifi"
+                src={
+                  item.Avatar ||
+                  "https://forwardx.vn/wp-content/uploads/2025/03/cropped-Icon-Logo-180x180.png"
+                }
+              />
             </div>
             <div className={`message-content ${item.Read ? "read" : ""}`}>
               <div className="header2">{LangSelect.Get(item.FeatureName)}</div>
@@ -351,7 +418,7 @@ const NotificationDropdown = () => {
       toggleContent={toggleContent}
       dropdownContent={dropdownContent}
       classNameChild="md"
-      className="notification dropdown"
+      className="notification dropdown notification1"
     />
   );
 };

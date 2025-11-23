@@ -1,91 +1,166 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useLayoutEffect } from 'react';
 import { createPortal } from 'react-dom';
 
-const DropdownComponent = ({ toggleContent, dropdownContent, className, classNameChild }) => {
-    const [dropdownOpen, setDropdownOpen] = useState(false);
-    const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
-    const dropdownRef = useRef(null);
-    const toggleRef = useRef(null);
+const DropdownComponent = ({
+  toggleContent,
+  dropdownContent,
+  className = '',
+  classNameChild = '',
+  minWidthMatchToggle = true,
+}) => {
+  const [open, setOpen] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [coords, setCoords] = useState({ top: 0, left: 0, minWidth: undefined });
+  const [mounted, setMounted] = useState(false); // <-- tránh lỗi khi SSR/Next.js
+  const dropdownRef = useRef(null);
+  const toggleRef = useRef(null);
+  const rafRef = useRef(0);
+  const pendingRef = useRef(false);
 
-    const toggleDropdown = () => {
-        if (!dropdownOpen && toggleRef.current) {
-            const rect = toggleRef.current.getBoundingClientRect();
-            setDropdownPosition({ top: rect.bottom + window.scrollY, left: rect.left + window.scrollX });
-        }
-        setDropdownOpen(!dropdownOpen);
+  useEffect(() => setMounted(true), []);
+
+  const computeCoords = useCallback(() => {
+    const tEl = toggleRef.current;
+    const dEl = dropdownRef.current;
+    if (!tEl || !dEl) return;
+
+    const tRect = tEl.getBoundingClientRect();
+    const dRect = dEl.getBoundingClientRect();
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const GAP = 4;
+
+    let top = tRect.bottom + GAP;
+    let left = tRect.left;
+
+    if (vh - tRect.bottom < dRect.height + GAP && tRect.top > dRect.height + GAP) {
+      top = tRect.top - dRect.height - GAP;
+    }
+    if (left + dRect.width > vw - 4) left = Math.max(4, tRect.right - dRect.width);
+    if (left < 4) left = 4;
+    if (top + dRect.height > vh - 4) top = Math.max(4, vh - dRect.height - 4);
+    if (top < 4) top = 4;
+
+    setCoords({
+      top,
+      left,
+      minWidth: minWidthMatchToggle ? Math.ceil(tRect.width) : undefined,
+    });
+  }, [minWidthMatchToggle]);
+
+  const scheduleRecalc = useCallback(() => {
+    if (pendingRef.current) return;
+    pendingRef.current = true;
+    rafRef.current = requestAnimationFrame(() => {
+      pendingRef.current = false;
+      computeCoords();
+    });
+  }, [computeCoords]);
+
+  const openDropdown = () => setOpen(true);
+  const closeDropdown = () => {
+    setVisible(false);
+    setOpen(false);
+  };
+  const toggleDropdown = () => (open ? closeDropdown() : openDropdown());
+
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e) => {
+      const t = e.target;
+      if (
+        dropdownRef.current && !dropdownRef.current.contains(t) &&
+        toggleRef.current && !toggleRef.current.contains(t)
+      ) closeDropdown();
     };
-
-    const closeDropdown = (e) => {
-        if (dropdownRef.current && !dropdownRef.current.contains(e.target) && !toggleRef.current.contains(e.target)) {
-            setDropdownOpen(false);
-        }
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('touchstart', onDown, { passive: true });
+    return () => {
+      document.removeEventListener('mousedown', onDown);
+      document.removeEventListener('touchstart', onDown);
     };
+  }, [open]);
 
-    useEffect(() => {
-        if (dropdownOpen) {
-            const handleResize = () => {
-                if (dropdownRef.current && toggleRef.current) {
-                    const rect = toggleRef.current.getBoundingClientRect();
-                    const dropdownRect = dropdownRef.current.getBoundingClientRect();
-                    
-                    // Kiểm tra xem dropdown có vượt qua bên phải màn hình không
-                    const leftPosition = rect.left + dropdownRect.width > window.innerWidth
-                        ? rect.right - dropdownRect.width + window.scrollX
-                        : rect.left + window.scrollX;
-                    
-                    setDropdownPosition({
-                        top: rect.bottom + window.scrollY,
-                        left: leftPosition,
-                    });
-                }
-            };
+  useLayoutEffect(() => {
+    if (!open) return;
+    setVisible(false); // ẩn để đo cho chuẩn
+  }, [open]);
 
-            document.addEventListener('mousedown', closeDropdown);
-            window.addEventListener('resize', handleResize);
-            handleResize(); // Cập nhật vị trí khi mở dropdown lần đầu
+  useEffect(() => {
+    if (!open) return;
 
-            return () => {
-                document.removeEventListener('mousedown', closeDropdown);
-                window.removeEventListener('resize', handleResize);
-            };
-        }
-    }, [dropdownOpen]);
+    const id = requestAnimationFrame(() => {
+      computeCoords();
+      requestAnimationFrame(() => setVisible(true)); // hiện sau khi set vị trí
+    });
 
-    return (
-        <>
-            <div
-                className={`dropdown ${dropdownOpen ? 'show' : ''} ${className}`}
-                ref={toggleRef}
-                style={{ position: 'relative' }}
-            >
-                <a
-                    onClick={toggleDropdown}
-                    aria-expanded={dropdownOpen}
-                    style={{ display: 'flex', alignItems: 'center' }}
-                >
-                    {toggleContent}
-                </a>
-            </div>
-            {dropdownOpen &&
-                createPortal(
-                    <div
-                        ref={dropdownRef}
-                        className={`dropdown-menu dropdown-menu-right dropdown-menu-icon-list ${dropdownOpen ? 'show' : ''} ${classNameChild}`}
-                        style={{
-                            position: 'absolute',
-                            top: dropdownPosition.top,
-                            left: dropdownPosition.left,
-                            opacity: '1',
-                            transition: 'all 0.13s ease',
-                            zIndex: 1000,
-                        }}
-                    >
-                        {dropdownContent}
-                    </div>,
-                    document.body
-                )}
-        </>
-    );
+    const onRecalc = scheduleRecalc;
+    window.addEventListener('resize', onRecalc, { passive: true });
+    window.addEventListener('scroll', onRecalc, true);
+    window.addEventListener('orientationchange', onRecalc);
+
+    let ro = null;
+    if (window.ResizeObserver && toggleRef.current) {
+      ro = new ResizeObserver(onRecalc);
+      ro.observe(toggleRef.current);
+    }
+
+    return () => {
+      cancelAnimationFrame(id);
+      cancelAnimationFrame(rafRef.current);
+      window.removeEventListener('resize', onRecalc, true);
+      window.removeEventListener('scroll', onRecalc, true);
+      window.removeEventListener('orientationchange', onRecalc);
+      if (ro) ro.disconnect();
+    };
+  }, [open, computeCoords, scheduleRecalc]);
+
+  return (
+    <>
+      <div className={`dropdown ${open ? 'show' : ''} ${className}`} style={{ position: 'relative' }}>
+        <button
+          type="button"
+          ref={toggleRef}
+          onClick={toggleDropdown}
+          aria-haspopup="menu"
+          aria-expanded={open}
+          className="bg-transparent border-0 p-0 m-0"
+          style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') closeDropdown();
+            if (e.key === 'ArrowDown' && !open) openDropdown();
+          }}
+        >
+          {toggleContent}
+        </button>
+      </div>
+
+      {mounted && open && createPortal(
+        <div
+          ref={dropdownRef}
+          role="menu"
+          // NOTE: thêm 'show' và display:block để không phụ thuộc CSS của Bootstrap
+          className={`dropdown-menu dropdown-menu-icon-list show ${classNameChild || ''}`}
+          style={{
+            position: 'fixed',
+            top: coords.top,
+            left: coords.left,
+            display: 'block',          // <--- QUAN TRỌNG
+            zIndex: 1000,
+            maxHeight: '80vh',
+            minWidth: coords.minWidth,
+            transform: visible ? 'translateY(0) scale(1)' : 'translateY(-4px) scale(0.98)',
+            opacity: visible ? 1 : 0,
+            transition: 'transform 120ms ease, opacity 120ms ease',
+            willChange: 'transform, opacity',
+          }}
+        >
+          {dropdownContent}
+        </div>,
+        document.body
+      )}
+    </>
+  );
 };
 
 export default DropdownComponent;

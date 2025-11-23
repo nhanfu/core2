@@ -1,43 +1,44 @@
 body {
-    font-family: 'Montserrat';
-    font-size: 10pt;
+  font-family: "Montserrat";
+  font-size: 10pt;
 }
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 table {
-    font-size: unset;
+  font-size: unset;
 }
 
-table>tr>td {
-    vertical-align: top;
+table > tr > td {
+  vertical-align: top;
 }
 
-td>span,
-td>p,
-td>div,
-td>strong {
-    padding-left: 2px;
-    vertical-align: top;
-    white-space: pre-wrap;
+td > span,
+td > p,
+td > div,
+td > strong {
+  padding-left: 2px;
+  vertical-align: top;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .logo {
-    min-width: 110px;
-    min-height: 56px;
+  min-width: 110px;
+  min-height: 56px;
 }
 
-.dashed tbody td {
-    border-bottom: 0.01px dashed rgb(126, 140, 141) !important;
+.dashed tbody tr:not(:last-child) td {
+  border-bottom: 0.01px dashed rgb(126, 140, 141) !important;
 }
 
 .a4 {
-    display: flex;
-    justify-content: center;
-    border: 1px solid red;
-    width: 210mm;
+  display: flex;
+  justify-content: center;
+  border: 1px solid red;
+  width: 206mm;
 }

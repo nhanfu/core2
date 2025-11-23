@@ -147,6 +147,7 @@ html {
   list-style-type: none;
   height: 100%;
   width: 200px;
+  top: 0;
   position: fixed;
   background-color: #021517;
   transition: width 0.4s, margin-left 0.4s;
@@ -183,7 +184,7 @@ th:focus .th-options {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin: 20px 27px;
+  margin: 6px 40px;
 }
 
 .menu-category {
@@ -393,7 +394,6 @@ th:focus .th-options {
 .header-navbar,
 footer {
   padding-left: 225px;
-  position: absolute;
 }
 
 .settings-content,
@@ -583,10 +583,9 @@ body.collapse-sidebar footer {
 .main-content {
   padding-left: 220px;
   padding-right: 20px;
-  padding-top: 76px;
+  padding-top: 16px;
   transition: padding-left 0.4s;
   width: 100%;
-  min-height: calc(100vh - 60px);
 }
 
 .main-content > .title {
@@ -994,7 +993,7 @@ table.dataTable {
 }
 
 .dropdown-menu.md {
-  width: 450px;
+  max-width: 450px;
 }
 
 .rounded-top-left {
@@ -1379,7 +1378,7 @@ div {
 .tab-item {
   position: relative;
   width: 100%;
-  min-height: calc(100vh - calc(2.5rem));
+  min-height: calc(100vh - 6.5rem);
   align-items: flex-start;
 }
 
@@ -1387,10 +1386,8 @@ div {
   max-height: calc(100vh - 5.4rem) !important;
   overflow-y: auto;
   overflow-x: hidden;
-}
-
-.popup-body {
-  max-height: calc(100vh - 14rem) !important;
+  overflow-anchor: none;
+  scroll-behavior: auto;
 }
 
 .tab-content {
@@ -1511,6 +1508,8 @@ div {
   overflow-y: auto;
   overflow-x: hidden;
   padding-bottom: 33rem;
+  overflow-anchor: none;
+  scroll-behavior: auto;
 }
 
 .popup-content {
@@ -1522,7 +1521,7 @@ div {
   max-height: calc(100vh - 6.4rem);
   position: relative;
   margin-top: 0.2rem;
-  padding-bottom: 10rem;
+  padding-bottom: 11rem;
 }
 
 .popup-title {
@@ -1664,6 +1663,8 @@ div {
   overflow-y: hidden;
   overflow-x: auto;
   border-bottom: 0;
+  overflow-anchor: none;
+  scroll-behavior: auto;
 }
 
 .btn,
@@ -1825,7 +1826,7 @@ div {
 }
 
 button.btn {
-  padding: 5px 9px;
+  padding: 3px 9px;
 }
 
 .mr-1 {
@@ -1833,8 +1834,8 @@ button.btn {
 }
 
 .detail-button {
-  min-width: 80px;
-  margin-left: 10px;
+  min-width: 73px;
+  margin-left: 6px;
 }
 
 .resizer {
@@ -2145,6 +2146,8 @@ button.btn {
   overflow-x: hidden;
   overflow-y: auto;
   overflow-y: overlay;
+  overflow-anchor: none;
+  scroll-behavior: auto;
 }
 
 .grid-wrapper,
@@ -2158,6 +2161,8 @@ button.btn {
 .result-wrapper > .grid-wrapper .table-wrapper:hover {
   overflow-y: auto;
   overflow-y: overlay;
+  overflow-anchor: none;
+  scroll-behavior: auto;
 }
 
 .bolder {
@@ -2212,7 +2217,7 @@ button.btn {
 }
 
 .grid-wrapper .button-toolbar button {
-  height: 26px;
+  height: 24px;
   padding: 2px 14px;
   border-radius: 30px 0 0 30px;
   background-color: var(--primary-btn-background-color);
@@ -2223,7 +2228,7 @@ button.btn {
   justify-content: center;
   gap: 0.4rem;
   box-shadow: none;
-  margin-top: 4px;
+  margin-top: 10px;
 }
 
 .grid-wrapper .grid-toolbar .fa {
@@ -2231,7 +2236,6 @@ button.btn {
 }
 
 .grid-wrapper .grid-toolbar.search > * {
-  max-width: 150px;
   display: flex;
   width: 100%;
   align-items: center;
@@ -2568,6 +2572,10 @@ thead .sticky-column {
   box-sizing: content-box;
   border: 1px solid #166ee1 !important;
   border-radius: 2px;
+}
+
+.grid-wrapper .table-wrapper tbody td.cell-copy {
+  border: 1px dashed #16a34a !important;
 }
 
 .grid-wrapper .table-wrapper tbody td.cell-matrix {
@@ -3631,11 +3639,12 @@ table.table {
 }
 
 .gallery .image {
-  max-height: 72px;
+  max-height: 41px;
 }
 
 .dropdown-menu .menu-content {
   max-height: calc(100vh - 15rem);
+  min-width: 300px;
 }
 
 .dropdown-menu .menu-content .header {
@@ -3962,7 +3971,8 @@ table.table {
   max-height: 150px;
   /* Chiều cao tối đa của dropdown */
   overflow-y: auto;
-  /* Hiển thị thanh cuộn nếu nội dung vượt quá */
+  overflow-anchor: none;
+  scroll-behavior: auto;
 }
 
 .choices__list--dropdown .choices__item {
@@ -3971,7 +3981,7 @@ table.table {
 }
 
 .popup-content.form-dialog {
-  min-height: calc(100vh - 5.4rem);
+  min-height: calc(100vh - 9.4rem);
   width: 90%;
 }
 
@@ -3995,9 +4005,10 @@ table.table {
   display: flex;
   width: 100%;
   align-items: center;
+  white-space: nowrap;
 }
 
-.ss-content.ss-open-below {
+.ss-content.ss-open {
   min-width: 150px !important;
 }
 
@@ -4007,6 +4018,7 @@ table.table {
 
 .ss-main .ss-values .ss-single {
   width: 100%;
+  max-width: 100%;
   margin-left: 0;
 }
 
@@ -4066,6 +4078,8 @@ table.table {
   overflow-y: auto;
   overflow-x: hidden;
   padding-bottom: 20rem;
+  overflow-anchor: none;
+  scroll-behavior: auto;
 }
 
 /* Container danh sách cuộc trò chuyện */
@@ -4077,7 +4091,7 @@ table.table {
   overflow: hidden;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   display: flex;
-  height: calc(110vh - 13rem);
+  height: calc(100vh - 7rem);
 }
 
 .discussions {
@@ -4145,6 +4159,17 @@ table.table {
   max-width: 80%;
 }
 
+.name2 a {
+  white-space: nowrap;
+}
+
+.description {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 80%;
+}
+
 .message {
   font-size: 12px;
   color: #666;
@@ -4161,11 +4186,70 @@ table.table {
   min-width: 60px;
 }
 
+.card-config {
+  width: 100%;
+}
+
+.history-view {
+  width: 80%;
+}
+
 /* Responsive: Giảm kích thước khi trên mobile */
 @media (max-width: 768px) {
   .chat-container {
     max-width: 100%;
     border-radius: 0;
+  }
+
+  .main-content {
+    padding: 0 !important;
+  }
+
+  .header-navbar {
+    padding: 0 !important;
+  }
+
+  .header-wrapper {
+    margin-top: 0 !important;
+    border-radius: 0 !important;
+  }
+
+  .popup-content {
+    margin-top: 0;
+    border-radius: 0;
+    padding: 0;
+    width: 100% !important;
+    box-shadow: unset !important;
+  }
+
+  .ui-layout input:not([type="checkbox"]):not([type="radio"]) {
+    height: 35px;
+    border: 1px solid #ced4da;
+  }
+
+  .ui-layout textarea {
+    border: 1px solid #ced4da;
+  }
+
+  .grid-toolbar input {
+    height: 26px !important;
+  }
+
+  .datetime-picker {
+    height: 35px;
+  }
+
+  .datetime-picker .btn-group button {
+    height: 34px;
+  }
+
+  .popup-footer {
+    border-radius: 0;
+  }
+
+  .popup-title {
+    padding: 3px 15px 3px 8px;
+    border-top: 1px solid #ced4da;
   }
 
   .discussion {
@@ -4176,9 +4260,13 @@ table.table {
     width: 20%;
   }
 
+  .chat-icon2 {
+    display: none !important;
+  }
+
   .photo {
-    width: 40px;
-    height: 40px;
+    width: 28px !important;
+    height: 28px !important;
     font-size: 16px;
   }
 
@@ -4187,14 +4275,75 @@ table.table {
     max-width: 180px;
   }
 
+  .time i {
+    font-size: 10px;
+  }
+
   .message {
     font-size: 10px;
-    max-width: 180px;
   }
 
   .timer {
     font-size: 10px;
     min-width: 50px;
+  }
+
+  .name2 {
+    display: block !important;
+    font-size: 11px !important;
+  }
+
+  .name2 .photo {
+    width: 25px;
+    height: 25px;
+  }
+
+  .discussion .photo {
+    display: none;
+  }
+
+  .name2 .fa-user-plus {
+    font-size: 12px !important;
+  }
+
+  .card-config {
+    width: unset;
+  }
+
+  .confirm-dialog {
+    width: 100%;
+  }
+
+  .history-view {
+    width: 100%;
+  }
+
+  .popup-content {
+    max-height: calc(100vh - 9.4rem);
+  }
+
+  .popup-content .scroll-content {
+    max-height: calc(100vh - 12.5rem) !important;
+  }
+
+  .chat-container {
+    height: calc(100vh - 11rem);
+  }
+
+  .grid-wrapper.sticky {
+    max-height: calc(100vh - 17rem);
+  }
+
+  .button-toolbar .caption {
+    display: none;
+  }
+
+  .button-toolbar .btn {
+    min-width: 41px !important;
+  }
+
+  .ss-main {
+    height: 35px;
   }
 }
 
@@ -4233,6 +4382,8 @@ table.table {
   padding: 15px;
   overflow-y: auto;
   background: #f8f8f8;
+  overflow-anchor: none;
+  scroll-behavior: auto;
 }
 
 /* Tin nhắn của người khác */
@@ -4271,6 +4422,7 @@ table.table {
   word-wrap: break-word;
   margin-bottom: 0;
   white-space: break-spaces;
+  visibility: unset;
 }
 .message .text2 {
   border-radius: 10px;
@@ -4337,6 +4489,8 @@ table.table {
   resize: none;
   overflow-y: auto;
   font-family: inherit;
+  overflow-anchor: none;
+  scroll-behavior: auto;
 }
 
 .footer-chat .send {
@@ -4720,6 +4874,8 @@ textarea[readonly] {
   background-color: #f9f9f9;
   overflow-y: auto; /* Cho phép cuộn nội dung */
   border-left: 1px solid #ccc; /* Viền ngăn cách với sidebar */
+  overflow-anchor: none;
+  scroll-behavior: auto;
 }
 
 .devtools-care-li {
@@ -4901,6 +5057,8 @@ hr {
   gap: 10px;
   min-height: 0;
   padding-right: 6px;
+  overflow-anchor: none;
+  scroll-behavior: auto;
 }
 
 .labels2 {
@@ -5078,4 +5236,89 @@ hr {
   padding: 0;
   padding-left: 7px;
   padding-right: 7px;
+}
+
+.history-view .cell-text {
+  white-space: pre-wrap !important;
+}
+
+.history-view .user-avatar {
+  white-space: nowrap !important;
+}
+
+.photo.spacer {
+  display: inline-block;
+  vertical-align: top;
+  background: transparent !important;
+}
+
+.wrapper-cell-mobile {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.wrapper-cell-mobile .cell-label {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+
+.wrapper-cell-mobile .cell-value {
+  flex: 2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wrapper-cell-mobile .cell-value {
+  flex: 2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wrapper-cell-mobile:last-child {
+  border-bottom: none;
+}
+
+.list-wrapper {
+  overflow: scroll;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.list-body li {
+  padding: 1rem 1rem;
+  border-bottom: 1px solid #ced4da;
+}
+
+.list-body .user-avatar {
+  display: flex;
+  gap: 1rem;
+}
+
+.wrapper-cell-mobile .button-copy {
+  display: none;
+}
+
+.result-wrapper .list-body li {
+  padding: 0.2rem;
+}
+
+.list-empty li {
+  padding: 1rem 1rem;
+  border-bottom: 1px solid #eee;
+  background-color: #efefef;
+}
+
+.wrapper-cell-mobile .cell-value .cell-text {
+  display: flex;
+  width: auto;
 }

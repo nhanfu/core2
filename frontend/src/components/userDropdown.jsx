@@ -12,14 +12,14 @@ const UserDropdown = ({ editForm }) => {
     Client.Token = null;
     localStorage.removeItem("UserInfo");
     ChromeTabs.tabs.forEach((x) => x.content.Dispose());
-    LoginBL.Instance.Render();
+    window.location.reload();
   };
 
   const toggleContent = (
     <>
       <div className="label">
         <span></span>
-        <div>{Client.Token.FullName}</div>
+        <div style={{ whiteSpace: "nowrap" }}>{Client.Token.UserName}</div>
       </div>
       <img
         className="img-user"

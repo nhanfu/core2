@@ -29,6 +29,11 @@ export class RichTextBox extends EditableComponent {
         this.ParentElement.appendChild(this.Element);
     }
 
+    SetOldTextAndVal() {
+        this.OriginalText = new DOMParser().parseFromString(this.Entity[this.Meta.FieldName], 'text/html').body.textContent;
+        this.OldValue = this.OriginalText;
+    }
+
     BindingWebComponent() {
         Html.Take(this.ParentElement).TextArea.Id("RE_" + Uuid7.Guid());
         this.Element = Html.Context;
@@ -42,9 +47,9 @@ export class RichTextBox extends EditableComponent {
      */
     quill;
     async initCkEditor() {
-        this.OldValue = this.Entity[this.Name];
         var self = this;
         this.SetDefaultVal();
+        this.SetOldTextAndVal();
         this.quill = (await tinymce.init({
             license_key: 'gpl',
             selector: '#' + this.Element.id,
@@ -54,10 +59,7 @@ export class RichTextBox extends EditableComponent {
                 'insertdatetime', 'media', 'table', 'wordcount'
             ],
             content_css: ['https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap', '/custom.css?v=dhjsjdsjhdjshjdhsjdhjshjhj'],
-            toolbar: 'undo redo | blocks | ' +
-                'bold italic backcolor | alignleft aligncenter ' +
-                'alignright alignjustify | bullist numlist outdent indent | ' +
-                'removeformat | help',
+            toolbar: '',
             font_size_formats: '8pt 9pt 10pt 11pt 12pt 13pt 14pt 15pt 16pt 17pt 18pt 24pt 36pt 48pt',
             contextmenu: "margin-page | link image inserttable | table add-background-img gen-table-excel | tablename groupby | classProp titleProp stylesProp | Viewpdf Viewhistory",
             images_upload_handler: self.ImageHandler.bind(self),
@@ -70,7 +72,7 @@ export class RichTextBox extends EditableComponent {
                     editor.setContent(self.Entity[self.Meta.FieldName] || '');
                 });
                 editor.on('Change', function (e) {
-                    self.Entity[self.Meta.FieldName] = editor.getBody().innerHTML;
+                    self.Entity[self.Meta.FieldName] = editor.getBody().innerHTML.replace(/<br[^>]*data-mce-bogus="1"[^>]*>/gi, "");
                     self.Dirty = true;
                 });
                 if (self.Token.RoleNames.some(x => x == "BOD" || x == "ADMIN")) {

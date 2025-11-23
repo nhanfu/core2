@@ -1,9 +1,11 @@
 FROM node:18-alpine
 
+RUN npm install -g pnpm
+
 WORKDIR /app
 
 # Copy package files first to leverage Docker cache
-COPY package.json package-lock.json* ./
+COPY package.json pnpm-lock.yaml* ./
 RUN pnpm install
 
 # Copy source code

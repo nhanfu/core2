@@ -53,6 +53,12 @@ export class Chat extends EditableComponent {
         Html.Take(this.ParentElement).Div.ClassName("chat-container");
         this.Element = Html.Context;
         this.LoadData();
+        if (this.Entity.Id) {
+            window.setTimeout(() => {
+                var evt = "UpdateViewEntity" + this.Entity.Id.replaceAll("-", "");
+                EditForm.NotificationClient.AddListener(evt, this.HandleMessage.bind(this));
+            }, 1000);
+        }
     }
 
     HandleMessage(data) {
@@ -75,11 +81,30 @@ export class Chat extends EditableComponent {
                 existingElement.innerHTML = message.Message;
             }
         } else {
+            const lastMessage = this.ChatData.length ? this.ChatData[this.ChatData.length - 1] : null;
+            if (lastMessage && lastMessage.FromId === message.FromId) {
+                const prevEl = document.querySelector(`[data-id="${lastMessage.Id}"]`);
+                if (prevEl) {
+                    const photoEl = prevEl.querySelector(".photo");
+                    if (photoEl) {
+                        photoEl.classList.add("spacer");
+                        photoEl.innerHTML = "";
+                    }
+                    const timeEl = prevEl.nextElementSibling;
+                    if (timeEl && timeEl.classList.contains("time")) timeEl.remove();
+                    if (timeEl && timeEl.classList.contains("response-time")) timeEl.remove();
+
+                    prevEl.classList.add("message-grouped");
+                }
+            }
+
             this.ChatData.push(message);
-            this.AddMessageToDOM(message);
+            this.AddMessageToDOM(message, true);
         }
         window.setTimeout(() => {
-            this.HtmlContentChat.parentElement.scrollTop = this.HtmlContentChat.clientHeight;
+            if (this.HtmlContentChat && this.HtmlContentChat.parentElement) {
+                this.HtmlContentChat.parentElement.scrollTop = this.HtmlContentChat.clientHeight;
+            }
         }, 100);
         this.HtmlIputChat.value = "";
         this.LastUserId = message.FromId;
@@ -91,36 +116,50 @@ export class Chat extends EditableComponent {
         }, 500);
     }
 
-    AddMessageToDOM(item) {
+    /**
+     * Add message vào DOM.
+     * isLastInGroup: nếu true thì render avatar + time/name, ngược lại render spacer thay avatar (để giữ căn lề) và ẩn time.
+     */
+    AddMessageToDOM(item, isLastInGroup = true) {
         Html.Take(this.HtmlContentChat);
         const isImage = Utils.IsImage(item.Message);
+
         if (this.Token.UserId == item.FromId) {
             Html.Instance.Div.DataAttr("id", item.Id).ClassName("message text-only").Div.ClassName("response")
                 .P.ClassName("text2");
             if (isImage) {
-                Html.Instance.Event(EventType.Click, () => this.ShowPreview(item))
+                Html.Instance.Event(EventType.Click, () => this.ShowPreview(item));
             }
             Html.Instance.InnerHTML(item.Message).End.Render();
             if (item.Message != "Tin nhắn đã được thu hồi") {
                 Html.Instance.I.ClassName("icon fa fa-trash clickable").Event(EventType.Click, async () => await this.DeleteMessage(item)).End.Render();
             }
             Html.Instance.End.End.Render();
+
+            if (isLastInGroup) {
+                Html.Instance.P.ClassName("response-time time").I.Text(this.dayjs(item.InsertedDate).format("HH:mm DD/MM/YYYY")).End.End.Render();
+            }
         }
         else {
-            Html.Instance.Div.DataAttr("id", item.Id).ClassName("message")
-                .Div.ClassName("photo").Style(`background-image: url(${item.Avatar});`)
-                .Div.ClassName("online").End.End.P.ClassName("text");
+            Html.Instance.Div.DataAttr("id", item.Id).ClassName("message");
+
+            if (isLastInGroup) {
+                Html.Instance.Div.ClassName("photo").Style(`background-image: url('${item.Avatar}');`)
+                    .Div.ClassName("online").End.End;
+            } else {
+                Html.Instance.Div.ClassName("photo spacer").End;
+            }
+
+            Html.Instance.P.ClassName("text");
             Html.Instance.InnerHTML(item.Message);
             if (isImage) {
-                Html.Instance.Event(EventType.Click, () => this.ShowPreview(item))
+                Html.Instance.Event(EventType.Click, () => this.ShowPreview(item));
             }
             Html.Instance.End.End.Render();
-        }
-        if (this.Token.UserId == item.FromId) {
-            Html.Instance.P.ClassName("response-time time").Text(item.Time).End.Render();
-        }
-        else {
-            Html.Instance.P.ClassName("time").Text(item.Time).End.Render();
+
+            if (isLastInGroup) {
+                Html.Instance.P.ClassName("time").I.Text(item.FromName + ' - ' + this.dayjs(item.InsertedDate).format("HH:mm DD/MM/YYYY")).End.End.Render();
+            }
         }
     }
 
@@ -131,6 +170,9 @@ export class Chat extends EditableComponent {
             this.Users = data[2];
             this.RenderDiscussions();
             this.RenderChat();
+            if (!this.Entity || !this.EntityId || this.EntityId.startsWith("-")) {
+                this.HandlerClickBot();
+            }
         })
     }
 
@@ -157,11 +199,33 @@ export class Chat extends EditableComponent {
     BodyDiscussions;
 
     RenderDiscussions() {
-        Html.Take(this.Element).Section.ClassName("discussions")
+        Html.Take(this.Element).Section.ClassName("discussions").Div.ClassName("header-discussions").Div.TabIndex(-1).Event(EventType.Click, (evt) => this.HandlerClickBot(evt)).ClassName("discussion " + (("-1" == this.Entity.Id) ? "message-active" : "") + "")
+            .Div.ClassName("photo").Style("background-image: url('https://forwardx.vn/wp-content/uploads/2025/03/cropped-Icon-Logo-180x180.png');").End
+            .Div.ClassName("desc-contact")
+            .Span.ClassName("name").IText("Forwardx").End
+            .Span.ClassName("description").Text("Bot Assistant").End
+            .P.ClassName("message").InnerHTML('....').End
+            .P.ClassName("message").InnerHTML('').End.End
+            .End.Render();
         Html.Instance.Div.Render();
         this.BodyDiscussions = Html.Context;
         this.RenderBodyDiscussions();
         Html.Instance.EndOf(".discussions");
+    }
+
+    HandlerClickBot() {
+        document.querySelector(".footer-chat").classList.add("d-none");
+        this.OptionsElement.classList.add("d-none");
+        Html.Take(this.HtmlContentChat).Clear();
+        Html.Take(this.TitleText).Clear().Text("Forwardx");
+        Html.Take(this.FeatureText).Clear().IText("Bot Assistant");
+        var rsSaleFunction = localStorage.getItem("SalesFunction2") ? JSON.parse(localStorage.getItem("SalesFunction2")) : [];
+        const aiEntry = rsSaleFunction.find((x) => x.Code == "AI_ID");
+        const chatbotId = aiEntry && aiEntry.Value;
+        const el = document.createElement("zapier-interfaces-chatbot-embed");
+        el.setAttribute("chatbot-id", chatbotId.toString());
+        el.style.height = "calc(100vh - 14rem)";
+        this.HtmlContentChat.appendChild(el);
     }
 
     LastFromId;
@@ -175,11 +239,19 @@ export class Chat extends EditableComponent {
         Html.Take(this.HtmlContentChat).Clear();
         this.LastFromId = this.ChatData.find(x => x.FromId != this.Token.UserId);
         this.LastUserId = this.ChatData.find(x => x.FromId != this.Token.UserId);
-        this.ChatData.forEach(item => {
-            this.AddMessageToDOM(item);
-        });
+
+        // render theo nhóm: nếu message tiếp theo cùng FromId -> current không phải cuối nhóm
+        for (let i = 0; i < (this.ChatData || []).length; i++) {
+            const item = this.ChatData[i];
+            const next = (i + 1 < this.ChatData.length) ? this.ChatData[i + 1] : null;
+            const isLastInGroup = !(next && next.FromId === item.FromId);
+            this.AddMessageToDOM(item, isLastInGroup);
+        }
+
         window.setTimeout(() => {
-            this.HtmlContentChat.parentElement.scrollTop = this.HtmlContentChat.clientHeight;
+            if (this.HtmlContentChat && this.HtmlContentChat.parentElement) {
+                this.HtmlContentChat.parentElement.scrollTop = this.HtmlContentChat.clientHeight;
+            }
         }, 100);
     }
 
@@ -202,6 +274,10 @@ export class Chat extends EditableComponent {
     /**
      * @type {HTMLElement}
      */
+    OptionsElement;
+    /**
+     * @type {HTMLElement}
+     */
     DarkOverlay;
     /**
     * @type {Picker}
@@ -216,10 +292,12 @@ export class Chat extends EditableComponent {
         this.FeatureText = Html.Context;
         Html.Instance.End.Span.Text(" : ").End.A.Style("color:#fff").ClassName("mr-1").Event(EventType.Click, this.OpenPopup.bind(this)).Text(this.Entity.FormatChat ? this.Entity.FormatChat.replaceAll("<br>", "") : "");
         this.TitleText = Html.Context;
-        Html.Instance.End.Span.ClassName("d-flex").Render();
+        Html.End.Div.ClassName("d-flex align-items-center");
+        this.OptionsElement = Html.Context;
+        Html.Span.ClassName("d-flex").Render();
         this.UserElement = Html.Context;
         Html.Instance.End.I.Event(EventType.Click, this.AddUser.bind(this)).ClassName("fas fa-user-plus").End.Render();
-        Html.Instance.End.End.Div.ClassName("messages-chat").Div.Render();
+        Html.Instance.End.End.End.Div.ClassName("messages-chat").Div.Render();
         this.HtmlContentChat = Html.Context;
         this.RenderBodyChat();
         Html.Instance.End.End.Div.ClassName("footer-chat")
@@ -246,7 +324,7 @@ export class Chat extends EditableComponent {
     RenderUsers() {
         Html.Take(this.UserElement).Clear();
         Html.Take(this.UserElement).ForEach(this.Users || [], (item) => {
-            Html.Instance.Div.ClassName("photo").Style("background-image: url(" + item.Avatar + ");").End.Render();
+            Html.Instance.Div.ClassName("photo").Style("background-image: url('" + item.Avatar + "');").End.Render();
         })
     }
 
@@ -396,14 +474,28 @@ export class Chat extends EditableComponent {
         });
     }
 
+    RemoveGuid(path) {
+        let fileName = path.replace(/^.*[\\\/]/, '');
+        let extension = '';
+        let nameWithoutExt = fileName;
+        const lastDotIndex = fileName.lastIndexOf('.');
+        if (lastDotIndex !== -1) {
+            extension = fileName.substring(lastDotIndex + 1);
+            nameWithoutExt = fileName.substring(0, lastDotIndex);
+        }
+        const uuidRegex = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/g;
+        const cleanedName = nameWithoutExt.replace(uuidRegex, '').replace(/\s+/g, ' ').trim();
+        return `${cleanedName}.${extension}`;
+    }
+
     async UploadAllFiles(filesSelected) {
         Spinner.AppendTo();
         const files = Array.from(filesSelected).map(this.UploadFile.bind(this));
         let allPath = await Promise.all(files);
         var thumbText = allPath[0];
         const isImage = Utils.IsImage(thumbText);
-        const fileName = Utils.GetExtension(thumbText);
-        var format = `<a href="${thumbText}" target="_blank">${fileName}</a>`;
+        const fileName = this.RemoveGuid(thumbText);
+        var format = `<a href="${thumbText}" target="_blank" style="color: red; font-weight: 700;"><i class="fal fa-file-alt mr-1"></i>${fileName}</a>`;
         if (isImage) {
             format = `<img src="${thumbText}">`;
         }
@@ -504,11 +596,11 @@ export class Chat extends EditableComponent {
         Html.Take(this.BodyDiscussions).Clear();
         this.Conversation.forEach(item => {
             Html.Instance.Div.TabIndex(-1).Event(EventType.Click, (evt) => this.HandlerClick(evt, item)).ClassName("discussion " + ((item.Id == this.Entity.Id) ? "message-active" : "") + ((!item.Read) ? "text-unread" : ""))
-                .Div.ClassName("photo").Style("background-image: url(" + item.Icon + ");").End
+                .Div.ClassName("photo").Style("background-image: url('" + item.Icon + "');").End
                 .Div.ClassName("desc-contact")
                 .Span.ClassName("name").IText(item.Label).End
                 .Span.ClassName("description").Text(item.FormatChat ? item.FormatChat.replaceAll("<br>", "") : "").End
-                .P.ClassName("message").InnerHTML(item.Message).End
+                .P.ClassName("message").InnerHTML(item.Message || '').End
                 .P.ClassName("message").InnerHTML(item.Time).End.End
                 .End.Render();
         });
@@ -519,6 +611,8 @@ export class Chat extends EditableComponent {
     * @param {{}} item
     */
     HandlerClick(e, item) {
+        document.querySelector(".footer-chat").classList.remove("d-none");
+        this.OptionsElement.classList.remove("d-none");
         if (item.ConversationReadId) {
             var patch = new PatchVM();
             patch.Table = "ConversationRead";
@@ -536,6 +630,8 @@ export class Chat extends EditableComponent {
                 this.Entity = item;
                 this.EditForm.Entity = item;
                 this.UpdateView(true);
+                var evt = "UpdateViewEntity" + this.Entity.Id.replaceAll("-", "");
+                EditForm.NotificationClient.AddListener(evt, this.HandleMessage.bind(this));
                 await this.updateBadge();
             });
         }
@@ -545,6 +641,8 @@ export class Chat extends EditableComponent {
             this.Entity = item;
             this.EditForm.Entity = item;
             this.UpdateView(true);
+            var evt = "UpdateViewEntity" + this.Entity.Id.replaceAll("-", "");
+            EditForm.NotificationClient.AddListener(evt, this.HandleMessage.bind(this));
             this.updateBadge();
         }
     }

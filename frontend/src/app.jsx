@@ -12,7 +12,7 @@ import {
 } from "../lib/index.js";
 import { Spinner } from "../lib/spinner.js";
 import { LoginBL } from "./forms/login.jsx";
-import "./slimselect.css";
+import "./slimselect3.css";
 import "./index.css";
 import AppComponent from "./AppComponent.jsx";
 import Decimal from "decimal.js";

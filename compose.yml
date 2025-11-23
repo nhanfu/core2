@@ -1,5 +1,32 @@
 services:
 
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:latest
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_PID=Developer
+      - SA_PASSWORD=YourStrongPassword123!
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo > /dev/tcp/localhost/1433"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  db-init:
+    image: mcr.microsoft.com/mssql-tools
+    volumes:
+      - ./CoreAPI/wwwroot/upload/crm/db:/scripts
+    environment:
+      - SA_PASSWORD=YourStrongPassword123!
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    command: bash /scripts/init.sh
+
   coreapi:
     build:
       context: ./CoreAPI
@@ -17,16 +44,23 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
 
   frontend:
-    image: node:20-alpine  # Use an appropriate Node.js image
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     volumes:
       - ./frontend:/app
+      - /app/node_modules
     ports:
       - "5173:5173"
     environment:
       - NODE_ENV=development
-    working_dir: /app
-    command: sh -c "pnpm install && pnpm run dev -- --host"  # Vite dev server with host flag
     depends_on:
       - coreapi
+
+volumes:
+  sqlserver_data:

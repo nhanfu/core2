@@ -17,7 +17,6 @@ export class QRCode extends EditableComponent {
             throw new Error("UI is required");
         }
         this.ParentElement = ele;
-        this.Meta = meta;
         this.DefaultValue = '';
         this.Value = '';
     }

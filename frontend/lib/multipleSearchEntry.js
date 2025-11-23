@@ -36,7 +36,7 @@ export class MultipleSearchEntry extends SearchEntry {
             this._listValues = [];
             return;
         }
-        this._listValues = source.split(this.Meta.GroupFormat || ',').filter(x => x.trim().length > 0);
+        this._listValues = source.toString().split(this.Meta.GroupFormat || ',').filter(x => x.trim().length > 0);
     }
 
     _listValues = [];
@@ -80,9 +80,12 @@ export class MultipleSearchEntry extends SearchEntry {
         }
         else {
             this.Matched = this.Entity[this.DisplayField] || null;
-            if (this._listValues.length > 0 && this.MatchedItems.length < this._listValues.length && (!this.Parent.IsListViewItem || this.Meta.IsMultiple)) {
+            if (this._listValues.length > 0 && this.MatchedItems.filter(x => this._listValues.includes(x.Id)).length < this._listValues.length && (!this.Parent.IsListViewItem || this.Meta.IsMultiple)) {
                 Client.Instance.GetByIdAsync(this.Meta.RefName, this._listValues).then(data => {
-                    this.MatchedItems = data.data ? data.data : null;
+                    this.MatchedItems = data.data ? data.data : [];
+                    if (this.MatchedItems.length != this._listValues.length) {
+                        this.ListValues = this.MatchedItems.map(x => x[this.IdField].toString());
+                    }
                     this.SetMatchedValue();
                     this.Entity[this.Name + "Text"] = this.MatchedItems.length > 0 ? this.MatchedItems.map(item => this.GetMatchedText(item)).join(this.Meta.GroupFormat || ',') : this.Entity[this.Name + "Text"];
                 })

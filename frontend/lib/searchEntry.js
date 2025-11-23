@@ -227,7 +227,7 @@ export class SearchEntry extends EditableComponent {
                     this.Entity.ExchangeRateVND = null;
                     this.Entity.ExchangeRateUSD = null;
                     this.Entity.CurrencyCode = null;
-                    if (this.Parent.IsListViewItem) {
+                    if (this.Parent.IsListViewItem && this.Dirty) {
                         this.Parent.UpdateView(false, false, "ExchangeRateVND", "ExchangeRateUSD");
                     }
                 }
@@ -278,6 +278,7 @@ export class SearchEntry extends EditableComponent {
         newMeta.DisabledExp = null;
         newMeta.ShowExp = null;
         this._gv = new GridView(newMeta);
+        newMeta.VirtualScroll = true;
         this._gv.Meta = newMeta;
         this.RenderRootResult();
         this._gv.Meta = newMeta;
@@ -443,7 +444,7 @@ export class SearchEntry extends EditableComponent {
                             this.Entity.ExchangeRateVND = EditableComponent.ExchangeRateVND[code];
                             this.Entity.ExchangeRateUSD = EditableComponent.ExchangeRateUSD[code];
                         }
-                        if (this.Parent.IsListViewItem) {
+                        if (this.Parent.IsListViewItem && this.Dirty) {
                             this.Parent.UpdateView(false, false, "ExchangeRateVND", "ExchangeRateUSD");
                         }
                     }
@@ -539,9 +540,9 @@ export class SearchEntry extends EditableComponent {
             this.UserInput?.Invoke({ NewData: this._value, OldData: oldValue, EvType: EventType.Change });
             this.DiposeGvWrapper();
         });
-        if (this.Parent.IsListViewItem) {
+        if (this.Parent.IsListViewItem && this.Dirty) {
             window.setTimeout(() => {
-                if (this.IsCurrency) {
+                if (this.IsCurrency && this.Dirty) {
                     this.Parent.UpdateView(false, false, "ExchangeRateVND", "ExchangeRateUSD");
                 }
                 this._input.focus();
@@ -684,7 +685,7 @@ export class SearchEntry extends EditableComponent {
         if (Utils.isNullOrWhiteSpace(this.Meta.DefaultVal)) {
             return;
         }
-        var data = Utils.IsFunction(this.Meta.DefaultVal, true, this);
+        var data = this.Meta.DefaultVal;
         if (!data) {
             data = this.Meta.DefaultVal;
         }

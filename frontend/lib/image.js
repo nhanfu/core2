@@ -77,7 +77,7 @@ export class Image extends EditableComponent {
         const gallery = document.createElement('div');
         gallery.className = "gallery";
         this._gallerys.appendChild(gallery);
-        const thumbText = this.RemoveGuid(path);
+        const thumbText = this.RemoveGuid(path).toLowerCase();
         const isImage = Utils.IsImage(thumbText);
         var linkF = (path.includes("http") ? path : Client.api + "/" + Utils.DecodeSpecialChar(path));
         if (isImage) {
@@ -183,7 +183,7 @@ export class Image extends EditableComponent {
     }
 
     PreviewPDF(link) {
-        this.openPopupIFrame(link);
+        window.open(link, "_blank");
     }
 
     PreviewImage(link) {

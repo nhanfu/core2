@@ -18,6 +18,7 @@ export class ActionButton extends EditableComponent {
         /** @type {Component} */
         this.Meta = ui;
         this.ButtonEle = ele;
+        this.IsAction = true;
         this._textEle = null;
     }
 
@@ -38,6 +39,7 @@ export class ActionButton extends EditableComponent {
             const childCom = ComponentFactory.GetComponent(newChid, this.EditForm);
             if (childCom === null) return;
             childCom.ParentElement = this.Element;
+            childCom.IsAction = true;
             this.AddChild(childCom);
         }
     }

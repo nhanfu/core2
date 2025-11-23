@@ -168,7 +168,6 @@ export class TabEditor extends EditForm {
         if (!keyCode) {
             return false;
         }
-        // @ts-ignore
         if (keyCode === KeyCodeEnum.Escape && !shiftKey && !ctrlKey && !altKey) {
             this.DirtyCheckAndCancel();
             return true;
@@ -203,7 +202,20 @@ export class TabEditor extends EditForm {
         if (!this.Popup && this._li) {
             this.DisposeTab();
         }
+        this.ChildCom.forEach(c => c.Dispose());
         super.Dispose();
+    }
+
+    /**
+     * Disposes of the tab editor, removing it from the DOM and focusing on the parent form.
+     */
+    ForceDispose() {
+        this.Dirty = false;
+        this.Dispose();
+        let existingTabIndex = ChromeTabs.tabs.findIndex(tab => tab.ul === this._li);
+        if (existingTabIndex !== -1) {
+            ChromeTabs.tabs.splice(existingTabIndex, 1);
+        }
     }
 
     /**
@@ -213,10 +225,6 @@ export class TabEditor extends EditForm {
         if (this.ParentForm) {
             this.ParentForm.focus();
             this.ParentForm = null;
-        }
-        let existingTabIndex = ChromeTabs.tabs.findIndex(tab => tab.ul === this._li);
-        if (existingTabIndex !== -1) {
-            ChromeTabs.tabs.splice(existingTabIndex, 1);
         }
         if (ChromeTabs.tabs.length == 0) {
             window.history.pushState({ page: null }, "/#/home", (window.location.origin || ""));
@@ -228,7 +236,6 @@ export class TabEditor extends EditForm {
      */
     RemoveDOM() {
         this.Element?.remove();
-        this._li?.remove();
         this._backdrop?.remove();
         this._backdropGridView?.remove();
     }

@@ -44,17 +44,28 @@ export class GoogleMap extends EditableComponent {
         if (localStorage.getItem('GOOGLE_MAPS_API_KEY') != null) {
             return localStorage.getItem('GOOGLE_MAPS_API_KEY');
         }
-
-        return import.meta.env?.GOOGLE_MAPS_API_KEY ?? '';
+        
+        // Try to get API key from environment settings
+        try {
+            const response = await Client.Instance.GetConfig('GOOGLE_MAPS_API_KEY');
+            if (response && response.value) {
+                return response.value;
+            }
+        } catch (error) {
+            console.warn('Could not retrieve Google Maps API key from server config:', error);
+        }
+        
+        // Return empty string for anonymous access
+        return '';
     }
 
     Render() {
         this.SetDefaultVal();
-
+        
         // Create container for map
         Html.Take(this.ParentElement).Div.ClassName("google-map-wrapper").Style(`height: ${this.mapHeight}; width: ${this.mapWidth}; position: relative;`);
         this.Element = Html.Context;
-
+        
         // Create search box
         if (this.Meta.ShowSearch !== false) {
             Html.Instance.Div.ClassName("map-search-box").Style("position: absolute; top: 10px; left: 10px; z-index: 1; width: 70%; max-width: 400px;")
@@ -62,12 +73,12 @@ export class GoogleMap extends EditableComponent {
             this.searchInput = Html.Context;
             Html.Instance.End.End.Render();
         }
-
+        
         // Create map container
         Html.Instance.Div.Id(`map-${this.Meta.Id}`).Style(`height: 100%; width: 100%;`);
         this.mapContainer = Html.Context;
         Html.Instance.End.Render();
-
+        
         // Load Google Maps API
         this.loadGoogleMapsScript();
     }
@@ -90,28 +101,28 @@ export class GoogleMap extends EditableComponent {
         }
 
         Spinner.AppendTo();
-
+        
         try {
             // Get API key from environment or component settings
             const apiKey = await this.getApiKey();
             const keyParam = apiKey ? `key=${apiKey}&` : '';
-
+            
             const script = document.createElement('script');
             script.id = 'google-maps-script';
             script.src = `https://maps.googleapis.com/maps/api/js?${keyParam}libraries=places`;
             script.defer = true;
             script.async = true;
-
+            
             script.addEventListener('load', () => {
                 this.scriptLoaded = true;
                 this.initMap();
                 Spinner.Hide();
             });
-
+            
             script.addEventListener('error', (e) => {
                 console.error('Failed to load Google Maps API:', e);
                 Spinner.Hide();
-
+                
                 // Show user-friendly error message
                 if (apiKey) {
                     Html.Take(this.mapContainer).Clear().Div.ClassName("alert alert-danger").Text("Failed to load Google Maps API. Please check your API key configuration.");
@@ -119,7 +130,7 @@ export class GoogleMap extends EditableComponent {
                     Html.Take(this.mapContainer).Clear().Div.ClassName("alert alert-warning").Text("Failed to load Google Maps API in anonymous mode. Usage limits may have been exceeded.");
                 }
             });
-
+            
             document.head.appendChild(script);
         } catch (error) {
             console.error('Error loading Google Maps API:', error);
@@ -136,16 +147,16 @@ export class GoogleMap extends EditableComponent {
 
         // Initialize geocoder
         this.geocoder = new google.maps.Geocoder();
-
+        
         // Get initial coordinates
         let initialLat = this.Entity[this.latField] !== undefined ? parseFloat(this.Entity[this.latField]) : null;
         let initialLng = this.Entity[this.lngField] !== undefined ? parseFloat(this.Entity[this.lngField]) : null;
-
+        
         // Set initial center
         const center = (initialLat && initialLng && !isNaN(initialLat) && !isNaN(initialLng))
             ? { lat: initialLat, lng: initialLng }
             : this.defaultCenter;
-
+        
         // Set map type
         let mapTypeId;
         switch (this.mapType.toLowerCase()) {
@@ -161,7 +172,7 @@ export class GoogleMap extends EditableComponent {
             default:
                 mapTypeId = google.maps.MapTypeId.ROADMAP;
         }
-
+        
         // Create map
         this.map = new google.maps.Map(this.mapContainer, {
             center: center,
@@ -175,7 +186,7 @@ export class GoogleMap extends EditableComponent {
         // Add marker if we have coordinates
         if (initialLat && initialLng && !isNaN(initialLat) && !isNaN(initialLng)) {
             this.addMarker(center);
-
+            
             // Try to get address for initial coordinates if not already set
             if (!this.Entity[this.addressField] && this.geocoder) {
                 this.geocoder.geocode({ location: center }, (results, status) => {
@@ -212,7 +223,7 @@ export class GoogleMap extends EditableComponent {
 
         try {
             this.searchBox = new google.maps.places.SearchBox(this.searchInput);
-
+            
             // Bias search results to current map view
             this.map.addListener('bounds_changed', () => {
                 this.searchBox.setBounds(this.map.getBounds());
@@ -248,12 +259,12 @@ export class GoogleMap extends EditableComponent {
 
     addMarker(position, address) {
         if (!this.map) return;
-
+        
         // Remove existing marker
         if (this.marker) {
             this.marker.setMap(null);
         }
-
+        
         // Create new marker
         this.marker = new google.maps.Marker({
             position: position,
@@ -267,11 +278,11 @@ export class GoogleMap extends EditableComponent {
             if (this.infoWindow) {
                 this.infoWindow.close();
             }
-
+            
             this.infoWindow = new google.maps.InfoWindow({
                 content: `<div>${Utils.EncodeHtml(address)}</div>`
             });
-
+            
             this.infoWindow.open(this.map, this.marker);
             this.marker.addListener('click', () => {
                 this.infoWindow.open(this.map, this.marker);
@@ -291,15 +302,15 @@ export class GoogleMap extends EditableComponent {
 
     updateLocationData(latLng, address) {
         if (!latLng) return;
-
+        
         const lat = latLng.lat();
         const lng = latLng.lng();
-
+        
         // Update entity with new coordinates
         if (this.Entity) {
             this.Entity[this.latField] = lat;
             this.Entity[this.lngField] = lng;
-
+            
             // If address is provided, update it directly
             if (address) {
                 this.Entity[this.addressField] = address;
@@ -308,7 +319,7 @@ export class GoogleMap extends EditableComponent {
                 this.DispatchEvent(this.Meta.Events, EventType.Change, this, this.Entity);
                 return;
             }
-
+            
             // Otherwise geocode the coordinates to get address
             if (this.geocoder) {
                 this.geocoder.geocode({ location: { lat, lng } }, (results, status) => {
@@ -319,7 +330,7 @@ export class GoogleMap extends EditableComponent {
                     } else {
                         this.addMarker({ lat, lng });
                     }
-
+                    
                     this.Dirty = true;
                     this.DispatchEvent(this.Meta.Events, EventType.Change, this, this.Entity);
                 });
@@ -338,11 +349,11 @@ export class GoogleMap extends EditableComponent {
             }
             return;
         }
-
+        
         let lat = this.Entity[this.latField] !== undefined ? parseFloat(this.Entity[this.latField]) : null;
         let lng = this.Entity[this.lngField] !== undefined ? parseFloat(this.Entity[this.lngField]) : null;
         let address = this.Entity[this.addressField];
-
+        
         if (lat && lng && !isNaN(lat) && !isNaN(lng)) {
             const position = { lat, lng };
             this.map.setCenter(position);
@@ -355,7 +366,7 @@ export class GoogleMap extends EditableComponent {
         if (this.map && this.marker) {
             // Make marker draggable or not based on disabled state
             this.marker.setDraggable(!value);
-
+            
             // Disable/enable click event
             if (value) {
                 google.maps.event.clearListeners(this.map, 'click');
@@ -366,7 +377,7 @@ export class GoogleMap extends EditableComponent {
                 });
             }
         }
-
+        
         // Disable/enable search input
         if (this.searchInput) {
             this.searchInput.disabled = value;
@@ -377,13 +388,13 @@ export class GoogleMap extends EditableComponent {
         const lat = this.Entity[this.latField];
         const lng = this.Entity[this.lngField];
         const address = this.Entity[this.addressField];
-
+        
         if (address) {
             return address;
         } else if (lat && lng) {
             return `${lat}, ${lng}`;
         }
-
+        
         return '';
     }
 }

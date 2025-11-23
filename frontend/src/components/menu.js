@@ -113,7 +113,7 @@ export class MenuComponent extends EditableComponent {
       }, {});
 
     Object.values(dic).forEach((menu) => {
-      if (menu.ParentId !== null && dic.hasOwnProperty(menu.ParentId)) {
+      if (menu.ParentId && dic.hasOwnProperty(menu.ParentId)) {
         const parent = dic[menu.ParentId];
         if (
           parent.InverseParent === undefined ||
@@ -132,7 +132,7 @@ export class MenuComponent extends EditableComponent {
     });
 
     this.Features = features
-      .filter((f) => f.ParentId === null && f.IsMenu)
+      .filter((f) => !f.ParentId && f.IsMenu)
       .sort((a, b) => a.Order - b.Order);
   }
   /**

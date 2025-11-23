@@ -40,19 +40,25 @@ export class ConfirmDialog extends EditableComponent {
     Render() {
         if (this.Component) {
             this.Component = JSON.parse(JSON.stringify(this.Component));
+            this.Component.forEach(x => {
+                x.FocusSearch = false;
+                x.Width = null;
+                x.MaxWidth = null;
+                x.MinWidth = null;
+            })
         }
         Html.Take(this.PElement || document.body);
         Html.Div.ClassName((this.ComponentGroup ? "backdrop2" : "backdrop")).Style((this.ComponentGroup ? "" : "align-items: center;"));
         this.Element = Html.Context;
         this.ParentElement = this.Element.parentElement;
-        Html.Instance.Div.Escape(() => this.Dispose()).ClassName("popup-content " + (this.ComponentGroup ? "form-dialog" : "confirm-dialog")).Style((this.ComponentGroup ? "" : "top: auto;"))
+        Html.Instance.Div.Escape(() => this.Dispose()).ClassName("popup-content " + (this.ComponentGroup ? "form-dialog" : "confirm-dialog")).Style((this.ComponentGroup ? "" : "top: auto;min-width: 350px;"))
             .Div.ClassName("popup-title").Div.I.ClassName("fas fa-question-circle mr-1").End.IText("Confirm", this.EditForm.Meta.Label).End
             .Div.ClassName("icon-box").Span.ClassName("fa fa-times")
             .Event("click", () => this.CloseDispose())
             .EndOf(".popup-title")
             .Div.ClassName("popup-body");
         this.BodyElement = Html.Context;
-        Html.Instance.Div.ClassName("bold").IText(this.Title, this.EditForm.Meta.Label).End.Div.ClassName("card").Event("keydown", (e) => this.HotKeyHandler(e)).Width(this.ComponentGroup ? "" : (this.Width || "450px")).MarginRem("top", 1).TextAlign(this.ComponentGroup ? "" : "center");
+        Html.Instance.Div.ClassName("bold").IText(this.Title, this.EditForm.Meta.Label).End.Div.ClassName("card card-config").Event("keydown", (e) => this.HotKeyHandler(e)).MarginRem("top", 1).TextAlign(this.ComponentGroup ? "" : "center");
         this.DivElement = Html.Context;
         if (this.NeedAnswer) {
             if (this.ComponentGroup && this.ComponentGroup.ComponentType == "Section") {
@@ -60,12 +66,12 @@ export class ConfirmDialog extends EditableComponent {
                     Children: this.ComponentGroup.Children,
                     Column: this.ComponentGroup ? this.ComponentGroup.Column : 12,
                     IsSimple: true,
-                    ClassName: 'panel group scroll-content'
+                    ClassName: 'panel group'
                 };
                 var _basicSearchGroup = Section.RenderSection(this.EditForm, sectionInfo);
                 this.DivElement.insertBefore(_basicSearchGroup.Element, this.DivElement.firstChild);
                 _basicSearchGroup.Element.style.width = "100%";
-                _basicSearchGroup.Element.className = "group scroll-content";
+                _basicSearchGroup.Element.className = "group";
             }
             else {
                 if (this.Component && this.Component.length > 0) {
@@ -77,6 +83,7 @@ export class ConfirmDialog extends EditableComponent {
                             x.Active = true;
                             x.CanRead = true;
                             x.CanReadAll = true;
+                            x.Visibility = true;
                             x.CanWrite = true;
                             x.CanWriteAll = true;
                             x.ShowLabel = true;
@@ -95,12 +102,14 @@ export class ConfirmDialog extends EditableComponent {
                     com.CanReadAll = true;
                     com.CanWrite = true;
                     com.CanWriteAll = true;
+                    com.Visibility = true;
                     com.ShowLabel = false;
                     com.ComponentType = "Textarea";
                     com.FieldName = "ReasonOfChange";
                     com.Row = 3;
                     com.Column = 12;
                     com.XxlCol = 12;
+                    com.Visibility = true;
                     com.MultipleLine = this.MultipleLine;
                     this.Component.push(com);
                 }
@@ -108,6 +117,7 @@ export class ConfirmDialog extends EditableComponent {
                     Components: this.Component,
                     Column: this.ComponentGroup ? this.ComponentGroup.Column : 12,
                     IsSimple: true,
+                    IsPublic: true,
                     ClassName: 'card-body panel group'
                 };
                 var _basicSearchGroup = Section.RenderSection(this.EditForm, sectionInfo);

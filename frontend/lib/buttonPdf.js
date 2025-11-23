@@ -103,7 +103,8 @@ export class ButtonPdf extends Button {
                                 table > tr > td {
                                     vertical-align: top;
                                 }
-
+                                    
+                                td,
                                 td>span,
                                 td>p,
                                 td>div,
@@ -111,6 +112,7 @@ export class ButtonPdf extends Button {
                                     padding-left: 2px;
                                     vertical-align: top;
                                     white-space: pre-wrap;
+                                    word-break: break-word;
                                 }
 
                                 .logo {
@@ -169,6 +171,10 @@ export class ButtonPdf extends Button {
     }
 
     PrintPdf() {
+        if (!this.Meta.ShowHotKey) {
+            this.IFrameElement.contentWindow.print();
+            return;
+        }
         Spinner.AppendTo();
         Client.Instance.PostAsync(
             {
@@ -403,6 +409,7 @@ export class ButtonPdf extends Button {
                     padding-left: 2px;
                     vertical-align: top;
                     white-space: pre-wrap;
+                    word-break: break-word;
                 }
                 .logo { width: 100%; height: 100%; }
                 .dashed tbody tr:not(:last-child) td {

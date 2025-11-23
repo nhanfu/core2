@@ -338,9 +338,10 @@ export class HTML {
     /**
      * @param {boolean} val
      */
-    SmallCheckbox(val = false) {
+    SmallCheckbox(val = false, disabled = false) {
+        var attr = disabled ? "disabled" : "enabled";
         this.Label.ClassName("checkbox input-small transition-on style2")
-            .Input.Attr("type", "checkbox").Type("checkbox").End
+            .Input.Attr(attr, attr).Attr("type", "checkbox").Type("checkbox").End
             .Span.ClassName("check myCheckbox");
         // @ts-ignore
         this.Context.previousElementSibling.checked = val;

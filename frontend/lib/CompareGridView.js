@@ -9,7 +9,7 @@ export class CompareGridView extends GridView {
         super(ui);
         this.ContentFieldName = "TextHistory";
         this.ReasonOfChange = "ReasonOfChange";
-        this.Style = "white-space: pre-wrap;";
+        this.Style = "white-space: pre-wrap;word-break: break-word;";
         this.Meta.LocalHeader = [
             {
                 FieldName: "InsertedBy",

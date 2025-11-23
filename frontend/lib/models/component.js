@@ -58,6 +58,8 @@ export class Component {
     Events = null;
     /** @type {boolean} */
     Disabled = false;
+    /** @type {boolean} */
+    Visibility = false;
     /** @type {string} */
     Validation = null;
     /** @type {boolean} */
@@ -82,6 +84,16 @@ export class Component {
     DefaultVal = null;
     /** @type {string} */
     DateTimeField = null;
+    /** @type {boolean} */
+    Active = false;
+    /** @type {Date} */
+    InsertedDate = new Date();
+    /** @type {string} */
+    InsertedBy = null;
+    /** @type {Date} */
+    UpdatedDate = new Date();
+    /** @type {string} */
+    UpdatedBy = null;
     /** @type {boolean} */
     CanAdd = false;
     /** @type {boolean} */
@@ -260,8 +272,8 @@ export class Component {
     RowSpan;
     /** @type {string} */
     ComponentDefaultValueId;
-    
-    ReportTypeId = 1;
+    /** @type {string} */
+    GroupTypeId;
     CanRead = false;
     CanReadAll = false;
     CanWrite = false;

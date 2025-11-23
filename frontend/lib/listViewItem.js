@@ -14,6 +14,9 @@ import { Toast } from "./toast.js";
 import { ElementType } from './models/elementType.js';
 import { Checkbox } from "./checkbox.js";
 import { KeyCodeEnum } from "./models/";
+import tippy from 'tippy.js';
+import 'tippy.js/dist/tippy.css';
+import 'tippy.js/animations/scale.css';
 
 /**
  * @typedef {import('./section.js').ListViewSection} ListViewSection
@@ -112,14 +115,16 @@ export class ListViewItem extends Section {
      * @param {boolean} value - The selected state.
      */
     SetSelected(value) {
-        if (!this.Element) {
-            return;
-        }
-        if (value) {
-            this.Element.classList.add(ListViewItem.SelectedClass);
-        } else {
-            this.Element.classList.remove(ListViewItem.SelectedClass);
-        }
+        window.setTimeout(() => {
+            if (!this.Element) {
+                return;
+            }
+            if (value) {
+                this.Element.classList.add(ListViewItem.SelectedClass);
+            } else {
+                this.Element.classList.remove(ListViewItem.SelectedClass);
+            }
+        }, 50);
     }
 
     /**
@@ -210,10 +215,10 @@ export class ListViewItem extends Section {
     SetChooseCell() {
         var entity = this.ListView.Entity;
         if (this.ListView.Meta.IsMultiple) {
-            if (entity[this.ListView.Meta.FieldName].toString().includes(this.Entity[this.IdField].toString())) {
+            if (entity[this.ListView.Meta.FieldName].toString().split(",").includes(this.Entity[this.IdField].toString())) {
                 this.Element.classList.add('cell-choose');
             }
-            else{
+            else {
                 this.Element.classList.remove('cell-choose');
             }
         }
@@ -229,6 +234,16 @@ export class ListViewItem extends Section {
          * @param {HTMLElement} [cellWrapper=null] - The wrapper element for the cell.
          */
     RenderTableCell(rowData, header, cellWrapper = null) {
+        if (header.StatusBar && this.Meta.Validation) {
+            var cont = Utils.IsFunction(this.Meta.Validation, false, this)
+            tippy(cellWrapper.parentElement, {
+                allowHTML: true,
+                placement: 'right',
+                arrow: true,
+                delay: [10, 10],
+                content: cont
+            });
+        }
         if (header.StatusBar && !this.ListView.IsSearchEntry && this.ListView.Meta.IsMultiple) {
             header.ComponentType = "Checkbox";
             header.Editable = true;
@@ -256,12 +271,14 @@ export class ListViewItem extends Section {
             this.Checkbox = com;
             this.Checkbox.Disabled = false;
             this.Checkbox.Element.addEventListener(EventType.Change, (e) => {
+                this.Checkbox.Dirty = false;
                 if (this.EmptyRow) {
                     return;
                 }
                 e.preventDefault();
                 e.stopPropagation();
                 this.Selected = !this.Selected;
+                this.DispatchEvent(this.Meta.Events, EventType.Click, this, this.Entity).then();
             });
             this.Checkbox.Element.parentElement.addEventListener(EventType.KeyDown, (e) => {
                 if (this.EmptyRow) {
@@ -296,7 +313,7 @@ export class ListViewItem extends Section {
         var entity = this.ListView.Entity;
         if (this.ListView.Meta.ComponentType == "Dropdown" && entity[this.ListView.Meta.FieldName]) {
             if (this.ListView.Meta.IsMultiple) {
-                if (entity[this.ListView.Meta.FieldName].toString().includes(rowData[this.IdField].toString())) {
+                if (entity[this.ListView.Meta.FieldName].toString().split(",").includes(rowData[this.IdField].toString())) {
                     cellWrapper.parentElement.parentElement.classList.add('cell-choose');
                 }
             }
@@ -309,9 +326,11 @@ export class ListViewItem extends Section {
         if (com.Element && header.ChildStyle) {
             com.Element.style.cssText = header.ChildStyle;
         }
-        com.UserInput.add(arg => this.UserInputHandler(arg, com));
+        if (!header.StatusBar) {
+            com.UserInput.add(arg => this.UserInputHandler(arg, com));
+        }
         if (header.Editable && header.Id) {
-            if (com.Disabled || this.ListView.Meta.IsRealtime) {
+            if (this.ListView.Meta.IsRealtime) {
                 return;
             }
             var copyButton = document.createElement("button");
@@ -361,7 +380,7 @@ export class ListViewItem extends Section {
      * @param {EditableComponent} component - The editable component.
      */
     UserInputHandler(arg, component) {
-        if (component.Disabled) {
+        if (component.Disabled || component.StatusBar) {
             return;
         }
         if (component.ComponentType == "Input" || component.ComponentType == "Textarea") {
@@ -525,8 +544,8 @@ export class ListViewItem extends Section {
             patchDetail.OldVal = null;
             patchDetail.Value = val;
             var component = this.Children.find(y => y.Meta.FieldName == cell)
-            if (component) {
-                let text = component.GetValueText();
+            if (component && component.Meta.Editable) {
+                let text = component.ChangeValue || component.GetValueText();
                 let actText = Utils.isNullOrWhiteSpace(text) ? 'N/A' : text;
                 let oldText = Utils.isNullOrWhiteSpace(component.OriginalText) ? 'N/A' : component.OriginalText;
                 if (actText != oldText) {
@@ -636,9 +655,7 @@ export class ListViewItem extends Section {
     SetSeletedListViewItem(allListView, _lastIndex, currentIndex) {
         const start = allListView[0].RowNo > _lastIndex ? allListView[0].RowNo : _lastIndex;
         const items = this.ListView.AllListViewItem.filter(x => x.RowNo >= start && x.RowNo <= currentIndex);
-        if (!this.ListView.VirtualScroll) {
-            this.ListView.SelectedIds = items.map(x => x.EntityId);
-        }
+        this.ListView.SelectedIds = items.map(x => x.EntityId);
         items.forEach(item => {
             const id = item.EntityId;
             if (this.ListView.SelectedIds.includes(id)) {

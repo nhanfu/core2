@@ -1,3 +1,5 @@
+use crm;
+go
 INSERT [dbo].[MasterData] ([Id], [Code], [Name], [Description], [ParentId], [Path], [IsLocal], [IsContainer], [IsCBM], [IsKGS], [IsGW], [Active], [InsertedDate], [InsertedBy], [UpdatedDate], [UpdatedBy], [Enum], [GroupEnum], [CodeMn]) VALUES (N'0000189c-0000-0000-8000-6e098d6d675a', N'Carrier', N'Carrier', NULL, N'00f1183c-0000-0000-8000-998fcd63f69d', NULL, 0, 0, 0, 0, 0, 1, CAST(N'2024-08-22T11:44:52.2976809' AS DateTime2), N'1', CAST(N'2024-08-22T12:45:11.8044686' AS DateTime2), N'1', NULL, NULL, NULL)
 GO
 INSERT [dbo].[MasterData] ([Id], [Code], [Name], [Description], [ParentId], [Path], [IsLocal], [IsContainer], [IsCBM], [IsKGS], [IsGW], [Active], [InsertedDate], [InsertedBy], [UpdatedDate], [UpdatedBy], [Enum], [GroupEnum], [CodeMn]) VALUES (N'00001b74-0000-0000-8000-136ba5545ea9', N'Door to Door', N'Door to Door', NULL, N'00fc1bb4-0000-0000-8000-12f6bf036aa6', NULL, 0, 0, 0, 0, 0, 1, CAST(N'2024-08-27T13:16:19.4667093' AS DateTime2), N'1', CAST(N'2024-08-27T13:17:19.1239517' AS DateTime2), N'1', NULL, NULL, NULL)

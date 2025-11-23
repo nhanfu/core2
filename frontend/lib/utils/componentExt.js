@@ -45,7 +45,7 @@ export class ComponentExt {
             if (!textbox) {
                 return '';
             }
-            let fieldName = `ds.[${component.FieldName}]`;
+            let fieldName = component.SearchFieldName ? `${component.SearchFieldName}` : `ds.[${component.FieldName}]`;
             switch (textbox.SearchMethod) {
                 case SearchMethodEnum.Empty:
                     rs = `(${fieldName} is null or ${fieldName} = '')`
@@ -59,8 +59,8 @@ export class ComponentExt {
             return rs;
         }
         searchTerm = searchTerm.trim();
-        let fieldName = `ds.[${component.FieldName}]`;
-        var searchParam = `@${component.FieldName.toLocaleLowerCase()}search`;
+        let fieldName = component.SearchFieldName ? `${component.SearchFieldName}` : `ds.[${component.FieldName}]`;
+        let searchParam = component.SearchFieldName ? `@${component.SearchFieldName.replaceAll(".", "").toLocaleLowerCase()}search` : `@${component.FieldName.toLocaleLowerCase()}search`;
         switch (component.HotKey ? SearchMethodEnum.StartWith : (textbox ? textbox.SearchMethod : SearchMethodEnum.Contain)) {
             case SearchMethodEnum.Empty:
                 rs = `(${fieldName} is null or ${fieldName} = '')`;
@@ -74,13 +74,13 @@ export class ComponentExt {
                         var sqlmap = this.ExtractStrings(component.FormatData).map(x => {
                             return `ds2.[${x}] = ${searchParam}`;
                         });
-                        rs = `exists (select ds2.Id from [${component.RefName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" and ")}))`;
+                        rs = `exists (select ds2.Id from [${component.RefName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" or ")}))`;
                     }
                     else {
                         var sqlmap = this.ExtractStrings(component.FormatData).map(x => {
                             return `ds2.[${x}] = ${searchParam}`;
                         });
-                        rs = `exists (select ds2.Id from [${component.RefName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" and ")}))`;
+                        rs = `exists (select ds2.Id from [${component.RefName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" or ")}))`;
                     }
                 }
                 else if (component.ComponentType === "Datepicker") {
@@ -96,13 +96,13 @@ export class ComponentExt {
                         var sqlmap = this.ExtractStrings(component.FormatData).map(x => {
                             return `ds2.[${x}] != ${searchParam}`;
                         });
-                        rs = `exists (select ds2.Id from [${component.RefName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" and ")}))`;
+                        rs = `exists (select ds2.Id from [${component.RefName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" or ")}))`;
                     }
                     else {
                         var sqlmap = this.ExtractStrings(component.FormatData).map(x => {
                             return `ds2.[${x}] != ${searchParam}`;
                         });
-                        rs = `exists (select ds2.Id from [${component.RefName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" and ")}))`;
+                        rs = `exists (select ds2.Id from [${component.RefName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" or ")}))`;
                     }
                 }
                 else if (component.ComponentType === "Datepicker") {
@@ -117,7 +117,7 @@ export class ComponentExt {
                     if (Utils.isNullOrWhiteSpace(component.RefName)) {
                         var datas = JSON.parse(component.Query);
                         var fieldSearch = this.ExtractStrings(component.FormatData)[0];
-                        var ids = datas.filter(x => x[fieldSearch].includes(searchTerm)).map(x => x.Id);
+                        var ids = datas.filter(x => x[fieldSearch].toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())).map(x => x.Id);
                         if (ids && ids.length > 0) {
                             rs = `${fieldName} in ('${ids.join("','")}')`;
                         }
@@ -129,7 +129,7 @@ export class ComponentExt {
                         var sqlmap = this.ExtractStrings(component.FormatData).map(x => {
                             return `charindex(${searchParam}, ds2.[${x}]) >= 1`
                         });
-                        rs = `exists (select ds2.Id from [${component.RefName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" and ")}))`;
+                        rs = `exists (select ds2.Id from [${component.RefName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" or ")}))`;
                     }
                 }
                 else if (component.ComponentType === "Checkbox") {
@@ -144,7 +144,7 @@ export class ComponentExt {
                     if (Utils.isNullOrWhiteSpace(component.RefName)) {
                         var datas = JSON.parse(component.Query);
                         var fieldSearch = this.ExtractStrings(component.FormatData)[0];
-                        var ids = datas.filter(x => x[fieldSearch].includes(searchTerm)).map(x => x.Id);
+                        var ids = datas.filter(x => x[fieldSearch].toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())).map(x => x.Id);
                         if (ids && ids.length > 0) {
                             rs = `${fieldName} in ('${ids.join("','")}')`;
                         }
@@ -156,7 +156,7 @@ export class ComponentExt {
                         var sqlmap = this.ExtractStrings(component.FormatData).map(x => {
                             return `ds2.[${x}] LIKE ${searchParam} + '%'`;
                         });
-                        rs = `exists (select ds2.Id from [${component.RefName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" and ")}))`;
+                        rs = `exists (select ds2.Id from [${component.RefName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" or ")}))`;
                     }
                 }
                 else {
@@ -168,7 +168,7 @@ export class ComponentExt {
                     if (Utils.isNullOrWhiteSpace(component.RefName)) {
                         var datas = JSON.parse(component.Query);
                         var fieldSearch = this.ExtractStrings(component.FormatData)[0];
-                        var ids = datas.filter(x => x[fieldSearch].includes(searchTerm)).map(x => x.Id);
+                        var ids = datas.filter(x => x[fieldSearch].toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())).map(x => x.Id);
                         if (ids && ids.length > 0) {
                             rs = `${fieldName} not in ('${ids.join("','")}')`;
                         }
@@ -180,7 +180,7 @@ export class ComponentExt {
                         var sqlmap = this.ExtractStrings(component.FormatData).map(x => {
                             return `charindex(${searchParam}, ds2.[${x}]) = 0`
                         });
-                        rs = `exists (select ds2.Id from [${component.RefName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" and ")}))`;
+                        rs = `exists (select ds2.Id from [${component.RefName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" or ")}))`;
                     }
 
                 }
@@ -234,12 +234,12 @@ export class ComponentExt {
     }
 
     /**
-     * Loads a feature by name and optionally by ID, returning a promise that resolves to the feature.
-     * 
-     * @param {string} name - The name of the feature to load.
-     * @param {string} [id=null] - The optional ID of the feature.
-     * @returns {Promise<Component>} A promise that resolves to the loaded Feature object or null if not found.
-     */
+ * Loads a feature by name and optionally by ID, returning a promise that resolves to the feature.
+ * 
+ * @param {string} name - The name of the feature to load.
+ * @param {string} [id=null] - The optional ID of the feature.
+ * @returns {Promise<Component>} A promise that resolves to the loaded Feature object or null if not found.
+ */
     static LoadFeature(name, id = null) {
         return new Promise((resolve, reject) => {
             // @ts-ignore
@@ -255,6 +255,21 @@ export class ComponentExt {
             }).catch(err => reject(err));
         });
     }
+
+    static LoadPublicFeature(name, id = null) {
+        return new Promise((resolve, reject) => {
+            // @ts-ignore
+            const featureTask = Client.Instance.SubmitAsync({
+                Url: `/api/feature/getPublicFeature?name=` + name,
+                IsRawString: true,
+                Method: "GET",
+            })
+            featureTask.then(ds => {
+                resolve(ds);
+            }).catch(err => reject(err));
+        });
+    }
+
 
     // Assign methods to an instance based on a feature's script
     static AssignMethods(feature, instance) {

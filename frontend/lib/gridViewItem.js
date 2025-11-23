@@ -1,4 +1,4 @@
-import { Component, ElementType } from "./models/";
+import { Component, ElementType, EventType } from "./models/";
 import { ListViewItem } from "./listViewItem.js";
 import { Html } from "./utils/html.js";
 
@@ -49,6 +49,7 @@ export class GridViewItem extends ListViewItem {
             });
             Html.Instance.Event("mouseover",/**@param {Event} e */(e) => {
                 if (this.ListView.IsMouseDown && this.ListView.StartCell) {
+                    window.getSelection().removeAllRanges();
                     const startRow = parseInt(this.ListView.StartCell.dataset.row);
                     const startCol = parseInt(this.ListView.StartCell.dataset.col);
                     const endRow = parseInt(td.dataset.row);
@@ -93,15 +94,29 @@ export class GridViewItem extends ListViewItem {
             return;
         }
         if (this.ListView.LastElementFocus) {
+            this.ListView.LastElementFocus?.closest("td").classList.remove("cell-copy");
             this.ListView.LastElementFocus?.closest("td").classList.remove("cell-selected");
         }
-
-        /** @type {HTMLTableCellElement} */
-        // @ts-ignore
         let td = e.target;
-        td.closest("td").classList.add("cell-selected");
+        /**
+         * @type {HTMLTableCellElement}
+         */
+        var tdElement = td.closest("td");
+        tdElement.classList.add("cell-selected");
         this.ListView.LastElementFocus = td;
         this.ListView.LastComponentFocus = header;
         this.ListView.EntityFocusId = this.EntityId;
+        if (!tdElement._hasCopyListener) {
+            tdElement._hasCopyListener = true;
+            tdElement.addEventListener(EventType.KeyDown, (ev) => {
+                if (ev.ctrlKey && ev.key.toLowerCase() === "c") {
+                    const selectedText = window.getSelection()?.toString() || "";
+                    if (selectedText.length > 0) return;
+                    td.classList.add("cell-copy");
+                    const text = td.innerText == "" ? td.value.trim() : td.innerText.trim();
+                    navigator.clipboard.writeText(text).catch(() => { });
+                }
+            });
+        }
     }
 }

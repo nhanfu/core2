@@ -24,46 +24,62 @@ export class Label extends EditableComponent {
             this.RenderNewEle(cellText, cellData);
         }
         if (this.Meta && this.Meta.ComponentType == "Checkbox") {
-            this.Element.textContent = cellData ? "✅" : "☐";
-            this.OriginalText = this.Element.textContent;
+            Html.Take(this.Element).SmallCheckbox(cellData, true);
+            this.OriginalText = cellData ? "✅" : "☐";
             return;
         }
-        var textCalc = Utils.IsFunction(this.Meta.FormatData || '', false, this);
+        var textCalc = this.Meta && this.Meta.FormatData && (this.Meta.FormatData.includes(".") || this.Meta.FormatData.includes("return")) ? Utils.IsFunction(this.Meta.FormatData || '', false, this) : "";
         if (textCalc) {
             cellText = textCalc;
-            this.Element.innerHTML = cellText;
+            if (this.Meta.ComponentType == "Input") {
+                this.Element.textContent = this.getTextContent(cellText);
+            }
+            else {
+                this.Element.innerHTML = cellText;
+            }
+            this.Element.title = cellText;
         }
         else {
             this.CalcCellText(cellData);
         }
+        this.SetOldTextAndVal();
     }
 
     RenderNewEle(cellText, cellData) {
         if (this.Meta.ComponentType == "Number") {
             Html.Instance.Style("justify-content: end;");
         }
-        else if (this.Meta.ComponentType == "Checkbox") {
-            Html.Instance.Style("justify-content: center;");
-        }
         if (!this.Meta.IsMultiple) {
-            if (!cellText.includes("<div")) {
+            if (!cellText.includes("<div") && this.Meta.ComponentType != "Checkbox" && ((this.Meta.FormatData && !this.Meta.FormatData.includes("<div")) || !this.Meta.FormatData)) {
                 Html.Instance.Span.ClassName("cell-text").Render();
             }
-            Html.Instance.InnerHTML(cellText);
+            if (this.Meta.ComponentType == "Input") {
+                Html.Instance.Title(cellText).Text(this.getTextContent(cellText));
+            }
+            else {
+                Html.Instance.Title(cellText).InnerHTML(cellText);
+            }
         }
         this.Element = Html.Context;
         Html.Instance.End.Render();
     }
 
     CalcCellText(cellData) {
+        if (this.Meta && this.Meta.ComponentType == "Checkbox") {
+            Html.Take(this.Element).Clear();
+            Html.Take(this.Element).SmallCheckbox(cellData, true);
+            this.OriginalText = cellData ? "✅" : "☐";
+            return;
+        }
         if (this.Meta.Query && this.Meta.ComponentType == "Label") {
             this.RunQuerys().then((data) => {
-                var cellText = Utils.GetCellText(this.Meta, cellData, data[0][0], false, this.EmptyRow, this.EditForm?.Entity);
-                if (!cellText || cellText == "null") {
-                    cellText = "";
+                if (data[0]) {
+                    var cellText = Utils.GetCellText(this.Meta, cellData, data[0][0], false, this.EmptyRow, this.EditForm?.Entity);
+                    if (!cellText || cellText == "null") {
+                        cellText = "";
+                    }
+                    this.Element.innerHTML = cellText;
                 }
-                this.Element.innerHTML = cellText;
-                this.replaceTextInElement(this.Element);
             });
         }
         else {
@@ -71,22 +87,19 @@ export class Label extends EditableComponent {
             if (!cellText || cellText == "null") {
                 cellText = "";
             }
-            this.Element.innerHTML = cellText;
+            if (this.Meta.ComponentType == "Input") {
+                this.Element.textContent = this.getTextContent(cellText);
+            }
+            else {
+                this.Element.innerHTML = cellText;
+            }
+            this.Element.title = cellText;
         }
     }
 
-    replaceTextInElement(element) {
-        const walker = document.createTreeWalker(
-            element,
-            NodeFilter.SHOW_TEXT,
-            null,
-            false
-        );
-
-        let node;
-        while ((node = walker.nextNode())) {
-            node.textContent = LangSelect.Get(node.textContent || '', this.EditForm.FeatureName);
-        }
+    getTextContent(element) {
+        const doc = new DOMParser().parseFromString(element, 'text/html');
+        return doc.body.textContent || '';
     }
 
     LabelClickHandler(e) {
@@ -120,13 +133,25 @@ export class Label extends EditableComponent {
         this.PrepareUpdateView(force, dirty);
         const cellData = this.Entity[this.Meta.FieldName];
         var cellText = "";
-        var textCalc = Utils.IsFunction(this.Meta.FormatData || '', false, this);
+        var textCalc = this.Meta && this.Meta.FormatData && (this.Meta.FormatData.includes(".") || this.Meta.FormatData.includes("return")) ? Utils.IsFunction(this.Meta.FormatData || '', false, this) : "";
         if (textCalc) {
             cellText = textCalc;
-            this.Element.innerHTML = cellText;
+            if (this.Meta.ComponentType == "Input") {
+                this.Element.textContent = this.getTextContent(cellText);
+            }
+            else {
+                this.Element.innerHTML = cellText;
+            }
+            this.Element.title = cellText;
         }
         else {
             this.CalcCellText(cellData);
+            this.Element.title = "";
+        }
+        if (!this.Dirty) {
+            this.OriginalText = this.getTextContent(cellText);
+            this.DOMContentLoaded?.Invoke();
+            this.OldValue = this.getTextContent(cellText);
         }
     }
 

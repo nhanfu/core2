@@ -19,7 +19,6 @@ export class PdfReport extends EditableComponent {
     constructor(ui, ele = null) {
         super(ui);
         if (!ui) throw new Error("ArgumentNullException: ui");
-        this.Meta = ui;
         this.Element = ele;
         this.Selected = null;
         this.Data = null;
@@ -60,8 +59,12 @@ export class PdfReport extends EditableComponent {
     }
 
     async LoadData() {
+        var entity2 = this.Entity;
+        if (this.Parent.IsAction) {
+            entity2 = this.Parent.Entity;
+        }
         var gridViews = this.EditForm.ChildCom.filter(x => x.IsListView);
-        var entity = JSON.parse(JSON.stringify(this.Entity));
+        var entity = JSON.parse(JSON.stringify(entity2));
         gridViews.forEach((grid, index) => {
             entity["t" + index] = grid.AllListViewItem.filter(x => !x.GroupRow).map(x => x.Entity);
             entity["t" + index + "h"] = grid.Header;

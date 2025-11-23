@@ -2,6 +2,7 @@ import Decimal from "decimal.js";
 import { Component } from "../models/component.js";
 import { Client } from '../clients/client.js';
 import { HttpMethod } from '../models/enum.js';
+import { LangSelect } from "./langSelect.js";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone.js";
 import customParseFormat from "dayjs/plugin/customParseFormat.js";
@@ -44,6 +45,7 @@ export class Utils {
     static PatchSvc = "/api/feature/run";
     static PatchSvcs = "/api/feature/runs";
     static PatchesSvc = "user/SavePatches";
+    static UserSvc = "/user/svc";
     static DeleteSvc = "/api/feature/delete";
     static DeactivateSvc = "/user/Deactivate";
     static ExportExcel = "/user/excel";
@@ -211,75 +213,35 @@ export class Utils {
     }
 
     static FormatEntity(format, source, number = false, pre = 0) {
-        if (format === null) {
-            return null;
-        }
+        if (!format) return null;
+        if (!source) return null;
 
-        if (source === null) {
-            return format;
-        }
-
-        let formatted = [];
-        let index = 0;
-        let isInGroup = false;
-        let beforeColon = false;
-        let field = [];
+        const regex = /\{([^\}:]+)(:[^\}]+)?\}/g;
         let objList = [];
-        for (let i = 0; i < format.length; i++) {
-            const ch = format[i];
-            switch (ch) {
-                case '{':
-                    isInGroup = true;
-                    beforeColon = true;
-                    formatted.push(ch + index.toString());
-                    break;
-                case ':':
-                    if (isInGroup && !beforeColon) {
-                        formatted.push(ch);
-                    } else if (isInGroup) {
-                        beforeColon = false;
-                        formatted.push(ch);
-                        this.GetValues(source, field, objList);
-                        field = [];
-                    } else {
-                        formatted.push(ch);
-                    }
-                    break;
-                case '}':
-                    if (isInGroup) {
-                        isInGroup = false;
-                        formatted.push(ch);
-                        index++;
-                        this.GetValues(source, field, objList);
-                        field = [];
-                    }
-                    break;
-                default:
-                    if (isInGroup && beforeColon) {
-                        field.push(ch);
-                    } else {
-                        formatted.push(ch);
-                    }
-                    break;
-            }
-        }
+        let idx = 0;
+
+        const replaced = format.replace(regex, (match, fieldName, formatSpec) => {
+            let value = source[fieldName];
+            objList.push(value);
+            return `{${idx++}}`;
+        });
+
         if (!number) {
-            return this.Format(formatted.join(''), objList);
-        }
-        else {
-            return this.FormatNumber(formatted.join(''), pre, objList);
+            return this.Format(replaced, objList);
+        } else {
+            return this.FormatNumber(replaced, pre, objList);
         }
     }
 
     static Format(template, args) {
         return template.replace(/{(\d+)}/g, (/** @type {any} */ match, /** @type {string | number} */ index) => {
-            return typeof args[index] != 'undefined' ? args[index] : match;
+            return typeof args[index] != 'undefined' ? args[index] : '';
         });
     }
 
     static FormatNumber(template, pre, args) {
         return template.replace(/{(\d+)}/g, (/** @type {any} */ match, /** @type {string | number} */ index) => {
-            return typeof args[index] != 'undefined' ? new Decimal(args[index]).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : match;
+            return typeof args[index] != 'undefined' ? new Decimal(args[index]).toFixed(pre || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
         });
     }
 
@@ -345,7 +307,7 @@ export class Utils {
                     text = '';
                 }
                 else {
-                    text = dayjs.tz(cellData, dayjs.tz.guess()).format(this.isNullOrWhiteSpace(header.FormatData) ? 'DD/MM/YYYY' : header.FormatData);
+                    text = !cellData ? '' : dayjs.tz(cellData, dayjs.tz.guess()).format(this.isNullOrWhiteSpace(header.FormatData) ? 'DD/MM/YYYY' : header.FormatData);
                 }
                 break;
             case 'Dropdown':
@@ -405,11 +367,12 @@ export class Utils {
                     text = '';
                 }
                 else {
+                    var pre = header.GroupTypeId ? parseInt(LangSelect._webConfig[header.GroupTypeId]) : header.Precision
                     if (!this.isNullOrWhiteSpace(header.FormatData)) {
-                        text = this.FormatEntity(header.FormatData, row, true);
+                        text = this.FormatEntity(header.FormatData, row, true, pre);
                     }
                     else {
-                        var fixedValue = new Decimal(cellData).toFixed(0);
+                        var fixedValue = new Decimal(cellData).toFixed(pre || 0);
                         var parts = fixedValue.split('.');
                         parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                         text = parts.join('.');

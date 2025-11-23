@@ -55,7 +55,7 @@ export class Select extends EditableComponent {
 
     Render() {
         this.SetDefaultVal();
-        this._value = this.Entity[this.Name];
+        this._value = this.Entity[this.Name] == null ? null : this.Entity[this.Name].toString();
         this.RenderInputAndEvents();
         if (this.Meta.ShowHotKey) {
             this.RenderIcons();
@@ -68,7 +68,7 @@ export class Select extends EditableComponent {
         });
         this.SS = new SlimSelect({
             select: this.Element.firstElementChild,
-            data: this.Data.map(x => ({ text: x.Name, value: x.Id, html: x.Description || x.Name })),
+            data: this.Data.map(x => ({ text: x.Name, value: x.Id == null ? null : x.Id.toString(), html: x.Description || x.Name })),
             settings: {
                 disabled: this.Meta.Disabled,
                 showSearch: this.Data.length >= 5
@@ -76,17 +76,22 @@ export class Select extends EditableComponent {
             events: {
                 afterChange: (newVal) => {
                     var mapEntity = this.Data.find(x => {
-                        const xId = x?.Id != null ? x.Id.toString() : null;
+                        const xId = x.Id != null ? x.Id.toString() : null;
                         const entityValue = newVal[0].value != null ? newVal[0].value.toString() : null;
                         return xId === entityValue;
                     });
-                    if (mapEntity && mapEntity.Id != this.Entity[this.Name]) {
+                    if (mapEntity && (mapEntity.Id == null ? null : mapEntity.Id.toString()) != (this.Entity[this.Name] == null ? null : this.Entity[this.Name].toString())) {
                         this.EntrySelected(mapEntity);
                     }
                 }
             }
         });
-        this.SS.setSelected(this.Entity[this.Name] || this.Data[0].Id);
+        if (this.Entity[this.Name] != null) {
+            this.SS.setSelected(this.Entity[this.Name] == null ? null : this.Entity[this.Name].toString());
+        }
+        else {
+            this.SS.setSelected(null);
+        }
         this.FindMatchText();
     }
 
@@ -126,9 +131,9 @@ export class Select extends EditableComponent {
     }
 
     FindMatchText() {
-        if (this.Entity[this.Meta.FieldName]) {
+        if (this.Entity[this.Meta.FieldName] != null && this.Entity[this.Meta.FieldName] !== undefined) {
             this.Matched = this.Data.find(x => {
-                const xId = x?.Id != null ? x.Id.toString() : null;
+                const xId = x.Id != null ? x.Id.toString() : null;
                 const entityValue = this.Entity?.[this.Meta.FieldName] != null ? this.Entity[this.Meta.FieldName].toString() : null;
                 return xId === entityValue;
             });
@@ -149,7 +154,7 @@ export class Select extends EditableComponent {
         const selected = this.SS.getSelected()[0];
         if (selected) {
             this.Matched = this.Data.find(x => {
-                const xId = x?.Id != null ? x.Id.toString() : null;
+                const xId = x.Id != null ? x.Id.toString() : null;
                 const entityValue = selected != null ? selected.toString() : null;
                 return xId === entityValue;
             });
@@ -216,8 +221,8 @@ export class Select extends EditableComponent {
             Name: 'Selected Option',
             Description: 'Selected Option'
         });
-        this.SS.setData(this.Data.map(x => ({ text: x.Name, value: x.Id, html: x.Description || x.Name })));
-        this._value = this.Entity[this.Meta.FieldName];
+        this.SS.setData(this.Data.map(x => ({ text: x.Name, value: x.Id == null ? null : x.Id.toString(), html: x.Description || x.Name })));
+        this._value = this.Entity[this.Meta.FieldName] == null ? null : this.Entity[this.Meta.FieldName].toString();
         if (this._value === null) {
             this.Matched = null;
             this.Entity[this.DisplayField] = null;
