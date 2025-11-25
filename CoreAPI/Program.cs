@@ -80,16 +80,26 @@ services.AddAuthentication(options =>
 });
 services.AddDistributedMemoryCache();
 services.AddHttpContextAccessor();
+services.AddScoped<PostgreSqlProvider>();
 services.AddScoped<SqlServerProvider>();
 services.AddScoped<DuckDbProvider>();
-services.AddScoped<ISqlProvider, SqlServerProvider>();
+services.AddScoped<ISqlProvider, PostgreSqlProvider>();
 services.AddScoped<UserService>();
 services.AddScoped<AuthService>();
 services.AddScoped<SendMailService>();
 services.AddScoped<PdfService>();
 services.AddScoped<ExcelService>();
 services.AddScoped<OpenAIHttpClientService>();
+services.AddScoped<DatabaseMigrationService>();
 var app = builder.Build();
+
+// Run database migration on startup
+using (var scope = app.Services.CreateScope())
+{
+    var migrationService = scope.ServiceProvider.GetRequiredService<DatabaseMigrationService>();
+    await migrationService.MigrateAsync();
+}
+
 app.UseCors("MyPolicy");
 app.UseAuthentication();
 app.UseWebSockets();
