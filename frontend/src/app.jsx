@@ -1,22 +1,14 @@
-import React from "react";
-import { ToastContainer } from "react-toastify";
 import {
   Page,
   EditForm,
   Feature,
-  ComponentExt,
   ChromeTabs,
-  LangSelect,
   Client,
-  EditableComponent,
 } from "../lib/index.js";
 import { Spinner } from "../lib/spinner.js";
 import { LoginBL } from "./forms/login.jsx";
 import "./slimselect3.css";
 import "./index.css";
-import AppComponent from "./AppComponent.jsx";
-import Decimal from "decimal.js";
-import VNTank from "./components/VnTank.jsx";
 
 export class App {
   /** @type {Page} */

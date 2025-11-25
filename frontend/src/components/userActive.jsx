@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import DropdownComponent from './DropdownComponent';
 import { Client } from '../../lib';
-import { fetchData, addData, updateData } from '../redux/genericSlice'; // Update to use the Redux Toolkit slice
+import { fetchData } from '../redux/genericSlice'; // Update to use the Redux Toolkit slice
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
@@ -23,10 +22,10 @@ const UserActive = () => {
             const response = await Client.Instance.PostAsync({}, "/api/GetUserActive");
             dispatch(fetchData({ key: USERACTIVE_KEY, data: response }));
         };
-        const handleUserConnectMessage = (data) => {
+        const handleUserConnectMessage = (_data) => {
             fetchNotificationsData();
         };
-        const handleUserDisConnectMessage = (data) => {
+        const handleUserDisConnectMessage = (_data) => {
             fetchNotificationsData();
         };
         window.addEventListener("UserConnect", handleUserConnectMessage);

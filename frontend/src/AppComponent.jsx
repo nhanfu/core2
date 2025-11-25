@@ -1,14 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { ToastContainer } from "react-toastify";
+import { useEffect, useState } from "react";
 import { ChromeTabs, Client } from "../lib";
-import UserDropdown from "./components/userDropdown.jsx";
-import NotificationDropdown from "./components/NotificationDropdown.jsx";
-import LangComponent from "./components/LangComponent.jsx";
 import store from "./redux/store.js";
-import { Provider } from "react-redux";
-import UserActive from "./components/userActive.jsx";
-import ChatBot from "./components/ChatBot.jsx";
-import ExchangeRate from "./components/ExchangeRate.jsx";
 import { EditForm } from "../lib";
 const AppComponent = ({ editForm }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);

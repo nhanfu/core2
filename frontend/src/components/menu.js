@@ -9,7 +9,7 @@ import {
 } from "../../lib";
 import EventType from "../../lib/models/eventType.js";
 import { ElementType } from "../../lib/models/elementType.js";
-import Sortable, { Swap } from "sortablejs";
+import Sortable from "sortablejs";
 export class MenuComponent extends EditableComponent {
   CurrentHref;
   /**
@@ -240,7 +240,7 @@ export class MenuComponent extends EditableComponent {
   RenderMenuItems(menuItems) {
     Html.Instance.Ul.Render();
     if (Client.SystemRole) {
-      var seft = this;
+      var _seft = this;
       new Sortable(Html.Context, {
         animation: 500, // Animation kéo dài hơn
         ghostClass: "blue-background-class",
@@ -364,7 +364,7 @@ export class MenuComponent extends EditableComponent {
    * @param {Event} e
    * @param {Feature} feature
    */
-  MenuItemContextMenu(e, feature) {
+  MenuItemContextMenu(e, _feature) {
     e.preventDefault();
     e.stopPropagation();
   }

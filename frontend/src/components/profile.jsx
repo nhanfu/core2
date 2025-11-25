@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./profile.css";
 import { Client, TabEditor } from "../../lib";
 import { LoginBL } from "../forms/login";
@@ -14,7 +14,7 @@ const Profile = () => {
     }
   };
 
-  const handleLogout = (event) => {
+  const handleLogout = (_event) => {
     Client.Token = null;
     localStorage.removeItem("UserInfo");
     unsubscribeToken();

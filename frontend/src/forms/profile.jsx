@@ -1,7 +1,5 @@
 import "./profile.css";
-import React from "react";
 import { Client, Page } from "../../lib/index.js";
-import { ToastContainer } from "react-toastify";
 import { Toast } from "../../lib/toast.js";
 import { LoginBL } from "./login.jsx";
 
