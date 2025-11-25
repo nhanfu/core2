@@ -1,5 +1,3 @@
-import React from "react";
-import { ToastContainer } from "react-toastify";
 import { Client, Html, EditForm } from "../../lib";
 import { KeyCodeEnum, RoleEnum } from "../../lib/models/enum.js";
 import { Toast } from "../../lib/toast.js";
@@ -205,7 +203,7 @@ export class LoginBL extends EditForm {
       oldToken &&
       new Date(oldToken.RefreshTokenExp) > Client.EpsilonNow
     ) {
-      Client.RefreshToken().then((newToken) => {
+      Client.RefreshToken().then((_newToken) => {
         App.Instance.RenderLayout().then(async () => {
           await this.InitAppIfEmpty();
         });
@@ -241,7 +239,7 @@ export class LoginBL extends EditForm {
 
   SubmitLogin() {
     const login = this.LoginEntity;
-    const tcs = new Promise((resolve, reject) => {
+    const tcs = new Promise((resolve, _reject) => {
       // @ts-ignore
       Client.Instance.SubmitAsync({
         Url: `/api/auth/login`,
@@ -534,10 +532,10 @@ export class LoginBL extends EditForm {
     Toast.Success("OKi");
   }
 
-  InitFCM(signout = false) {
+  InitFCM(_signout = false) {
     console.log("Init fcm");
-    let tenantCode = Client.Token.TenantCode;
-    let strUserId = `U${Client.Token.UserId.toString().padStart(7, "0")}`;
+    let _tenantCode = Client.Token.TenantCode;
+    let _strUserId = `U${Client.Token.UserId.toString().padStart(7, "0")}`;
   }
 
   static DiposeAll() {

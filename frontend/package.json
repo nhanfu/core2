@@ -7,9 +7,9 @@
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "https://github.com/nguyentrantin98/htmljs-design.git"
+    "url": "https://github.com/nhanfu/core2.git"
   },
-  "homepage": "https://github.com/nguyentrantin98/example-htmljs-code",
+  "homepage": "https://github.com/nhanfu/core2",
   "files": [
     "lib",
     "README.md"
@@ -53,5 +53,14 @@
     "uuid": "^11.1.0",
     "vite": "^6.2.1",
     "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.28.5",
+    "@babel/eslint-parser": "^7.28.5",
+    "@babel/preset-react": "^7.28.5",
+    "eslint": "8.57.1",
+    "eslint-plugin-react": "7.37.5",
+    "eslint-plugin-react-hooks": "7.0.1",
+    "eslint-plugin-unused-imports": "4.3.0"
   }
 }

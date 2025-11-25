@@ -1,5 +1,3 @@
-import React from "react";
-import { ToastContainer } from "react-toastify";
 import { Client, Html, EditForm } from "../../lib";
 import { WebSocketClient } from "../../lib/clients/websocketClient.js";
 import { KeyCodeEnum, RoleEnum } from "../../lib/models/enum.js";
@@ -207,7 +205,7 @@ export class RegisterBL extends EditForm {
       oldToken &&
       new Date(oldToken.RefreshTokenExp) > Client.EpsilonNow
     ) {
-      Client.RefreshToken().then((newToken) => {
+      Client.RefreshToken().then((_newToken) => {
         App.Instance.RenderLayout().then(() => {
           this.InitAppIfEmpty();
         });
@@ -241,7 +239,7 @@ export class RegisterBL extends EditForm {
 
   SubmitRegister() {
     const login = this.LoginEntity;
-    const tcs = new Promise((resolve, reject) => {
+    const tcs = new Promise((resolve, _reject) => {
       // @ts-ignore
       Client.Instance.SubmitAsync({
         Url: `/api/auth/register`,
@@ -273,7 +271,7 @@ export class RegisterBL extends EditForm {
             }, 200);
           });
       })
-        .catch((e) => resolve(false));
+        .catch((_e) => resolve(false));
     });
     return tcs;
   }
@@ -311,10 +309,10 @@ export class RegisterBL extends EditForm {
     }
   }
 
-  InitFCM(signout = false) {
+  InitFCM(_signout = false) {
     console.log("Init fcm");
-    let tenantCode = Client.Token.TenantCode;
-    let strUserId = `U${Client.Token.UserId.toString().padStart(7, "0")}`;
+    let _tenantCode = Client.Token.TenantCode;
+    let _strUserId = `U${Client.Token.UserId.toString().padStart(7, "0")}`;
   }
 
   static DiposeAll() {

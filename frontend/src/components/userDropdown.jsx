@@ -1,10 +1,7 @@
-import React from "react";
-import DropdownComponent from "./DropdownComponent";
-import { ChromeTabs, Client, TabEditor } from "../../lib";
-import { LoginBL } from "../forms/login";
+import { ChromeTabs, Client } from "../../lib";
 
-const UserDropdown = ({ editForm }) => {
-  const handleLogout = (event) => {
+const UserDropdown = ({ editForm: _editForm }) => {
+  const handleLogout = (_event) => {
     deleteMethod();
   };
 
