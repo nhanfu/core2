@@ -21,6 +21,8 @@ namespace CoreAPI.Data
         public DbSet<Partner> Partners { get; set; }
         public DbSet<Resource> Resources { get; set; }
         public DbSet<UserSetting> UserSettings { get; set; }
+        public DbSet<MasterData> MasterData { get; set; }
+        public DbSet<UserLogin> UserLogins { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -162,6 +164,16 @@ namespace CoreAPI.Data
                 entity.ToTable("UserSetting");
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id).HasMaxLength(50);
+            });
+
+            // UserLogin Configuration
+            modelBuilder.Entity<UserLogin>(entity =>
+            {
+                entity.ToTable("UserLogin");
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).HasMaxLength(50);
+                entity.Property(e => e.UserId).HasMaxLength(50);
+                entity.HasIndex(e => e.UserId);
             });
         }
     }

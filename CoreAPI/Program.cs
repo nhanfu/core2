@@ -125,9 +125,9 @@ using (var scope = app.Services.CreateScope())
     // Apply pending migrations
     await dbContext.Database.MigrateAsync();
     
-    // Run legacy migration service for backward compatibility
-    var migrationService = scope.ServiceProvider.GetRequiredService<DatabaseMigrationService>();
-    await migrationService.MigrateAsync();
+    //// Run legacy migration service for backward compatibility
+    //var migrationService = scope.ServiceProvider.GetRequiredService<DatabaseMigrationService>();
+    //await migrationService.MigrateAsync();
 }
 
 app.UseCors("MyPolicy");

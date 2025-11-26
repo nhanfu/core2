@@ -3,6 +3,7 @@ using System;
 using CoreAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CoreAPI.Migrations._202511
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251126074955_InitialUserLogin")]
+    partial class InitialUserLogin
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -722,13 +725,10 @@ namespace CoreAPI.Migrations._202511
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<string>("AccountBranch")
+                    b.Property<string>("AccName")
                         .HasColumnType("text");
 
-                    b.Property<string>("AccountName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("AccountNumber")
+                    b.Property<string>("AccNumber")
                         .HasColumnType("text");
 
                     b.Property<int?>("ActionId")
@@ -736,6 +736,12 @@ namespace CoreAPI.Migrations._202511
 
                     b.Property<bool>("Active")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("AdditionTypeIds")
+                        .HasColumnType("text");
+
+                    b.Property<string>("AdditionTypeIdsText")
+                        .HasColumnType("text");
 
                     b.Property<string>("Address")
                         .HasColumnType("text");
@@ -783,13 +789,13 @@ namespace CoreAPI.Migrations._202511
                     b.Property<string>("ContactPhoneNumber")
                         .HasColumnType("text");
 
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
                     b.Property<decimal?>("CreditLimit")
                         .HasColumnType("numeric");
 
                     b.Property<string>("CustomerTypeId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CustomerTypeIdText")
                         .HasColumnType("text");
 
                     b.Property<string>("DebitAccountId")
@@ -823,12 +829,6 @@ namespace CoreAPI.Migrations._202511
                     b.Property<string>("EmailInv")
                         .HasColumnType("text");
 
-                    b.Property<string>("Fax")
-                        .HasColumnType("text");
-
-                    b.Property<string>("FeatureName")
-                        .HasColumnType("text");
-
                     b.Property<string>("Footer")
                         .HasColumnType("text");
 
@@ -851,6 +851,9 @@ namespace CoreAPI.Migrations._202511
                         .HasColumnType("text");
 
                     b.Property<string>("History")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Icon")
                         .HasColumnType("text");
 
                     b.Property<string>("IdCode")
@@ -890,9 +893,6 @@ namespace CoreAPI.Migrations._202511
                     b.Property<string>("Note")
                         .HasColumnType("text");
 
-                    b.Property<string>("OpenedAt")
-                        .HasColumnType("text");
-
                     b.Property<string>("PartnerTypeIds")
                         .HasColumnType("text");
 
@@ -920,25 +920,10 @@ namespace CoreAPI.Migrations._202511
                     b.Property<string>("Rating")
                         .HasColumnType("text");
 
-                    b.Property<string>("ReceivesAccountName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ReceivesAccountNumber")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ReceivesBankId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ReceivesSwiftCode")
-                        .HasColumnType("text");
-
                     b.Property<string>("RegularShippingFrom")
                         .HasColumnType("text");
 
                     b.Property<string>("ResidenceTypeId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ResidenceTypeIdText")
                         .HasColumnType("text");
 
                     b.Property<int?>("RushMonth")
@@ -962,9 +947,6 @@ namespace CoreAPI.Migrations._202511
                     b.Property<string>("TaxCode")
                         .HasColumnType("text");
 
-                    b.Property<string>("ToastWarning")
-                        .HasColumnType("text");
-
                     b.Property<string>("TrackingURL")
                         .HasColumnType("text");
 
@@ -977,10 +959,10 @@ namespace CoreAPI.Migrations._202511
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Web")
+                    b.Property<string>("Warning")
                         .HasColumnType("text");
 
-                    b.Property<string>("WebSite")
+                    b.Property<string>("Web")
                         .HasColumnType("text");
 
                     b.Property<string>("ZipCode")

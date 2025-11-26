@@ -18,7 +18,6 @@
         public string UpdatedBy { get; set; }
         public string Code { get; set; }
         public string TaxCode { get; set; }
-        public string CreatedBy { get; set; }
         public string GroupId { get; set; }
         public string GenderId { get; set; }
         public DateTime? IssuedDate { get; set; }
@@ -44,15 +43,18 @@
         public string CustomerTypeId { get; set; }
         public string CompanyName { get; set; }
         public string ResidenceTypeId { get; set; }
+        public string ResidenceTypeIdText { get; set; }
         public string Description { get; set; }
         public string CompanyNameInv { get; set; }
         public string EmailInv { get; set; }
         public string AssignmentDebitId { get; set; }
         public string AssignmentInvId { get; set; }
-        public string AccNumber { get; set; }
-        public string AccName { get; set; }
+        public string AccountNumber { get; set; }
+        public string AccountName { get; set; }
         public string BankId { get; set; }
+        public string AccountBranch { get; set; }
         public string SwiftCode { get; set; }
+        public string OpenedAt { get; set; }
         public string IdCode { get; set; }
         public string Password { get; set; }
         public string Industry { get; set; }
@@ -61,7 +63,7 @@
         public string Rating { get; set; }
         public DateTime? PoDate { get; set; }
         public decimal? MinProfitMonth { get; set; }
-        public string Warning { get; set; }
+        public string ToastWarning { get; set; }
         public int? ActionId { get; set; }
         public string RegularShippingFrom { get; set; }
         public string ConditionId { get; set; }
@@ -71,17 +73,22 @@
         public string TrackingURL { get; set; }
         public bool IsNoDebt { get; set; }
         public string PartnerTypeIds { get; set; }
-        public string AdditionTypeIds { get; set; }
         public string PartnerTypeIdsText { get; set; }
-        public string AdditionTypeIdsText { get; set; }
         public string FormatChat { get; set; }
         public string AddressInv { get; set; }
         public string AssignId { get; set; }
         public string History { get; set; }
         public DateTime? Birthday { get; set; }
         public string Logo { get; set; }
+        public string WebSite { get; set; }
+        public string Fax { get; set; }
+        public string ReceivesAccountNumber { get; set; }
+        public string ReceivesAccountName { get; set; }
+        public string ReceivesBankId { get; set; }
+        public string ReceivesSwiftCode { get; set; }
+        public string CustomerTypeIdText { get; set; }
+        public string FeatureName { get; set; }
         public string Header { get; set; }
         public string Footer { get; set; }
-        public string Icon { get; set; }
     }
 }

@@ -57,5 +57,8 @@
         public bool IsDepartment { get; set; }
         public bool IsTeam { get; set; }
         public string PositionId { get; set; }
+        public string MailServer { get; set; }
+        public string PortServer { get; set; }
+
     }
 }

@@ -155,7 +155,7 @@ public class PostgreSqlProvider(IDistributedCache cache, IConfiguration cfg, ISe
             var values = valueFields.Combine(x => x.Value is null ? "null" : $"'{x.Value}'");
             if (fields.IsNullOrWhiteSpace() || values.IsNullOrWhiteSpace()) return null;
             return @$"INSERT INTO ""{vm.Table}"" (""Id"", ""Active"", ""InsertedBy"", ""InsertedDate"", {fields})
-                    VALUES ('{idField.Value}', 1, '{UserId ?? 1.ToString()}', '{now}', {values});";
+                    VALUES ('{idField.Value}', True, '{UserId ?? 1.ToString()}', '{now}', {values});";
         }
     }
 
