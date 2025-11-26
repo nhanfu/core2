@@ -12,6 +12,9 @@ RUN npm install
 # Copy source code
 COPY . .
 
+# Copy .env.docker and rename to .env
+COPY .env.docker .env
+
 # Build the application
 RUN npm run build1
 

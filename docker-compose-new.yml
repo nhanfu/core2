@@ -30,12 +30,12 @@ services:
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_URLS=http://+:8080
+      - ASPNETCORE_URLS=http://+:7080
       - ConnectionStrings__logistics=Host=db;Port=5432;Database=crm;Username=postgres;Password=YourStrongPassword123!;
-      - Tokens__Issuer=http://api.nguyenduyphong.id.vn
+      - Tokens__Issuer=TSNLabs_Id
       - Tokens__Key=f82bccd1-9ef3-4572-83e3-588dfe04e1b9
     ports:
-      - "8080:8080"
+      - "7080:7080"
     depends_on:
       db:
         condition: service_healthy
@@ -57,12 +57,6 @@ services:
       - api
     networks:
       - core2-network
-    environment:
-      - API_URL=http://localhost:8080
-      - VITE_API_HOST=http://localhost:8080
-      - VITE_API_BASE_URI=http://localhost:8080
-      - VITE_API_URL=http://localhost:8080
-
 volumes:
   postgres_data:
     driver: local
