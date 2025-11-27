@@ -1,10 +1,14 @@
 ﻿using Core.Extensions;
 using Core.Middlewares;
 using Core.Services;
+using CoreAPI.Data;
+using CoreAPI.Repositories;
+using CoreAPI.Repositories.Interfaces;
 using CoreAPI.Services;
 using CoreAPI.Services.Sql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System.IO.Compression;
@@ -13,6 +17,22 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var conf = builder.Configuration;
+
+// Add Entity Framework Core with PostgreSQL
+services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(conf.GetConnectionString("logistics"),
+        npgsqlOptions =>
+        {
+            npgsqlOptions.EnableRetryOnFailure(
+                maxRetryCount: 5,
+                maxRetryDelay: TimeSpan.FromSeconds(30),
+                errorCodesToAdd: null);
+        }));
+
+// Register Unit of Work and Repositories
+services.AddScoped<IUnitOfWork, UnitOfWork>();
+services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
 services.AddHttpClient();
 services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
 {
@@ -80,16 +100,36 @@ services.AddAuthentication(options =>
 });
 services.AddDistributedMemoryCache();
 services.AddHttpContextAccessor();
+
+// Legacy SQL providers (can be gradually migrated to use EF Core)
+services.AddScoped<PostgreSqlProvider>();
 services.AddScoped<SqlServerProvider>();
 services.AddScoped<DuckDbProvider>();
-services.AddScoped<ISqlProvider, SqlServerProvider>();
+services.AddScoped<ISqlProvider, PostgreSqlProvider>();
+
 services.AddScoped<UserService>();
 services.AddScoped<AuthService>();
 services.AddScoped<SendMailService>();
 services.AddScoped<PdfService>();
 services.AddScoped<ExcelService>();
 services.AddScoped<OpenAIHttpClientService>();
+services.AddScoped<DatabaseMigrationService>();
+
 var app = builder.Build();
+
+// Apply EF Core migrations and seed data on startup
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    
+    // Apply pending migrations
+    await dbContext.Database.MigrateAsync();
+    
+    //// Run legacy migration service for backward compatibility
+    //var migrationService = scope.ServiceProvider.GetRequiredService<DatabaseMigrationService>();
+    //await migrationService.MigrateAsync();
+}
+
 app.UseCors("MyPolicy");
 app.UseAuthentication();
 app.UseWebSockets();

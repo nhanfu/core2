@@ -1,0 +1,42 @@
+# Build output
+bin/
+obj/
+dist/
+out/
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Visual Studio
+.vs/
+.vscode/
+
+# Development
+*.log
+*.tmp
+
+# Publishing
+publish/
+
+# Environment
+.env
+.env.local
+
+# Uploads and temp files
+wwwroot/upload/
+wwwroot/excel/
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+
+# Test results
+TestResults/
+
+# Misc
+.DS_Store
+*.swp

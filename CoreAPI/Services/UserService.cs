@@ -10,7 +10,7 @@ using CoreAPI.Services.Sql;
 using CoreAPI.ViewModels;
 using Hangfire;
 using LinqKit;
-using Microsoft.Data.SqlClient;
+using Npgsql;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
@@ -123,34 +123,34 @@ public class UserService
 
     public async Task<Dictionary<string, object>[]> GetDictionary()
     {
-        var query = @$"select * from [Dictionary]";
+        var query = @$"SELECT * FROM ""Dictionary""";
         var ds = await _sql.ReadDataSet(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         return ds[0];
     }
     public async Task<Dictionary<string, object>[]> MyNotification()
     {
-        var query = @$"select * from [TaskNotification] where AssignedId = '{UserId}' order by InsertedDate desc";
+        var query = @$"SELECT * FROM ""TaskNotification"" WHERE ""AssignedId"" = '{UserId}' ORDER BY ""InsertedDate"" DESC";
         var ds = await _sql.ReadDataSet(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         return ds[0];
     }
 
     public async Task<Dictionary<string, object>[]> WebConfig()
     {
-        var query = @$"select * from [WebConfig]";
+        var query = @$"SELECT * FROM ""WebConfig""";
         var ds = await _sql.ReadDataSet(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         return ds[0];
     }
 
     public async Task<Dictionary<string, object>[]> SalesFunction()
     {
-        var query = @$"select * from [SaleFunction]";
+        var query = @$"SELECT * FROM ""SaleFunction""";
         var ds = await _sql.ReadDataSet(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         return ds[0];
     }
 
     public async Task<bool> PostUserSetting(UserSetting userSetting)
     {
-        var query = @$"select * from [UserSetting] where UserId = '{UserId}' and ComponentId = '{userSetting.ComponentId}' and FeatureId = '{userSetting.FeatureId}'";
+        var query = @$"SELECT * FROM ""UserSetting"" WHERE ""UserId"" = '{UserId}' AND ""ComponentId"" = '{userSetting.ComponentId}' AND ""FeatureId"" = '{userSetting.FeatureId}'";
         var setting = await _sql.ReadDsAs<UserSetting>(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         if (setting != null)
         {
@@ -179,7 +179,7 @@ public class UserService
 
     public async Task<SqlResult> Go(SqlViewModel sqlViewModel)
     {
-        var query = @$"select * from [{sqlViewModel.Table}] where Id in ({sqlViewModel.Id.CombineStrings()})";
+        var query = @$"SELECT * FROM ""{sqlViewModel.Table}"" WHERE ""Id"" IN ({sqlViewModel.Id.CombineStrings()})";
         var ds = await _sql.ReadDataSet(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         return new SqlResult()
         {
@@ -191,7 +191,7 @@ public class UserService
 
     public async Task<Dictionary<string, object>[][]> Gos(List<Gos> gos)
     {
-        var query = gos.Select(x => @$"select * from [{x.TableName}] where Id in ({x.Ids.CombineStrings()})").Combine(";");
+        var query = gos.Select(x => @$"SELECT * FROM ""{x.TableName}"" WHERE ""Id"" IN ({x.Ids.CombineStrings()})").Combine(";");
         var ds = await _sql.ReadDataSet(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         return ds;
     }
@@ -204,7 +204,7 @@ public class UserService
             FieldName = "@id" + (index + 1),
             Value = x
         }).ToList();
-        var query = @$"select * from [{sqlViewModel.Table}] where [{sqlViewModel.Format.Replace("{", "").Replace("}", "")}] in ({param.Select(x => x.FieldName).ToList().Combine()})";
+        var query = @$"SELECT * FROM ""{sqlViewModel.Table}"" WHERE ""{sqlViewModel.Format.Replace("{", "").Replace("}", "")}"" IN ({param.Select(x => x.FieldName).ToList().Combine()})";
         var ds = await _sql.ReadDataSet(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"), false, param);
         return new SqlResult()
         {
@@ -216,14 +216,14 @@ public class UserService
 
     public async Task<bool> MoveHBL(MoveHBLVM entity)
     {
-        var update = $"UPDATE [Shipment] set ParentId = '{entity.ShipmentId}' where Id in ({entity.ShipmentDetailId.CombineStrings()})";
+        var update = $"UPDATE \"Shipment\" SET \"ParentId\" = '{entity.ShipmentId}' WHERE \"Id\" IN ({entity.ShipmentDetailId.CombineStrings()})";
         await _sql.RunSqlCmd(null, update);
         return true;
     }
 
     public async Task<Conversation> Conversation(Conversation entity)
     {
-        var query = @$"select * from [Conversation] where RecordId = '{entity.RecordId}' and EntityId = '{entity.EntityId}'";
+        var query = @$"SELECT * FROM ""Conversation"" WHERE ""RecordId"" = '{entity.RecordId}' AND ""EntityId"" = '{entity.EntityId}'";
         var conversation = await _sql.ReadDsAs<Conversation>(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         if (conversation is null)
         {
@@ -244,7 +244,7 @@ public class UserService
 
     public async Task<Dictionary<string, object>[]> GetMenu()
     {
-        var query = @$"select * from [Feature] f where IsMenu = 1 and (exists (select Id from FeaturePolicy where FeatureId = f.Id and RoleId in ({RoleIds.CombineStrings()}) and CanRead = 1) or 'ADMIN' in ({RoleIds.CombineStrings()}))";
+        var query = @$"SELECT * FROM ""Feature"" f WHERE ""IsMenu"" = true AND (EXISTS (SELECT ""Id"" FROM ""FeaturePolicy"" WHERE ""FeatureId"" = f.""Id"" AND ""RoleId"" IN ({RoleIds.CombineStrings()}) AND ""CanRead"" = true) OR 'ADMIN' IN ({RoleIds.CombineStrings()}))";
         var ds = await _sql.ReadDataSet(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         return ds[0];
     }
@@ -260,16 +260,16 @@ public class UserService
 
     public async Task<bool> PublishAllFeature(string t)
     {
-        var query = @$"select * from [Feature]";
+        var query = @$"SELECT * FROM ""Feature""";
         var features = await _sql.ReadDsAsArr<Feature>(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics", t));
         foreach (var feature in features)
         {
-            var query2 = @$"select [Component] .*,isnull(def.Value,DefaultVal) as DefaultVal,def.Id as ComponentDefaultValueId
-        from [Component] 
-        outer apply (select top 1 Value,Id from ComponentDefaultValue where ComponentId = Component.Id) as def 
-        where FeatureId = '{feature.Id}'
-        select * from [FeaturePolicy] where FeatureId = '{feature.Id}'
-        select * from [UserSetting] where FeatureId = '{feature.Id}'";
+            var query2 = @$"SELECT c.*, COALESCE(def.""Value"", c.""DefaultVal"") as ""DefaultVal"", def.""Id"" as ""ComponentDefaultValueId""
+        FROM ""Component"" c
+        LEFT JOIN LATERAL (SELECT ""Value"", ""Id"" FROM ""ComponentDefaultValue"" WHERE ""ComponentId"" = c.""Id"" LIMIT 1) def ON true
+        WHERE c.""FeatureId"" = '{feature.Id}'
+        SELECT * FROM ""FeaturePolicy"" WHERE ""FeatureId"" = '{feature.Id}'
+        SELECT * FROM ""UserSetting"" WHERE ""FeatureId"" = '{feature.Id}'";
             var childs = await _sql.ReadDataSet(query2, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
             var components = childs.Length > 0 && childs[0].Length > 0 ? childs[0].Select(x => x.MapTo<Component>()).ToList() : new List<Component>();
             var policys = childs.Length > 1 && childs[1].Length > 0 ? childs[1].Select(x => x.MapTo<FeaturePolicy>()).ToList() : new List<FeaturePolicy>();
@@ -294,16 +294,16 @@ public class UserService
 
     public async Task<bool> PublishFeatureByName(string Name, string t = null)
     {
-        var query = @$"select * from [Feature] where Name = '{Name}'";
+        var query = @$"SELECT * FROM ""Feature"" WHERE ""Name"" = '{Name}'";
         var features = await _sql.ReadDsAsArr<Feature>(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics", t));
         foreach (var feature in features)
         {
-            var query2 = @$"select [Component] .*,isnull(def.Value,DefaultVal) as DefaultVal,def.Id as ComponentDefaultValueId
-        from [Component] 
-        outer apply (select top 1 Value,Id from ComponentDefaultValue where ComponentId = Component.Id) as def 
-        where FeatureId = '{feature.Id}'
-        select * from [FeaturePolicy] where FeatureId = '{feature.Id}'
-        select * from [UserSetting] where FeatureId = '{feature.Id}'";
+            var query2 = @$"SELECT c.*, COALESCE(def.""Value"", c.""DefaultVal"") as ""DefaultVal"", def.""Id"" as ""ComponentDefaultValueId""
+        FROM ""Component"" c
+        LEFT JOIN LATERAL (SELECT ""Value"", ""Id"" FROM ""ComponentDefaultValue"" WHERE ""ComponentId"" = c.""Id"" LIMIT 1) def ON true
+        WHERE c.""FeatureId"" = '{feature.Id}'
+        SELECT * FROM ""FeaturePolicy"" WHERE ""FeatureId"" = '{feature.Id}'
+        SELECT * FROM ""UserSetting"" WHERE ""FeatureId"" = '{feature.Id}'";
             var childs = await _sql.ReadDataSet(query2, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
             var components = childs.Length > 0 && childs[0].Length > 0 ? childs[0].Select(x => x.MapTo<Component>()).ToList() : new List<Component>();
             var policys = childs.Length > 1 && childs[1].Length > 0 ? childs[1].Select(x => x.MapTo<FeaturePolicy>()).ToList() : new List<FeaturePolicy>();
@@ -360,7 +360,7 @@ public class UserService
     {
         if (vm.ComId.IsNullOrWhiteSpace())
         {
-            var sql = vm.Delete.Select(x => $"delete from [{x.Table}] where Id in ({x.Ids.CombineStrings()})");
+            var sql = vm.Delete.Select(x => $"DELETE FROM \"{x.Table}\" WHERE \"Id\" IN ({x.Ids.CombineStrings()})");
             try
             {
                 await _sql.RunSqlCmd(null, sql.Combine(";"));
@@ -372,7 +372,7 @@ public class UserService
         }
         else
         {
-            var query = @$"select top 1 * from [Component] where Id = '{vm.ComId}'";
+            var query = @$"SELECT * FROM ""Component"" WHERE ""Id"" = '{vm.ComId}' LIMIT 1";
             var com = await _sql.ReadDsAs<Component>(query);
             var data = JsonConvert.DeserializeObject<SqlQuery>(com.Query);
             Dictionary<string, object> dictionary = new Dictionary<string, object>
@@ -383,18 +383,18 @@ public class UserService
             if (!data.update.IsNullOrWhiteSpace())
             {
                 var qr = Utils.FormatEntity(data.update, dictionary);
-                var deletequery = qr + ";" + vm.Delete.Select(x => $"delete from [{x.Table}] where Id in ({x.Ids.CombineStrings()})").Combine(";");
+                var deletequery = qr + ";" + vm.Delete.Select(x => $"DELETE FROM \"{x.Table}\" WHERE \"Id\" IN ({x.Ids.CombineStrings()})").Combine(";");
                 try
                 {
                     await _sql.RunSqlCmd(null, deletequery);
                     if (vm.Table == "Component")
                     {
-                        var feature = await _sql.ReadDsAs<Feature>($"SELECT * FROM Feature where Id = '{com.FeatureId}'");
+                        var feature = await _sql.ReadDsAs<Feature>($"SELECT * FROM \"Feature\" WHERE \"Id\" = '{com.FeatureId}'");
                         await PublishFeatureByName(feature.Name);
                     }
                     else if (vm.Table == "FeaturePolicy")
                     {
-                        var feature = await _sql.ReadDsAs<Feature>($"SELECT * FROM Feature where Id = '{com.FeatureId}'");
+                        var feature = await _sql.ReadDsAs<Feature>($"SELECT * FROM \"Feature\" WHERE \"Id\" = '{com.FeatureId}'");
                         await PublishFeatureByName(feature.Name);
                     }
                 }
@@ -405,18 +405,18 @@ public class UserService
             }
             else
             {
-                var sql = vm.Delete.Select(x => $"delete from [{x.Table}] where Id in ({x.Ids.CombineStrings()})");
+                var sql = vm.Delete.Select(x => $"DELETE FROM \"{x.Table}\" WHERE \"Id\" IN ({x.Ids.CombineStrings()})");
                 try
                 {
                     await _sql.RunSqlCmd(null, sql.Combine(";"));
                     if (vm.Table == "Component")
                     {
-                        var feature = await _sql.ReadDsAs<Feature>($"SELECT * FROM Feature where Id = '{com.FeatureId}'");
+                        var feature = await _sql.ReadDsAs<Feature>($"SELECT * FROM \"Feature\" WHERE \"Id\" = '{com.FeatureId}'");
                         await PublishFeatureByName(feature.Name);
                     }
                     else if (vm.Table == "FeaturePolicy")
                     {
-                        var feature = await _sql.ReadDsAs<Feature>($"SELECT * FROM Feature where Id = '{com.FeatureId}'");
+                        var feature = await _sql.ReadDsAs<Feature>($"SELECT * FROM \"Feature\" WHERE \"Id\" = '{com.FeatureId}'");
                         await PublishFeatureByName(feature.Name);
                     }
                 }
@@ -622,7 +622,7 @@ public class UserService
             }
             if (groupReceiverId != null && !groupReceiverId.Value.IsNullOrWhiteSpace())
             {
-                var queryUser = @$"SELECT * FROM [User] where TeamId = '{groupReceiverId.Value}'";
+                var queryUser = @$"SELECT * FROM ""User"" WHERE ""TeamId"" = '{groupReceiverId.Value}'";
                 var users = await _sql.ReadDsAsArr<User>(queryUser);
                 var taskUser = users.Select(x => new TaskNotification()
                 {
@@ -655,7 +655,7 @@ public class UserService
                 updatedItem = rs.updatedItem
             };
         }
-        var query2 = @$"SELECT * FROM ApprovalConfig where VoucherTypeId = '{voucherTypeId.Value}' and ParentId is not null order by Level asc";
+        var query2 = @$"SELECT * FROM ""ApprovalConfig"" WHERE ""VoucherTypeId"" = '{voucherTypeId.Value}' AND ""ParentId"" IS NOT NULL ORDER BY ""Level"" ASC";
         var approvalConfig = await _sql.ReadDsAsArr<ApprovalConfig>(query2);
         if (approvalConfig.Nothing())
         {
@@ -675,12 +675,12 @@ public class UserService
         var user = matchApprovalConfig.UserIds.IsNullOrWhiteSpace() ? Array.Empty<string>() : matchApprovalConfig.UserIds.Split(",");
         if (matchApprovalConfig.IsTeam)
         {
-            var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] where [{nameof(User.TeamId)}] = '{GroupId}' and IsTeam = 1");
+            var users = await _sql.ReadDsAsArr<User>($@"SELECT * FROM ""User"" WHERE ""TeamId"" = '{GroupId}' AND ""IsTeam"" = true");
             user = users.Select(x => x.Id).ToArray();
         }
         if (matchApprovalConfig.IsDepartment)
         {
-            var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] where [{nameof(User.DepartmentId)}] = '{DepartmentId}' and IsDepartment = 1");
+            var users = await _sql.ReadDsAsArr<User>($@"SELECT * FROM ""User"" WHERE ""DepartmentId"" = '{DepartmentId}' AND ""IsDepartment"" = true");
             user = users.Select(x => x.Id).ToArray();
         }
         if (user.Nothing())
@@ -798,7 +798,7 @@ public class UserService
             }
             if (groupReceiverId != null && !groupReceiverId.Value.IsNullOrWhiteSpace())
             {
-                var queryUser = @$"SELECT * FROM [User] where TeamId = '{groupReceiverId.Value}'";
+                var queryUser = @$"SELECT * FROM ""User"" WHERE ""TeamId"" = '{groupReceiverId.Value}'";
                 var users = await _sql.ReadDsAsArr<User>(queryUser);
                 if (users.Select(x => x.Id).ToList().Contains(UserId))
                 {
@@ -852,7 +852,7 @@ public class UserService
                 updatedItem = rs.updatedItem
             };
         }
-        var query2 = @$"SELECT * FROM ApprovalConfig where VoucherTypeId = '{voucherTypeId.Value}' and ParentId is not null  order by Level asc";
+        var query2 = @$"SELECT * FROM ""ApprovalConfig"" WHERE ""VoucherTypeId"" = '{voucherTypeId.Value}' AND ""ParentId"" IS NOT NULL  ORDER BY ""Level"" ASC";
         var approvalConfig = await _sql.ReadDsAsArr<ApprovalConfig>(query2);
         if (approvalConfig.Nothing())
         {
@@ -862,7 +862,7 @@ public class UserService
                 message = "Please config approved"
             };
         }
-        var queryApprovement = @$"SELECT * FROM Approvement where Name = '{name}' and RecordId = '{id}' and Approved = 1 and IsEnd = 0 order by CurrentLevel desc";
+        var queryApprovement = @$"SELECT * FROM ""Approvement"" WHERE ""Name"" = '{name}' AND ""RecordId"" = '{id}' AND ""Approved"" = 1 AND ""IsEnd"" = 0 ORDER BY ""CurrentLevel"" DESC";
         var approvements = await _sql.ReadDsAsArr<Approvement>(queryApprovement);
         var matchApprovalConfig = approvalConfig.FirstOrDefault(x => x.Level == 1);
         if (matchApprovalConfig is null)
@@ -880,12 +880,12 @@ public class UserService
             var userEndApproved = nextConfig1.UserIds.IsNullOrWhiteSpace() ? Array.Empty<string>() : nextConfig1.UserIds.Split(",");
             if (nextConfig1.IsTeam)
             {
-                var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] where [{nameof(User.TeamId)}] = '{GroupId}' and IsTeam = 1");
+                var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM \"User\" WHERE \"TeamId\" = '{GroupId}' AND \"IsTeam\" = true");
                 userEndApproved = users.Select(x => x.Id).ToArray();
             }
             if (nextConfig1.IsDepartment)
             {
-                var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] where [{nameof(User.DepartmentId)}] = '{DepartmentId}' and IsDepartment = 1");
+                var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM \"User\" WHERE \"DepartmentId\" = '{DepartmentId}' AND \"IsDepartment\" = true");
                 userEndApproved = users.Select(x => x.Id).ToArray();
             }
             if (userEndApproved.Nothing())
@@ -935,6 +935,8 @@ public class UserService
                 EntityId = name,
                 Avatar = Avatar,
                 FeatureName = featureName is null ? null : featureName.Value,
+                //FeatureName2 = featureName2 is null ? null : featureName2.Value,
+                //FeatureName3 = featureName3 is null ? null : featureName3.Value,
                 Title = titLe.Value ?? "",
                 Title2 = FullName + " has approved your request.",
                 Icon = "fal fa-smile",
@@ -962,12 +964,12 @@ public class UserService
         var userApproved = nextConfig.UserIds.IsNullOrWhiteSpace() ? Array.Empty<string>() : nextConfig.UserIds.Split(",");
         if (nextConfig.IsTeam)
         {
-            var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] where [{nameof(User.TeamId)}] = '{GroupId}' and IsTeam = 1");
+            var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM \"User\" WHERE \"TeamId\" = '{GroupId}' AND \"IsTeam\" = true");
             userApproved = users.Select(x => x.Id).ToArray();
         }
         if (nextConfig.IsDepartment)
         {
-            var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] where [{nameof(User.DepartmentId)}] = '{DepartmentId}' and IsDepartment = 1");
+            var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM \"User\" WHERE \"DepartmentId\" = '{DepartmentId}' AND \"IsDepartment\" = true");
             userApproved = users.Select(x => x.Id).ToArray();
         }
         if (userApproved.Nothing())
@@ -1020,6 +1022,8 @@ public class UserService
                 EntityId = name,
                 Avatar = Avatar,
                 FeatureName = featureName is null ? null : featureName.Value,
+                //FeatureName2 = featureName2 is null ? null : featureName2.Value,
+                //FeatureName3 = featureName3 is null ? null : featureName3.Value,
                 Title = titLe.Value ?? "",
                 Title2 = FullName + " has approved your request.",
                 Icon = "fal fa-smile",
@@ -1038,6 +1042,7 @@ public class UserService
             return new SqlResult()
             {
                 status = 200,
+                message = "Your data has been approved.",
                 updatedItem = rs2.updatedItem
             };
         }
@@ -1046,12 +1051,12 @@ public class UserService
             userApproved = nextLevelConfig.UserIds.IsNullOrWhiteSpace() ? Array.Empty<string>() : nextLevelConfig.UserIds.Split(",");
             if (nextLevelConfig.IsTeam)
             {
-                var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] where [{nameof(User.TeamId)}] = '{GroupId}' and IsTeam = 1");
+                var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM \"User\" WHERE \"TeamId\" = '{GroupId}' AND \"IsTeam\" = true");
                 userApproved = users.Select(x => x.Id).ToArray();
             }
             if (nextLevelConfig.IsDepartment)
             {
-                var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] where [{nameof(User.DepartmentId)}] = '{DepartmentId}' and IsDepartment = 1");
+                var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM \"User\" WHERE \"DepartmentId\" = '{DepartmentId}' AND \"IsDepartment\" = true");
                 userApproved = users.Select(x => x.Id).ToArray();
             }
             if (userApproved.Nothing())
@@ -1079,6 +1084,8 @@ public class UserService
                 EntityId = name,
                 Avatar = Avatar,
                 FeatureName = featureName is null ? null : featureName.Value,
+                //FeatureName2 = featureName2 is null ? null : featureName2.Value,
+                //FeatureName3 = featureName3 is null ? null : featureName3.Value,
                 Title = titLe.Value ?? "",
                 Title2 = FullName + " has sent you an approval request.",
                 Icon = "fal fa-smile",
@@ -1216,7 +1223,7 @@ public class UserService
             }
             if (groupReceiverId != null && !groupReceiverId.Value.IsNullOrWhiteSpace())
             {
-                var queryUser = @$"SELECT * FROM [User] where TeamId = '{groupReceiverId.Value}'";
+                var queryUser = @$"SELECT * FROM ""User"" WHERE ""TeamId"" = '{groupReceiverId.Value}'";
                 var users = await _sql.ReadDsAsArr<User>(queryUser);
                 if (users.Select(x => x.Id).ToList().Contains(UserId))
                 {
@@ -1270,7 +1277,7 @@ public class UserService
             if (receiverIds != null && !receiverIds.Value.IsNullOrWhiteSpace())
             {
                 var userString = receiverIds.Value.Split(",");
-                var queryUser = @$"SELECT * FROM [User] where Id in ({userString.CombineStrings()})";
+                var queryUser = @$"SELECT * FROM ""User"" WHERE ""Id"" IN ({userString.CombineStrings()})";
                 var users = await _sql.ReadDsAsArr<User>(queryUser);
                 if (users.Select(x => x.Id).ToList().Contains(UserId))
                 {
@@ -1327,7 +1334,7 @@ public class UserService
                 updatedItem = rs.updatedItem
             };
         }
-        var query2 = @$"SELECT * FROM ApprovalConfig where VoucherTypeId = '{voucherTypeId.Value}' and ParentId is not null  order by Level asc";
+        var query2 = @$"SELECT * FROM ""ApprovalConfig"" WHERE ""VoucherTypeId"" = '{voucherTypeId.Value}' AND ""ParentId"" IS NOT NULL  ORDER BY ""Level"" ASC";
         var approvalConfig = await _sql.ReadDsAsArr<ApprovalConfig>(query2);
         if (approvalConfig.Nothing())
         {
@@ -1347,19 +1354,19 @@ public class UserService
             };
         }
         var maxLevel = approvalConfig.Max(x => x.Level);
-        var queryApprovement = @$"SELECT * FROM Approvement where Name = '{name}' and RecordId = '{id}' and IsEnd = 0 order by CurrentLevel desc";
+        var queryApprovement = @$"SELECT * FROM ""Approvement"" WHERE ""Name"" = '{name}' AND ""RecordId"" = '{id}' AND ""IsEnd"" = 0 ORDER BY ""CurrentLevel"" DESC";
         var approvements = await _sql.ReadDsAsArr<Approvement>(queryApprovement);
         var nextLevel = approvements.Nothing() ? 1 : approvements.FirstOrDefault().NextLevel;
         var nextConfig = approvalConfig.FirstOrDefault(x => x.Level == nextLevel);
         var userApproved = nextConfig.UserIds.IsNullOrWhiteSpace() ? Array.Empty<string>() : nextConfig.UserIds.Split(",");
         if (nextConfig.IsTeam)
         {
-            var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] where [{nameof(User.TeamId)}] = '{GroupId}' and IsTeam = 1");
+            var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM \"User\" WHERE \"TeamId\" = '{GroupId}' AND \"IsTeam\" = true");
             userApproved = users.Select(x => x.Id).ToArray();
         }
         if (nextConfig.IsDepartment)
         {
-            var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM [USER] where [{nameof(User.DepartmentId)}] = '{DepartmentId}' and IsDepartment = 1");
+            var users = await _sql.ReadDsAsArr<User>($"SELECT * FROM \"User\" WHERE \"DepartmentId\" = '{DepartmentId}' AND \"IsDepartment\" = true");
             userApproved = users.Select(x => x.Id).ToArray();
         }
         if (!userApproved.Contains(UserId))
@@ -1410,7 +1417,7 @@ public class UserService
         var patch = task.MapToPatch();
         await SavePatch(patch);
         var rs1 = await SavePatch2(vm);
-        var update = $"Update Approvement set IsEnd = 1 where Name = '{name}' and RecordId = '{id}'";
+        var update = $@"UPDATE ""Approvement"" SET ""IsEnd"" = 1 WHERE ""Name"" = '{name}' AND ""RecordId"" = '{id}'";
         await _sql.RunSqlCmd(null, update);
         return new SqlResult()
         {
@@ -1429,19 +1436,19 @@ public class UserService
         if (!table.Duplicate.IsNullOrWhiteSpace())
         {
             var field = table.Duplicate.Split(",");
-            using SqlConnection connection = new(BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
+            using NpgsqlConnection connection = new(BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
             await connection.OpenAsync();
             try
             {
-                using SqlCommand command = new SqlCommand();
+                using NpgsqlCommand command = new NpgsqlCommand();
                 {
                     command.Connection = connection;
-                    var wheres = field.Select(x => $"[{x}] = @{x.ToLower()} and [{x}] is not null and @{x.ToLower()} is not null").ToList();
+                    var wheres = field.Select(x => $"[{x}] = @{x.ToLower()} AND [{x}] IS NOT NULL AND @{x.ToLower()} IS NOT NULL").ToList();
                     if (Update)
                     {
                         wheres.Add($"[Id] != @id");
                     }
-                    command.CommandText += $"Select Top 1 * from [{patch.Table}] where {wheres.Combine(" and ")}";
+                    command.CommandText += $@"SELECT 1 FROM ""{patch.Table}"" WHERE {wheres.Combine(" AND ")} LIMIT 1";
                     foreach (var item in field)
                     {
                         var val = patch.Changes.FirstOrDefault(x => x.Field == item);
@@ -1527,21 +1534,21 @@ public class UserService
                 new PatchDetail { Field = "UpdatedBy", Value = null },
                 new PatchDetail { Field = "Active", Value = "1" }
             });
-            using SqlConnection connection = new SqlConnection(BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
+            using NpgsqlConnection connection = new NpgsqlConnection(BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
             await connection.OpenAsync();
-            SqlTransaction transaction = connection.BeginTransaction();
+            NpgsqlTransaction transaction = connection.BeginTransaction();
             try
             {
-                using SqlCommand command = new SqlCommand();
+                using NpgsqlCommand command = new NpgsqlCommand();
                 command.Transaction = transaction;
                 command.Connection = connection;
                 var update = filteredChanges.Select(x => $"@{id.Replace("-", "") + x.Field.ToLower()}");
                 var cells = filteredChanges.Select(x => x.Field).ToList();
                 if (!vm.Delete.Nothing())
                 {
-                    command.CommandText += vm.Delete.Select(x => $"delete from [{x.Table}] where Id in ({x.Ids.CombineStrings()})").Combine(";");
+                    command.CommandText += vm.Delete.Select(x => $"DELETE FROM \"{x.Table}\" WHERE \"Id\" IN ({x.Ids.CombineStrings()})").Combine(";");
                 }
-                command.CommandText += $"INSERT into [{vm.Table}]([{cells.Combine("],[")}]) values({update.Combine()})";
+                command.CommandText += $"INSERT into \"{vm.Table}\"([{cells.Combine("],[")}]) values({update.Combine()})";
                 foreach (var item in filteredChanges)
                 {
                     if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
@@ -1575,7 +1582,7 @@ public class UserService
                                         });
                                 var updateDetail = filteredDetailChanges.Select(x => $"@{idDetail.Replace("-", "") + x.Field.ToLower()}");
                                 var cellsDetails = filteredDetailChanges.Select(x => x.Field).ToList();
-                                command.CommandText += $";INSERT into [{detail.Table}]([{cellsDetails.Combine("],[")}]) values({updateDetail.Combine()})";
+                                command.CommandText += $@";INSERT into ""{detail.Table}""([{cellsDetails.Combine("],[")}]) values({updateDetail.Combine()})";
                                 foreach (var item in filteredDetailChanges)
                                 {
                                     if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
@@ -1594,7 +1601,7 @@ public class UserService
                                         });
                                 filteredDetailChanges = filteredDetailChanges.Where(x => x.Field != "Id").ToList();
                                 var updateDetail = filteredDetailChanges.Select(x => $"[{x.Field}] = @{idDetail.Replace("-", "") + x.Field.ToLower()}");
-                                command.CommandText += $";UPDATE [{detail.Table}] SET {updateDetail.Combine()} WHERE Id = '{idDetail}';";
+                                command.CommandText += $@";UPDATE ""{detail.Table}"" SET {updateDetail.Combine()} WHERE ""Id"" = '{idDetail}';";
                                 foreach (var item in filteredDetailChanges)
                                 {
                                     if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
@@ -1621,10 +1628,10 @@ public class UserService
                 await transaction.CommitAsync();
                 await connection.CloseAsync();
                 var childs = new List<string>();
-                var sql = $"SELECT * FROM [{vm.Table}] where Id = '{id}'";
+                var sql = $@"SELECT * FROM ""{vm.Table}"" WHERE ""Id"" = '{id}'";
                 foreach (var item in selectIds)
                 {
-                    sql += $";SELECT * FROM [{item.Table}] where Id in ({item.Ids.CombineStrings()})";
+                    sql += $@";SELECT * FROM ""{item.Table}"" WHERE ""Id"" IN ({item.Ids.CombineStrings()})";
                 }
                 var entity = await _sql.ReadDataSet(sql);
                 selectIds.ForEach(x =>
@@ -1643,7 +1650,7 @@ public class UserService
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-                var entity = await _sql.ReadDataSet($"SELECT * FROM [{vm.Table}] where Id = '{id}'");
+                var entity = await _sql.ReadDataSet($@"SELECT * FROM ""{vm.Table}"" WHERE ""Id"" = '{id}'");
                 return new SqlResult()
                 {
                     updatedItem = entity[0],
@@ -1657,7 +1664,7 @@ public class UserService
             var (dup, mess, currentEntity) = await CheckDuplicate(vm, true);
             if (dup)
             {
-                var sql = $"SELECT * FROM [{vm.Table}] where Id = '{id}'";
+                var sql = @$"SELECT * FROM ""{vm.Table}"" WHERE ""Id"" = '{id}'";
                 var entity = await _sql.ReadDataSet(sql);
                 return new SqlResult()
                 {
@@ -1671,13 +1678,13 @@ public class UserService
                 new PatchDetail { Field = "UpdatedDate", Value = DateTime.Now.ToISOFormat()},
                 new PatchDetail { Field = "UpdatedBy", Value = UserId },
             });
-            using (SqlConnection connection = new SqlConnection(BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics")))
+            using (NpgsqlConnection connection = new NpgsqlConnection(BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics")))
             {
                 await connection.OpenAsync();
-                SqlTransaction transaction = connection.BeginTransaction();
+                NpgsqlTransaction transaction = connection.BeginTransaction();
                 try
                 {
-                    using (SqlCommand command = new SqlCommand())
+                    using (NpgsqlCommand command = new NpgsqlCommand())
                     {
                         command.Transaction = transaction;
                         command.Connection = connection;
@@ -1685,9 +1692,9 @@ public class UserService
                         var update = updates.Select(x => $"[{x.Field}] = @{id.Replace("-", "") + x.Field.ToLower()}");
                         if (!vm.Delete.Nothing())
                         {
-                            command.CommandText += vm.Delete.Select(x => $"delete from [{x.Table}] where Id in ({x.Ids.CombineStrings()})").Combine(";");
+                            command.CommandText += vm.Delete.Select(x => $"DELETE FROM \"{x.Table}\" WHERE \"Id\" IN ({x.Ids.CombineStrings()})").Combine(";");
                         }
-                        command.CommandText += $" UPDATE [{vm.Table}] SET {update.Combine()} WHERE Id = '{id}';";
+                        command.CommandText += $" UPDATE \"{vm.Table}\" SET {update.Combine()} WHERE \"Id\" = '{id}';";
                         foreach (var item in updates)
                         {
                             if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
@@ -1731,7 +1738,7 @@ public class UserService
                                         });
                                         var updateDetail = filteredDetailChanges.Select(x => $"@{idDetail.Replace("-", "") + x.Field.ToLower()}");
                                         var insertDetail = filteredDetailChanges.Select(x => $"[{x.Field}]").ToList();
-                                        command.CommandText += $";INSERT into [{detail.Table}]({insertDetail.Combine()}) values({updateDetail.Combine()})";
+                                        command.CommandText += $@";INSERT into ""{detail.Table}""([{insertDetail.Combine("],[")}]) values({updateDetail.Combine()})";
                                         foreach (var item in filteredDetailChanges)
                                         {
                                             if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
@@ -1750,7 +1757,7 @@ public class UserService
                                         });
                                         filteredDetailChanges = filteredDetailChanges.Where(x => x.Field != "Id").ToList();
                                         var updateDetail = filteredDetailChanges.Select(x => $"[{x.Field}] = @{idDetail.Replace("-", "") + x.Field.ToLower()}");
-                                        command.CommandText += $";UPDATE [{detail.Table}] SET {updateDetail.Combine()} WHERE Id = '{idDetail}';";
+                                        command.CommandText += $@";UPDATE ""{detail.Table}"" SET {updateDetail.Combine()} WHERE ""Id"" = '{idDetail}';";
                                         foreach (var item in filteredDetailChanges)
                                         {
                                             if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
@@ -1777,10 +1784,10 @@ public class UserService
                         }
                         await transaction.CommitAsync();
                         await connection.CloseAsync();
-                        var sql = $"SELECT * FROM [{vm.Table}] where Id = '{id}'";
+                        var sql = $@"SELECT * FROM ""{vm.Table}"" WHERE ""Id"" = '{id}'";
                         foreach (var item in selectIds)
                         {
-                            sql += $";SELECT * FROM [{item.Table}] where Id in ({item.Ids.CombineStrings()})";
+                            sql += $@";SELECT * FROM ""{item.Table}"" WHERE ""Id"" IN ({item.Ids.CombineStrings()})";
                         }
                         var entity = await _sql.ReadDataSet(sql);
                         selectIds.ForEach(x =>
@@ -1795,13 +1802,13 @@ public class UserService
                         else if (vm.Table == "Component")
                         {
                             var featureId = filteredChanges.FirstOrDefault(x => x.Field == "FeatureId").Value;
-                            var feature = await _sql.ReadDsAs<Feature>($"SELECT * FROM Feature where Id = '{featureId}'");
+                            var feature = await _sql.ReadDsAs<Feature>($"SELECT * FROM \"Feature\" WHERE \"Id\" = '{featureId}'");
                             await PublishFeatureByName(feature.Name);
                         }
                         else if (vm.Table == "FeaturePolicy")
                         {
                             var featureId = filteredChanges.FirstOrDefault(x => x.Field == "FeatureId").Value;
-                            var feature = await _sql.ReadDsAs<Feature>($"SELECT * FROM Feature where Id = '{featureId}'");
+                            var feature = await _sql.ReadDsAs<Feature>($"SELECT * FROM \"Feature\" WHERE \"Id\" = '{featureId}'");
                             await PublishFeatureByName(feature.Name);
                         }
                         await Notification(vm, id, filteredChanges, oldIsSend, receiverIds);
@@ -1817,7 +1824,7 @@ public class UserService
                 catch (Exception ex)
                 {
                     transaction.Rollback();
-                    var entity = await _sql.ReadDataSet($"SELECT * FROM [{vm.Table}] where Id = '{id}'");
+                    var entity = await _sql.ReadDataSet($@"SELECT * FROM ""{vm.Table}"" WHERE ""Id"" = '{id}'");
                     return new SqlResult()
                     {
                         updatedItem = entity[0],
@@ -1829,15 +1836,39 @@ public class UserService
         }
     }
 
+    public async Task<int> SavePatches(PatchVM[] patches)
+    {
+        if (patches.Nothing()) throw new ArgumentException($"{nameof(patches)} is null or empty");
+        patches = patches.Where(x => x.Id is not null).ToArray();
+        patches[0].CachedDataConn ??= await _sql.GetConnStrFromKey(patches[0].DataConn);
+        patches[0].CachedMetaConn ??= await _sql.GetConnStrFromKey(patches[0].MetaConn);
+        var tables = patches.Select(x => x.Table);
+        string rightQuery = @$"SELECT * FROM ""FeaturePolicy"" 
+            WHERE ""Active"" = true AND (""CanWrite"" = true OR ""CanWriteAll"" = true) AND ""EntityName"" IN ({tables.CombineStrings()}) AND ""RoleId"" IN ({RoleIds.CombineStrings()})";
+        var permissions = await _sql.ReadDsAsArr<FeaturePolicy>(rightQuery, patches[0].CachedMetaConn);
+        permissions = permissions.DistinctBy(x => x.TableName).ToArray();
+        var lackPerTables = patches.Select(x => x.Table).Except(permissions.Select(x => x.TableName)).ToArray();
+        if (lackPerTables.Length > 0)
+        {
+            throw new ApiException($"All table must have write permission {lackPerTables.CombineStrings()}")
+            {
+                StatusCode = HttpStatusCode.Unauthorized
+            };
+        }
+        var sql = patches.Select(_sql.GetCreateOrUpdateCmd).Where(x => x is not null).Combine(";\n");
+        var result = await _sql.RunSqlCmd(patches[0].CachedDataConn, sql);
+        return result;
+    }
+
     public async Task<SqlResult> SavePatchs2(List<PatchVM> vms)
     {
         var selectIds = new List<DetailData>();
-        using SqlConnection connection = new SqlConnection(BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
+        using NpgsqlConnection connection = new NpgsqlConnection(BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         await connection.OpenAsync();
-        SqlTransaction transaction = connection.BeginTransaction();
+        NpgsqlTransaction transaction = connection.BeginTransaction();
         try
         {
-            using SqlCommand command = new SqlCommand();
+            using NpgsqlCommand command = new NpgsqlCommand();
             command.Transaction = transaction;
             command.Connection = connection;
             foreach (var vm in vms)
@@ -1851,20 +1882,20 @@ public class UserService
                 {
                     id = id.Substring(1);
                     AddDefaultFields(filteredChanges, new List<PatchDetail>()
-                            {
-                                new PatchDetail { Field = "InsertedDate", Value = DateTime.Now.ToISOFormat() },
-                                new PatchDetail { Field = "InsertedBy", Value = UserId },
-                                new PatchDetail { Field = "UpdatedDate", Value = null },
-                                new PatchDetail { Field = "UpdatedBy", Value = null },
-                                new PatchDetail { Field = "Active", Value = "1" }
-                            });
+                    {
+                        new PatchDetail { Field = "InsertedDate", Value = DateTime.Now.ToISOFormat() },
+                        new PatchDetail { Field = "InsertedBy", Value = UserId },
+                        new PatchDetail { Field = "UpdatedDate", Value = null },
+                        new PatchDetail { Field = "UpdatedBy", Value = null },
+                        new PatchDetail { Field = "Active", Value = "1" }
+                    });
                     var update = filteredChanges.Select(x => $"@{id.Replace("-", "") + x.Field.ToLower()}");
                     var cells = filteredChanges.Select(x => x.Field).ToList();
                     if (!vm.Delete.Nothing())
                     {
-                        command.CommandText += vm.Delete.Select(x => $"delete from [{x.Table}] where Id in ({x.Ids.CombineStrings()})").Combine(";");
+                        command.CommandText += vm.Delete.Select(x => $"DELETE FROM \"{x.Table}\" WHERE \"Id\" IN ({x.Ids.CombineStrings()})").Combine(";");
                     }
-                    command.CommandText += $"INSERT into [{vm.Table}]([{cells.Combine("],[")}]) values({update.Combine()})";
+                    command.CommandText += $"INSERT INTO \"{vm.Table}\"(\"{cells.Combine("\",\"")}\") VALUES({update.Combine()})";
                     foreach (var item in filteredChanges)
                     {
                         if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
@@ -1877,17 +1908,17 @@ public class UserService
                 else
                 {
                     AddDefaultFields(filteredChanges, new List<PatchDetail>()
-                            {
-                                new PatchDetail { Field = "UpdatedDate", Value = DateTime.Now.ToISOFormat()},
-                                new PatchDetail { Field = "UpdatedBy", Value = UserId },
-                            });
+                    {
+                        new PatchDetail { Field = "UpdatedDate", Value = DateTime.Now.ToISOFormat()},
+                        new PatchDetail { Field = "UpdatedBy", Value = UserId },
+                    });
                     var updates = filteredChanges.Where(x => x.Field != "Id").ToList();
-                    var update = updates.Select(x => $"[{x.Field}] = @{id.Replace("-", "") + x.Field.ToLower()}");
+                    var update = updates.Select(x => $"\"{x.Field}\" = @{id.Replace("-", "") + x.Field.ToLower()}");
                     if (!vm.Delete.Nothing())
                     {
-                        command.CommandText += vm.Delete.Select(x => $"delete from [{x.Table}] where Id in ({x.Ids.CombineStrings()})").Combine(";");
+                        command.CommandText += vm.Delete.Select(x => $"DELETE FROM \"{x.Table}\" WHERE \"Id\" IN ({x.Ids.CombineStrings()})").Combine(";");
                     }
-                    command.CommandText += $" UPDATE [{vm.Table}] SET {update.Combine()} WHERE Id = '{id}';";
+                    command.CommandText += $"UPDATE \"{vm.Table}\" SET {update.Combine()} WHERE \"Id\" = '{id}';";
                     foreach (var item in updates)
                     {
                         if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
@@ -1913,16 +1944,16 @@ public class UserService
                             if (idDetail.StartsWith("-"))
                             {
                                 AddDefaultFields(filteredDetailChanges, new List<PatchDetail>()
-                                        {
-                                            new PatchDetail { Field = "InsertedDate", Value = DateTime.Now.ToISOFormat() },
-                                            new PatchDetail { Field = "InsertedBy", Value = UserId },
-                                            new PatchDetail { Field = "UpdatedDate", Value = null },
-                                            new PatchDetail { Field = "UpdatedBy", Value = null },
-                                            new PatchDetail { Field = "Active", Value = "1" }
-                                        });
+                                {
+                                    new PatchDetail { Field = "InsertedDate", Value = DateTime.Now.ToISOFormat() },
+                                    new PatchDetail { Field = "InsertedBy", Value = UserId },
+                                    new PatchDetail { Field = "UpdatedDate", Value = null },
+                                    new PatchDetail { Field = "UpdatedBy", Value = null },
+                                    new PatchDetail { Field = "Active", Value = "1" }
+                                });
                                 var updateDetail = filteredDetailChanges.Select(x => $"@{idDetail.Replace("-", "") + x.Field.ToLower()}");
                                 var cellsDetails = filteredDetailChanges.Select(x => x.Field).ToList();
-                                command.CommandText += $";INSERT into [{detail.Table}]([{cellsDetails.Combine("],[")}]) values({updateDetail.Combine()})";
+                                command.CommandText += $";INSERT INTO \"{detail.Table}\"(\"{cellsDetails.Combine("\",\"")}\") VALUES({updateDetail.Combine()})";
                                 foreach (var item in filteredDetailChanges)
                                 {
                                     if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
@@ -1935,13 +1966,13 @@ public class UserService
                             else
                             {
                                 AddDefaultFields(filteredDetailChanges, new List<PatchDetail>()
-                                        {
-                                            new PatchDetail { Field = "UpdatedDate", Value = DateTime.Now.ToISOFormat()},
-                                            new PatchDetail { Field = "UpdatedBy", Value = UserId },
-                                        });
+                                {
+                                    new PatchDetail { Field = "UpdatedDate", Value = DateTime.Now.ToISOFormat()},
+                                    new PatchDetail { Field = "UpdatedBy", Value = UserId },
+                                });
                                 filteredDetailChanges = filteredDetailChanges.Where(x => x.Field != "Id").ToList();
-                                var updateDetail = filteredDetailChanges.Select(x => $"[{x.Field}] = @{idDetail.Replace("-", "") + x.Field.ToLower()}");
-                                command.CommandText += $";UPDATE [{detail.Table}] SET {updateDetail.Combine()} WHERE Id = '{idDetail}';";
+                                var updateDetail = filteredDetailChanges.Select(x => $"\"{x.Field}\" = @{idDetail.Replace("-", "") + x.Field.ToLower()}");
+                                command.CommandText += $";UPDATE \"{detail.Table}\" SET {updateDetail.Combine()} WHERE \"Id\" = '{idDetail}';";
                                 foreach (var item in filteredDetailChanges)
                                 {
                                     if ((item.Value != null && item.Value.Contains(id) || item.Field == "Id") && item.Value.StartsWith("-"))
@@ -1968,10 +1999,10 @@ public class UserService
             }
             await transaction.CommitAsync();
             await connection.CloseAsync();
-            var sql = $"SELECT * FROM [{vms[0].Table}] where Id = '{vms[0].Changes.FirstOrDefault(x => x.Field == "Id").Value}'";
+            var sql = $"SELECT * FROM \"{vms[0].Table}\" WHERE \"Id\" = '{vms[0].Changes.FirstOrDefault(x => x.Field == "Id").Value}'";
             foreach (var item in selectIds)
             {
-                sql += $";SELECT * FROM [{item.Table}] where Id in ({item.Ids.CombineStrings()})";
+                sql += $";SELECT * FROM \"{item.Table}\" WHERE \"Id\" IN ({item.Ids.CombineStrings()})";
             }
             var entity = await _sql.ReadDataSet(sql);
             selectIds.ForEach(x =>
@@ -1981,7 +2012,7 @@ public class UserService
             if (vms[0].Table == "Component")
             {
                 var featureId = vms[0].Changes.FirstOrDefault(x => x.Field == "FeatureId").Value;
-                var feature = await _sql.ReadDsAs<Feature>($"SELECT * FROM Feature where Id = '{featureId}'");
+                var feature = await _sql.ReadDsAs<Feature>($"SELECT * FROM \"Feature\" WHERE \"Id\" = '{featureId}'");
                 await PublishFeatureByName(feature.Name);
             }
             return new SqlResult()
@@ -1995,7 +2026,7 @@ public class UserService
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-            var entity = await _sql.ReadDataSet($"SELECT * FROM [{vms[0].Table}] where Id = '{vms[0].Changes.FirstOrDefault(x => x.Field == "Id").Value}'");
+            var entity = await _sql.ReadDataSet($"SELECT * FROM \"{vms[0].Table}\" WHERE \"Id\" = '{vms[0].Changes.FirstOrDefault(x => x.Field == "Id").Value}'");
             return new SqlResult()
             {
                 updatedItem = entity[0],
@@ -2003,6 +2034,26 @@ public class UserService
                 message = ex.Message
             };
         }
+    }
+    public async Task<string[]> DeactivateAsync(SqlViewModel vm)
+    {
+        vm.CachedDataConn ??= await _sql.GetConnStrFromKey(vm.DataConn ?? "default");
+        var allRights = await GetEntityPerm(vm.Table, null, vm.CachedDataConn);
+        var canDeactivateAll = allRights.Any(x => x.CanDeactivateAll);
+        var canDeactivateSelf = allRights.Any(x => x.CanDeactivate);
+        // PostgreSQL: Changed [brackets] to "quotes", IS NOT NULL, ORDER BY
+        var query = $"select * from \"{vm.Table}\" where \"Id\" in ({vm.Id.CombineStrings()})";
+        var ds = await _sql.ReadDataSet(query, vm.CachedDataConn);
+        var rows = ds.Length > 0 ? ds[0] : null;
+        if (rows.Nothing()) return null ;
+        var canDeactivateRows = rows.Where(x =>
+        {
+            return canDeactivateAll || canDeactivateSelf && Utils.IsOwner(x, UserId, RoleIds);
+        }).Select(x => x.GetValueOrDefault(Utils.IdField)?.ToString()).ToArray();
+        if (canDeactivateRows.Nothing()) return null;
+        var deactivateCmd = $"update {vm.Table} set \"Active\" = false where \"Id\" in ({canDeactivateRows.CombineStrings()})";
+        await _sql.RunSqlCmd(vm.CachedDataConn, deactivateCmd);
+        return canDeactivateRows;
     }
 
     private async Task Notification(PatchVM vm, string id, List<PatchDetail> filteredChanges, string isSend, PatchDetail receiverIds)
@@ -2016,7 +2067,8 @@ public class UserService
         if (isSend == "0" && receiverIds != null && receiverIds.Value != null)
         {
             var userString = receiverIds.Value.Split(",");
-            var queryUser = @$"SELECT * FROM [User] where Id in ({userString.CombineStrings()})";
+            var queryUser = @$"SELECT * FROM ""User"" WHERE ""Id"" IN ({userString.CombineStrings()})";
+
             var users = await _sql.ReadDsAsArr<User>(queryUser);
             var templateMessage = " has sent you an approval request.";
             var f2 = featureName2 is null ? null : featureName2.Value;
@@ -2056,16 +2108,18 @@ public class UserService
 
     public async Task<Dictionary<string, object>[][]> GetTableColumns(string tableName)
     {
+        // PostgreSQL: Completely different system catalogs
         string query = $@"
-        SELECT c.COLUMN_NAME 
-        FROM INFORMATION_SCHEMA.COLUMNS c
-        JOIN sys.columns sc ON c.COLUMN_NAME = sc.name 
-        AND OBJECT_ID(c.TABLE_SCHEMA + '.' + c.TABLE_NAME) = sc.object_id
-        WHERE c.TABLE_NAME = '{tableName}' 
-        AND sc.is_computed = 0";
+        SELECT column_name as ""COLUMN_NAME""
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+        AND table_name = '{tableName}'
+        AND is_generated = 'NEVER'
+        ORDER BY ordinal_position";
 
         return await _sql.ReadDataSet(query);
     }
+
 
     private async Task<bool> HasWritePermission(PatchVM vm)
     {
@@ -2080,7 +2134,7 @@ public class UserService
         }
         else
         {
-            var origin = @$"select t.* from [{vm.Table}] as t where t.Id = '{oldId}'";
+            var origin = @$"select t.* from ""{vm.Table}"" as t where t.""Id"" = '{oldId}'";
             var ds = await _sql.ReadDataSet(origin, vm.CachedDataConn);
             var originRow = ds.Length > 0 && ds[0].Length > 0 ? ds[0][0] : null;
             var isOwner = Utils.IsOwner(originRow, UserId, RoleIds);
@@ -2094,7 +2148,7 @@ public class UserService
         if (vm.ByPassPerm) return null;
         var allRights = vm.ByPassPerm ? [] : await GetEntityPerm(vm.Table, recordId: null, vm.CachedMetaConn);
         var idField = vm.Delete;
-        var origin = @$"select t.* from [{vm.Table}] as t where t.Id in ()";
+        var origin = @$"select t.* from ""{vm.Table}"" as t where t.""Id"" in ()";
         var ds = await _sql.ReadDataSet(origin, vm.CachedDataConn);
         var originRows = ds.Length > 0 && ds[0].Length > 0 ? ds[0] : null;
         return originRows.WhereNot(x =>
@@ -2102,50 +2156,6 @@ public class UserService
             var isOwner = Utils.IsOwner(x, UserId, RoleIds);
             return isOwner || allRights.Any(x => x.CanDeleteAll);
         }).Select(x => x.GetValueOrDefault(Utils.IdField)).Combine();
-    }
-
-    public async Task<int> SavePatches(PatchVM[] patches)
-    {
-        if (patches.Nothing()) throw new ArgumentException($"{nameof(patches)} is null or empty");
-        patches = patches.Where(x => x.Id is not null).ToArray();
-        patches[0].CachedDataConn ??= await _sql.GetConnStrFromKey(patches[0].DataConn);
-        patches[0].CachedMetaConn ??= await _sql.GetConnStrFromKey(patches[0].MetaConn);
-        var tables = patches.Select(x => x.Table);
-        string rightQuery = @$"select * from [FeaturePolicy] 
-            where Active = 1 and (CanWrite = 1 or CanWriteAll = 1) and EntityName in ({tables.CombineStrings()}) and RoleId in ({RoleIds.CombineStrings()})";
-        var permissions = await _sql.ReadDsAsArr<FeaturePolicy>(rightQuery, patches[0].CachedMetaConn);
-        permissions = permissions.DistinctBy(x => x.TableName).ToArray();
-        var lackPerTables = patches.Select(x => x.Table).Except(permissions.Select(x => x.TableName)).ToArray();
-        if (lackPerTables.Length > 0)
-        {
-            throw new ApiException($"All table must have write permission {lackPerTables.CombineStrings()}")
-            {
-                StatusCode = HttpStatusCode.Unauthorized
-            };
-        }
-        var sql = patches.Select(_sql.GetCreateOrUpdateCmd).Where(x => x is not null).Combine(";\n");
-        var result = await _sql.RunSqlCmd(patches[0].CachedDataConn, sql);
-        return result;
-    }
-
-    public async Task<string[]> DeactivateAsync(SqlViewModel vm)
-    {
-        vm.CachedDataConn ??= await _sql.GetConnStrFromKey(vm.DataConn ?? "default");
-        var allRights = await GetEntityPerm(vm.Table, null, vm.CachedDataConn);
-        var canDeactivateAll = allRights.Any(x => x.CanDeactivateAll);
-        var canDeactivateSelf = allRights.Any(x => x.CanDeactivate);
-        var query = $"select * from [{vm.Table}] where Id in ({vm.Id.CombineStrings()})";
-        var ds = await _sql.ReadDataSet(query, vm.CachedDataConn);
-        var rows = ds.Length > 0 ? ds[0] : null;
-        if (rows.Nothing()) return null;
-        var canDeactivateRows = rows.Where(x =>
-        {
-            return canDeactivateAll || canDeactivateSelf && Utils.IsOwner(x, UserId, RoleIds);
-        }).Select(x => x.GetValueOrDefault(Utils.IdField)?.ToString()).ToArray();
-        if (canDeactivateRows.Nothing()) return null;
-        var deactivateCmd = $"update {vm.Table} set Active = 0 where Id in ({canDeactivateRows.CombineStrings()})";
-        await _sql.RunSqlCmd(vm.CachedDataConn, deactivateCmd);
-        return canDeactivateRows;
     }
 
     public async Task<SqlComResult> ComQuery(SqlViewModel vm)
@@ -2285,11 +2295,14 @@ public class UserService
 
     public async Task<CheckDeleteResult> CheckDelete(CheckDeleteItem item)
     {
-        var query = @$"select top 1 * from [Component] where Id = '{item.ComId}'";
+        var query = @$"SELECT * FROM ""Component"" WHERE ""Id"" = '{item.ComId}'";
         var com = await _sql.ReadDsAs<Component>(query);
         var data = JsonConvert.DeserializeObject<SqlQuery>(com.Query);
-        Dictionary<string, object> dictionary = item.Params.IsNullOrWhiteSpace() ? new Dictionary<string, object>() : JsonConvert.DeserializeObject<Dictionary<string, object>>(item.Params);
-        dictionary["EntityIds"] = item.EntityIds.CombineStrings();
+        Dictionary<string, object> dictionary = new Dictionary<string, object>
+        {
+            { "EntityIds", item.EntityIds.CombineStrings() },
+            { "ComId", item.ComId }
+        };
         var qr = Utils.FormatEntity(data.delete, dictionary);
         var exists = await _sql.ReadDataSet(qr);
         return new CheckDeleteResult()
@@ -2460,10 +2473,10 @@ public class UserService
         }
         else
         {
-            var q = @$"select * from [FeaturePolicy] 
-            where Active = 1 and EntityName = '{entityName}'
-            and (RecordId = '{recordId}' or '{recordId}' = '') and RoleId in ({RoleIds.CombineStrings()})";
-            if (pre != null) q += $" and {permissionName} = 1";
+            var q = @$"SELECT * FROM ""FeaturePolicy"" 
+            WHERE ""Active"" = 1 AND ""EntityName"" = '{entityName}'
+            AND (""RecordId"" = '{recordId}' OR '{recordId}' = '') AND ""RoleId"" IN ({RoleIds.CombineStrings()})";
+            if (pre != null) q += $" AND {permissionName} = 1";
             permissions = await _sql.ReadDsAsArr<FeaturePolicy>(q, connStr);
             await SetStringAsync(key, JsonConvert.SerializeObject(permissions), Utils.CacheTTL);
         }
@@ -2473,7 +2486,7 @@ public class UserService
 
     public async Task<Dictionary<string, object>> GetMessageActive()
     {
-        var users = await _sql.ReadDataSet($"SELECT COUNT(Id) as Total FROM [ConversationRead] WHERE UserId = '{UserId}' and [Read] = 0", BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
+        var users = await _sql.ReadDataSet($@"SELECT COUNT(""Id"") as ""Total"" FROM ""ConversationRead"" WHERE ""UserId"" = '{UserId}' AND ""Read"" = false", BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         return users[0][0];
     }
 
@@ -2581,12 +2594,12 @@ public class UserService
 
         var patches = await ParseCsvFile(path, table);
 
-        using SqlConnection connection = new(connStr);
+        using NpgsqlConnection connection = new(connStr);
         await connection.OpenAsync();
         using var transaction = connection.BeginTransaction();
         try
         {
-            using SqlCommand command = new();
+            using NpgsqlCommand command = new();
             command.Transaction = transaction;
             command.Connection = connection;
             patches.SelectForEach((x, index) =>
@@ -2605,20 +2618,23 @@ public class UserService
         return true;
     }
 
-    private void ImportItem(PatchVM vm, SqlCommand command, int index)
+    private void ImportItem(PatchVM vm, NpgsqlCommand command, int index)
     {
         var idField = vm.Changes.FirstOrDefault(x => x.Field == Utils.IdField);
         var oldId = idField?.OldVal;
         var valueFields = vm.Changes.Where(x => !_sql.SystemFields.Contains(x.Field.ToLower())).ToList();
-        var update = valueFields.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
+        var update = valueFields.Select(x => $"@{x.Field.ToLower()}");
         var now = DateTime.Now.ToString(DateTimeExt.DateFormat);
 
         var fields = valueFields.Combine(x => $"[{x.Field}]");
         var fieldParams = valueFields.Combine(x => $"@{x.Field}{index}");
-        command.CommandText += @$"insert into [{vm.Table}] ([Id], [TenantCode], [Active], [InsertedBy], [InsertedDate], {fields}) 
-                        values ('{idField.Value}', '{TenantCode}', 1, '{UserId}', '{now}', {fieldParams});";
+        command.CommandText += @$"INSERT into ""{vm.Table}""([{fields.Combine("],[")}]) values({fieldParams.Combine()})";
         foreach (var item in valueFields)
         {
+            if ( item.Field == "Id" && item.Value.StartsWith("-"))
+            {
+                item.Value = item.Value.Substring(1);
+            }
             command.Parameters.AddWithValue($"@{item.Field}{index}", item.Value is null ? DBNull.Value : item.Value);
         }
     }

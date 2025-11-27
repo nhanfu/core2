@@ -27,16 +27,20 @@
 		<PackageReference Include="MailKit" Version="4.11.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.3" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="9.0.3" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.3" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.3">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="162.5.57" />
+		<PackageReference Include="Microsoft.SqlServer.DacFx" Version="162.5.57" />
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.3" />
     <PackageReference Include="OpenAI" Version="2.1.0" />
 		<PackageReference Include="PuppeteerSharp" Version="20.1.3" />
 		<PackageReference Include="System.Security.Cryptography.Algorithms" Version="4.3.1" />
 		<PackageReference Include="Topaz" Version="1.4.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Migrations\" />
 	</ItemGroup>
 
 </Project>
