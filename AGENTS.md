@@ -58,10 +58,9 @@
   - Linked issue/task when available.
 
 ## Roadmap Direction
-- Execution source of truth for AI agents is `PRD.md` (requirements, acceptance criteria, verification loop).
 - Roadmap ownership is in `ROADMAP.md` (phases, priorities, and success metrics).
 - Priority order: runtime rewrite first, database migration second, YAML support third.
-- Backward compatibility is not required for roadmap execution; package-first outcomes are preferred for smaller client projects.
+- Backward compatibility is required for roadmap execution; package-first outcomes are preferred for smaller client projects.
 
 ## Security & Configuration Tips
 - Do not commit real secrets; use local overrides in `CoreAPI/appsettings.Development.json` and environment variables.

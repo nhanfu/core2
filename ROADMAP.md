@@ -2,14 +2,13 @@
 
 ## Principles
 - Priority order is fixed: runtime rewrite, then database migration, then YAML support.
-- Backward compatibility is not required during roadmap execution.
+- Backward compatibility is required during roadmap execution.
 - Development workflow is TDD-first (`red -> green -> refactor`) for runtime and metadata transformation logic.
 - Goal is package-first delivery for smaller client projects.
 
 ## Phase 1: Runtime Rewrite (Now)
 ### Scope
-- Move core runtime from `CoreAPI (.NET)` toward a native JS runtime on `Bun`.
-- Keep security-oriented execution patterns inspired by `Deno`.
+- Move core runtime from `CoreAPI (.NET)` toward a native JS runtime on `bun`. The new runtime is under `svc` folder.
 - Preserve metadata-driven execution model (metadata defines behavior, runtime executes).
 - Support initial data loading from meta attributes, not only by Entity ID.
 

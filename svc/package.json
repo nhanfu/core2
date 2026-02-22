@@ -1,0 +1,26 @@
+{
+  "name": "@corejs/runtime",
+  "version": "0.1.0",
+  "description": "Corejs metadata-driven runtime on Bun",
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.js",
+    "./package.json": "./package.json"
+  },
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "bun build src/index.ts --outdir dist --target bun && tsc -p tsconfig.build.json --emitDeclarationOnly --declaration --declarationMap --outDir dist",
+    "example:a": "bun examples/client-a.ts",
+    "example:b": "bun examples/client-b.ts",
+    "test": "bun test",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "bun-types": "^1.0.0",
+    "typescript": "^5.4.5"
+  }
+}
