@@ -11,7 +11,7 @@ describe("SqlBuilder", () => {
         { Field: "Name", Value: "Jane" },
       ],
     });
-    expect(sql).toContain("insert into [User]");
+    expect(sql).toContain('insert into "User"');
     expect(sql).toContain("'abc'");
     expect(sql).toContain("Jane");
   });
@@ -25,12 +25,12 @@ describe("SqlBuilder", () => {
         { Field: "Name", Value: "Jane" },
       ],
     });
-    expect(sql).toContain("update [User]");
-    expect(sql).toContain("where [Id] = 'old'");
+    expect(sql).toContain('update "User"');
+    expect(sql).toContain('where "Id" = \'old\'');
   });
 
-  test("buildCreateOrUpdate supports postgres quoting", () => {
-    const builder = new SqlBuilder("user1", "postgres");
+  test("buildCreateOrUpdate uses postgres quoting", () => {
+    const builder = new SqlBuilder("user1");
     const sql = builder.buildCreateOrUpdate({
       Table: "User",
       Changes: [

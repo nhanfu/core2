@@ -51,7 +51,7 @@ describe("UserService", () => {
     await service.savePatch(patch);
 
     expect(executes.length).toBe(1);
-    expect(executes[0]).toContain("insert into [Demo]");
+    expect(executes[0]).toContain('insert into "Demo"');
   });
 
   test("parseCsvFile creates patches", async () => {

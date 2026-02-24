@@ -1,8 +1,8 @@
-import type { PatchDetail, PatchVM, SqlDialect } from "./types.js";
+import type { PatchDetail, PatchVM } from "./types.js";
 import { SystemFields, escapeSqlValue, isNullOrWhiteSpace, toLowerSafe } from "./utils.js";
 
 export class SqlBuilder {
-  constructor(private userId: string = "1", private dialect: SqlDialect = "sqlserver") {}
+  constructor(private userId: string = "1") {}
 
   buildCreateOrUpdate(vm: PatchVM): string {
     const normalized = this.normalizePatch(vm);
@@ -59,7 +59,7 @@ export class SqlBuilder {
       .filter((x) => toLowerSafe(x.Field) !== "id")
       .map((x) => {
         const field = this.wrapIdent(x.Field);
-        return x.Value === null ? `${field} = null` : `${field} = ${escapeSqlValue(x.Value, this.dialect)}`;
+        return x.Value === null ? `${field} = null` : `${field} = ${escapeSqlValue(x.Value)}`;
       });
     if (updateFields.length === 0) return "";
     const now = new Date().toISOString();
@@ -76,7 +76,7 @@ export class SqlBuilder {
     const valueFields = (vm.Changes || [])
       .filter((x) => toLowerSafe(x.Field) !== "active" && toLowerSafe(x.Field) !== "id");
     const fields = valueFields.map((x) => this.wrapIdent(x.Field));
-    const values = valueFields.map((x) => (x.Value === null ? "null" : escapeSqlValue(x.Value, this.dialect)));
+    const values = valueFields.map((x) => (x.Value === null ? "null" : escapeSqlValue(x.Value)));
     if (fields.length === 0 || values.length === 0) return "";
     const now = new Date().toISOString();
     const baseFields = ["Id", "Active", "InsertedBy", "InsertedDate"].map((field) => this.wrapIdent(field));
@@ -85,11 +85,11 @@ export class SqlBuilder {
   }
 
   private wrapIdent(name: string): string {
-    return this.dialect === "postgres" ? `"${name}"` : `[${name}]`;
+    return `"${name}"`;
   }
 
   private wrapTable(name: string | null | undefined): string {
-    if (!name) return this.dialect === "postgres" ? '""' : "[]";
+    if (!name) return '""';
     return this.wrapIdent(name);
   }
 }

@@ -1,7 +1,5 @@
 export type IdValue = string | number;
 
-export type SqlDialect = "sqlserver" | "postgres";
-
 export interface FeaturePolicy {
   Id?: string;
   FeatureId?: string;
@@ -359,7 +357,6 @@ export interface RuntimeContext {
   metaConn?: string;
   dataConn?: string;
   variables?: Record<string, unknown>;
-  sqlDialect?: SqlDialect;
 }
 
 export interface DataAdapter {

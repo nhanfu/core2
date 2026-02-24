@@ -45,24 +45,30 @@ export class PatchService {
 
   async hardDelete(vm: PatchVM): Promise<boolean> {
     if (!vm.ComId) {
-      const sql = (vm.Delete || []).map((item) => `delete from [${item.Table}] where Id in (${combineStrings(item.Ids, this.context.sqlDialect)})`).join(";");
+      const sql = (vm.Delete || [])
+        .map((item) => `delete from "${item.Table}" where "Id" in (${combineStrings(item.Ids)})`)
+        .join(";");
       if (sql) await this.context.execute(sql);
       return true;
     }
-    const componentRows = await this.context.query(`select top 1 * from [Component] where Id = ${escapeValue(vm.ComId, this.context.sqlDialect)}`);
+    const componentRows = await this.context.query(`select * from "Component" where "Id" = ${escapeValue(vm.ComId)} limit 1`);
     const com = componentRows[0] as Component | undefined;
     if (!com || !com.Query) return false;
     const data = parseJsonSafe<{ update?: string }>(com.Query);
     const dictionary: Record<string, unknown> = {
-      EntityIds: combineStrings(vm.Delete?.flatMap((item) => item.Ids) || [], this.context.sqlDialect),
+      EntityIds: combineStrings(vm.Delete?.flatMap((item) => item.Ids) || []),
       NewId: vm.NewId,
     };
     if (data?.update) {
       const updateSql = formatEntity(data.update, dictionary);
-      const deleteSql = (vm.Delete || []).map((item) => `delete from [${item.Table}] where Id in (${combineStrings(item.Ids, this.context.sqlDialect)})`).join(";");
+      const deleteSql = (vm.Delete || [])
+        .map((item) => `delete from "${item.Table}" where "Id" in (${combineStrings(item.Ids)})`)
+        .join(";");
       await this.context.execute([updateSql, deleteSql].filter(Boolean).join(";"));
     } else {
-      const deleteSql = (vm.Delete || []).map((item) => `delete from [${item.Table}] where Id in (${combineStrings(item.Ids, this.context.sqlDialect)})`).join(";");
+      const deleteSql = (vm.Delete || [])
+        .map((item) => `delete from "${item.Table}" where "Id" in (${combineStrings(item.Ids)})`)
+        .join(";");
       await this.context.execute(deleteSql);
     }
     return true;
@@ -80,10 +86,10 @@ export class PatchService {
   }
 
   async deactivateAsync(vm: SqlViewModel): Promise<string[] | null> {
-    const rows = await this.context.query(`select * from [${vm.Table}] where Id in (${combineStrings(vm.Id, this.context.sqlDialect)})`);
+    const rows = await this.context.query(`select * from "${vm.Table}" where "Id" in (${combineStrings(vm.Id)})`);
     if (isEmpty(rows)) return null;
     const rowIds = rows.map((row) => toStringSafe(getRowValue(row, "Id")));
-    await this.context.execute(`update ${vm.Table} set Active = 0 where Id in (${combineStrings(rowIds, this.context.sqlDialect)})`);
+    await this.context.execute(`update "${vm.Table}" set "Active" = 0 where "Id" in (${combineStrings(rowIds)})`);
     return rowIds;
   }
 }

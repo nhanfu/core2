@@ -1,6 +1,6 @@
 import { access, mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
-import type { PatchDetail, PatchVM, SqlDialect } from "../types.js";
+import type { PatchDetail, PatchVM } from "../types.js";
 import { escapeSqlValue, formatTemplate, isNullOrWhiteSpace, parseJsonSafe } from "../utils.js";
 
 export const DEFAULT_CACHE_TTL_MS = 30 * 60 * 1000;
@@ -19,15 +19,15 @@ export const normalizeIdValue = (value: string | null | undefined): string | nul
   return value;
 };
 
-export const escapeValue = (value: string | null | undefined, dialect: SqlDialect = "sqlserver"): string => {
+export const escapeValue = (value: string | null | undefined): string => {
   if (value === null || value === undefined) return "null";
-  return escapeSqlValue(String(value), dialect);
+  return escapeSqlValue(String(value));
 };
 
-export const combineStrings = (values?: Array<string | number | null | undefined>, dialect: SqlDialect = "sqlserver"): string => {
+export const combineStrings = (values?: Array<string | number | null | undefined>): string => {
   const filtered = (values || []).filter((value): value is string | number => value !== null && value !== undefined);
   if (filtered.length === 0) return "";
-  return filtered.map((value) => escapeValue(String(value), dialect)).join(",");
+  return filtered.map((value) => escapeValue(String(value))).join(",");
 };
 
 export const distinctBy = <T, K>(items: T[], selector: (item: T) => K): T[] => {
@@ -59,11 +59,11 @@ export const formatEntity = (template: string, data: Record<string, unknown>): s
   return formatTemplate(template, data || {});
 };
 
-export const getChange = (vm: PatchVM, field: string): PatchDetail | undefined =>
-  vm.Changes?.find((change) => change.Field === field);
+export const getChange = (vm: PatchVM, excludeField: string): PatchDetail | undefined =>
+  vm.Changes?.find((change) => change.Field !== excludeField);
 
-export const getChangeValue = (vm: PatchVM, field: string): string | null => {
-  const change = getChange(vm, field);
+export const getChangeValue = (vm: PatchVM, excludeField: string): string | null => {
+  const change = getChange(vm, excludeField);
   if (!change) return null;
   return change.Value ?? null;
 };

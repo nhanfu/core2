@@ -4,7 +4,6 @@ import type {
   PatchVM,
   RuntimeContext,
   SqlComResult,
-  SqlDialect,
   SqlViewModel,
 } from "./types.js";
 import { SqlBuilder } from "./sql.js";
@@ -24,7 +23,6 @@ export class UserService implements UserServiceContext {
   request?: RequestInfo;
   webRootPath: string;
   metadataRoot: string;
-  sqlDialect: SqlDialect;
   defaultConnKey: string;
   sqlBuilder: SqlBuilder;
 
@@ -61,7 +59,6 @@ export class UserService implements UserServiceContext {
     this.request = options.request;
     this.webRootPath = options.webRootPath ?? process.cwd();
     this.metadataRoot = options.metadataRoot ?? this.webRootPath;
-    this.sqlDialect = options.sqlDialect ?? "sqlserver";
     this.defaultConnKey = options.defaultConnKey ?? "logistics";
     this.GroupId = options.groupId;
     this.DepartmentId = options.departmentId;
@@ -82,7 +79,7 @@ export class UserService implements UserServiceContext {
     this.TenantCode = options.tenantCode;
     this.RoleIds = ensureArray(options.roleIds);
     this.RoleNames = ensureArray(options.roleNames);
-    this.sqlBuilder = new SqlBuilder(this.UserId || "1", this.sqlDialect);
+    this.sqlBuilder = new SqlBuilder(this.UserId || "1");
 
     this.featureService = new FeatureService(this);
     this.patchService = new PatchService(this, this.featureService);
@@ -125,7 +122,6 @@ export class UserService implements UserServiceContext {
       roleIds: this.RoleIds || [],
       roleNames: this.RoleNames || [],
       userId: this.UserId || undefined,
-      sqlDialect: this.sqlDialect,
     };
   }
 
@@ -220,32 +216,33 @@ export class UserService implements UserServiceContext {
     const finalPath = await this.storageService.saveFileToUpload(file, true);
     const patches = await this.storageService.parseCsvFile(finalPath, table);
     if (patches.length === 0) return true;
+    const wrapIdent = (name: string) => `"${name}"`;
     const sqlStatements = patches.map((patch) => {
       const changes = patch.Changes || [];
-      const fields = changes.map((change) => `[${change.Field}]`);
-      const values = changes.map((change) => escapeValue(change.Value || null, this.sqlDialect));
+      const fields = changes.map((change) => wrapIdent(change.Field));
+      const values = changes.map((change) => escapeValue(change.Value || null));
       const now = toIso(this.now());
-      if (!fields.includes("[Id]")) {
-        fields.unshift("[Id]");
-        values.unshift(escapeValue(crypto.randomUUID(), this.sqlDialect));
+      if (!fields.includes('"Id"')) {
+        fields.unshift(wrapIdent("Id"));
+        values.unshift(escapeValue(crypto.randomUUID()));
       }
-      if (!fields.includes("[TenantCode]")) {
-        fields.unshift("[TenantCode]");
-        values.unshift(escapeValue(this.TenantCode || "system", this.sqlDialect));
+      if (!fields.includes('"TenantCode"')) {
+        fields.unshift(wrapIdent("TenantCode"));
+        values.unshift(escapeValue(this.TenantCode || "system"));
       }
-      if (!fields.includes("[Active]")) {
-        fields.unshift("[Active]");
+      if (!fields.includes('"Active"')) {
+        fields.unshift(wrapIdent("Active"));
         values.unshift("1");
       }
-      if (!fields.includes("[InsertedBy]")) {
-        fields.unshift("[InsertedBy]");
-        values.unshift(escapeValue(this.UserId || "0", this.sqlDialect));
+      if (!fields.includes('"InsertedBy"')) {
+        fields.unshift(wrapIdent("InsertedBy"));
+        values.unshift(escapeValue(this.UserId || "0"));
       }
-      if (!fields.includes("[InsertedDate]") && !fields.includes("[Inserteddate]")) {
-        fields.unshift("[InsertedDate]");
-        values.unshift(escapeValue(now, this.sqlDialect));
+      if (!fields.includes('"InsertedDate"') && !fields.includes('"Inserteddate"')) {
+        fields.unshift(wrapIdent("InsertedDate"));
+        values.unshift(escapeValue(now));
       }
-      return `insert into [${table}] (${fields.join(", ")}) values (${values.join(", ")})`;
+      return `insert into ${wrapIdent(table)} (${fields.join(", ")}) values (${values.join(", ")})`;
     });
     if (!isEmpty(sqlStatements)) {
       await this.execute(sqlStatements.join(";"));

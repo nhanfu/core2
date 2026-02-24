@@ -1,4 +1,4 @@
-import type { DataAdapter, MetadataStore, SqlDialect } from "../types.js";
+import type { DataAdapter, MetadataStore } from "../types.js";
 import type { SqlBuilder } from "../sql.js";
 
 export interface CacheStore {
@@ -25,7 +25,6 @@ export interface UserServiceOptions {
   request?: RequestInfo;
   webRootPath?: string;
   metadataRoot?: string;
-  sqlDialect?: SqlDialect;
   defaultConnKey?: string;
   groupId?: string;
   departmentId?: string;
@@ -58,7 +57,6 @@ export interface UserServiceContext {
   request?: RequestInfo;
   webRootPath: string;
   metadataRoot: string;
-  sqlDialect: SqlDialect;
   defaultConnKey: string;
   sqlBuilder: SqlBuilder;
   GroupId?: string;
