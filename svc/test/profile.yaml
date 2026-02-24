@@ -2,11 +2,18 @@ Id: profile
 Name: profile
 Label: Profile
 Order: 18
+Query:
+  Global:
+    // js
+    (vm) => `select * from "Users" where "Id" = ${vm.id}`
 Script:
   // js
   return {
     Init: async function (com, entity) {
-      const ds = await this.Client.GetByIdAsync("User", [this.Token.UserId]);
+      const ds = await this.client.fetch("Global", 
+        { 
+          id: this.urlQuery.userId ?? this.Token?.UserId 
+        });
       this.Entity = ds.data[0];
       this.UpdateView(true)
     },
@@ -50,7 +57,7 @@ Components:
             SmCol: 6
             Query:
               // js
-              (params) => `select ds.* from "MasterData" as ds left join
+              (vm) => `select ds.* from "MasterData" as ds left join
                 "MasterData" ds1 on ds."ParentId" = ds1."Id" where ds1."Name" = 'Department Type',
 
                 select count(ds.Id) as total from "MasterData"
@@ -91,7 +98,7 @@ Components:
             SmCol: 6
             Query: 
               // js
-              (params) => `select * from "Partner" as ds where "ServiceId" = 5;
+              (vm) => `select * from "Partner" as ds where "ServiceId" = 5;
                 select count(ds.Id) as total from "Partner" as ds where "ServiceId" = 5
             RefName: Partner
             Template: '[{ "FieldName" : "Name", "Label" : "Name", "ComponentType" : "Input" }]'
@@ -209,7 +216,7 @@ Components:
         ClassName: btn btn-sm btn-primary
         HotKey: Ctrl-S
         Events: '{ "click" : "SavePatch" }'
-FeaturePolicies:
+Policies:
   - Role: ADMIN
     CanRead: true
     CanWrite: true
