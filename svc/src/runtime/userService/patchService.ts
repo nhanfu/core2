@@ -80,7 +80,6 @@ export class PatchService {
   }
 
   async deactivateAsync(vm: SqlViewModel): Promise<string[] | null> {
-    vm.CachedDataConn = await this.context.resolveConnection(vm.DataConn || "default") || vm.CachedDataConn;
     const rows = await this.context.query(`select * from [${vm.Table}] where Id in (${combineStrings(vm.Id, this.context.sqlDialect)})`);
     if (isEmpty(rows)) return null;
     const rowIds = rows.map((row) => toStringSafe(getRowValue(row, "Id")));
