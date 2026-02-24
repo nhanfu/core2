@@ -104,29 +104,15 @@ export class QueryService {
     }
     const feature = await this.featureService.getFeatureFromJson(vm.Feature || "", this.context.TenantCode || "system");
     if (!feature) return null;
-    const com = await this.findComponentById(vm, feature.Components || [], feature);
+    const com = await this.featureService.findComponentById(
+      vm.ComId || "",
+      feature.Components || [],
+      this.context.RoleIds || [],
+      feature,
+    );
     if (!com) return null;
     await this.context.cache.set(comKey, JSON.stringify(com));
     return com;
-  }
-
-  private async findComponentById(vm: SqlViewModel, components: Component[], feature: Feature): Promise<Component | null> {
-    for (const component of components) {
-      if (component.Id === vm.ComId) {
-        if (!component.IsPrivate || (this.context.RoleIds || []).includes("ADMIN")) {
-          return component;
-        }
-        const permissions = (feature.FeaturePolicies || []).filter(
-          (policy) => (this.context.RoleIds || []).includes(policy.RoleId || "") && policy.CanRead,
-        );
-        return permissions.length > 0 ? component : null;
-      }
-      if (component.Components && component.Components.length > 0) {
-        const found = await this.findComponentById(vm, component.Components, feature);
-        if (found) return found;
-      }
-    }
-    return null;
   }
 
   private async runjsWrap(vm: SqlViewModel): Promise<SqlComResult> {

@@ -51,8 +51,7 @@ export class PatchService {
       if (sql) await this.context.execute(sql);
       return true;
     }
-    const componentRows = await this.context.query(`select * from "Component" where "Id" = ${escapeValue(vm.ComId)} limit 1`);
-    const com = componentRows[0] as Component | undefined;
+    const com = await this.getComponent(vm);
     if (!com || !com.Query) return false;
     const data = parseJsonSafe<{ update?: string }>(com.Query);
     const dictionary: Record<string, unknown> = {
@@ -91,5 +90,25 @@ export class PatchService {
     const rowIds = rows.map((row) => toStringSafe(getRowValue(row, "Id")));
     await this.context.execute(`update "${vm.Table}" set "Active" = 0 where "Id" in (${combineStrings(rowIds)})`);
     return rowIds;
+  }
+
+  private async getComponent(vm: PatchVM): Promise<Component | null> {
+    const comKey = `Component${vm.ComId}`.toUpperCase();
+    const cached = await this.context.cache.get(comKey);
+    if (cached) {
+      const parsed = parseJsonSafe<Component>(cached);
+      if (parsed) return parsed;
+    }
+    const feature = await this.featureService.getFeatureFromJson(vm.FeatureId || "", this.context.TenantCode || "system");
+    if (!feature) return null;
+    const com = await this.featureService.findComponentById(
+      vm.ComId || "",
+      feature.Components || [],
+      this.context.RoleIds || [],
+      feature,
+    );
+    if (!com) return null;
+    await this.context.cache.set(comKey, JSON.stringify(com));
+    return com;
   }
 }

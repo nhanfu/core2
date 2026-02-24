@@ -30,4 +30,32 @@ export class FeatureService {
     if (!content) return null;
     return parseJsonSafe<Feature>(content);
   }
+
+
+  async findComponentById(
+    comId: string,
+    components: Component[],
+    roleIds: string[],
+    feature?: Feature,
+  ): Promise<Component | null> {
+    for (const component of components) {
+      if (component.Id === comId) {
+        if (!component.IsPrivate || roleIds.includes("ADMIN")) {
+          return component;
+        }
+        if (feature) {
+          const permissions = (feature.FeaturePolicies || []).filter(
+            (policy) => roleIds.includes(policy.RoleId || "") && policy.CanRead,
+          );
+          return permissions.length > 0 ? component : null;
+        }
+        return null;
+      }
+      if (component.Components && component.Components.length > 0) {
+        const found = await this.findComponentById(comId, component.Components, roleIds, feature);
+        if (found) return found;
+      }
+    }
+    return null;
+  }
 }
