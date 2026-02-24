@@ -1,0 +1,302 @@
+using Core.Enums;
+using Core.Exceptions;
+using Core.Extensions;
+using Core.Models;
+using Core.ViewModels;
+using CoreAPI.BgService;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
+using Npgsql;
+using System.Data;
+
+namespace CoreAPI.Services.Sql;
+
+public class PostgreSqlProvider(IDistributedCache cache, IConfiguration cfg, IServiceProvider iServiceProvider) : ISqlProvider
+{
+    public List<string> SystemFields { get; set; }
+    static readonly TSqlTokenType[] SideEffectCmd = [
+        TSqlTokenType.Insert, TSqlTokenType.Update, TSqlTokenType.Delete,
+            TSqlTokenType.Create, TSqlTokenType.Drop, TSqlTokenType.Alter,
+            TSqlTokenType.Truncate, TSqlTokenType.MultilineComment, TSqlTokenType.SingleLineComment
+    ];
+
+    public string TenantCode { get; set; }
+    public string Env { get; set; }
+    public string UserId { get; set; }
+
+    public async Task<Dictionary<string, object>[][]> ReadDataSet(string query, string connInfo = null, bool shouldMapToConnStr = false, List<WhereParamVM> paramVMs = null)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(query);
+        if (connInfo is null)
+        {
+            connInfo = BgExt.GetConnectionString(iServiceProvider, cfg, "logistics");
+        }
+        ArgumentException.ThrowIfNullOrWhiteSpace(connInfo);
+        var sideEffect = HasSideEffect(query);
+        if (sideEffect) throw new ApiException("Side effect of query is NOT allowed");
+        var connStr = shouldMapToConnStr ? await GetConnStrFromKey(connInfo) : connInfo;
+        var tables = new List<Dictionary<string, object>[]>();
+        try
+        {
+            using (var con = new NpgsqlConnection(connStr))
+            using (var npgsqlCmd = new NpgsqlCommand(query, con) { CommandType = CommandType.Text })
+            {
+                await con.OpenAsync();
+                if (!paramVMs.Nothing())
+                {
+                    foreach (var item in paramVMs)
+                    {
+                        npgsqlCmd.Parameters.AddWithValue(item.FieldName, (object)item.Value ?? DBNull.Value);
+                    }
+                }
+                using (var reader = await npgsqlCmd.ExecuteReaderAsync())
+                {
+                    do
+                    {
+                        var table = new List<Dictionary<string, object>>();
+                        while (await reader.ReadAsync())
+                        {
+                            table.Add(ReadPgRecord(reader));
+                        }
+                        tables.Add(table.ToArray());
+                    }
+                    while (await reader.NextResultAsync());
+                }
+            }
+            return tables.ToArray();
+        }
+        catch (Exception e)
+        {
+            var message = $"{e.Message} {query}";
+            throw new ApiException(message, e)
+            {
+                StatusCode = HttpStatusCode.InternalServerError,
+            };
+        }
+    }
+
+    protected static Dictionary<string, object> ReadPgRecord(IDataRecord reader)
+    {
+        var row = new Dictionary<string, object>();
+        for (var i = 0; i < reader.FieldCount; i++)
+        {
+            var val = reader[i];
+            row[reader.GetName(i)] = val == DBNull.Value ? null : val;
+        }
+        return row;
+    }
+
+    public bool HasSideEffect(string sql, params TSqlTokenType[] allowCmds)
+    {
+        var finalCmd = SideEffectCmd.Except(allowCmds).ToArray();
+        TSql110Parser parser = new(true);
+        var fragments = parser.Parse(new StringReader(sql), out var errors);
+        return fragments.ScriptTokenStream.Any(x => finalCmd.Contains(x.TokenType));
+    }
+
+    public async Task<string> GetConnStrFromKey(string connKey, string tenantCode = null, string env = null)
+    {
+        return BgExt.GetConnectionString(iServiceProvider, cfg, "logistics");
+    }
+
+    public async Task<T> ReadDsAs<T>(string query, string connInfo = null) where T : class
+    {
+        var ds = await ReadDataSet(query, connInfo);
+        if (ds.Length == 0 || ds[0].Length == 0) return null;
+        return ds[0][0].MapTo<T>();
+    }
+
+    public async Task<T[]> ReadDsAsArr<T>(string query, string connInfo = null) where T : class
+    {
+        var ds = await ReadDataSet(query, connInfo);
+        if (ds.Length == 0 || ds[0].Length == 0) return [];
+        return ds[0].Select(x => x.MapTo<T>()).ToArray();
+    }
+
+    public async Task<int> RunSqlCmd(string connStr, string cmdText)
+    {
+        if (cmdText.IsNullOrWhiteSpace()) return 0;
+        if (connStr.IsNullOrWhiteSpace())
+        {
+            connStr = BgExt.GetConnectionString(iServiceProvider, cfg, "logistics");
+        }
+        using (NpgsqlConnection connection = new NpgsqlConnection(connStr))
+        {
+            await connection.OpenAsync();
+            using (NpgsqlTransaction transaction = connection.BeginTransaction())
+            {
+                using (NpgsqlCommand cmd = new NpgsqlCommand
+                {
+                    Transaction = transaction,
+                    Connection = connection,
+                    CommandText = cmdText
+                })
+                {
+                    var anyComment = HasSqlComment(cmd.CommandText);
+                    if (anyComment) throw new ApiException("Comment is NOT allowed");
+                    try
+                    {
+                        var affected = await cmd.ExecuteNonQueryAsync();
+                        transaction.Commit();
+                        return affected;
+                    }
+                    catch (Exception e)
+                    {
+                        transaction.Rollback();
+                        var message = "Error occurs";
+#if DEBUG
+                        message = $"Error occurs at {connStr} {cmdText}";
+#endif
+                        throw new ApiException(message, e)
+                        {
+                            StatusCode = HttpStatusCode.InternalServerError
+                        };
+                    }
+                }
+            }
+        }
+    }
+
+    public async Task<int> RunSqlCmd(string connStr, string cmdText, Dictionary<string, object> ps)
+    {
+        if (cmdText.IsNullOrWhiteSpace()) return 0;
+        if (connStr.IsNullOrWhiteSpace())
+        {
+            connStr = BgExt.GetConnectionString(iServiceProvider, cfg, "logistics");
+        }
+        using (NpgsqlConnection connection = new NpgsqlConnection(connStr))
+        {
+            await connection.OpenAsync();
+            using (NpgsqlTransaction transaction = connection.BeginTransaction())
+            {
+                using (NpgsqlCommand cmd = new NpgsqlCommand
+                {
+                    Transaction = transaction,
+                    Connection = connection,
+                    CommandText = cmdText
+                })
+                {
+                    var anyComment = HasSqlComment(cmd.CommandText);
+                    if (ps != null)
+                    {
+                        foreach (var param in ps)
+                        {
+                            cmd.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
+                        }
+                    }
+                    if (anyComment) throw new ApiException("Comment is NOT allowed");
+                    try
+                    {
+                        var affected = await cmd.ExecuteNonQueryAsync();
+                        transaction.Commit();
+                        return affected;
+                    }
+                    catch (Exception e)
+                    {
+                        transaction.Rollback();
+                        var message = "Error occurs";
+#if DEBUG
+                        message = $"Error occurs at {connStr} {cmdText}";
+#endif
+                        throw new ApiException(message, e)
+                        {
+                            StatusCode = HttpStatusCode.InternalServerError
+                        };
+                    }
+                }
+            }
+        }
+    }
+
+    public string GetCreateOrUpdateCmd(PatchVM vm)
+    {
+        if (vm == null || vm.Table.IsNullOrWhiteSpace() || vm.Changes.Nothing())
+        {
+            throw new ApiException("Table name and change details can NOT be empty") { StatusCode = HttpStatusCode.BadRequest };
+        }
+        if (vm.Id is null)
+        {
+            throw new ApiException("Id cannot be null") { StatusCode = HttpStatusCode.BadRequest };
+        }
+
+        vm.Table = Utils.RemoveWhiteSpace(vm.Table);
+        vm.Changes = vm.Changes.Where(patch =>
+        {
+            if (patch.Field.IsNullOrWhiteSpace())
+                throw new ApiException($"Field name of the patch can NOT be empty")
+                {
+                    StatusCode = HttpStatusCode.BadRequest
+                };
+            patch.Field = Utils.RemoveWhiteSpace(patch.Field);
+            patch.Value = patch.Value?.Replace("'", "''");
+            patch.OldVal = patch.OldVal?.Replace("'", "''");
+            return !SystemFields.Contains(patch.Field);
+        }).ToList();
+        var idField = vm.Id;
+        var valueFields = vm.Changes.Where(x => !SystemFields.Contains(x.Field.ToLower())).ToArray();
+        var now = DateTime.Now.ToString(DateTimeExt.DateFormat);
+        var oldId = idField?.OldVal;
+        
+        // PostgreSQL uses double quotes for identifiers
+        if (oldId is not null)
+        {
+            var update = valueFields.Combine(x => x.Value is null ? $"\"{x.Field}\" = null" : $"\"{x.Field}\" = N'{x.Value}'");
+            if (update.IsNullOrWhiteSpace()) return null;
+            return @$"update ""{vm.Table}"" set {update}, 
+                ""UpdatedBy"" = '{UserId ?? 1.ToString()}', ""UpdatedDate"" = '{now}' where ""Id"" = '{oldId}';";
+        }
+        else
+        {
+            valueFields = valueFields.Where(x => x.Field != "Active").ToArray();
+            var fields = valueFields.Combine(x => $"\"{x.Field}\"");
+            var values = valueFields.Combine(x => x.Value is null ? "null" : $"N'{x.Value}'");
+            if (fields.IsNullOrWhiteSpace() || values.IsNullOrWhiteSpace()) return null;
+            return @$"insert into ""{vm.Table}"" (""Id"", ""Active"", ""InsertedBy"", ""InsertedDate"", {fields})
+                    values ('{idField.Value}', 1, '{UserId ?? 1.ToString()}', '{now}', {values});";
+        }
+    }
+
+    public string GetUpdateCmd(PatchVM vm)
+    {
+        if (vm == null || vm.Table.IsNullOrWhiteSpace() || vm.Changes.Nothing())
+        {
+            throw new ApiException("Table name and change details can NOT be empty") { StatusCode = HttpStatusCode.BadRequest };
+        }
+        if (vm.Id is null)
+        {
+            throw new ApiException("Id cannot be null") { StatusCode = HttpStatusCode.BadRequest };
+        }
+
+        vm.Table = Utils.RemoveWhiteSpace(vm.Table);
+        vm.Changes = vm.Changes.Where(patch =>
+        {
+            if (patch.Field.IsNullOrWhiteSpace())
+                throw new ApiException($"Field name of the patch can NOT be empty")
+                {
+                    StatusCode = HttpStatusCode.BadRequest
+                };
+            patch.Field = Utils.RemoveWhiteSpace(patch.Field);
+            patch.Value = patch.Value?.Replace("'", "''");
+            patch.OldVal = patch.OldVal?.Replace("'", "''");
+            return !SystemFields.Contains(patch.Field);
+        }).ToList();
+        var idField = vm.Id;
+        var valueFields = vm.Changes.Where(x => !SystemFields.Contains(x.Field.ToLower())).ToArray();
+        var now = DateTime.Now.ToString(DateTimeExt.DateFormat);
+        var oldId = idField?.Value;
+        
+        // PostgreSQL uses double quotes for identifiers
+        var update = valueFields.Combine(x => x.Value is null ? $"\"{x.Field}\" = null" : $"\"{x.Field}\" = N'{x.Value}'");
+        if (update.IsNullOrWhiteSpace()) return null;
+        return @$"update ""{vm.Table}"" set {update},""UpdatedBy"" = '{UserId ?? 1.ToString()}', ""UpdatedDate"" = '{now}' where ""Id"" = '{oldId}';";
+    }
+
+    public bool HasSqlComment(string sql)
+    {
+        TSql110Parser parser = new(true);
+        var fragments = parser.Parse(new StringReader(sql), out var errors);
+
+        return fragments.ScriptTokenStream
+            .Any(x => x.TokenType == TSqlTokenType.MultilineComment || x.TokenType == TSqlTokenType.SingleLineComment);
+    }
+}

@@ -169,10 +169,6 @@ export class UserService implements UserServiceContext {
     return this.queryService.comQuery(vm);
   }
 
-  sql(vm: SqlViewModel) {
-    return this.queryService.sql(vm);
-  }
-
   convertHtmlToPlainText(htmlContent: string): string {
     let plainText = htmlContent.replace(/<[^>]+>|&nbsp;/g, "").trim();
     plainText = plainText.replace(/&(amp|quot|gt|lt|nbsp);/g, (_match, entity) => this.decodeEntity(entity));

@@ -1,7 +1,6 @@
 import path from "path";
-import type { Component, Feature, FeaturePolicy } from "../types.js";
+import type { Component, Feature } from "../types.js";
 import type { UserServiceContext } from "./types.js";
-import { combineStrings, escapeValue, getRowValue, isEmpty, toStringSafe } from "./utils.js";
 import { parseJsonSafe } from "../utils.js";
 import { readText, writeText, ensureDirectoryExists } from "./utils.js";
 

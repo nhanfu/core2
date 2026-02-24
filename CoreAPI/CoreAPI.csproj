@@ -19,6 +19,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Npgsql" Version="9.0.2" />
 		<PackageReference Include="ClosedXML" Version="0.104.2" />
 		<PackageReference Include="DuckDB.NET.Data.Full" Version="1.2.1" />
 		<PackageReference Include="Hangfire" Version="1.8.18" />
