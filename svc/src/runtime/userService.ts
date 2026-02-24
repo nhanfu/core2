@@ -1,13 +1,10 @@
 import type {
-  Conversation,
   DataAdapter,
-  Gos,
   MetadataStore,
   PatchVM,
   RuntimeContext,
   SqlComResult,
   SqlDialect,
-  SqlResult,
   SqlViewModel,
 } from "./types.js";
 import { SqlBuilder } from "./sql.js";
@@ -24,7 +21,6 @@ export class UserService implements UserServiceContext {
   metadataStore: MetadataStore;
   cache: CacheStore;
   now: () => Date;
-  resolveConn?: (connKey?: string | null) => Promise<string | null> | string | null;
   request?: RequestInfo;
   webRootPath: string;
   metadataRoot: string;
@@ -62,7 +58,6 @@ export class UserService implements UserServiceContext {
     this.metadataStore = options.metadataStore;
     this.cache = options.cache ?? new MemoryCacheStore();
     this.now = options.now ?? (() => new Date());
-    this.resolveConn = options.resolveConn;
     this.request = options.request;
     this.webRootPath = options.webRootPath ?? process.cwd();
     this.metadataRoot = options.metadataRoot ?? this.webRootPath;
@@ -91,7 +86,7 @@ export class UserService implements UserServiceContext {
 
     this.featureService = new FeatureService(this);
     this.patchService = new PatchService(this, this.featureService);
-    this.queryService = new QueryService(this, this.featureService, this.patchService);
+    this.queryService = new QueryService(this, this.featureService);
     this.storageService = new StorageService(this);
   }
 
@@ -134,66 +129,26 @@ export class UserService implements UserServiceContext {
     };
   }
 
-  async resolveConnection(conn?: string | null): Promise<string | undefined> {
-    if (!this.resolveConn) return conn || undefined;
-    const resolved = await this.resolveConn(conn);
-    return resolved || conn || undefined;
-  }
-
-  getDefaultConn(): string {
-    return this.defaultConnKey;
-  }
-
   async query(sql: string, params?: Record<string, unknown>): Promise<Array<Record<string, unknown>>> {
-    const conn = this.getDefaultConn();
-    const resolved = await this.resolveConnection(conn);
-    return this.adapter.query(sql, { conn: resolved, params });
+    return this.adapter.query(sql, params );
   }
 
   async queryMany(sql: string, params?: Record<string, unknown>): Promise<Array<Array<Record<string, unknown>>>> {
-    const conn = this.getDefaultConn();
-    const resolved = await this.resolveConnection(conn);
     if (this.adapter.queryMany) {
-      return this.adapter.queryMany(sql, { conn: resolved, params });
+      return this.adapter.queryMany(sql, params );
     }
-    const data = await this.adapter.query(sql, { conn: resolved, params });
+    const data = await this.adapter.query(sql, params);
     return [data];
   }
 
   async execute(sql: string, params?: Record<string, unknown>): Promise<number> {
-    const conn = this.getDefaultConn();
-    const resolved = await this.resolveConnection(conn);
-    return this.adapter.execute(sql, { conn: resolved, params });
-  }
-
-  go(vm: SqlViewModel): Promise<SqlResult> {
-    return this.queryService.go(vm);
-  }
-
-  gos(items: Gos[]) {
-    return this.queryService.gos(items);
-  }
-
-  goByName(vm: SqlViewModel): Promise<SqlResult> {
-    return this.queryService.goByName(vm);
-  }
-
-  moveHBL(entity: { ShipmentId?: string; ShipmentDetailId?: string[] }) {
-    return this.queryService.moveHBL(entity);
-  }
-
-  conversation(entity: Conversation) {
-    return this.queryService.conversation(entity);
-  }
-
-  getMenu() {
-    return this.queryService.getMenu();
+    return this.adapter.execute(sql, params);
   }
 
   getFeature(name: string) {
     return this.featureService.getFeature(name);
   }
-  
+
   hardDelete(vm: PatchVM) {
     return this.patchService.hardDelete(vm);
   }
@@ -204,30 +159,6 @@ export class UserService implements UserServiceContext {
 
   updatePatch(vm: PatchVM) {
     return this.patchService.updatePatch(vm);
-  }
-
-  sendEntity(vm: PatchVM): Promise<SqlResult> {
-    return this.patchService.sendEntity(vm);
-  }
-
-  approvedEntity(vm: PatchVM): Promise<SqlResult> {
-    return this.patchService.approvedEntity(vm);
-  }
-
-  forwardEntity(vm: PatchVM): Promise<SqlResult> {
-    return this.patchService.forwardEntity(vm);
-  }
-
-  declineEntity(vm: PatchVM): Promise<SqlResult> {
-    return this.patchService.declineEntity(vm);
-  }
-
-  savePatch2(vm: PatchVM): Promise<SqlResult> {
-    return this.patchService.savePatch2(vm);
-  }
-
-  savePatchs2(vms: PatchVM[]): Promise<SqlResult> {
-    return this.patchService.savePatchs2(vms);
   }
 
   savePatches(patches: PatchVM[]) {
@@ -242,20 +173,8 @@ export class UserService implements UserServiceContext {
     return this.queryService.comQuery(vm);
   }
 
-  report(vm: SqlViewModel) {
-    return this.queryService.report(vm);
-  }
-
   sql(vm: SqlViewModel) {
     return this.queryService.sql(vm);
-  }
-
-  checkDelete(item: { ComId?: string; EntityIds?: string[]; Params?: string | null }) {
-    return this.queryService.checkDelete(item);
-  }
-
-  getMessageActive() {
-    return this.queryService.getMessageActive();
   }
 
   convertHtmlToPlainText(htmlContent: string): string {

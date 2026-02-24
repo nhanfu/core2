@@ -21,35 +21,7 @@ export class QueryService {
   constructor(
     private context: UserServiceContext,
     private featureService: FeatureService,
-    private patchService: PatchService,
   ) {}
-
-  async go(vm: SqlViewModel): Promise<SqlResult> {
-    const ids = vm.Id || [];
-    const sql = `select * from [${vm.Table}] where Id in (${combineStrings(ids, this.context.sqlDialect)})`;
-    const data = await this.context.query(sql);
-    return { data, status: 200, message: "Select successful" };
-  }
-
-  async gos(items: Gos[]): Promise<Array<Array<Record<string, unknown>>>> {
-    const queries = items.map((item) => `select * from [${item.TableName}] where Id in (${combineStrings(item.Ids, this.context.sqlDialect)})`);
-    if (queries.length === 0) return [];
-    return this.context.queryMany(queries.join(";"));
-  }
-
-  async goByName(vm: SqlViewModel): Promise<SqlResult> {
-    const ids = vm.Id || [];
-    const field = (vm.Format || "").replace("{", "").replace("}", "");
-    const sql = `select * from [${vm.Table}] where [${field}] in (${combineStrings(ids, this.context.sqlDialect)})`;
-    const data = await this.context.query(sql);
-    return { data, status: 200, message: "Select successful" };
-  }
-
-  async getMenu(): Promise<Array<Record<string, unknown>>> {
-    const roles = combineStrings(this.context.RoleIds, this.context.sqlDialect);
-    const sql = `select * from [Feature] f where IsMenu = 1 and (exists (select Id from FeaturePolicy where FeatureId = f.Id and RoleId in (${roles}) and CanRead = 1) or 'ADMIN' in (${roles}))`;
-    return this.context.query(sql);
-  }
 
   async comQuery(vm: SqlViewModel): Promise<SqlComResult> {
     const com = await this.getComponent(vm);
@@ -59,22 +31,6 @@ export class QueryService {
     if (invalid) throw new Error("Parameters must NOT contains sql keywords");
     vm.JsScript = com.Query;
     return this.runjsWrap(vm);
-  }
-
-  async report(vm: SqlViewModel): Promise<Array<Array<Record<string, unknown>>>> {
-    const com = await this.getComponent(vm);
-    if (!com) throw new Error("Component not found or not public to the current user");
-    const dictionary = vm.Params ? (parseJsonSafe<Record<string, unknown>>(vm.Params) || {}) : {};
-    dictionary.TokenUserId = this.context.UserId || "";
-    dictionary.TokenRoleNames = (this.context.RoleNames || []).join(",");
-    dictionary.TokenPartnerId = this.context.VendorId || "";
-    dictionary.TokenUserName = this.context.UserName || "";
-    dictionary.TokenGroupId = this.context.GroupId || "";
-    if (com.Query && com.Query.includes("ds.InsertedBy = '{TokenUserId}'") && (this.context.RoleNames || []).includes("BOD")) {
-      com.Query = com.Query.replace("ds.InsertedBy = '{TokenUserId}'", "ds.InsertedBy = '{TokenUserId}' or '{TokenRoleNames}' like '%BOD%'");
-    }
-    const query = formatEntity(com.Query || "", dictionary);
-    return this.context.queryMany(query);
   }
 
   async sql(vm: SqlViewModel): Promise<Array<Array<Record<string, unknown>>>> {
@@ -91,25 +47,6 @@ export class QueryService {
     }
     const query = formatEntity(com.Query || "", dictionary);
     return this.context.queryMany(query);
-  }
-
-  async checkDelete(item: CheckDeleteItem): Promise<CheckDeleteResult> {
-    const comRows = await this.context.query(`select top 1 * from [Component] where Id = ${escapeValue(item.ComId || "", this.context.sqlDialect)}`);
-    const com = comRows[0] as Component | undefined;
-    const data = com?.Query ? parseJsonSafe<SqlQuery>(com.Query) : null;
-    const dictionary = item.Params ? (parseJsonSafe<Record<string, unknown>>(item.Params) || {}) : {};
-    dictionary.EntityIds = combineStrings(item.EntityIds, this.context.sqlDialect);
-    const query = formatEntity(data?.delete || "", dictionary);
-    const exists = await this.context.queryMany(query);
-    const hasRows = exists[0] && exists[0].length > 0;
-    return { status: hasRows ? 500 : 200, message: dictionary.Message ? String(dictionary.Message) : null };
-  }
-
-  async getMessageActive(): Promise<Record<string, unknown>> {
-    const data = await this.context.query(
-      `SELECT COUNT(Id) as Total FROM [ConversationRead] WHERE UserId = ${escapeValue(this.context.UserId || "", this.context.sqlDialect)} and [Read] = 0`,
-    );
-    return data[0] || {};
   }
 
   async readDs(query: string): Promise<Array<Array<Record<string, unknown>>>> {
@@ -200,16 +137,4 @@ export class QueryService {
     const countValue = countRow ? Number(getRowValue(countRow, "total")) : null;
     return { count: countValue, value: data[0] || [] };
   }
-
-
-  moveHBL(entity: { ShipmentId?: string; ShipmentDetailId?: string[] }): Promise<SqlResult> {
-    // TODO: Implement moveHBL functionality
-    return Promise.resolve({ data: [], status: 200, message: "Not implemented" });
-  }
-
-  conversation(entity: Conversation): Promise<SqlResult> {
-    // TODO: Implement conversation functionality
-    return Promise.resolve({ data: [], status: 200, message: "Not implemented" });
-  }
-
 }

@@ -54,19 +54,6 @@ describe("UserService", () => {
     expect(executes[0]).toContain("insert into [Demo]");
   });
 
-  test("getMenu builds query with role ids", async () => {
-    const { adapter, queries } = createAdapter();
-    const service = new UserService({
-      adapter,
-      metadataStore: createStore(),
-      roleIds: ["ADMIN", "OPS"],
-      tenantCode: "system",
-    });
-
-    await service.getMenu();
-    expect(queries.some((query) => query.includes("RoleId in"))).toBe(true);
-  });
-
   test("parseCsvFile creates patches", async () => {
     const { adapter } = createAdapter();
     const service = new UserService({
