@@ -193,15 +193,7 @@ export class UserService implements UserServiceContext {
   getFeature(name: string) {
     return this.featureService.getFeature(name);
   }
-
-  publishAllFeature(tenant: string) {
-    return this.featureService.publishAllFeature(tenant);
-  }
-
-  publishFeatureByName(name: string, tenant?: string | null) {
-    return this.featureService.publishFeatureByName(name, tenant);
-  }
-
+  
   hardDelete(vm: PatchVM) {
     return this.patchService.hardDelete(vm);
   }
@@ -305,11 +297,6 @@ export class UserService implements UserServiceContext {
     if (comId.trim() === "" || table.trim() === "") throw new Error("ComId or table cannot be null");
     if (files.length === 0) throw new Error("No file uploaded");
     await this.comQuery({ ComId: comId, DataConn: connKey });
-    const connStr = await this.resolveConnection(connKey);
-    const tableRights = await this.patchService.getEntityPermissions(table, null);
-    if (!tableRights.some((perm) => perm.CanWriteAll)) {
-      throw new Error("Cannot import data due to lack of permission");
-    }
     const file = files[0];
     const finalPath = await this.storageService.saveFileToUpload(file, true);
     const patches = await this.storageService.parseCsvFile(finalPath, table);
