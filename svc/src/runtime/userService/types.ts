@@ -82,9 +82,9 @@ export interface UserServiceContext {
   RoleIds?: string[];
   RoleNames?: string[];
   getRuntimeContext(): import("../types.js").RuntimeContext;
-  query(sql: string, conn?: string, params?: Record<string, unknown>): Promise<Array<Record<string, unknown>>>;
-  queryMany(sql: string, conn?: string, params?: Record<string, unknown>): Promise<Array<Array<Record<string, unknown>>>>;
-  execute(sql: string, conn?: string, params?: Record<string, unknown>): Promise<number>;
+  query(sql: string, params?: Record<string, unknown>): Promise<Array<Record<string, unknown>>>;
+  queryMany(sql: string, params?: Record<string, unknown>): Promise<Array<Array<Record<string, unknown>>>>;
+  execute(sql: string, params?: Record<string, unknown>): Promise<number>;
   resolveConnection(conn?: string | null): Promise<string | undefined>;
   getDefaultConn(): string;
 }

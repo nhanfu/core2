@@ -53,7 +53,7 @@ export class PatchService {
     if (!canWrite) throw new Error(`Unauthorized to write on "${vm.Table}"`);
     const sql = this.context.sqlBuilder.buildCreateOrUpdate(vm);
     if (!sql) return 0;
-    return this.context.execute(sql, vm.CachedDataConn);
+    return this.context.execute(sql);
   }
 
   async updatePatch(vm: PatchVM): Promise<number> {
@@ -62,19 +62,16 @@ export class PatchService {
     if (!canWrite) throw new Error(`Unauthorized to write on "${vm.Table}"`);
     const sql = this.context.sqlBuilder.buildUpdate(vm);
     if (!sql) return 0;
-    return this.context.execute(sql, vm.CachedDataConn);
+    return this.context.execute(sql);
   }
 
   async hardDelete(vm: PatchVM): Promise<boolean> {
     if (!vm.ComId) {
       const sql = (vm.Delete || []).map((item) => `delete from [${item.Table}] where Id in (${combineStrings(item.Ids, this.context.sqlDialect)})`).join(";");
-      if (sql) await this.context.execute(sql, this.context.getDefaultConn());
+      if (sql) await this.context.execute(sql);
       return true;
     }
-    const componentRows = await this.context.query(
-      `select top 1 * from [Component] where Id = ${escapeValue(vm.ComId, this.context.sqlDialect)}`,
-      this.context.getDefaultConn(),
-    );
+    const componentRows = await this.context.query(`select top 1 * from [Component] where Id = ${escapeValue(vm.ComId, this.context.sqlDialect)}`);
     const com = componentRows[0] as Component | undefined;
     if (!com || !com.Query) return false;
     const data = parseJsonSafe<{ update?: string }>(com.Query);
@@ -85,15 +82,15 @@ export class PatchService {
     if (data?.update) {
       const updateSql = formatEntity(data.update, dictionary);
       const deleteSql = (vm.Delete || []).map((item) => `delete from [${item.Table}] where Id in (${combineStrings(item.Ids, this.context.sqlDialect)})`).join(";");
-      await this.context.execute([updateSql, deleteSql].filter(Boolean).join(";"), this.context.getDefaultConn());
+      await this.context.execute([updateSql, deleteSql].filter(Boolean).join(";"));
     } else {
       const deleteSql = (vm.Delete || []).map((item) => `delete from [${item.Table}] where Id in (${combineStrings(item.Ids, this.context.sqlDialect)})`).join(";");
-      await this.context.execute(deleteSql, this.context.getDefaultConn());
+      await this.context.execute(deleteSql);
     }
     if (vm.Table === "Component" || vm.Table === "FeaturePolicy") {
       const featureId = toStringSafe(getRowValue(com as Record<string, unknown>, "FeatureId"));
       if (featureId) {
-        const featureRows = await this.context.query(`select * from [Feature] where Id = ${escapeValue(featureId, this.context.sqlDialect)}`, this.context.getDefaultConn());
+        const featureRows = await this.context.query(`select * from [Feature] where Id = ${escapeValue(featureId, this.context.sqlDialect)}`);
         const feature = featureRows[0] as Feature | undefined;
         if (feature?.Name) await this.featureService.publishFeatureByName(feature.Name);
       }
@@ -198,7 +195,7 @@ export class PatchService {
         await this.savePatch({ Table: "TaskNotification", Changes: Object.entries(notification).map(([Field, Value]) => ({ Field, Value: Value ? String(Value) : null })) });
       }
       if (groupReceiverId && groupReceiverId !== "") {
-        const users = await this.context.query(`SELECT * FROM [User] where TeamId = ${escapeValue(groupReceiverId, this.context.sqlDialect)}`, this.context.getDefaultConn());
+        const users = await this.context.query(`SELECT * FROM [User] where TeamId = ${escapeValue(groupReceiverId, this.context.sqlDialect)}`);
         const tasks = users.map((user) => ({
           Id: crypto.randomUUID(),
           VoucherTypeId: Number(voucherTypeId || 0),
@@ -222,10 +219,7 @@ export class PatchService {
       return { status: 200, updatedItem: rs.updatedItem };
     }
 
-    const approvalConfig = await this.context.query(
-      `SELECT * FROM ApprovalConfig where VoucherTypeId = ${escapeValue(voucherTypeId || "", this.context.sqlDialect)} and ParentId is not null order by Level asc`,
-      this.context.getDefaultConn(),
-    );
+    const approvalConfig = await this.context.query(`SELECT * FROM ApprovalConfig where VoucherTypeId = ${escapeValue(voucherTypeId || "", this.context.sqlDialect)} and ParentId is not null order by Level asc`);
     if (isEmpty(approvalConfig)) {
       return { status: 500 };
     }
@@ -236,17 +230,11 @@ export class PatchService {
     }
     let userApproved = matchApprovalConfig.UserIds ? matchApprovalConfig.UserIds.split(",") : [];
     if (matchApprovalConfig.IsTeam) {
-      const teamUsers = await this.context.query(
-        `SELECT * FROM [USER] where [TeamId] = ${escapeValue(this.context.GroupId || "", this.context.sqlDialect)} and IsTeam = 1`,
-        this.context.getDefaultConn(),
-      );
+      const teamUsers = await this.context.query(`SELECT * FROM [USER] where [TeamId] = ${escapeValue(this.context.GroupId || "", this.context.sqlDialect)} and IsTeam = 1`);
       userApproved = teamUsers.map((user) => toStringSafe(getRowValue(user, "Id")));
     }
     if (matchApprovalConfig.IsDepartment) {
-      const deptUsers = await this.context.query(
-        `SELECT * FROM [USER] where [DepartmentId] = ${escapeValue(this.context.DepartmentId || "", this.context.sqlDialect)} and IsDepartment = 1`,
-        this.context.getDefaultConn(),
-      );
+      const deptUsers = await this.context.query(`SELECT * FROM [USER] where [DepartmentId] = ${escapeValue(this.context.DepartmentId || "", this.context.sqlDialect)} and IsDepartment = 1`);
       userApproved = deptUsers.map((user) => toStringSafe(getRowValue(user, "Id")));
     }
     if (isEmpty(userApproved)) {
@@ -328,7 +316,7 @@ export class PatchService {
         await this.savePatch({ Table: "TaskNotification", Changes: Object.entries(task).map(([Field, Value]) => ({ Field, Value: Value ? String(Value) : null })) });
       }
       if (groupReceiverId && groupReceiverId !== "") {
-        const users = await this.context.query(`SELECT * FROM [User] where TeamId = ${escapeValue(groupReceiverId, this.context.sqlDialect)}`, this.context.getDefaultConn());
+        const users = await this.context.query(`SELECT * FROM [User] where TeamId = ${escapeValue(groupReceiverId, this.context.sqlDialect)}`);
         const ids = users.map((user) => toStringSafe(getRowValue(user, "Id")));
         if (!ids.includes(this.context.UserId || "")) {
           return { status: 500, message: "You do not have permission to browse the data" };
@@ -369,18 +357,12 @@ export class PatchService {
       return { status: 200, updatedItem: rs.updatedItem };
     }
 
-    const approvalConfigRows = await this.context.query(
-      `SELECT * FROM ApprovalConfig where VoucherTypeId = ${escapeValue(voucherTypeId || "", this.context.sqlDialect)} and ParentId is not null  order by Level asc`,
-      this.context.getDefaultConn(),
-    );
+    const approvalConfigRows = await this.context.query(`SELECT * FROM ApprovalConfig where VoucherTypeId = ${escapeValue(voucherTypeId || "", this.context.sqlDialect)} and ParentId is not null  order by Level asc`);
     if (isEmpty(approvalConfigRows)) {
       return { status: 500, message: "Please config approved" };
     }
     const approvalConfig = approvalConfigRows as ApprovalConfig[];
-    const approvements = await this.context.query(
-      `SELECT * FROM Approvement where Name = ${escapeValue(name || "", this.context.sqlDialect)} and RecordId = ${escapeValue(id, this.context.sqlDialect)} and Approved = 1 and IsEnd = 0 order by CurrentLevel desc`,
-      this.context.getDefaultConn(),
-    );
+    const approvements = await this.context.query(`SELECT * FROM Approvement where Name = ${escapeValue(name || "", this.context.sqlDialect)} and RecordId = ${escapeValue(id, this.context.sqlDialect)} and Approved = 1 and IsEnd = 0 order by CurrentLevel desc`);
     const matchApprovalConfig = approvalConfig.find((row) => row.Level === 1);
     if (!matchApprovalConfig) {
       return { status: 500, message: "Please config approved" };
@@ -392,17 +374,11 @@ export class PatchService {
       if (!nextConfig) return { status: 500, message: "Please config approved" };
       let userApproved = nextConfig.UserIds ? nextConfig.UserIds.split(",") : [];
       if (nextConfig.IsTeam) {
-        const users = await this.context.query(
-          `SELECT * FROM [USER] where [TeamId] = ${escapeValue(this.context.GroupId || "", this.context.sqlDialect)} and IsTeam = 1`,
-          this.context.getDefaultConn(),
-        );
+        const users = await this.context.query(`SELECT * FROM [USER] where [TeamId] = ${escapeValue(this.context.GroupId || "", this.context.sqlDialect)} and IsTeam = 1`);
         userApproved = users.map((user) => toStringSafe(getRowValue(user, "Id")));
       }
       if (nextConfig.IsDepartment) {
-        const users = await this.context.query(
-          `SELECT * FROM [USER] where [DepartmentId] = ${escapeValue(this.context.DepartmentId || "", this.context.sqlDialect)} and IsDepartment = 1`,
-          this.context.getDefaultConn(),
-        );
+        const users = await this.context.query(`SELECT * FROM [USER] where [DepartmentId] = ${escapeValue(this.context.DepartmentId || "", this.context.sqlDialect)} and IsDepartment = 1`);
         userApproved = users.map((user) => toStringSafe(getRowValue(user, "Id")));
       }
       if (isEmpty(userApproved)) return { status: 500, message: "Please config user approved" };
@@ -452,17 +428,11 @@ export class PatchService {
     if (!nextConfig) return { status: 500, message: "Please config approved" };
     let userApproved = nextConfig.UserIds ? nextConfig.UserIds.split(",") : [];
     if (nextConfig.IsTeam) {
-      const users = await this.context.query(
-        `SELECT * FROM [USER] where [TeamId] = ${escapeValue(this.context.GroupId || "", this.context.sqlDialect)} and IsTeam = 1`,
-        this.context.getDefaultConn(),
-      );
+      const users = await this.context.query(`SELECT * FROM [USER] where [TeamId] = ${escapeValue(this.context.GroupId || "", this.context.sqlDialect)} and IsTeam = 1`);
       userApproved = users.map((user) => toStringSafe(getRowValue(user, "Id")));
     }
     if (nextConfig.IsDepartment) {
-      const users = await this.context.query(
-        `SELECT * FROM [USER] where [DepartmentId] = ${escapeValue(this.context.DepartmentId || "", this.context.sqlDialect)} and IsDepartment = 1`,
-        this.context.getDefaultConn(),
-      );
+      const users = await this.context.query(`SELECT * FROM [USER] where [DepartmentId] = ${escapeValue(this.context.DepartmentId || "", this.context.sqlDialect)} and IsDepartment = 1`);
       userApproved = users.map((user) => toStringSafe(getRowValue(user, "Id")));
     }
     if (isEmpty(userApproved)) return { status: 500, message: "Please config user approved" };
@@ -511,17 +481,11 @@ export class PatchService {
     }
     let nextUserApproved = nextLevelConfig.UserIds ? nextLevelConfig.UserIds.split(",") : [];
     if (nextLevelConfig.IsTeam) {
-      const users = await this.context.query(
-        `SELECT * FROM [USER] where [TeamId] = ${escapeValue(this.context.GroupId || "", this.context.sqlDialect)} and IsTeam = 1`,
-        this.context.getDefaultConn(),
-      );
+      const users = await this.context.query(`SELECT * FROM [USER] where [TeamId] = ${escapeValue(this.context.GroupId || "", this.context.sqlDialect)} and IsTeam = 1`);
       nextUserApproved = users.map((user) => toStringSafe(getRowValue(user, "Id")));
     }
     if (nextLevelConfig.IsDepartment) {
-      const users = await this.context.query(
-        `SELECT * FROM [USER] where [DepartmentId] = ${escapeValue(this.context.DepartmentId || "", this.context.sqlDialect)} and IsDepartment = 1`,
-        this.context.getDefaultConn(),
-      );
+      const users = await this.context.query(`SELECT * FROM [USER] where [DepartmentId] = ${escapeValue(this.context.DepartmentId || "", this.context.sqlDialect)} and IsDepartment = 1`);
       nextUserApproved = users.map((user) => toStringSafe(getRowValue(user, "Id")));
     }
     if (isEmpty(nextUserApproved)) return { status: 500, message: "Please config user approved" };
@@ -645,7 +609,7 @@ export class PatchService {
         await this.savePatch({ Table: "TaskNotification", Changes: Object.entries(task).map(([Field, Value]) => ({ Field, Value: Value ? String(Value) : null })) });
       }
       if (groupReceiverId && groupReceiverId !== "") {
-        const users = await this.context.query(`SELECT * FROM [User] where TeamId = ${escapeValue(groupReceiverId, this.context.sqlDialect)}`, this.context.getDefaultConn());
+        const users = await this.context.query(`SELECT * FROM [User] where TeamId = ${escapeValue(groupReceiverId, this.context.sqlDialect)}`);
         const ids = users.map((user) => toStringSafe(getRowValue(user, "Id")));
         if (!ids.includes(this.context.UserId || "")) {
           return { status: 500, message: "You do not have permission to browse the data" };
@@ -688,7 +652,7 @@ export class PatchService {
       }
       if (receiverIds && receiverIds !== "") {
         const ids = receiverIds.split(",");
-        const users = await this.context.query(`SELECT * FROM [User] where Id in (${combineStrings(ids, this.context.sqlDialect)})`, this.context.getDefaultConn());
+        const users = await this.context.query(`SELECT * FROM [User] where Id in (${combineStrings(ids, this.context.sqlDialect)})`);
         const userIds = users.map((user) => toStringSafe(getRowValue(user, "Id")));
         if (!userIds.includes(this.context.UserId || "")) {
           return { status: 500, message: "You do not have permission to browse the data" };
@@ -732,35 +696,23 @@ export class PatchService {
       return { status: 200, updatedItem: rs.updatedItem };
     }
 
-    const approvalConfigRows = await this.context.query(
-      `SELECT * FROM ApprovalConfig where VoucherTypeId = ${escapeValue(voucherTypeId || "", this.context.sqlDialect)} and ParentId is not null  order by Level asc`,
-      this.context.getDefaultConn(),
-    );
+    const approvalConfigRows = await this.context.query(`SELECT * FROM ApprovalConfig where VoucherTypeId = ${escapeValue(voucherTypeId || "", this.context.sqlDialect)} and ParentId is not null  order by Level asc`);
     if (isEmpty(approvalConfigRows)) return { status: 500, message: "Please config approved" };
     const approvalConfig = approvalConfigRows as ApprovalConfig[];
     const matchApprovalConfig = approvalConfig.find((row) => row.Level === 1);
     if (!matchApprovalConfig) return { status: 500, message: "Please config approved" };
     const maxLevel = Math.max(...approvalConfig.map((row) => row.Level || 0));
-    const approvements = await this.context.query(
-      `SELECT * FROM Approvement where Name = ${escapeValue(name || "", this.context.sqlDialect)} and RecordId = ${escapeValue(id, this.context.sqlDialect)} and IsEnd = 0 order by CurrentLevel desc`,
-      this.context.getDefaultConn(),
-    );
+    const approvements = await this.context.query(`SELECT * FROM Approvement where Name = ${escapeValue(name || "", this.context.sqlDialect)} and RecordId = ${escapeValue(id, this.context.sqlDialect)} and IsEnd = 0 order by CurrentLevel desc`);
     const nextLevel = approvements.length === 0 ? 1 : Number(getRowValue(approvements[0], "NextLevel")) || 1;
     const nextConfig = approvalConfig.find((row) => row.Level === nextLevel);
     if (!nextConfig) return { status: 500, message: "Please config approved" };
     let userApproved = nextConfig.UserIds ? nextConfig.UserIds.split(",") : [];
     if (nextConfig.IsTeam) {
-      const users = await this.context.query(
-        `SELECT * FROM [USER] where [TeamId] = ${escapeValue(this.context.GroupId || "", this.context.sqlDialect)} and IsTeam = 1`,
-        this.context.getDefaultConn(),
-      );
+      const users = await this.context.query(`SELECT * FROM [USER] where [TeamId] = ${escapeValue(this.context.GroupId || "", this.context.sqlDialect)} and IsTeam = 1`);
       userApproved = users.map((user) => toStringSafe(getRowValue(user, "Id")));
     }
     if (nextConfig.IsDepartment) {
-      const users = await this.context.query(
-        `SELECT * FROM [USER] where [DepartmentId] = ${escapeValue(this.context.DepartmentId || "", this.context.sqlDialect)} and IsDepartment = 1`,
-        this.context.getDefaultConn(),
-      );
+      const users = await this.context.query(`SELECT * FROM [USER] where [DepartmentId] = ${escapeValue(this.context.DepartmentId || "", this.context.sqlDialect)} and IsDepartment = 1`);
       userApproved = users.map((user) => toStringSafe(getRowValue(user, "Id")));
     }
     if (!userApproved.includes(this.context.UserId || "")) return { status: 500, message: "You do not have permission to browse the data" };
@@ -800,10 +752,7 @@ export class PatchService {
     };
     await this.savePatch({ Table: "TaskNotification", Changes: Object.entries(task).map(([Field, Value]) => ({ Field, Value: Value ? String(Value) : null })) });
     const rs1 = await this.savePatch2(vm);
-    await this.context.execute(
-      `Update Approvement set IsEnd = 1 where Name = ${escapeValue(name || "", this.context.sqlDialect)} and RecordId = ${escapeValue(id, this.context.sqlDialect)}`,
-      this.context.getDefaultConn(),
-    );
+    await this.context.execute(`Update Approvement set IsEnd = 1 where Name = ${escapeValue(name || "", this.context.sqlDialect)} and RecordId = ${escapeValue(id, this.context.sqlDialect)}`);
     return { status: 200, updatedItem: rs1.updatedItem };
   }
 
@@ -881,7 +830,7 @@ export class PatchService {
         }
       }
 
-      await this.context.execute(sqlParts.join(";"), this.context.getDefaultConn());
+      await this.context.execute(sqlParts.join(";"));
       const entity = await this.readEntityWithDetails(vm.Table || "", id, selectIds);
       await this.notification(vm, id, filteredChanges, oldIsSend, receiverIds);
       return {
@@ -894,7 +843,7 @@ export class PatchService {
 
     const [dup, mess, currentEntity] = await this.checkDuplicate(vm, true);
     if (dup) {
-      const entity = await this.context.query(`SELECT * FROM [${vm.Table}] where Id = ${escapeValue(id, this.context.sqlDialect)}`, this.context.getDefaultConn());
+      const entity = await this.context.query(`SELECT * FROM [${vm.Table}] where Id = ${escapeValue(id, this.context.sqlDialect)}`);
       return {
         updatedItem: entity,
         status: 409,
@@ -961,7 +910,7 @@ export class PatchService {
       }
     }
 
-    await this.context.execute(sqlParts.join(";"), this.context.getDefaultConn());
+    await this.context.execute(sqlParts.join(";"));
     const entity = await this.readEntityWithDetails(vm.Table || "", id, selectIds);
     if (vm.Table === "Feature") {
       const name = filteredChanges.find((change) => change.Field === "Name")?.Value || "";
@@ -969,7 +918,7 @@ export class PatchService {
     } else if (vm.Table === "Component" || vm.Table === "FeaturePolicy") {
       const featureId = filteredChanges.find((change) => change.Field === "FeatureId")?.Value || "";
       if (featureId) {
-        const featureRows = await this.context.query(`SELECT * FROM Feature where Id = ${escapeValue(featureId, this.context.sqlDialect)}`, this.context.getDefaultConn());
+        const featureRows = await this.context.query(`SELECT * FROM Feature where Id = ${escapeValue(featureId, this.context.sqlDialect)}`);
         const feature = featureRows[0] as Feature | undefined;
         if (feature?.Name) await this.featureService.publishFeatureByName(feature.Name);
       }
@@ -1063,7 +1012,7 @@ export class PatchService {
     }
 
     if (!isEmpty(sqlParts)) {
-      await this.context.execute(sqlParts.join(";"), this.context.getDefaultConn());
+      await this.context.execute(sqlParts.join(";"));
     }
     const firstVm = vms[0];
     const firstId = normalizeIdValue(getChangeValue(firstVm, "Id") || "") || "";
@@ -1071,7 +1020,7 @@ export class PatchService {
     if (firstVm.Table === "Component") {
       const featureId = getChangeValue(firstVm, "FeatureId") || "";
       if (featureId) {
-        const featureRows = await this.context.query(`SELECT * FROM Feature where Id = ${escapeValue(featureId, this.context.sqlDialect)}`, this.context.getDefaultConn());
+        const featureRows = await this.context.query(`SELECT * FROM Feature where Id = ${escapeValue(featureId, this.context.sqlDialect)}`);
         const feature = featureRows[0] as Feature | undefined;
         if (feature?.Name) await this.featureService.publishFeatureByName(feature.Name);
       }
@@ -1091,7 +1040,7 @@ export class PatchService {
     await this.resolvePatchConnections(usable[0]);
     const tables = usable.map((patch) => patch.Table || "");
     const permissionQuery = `select * from [FeaturePolicy] where Active = 1 and (CanWrite = 1 or CanWriteAll = 1) and EntityName in (${combineStrings(tables, this.context.sqlDialect)}) and RoleId in (${combineStrings(this.context.RoleIds, this.context.sqlDialect)})`;
-    const permissions = distinctBy(await this.context.query(permissionQuery, usable[0].CachedMetaConn), (perm) => toStringSafe(getRowValue(perm, "TableName")));
+    const permissions = distinctBy(await this.context.query(permissionQuery), (perm) => toStringSafe(getRowValue(perm, "TableName")));
     const permissionTables = permissions.map((perm) => toStringSafe(getRowValue(perm, "TableName")));
     const lack = tables.filter((table) => !permissionTables.includes(table));
     if (!isEmpty(lack)) {
@@ -1101,38 +1050,38 @@ export class PatchService {
       .map((patch) => this.context.sqlBuilder.buildCreateOrUpdate(patch))
       .filter((statement) => statement && statement.trim() !== "")
       .join(";\n");
-    return this.context.execute(sql, usable[0].CachedDataConn);
+    return this.context.execute(sql);
   }
 
   async deactivateAsync(vm: SqlViewModel): Promise<string[] | null> {
     vm.CachedDataConn = await this.context.resolveConnection(vm.DataConn || "default") || vm.CachedDataConn;
-    const allRights = await this.getEntityPerm(vm.Table || "", null, vm.CachedDataConn);
+    const allRights = await this.getEntityPerm(vm.Table || "", null);
     const canDeactivateAll = allRights.some((perm) => perm.CanDeactivateAll);
     const canDeactivateSelf = allRights.some((perm) => perm.CanDeactivate);
-    const rows = await this.context.query(`select * from [${vm.Table}] where Id in (${combineStrings(vm.Id, this.context.sqlDialect)})`, vm.CachedDataConn);
+    const rows = await this.context.query(`select * from [${vm.Table}] where Id in (${combineStrings(vm.Id, this.context.sqlDialect)})`);
     if (isEmpty(rows)) return null;
     const canDeactivateRows = rows
       .filter((row) => canDeactivateAll || (canDeactivateSelf && isOwner(row, this.context.UserId, this.context.RoleIds)))
       .map((row) => toStringSafe(getRowValue(row, "Id")));
     if (isEmpty(canDeactivateRows)) return null;
-    await this.context.execute(`update ${vm.Table} set Active = 0 where Id in (${combineStrings(canDeactivateRows, this.context.sqlDialect)})`, vm.CachedDataConn);
+    await this.context.execute(`update ${vm.Table} set Active = 0 where Id in (${combineStrings(canDeactivateRows, this.context.sqlDialect)})`);
     return canDeactivateRows;
   }
 
   async getTableColumns(tableName: string): Promise<Array<Array<Record<string, unknown>>>> {
     const sql = `SELECT c.TABLE_NAME, c.COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS c JOIN sys.columns sc ON c.COLUMN_NAME = sc.name AND OBJECT_ID(c.TABLE_SCHEMA + '.' + c.TABLE_NAME) = sc.object_id WHERE c.TABLE_NAME = ${escapeValue(tableName, this.context.sqlDialect)} AND sc.is_computed = 0`;
-    return this.context.queryMany(sql, this.context.getDefaultConn());
+    return this.context.queryMany(sql);
   }
 
-  async getEntityPermissions(entityName: string, recordId: string | null, connStr?: string): Promise<FeaturePolicy[]> {
-    return this.getEntityPerm(entityName, recordId, connStr);
+  async getEntityPermissions(entityName: string, recordId: string | null): Promise<FeaturePolicy[]> {
+    return this.getEntityPerm(entityName, recordId);
   }
 
   private async getTableColumnsForTables(tableNames: string[]): Promise<Map<string, string[]>> {
     const filtered = tableNames.filter((name) => name && name.trim() !== "");
     if (filtered.length === 0) return new Map();
     const sql = `SELECT c.TABLE_NAME, c.COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS c JOIN sys.columns sc ON c.COLUMN_NAME = sc.name AND OBJECT_ID(c.TABLE_SCHEMA + '.' + c.TABLE_NAME) = sc.object_id WHERE c.TABLE_NAME in (${combineStrings(filtered, this.context.sqlDialect)}) AND sc.is_computed = 0`;
-    const rows = await this.context.query(sql, this.context.getDefaultConn());
+    const rows = await this.context.query(sql);
     const map = new Map<string, string[]>();
     rows.forEach((row) => {
       const table = toStringSafe(getRowValue(row, "TABLE_NAME"));
@@ -1171,7 +1120,7 @@ export class PatchService {
       if (!detail.Table || isEmpty(detail.Ids)) return;
       queries.push(`SELECT * FROM [${detail.Table}] where Id in (${combineStrings(detail.Ids, this.context.sqlDialect)})`);
     });
-    const data = await this.context.queryMany(queries.join(";"), this.context.getDefaultConn());
+    const data = await this.context.queryMany(queries.join(";"));
     details.forEach((detail, index) => {
       detail.Data = data[index + 1] || [];
     });
@@ -1187,7 +1136,7 @@ export class PatchService {
     const featureName3 = getChangeValue(vm, "FeatureName3");
     if (isSend === "0" && receiverIds?.Value) {
       const receivers = receiverIds.Value.split(",");
-      const users = await this.context.query(`SELECT * FROM [User] where Id in (${combineStrings(receivers, this.context.sqlDialect)})`, this.context.getDefaultConn());
+      const users = await this.context.query(`SELECT * FROM [User] where Id in (${combineStrings(receivers, this.context.sqlDialect)})`);
       let templateMessage = " has sent you an approval request.";
       let f2 = featureName2;
       let f3 = featureName3;
@@ -1219,7 +1168,7 @@ export class PatchService {
   }
 
   private async checkDuplicate(vm: PatchVM, update: boolean): Promise<[boolean, string | null, Record<string, unknown> | null]> {
-    const tableRows = await this.context.query(`Select * from TableName where [Name] = ${escapeValue(vm.Table || "", this.context.sqlDialect)}`, this.context.getDefaultConn());
+    const tableRows = await this.context.query(`Select * from TableName where [Name] = ${escapeValue(vm.Table || "", this.context.sqlDialect)}`);
     if (isEmpty(tableRows)) return [false, null, null];
     const table = tableRows[0] as TableName;
     if (!table.Duplicate) return [false, null, null];
@@ -1237,7 +1186,7 @@ export class PatchService {
     }
     const sql = `Select Top 1 * from [${vm.Table}] where ${conditions.join(" and ")}`;
     try {
-      const rows = await this.context.query(sql, this.context.getDefaultConn());
+      const rows = await this.context.query(sql);
       if (!isEmpty(rows)) {
         return [true, table.Description || null, rows[0]];
       }
@@ -1254,18 +1203,18 @@ export class PatchService {
 
   private async hasWritePermission(vm: PatchVM): Promise<boolean> {
     if (vm.ByPassPerm) return true;
-    const allRights = await this.getEntityPerm(vm.Table || "", null, vm.CachedMetaConn);
+    const allRights = await this.getEntityPerm(vm.Table || "", null);
     const idField = vm.Changes?.find((change) => change.Field === "Id");
     const oldId = idField?.OldVal;
     if (!oldId) {
       return allRights.some((perm) => perm.CanWriteAll);
     }
-    const originRows = await this.context.query(`select t.* from [${vm.Table}] as t where t.Id = ${escapeValue(oldId, this.context.sqlDialect)}`, vm.CachedDataConn);
+    const originRows = await this.context.query(`select t.* from [${vm.Table}] as t where t.Id = ${escapeValue(oldId, this.context.sqlDialect)}`);
     const originRow = originRows[0];
     return isOwner(originRow || {}, this.context.UserId, this.context.RoleIds) || allRights.some((perm) => perm.CanWriteAll);
   }
 
-  private async getEntityPerm(entityName: string, recordId: string | null, connStr?: string): Promise<FeaturePolicy[]> {
+  private async getEntityPerm(entityName: string, recordId: string | null): Promise<FeaturePolicy[]> {
     if (!entityName || isEmpty(this.context.RoleIds)) return [];
     const key = `${entityName}_AllRights`;
     const cached = await this.context.cache.get(key);
@@ -1275,7 +1224,7 @@ export class PatchService {
     }
     const recordValue = recordId || "";
     const query = `select * from [FeaturePolicy] where Active = 1 and EntityName = ${escapeValue(entityName, this.context.sqlDialect)} and (RecordId = ${escapeValue(recordValue, this.context.sqlDialect)} or ${escapeValue(recordValue, this.context.sqlDialect)} = '') and RoleId in (${combineStrings(this.context.RoleIds, this.context.sqlDialect)})`;
-    const permissions = await this.context.query(query, connStr);
+    const permissions = await this.context.query(query);
     await this.context.cache.set(key, JSON.stringify(permissions), DEFAULT_CACHE_TTL_MS);
     return permissions as FeaturePolicy[];
   }

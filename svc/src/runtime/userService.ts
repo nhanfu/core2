@@ -144,12 +144,14 @@ export class UserService implements UserServiceContext {
     return this.defaultConnKey;
   }
 
-  async query(sql: string, conn?: string, params?: Record<string, unknown>): Promise<Array<Record<string, unknown>>> {
+  async query(sql: string, params?: Record<string, unknown>): Promise<Array<Record<string, unknown>>> {
+    const conn = this.getDefaultConn();
     const resolved = await this.resolveConnection(conn);
     return this.adapter.query(sql, { conn: resolved, params });
   }
 
-  async queryMany(sql: string, conn?: string, params?: Record<string, unknown>): Promise<Array<Array<Record<string, unknown>>>> {
+  async queryMany(sql: string, params?: Record<string, unknown>): Promise<Array<Array<Record<string, unknown>>>> {
+    const conn = this.getDefaultConn();
     const resolved = await this.resolveConnection(conn);
     if (this.adapter.queryMany) {
       return this.adapter.queryMany(sql, { conn: resolved, params });
@@ -158,7 +160,8 @@ export class UserService implements UserServiceContext {
     return [data];
   }
 
-  async execute(sql: string, conn?: string, params?: Record<string, unknown>): Promise<number> {
+  async execute(sql: string, params?: Record<string, unknown>): Promise<number> {
+    const conn = this.getDefaultConn();
     const resolved = await this.resolveConnection(conn);
     return this.adapter.execute(sql, { conn: resolved, params });
   }
@@ -303,7 +306,7 @@ export class UserService implements UserServiceContext {
     if (files.length === 0) throw new Error("No file uploaded");
     await this.comQuery({ ComId: comId, DataConn: connKey });
     const connStr = await this.resolveConnection(connKey);
-    const tableRights = await this.patchService.getEntityPermissions(table, null, connStr);
+    const tableRights = await this.patchService.getEntityPermissions(table, null);
     if (!tableRights.some((perm) => perm.CanWriteAll)) {
       throw new Error("Cannot import data due to lack of permission");
     }
@@ -339,7 +342,7 @@ export class UserService implements UserServiceContext {
       return `insert into [${table}] (${fields.join(", ")}) values (${values.join(", ")})`;
     });
     if (!isEmpty(sqlStatements)) {
-      await this.execute(sqlStatements.join(";"), connStr || connKey);
+      await this.execute(sqlStatements.join(";"));
     }
     await this.storageService.deleteFile(finalPath);
     return true;
@@ -353,8 +356,8 @@ export class UserService implements UserServiceContext {
     return this.storageService.deleteFile(path);
   }
 
-  readDs(query: string, connStr: string) {
-    return this.queryService.readDs(query, connStr);
+  readDs(query: string) {
+    return this.queryService.readDs(query);
   }
 
   getStringAsync(key: string): Promise<string | null> {

@@ -15,15 +15,13 @@ export class FeatureService {
   }
 
   async publishAllFeature(tenant: string): Promise<boolean> {
-    const conn = this.context.getDefaultConn();
     const [features, components, policies, settings] = await Promise.all([
-      this.context.query("select * from [Feature]", conn),
+      this.context.query("select * from [Feature]"),
       this.context.query(
         "select [Component].*, isnull(def.Value, DefaultVal) as DefaultVal, def.Id as ComponentDefaultValueId from [Component] outer apply (select top 1 Value,Id from ComponentDefaultValue where ComponentId = Component.Id) as def",
-        conn,
       ),
-      this.context.query("select * from [FeaturePolicy]", conn),
-      this.context.query("select * from [UserSetting]", conn),
+      this.context.query("select * from [FeaturePolicy]"),
+      this.context.query("select * from [UserSetting]"),
     ]);
 
     const featuresById = new Map<string, Feature>();
@@ -71,20 +69,17 @@ export class FeatureService {
   }
 
   async publishFeatureByName(name: string, tenant?: string | null): Promise<boolean> {
-    const conn = this.context.getDefaultConn();
     const features = await this.context.query(
       `select * from [Feature] where Name = ${escapeValue(name, this.context.sqlDialect)}`,
-      conn,
     );
     if (isEmpty(features)) return true;
     const featureIds = features.map((row) => toStringSafe(getRowValue(row, "Id")));
     const [components, policies, settings] = await Promise.all([
       this.context.query(
         `select [Component].*, isnull(def.Value, DefaultVal) as DefaultVal, def.Id as ComponentDefaultValueId from [Component] outer apply (select top 1 Value,Id from ComponentDefaultValue where ComponentId = Component.Id) as def where FeatureId in (${combineStrings(featureIds, this.context.sqlDialect)})`,
-        conn,
       ),
-      this.context.query(`select * from [FeaturePolicy] where FeatureId in (${combineStrings(featureIds, this.context.sqlDialect)})`, conn),
-      this.context.query(`select * from [UserSetting] where FeatureId in (${combineStrings(featureIds, this.context.sqlDialect)})`, conn),
+      this.context.query(`select * from [FeaturePolicy] where FeatureId in (${combineStrings(featureIds, this.context.sqlDialect)})`),
+      this.context.query(`select * from [UserSetting] where FeatureId in (${combineStrings(featureIds, this.context.sqlDialect)})`),
     ]);
 
     const componentsByFeature = new Map<string, Array<Record<string, unknown>>>();

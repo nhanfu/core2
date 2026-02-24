@@ -377,3 +377,4 @@ FodyWeavers.xsd
 /CoreAPI/wwwroot/upload/*/file
 
 .env
+/svc/dist

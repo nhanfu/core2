@@ -27,28 +27,28 @@ export class QueryService {
   async go(vm: SqlViewModel): Promise<SqlResult> {
     const ids = vm.Id || [];
     const sql = `select * from [${vm.Table}] where Id in (${combineStrings(ids, this.context.sqlDialect)})`;
-    const data = await this.context.query(sql, this.context.getDefaultConn());
+    const data = await this.context.query(sql);
     return { data, status: 200, message: "Select successful" };
   }
 
   async gos(items: Gos[]): Promise<Array<Array<Record<string, unknown>>>> {
     const queries = items.map((item) => `select * from [${item.TableName}] where Id in (${combineStrings(item.Ids, this.context.sqlDialect)})`);
     if (queries.length === 0) return [];
-    return this.context.queryMany(queries.join(";"), this.context.getDefaultConn());
+    return this.context.queryMany(queries.join(";"));
   }
 
   async goByName(vm: SqlViewModel): Promise<SqlResult> {
     const ids = vm.Id || [];
     const field = (vm.Format || "").replace("{", "").replace("}", "");
     const sql = `select * from [${vm.Table}] where [${field}] in (${combineStrings(ids, this.context.sqlDialect)})`;
-    const data = await this.context.query(sql, this.context.getDefaultConn());
+    const data = await this.context.query(sql);
     return { data, status: 200, message: "Select successful" };
   }
 
   async getMenu(): Promise<Array<Record<string, unknown>>> {
     const roles = combineStrings(this.context.RoleIds, this.context.sqlDialect);
     const sql = `select * from [Feature] f where IsMenu = 1 and (exists (select Id from FeaturePolicy where FeatureId = f.Id and RoleId in (${roles}) and CanRead = 1) or 'ADMIN' in (${roles}))`;
-    return this.context.query(sql, this.context.getDefaultConn());
+    return this.context.query(sql);
   }
 
   async comQuery(vm: SqlViewModel): Promise<SqlComResult> {
@@ -74,7 +74,7 @@ export class QueryService {
       com.Query = com.Query.replace("ds.InsertedBy = '{TokenUserId}'", "ds.InsertedBy = '{TokenUserId}' or '{TokenRoleNames}' like '%BOD%'");
     }
     const query = formatEntity(com.Query || "", dictionary);
-    return this.context.queryMany(query, this.context.getDefaultConn());
+    return this.context.queryMany(query);
   }
 
   async sql(vm: SqlViewModel): Promise<Array<Array<Record<string, unknown>>>> {
@@ -90,17 +90,17 @@ export class QueryService {
       com.Query = com.Query.replace("ds.InsertedBy = '{TokenUserId}'", "ds.InsertedBy = '{TokenUserId}' or '{TokenRoleNames}' like '%BOD%'");
     }
     const query = formatEntity(com.Query || "", dictionary);
-    return this.context.queryMany(query, this.context.getDefaultConn());
+    return this.context.queryMany(query);
   }
 
   async checkDelete(item: CheckDeleteItem): Promise<CheckDeleteResult> {
-    const comRows = await this.context.query(`select top 1 * from [Component] where Id = ${escapeValue(item.ComId || "", this.context.sqlDialect)}`, this.context.getDefaultConn());
+    const comRows = await this.context.query(`select top 1 * from [Component] where Id = ${escapeValue(item.ComId || "", this.context.sqlDialect)}`);
     const com = comRows[0] as Component | undefined;
     const data = com?.Query ? parseJsonSafe<SqlQuery>(com.Query) : null;
     const dictionary = item.Params ? (parseJsonSafe<Record<string, unknown>>(item.Params) || {}) : {};
     dictionary.EntityIds = combineStrings(item.EntityIds, this.context.sqlDialect);
     const query = formatEntity(data?.delete || "", dictionary);
-    const exists = await this.context.queryMany(query, this.context.getDefaultConn());
+    const exists = await this.context.queryMany(query);
     const hasRows = exists[0] && exists[0].length > 0;
     return { status: hasRows ? 500 : 200, message: dictionary.Message ? String(dictionary.Message) : null };
   }
@@ -108,13 +108,12 @@ export class QueryService {
   async getMessageActive(): Promise<Record<string, unknown>> {
     const data = await this.context.query(
       `SELECT COUNT(Id) as Total FROM [ConversationRead] WHERE UserId = ${escapeValue(this.context.UserId || "", this.context.sqlDialect)} and [Read] = 0`,
-      this.context.getDefaultConn(),
     );
     return data[0] || {};
   }
 
-  async readDs(query: string, connStr: string): Promise<Array<Array<Record<string, unknown>>>> {
-    return this.context.queryMany(query, connStr);
+  async readDs(query: string): Promise<Array<Array<Record<string, unknown>>>> {
+    return this.context.queryMany(query);
   }
 
   private calcFinalQuery(vm: SqlViewModel): string {
@@ -196,9 +195,21 @@ export class QueryService {
   private async runjsWrap(vm: SqlViewModel): Promise<SqlComResult> {
     const actQuery = this.calcFinalQuery(vm);
     const params = parseWhereParams(vm.WhereParams);
-    const data = await this.context.queryMany(actQuery, this.context.getDefaultConn(), params);
+    const data = await this.context.queryMany(actQuery, params);
     const countRow = data.length > 1 && data[1].length > 0 ? data[1][0] : null;
     const countValue = countRow ? Number(getRowValue(countRow, "total")) : null;
     return { count: countValue, value: data[0] || [] };
   }
+
+
+  moveHBL(entity: { ShipmentId?: string; ShipmentDetailId?: string[] }): Promise<SqlResult> {
+    // TODO: Implement moveHBL functionality
+    return Promise.resolve({ data: [], status: 200, message: "Not implemented" });
+  }
+
+  conversation(entity: Conversation): Promise<SqlResult> {
+    // TODO: Implement conversation functionality
+    return Promise.resolve({ data: [], status: 200, message: "Not implemented" });
+  }
+
 }
