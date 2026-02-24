@@ -51,6 +51,14 @@ console.log(feature?.Name, initialData.data.length);
 - `RuntimeEngine.executePatch(patch, feature, component, context)`
 - `RuntimeEngine.executeEvent(feature, eventsJson, eventType, args)`
 
+## Metadata Formats
+
+Metadata files can be stored as `.json`, `.yaml`, or `.yml` under the tenant `features` folder.
+
+## SQL Dialect
+
+`RuntimeEngine.executePatch` can emit SQL Server or PostgreSQL syntax. Set `context.sqlDialect` to `"postgres"` to enable PostgreSQL quoting and string literal behavior.
+
 ## Permissions
 
 The permission pipeline uses `FeaturePolicies` and role IDs in the runtime context. Set `PatchVM.ByPassPerm = true` to bypass checks (use with caution).

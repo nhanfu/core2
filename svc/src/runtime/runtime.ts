@@ -57,7 +57,7 @@ export class RuntimeEngine {
     if (!allow) {
       throw new Error("Unauthorized to write");
     }
-    const builder = new SqlBuilder(context.userId || "1");
+    const builder = new SqlBuilder(context.userId || "1", context.sqlDialect);
     const sql = patch.Update ? builder.buildUpdate(patch) : builder.buildCreateOrUpdate(patch);
     if (!sql) return 0;
     return this.adapter.execute(sql, { conn: context.dataConn });

@@ -59,8 +59,6 @@
 
 ## Roadmap Direction
 - Roadmap ownership is in `ROADMAP.md` (phases, priorities, and success metrics).
-- Priority order: runtime rewrite first, database migration second, YAML support third.
-- Backward compatibility is required for roadmap execution; package-first outcomes are preferred for smaller client projects.
 
 ## Security & Configuration Tips
 - Do not commit real secrets; use local overrides in `CoreAPI/appsettings.Development.json` and environment variables.

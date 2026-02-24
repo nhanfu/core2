@@ -7,3 +7,4 @@ export * from "./runtime/sql.js";
 export * from "./runtime/initialData.js";
 export * from "./runtime/metadataStore.js";
 export * from "./runtime/runtime.js";
+export * from "./runtime/userService.js";

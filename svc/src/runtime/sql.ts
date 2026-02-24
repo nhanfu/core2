@@ -1,8 +1,8 @@
-import type { PatchDetail, PatchVM } from "./types.js";
+import type { PatchDetail, PatchVM, SqlDialect } from "./types.js";
 import { SystemFields, escapeSqlValue, isNullOrWhiteSpace, toLowerSafe } from "./utils.js";
 
 export class SqlBuilder {
-  constructor(private userId: string = "1") {}
+  constructor(private userId: string = "1", private dialect: SqlDialect = "sqlserver") {}
 
   buildCreateOrUpdate(vm: PatchVM): string {
     const normalized = this.normalizePatch(vm);
@@ -57,10 +57,16 @@ export class SqlBuilder {
   private buildUpdateInternal(vm: PatchVM, id: string): string {
     const updateFields = (vm.Changes || [])
       .filter((x) => toLowerSafe(x.Field) !== "id")
-      .map((x) => (x.Value === null ? `[${x.Field}] = null` : `[${x.Field}] = ${escapeSqlValue(x.Value)}`));
+      .map((x) => {
+        const field = this.wrapIdent(x.Field);
+        return x.Value === null ? `${field} = null` : `${field} = ${escapeSqlValue(x.Value, this.dialect)}`;
+      });
     if (updateFields.length === 0) return "";
     const now = new Date().toISOString();
-    return `update [${vm.Table}] set ${updateFields.join(", ")}, UpdatedBy = '${this.userId}', UpdatedDate = '${now}' where Id = '${id}';`;
+    const updatedBy = this.wrapIdent("UpdatedBy");
+    const updatedDate = this.wrapIdent("UpdatedDate");
+    const idField = this.wrapIdent("Id");
+    return `update ${this.wrapTable(vm.Table)} set ${updateFields.join(", ")}, ${updatedBy} = '${this.userId}', ${updatedDate} = '${now}' where ${idField} = '${id}';`;
   }
 
   private buildInsertInternal(vm: PatchVM, id: string | null | undefined): string {
@@ -69,10 +75,21 @@ export class SqlBuilder {
     }
     const valueFields = (vm.Changes || [])
       .filter((x) => toLowerSafe(x.Field) !== "active" && toLowerSafe(x.Field) !== "id");
-    const fields = valueFields.map((x) => `[${x.Field}]`);
-    const values = valueFields.map((x) => (x.Value === null ? "null" : escapeSqlValue(x.Value)));
+    const fields = valueFields.map((x) => this.wrapIdent(x.Field));
+    const values = valueFields.map((x) => (x.Value === null ? "null" : escapeSqlValue(x.Value, this.dialect)));
     if (fields.length === 0 || values.length === 0) return "";
     const now = new Date().toISOString();
-    return `insert into [${vm.Table}] ([Id], [Active], [InsertedBy], [InsertedDate], ${fields.join(", ")}) values ('${id}', 1, '${this.userId}', '${now}', ${values.join(", ")});`;
+    const baseFields = ["Id", "Active", "InsertedBy", "InsertedDate"].map((field) => this.wrapIdent(field));
+    const baseValues = [`'${id}'`, "1", `'${this.userId}'`, `'${now}'`];
+    return `insert into ${this.wrapTable(vm.Table)} (${baseFields.concat(fields).join(", ")}) values (${baseValues.concat(values).join(", ")});`;
+  }
+
+  private wrapIdent(name: string): string {
+    return this.dialect === "postgres" ? `"${name}"` : `[${name}]`;
+  }
+
+  private wrapTable(name: string | null | undefined): string {
+    if (!name) return this.dialect === "postgres" ? '""' : "[]";
+    return this.wrapIdent(name);
   }
 }

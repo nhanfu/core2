@@ -1,11 +1,14 @@
 export type IdValue = string | number;
 
+export type SqlDialect = "sqlserver" | "postgres";
+
 export interface FeaturePolicy {
   Id?: string;
   FeatureId?: string;
   RoleId?: string;
   RecordId?: string;
   UserId?: string;
+  EntityName?: string;
   TableName?: string;
   CanRead?: boolean;
   CanReadAll?: boolean;
@@ -23,6 +26,7 @@ export interface FeaturePolicy {
 
 export interface Component {
   Id?: string;
+  FeatureId?: string;
   FieldName?: string;
   ComponentType?: string;
   ComponentGroupId?: string;
@@ -42,6 +46,7 @@ export interface Component {
   ShowExp?: string;
   Validation?: string;
   EntityName?: string;
+  EntityId?: string;
   TableName?: string;
   CanRead?: boolean;
   CanReadAll?: boolean;
@@ -63,6 +68,10 @@ export interface Component {
   OrderBy?: string;
   IsRealtime?: boolean;
   IsTab?: boolean;
+  IsPrivate?: boolean;
+  DefaultVal?: string;
+  ComponentDefaultValueId?: string;
+  Active?: boolean;
 }
 
 export interface Feature {
@@ -192,6 +201,148 @@ export interface QueryResult {
   total?: Array<Record<string, unknown>>[];
 }
 
+export interface DetailData {
+  Index?: number;
+  Table?: string;
+  ComId?: string;
+  Ids?: string[];
+  Data?: Array<Record<string, unknown>>;
+}
+
+export interface SqlResult {
+  data?: Array<Record<string, unknown>>;
+  status?: number;
+  message?: string;
+  updatedItem?: Array<Record<string, unknown>>;
+  Detail?: DetailData[];
+}
+
+export interface SqlComResult {
+  count?: number | null;
+  value?: Array<Record<string, unknown>>;
+}
+
+export interface WhereParamVM {
+  FieldName?: string;
+  Value?: string | null;
+}
+
+export interface CheckDeleteItem {
+  ComId?: string;
+  EntityIds?: string[];
+  Params?: string | null;
+}
+
+export interface CheckDeleteResult {
+  status?: number;
+  message?: string | null;
+}
+
+export interface Gos {
+  TableName?: string;
+  Ids?: string[];
+}
+
+export interface MoveHBLVM {
+  ShipmentId?: string;
+  ShipmentDetailId?: string[];
+}
+
+export interface UserSetting {
+  Id?: string;
+  ComponentId?: string;
+  FeatureId?: string;
+  UserId?: string;
+  Active?: boolean;
+  Value?: string | null;
+  InsertedBy?: string | null;
+  InsertedDate?: string | null;
+  UpdatedBy?: string | null;
+  UpdatedDate?: string | null;
+}
+
+export interface Conversation {
+  Id?: string;
+  RecordId?: string;
+  EntityId?: string;
+  FormatChat?: string;
+  Icon?: string;
+}
+
+export interface TaskNotification {
+  Id?: string;
+  VoucherTypeId?: number | string;
+  EntityId?: string;
+  Avatar?: string;
+  FeatureName?: string | null;
+  FeatureName2?: string | null;
+  FeatureName3?: string | null;
+  Title?: string;
+  Title2?: string;
+  Icon?: string;
+  Description?: string;
+  InsertedBy?: string;
+  RecordId?: string;
+  InsertedDate?: string;
+  Active?: boolean;
+  AssignedId?: string;
+}
+
+export interface Approvement {
+  Id?: string;
+  Approved?: boolean;
+  CurrentLevel?: number;
+  NextLevel?: number;
+  Name?: string;
+  RecordId?: string;
+  StatusId?: number | string;
+  UserApproveId?: string;
+  ApprovedBy?: string;
+  ApprovedDate?: string;
+  InsertedBy?: string;
+  InsertedDate?: string;
+  ReasonOfChange?: string | null;
+  IsEnd?: boolean;
+}
+
+export interface ApprovalConfig {
+  Id?: string;
+  VoucherTypeId?: string;
+  ParentId?: string | null;
+  Level?: number;
+  UserIds?: string | null;
+  IsTeam?: boolean;
+  IsDepartment?: boolean;
+}
+
+export interface TableName {
+  Name?: string;
+  Duplicate?: string | null;
+  Description?: string | null;
+}
+
+export interface User {
+  Id?: string;
+  UserName?: string;
+  FullName?: string;
+  Email?: string;
+  TeamId?: string | null;
+  DepartmentId?: string | null;
+  RoleIds?: string | null;
+  RoleIdsText?: string | null;
+  CompanyId?: string | null;
+  IsTeam?: boolean;
+  IsDepartment?: boolean;
+  Avatar?: string | null;
+}
+
+export interface Partner {
+  Id?: string;
+  CompanyName?: string;
+  Email?: string;
+  InsertedBy?: string | null;
+}
+
 export interface ActionRequest {
   feature?: Feature;
   component?: Component;
@@ -203,14 +354,17 @@ export interface RuntimeContext {
   tenant?: string;
   env?: string;
   roleIds?: string[];
+  roleNames?: string[];
   userId?: string;
   metaConn?: string;
   dataConn?: string;
   variables?: Record<string, unknown>;
+  sqlDialect?: SqlDialect;
 }
 
 export interface DataAdapter {
   query(sql: string, options?: { params?: Record<string, unknown>; conn?: string }): Promise<Array<Record<string, unknown>>>;
+  queryMany?(sql: string, options?: { params?: Record<string, unknown>; conn?: string }): Promise<Array<Array<Record<string, unknown>>>>;
   execute(sql: string, options?: { params?: Record<string, unknown>; conn?: string }): Promise<number>;
 }
 

@@ -1,4 +1,4 @@
-import type { Component, Feature } from "./types.js";
+import type { Component, Feature, SqlDialect } from "./types.js";
 
 export const SystemFields = [
   "id",
@@ -14,9 +14,11 @@ export const isNullOrWhiteSpace = (value?: string | null): boolean => {
   return value.toString().trim() === "";
 };
 
-export const escapeSqlValue = (value: string | null | undefined): string => {
+export const escapeSqlValue = (value: string | null | undefined, dialect: SqlDialect = "sqlserver"): string => {
   if (value === null || value === undefined) return "null";
-  return `N'${value.replace(/'/g, "''")}'`;
+  const escaped = value.replace(/'/g, "''");
+  if (dialect === "postgres") return `'${escaped}'`;
+  return `N'${escaped}'`;
 };
 
 export const toLowerSafe = (value?: string | null): string => {
