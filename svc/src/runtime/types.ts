@@ -373,4 +373,5 @@ export interface MetadataStore {
 export interface ScriptRunner {
   evaluate<T = unknown>(expression: string, scope?: Record<string, unknown>): T | null;
   invoke<T = unknown>(expression: string, scope?: Record<string, unknown>, args?: unknown[]): T | null;
+  invokeAsync<T = unknown>(expression: string, scope?: Record<string, unknown>, args?: unknown[]): Promise<T | null>;
 }

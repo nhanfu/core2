@@ -5,8 +5,182 @@ import type { PatchVM, PatchDetail } from "../types.js";
 import { ensureDirectoryExists, fileExists, increaseFileName, isEmpty, readText, writeBinary } from "./utils.js";
 import { isNullOrWhiteSpace } from "../utils.js";
 
+/**
+ * Supabase Storage configuration
+ */
+export interface SupabaseStorageConfig {
+  supabaseUrl: string;
+  supabaseKey: string;
+  bucket?: string;
+}
+
 export class StorageService {
+  private supabaseConfig?: SupabaseStorageConfig;
+
   constructor(private context: UserServiceContext) {}
+
+  /**
+   * Configure Supabase Storage
+   */
+  configureSupabase(config: SupabaseStorageConfig): void {
+    this.supabaseConfig = config;
+  }
+
+  /**
+   * Check if Supabase Storage is configured
+   */
+  isSupabaseConfigured(): boolean {
+    return !!this.supabaseConfig?.supabaseUrl && !!this.supabaseConfig?.supabaseKey;
+  }
+
+  /**
+   * Upload file to Supabase Storage
+   */
+  async uploadToSupabase(filePath: string, fileName: string, folder?: string): Promise<string> {
+    if (!this.supabaseConfig) {
+      throw new Error("Supabase Storage is not configured");
+    }
+
+    const bucket = this.supabaseConfig.bucket || "files";
+    const pathParts = folder ? `${folder}/${fileName}` : fileName;
+    
+    const content = await readText(filePath);
+    if (!content) {
+      throw new Error("Failed to read file content");
+    }
+
+    const response = await fetch(
+      `${this.supabaseConfig.supabaseUrl}/storage/v1/object/${bucket}/${pathParts}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/octet-stream",
+          Authorization: `Bearer ${this.supabaseConfig.supabaseKey}`,
+        },
+        body: content,
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(`Failed to upload to Supabase: ${error}`);
+    }
+
+    return `${this.supabaseConfig.supabaseUrl}/storage/v1/object/public/${bucket}/${pathParts}`;
+  }
+
+  /**
+   * Download file from Supabase Storage
+   */
+  async downloadFromSupabase(filePath: string, destinationPath: string): Promise<void> {
+    if (!this.supabaseConfig) {
+      throw new Error("Supabase Storage is not configured");
+    }
+
+    const response = await fetch(filePath, {
+      headers: {
+        Authorization: `Bearer ${this.supabaseConfig.supabaseKey}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to download from Supabase");
+    }
+
+    const arrayBuffer = await response.arrayBuffer();
+    await writeBinary(destinationPath, arrayBuffer);
+  }
+
+  /**
+   * Delete file from Supabase Storage
+   */
+  async deleteFromSupabase(publicUrl: string): Promise<boolean> {
+    if (!this.supabaseConfig) {
+      throw new Error("Supabase Storage is not configured");
+    }
+
+    // Extract path from public URL
+    const bucket = this.supabaseConfig.bucket || "files";
+    const pathMatch = publicUrl.match(/object\/public\/[^/]+\/(.+)$/);
+    
+    if (!pathMatch) {
+      throw new Error("Invalid Supabase public URL");
+    }
+
+    const objectPath = pathMatch[1];
+    
+    const response = await fetch(
+      `${this.supabaseConfig.supabaseUrl}/storage/v1/object/${bucket}/${objectPath}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${this.supabaseConfig.supabaseKey}`,
+        },
+      }
+    );
+
+    return response.ok;
+  }
+
+  /**
+   * List files in Supabase Storage bucket
+   */
+  async listSupabaseFiles(prefix?: string): Promise<{ name: string; id: string; updatedAt: string }[]> {
+    if (!this.supabaseConfig) {
+      throw new Error("Supabase Storage is not configured");
+    }
+
+    const bucket = this.supabaseConfig.bucket || "files";
+    const url = new URL(`${this.supabaseConfig.supabaseUrl}/storage/v1/object/list/${bucket}`);
+    
+    if (prefix) {
+      url.searchParams.set("prefix", prefix);
+    }
+
+    const response = await fetch(url.toString(), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${this.supabaseConfig.supabaseKey}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to list Supabase files");
+    }
+
+    return (await response.json()) as { name: string; id: string; updatedAt: string }[];
+  }
+
+  /**
+   * Get signed URL for private file
+   */
+  async getSignedUrl(filePath: string, expiresIn: number = 3600): Promise<string> {
+    if (!this.supabaseConfig) {
+      throw new Error("Supabase Storage is not configured");
+    }
+
+    const bucket = this.supabaseConfig.bucket || "files";
+    
+    const response = await fetch(
+      `${this.supabaseConfig.supabaseUrl}/storage/v1/object/sign/${bucket}/${filePath}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.supabaseConfig.supabaseKey}`,
+        },
+        body: JSON.stringify({ expiresIn }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to get signed URL");
+    }
+
+    const data = await response.json();
+    return `${this.supabaseConfig.supabaseUrl}/storage/v1${data.signedURL}`;
+  }
 
   async postImageAsync(imageBase64: string, name = "Captured", reup = false): Promise<string> {
     const fileName = `${path.parse(name).name}${path.parse(name).ext}`;

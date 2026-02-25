@@ -7,8 +7,11 @@ import type { UserServiceContext } from "./types.js";
 import type { FeatureService } from "./featureService.js";
 import { getRowValue, parseWhereParams } from "./utils.js";
 import { parseJsonSafe } from "../utils.js";
+import { createScriptRunner } from "../scriptRunner.js";
 
 export class QueryService {
+  private scriptRunner = createScriptRunner();
+
   constructor(
     private context: UserServiceContext,
     private featureService: FeatureService,
@@ -49,8 +52,8 @@ export class QueryService {
   }
 
   private async runjsWrap(vm: SqlViewModel): Promise<SqlComResult> {
-    const script = new Function(vm.JsScript ?? "");
-    const actQuery = script(vm);
+    // Use the ScriptRunner instead of insecure new Function()
+    const actQuery = this.scriptRunner.invoke<string>(vm.JsScript ?? "", { vm }) ?? "";
     const params = parseWhereParams(vm.WhereParams);
     const data = await this.context.queryMany(actQuery, params);
     const countRow = data.length > 1 && data[1].length > 0 ? data[1][0] : null;
