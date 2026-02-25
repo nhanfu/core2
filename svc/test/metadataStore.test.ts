@@ -1,28 +1,27 @@
-import { describe, expect, test } from "bun:test";
-import { mkdtemp, mkdir, writeFile } from "fs/promises";
-import os from "os";
-import path from "path";
+import { assertEquals } from "https://deno.land/std@0.208.0/assert/mod.ts";
 import { FileMetadataStore } from "../src/runtime/metadataStore.js";
 
-describe("FileMetadataStore", () => {
-  test("loads YAML and YML features", async () => {
-    const baseDir = await mkdtemp(path.join(os.tmpdir(), "corejs-meta-"));
-    const featureDir = path.join(baseDir, "system", "features");
-    await mkdir(featureDir, { recursive: true });
-    await writeFile(
-      path.join(featureDir, "yaml-feature.yaml"),
-      "Id: yaml-feature\nName: yaml-feature\nLabel: YAML Feature\n",
-    );
-    await writeFile(
-      path.join(featureDir, "yml-feature.yml"),
-      "Id: yml-feature\nName: yml-feature\nLabel: YML Feature\n",
-    );
+Deno.test("FileMetadataStore: loads YAML and YML features", async () => {
+  const baseDir = await Deno.makeTempDir();
+  const featureDir = `${baseDir}/system/features`;
+  await Deno.mkdir(featureDir, { recursive: true });
+  
+  await Deno.writeTextFile(
+    `${featureDir}/yaml-feature.yaml`,
+    "Id: yaml-feature\nName: yaml-feature\nLabel: YAML Feature\n",
+  );
+  await Deno.writeTextFile(
+    `${featureDir}/yml-feature.yml`,
+    "Id: yml-feature\nName: yml-feature\nLabel: YML Feature\n",
+  );
 
-    const store = new FileMetadataStore(baseDir, "system");
-    const yaml = await store.getFeature("yaml-feature", { tenant: "system" });
-    const yml = await store.getFeature("yml-feature", { tenant: "system" });
+  const store = new FileMetadataStore(baseDir, "system");
+  const yaml = await store.getFeature("yaml-feature", { tenant: "system" });
+  const yml = await store.getFeature("yml-feature", { tenant: "system" });
 
-    expect(yaml?.Name).toBe("yaml-feature");
-    expect(yml?.Name).toBe("yml-feature");
-  });
+  assertEquals(yaml?.Name, "yaml-feature");
+  assertEquals(yml?.Name, "yml-feature");
+  
+  // Cleanup
+  await Deno.remove(baseDir, { recursive: true });
 });

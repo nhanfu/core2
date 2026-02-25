@@ -1,8 +1,8 @@
-import path from "path";
-import type { Component, Feature } from "../types.js";
-import type { UserServiceContext } from "./types.js";
-import { parseJsonSafe } from "../utils.js";
-import { readText, writeText, ensureDirectoryExists } from "./utils.js";
+import path from "node:path";
+import type { Component, Feature } from "../types.ts";
+import type { UserServiceContext } from "./types.ts";
+import { parseJsonSafe } from "../utils.ts";
+import { readText, writeText, ensureDirectoryExists } from "./utils.ts";
 
 export class FeatureService {
   constructor(private context: UserServiceContext) {}

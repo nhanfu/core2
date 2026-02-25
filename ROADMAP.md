@@ -4,12 +4,14 @@
 - Priority order is fixed: runtime rewrite, then database migration, then YAML support.
 - Backward compatibility is not required during roadmap execution.
 - Development workflow is TDD-first (`red -> green -> refactor`) for runtime and metadata transformation logic.
-- Goal is package-first delivery for smaller client projects.
+- To create package-first delivery for smaller client projects.
+- To create a system that allow AI agent to generate complete application via natural language prompts (e.g. "create CRM system").
+- AI Agents can sign in the system, act as a user, access metadata file and know how to inteact with the system, also integrate with third party services.
 
 ### Scope
 
 ## Phase 1
-- Move core runtime from `CoreAPI (.NET)` toward a native JS runtime on `bun`. The new runtime is under `svc` folder.
+- Move core runtime from `CoreAPI (.NET)` toward a native JS runtime on `Deno`. The new runtime is under `svc` folder.
 - Preserve metadata-driven execution model (metadata defines behavior, runtime executes). See sample files in /svc/test/profile.yaml
 - Support YAML files as primary source code format for frontend component configs, SQL queries, DML, backend logic, etc. JSON support remains for backward compatibility.
 - Finish the JS runtime implementation to fully execute YAML-defined features.

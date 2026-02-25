@@ -1,30 +1,21 @@
-# Implementation TODO
+# Svc Deno Conversion TODO
 
-## Phase 1 - HIGH Priority
+## Phase 1: Configuration Files
+- [ ] Create deno.json for Deno configuration
+- [ ] Update package.json - remove Bun-specific scripts and dependencies
+- [ ] Update tsconfig.json - replace bun-types with Deno types
 
-### 1. Supabase PostgreSQL Adapter
-- [x] Create `svc/src/runtime/adapters/supabaseAdapter.ts`
+## Phase 2: Source Code Updates
+- [ ] Update metadataStore.ts - Replace Bun.file with Deno APIs
+- [ ] Update userService/utils.ts - Replace Bun APIs with Deno APIs
+- [ ] Update userService/storageService.ts - Replace Bun APIs with Deno APIs
 
-### 2. Supabase Auth Integration  
-- [x] Create `svc/src/runtime/adapters/authAdapter.ts`
+## Phase 3: Test Updates
+- [ ] Update test/userService.test.ts - Convert bun:test to Deno test
+- [ ] Update test/metadataStore.test.ts - Convert bun:test to Deno test
+- [ ] Update test/permission.test.ts - Convert bun:test to Deno test
+- [ ] Update test/sql.test.ts - Convert bun:test to Deno test
 
-### 3. Supabase Storage Service Update
-- [ ] Modify `svc/src/runtime/userService/storageService.ts`
-
-### 4. Script Execution Engine
-- [ ] Create `svc/src/runtime/scriptRunner.ts`
-- [ ] Modify `svc/src/runtime/types.ts`
-- [ ] Modify `svc/src/runtime/userService/queryService.ts`
-
-## Phase 2 - MEDIUM Priority
-
-### 5. Event System
-- [ ] Create `svc/src/runtime/eventBus.ts`
-- [ ] Create `svc/src/runtime/componentEvents.ts`
-- [ ] Modify `svc/src/runtime/types.ts`
-
-### 6. Test Expansion
-- [ ] Create `svc/test/scriptRunner.test.ts`
-- [ ] Create `svc/test/eventBus.test.ts`
-- [ ] Create `svc/test/adapter.test.ts`
-- [ ] Create `svc/test/integration.test.ts`
+## Phase 4: Cleanup
+- [ ] Remove bun.lock file
+- [ ] Verify all changes compile with `deno check`

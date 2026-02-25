@@ -1,13 +1,14 @@
-import path from "path";
-import { readFile } from "fs/promises";
+import path from "node:path";
+import { readFile } from "node:fs/promises";
 import { parse as parseYaml } from "yaml";
-import type { Feature, MetadataStore, RuntimeContext } from "./types.js";
-import { isNullOrWhiteSpace } from "./utils.js";
+import type { Feature, MetadataStore, RuntimeContext } from "./types.ts";
+import { isNullOrWhiteSpace } from "./utils.ts";
 
 const readText = async (filePath: string): Promise<string | null> => {
   try {
-    if (typeof Bun !== "undefined") {
-      return await Bun.file(filePath).text();
+    // Use Deno's readFile if available (Deno runtime), otherwise fallback to Node.js
+    if (typeof Deno !== "undefined") {
+      return await Deno.readTextFile(filePath);
     }
     return await readFile(filePath, "utf-8");
   } catch {

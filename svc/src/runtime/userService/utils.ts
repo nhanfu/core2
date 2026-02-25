@@ -1,7 +1,7 @@
-import { access, mkdir, readFile, writeFile } from "fs/promises";
-import path from "path";
-import type { PatchDetail, PatchVM } from "../types.js";
-import { escapeSqlValue, formatTemplate, isNullOrWhiteSpace, parseJsonSafe } from "../utils.js";
+import { access, mkdir, readFile, writeFile } from "node:fs/promises";
+import path from "node:path";
+import type { PatchDetail, PatchVM } from "../types.ts";
+import { escapeSqlValue, formatTemplate, isNullOrWhiteSpace, parseJsonSafe } from "../utils.ts";
 
 export const DEFAULT_CACHE_TTL_MS = 30 * 60 * 1000;
 
@@ -80,8 +80,9 @@ export const setChangeValue = (vm: PatchVM, field: string, value: string | null)
 
 export const readText = async (filePath: string): Promise<string | null> => {
   try {
-    if (typeof Bun !== "undefined") {
-      return await Bun.file(filePath).text();
+    // Use Deno's readTextFile if available (Deno runtime), otherwise fallback to Node.js
+    if (typeof Deno !== "undefined") {
+      return await Deno.readTextFile(filePath);
     }
     return await readFile(filePath, "utf-8");
   } catch {
@@ -90,16 +91,18 @@ export const readText = async (filePath: string): Promise<string | null> => {
 };
 
 export const writeText = async (filePath: string, content: string): Promise<void> => {
-  if (typeof Bun !== "undefined") {
-    await Bun.write(filePath, content);
+  // Use Deno's writeTextFile if available (Deno runtime), otherwise fallback to Node.js
+  if (typeof Deno !== "undefined") {
+    await Deno.writeTextFile(filePath, content);
     return;
   }
   await writeFile(filePath, content, "utf-8");
 };
 
 export const writeBinary = async (filePath: string, content: ArrayBuffer): Promise<void> => {
-  if (typeof Bun !== "undefined") {
-    await Bun.write(filePath, new Uint8Array(content));
+  // Use Deno's writeFile if available (Deno runtime), otherwise fallback to Node.js
+  if (typeof Deno !== "undefined") {
+    await Deno.writeFile(filePath, new Uint8Array(content));
     return;
   }
   await writeFile(filePath, Buffer.from(content));
@@ -107,12 +110,23 @@ export const writeBinary = async (filePath: string, content: ArrayBuffer): Promi
 
 export const ensureDirectoryExists = async (filePath: string): Promise<void> => {
   const dir = path.dirname(filePath);
+  // Use Deno's mkdir if available (Deno runtime), otherwise fallback to Node.js
+  if (typeof Deno !== "undefined") {
+    await Deno.mkdir(dir, { recursive: true });
+    return;
+  }
   await mkdir(dir, { recursive: true });
 };
 
 export const fileExists = async (filePath: string): Promise<boolean> => {
-  if (typeof Bun !== "undefined") {
-    return await Bun.file(filePath).exists();
+  // Use Deno's stat if available (Deno runtime), otherwise fallback to Node.js
+  if (typeof Deno !== "undefined") {
+    try {
+      await Deno.stat(filePath);
+      return true;
+    } catch {
+      return false;
+    }
   }
   try {
     await access(filePath);

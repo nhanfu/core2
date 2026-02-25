@@ -1,9 +1,9 @@
-import path from "path";
-import { unlink } from "fs/promises";
-import type { FileLike, UserServiceContext } from "./types.js";
-import type { PatchVM, PatchDetail } from "../types.js";
-import { ensureDirectoryExists, fileExists, increaseFileName, isEmpty, readText, writeBinary } from "./utils.js";
-import { isNullOrWhiteSpace } from "../utils.js";
+import path from "node:path";
+import { unlink } from "node:fs/promises";
+import type { FileLike, UserServiceContext } from "./types.ts";
+import type { PatchVM, PatchDetail } from "../types.ts";
+import { ensureDirectoryExists, fileExists, increaseFileName, readText, writeBinary } from "./utils.ts";
+import { isNullOrWhiteSpace } from "../utils.ts";
 
 /**
  * Supabase Storage configuration
@@ -219,9 +219,13 @@ export class StorageService {
       : path.join(this.context.webRootPath, filePath);
     const exists = await fileExists(absolutePath);
     if (!exists) return true;
-    if (typeof Bun !== "undefined") {
-      await Bun.write(absolutePath, "");
-      await unlink(absolutePath).catch(() => undefined);
+    // Use Deno's remove if available (Deno runtime), otherwise fallback to Node.ts
+    if (typeof Deno !== "undefined") {
+      try {
+        await Deno.remove(absolutePath);
+      } catch {
+        // Ignore errors
+      }
       return true;
     }
     await unlink(absolutePath).catch(() => undefined);
