@@ -209,7 +209,7 @@ const AppComponent = ({ editForm }) => {
       <nav className="main-sidebar ps-menu" onBlur={actionBlur} tabIndex="-1">
         <div className="sidebar-header">
           <a className="text">
-            <img src={Client.Token.Vendor.Logo} />
+            <img src={Client.Token.Vendor?.Logo} />
           </a>
         </div>
         <div className="search-content p-2"></div>

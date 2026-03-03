@@ -103,13 +103,6 @@ public class UserController(
         return await _auth.RefreshAsync(token);
     }
 
-    [AllowAnonymous]
-    [HttpPost("api/[Controller]/ForgotPassword")]
-    public Task<bool> ForgotPassword([FromBody] LoginVM login)
-    {
-        return _auth.ForgotPassword(login);
-    }
-
     [HttpPost("api/[Controller]/UpdatePassword")]
     public Task<bool> UpdatePassword([FromBody] UpdatePasswordVM login)
     {

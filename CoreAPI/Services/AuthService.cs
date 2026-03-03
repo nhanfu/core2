@@ -175,33 +175,6 @@ public class AuthService
         return true;
     }
 
-    public async Task<bool> ForgotPassword(LoginVM login)
-    {
-        var user = await _sql.ReadDsAs<User>($"select * from [User] where UserName = '{login.UserName}'");
-        var span = DateTime.Now - (user.UpdatedDate ?? DateTime.Now);
-        if (user.LoginFailedCount >= UserServiceHelpers.MAX_LOGIN && span.TotalMinutes < 5)
-        {
-            throw new ApiException($"The account {login.UserName} has been locked for a while! Please contact your administrator to unlock.");
-        }
-        // Send mail
-        var emailTemplate = await _sql.ReadDsAs<MasterData>($"select * from [MasterData] where Name = 'ForgotPassEmail'")
-            ?? throw new InvalidOperationException("Cannot find recovery email template!");
-        var oneClickLink = GenerateRandomToken();
-        user.Recover = oneClickLink;
-        await _patchService.SavePatch(new PatchVM
-        {
-            Table = nameof(User),
-            Changes = [new PatchDetail { Field = nameof(User.Recover), Value = oneClickLink }],
-        });
-        var email = new EmailVM
-        {
-            ToAddresses = [user.Email],
-            Subject = "Email recovery",
-        };
-        await SendMail(email);
-        return true;
-    }
-
     public async Task SendMail(EmailVM email, string connStr = null, string webRoot = null)
     {
         var query = $"select top 1 * from [User] m where Id = '{_userService.UserId}'";
@@ -322,12 +295,12 @@ public class AuthService
             new ("DepartmentId", user.DepartmentId ?? string.Empty),
             new ("UserName", user.UserName),
             new ("FullName", user.FullName),
-            new ("CName", user.Company.CompanyName ?? string.Empty),
-            new ("CLogo", user.Company.Logo ?? string.Empty),
-            new ("CIcon", user.Company.Icon ?? string.Empty),
-            new ("CAddress", user.Company.Address ?? string.Empty),
-            new ("CPhoneNumber", user.Company.PhoneNumber ?? string.Empty),
-            new ("CEmail",user.Company.Email ?? string.Empty),
+            new ("CName", user.Company?.CompanyName ?? string.Empty),
+            new ("CLogo", user.Company?.Logo ?? string.Empty),
+            new ("CIcon", user.Company?.Icon ?? string.Empty),
+            new ("CAddress", user.Company?.Address ?? string.Empty),
+            new ("CPhoneNumber", user.Company?.PhoneNumber ?? string.Empty),
+            new ("CEmail",user.Company?.Email ?? string.Empty),
             new (UserServiceHelpers.TenantClaim,login.TanentCode),
             new ("Email", user.Email ?? string.Empty),
             new ("Dob", user.Dob?.ToString() ?? string.Empty),
