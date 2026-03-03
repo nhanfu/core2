@@ -2,6 +2,7 @@ using Core.Exceptions;
 using Core.Extensions;
 using Core.Models;
 using Core.ViewModels;
+using CoreAPI.Services.Interfaces;
 using CoreAPI.Services.Sql;
 using CoreAPI.BgService;
 using Microsoft.Extensions.Caching.Distributed;
@@ -12,7 +13,7 @@ using System.Text.RegularExpressions;
 
 namespace CoreAPI.Services;
 
-public class PatchService
+public class PatchService : IPatchService
 {
     private readonly ISqlProvider _sql;
     private readonly IDistributedCache _cache;
@@ -44,7 +45,7 @@ public class PatchService
         _sql.Env = Env;
     }
 
-    public async Task SetUserContext(string userId, string tenantCode, string env, List<string> roleIds)
+    public void SetUserContext(string userId, string tenantCode, string env, List<string> roleIds)
     {
         UserId = userId;
         TenantCode = tenantCode;

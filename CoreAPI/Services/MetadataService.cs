@@ -1,12 +1,13 @@
 using Core.Exceptions;
 using Core.Models;
 using CoreAPI.BgService;
+using CoreAPI.Services.Interfaces;
 using CoreAPI.Services.Sql;
 using Newtonsoft.Json;
 
 namespace CoreAPI.Services;
 
-public class MetadataService
+public class MetadataService : IMetadataService
 {
     private readonly ISqlProvider _sql;
     private readonly IConfiguration _configuration;

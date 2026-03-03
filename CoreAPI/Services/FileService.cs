@@ -1,11 +1,12 @@
 using Core.Exceptions;
 using Core.ViewModels;
 using CoreAPI.BgService;
+using CoreAPI.Services.Interfaces;
 using CoreAPI.Services.Sql;
 
 namespace CoreAPI.Services;
 
-public class FileService
+public class FileService : IFileService
 {
     private readonly ISqlProvider _sql;
     private readonly IConfiguration _configuration;
@@ -135,7 +136,7 @@ public class FileService
         return Path.Combine(webRootPath, "upload", TenantCode ?? "default", "file", $"U{UserId ?? "system"}", fileName);
     }
 
-    public static string IncreaseFileName(string path)
+    public string IncreaseFileName(string path)
     {
         var uploadedPath = path;
         var index = 0;
@@ -149,7 +150,7 @@ public class FileService
         return path;
     }
 
-    public static void EnsureDirectoryExist(string path)
+    public void EnsureDirectoryExist(string path)
     {
         var dir = Path.GetDirectoryName(path);
         if (!Directory.Exists(dir))

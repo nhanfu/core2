@@ -8,6 +8,8 @@ using Core.Extensions;
 using Core.Models;
 using Core.Services;
 using Core.ViewModels;
+using CoreAPI.Services;
+using CoreAPI.Services.Interfaces;
 using CoreAPI.Services.Sql;
 using Microsoft.IdentityModel.Tokens;
 
@@ -18,11 +20,12 @@ public class AuthService
     public readonly IHttpContextAccessor _ctx;
 
     private readonly UserService _userService;
+    private readonly IPatchService _patchService;
     private bool _debug;
     public readonly ISqlProvider _sql;
     private readonly IConfiguration _cfg;
 
-    public AuthService(IHttpContextAccessor ctx, UserService userService,
+    public AuthService(IHttpContextAccessor ctx, UserService userService, IPatchService patchService,
         ISqlProvider sql, IConfiguration cfg)
     {
         _ctx = ctx;
@@ -34,6 +37,18 @@ public class AuthService
         _debug = false;
 #endif
         _userService = userService;
+        _patchService = patchService;
+    }
+
+    private void EnsurePatchServiceContext()
+    {
+        if (_patchService == null || _userService == null) return;
+
+        // Set context on PatchService from UserService
+        if (_patchService is PatchService ps)
+        {
+            ps.SetUserContext(_userService.UserId, _userService.TenantCode, _userService.Env, _userService.RoleIds);
+        }
     }
 
     public async Task<Token> SignInAsync(LoginVM login)
@@ -67,7 +82,7 @@ public class AuthService
                 changes.Add(new PatchDetail { Field = nameof(User.Password), Value = hashedPassword });
             }
         }
-        await _userService.SavePatch(new PatchVM
+        await _patchService.SavePatch(new PatchVM
         {
             Table = nameof(User),
             TenantCode = login.TanentCode,
@@ -148,7 +163,7 @@ public class AuthService
         var connStr = _sql.GetConnStrFromKey(token.ConnKey);
         var userLogin = await _sql.ReadDsAs<UserLogin>(query, connStr);
         if (userLogin is null) return true;
-        await _userService.SavePatch(new PatchVM
+        await _patchService.SavePatch(new PatchVM
         {
             Table = nameof(UserLogin),
             Changes =
@@ -173,7 +188,7 @@ public class AuthService
             ?? throw new InvalidOperationException("Cannot find recovery email template!");
         var oneClickLink = GenerateRandomToken();
         user.Recover = oneClickLink;
-        await _userService.SavePatch(new PatchVM
+        await _patchService.SavePatch(new PatchVM
         {
             Table = nameof(User),
             Changes = [new PatchDetail { Field = nameof(User.Recover), Value = oneClickLink }],
@@ -227,7 +242,7 @@ public class AuthService
             Avatar = ""
         };
         var save = user.MapToPatch();
-        await _userService.SavePatch2(save);
+        await _patchService.SavePatch2(save);
         var email = new EmailVM
         {
             ToAddresses = [user.Email],
@@ -255,7 +270,7 @@ public class AuthService
             new PatchDetail { Field = nameof(User.Salt), Value = user.Salt },
             new PatchDetail { Field = nameof(User.Password), Value = user.Password },
         ];
-        await _userService.SavePatch(new PatchVM
+        await _patchService.SavePatch(new PatchVM
         {
             Table = nameof(User),
             Changes = changes,
@@ -278,7 +293,7 @@ public class AuthService
             new PatchDetail { Field = nameof(User.Salt), Value = user.Salt },
             new PatchDetail { Field = nameof(User.Password), Value = user.Password },
         ];
-        await _userService.SavePatch(new PatchVM
+        await _patchService.SavePatch(new PatchVM
         {
             CachedDataConn = vm.CachedDataConn,
             CachedMetaConn = vm.CachedMetaConn,
@@ -339,7 +354,7 @@ public class AuthService
         };
         var patch = userLogin.MapToPatch();
         patch.TenantCode = login.TanentCode;
-        await _userService.SavePatch(patch);
+        await _patchService.SavePatch(patch);
         return res;
     }
 

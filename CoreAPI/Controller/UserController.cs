@@ -1,22 +1,47 @@
 ﻿using Core.Exceptions;
 using Core.Extensions;
-using Core.Middlewares;
 using Core.Models;
 using Core.Services;
 using Core.ViewModels;
 using CoreAPI.BgService;
-using CoreAPI.Models;
 using CoreAPI.Services;
-using CoreAPI.ViewModels;
+using CoreAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Core.Controllers;
 
 [Authorize]
-public class UserController(UserService _userSvc, AuthService _authSvc, PdfService _pdfService,
-    ExcelService _excelService, OpenAIHttpClientService _openAIHttpClientService, AuthService _auth) : ControllerBase
+public class UserController(
+    UserService _userSvc,
+    AuthService _authSvc,
+    PdfService _pdfService,
+    ExcelService _excelService,
+    OpenAIHttpClientService _openAIHttpClientService,
+    AuthService _auth,
+    IPatchService _patchService,
+    IQueryService _queryService,
+    IFileService _fileService,
+    IMetadataService _metadataService,
+    IHttpContextAccessor _httpContextAccessor) : ControllerBase
 {
+    private void SetUserContextToServices()
+    {
+        var user = _httpContextAccessor.HttpContext?.User;
+        if (user == null) return;
+
+        var userId = user.FindFirst("UserId")?.Value ?? user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var tenantCode = user.FindFirst("TenantCode")?.Value?.ToUpper();
+        var env = user.FindFirst("Environment")?.Value;
+        var roleIds = user.FindAll("RoleId").Select(c => c.Value).ToList();
+        var roleNames = user.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
+
+        if (_patchService is PatchService ps) ps.SetUserContext(userId, tenantCode, env, roleIds);
+        if (_queryService is QueryService qs) qs.SetUserContext(userId, tenantCode, env, roleIds, roleNames, null, null, null);
+        if (_fileService is FileService fs) fs.SetUserContext(userId, tenantCode);
+        if (_metadataService is MetadataService ms) ms.SetUserContext(tenantCode, roleIds);
+    }
     [AllowAnonymous]
     [HttpPost("/api/auth/login")]
     public async Task<ActionResult<Token>> SignInAsync([FromBody] LoginVM login)
@@ -106,33 +131,38 @@ public class UserController(UserService _userSvc, AuthService _authSvc, PdfServi
     [HttpPatch("api/[Controller]/SavePatches", Order = 0)]
     public Task<int> SavePatches([FromBody] PatchVM[] patches)
     {
+        SetUserContextToServices();
         patches.Action(x => x.ByPassPerm = false);
-        return _userSvc.SavePatches(patches);
+        return _patchService.SavePatches(patches);
     }
 
     [HttpDelete("api/[Controller]/Deactivate", Order = 0)]
     public Task<string[]> DeactivateAsync([FromBody] SqlViewModel vm)
     {
-        return _userSvc.DeactivateAsync(vm);
+        SetUserContextToServices();
+        return _patchService.DeactivateAsync(vm);
     }
 
     [HttpPost("api/[Controller]/ImportCsv")]
     public Task<bool> ImportCsv([FromForm] List<IFormFile> files, [FromQuery] string table, [FromQuery] string comId, [FromQuery] string connKey)
     {
-        return _userSvc.ImportCsv(files, table, comId, connKey);
+        SetUserContextToServices();
+        return _fileService.ImportCsv(files, table, comId, connKey);
     }
 
     [HttpPost("/api/fileUpload/file")]
     public Task<string> PostFileAsync([FromForm] IFormFile file, bool reup = false)
     {
-        return _userSvc.PostFileAsync(file, reup);
+        SetUserContextToServices();
+        return _fileService.PostFileAsync(file, reup);
     }
 
     [HttpPost("api/[Controller]/Image")]
     public Task<string> PostImageAsync([FromServices] IWebHostEnvironment host,
         [FromQuery] string name = "Captured", [FromQuery] bool reup = false)
     {
-        return _userSvc.PostImageAsync(host, name, reup);
+        SetUserContextToServices();
+        return _fileService.PostImageAsync(host, name, reup);
     }
 
     [HttpPost("api/fileUpload/deleteFile")]
@@ -161,13 +191,6 @@ public class UserController(UserService _userSvc, AuthService _authSvc, PdfServi
         return _userSvc.WebConfig();
     }
 
-    [AllowAnonymous]
-    [HttpGet("/api/salesFunction")]
-    public Task<Dictionary<string, object>[]> SalesFunction()
-    {
-        return _userSvc.SalesFunction();
-    }
-
     [HttpPost("api/[Controller]/userSetting")]
     public Task<bool> Dictionary([FromBody] UserSetting userSetting)
     {
@@ -177,37 +200,36 @@ public class UserController(UserService _userSvc, AuthService _authSvc, PdfServi
     [HttpPost("/api/feature/go")]
     public Task<SqlResult> Go([FromBody] SqlViewModel entity)
     {
-        return _userSvc.Go(entity);
+        SetUserContextToServices();
+        return _queryService.Go(entity);
     }
 
     [HttpPost("/api/feature/gos")]
     public Task<Dictionary<string, object>[][]> Gos([FromBody] List<Gos> entitys)
     {
-        return _userSvc.Gos(entitys);
+        SetUserContextToServices();
+        return _queryService.Gos(entitys);
     }
 
     [HttpPost("/api/feature/gobyname")]
     public Task<SqlResult> GoByName([FromBody] SqlViewModel entity)
     {
-        return _userSvc.GoByName(entity);
-    }
-
-    [HttpPost("/api/Conversation")]
-    public async Task<Conversation> Conversation([FromBody] Conversation entity)
-    {
-        return await _userSvc.Conversation(entity);
+        SetUserContextToServices();
+        return _queryService.GoByName(entity);
     }
 
     [HttpPatch("/api/feature/run")]
     public Task<SqlResult> Run([FromBody] PatchVM entity)
     {
-        return _userSvc.SavePatch2(entity);
+        SetUserContextToServices();
+        return _patchService.SavePatch2(entity);
     }
 
     [HttpPatch("/api/feature/runs")]
     public Task<SqlResult> Runs([FromBody] List<PatchVM> entitys)
     {
-        return _userSvc.SavePatchs2(entitys);
+        SetUserContextToServices();
+        return _patchService.SavePatchs2(entitys);
     }
 
     [HttpPost("/api/CheckDelete")]
@@ -219,38 +241,43 @@ public class UserController(UserService _userSvc, AuthService _authSvc, PdfServi
     [HttpDelete("/api/feature/delete")]
     public Task<bool> Delete([FromBody] PatchVM entity)
     {
-        return _userSvc.HardDelete(entity);
+        SetUserContextToServices();
+        return _patchService.HardDelete(entity);
     }
 
     [HttpPost("/api/feature/com")]
     public Task<SqlComResult> Com([FromBody] SqlViewModel entity)
     {
-        return _userSvc.ComQuery(entity);
+        SetUserContextToServices();
+        return _queryService.ComQuery(entity);
     }
 
     [AllowAnonymous]
     [HttpGet("/api/feature/getMenu")]
     public Task<Dictionary<string, object>[]> GetMenu()
     {
-        return _userSvc.GetMenu();
+        SetUserContextToServices();
+        return _metadataService.GetMenu();
     }
 
     [HttpPost("/api/feature/getFeature")]
     public Feature GetFeature([FromBody] ServiceVM vm)
     {
-        return _userSvc.GetFeature(vm.Name);
+        return _metadataService.GetFeature(vm.Name);
     }
 
     [HttpPost("/api/feature/report")]
     public Task<Dictionary<string, object>[][]> Report([FromBody] SqlViewModel entity)
     {
-        return _userSvc.Report(entity);
+        SetUserContextToServices();
+        return _queryService.Report(entity);
     }
 
     [HttpPost("/api/feature/sql")]
     public Task<Dictionary<string, object>[][]> Sql([FromBody] SqlViewModel entity)
     {
-        return _userSvc.Sql(entity);
+        SetUserContextToServices();
+        return _queryService.Sql(entity);
     }
 
     [HttpPost("api/GetMessageActive")]

@@ -1,16 +1,13 @@
-using Core.Exceptions;
 using Core.Extensions;
 using Core.ViewModels;
-using CoreAPI.Services.Sql;
 using CoreAPI.BgService;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using CoreAPI.Services.Interfaces;
+using CoreAPI.Services.Sql;
 using Newtonsoft.Json;
-using System.Text.RegularExpressions;
 
 namespace CoreAPI.Services;
 
-public class QueryService
+public class QueryService : IQueryService
 {
     private readonly ISqlProvider _sql;
     private readonly IConfiguration _configuration;
@@ -39,7 +36,7 @@ public class QueryService
         _logger = logger;
     }
 
-    public async Task SetUserContext(
+    public void SetUserContext(
         string userId,
         string tenantCode,
         string env,
