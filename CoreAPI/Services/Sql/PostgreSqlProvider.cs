@@ -4,6 +4,7 @@ using Core.Extensions;
 using Core.Models;
 using Core.ViewModels;
 using CoreAPI.BgService;
+using CoreAPI.Services.Supabase;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using Npgsql;
@@ -11,8 +12,29 @@ using System.Data;
 
 namespace CoreAPI.Services.Sql;
 
-public class PostgreSqlProvider(IDistributedCache cache, IConfiguration cfg, IServiceProvider iServiceProvider) : ISqlProvider
+public class PostgreSqlProvider(IDistributedCache cache, IConfiguration cfg, IServiceProvider iServiceProvider, SupabaseService supabaseService) : ISqlProvider
 {
+    // Connection pool settings
+    private const int MinPoolSize = 5;
+    private const int MaxPoolSize = 100;
+    private const int ConnectionTimeout = 30;
+
+    /// <summary>
+    /// Ensures connection string has pooling enabled with optimal settings
+    /// </summary>
+    private string EnsurePoolingEnabled(string connectionString)
+    {
+        if (string.IsNullOrWhiteSpace(connectionString))
+            return connectionString;
+
+        // Check if pooling is already configured
+        if (connectionString.ToLower().Contains("pooling"))
+            return connectionString;
+
+        // Add pooling parameters
+        var separator = connectionString.EndsWith(";") ? "" : ";";
+        return $"{connectionString}{separator}Pooling=true;MinPoolSize={MinPoolSize};MaxPoolSize={MaxPoolSize};ConnectionIdleLifetime={ConnectionTimeout};";
+    }
     public List<string> SystemFields { get; set; }
     static readonly TSqlTokenType[] SideEffectCmd = [
         TSqlTokenType.Insert, TSqlTokenType.Update, TSqlTokenType.Delete,
@@ -96,7 +118,16 @@ public class PostgreSqlProvider(IDistributedCache cache, IConfiguration cfg, ISe
 
     public string GetConnStrFromKey(string connKey, string tenantCode = null, string env = null)
     {
-        return BgExt.GetConnectionString(iServiceProvider, cfg, "logistics");
+        // Try to use Supabase connection string if available
+        var supabaseConnStr = EnsurePoolingEnabled(supabaseService?.ConnectionString ?? "");
+        if (!string.IsNullOrWhiteSpace(supabaseConnStr))
+        {
+            return supabaseConnStr;
+        }
+
+        // Fall back to configuration-based connection string with pooling
+        var connStr = BgExt.GetConnectionString(iServiceProvider, cfg, "logistics");
+        return EnsurePoolingEnabled(connStr);
     }
 
     public async Task<T> ReadDsAs<T>(string query, string connInfo = null) where T : class

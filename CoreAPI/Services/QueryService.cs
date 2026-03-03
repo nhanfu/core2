@@ -3,6 +3,7 @@ using Core.ViewModels;
 using CoreAPI.BgService;
 using CoreAPI.Services.Interfaces;
 using CoreAPI.Services.Sql;
+using Jint;
 using Newtonsoft.Json;
 
 namespace CoreAPI.Services;
@@ -152,6 +153,13 @@ public class QueryService : IQueryService
 
     private string CalcFinalQuery(SqlViewModel vm)
     {
+        // If JsScript contains a JavaScript function (arrow function syntax), use Jint to execute it
+        if (!string.IsNullOrWhiteSpace(vm.JsScript) && vm.JsScript.Contains("=>"))
+        {
+            return CalcQueryWithJint(vm);
+        }
+
+        // Fallback to legacy behavior for backward compatibility
         var dictionary = string.IsNullOrWhiteSpace(vm.Params)
             ? new Dictionary<string, object>()
             : JsonConvert.DeserializeObject<Dictionary<string, object>>(vm.Params);
@@ -245,6 +253,60 @@ public class QueryService : IQueryService
         }
 
         return sqlSelect;
+    }
+
+    /// <summary>
+    /// Calculates query using Jint runtime with user-defined JavaScript function.
+    /// The function is declared in the JSScript property as an arrow function.
+    /// Example: (vm) => `select * from "Users" where "Id" = ${vm.id}`
+    /// </summary>
+    private string CalcQueryWithJint(SqlViewModel vm)
+    {
+        var dictionary = string.IsNullOrWhiteSpace(vm.Params)
+            ? []
+            : JsonConvert.DeserializeObject<Dictionary<string, object>>(vm.Params);
+
+        // Add token values to the context
+        dictionary["TokenUserId"] = UserId;
+        dictionary["TokenRoleNames"] = RoleNames.Combine() ?? string.Empty;
+        dictionary["TokenPartnerId"] = VendorId ?? string.Empty;
+        dictionary["TokenUserName"] = UserName ?? string.Empty;
+        dictionary["TokenGroupId"] = GroupId ?? string.Empty;
+        dictionary["Skip"] = vm.Skip;
+        dictionary["Top"] = vm.Top;
+        dictionary["TenantCode"] = TenantCode;
+
+        try
+        {
+            // Create Jint engine with strict timeout
+            var engine = new Engine(options => options
+                .TimeoutInterval(TimeSpan.FromSeconds(5))
+                .LimitRecursion(100));
+
+            // Set context values in JavaScript
+            foreach (var kvp in dictionary)
+            {
+                engine.SetValue(kvp.Key, kvp.Value);
+            }
+
+            // Add helper functions
+            engine.SetValue("vm", vm);
+
+            // Execute the JavaScript function and get the SQL query
+            var result = engine.Evaluate(vm.JsScript);
+
+            if (result != null && result.Type != Jint.Runtime.Types.Undefined)
+            {
+                return result.ToString();
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error executing Jint script: {Script}", vm.JsScript);
+            throw new InvalidOperationException($"Error executing Jint script: {ex.Message}", ex);
+        }
+
+        return string.Empty;
     }
 
     private string FormatEntity(string template, Dictionary<string, object> data)

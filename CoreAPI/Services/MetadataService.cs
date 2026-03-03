@@ -4,6 +4,8 @@ using CoreAPI.BgService;
 using CoreAPI.Services.Interfaces;
 using CoreAPI.Services.Sql;
 using Newtonsoft.Json;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 
 namespace CoreAPI.Services;
 
@@ -77,14 +79,70 @@ public class MetadataService : IMetadataService
 
     public static Feature GetFeatureFromJson(string featureName, string t)
     {
-        string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "upload", t ?? "system", "features", featureName + ".json");
+        string basePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "upload", t ?? "system", "features");
+        string jsonPath = Path.Combine(basePath, featureName + ".json");
+        string yamlPath = Path.Combine(basePath, featureName + ".yaml");
 
-        if (!File.Exists(filePath))
+        Feature feature = null;
+
+        // Try JSON first
+        if (File.Exists(jsonPath))
+        {
+            string json = File.ReadAllText(jsonPath);
+            feature = JsonConvert.DeserializeObject<Feature>(json);
+        }
+        // Then try YAML
+        else if (File.Exists(yamlPath))
+        {
+            string yaml = File.ReadAllText(yamlPath);
+            var deserializer = new DeserializerBuilder()
+                .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                .Build();
+            feature = deserializer.Deserialize<Feature>(yaml);
+        }
+
+        if (feature == null)
         {
             return null;
         }
 
-        string json = File.ReadAllText(filePath);
-        return JsonConvert.DeserializeObject<Feature>(json);
+        // Remove properties starting with _ (underscore)
+        return RemoveUnderscoreProperties(feature);
+    }
+
+    private static Feature RemoveUnderscoreProperties(Feature feature)
+    {
+        // Use reflection to remove properties starting with _
+        var json = JsonConvert.SerializeObject(feature);
+        var dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+        RemoveUnderscorePropertiesRecursive(dict);
+        return JsonConvert.DeserializeObject<Feature>(JsonConvert.SerializeObject(dict));
+    }
+
+    private static void RemoveUnderscorePropertiesRecursive(Dictionary<string, object> dict)
+    {
+        var keysToRemove = dict.Keys.Where(k => k.StartsWith("_")).ToList();
+        foreach (var key in keysToRemove)
+        {
+            dict.Remove(key);
+        }
+
+        foreach (var value in dict.Values)
+        {
+            if (value is Dictionary<string, object> nestedDict)
+            {
+                RemoveUnderscorePropertiesRecursive(nestedDict);
+            }
+            else if (value is List<object> list)
+            {
+                foreach (var item in list)
+                {
+                    if (item is Dictionary<string, object> listItemDict)
+                    {
+                        RemoveUnderscorePropertiesRecursive(listItemDict);
+                    }
+                }
+            }
+        }
     }
 }
