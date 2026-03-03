@@ -39,7 +39,6 @@ services.AddResponseCompression(options =>
 {
     options.Providers.Add<GzipCompressionProvider>();
 });
-services.AddSingleton<ConnectionManager>();
 services.AddMvc(options =>
 {
     options.EnableEndpointRouting = false;
