@@ -81,8 +81,11 @@ services.AddAuthentication(options =>
 services.AddDistributedMemoryCache();
 services.AddHttpContextAccessor();
 services.AddScoped<SqlServerProvider>();
-services.AddScoped<DuckDbProvider>();
 services.AddScoped<ISqlProvider, SqlServerProvider>();
+services.AddScoped<PatchService>();
+services.AddScoped<QueryService>();
+services.AddScoped<FileService>();
+services.AddScoped<MetadataService>();
 services.AddScoped<UserService>();
 services.AddScoped<AuthService>();
 services.AddScoped<SendMailService>();

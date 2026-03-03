@@ -10,7 +10,7 @@ namespace CoreAPI.Services.Sql
         string UserId { get; set; }
         public List<string> SystemFields { get; set; }
 
-        Task<string> GetConnStrFromKey(string connKey, string tenantCode = null, string env = null);
+        string GetConnStrFromKey(string connKey, string tenantCode = null, string env = null);
         string GetCreateOrUpdateCmd(PatchVM vm);
         string GetUpdateCmd(PatchVM vm);
         bool HasSideEffect(string sql, params TSqlTokenType[] allowCmds);

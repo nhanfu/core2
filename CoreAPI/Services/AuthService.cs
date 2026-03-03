@@ -82,6 +82,7 @@ public class AuthService
         }
         return await GetUserToken(matchedUser, login);
     }
+    
     public async Task<Token> RefreshAsync(RefreshVM token)
     {
         var principal = Utils.GetPrincipalFromAccessToken(token.AccessToken, _cfg);
@@ -144,7 +145,7 @@ public class AuthService
         var sessionId = principal.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti).Value;
         var ipAddress = GetRemoteIpAddress(_ctx.HttpContext);
         var query = $"select * from [UserLogin] where Id = '{sessionId}'";
-        var connStr = await _sql.GetConnStrFromKey(token.ConnKey);
+        var connStr = _sql.GetConnStrFromKey(token.ConnKey);
         var userLogin = await _sql.ReadDsAs<UserLogin>(query, connStr);
         if (userLogin is null) return true;
         await _userService.SavePatch(new PatchVM
@@ -265,8 +266,8 @@ public class AuthService
 
     public async Task<string> ResendUser(SqlViewModel vm)
     {
-        vm.CachedMetaConn ??= await _sql.GetConnStrFromKey(vm.MetaConn);
-        vm.CachedDataConn ??= await _sql.GetConnStrFromKey(vm.DataConn);
+        vm.CachedMetaConn ??= _sql.GetConnStrFromKey(vm.MetaConn);
+        vm.CachedDataConn ??= _sql.GetConnStrFromKey(vm.DataConn);
         var user = await _sql.ReadDsAs<User>($"select * from [User] where Id in ({vm.Id.CombineStrings()})", vm.CachedMetaConn);
         user.Salt = GenerateRandomToken();
         var randomPassword = GenerateRandomToken(10);

@@ -34,7 +34,7 @@ public class SqlServerProvider(IDistributedCache cache, IConfiguration cfg, ISer
         ArgumentException.ThrowIfNullOrWhiteSpace(connInfo);
         var sideEffect = HasSideEffect(query);
         if (sideEffect) throw new ApiException("Side effect of query is NOT allowed");
-        var connStr = shouldMapToConnStr ? await GetConnStrFromKey(connInfo) : connInfo;
+        var connStr = shouldMapToConnStr ? GetConnStrFromKey(connInfo) : connInfo;
         var tables = new List<Dictionary<string, object>[]>();
         try
         {
@@ -94,7 +94,7 @@ public class SqlServerProvider(IDistributedCache cache, IConfiguration cfg, ISer
         return fragments.ScriptTokenStream.Any(x => finalCmd.Contains(x.TokenType));
     }
 
-    public async Task<string> GetConnStrFromKey(string connKey, string tenantCode = null, string env = null)
+    public string GetConnStrFromKey(string connKey, string tenantCode = null, string env = null)
     {
         return BgExt.GetConnectionString(iServiceProvider, cfg, "logistics");
     }

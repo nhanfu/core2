@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(bun install:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(dotnet build:*)"
+    ]
+  }
+}

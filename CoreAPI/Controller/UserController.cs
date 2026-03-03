@@ -198,12 +198,6 @@ public class UserController(UserService _userSvc, AuthService _authSvc, PdfServi
         return await _userSvc.Conversation(entity);
     }
 
-    [HttpPost("/api/MoveHBL")]
-    public async Task<bool> MoveHBL([FromBody] MoveHBLVM entity)
-    {
-        return await _userSvc.MoveHBL(entity);
-    }
-
     [HttpPatch("/api/feature/run")]
     public Task<SqlResult> Run([FromBody] PatchVM entity)
     {
@@ -214,30 +208,6 @@ public class UserController(UserService _userSvc, AuthService _authSvc, PdfServi
     public Task<SqlResult> Runs([FromBody] List<PatchVM> entitys)
     {
         return _userSvc.SavePatchs2(entitys);
-    }
-
-    [HttpPost("/api/feature/SendEntity")]
-    public Task<SqlResult> SendEntity([FromBody] PatchVM entity)
-    {
-        return _userSvc.SendEntity(entity);
-    }
-
-    [HttpPost("/api/feature/ApprovedEntity")]
-    public Task<SqlResult> ApprovedEntity([FromBody] PatchVM entity)
-    {
-        return _userSvc.ApprovedEntity(entity);
-    }
-
-    [HttpPost("/api/feature/ForwardEntity")]
-    public Task<SqlResult> ForwardEntity([FromBody] PatchVM entity)
-    {
-        return _userSvc.ForwardEntity(entity);
-    }
-
-    [HttpPost("/api/feature/DeclineEntity")]
-    public Task<SqlResult> DeclineEntity([FromBody] PatchVM entity)
-    {
-        return _userSvc.DeclineEntity(entity);
     }
 
     [HttpPost("/api/CheckDelete")]
@@ -263,13 +233,6 @@ public class UserController(UserService _userSvc, AuthService _authSvc, PdfServi
     public Task<Dictionary<string, object>[]> GetMenu()
     {
         return _userSvc.GetMenu();
-    }
-
-    [AllowAnonymous]
-    [HttpGet("/api/feature/PublishAllFeature/{t}")]
-    public Task<bool> PublishAllFeature([FromRoute] string t)
-    {
-        return _userSvc.PublishAllFeature(t);
     }
 
     [HttpPost("/api/feature/getFeature")]
