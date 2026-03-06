@@ -6,7 +6,6 @@ import { Html } from "./utils/html";
 import { Utils } from "./utils/utils.js";
 import { Client } from "./clients/client.js";
 import { KeyCodeEnum } from "./models/index.js";
-import { EditForm } from "./editForm.js";
 import { Picker, Data } from 'emoji-mart';
 import { ComponentExt } from "./utils/componentExt.js";
 import { Spinner } from "./spinner.js";
@@ -53,12 +52,6 @@ export class Chat extends EditableComponent {
         Html.Take(this.ParentElement).Div.ClassName("chat-container");
         this.Element = Html.Context;
         this.LoadData();
-        if (this.Entity.Id) {
-            window.setTimeout(() => {
-                var evt = "UpdateViewEntity" + this.Entity.Id.replaceAll("-", "");
-                EditForm.NotificationClient.AddListener(evt, this.HandleMessage.bind(this));
-            }, 1000);
-        }
     }
 
     HandleMessage(data) {
@@ -630,8 +623,6 @@ export class Chat extends EditableComponent {
                 this.Entity = item;
                 this.EditForm.Entity = item;
                 this.UpdateView(true);
-                var evt = "UpdateViewEntity" + this.Entity.Id.replaceAll("-", "");
-                EditForm.NotificationClient.AddListener(evt, this.HandleMessage.bind(this));
                 await this.updateBadge();
             });
         }
@@ -641,8 +632,6 @@ export class Chat extends EditableComponent {
             this.Entity = item;
             this.EditForm.Entity = item;
             this.UpdateView(true);
-            var evt = "UpdateViewEntity" + this.Entity.Id.replaceAll("-", "");
-            EditForm.NotificationClient.AddListener(evt, this.HandleMessage.bind(this));
             this.updateBadge();
         }
     }

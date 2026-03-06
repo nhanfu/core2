@@ -7,7 +7,6 @@ import { MenuComponent } from "../components/menu.js";
 import { RegisterBL } from "./register.jsx";
 import "../../lib/css/login.css";
 import { App } from "../app.jsx";
-import { WebSocketClient } from "../../lib/clients/index.js";
 import { LangSelect } from "../../lib";
 import { EditableComponent } from "../../lib";
 import Decimal from "decimal.js";
@@ -31,9 +30,6 @@ export class LoginBL extends EditForm {
     };
     this.Name = "Login";
     this.Title = "Đăng nhập";
-    window.addEventListener("beforeunload", () =>
-      this.NotificationClient?.Close()
-    );
     this.Login = true;
     this.Meta.IsPublic = true;
     this.Meta.Label = "Login";
@@ -310,7 +306,6 @@ export class LoginBL extends EditForm {
     this.LoadByFromUrl();
     this.InitAppHanlder?.(Client.Token);
     MenuComponent.Instance.Render();
-    EditForm.NotificationClient = new WebSocketClient("apiv2.forwardx.vn/task");
   }
 
   async getExchangeRate() {

@@ -24,13 +24,15 @@ public class AuthService
     private bool _debug;
     public readonly ISqlProvider _sql;
     private readonly IConfiguration _cfg;
+    private readonly ILogger<AuthService> _logger;
 
     public AuthService(IHttpContextAccessor ctx, UserService userService, IPatchService patchService,
-        ISqlProvider sql, IConfiguration cfg)
+        ISqlProvider sql, IConfiguration cfg, ILogger<AuthService> logger)
     {
         _ctx = ctx;
         _sql = sql;
         _cfg = cfg;
+        _logger = logger;
 #if DEBUG
         _debug = true;
 #else
@@ -100,28 +102,41 @@ public class AuthService
     
     public async Task<Token> RefreshAsync(RefreshVM token)
     {
-        var principal = Utils.GetPrincipalFromAccessToken(token.AccessToken, _cfg);
-        var userId = principal.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
-        var userName = principal.Claims.FirstOrDefault(x => x.Type == "UserName")?.Value;
-        var tenant = principal.Claims.FirstOrDefault(x => x.Type == UserServiceHelpers.TenantClaim)?.Value;
-        EnsureTokenParam(userId, userName, tenant);
-        var query =
-            @$"select * from UserLogin 
-            where UserId = '{userId}' and RefreshToken = '{token.RefreshToken}'
-            and RefreshTokenExp > '{DateTime.Now}' and Active = true order by InsertedDate desc";
-        var userLogin = await _sql.ReadDsAs<UserLogin>(query);
+        try
+        {
+            _logger.LogInformation("[DEBUG RefreshAsync] Received refresh request for token");
+            var principal = Utils.GetPrincipalFromAccessToken(token.AccessToken, _cfg);
+            var userId = principal.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
+            var userName = principal.Claims.FirstOrDefault(x => x.Type == "UserName")?.Value;
+            var tenant = principal.Claims.FirstOrDefault(x => x.Type == UserServiceHelpers.TenantClaim)?.Value;
+            _logger.LogInformation("[DEBUG RefreshAsync] UserId: {UserId}, Tenant: {Tenant}", userId, tenant);
+            EnsureTokenParam(userId, userName, tenant);
+            var query =
+                @$"select * from UserLogin
+                where UserId = '{userId}' and RefreshToken = '{token.RefreshToken}'
+                and RefreshTokenExp > '{DateTime.UtcNow}' and Active = true order by InsertedDate desc";
+            _logger.LogInformation("[DEBUG RefreshAsync] Query: {Query}", query);
+            var userLogin = await _sql.ReadDsAs<UserLogin>(query);
+            _logger.LogInformation("[DEBUG RefreshAsync] Found userLogin: {Found}", userLogin != null);
 
-        if (userLogin == null)
-        {
-            return null;
+            if (userLogin == null)
+            {
+                _logger.LogWarning("[DEBUG RefreshAsync] No valid user login found - returning null");
+                return null;
+            }
+            var login = new LoginVM
+            {
+                TenantCode = tenant,
+                UserName = userName,
+            };
+            var updatedUser = await GetUserByLogin(login);
+            return await GetUserToken(updatedUser, login, token.RefreshToken);
         }
-        var login = new LoginVM
+        catch (Exception ex)
         {
-            TenantCode = tenant,
-            UserName = userName,
-        };
-        var updatedUser = await GetUserByLogin(login);
-        return await GetUserToken(updatedUser, login, token.RefreshToken);
+            _logger.LogError(ex, "[DEBUG RefreshAsync] Error: {Message}", ex.Message);
+            throw;
+        }
     }
 
     private static void EnsureTokenParam(params string[] claims)

@@ -245,7 +245,6 @@ public class UserController(
         return _queryService.ComQuery(entity);
     }
 
-    [AllowAnonymous]
     [HttpGet("/api/feature/getMenu")]
     public Task<Dictionary<string, object>[]> GetMenu()
     {
@@ -256,6 +255,7 @@ public class UserController(
     [HttpPost("/api/feature/getFeature")]
     public Feature GetFeature([FromBody] ServiceVM vm)
     {
+        SetUserContextToServices();
         return _metadataService.GetFeature(vm.Name);
     }
 

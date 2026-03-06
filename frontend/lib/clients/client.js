@@ -24,7 +24,7 @@ export class Client {
     // @ts-ignore
     static BaseUri = (import.meta.env?.VITE_API_BASE_URI || window.location.origin).toLowerCase();
     // @ts-ignore
-    static IsPortal = import.meta.env?.VITE_IS_PORTAL !== "admin";
+    static IsPortal = ((import.meta.env?.VITE_IS_PORTAL || import.meta.env?.VITE_STARTUP || "").toLowerCase() !== "admin");
     // @ts-ignore
     static MetaConn = import.meta.env?.VITE_META_CONN || "default";
     // @ts-ignore
@@ -126,6 +126,7 @@ export class Client {
         };
 
         const url = Client.api + (options.FinalUrl ?? options.Url);
+        console.log('[DEBUG SubmitAsyncWithToken] Client.api:', Client.api, 'Url:', options.Url, 'FinalUrl:', options.FinalUrl, 'Constructed url:', url);
 
         try {
             const response = await fetch(url, {
@@ -412,16 +413,28 @@ export class Client {
 
     static async RefreshToken(success = null) {
         const oldToken = Client.Token;
-        if (!oldToken || new Date(oldToken.RefreshTokenExp) <= Client.EpsilonNow) return null;
-        if (new Date(oldToken.AccessTokenExp) > Client.EpsilonNow) return oldToken;
+        console.log('[DEBUG RefreshToken] oldToken:', oldToken ? { AccessTokenExp: oldToken.AccessTokenExp, RefreshTokenExp: oldToken.RefreshTokenExp } : null);
+        console.log('[DEBUG RefreshToken] EpsilonNow:', Client.EpsilonNow);
+        if (!oldToken || new Date(oldToken.RefreshTokenExp) <= Client.EpsilonNow) {
+            console.log('[DEBUG RefreshToken] Case 1: No token or RefreshToken expired');
+            return null;
+        }
+        if (new Date(oldToken.AccessTokenExp) > Client.EpsilonNow) {
+            console.log('[DEBUG RefreshToken] Case 2: AccessToken still valid, returning old token');
+            return oldToken;
+        }
         if (new Date(oldToken.AccessTokenExp) <= Client.EpsilonNow && new Date(oldToken.RefreshTokenExp) > Client.EpsilonNow) {
+            console.log('[DEBUG RefreshToken] Case 3: Need to refresh token');
             const newToken = await Client.GetToken(oldToken);
+            console.log('[DEBUG RefreshToken] Got newToken:', newToken);
             if (newToken) {
                 Client.Token = newToken;
                 success?.(newToken);
             }
             return newToken;
         }
+        console.log('[DEBUG RefreshToken] Case 4: RefreshToken also expired');
+        return null;
     }
 
     /**

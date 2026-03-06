@@ -5,7 +5,6 @@ import { Html } from "./utils/html.js";
 import Sortable from "sortablejs";
 import { Utils } from "./utils/utils.js";
 import { Client } from "./clients/client.js";
-import { EditForm } from "./index.js";
 import { KanbanItem } from "./kanbanItem.js";
 import Decimal from "decimal.js";
 
@@ -85,10 +84,6 @@ export class KanbanColumn extends EditableComponent {
      * Renders the button component into the DOM.
      */
     Render() {
-        window.setTimeout(() => {
-            var evt = "ShipmentTask" + this.Entity.Id;
-            EditForm.NotificationClient.AddListener(evt, this.HandleMessage.bind(this));
-        }, 1000);
         var group = this.Meta.Id;
         Html.Take(this.ParentElement).Div.ClassName("kanban-column");
         this.Element = Html.Context;

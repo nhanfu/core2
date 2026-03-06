@@ -63,7 +63,7 @@ var tokenOptions = new TokenValidationParameters()
     ValidIssuer = conf["Tokens:Issuer"],
     ValidAudience = conf["Tokens:Issuer"],
     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(conf["Tokens:Key"])),
-    ClockSkew = TimeSpan.Zero
+    ClockSkew = TimeSpan.FromMinutes(5)
 };
 services.AddSingleton(tokenOptions);
 services.AddAuthentication(options =>

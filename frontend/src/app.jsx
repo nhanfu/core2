@@ -55,18 +55,7 @@ export class App {
 
   async Init() {
     Spinner.Init();
-    if (Client.Token) {
-      Client.GetToken(Client.Token)
-        .then((token) => {
-          Client.Token = token;
-          LoginBL.Instance.Render();
-        })
-        .catch(() => {
-          this.removeUser();
-        });
-    } else {
-      LoginBL.Instance.Render();
-    }
+    LoginBL.Instance.Render();
   }
 
   removeUser() {
