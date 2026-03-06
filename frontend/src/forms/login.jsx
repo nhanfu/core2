@@ -25,7 +25,7 @@ export class LoginBL extends EditForm {
     super("User");
     this.Entity = {
       AutoSignIn: true,
-      TanentCode: "dev",
+      TenantCode: "dev",
       UserName: "",
       Password: "",
     };
@@ -42,7 +42,7 @@ export class LoginBL extends EditForm {
       const logIn = async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
-        const tanentCode = formData.get("TanentCode");
+        const tanentCode = formData.get("TenantCode");
         const userName = formData.get("UserName");
         const password = formData.get("Password");
         if (!tanentCode || !userName || !password) {
@@ -50,7 +50,7 @@ export class LoginBL extends EditForm {
           return;
         }
         const login = {
-          TanentCode: tanentCode,
+          TenantCode: tanentCode,
           UserName: userName,
           Password: password,
           AutoSignIn: true,
@@ -102,7 +102,7 @@ export class LoginBL extends EditForm {
                     <input
                       className="input ap-lg-input"
                       type="text"
-                      name="TanentCode"
+                      name="TenantCode"
                     />
                   </div>
                   <div className="wrap-input username-wrap validate-input">

@@ -1,31 +1,34 @@
 services:
 
-  sqlserver:
-    image: mcr.microsoft.com/mssql/server:latest
+  postgres:
+    image: postgres:16-alpine
     ports:
-      - "1433:1433"
+      - "5432:5432"
     environment:
-      - ACCEPT_EULA=Y
-      - MSSQL_PID=Developer
-      - SA_PASSWORD=YourStrongPassword123!
+      - POSTGRES_DB=crm
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=YourStrongPassword123!
     volumes:
-      - sqlserver_data:/var/opt/mssql
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "bash", "-c", "echo > /dev/tcp/localhost/1433"]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 10
 
   db-init:
-    image: mcr.microsoft.com/mssql-tools
+    image: postgres:16-alpine
     volumes:
       - ./CoreAPI/wwwroot/upload/crm/db:/scripts
     environment:
-      - SA_PASSWORD=YourStrongPassword123!
+      - POSTGRES_HOST=postgres
+      - POSTGRES_DB=crm
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=YourStrongPassword123!
     depends_on:
-      sqlserver:
+      postgres:
         condition: service_healthy
-    command: bash /scripts/init.sh
+    command: bash /scripts/init_pg.sh
 
   coreapi:
     build:
@@ -45,7 +48,7 @@ services:
         max-size: "10m"
         max-file: "3"
     depends_on:
-      sqlserver:
+      postgres:
         condition: service_healthy
 
   frontend:
@@ -53,8 +56,13 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - ./frontend/src:/app/src
+      - ./frontend/lib:/app/lib
+      - ./frontend/index.html:/app/index.html
+      - ./frontend/vite.config.js:/app/vite.config.js
+      - ./frontend/.env:/app/.env
+      - ./frontend/public:/app/public
+      - ./frontend/images:/app/images
     ports:
       - "5173:5173"
     environment:
@@ -63,4 +71,4 @@ services:
       - coreapi
 
 volumes:
-  sqlserver_data:
+  postgres_data:

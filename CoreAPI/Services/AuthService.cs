@@ -53,9 +53,9 @@ public class AuthService
 
     public async Task<Token> SignInAsync(LoginVM login)
     {
-        if (login.TanentCode.HasAnyChar())
+        if (login.TenantCode.HasAnyChar())
         {
-            login.TanentCode = login.TanentCode.Trim();
+            login.TenantCode = login.TenantCode.Trim();
         }
         var matchedUser = await GetUserByLogin(login) ?? throw new ApiException($"Sai mật khẩu hoặc tên đăng nhập.<br /> Vui lòng đăng nhập lại!")
         {
@@ -67,14 +67,14 @@ public class AuthService
         if (!matchPassword && !_debug)
         {
             var loginFailedCount = matchedUser.LoginFailedCount.HasValue ? matchedUser.LoginFailedCount + 1 : 1;
-            changes.Add(new PatchDetail { Field = nameof(User.LastFailedLogin), Value = DateTime.Now.ToISOFormat() });
+            changes.Add(new PatchDetail { Field = nameof(User.LastFailedLogin), Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") });
             changes.Add(new PatchDetail { Field = nameof(User.LoginFailedCount), Value = loginFailedCount.ToString() });
         }
         else
         {
             matchedUser.LastLogin = DateTime.Now;
             matchedUser.LoginFailedCount = 0;
-            changes.Add(new PatchDetail { Field = nameof(User.LastLogin), Value = DateTime.Now.ToISOFormat() });
+            changes.Add(new PatchDetail { Field = nameof(User.LastLogin), Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") });
             changes.Add(new PatchDetail { Field = nameof(User.LoginFailedCount), Value = 0.ToString() });
             if (_debug)
             {
@@ -85,7 +85,7 @@ public class AuthService
         await _patchService.SavePatch(new PatchVM
         {
             Table = nameof(User),
-            TenantCode = login.TanentCode,
+            TenantCode = login.TenantCode,
             Changes = changes
         });
         if (!matchPassword)
@@ -108,7 +108,7 @@ public class AuthService
         var query =
             @$"select * from UserLogin 
             where UserId = '{userId}' and RefreshToken = '{token.RefreshToken}'
-            and RefreshTokenExp > '{DateTime.Now}' and Active = 1 order by InsertedDate desc";
+            and RefreshTokenExp > '{DateTime.Now}' and Active = true order by InsertedDate desc";
         var userLogin = await _sql.ReadDsAs<UserLogin>(query);
 
         if (userLogin == null)
@@ -117,7 +117,7 @@ public class AuthService
         }
         var login = new LoginVM
         {
-            TanentCode = tenant,
+            TenantCode = tenant,
             UserName = userName,
         };
         var updatedUser = await GetUserByLogin(login);
@@ -137,16 +137,20 @@ public class AuthService
 
     public async Task<User> GetUserByLogin(LoginVM login)
     {
-        var query = @$"
-        declare @username varchar(100) = '{login.UserName}';
-        select u.* from [User] u 
-        where u.Active = 1 and u.Username = @username;
-        select top 1 p.* from [Partner] p 
-        left join [User] u on p.Id = u.CompanyId
-        where u.Active = 1 and u.Username = @username;";
+        var username = login.UserName;
+        var query = $@"
+        select u.* from ""User"" u
+        where u.""Active"" = true and u.""UserName"" = '{username}';
+        select p.* from ""Partner"" p
+        left join ""User"" u on p.""Id"" = u.""CompanyId""
+        where u.""Active"" = true and u.""UserName"" = '{username}'
+        limit 1;";
         var ds = await _sql.ReadDataSet(query);
         var userDb = ds.Length > 0 && ds[0].Length > 0 ? ds[0][0].MapTo<User>() : null;
-        userDb.Company = ds.Length > 1 && ds[1].Length > 0 ? ds[1][0].MapTo<Partner>() : null;
+        if (userDb != null)
+        {
+            userDb.Company = ds.Length > 1 && ds[1].Length > 0 ? ds[1][0].MapTo<Partner>() : null;
+        }
         return userDb;
     }
 
@@ -159,7 +163,7 @@ public class AuthService
         var principal = Utils.GetPrincipalFromAccessToken(token.AccessToken, _cfg);
         var sessionId = principal.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti).Value;
         var ipAddress = GetRemoteIpAddress(_ctx.HttpContext);
-        var query = $"select * from [UserLogin] where Id = '{sessionId}'";
+        var query = $"select * from \"UserLogin\" where \"Id\" = '{sessionId}'";
         var connStr = _sql.GetConnStrFromKey(token.ConnKey);
         var userLogin = await _sql.ReadDsAs<UserLogin>(query, connStr);
         if (userLogin is null) return true;
@@ -169,7 +173,7 @@ public class AuthService
             Changes =
             [
                 new PatchDetail { Field = nameof(UserLogin.Id), OldVal = userLogin.Id },
-                new PatchDetail { Field = nameof(UserLogin.AccessTokenExp), Value = DateTime.Now.ToISOFormat() },
+                new PatchDetail { Field = nameof(UserLogin.AccessTokenExp), Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") },
             ]
         });
         return true;
@@ -177,7 +181,7 @@ public class AuthService
 
     public async Task SendMail(EmailVM email, string connStr = null, string webRoot = null)
     {
-        var query = $"select top 1 * from [User] m where Id = '{_userService.UserId}'";
+        var query = $"select * from \"User\" m where \"Id\" = '{_userService.UserId}' limit 1";
         var user = await _sql.ReadDsAs<User>(query, connStr);
         var fromName = user.FullName;
         var fromAddress = user.Email;
@@ -190,7 +194,7 @@ public class AuthService
     {
         var ramdomPass = GenerateRandomToken(8);
         var randomSalt = GenerateRandomToken(8);
-        var old = $"select * from [User] where Id = '{entity.Id}'";
+        var old = $"select * from \"User\" where \"Id\" = '{entity.Id}'";
         var oldUser = await _sql.ReadDsAs<User>(old);
         var id = "-" + entity.Id;
         if (oldUser != null)
@@ -228,7 +232,7 @@ public class AuthService
 
     public async Task<bool> UpdatePassword(UpdatePasswordVM vm)
     {
-        var user = await _sql.ReadDsAs<User>($"select * from [User] where Id in ('{_userService.UserId}')");
+        var user = await _sql.ReadDsAs<User>($"select * from \"User\" where \"Id\" in ('{_userService.UserId}')");
         var hashedPassword = GetHash(Utils.SHA256, vm.Password + user.Salt);
         var matchPassword = user.Password == hashedPassword;
         if (!matchPassword)
@@ -248,7 +252,7 @@ public class AuthService
             Table = nameof(User),
             Changes = changes,
         });
-        await _sql.RunSqlCmd(null, $"update [UserLogin] set Active = 0 where UserId in ('{_userService.UserId}')");
+        await _sql.RunSqlCmd(null, $"update \"UserLogin\" set \"Active\" = 0 where \"UserId\" in ('{_userService.UserId}')");
         return true;
     }
 
@@ -256,7 +260,7 @@ public class AuthService
     {
         vm.CachedMetaConn ??= _sql.GetConnStrFromKey(vm.MetaConn);
         vm.CachedDataConn ??= _sql.GetConnStrFromKey(vm.DataConn);
-        var user = await _sql.ReadDsAs<User>($"select * from [User] where Id in ({vm.Id.CombineStrings()})", vm.CachedMetaConn);
+        var user = await _sql.ReadDsAs<User>($"select * from \"User\" where \"Id\" in ({vm.Id.CombineStrings()})", vm.CachedMetaConn);
         user.Salt = GenerateRandomToken();
         var randomPassword = GenerateRandomToken(10);
         user.Password = GetHash(Utils.SHA256, randomPassword + user.Salt);
@@ -301,7 +305,7 @@ public class AuthService
             new ("CAddress", user.Company?.Address ?? string.Empty),
             new ("CPhoneNumber", user.Company?.PhoneNumber ?? string.Empty),
             new ("CEmail",user.Company?.Email ?? string.Empty),
-            new (UserServiceHelpers.TenantClaim,login.TanentCode),
+            new (UserServiceHelpers.TenantClaim,login.TenantCode),
             new ("Email", user.Email ?? string.Empty),
             new ("Dob", user.Dob?.ToString() ?? string.Empty),
         ];
@@ -310,7 +314,7 @@ public class AuthService
         var newLogin = refreshToken is null;
         refreshToken ??= GenerateRandomToken();
         var (token, exp) = AccessToken(claims);
-        var res = JsonToken(user, login.TanentCode, roleIds, roleNames, refreshToken, token, exp, signinDate);
+        var res = JsonToken(user, login.TenantCode, roleIds, roleNames, refreshToken, token, exp, signinDate);
         if (!newLogin || !login.AutoSignIn)
         {
             return res;
@@ -326,7 +330,7 @@ public class AuthService
             Active = true
         };
         var patch = userLogin.MapToPatch();
-        patch.TenantCode = login.TanentCode;
+        patch.TenantCode = login.TenantCode;
         await _patchService.SavePatch(patch);
         return res;
     }

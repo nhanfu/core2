@@ -9,13 +9,19 @@
 
 ## Phase 1
 - Refactor UserService.cs, it's really big - done
-- Let user code calc query using Jint runtime, the function is declared at json file in JSScript property, not to use CalcFinalQuery
-- Support yaml, similar to json. See a sample yaml file in /CoreAPI/wwwroot/upload/crm/features/profile.yaml and an original JSON file in /CoreAPI/wwwroot/upload/crm/features/profile.json
+- Let user code calc query using Jint runtime, the function is declared at json file in JSScript property, not to use CalcFinalQuery - done
+- Support yaml, similar to json. See a sample yaml file in /CoreAPI/wwwroot/upload/crm/features/profile.yaml and an original JSON file in /CoreAPI/wwwroot/upload/crm/features/profile.json - done
     - The system should convert yaml to json before sending to the client.
     - All properties start with _ should be clear before sending to the client
-- Integrate popular cloud services like Supabase for storage, database, and authentication instead of local setups.
 - Using PostgreSQL (via Supabase) instead of SQL Server, no need to support SQL Server at this point.
-- Support connection pool so we don't have to create too many connection to the database
+    - Convert all scripts in CoreAPI/wwwroot/upload/crm/db folder to postgreSQL scripts
+    - Use PostgreSqlProvider instead of SqlServerProvider in Program.cs
+    - Replace all sql server query to postgreSQL query - working
+- Add connection pool to PostgreSqlProvider, so that we don't have to create too many connection to the database - in ReadDataSet
+- Integrate popular cloud services like Supabase to integrate with:
+    - Storage - FileService
+    - Database - PostgreSqlProvider
+    - Authentication - AuthService
 - Migrate core runtime from `CoreAPI (.NET)` toward a native JS runtime on `Deno`. The new runtime is under `svc` folder.
 
 ## Phase 2

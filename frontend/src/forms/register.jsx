@@ -49,7 +49,7 @@ export class RegisterBL extends EditForm {
                   <input
                     className="input ap-lg-input"
                     type="text"
-                    name="TanentCode"
+                    name="TenantCode"
                     placeholder="Tanent Code"
                   />
                 </div>
@@ -150,7 +150,7 @@ export class RegisterBL extends EditForm {
       },
       {
         ComponentType: "Input",
-        FieldName: "TanentCode",
+        FieldName: "TenantCode",
         Label: "Tanent Code",
         Validation: `[{"Rule": "required", "Message": "{0} is required"}]`
       },

@@ -125,12 +125,12 @@ public class PatchService : IPatchService
 
             var cells = vm.Changes.Select(x => x.Field).ToList();
             var update = vm.Changes.Select(x => $"@{id + x.Field.ToLower()}");
-            var cmd = $"INSERT into [{vm.Table}]([{cells.Combine("],[")}]) values({update.Combine()})";
+            var cmd = $"INSERT into \"{vm.Table}\"(\"{cells.Combine("\",\"")}\") values({update.Combine()})";
 
             var result = await _sql.RunSqlCmd(vm.CachedDataConn, cmd);
             if (result > 0)
             {
-                var entity = await _sql.ReadDataSet($"SELECT * FROM [{vm.Table}] WHERE Id = '{id}'");
+                var entity = await _sql.ReadDataSet($"SELECT * FROM \"{vm.Table}\" WHERE \"Id\" = '{id}'");
                 return new SqlResult
                 {
                     updatedItem = entity[0],
@@ -145,7 +145,7 @@ public class PatchService : IPatchService
             var (dup, mess, currentEntity) = await CheckDuplicate(vm, true);
             if (dup)
             {
-                var entity = await _sql.ReadDataSet($"SELECT * FROM [{vm.Table}] WHERE Id = '{id}'");
+                var entity = await _sql.ReadDataSet($"SELECT * FROM \"{vm.Table}\" WHERE \"Id\" = '{id}'");
                 return new SqlResult
                 {
                     updatedItem = entity[0],
@@ -161,13 +161,13 @@ public class PatchService : IPatchService
             });
 
             var updates = vm.Changes.Where(x => x.Field != "Id").ToList();
-            var update = updates.Select(x => $"[{x.Field}] = @{id + x.Field.ToLower()}");
-            var cmd = $"UPDATE [{vm.Table}] SET {update.Combine()} WHERE Id = '{id}'";
+            var update = updates.Select(x => $"\"{x.Field}\" = @{id + x.Field.ToLower()}");
+            var cmd = $"UPDATE \"{vm.Table}\" SET {update.Combine()} WHERE \"Id\" = '{id}'";
 
             var result = await _sql.RunSqlCmd(vm.CachedDataConn, cmd);
             if (result > 0)
             {
-                var entity = await _sql.ReadDataSet($"SELECT * FROM [{vm.Table}] WHERE Id = '{id}'");
+                var entity = await _sql.ReadDataSet($"SELECT * FROM \"{vm.Table}\" WHERE \"Id\" = '{id}'");
                 return new SqlResult
                 {
                     updatedItem = entity[0],
@@ -210,8 +210,8 @@ public class PatchService : IPatchService
         patches[0].CachedMetaConn ??= _sql.GetConnStrFromKey(patches[0].MetaConn);
 
         var tables = patches.Select(x => x.Table);
-        string rightQuery = $"select * from [FeaturePolicy] " +
-            $"where Active = 1 and (CanWrite = 1 or CanWriteAll = 1) and EntityName in ({tables.CombineStrings()}) and RoleId in ({RoleIds.CombineStrings()})";
+        string rightQuery = $"select * from \"FeaturePolicy\" " +
+            $"where \"Active\" = true and (\"CanWrite\" = true or \"CanWriteAll\" = true) and \"EntityName\" in ({tables.CombineStrings()}) and \"RoleId\" in ({RoleIds.CombineStrings()})";
 
         var permissions = await _sql.ReadDsAsArr<Core.Models.FeaturePolicy>(rightQuery, patches[0].CachedMetaConn);
         permissions = permissions.DistinctBy(x => x.TableName).ToArray();
@@ -236,7 +236,7 @@ public class PatchService : IPatchService
 
         if (string.IsNullOrWhiteSpace(vm.ComId))
         {
-            var sql = vm.Delete.Select(x => $"delete from [{x.Table}] where Id in ({x.Ids.CombineStrings()})");
+            var sql = vm.Delete.Select(x => $"delete from \"{x.Table}\" where \"Id\" in ({x.Ids.CombineStrings()})");
             try
             {
                 await _sql.RunSqlCmd(null, sql.Combine(";"));
@@ -249,7 +249,7 @@ public class PatchService : IPatchService
         }
         else
         {
-            var query = $"select top 1 * from [Component] where Id = '{vm.ComId}'";
+            var query = $"select * from \"Component\" where \"Id\" = '{vm.ComId}' limit 1";
             var com = await _sql.ReadDsAs<Core.Models.Component>(query);
             var data = JsonConvert.DeserializeObject<SqlQuery>(com.Query);
 
@@ -262,7 +262,7 @@ public class PatchService : IPatchService
             if (!string.IsNullOrWhiteSpace(data?.update))
             {
                 var qr = FormatEntityMessage(data.update, dictionary);
-                var deletequery = qr + ";" + vm.Delete.Select(x => $"delete from [{x.Table}] where Id in ({x.Ids.CombineStrings()})").Combine(";");
+                var deletequery = qr + ";" + vm.Delete.Select(x => $"delete from \"{x.Table}\" where \"Id\" in ({x.Ids.CombineStrings()})").Combine(";");
                 try
                 {
                     await _sql.RunSqlCmd(null, deletequery);
@@ -275,7 +275,7 @@ public class PatchService : IPatchService
             }
             else
             {
-                var sql = vm.Delete.Select(x => $"delete from [{x.Table}] where Id in ({x.Ids.CombineStrings()})");
+                var sql = vm.Delete.Select(x => $"delete from \"{x.Table}\" where \"Id\" in ({x.Ids.CombineStrings()})");
                 try
                 {
                     await _sql.RunSqlCmd(null, sql.Combine(";"));
@@ -296,7 +296,7 @@ public class PatchService : IPatchService
         var canDeactivateAll = allRights.Any(x => x.CanDeactivateAll);
         var canDeactivateSelf = allRights.Any(x => x.CanDeactivate);
 
-        var query = $"select * from [{vm.Table}] where Id in ({vm.Id.CombineStrings()})";
+        var query = $"select * from \"{vm.Table}\" where \"Id\" in ({vm.Id.CombineStrings()})";
         var ds = await _sql.ReadDataSet(query, vm.CachedDataConn);
         var rows = ds.Length > 0 ? ds[0] : null;
 
@@ -318,7 +318,7 @@ public class PatchService : IPatchService
         }
 
         var activeField = rows[0].ContainsKey("Active") ? "Active" : "IsActive";
-        var updateQuery = $"UPDATE [{vm.Table}] SET [{activeField}] = 0 WHERE Id in ({vm.Id.CombineStrings()})";
+        var updateQuery = $"UPDATE \"{vm.Table}\" SET \"{activeField}\" = false WHERE \"Id\" in ({vm.Id.CombineStrings()})";
         await _sql.RunSqlCmd(vm.CachedDataConn, updateQuery);
 
         return Array.Empty<string>();
@@ -339,7 +339,7 @@ public class PatchService : IPatchService
         }
         else
         {
-            var origin = $"select t.* from [{vm.Table}] as t where t.Id = '{oldId}'";
+            var origin = $"select t.* from \"{vm.Table}\" as t where t.\"Id\" = '{oldId}'";
             var ds = await _sql.ReadDataSet(origin, vm.CachedDataConn);
             var originRow = ds.Length > 0 && ds[0].Length > 0 ? ds[0][0] : null;
             var isOwner = IsOwner(originRow, UserId, RoleIds);
@@ -363,9 +363,9 @@ public class PatchService : IPatchService
         }
         else
         {
-            var q = $"select * from [FeaturePolicy] " +
-                $"where Active = 1 and EntityName = '{entityName}' " +
-                $"and (RecordId = '{recordId}' or '{recordId}' = '') and RoleId in ({RoleIds.CombineStrings()})";
+            var q = $"select * from \"FeaturePolicy\" " +
+                $"where \"Active\" = true and \"EntityName\" = '{entityName}' " +
+                $"and (\"RecordId\" = '{recordId}' or '{recordId}' = '') and \"RoleId\" in ({RoleIds.CombineStrings()})";
 
             permissions = await _sql.ReadDsAsArr<Core.Models.FeaturePolicy>(q, connStr);
             await SetStringAsync(key, JsonConvert.SerializeObject(permissions), TimeSpan.FromMinutes(5));

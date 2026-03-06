@@ -43,7 +43,7 @@ public class MetadataService : IMetadataService
     public async Task<Dictionary<string, object>[]> GetMenu()
     {
         var roleIdsStr = RoleIds.Count > 0 ? string.Join(",", RoleIds.Select(x => $"'{x}'")) : "";
-        var query = $@"select * from [Feature] f where IsMenu = 1 and (exists (select Id from FeaturePolicy where FeatureId = f.Id and RoleId in ({roleIdsStr}) and CanRead = 1) or 'ADMIN' in ({roleIdsStr}))";
+        var query = $@"select * from ""Feature"" f where ""IsMenu"" = true and (exists (select ""Id"" from ""FeaturePolicy"" where ""FeatureId"" = f.""Id"" and ""RoleId"" in ({roleIdsStr}) and ""CanRead"" = true) or 'ADMIN' in ({roleIdsStr}))";
         var ds = await _sql.ReadDataSet(query, BgExt.GetConnectionString(_serviceProvider, _configuration, "logistics"));
         return ds[0];
     }

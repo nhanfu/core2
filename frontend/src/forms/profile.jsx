@@ -10,7 +10,7 @@ export class ProfileBL extends Page {
     super("User");
     this.Entity = {
       AutoSignIn: true,
-      TanentCode: "dev",
+      TenantCode: "dev",
       UserName: "",
       Password: "",
     };

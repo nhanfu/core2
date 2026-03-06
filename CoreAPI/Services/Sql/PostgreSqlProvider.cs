@@ -4,7 +4,6 @@ using Core.Extensions;
 using Core.Models;
 using Core.ViewModels;
 using CoreAPI.BgService;
-using CoreAPI.Services.Supabase;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using Npgsql;
@@ -12,7 +11,7 @@ using System.Data;
 
 namespace CoreAPI.Services.Sql;
 
-public class PostgreSqlProvider(IDistributedCache cache, IConfiguration cfg, IServiceProvider iServiceProvider, SupabaseService supabaseService) : ISqlProvider
+public class PostgreSqlProvider(IDistributedCache cache, IConfiguration cfg, IServiceProvider iServiceProvider) : ISqlProvider
 {
     // Connection pool settings
     private const int MinPoolSize = 5;
@@ -118,14 +117,7 @@ public class PostgreSqlProvider(IDistributedCache cache, IConfiguration cfg, ISe
 
     public string GetConnStrFromKey(string connKey, string tenantCode = null, string env = null)
     {
-        // Try to use Supabase connection string if available
-        var supabaseConnStr = EnsurePoolingEnabled(supabaseService?.ConnectionString ?? "");
-        if (!string.IsNullOrWhiteSpace(supabaseConnStr))
-        {
-            return supabaseConnStr;
-        }
-
-        // Fall back to configuration-based connection string with pooling
+        // Use configuration-based connection string with pooling
         var connStr = BgExt.GetConnectionString(iServiceProvider, cfg, "logistics");
         return EnsurePoolingEnabled(connStr);
     }
@@ -265,25 +257,25 @@ public class PostgreSqlProvider(IDistributedCache cache, IConfiguration cfg, ISe
         }).ToList();
         var idField = vm.Id;
         var valueFields = vm.Changes.Where(x => !SystemFields.Contains(x.Field.ToLower())).ToArray();
-        var now = DateTime.Now.ToString(DateTimeExt.DateFormat);
+        var now = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
         var oldId = idField?.OldVal;
-        
-        // PostgreSQL uses double quotes for identifiers
+
+        // PostgreSQL uses double quotes for identifiers and single quotes for values
         if (oldId is not null)
         {
-            var update = valueFields.Combine(x => x.Value is null ? $"\"{x.Field}\" = null" : $"\"{x.Field}\" = N'{x.Value}'");
+            var update = valueFields.Combine(x => x.Value is null ? $"\"{x.Field}\" = null" : $"\"{x.Field}\" = '{x.Value.Replace("''", "'")}'");
             if (update.IsNullOrWhiteSpace()) return null;
-            return @$"update ""{vm.Table}"" set {update}, 
+            return @$"update ""{vm.Table}"" set {update},
                 ""UpdatedBy"" = '{UserId ?? 1.ToString()}', ""UpdatedDate"" = '{now}' where ""Id"" = '{oldId}';";
         }
         else
         {
             valueFields = valueFields.Where(x => x.Field != "Active").ToArray();
             var fields = valueFields.Combine(x => $"\"{x.Field}\"");
-            var values = valueFields.Combine(x => x.Value is null ? "null" : $"N'{x.Value}'");
+            var values = valueFields.Combine(x => x.Value is null ? "null" : $"'{x.Value.Replace("''", "'")}'");
             if (fields.IsNullOrWhiteSpace() || values.IsNullOrWhiteSpace()) return null;
             return @$"insert into ""{vm.Table}"" (""Id"", ""Active"", ""InsertedBy"", ""InsertedDate"", {fields})
-                    values ('{idField.Value}', 1, '{UserId ?? 1.ToString()}', '{now}', {values});";
+                    values ('{idField.Value}', true, '{UserId ?? 1.ToString()}', '{now}', {values});";
         }
     }
 
@@ -313,11 +305,11 @@ public class PostgreSqlProvider(IDistributedCache cache, IConfiguration cfg, ISe
         }).ToList();
         var idField = vm.Id;
         var valueFields = vm.Changes.Where(x => !SystemFields.Contains(x.Field.ToLower())).ToArray();
-        var now = DateTime.Now.ToString(DateTimeExt.DateFormat);
+        var now = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
         var oldId = idField?.Value;
-        
-        // PostgreSQL uses double quotes for identifiers
-        var update = valueFields.Combine(x => x.Value is null ? $"\"{x.Field}\" = null" : $"\"{x.Field}\" = N'{x.Value}'");
+
+        // PostgreSQL uses double quotes for identifiers and single quotes for values
+        var update = valueFields.Combine(x => x.Value is null ? $"\"{x.Field}\" = null" : $"\"{x.Field}\" = '{x.Value.Replace("''", "'")}'");
         if (update.IsNullOrWhiteSpace()) return null;
         return @$"update ""{vm.Table}"" set {update},""UpdatedBy"" = '{UserId ?? 1.ToString()}', ""UpdatedDate"" = '{now}' where ""Id"" = '{oldId}';";
     }

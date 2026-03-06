@@ -104,28 +104,28 @@ public class UserService
 
     public async Task<Dictionary<string, object>[]> GetDictionary()
     {
-        var query = @$"select * from [Dictionary]";
+        var query = @$"select * from ""Dictionary""";
         var ds = await _sql.ReadDataSet(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         return ds[0];
     }
 
     public async Task<Dictionary<string, object>[]> MyNotification()
     {
-        var query = @$"select * from [TaskNotification] where AssignedId = '{UserId}' order by InsertedDate desc";
+        var query = @$"select * from ""TaskNotification"" where ""AssignedId"" = '{UserId}' order by ""InsertedDate"" desc";
         var ds = await _sql.ReadDataSet(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         return ds[0];
     }
 
     public async Task<Dictionary<string, object>[]> WebConfig()
     {
-        var query = @$"select * from [WebConfig]";
+        var query = @$"select * from ""WebConfig""";
         var ds = await _sql.ReadDataSet(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         return ds[0];
     }
 
     public async Task<bool> PostUserSetting(UserSetting userSetting)
     {
-        var query = @$"select * from [UserSetting] where UserId = '{UserId}' and ComponentId = '{userSetting.ComponentId}' and FeatureId = '{userSetting.FeatureId}'";
+        var query = @$"select * from ""UserSetting"" where ""UserId"" = '{UserId}' and ""ComponentId"" = '{userSetting.ComponentId}' and ""FeatureId"" = '{userSetting.FeatureId}'";
         var setting = await _sql.ReadDsAs<UserSetting>(query, BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         if (setting != null)
         {
@@ -197,7 +197,7 @@ public class UserService
         }
         else
         {
-            var origin = @$"select t.* from [{vm.Table}] as t where t.Id = '{oldId}'";
+            var origin = @$"select t.* from ""{vm.Table}"" as t where t.""Id"" = '{oldId}'";
             var ds = await _sql.ReadDataSet(origin, vm.CachedDataConn);
             var originRow = ds.Length > 0 && ds[0].Length > 0 ? ds[0][0] : null;
             var isOwner = Utils.IsOwner(originRow, UserId, RoleIds);
@@ -208,7 +208,7 @@ public class UserService
 
     public async Task<CheckDeleteResult> CheckDelete(CheckDeleteItem item)
     {
-        var query = @$"select top 1 * from [Component] where Id = '{item.ComId}'";
+        var query = @$"select * from ""Component"" where ""Id"" = '{item.ComId}' limit 1";
         var com = await _sql.ReadDsAs<Component>(query);
         var data = JsonConvert.DeserializeObject<SqlQuery>(com.Query);
         Dictionary<string, object> dictionary = item.Params.IsNullOrWhiteSpace() ? new Dictionary<string, object>() : JsonConvert.DeserializeObject<Dictionary<string, object>>(item.Params);
@@ -270,10 +270,10 @@ public class UserService
         }
         else
         {
-            var q = @$"select * from [FeaturePolicy] 
-            where Active = 1 and EntityName = '{entityName}'
-            and (RecordId = '{recordId}' or '{recordId}' = '') and RoleId in ({RoleIds.CombineStrings()})";
-            if (pre != null) q += $" and {permissionName} = 1";
+            var q = @$"select * from ""FeaturePolicy""
+            where ""Active"" = true and ""EntityName"" = '{entityName}'
+            and (""RecordId"" = '{recordId}' or '{recordId}' = '') and ""RoleId"" in ({RoleIds.CombineStrings()})";
+            if (pre != null) q += $" and {permissionName} = true";
             permissions = await _sql.ReadDsAsArr<FeaturePolicy>(q, connStr);
             await SetStringAsync(key, JsonConvert.SerializeObject(permissions), Utils.CacheTTL);
         }
@@ -283,7 +283,7 @@ public class UserService
 
     public async Task<Dictionary<string, object>> GetMessageActive()
     {
-        var users = await _sql.ReadDataSet($"SELECT COUNT(Id) as Total FROM [ConversationRead] WHERE UserId = '{UserId}' and [Read] = 0", BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
+        var users = await _sql.ReadDataSet($"SELECT COUNT(\"Id\") as Total FROM \"ConversationRead\" WHERE \"UserId\" = '{UserId}' and \"Read\" = false", BgExt.GetConnectionString(iServiceProvider, _configuration, "logistics"));
         return users[0][0];
     }
 
