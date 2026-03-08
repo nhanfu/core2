@@ -4,7 +4,9 @@
       "Bash(mkdir:*)",
       "Bash(bun install:*)",
       "mcp__ide__getDiagnostics",
-      "Bash(dotnet build:*)"
+      "Bash(dotnet build:*)",
+      "Bash(chmod +x /home/nhanjs/projects/core2/CoreAPI/wwwroot/upload/crm/db/setup_local_pg.sh)",
+      "Bash(sudo /home/nhanjs/projects/core2/CoreAPI/wwwroot/upload/crm/db/setup_local_pg.sh)"
     ]
   }
 }

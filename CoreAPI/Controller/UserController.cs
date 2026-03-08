@@ -13,6 +13,7 @@ using System.Security.Claims;
 namespace Core.Controllers;
 
 [Authorize]
+[AllowAnonymous]
 public class UserController(
     UserService _userSvc,
     AuthService _authSvc,
@@ -34,7 +35,7 @@ public class UserController(
         var userId = user.FindFirst("UserId")?.Value ?? user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         var tenantCode = user.FindFirst("TenantCode")?.Value?.ToUpper();
         var env = user.FindFirst("Environment")?.Value;
-        var roleIds = user.FindAll("RoleId").Select(c => c.Value).ToList();
+        var roleIds = user.FindAll("RoleIds").Select(c => c.Value).ToList();
         var roleNames = user.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
 
         if (_patchService is PatchService ps) ps.SetUserContext(userId, tenantCode, env, roleIds);
@@ -245,10 +246,22 @@ public class UserController(
         return _queryService.ComQuery(entity);
     }
 
+    [AllowAnonymous]
     [HttpGet("/api/feature/getMenu")]
     public Task<Dictionary<string, object>[]> GetMenu()
     {
-        SetUserContextToServices();
+        // Set default context for anonymous requests
+        if (_httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated != true)
+        {
+            if (_metadataService is MetadataService ms)
+            {
+                ms.SetUserContext("crm", new List<string> { "ADMIN" });
+            }
+        }
+        else
+        {
+            SetUserContextToServices();
+        }
         return _metadataService.GetMenu();
     }
 

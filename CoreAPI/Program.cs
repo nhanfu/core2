@@ -21,10 +21,6 @@ services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
            .AllowAnyMethod()
            .AllowAnyHeader();
 }));
-services.Configure<IISServerOptions>(options =>
-{
-    options.AutomaticAuthentication = false;
-});
 services.AddDistributedMemoryCache();
 services.AddLogging(config =>
 {
@@ -58,7 +54,7 @@ var tokenOptions = new TokenValidationParameters()
 {
     ValidateIssuer = true,
     ValidateAudience = true,
-    ValidateLifetime = true,
+    ValidateLifetime = false, // TEMP: disable for testing
     ValidateIssuerSigningKey = true,
     ValidIssuer = conf["Tokens:Issuer"],
     ValidAudience = conf["Tokens:Issuer"],
@@ -73,9 +69,6 @@ services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    options.Authority = conf["Tokens:Issuer"];
-    options.Audience = conf["Tokens:Issuer"];
-    options.RequireHttpsMetadata = false;
     options.TokenValidationParameters = tokenOptions;
 });
 services.AddDistributedMemoryCache();

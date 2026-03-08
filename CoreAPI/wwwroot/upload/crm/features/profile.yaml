@@ -3,10 +3,10 @@ Name: profile
 Label: Profile
 Order: 18
 Query:
-  Global:
+  Global: |
     // js
     (vm) => `select * from "Users" where "Id" = ${vm.id}`
-Script:
+Script: |
   // js
   return {
     Init: async function (com, entity) {
@@ -55,7 +55,7 @@ Components:
             Disabled: true
             Validation: '[{"Rule": "required", "Message": "{0} is required"}]'
             SmCol: 6
-            Query:
+            Query: |
               // js
               (vm) => `select ds.* from "MasterData" as ds left join
                 "MasterData" ds1 on ds."ParentId" = ds1."Id" where ds1."Name" = 'Department Type',
@@ -96,10 +96,10 @@ Components:
             Disabled: true
             Validation: '[{"Rule": "required", "Message": "{0} is required"}]'
             SmCol: 6
-            Query: 
+            Query: |
               // js
               (vm) => `select * from "Partner" as ds where "ServiceId" = 5;
-                select count(ds.Id) as total from "Partner" as ds where "ServiceId" = 5
+                select count(ds."Id") as total from "Partner" as ds where "ServiceId" = 5`
             RefName: Partner
             Template: '[{ "FieldName" : "Name", "Label" : "Name", "ComponentType" : "Input" }]'
           - Id: General.Avatar.0

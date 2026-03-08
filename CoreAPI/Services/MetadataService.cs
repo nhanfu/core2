@@ -42,61 +42,70 @@ public class MetadataService : IMetadataService
 
     public Task<Dictionary<string, object>[]> GetMenu()
     {
-        // Read menu from YAML/JSON files in tenant's features folder
-        string basePath = GetFeatureFolderPath(TenantCode);
-
-        if (!Directory.Exists(basePath))
+        try
         {
-            return Task.FromResult(Array.Empty<Dictionary<string, object>>());
-        }
+            // Read menu from YAML/JSON files in tenant's features folder
+            string basePath = GetFeatureFolderPath(TenantCode);
 
-        var menuItems = new List<Dictionary<string, object>>();
-        var deserializer = new DeserializerBuilder()
-            .WithNamingConvention(CamelCaseNamingConvention.Instance)
-            .Build();
+            _logger.LogInformation("GetMenu called - TenantCode: {TenantCode}, BasePath: {BasePath}",
+                TenantCode, basePath);
 
-        // Get all yaml and json files
-        var yamlFiles = Directory.GetFiles(basePath, "*.yaml");
-        var jsonFiles = Directory.GetFiles(basePath, "*.json");
-
-        var allFiles = yamlFiles.Concat(jsonFiles).ToList();
-
-        foreach (var file in allFiles)
-        {
-            try
+            if (!Directory.Exists(basePath))
             {
-                Feature feature = null;
-                var fileName = Path.GetFileNameWithoutExtension(file);
+                _logger.LogWarning("Directory does not exist: {Path}", basePath);
+                return Task.FromResult(Array.Empty<Dictionary<string, object>>());
+            }
 
-                if (file.EndsWith(".yaml", StringComparison.OrdinalIgnoreCase))
-                {
-                    string yaml = File.ReadAllText(file);
-                    feature = deserializer.Deserialize<Feature>(yaml);
-                }
-                else if (file.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
-                {
-                    string json = File.ReadAllText(file);
-                    feature = JsonConvert.DeserializeObject<Feature>(json);
-                }
+            var menuItems = new List<Dictionary<string, object>>();
+            var deserializer = new DeserializerBuilder()
+                .WithNamingConvention(NullNamingConvention.Instance)
+                .IgnoreUnmatchedProperties()
+                .Build();
 
-                // Only include features with IsMenu = true
-                if (feature != null && feature.IsMenu)
+            // Get all yaml and json files
+            var yamlFiles = Directory.GetFiles(basePath, "*.yaml");
+            var jsonFiles = Directory.GetFiles(basePath, "*.json");
+
+            var allFiles = yamlFiles.Concat(jsonFiles).ToList();
+
+            foreach (var file in allFiles)
+            {
+                try
                 {
-                    // Filter by role permissions
-                    if (HasMenuPermission(feature))
+                    Feature feature = null;
+
+                    if (file.EndsWith(".yaml", StringComparison.OrdinalIgnoreCase))
+                    {
+                        string yaml = File.ReadAllText(file);
+                        feature = deserializer.Deserialize<Feature>(yaml);
+                    }
+                    else if (file.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+                    {
+                        string json = File.ReadAllText(file);
+                        feature = JsonConvert.DeserializeObject<Feature>(json);
+                    }
+
+                    // Only include features with IsMenu = true and has permission
+                    if (feature != null && feature.IsMenu && HasMenuPermission(feature))
                     {
                         menuItems.Add(ConvertFeatureToDictionary(feature));
                     }
                 }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Error reading feature file: {File}", file);
+                }
             }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, "Error reading feature file: {File}", file);
-            }
-        }
 
-        // Sort by Order
-        return Task.FromResult(menuItems.OrderBy(x => x.ContainsKey("Order") ? x["Order"] : 999).ToArray());
+            var result = menuItems.OrderBy(x => x.ContainsKey("Order") ? x["Order"] : 999).ToArray();
+            _logger.LogInformation("Returning {Count} menu items", result.Length);
+            return Task.FromResult(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error in GetMenu");
+            return Task.FromResult(Array.Empty<Dictionary<string, object>>());
+        }
     }
 
     private bool HasMenuPermission(Feature feature)
@@ -185,20 +194,19 @@ public class MetadataService : IMetadataService
 
         Feature feature = null;
 
-        // Try JSON first
-        if (File.Exists(jsonPath))
-        {
-            string json = File.ReadAllText(jsonPath);
-            feature = JsonConvert.DeserializeObject<Feature>(json);
-        }
-        // Then try YAML
-        else if (File.Exists(yamlPath))
+        if (File.Exists(yamlPath))
         {
             string yaml = File.ReadAllText(yamlPath);
             var deserializer = new DeserializerBuilder()
-                .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                .WithNamingConvention(NullNamingConvention.Instance)
+                .IgnoreUnmatchedProperties()
                 .Build();
             feature = deserializer.Deserialize<Feature>(yaml);
+        }
+        else if (File.Exists(jsonPath))
+        {
+            string json = File.ReadAllText(jsonPath);
+            feature = JsonConvert.DeserializeObject<Feature>(json);
         }
 
         if (feature == null)

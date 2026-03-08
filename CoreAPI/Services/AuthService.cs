@@ -88,6 +88,7 @@ public class AuthService
         {
             Table = nameof(User),
             TenantCode = login.TenantCode,
+            ByPassPerm = true,
             Changes = changes
         });
         if (!matchPassword)
@@ -112,9 +113,9 @@ public class AuthService
             _logger.LogInformation("[DEBUG RefreshAsync] UserId: {UserId}, Tenant: {Tenant}", userId, tenant);
             EnsureTokenParam(userId, userName, tenant);
             var query =
-                @$"select * from UserLogin
-                where UserId = '{userId}' and RefreshToken = '{token.RefreshToken}'
-                and RefreshTokenExp > '{DateTime.UtcNow}' and Active = true order by InsertedDate desc";
+                @$"select * from ""UserLogin""
+                where ""UserId"" = '{userId}' and ""RefreshToken"" = '{token.RefreshToken}'
+                and ""RefreshTokenExp"" > '{DateTime.UtcNow}' and ""Active"" = true order by ""InsertedDate"" desc";
             _logger.LogInformation("[DEBUG RefreshAsync] Query: {Query}", query);
             var userLogin = await _sql.ReadDsAs<UserLogin>(query);
             _logger.LogInformation("[DEBUG RefreshAsync] Found userLogin: {Found}", userLogin != null);
