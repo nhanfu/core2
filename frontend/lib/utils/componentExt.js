@@ -244,7 +244,7 @@ export class ComponentExt {
         return new Promise((resolve, reject) => {
             // @ts-ignore
             const featureTask = Client.Instance.SubmitAsync({
-                Url: `/api/feature/getFeature`,
+                Url: `/api/feature/loadFeature`,
                 Method: "POST",
                 JsonData: JSON.stringify({
                     Name: name

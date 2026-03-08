@@ -382,7 +382,7 @@ export class LoginBL extends EditForm {
                 if (fName.params.popup2) {
                   var popup = tab.Children.find((x) => x.Popup);
                   Client.Instance.SubmitAsync({
-                    Url: `/api/feature/getFeature`,
+                    Url: `/api/feature/loadFeature`,
                     Method: "POST",
                     JsonData: JSON.stringify({
                       Name: fName.params.popup2,

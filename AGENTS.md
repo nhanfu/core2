@@ -8,6 +8,7 @@
 ## Instruction
 - If a nested function is long and does more than one thing, extract it
 - Never fetching data in a loop
+- Don't ask clarifying questions unless the request is genuinely ambiguous — the user knows the scope and expects execution, not dialogue
 
 ## Project Structure & Module Organization
 - `CoreAPI/`: ASP.NET Core 9 backend (`Program.cs`, controllers, services, models, middleware).

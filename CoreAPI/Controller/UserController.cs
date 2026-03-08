@@ -265,11 +265,16 @@ public class UserController(
         return _metadataService.GetMenu();
     }
 
-    [HttpPost("/api/feature/getFeature")]
-    public Feature GetFeature([FromBody] ServiceVM vm)
+    [HttpPost("/api/feature/loadFeature")]
+    [HttpPost("/api/feature/loadfeature")]
+    public ActionResult<Feature> LoadFeatureEndpoint([FromBody] ServiceVM vm)
     {
         SetUserContextToServices();
-        return _metadataService.GetFeature(vm.Name);
+        if (vm == null || string.IsNullOrWhiteSpace(vm.Name))
+        {
+            return BadRequest("Name is required.");
+        }
+        return _metadataService.LoadFeature(vm.Name);
     }
 
     [HttpPost("/api/feature/report")]
