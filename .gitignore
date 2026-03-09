@@ -378,3 +378,5 @@ FodyWeavers.xsd
 
 .env
 /svc/dist
+/worktrees
+.worktrees
