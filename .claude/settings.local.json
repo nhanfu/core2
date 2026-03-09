@@ -6,7 +6,16 @@
       "mcp__ide__getDiagnostics",
       "Bash(dotnet build:*)",
       "Bash(chmod +x /home/nhanjs/projects/core2/CoreAPI/wwwroot/upload/crm/db/setup_local_pg.sh)",
-      "Bash(sudo /home/nhanjs/projects/core2/CoreAPI/wwwroot/upload/crm/db/setup_local_pg.sh)"
+      "Bash(sudo /home/nhanjs/projects/core2/CoreAPI/wwwroot/upload/crm/db/setup_local_pg.sh)",
+      "Bash(deno check:*)",
+      "mcp__plugin_serena_serena__list_dir",
+      "mcp__plugin_serena_serena__get_current_config",
+      "Bash(timeout 10 deno run:*)",
+      "mcp__plugin_supabase_supabase__list_projects",
+      "mcp__plugin_supabase_supabase__get_project_url",
+      "mcp__plugin_supabase_supabase__get_publishable_keys",
+      "Bash(cp:*)",
+      "WebSearch"
     ]
   }
 }
