@@ -91,27 +91,27 @@ export class Textbox extends EditableComponent {
         this._value = this._text;
         if (this.ComponentType == "Textarea" || this.textArea != null) {
             if (this.textArea == null) {
-                Html.Take(this.ParentElement).TextArea.Value(this._text).PlaceHolder(this.Meta.PlainText);
+                Html.take(this.ParentElement).textArea.value(this._text).placeHolder(this.Meta.PlainText);
                 // @ts-ignore
                 this.Element = this.textArea = Html.Context;
             } else if (this.textArea) {
-                Html.Take(this.Element);
+                Html.take(this.Element);
                 this.Element = this.textArea;
                 this.textArea.value = this._text;
             }
             if (this.Meta.Row > 0) {
-                Html.Instance.Attr("rows", this.Meta.Row ?? 1);
+                Html.Instance.attr("rows", this.Meta.Row ?? 1);
             }
             this.textArea.addEventListener("input", (e) => this.PopulateUIChange(EventType.Input));
             this.textArea.addEventListener("change", (e) => this.PopulateUIChange(EventType.Change));
         }
         else {
             if (this.Input == null) {
-                Html.Take(this.ParentElement).Input.Value(this._text)?.PlaceHolder(this.Meta.PlainText);
+                Html.take(this.ParentElement).input.value(this._text)?.placeHolder(this.Meta.PlainText);
                 // @ts-ignore
                 this.Element = this.Input = Html.Context;
             } else {
-                Html.Take(this.Element);
+                Html.take(this.Element);
                 this.Element = this.Input;
                 this.Input.value = this._text;
             }
@@ -120,10 +120,10 @@ export class Textbox extends EditableComponent {
             this.Input.addEventListener("change", (e) => this.PopulateUIChange(EventType.Change));
         }
         if (this.Password) {
-            Html.Instance.Style("text-security: disc;-webkit-text-security: disc;-moz-text-security: disc;");
+            Html.Instance.style("text-security: disc;-webkit-text-security: disc;-moz-text-security: disc;");
         }
         if (!this.Meta.ShowLabel) {
-            Html.Instance.PlaceHolder(this.Meta.PlainText);
+            Html.Instance.placeHolder(this.Meta.PlainText);
         }
         if (this.Element && this.Element.closest("td")) {
             this.Element.closest("td").addEventListener("keydown", this.ListViewItemTab.bind(this));
@@ -281,7 +281,7 @@ export class Textbox extends EditableComponent {
             DataConn: this.DataConn,
         };
         var tcs = new Promise((resolve, reject) => {
-            Client.Instance.ComQuery(submit)
+            Client.instance.comQuery(submit)
                 .then(ds => {
                     var exists = ds.length > 0 && ds[0].length > 0;
                     return exists;

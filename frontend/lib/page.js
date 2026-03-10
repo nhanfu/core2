@@ -33,9 +33,9 @@ export class Page {
     }
 
     async render() {
-        Html.Take(this.ParentElement ?? this.Meta.ParentElement ?? document.body);
-        Html.Instance.Clear();
-        Html.Instance.Div.Render();
+        Html.take(this.ParentElement ?? this.Meta.ParentElement ?? document.body);
+        Html.Instance.clear();
+        Html.Instance.div.render();
         this.Element = Html.Context;
         let root = createRoot(this.Element);
         let reactElement = React.createElement(this.Meta.Layout);

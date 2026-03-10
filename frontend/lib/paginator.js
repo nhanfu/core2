@@ -63,7 +63,7 @@ export class Paginator extends EditableComponent {
      * Render the paginator into the DOM.
      */
     Render() {
-        Html.Take(this.Parent.Element).Div.ClassName("grid-toolbar paging").Label.IText("Pagination").End.Render();
+        Html.take(this.Parent.Element).div.className("grid-toolbar paging").label.iText("Pagination").end.render();
         this.Element = Html.Context;
         var startIndex = new Label({ FieldName: "StartIndex" });
         var endIndex = new Label({ FieldName: "EndIndex" });
@@ -75,20 +75,20 @@ export class Paginator extends EditableComponent {
         pageSize.SetSeclection = false;
         this.AddChild(pageSize);
         pageSize.Element.addEventListener("change", this.ReloadListView);
-        Html.Instance.End.Render();
-        Html.Instance.Div.Style("display: flex;").Render();
+        Html.Instance.end.render();
+        Html.Instance.div.style("display: flex;").render();
         this.AddChild(startIndex);
-        Html.Instance.Text("-");
+        Html.Instance.text("-");
         this.AddChild(endIndex);
-        Html.Instance.IText(" of ");
+        Html.Instance.iText(" of ");
         this.AddChild(total);
-        Html.Take(this.Element).Ul.ClassName("pagination").Li.Text("❮").Event("click", this.PrevPage.bind(this)).End.Render();
+        Html.take(this.Element).ul.className("pagination").li.text("❮").event("click", this.PrevPage.bind(this)).end.render();
         this.AddChild(pageNum);
         pageNum.Element.addEventListener("change", () => {
             this.Options.PageIndex = this.Options.PageNumber - 1;
             this.ReloadListView();
         });
-        Html.Instance.End.Li.Text("❯").Event("click", this.NextPage.bind(this)).End.Render();
+        Html.Instance.end.li.text("❯").event("click", this.NextPage.bind(this)).end.render();
     }
 
     /**

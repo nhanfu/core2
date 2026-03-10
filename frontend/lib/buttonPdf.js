@@ -47,20 +47,20 @@ export class ButtonPdf extends Button {
         const handlerCopyLink = this.CopyLink.bind(this);
         const handlerPdf = this.ExportPdf.bind(this);
         const handlerSendMail = this.SendMail.bind(this);
-        Html.Take(this.TabEditor?.Element ?? document.body).Div.ClassName("backdrop").Style("align-items: center;");
+        Html.take(this.TabEditor?.Element ?? document.body).div.className("backdrop").style("align-items: center;");
         this.Preview = Html.Context;
-        Html.Instance.Div.Escape(handlerClose).ClassName("popup-content");
+        Html.Instance.div.escape(handlerClose).className("popup-content");
         this.PopupContent = Html.Context;
-        Html.Instance.Div.ClassName("popup-title").Span.IText(this.Meta.PlainText || "Report PDF", this.EditForm.Meta.Label);
+        Html.Instance.div.className("popup-title").span.iText(this.Meta.PlainText || "Report PDF", this.EditForm.Meta.Label);
         this.TitleElement = Html.Context;
-        Html.Instance.End.Div.ClassName("title-center");
+        Html.Instance.end.div.className("title-center");
         this.TitleCenterElement = Html.Context;
-        Html.Instance.End.Div.ClassName("icon-box d-flex").Style("display: flex; gap: 20px; align-items: center;")
-            .Span.ClassName("fal fa-at").Event("click", handlerSendMail).End
-            .Span.ClassName("fal fa-copy").Event("click", handlerCopyLink).End
-            .Span.ClassName("fal fa-file-pdf").Event("click", handlerPdf).End
-            .Span.ClassName("fal fa-print").Event("click", handlerPrint).End
-            .Span.ClassName("fa fa-times").Event("click", handlerClose).End.End.End.Div.ClassName("popup-body scroll-content").Style("padding-bottom: 1rem;max-height:calc(100vh - 10rem) !important;display: flex; align-items: center;background-color:#525659");
+        Html.Instance.end.div.className("icon-box d-flex").style("display: flex; gap: 20px; align-items: center;")
+            .span.className("fal fa-at").event("click", handlerSendMail).end
+            .span.className("fal fa-copy").event("click", handlerCopyLink).end
+            .span.className("fal fa-file-pdf").event("click", handlerPdf).end
+            .span.className("fal fa-print").event("click", handlerPrint).end
+            .span.className("fa fa-times").event("click", handlerClose).end.end.end.div.className("popup-body scroll-content").style("padding-bottom: 1rem;max-height:calc(100vh - 10rem) !important;display: flex; align-items: center;background-color:#525659");
         var width = "794px";
         switch (this.Meta.ReportTypeId) {
             case 1: // A4 Portrait
@@ -82,7 +82,7 @@ export class ButtonPdf extends Button {
             default:
                 width = "794px"; // fallback
         }
-        Html.Instance.Iframe.ClassName("container-rpt").Style("margin:auto;background:#fff;overflow: auto;min-height:calc(-13rem + 100vh);").Width(width);
+        Html.Instance.iFrame.className("container-rpt").style("margin:auto;background:#fff;overflow: auto;min-height:calc(-13rem + 100vh);").width(width);
         this.IFrameElement = Html.Context;
         var css = document.createElement('style');
         css.textContent = `body {
@@ -176,7 +176,7 @@ export class ButtonPdf extends Button {
             return;
         }
         Spinner.AppendTo();
-        Client.Instance.PostAsync(
+        Client.instance.postAsync(
             {
                 Html: this.IFrameElement.contentWindow.document.documentElement.outerHTML,
                 FileName: this.Entity.FormatChat || this.Entity.Code || this.Entity.Id,
@@ -252,7 +252,7 @@ export class ButtonPdf extends Button {
 
     CopyLink() {
         Spinner.AppendTo();
-        Client.Instance.PostAsync({
+        Client.instance.postAsync({
             Html: this.IFrameElement.contentWindow.document.documentElement.outerHTML,
             FileName: this.Entity.FormatChat || this.Entity.Code || this.Entity.Id,
             Type: this.TypeId,
@@ -270,20 +270,20 @@ export class ButtonPdf extends Button {
 
     ExportPdf() {
         Spinner.AppendTo();
-        Client.Instance.PostAsync({
+        Client.instance.postAsync({
             Html: this.IFrameElement.contentWindow.document.documentElement.outerHTML,
             FileName: this.Entity.FormatChat || this.Entity.Code || this.Entity.Id,
             Type: this.TypeId,
             Landscape: this.Landscape
         }, "/api/GenPdf").then(response => {
             Spinner.Hide();
-            Client.Download(response);
+            Client.download(response);
         });
     }
 
     async SendMail() {
-        var planEmail = await Client.Instance.GetService("Get PlanEmail");
-        var partner = await Client.Instance.GetService("Get Partner");
+        var planEmail = await Client.instance.getService("Get PlanEmail");
+        var partner = await Client.instance.getService("Get Partner");
         var com1 = planEmail[0][0];
         com1.ComponentType = "Dropdown";
         com1.ShowLabel = true;
@@ -382,14 +382,14 @@ export class ButtonPdf extends Button {
 
     async createEMLFromFileUrl() {
         Spinner.AppendTo();
-        Client.Instance.PostAsync({
+        Client.instance.postAsync({
             Html: this.IFrameElement.contentWindow.document.documentElement.outerHTML,
             FileName: this.Entity.FormatChat || this.Entity.Code || this.Entity.Id,
             Type: this.TypeId,
             Landscape: this.Landscape
         }, "/api/GenPdf").then(async (response2) => {
             Spinner.Hide();
-            const removePath = Client.RemoveGuid(response2);
+            const removePath = Client.removeGuid(response2);
             const fileUrl = response2;
             const fileName = removePath;
             const subject = this.EditForm.Entity.PdfSubjectMail || '';

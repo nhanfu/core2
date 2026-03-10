@@ -64,7 +64,7 @@ export class App {
   }
 
   removeUser() {
-    Client.Token = null;
+    Client.token = null;
     localStorage.removeItem("UserInfo");
     LoginBL.instance.render();
   }

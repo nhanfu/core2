@@ -180,6 +180,10 @@ async function getUserCenterIds(userId: string): Promise<string[]> {
  * @returns Partner object
  */
 async function getTenant(tenantCode: string): Promise<Partner | null> {
+  if (!tenantCode) {
+    return null;
+  }
+
   try {
     const partners = await query(
       `SELECT
@@ -211,19 +215,15 @@ async function getTenant(tenantCode: string): Promise<Partner | null> {
 
 /**
  * Sign in a user with username and password
- * @param tenantCode - The tenant code (company code)
  * @param userName - The username
  * @param password - The plain text password
  * @returns Token object with user data and tokens
  * @throws Error if credentials are invalid
  */
 export async function SignIn(
-  tenantCode: string,
   userName: string,
   password: string
 ): Promise<Token> {
-  // Step 1: Query user by username and tenantCode
-  // The tenantCode maps to company (partners table via companyId)
   const users = await query(
     `${USER_SELECT}
      FROM "User" u
@@ -238,7 +238,8 @@ export async function SignIn(
 
   const user = {
     ...(users[0] as User & { tenant_code?: string }),
-    tenant_code: (users[0] as { tenant_code?: string }).tenant_code || tenantCode,
+    tenant_code: (users[0] as { tenant_code?: string }).tenant_code ||
+      Deno.env.get("TENANT_CODE") || "system",
   };
 
   // Check if user is active
@@ -280,7 +281,7 @@ export async function SignIn(
   const centerIds = await getUserCenterIds(user.id);
 
   // Get tenant/company info
-  const tenant = await getTenant(tenantCode);
+  const tenant = await getTenant(user.tenant_code || "");
 
   // Step 5: Store refresh token in database
   try {
@@ -333,7 +334,7 @@ export async function SignIn(
     partnerId: user.partnerId || "",
     regionId: "",
     signinDate: new Date(),
-    tenantCode: tenantCode,
+    tenantCode: user.tenant_code || "system",
     env: Deno.env.get("ENV") || "production",
     connKey: Deno.env.get("CONN_KEY") || "default",
   };

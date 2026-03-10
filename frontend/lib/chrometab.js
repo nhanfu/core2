@@ -265,7 +265,7 @@ export class ChromeTabs {
         const translated = LangSelect.Get(tabProperties.title);
         const textContent = translated;
         const textNode = document.createTextNode(textContent);
-        Html.MarkLangProp(textNode, tabProperties.title, "textContent");
+        Html.markLangProp(textNode, tabProperties.title, "textContent");
         context.appendChild(textNode);
         const faviconEl = tabEl.querySelector('.chrome-tab-favicon')
         if (tabProperties.favicon) {

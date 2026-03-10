@@ -27,9 +27,9 @@ export class PdfReport extends EditableComponent {
     }
 
     Render() {
-        Html.Take(this.ParentElement);
-        this._rptContent = Html.GetContext();
-        this.Element = Html.GetContext();
+        Html.take(this.ParentElement);
+        this._rptContent = Html.getContext();
+        this.Element = Html.getContext();
         this.RenderInternal();
     }
 
@@ -70,7 +70,7 @@ export class PdfReport extends EditableComponent {
             entity["t" + index + "h"] = grid.Header;
         })
         try {
-            var res = await Client.Instance.PostAsync({ ComId: this.Meta.Id, Data: entity }, "/api/CreateHtml");
+            var res = await Client.instance.postAsync({ ComId: this.Meta.Id, Data: entity }, "/api/CreateHtml");
             return res;
         } catch (error) {
             return error.Message;

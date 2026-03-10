@@ -550,17 +550,17 @@ export class Utils {
             return defaultOwnership;
         }
 
-        if (!Client.Token) return defaultOwnership; // Adjust as per your application's context
+        if (!Client.token) return defaultOwnership; // Adjust as per your application's context
 
         const ownerUserIds = entity[OwnerUserIds]?.toString();
-        const isOwnerUser = ownerUserIds?.trim() !== "" && ownerUserIds.split(Comma).includes(Client.Token.UserId);
+        const isOwnerUser = ownerUserIds?.trim() !== "" && ownerUserIds.split(Comma).includes(Client.token.UserId);
 
         const ownerRoleIds = entity[OwnerRoleIds]?.toString();
         const isOwnerRole = ownerRoleIds?.trim() !== "" &&
-            ownerRoleIds.split(Comma).some(entityRole => Client.Token.RoleIds.some(k => k == entityRole));
+            ownerRoleIds.split(Comma).some(entityRole => Client.token.RoleIds.some(k => k == entityRole));
 
         const createdId = entity[InsertedBy]?.toString();
-        const isOwner = (!ownerUserIds && createdId === Client.Token.UserId) || isOwnerRole || isOwnerUser;
+        const isOwner = (!ownerUserIds && createdId === Client.token.UserId) || isOwnerRole || isOwnerUser;
 
         return isOwner;
     }
@@ -604,7 +604,7 @@ export class Utils {
             IsRawString: true,
             Method: HttpMethod.POST
         };
-        return Client.Instance.SubmitAsync(p);
+        return Client.instance.submitAsync(p);
     }
 
     static GetMimeType(extension) {

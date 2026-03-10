@@ -50,7 +50,7 @@ export class Chart extends EditableComponent {
      */
     AddElement() {
         if (!this.Element) {
-            this.Element = Html.Take(this.ParentElement).Div.ClassName("chart-wrapper").Style(this.Meta.Style || "height:350px").GetContext();
+            this.Element = Html.take(this.ParentElement).div.className("chart-wrapper").style(this.Meta.Style || "height:350px").getContext();
         }
     }
 
@@ -85,7 +85,7 @@ export class Chart extends EditableComponent {
             }),
             ComId: this.Meta.Id,
         };
-        this.Data = this.Meta.LocalData ?? await Client.Instance.SubmitAsync({
+        this.Data = this.Meta.LocalData ?? await Client.instance.submitAsync({
             Url: "/api/feature/report",
             IsRawString: true,
             JsonData: JSON.stringify(entity),
@@ -169,7 +169,7 @@ export class Chart extends EditableComponent {
             Params: submitEntity ? JSON.stringify(submitEntity) : null,
             ComId: this.Meta.Id,
         };
-        this.Data = this.Meta.LocalData ?? await Client.Instance.SubmitAsync({
+        this.Data = this.Meta.LocalData ?? await Client.instance.submitAsync({
             Url: "/api/feature/report",
             IsRawString: true,
             JsonData: JSON.stringify(entity),
@@ -212,14 +212,14 @@ export class Chart extends EditableComponent {
     }
 
     ShowSearch() {
-        Html.Take(this.Element).Div.Style("opacity: 1; pointer-events: all; transition: .15s ease all;")
-            .TabIndex(-1)
-            .ClassName("apexcharts-menu");
+        Html.take(this.Element).div.style("opacity: 1; pointer-events: all; transition: .15s ease all;")
+            .tabIndex(-1)
+            .className("apexcharts-menu");
         this.SearchElement = Html.Context;
         const formatDate = (date) => this.dayjs(date).format("YYYY-MM-DD");
 
         Html.Instance
-            .Div.ClassName("apexcharts-menu-item").TabIndex(-1).Event(EventType.Click, (e) => {
+            .div.className("apexcharts-menu-item").tabIndex(-1).event(EventType.Click, (e) => {
                 e.preventDefault();
                 this.Title = LangSelect.Get("Week", this.EditForm.FeatureName);
 
@@ -231,10 +231,10 @@ export class Chart extends EditableComponent {
                 this.ToDate = formatDate(lastDayOfWeek);
                 this.RenderChart().then();
                 this.CloseSearch();
-            }).IText("Week", this.EditForm.Meta.Label).End
+            }).iText("Week", this.EditForm.Meta.Label).end
 
             // Tuần trước
-            .Div.ClassName("apexcharts-menu-item").TabIndex(-1).Event(EventType.Click, (e) => {
+            .div.className("apexcharts-menu-item").tabIndex(-1).event(EventType.Click, (e) => {
                 e.preventDefault();
                 this.Title = LangSelect.Get("Last Week", this.EditForm.FeatureName);
 
@@ -246,10 +246,10 @@ export class Chart extends EditableComponent {
                 this.ToDate = formatDate(lastDayOfLastWeek);
                 this.RenderChart().then();
                 this.CloseSearch();
-            }).IText("Last Week", this.EditForm.Meta.Label).End
+            }).iText("Last Week", this.EditForm.Meta.Label).end
 
             // Tháng này
-            .Div.TabIndex(-1).ClassName("apexcharts-menu-item").Event(EventType.Click, (e) => {
+            .div.tabIndex(-1).className("apexcharts-menu-item").event(EventType.Click, (e) => {
                 e.preventDefault();
                 this.Title = LangSelect.Get("Month", this.EditForm.FeatureName);
 
@@ -261,10 +261,10 @@ export class Chart extends EditableComponent {
                 this.ToDate = formatDate(lastDayOfMonth);
                 this.RenderChart().then();
                 this.CloseSearch();
-            }).IText("Month", this.EditForm.Meta.Label).End
+            }).iText("Month", this.EditForm.Meta.Label).end
 
             // Tháng trước
-            .Div.TabIndex(-1).ClassName("apexcharts-menu-item").Event(EventType.Click, (e) => {
+            .div.tabIndex(-1).className("apexcharts-menu-item").event(EventType.Click, (e) => {
                 e.preventDefault();
                 this.Title = LangSelect.Get("Last Month", this.EditForm.FeatureName);
 
@@ -276,10 +276,10 @@ export class Chart extends EditableComponent {
                 this.ToDate = formatDate(lastDayOfLastMonth);
                 this.RenderChart().then();
                 this.CloseSearch();
-            }).IText("Last Month", this.EditForm.Meta.Label).End
+            }).iText("Last Month", this.EditForm.Meta.Label).end
 
             // Quý này
-            .Div.TabIndex(-1).ClassName("apexcharts-menu-item").Event(EventType.Click, () => {
+            .div.tabIndex(-1).className("apexcharts-menu-item").event(EventType.Click, () => {
                 this.Title = LangSelect.Get("Quarter", this.EditForm.FeatureName);
 
                 let today = this.dayjs();
@@ -290,10 +290,10 @@ export class Chart extends EditableComponent {
                 this.ToDate = formatDate(lastDayOfQuarter);
                 this.RenderChart().then();
                 this.CloseSearch();
-            }).IText("Quarter", this.EditForm.Meta.Label).End
+            }).iText("Quarter", this.EditForm.Meta.Label).end
 
             // Quý trước
-            .Div.TabIndex(-1).ClassName("apexcharts-menu-item").Event(EventType.Click, () => {
+            .div.tabIndex(-1).className("apexcharts-menu-item").event(EventType.Click, () => {
                 this.Title = LangSelect.Get("Last Quarter", this.EditForm.FeatureName);
 
                 let today = this.dayjs();
@@ -304,10 +304,10 @@ export class Chart extends EditableComponent {
                 this.ToDate = formatDate(lastDayOfLastQuarter);
                 this.RenderChart().then();
                 this.CloseSearch();
-            }).IText("Last Quarter", this.EditForm.Meta.Label).End
+            }).iText("Last Quarter", this.EditForm.Meta.Label).end
 
             // Năm này
-            .Div.TabIndex(-1).ClassName("apexcharts-menu-item").Event(EventType.Click, () => {
+            .div.tabIndex(-1).className("apexcharts-menu-item").event(EventType.Click, () => {
                 this.Title = LangSelect.Get("Year", this.EditForm.FeatureName);
 
                 let today = this.dayjs();
@@ -318,10 +318,10 @@ export class Chart extends EditableComponent {
                 this.ToDate = formatDate(lastDayOfYear);
                 this.RenderChart().then();
                 this.CloseSearch();
-            }).IText("Year", this.EditForm.Meta.Label).End
+            }).iText("Year", this.EditForm.Meta.Label).end
 
             // Năm trước
-            .Div.TabIndex(-1).ClassName("apexcharts-menu-item").Event(EventType.Click, () => {
+            .div.tabIndex(-1).className("apexcharts-menu-item").event(EventType.Click, () => {
                 this.Title = LangSelect.Get("Last Year", this.EditForm.FeatureName);
 
                 let today = this.dayjs();
@@ -332,9 +332,9 @@ export class Chart extends EditableComponent {
                 this.ToDate = formatDate(lastDayOfLastYear);
                 this.RenderChart().then();
                 this.CloseSearch();
-            }).IText("Last Year", this.EditForm.Meta.Label).End
+            }).iText("Last Year", this.EditForm.Meta.Label).end
 
-            .End.Render();
+            .end.render();
         this.SearchElement.firstElementChild.focus();
     }
 

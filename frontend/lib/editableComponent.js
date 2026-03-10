@@ -42,7 +42,7 @@ export class EditableComponent {
     static ExchangeRateSaleUSD = {};
     static ExchangeRateProfitUSD = {};
     /** @type {Client} */
-    Client = Client.Instance;
+    Client = Client.instance;
     /** @type {Uuid7} */
     Uuid7 = Uuid7;
     /** @type {Decimal} */
@@ -157,7 +157,7 @@ export class EditableComponent {
     IsEditForm = false;
     /** @type {Token} */
     get Token() {
-        return Client.Token;
+        return Client.token;
     }
     /** @type {TabEditor} Handle toggle event. */
     get TabEditor() {
@@ -1092,7 +1092,7 @@ export class EditableComponent {
         if (!child.Parent) {
             child.Parent = this;
         }
-        Html.Take(child.ParentElement);
+        Html.take(child.ParentElement);
         child.Render();
         if (disabledExp || (child.Meta && child.Meta.DisabledExp && child.Entity)) {
             child.ToggleDisabled(disabledExp || child.Meta.DisabledExp);
@@ -1209,7 +1209,7 @@ export class EditableComponent {
             Params: submitEntity ? JSON.stringify(submitEntity) : null,
             ComId: this.Meta.Id,
         };
-        return await Client.Instance.SubmitAsync({
+        return await Client.instance.submitAsync({
             Url: "/api/feature/report",
             IsRawString: true,
             JsonData: JSON.stringify(entity),
@@ -1223,7 +1223,7 @@ export class EditableComponent {
             Params: submitEntity ? JSON.stringify(submitEntity) : null,
             ComId: this.Meta.Id,
         };
-        return await Client.Instance.SubmitAsync({
+        return await Client.instance.submitAsync({
             Url: "/api/feature/sql",
             IsRawString: true,
             JsonData: JSON.stringify(entity),
@@ -1258,7 +1258,7 @@ export class EditableComponent {
             Changes: componentPatch,
             Table: tablename
         };
-        await Client.Instance.PatchAsync(componentModel);
+        await Client.instance.patchAsync(componentModel);
         Spinner.Hide();
     }
 
@@ -1303,7 +1303,7 @@ export class EditableComponent {
         const models = prepared.map(o => this.ReadObject(o, tableName));
         for (const batch of chunks(models, batchSize)) {
             Spinner.AppendTo();
-            await client.PatchAsync2(batch);
+            await client.patchAsync2(batch);
         }
         Spinner.Hide();
     }

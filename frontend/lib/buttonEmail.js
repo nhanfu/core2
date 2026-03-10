@@ -51,15 +51,15 @@ export class ButtonEmail extends Button {
 
     ExportPdf() {
         Spinner.AppendTo();
-        Client.Instance.PostAsync({ Html: this.Entity["PdfTemplate"], FileName: this.Entity.FormatChat || this.Entity.Code || this.Entity.Id }, "/api/GenPdf").then(response => {
+        Client.instance.postAsync({ Html: this.Entity["PdfTemplate"], FileName: this.Entity.FormatChat || this.Entity.Code || this.Entity.Id }, "/api/GenPdf").then(response => {
             Spinner.Hide();
-            Client.Download(response);
+            Client.download(response);
         });
     }
 
     async SendMail() {
-        var planEmail = await Client.Instance.GetService("Get PlanEmail");
-        var partner = await Client.Instance.GetService("Get Partner");
+        var planEmail = await Client.instance.getService("Get PlanEmail");
+        var partner = await Client.instance.getService("Get Partner");
         var com1 = planEmail[0][0];
         com1.ComponentType = "Dropdown";
         com1.ShowLabel = true;
@@ -158,9 +158,9 @@ export class ButtonEmail extends Button {
 
     async createEMLFromFileUrl() {
         Spinner.AppendTo();
-        Client.Instance.PostAsync({ Html: this.Entity["PdfTemplate"], FileName: this.Entity.FormatChat || this.Entity.Code || this.Entity.Id }, "/api/GenPdf").then(async (response2) => {
+        Client.instance.postAsync({ Html: this.Entity["PdfTemplate"], FileName: this.Entity.FormatChat || this.Entity.Code || this.Entity.Id }, "/api/GenPdf").then(async (response2) => {
             Spinner.Hide();
-            const removePath = Client.RemoveGuid(response2);
+            const removePath = Client.removeGuid(response2);
             const fileUrl = response2;
             const fileName = removePath;
             const subject = this.EditForm.Entity.PdfSubjectMail || '';

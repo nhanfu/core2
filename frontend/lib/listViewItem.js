@@ -158,10 +158,10 @@ export class ListViewItem extends Section {
         if (this._selected) {
             this.Element.classList.add(ListViewItem.SelectedClass);
         }
-        Html.Instance.Take(this.Element)
-            .Event(EventType.Click, this.RowItemClick.bind(this))
-            .Event(EventType.DblClick, this.RowDblClick.bind(this))
-            .Event(EventType.FocusIn, () => {
+        Html.Instance.take(this.Element)
+            .event(EventType.Click, this.RowItemClick.bind(this))
+            .event(EventType.DblClick, this.RowDblClick.bind(this))
+            .event(EventType.FocusIn, () => {
                 if (this.Meta.CanAdd) {
                     this.ListView.EmptySection.Children.ForEach(x => {
                         if (x.Focused) {
@@ -176,9 +176,9 @@ export class ListViewItem extends Section {
                 });
                 this.Focused = true;
             })
-            .Event(EventType.FocusOut, this.RowFocusOut.bind(this))
-            .Event(EventType.MouseEnter, this.MouseEnter.bind(this))
-            .Event(EventType.MouseLeave, this.MouseLeave.bind(this));
+            .event(EventType.FocusOut, this.RowFocusOut.bind(this))
+            .event(EventType.MouseEnter, this.MouseEnter.bind(this))
+            .event(EventType.MouseLeave, this.MouseLeave.bind(this));
     }
 
     /**
@@ -433,7 +433,7 @@ export class ListViewItem extends Section {
                     this.ShowMessage = showMessage;
                     this.ValidateAsync().then(isValid => {
                         if (!isValid) return;
-                        Client.Instance.PatchAsync(patchModel).then(rs => {
+                        Client.instance.patchAsync(patchModel).then(rs => {
                             this.PatchUpdateCb(rs);
                             resolve(rs.updatedItem[0]);
                         });
@@ -481,7 +481,7 @@ export class ListViewItem extends Section {
     async SendEntity() {
         this.Entity.StatusId = 2;
         var patchModel = this.GetPatchVM();
-        var res = await Client.Instance.PostAsync(patchModel, "/api/feature/SendEntity");
+        var res = await Client.instance.postAsync(patchModel, "/api/feature/SendEntity");
         if (res.status == 200) {
             return true;
         }
@@ -721,7 +721,7 @@ export class ListViewItem extends Section {
 
     async UpdateEntity() {
         if (!this.EntityId.startsWith("-")) {
-            var updateRow = await Client.Instance.GetByIdAsync(this.ListView.Meta.RefName, [this.Entity.Id]);
+            var updateRow = await Client.instance.getByIdAsync(this.ListView.Meta.RefName, [this.Entity.Id]);
             var entity = updateRow.data[0];
             if (entity) {
                 await this.ListView.LoadMasterData([entity]);

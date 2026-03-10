@@ -64,7 +64,7 @@ export class SearchEntry extends EditableComponent {
             this.Element = this._input = this.ParentElement;
         }
         if (this.Element == null) {
-            this.Element = this._input = Html.Take(this.ParentElement).Div.Position(PositionEnum.relative).TabIndex(-1).ClassName(this.SEntryClass).Input.GetContext();
+            this.Element = this._input = Html.take(this.ParentElement).div.position(PositionEnum.relative).tabIndex(-1).className(this.SEntryClass).input.getContext();
             this._parentInput = this._input.parentElement;
         }
         else {
@@ -77,12 +77,12 @@ export class SearchEntry extends EditableComponent {
             }
         }
         this._input.autocomplete = "off";
-        Html.Take(this._input).PlaceHolder(this.Meta.PlainText || "Select data")
-            .Event(EventType.ContextMenu, () => this._contextMenu = true)
-            .Event(EventType.Focus, this.FocusIn.bind(this))
-            .Event(EventType.FocusOut, this.DiposeGvWrapper.bind(this))
-            .Event(EventType.KeyDown, this.SEKeydownHandler.bind(this))
-            .Event(EventType.Input, () => this.Search(this._input.value, true, null, true, false));
+        Html.take(this._input).placeHolder(this.Meta.PlainText || "Select data")
+            .event(EventType.ContextMenu, () => this._contextMenu = true)
+            .event(EventType.Focus, this.FocusIn.bind(this))
+            .event(EventType.FocusOut, this.DiposeGvWrapper.bind(this))
+            .event(EventType.KeyDown, this.SEKeydownHandler.bind(this))
+            .event(EventType.Input, () => this.Search(this._input.value, true, null, true, false));
     }
 
     SEKeydownHandler(e) {
@@ -191,8 +191,8 @@ export class SearchEntry extends EditableComponent {
 
     RenderIcons() {
         let title = LangSelect.Get('Create new data');
-        Html.Take(this.Element.parentElement).Div.ClassName('search-icons');
-        let div = Html.Instance.Icon('fa fa-plus').Title(`${title} ${LangSelect.Get(this.Meta.Label)}`).Event('click', this.OpenRefAdd.bind(this)).End.GetContext();
+        Html.take(this.Element.parentElement).div.className('search-icons');
+        let div = Html.Instance.icon('fa fa-plus').title(`${title} ${LangSelect.Get(this.Meta.Label)}`).event('click', this.OpenRefAdd.bind(this)).end.getContext();
         if (this.Element.nextElementSibling !== null) {
             this.Element.parentElement.insertBefore(div, this.Element.nextElementSibling);
         } else {
@@ -408,7 +408,7 @@ export class SearchEntry extends EditableComponent {
                     }, 500);
                 }
                 else {
-                    Client.Instance.GetByIdAsync(this.Meta.RefName, [this.Entity[this.Meta.TabGroup]]).then(data => {
+                    Client.instance.getByIdAsync(this.Meta.RefName, [this.Entity[this.Meta.TabGroup]]).then(data => {
                         this.Matched = data.data ? data.data[0] : null;
                         this.SetMatchedValue();
                     })
@@ -434,7 +434,7 @@ export class SearchEntry extends EditableComponent {
         else {
             this.Matched = this.Entity[this.DisplayField] || null;
             if ((this._value && this.Matched && this.Matched.Id != this._value) || (!this.Matched && this._value)) {
-                Client.Instance.GetByIdAsync(this.Meta.RefName, [this._value]).then(data => {
+                Client.instance.getByIdAsync(this.Meta.RefName, [this._value]).then(data => {
                     this.Matched = data.data ? data.data[0] : null;
                     this.SetMatchedValue();
                     if (this.IsCurrency) {

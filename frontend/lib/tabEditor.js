@@ -70,7 +70,7 @@ export class TabEditor extends EditForm {
      * Renders the tab part of the editor.
      */
     RenderTab() {
-        Html.Take(TabEditor.TabContainer).TabIndex(-1).Trigger(EventType.Focus).Div.Event(EventType.KeyDown, (e) => this.HotKeyHandler(e)).Render();
+        Html.take(TabEditor.TabContainer).tabIndex(-1).trigger(EventType.Focus).div.event(EventType.KeyDown, (e) => this.HotKeyHandler(e)).render();
         this.Element = Html.Context;
         this.ParentElement = TabEditor.TabContainer;
         super.Render();

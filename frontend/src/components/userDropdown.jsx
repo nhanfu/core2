@@ -9,7 +9,7 @@ const UserDropdown = ({ editForm }) => {
   };
 
   const deleteMethod = () => {
-    Client.Token = null;
+    Client.token = null;
     localStorage.removeItem("UserInfo");
     ChromeTabs.tabs.forEach((x) => x.content.dispose());
     window.location.reload();
@@ -19,11 +19,11 @@ const UserDropdown = ({ editForm }) => {
     <>
       <div className="label">
         <span></span>
-        <div style={{ whiteSpace: "nowrap" }}>{Client.Token.userName}</div>
+        <div style={{ whiteSpace: "nowrap" }}>{Client.token.userName}</div>
       </div>
       <img
         className="img-user"
-        src={Client.Token.avatar || "/assets/images/avatar1.png"}
+        src={Client.token.avatar || "/assets/images/avatar1.png"}
         alt="user"
         srcSet=""
       />

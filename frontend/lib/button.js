@@ -26,22 +26,22 @@ export class Button extends EditableComponent {
     Render() {
         if (!this.buttonEle) {
             if (!this.ParentElement) throw new Error("ParentElement is required");
-            Html.Take(this.ParentElement).Button.Render();
+            Html.take(this.ParentElement).button.render();
             this.Element = this.buttonEle = Html.Context;
         } else {
             this.Element = this.buttonEle;
         }
 
-        Html.Take(this.Element)
-            .ClassName(this.Meta.ClassName)
-            .Event("click", () => this.DispatchClick())
-            .Style(this.Meta.Style);
+        Html.take(this.Element)
+            .className(this.Meta.ClassName)
+            .event("click", () => this.DispatchClick())
+            .style(this.Meta.Style);
 
         if (this.Meta.Icon) {
-            Html.Icon(this.Meta.Icon).End.Text(" ").Render();
+            Html.icon(this.Meta.Icon).end.text(" ").render();
         }
 
-        Html.Span.ClassName("caption").IText(this.Meta.Label || "", this.EditForm.Meta.Label);
+        Html.span.className("caption").iText(this.Meta.Label || "", this.EditForm.Meta.Label);
         this._textEle = Html.Context;
 
         this.Element.closest("td")?.addEventListener("keydown", e => this.ListViewItemTab(e));

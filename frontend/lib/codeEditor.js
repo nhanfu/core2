@@ -35,7 +35,7 @@ export class CodeEditor extends EditableComponent {
         this.SetOldTextAndVal();
         if (!this.Element) {
             this.ParentElement.style.textAlign = 'unset';
-            Html.Take(this.ParentElement).Div.ClassName("code-editor").Style(this.Meta.Style || "height:150px;max-height:150px;position: relative;");
+            Html.take(this.ParentElement).div.className("code-editor").style(this.Meta.Style || "height:150px;max-height:150px;position: relative;");
             this.Element = Html.Context;
         }
         this.Config().then(() => {
@@ -197,24 +197,24 @@ export class CodeEditor extends EditableComponent {
         this.Element.classList.add('code-editor');
         this.Element.style.resize = 'both';
         this.Element.style.border = '1px solid #dde';
-        Html.Take(this.Element).Icon('fal fal fa-compress-wide').Style("position: absolute; z-index: 1; top: 0; right: 0;")
-            .Event('click', () => {
+        Html.take(this.Element).icon('fal fal fa-compress-wide').style("position: absolute; z-index: 1; top: 0; right: 0;")
+            .event('click', () => {
                 ComponentExt.FullScreen(this.Element);
-            }).End
-            .Select.Event("change", /**@param {Event} e */(e) => {
+            }).end
+            .select.event("change", /**@param {Event} e */(e) => {
                 var newLanguage = e.target.value;
                 monaco.editor.setModelLanguage(this.editor.getModel(), newLanguage);
-            }).Style("position: absolute; z-index: 1; left: 0; bottom: 0;")
-            .Option.Attr("value", "javascript").Attr(this.Meta.Lang == "javascript" ? "selected" : "no", "").IText("javascript").End
-            .Option.Attr("value", "json").Attr(this.Meta.Lang == "json" ? "selected" : "no", "").IText("json").End
-            .Option.Attr("value", "sql").Attr(this.Meta.Lang == "sql" ? "selected" : "no", "").IText("sql").End
-            .Option.Attr("value", "html").Attr(this.Meta.Lang == "html" ? "selected" : "no", "").IText("html").End
-            .Option.Attr("value", "css").Attr(this.Meta.Lang == "css" ? "selected" : "no", "").IText("css").End
-            .Option.Attr("value", "text").Attr(this.Meta.Lang == "text" ? "selected" : "no", "").IText("text").End.End
-            .Icon('fal fa-history').Style("position: absolute; z-index: 1; bottom: 0; right: 0;")
-            .Event('click', () => {
+            }).style("position: absolute; z-index: 1; left: 0; bottom: 0;")
+            .option.attr("value", "javascript").attr(this.Meta.Lang == "javascript" ? "selected" : "no", "").iText("javascript").end
+            .option.attr("value", "json").attr(this.Meta.Lang == "json" ? "selected" : "no", "").iText("json").end
+            .option.attr("value", "sql").attr(this.Meta.Lang == "sql" ? "selected" : "no", "").iText("sql").end
+            .option.attr("value", "html").attr(this.Meta.Lang == "html" ? "selected" : "no", "").iText("html").end
+            .option.attr("value", "css").attr(this.Meta.Lang == "css" ? "selected" : "no", "").iText("css").end
+            .option.attr("value", "text").attr(this.Meta.Lang == "text" ? "selected" : "no", "").iText("text").end.end
+            .icon('fal fa-history').style("position: absolute; z-index: 1; bottom: 0; right: 0;")
+            .event('click', () => {
                 this.RenderPopup();
-            }).Event('contextmenu', (e) => this.EditForm.SysConfigMenu(e, this.Meta, null, null));
+            }).event('contextmenu', (e) => this.EditForm.SysConfigMenu(e, this.Meta, null, null));
     }
     time;
 
@@ -230,16 +230,16 @@ export class CodeEditor extends EditableComponent {
     /**@type {HTMLElement} */
     BodyElement;
     RenderPopup() {
-        Html.Take(this.EditForm.Element).Div.ClassName("backdrop");
+        Html.take(this.EditForm.Element).div.className("backdrop");
         this._backdrop = Html.Context;
-        Html.Instance.Div.ClassName("popup-content").Div.ClassName("popup-title").Span.IText("History change");
+        Html.Instance.div.className("popup-content").div.className("popup-title").span.iText("History change");
         this.TitleElement = Html.Context;
-        Html.Instance.End.Div.ClassName("icon-box").Span.ClassName("fa fa-times")
-            .Event(EventType.Click, () => {
+        Html.Instance.end.div.className("icon-box").span.className("fa fa-times")
+            .event(EventType.Click, () => {
                 this._backdrop.remove();
-            }).End.End.End.Div.ClassName("popup-body").Div.ClassName("wrapper scroll-content");
+            }).end.end.end.div.className("popup-body").div.className("wrapper scroll-content");
         this.BodyElement = Html.Context;
-        Html.Instance.End.Div.ClassName("popup-footer");
+        Html.Instance.end.div.className("popup-footer");
         if (this._backdrop.OutOfViewport().Top) {
             this._backdrop.scrollIntoView(true);
         }
@@ -251,7 +251,7 @@ export class CodeEditor extends EditableComponent {
             Skip: 0,
             Top: 110,
         };
-        Client.Instance.SubmitAsync({
+        Client.instance.submitAsync({
             NoQueue: true,
             Url: `/api/feature/com`,
             Method: "POST",
@@ -263,8 +263,8 @@ export class CodeEditor extends EditableComponent {
                 return;
             }
             dataa.forEach(item => {
-                Html.Take(this.BodyElement);
-                Html.Instance.Div.Label.ClassName("header").Text(this.dayjs(item.InsertedDate).format("DD/MM/YYYY HH:mm")).End.Div.ClassName("diff-container").Style("height:250px");
+                Html.take(this.BodyElement);
+                Html.Instance.div.label.className("header").text(this.dayjs(item.InsertedDate).format("DD/MM/YYYY HH:mm")).end.div.className("diff-container").style("height:250px");
                 const modifiedModel = monaco.editor.createModel(
                     item.Value ?? ``,
                     this.Meta.Lang ?? 'javascript'

@@ -24,7 +24,7 @@ export class Label extends EditableComponent {
             this.RenderNewEle(cellText, cellData);
         }
         if (this.Meta && this.Meta.ComponentType == "Checkbox") {
-            Html.Take(this.Element).SmallCheckbox(cellData, true);
+            Html.take(this.Element).smallCheckbox(cellData, true);
             this.OriginalText = cellData ? "✅" : "☐";
             return;
         }
@@ -47,27 +47,27 @@ export class Label extends EditableComponent {
 
     RenderNewEle(cellText, cellData) {
         if (this.Meta.ComponentType == "Number") {
-            Html.Instance.Style("justify-content: end;");
+            Html.Instance.style("justify-content: end;");
         }
         if (!this.Meta.IsMultiple) {
             if (!cellText.includes("<div") && this.Meta.ComponentType != "Checkbox" && ((this.Meta.FormatData && !this.Meta.FormatData.includes("<div")) || !this.Meta.FormatData)) {
-                Html.Instance.Span.ClassName("cell-text").Render();
+                Html.Instance.span.className("cell-text").render();
             }
             if (this.Meta.ComponentType == "Input") {
-                Html.Instance.Title(cellText).Text(this.getTextContent(cellText));
+                Html.Instance.title(cellText).text(this.getTextContent(cellText));
             }
             else {
-                Html.Instance.Title(cellText).InnerHTML(cellText);
+                Html.Instance.title(cellText).innerHTML(cellText);
             }
         }
         this.Element = Html.Context;
-        Html.Instance.End.Render();
+        Html.Instance.end.render();
     }
 
     CalcCellText(cellData) {
         if (this.Meta && this.Meta.ComponentType == "Checkbox") {
-            Html.Take(this.Element).Clear();
-            Html.Take(this.Element).SmallCheckbox(cellData, true);
+            Html.take(this.Element).clear();
+            Html.take(this.Element).smallCheckbox(cellData, true);
             this.OriginalText = cellData ? "✅" : "☐";
             return;
         }

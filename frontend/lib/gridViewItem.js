@@ -35,19 +35,19 @@ export class GridViewItem extends ListViewItem {
         if (header && header.ComponentType == "Number") {
             header.TextAlign = "right";
         }
-        Html.Take(this.Element).TData.Attr("component", header.ComponentType || "Number").TabIndex(-1).DataAttr("field", header.FieldName || "NonField").TextAlign(header.TextAlign || 'left').Event("focusin", (e) => this.FocusCell(e, header));;
+        Html.take(this.Element).tData.attr("component", header.ComponentType || "Number").tabIndex(-1).dataAttr("field", header.FieldName || "NonField").textAlign(header.TextAlign || 'left').event("focusin", (e) => this.FocusCell(e, header));;
         if (header.StatusBar && this.Meta.ShowHotKey) {
-            Html.Instance.ClassName("status-bar");
+            Html.Instance.className("status-bar");
         }
-        var td = Html.Instance.GetContext();
-        Html.Instance.Event("keydown", (e) => this.ListViewItemTab(e, td, header));
+        var td = Html.Instance.getContext();
+        Html.Instance.event("keydown", (e) => this.ListViewItemTab(e, td, header));
         if (header.FieldName && header.ComponentType != 'Button' && !header.StatusBar) {
-            Html.Instance.Event("mousedown", (e) => {
+            Html.Instance.event("mousedown", (e) => {
                 this.ListView.ClearSelection();
                 this.ListView.IsMouseDown = true;
                 this.ListView.StartCell = e.target.closest("td");
             });
-            Html.Instance.Event("mouseover",/**@param {Event} e */(e) => {
+            Html.Instance.event("mouseover",/**@param {Event} e */(e) => {
                 if (this.ListView.IsMouseDown && this.ListView.StartCell) {
                     window.getSelection().removeAllRanges();
                     const startRow = parseInt(this.ListView.StartCell.dataset.row);
@@ -71,18 +71,18 @@ export class GridViewItem extends ListViewItem {
                     }
                 }
             });
-            Html.Instance.Event("mouseup", (e) => {
+            Html.Instance.event("mouseup", (e) => {
                 this.ListView.IsMouseDown = false;
                 this.ListView.StartCell = null;
             });
         }
-        Html.Instance.Div.ClassName("wrapper-cell").Render();
+        Html.Instance.div.className("wrapper-cell").render();
         if (header.ComponentType == "Checkbox") {
-            Html.Instance.Style("justify-content: center;");
+            Html.Instance.style("justify-content: center;");
         }
         header.FocusSearch = !header.IsMultiple;
         super.RenderTableCell(rowData, header, cellWrapper ?? Html.Context);
-        Html.Instance.EndOf(ElementType.td);
+        Html.Instance.endOf(ElementType.td);
     }
 
     /**

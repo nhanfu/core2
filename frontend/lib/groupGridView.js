@@ -20,7 +20,7 @@ export class GroupGridView extends GridView {
     }
     Render() {
         super.Render();
-        Html.Take(this.Element).ClassName("group-table").End.Render();
+        Html.take(this.Element).className("group-table").end.render();
     }
     RenderContent() {
         if (!this.LoadRerender) {
@@ -39,7 +39,7 @@ export class GroupGridView extends GridView {
         this.MainSection.Show = false;
         this.MainSection.DisposeChildren();
         this.FormattedRowData.forEach((row, index) => {
-            Html.Take(this.MainSection.Element);
+            Html.take(this.MainSection.Element);
             this.RenderRowData1(this.Header, row, this.MainSection, null);
         });
         this.UpdateStickyColumns();
@@ -88,7 +88,7 @@ export class GroupGridView extends GridView {
             return tr;
         }
         else {
-            Html.Take(this.MainSection);
+            Html.take(this.MainSection);
             let first = rowSection.Entity;
             var groupSection = new GroupViewItem(ElementType.tr);
             groupSection.Key = rowSection.Entity[this._groupKey];
@@ -100,23 +100,23 @@ export class GroupGridView extends GridView {
             this.MainSection.AddChild(groupSection);
             groupSection.Element.tabIndex = -1;
             var groupText = Utils.IsFunction(this.Meta.GroupFormat, false, groupSection);
-            Html.Instance.TData.ClassName("status-cell").TabIndex(-1).Event(EventType.Click, () => groupSection.ShowChildren1 = !groupSection.ShowChildren1).Icon("fal fa-square");
+            Html.Instance.tData.className("status-cell").tabIndex(-1).event(EventType.Click, () => groupSection.ShowChildren1 = !groupSection.ShowChildren1).icon("fal fa-square");
             groupSection.Chevron = Html.Context;
-            Html.Instance.End.End.TData.Event(EventType.Click, () => this.DispatchClick(first))
-                .Event(EventType.DblClick, () => this.DispatchDblClick(first))
-                .Div.ClassName("d-flex");
+            Html.Instance.end.end.tData.event(EventType.Click, () => this.DispatchClick(first))
+                .event(EventType.DblClick, () => this.DispatchDblClick(first))
+                .div.className("d-flex");
             groupSection.GroupText = Html.Context;
-            Html.Instance.InnerHTML(groupText);
-            Html.Instance.EndOf(ElementType.td);
+            Html.Instance.innerHTML(groupText);
+            Html.Instance.endOf(ElementType.td);
             this.Header.slice(2).forEach(item => {
-                Html.Instance.TData.Attr("component", "Number").ClassName("data-summary").Style("font-weight:600");
+                Html.Instance.tData.attr("component", "Number").className("data-summary").style("font-weight:600");
                 var sec = new Section(null, Html.Context);
                 sec.Meta = item;
                 groupSection.AddChild(sec);
-                Html.Instance.EndOf(ElementType.td);
+                Html.Instance.endOf(ElementType.td);
             });
-            Html.Instance.EndOf(ElementType.tr);
-            Html.Take(this.MainSection.Element);
+            Html.Instance.endOf(ElementType.tr);
+            Html.take(this.MainSection.Element);
             rowSection.Element.classList.add("group-detail");
             groupSection.ChildrenItems.push(rowSection);
             rowSection.GroupSection = groupSection;
@@ -146,7 +146,7 @@ export class GroupGridView extends GridView {
             return tr;
         }
         else {
-            Html.Take(this.MainSection);
+            Html.take(this.MainSection);
             let first = row;
             var groupSection = new GroupViewItem(ElementType.tr);
             groupSection.Key = row[this._groupKey];
@@ -158,23 +158,23 @@ export class GroupGridView extends GridView {
             this.MainSection.AddChild(groupSection);
             groupSection.Element.tabIndex = -1
             var groupText = Utils.IsFunction(this.Meta.GroupFormat, false, groupSection);
-            Html.Instance.TData.ClassName("status-cell").TabIndex(-1).Event(EventType.Click, () => groupSection.ShowChildren1 = !groupSection.ShowChildren1).Icon("fal fa-square");
+            Html.Instance.tData.className("status-cell").tabIndex(-1).event(EventType.Click, () => groupSection.ShowChildren1 = !groupSection.ShowChildren1).icon("fal fa-square");
             groupSection.Chevron = Html.Context;
-            Html.Instance.End.End.TData.Event(EventType.Click, () => this.DispatchClick(first))
-                .Event(EventType.DblClick, () => this.DispatchDblClick(first))
-                .Div.ClassName("d-flex");
+            Html.Instance.end.end.tData.event(EventType.Click, () => this.DispatchClick(first))
+                .event(EventType.DblClick, () => this.DispatchDblClick(first))
+                .div.className("d-flex");
             groupSection.GroupText = Html.Context;
-            Html.Instance.InnerHTML(groupText);
-            Html.Instance.EndOf(ElementType.td);
+            Html.Instance.innerHTML(groupText);
+            Html.Instance.endOf(ElementType.td);
             this.Header.slice(2).forEach(item => {
-                Html.Instance.TData.Attr("component", "Number").ClassName("data-summary").Style("font-weight:600");
+                Html.Instance.tData.attr("component", "Number").className("data-summary").style("font-weight:600");
                 var sec = new Section(null, Html.Context);
                 sec.Meta = item;
                 groupSection.AddChild(sec);
-                Html.Instance.EndOf(ElementType.td);
+                Html.Instance.endOf(ElementType.td);
             });
-            Html.Instance.EndOf(ElementType.tr);
-            Html.Take(this.MainSection.Element);
+            Html.Instance.endOf(ElementType.tr);
+            Html.take(this.MainSection.Element);
             let rowSection = super.RenderRowData(this.Header, row, this.MainSection);
             rowSection.Element.classList.add("group-detail");
             groupSection.ChildrenItems.push(rowSection);
@@ -194,7 +194,7 @@ export class GroupGridView extends GridView {
             groupSection1.ChildrenItems.push(tr);
             return tr;
         }
-        Html.Take(section.Element);
+        Html.take(section.Element);
         let first = row;
         var groupSection = new GroupViewItem(ElementType.tr);
         groupSection.Key = row[this._groupKey];
@@ -213,34 +213,34 @@ export class GroupGridView extends GridView {
         groupSection.Element.tabIndex = -1;
         if (!this.Meta.IsMultiple) {
             var groupText = Utils.IsFunction(this.Meta.GroupFormat, false, groupSection);
-            Html.Instance.TData.ClassName("status-cell").TabIndex(-1).Event(EventType.Click, () => groupSection.ShowChildren1 = !groupSection.ShowChildren1).Icon("fal fa-square");
+            Html.Instance.tData.className("status-cell").tabIndex(-1).event(EventType.Click, () => groupSection.ShowChildren1 = !groupSection.ShowChildren1).icon("fal fa-square");
             groupSection.Chevron = Html.Context;
-            Html.Instance.End.End.TData.DataAttr("field", this.Header[1].FieldName).Event(EventType.DblClick, () => this.DispatchDblClick(first))
-                .Div.ClassName("d-flex");
+            Html.Instance.end.end.tData.dataAttr("field", this.Header[1].FieldName).event(EventType.DblClick, () => this.DispatchDblClick(first))
+                .div.className("d-flex");
             groupSection.GroupText = Html.Context;
-            Html.Instance.InnerHTML(groupText);
-            Html.Instance.Event(EventType.Click, () => groupSection.ShowChildren = !groupSection.ShowChildren)
-            Html.Instance.EndOf(ElementType.td);
+            Html.Instance.innerHTML(groupText);
+            Html.Instance.event(EventType.Click, () => groupSection.ShowChildren = !groupSection.ShowChildren)
+            Html.Instance.endOf(ElementType.td);
             this.Header.slice(2).forEach(item => {
-                Html.Instance.TData.Attr("component", "Number").DataAttr("field", item.FieldName).TabIndex(-1).Event(EventType.Click, () => groupSection.ShowChildren = !groupSection.ShowChildren).ClassName("data-summary").Style("font-weight:600");
+                Html.Instance.tData.attr("component", "Number").dataAttr("field", item.FieldName).tabIndex(-1).event(EventType.Click, () => groupSection.ShowChildren = !groupSection.ShowChildren).className("data-summary").style("font-weight:600");
                 var sec = new Section(null, Html.Context);
                 sec.Meta = item;
                 groupSection.AddChild(sec);
-                Html.Instance.EndOf(ElementType.td);
+                Html.Instance.endOf(ElementType.td);
             });
         }
         else {
-            Html.Instance.TData.ClassName("status-cell").TabIndex(-1).Event(EventType.Click, () => groupSection.ShowChildren1 = !groupSection.ShowChildren1).Icon("fal fa-square");
+            Html.Instance.tData.className("status-cell").tabIndex(-1).event(EventType.Click, () => groupSection.ShowChildren1 = !groupSection.ShowChildren1).icon("fal fa-square");
             groupSection.Chevron = Html.Context;
-            Html.Instance.End.EndOf(ElementType.td)
+            Html.Instance.end.endOf(ElementType.td)
             this.Header.slice(1).forEach(item => {
-                Html.Instance.TData.Attr("component", "Number").TabIndex(-1).Event(EventType.Click, () => groupSection.ShowChildren = !groupSection.ShowChildren).ClassName("data-group");
+                Html.Instance.tData.attr("component", "Number").tabIndex(-1).event(EventType.Click, () => groupSection.ShowChildren = !groupSection.ShowChildren).className("data-group");
                 groupSection.RenderTableCell(groupSection.Entity, item);
-                Html.Instance.EndOf(ElementType.td);
+                Html.Instance.endOf(ElementType.td);
             });
         }
-        Html.Instance.EndOf(ElementType.tr);
-        Html.Take(section.Element);
+        Html.Instance.endOf(ElementType.tr);
+        Html.take(section.Element);
         let rowSection = super.RenderRowData(headers, row, section);
         rowSection.Element.classList.add("group-detail");
         groupSection.ChildrenItems.push(rowSection);
@@ -333,11 +333,11 @@ export class GroupGridView extends GridView {
         if (!(section.Element instanceof HTMLTableSectionElement)) {
             throw new Error("The section is not an HTML table element");
         }
-        Html.Take(section.Element);
+        Html.take(section.Element);
         if (row.Key === null || row.Key.toString().trim() === "") {
             let rowResult = null;
             row.Children.forEach(child => {
-                Html.Take(section.Element);
+                Html.take(section.Element);
                 rowResult = super.RenderRowData(headers, child, section, null);
             });
             return rowResult;
@@ -363,29 +363,29 @@ export class GroupGridView extends GridView {
             groupSection.Entity = val;
             groupSection.Entity["ModelName"] = this.Meta.RefName;
             headers.filter(x => !x.Hidden).forEach(header => {
-                Html.Instance.TData.TabIndex(-1)
-                    .Style(header.Style)
-                    .Event(EventType.FocusIn, e => this.FocusCell(e, header))
-                    .DataAttr("field", header.FieldName).Render();
+                Html.Instance.tData.tabIndex(-1)
+                    .style(header.Style)
+                    .event(EventType.FocusIn, e => this.FocusCell(e, header))
+                    .dataAttr("field", header.FieldName).render();
                 let td = Html.Context;
                 groupSection.RenderTableCell(val, header, td);
-                Html.Instance.EndOf(ElementType.td);
+                Html.Instance.endOf(ElementType.td);
             });
         } else {
-            Html.Instance.TData.ClassName("status-cell").Icon("mif-pencil").EndOf(ElementType.td)
-                .TData.ColSpan(headers.length - 1)
-                .Event(EventType.Click, () => this.DispatchClick(first))
-                .Event(EventType.DblClick, () => this.DispatchDblClick(first))
-                .Icon("fa fa-chevron-down").Event(EventType.Click, () => groupSection.ShowChildren = !groupSection.ShowChildren).End
-                .Div.ClassName("d-flex").InnerHTML(groupText);
+            Html.Instance.tData.className("status-cell").icon("mif-pencil").endOf(ElementType.td)
+                .tData.colSpan(headers.length - 1)
+                .event(EventType.Click, () => this.DispatchClick(first))
+                .event(EventType.DblClick, () => this.DispatchDblClick(first))
+                .icon("fa fa-chevron-down").event(EventType.Click, () => groupSection.ShowChildren = !groupSection.ShowChildren).end
+                .div.className("d-flex").innerHTML(groupText);
             groupSection.GroupText = Html.Context;
             groupSection.Chevron = Html.Context.previousElementSibling;
             groupSection.Chevron.ParentElement.PreviousElementSibling.AppendChild(groupSection.Chevron);
-            Html.Instance.EndOf(ElementType.td);
+            Html.Instance.endOf(ElementType.td);
         }
-        Html.Instance.EndOf(ElementType.tr);
+        Html.Instance.endOf(ElementType.tr);
         row.Children.forEach(child => {
-            Html.Take(section.Element);
+            Html.take(section.Element);
             let rowSection = super.RenderRowData(headers, child, section);
             rowSection.Element.AddClass("group-detail");
             groupSection.ChildrenItems.push(rowSection);

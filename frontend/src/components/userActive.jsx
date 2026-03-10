@@ -20,7 +20,7 @@ const UserActive = () => {
     const taskNotification = useSelector(state => state.generic[USERACTIVE_KEY] || []); // Adjusted to use the slice state
     useEffect(() => {
         const fetchNotificationsData = async () => {
-            const response = await Client.Instance.PostAsync({}, "/api/GetUserActive");
+            const response = await Client.instance.postAsync({}, "/api/GetUserActive");
             dispatch(fetchData({ key: USERACTIVE_KEY, data: response }));
         };
         const handleUserConnectMessage = (data) => {

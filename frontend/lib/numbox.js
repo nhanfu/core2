@@ -132,7 +132,7 @@ export class Numbox extends EditableComponent {
             }
         }
         if (!this._input || this._input === null) {
-            Html.Take(this.ParentElement).Input.Render();
+            Html.take(this.ParentElement).input.render();
             const inputElement = Html.Context;
             if (inputElement instanceof HTMLInputElement) {
                 this.Element = this._input = inputElement;

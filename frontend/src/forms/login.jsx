@@ -24,7 +24,6 @@ export class LoginBL extends EditForm {
     super("User");
     this.entity = {
       autoSignIn: true,
-      tenantCode: "dev",
       userName: "",
       password: "",
     };
@@ -40,31 +39,29 @@ export class LoginBL extends EditForm {
       const logIn = async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
-        const tanentCode = formData.get("TenantCode");
         const userName = formData.get("UserName");
         const password = formData.get("Password");
-        if (!tanentCode || !userName || !password) {
+        if (!userName || !password) {
           Toast.Warning("UserName or Password is required!");
           return;
         }
         const login = {
-          tenantCode: tanentCode,
           userName: userName,
           password: password,
           autoSignIn: true,
         };
         try {
-          var res = await Client.Instance.SubmitAsync({
-            Url: `/api/auth/login?t=` + tanentCode,
+          var res = await Client.instance.submitAsync({
+            Url: `/api/auth/login`,
             JsonData: JSON.stringify(login),
             IsRawString: true,
             Method: "POST",
             AllowAnonymous: true,
           });
-          Client.Token = res;
+          Client.token = res;
           this.initFCM();
           if (this.signedInHandler) {
-            this.signedInHandler(Client.Token);
+            this.signedInHandler(Client.token);
           }
           this.dispose();
           window.history.pushState(null, "Home", "");
@@ -74,7 +71,7 @@ export class LoginBL extends EditForm {
             })
             .finally(() => {
               window.setTimeout(() => {
-                Toast.Success(`Hello ` + Client.Token.FullName);
+                Toast.Success(`Hello ` + Client.token.FullName);
               }, 200);
             });
         } catch (error) {
@@ -95,14 +92,6 @@ export class LoginBL extends EditForm {
                   objname="jInputs"
                   onSubmit={logIn}
                 >
-                  <div className="wrap-input username-wrap validate-input">
-                    <label>Company name</label>
-                    <input
-                      className="input ap-lg-input"
-                      type="text"
-                      name="TenantCode"
-                    />
-                  </div>
                   <div className="wrap-input username-wrap validate-input">
                     <label>User name</label>
                     <input
@@ -187,7 +176,7 @@ export class LoginBL extends EditForm {
   tokenRefreshedHandler = null;
 
   render() {
-    let oldToken = Client.Token;
+    let oldToken = Client.token;
     if (!oldToken || new Date(oldToken.RefreshTokenExp) <= Client.EpsilonNow) {
       this.ParentElement = document.getElementById("app");
       this.Element = this.ParentElement;
@@ -204,7 +193,7 @@ export class LoginBL extends EditForm {
       oldToken &&
       new Date(oldToken.RefreshTokenExp) > Client.EpsilonNow
     ) {
-      Client.RefreshToken().then((newToken) => {
+      Client.refreshToken().then((newToken) => {
         App.instance.renderLayout().then(async () => {
           await this.initAppIfEmpty();
         });
@@ -242,7 +231,7 @@ export class LoginBL extends EditForm {
     const login = this.loginEntity;
     const tcs = new Promise((resolve, reject) => {
       // @ts-ignore
-      Client.Instance.SubmitAsync({
+      Client.instance.submitAsync({
         Url: `/api/auth/login`,
         JsonData: JSON.stringify(login),
         IsRawString: true,
@@ -254,10 +243,10 @@ export class LoginBL extends EditForm {
             resolve(false);
             return;
           }
-          Client.Token = res;
+          Client.token = res;
           this.initFCM();
           if (this.signedInHandler) {
-            this.signedInHandler(Client.Token);
+            this.signedInHandler(Client.token);
           }
           resolve(true);
           this.dispose();
@@ -268,7 +257,7 @@ export class LoginBL extends EditForm {
             })
             .finally(() => {
               window.setTimeout(() => {
-                Toast.Success(`Hello ` + Client.Token.FullName);
+                Toast.Success(`Hello ` + Client.token.FullName);
               }, 200);
             });
         })
@@ -281,7 +270,7 @@ export class LoginBL extends EditForm {
   }
 
   async forgotPassword(login) {
-    return Client.Instance.PostAsync(login, "/user/ForgotPassword").then(
+    return Client.instance.postAsync(login, "/user/ForgotPassword").then(
       (res) => {
         if (res) {
           Toast.Warning(
@@ -299,7 +288,7 @@ export class LoginBL extends EditForm {
 
   async initAppIfEmpty() {
     const systemRoleId = RoleEnum.System;
-    Client.Instance.SystemRole = Client.Token.RoleIds.includes(
+    Client.instance.SystemRole = Client.token.RoleIds.includes(
       systemRoleId.toString()
     );
     if (this._initApp) {
@@ -307,7 +296,7 @@ export class LoginBL extends EditForm {
     }
     this._initApp = true;
     this.loadByFromUrl();
-    this.initAppHandler?.(Client.Token);
+    this.initAppHandler?.(Client.token);
     MenuComponent.instance.render();
   }
 
@@ -319,7 +308,7 @@ export class LoginBL extends EditForm {
         IsRawString: true,
         Method: "GET",
       };
-      var xmlString = await Client.Instance.SubmitAsync(json3);
+      var xmlString = await Client.instance.submitAsync(json3);
       const parser = new DOMParser();
       const xmlDoc = parser.parseFromString(xmlString, "text/xml");
       const json = this.extractExchangeRates(xmlDoc);
@@ -376,7 +365,7 @@ export class LoginBL extends EditForm {
     ComponentExt.InitFeatureByName(fName.pathname, true).then((tab) => {
       window.setTimeout(() => {
         if (fName.params.id) {
-          Client.Instance.GetByIdAsync(tab.meta.entityId, [
+          Client.instance.getByIdAsync(tab.meta.entityId, [
             fName.params.id,
           ]).then((data) => {
             if (data && data.data && data.data[0]) {
@@ -384,14 +373,14 @@ export class LoginBL extends EditForm {
               window.setTimeout(() => {
                 if (fName.params.popup2) {
                   var popup = tab.children.find((x) => x.popup);
-                  Client.Instance.SubmitAsync({
+                  Client.instance.submitAsync({
                     Url: `/api/feature/loadFeature`,
                     Method: "POST",
                     JsonData: JSON.stringify({
                       Name: fName.params.popup2,
                     }),
                   }).then((item) => {
-                    Client.Instance.GetByIdAsync(item.entityId, [
+                    Client.instance.getByIdAsync(item.entityId, [
                       fName.params.id2,
                     ]).then((data2) => {
                       if (data2.data[0]) {
@@ -441,8 +430,8 @@ export class LoginBL extends EditForm {
 
   initFCM(signout = false) {
     console.log("Init fcm");
-    let tenantCode = Client.Token.TenantCode;
-    let strUserId = `U${Client.Token.UserId.toString().padStart(7, "0")}`;
+    let tenantCode = Client.token.TenantCode;
+    let strUserId = `U${Client.token.UserId.toString().padStart(7, "0")}`;
   }
 
   static diposeAll() {

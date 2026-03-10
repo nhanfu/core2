@@ -27,21 +27,21 @@ export class HTML {
      * @param {HTMLElement|string|null|undefined} ele 
      * @returns 
      */
-    Take(ele) {
+    take(ele) {
         if (ele == null) return this;
         if (typeof (ele) === 'string') this.Context = document.querySelector(ele);
         else this.Context = ele;
         return this;
     }
 
-    GetContext() {
+    getContext() {
         return this.Context;
     }
 
     /**
      * @param {string} node
      */
-    Add(node) {
+    add(node) {
         const ele = document.createElement(node);
         if (this.Context) {
             this.Context.appendChild(ele);
@@ -51,147 +51,144 @@ export class HTML {
         }
         return this;
     }
-    get Div() {
-        return this.Add('div');
+    get div() {
+        return this.add('div');
     }
-    get Iframe() {
-        return this.Add('iframe');
+    get iFrame() {
+        return this.add('iframe');
     }
-    get Link() {
-        return this.Add('link');
+    get link() {
+        return this.add('link');
     }
-    get Script() {
-        return this.Add('script');
+    get script() {
+        return this.add('script');
     }
-    get Header() {
-        return this.Add('header');
+    get header() {
+        return this.add('header');
     }
-    get Section() {
-        return this.Add('section');
+    get section() {
+        return this.add('section');
     }
-    get Canvas() {
-        return this.Add('canvas');
+    get canvas() {
+        return this.add('canvas');
     }
-    get Video() {
-        return this.Add('video');
+    get video() {
+        return this.add('video');
     }
-    get Audio() {
-        return this.Add('audio');
+    get audio() {
+        return this.add('audio');
     }
-    get H1() {
-        return this.Add('h1');
+    get h1() {
+        return this.add('h1');
     }
-    get H2() {
-        return this.Add('h2');
+    get h2() {
+        return this.add('h2');
     }
-    get H3() {
-        return this.Add('h3');
+    get h3() {
+        return this.add('h3');
     }
-    get H4() {
-        return this.Add('h4');
+    get h4() {
+        return this.add('h4');
     }
-    get H5() {
-        return this.Add('h5');
+    get h5() {
+        return this.add('h5');
     }
-    get H6() {
-        return this.Add('h6');
+    get h6() {
+        return this.add('h6');
     }
-    get Nav() {
-        return this.Add('nav');
+    get nav() {
+        return this.add('nav');
     }
-    get Input() {
-        return this.Add('input');
+    get input() {
+        return this.add('input');
     }
-    get Iframe() {
-        return this.Add('iframe');
+    get select() {
+        return this.add('select');
     }
-    get Select() {
-        return this.Add('select');
+    get option() {
+        return this.add('option');
     }
-    get Option() {
-        return this.Add('option');
+    get span() {
+        return this.add('span');
     }
-    get Span() {
-        return this.Add('span');
+    get small() {
+        return this.add('small');
     }
-    get Small() {
-        return this.Add('small');
+    get i() {
+        return this.add('i');
     }
-    get I() {
-        return this.Add('i');
+    get img() {
+        return this.add('img');
     }
-    get Img() {
-        return this.Add('img');
+    get button() {
+        return this.add('button');
     }
-    get Button() {
-        return this.Add('button');
+    get table() {
+        return this.add('table');
     }
-    get Table() {
-        return this.Add('table');
+    get tHead() {
+        return this.add('thead');
     }
-    get Thead() {
-        return this.Add('thead');
+    get th() {
+        return this.add('th');
     }
-    get Th() {
-        return this.Add('th');
+    get tBody() {
+        return this.add('tbody');
     }
-    get TBody() {
-        return this.Add('tbody');
+    get tFooter() {
+        return this.add('tfoot');
     }
-    get TFooter() {
-        return this.Add('tfoot');
+    get tRow() {
+        return this.add('tr');
     }
-    get TRow() {
-        return this.Add('tr');
+    get tData() {
+        return this.add('td');
     }
-    get TData() {
-        return this.Add('td');
+    get p() {
+        return this.add('p');
     }
-    get P() {
-        return this.Add('p');
+    get textArea() {
+        return this.add('textarea');
     }
-    get TextArea() {
-        return this.Add('textarea');
+    get details() {
+        return this.add('details');
     }
-    get Details() {
-        return this.Add('details');
+    get summary() {
+        return this.add('summary');
     }
-    get Summary() {
-        return this.Add('summary');
-    }
-    get Br() {
+    get br() {
         var br = document.createElement("br");
         this.Context.appendChild(br);
         return this;
     }
-    get Hr() {
+    get hr() {
         var hr = document.createElement("hr");
         this.Context.appendChild(hr);
         return this;
     }
-    get Ul() {
-        return this.Add('ul');
+    get ul() {
+        return this.add('ul');
     }
-    get Li() {
-        return this.Add('li');
+    get li() {
+        return this.add('li');
     }
-    get Aside() {
-        return this.Add('aside');
+    get aside() {
+        return this.add('aside');
     }
-    get A() {
-        return this.Add('a');
+    get a() {
+        return this.add('a');
     }
-    get Form() {
-        return this.Add('form');
+    get form() {
+        return this.add('form');
     }
-    get Label() {
-        return this.Add('label');
+    get label() {
+        return this.add('label');
     }
-    get End() {
+    get end() {
         this.Context = this.Context.parentElement;
         return this;
     }
-    Render() {
+    render() {
         // Not to do anything here
     }
     /**
@@ -199,14 +196,14 @@ export class HTML {
      * @param {(...args) => any} handler
      * @param {any[]} args
      */
-    Event(name, handler, ...args) {
+    event(name, handler, ...args) {
         this.Context.addEventListener(name, (e) => handler(e, ...args));
         return this;
     }
     /**
      * @param {string} type
      */
-    Trigger(type) {
+    trigger(type) {
         var e = new Event(type);
         this.Context.dispatchEvent(e);
         return this;
@@ -215,7 +212,7 @@ export class HTML {
     /**
      * @param {string} cls
      */
-    ClassName(cls) {
+    className(cls) {
         if (this.Context.className != "") {
             this.Context.className += (' ' + cls);
         }
@@ -228,7 +225,7 @@ export class HTML {
     /**
      * @param {string} id
      */
-    Id(id) {
+    id(id) {
         this.Context.id = id;
         return this;
     }
@@ -236,7 +233,7 @@ export class HTML {
     /**
      * @param {string} style
      */
-    Style(style) {
+    style(style) {
         if (style == null) return this;
         this.Context.style.cssText += style;
         return this;
@@ -244,7 +241,7 @@ export class HTML {
     /**
      * @param {string} width
      */
-    Width(width) {
+    width(width) {
         this.Context.style.width = width;
         return this;
     }
@@ -254,59 +251,59 @@ export class HTML {
      * @param {number} number
      * @param {string} [unit]
      */
-    Padding(direction, number, unit) {
+    padding(direction, number, unit) {
         if (unit == null) unit = 'px';
-        return this.Style(`padding-${direction}: ${number}${unit}`);
+        return this.style(`padding-${direction}: ${number}${unit}`);
     }
     /**
      * @param {string} alignment
      */
-    TextAlign(alignment) {
-        return this.Style("text-align: " + alignment);
+    textAlign(alignment) {
+        return this.style("text-align: " + alignment);
     }
     /**
      * @param {string} text
      */
-    Text(text) {
+    text(text) {
         if (text === null || text === undefined) return this;
         var node = new Text(text);
         this.Context.appendChild(node);
         return this;
     }
 
-    Button2(text = '', className = 'button info small', icon = '') {
-        this.Button.Render();
+    button2(text = '', className = 'button info small', icon = '') {
+        this.button.render();
         if (icon !== '') {
-            this.Span.ClassName(icon).End.Text(' ').Render();
+            this.span.className(icon).end.text(' ').render();
         }
-        return this.ClassName(className).IText(text);
+        return this.className(className).iText(text);
     }
 
     /**
      * @param {string} langKey
      */
-    Title(langKey) {
+    title(langKey) {
         if (!langKey) {
             return this;
         }
-        this.MarkLangProp(this.Context, langKey, "title");
-        return this.Attr("title", LangSelect.Get(langKey));
+        this.markLangProp(this.Context, langKey, "title");
+        return this.attr("title", LangSelect.Get(langKey));
     }
 
     /**
      * @param {any} direction
      * @param {any} margin
      */
-    Margin(direction, margin, unit = "px") {
-        return this.Style(`margin-${direction} : ${margin}${unit}`);
+    margin(direction, margin, unit = "px") {
+        return this.style(`margin-${direction} : ${margin}${unit}`);
     }
 
     /**
      * @param {string} direction
      * @param {number} margin
      */
-    MarginRem(direction, margin) {
-        return this.Style(`margin-${direction} : ${margin}rem`);
+    marginRem(direction, margin) {
+        return this.style(`margin-${direction} : ${margin}rem`);
     }
 
     /**
@@ -315,14 +312,14 @@ export class HTML {
      * @param {...any} parameters - Parameters used for string formatting in the translated text.
      * @returns {Html} Returns the Html instance for chaining.
      */
-    IText(langKey, featureId, ...parameters) {
+    iText(langKey, featureId, ...parameters) {
         if (!langKey) {
             return this;
         }
         const translated = LangSelect.Get(langKey, featureId);
         const textContent = parameters.length > 0 ? Str.Format(translated, parameters) : translated;
         const textNode = document.createTextNode(textContent);
-        this.MarkLangProp(textNode, langKey, "textContent", parameters);
+        this.markLangProp(textNode, langKey, "textContent", parameters);
         textNode["featurename"] = featureId;
         this.Context.appendChild(textNode);
         return this;
@@ -331,18 +328,18 @@ export class HTML {
     /**
      * @param {string} html
      */
-    InnerHTML(html) {
+    innerHTML(html) {
         this.Context.innerHTML = html;
         return this;
     }
     /**
      * @param {boolean} val
      */
-    SmallCheckbox(val = false, disabled = false) {
+    smallCheckbox(val = false, disabled = false) {
         var attr = disabled ? "disabled" : "enabled";
-        this.Label.ClassName("checkbox input-small transition-on style2")
-            .Input.Attr(attr, attr).Attr("type", "checkbox").Type("checkbox").End
-            .Span.ClassName("check myCheckbox");
+        this.label.className("checkbox input-small transition-on style2")
+            .input.attr(attr, attr).attr("type", "checkbox").type("checkbox").end
+            .span.className("check myCheckbox");
         // @ts-ignore
         this.Context.previousElementSibling.checked = val;
         return this;
@@ -350,7 +347,7 @@ export class HTML {
     /**
      * @param {string} name
      */
-    Type(name) {
+    type(name) {
         // @ts-ignore
         this.Context.type = name;
         return this;
@@ -359,17 +356,17 @@ export class HTML {
      * @param {string} name
      * @param {string} value
      */
-    Attr(name, value) {
+    attr(name, value) {
         this.Context.setAttribute(name, value);
         return this;
     }
 
-    Href(value) {
+    href(value) {
         this.Context.setAttribute("href", value);
         return this;
     }
 
-    Src(value) {
+    src(value) {
         this.Context.setAttribute("src", value);
         return this;
     }
@@ -377,7 +374,7 @@ export class HTML {
     /**
      * @param {number} index
      */
-    TabIndex(index) {
+    tabIndex(index) {
         this.Context.setAttribute('tabindex', index.toString());
         return this;
     }
@@ -386,7 +383,7 @@ export class HTML {
      * @param {string} name
      * @param {string} value
      */
-    DataAttr(name, value) {
+    dataAttr(name, value) {
         this.Context.setAttribute('data-' + name, value);
         return this;
     }
@@ -394,12 +391,12 @@ export class HTML {
     /**
      * @param {string} langKey
      */
-    PlaceHolder(langKey) {
+    placeHolder(langKey) {
         if (!langKey || langKey.trim() === '') {
             return this;
         }
-        this.MarkLangProp(this.Context, langKey, "placeholder");
-        return this.Attr("placeholder", LangSelect.Get(langKey));
+        this.markLangProp(this.Context, langKey, "placeholder");
+        return this.attr("placeholder", LangSelect.Get(langKey));
     }
 
 
@@ -410,7 +407,7 @@ export class HTML {
      * @param {string} propName - The name of the property to mark.
      * @param {...any} parameters - Additional parameters associated with the language property.
      */
-    MarkLangProp(ctx, langKey, propName, ...parameters) {
+    markLangProp(ctx, langKey, propName, ...parameters) {
         if (!ctx) return;
 
         const langKeyProperty = LangSelect.LangKey + propName;
@@ -429,7 +426,7 @@ export class HTML {
     /**
      * @param {string} val
      */
-    Value(val) {
+    value(val) {
         /** @type {HTMLInputElement} */
         // @ts-ignore
         const input = this.Context;
@@ -441,13 +438,13 @@ export class HTML {
      * @param {string} icon - Icon class or URL to set as background.
      * @returns {Html} Returns this for chaining.
      */
-    Icon(icon) {
+    icon(icon) {
         const isIconClass = icon && (icon.includes("mif") || icon.includes("fa") || icon.includes("fa-"));
-        this.Span.ClassName("icon");
+        this.span.className("icon");
         if (isIconClass) {
-            this.ClassName(icon).Render();
+            this.className(icon).render();
         } else {
-            this.Style(`background-image: url(${Client.Origin + icon});`).ClassName("iconBg").Render();
+            this.style(`background-image: url(${Client.Origin + icon});`).className("iconBg").render();
         }
         return this;
     }
@@ -456,10 +453,10 @@ export class HTML {
      * @param {string | number} distance
      * @param {string} unit
      */
-    Position(position, distance = null, unit = 'px') {
+    position(position, distance = null, unit = 'px') {
         if (distance == null)
-            return this.Style(`position: {${position}}`);
-        return this.Style(`position: ${position}; ${position}: ${distance}${unit};`);
+            return this.style(`position: {${position}}`);
+        return this.style(`position: ${position}; ${position}: ${distance}${unit};`);
     }
 
 
@@ -468,7 +465,7 @@ export class HTML {
      * @param {Function} action - Action to execute when the escape key is pressed.
      * @returns {Html} Returns this for chaining.
      */
-    Escape(action) {
+    escape(action) {
         const div = this.Context;
         div.tabIndex = -1;
         div.focus();
@@ -487,13 +484,13 @@ export class HTML {
      * @param {string} iconClass - Icon class or URL to set as background.
      * @returns {Html} Returns this for chaining.
      */
-    IconForSpan(iconClass) {
+    iconForSpan(iconClass) {
         if (!iconClass || iconClass.trim().length === 0) {
             return this;
         }
         iconClass = iconClass.trim();
         const span = this.Context;
-        this.ClassName("icon");
+        this.className("icon");
         const isIconClass = iconClass.includes("mif") || iconClass.includes("fa") || iconClass.includes("fa-");
         if (isIconClass) {
             span.classList.add(iconClass);
@@ -509,10 +506,10 @@ export class HTML {
      * @param {string} left - The left position in pixels.
      * @returns {Html} Returns this for chaining.
      */
-    Floating(top, left) {
-        return this.Position(PositionEnum.fixed)
-            .Position(Direction.top, top)
-            .Position(Direction.left, left);
+    floating(top, left) {
+        return this.position(PositionEnum.fixed)
+            .position(Direction.top, top)
+            .position(Direction.left, left);
     }
     /**
      * Inserts HTML content into the current context with optional language translation.
@@ -520,13 +517,13 @@ export class HTML {
      * @param {...any} parameters - Parameters for formatting the translation.
      * @returns {Html} Returns this for chaining.
      */
-    IHtml(langKey, featureId, ...parameters) {
+    iHtml(langKey, featureId, ...parameters) {
         if (!langKey) {
             return this;
         }
         const ctx = this.Context;
         const translated = LangSelect.Get(langKey, featureId);
-        this.MarkLangProp(ctx, langKey, 'innerHTML', parameters);
+        this.markLangProp(ctx, langKey, 'innerHTML', parameters);
         ctx.innerHTML = translated;
         return this;
     }
@@ -535,8 +532,8 @@ export class HTML {
      * @param {number} colSpan - The number of columns to span.
      * @returns {Html} Returns this for chaining.
      */
-    ColSpan(colSpan) {
-        return this.Attr("colspan", colSpan.toString());
+    colSpan(colSpan) {
+        return this.attr("colspan", colSpan.toString());
     }
 
     /**
@@ -544,8 +541,8 @@ export class HTML {
      * @param {number} rowSpan - The number of rows to span.
      * @returns {Html} Returns this for chaining.
      */
-    RowSpan(rowSpan) {
-        return this.Attr("rowspan", rowSpan.toString());
+    rowSpan(rowSpan) {
+        return this.attr("rowspan", rowSpan.toString());
     }
 
     /**
@@ -553,7 +550,7 @@ export class HTML {
      * @param {string|ElementType} selector - The selector or element type to end at.
      * @returns {Html} Returns this for chaining.
      */
-    EndOf(selector) {
+    endOf(selector) {
         if (typeof selector === "object" && selector.toString) { // Assuming ElementType is an object with toString()
             selector = selector.toString();
         }
@@ -581,20 +578,20 @@ export class HTML {
      * @param {ElementType} type - The element type to find the closest ancestor.
      * @returns {Html} Returns this for chaining.
      */
-    Closest(type) {
+    closest(type) {
         if (this.Context && typeof this.Context.closest === 'function') {
             this.Context = this.Context.closest(type.toString());
         }
         return this;
     }
 
-    Clear() {
+    clear() {
         this.Context.innerHTML = '';
         return this;
     }
 
-    Checkbox(value) {
-        this.Add(ElementType.input);
+    checkbox(value) {
+        this.add(ElementType.input);
         var checkbox = this.Context;
         if (checkbox instanceof HTMLInputElement) {
             checkbox.setAttribute("type", "checkbox");
@@ -609,7 +606,7 @@ export class HTML {
      * @param {string} [left=null] - Set left to '0px' if it's aligned left with previous element.
      * @returns {HTML} Returns the instance of the class for chaining.
      */
-    Sticky(top = null, left = null) {
+    sticky(top = null, left = null) {
         const ctx = this.Context;
         if (!ctx) {
             return this;
@@ -624,30 +621,30 @@ export class HTML {
         }
 
         if (top !== null) {
-            this.Style(`top: ${top};`);
+            this.style(`top: ${top};`);
         }
 
         if (left !== null) {
-            this.Style(`left: ${left};`);
+            this.style(`left: ${left};`);
         }
 
-        return this.Style("position: sticky; z-index: 1;");
+        return this.style("position: sticky; z-index: 1;");
     }
 
-    ForEach(array, callback) {
+    forEach(array, callback) {
         for (let index = 0; index < array.length; index++) {
             callback(array[index], index);
         }
         return this;
     }
 
-    Display(shouldShow) {
+    display(shouldShow) {
         const ele = this.Context;
         ele.style.display = shouldShow ? '' : 'none';
         return this;
     }
 
-    Visibility(visible) {
+    visibility(visible) {
         var ele = this.Context;
         ele.style.visibility = visible ? "" : "hidden";
         return this;

@@ -13,7 +13,6 @@ import type { Token } from "../types/interfaces.ts";
 
 /** Request body for login endpoint */
 export interface LoginRequest {
-  tenantCode: string;
   userName: string;
   password: string;
 }
@@ -43,7 +42,6 @@ export interface ApiResponse<T = unknown> {
 /**
  * POST /api/auth/login
  * Sign in with credentials
- * @param tenantCode - The tenant/company code
  * @param userName - The username
  * @param password - The password
  * @returns Token object with accessToken, refreshToken, user data, roles
@@ -52,16 +50,7 @@ export async function login(
   body: LoginRequest
 ): Promise<ApiResponse<Token>> {
   try {
-    const { tenantCode, userName, password } = body;
-
-    // Validate required fields
-    if (!tenantCode) {
-      return {
-        success: false,
-        message: "Tenant code is required",
-        statusCode: 400,
-      };
-    }
+    const { userName, password } = body;
 
     if (!userName) {
       return {
@@ -80,7 +69,7 @@ export async function login(
     }
 
     // Attempt to sign in
-    const token = await SignIn(tenantCode, userName, password);
+    const token = await SignIn(userName, password);
 
     return {
       success: true,

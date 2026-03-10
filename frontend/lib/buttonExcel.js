@@ -44,7 +44,7 @@ export class ButtonExcel extends Button {
 
     LoadData() {
         let promise = new Promise((resolve, reject) => {
-            Client.Instance.PostAsync({ ComId: this.Meta.Id, Data: this.Entity }, "/api/CreateExcel").then(res => {
+            Client.instance.postAsync({ ComId: this.Meta.Id, Data: this.Entity }, "/api/CreateExcel").then(res => {
                 resolve(res);
             }).catch(e => {
                 Spinner.Hide();

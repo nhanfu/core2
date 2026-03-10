@@ -49,7 +49,7 @@ export class Chat extends EditableComponent {
 
     Render() {
         this.Title = Utils.FormatEntity(this.Meta.FormatData, this.Entity);
-        Html.Take(this.ParentElement).Div.ClassName("chat-container");
+        Html.take(this.ParentElement).div.className("chat-container");
         this.Element = Html.Context;
         this.LoadData();
     }
@@ -114,44 +114,44 @@ export class Chat extends EditableComponent {
      * isLastInGroup: nếu true thì render avatar + time/name, ngược lại render spacer thay avatar (để giữ căn lề) và ẩn time.
      */
     AddMessageToDOM(item, isLastInGroup = true) {
-        Html.Take(this.HtmlContentChat);
+        Html.take(this.HtmlContentChat);
         const isImage = Utils.IsImage(item.Message);
 
         if (this.Token.UserId == item.FromId) {
-            Html.Instance.Div.DataAttr("id", item.Id).ClassName("message text-only").Div.ClassName("response")
-                .P.ClassName("text2");
+            Html.Instance.div.dataAttr("id", item.Id).className("message text-only").div.className("response")
+                .p.className("text2");
             if (isImage) {
-                Html.Instance.Event(EventType.Click, () => this.ShowPreview(item));
+                Html.Instance.event(EventType.Click, () => this.ShowPreview(item));
             }
-            Html.Instance.InnerHTML(item.Message).End.Render();
+            Html.Instance.innerHTML(item.Message).end.render();
             if (item.Message != "Tin nhắn đã được thu hồi") {
-                Html.Instance.I.ClassName("icon fa fa-trash clickable").Event(EventType.Click, async () => await this.DeleteMessage(item)).End.Render();
+                Html.Instance.i.className("icon fa fa-trash clickable").event(EventType.Click, async () => await this.DeleteMessage(item)).end.render();
             }
-            Html.Instance.End.End.Render();
+            Html.Instance.end.end.render();
 
             if (isLastInGroup) {
-                Html.Instance.P.ClassName("response-time time").I.Text(this.dayjs(item.InsertedDate).format("HH:mm DD/MM/YYYY")).End.End.Render();
+                Html.Instance.p.className("response-time time").i.text(this.dayjs(item.InsertedDate).format("HH:mm DD/MM/YYYY")).end.end.render();
             }
         }
         else {
-            Html.Instance.Div.DataAttr("id", item.Id).ClassName("message");
+            Html.Instance.div.dataAttr("id", item.Id).className("message");
 
             if (isLastInGroup) {
-                Html.Instance.Div.ClassName("photo").Style(`background-image: url('${item.Avatar}');`)
-                    .Div.ClassName("online").End.End;
+                Html.Instance.div.className("photo").style(`background-image: url('${item.Avatar}');`)
+                    .div.className("online").end.end;
             } else {
-                Html.Instance.Div.ClassName("photo spacer").End;
+                Html.Instance.div.className("photo spacer").end;
             }
 
-            Html.Instance.P.ClassName("text");
-            Html.Instance.InnerHTML(item.Message);
+            Html.Instance.p.className("text");
+            Html.Instance.innerHTML(item.Message);
             if (isImage) {
-                Html.Instance.Event(EventType.Click, () => this.ShowPreview(item));
+                Html.Instance.event(EventType.Click, () => this.ShowPreview(item));
             }
-            Html.Instance.End.End.Render();
+            Html.Instance.end.end.render();
 
             if (isLastInGroup) {
-                Html.Instance.P.ClassName("time").I.Text(item.FromName + ' - ' + this.dayjs(item.InsertedDate).format("HH:mm DD/MM/YYYY")).End.End.Render();
+                Html.Instance.p.className("time").i.text(item.FromName + ' - ' + this.dayjs(item.InsertedDate).format("HH:mm DD/MM/YYYY")).end.end.render();
             }
         }
     }
@@ -177,13 +177,13 @@ export class Chat extends EditableComponent {
     }
 
     RenderMenu() {
-        Html.Take(this.Element).Nav.ClassName("chat-menu").Ul.ClassName("chat-items")
-            .Li.ClassName("chat-item").I.ClassName("fal fa-home").End.End
-            .Li.ClassName("chat-item").I.ClassName("fal fa-user").End.End
-            .Li.ClassName("chat-item").I.ClassName("fal fa-pencil").End.End
-            .Li.ClassName("chat-item").I.ClassName("fal fa-comment").End.End
-            .Li.ClassName("chat-item").I.ClassName("fal fa-file").End.End
-            .Li.ClassName("chat-item").I.ClassName("fal fa-cog").End.EndOf(".chat-menu");
+        Html.take(this.Element).nav.className("chat-menu").ul.className("chat-items")
+            .li.className("chat-item").i.className("fal fa-home").end.end
+            .li.className("chat-item").i.className("fal fa-user").end.end
+            .li.className("chat-item").i.className("fal fa-pencil").end.end
+            .li.className("chat-item").i.className("fal fa-comment").end.end
+            .li.className("chat-item").i.className("fal fa-file").end.end
+            .li.className("chat-item").i.className("fal fa-cog").end.endOf(".chat-menu");
     }
 
     /**
@@ -192,26 +192,26 @@ export class Chat extends EditableComponent {
     BodyDiscussions;
 
     RenderDiscussions() {
-        Html.Take(this.Element).Section.ClassName("discussions").Div.ClassName("header-discussions").Div.TabIndex(-1).Event(EventType.Click, (evt) => this.HandlerClickBot(evt)).ClassName("discussion " + (("-1" == this.Entity.Id) ? "message-active" : "") + "")
-            .Div.ClassName("photo").Style("background-image: url('https://forwardx.vn/wp-content/uploads/2025/03/cropped-Icon-Logo-180x180.png');").End
-            .Div.ClassName("desc-contact")
-            .Span.ClassName("name").IText("Forwardx").End
-            .Span.ClassName("description").Text("Bot Assistant").End
-            .P.ClassName("message").InnerHTML('....').End
-            .P.ClassName("message").InnerHTML('').End.End
-            .End.Render();
-        Html.Instance.Div.Render();
+        Html.take(this.Element).section.className("discussions").div.className("header-discussions").div.tabIndex(-1).event(EventType.Click, (evt) => this.HandlerClickBot(evt)).className("discussion " + (("-1" == this.Entity.Id) ? "message-active" : "") + "")
+            .div.className("photo").style("background-image: url('https://forwardx.vn/wp-content/uploads/2025/03/cropped-Icon-Logo-180x180.png');").end
+            .div.className("desc-contact")
+            .span.className("name").iText("Forwardx").end
+            .span.className("description").text("Bot Assistant").end
+            .p.className("message").innerHTML('....').end
+            .p.className("message").innerHTML('').end.end
+            .end.render();
+        Html.Instance.div.render();
         this.BodyDiscussions = Html.Context;
         this.RenderBodyDiscussions();
-        Html.Instance.EndOf(".discussions");
+        Html.Instance.endOf(".discussions");
     }
 
     HandlerClickBot() {
         document.querySelector(".footer-chat").classList.add("d-none");
         this.OptionsElement.classList.add("d-none");
-        Html.Take(this.HtmlContentChat).Clear();
-        Html.Take(this.TitleText).Clear().Text("Forwardx");
-        Html.Take(this.FeatureText).Clear().IText("Bot Assistant");
+        Html.take(this.HtmlContentChat).clear();
+        Html.take(this.TitleText).clear().text("Forwardx");
+        Html.take(this.FeatureText).clear().iText("Bot Assistant");
         var rsSaleFunction = localStorage.getItem("SalesFunction2") ? JSON.parse(localStorage.getItem("SalesFunction2")) : [];
         const aiEntry = rsSaleFunction.find((x) => x.Code == "AI_ID");
         const chatbotId = aiEntry && aiEntry.Value;
@@ -229,7 +229,7 @@ export class Chat extends EditableComponent {
     Title = null;
 
     RenderBodyChat() {
-        Html.Take(this.HtmlContentChat).Clear();
+        Html.take(this.HtmlContentChat).clear();
         this.LastFromId = this.ChatData.find(x => x.FromId != this.Token.UserId);
         this.LastUserId = this.ChatData.find(x => x.FromId != this.Token.UserId);
 
@@ -278,26 +278,26 @@ export class Chat extends EditableComponent {
     Picker;
 
     RenderChat() {
-        Html.Take(this.Element).Section.ClassName("chat")
-            .Div.ClassName("header-chat");
+        Html.take(this.Element).section.className("chat")
+            .div.className("header-chat");
         this.HtmlHeaderChat = Html.Context;
-        Html.Instance.Div.ClassName("name2").Style("width: 100%; display: flex ; align-items: center; gap: 10px;").Span.IText(this.Entity.Label)
+        Html.Instance.div.className("name2").style("width: 100%; display: flex ; align-items: center; gap: 10px;").span.iText(this.Entity.Label)
         this.FeatureText = Html.Context;
-        Html.Instance.End.Span.Text(" : ").End.A.Style("color:#fff").ClassName("mr-1").Event(EventType.Click, this.OpenPopup.bind(this)).Text(this.Entity.FormatChat ? this.Entity.FormatChat.replaceAll("<br>", "") : "");
+        Html.Instance.end.span.text(" : ").end.a.style("color:#fff").className("mr-1").event(EventType.Click, this.OpenPopup.bind(this)).text(this.Entity.FormatChat ? this.Entity.FormatChat.replaceAll("<br>", "") : "");
         this.TitleText = Html.Context;
-        Html.End.Div.ClassName("d-flex align-items-center");
+        Html.end.div.className("d-flex align-items-center");
         this.OptionsElement = Html.Context;
-        Html.Span.ClassName("d-flex").Render();
+        Html.span.className("d-flex").render();
         this.UserElement = Html.Context;
-        Html.Instance.End.I.Event(EventType.Click, this.AddUser.bind(this)).ClassName("fas fa-user-plus").End.Render();
-        Html.Instance.End.End.End.Div.ClassName("messages-chat").Div.Render();
+        Html.Instance.end.i.event(EventType.Click, this.AddUser.bind(this)).className("fas fa-user-plus").end.render();
+        Html.Instance.end.end.end.div.className("messages-chat").div.render();
         this.HtmlContentChat = Html.Context;
         this.RenderBodyChat();
-        Html.Instance.End.End.Div.ClassName("footer-chat")
-            .Input.Type("file").ClassName("attach-file").Style("display: none;").Event(EventType.Change, this.AttachFile.bind(this)).End
-            .I.ClassName("icon fa fa-paperclip clickable").Event(EventType.Click, () => this.Element.querySelector(".attach-file").click()).End
-            .I.ClassName("icon fa fa-smile clickable").Event(EventType.Click, this.ShowEmojiPicker.bind(this)).End
-            .TextArea.ClassName("write-message").PlaceHolder("Type your message here");
+        Html.Instance.end.end.div.className("footer-chat")
+            .input.type("file").className("attach-file").style("display: none;").event(EventType.Change, this.AttachFile.bind(this)).end
+            .i.className("icon fa fa-paperclip clickable").event(EventType.Click, () => this.Element.querySelector(".attach-file").click()).end
+            .i.className("icon fa fa-smile clickable").event(EventType.Click, this.ShowEmojiPicker.bind(this)).end
+            .textArea.className("write-message").placeHolder("Type your message here");
         this.HtmlIputChat = Html.Context;
         this.HtmlIputChat.addEventListener("keydown", (e) => {
             if (e.KeyCodeEnum() == KeyCodeEnum.Enter && !e.shiftKey) {
@@ -310,14 +310,14 @@ export class Chat extends EditableComponent {
             this.style.height = "36px";
             this.style.height = this.scrollHeight + "px";
         });
-        Html.Instance.End.I.ClassName("icon send fal fa-arrow-circle-right clickable").Event(EventType.Click, this.SendChat.bind(this)).End.Render();
+        Html.Instance.end.i.className("icon send fal fa-arrow-circle-right clickable").event(EventType.Click, this.SendChat.bind(this)).end.render();
         this.RenderUsers();
     }
 
     RenderUsers() {
-        Html.Take(this.UserElement).Clear();
-        Html.Take(this.UserElement).ForEach(this.Users || [], (item) => {
-            Html.Instance.Div.ClassName("photo").Style("background-image: url('" + item.Avatar + "');").End.Render();
+        Html.take(this.UserElement).clear();
+        Html.take(this.UserElement).forEach(this.Users || [], (item) => {
+            Html.Instance.div.className("photo").style("background-image: url('" + item.Avatar + "');").end.render();
         })
     }
 
@@ -393,7 +393,7 @@ export class Chat extends EditableComponent {
                     Table: "Conversation",
                     NotMessage: true
                 };
-                await Client.Instance.PatchAsync(patchModelDetail);
+                await Client.instance.patchAsync(patchModelDetail);
                 this.Dirty = false;
                 this.UpdateView(true);
             }, () => { }, true, [com], null, null);
@@ -403,28 +403,28 @@ export class Chat extends EditableComponent {
     ShowPreview(item) {
         var rotate = 0;
         var img = null;
-        Html.Take(document.body).Div.ClassName("dark-overlay zoom");
+        Html.take(document.body).div.className("dark-overlay zoom");
         this.DarkOverlay = Html.Context;
-        Html.Instance.InnerHTML(item.Message);
+        Html.Instance.innerHTML(item.Message);
         img = Html.Context.querySelector("img");
-        Html.Instance.Span.ClassName("close").Event(EventType.Click, () => {
+        Html.Instance.span.className("close").event(EventType.Click, () => {
             this.DarkOverlay.remove();
-        }).I.ClassName("fa fa-times").End.End
-            .Div.ClassName("toolbar")
-            .Span.ClassName("icon fa fa-undo ro-left").Event(EventType.Click, () => {
+        }).i.className("fa fa-times").end.end
+            .div.className("toolbar")
+            .span.className("icon fa fa-undo ro-left").event(EventType.Click, () => {
                 rotate -= 90;
                 img.style.transform = `rotate(${rotate}deg)`;
-            }).End
-            .Span.ClassName("icon fa fa-cloud-download-alt").Event(EventType.Click, () => this.DownloadFile(item)).End
-            .Span.ClassName("icon fa fa-redo ro-right").Event(EventType.Click, () => {
+            }).end
+            .span.className("icon fa fa-cloud-download-alt").event(EventType.Click, () => this.DownloadFile(item)).end
+            .span.className("icon fa fa-redo ro-right").event(EventType.Click, () => {
                 rotate += 90;
                 img.style.transform = `rotate(${rotate}deg)`;
-            }).End.End
+            }).end.end
     }
 
     DownloadFile(item) {
         var file = document.querySelector(".dark-overlay img");
-        Client.Download(file.getAttribute("src"));
+        Client.download(file.getAttribute("src"));
     }
 
     ShowEmojiPicker() {
@@ -534,12 +534,12 @@ export class Chat extends EditableComponent {
             Field: "EntityId",
             Value: this.Entity.EntityId,
         }];
-        await Client.Instance.PatchAsync(patch);
+        await Client.instance.patchAsync(patch);
         Spinner.Hide();
     }
 
     async updateBadge() {
-        const response = await Client.Instance.PostAsync(null, "/api/ChatBadge");
+        const response = await Client.instance.postAsync(null, "/api/ChatBadge");
         document.querySelector("#badgeMessage").textContent = response > 0 ? response.toString() : "";
     };
 
@@ -548,7 +548,7 @@ export class Chat extends EditableComponent {
      */
     async UploadFile(file) {
         try {
-            const path = await Client.Instance.PostFilesAsync(file, Utils.FileSvc);
+            const path = await Client.instance.postFilesAsync(file, Utils.FileSvc);
             return path;
         } catch (error) {
             console.error("Error posting file:", error);
@@ -568,7 +568,7 @@ export class Chat extends EditableComponent {
             Field: "Message",
             Value: "Tin nhắn đã được thu hồi",
         }];
-        await Client.Instance.PatchAsync(patch);
+        await Client.instance.patchAsync(patch);
         Spinner.Hide();
     }
 
@@ -578,24 +578,24 @@ export class Chat extends EditableComponent {
             this.RenderBodyDiscussions();
             if (force) {
                 this.RenderBodyChat();
-                Html.Take(this.TitleText).Clear().Text(this.Entity.FormatChat ? this.Entity.FormatChat.replaceAll("<br>", "") : "");
-                Html.Take(this.FeatureText).Clear().IText(this.Entity.Label);
+                Html.take(this.TitleText).clear().text(this.Entity.FormatChat ? this.Entity.FormatChat.replaceAll("<br>", "") : "");
+                Html.take(this.FeatureText).clear().iText(this.Entity.Label);
                 this.RenderUsers();
             }
         });
     }
 
     RenderBodyDiscussions() {
-        Html.Take(this.BodyDiscussions).Clear();
+        Html.take(this.BodyDiscussions).clear();
         this.Conversation.forEach(item => {
-            Html.Instance.Div.TabIndex(-1).Event(EventType.Click, (evt) => this.HandlerClick(evt, item)).ClassName("discussion " + ((item.Id == this.Entity.Id) ? "message-active" : "") + ((!item.Read) ? "text-unread" : ""))
-                .Div.ClassName("photo").Style("background-image: url('" + item.Icon + "');").End
-                .Div.ClassName("desc-contact")
-                .Span.ClassName("name").IText(item.Label).End
-                .Span.ClassName("description").Text(item.FormatChat ? item.FormatChat.replaceAll("<br>", "") : "").End
-                .P.ClassName("message").InnerHTML(item.Message || '').End
-                .P.ClassName("message").InnerHTML(item.Time).End.End
-                .End.Render();
+            Html.Instance.div.tabIndex(-1).event(EventType.Click, (evt) => this.HandlerClick(evt, item)).className("discussion " + ((item.Id == this.Entity.Id) ? "message-active" : "") + ((!item.Read) ? "text-unread" : ""))
+                .div.className("photo").style("background-image: url('" + item.Icon + "');").end
+                .div.className("desc-contact")
+                .span.className("name").iText(item.Label).end
+                .span.className("description").text(item.FormatChat ? item.FormatChat.replaceAll("<br>", "") : "").end
+                .p.className("message").innerHTML(item.Message || '').end
+                .p.className("message").innerHTML(item.Time).end.end
+                .end.render();
         });
     }
 
@@ -617,7 +617,7 @@ export class Chat extends EditableComponent {
                 Field: "Read",
                 Value: "1",
             }];
-            Client.Instance.PatchAsync(patch).then(async () => {
+            Client.instance.patchAsync(patch).then(async () => {
                 this.Element.querySelectorAll(".discussion").forEach(x => x.classList.remove("message-active"));
                 e.target.closest(".discussion").classList.add("message-active");
                 this.Entity = item;
@@ -684,7 +684,7 @@ export class Chat extends EditableComponent {
             Field: "EntityId",
             Value: this.Entity.EntityId,
         }];
-        Client.Instance.PatchAsync(patch).then();
+        Client.instance.patchAsync(patch).then();
         window.setTimeout(() => {
             this.updateBadge();
         }, 500);

@@ -189,7 +189,7 @@ export class RegisterBL extends EditForm {
   tokenRefreshedHandler = null;
 
   render() {
-    let oldToken = Client.Token;
+    let oldToken = Client.token;
     if (!oldToken || new Date(oldToken.RefreshTokenExp) <= Client.EpsilonNow) {
       this.ParentElement = document.getElementById("app");
       this.Element = this.ParentElement;
@@ -206,7 +206,7 @@ export class RegisterBL extends EditForm {
       oldToken &&
       new Date(oldToken.RefreshTokenExp) > Client.EpsilonNow
     ) {
-      Client.RefreshToken().then((newToken) => {
+      Client.refreshToken().then((newToken) => {
         App.instance.renderLayout().then(() => {
           this.initAppIfEmpty();
         });
@@ -242,7 +242,7 @@ export class RegisterBL extends EditForm {
     const login = this.loginEntity;
     const tcs = new Promise((resolve, reject) => {
       // @ts-ignore
-      Client.Instance.SubmitAsync({
+      Client.instance.submitAsync({
         Url: `/api/auth/register`,
         JsonData: JSON.stringify(login),
         IsRawString: true,
@@ -253,12 +253,12 @@ export class RegisterBL extends EditForm {
           resolve(false);
           return;
         }
-        Client.Token = res.token;
+        Client.token = res.token;
         login.UserName = "";
         login.Password = "";
         this.initFCM();
         if (this.signedInHandler) {
-          this.signedInHandler(Client.Token);
+          this.signedInHandler(Client.token);
         }
         resolve(true);
         this.dispose();
@@ -268,7 +268,7 @@ export class RegisterBL extends EditForm {
           })
           .finally(() => {
             window.setTimeout(() => {
-              Toast.Success(`Xin chào ` + Client.Token.FullName);
+              Toast.Success(`Xin chào ` + Client.token.FullName);
             }, 200);
           });
       })
@@ -278,7 +278,7 @@ export class RegisterBL extends EditForm {
   }
 
   async forgotPassword(login) {
-    return Client.Instance.PostAsync(login, "/user/ForgotPassword").then(
+    return Client.instance.postAsync(login, "/user/ForgotPassword").then(
       (res) => {
         if (res) {
           Toast.Warning(
@@ -297,20 +297,20 @@ export class RegisterBL extends EditForm {
   initAppIfEmpty() {
     const systemRoleId = RoleEnum.System;
     // @ts-ignore
-    Client.Instance.SystemRole = Client.Token.RoleIds.includes(
+    Client.instance.SystemRole = Client.token.RoleIds.includes(
       systemRoleId.toString()
     );
     if (this._initApp) {
       return;
     }
     this._initApp = true;
-    this.initAppHandler?.(Client.Token);
+    this.initAppHandler?.(Client.token);
   }
 
   initFCM(signout = false) {
     console.log("Init fcm");
-    let tenantCode = Client.Token.TenantCode;
-    let strUserId = `U${Client.Token.UserId.toString().padStart(7, "0")}`;
+    let tenantCode = Client.token.TenantCode;
+    let strUserId = `U${Client.token.UserId.toString().padStart(7, "0")}`;
   }
 
   static diposeAll() {

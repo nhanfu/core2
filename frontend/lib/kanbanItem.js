@@ -24,65 +24,65 @@ export class KanbanItem extends EditableComponent {
      * Renders the button component into the DOM.
      */
     Render() {
-        Html.Take(this.ParentElement);
+        Html.take(this.ParentElement);
         if (this.Top) {
-            var itemTop = Html.Div.ClassName("kanban-item").Context;
+            var itemTop = Html.div.className("kanban-item").Context;
             this.Element = Html.Context;
             Html.Context["Entity"] = this.Entity;
-            Html.Event("dblclick", () => this.DispatchEvent(this.Meta.Events, EventType.DblClick, this, this.Entity))
-                .Div.ClassName("labels").Div.ClassName("labels2");
+            Html.event("dblclick", () => this.DispatchEvent(this.Meta.Events, EventType.DblClick, this, this.Entity))
+                .div.className("labels").div.className("labels2");
             if (this.Entity.CategoryId) {
-                Html.Div.ClassName("label").Style("background-color:" + this.Entity.CategoryId).Attr("title", this.Entity.CategoryIdText).End.Render();
+                Html.div.className("label").style("background-color:" + this.Entity.CategoryId).attr("title", this.Entity.CategoryIdText).end.render();
             }
             if (this.Entity.PriorityLevelId) {
-                Html.Div.ClassName("label").Style("background-color:" + this.Entity.PriorityLevelId).Attr("title", this.Entity.PriorityLevelIdText).End.Render();
+                Html.div.className("label").style("background-color:" + this.Entity.PriorityLevelId).attr("title", this.Entity.PriorityLevelIdText).end.render();
             }
-            Html.End.Render();
+            Html.end.render();
             if (this.Entity.AvatarReceiver) {
-                Html.Div.ClassName("user-avatar label2").Img.Src(this.Entity.AvatarReceiver).End.A.ClassName("full-name").Text(this.Entity.FullNameReceiver).End.End.Render();
+                Html.div.className("user-avatar label2").img.src(this.Entity.AvatarReceiver).end.a.className("full-name").text(this.Entity.FullNameReceiver).end.end.render();
             }
-            Html.End.Render();
+            Html.end.render();
             if (this.Entity.Code) {
-                Html.Div.ClassName("bold").Text(this.Entity.Code).End.Render();
+                Html.div.className("bold").text(this.Entity.Code).end.render();
             }
-            Html.Div.Text(this.Entity.JobName).End.Render();
+            Html.div.text(this.Entity.JobName).end.render();
             if (this.Entity.Tags) {
-                Html.Div.ClassName("tag text-xs").Text(this.Entity.Tags).End.Render();
+                Html.div.className("tag text-xs").text(this.Entity.Tags).end.render();
             }
-            Html.Div.ClassName("user-avatar")
-                .Img.Src(this.Entity.Avatar).End
-                .A.ClassName("full-name").Text(this.Entity.FullName).End
-                .Span.ClassName("created-date").Text(this.dayjs(this.Entity.InsertedDate).format("DD/MM/YY HH:MM"));
+            Html.div.className("user-avatar")
+                .img.src(this.Entity.Avatar).end
+                .a.className("full-name").text(this.Entity.FullName).end
+                .span.className("created-date").text(this.dayjs(this.Entity.InsertedDate).format("DD/MM/YY HH:MM"));
             this.ParentElement.prepend(itemTop);
         }
         else {
-            Html.Div.ClassName("kanban-item");
+            Html.div.className("kanban-item");
             this.Element = Html.Context;
             Html.Context["Entity"] = this.Entity;
-            Html.Event("dblclick", () => this.DispatchEvent(this.Meta.Events, EventType.DblClick, this, this.Entity))
-                .Div.ClassName("labels").Div.ClassName("labels2");
+            Html.event("dblclick", () => this.DispatchEvent(this.Meta.Events, EventType.DblClick, this, this.Entity))
+                .div.className("labels").div.className("labels2");
             if (this.Entity.CategoryId) {
-                Html.Div.ClassName("label").Style("background-color:" + this.Entity.CategoryId).Attr("title", this.Entity.CategoryIdText).End.Render();
+                Html.div.className("label").style("background-color:" + this.Entity.CategoryId).attr("title", this.Entity.CategoryIdText).end.render();
             }
             if (this.Entity.PriorityLevelId) {
-                Html.Div.ClassName("label").Style("background-color:" + this.Entity.PriorityLevelId).Attr("title", this.Entity.PriorityLevelIdText).End.Render();
+                Html.div.className("label").style("background-color:" + this.Entity.PriorityLevelId).attr("title", this.Entity.PriorityLevelIdText).end.render();
             }
-            Html.End.Render();
+            Html.end.render();
             if (this.Entity.AvatarReceiver) {
-                Html.Div.ClassName("user-avatar label2").Img.Src(this.Entity.AvatarReceiver).End.A.ClassName("full-name").Text(this.Entity.FullNameReceiver).End.End.Render();
+                Html.div.className("user-avatar label2").img.src(this.Entity.AvatarReceiver).end.a.className("full-name").text(this.Entity.FullNameReceiver).end.end.render();
             }
-            Html.End.Render();
+            Html.end.render();
             if (this.Entity.Code) {
-                Html.Div.ClassName("bold").Text(this.Entity.Code).End.Render();
+                Html.div.className("bold").text(this.Entity.Code).end.render();
             }
-            Html.Div.IText(this.Entity.JobName).End.Render();
+            Html.div.iText(this.Entity.JobName).end.render();
             if (this.Entity.Tags) {
-                Html.Div.ClassName("tag text-xs").Text(this.Entity.Tags).End.Render();
+                Html.div.className("tag text-xs").text(this.Entity.Tags).end.render();
             }
-            Html.Div.ClassName("user-avatar")
-                .Img.Src(this.Entity.Avatar).End
-                .A.ClassName("full-name").Text(this.Entity.FullName).End
-                .Span.ClassName("created-date").Text(this.dayjs(this.Entity.InsertedDate).format("DD/MM/YY HH:mm"));
+            Html.div.className("user-avatar")
+                .img.src(this.Entity.Avatar).end
+                .a.className("full-name").text(this.Entity.FullName).end
+                .span.className("created-date").text(this.dayjs(this.Entity.InsertedDate).format("DD/MM/YY HH:mm"));
         }
     }
 
@@ -124,28 +124,28 @@ export class KanbanItem extends EditableComponent {
     }
 
     UpdateView() {
-        Html.Take(this.Element);
-        Html.Clear();
-        Html.Div.ClassName("labels").Div.ClassName("labels2");
+        Html.take(this.Element);
+        Html.clear();
+        Html.div.className("labels").div.className("labels2");
         if (this.Entity.CategoryId) {
-            Html.Div.ClassName("label").Style("background-color:" + this.Entity.CategoryId).Attr("title", this.Entity.CategoryIdText).End.Render();
+            Html.div.className("label").style("background-color:" + this.Entity.CategoryId).attr("title", this.Entity.CategoryIdText).end.render();
         }
         if (this.Entity.PriorityLevelId) {
-            Html.Div.ClassName("label").Style("background-color:" + this.Entity.PriorityLevelId).Attr("title", this.Entity.PriorityLevelIdText).End.Render();
+            Html.div.className("label").style("background-color:" + this.Entity.PriorityLevelId).attr("title", this.Entity.PriorityLevelIdText).end.render();
         }
-        Html.End.Render();
+        Html.end.render();
         if (this.Entity.AvatarReceiver) {
-            Html.Div.ClassName("user-avatar label2").Img.Src(this.Entity.AvatarReceiver).End.A.ClassName("full-name").Text(this.Entity.FullNameReceiver).End.End.Render();
+            Html.div.className("user-avatar label2").img.src(this.Entity.AvatarReceiver).end.a.className("full-name").text(this.Entity.FullNameReceiver).end.end.render();
         }
-        Html.End.Render();
+        Html.end.render();
         if (this.Entity.Code) {
-            Html.Div.ClassName("bold").Text(this.Entity.Code).End.Render();
+            Html.div.className("bold").text(this.Entity.Code).end.render();
         }
-        Html.Div.IText(this.Entity.JobName).End.Render();
+        Html.div.iText(this.Entity.JobName).end.render();
         if (this.Entity.Tags) {
-            Html.Div.ClassName("tag text-xs").Text(this.Entity.Tags).End.Render();
+            Html.div.className("tag text-xs").text(this.Entity.Tags).end.render();
         }
-        Html.Div.ClassName("user-avatar").Img.Src(this.Entity.Avatar).End.A.ClassName("full-name").Text(this.Entity.FullName).End.Span.ClassName("created-date").Text(this.dayjs(this.Entity.InsertedDate).format("DD/MM/YY HH:MM")).End.End
-        Html.End.Render();
+        Html.div.className("user-avatar").img.src(this.Entity.Avatar).end.a.className("full-name").text(this.Entity.FullName).end.span.className("created-date").text(this.dayjs(this.Entity.InsertedDate).format("DD/MM/YY HH:MM")).end.end
+        Html.end.render();
     }
 }

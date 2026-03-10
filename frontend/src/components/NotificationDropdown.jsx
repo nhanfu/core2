@@ -30,7 +30,7 @@ const NotificationDropdown = () => {
   }, [taskNotification]);
   useEffect(() => {
     const fetchNotificationsData = async () => {
-      const response = await Client.Instance.PostAsync(
+      const response = await Client.instance.postAsync(
         {},
         "/api/feature/mynotification"
       );
@@ -42,7 +42,7 @@ const NotificationDropdown = () => {
     const handleMessage = (data) => {
       if (
         data.detail.tenantCode.toLowerCase() !==
-        Client.Token.tenantCode.toLowerCase()
+        Client.token.tenantCode.toLowerCase()
       )
         return;
       const message = data.detail.message;
@@ -126,7 +126,7 @@ const NotificationDropdown = () => {
       };
     });
     document.querySelector(".notification1 .badge").innerHTML = "";
-    await Client.Instance.PatchAsync2(patchs);
+    await Client.instance.patchAsync2(patchs);
     dispatch(
       updateData({
         key: NOTIFICATION_KEY,
@@ -138,14 +138,14 @@ const NotificationDropdown = () => {
   const handleClick = async (taskNotifi) => {
     var prams = getFeatureNameFromUrl();
     if (taskNotifi.voucherTypeId == 1) {
-      var inquiryDetail = await Client.Instance.GetByIdAsync(
+      var inquiryDetail = await Client.instance.getByIdAsync(
         taskNotifi.entityId,
         [taskNotifi.recordId]
       );
       if (!inquiryDetail.data) {
         Toast.Warning("Record not exists!");
       } else {
-        var inquiry = await Client.Instance.GetByIdAsync("Inquiry", [
+        var inquiry = await Client.instance.getByIdAsync("Inquiry", [
           inquiryDetail.data[0].inquiryId,
         ]);
         var tabChrome = ChromeTabs.tabs.find(
@@ -170,7 +170,7 @@ const NotificationDropdown = () => {
         }
       }
     } else if (taskNotifi.voucherTypeId == 8) {
-      var inquiryDetail = await Client.Instance.GetByIdAsync(
+      var inquiryDetail = await Client.instance.getByIdAsync(
         taskNotifi.entityId,
         [taskNotifi.recordId]
       );
@@ -204,7 +204,7 @@ const NotificationDropdown = () => {
         }
       }
     } else if (taskNotifi.voucherTypeId == 9) {
-      var inquiryDetail = await Client.Instance.GetByIdAsync(
+      var inquiryDetail = await Client.instance.getByIdAsync(
         taskNotifi.entityId,
         [taskNotifi.recordId]
       );
@@ -241,7 +241,7 @@ const NotificationDropdown = () => {
         }
       }
     } else if (taskNotifi.voucherTypeId == 11) {
-      var inquiryDetail = await Client.Instance.GetByIdAsync(
+      var inquiryDetail = await Client.instance.getByIdAsync(
         taskNotifi.entityId,
         [taskNotifi.recordId]
       );
@@ -275,7 +275,7 @@ const NotificationDropdown = () => {
         }
       }
     } else if (taskNotifi.voucherTypeId == 3) {
-      var entity = await Client.Instance.GetByIdAsync(taskNotifi.entityId, [
+      var entity = await Client.instance.getByIdAsync(taskNotifi.entityId, [
         taskNotifi.recordId,
       ]);
       if (!entity.data) {
@@ -305,7 +305,7 @@ const NotificationDropdown = () => {
         }
       }
     } else {
-      var entity = await Client.Instance.GetByIdAsync(taskNotifi.entityId, [
+      var entity = await Client.instance.getByIdAsync(taskNotifi.entityId, [
         taskNotifi.recordId,
       ]);
       if (!entity.data) {
@@ -352,7 +352,7 @@ const NotificationDropdown = () => {
       table: "TaskNotification",
       changes: changes,
     };
-    Client.Instance.PatchAsync(patch).then();
+    Client.instance.patchAsync(patch).then();
   };
 
   const toggleContent = (

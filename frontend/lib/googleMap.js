@@ -47,7 +47,7 @@ export class GoogleMap extends EditableComponent {
         
         // Try to get API key from environment settings
         try {
-            const response = await Client.Instance.GetConfig('GOOGLE_MAPS_API_KEY');
+            const response = await Client.instance.getConfig('GOOGLE_MAPS_API_KEY');
             if (response && response.value) {
                 return response.value;
             }
@@ -63,21 +63,21 @@ export class GoogleMap extends EditableComponent {
         this.SetDefaultVal();
         
         // Create container for map
-        Html.Take(this.ParentElement).Div.ClassName("google-map-wrapper").Style(`height: ${this.mapHeight}; width: ${this.mapWidth}; position: relative;`);
+        Html.take(this.ParentElement).div.className("google-map-wrapper").style(`height: ${this.mapHeight}; width: ${this.mapWidth}; position: relative;`);
         this.Element = Html.Context;
         
         // Create search box
         if (this.Meta.ShowSearch !== false) {
-            Html.Instance.Div.ClassName("map-search-box").Style("position: absolute; top: 10px; left: 10px; z-index: 1; width: 70%; max-width: 400px;")
-                .Input.ClassName("form-control").PlaceHolder("Search location...").Style("width: 100%; padding: 8px; border-radius: 2px; box-shadow: 0 2px 6px rgba(0,0,0,0.3);");
+            Html.Instance.div.className("map-search-box").style("position: absolute; top: 10px; left: 10px; z-index: 1; width: 70%; max-width: 400px;")
+                .input.className("form-control").placeHolder("Search location...").style("width: 100%; padding: 8px; border-radius: 2px; box-shadow: 0 2px 6px rgba(0,0,0,0.3);");
             this.searchInput = Html.Context;
-            Html.Instance.End.End.Render();
+            Html.Instance.end.end.render();
         }
         
         // Create map container
-        Html.Instance.Div.Id(`map-${this.Meta.Id}`).Style(`height: 100%; width: 100%;`);
+        Html.Instance.div.id(`map-${this.Meta.Id}`).style(`height: 100%; width: 100%;`);
         this.mapContainer = Html.Context;
-        Html.Instance.End.Render();
+        Html.Instance.end.render();
         
         // Load Google Maps API
         this.loadGoogleMapsScript();
@@ -125,9 +125,9 @@ export class GoogleMap extends EditableComponent {
                 
                 // Show user-friendly error message
                 if (apiKey) {
-                    Html.Take(this.mapContainer).Clear().Div.ClassName("alert alert-danger").Text("Failed to load Google Maps API. Please check your API key configuration.");
+                    Html.take(this.mapContainer).clear().div.className("alert alert-danger").text("Failed to load Google Maps API. Please check your API key configuration.");
                 } else {
-                    Html.Take(this.mapContainer).Clear().Div.ClassName("alert alert-warning").Text("Failed to load Google Maps API in anonymous mode. Usage limits may have been exceeded.");
+                    Html.take(this.mapContainer).clear().div.className("alert alert-warning").text("Failed to load Google Maps API in anonymous mode. Usage limits may have been exceeded.");
                 }
             });
             
@@ -135,7 +135,7 @@ export class GoogleMap extends EditableComponent {
         } catch (error) {
             console.error('Error loading Google Maps API:', error);
             Spinner.Hide();
-            Html.Take(this.mapContainer).Clear().Div.ClassName("alert alert-danger").Text("Error loading Google Maps API: " + error.message);
+            Html.take(this.mapContainer).clear().div.className("alert alert-danger").text("Error loading Google Maps API: " + error.message);
         }
     }
 

@@ -57,15 +57,15 @@ export class MenuComponent extends EditableComponent {
 
   render() {
     new Promise(() => {
-      Client.Instance.SubmitAsync({
+      Client.instance.submitAsync({
         Url: `/api/feature/getMenu`,
         IsRawString: true,
         Method: "GET",
       }).then((features) => {
         var cloneFeature = JSON.parse(JSON.stringify(features));
-        Html.Take(".search-content")
-          .Input.Type("search")
-          .Event(EventType.Input, (e) => {
+        Html.take(".search-content")
+          .input.type("search")
+          .event(EventType.Input, (e) => {
             var actFeature = JSON.parse(JSON.stringify(features));
             if (e.target.value) {
               var newFeatures = JSON.parse(
@@ -91,14 +91,14 @@ export class MenuComponent extends EditableComponent {
               this.renderMenu(this.features);
             }
           })
-          .ClassName("form-control")
-          .PlaceHolder("Search...")
-          .End.Render();
+          .className("form-control")
+          .placeHolder("Search...")
+          .end.render();
         this.buildFeatureTree(cloneFeature);
         this.renderMenu(this.features);
-        if (Client.Token.Vendor.Icon) {
+        if (Client.token.Vendor.Icon) {
           var icon = document.querySelector("#iconweb");
-          icon.href = Client.Token.Vendor.Icon;
+          icon.href = Client.token.Vendor.Icon;
         }
       });
     });
@@ -140,8 +140,8 @@ export class MenuComponent extends EditableComponent {
    * @param {Feature[]} features - The array of Feature objects.
    */
   renderMenu(features) {
-    Html.Take(".sidebar-content").Clear().Ul.Render();
-    if (Client.SystemRole) {
+    Html.take(".sidebar-content").clear().ul.render();
+    if (Client.systemRole) {
       new Sortable(Html.Context, {
         animation: 500, // Animation kéo dài hơn
         ghostClass: "blue-background-class",
@@ -179,57 +179,57 @@ export class MenuComponent extends EditableComponent {
               table: "Feature",
             })
           });
-          Client.Instance.PatchAsync2(items).then();
+          Client.instance.patchAsync2(items).then();
         }
       });
     }
     /**
      * @param {Feature[]} features
      */
-    Html.Instance.ForEach(
+    Html.Instance.forEach(
       features,
       /**
        * @param {Feature} item
        */
       (item) => {
         if (item.isGroup) {
-          Html.Instance.Li.ClassName("menu-category");
-          Html.Instance.Event(EventType.ContextMenu, (e) =>
+          Html.Instance.li.className("menu-category");
+          Html.Instance.event(EventType.ContextMenu, (e) =>
             this.menuItemContextMenu(e, item)
           );
-          Html.Instance.Span.IText(
+          Html.Instance.span.iText(
             item.label,
             "Menu"
-          ).End.End.Render();
+          ).end.end.render();
         } else {
           var check = item.inverseParent && item.inverseParent.length > 0;
-          Html.Instance.Li.DataAttr("id", item.id).Render();
-          Html.Instance.Event(EventType.ContextMenu, (e) =>
+          Html.Instance.li.dataAttr("id", item.id).render();
+          Html.Instance.event(EventType.ContextMenu, (e) =>
             this.menuItemContextMenu(e, item)
           );
           if (item.name == this.currentHref) {
-            Html.Instance.ClassName("active");
+            Html.Instance.className("active");
           }
           if (check) {
             if (item.inverseParent.some((x) => x.name == this.currentHref)) {
-              Html.Instance.ClassName("open");
-              Html.Instance.ClassName("active");
+              Html.Instance.className("open");
+              Html.Instance.className("active");
             }
           }
-          Html.Instance.A.DataAttr("page", item.name).ClassName(
+          Html.Instance.a.dataAttr("page", item.name).className(
             check ? "main-menu has-dropdown" : "link"
           );
-          Html.Instance.Event(EventType.Click, (e) =>
+          Html.Instance.event(EventType.Click, (e) =>
             this.menuItemClick(e, item)
           )
-            .I.ClassName(item.icon)
-            .End.Span.IText(item.label, "Menu")
-            .End.Render();
-          Html.Instance.EndOf(ElementType.a);
+            .i.className(item.icon)
+            .end.span.iText(item.label, "Menu")
+            .end.render();
+          Html.Instance.endOf(ElementType.a);
           if (check) {
             this.renderMenuItems(item.inverseParent);
           }
-          Html.Instance.End.Render();
+          Html.Instance.end.render();
         }
       }
     );
@@ -238,8 +238,8 @@ export class MenuComponent extends EditableComponent {
    * @param {Feature[]} menuItems
    */
   renderMenuItems(menuItems) {
-    Html.Instance.Ul.Render();
-    if (Client.SystemRole) {
+    Html.Instance.ul.render();
+    if (Client.systemRole) {
       var seft = this;
       new Sortable(Html.Context, {
         animation: 500, // Animation kéo dài hơn
@@ -278,13 +278,13 @@ export class MenuComponent extends EditableComponent {
               table: "Feature",
             })
           });
-          Client.Instance.PatchAsync2(items).then();
+          Client.instance.patchAsync2(items).then();
         }
       });
     }
-    Html.ClassName("sub-menu")
-      .Style(`max-height: ${menuItems.length * 44}px;`)
-      .ForEach(
+    Html.className("sub-menu")
+      .style(`max-height: ${menuItems.length * 44}px;`)
+      .forEach(
         menuItems,
         /**
          * @param {Feature} item
@@ -292,38 +292,38 @@ export class MenuComponent extends EditableComponent {
         (item) => {
           var check =
             item.inverseParent != null && item.inverseParent.count > 0;
-          Html.Instance.Li.DataAttr("id", item.id).Render();
-          Html.Instance.Event(EventType.ContextMenu, (e) =>
+          Html.Instance.li.dataAttr("id", item.id).render();
+          Html.Instance.event(EventType.ContextMenu, (e) =>
             this.menuItemContextMenu(e, item)
           );
           if (!check) {
             if (this.currentHref == item.name) {
-              Html.Instance.ClassName("active");
+              Html.Instance.className("active");
             }
           }
           if (check) {
             if (item.inverseParent.some((x) => x.name == this.currentHref)) {
-              Html.Instance.ClassName("open");
-              Html.Instance.ClassName("active");
+              Html.Instance.className("open");
+              Html.Instance.className("active");
             }
           }
-          Html.Instance.A.DataAttr("page", item.name).ClassName(
+          Html.Instance.a.dataAttr("page", item.name).className(
             check ? "main-menu has-dropdown" : "link"
           );
-          Html.Instance.Event(EventType.Click, (e) =>
+          Html.Instance.event(EventType.Click, (e) =>
             this.menuItemClick(e, item)
           )
-            .I.ClassName(item.icon)
-            .End.Span.IText(item.label, "Menu")
-            .End.Render();
-          Html.Instance.EndOf(ElementType.a);
+            .i.className(item.icon)
+            .end.span.iText(item.label, "Menu")
+            .end.render();
+          Html.Instance.endOf(ElementType.a);
           if (check) {
             this.renderMenuItems(item.inverseParent);
           }
-          Html.Instance.End.Render();
+          Html.Instance.end.render();
         }
       );
-    Html.Instance.EndOf(ElementType.ul);
+    Html.Instance.endOf(ElementType.ul);
   }
   /**
    * @param {Event} e

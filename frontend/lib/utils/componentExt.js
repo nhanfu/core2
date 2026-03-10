@@ -243,7 +243,7 @@ export class ComponentExt {
     static LoadFeature(name, id = null) {
         return new Promise((resolve, reject) => {
             // @ts-ignore
-            const featureTask = Client.Instance.SubmitAsync({
+            const featureTask = Client.instance.submitAsync({
                 Url: `/api/feature/loadFeature`,
                 Method: "POST",
                 JsonData: JSON.stringify({
@@ -259,7 +259,7 @@ export class ComponentExt {
     static LoadPublicFeature(name, id = null) {
         return new Promise((resolve, reject) => {
             // @ts-ignore
-            const featureTask = Client.Instance.SubmitAsync({
+            const featureTask = Client.instance.submitAsync({
                 Url: `/api/feature/getPublicFeature?name=` + name,
                 IsRawString: true,
                 Method: "GET",
@@ -331,7 +331,7 @@ export class ComponentExt {
         element.style.right = "auto";
         element.style.bottom = "auto";
         element.style.left = "auto";
-        Html.Take(element).Floating(containerBottom, containerRect.left);
+        Html.take(element).floating(containerBottom, containerRect.left);
         if (this.IsOutOfViewport(element).Right) {
             if (!this.IsOutOfViewport(element).Bottom) {
                 this.BottomCenter(element, parentEle);

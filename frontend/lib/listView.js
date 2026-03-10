@@ -129,7 +129,7 @@ export class ListView extends EditableComponent {
         if (this.EditForm) {
             this.generalPolicies = this.EditForm.Policies;
         }
-        Html.Take(this.ParentElement).DataAttr('name', this.Name);
+        Html.take(this.ParentElement).dataAttr('name', this.Name);
         this.AddSections();
         this.SetRowDataIfExists();
         if (this.Meta.LocalRender) {
@@ -158,7 +158,7 @@ export class ListView extends EditableComponent {
 
     Rerender() {
         this.mainSection.DisposeChildren();
-        Html.Take(this.mainSection.Element).Clear();
+        Html.take(this.mainSection.Element).clear();
         this.RenderContent();
     }
     /**
@@ -224,18 +224,18 @@ export class ListView extends EditableComponent {
     async ExcelData() {
         let sql = this.GetSql(0, 10000, false);
         sql.ExportExcel = true;
-        const data = await Client.Instance.SubmitAsync({
+        const data = await Client.instance.submitAsync({
             NoQueue: true,
             Url: `/api/feature/com`,
             Method: "POST",
             JsonData: JSON.stringify(sql),
         });
         if (this.FindClosest(x => x.IsTabComponent)) {
-            Client.Download(data.Url, LangSelect.Get(this.EditForm.Meta.Label, this.Meta.Name) + "-" + LangSelect.Get(this.Parent.Meta.Label) + ".xlsx");
+            Client.download(data.Url, LangSelect.Get(this.EditForm.Meta.Label, this.Meta.Name) + "-" + LangSelect.Get(this.Parent.Meta.Label) + ".xlsx");
 
         }
         else {
-            Client.Download(data.Url, LangSelect.Get(this.EditForm.Meta.Label, this.Meta.Name) + ".xlsx");
+            Client.download(data.Url, LangSelect.Get(this.EditForm.Meta.Label, this.Meta.Name) + ".xlsx");
         }
     }
 
@@ -245,7 +245,7 @@ export class ListView extends EditableComponent {
 
     async ExportExcel() {
         const htmlWithInline = await this.inlineAllStyles(this.Element.outerHTML);
-        const response = await Client.Instance.SubmitAsync({
+        const response = await Client.instance.submitAsync({
             NoQueue: true,
             Url: `/api/HtmlToExcel/export`,
             Method: "POST",
@@ -340,7 +340,7 @@ export class ListView extends EditableComponent {
                     XLSX.utils.book_append_sheet(wb, ws_master, headers[index].Label);
                 }
                 else {
-                    const data = await Client.Instance.SubmitAsync({
+                    const data = await Client.instance.submitAsync({
                         NoQueue: true,
                         Url: `/api/feature/com`,
                         Method: "POST",
@@ -429,7 +429,7 @@ export class ListView extends EditableComponent {
                 }, []));
                 let dataTasks = groupedList.map(x => ({
                     Header: x.TableName,
-                    Data: Client.Instance.GetByNameAsync(x.TableName, x.Id, x.Format)
+                    Data: Client.instance.getByNameAsync(x.TableName, x.Id, x.Format)
                 }));
                 let results = await Promise.all(dataTasks.map(x => x.Data));
                 dataTasks.forEach((task, index) => {
@@ -539,7 +539,7 @@ export class ListView extends EditableComponent {
 
 
     async CustomQuery(vm) {
-        const data = await Client.Instance.SubmitAsync({
+        const data = await Client.instance.submitAsync({
             NoQueue: true,
             Url: `/api/feature/com`,
             Method: "POST",
@@ -619,7 +619,7 @@ export class ListView extends EditableComponent {
             Ids: x.DataSourceOptimized,
             Header: x
         }));
-        var results2 = await Client.Instance.GetByIdsAsync(dataTasks);
+        var results2 = await Client.instance.getByIdsAsync(dataTasks);
         results2.forEach((task, index) => {
             if (task && task.length == 0) {
                 return;
@@ -762,15 +762,15 @@ export class ListView extends EditableComponent {
             this.AddChild(this.mainSection);
             return;
         }
-        Html.Take(this.ParentElement).Div.ClassName("grid-wrapper");
+        Html.take(this.ParentElement).div.className("grid-wrapper");
         this.Element = Html.Context;
         if (this.Meta.CanSearch) {
-            Html.Instance.Div.Div.ClassName("grid-toolbar search").End.Render();
-            Html.Instance.Div.ClassName("button-toolbar").End.End.Render();
+            Html.Instance.div.div.className("grid-toolbar search").end.render();
+            Html.Instance.div.className("button-toolbar").end.end.render();
         }
         this.listViewSearch = new ListViewSearch(this.Meta);
         this.AddChild(this.listViewSearch);
-        Html.Take(this.Element).Div.ClassName("list-content").End.Div.ClassName("empty");
+        Html.take(this.Element).div.className("list-content").end.div.className("empty");
         this.emptySection = new ListViewSection(null, Html.Context);
         this.emptySection.ParentElement = this.Element;
         this.AddChild(this.emptySection);
@@ -779,7 +779,7 @@ export class ListView extends EditableComponent {
         this.mainSection = new ListViewSection(null, this.emptySection.Element.previousElementSibling);
         this.AddChild(this.mainSection);
 
-        Html.Instance.EndOf(".list-content");
+        Html.Instance.endOf(".list-content");
         this.RenderPaginator();
     }
 
@@ -1060,7 +1060,7 @@ export class ListView extends EditableComponent {
     }
 
     async RenderRelatedDataMenu() {
-        const targetRef = await Client.Instance.GetByIdAsync('EntityRef', this.DataConn, [this.Meta.Id]);
+        const targetRef = await Client.instance.getByIdAsync('EntityRef', this.DataConn, [this.Meta.Id]);
         if (targetRef.Nothing()) {
             return;
         }
@@ -1165,7 +1165,7 @@ export class ListView extends EditableComponent {
                 Params: submitEntity ? JSON.stringify(submitEntity) : null,
                 ComId: pivotRow.Id,
             };
-            var data = await Client.Instance.SubmitAsync({
+            var data = await Client.instance.submitAsync({
                 Url: "/api/feature/sql",
                 IsRawString: true,
                 JsonData: JSON.stringify(entity),
@@ -1497,17 +1497,17 @@ export class ListView extends EditableComponent {
         if (!currentItem) {
             return;
         }
-        Html.Take(this.TabEditor.Element).Div.ClassName("backdrop").TabIndex(-1).Trigger(EventType.Focus)
-            .Style("align-items: baseline;");
+        Html.take(this.TabEditor.Element).div.className("backdrop").tabIndex(-1).trigger(EventType.Focus)
+            .style("align-items: baseline;");
         this._history = Html.Context;
-        Html.Instance.Div.Escape((e) => this.DisposeViewHistory.bind(this)).ClassName("popup-content confirm-dialog history-view")
-            .Div.ClassName("popup-title").InnerHTML("View history change")
-            .Div.ClassName("icon-box").Span.ClassName("fal fa-times")
-            .Event(EventType.Click, () => this._history.remove())
-            .EndOf(".popup-title")
-            .Div.ClassName("card-body panel group");
+        Html.Instance.div.escape((e) => this.DisposeViewHistory.bind(this)).className("popup-content confirm-dialog history-view")
+            .div.className("popup-title").innerHTML("View history change")
+            .div.className("icon-box").span.className("fal fa-times")
+            .event(EventType.Click, () => this._history.remove())
+            .endOf(".popup-title")
+            .div.className("card-body panel group");
         const body = Html.Context;
-        var coms = await Client.Instance.GetService("History Change");
+        var coms = await Client.instance.getService("History Change");
         var com = coms[0][0];
         com.Row = 50;
         var params = {
@@ -1601,7 +1601,7 @@ export class ListView extends EditableComponent {
      */
     async Deactivate() {
         const ids = this.GetSelectedRows().map(x => x[this.IdField].toString());
-        const deactivatedIds = await Client.Instance.DeactivateAsync(ids, this.Meta.RefName, this.DataConn);
+        const deactivatedIds = await Client.instance.deactivateAsync(ids, this.Meta.RefName, this.DataConn);
         if (deactivatedIds.length > 0) {
             Toast.Success("Data deactivated successfully");
         } else {
@@ -1631,7 +1631,7 @@ export class ListView extends EditableComponent {
                 const ids = deletedItems.map(x => x[this.IdField]).filter(x => !x.startsWith('-'));
                 if (ids && ids.length > 0) {
                     let submitEntity = Utils.IsFunction(this.Meta.PreQuery, true, this);
-                    Client.Instance.PostAsync({
+                    Client.instance.postAsync({
                         EntityIds: ids,
                         Params: submitEntity ? JSON.stringify(submitEntity) : null,
                         ComId: this.Meta.Id
@@ -1720,7 +1720,7 @@ export class ListView extends EditableComponent {
             return true;
         }
         else {
-            const result = await Client.Instance.HardDeleteAsync(ids, this.Meta.RefName, newId, this.Meta.Id);
+            const result = await Client.instance.hardDeleteAsync(ids, this.Meta.RefName, newId, this.Meta.Id);
             if (result) {
                 this.AllListViewItem.filter(x => x.Selected).forEach(x => x.Dispose());
                 this.ClearSelected();
@@ -1835,7 +1835,7 @@ export class ListView extends EditableComponent {
                 Table: this.Meta.RefName,
             };
         }).filter(x => x != null);
-        Client.Instance.PatchAsync2(columns).then();
+        Client.instance.patchAsync2(columns).then();
     }
 
     /**
@@ -1971,7 +1971,7 @@ export class ListView extends EditableComponent {
     GetRealTimeSelectedRows() {
         return new Promise((resolve, reject) => {
             // @ts-ignore
-            Client.Instance.GetByIdAsync(this.Meta.RefName, this.DataConn || Client.DataConn, this.selectedIds.ToArray())
+            Client.instance.getByIdAsync(this.Meta.RefName, this.DataConn || Client.DataConn, this.selectedIds.ToArray())
                 .then(res => {
                     resolve(res ? res.slice() : []);
                 })
@@ -2116,7 +2116,7 @@ export class ListView extends EditableComponent {
 
     GetUserSetting(prefix) {
         // @ts-ignore
-        return Client.Instance.UserSvc({
+        return Client.instance.userSvc({
             MetaConn: this.MetaConn,
             DataConn: this.DataConn,
             ComId: "UserSetting",

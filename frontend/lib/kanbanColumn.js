@@ -85,9 +85,9 @@ export class KanbanColumn extends EditableComponent {
      */
     Render() {
         var group = this.Meta.Id;
-        Html.Take(this.ParentElement).Div.ClassName("kanban-column");
+        Html.take(this.ParentElement).div.className("kanban-column");
         this.Element = Html.Context;
-        Html.H2.Text(this.Entity.Title).End.Div.ClassName("kanban-items").Render();
+        Html.h2.text(this.Entity.Title).end.div.className("kanban-items").render();
         Html.Context["Entity"] = this.Entity;
         this.MainSection = Html.Context;
         new Sortable(this.MainSection, {
@@ -110,14 +110,14 @@ export class KanbanColumn extends EditableComponent {
                 }
                 item.Entity.ProgressId = toContainer.Entity.Id;
                 const patchModel = this.GetPatchEntity(item.Entity);
-                Client.Instance.PatchAsync(patchModel);
+                Client.instance.patchAsync(patchModel);
             }
         });
         this.RenderItemData();
-        Html.End.Div.ClassName("kanban-pagination");
+        Html.end.div.className("kanban-pagination");
         this.PaginationSection = Html.Context;
         if (this.Entity.CanAdd) {
-            Html.Take(this.MainSection.parentElement).Button.ClassName("add-task").Event("click", () => this.DispatchClick()).IText("+ Add Task").End.Render()
+            Html.take(this.MainSection.parentElement).button.className("add-task").event("click", () => this.DispatchClick()).iText("+ Add Task").end.render()
         }
     }
 
@@ -132,9 +132,9 @@ export class KanbanColumn extends EditableComponent {
         this.Options.PageNumber = (this.Options.PageIndex || 0) + 1;
         this.Options.StartIndex = (this.Options.PageIndex || 0) * (this.Options.PageSize || 50) + 1;
         this.Options.EndIndex = this.Options.StartIndex + this.Options.CurrentPageCount - 1;
-        Html.Take(this.PaginationSection);
-        Html.Clear();
-        Html.Button.ClassName("prev-page").Event("click", this.PrevPage.bind(this)).Text("←").End.Span.ClassName("page-info").Text(this.Options.StartIndex + " - " + this.Options.EndIndex + " of " + this.Options.Total).End.Button.ClassName("next-page").Event("click", this.NextPage.bind(this)).Text("→").End.End.Render();
+        Html.take(this.PaginationSection);
+        Html.clear();
+        Html.button.className("prev-page").event("click", this.PrevPage.bind(this)).text("←").end.span.className("page-info").text(this.Options.StartIndex + " - " + this.Options.EndIndex + " of " + this.Options.Total).end.button.className("next-page").event("click", this.NextPage.bind(this)).text("→").end.end.render();
     }
 
     GetPatchEntity(entity) {
@@ -186,7 +186,7 @@ export class KanbanColumn extends EditableComponent {
     }
 
     async CustomQuery(vm) {
-        const data = await Client.Instance.SubmitAsync({
+        const data = await Client.instance.submitAsync({
             NoQueue: true,
             Url: `/api/feature/com`,
             Method: "POST",

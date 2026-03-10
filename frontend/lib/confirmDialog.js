@@ -47,18 +47,18 @@ export class ConfirmDialog extends EditableComponent {
                 x.MinWidth = null;
             })
         }
-        Html.Take(this.PElement || document.body);
-        Html.Div.ClassName((this.ComponentGroup ? "backdrop2" : "backdrop")).Style((this.ComponentGroup ? "" : "align-items: center;"));
+        Html.take(this.PElement || document.body);
+        Html.div.className((this.ComponentGroup ? "backdrop2" : "backdrop")).style((this.ComponentGroup ? "" : "align-items: center;"));
         this.Element = Html.Context;
         this.ParentElement = this.Element.parentElement;
-        Html.Instance.Div.Escape(() => this.Dispose()).ClassName("popup-content " + (this.ComponentGroup ? "form-dialog" : "confirm-dialog")).Style((this.ComponentGroup ? "" : "top: auto;min-width: 350px;"))
-            .Div.ClassName("popup-title").Div.I.ClassName("fas fa-question-circle mr-1").End.IText("Confirm", this.EditForm.Meta.Label).End
-            .Div.ClassName("icon-box").Span.ClassName("fa fa-times")
-            .Event("click", () => this.CloseDispose())
-            .EndOf(".popup-title")
-            .Div.ClassName("popup-body");
+        Html.Instance.div.escape(() => this.Dispose()).className("popup-content " + (this.ComponentGroup ? "form-dialog" : "confirm-dialog")).style((this.ComponentGroup ? "" : "top: auto;min-width: 350px;"))
+            .div.className("popup-title").div.i.className("fas fa-question-circle mr-1").end.iText("Confirm", this.EditForm.Meta.Label).end
+            .div.className("icon-box").span.className("fa fa-times")
+            .event("click", () => this.CloseDispose())
+            .endOf(".popup-title")
+            .div.className("popup-body");
         this.BodyElement = Html.Context;
-        Html.Instance.Div.ClassName("bold").IText(this.Title, this.EditForm.Meta.Label).End.Div.ClassName("card card-config").Event("keydown", (e) => this.HotKeyHandler(e)).MarginRem("top", 1).TextAlign(this.ComponentGroup ? "" : "center");
+        Html.Instance.div.className("bold").iText(this.Title, this.EditForm.Meta.Label).end.div.className("card card-config").event("keydown", (e) => this.HotKeyHandler(e)).marginRem("top", 1).textAlign(this.ComponentGroup ? "" : "center");
         this.DivElement = Html.Context;
         if (this.NeedAnswer) {
             if (this.ComponentGroup && this.ComponentGroup.ComponentType == "Section") {
@@ -126,7 +126,7 @@ export class ConfirmDialog extends EditableComponent {
                 _basicSearchGroup.Element.className = "group card-body";
             }
         }
-        Html.Take(this.BodyElement).Div.Style("width: 172px; margin: auto; padding: 1rem; display: flex; justify-content: center; gap: 1rem;").Button2(this.YesText, "btn btn-success mt-2", "fal fa-check").Event("click", () => {
+        Html.take(this.BodyElement).div.style("width: 172px; margin: auto; padding: 1rem; display: flex; justify-content: center; gap: 1rem;").button2(this.YesText, "btn btn-success mt-2", "fal fa-check").event("click", () => {
             this.ValidateAsync().then((isValid) => {
                 if (!isValid) {
                     return;
@@ -142,12 +142,12 @@ export class ConfirmDialog extends EditableComponent {
                     this.Dispose();
                 }
             })
-        }).End.Render();
+        }).end.render();
         this._yesBtn = Html.Context;
         if (!this.IgnoreNoButton) {
-            Html.Instance.Button2(this.NoText, "btn btn-danger btn-sm mt-2", "fal fa-window-close")
-                .MarginRem("left", 1)
-                .Event("click", () => {
+            Html.Instance.button2(this.NoText, "btn btn-danger btn-sm mt-2", "fal fa-window-close")
+                .marginRem("left", 1)
+                .event("click", () => {
                     try {
                         if (this.NoConfirmed.handler) {
                             this.NoConfirmed?.invoke();
@@ -156,13 +156,13 @@ export class ConfirmDialog extends EditableComponent {
                         console.error(ex.stack);
                     }
                     this.CloseDispose();
-                }).End.Render();
+                }).end.render();
         }
         if (!this.IgnoreCancelButton) {
-            Html.Instance.Button2(this.CancelText, "btn btn-success btn-sm mt-2", "fal fa-times")
-                .MarginRem("left", 1)
-                .Event("click", () => this.Dispose())
-                .Render();
+            Html.Instance.button2(this.CancelText, "btn btn-success btn-sm mt-2", "fal fa-times")
+                .marginRem("left", 1)
+                .event("click", () => this.Dispose())
+                .render();
         }
     }
 

@@ -97,7 +97,7 @@ export class Select extends EditableComponent {
 
     RenderInputAndEvents() {
         if (this.Element == null) {
-            this._input = Html.Take(this.ParentElement).TextAlign("left").Div.Position(PositionEnum.relative).TabIndex(-1).ClassName(this.SEntryClass).Select.TabIndex(-1).GetContext();
+            this._input = Html.take(this.ParentElement).textAlign("left").div.position(PositionEnum.relative).tabIndex(-1).className(this.SEntryClass).select.tabIndex(-1).getContext();
             this._parentInput = this._input.parentElement;
             this.Element = this._input.parentElement;
         }
@@ -105,10 +105,10 @@ export class Select extends EditableComponent {
             this._input = this.Element.firstElementChild;
         }
         if (this.Parent.IsListViewItem) {
-            Html.Take(this.Element.parentElement).Event(EventType.KeyDown, (e) => this.SEKeydownHandler(e));
+            Html.take(this.Element.parentElement).event(EventType.KeyDown, (e) => this.SEKeydownHandler(e));
         }
         else {
-            Html.Take(this.Element).Event(EventType.KeyDown, (e) => this.SEKeydownHandler(e));
+            Html.take(this.Element).event(EventType.KeyDown, (e) => this.SEKeydownHandler(e));
         }
     }
 

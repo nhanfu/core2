@@ -39,11 +39,11 @@ export class Checkbox extends EditableComponent {
     Render() {
 
         if (this.ParentElement != null && this.Element == null) {
-            Html.Take(this.ParentElement).TabIndex(-1).SmallCheckbox(this._value ?? false);
+            Html.take(this.ParentElement).tabIndex(-1).smallCheckbox(this._value ?? false);
             this._input = Html.Context.previousElementSibling;
         }
         this.Element = this._input.parentElement ?? this._input;
-        Html.Take(this._input).Event('input', this.UserChange.bind(this));
+        Html.take(this._input).event('input', this.UserChange.bind(this));
         this.SetDisableUI(!this.Meta.Editable);
         this.SetDefaultVal();
         this.Value = Utils.GetPropValue(this.Entity, this.Name);

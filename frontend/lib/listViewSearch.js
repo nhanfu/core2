@@ -115,46 +115,46 @@ export class ListViewSearch extends EditableComponent {
         if (!this.Meta.CanSearch) {
             var coms = this.EditForm.Meta.ComponentOptions && this.EditForm.Meta.ComponentOptions.filter(x => x.ComponentId == this.Meta.Id && x.TypeId == 1);
             if (coms && coms.length > 0) {
-                Html.Take(this.Parent.Element.firstChild.firstChild).TabIndex(-1).Event(EventType.KeyPress, this.EnterSearch.bind(this));
+                Html.take(this.Parent.Element.firstChild.firstChild).tabIndex(-1).event(EventType.KeyPress, this.EnterSearch.bind(this));
                 this.Element = Html.Context;
-                Html.Take(this.Element).Div.ClassName('searching-block');
-                Html.Button.ClassName("btn btn-light btn-sm mr-1").Event(EventType.Click, (e) => {
+                Html.take(this.Element).div.className('searching-block');
+                Html.button.className("btn btn-light btn-sm mr-1").event(EventType.Click, (e) => {
                     this.ExcelOptions(e, coms);
-                }).Icon('fal fa-file-excel mr-1').End.End.Render();
+                }).icon('fal fa-file-excel mr-1').end.end.render();
             }
             var coms2 = this.EditForm.Meta.ComponentOptions && this.EditForm.Meta.ComponentOptions.filter(x => x.ComponentId == this.Meta.Id && x.TypeId == 2);
             if (coms2 && coms2.length > 0) {
-                Html.Button.ClassName("btn btn-light btn-sm").Event(EventType.Click, (e) => {
+                Html.button.className("btn btn-light btn-sm").event(EventType.Click, (e) => {
                     this.ExcelOptions(e, coms2);
-                }).Icon('fal fal fa-print mr-1').End.End.Render();
+                }).icon('fal fal fa-print mr-1').end.end.render();
             }
             return;
         }
         // @ts-ignore
-        Html.Take(this.Parent.Element.firstChild.firstChild).TabIndex(-1).Event(EventType.KeyPress, this.EnterSearch.bind(this));
+        Html.take(this.Parent.Element.firstChild.firstChild).tabIndex(-1).event(EventType.KeyPress, this.EnterSearch.bind(this));
         this.Element = Html.Context;
         this.RenderImportBtn();
-        Html.Take(this.Element).Div.Render();
-        Html.Take(this.Element).Div.ClassName('searching-block')
-            .Button.ClassName("btn btn-light btn-sm mr-1").Event(EventType.Click, () => {
+        Html.take(this.Element).div.render();
+        Html.take(this.Element).div.className('searching-block')
+            .button.className("btn btn-light btn-sm mr-1").event(EventType.Click, () => {
                 this.Parent.ClearSelected();
                 this.Parent.ReloadData().then();
-            }).Icon('fal fa-search')
-            .End.End
-            .Button.ClassName("btn btn-light btn-sm mr-1").Event(EventType.Click, this.RefreshListView.bind(this)).Icon('fal fa-undo').End.End
-            .Button.ClassName("btn btn-light btn-sm mr-1").Event(EventType.Click, this.ExportExcel.bind(this)).Icon('fal fa-file-excel').End.End
-            .Render();
+            }).icon('fal fa-search')
+            .end.end
+            .button.className("btn btn-light btn-sm mr-1").event(EventType.Click, this.RefreshListView.bind(this)).icon('fal fa-undo').end.end
+            .button.className("btn btn-light btn-sm mr-1").event(EventType.Click, this.ExportExcel.bind(this)).icon('fal fa-file-excel').end.end
+            .render();
         var coms = this.EditForm.Meta.ComponentOptions && this.EditForm.Meta.ComponentOptions.filter(x => x.ComponentId == this.Meta.Id && x.TypeId == 1);
         if (coms && coms.length > 0) {
-            Html.Button.ClassName("btn btn-light btn-sm mr-1").Event(EventType.Click, (e) => {
+            Html.button.className("btn btn-light btn-sm mr-1").event(EventType.Click, (e) => {
                 this.ExcelOptions(e, coms2);
-            }).Icon('fal fa-file-excel mr-1').End.End.Render();
+            }).icon('fal fa-file-excel mr-1').end.end.render();
         }
         var coms2 = this.EditForm.Meta.ComponentOptions && this.EditForm.Meta.ComponentOptions.filter(x => x.ComponentId == this.Meta.Id && x.TypeId == 2);
         if (coms2 && coms2.length > 0) {
-            Html.Button.ClassName("btn btn-light btn-sm").Event(EventType.Click, (e) => {
+            Html.button.className("btn btn-light btn-sm").event(EventType.Click, (e) => {
                 this.ExcelOptions(e, coms2);
-            }).Icon('fal fal fa-print mr-1').End.End.Render();
+            }).icon('fal fal fa-print mr-1').end.end.render();
         }
     }
 
@@ -268,7 +268,7 @@ export class ListViewSearch extends EditableComponent {
         var formData = new FormData(uploadForm);
         var meta = this.Parent.Meta;
         // @ts-ignore
-        Client.Instance.SubmitAsync({
+        Client.instance.submitAsync({
             FormData: formData,
             Url: `/user/importCsv?table=${meta.RefName}&comId=${meta.Id}&connKey=${meta.MetaConn}`,
             Method: HttpMethod.POST,
@@ -321,19 +321,19 @@ export class ListViewSearch extends EditableComponent {
                 const handlerPrint = this.PrintPdf.bind(this);
                 const handlerPdf = this.ExportPdf.bind(this);
                 const handlerSendMail = this.SendMail.bind(this);
-                Html.Take(this.TabEditor?.Element ?? document.body).Div.ClassName("backdrop").Style("align-items: center;");
+                Html.take(this.TabEditor?.Element ?? document.body).div.className("backdrop").style("align-items: center;");
                 this.Preview = Html.Context;
-                Html.Instance.Div.Escape(handlerClose).ClassName("popup-content");
+                Html.Instance.div.escape(handlerClose).className("popup-content");
                 this.PopupContent = Html.Context;
-                Html.Instance.Div.ClassName("popup-title").Span.IText(this.Meta.PlainText || "Report PDF", this.EditForm.Meta.Label);
+                Html.Instance.div.className("popup-title").span.iText(this.Meta.PlainText || "Report PDF", this.EditForm.Meta.Label);
                 this.TitleElement = Html.Context;
-                Html.Instance.End.Div.ClassName("title-center");
+                Html.Instance.end.div.className("title-center");
                 this.TitleCenterElement = Html.Context;
-                Html.Instance.End.Div.ClassName("icon-box d-flex").Style("display: flex; gap: 20px; align-items: center;")
-                    .Span.ClassName("fal fa-at").Event("click", handlerSendMail).End
-                    .Span.ClassName("fal fa-file-pdf").Event("click", handlerPdf).End
-                    .Span.ClassName("fal fa-print").Event("click", handlerPrint).End
-                    .Span.ClassName("fa fa-times").Event("click", handlerClose).End.End.End.Div.ClassName("popup-body scroll-content").Style("padding-bottom: 1rem;max-height:calc(100vh - 10rem) !important;display: flex; align-items: center;background-color:#525659");
+                Html.Instance.end.div.className("icon-box d-flex").style("display: flex; gap: 20px; align-items: center;")
+                    .span.className("fal fa-at").event("click", handlerSendMail).end
+                    .span.className("fal fa-file-pdf").event("click", handlerPdf).end
+                    .span.className("fal fa-print").event("click", handlerPrint).end
+                    .span.className("fa fa-times").event("click", handlerClose).end.end.end.div.className("popup-body scroll-content").style("padding-bottom: 1rem;max-height:calc(100vh - 10rem) !important;display: flex; align-items: center;background-color:#525659");
                 var width = "794px";
                 switch (this.Meta.ReportTypeId) {
                     case 1: // A4 Portrait
@@ -351,7 +351,7 @@ export class ListViewSearch extends EditableComponent {
                     default:
                         width = "794px"; // fallback
                 }
-                Html.Instance.Iframe.ClassName("container-rpt").Style("margin:auto;background:#fff;overflow: auto;min-height:calc(-13rem + 100vh);").Width(width);
+                Html.Instance.iFrame.className("container-rpt").style("margin:auto;background:#fff;overflow: auto;min-height:calc(-13rem + 100vh);").width(width);
                 this.IFrameElement = Html.Context;
                 var css = document.createElement('style');
                 css.textContent = `body {
@@ -443,15 +443,15 @@ export class ListViewSearch extends EditableComponent {
 
     ExportPdf() {
         Spinner.AppendTo();
-        Client.Instance.PostAsync({ Html: this.IFrameElement.contentWindow.document.documentElement.outerHTML, FileName: this.MetaData.FileName }, "/api/GenPdf").then(response => {
+        Client.instance.postAsync({ Html: this.IFrameElement.contentWindow.document.documentElement.outerHTML, FileName: this.MetaData.FileName }, "/api/GenPdf").then(response => {
             Spinner.Hide();
-            Client.Download(response);
+            Client.download(response);
         });
     }
 
     async SendMail() {
-        var planEmail = await Client.Instance.GetService("Get PlanEmail");
-        var partner = await Client.Instance.GetService("Get Partner");
+        var planEmail = await Client.instance.getService("Get PlanEmail");
+        var partner = await Client.instance.getService("Get Partner");
         var com1 = planEmail[0][0];
         com1.ComponentType = "Dropdown";
         com1.ShowLabel = true;
@@ -550,9 +550,9 @@ export class ListViewSearch extends EditableComponent {
 
     async createEMLFromFileUrl() {
         Spinner.AppendTo();
-        Client.Instance.PostAsync({ Html: this.IFrameElement.contentWindow.document.documentElement.outerHTML, FileName: this.Entity.FormatChat || this.Entity.Code || this.Entity.Id }, "/api/GenPdf").then(async (response2) => {
+        Client.instance.postAsync({ Html: this.IFrameElement.contentWindow.document.documentElement.outerHTML, FileName: this.Entity.FormatChat || this.Entity.Code || this.Entity.Id }, "/api/GenPdf").then(async (response2) => {
             Spinner.Hide();
-            const removePath = Client.RemoveGuid(response2);
+            const removePath = Client.removeGuid(response2);
             const fileUrl = response2;
             const fileName = removePath;
             const subject = this.EditForm.Entity.PdfSubjectMail || '';
@@ -663,7 +663,7 @@ export class ListViewSearch extends EditableComponent {
         let submitEntity = Utils.IsFunction(this.Meta.PreQuery, true, this);
         var params = submitEntity ? JSON.stringify(submitEntity) : null;
         let promise = new Promise((resolve, reject) => {
-            Client.Instance.PostAsync({ ComId: this.Meta.Id, PathTemplate: meta.TypeId == 1 ? meta.ExcelUrl : meta.Template, FileName: meta.FileName, Params: params, Report: true }, meta.TypeId == 1 ? "/api/CreateExcel" : "/api/CreateHtml").then(res => {
+            Client.instance.postAsync({ ComId: this.Meta.Id, PathTemplate: meta.TypeId == 1 ? meta.ExcelUrl : meta.Template, FileName: meta.FileName, Params: params, Report: true }, meta.TypeId == 1 ? "/api/CreateExcel" : "/api/CreateHtml").then(res => {
                 resolve(res);
             }).catch(e => {
                 Spinner.Hide();
@@ -694,8 +694,8 @@ export class ListViewSearch extends EditableComponent {
     }
 
     RenderImportBtn() {
-        Html.Take(this.Element).Form.Attr('method', 'POST').Attr('enctype', 'multipart/form-data')
-            .Display(false).Input.Type('file').Id(`id_${Uuid7.Id25()}`).Attr('name', 'files').Attr('accept', '.csv');
+        Html.take(this.Element).form.attr('method', 'POST').attr('enctype', 'multipart/form-data')
+            .display(false).input.type('file').id(`id_${Uuid7.Id25()}`).attr('name', 'files').attr('accept', '.csv');
         // @ts-ignore
         this._uploader = Html.Context;
         this._uploader.addEventListener(EventType.Change, (/** @type {Event} */ ev) => this.UploadCsv(ev));

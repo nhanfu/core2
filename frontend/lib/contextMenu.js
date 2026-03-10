@@ -66,7 +66,7 @@ export class ContextMenu extends EditableComponent {
             return;
         }
         if (this.Element == null) {
-            Html.Take(this.PElement ?? document.body).Div.ClassName("context-menu");
+            Html.take(this.PElement ?? document.body).div.className("context-menu");
             this.Element = Html.Instance.Context;
             this.Element.addEventListener("focusout", () => this.Dispose());
             this.Element.addEventListener("keydown", (e) => this.HotKeyHandler(e));
@@ -77,7 +77,7 @@ export class ContextMenu extends EditableComponent {
         if (this.PElement != null && this.Element != null) {
             this.PElement.appendChild(this.Element);
         }
-        Html.Take(this.Element).Clear().TabIndex(-1).Floating(this.Top, this.Left);
+        Html.take(this.Element).clear().tabIndex(-1).floating(this.Top, this.Left);
         this.ParentElement = this.Element.ParentElement;
         this.RenderMenuItems(this.MenuItems);
         window.setTimeout(() => {
@@ -100,26 +100,26 @@ export class ContextMenu extends EditableComponent {
             if (!item) {
                 continue;
             }
-            Html.Instance.Div.ClassName("menu-item");
+            Html.Instance.div.className("menu-item");
             item.Ele = Html.Context;
             if (i == 0 && level == 0 && (items[i].MenuItems == null || items[i].MenuItems.length == 0)) {
                 this._selectedIndex = i;
                 this.SetSelectedItem(Html.Context);
             }
             if (item.Disabled) {
-                Html.Instance.Attr("disabled", "disabled");
+                Html.Instance.attr("disabled", "disabled");
             } else {
-                Html.Instance.Event("click", (e) => this.MenuItemClickHandler(e, item));
+                Html.Instance.event("click", (e) => this.MenuItemClickHandler(e, item));
             }
-            Html.Instance.Div.ClassName("menu-left").Span.ClassName("icon").Icon(item.Icon).End.End.IText(item.Text, this.EditForm.Meta.Label).End.Span.ClassName("shortcut").IText(item.Shortcut).End.Render();
+            Html.Instance.div.className("menu-left").span.className("icon").icon(item.Icon).end.end.iText(item.Text, this.EditForm.Meta.Label).end.span.className("shortcut").iText(item.Shortcut).end.render();
             if (item.MenuItems != null && item.MenuItems.length > 0) {
-                Html.Instance.Div.ClassName("submenu context-menu").Render();
+                Html.Instance.div.className("submenu context-menu").render();
                 this.RenderMenuItems(item.MenuItems, level + 1);
-                Html.Instance.End.Render();
+                Html.Instance.end.render();
             }
-            Html.Instance.End.Render();
+            Html.Instance.end.render();
             if (item.Line) {
-                Html.Instance.Hr.Render();
+                Html.Instance.hr.render();
             }
         }
     }

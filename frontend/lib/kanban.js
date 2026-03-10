@@ -28,7 +28,7 @@ export class Kanban extends EditableComponent {
         var kanbanColumn = JSON.parse(template || "{}");
         if (!this.ButtonEle) {
             if (!this.ParentElement) throw new Error("ParentElement is required");
-            Html.Take(this.ParentElement).Div.ClassName("kanban-wrapper").Div.ClassName("kanban").Render();
+            Html.take(this.ParentElement).div.className("kanban-wrapper").div.className("kanban").render();
             this.Element = Html.Context;
         } else {
             this.Element = this.ButtonEle;

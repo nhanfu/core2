@@ -81,7 +81,7 @@ export class MultipleSearchEntry extends SearchEntry {
         else {
             this.Matched = this.Entity[this.DisplayField] || null;
             if (this._listValues.length > 0 && this.MatchedItems.filter(x => this._listValues.includes(x.Id)).length < this._listValues.length && (!this.Parent.IsListViewItem || this.Meta.IsMultiple)) {
-                Client.Instance.GetByIdAsync(this.Meta.RefName, this._listValues).then(data => {
+                Client.instance.getByIdAsync(this.Meta.RefName, this._listValues).then(data => {
                     this.MatchedItems = data.data ? data.data : [];
                     if (this.MatchedItems.length != this._listValues.length) {
                         this.ListValues = this.MatchedItems.map(x => x[this.IdField].toString());
@@ -118,13 +118,13 @@ export class MultipleSearchEntry extends SearchEntry {
         if (exist) {
             return;
         }
-        Html.Take(this.Element.parentElement).Span.Attr("data-id", idAttr).I.ClassName("fal fa-tag mr-1").End.Text(this.GetMatchedText(item));
+        Html.take(this.Element.parentElement).span.attr("data-id", idAttr).i.className("fal fa-tag mr-1").end.text(this.GetMatchedText(item));
         var tag = Html.Context;
         this.Element.parentElement.insertBefore(Html.Context, this._input);
         if (this.Disabled) {
             this._input.readOnly = true;
         }
-        Html.Instance.Button.ClassName("fa fa-times").Event(EventType.Click, async () => {
+        Html.Instance.button.className("fa fa-times").event(EventType.Click, async () => {
             if (this.Disabled) {
                 return;
             }
@@ -139,7 +139,7 @@ export class MultipleSearchEntry extends SearchEntry {
             }
             await this.DispatchEvent(this.Meta.Events, EventType.Change, this);
             tag.remove();
-        }).End.Render();
+        }).end.render();
     }
 
     EntrySelected(rowData) {

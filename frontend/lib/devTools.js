@@ -86,12 +86,12 @@ export class DevTools extends EditableComponent {
      * @param {object} group - The component group to inspect.
      */
     async show(group) {
-        Html.Take(document.body).Div.ClassName("popup-config");
+        Html.take(document.body).div.className("popup-config");
         this.Element = Html.Context;
         this.AddResizeLines(this.Element);
-        Html.Instance.Div.ClassName("devtools-header")
-            .Span.Text("DevTools").End
-            .Span.ClassName("btn").Event(EventType.Click, () => {
+        Html.Instance.div.className("devtools-header")
+            .span.text("DevTools").end
+            .span.className("btn").event(EventType.Click, () => {
                 if (this.ConfigEditor) {
                     this.ConfigEditor.Dirty = false;
                     this.ConfigEditor.Dispose();
@@ -105,29 +105,29 @@ export class DevTools extends EditableComponent {
                 if (this.Element) {
                     this.Element.remove();
                 }
-            }).I.ClassName("fa fa-times").End.End.End;
-        Html.Instance.Div.ClassName("devtools-tabs")
-            .Div.ClassName("devtools-left")
-            .Div.ClassName("devtools-tab elements2 active").Event(EventType.Click, () => this.showTabContent("Elements")).Text("Elements").End
-            .Div.ClassName("devtools-tab console2").Event(EventType.Click, () => this.showTabContent("Console")).Text("Console").End
-            .Div.ClassName("devtools-tab sources2").Event(EventType.Click, () => this.showTabContent("Sources")).Text("Sources").End
-            .Div.ClassName("devtools-tab network2").Event(EventType.Click, () => this.showTabContent("Network")).Text("Network").End.End
-            .Div.ClassName("devtools-right").Render();
+            }).i.className("fa fa-times").end.end.end;
+        Html.Instance.div.className("devtools-tabs")
+            .div.className("devtools-left")
+            .div.className("devtools-tab elements2 active").event(EventType.Click, () => this.showTabContent("Elements")).text("Elements").end
+            .div.className("devtools-tab console2").event(EventType.Click, () => this.showTabContent("Console")).text("Console").end
+            .div.className("devtools-tab sources2").event(EventType.Click, () => this.showTabContent("Sources")).text("Sources").end
+            .div.className("devtools-tab network2").event(EventType.Click, () => this.showTabContent("Network")).text("Network").end.end
+            .div.className("devtools-right").render();
         this.BtnGroupConfig = Html.Context;
-        Html.Instance.End.End.Render();
-        Html.Instance.Div.ClassName("devtools-content")
-            .Div.ClassName("devtools-sidebar components");
+        Html.Instance.end.end.render();
+        Html.Instance.div.className("devtools-content")
+            .div.className("devtools-sidebar components");
         this.SectionComponents = new Section(null, Html.Context);
         this.SectionComponents.Meta = {
             Id: group.Id,
             Column: group.Column
         };
         this.AddChild(this.SectionComponents);
-        Html.Instance.End.Div.ClassName("devtools-main meta-data").End.End;
-        Html.Instance.Div.ClassName("console")
-            .Input.ClassName("console-input").PlaceHolder("> Type JavaScript here...").End.Render();
+        Html.Instance.end.div.className("devtools-main meta-data").end.end;
+        Html.Instance.div.className("console")
+            .input.className("console-input").placeHolder("> Type JavaScript here...").end.render();
         this.calculateSidebarHeight();
-        Html.Take(".components");
+        Html.take(".components");
         this.RenderElements(this.EditForm.GroupTree, true);
     }
 
@@ -290,29 +290,29 @@ export class DevTools extends EditableComponent {
      */
     RenderElements(groupTree) {
         groupTree = groupTree.sort((a, b) => a.Order - b.Order);
-        Html.Instance.Ul.Render();
-        Html.Instance.ClassName("devtools-nested active");
+        Html.Instance.ul.render();
+        Html.Instance.className("devtools-nested active");
         groupTree.forEach(group => {
-            Html.Instance.Li.ClassName("devtools-care-li").DataAttr("id", group.Id).Render();
+            Html.Instance.li.className("devtools-care-li").dataAttr("id", group.Id).render();
             if (this.ConfigEditor && this.ConfigEditor.Entity.Id == group.Id) {
-                Html.Instance.ClassName("active");
+                Html.Instance.className("active");
             }
             if ((group.Children && group.Children.length > 0) ||
                 (group.Components && group.Components.length > 0)) {
-                Html.Instance.Span.ClassName("devtools-caret devtools-caret-down");
+                Html.Instance.span.className("devtools-caret devtools-caret-down");
                 if (this.ConfigSectionEditor && this.ConfigSectionEditor.Entity.Id == group.Id) {
-                    Html.Instance.ClassName("active");
+                    Html.Instance.className("active");
                 }
-                Html.Instance.I.Event(EventType.Click, async (e) => {
+                Html.Instance.i.event(EventType.Click, async (e) => {
                     var ulElement = e.target.closest("span").nextElementSibling;
                     var spanElement = e.target.closest("span");
                     ulElement.classList.toggle('active');
                     spanElement.classList.toggle('devtools-caret-down');
-                }).ClassName("fas fa-chevron-right").End.Span.ClassName("w-100").Event(EventType.Click, async (e) => {
+                }).className("fas fa-chevron-right").end.span.className("w-100").event(EventType.Click, async (e) => {
                     var spanElement = e.target.closest("span").parentElement;
                     spanElement.classList.toggle('active');
                     await this.UpdateSectionData(group, e);
-                }).Text(group.Label || group.FieldName).End.End.Render();
+                }).text(group.Label || group.FieldName).end.end.render();
             }
             else {
                 const iconMap = {
@@ -330,8 +330,8 @@ export class DevTools extends EditableComponent {
                     GridView: "fal fa-th-large"
                 };
                 const icon = iconMap[group.ComponentType] || "fal fa-text";
-                Html.Instance.Event(EventType.Click, async (e) => await this.UpdateMetaData(group, e));
-                Html.Instance.Span.I.ClassName(icon).ClassName("mr-1").End.Text(group.Label || group.FieldName).End.Render();
+                Html.Instance.event(EventType.Click, async (e) => await this.UpdateMetaData(group, e));
+                Html.Instance.span.i.className(icon).className("mr-1").end.text(group.Label || group.FieldName).end.render();
             }
             if (group.Children && group.Children.length > 0) {
                 this.RenderElements(group.Children);
@@ -339,26 +339,26 @@ export class DevTools extends EditableComponent {
             if (group.Components && group.Components.length > 0) {
                 this.RenderElements(group.Components);
             }
-            Html.Instance.End.Render();
+            Html.Instance.end.render();
         });
-        Html.Instance.End.Render();
+        Html.Instance.end.render();
     }
 
     RerenderUI() {
-        Html.Take(".components").Clear();
-        Html.Instance.Ul.ClassName("devtools-tree")
-            .Li.ClassName("devtools-care-li");
-        Html.Instance.Span.ClassName("devtools-caret devtools-caret-down");
-        Html.Instance.I.Event(EventType.Click, async (e) => {
+        Html.take(".components").clear();
+        Html.Instance.ul.className("devtools-tree")
+            .li.className("devtools-care-li");
+        Html.Instance.span.className("devtools-caret devtools-caret-down");
+        Html.Instance.i.event(EventType.Click, async (e) => {
             var ulElement = e.target.closest("span").nextElementSibling;
             var spanElement = e.target.closest("span");
             ulElement.classList.toggle('active');
             spanElement.classList.toggle('devtools-caret-down');
-        }).ClassName("fas fa-chevron-right").End.Span.ClassName("w-100").Event(EventType.Click, async (e) => {
+        }).className("fas fa-chevron-right").end.span.className("w-100").event(EventType.Click, async (e) => {
             await this.UpdateFeatureData(this.Meta, e);
-        }).Text(this.Meta.Label).End.End.Render();
+        }).text(this.Meta.Label).end.end.render();
         this.RenderElements(this.GroupTree);
-        Html.Take(this.Element).Clear();
+        Html.take(this.Element).clear();
         this.EditForm.RenderTabOrSection(this.GroupTree.filter(x => x.Active), this);
     }
 
@@ -373,9 +373,9 @@ export class DevTools extends EditableComponent {
         switch (name) {
             case "Elements":
                 this.Element.querySelector(".elements2").classList.add("active");
-                Html.Take(".meta-data").Clear();
-                Html.Take(".devtools-right").Clear();
-                Html.Take(".components").Clear();
+                Html.take(".meta-data").clear();
+                Html.take(".devtools-right").clear();
+                Html.take(".components").clear();
                 this.RenderElements(this.EditForm.GroupTree, true);
                 if (this.SectionComponents) {
                     this.SectionComponents.DisposeChildren();
@@ -409,19 +409,19 @@ export class DevTools extends EditableComponent {
                     this.ConfigEditor.Dispose();
                     this.ConfigEditor = null;
                 }
-                Html.Take(".meta-data").Clear();
-                Html.Take(".components").Clear();
+                Html.take(".meta-data").clear();
+                Html.take(".components").clear();
                 this.UpdateConfig();
                 break;
             case "Sources":
                 this.DevToolsElement.querySelector(".sources2").classList.add("active");
-                Html.Take(".meta-data").Clear();
-                Html.Take(".components").Clear();
+                Html.take(".meta-data").clear();
+                Html.take(".components").clear();
                 break;
             case "Network":
                 this.DevToolsElement.querySelector(".network2").classList.add("active");
-                Html.Take(".meta-data").Clear();
-                Html.Take(".components").Clear();
+                Html.take(".meta-data").clear();
+                Html.take(".components").clear();
                 break;
         }
     }
@@ -446,8 +446,8 @@ export class DevTools extends EditableComponent {
             this.ConfigEditor.UpdateView(true, true);
             return;
         }
-        Html.Take(".devtools-right").Clear();
-        Html.Take(".meta-data").Div.Render();
+        Html.take(".devtools-right").clear();
+        Html.take(".meta-data").div.render();
         this.ConfigEditor = await this.EditForm.OpenPopup("component-editor2", group, true, { BtnGroupConfig: this.BtnGroupConfig }, Html.Context);
     }
 
@@ -467,8 +467,8 @@ export class DevTools extends EditableComponent {
             this.ConfigSectionEditor.UpdateView(true, true);
             return;
         }
-        Html.Take(".devtools-right").Clear();
-        Html.Take(".meta-data").Div.Render();
+        Html.take(".devtools-right").clear();
+        Html.take(".meta-data").div.render();
         this.ConfigSectionEditor = await this.EditForm.OpenPopup("section-editor2", group, true, { BtnGroupConfig: this.BtnGroupConfig }, Html.Context);
     }
 
@@ -578,7 +578,7 @@ export class DevTools extends EditableComponent {
                     index++;
                 });
             }
-            if (Client.SystemRole) {
+            if (Client.systemRole) {
                 const columns = headerElements.map(header => {
                     const match = header.Element;
                     if (match && !header.Meta.StatusBar && Utils.isNullOrWhiteSpace(match.style.display)) {
@@ -603,7 +603,7 @@ export class DevTools extends EditableComponent {
                     }
                     return null;
                 }).filter(x => x != null);
-                Client.Instance.PatchAsync2(columns).then();
+                Client.instance.patchAsync2(columns).then();
             }
             else {
                 const columns = headerElements.map(header => {
@@ -625,7 +625,7 @@ export class DevTools extends EditableComponent {
                 userSetting.ComponentId = this.Meta.Id;
                 userSetting.Active = true;
                 userSetting.Value = JSON.stringify(columns);
-                Client.Instance.PostAsync(userSetting, "/api/UserSetting").then();
+                Client.instance.postAsync(userSetting, "/api/UserSetting").then();
             }
             if (sticky) {
                 this.updateStickyColumns();

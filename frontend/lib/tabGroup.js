@@ -22,18 +22,18 @@ export class TabGroup extends EditableComponent {
     }
 
     Render() {
-        Html.Take(this.ParentElement).Div.ClassName("tab-group")
-            .ClassName("tab-horizontal");
+        Html.take(this.ParentElement).div.className("tab-group")
+            .className("tab-horizontal");
         this.TabGroupElement = Html.Context;
-        Html.Instance.Div.ClassName("headers-wrapper").Ul.ClassName("nav-config  nav nav-tabs nav-tabs-bottom mb-0");
+        Html.Instance.div.className("headers-wrapper").ul.className("nav-config  nav nav-tabs nav-tabs-bottom mb-0");
         this.Ul = Html.Context;
         this.Element = this.Ul.parentElement;
-        Html.Instance.End.End.Render();
+        Html.Instance.end.end.render();
         if (this.EditForm.ButtonFrozen != null && !this.EditForm.IsLoadButtonFrozen) {
             Section.RenderGroupContent(this.Parent, this.EditForm.ButtonFrozen, this.EditForm.width);
             this.EditForm.IsLoadButtonFrozen = true;
         }
-        Html.Instance.Div.ClassName("tabs-content");
+        Html.Instance.div.className("tabs-content");
         this.TabContent = Html.Context;
     }
 }

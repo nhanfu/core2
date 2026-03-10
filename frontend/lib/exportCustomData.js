@@ -224,14 +224,14 @@ export class ExportCustomData extends PopupEditor {
     }
 
     RenderDetails() {
-        Html.Take(this._tbody).Clear();
+        Html.take(this._tbody).clear();
         let i = 1;
         for (let item of this._headers) {
-            Html.Instance.TRow.DataAttr("id", item.Id)
-                .TData.DataAttr("id", item.Id).Style("padding:0").IText(i.toString(), this.EditForm.Meta.Label).End
-                .TData.Style("padding:0").Checkbox(item.IsExport).Event("input", (e1) => item.IsExport = e1.target.checked).End.End
-                .TData.Style("padding:0").ClassName("text-left").IText(item.Label, this.EditForm.Meta.Label).End
-                .EndOf("tr");
+            Html.Instance.tRow.dataAttr("id", item.Id)
+                .tData.dataAttr("id", item.Id).style("padding:0").iText(i.toString(), this.EditForm.Meta.Label).end
+                .tData.style("padding:0").checkbox(item.IsExport).event("input", (e1) => item.IsExport = e1.target.checked).end.end
+                .tData.style("padding:0").className("text-left").iText(item.Label, this.EditForm.Meta.Label).end
+                .endOf("tr");
             i++;
         }
         this.Move();
@@ -298,9 +298,9 @@ export class ExportCustomData extends PopupEditor {
         };
 
         // @ts-ignore
-        Client.Instance.SubmitAsync(xhrWrapper)
+        Client.instance.submitAsync(xhrWrapper)
             .then(path => {
-                Client.Download(`/excel/Download/${path}`);
+                Client.download(`/excel/Download/${path}`);
                 Toast.Success("Xuất file thành công");
             });
     }

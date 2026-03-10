@@ -36,10 +36,10 @@ export class ListRowItem extends ListViewItem {
         if (header && header.ComponentType == "Number") {
             header.TextAlign = "right";
         }
-        Html.Instance.Div.ClassName("wrapper-cell-mobile").Event("focusin", (e) => {
+        Html.Instance.div.className("wrapper-cell-mobile").event("focusin", (e) => {
             this.ListView.LastComponentFocus = header;
-        }).Span.ClassName("cell-label").IText(header.ComponentType == "Button" ? "View" : header.Label).End.Div.ClassName("cell-value").Render();
+        }).span.className("cell-label").iText(header.ComponentType == "Button" ? "View" : header.Label).end.div.className("cell-value").render();
         super.RenderTableCell(rowData, header, cellWrapper ?? Html.Context);
-        Html.Instance.EndOf(".wrapper-cell-mobile");
+        Html.Instance.endOf(".wrapper-cell-mobile");
     }
 }

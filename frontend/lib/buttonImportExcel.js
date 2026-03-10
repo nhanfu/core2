@@ -29,22 +29,22 @@ export class ButtonImportExcel extends EditableComponent {
     Render() {
         if (!this.ButtonEle) {
             if (!this.ParentElement) throw new Error("ParentElement is required");
-            Html.Take(this.ParentElement).Button.Render();
+            Html.take(this.ParentElement).button.render();
             this.Element = this.ButtonEle = Html.Context;
         } else {
             this.Element = this.ButtonEle;
         }
 
-        Html.Take(this.Element)
-            .ClassName(this.Meta.ClassName)
-            .Event("click", () => this.DispatchClick())
-            .Style(this.Meta.Style);
+        Html.take(this.Element)
+            .className(this.Meta.ClassName)
+            .event("click", () => this.DispatchClick())
+            .style(this.Meta.Style);
 
         if (this.Meta.Icon) {
-            Html.Icon(this.Meta.Icon).End.Text(" ").Render();
+            Html.icon(this.Meta.Icon).end.text(" ").render();
         }
 
-        Html.Span.ClassName("caption").IText(this.Meta.Label || "", this.EditForm.Meta.Label);
+        Html.span.className("caption").iText(this.Meta.Label || "", this.EditForm.Meta.Label);
         this._textEle = Html.Context;
 
         this.Element.closest("td")?.addEventListener("keydown", e => this.ListViewItemTab(e));
@@ -101,7 +101,7 @@ export class ButtonImportExcel extends EditableComponent {
         }
         Spinner.AppendTo();
         try {
-            var rs = await Client.Instance.PostFilesAsync(file, this.Meta.FormatData);
+            var rs = await Client.instance.postFilesAsync(file, this.Meta.FormatData);
             Spinner.Hide();
             if (this.isBlob(rs)) {
                 const ext = this.inferExtByType(rs.type);

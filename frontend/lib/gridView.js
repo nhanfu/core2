@@ -90,8 +90,8 @@ export class GridView extends ListView {
         if (this.headerSection && this.headerSection.Element != null) {
             return;
         }
-        Html.Take(this.ParentElement);
-        Html.Instance.Div.Style(this.Meta.ChildStyle).ClassName("grid-wrapper").ClassName(this.Meta.VirtualScroll && this.IsMobile() ? "" : this.Meta.ClassName).ClassName(this.Editable ? "editable" : "");
+        Html.take(this.ParentElement);
+        Html.Instance.div.style(this.Meta.ChildStyle).className("grid-wrapper").className(this.Meta.VirtualScroll && this.IsMobile() ? "" : this.Meta.ClassName).className(this.Editable ? "editable" : "");
         this.Element = Html.Context;
         if (this.Meta.VirtualScroll && this.IsMobile()) {
             const style = this.Element.style.height;
@@ -101,10 +101,10 @@ export class GridView extends ListView {
             });
             this.Element.style.height = newHeight;
         }
-        Html.Instance.Div.ClassName("d-grid").Style("grid-template-columns: repeat(12, 1fr)").Div.Style("grid-area: span 1 / span 10;").ClassName("grid-toolbar search").End.Render();
-        Html.Instance.Div.Style("grid-area: span 1 / span 2;").ClassName("button-toolbar").Render();
+        Html.Instance.div.className("d-grid").style("grid-template-columns: repeat(12, 1fr)").div.style("grid-area: span 1 / span 10;").className("grid-toolbar search").end.render();
+        Html.Instance.div.style("grid-area: span 1 / span 2;").className("button-toolbar").render();
         this.menuGridView = Html.Context;
-        Html.Instance.End.Render();
+        Html.Instance.end.render();
         var child = (this.EditForm.Meta.Components || []).filter(x => x.ComponentGroupId == this.Meta.Id && (x.ComponentType == "Button" || x.ComponentType == "ImportExcel")).sort((a, b) => (a.Order || 0) - (b.Order || 0));;
         child.forEach(ui => {
             const com = ComponentFactory.GetComponent(ui, this.EditForm);
@@ -116,7 +116,7 @@ export class GridView extends ListView {
             if (ui.Focus) {
                 com.Focus();
             }
-            if (Client.SystemRole) {
+            if (Client.systemRole) {
                 com.Element.addEventListener('contextmenu', e => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -144,27 +144,27 @@ export class GridView extends ListView {
         }
         this.AddChild(this.ListViewSearch);
         if (this.Meta.VirtualScroll && this.IsMobile()) {
-            Html.Take(this.Element)
-                .Div.ClassName("list-wrapper")
-                .Div.ClassName("list-container").Render();
+            Html.take(this.Element)
+                .div.className("list-wrapper")
+                .div.className("list-container").render();
             this.dataTable = Html.Context;
-            Html.Instance.Div.ClassName("list-header").TabIndex(-1).Render();
+            Html.Instance.div.className("list-header").tabIndex(-1).render();
             this.headerSection = new ListViewSection(null, Html.Context);
             this.headerSection.ParentElement = this.dataTable;
             this.AddChild(this.headerSection);
 
-            Html.Take(this.dataTable).Div.ClassName("list-search").Render();
+            Html.take(this.dataTable).div.className("list-search").render();
             this.searchSection = new ListViewSection(null, Html.Context);
             this.searchSection.Entity = { Id: Uuid7.Guid() };
             this.searchSection.ParentElement = this.dataTable;
             this.AddChild(this.searchSection);
 
-            Html.Take(this.dataTable).Div.ClassName("list-empty").Render();
+            Html.take(this.dataTable).div.className("list-empty").render();
             this.emptySection = new ListViewSection(null, Html.Context);
             this.emptySection.ParentElement = this.dataTable;
             this.AddChild(this.emptySection);
 
-            Html.Take(this.dataTable).Ul.ClassName("list-body").Render();
+            Html.take(this.dataTable).ul.className("list-body").render();
             this.mainSection = new ListViewSection(null, Html.Context);
             this.mainSection.ParentElement = this.dataTable;
             this.AddChild(this.mainSection);
@@ -175,32 +175,32 @@ export class GridView extends ListView {
                 this.AddContentRendered = true;
             }
 
-            Html.Take(this.dataTable).Div.ClassName("list-footer").Render();
+            Html.take(this.dataTable).div.className("list-footer").render();
             this.footerSection = new ListViewSection(null, Html.Context);
             this.footerSection.ParentElement = this.dataTable;
             this.AddChild(this.footerSection);
 
-            Html.Instance.EndOf(".list-wrapper");
+            Html.Instance.endOf(".list-wrapper");
         }
         else {
-            Html.Take(this.Element).Div.ClassName("table-wrapper").Table.ClassName("table").Event('keydown', e => this.HotKeyF6Handler(e, e.KeyCodeEnum()))
+            Html.take(this.Element).div.className("table-wrapper").table.className("table").event('keydown', e => this.HotKeyF6Handler(e, e.KeyCodeEnum()))
             this.dataTable = Html.Context;
-            Html.Instance.Thead.TabIndex(-1).ClassName("tb-header").Render();
+            Html.Instance.tHead.tabIndex(-1).className("tb-header").render();
             this.headerSection = new ListViewSection(null, Html.Context);
             this.headerSection.ParentElement = this.dataTable;
             this.AddChild(this.headerSection);
-            Html.Take(this.dataTable).Thead.ClassName("tb-search").Render();
+            Html.take(this.dataTable).tHead.className("tb-search").render();
             this.searchSection = new ListViewSection(null, Html.Context);
             this.searchSection.Entity = {
                 Id: Uuid7.Guid()
             }
             this.searchSection.ParentElement = this.dataTable;
             this.AddChild(this.searchSection);
-            Html.Take(this.dataTable).TBody.ClassName("tb-empty").Render();
+            Html.take(this.dataTable).tBody.className("tb-empty").render();
             this.emptySection = new ListViewSection(null, Html.Context);
             this.emptySection.ParentElement = this.dataTable;
             this.AddChild(this.emptySection);
-            Html.Take(this.dataTable).TBody.ClassName("tb-body").Render();
+            Html.take(this.dataTable).tBody.className("tb-body").render();
             this.mainSection = new ListViewSection(null, Html.Context);
             this.mainSection.ParentElement = this.dataTable;
             this.AddChild(this.mainSection);
@@ -223,13 +223,13 @@ export class GridView extends ListView {
                 this.emptySection.Element.addEventListener('contextmenu', this.BodyContextMenuHandler.bind(this));
                 this.AddContentRendered = true;
             }
-            Html.Take(this.dataTable).TFooter.ClassName("tb-footer").Render();
+            Html.take(this.dataTable).tFooter.className("tb-footer").render();
             this.footerSection = new ListViewSection(null, Html.Context);
             this.footerSection.ParentElement = this.dataTable;
             this.AddChild(this.footerSection);
-            Html.Instance.EndOf(".table-wrapper");
+            Html.Instance.endOf(".table-wrapper");
         }
-        Html.Take(this.Element);
+        Html.take(this.Element);
         this.RenderPaginator();
     }
 
@@ -805,7 +805,7 @@ export class GridView extends ListView {
         this.mainSection.Show = false;
         for (let index = 0; index < this.FormattedRowData.length; index++) {
             const rowData = this.FormattedRowData[index];
-            Html.Take(this.mainSection.Element);
+            Html.take(this.mainSection.Element);
             this.RenderRowData(this.Header, rowData, this.mainSection, index);
         }
         this.mainSection.Show = true;
@@ -871,7 +871,7 @@ export class GridView extends ListView {
      */
     RenderRowData(headers, row, section, index = null, emptyRow = false) {
         const tbody = section.Element;
-        Html.Take(tbody);
+        Html.take(tbody);
         if (this.Meta.VirtualScroll && this.IsMobile()) {
             var rowSection = new ListRowItem(ElementType.li);
             rowSection.EmptyRow = emptyRow;
@@ -1348,7 +1348,7 @@ export class GridView extends ListView {
             return rowSection;
         }
         else {
-            Html.Take(this.mainSection);
+            Html.take(this.mainSection);
             groupSection = new GroupViewItem(ElementType.tr);
             groupSection.Key = rowSection.Entity[this._groupKey];
             groupSection.Entity = rowSection.Entity;
@@ -1359,23 +1359,23 @@ export class GridView extends ListView {
             this.mainSection.AddChild(groupSection);
             groupSection.Element.tabIndex = -1;
             var groupText = Utils.IsFunction(this.Meta.GroupFormat, false, rowSection);
-            Html.Instance.TData.ClassName("status-cell").TabIndex(-1).Event(EventType.Click, () => groupSection.ShowChildren1 = !groupSection.ShowChildren1).Icon("fal fa-square");
+            Html.Instance.tData.className("status-cell").tabIndex(-1).event(EventType.Click, () => groupSection.ShowChildren1 = !groupSection.ShowChildren1).icon("fal fa-square");
             groupSection.Chevron = Html.Context;
-            Html.Instance.End.End.TData.Event(EventType.Click, () => this.DispatchClick(first))
-                .Event(EventType.DblClick, () => this.DispatchDblClick(first))
-                .Div.ClassName("d-flex");
+            Html.Instance.end.end.tData.event(EventType.Click, () => this.DispatchClick(first))
+                .event(EventType.DblClick, () => this.DispatchDblClick(first))
+                .div.className("d-flex");
             groupSection.GroupText = Html.Context;
-            Html.Instance.InnerHTML(groupText);
-            Html.Instance.EndOf(ElementType.td);
+            Html.Instance.innerHTML(groupText);
+            Html.Instance.endOf(ElementType.td);
             this.Header.slice(2).forEach(item => {
-                Html.Instance.TData.ClassName("data-summary").Style("font-weight:600");
+                Html.Instance.tData.className("data-summary").style("font-weight:600");
                 var sec = new Section(null, Html.Context);
                 sec.Meta = item;
                 groupSection.AddChild(sec);
-                Html.Instance.EndOf(ElementType.td);
+                Html.Instance.endOf(ElementType.td);
             });
-            Html.Instance.EndOf(ElementType.tr);
-            Html.Take(this.mainSection.Element);
+            Html.Instance.endOf(ElementType.tr);
+            Html.take(this.mainSection.Element);
             rowSection.Element.classList.add("group-detail");
             groupSection.ChildrenItems.push(rowSection);
             rowSection.GroupSection = groupSection;
@@ -1516,19 +1516,19 @@ export class GridView extends ListView {
         headers.forEach((x, index) => x.PostOrder = index);
         this.headerSection.DisposeChildren();
         const anyGroup = headers.some(x => x.GroupName && !Utils.isNullOrWhiteSpace(x.GroupName));
-        Html.Take(this.headerSection.Element).Clear().TRow.ForEach(headers, (header, index) => {
+        Html.take(this.headerSection.Element).clear().tRow.forEach(headers, (header, index) => {
             if (anyGroup && !Utils.isNullOrWhiteSpace(header.GroupName)) {
                 if (header !== headers.find(x => x.GroupName === header.GroupName)) {
                     return;
                 }
-                Html.Th.Attr("component", header.ComponentType || "Number").ColSpan(headers.filter(x => x.GroupName === header.GroupName).length);
+                Html.th.attr("component", header.ComponentType || "Number").colSpan(headers.filter(x => x.GroupName === header.GroupName).length);
                 this.ThGroup.push({
                     GroupName: header.GroupName,
                     Element: Html.Context
                 });
                 var groupCom = this.LoadGridPolicy().find(x => x.GroupName == header.GroupName && x.TopEmpty);
                 if (groupCom) {
-                    Html.Event(EventType.ContextMenu, this.HeaderContextMenu.bind(this), groupCom)
+                    Html.event(EventType.ContextMenu, this.HeaderContextMenu.bind(this), groupCom)
                     var com = ComponentFactory.GetComponent(groupCom, this.EditForm, null, true);
                     com.ParentElement = Html.Context;
                     this.EditForm.AddChild(com);
@@ -1536,40 +1536,40 @@ export class GridView extends ListView {
                     if (groupCom.Disabled) {
                         com.SetDisabled(true);
                     }
-                    Html.EndOf("th");
+                    Html.endOf("th");
                 }
                 else {
-                    Html.IHtml(header.GroupName, this.EditForm.Meta.Label).End.Render();
+                    Html.iHtml(header.GroupName, this.EditForm.Meta.Label).end.render();
                 }
                 return;
             }
-            Html.Th.Attr("component", header.ComponentType || "Number")
-                .TabIndex(-1).Width(header.AutoFit ? "auto" : header.Width)
-                .Style(`${header.Style};min-width: ${header.MinWidth}; max-width: ${header.MaxWidth}`)
-                .TextAlign('center')
-                .Event(EventType.ContextMenu, this.HeaderContextMenu.bind(this), header)
-                .Event(EventType.FocusOut, e => this.FocusOutHeader(e, header))
-                .Event(EventType.KeyDown, e => this.ThHotKeyHandler(e, header));
+            Html.th.attr("component", header.ComponentType || "Number")
+                .tabIndex(-1).width(header.AutoFit ? "auto" : header.Width)
+                .style(`${header.Style};min-width: ${header.MinWidth}; max-width: ${header.MaxWidth}`)
+                .textAlign('center')
+                .event(EventType.ContextMenu, this.HeaderContextMenu.bind(this), header)
+                .event(EventType.FocusOut, e => this.FocusOutHeader(e, header))
+                .event(EventType.KeyDown, e => this.ThHotKeyHandler(e, header));
             var sec = new Section(null, Html.Context);
             sec.Meta = header;
             this.headerSection.AddChild(sec);
             if (anyGroup && (!header.GroupName || header.GroupName === "")) {
-                Html.Instance.RowSpan(2);
+                Html.Instance.rowSpan(2);
             }
             if (!anyGroup && this.Header.some(x => x.GroupName && x.GroupName.length)) {
-                Html.Instance.ClassName("header-group");
+                Html.Instance.className("header-group");
             }
             if (header.StatusBar) {
-                Html.Instance.A.Icon("fal fa-level-down").Event(EventType.Click, this.ToggleAll.bind(this)).End.End.Render();
+                Html.Instance.a.icon("fal fa-level-down").event(EventType.Click, this.ToggleAll.bind(this)).end.end.render();
             }
             if (header.Icon) {
-                Html.Instance.Icon(header.Icon).Margin(Direction.Right, 0).End.Render();
+                Html.Instance.icon(header.Icon).margin(Direction.Right, 0).end.render();
             } else if (!header.StatusBar) {
                 if (!anyGroup) {
-                    Html.Instance.Event(EventType.Click, e => this.ClickHeader(e, header))
+                    Html.Instance.event(EventType.Click, e => this.ClickHeader(e, header))
                 }
                 else {
-                    Html.Instance.Event(EventType.Click, (e) => {
+                    Html.Instance.event(EventType.Click, (e) => {
                         e.preventDefault();
                         e.stopPropagation();
                         if (this.EditForm.DevToolsElement) {
@@ -1577,33 +1577,33 @@ export class GridView extends ListView {
                         }
                     });
                 }
-                Html.Instance.IHtml(header.Label, this.EditForm.Meta.Label).Render();
+                Html.Instance.iHtml(header.Label, this.EditForm.Meta.Label).render();
             }
             if (header.ComponentType === "Number") {
-                Html.Instance.Div.End.Render();
-                Html.Instance.Span.Style("display: block;").End.Render();
+                Html.Instance.div.end.render();
+                Html.Instance.span.style("display: block;").end.render();
             }
             if (header.Description) {
-                Html.Instance.Attr("title", header.Description);
+                Html.Instance.attr("title", header.Description);
             }
             if (!header.StatusBar && header.ComponentType != 'Button' && header.FieldName) {
-                Html.Instance.Div.ClassName("th-options").I.ClassName("fal fa-ellipsis-v").End.End.Render();
+                Html.Instance.div.className("th-options").i.className("fal fa-ellipsis-v").end.end.render();
                 this.CreateResizableTable(Html.Context);
             }
-            Html.Instance.EndOf(ElementType.th);
-        }).EndOf(ElementType.tr).Render();
+            Html.Instance.endOf(ElementType.th);
+        }).endOf(ElementType.tr).render();
 
         if (anyGroup) {
-            Html.Instance.TRow.ForEach(headers, (header, index) => {
+            Html.Instance.tRow.forEach(headers, (header, index) => {
                 if (anyGroup && !Utils.isNullOrWhiteSpace(header.GroupName)) {
-                    Html.Instance.Th.Attr("component", header.ComponentType || "Number").Style(`min-width: ${header.MinWidth}; max-width: ${header.MaxWidth}`)
-                        .TextAlign(header.TextAlignEnum)
-                        .Event(EventType.ContextMenu, this.HeaderContextMenu.bind(this), header)
-                        .IHtml(header.Label, this.EditForm.Meta.Label);
+                    Html.Instance.th.attr("component", header.ComponentType || "Number").style(`min-width: ${header.MinWidth}; max-width: ${header.MaxWidth}`)
+                        .textAlign(header.TextAlignEnum)
+                        .event(EventType.ContextMenu, this.HeaderContextMenu.bind(this), header)
+                        .iHtml(header.Label, this.EditForm.Meta.Label);
                     var sec = new Section(null, Html.Context);
                     sec.Meta = header;
                     this.headerSection.AddChild(sec);
-                    Html.Instance.EndOf(ElementType.th);
+                    Html.Instance.endOf(ElementType.th);
                 }
             });
         }
@@ -1612,13 +1612,13 @@ export class GridView extends ListView {
             var headerHeight = this.headerSection.Element.clientHeight;
             this.searchSection.Element.style.top = `${headerHeight}px`;
             this.searchSection.Element.style.position = "sticky";
-            Html.Take(this.searchSection.Element).Clear().TRow.ForEach(headers, (header, index) => {
-                Html.TData.TabIndex(-1);
+            Html.take(this.searchSection.Element).clear().tRow.forEach(headers, (header, index) => {
+                Html.tData.tabIndex(-1);
                 if (header.StatusBar) {
-                    Html.Instance.Style(`top:${headerHeight}px`).Span.ClassName("fal fa-search").End;
+                    Html.Instance.style(`top:${headerHeight}px`).span.className("fal fa-search").end;
                 }
                 else {
-                    Html.Div.ClassName("input-group-button").TabIndex(-1);
+                    Html.div.className("input-group-button").tabIndex(-1);
                 }
                 var sec = new Section(null, Html.Context);
                 sec.Meta = header;
@@ -1651,9 +1651,9 @@ export class GridView extends ListView {
                                     this.ApplyFilter();
                                 }
                             });
-                            Html.End.Div.ClassName("btn-group").Button.TabIndex(-1).Event("click", (e) => {
+                            Html.end.div.className("btn-group").button.tabIndex(-1).event("click", (e) => {
                                 this.SearchTypeMenu(e, header, txtSearch);
-                            }).Span.ClassName(txtSearch.SearchIcon);
+                            }).span.className(txtSearch.SearchIcon);
                             txtSearch.SearchIconElement = Html.Context;
                             break;
                         case "Number":
@@ -1679,9 +1679,9 @@ export class GridView extends ListView {
                                     this.ApplyFilter();
                                 }
                             });
-                            Html.End.Div.ClassName("btn-group").Button.TabIndex(-1).Event("click", (e) => {
+                            Html.end.div.className("btn-group").button.tabIndex(-1).event("click", (e) => {
                                 this.SearchTypeMenu(e, header, txtSearch);
-                            }).Span.ClassName(txtSearch.SearchIcon);
+                            }).span.className(txtSearch.SearchIcon);
                             txtSearch.SearchIconElement = Html.Context;
                             break;
                         case "Datepicker":
@@ -1705,9 +1705,9 @@ export class GridView extends ListView {
                                     this.ActionFilter();
                                 }
                             });
-                            Html.End.Div.ClassName("btn-group").Button.TabIndex(-1).Event("click", (e) => {
+                            Html.end.div.className("btn-group").button.tabIndex(-1).event("click", (e) => {
                                 this.SearchTypeMenu(e, header, txtSearch);
-                            }).Span.ClassName(txtSearch.SearchIcon);
+                            }).span.className(txtSearch.SearchIcon);
                             txtSearch.SearchIconElement = Html.Context;
                             break;
                         case "Checkbox":
@@ -1749,8 +1749,8 @@ export class GridView extends ListView {
                             break;
                     }
                 }
-                Html.EndOf(ElementType.td);
-            }).EndOf(ElementType.tr).Render();
+                Html.endOf(ElementType.td);
+            }).endOf(ElementType.tr).render();
         }
     }
 
@@ -1957,7 +1957,7 @@ export class GridView extends ListView {
                     index++;
                 });
             }
-            if (Client.SystemRole) {
+            if (Client.systemRole) {
                 const columns = headerElements.map(header => {
                     const match = header.Element;
                     if (match && !header.Meta.StatusBar && Utils.isNullOrWhiteSpace(match.style.display)) {
@@ -1982,7 +1982,7 @@ export class GridView extends ListView {
                     }
                     return null;
                 }).filter(x => x != null);
-                Client.Instance.PatchAsync2(columns).then();
+                Client.instance.patchAsync2(columns).then();
             }
             else {
                 const columns = headerElements.map(header => {
@@ -2005,7 +2005,7 @@ export class GridView extends ListView {
                 userSetting.ComponentId = this.Meta.Id;
                 userSetting.Active = true;
                 userSetting.Value = JSON.stringify(columns);
-                Client.Instance.PostAsync(userSetting, "/api/UserSetting").then();
+                Client.instance.postAsync(userSetting, "/api/UserSetting").then();
             }
             if (sticky) {
                 this.UpdateStickyColumns();
@@ -2025,7 +2025,7 @@ export class GridView extends ListView {
                 ]
             };
             // @ts-ignore
-            Client.Instance.PatchAsync(patchVM);
+            Client.instance.patchAsync(patchVM);
         }, 1000);
     }
 
@@ -2068,12 +2068,12 @@ export class GridView extends ListView {
         menu.Top = e.clientY;
         menu.Left = e.clientX;
         menu.MenuItems = [];
-        if (Client.SystemRole) {
+        if (Client.systemRole) {
             menu.MenuItems.push({ Icon: "fal fa-wrench", Text: "Column Properties", Click: () => this.EditForm.ComponentProperties(header) });
             menu.MenuItems.push({ Icon: "fal fa-table", Text: "Table Properties", Click: () => this.EditForm.ComponentProperties(this.Meta) });
         }
         if (!header.StatusBar && header.FieldName && !header.GroupName) {
-            if (Client.SystemRole && ["Input", "Dropdown", "Select", "Checkbox", "Textarea"].some(x => x == header.ComponentType)) {
+            if (Client.systemRole && ["Input", "Dropdown", "Select", "Checkbox", "Textarea"].some(x => x == header.ComponentType)) {
                 menu.MenuItems.push({ Icon: "fal fa-copy", Text: "Set Default Value", Click: this.SetDefaultValue.bind(this), Parameter: header });
             }
             menu.MenuItems.push({
@@ -2136,7 +2136,7 @@ export class GridView extends ListView {
                 NotMessage: true
             };
             component.DefaultVal = this[name][com.FieldName];
-            await Client.Instance.PatchAsync(patchModelDetail);
+            await Client.instance.patchAsync(patchModelDetail);
             this.Dirty = false;
         }, () => { }, true, [com], null, null, null, true);
     }

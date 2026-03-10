@@ -27,7 +27,7 @@ export class ActionButton extends EditableComponent {
      */
     Render() {
         if (!this.buttonEle) {
-            Html.Take(this.ParentElement).ClassName("btn-group-view").Render();
+            Html.take(this.ParentElement).className("btn-group-view").render();
             this.Element = this.buttonEle = Html.Context;
         } else {
             this.Element = this.buttonEle;

@@ -14,13 +14,13 @@ export class HtmlCode extends EditableComponent {
     }
 
     Render() {
-        this.Element = Html.Take(this.ParentElement).Div.GetContext();
+        this.Element = Html.take(this.ParentElement).div.getContext();
         const submitEntity = Utils.IsFunction(this.Meta.PreQuery, false, this);
         const entity = {
             Params: submitEntity,
             ComId: this.Meta.Id,
         };
-        Client.Instance.SubmitAsync({
+        Client.instance.submitAsync({
             Url: "/api/feature/report",
             IsRawString: true,
             JsonData: JSON.stringify(entity, this.getCircularReplacer(), 2),

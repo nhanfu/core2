@@ -65,30 +65,30 @@ export class Client {
     /** @type {Client} */
     static _instance;
     /** @type {Client} */
-    static get Instance() {
+    static get instance() {
         if (!Client._instance) {
             Client._instance = new Client();
         }
         return Client._instance;
     }
     /** @type {Token} */
-    static get Token() {
+    static get token() {
         return JSON.parse(localStorage.getItem('UserInfo'));
     }
 
-    static set Token(value) {
+    static set token(value) {
         localStorage.setItem('UserInfo', JSON.stringify(value));
     }
-    static get SystemRole() {
-        return Client.Token.RoleNames.some(x => x.toLowerCase() == "admin");
+    static get systemRole() {
+        return Client.token.RoleNames.some(x => x.toLowerCase() == "admin");
     }
-    static get BodRole() {
-        return Client.Token.RoleNames.some(x => x.toLowerCase() == "bod");
+    static get bodRole() {
+        return Client.token.RoleNames.some(x => x.toLowerCase() == "bod");
     }
     /**
      * @param {SqlViewModel} vm
      */
-    async UserSvc(vm, annonymous = false) {
+    async userSvc(vm, annonymous = false) {
         /** @type {XHRWrapper} */
         // @ts-ignore
         const data = {
@@ -98,10 +98,10 @@ export class Client {
             Method: "POST",
             AllowAnonymous: annonymous
         };
-        return this.SubmitAsync(data);
+        return this.submitAsync(data);
     }
 
-    async ComQuery(vm) {
+    async comQuery(vm) {
         /** @type {XHRWrapper} */
         // @ts-ignore
         const data = {
@@ -110,17 +110,17 @@ export class Client {
             IsRawString: true,
             Method: "POST"
         };
-        return this.SubmitAsync(data);
+        return this.submitAsync(data);
     }
 
-    async SubmitAsyncWithToken(options) {
+    async submitAsyncWithToken(options) {
         const isFormData = !!options.FormData;
         const useMsgPack = false;
         options.Headers = {
             ...(!options.Headers && !isFormData && !useMsgPack && { "Content-Type": "application/json" }),
             ...(!options.Headers && !isFormData && useMsgPack && { "Content-Type": "application/msgpack" }),
             ...(options.Headers || {}),
-            ...(!options.AllowAnonymous && { Authorization: `Bearer ${Client.Token?.AccessToken}` }),
+            ...(!options.AllowAnonymous && { Authorization: `Bearer ${Client.token?.AccessToken}` }),
             ...(useMsgPack ? { Accept: "application/msgpack, application/json" } : {}),
             "User-Agent": "Mozilla/5.0"
         };
@@ -177,83 +177,86 @@ export class Client {
      * @param {XHRWrapper} options 
      * @returns 
      */
-    async SubmitAsync(options) {
+    async submitAsync(options) {
         if (!options.AllowAnonymous) {
-            await Client.RefreshToken();
+            await Client.refreshToken();
         }
-        return await this.SubmitAsyncWithToken(options);
+        return await this.submitAsyncWithToken(options);
     }
     /**
      * @param {[]} arrays
      */
-    async GetByIdsAsync(arrays) {
+    async getByIdsAsync(arrays) {
         const data = {
             JsonData: JSON.stringify(arrays),
             Url: Utils.ComQuerys,
             IsRawString: true,
             Method: "POST"
         };
-        return this.SubmitAsync(data);
+        return this.submitAsync(data);
     }
     /**
      * @param {string} table
      * @param {string} connKey
      * @param {string[]} ids
      */
-    async GetByIdAsync(table, ids) {
+    async getByIdAsync(table, ids) {
         const data = {
             JsonData: JSON.stringify({ Table: table, Id: ids }),
             Url: Utils.ComQuery,
             IsRawString: true,
             Method: "POST"
         };
-        return this.SubmitAsync(data);
+        return this.submitAsync(data);
     }
     /**
      * @param {string} table
      * @param {string} connKey
      * @param {string[]} ids
      */
-    async GetByNameAsync(table, ids, format) {
+    async getByNameAsync(table, ids, format) {
         const data = {
             JsonData: JSON.stringify({ Table: table, Id: ids, Format: format }),
             Url: Utils.ComQueryByName,
             IsRawString: true,
             Method: "POST"
         };
-        return this.SubmitAsync(data);
+        return this.submitAsync(data);
     }
-    async NotificationUser(entity, ...user) {
+
+    async notificationUser(entity, ...user) {
         const data = {
             JsonData: JSON.stringify({ Entity: entity, Rule: user }),
             Url: "/api/feature/notificationuser",
             IsRawString: true,
             Method: "POST"
         };
-        return this.SubmitAsync(data);
+        return this.submitAsync(data);
     }
-    async NotificationRole(entity, ...role) {
+
+    async notificationRole(entity, ...role) {
         const data = {
             JsonData: JSON.stringify({ Entity: entity, Rule: role }),
             Url: "/api/feature/notificationrole",
             IsRawString: true,
             Method: "POST"
         };
-        return this.SubmitAsync(data);
+        return this.submitAsync(data);
     }
+
     /**
      * @param {string} name
      */
-    async GetService(name) {
+    async getService(name) {
         const data = {
             JsonData: JSON.stringify({ Name: name }),
             Url: "/api/feature/getService",
             Method: "POST"
         };
-        return this.SubmitAsync(data);
+        return this.submitAsync(data);
     }
 
-    async PostAsync(value, subUrl = "", annonymous = false) {
+    async postAsync(value, subUrl = "", annonymous = false) {
         /** @type {XHRWrapper} */
         // @ts-ignore
         const data = {
@@ -262,7 +265,7 @@ export class Client {
             Method: "POST",
             AllowAnonymous: annonymous,
         };
-        return this.SubmitAsync(data);
+        return this.submitAsync(data);
     }
 
     /**
@@ -272,7 +275,7 @@ export class Client {
      * @param {boolean} annonymous 
      * @returns {Promise<any>} Effected rows in the database
      */
-    async PatchAsync(value, errHandler = null, annonymous = false) {
+    async patchAsync(value, errHandler = null, annonymous = false) {
         /** @type {XHRWrapper} */
         // @ts-ignore
         const data = {
@@ -284,7 +287,7 @@ export class Client {
             AllowAnonymous: annonymous,
             ErrorHandler: errHandler
         };
-        return this.SubmitAsync(data);
+        return this.submitAsync(data);
     }
 
     /**
@@ -294,7 +297,7 @@ export class Client {
      * @param {boolean} annonymous 
      * @returns {Promise<any>} Effected rows in the database
      */
-    async PatchAsync2(value, errHandler = null, annonymous = false) {
+    async patchAsync2(value, errHandler = null, annonymous = false) {
         /** @type {XHRWrapper} */
         // @ts-ignore
         const data = {
@@ -306,10 +309,10 @@ export class Client {
             AllowAnonymous: annonymous,
             ErrorHandler: errHandler
         };
-        return this.SubmitAsync(data);
+        return this.submitAsync(data);
     }
 
-    async PostFilesAsync(file, url = "", progressHandler = null) {
+    async postFilesAsync(file, url = "", progressHandler = null) {
         const formData = new FormData();
         formData.append("file", file);
         /** @type {XHRWrapper} */
@@ -321,15 +324,15 @@ export class Client {
             Method: "POST",
             Url: url
         };
-        return await this.SubmitAsync(data);
+        return await this.submitAsync(data);
     }
 
     /**
      * @param {EmailVM} email
      */
-    async SendMail(email) {
+    async sendMail(email) {
         // @ts-ignore
-        return this.SubmitAsync({
+        return this.submitAsync({
             Value: email,
             Method: "POST",
             Url: "Email"
@@ -341,7 +344,7 @@ export class Client {
      * @param {string} table
      * @param {string} connKey
      */
-    async DeactivateAsync(ids, table, connKey) {
+    async deactivateAsync(ids, table, connKey) {
         const vm = {
             Ids: ids,
             Params: table,
@@ -349,7 +352,7 @@ export class Client {
             DataConn: connKey || Client.DataConn
         };
         // @ts-ignore
-        return this.SubmitAsync({
+        return this.submitAsync({
             Url: Utils.DeactivateSvc,
             Value: JSON.stringify(vm),
             Method: "DELETE",
@@ -360,7 +363,7 @@ export class Client {
         });
     }
 
-    async HardDeleteAsync(ids, table, newId, comId) {
+    async hardDeleteAsync(ids, table, newId, comId) {
         const vm = {
             Table: table,
             NewId: newId || null,
@@ -372,7 +375,7 @@ export class Client {
                 }
             ],
         };
-        return this.SubmitAsync({
+        return this.submitAsync({
             Url: Utils.DeleteSvc,
             JsonData: JSON.stringify(vm),
             Method: "DELETE",
@@ -383,8 +386,8 @@ export class Client {
         });
     }
 
-    async GetConfig(name, scope = 'global') {
-        return Client.Instance.UserSvc({
+    async getConfig(name, scope = 'global') {
+        return Client.instance.userSvc({
             MetaConn: this.MetaConn,
             DataConn: this.DataConn,
             ComId: "UserSetting",
@@ -393,7 +396,7 @@ export class Client {
         });
     }
 
-    static async LoadScript(src) {
+    static async loadScript(src) {
         const scriptExists = Array.from(document.body.children).some(x => x instanceof HTMLScriptElement && x.src.split("/").pop() === src.split("/").pop());
         if (scriptExists) return true;
         const tcs = new Promise((resolve) => {
@@ -411,8 +414,8 @@ export class Client {
         return tcs;
     }
 
-    static async RefreshToken(success = null) {
-        const oldToken = Client.Token;
+    static async refreshToken(success = null) {
+        const oldToken = Client.token;
         console.log('[DEBUG RefreshToken] oldToken:', oldToken ? { AccessTokenExp: oldToken.AccessTokenExp, RefreshTokenExp: oldToken.RefreshTokenExp } : null);
         console.log('[DEBUG RefreshToken] EpsilonNow:', Client.EpsilonNow);
         if (!oldToken || new Date(oldToken.RefreshTokenExp) <= Client.EpsilonNow) {
@@ -425,10 +428,10 @@ export class Client {
         }
         if (new Date(oldToken.AccessTokenExp) <= Client.EpsilonNow && new Date(oldToken.RefreshTokenExp) > Client.EpsilonNow) {
             console.log('[DEBUG RefreshToken] Case 3: Need to refresh token');
-            const newToken = await Client.GetToken(oldToken);
+            const newToken = await Client.getToken(oldToken);
             console.log('[DEBUG RefreshToken] Got newToken:', newToken);
             if (newToken) {
-                Client.Token = newToken;
+                Client.token = newToken;
                 success?.(newToken);
             }
             return newToken;
@@ -440,17 +443,17 @@ export class Client {
     /**
      * @param {Token} oldToken
      */
-    static async GetToken(oldToken) {
+    static async getToken(oldToken) {
         // @ts-ignore
-        const newToken = await Client.Instance.SubmitAsync({
+        const newToken = await Client.instance.submitAsync({
             NoQueue: true,
-            Url: `/api/auth/refreshToken?t=${Client.Token.TenantCode || Client.Tenant}`,
+            Url: `/api/auth/refreshToken?t=${Client.token.TenantCode || Client.Tenant}`,
             Method: "POST",
             JsonData: JSON.stringify({ RefreshToken: oldToken.RefreshToken, AccessToken: oldToken.AccessToken }),
             AllowAnonymous: true,
             ErrorHandler: (xhr) => {
                 if (xhr.status === 400) {
-                    Client.Token = null;
+                    Client.token = null;
                     Toast.Warning("Phiên truy cập đã hết hạn! Vui lòng chờ trong giây lát, hệ thống đang tải lại trang");
                 }
             },
@@ -461,7 +464,7 @@ export class Client {
     /**
      * @param {string} path
      */
-    static RemoveGuid(path) {
+    static removeGuid(path) {
         const url = path;
         const filename = url.split("/").pop(); // Lấy phần tên file
         const cleanFilename = filename.replace(/.{36}(?=\.\w+$)/, "");
@@ -470,8 +473,8 @@ export class Client {
     /**
      * @param {string} path
      */
-    static async Download(path, fileName = null) {
-        const removePath = this.RemoveGuid(path);
+    static async download(path, fileName = null) {
+        const removePath = this.removeGuid(path);
         const url = path.includes("http") ? path : Path.Combine(Client.Origin, path);
         try {
             const response = await fetch(url);

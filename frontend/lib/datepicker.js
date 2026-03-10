@@ -39,7 +39,7 @@ export class Datepicker extends EditableComponent {
             if (ele.firstElementChild instanceof HTMLInputElement) {
                 this.Input = ele.firstElementChild;
             } else {
-                this.Input = Html.Take(ele).Input.Context;
+                this.Input = Html.take(ele).input.Context;
             }
         }
         this.value = null;
@@ -107,27 +107,27 @@ export class Datepicker extends EditableComponent {
      */
     Render() {
         this.SetDefaultVal();
-        Html.Take(this.ParentElement);
+        Html.take(this.ParentElement);
         if (!this.Input) {
-            Html.Div.ClassName("datetime-picker").TabIndex(-1);
-            Html.Input.Render();
+            Html.div.className("datetime-picker").tabIndex(-1);
+            Html.input.render();
             this.Element = Html.Context;
             this.Input = this.Element;
         } else {
-            Html.Take(this.Input);
+            Html.take(this.Input);
             this.Element = this.Input;
         }
-        Html.Event("keydown", (e) => {
+        Html.event("keydown", (e) => {
             if (this.Disabled || !e) return;
             if (e.keyCode === 13) {
                 this.ParseDate();
             }
-        }).Event("change", () => this.ParseDate())
-            .PlaceHolder(this.Meta.PlainText).Attr("autocomplete", "off")
-            .Attr('name', this.Name);
+        }).event("change", () => this.ParseDate())
+            .placeHolder(this.Meta.PlainText).attr("autocomplete", "off")
+            .attr('name', this.Name);
         if (!this.Meta.ShowHotKey) {
-            Html.End.Div.ClassName("btn-group").Button.TabIndex(-1).Span.ClassName("fal fa-calendar")
-                .Event("click", (e) => {
+            Html.end.div.className("btn-group").button.tabIndex(-1).span.className("fal fa-calendar")
+                .event("click", (e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     if (this.Input.disabled) return;

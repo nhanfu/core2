@@ -35,7 +35,7 @@ export class RichTextBox extends EditableComponent {
     }
 
     BindingWebComponent() {
-        Html.Take(this.ParentElement).TextArea.Id("RE_" + Uuid7.Guid());
+        Html.take(this.ParentElement).textArea.id("RE_" + Uuid7.Guid());
         this.Element = Html.Context;
     }
 
@@ -508,16 +508,16 @@ export class RichTextBox extends EditableComponent {
     /**@type {HTMLElement} */
     BodyElement;
     RenderPopup() {
-        Html.Take(this.TabEditor.Element).Div.ClassName("backdrop").TabIndex(-1).Trigger(EventType.Focus);
+        Html.take(this.TabEditor.Element).div.className("backdrop").tabIndex(-1).trigger(EventType.Focus);
         this._backdrop = Html.Context;
-        Html.Instance.Div.ClassName("popup-content").Div.ClassName("popup-title").Span.IText("History change", this.EditForm.Meta.Label);
+        Html.Instance.div.className("popup-content").div.className("popup-title").span.iText("History change", this.EditForm.Meta.Label);
         this.TitleElement = Html.Context;
-        Html.Instance.End.Div.ClassName("icon-box").Span.ClassName("fa fa-times")
-            .Event(EventType.Click, () => {
+        Html.Instance.end.div.className("icon-box").span.className("fa fa-times")
+            .event(EventType.Click, () => {
                 this._backdrop.remove();
-            }).End.End.End.Div.ClassName("popup-body").Div.ClassName("wrapper scroll-content");
+            }).end.end.end.div.className("popup-body").div.className("wrapper scroll-content");
         this.BodyElement = Html.Context;
-        Html.Instance.End.Div.ClassName("popup-footer");
+        Html.Instance.end.div.className("popup-footer");
         if (this._backdrop.OutOfViewport().Top) {
             this._backdrop.scrollIntoView(true);
         }
@@ -529,7 +529,7 @@ export class RichTextBox extends EditableComponent {
             Skip: 0,
             Top: 10,
         };
-        Client.Instance.SubmitAsync({
+        Client.instance.submitAsync({
             NoQueue: true,
             Url: `/api/feature/com`,
             Method: "POST",
@@ -538,8 +538,8 @@ export class RichTextBox extends EditableComponent {
             /**@type {[]} */
             var dataa = data.value;
             dataa.forEach(item => {
-                Html.Take(this.BodyElement);
-                Html.Instance.Div.Label.ClassName("header").Text(this.dayjs(item.InsertedDate).format("DD/MM/YYYY HH:mm")).End.Div.ClassName("diff-container").Style("height:250px");
+                Html.take(this.BodyElement);
+                Html.Instance.div.label.className("header").text(this.dayjs(item.InsertedDate).format("DD/MM/YYYY HH:mm")).end.div.className("diff-container").style("height:250px");
                 const modifiedModel = monaco.editor.createModel(
                     item.Value ?? ``,
                     this.Meta.Lang ?? 'javascript'

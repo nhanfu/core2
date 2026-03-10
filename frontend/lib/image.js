@@ -139,31 +139,31 @@ export class Image extends EditableComponent {
     openPopupIFrame(url, img) {
         var rotate = 0;
         var img2 = null;
-        Html.Take(document.body).Div.ClassName("dark-overlay zoom");
+        Html.take(document.body).div.className("dark-overlay zoom");
         this.DarkOverlay = Html.Context;
         if (img) {
-            Html.Instance.Img.Src(url);
+            Html.Instance.img.src(url);
             img2 = Html.Context;
-            Html.Instance.End.Render();
-            Html.Instance.Span.ClassName("close").Event(EventType.Click, () => {
+            Html.Instance.end.render();
+            Html.Instance.span.className("close").event(EventType.Click, () => {
                 this.DarkOverlay.remove();
-            }).I.ClassName("fa fa-times").End.End
-                .Div.ClassName("toolbar")
-                .Span.ClassName("icon fa fa-undo ro-left").Event(EventType.Click, () => {
+            }).i.className("fa fa-times").end.end
+                .div.className("toolbar")
+                .span.className("icon fa fa-undo ro-left").event(EventType.Click, () => {
                     rotate -= 90;
                     img2.style.transform = `rotate(${rotate}deg)`;
-                }).End
-                .Span.ClassName("icon fa fa-cloud-download-alt").Event(EventType.Click, () => this.DownloadFile()).End
-                .Span.ClassName("icon fa fa-redo ro-right").Event(EventType.Click, () => {
+                }).end
+                .span.className("icon fa fa-cloud-download-alt").event(EventType.Click, () => this.DownloadFile()).end
+                .span.className("icon fa fa-redo ro-right").event(EventType.Click, () => {
                     rotate += 90;
                     img2.style.transform = `rotate(${rotate}deg)`;
-                }).End.End.Render();
+                }).end.end.render();
         }
         else {
-            Html.Instance.Span.ClassName("close").Event(EventType.Click, () => {
+            Html.Instance.span.className("close").event(EventType.Click, () => {
                 this.DarkOverlay.remove();
-            }).I.ClassName("fa fa-times").End.End.Render();
-            Html.Instance.Iframe.ClassName("container-rpt").Style("margin-top: 4rem; background: rgb(255, 255, 255); overflow: auto; min-height: calc(-4rem + 100vh); width: 100%;").Width("100%");
+            }).i.className("fa fa-times").end.end.render();
+            Html.Instance.iFrame.className("container-rpt").style("margin-top: 4rem; background: rgb(255, 255, 255); overflow: auto; min-height: calc(-4rem + 100vh); width: 100%;").width("100%");
             this.IFrameElement = Html.Context;
             this.IFrameElement.src = url;
         }
@@ -171,7 +171,7 @@ export class Image extends EditableComponent {
 
     DownloadFile() {
         var file = document.querySelector(".dark-overlay img");
-        Client.Download(file.getAttribute("src"));
+        Client.download(file.getAttribute("src"));
     }
 
     ClosePreview() {
@@ -179,7 +179,7 @@ export class Image extends EditableComponent {
     }
 
     DowloadPdf(url) {
-        Client.Download(url);
+        Client.download(url);
     }
 
     PreviewPDF(link) {
@@ -232,13 +232,13 @@ export class Image extends EditableComponent {
 
     RenderUploadForm() {
         const handler = this.UploadSelectedImages.bind(this);
-        Html.Take(this.ParentElement).Div.ClassName("ms-upload")
-            .Span
-            .Div.ClassName("ms-img-upload")
-            .Div.ClassName("ms-input-upload")
-        Html.Instance.Div.ClassName("w-full-100").Span.ClassName("text-input far fa-cloud-upload").Input.Type("file").Attr("title", "").Attr("accept", "");
+        Html.take(this.ParentElement).div.className("ms-upload")
+            .span
+            .div.className("ms-img-upload")
+            .div.className("ms-input-upload")
+        Html.Instance.div.className("w-full-100").span.className("text-input far fa-cloud-upload").input.type("file").attr("title", "").attr("accept", "");
         if (this.Meta.IsMultiple) {
-            Html.Instance.Attr("multiple", "multiple");
+            Html.Instance.attr("multiple", "multiple");
         }
         this.Element = this._input = Html.Context;
         this._input.accept = ".txt, .jpg, .jpeg, .png, .doc, .docx, .xls, .xlsx, .pdf";
@@ -247,7 +247,7 @@ export class Image extends EditableComponent {
         if (!this.CanWrite) {
             this._input.readOnly = true;
         }
-        Html.Instance.End.End.Div.ClassName("img-upload");
+        Html.Instance.end.end.div.className("img-upload");
         this._gallerys = Html.Context;
     }
 
@@ -311,8 +311,8 @@ export class Image extends EditableComponent {
      */
     async UploadFile(file) {
         try {
-            const path = await Client.Instance.PostFilesAsync(file, Utils.FileSvc);
-            await Client.Instance.PatchAsync({
+            const path = await Client.instance.postFilesAsync(file, Utils.FileSvc);
+            await Client.instance.patchAsync({
                 Table: "FileUpload",
                 Changes: [
                     { Field: "Id", Value: Uuid7.NewGuid() },

@@ -49,23 +49,23 @@ export class TabComponent extends EditableComponent {
     }
 
     Render() {
-        Html.Take(this.Parent.Ul).Li
-            .A.ClassName("nav-link tab-default")
-            .I.ClassName(this.Meta.Icon ?? "").End.Span
-            .IHtml(this.Meta.Label ?? this.Meta.Name, this.EditForm.Meta.Label);
+        Html.take(this.Parent.Ul).li
+            .a.className("nav-link tab-default")
+            .i.className(this.Meta.Icon ?? "").end.span
+            .iHtml(this.Meta.Label ?? this.Meta.Name, this.EditForm.Meta.Label);
         this.TextElement = Html.Context;
-        Html.Instance.End.Span.ClassName("ml-1 badge badge-warning");
+        Html.Instance.end.span.className("ml-1 badge badge-warning");
         this.BadgeElement = Html.Context;
         this.IsTabComponent = true;
         this.EditForm.TabComponents.push(this);
         if (this.Meta.DisplayBadge) {
-            Html.Instance.Text(this.Badge ?? "");
+            Html.Instance.text(this.Badge ?? "");
         }
         else {
             this.BadgeElement.style.display = "none";
         }
         this._li = Html.Context.parentElement.parentElement;
-        Html.Instance.End.Render();
+        Html.Instance.end.render();
         this._li.addEventListener("click", () => {
             if (this.HasRendered) {
                 this.Focus();
@@ -89,7 +89,7 @@ export class TabComponent extends EditableComponent {
     }
 
     RenderTabContent() {
-        Html.Take(this.Parent.TabContent).Div.ClassName("tab-content").Display(!this.Meta.Editable);
+        Html.take(this.Parent.TabContent).div.className("tab-content").display(!this.Meta.Editable);
         this.Element = Html.Context;
         Section.RenderSection(this, this.Meta, null, this.EditForm);
         this.HasRendered = true;
@@ -109,7 +109,7 @@ export class TabComponent extends EditableComponent {
                     OrderBy: (!meta.OrderBy ? "ds.InsertedDate desc" : meta.OrderBy),
                 };
 
-                const data = await Client.Instance.SubmitAsync({
+                const data = await Client.instance.submitAsync({
                     NoQueue: true,
                     Url: `/api/feature/CountBadge`,
                     Method: "POST",
@@ -133,6 +133,6 @@ export class TabComponent extends EditableComponent {
 
 
     UpdateViewMeta() {
-        Html.Take(this.TextElement).IHtml(this.Meta.Label ?? this.Meta.Name, this.EditForm.Meta.Label);
+        Html.take(this.TextElement).iHtml(this.Meta.Label ?? this.Meta.Name, this.EditForm.Meta.Label);
     }
 }

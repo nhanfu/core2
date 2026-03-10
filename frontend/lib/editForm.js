@@ -234,7 +234,7 @@ export class EditForm extends EditableComponent {
         entity.FeatureName = this.Meta.Label;
         entity.FeatureName2 = this.Meta.Name;
         if (entity.Id.startsWith("-")) {
-            entity.DepartmentId = Client.Token.DepartmentId;
+            entity.DepartmentId = Client.token.DepartmentId;
         }
         entity.FeatureName3 = this.Meta.Name.includes("editor") ? this.Meta.Name.replace("-editor", "") : (this.OpenFrom ? this.TabEditor.Meta.Name : "");
         var gridItem = this.ChildCom.filter(x => x.IsListView && x.Meta.Editable && !x.Meta.IsRealtime && x.Meta.EntityName == entityForm);
@@ -293,7 +293,7 @@ export class EditForm extends EditableComponent {
                 var itemEntity = rowData.map((rowItem, index3) => {
                     var row = rowItem.Entity;
                     if (row.Id.startsWith("-")) {
-                        row.DepartmentId = Client.Token.DepartmentId;
+                        row.DepartmentId = Client.token.DepartmentId;
                     }
                     let dirtyPatchDetail = [];
                     Object.getOwnPropertyNames(row).forEach(cell => {
@@ -373,7 +373,7 @@ export class EditForm extends EditableComponent {
         var gridItem = this.ChildCom.filter(x => x.IsListView && x.Meta.Editable && !x.Meta.IsRealtime && Utils.isNullOrWhiteSpace(x.Meta.EntityName));
         let dirtyPatch = [];
         if (this.EntityId && this.EntityId.startsWith("-")) {
-            this.Entity.DepartmentId = Client.Token.DepartmentId;
+            this.Entity.DepartmentId = Client.token.DepartmentId;
         }
         Object.getOwnPropertyNames(this.Entity).forEach(cell => {
             if (this.Entity[cell] instanceof Array || (this.Entity[cell] instanceof Object && !(this.Entity[cell] instanceof Decimal)) || cell == this._groupKey) {
@@ -429,7 +429,7 @@ export class EditForm extends EditableComponent {
                     var row = rowItem.Entity;
                     let dirtyPatchDetail = [];
                     if (row.Id.startsWith("-")) {
-                        row.DepartmentId = Client.Token.DepartmentId;
+                        row.DepartmentId = Client.token.DepartmentId;
                     }
                     Object.getOwnPropertyNames(row).forEach(cell => {
                         if (row[cell] instanceof Array || (row[cell] instanceof Object && !(row[cell] instanceof Decimal) && !(row[cell] instanceof Date)) || cell == this._groupKey) {
@@ -491,7 +491,7 @@ export class EditForm extends EditableComponent {
         var gridItem = this.ChildCom.filter(x => x.IsListView && x.Meta.Editable && !x.Meta.IsRealtime && Utils.isNullOrWhiteSpace(x.Meta.EntityName));
         let dirtyPatch = [];
         if (this.EntityId && this.EntityId.startsWith("-")) {
-            this.Entity.DepartmentId = Client.Token.DepartmentId;
+            this.Entity.DepartmentId = Client.token.DepartmentId;
         }
         Object.getOwnPropertyNames(this.Entity).forEach(cell => {
             if (this.Entity[cell] instanceof Array || (this.Entity[cell] instanceof Object && !(this.Entity[cell] instanceof Decimal)) || cell == this._groupKey) {
@@ -543,7 +543,7 @@ export class EditForm extends EditableComponent {
                 var itemEntity = allItem.map((rowItem, index3) => {
                     var row = rowItem.Entity;
                     if (row.Id.startsWith("-")) {
-                        row.DepartmentId = Client.Token.DepartmentId;
+                        row.DepartmentId = Client.token.DepartmentId;
                     }
                     let dirtyPatchDetail = [];
                     Object.getOwnPropertyNames(row).forEach(cell => {
@@ -598,8 +598,8 @@ export class EditForm extends EditableComponent {
         this.TabComponents = [];
         this.Children = [];
         this.ListViews = [];
-        Html.Take(this.TitleCenterElement).Clear();
-        Html.Take(this.PopUpMenu).Clear();
+        Html.take(this.TitleCenterElement).clear();
+        Html.take(this.PopUpMenu).clear();
         await this.LoadMeta();
     }
 
@@ -610,7 +610,7 @@ export class EditForm extends EditableComponent {
         }
         this.Meta = feature;
         if (feature.CodeId) {
-            var featureParent = await Client.Instance.GetByIdAsync("Feature", [feature.CodeId]);
+            var featureParent = await Client.instance.getByIdAsync("Feature", [feature.CodeId]);
             ComponentExt.AssignMethods(featureParent.data[0], this);
         }
         if (feature.Script) {
@@ -679,7 +679,7 @@ export class EditForm extends EditableComponent {
             Ids: x.DataSourceOptimized,
             Header: x
         }));
-        var results2 = await Client.Instance.GetByIdsAsync(dataTasks);
+        var results2 = await Client.instance.getByIdsAsync(dataTasks);
         results2.forEach((task, index) => {
             if (task && task.length == 0) {
                 return;
@@ -803,7 +803,7 @@ export class EditForm extends EditableComponent {
             }
             await this.DispatchCustomEvent(this.Meta.Events, "onsave", this, gridItem);
             var patchModel = this.GetPatchVM();
-            const rs = await Client.Instance.PatchAsync(patchModel);
+            const rs = await Client.instance.patchAsync(patchModel);
             var childEntity = this.ChildCom.find(x => !Utils.isNullOrWhiteSpace(x.Meta.EntityName) && !Utils.isNullOrWhiteSpace(x.Meta.TableName));
             Spinner.Hide();
             if (rs.status == 200) {
@@ -849,7 +849,7 @@ export class EditForm extends EditableComponent {
                         Table: item.Meta.RefName,
                         NotMessage: true
                     };
-                    await Client.Instance.PatchAsync(patchModelDetail);
+                    await Client.instance.patchAsync(patchModelDetail);
                 })
                 this.Entity = rs.updatedItem[0];
                 this.Dirty = false;
@@ -979,7 +979,7 @@ export class EditForm extends EditableComponent {
             this.Entity.FeatureName2 = this.Meta.Name;
             this.Entity.FeatureName3 = this.Meta.Name.includes("editor") ? this.Meta.Name.replace("-editor", "") : (this.OpenFrom ? this.TabEditor.Meta.Name : "");
             var patchModel = this.GetPatchSelectVM();
-            const rs = await Client.Instance.PatchAsync(patchModel);
+            const rs = await Client.instance.patchAsync(patchModel);
             if (rs.status == 200) {
                 this.Entity = rs.updatedItem[0];
                 this.Dirty = false;
@@ -1018,7 +1018,7 @@ export class EditForm extends EditableComponent {
             }
             var patchModel = this.GetEntityPatchVM(entityForm, tableName);
             var addRow = patchModel.Changes.find(x => x.Field == this.IdField).Value.startsWith("-");
-            const rs = await Client.Instance.PatchAsync(patchModel);
+            const rs = await Client.instance.patchAsync(patchModel);
             Spinner.Hide();
             if (rs.status == 200) {
                 this[entityForm] = rs.updatedItem[0];
@@ -1100,7 +1100,7 @@ export class EditForm extends EditableComponent {
         }
         this.Meta = feature;
         if (feature.CodeId) {
-            var featureParent = await Client.Instance.GetByIdAsync("Feature", [feature.CodeId]);
+            var featureParent = await Client.instance.getByIdAsync("Feature", [feature.CodeId]);
             ComponentExt.AssignMethods(featureParent.data[0], this);
         }
         if (feature.Script) {
@@ -1108,7 +1108,7 @@ export class EditForm extends EditableComponent {
         }
         var entity = await this.LoadEntity();
         if (this.EntityId && this.EntityId.startsWith("-")) {
-            if (!feature.FeaturePolicies.some(x => Client.Token.RoleIds.includes(x.RoleId) && (x.CanWrite || x.CanWriteAll))) {
+            if (!feature.FeaturePolicies.some(x => Client.token.RoleIds.includes(x.RoleId) && (x.CanWrite || x.CanWriteAll))) {
                 Spinner.Hide();
                 this.OpenConfig("Access denied", () => {
                 }, () => { }, false, [], true)
@@ -1120,30 +1120,30 @@ export class EditForm extends EditableComponent {
             const handlerHistory = await this.ViewHistory.bind(this);
             const handlerTrash = await this.HardDeleteSelected.bind(this);
             if (!this.IsChild) {
-                Html.Take(this.ParentElement ?? this.Parent?.Element ?? TabEditor.TabContainer)
-                    .Div.ClassName("backdrop").TabIndex(-1).Trigger(EventType.Focus).Event(EventType.KeyDown, this.HotKeyHandler.bind(this));
+                Html.take(this.ParentElement ?? this.Parent?.Element ?? TabEditor.TabContainer)
+                    .div.className("backdrop").tabIndex(-1).trigger(EventType.Focus).event(EventType.KeyDown, this.HotKeyHandler.bind(this));
                 this._backdrop = Html.Context;
-                Html.Instance.Div.ClassName("popup-content").Style(this.Meta.Style);
+                Html.Instance.div.className("popup-content").style(this.Meta.Style);
                 //Code cho phép kéo thả popup
                 this.PopupContent = Html.Context;
-                Html.Instance.Div.ClassName("popup-title").Span.IText(this.Title, feature.Id);
+                Html.Instance.div.className("popup-title").span.iText(this.Title, feature.Id);
                 this.TitleElement = Html.Context;
-                Html.Instance.End.Div.ClassName("title-center");
+                Html.Instance.end.div.className("title-center");
                 this.TitleCenterElement = Html.Context;
-                if (Client.SystemRole) {
+                if (Client.systemRole) {
                     this.TitleElement.addEventListener("contextmenu", (e) => this.SysConfigMenu(e, null, null, null));
                 }
-                Html.Instance.End.Div.ClassName("icon-box d-flex").Style("display: flex; gap: 20px; align-items: center;");
-                Html.Span.ClassName("fal fa-history")
-                    .Event(EventType.Click, handlerHistory).End
-                    .Span.ClassName("fa fa-times")
-                    .Event(EventType.Click, handler).End.End.End.Div.ClassName("popup-body");
+                Html.Instance.end.div.className("icon-box d-flex").style("display: flex; gap: 20px; align-items: center;");
+                Html.span.className("fal fa-history")
+                    .event(EventType.Click, handlerHistory).end
+                    .span.className("fa fa-times")
+                    .event(EventType.Click, handler).end.end.end.div.className("popup-body");
                 this.Element = Html.Context;
-                Html.Instance.End.Div.ClassName("popup-footer");
+                Html.Instance.end.div.className("popup-footer");
                 this.PopUpMenu = Html.Context;
             }
             else {
-                Html.Take(this.ParentElement);
+                Html.take(this.ParentElement);
                 this.Element = Html.Context;
             }
         }
@@ -1174,7 +1174,7 @@ export class EditForm extends EditableComponent {
     async HardDeleteConfirmed(deletedItems) {
         const ids = deletedItems.map(x => x[this.IdField]).filter(x => !x.startsWith('-'));
         var grid = this.ChildCom.find(Boolean);
-        const result = await Client.Instance.HardDeleteAsync(ids, this.Meta.EntityId, null, grid.Meta.Id);
+        const result = await Client.instance.hardDeleteAsync(ids, this.Meta.EntityId, null, grid.Meta.Id);
         if (result) {
             Toast.Success("Deleted successfully");
             this.DirtyCheckAndCancel();
@@ -1199,17 +1199,17 @@ export class EditForm extends EditableComponent {
         if (!currentItem) {
             return;
         }
-        Html.Take(this.TabEditor.Element).Div.ClassName("backdrop")
-            .Style("align-items: baseline;");
+        Html.take(this.TabEditor.Element).div.className("backdrop")
+            .style("align-items: baseline;");
         this._history = Html.Context;
-        Html.Instance.Div.TabIndex(-1).Escape((e) => this.DisposeViewHistory.bind(this)).ClassName("popup-content confirm-dialog history-view").Style("top: 0;")
-            .Div.ClassName("popup-title").InnerHTML("View history change")
-            .Div.ClassName("icon-box").Span.ClassName("fal fa-times")
-            .Event(EventType.Click, () => this._history.remove())
-            .EndOf(".popup-title")
-            .Div.ClassName("card-body panel group");
+        Html.Instance.div.tabIndex(-1).escape((e) => this.DisposeViewHistory.bind(this)).className("popup-content confirm-dialog history-view").style("top: 0;")
+            .div.className("popup-title").innerHTML("View history change")
+            .div.className("icon-box").span.className("fal fa-times")
+            .event(EventType.Click, () => this._history.remove())
+            .endOf(".popup-title")
+            .div.className("card-body panel group");
         const body = Html.Context;
-        var coms = await Client.Instance.GetService("History Change");
+        var coms = await Client.instance.getService("History Change");
         var com = coms[0][0];
         com.Row = 50;
         var params = {
@@ -1288,9 +1288,9 @@ export class EditForm extends EditableComponent {
             if (!this.Element) {
                 this.Element = this.ParentElement;
             }
-            Html.Take(this.Element);
-            Html.Instance.Clear();
-            Html.Instance.Div.Render();
+            Html.take(this.Element);
+            Html.Instance.clear();
+            Html.Instance.div.render();
             this.Element = Html.Context;
             let root = createRoot(this.Element);
             let reactElement = React.createElement(this.Meta.Layout);
@@ -1409,12 +1409,12 @@ export class EditForm extends EditableComponent {
      * Initializes DOM events for the form.
      */
     InitDOMEvents() {
-        Html.Take(this.Element).TabIndex(-1).Trigger('focus')
-            .Event(EventType.FocusIn, () => this.DispatchFeatureEvent(this.Meta.Events, EventType.FocusIn))
-            .Event(EventType.FocusOut, () => this.DispatchFeatureEvent(this.Meta.Events, EventType.FocusOut));
+        Html.take(this.Element).tabIndex(-1).trigger('focus')
+            .event(EventType.FocusIn, () => this.DispatchFeatureEvent(this.Meta.Events, EventType.FocusIn))
+            .event(EventType.FocusOut, () => this.DispatchFeatureEvent(this.Meta.Events, EventType.FocusOut));
         if (!this.Popup) {
-            Html.Instance.ClassName("tab-item");
-            if (Client.SystemRole) {
+            Html.Instance.className("tab-item");
+            if (Client.systemRole) {
                 Html.Instance.Context.addEventListener("contextmenu", (e) => this.SysConfigMenu(e, null, null, null));
             }
         }
@@ -1424,7 +1424,7 @@ export class EditForm extends EditableComponent {
      * Sets the current user properties from the token.
      */
     SetCurrentUserProperties() {
-        const token = Client.Token;
+        const token = Client.token;
         this.currentUserId = token?.UserId;
         this.regionId = token?.RegionId;
         this.centerIds = token?.CenterIds ? token.CenterIds.join(Str.Comma) : Str.Empty;
@@ -1482,7 +1482,7 @@ export class EditForm extends EditableComponent {
     DeleteGridView() {
         const dirtyGrid = this.GetDeleteGrid();
         dirtyGrid.forEach(grid => {
-            Client.Instance.HardDeleteAsync(grid.DeleteTempIds, grid.Meta.RefName)
+            Client.instance.hardDeleteAsync(grid.DeleteTempIds, grid.Meta.RefName)
                 .then(deleteSuccess => {
                     if (!deleteSuccess) {
                         Toast.Warning('Error deleting details, please check again');
@@ -1748,7 +1748,7 @@ export class EditForm extends EditableComponent {
             return null;
         }
         try {
-            const ds = await Client.Instance.GetByIdAsync(this.Meta.EntityId, [urlId]);
+            const ds = await Client.instance.getByIdAsync(this.Meta.EntityId, [urlId]);
             if (!ds.data) {
                 return null;
             }
@@ -1795,7 +1795,7 @@ export class EditForm extends EditableComponent {
     set Icon(value) {
         this._icon = value;
         if (this.IconElement !== null) {
-            Html.Take(this.IconElement).IconForSpan(value);
+            Html.take(this.IconElement).iconForSpan(value);
         }
     }
 
@@ -1807,7 +1807,7 @@ export class EditForm extends EditableComponent {
         this._title = value;
         if (this.TitleElement !== null) {
             this.TitleElement.innerHTML = ''; // clear inner HTML
-            Html.Take(this.TitleElement).IText(value, this.Meta.Id);
+            Html.take(this.TitleElement).iText(value, this.Meta.Id);
         }
     }
     /** @type {HTMLElement} */
@@ -2070,7 +2070,7 @@ export class EditForm extends EditableComponent {
         }
         var childEntity = form.ChildCom.find(x => !Utils.isNullOrWhiteSpace(x.Meta.EntityName) && !Utils.isNullOrWhiteSpace(x.Meta.TableName));
         if (childEntity && form[childEntity.Meta.EntityName] && !form[childEntity.Meta.EntityName].Id.startsWith("-")) {
-            Client.Instance.GetByIdAsync(childEntity.Meta.TableName, [form[childEntity.Meta.EntityName].Id]).then(async entity => {
+            Client.instance.getByIdAsync(childEntity.Meta.TableName, [form[childEntity.Meta.EntityName].Id]).then(async entity => {
                 if (entity.data && entity.data[0]) {
                     var updateEntity = entity.data[0];
                     await form.LoadMasterData(updateEntity);
@@ -2079,7 +2079,7 @@ export class EditForm extends EditableComponent {
                 }
             });
         }
-        Client.Instance.GetByIdAsync(form.Meta.EntityId, [form.EntityId]).then(async entity => {
+        Client.instance.getByIdAsync(form.Meta.EntityId, [form.EntityId]).then(async entity => {
             if (entity.data && entity.data[0]) {
                 var updateEntity = entity.data[0];
                 await form.LoadMasterData(updateEntity);
@@ -2180,7 +2180,7 @@ export class EditForm extends EditableComponent {
                 return b.CanRead - a.CanRead;
             }
             return 0;
-        }).find(x => !x.RecordId && (Client.Token.RoleIds.includes(x.RoleId) || Client.Token.UserId == x.UserId));
+        }).find(x => !x.RecordId && (Client.token.RoleIds.includes(x.RoleId) || Client.token.UserId == x.UserId));
 
 
         var newComponents = components.map(com => {
@@ -2189,7 +2189,7 @@ export class EditForm extends EditableComponent {
                 com.DefaultVal = defaultVal.Value;
                 com.ComponentDefaultValueId = defaultVal.Id;
             }
-            var check2 = this.Policies.sort((a, b) => b.CanRead - a.CanRead).find(x => x.RecordId && x.RecordId == com.Id && (Client.Token.RoleIds.includes(k == x.RoleId) || Client.Token.UserId == x.UserId));
+            var check2 = this.Policies.sort((a, b) => b.CanRead - a.CanRead).find(x => x.RecordId && x.RecordId == com.Id && (Client.token.RoleIds.includes(k == x.RoleId) || Client.token.UserId == x.UserId));
             if (check2 && check2.CanRead) {
                 com.CanWrite = check2.CanWrite;
                 com.CanWriteAll = check2.CanWriteAll;
@@ -2229,7 +2229,7 @@ export class EditForm extends EditableComponent {
         confirm.Content = "Are you sure you want to delete this?";
         confirm.YesConfirmed = async () => {
             try {
-                const success = await Client.Instance.HardDeleteAsync([this.EntityId], this.Meta.EntityName);
+                const success = await Client.instance.hardDeleteAsync([this.EntityId], this.Meta.EntityName);
                 if (success) {
                     Toast.Success("Data deleted successfully");
                     this.ParentForm?.UpdateView();
@@ -2258,8 +2258,8 @@ export class EditForm extends EditableComponent {
         e.preventDefault();
         e.stopPropagation();
         this.CtxCom = ctx;
-        if (!Client.SystemRole && component) {
-            if (Client.BodRole) {
+        if (!Client.systemRole && component) {
+            if (Client.bodRole) {
                 if (component.ComponentType == "Pdf") {
                     const ctxMenu = ContextMenu.Instance;
                     ctxMenu.Top = e.Top();
@@ -2305,7 +2305,7 @@ export class EditForm extends EditableComponent {
         ctxMenu.Top = e.Top();
         ctxMenu.Left = e.Left();
         ctxMenu.MenuItems = [];
-        if (Client.SystemRole) {
+        if (Client.systemRole) {
             if (component !== null) {
                 ctxMenu.MenuItems.push({ Icon: "fal fa-cog", Text: "Component Properties", Click: this.ComponentProperties.bind(this), Parameter: component });
                 ctxMenu.MenuItems.push({ Icon: "fal fa-sync-alt", Text: "Async Pdf", Click: this.AsyncProperties.bind(this), Parameter: component });
@@ -2319,7 +2319,7 @@ export class EditForm extends EditableComponent {
             ctxMenu.MenuItems.push({ Icon: "fal fa-copy", Text: "Set Default Value", Click: this.SetDefaultValue.bind(this), Parameter: component });
         }
         ctxMenu.EditForm = this;
-        if (Client.SystemRole && this.Token.TenantCode === "forwardx" && this.Token.UserId == "1") {
+        if (Client.systemRole && this.Token.TenantCode === "forwardx" && this.Token.UserId == "1") {
             ctxMenu.MenuItems.push({ Icon: "fal fa-clone", Text: "Clone Screen", Click: this.CloneFeature.bind(this) });
             ctxMenu.MenuItems.push({ Icon: "fal fa-sync-alt", Text: "Async To", Line: true, Click: this.AsyncTo.bind(this) });
             if (group !== null) {
@@ -2368,7 +2368,7 @@ export class EditForm extends EditableComponent {
         var name = com.EntityName || "Entity";
         this[name][com.FieldName] = com.DefaultVal;
         this.OpenConfig("Set default value", async () => {
-            if (Client.SystemRole) {
+            if (Client.systemRole) {
                 let dirtyPatchDetail = [
                     {
                         Label: "Id",
@@ -2395,7 +2395,7 @@ export class EditForm extends EditableComponent {
                     NotMessage: true
                 };
                 component.DefaultVal = this[name][com.FieldName];
-                await Client.Instance.PatchAsync(patchModelDetail);
+                await Client.instance.patchAsync(patchModelDetail);
                 this.Dirty = false;
             }
             else {
@@ -2430,7 +2430,7 @@ export class EditForm extends EditableComponent {
                     Table: "ComponentDefaultValue",
                     NotMessage: true
                 };
-                var data = await Client.Instance.PatchAsync(patchModelDetail);
+                var data = await Client.instance.patchAsync(patchModelDetail);
                 component.DefaultVal = this[name][com.FieldName];
                 component.ComponentDefaultValueId = data.updatedItem[0].Id;
                 this.Dirty = false;
@@ -2467,7 +2467,7 @@ export class EditForm extends EditableComponent {
             Delete: [],
             Detail: []
         };
-        await Client.Instance.PatchAsync(featureModel);
+        await Client.instance.patchAsync(featureModel);
         for (const group of this.GroupTree) {
             await this.buildComponentGroup(group, null, featureId);
         }
@@ -2500,7 +2500,7 @@ export class EditForm extends EditableComponent {
                 Delete: [],
                 Detail: []
             };
-            await Client.Instance.PatchAsync(componentModel);
+            await Client.instance.patchAsync(componentModel);
         }
     }
 
@@ -2534,7 +2534,7 @@ export class EditForm extends EditableComponent {
             Delete: [],
             Detail: []
         };
-        await Client.Instance.PatchAsync(newcomponentGroupModel);
+        await Client.instance.patchAsync(newcomponentGroupModel);
         if (componentGroup.Children) {
             for (const keyDetail of componentGroup.Children) {
                 await this.buildComponentGroup(keyDetail, newcomponentGroupId, featureId);
@@ -2579,7 +2579,7 @@ export class EditForm extends EditableComponent {
             Delete: [],
             Detail: []
         };
-        await Client.Instance.PatchAsync(componentModel);
+        await Client.instance.patchAsync(componentModel);
         if (childs) {
             for (const keyDetail2 of childs) {
                 await this.buildComponent(keyDetail2, newcomponentGroupId, featureId);
@@ -2607,7 +2607,7 @@ export class EditForm extends EditableComponent {
      */
     AsyncTo(ev) {
         Spinner.AppendTo();
-        Client.Instance.PostAsync({}, `/api/feature/AsyncTo/all/${this.Meta.Name}`).then((res) => {
+        Client.instance.postAsync({}, `/api/feature/AsyncTo/all/${this.Meta.Name}`).then((res) => {
             if (res.status == 200) {
                 Toast.Success("Async to successful.")
             }
@@ -2624,7 +2624,7 @@ export class EditForm extends EditableComponent {
      */
     AsyncProperties(com) {
         Spinner.AppendTo();
-        Client.Instance.PostAsync({}, `/api/component/AsyncTo/${com.Id}`).then((res) => {
+        Client.instance.postAsync({}, `/api/component/AsyncTo/${com.Id}`).then((res) => {
             if (res.status == 200) {
                 Toast.Success("Async to successful.")
             }
@@ -2888,7 +2888,7 @@ export class EditForm extends EditableComponent {
             entity["t" + index + "h"] = grid.Header;
         })
         try {
-            var res = await Client.Instance.PostAsync({ ComId: this.Entity.PdfPlanEmailId, Data: entity }, "/api/CreateHtml2");
+            var res = await Client.instance.postAsync({ ComId: this.Entity.PdfPlanEmailId, Data: entity }, "/api/CreateHtml2");
             return res;
         } catch (error) {
             return error.Message;
@@ -3008,7 +3008,7 @@ export class EditForm extends EditableComponent {
             this.Entity.FormatChat = this.Entity.FormatChat + " " + code;
         }
         var patchModel = this.GetPatchVM();
-        var res = await Client.Instance.PostAsync(patchModel, "/api/feature/SendEntity");
+        var res = await Client.instance.postAsync(patchModel, "/api/feature/SendEntity");
         if (res.status == 200) {
             this.Entity = res.updatedItem[0];
             this.Dirty = false;
@@ -3047,7 +3047,7 @@ export class EditForm extends EditableComponent {
         }
         await this.DispatchCustomEvent(this.Meta.Events, "onforword", this);
         var patchModel = this.GetPatchVM();
-        var res = await Client.Instance.PostAsync(patchModel, "/api/feature/ForwardEntity");
+        var res = await Client.instance.postAsync(patchModel, "/api/feature/ForwardEntity");
         if (res.status == 200) {
             this.Entity = res.updatedItem[0];
             this.Dirty = false;
@@ -3087,7 +3087,7 @@ export class EditForm extends EditableComponent {
         await this.DispatchCustomEvent(this.Meta.Events, "onapproved", this);
         var patchModel = this.GetPatchVM();
         patchModel.ReasonOfChange = change;
-        var res = await Client.Instance.PostAsync(patchModel, "/api/feature/ApprovedEntity");
+        var res = await Client.instance.postAsync(patchModel, "/api/feature/ApprovedEntity");
         if (res.status == 200) {
             this.Entity = res.updatedItem[0];
             this.Dirty = false;
@@ -3130,7 +3130,7 @@ export class EditForm extends EditableComponent {
         this.Entity.IsSend = false;
         var patchModel = this.GetPatchVM();
         patchModel.ReasonOfChange = change;
-        var res = await Client.Instance.PostAsync(patchModel, "/api/feature/DeclineEntity");
+        var res = await Client.instance.postAsync(patchModel, "/api/feature/DeclineEntity");
         if (res.status == 200) {
             this.Entity = res.updatedItem[0];
             this.Dirty = false;
@@ -3173,7 +3173,7 @@ export class EditForm extends EditableComponent {
         this.Entity.IsSend = false;
         var patchModel = this.GetPatchVM();
         patchModel.ReasonOfChange = change;
-        var res = await Client.Instance.PostAsync(patchModel, "/api/feature/UnlockEntity");
+        var res = await Client.instance.postAsync(patchModel, "/api/feature/UnlockEntity");
         if (res.status == 200) {
             this.Entity = res.updatedItem[0];
             this.Dirty = false;

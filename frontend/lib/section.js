@@ -28,7 +28,7 @@ export class Section extends EditableComponent {
         if (this.elementType == null) {
             this.elementType = this.Element?.tagName?.toLowerCase();
         } else {
-            Html.Take(this.ParentElement).Add(this.elementType.tagName == null ? this.elementType : this.elementType?.tagName?.toLowerCase());
+            Html.take(this.ParentElement).add(this.elementType.tagName == null ? this.elementType : this.elementType?.tagName?.toLowerCase());
             this.Element = Html.Context;
         }
         if (this.Meta === null) {
@@ -185,35 +185,35 @@ export class Section extends EditableComponent {
         var form = editForm ?? parent.EditForm;
         if (groupInfo.ClassName?.includes("ribbon")) {
             if (form.IsChild) {
-                Html.Take(form.BtnGroupConfig);
+                Html.take(form.BtnGroupConfig);
             }
             else {
-                Html.Take(form.PopUpMenu);
+                Html.take(form.PopUpMenu);
             }
         }
         else if (groupInfo.ClassName?.includes("title")) {
-            Html.Take(form.TitleCenterElement);
+            Html.take(form.TitleCenterElement);
         }
         else {
-            Html.Take(parent.Element);
+            Html.take(parent.Element);
         }
         if (groupInfo.IsDropDown) {
-            Html.Instance.Details.Summary.IText(groupInfo.Label, form.Meta.Label).End.Render();
+            Html.Instance.details.summary.iText(groupInfo.Label, form.Meta.Label).end.render();
         }
         else {
-            Html.Instance.Div.Render();
+            Html.Instance.div.render();
         }
         if (!groupInfo.IsSimple) {
-            Html.Instance.Event(EventType.ContextMenu, (e) => form.SysConfigMenu(e, null, groupInfo, null)).ClassName("section-item card").Width(width).Div.ClassName(groupInfo.ClassName ?? "");
+            Html.Instance.event(EventType.ContextMenu, (e) => form.SysConfigMenu(e, null, groupInfo, null)).className("section-item card").width(width).div.className(groupInfo.ClassName ?? "");
         }
         if (groupInfo.Label && !groupInfo.IsDropDown && !groupInfo.IsTab) {
-            Html.Instance.Label.ClassName("header").IText(groupInfo.Label, form.Meta.Label).End.Render();
+            Html.Instance.label.className("header").iText(groupInfo.Label, form.Meta.Label).end.render();
         }
         if (!groupInfo.ClassName?.includes("ribbon") && !groupInfo.IsSimple) {
-            Html.Instance.ClassName("panel").ClassName("group");
+            Html.Instance.className("panel").className("group");
         }
 
-        Html.Instance.Display(!groupInfo.Hidden).Style(groupInfo.Style || "");
+        Html.Instance.display(!groupInfo.Hidden).style(groupInfo.Style || "");
         const section = new Section(null, Html.Context);
         if (groupInfo.ComponentType == "Section") {
             section.IsSection = true;
@@ -226,7 +226,7 @@ export class Section extends EditableComponent {
         section.Disabled = parent.Disabled || groupInfo.Disabled;
         // @ts-ignore
         parent.AddChild(section, null, groupInfo.ShowExp, groupInfo.DisabledExp);
-        Html.Take(parent.Element);
+        Html.take(parent.Element);
         section.DOMContentLoaded?.Invoke();
         return section;
     }
@@ -235,17 +235,17 @@ export class Section extends EditableComponent {
         /**@type {EditForm}*/
         var form = this.EditForm;
         var groupInfo = this.Meta;
-        Html.Take(parentElement);
+        Html.take(parentElement);
         if (!groupInfo.IsSimple) {
-            Html.Instance.Event(EventType.ContextMenu, (e) => form.SysConfigMenu(e, null, groupInfo, null)).ClassName("section-item card").Div.ClassName(groupInfo.ClassName ?? "");
+            Html.Instance.event(EventType.ContextMenu, (e) => form.SysConfigMenu(e, null, groupInfo, null)).className("section-item card").div.className(groupInfo.ClassName ?? "");
         }
         if (groupInfo.Label && !groupInfo.IsDropDown && !groupInfo.IsTab) {
-            Html.Instance.Label.ClassName("header").IText(groupInfo.Label, form.Meta.Label).End.Render();
+            Html.Instance.label.className("header").iText(groupInfo.Label, form.Meta.Label).end.render();
         }
         if (!groupInfo.ClassName?.includes("ribbon") && !groupInfo.IsSimple) {
-            Html.Instance.ClassName("panel").ClassName("group");
+            Html.Instance.className("panel").className("group");
         }
-        Html.Instance.Display(!groupInfo.Hidden).Style(groupInfo.Style || "");
+        Html.Instance.display(!groupInfo.Hidden).style(groupInfo.Style || "");
         const section = new Section(null, Html.Context);
         if (groupInfo.ComponentType == "Section") {
             section.IsSection = true;
@@ -257,7 +257,7 @@ export class Section extends EditableComponent {
         section.Meta = groupInfo;
         section.Disabled = parent.Disabled || groupInfo.Disabled;
         this.Parent.AddChild(section, null, groupInfo.ShowExp, groupInfo.DisabledExp);
-        Html.Take(this.Parent.Element);
+        Html.take(this.Parent.Element);
         section.DOMContentLoaded?.Invoke();
         return section;
     }
@@ -375,7 +375,7 @@ export class Section extends EditableComponent {
             // @ts-ignore
             { Field: 'Label', Value: label },
         ];
-        Client.Instance.PatchAsync(patch).then(x => {
+        Client.instance.patchAsync(patch).then(x => {
             console.log('patch success');
         });
     }
@@ -389,7 +389,7 @@ export class Section extends EditableComponent {
             ]
         };
         // @ts-ignore
-        Client.Instance.PatchAsync(patch).Done();
+        Client.instance.patchAsync(patch).Done();
     }
 
     static _imeout1;
@@ -423,15 +423,15 @@ export class Section extends EditableComponent {
             return;
         }
 
-        Html.Take(this.Element);
+        Html.take(this.Element);
         const colSpan = innerCol || 2;
         ui.Label = ui.Label || '';
 
         let label = null;
         if (ui.ShowLabel) {
-            Html.Div.IText(ui.Label, this.EditForm.Meta.Label).TextAlign(column === 0 ? 'left' : 'right').Render();
+            Html.div.iText(ui.Label, this.EditForm.Meta.Label).textAlign(column === 0 ? 'left' : 'right').render();
             label = Html.Context;
-            Html.End.Render();
+            Html.end.render();
         }
 
         const childCom = ComponentFactory.GetComponent(ui, this.EditForm);
@@ -449,8 +449,8 @@ export class Section extends EditableComponent {
         if (childCom.Element) {
             if (ui.ChildStyle && ui.ComponentType != "GridView") {
                 const current = Html.Context;
-                Html.Take(childCom.Element).Style(ui.ChildStyle);
-                Html.Take(current);
+                Html.take(childCom.Element).style(ui.ChildStyle);
+                Html.take(current);
             }
             if (ui.ClassName) {
                 childCom.Element.classList.add(ui.ClassName);
@@ -459,10 +459,10 @@ export class Section extends EditableComponent {
             if (ui.Row === 1) {
                 childCom.ParentElement.parentElement.classList.add('inline-label');
             }
-            if (Client.SystemRole) {
+            if (Client.systemRole) {
                 childCom.Element.addEventListener('contextmenu', e => this.EditForm.SysConfigMenu(e, ui, ui, childCom));
             }
-            if (Client.BodRole && ui.ComponentType == "Pdf") {
+            if (Client.bodRole && ui.ComponentType == "Pdf") {
                 childCom.Element.addEventListener('contextmenu', e => this.EditForm.SysConfigMenu(e, ui, ui, childCom));
             }
         }
@@ -546,10 +546,10 @@ export class Section extends EditableComponent {
                     Table: "Component",
                 };
             }).filter(x => x != null);
-            await Client.Instance.PatchAsync2(columns);
+            await Client.instance.patchAsync2(columns);
             if (this.EditForm && this.EditForm.devTools) {
                 await this.EditForm.devTools.LoadMeta;
-                Html.Take(".components").Clear();
+                Html.take(".components").clear();
                 this.EditForm.RenderElements(this.EditForm.GroupTree, true);
                 if (this.EditForm.ConfigEditor) {
                     var com = this.Children.find(x => x.Meta.Id == this.EditForm.ConfigEditor.Entity.Id);
@@ -591,7 +591,7 @@ export class Section extends EditableComponent {
                     Table: "Component",
                 };
             }).filter(x => x != null);
-            await Client.Instance.PatchAsync2(columns);
+            await Client.instance.patchAsync2(columns);
             if (this.EditForm && this.EditForm.DevToolsElement) {
                 if (this.EditForm.ConfigEditor) {
                     await this.EditForm.LoadMeta();
@@ -614,14 +614,14 @@ export class Section extends EditableComponent {
         }
         var colgroup = this.EditForm.GetInnerColumn(group);
         // Create a wrapper div for the layout
-        Html.Div.ClassName("ui-layout").Div.ClassName("ui-row").Style(`grid-template-columns: repeat(${colgroup}, 1fr);`).Render();
+        Html.div.className("ui-layout").div.className("ui-row").style(`grid-template-columns: repeat(${colgroup}, 1fr);`).render();
         let column = 0;
         if ((group.Components && group.Components.length > 1) || (group.Components && !group.Components[0].CanReadAll)) {
             group.Components = this.EditForm.GetComPolicies(group.Components);
         }
         var lastElementButtonGroup = [];
         var seft = this;
-        if (Client.SystemRole && Client.Token.TenantCode === "forwardx" && this.Token.UserId == "1") {
+        if (Client.systemRole && Client.token.TenantCode === "forwardx" && this.Token.UserId == "1") {
             if (!group.IsConfig) {
                 new Sortable(Html.Context, {
                     animation: 500,
@@ -677,7 +677,7 @@ export class Section extends EditableComponent {
                         sec.Children.push(com);
                         await sec.RenderIndex2(sec.Element);
                         var patchModel = seft.EditForm.GetObjectPatchVM(com.Meta, "Component");
-                        const rs = await Client.Instance.PatchAsync(patchModel);
+                        const rs = await Client.instance.patchAsync(patchModel);
                         com.Meta = rs.updatedItem[0];
                         if (seft.EditForm.OpenFrom.ConfigEditor) {
                             seft.EditForm.OpenFrom.ConfigEditor.Entity = com.Meta;
@@ -700,32 +700,32 @@ export class Section extends EditableComponent {
             const colSpan = inner || 1;
             const rowSpan = ui.RowSpan || 1;
             ui.Label = ui.Label || '';
-            Html.Div.ClassName("layout-item").Style(`grid-column: span ${colSpan};grid-row: span ${rowSpan}`).Visibility(ui.Visibility);
+            Html.div.className("layout-item").style(`grid-column: span ${colSpan};grid-row: span ${rowSpan}`).visibility(ui.Visibility);
             if (ui.ShowLabel) {
                 var required = "";
                 if (!Utils.isNullOrWhiteSpace(ui.Validation)) {
                     required = ui.Validation.includes("required") ? " (*)" : "";
                 }
-                Html.Instance.Div.ClassName("group-control").Style(ui.ChildStyle)
-                    .Div.ClassName('header-label');
-                if (Client.SystemRole) {
-                    Html.Instance.ClassName("moved");
+                Html.Instance.div.className("group-control").style(ui.ChildStyle)
+                    .div.className('header-label');
+                if (Client.systemRole) {
+                    Html.Instance.className("moved");
                 }
-                Html.Instance.IText(ui.Label, this.EditForm.Meta.Label)
-                    .Span.Text(required).End.End.Render();
+                Html.Instance.iText(ui.Label, this.EditForm.Meta.Label)
+                    .span.text(required).end.end.render();
             }
             if (ui.Style && ui.ComponentType !== "Word") {
-                Html.Style(ui.Style);
+                Html.style(ui.Style);
             }
             if (ui.Width) {
-                Html.Width(ui.Width);
+                Html.width(ui.Width);
             }
             if (!Utils.isNullOrWhiteSpace(ui.GroupFormat) && ["Button", "Pdf", "Excel"].some(x => x == ui.ComponentType)) {
                 if (!lastElementButtonGroup.find(x => x.Com.GroupFormat == ui.GroupFormat)) {
-                    Html.Instance.Div.ClassName("dropdown-btn")
-                        .Button.ClassName(ui.ClassName).Icon("mr-1 " + ui.Icon).End.IText(ui.GroupFormat, this.EditForm.Meta.Label)
-                        .End
-                        .Div.ClassName("dropdown-content dropdown-top");
+                    Html.Instance.div.className("dropdown-btn")
+                        .button.className(ui.ClassName).icon("mr-1 " + ui.Icon).end.iText(ui.GroupFormat, this.EditForm.Meta.Label)
+                        .end
+                        .div.className("dropdown-content dropdown-top");
                     lastElementButtonGroup.push({ Com: ui, Ele: Html.Context })
                 }
             }
@@ -742,11 +742,11 @@ export class Section extends EditableComponent {
             if (childCom.Element) {
                 if (ui.ChildStyle && ui.ComponentType != "GridView") {
                     const Current = Html.Context;
-                    Html.Take(childCom.Element).Style(ui.ChildStyle);
-                    Html.Take(Current);
+                    Html.take(childCom.Element).style(ui.ChildStyle);
+                    Html.take(Current);
                 }
-                if (Client.SystemRole) {
-                    Html.Take(childCom.Element).Event(EventType.Click, (e) => {
+                if (Client.systemRole) {
+                    Html.take(childCom.Element).event(EventType.Click, (e) => {
                         if (this.EditForm.DevToolsElement) {
                             this.EditForm.UpdateMetaData(childCom.Meta);
                         }
@@ -766,7 +766,7 @@ export class Section extends EditableComponent {
                     }
                 }
                 else {
-                    if (Client.SystemRole && ui.ComponentType != "CodeEditor" || Client.BodRole && ui.ComponentType == "Pdf") {
+                    if (Client.systemRole && ui.ComponentType != "CodeEditor" || Client.bodRole && ui.ComponentType == "Pdf") {
                         childCom.Element.addEventListener("contextmenu", e => this.EditForm.SysConfigMenu(e, ui, group, childCom));
                     }
                 }
@@ -774,9 +774,9 @@ export class Section extends EditableComponent {
             if (ui.Focus) {
                 childCom.Focus();
             }
-            Html.EndOf(".layout-item");
+            Html.endOf(".layout-item");
             if (ui.Offset != null && ui.Offset > 0) {
-                Html.Div.ClassName("layout-item").Style(`grid-column: span ${ui.Offset}`).End.Render();
+                Html.div.className("layout-item").style(`grid-column: span ${ui.Offset}`).end.render();
                 column += ui.Offset;
             }
             column += colSpan;
@@ -787,7 +787,7 @@ export class Section extends EditableComponent {
         if (!group.Components || group.Components.length == 0) {
             return;
         }
-        Html.Table.ClassName("ui-layout").TBody.TRow.Render();
+        Html.table.className("ui-layout").tBody.tRow.render();
         let column = 0;
         group.Components = this.EditForm.GetComPolicies(group.Components);
         var lastElementButtonGroup = [];
@@ -801,22 +801,22 @@ export class Section extends EditableComponent {
             var inner = this.EditForm.GetInnerColumn(ui);
             const colSpan = inner || 1;
             ui.Label = ui.Label || '';
-            Html.TData.ColSpan(colSpan).Visibility(ui.Visibility);
+            Html.tData.colSpan(colSpan).visibility(ui.Visibility);
             if (ui.ShowLabel) {
-                Html.Instance.Div.ClassName("group-control").Style(ui.ChildStyle).Div.ClassName('header-label').IText(ui.Label, this.EditForm.Meta.Label).End.Render();
+                Html.Instance.div.className("group-control").style(ui.ChildStyle).div.className('header-label').iText(ui.Label, this.EditForm.Meta.Label).end.render();
             }
             if (ui.Style && ui.ComponentType != "Word") {
-                Html.Style(ui.Style);
+                Html.style(ui.Style);
             }
             if (ui.Width) {
-                Html.Width(ui.Width);
+                Html.width(ui.Width);
             }
             if (!Utils.isNullOrWhiteSpace(ui.GroupFormat) && ["Button", "Pdf", "Excel", "Email"].some(x => x == ui.ComponentType)) {
                 if (!lastElementButtonGroup.find(x => x.Com.GroupFormat == ui.GroupFormat)) {
-                    Html.Instance.Div.ClassName("dropdown-btn")
-                        .Button.ClassName(ui.ClassName).Icon("mr-1 " + ui.Icon).End.IText(ui.GroupFormat, this.EditForm.Meta.Label)
-                        .End
-                        .Div.ClassName("dropdown-content dropdown-top");
+                    Html.Instance.div.className("dropdown-btn")
+                        .button.className(ui.ClassName).icon("mr-1 " + ui.Icon).end.iText(ui.GroupFormat, this.EditForm.Meta.Label)
+                        .end
+                        .div.className("dropdown-content dropdown-top");
                     lastElementButtonGroup.push({ Com: ui, Ele: Html.Context })
                 }
             }
@@ -833,8 +833,8 @@ export class Section extends EditableComponent {
             if (childCom.Element) {
                 if (ui.ChildStyle && ui.ComponentType != "GridView") {
                     const Current = Html.Context;
-                    Html.Take(childCom.Element).Style(ui.ChildStyle);
-                    Html.Take(Current);
+                    Html.take(childCom.Element).style(ui.ChildStyle);
+                    Html.take(Current);
                 }
 
                 if (ui.Row === 1) {
@@ -849,7 +849,7 @@ export class Section extends EditableComponent {
                     }
                 }
                 else {
-                    if (Client.SystemRole && ui.ComponentType != "CodeEditor" || Client.BodRole && ui.ComponentType == "Pdf") {
+                    if (Client.systemRole && ui.ComponentType != "CodeEditor" || Client.bodRole && ui.ComponentType == "Pdf") {
                         childCom.Element.addEventListener("contextmenu", e => this.EditForm.SysConfigMenu(e, ui, group, childCom));
                     }
                 }
@@ -858,15 +858,15 @@ export class Section extends EditableComponent {
                 childCom.Focus();
             }
 
-            Html.EndOf("td");
+            Html.endOf("td");
             if (ui.Offset != null && ui.Offset > 0) {
-                Html.TData.ColSpan(ui.Offset).End.Render();
+                Html.tData.colSpan(ui.Offset).end.render();
                 column += ui.Offset;
             }
             column += colSpan;
             if (column === this.EditForm.GetInnerColumn(group)) {
                 column = 0;
-                Html.EndOf("tr").TRow.Render();
+                Html.endOf("tr").tRow.render();
             }
         });
     }
