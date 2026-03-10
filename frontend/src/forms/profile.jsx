@@ -8,24 +8,24 @@ import { LoginBL } from "./login.jsx";
 export class ProfileBL extends Page {
   constructor() {
     super("User");
-    this.Entity = {
-      AutoSignIn: true,
-      TenantCode: "dev",
-      UserName: "",
-      Password: "",
+    this.entity = {
+      autoSignIn: true,
+      tenantCode: "dev",
+      userName: "",
+      password: "",
     };
-    this.Name = "Profile";
-    this.Meta = {
-      Public: true,
-      Label: "Profile",
-      Name: "Profile",
-      Id: "Profile",
+    this.name = "Profile";
+    this.meta = {
+      public: true,
+      label: "Profile",
+      name: "Profile",
+      id: "Profile",
     };
-    this.Title = "Profile";
-    this.IsRender = true;
-    this.TabTitle = "Profile";
-    this.Meta.Label = "Login";
-    this.Meta.Layout = () => {
+    this.title = "Profile";
+    this.isRender = true;
+    this.tabTitle = "Profile";
+    this.meta.label = "Login";
+    this.meta.layout = () => {
       const changePass = async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
@@ -41,7 +41,7 @@ export class ProfileBL extends Page {
           if (response) {
             Toast.Success("Password updated successfully.");
             Client.Token = null;
-            LoginBL.Instance.Render();
+            LoginBL.instance.render();
           } else {
             Toast.Warning("Failed to update password.");
           }
@@ -147,24 +147,24 @@ export class ProfileBL extends Page {
         </>
       );
     };
-    this.Meta.Components = [];
+    this.meta.components = [];
   }
 
   /** @type {ProfileBL} */
-  static get Instance() {
+  static get instance() {
     this._instance = new ProfileBL();
     return this._instance;
   }
 
-  Toggle(value) {
-    if (!this.Element) {
+  toggle(value) {
+    if (!this.element) {
       return;
     }
     this._show = value;
     if (!this._show) {
-      this.Element.parentElement.style.display = "none";
+      this.element.parentElement.style.display = "none";
     } else {
-      this.Element.parentElement.style.display = "";
+      this.element.parentElement.style.display = "";
     }
   }
 }

@@ -111,7 +111,7 @@ export class Section extends EditableComponent {
         this.Element.appendChild(button);
         this.Element.appendChild(dropdown);
 
-        this.InnerEle = dropdown;
+        this.innerEle = dropdown;
         this.Chevron = chevron;
 
         // Add a focus out listener to hide dropdown when focus is lost
@@ -122,8 +122,8 @@ export class Section extends EditableComponent {
      * Handles button click to toggle the visibility of the dropdown.
      */
     DropdownBtnClick() {
-        const isVisible = this.InnerEle.style.display !== 'none';
-        this.InnerEle.style.display = isVisible ? 'none' : 'block';
+        const isVisible = this.innerEle.style.display !== 'none';
+        this.innerEle.style.display = isVisible ? 'none' : 'block';
         this.Chevron.textContent = isVisible ? '▼' : '▲';
     }
 
@@ -133,11 +133,11 @@ export class Section extends EditableComponent {
     HideDetailIfButtonOnly() {
         // This checks if all children are buttons which could be customized based on actual use case
         if (this._isAllBtn === null) {
-            this._isAllBtn = Array.from(this.InnerEle.children).every(child => child.tagName === 'BUTTON');
+            this._isAllBtn = Array.from(this.innerEle.children).every(child => child.tagName === 'BUTTON');
         }
 
         if (this._isAllBtn) {
-            this.InnerEle.style.display = 'none';
+            this.innerEle.style.display = 'none';
             this.Chevron.textContent = '▼';
         }
     }

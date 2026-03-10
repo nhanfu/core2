@@ -17,6 +17,7 @@ import { PatchDetail, PatchVM, SavePatchVM } from "./patch";
 import { SecurityVM } from "./securityVM";
 import { SqlViewModel } from "./sqlViewModel";
 import { Token } from "./token";
+import { UserSetting } from "./userSetting";
 import { ValidationRule } from "./validationRule";
 import XHRWrapper from "./xhrWrapper";
 import {
@@ -26,6 +27,6 @@ import {
 } from './enum';
 
 export {
-    Action, BadGatewayQueue, Component, ComponentType, CustomEventType, ElementType, EmailVM, EntityRef, EventType, ExcelExt, Feature, FeaturePolicy, HotKeyModel, ObservableArgs, ObservableList, PatchDetail, PatchVM, SecurityVM, SqlViewModel, Token, ValidationRule, XHRWrapper, ActiveStateEnum, AdvSearchOperation, AdvSearchVM, ComponentTypeTypeEnum, KeyCodeEnum, LogicOperation, OrderbyDirection, OperatorEnum, PositionEnum,
+    Action, BadGatewayQueue, Component, ComponentType, CustomEventType, ElementType, EmailVM, EntityRef, EventType, ExcelExt, Feature, FeaturePolicy, HotKeyModel, ObservableArgs, ObservableList, PatchDetail, PatchVM, SecurityVM, SqlViewModel, Token, UserSetting, ValidationRule, XHRWrapper, ActiveStateEnum, AdvSearchOperation, AdvSearchVM, ComponentTypeTypeEnum, KeyCodeEnum, LogicOperation, OrderbyDirection, OperatorEnum, PositionEnum,
     OperationToSql, CellSelected, Where, FieldCondition, OrderBy, MQEvent, Entity, HttpMethod, HttpStatusCode, RoleEnum, TaskStateEnum, SavePatchVM
 }

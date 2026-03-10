@@ -40,7 +40,7 @@ const UserActive = () => {
     const toggleContent = (
         <>
             <i className="fal fa-user-friends"></i>
-            <span className="badge">{taskNotification?.filter(x => !x.Read).length || ""}</span>
+            <span className="badge">{taskNotification?.filter(x => !x.read).length || ""}</span>
         </>
     );
 
@@ -55,15 +55,15 @@ const UserActive = () => {
                         key={index}
                     >
                         <div className={`message-icon text-info`}>
-                            <img className="message-icon" src={item.Avatar} />
+                            <img className="message-icon" src={item.avatar} />
                         </div>
                         <div className={`message-content`}>
                             <div className="header">
-                                {item.NickName}
+                                {item.nickName}
                             </div>
                             <div className="body">
-                                {item.FullName}
-                                <div className="time">{item.Ip}</div>
+                                {item.fullName}
+                                <div className="time">{item.ip}</div>
                             </div>
                         </div>
                     </a>

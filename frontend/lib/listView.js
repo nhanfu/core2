@@ -59,17 +59,17 @@ export class ListView extends EditableComponent {
      */
     constructor(ui, ele = null) {
         super(ui, ele);
-        this.IsListView = true;
-        this.DeleteTempIds = [];
+        this.isListView = true;
+        this.deleteTempIds = [];
         this.Meta = ui;
         this.Id = ui.Id;
         this.Name = ui.FieldName;
         /** @type {Component[]} */
         this.Header = [];
-        this.RowData = new ObservableList();
+        this.rowData = new ObservableList();
         /** @type {AdvSearchVM} */
         // @ts-ignore
-        this.AdvSearchVM = {
+        this.advSearchVM = {
             ActiveState: ActiveStateEnum.Yes,
             Conditions: [],
             AdvSearchConditions: [],
@@ -79,27 +79,27 @@ export class ListView extends EditableComponent {
         if (ele !== null) {
             this.Resolve(ui, ele);
         }
-        this.CanDelete = true;
+        this.canDelete = true;
         this._rowHeight = this.Meta.BodyItemHeight ?? 26;
         this._theadTable = this.Meta.HeaderHeight ?? 40;
         this._tfooterTable = this.Meta.FooterHeight ?? 35;
         this._scrollTable = this.Meta.ScrollHeight ?? 10;
         this._preQueryFn = Utils.IsFunction(this.Meta.PreQuery, false, this);
         /** @type {ListViewItem} */
-        this.LastShiftViewItem = undefined;
+        this.lastShiftViewItem = undefined;
         /** @type {number} */
-        this.LastIndex = undefined;
-        this.EntityFocusId = "";
+        this.lastIndex = undefined;
+        this.entityFocusId = "";
         /** @type {HTMLElement} */
-        this.LastElementFocus = null;
+        this.lastElementFocus = null;
         /** @type {Component} */
-        this.LastComponentFocus = null;
-        this.ToolbarColumn = {
+        this.lastComponentFocus = null;
+        this.toolbarColumn = {
             StatusBar: true,
             Label: '',
             Frozen: true
         };
-        this.LastColumn = {
+        this.lastColumn = {
             ComponentType: "Label",
             Width: "100%",
             Label: '',
@@ -127,7 +127,7 @@ export class ListView extends EditableComponent {
      */
     Render() {
         if (this.EditForm) {
-            this.GeneralPolicies = this.EditForm.Policies;
+            this.generalPolicies = this.EditForm.Policies;
         }
         Html.Take(this.ParentElement).DataAttr('name', this.Name);
         this.AddSections();
@@ -152,13 +152,13 @@ export class ListView extends EditableComponent {
             this.Rerender();
         } else {
             // If local rendering is not enabled, use the local data directly
-            this.RowData.Data = this.Meta.LocalData;
+            this.rowData.Data = this.Meta.LocalData;
         }
     }
 
     Rerender() {
-        this.MainSection.DisposeChildren();
-        Html.Take(this.MainSection.Element).Clear();
+        this.mainSection.DisposeChildren();
+        Html.Take(this.mainSection.Element).Clear();
         this.RenderContent();
     }
     /**
@@ -240,7 +240,7 @@ export class ListView extends EditableComponent {
     }
 
     CalcFilterQuery() {
-        return this.ListViewSearch.CalcFilterQuery();
+        return this.listViewSearch.CalcFilterQuery();
     }
 
     async ExportExcel() {
@@ -527,7 +527,7 @@ export class ListView extends EditableComponent {
      */
     SetRowData(listData) {
         listData = listData ?? [];
-        this.RowData._data = listData;
+        this.rowData._data = listData;
         this.RenderContent();
     }
 
@@ -603,7 +603,7 @@ export class ListView extends EditableComponent {
             this.LoadLocalData(rows)
             return;
         }
-        rows = rows || this.RowData.Data;
+        rows = rows || this.rowData.Data;
         let dataSource = headers.filter((obj, index, self) =>
             index === self.findIndex((t) => (
                 t.RefName === obj.RefName
@@ -647,7 +647,7 @@ export class ListView extends EditableComponent {
     }
 
     SyncMasterData(rows = null, headers = null) {
-        rows = rows || this.RowData.Data;
+        rows = rows || this.rowData.Data;
         headers = headers || this.Header;
 
         headers.filter(x => x.RefName).forEach(header => {
@@ -758,8 +758,8 @@ export class ListView extends EditableComponent {
         if (this.Meta.LiteGrid) {
             this.Element = this.ParentElement;
             this.Element.innerHTML = null;
-            this.MainSection = new ListViewSection(null, this.ParentElement);
-            this.AddChild(this.MainSection);
+            this.mainSection = new ListViewSection(null, this.ParentElement);
+            this.AddChild(this.mainSection);
             return;
         }
         Html.Take(this.ParentElement).Div.ClassName("grid-wrapper");
@@ -768,16 +768,16 @@ export class ListView extends EditableComponent {
             Html.Instance.Div.Div.ClassName("grid-toolbar search").End.Render();
             Html.Instance.Div.ClassName("button-toolbar").End.End.Render();
         }
-        this.ListViewSearch = new ListViewSearch(this.Meta);
-        this.AddChild(this.ListViewSearch);
+        this.listViewSearch = new ListViewSearch(this.Meta);
+        this.AddChild(this.listViewSearch);
         Html.Take(this.Element).Div.ClassName("list-content").End.Div.ClassName("empty");
-        this.EmptySection = new ListViewSection(null, Html.Context);
-        this.EmptySection.ParentElement = this.Element;
-        this.AddChild(this.EmptySection);
+        this.emptySection = new ListViewSection(null, Html.Context);
+        this.emptySection.ParentElement = this.Element;
+        this.AddChild(this.emptySection);
 
         // @ts-ignore
-        this.MainSection = new ListViewSection(null, this.EmptySection.Element.previousElementSibling);
-        this.AddChild(this.MainSection);
+        this.mainSection = new ListViewSection(null, this.emptySection.Element.previousElementSibling);
+        this.AddChild(this.mainSection);
 
         Html.Instance.EndOf(".list-content");
         this.RenderPaginator();
@@ -789,14 +789,14 @@ export class ListView extends EditableComponent {
      * Renders the content within the main section of the ListView.
      */
     RenderContent() {
-        this.MainSection.DisposeChildren();
-        this.EmptySection?.DisposeChildren();
-        this.FormattedRowData = this.FormattedRowData.length == 0 ? this.RowData.Data : this.FormattedRowData;
-        if (this.FormattedRowData.length == 0) {
+        this.mainSection.DisposeChildren();
+        this.emptySection?.DisposeChildren();
+        this.formattedRowData = this.formattedRowData.length == 0 ? this.rowData.Data : this.formattedRowData;
+        if (this.formattedRowData.length == 0) {
             return;
         }
-        this.FormattedRowData.forEach((rowData, index) => {
-            this.RenderRowData(this.Header, rowData, this.MainSection);
+        this.formattedRowData.forEach((rowData, index) => {
+            this.RenderRowData(this.Header, rowData, this.mainSection);
         });
         this.ContentRendered();
     }
@@ -828,24 +828,24 @@ export class ListView extends EditableComponent {
      * Clears all row data from the ListView.
      */
     ClearRowData() {
-        this.RowData.Clear();
-        this.MainSection.Children.forEach(x => x.Dispose());
-        this.MainSection.Children = [];
-        this.MainSection.Element.innerHTML = null;
-        this.FormattedRowData = [];
+        this.rowData.Clear();
+        this.mainSection.Children.forEach(x => x.Dispose());
+        this.mainSection.Children = [];
+        this.mainSection.Element.innerHTML = null;
+        this.formattedRowData = [];
         if (this.Entity == null || this.Parent.IsSearchEntry) {
             return;
         }
         if (this.ShouldSetEntity) {
-            this.Entity[this.Name] = this.RowData.Data;
+            this.Entity[this.Name] = this.rowData.Data;
         }
     }
 
     /** @type {ListViewItem[]} */
     // @ts-ignore
-    get AllListViewItem() { return this.MainSection.Children; }
+    get AllListViewItem() { return this.mainSection.Children; }
     /** @return {ListViewItem[]} */
-    get Item() { return this.MainSection.Children.filter(x => !x.GroupRow); }
+    get Item() { return this.mainSection.Children.filter(x => !x.GroupRow); }
     /**
      * Performs an action on all items that meet the condition specified by predicate.
      * @param {(item: EditableComponent) => void} action - The action to perform on each ListViewItem that meets the condition.
@@ -861,7 +861,7 @@ export class ListView extends EditableComponent {
     SetRowDataIfExists() {
         const value = Utils.GetPropValue(this.Entity, this.Name);
         if (this.Entity != null && Array.isArray(value)) {
-            this.RowData._data = value;
+            this.rowData._data = value;
         }
     }
 
@@ -874,7 +874,7 @@ export class ListView extends EditableComponent {
     UpdateView(force = false, dirty = null, componentNames = []) {
         if (!this.Editable) {
             if (force) {
-                this.ListViewSearch.RefreshListView();
+                this.listViewSearch.RefreshListView();
             }
         } else {
             this.RowAction(row => row.UpdateView(force, dirty, componentNames), row => !row.EmptyRow);
@@ -896,11 +896,11 @@ export class ListView extends EditableComponent {
             });
         }
         emptyRowData[this.IdField] = null;
-        this.RenderRowData(this.Header, emptyRowData, this.EmptySection, null, true);
+        this.RenderRowData(this.Header, emptyRowData, this.emptySection, null, true);
         if (!this.Meta.TopEmpty) {
-            this.MainSection.Element.insertBefore(this.MainSection.Element, this.EmptySection.Element);
+            this.mainSection.Element.insertBefore(this.mainSection.Element, this.emptySection.Element);
         } else {
-            this.MainSection.Element.appendChild(this.EmptySection.Element.firstElementChild);
+            this.mainSection.Element.appendChild(this.emptySection.Element.firstElementChild);
         }
         this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterEmptyRowCreated, emptyRowData).Done();
     }
@@ -924,7 +924,7 @@ export class ListView extends EditableComponent {
             this.Paginator = new Paginator({
                 Total: 0,
                 PageSize: this.Meta.Row ?? 50,
-                CurrentPageCount: this.RowData.Data.length,
+                CurrentPageCount: this.rowData.Data.length,
                 PageIndex: 0,
                 PageIndex: 0,
             });
@@ -982,11 +982,11 @@ export class ListView extends EditableComponent {
         this.OrderHeaderGroup(headers);
         this.Header = [];
         if (!["Dropdown", "Select"].some(x => x === this.Meta.ComponentType)) {
-            this.Header.push(this.ToolbarColumn);
+            this.Header.push(this.toolbarColumn);
         }
         this.Header.push(...headers);
         if (!["Dropdown", "Select"].some(x => x === this.Meta.ComponentType)) {
-            this.Header.push(this.LastColumn);
+            this.Header.push(this.lastColumn);
         }
         this.Header = this.Header.filter(x => x !== null && !x.TopEmpty);
         return this.Header;
@@ -1131,15 +1131,15 @@ export class ListView extends EditableComponent {
         let target = e.target.closest('tr');
         /** @type {ListViewItem} */
         // @ts-ignore
-        let currentRow = this.MainSection.Children.find(x => x.Element === target);
+        let currentRow = this.mainSection.Children.find(x => x.Element === target);
         if (currentRow) {
             if (!currentRow.GroupRow || this.Meta.GroupReferenceId) {
-                if (this.SelectedIds.length === 1) {
+                if (this.selectedIds.length === 1) {
                     this.ClearSelected();
                 }
                 currentRow.Selected = true;
-                this.LastListViewItem = currentRow;
-                this.SelectedIndex = currentRow.RowNo;
+                this.lastListViewItem = currentRow;
+                this.selectedIndex = currentRow.RowNo;
             }
         }
     }
@@ -1287,7 +1287,7 @@ export class ListView extends EditableComponent {
             TableName: this.Meta.RefName,
             RowData: this.copyRowWithoutId(selected)
         }
-        this.CopyData = dataCopy;
+        this.copyData = dataCopy;
         this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterCopied, selected, this._copiedRows);
     }
 
@@ -1355,7 +1355,7 @@ export class ListView extends EditableComponent {
     * @param {object} ev The event object.
     */
     async PasteSelected(ev) {
-        var dataCopy = this.CopyData;
+        var dataCopy = this.copyData;
         if (!dataCopy || dataCopy.TableName != this.Meta.RefName) {
             return;
         }
@@ -1385,14 +1385,14 @@ export class ListView extends EditableComponent {
             this.AddRowsNo(copyRows, index).then(list => {
                 if (this.Meta.IsRealtime) {
                     Promise.all(list.Select(x => x.PatchUpdateOrCreate())).then(() => {
-                        this.CopyData = [];
+                        this.copyData = [];
                         Toast.Success("Data pasted successfully !");
                         super.Dirty = false;
                         this.ClearSelected();
                     });
                 }
                 else {
-                    this.CopyData = [];
+                    this.copyData = [];
                     Toast.Success("Data pasted successfully !");
                 }
                 this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterPasted, copyRows).then();
@@ -1425,7 +1425,7 @@ export class ListView extends EditableComponent {
                 Click: () => this.DuplicateSelected(null, false)
             });
         }
-        var dataCopy = this.CopyData;
+        var dataCopy = this.copyData;
         if (dataCopy && dataCopy.TableName == this.Meta.RefName) {
             if (canWrite && dataCopy.RowData.length > 0) {
                 ContextMenu.Instance.MenuItems.push({
@@ -1700,7 +1700,7 @@ export class ListView extends EditableComponent {
         const ids = deletedItems.map(x => x[this.IdField]).filter(x => !x.startsWith('-'));
         if (this.Meta.Editable) {
             ids.forEach(x => {
-                this.DeleteTempIds.push(x);
+                this.deleteTempIds.push(x);
             });
             this.AllListViewItem.filter(x => x.Selected).forEach(x => {
                 x.Dispose();
@@ -1774,7 +1774,7 @@ export class ListView extends EditableComponent {
      * Updates pagination details based on the current data state.
      */
     RenderIndex() {
-        if (this.MainSection.Children.length === 0 || (this.Meta.VirtualScroll && this.IsMobile())) {
+        if (this.mainSection.Children.length === 0 || (this.Meta.VirtualScroll && this.IsMobile())) {
             return;
         }
         this.AllListViewItem.forEach((row, rowIndex) => {
@@ -1797,7 +1797,7 @@ export class ListView extends EditableComponent {
             const index = this.Paginator.Options.StartIndex + rowIndex;
             if (!this.Meta.IsMultiple) {
                 previous.innerHTML = index.toString();
-                row.Selected = this.SelectedIds.some(x => x == row.Entity[this.IdField]);
+                row.Selected = this.selectedIds.some(x => x == row.Entity[this.IdField]);
             }
             row.RowNo = index;
         });
@@ -1807,11 +1807,11 @@ export class ListView extends EditableComponent {
      * Updates pagination details based on the current data state.
      */
     async RenderIndex2() {
-        if (this.MainSection.Children.length === 0) {
+        if (this.mainSection.Children.length === 0) {
             return;
         }
-        for (let rowIndex = 0; rowIndex < this.MainSection.Element.children.length; rowIndex++) {
-            var trElement = this.MainSection.Element.children[rowIndex];
+        for (let rowIndex = 0; rowIndex < this.mainSection.Element.children.length; rowIndex++) {
+            var trElement = this.mainSection.Element.children[rowIndex];
             var item = this.Item.find(x => x.Element == trElement);
             var tdIndex = trElement.children[0];
             if (tdIndex != null) {
@@ -1854,12 +1854,12 @@ export class ListView extends EditableComponent {
                 });
             } else {
                 this.DispatchCustomEvent(this.Meta.Events, CustomEventType.BeforeCreated, rowData, this).then(() => {
-                    this.RowData.Data.push(rowData);
+                    this.rowData.Data.push(rowData);
                     rowSection.FilterChildren(child => true).forEach(child => {
                         child.EmptyRow = false;
                         child.UpdateView(true);
                     });
-                    this.EmptySection.Children.Clear();
+                    this.emptySection.Children.Clear();
                     this.AddNewEmptyRow();
                     this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterCreated, rowData, this).then(() => {
                         resolve(true);
@@ -1875,7 +1875,7 @@ export class ListView extends EditableComponent {
     * @param {string} id The identifier of the row to remove.
     */
     RemoveRowById(id) {
-        const listViewItem = this.MainSection.Children.find(x => x.EntityId === id);
+        const listViewItem = this.mainSection.Children.find(x => x.EntityId === id);
         if (listViewItem) {
             listViewItem.Dispose();
         }
@@ -1890,10 +1890,10 @@ export class ListView extends EditableComponent {
      */
     async AddRow(rowData, index = 0, singleAdd = true) {
         if (singleAdd) {
-            this.RowData.Data.splice(index, 0, rowData);
+            this.rowData.Data.splice(index, 0, rowData);
         }
         await this.DispatchCustomEvent(this.Meta.Events, CustomEventType.BeforeCreated, rowData, this);
-        const row = this.RenderRowData(this.Header, rowData, this.MainSection, index);
+        const row = this.RenderRowData(this.Header, rowData, this.mainSection, index);
         await this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterCreated, rowData);
         return row;
     }
@@ -1925,8 +1925,8 @@ export class ListView extends EditableComponent {
     ClearSelected() {
         this.AllListViewItem.forEach(x => x.Selected = false);
         /** @type {string[]} */
-        this.SelectedIds = [];
-        this.LastListViewItem = null;
+        this.selectedIds = [];
+        this.lastListViewItem = null;
     }
 
     ClearFocused() {
@@ -1971,7 +1971,7 @@ export class ListView extends EditableComponent {
     GetRealTimeSelectedRows() {
         return new Promise((resolve, reject) => {
             // @ts-ignore
-            Client.Instance.GetByIdAsync(this.Meta.RefName, this.DataConn || Client.DataConn, this.SelectedIds.ToArray())
+            Client.Instance.GetByIdAsync(this.Meta.RefName, this.DataConn || Client.DataConn, this.selectedIds.ToArray())
                 .then(res => {
                     resolve(res ? res.slice() : []);
                 })
@@ -1991,8 +1991,8 @@ export class ListView extends EditableComponent {
         if (row === null) {
             return;
         }
-        this.RowData.Data.Remove(row);
-        this.MainSection.FirstOrDefault(x => x.Entity == row)?.Dispose();
+        this.rowData.Data.Remove(row);
+        this.mainSection.FirstOrDefault(x => x.Entity == row)?.Dispose();
     }
 
     CalcTextAlign(header) {
@@ -2059,7 +2059,7 @@ export class ListView extends EditableComponent {
                 this.AllListViewItem[this.AllListViewItem.length - 1].Selected = true;
                 this.AllListViewItem[this.AllListViewItem.length - 1].Focused = true;
                 this.DataTable.parentElement.scrollTop = this.DataTable.parentElement.scrollHeight;
-                this.SelectedIndex = this.AllListViewItem.length - 1;
+                this.selectedIndex = this.AllListViewItem.length - 1;
                 this.Ele
             }
         }
@@ -2069,13 +2069,13 @@ export class ListView extends EditableComponent {
                 this.AllListViewItem[this.AllListViewItem.length - 1].Selected = true;
                 this.AllListViewItem[this.AllListViewItem.length - 1].Focused = true;
                 this.DataTable.parentElement.scrollTop = this.DataTable.parentElement.scrollHeight;
-                this.SelectedIndex = this.AllListViewItem.length - 1;
+                this.selectedIndex = this.AllListViewItem.length - 1;
             }
             else {
                 this.AllListViewItem[indexCurrent - 1].Selected = true;
                 this.AllListViewItem[indexCurrent - 1].Focused = true;
                 this.DataTable.parentElement.scrollTop = this.DataTable.parentElement.scrollTop - height;
-                this.SelectedIndex = indexCurrent - 1;
+                this.selectedIndex = indexCurrent - 1;
             }
         }
     }
@@ -2094,7 +2094,7 @@ export class ListView extends EditableComponent {
                 this.AllListViewItem[0].Selected = true;
                 this.AllListViewItem[0].Focused = true;
                 this.DataTable.parentElement.scrollTop = 0;
-                this.SelectedIndex = 0;
+                this.selectedIndex = 0;
             }
         }
         else {
@@ -2103,13 +2103,13 @@ export class ListView extends EditableComponent {
                 this.AllListViewItem[0].Selected = true;
                 this.AllListViewItem[0].Focused = true;
                 this.DataTable.parentElement.scrollTop = 0;
-                this.SelectedIndex = 0;
+                this.selectedIndex = 0;
             }
             else {
                 this.AllListViewItem[indexCurrent + 1].Selected = true;
                 this.AllListViewItem[indexCurrent + 1].Focused = true;
                 this.DataTable.parentElement.scrollTop = this.DataTable.parentElement.scrollTop + height;
-                this.SelectedIndex = indexCurrent + 1;
+                this.selectedIndex = indexCurrent + 1;
             }
         }
     }
@@ -2130,8 +2130,8 @@ export class ListView extends EditableComponent {
      * @param {ListViewItem} rowData The data object that represents the row to update.
      */
     async RealtimeUpdateAsync(rowData, arg) {
-        if (this.EmptyRow) {
-            this.EmptyRow = false;
+        if (this.emptyRow) {
+            this.emptyRow = false;
             return;
         }
         if (!this.Meta.IsRealtime || !arg) {

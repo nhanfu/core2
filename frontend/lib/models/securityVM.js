@@ -1,12 +1,12 @@
 import { FeaturePolicy } from "./featurePolicy.js";
 
 export class SecurityVM extends FeaturePolicy {
-    AllPermission = false;
+    allPermission = false;
     /** @type {string[]} */
-    RecordIds = [];
-    get StrRecordIds() {
-        return this.RecordIds.map(x => `"${x}"`).join();
+    recordIds = [];
+    get strRecordIds() {
+        return this.recordIds.map(x => `"${x}"`).join();
     }
     /** @type {FeaturePolicy[]} */
-    FeaturePolicy = [];
+    featurePolicy = [];
 }

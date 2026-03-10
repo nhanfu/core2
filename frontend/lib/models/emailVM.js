@@ -9,33 +9,33 @@ export class EmailVM {
      */
     constructor() {
         /** @type {string} Connection key, default value fetched from Client.MetaConn */
-        this.ConnKey = Client.MetaConn;
+        this.connKey = Client.MetaConn;
 
         /** @type {string} Email from address */
-        this.FromAddress = '';
+        this.fromAddress = '';
 
         /** @type {Array<string>} List of email addresses to send the email to */
-        this.ToAddresses = [];
+        this.toAddresses = [];
 
         /** @type {Array<string>} List of email addresses for CC */
-        this.CC = [];
+        this.cc = [];
 
         /** @type {Array<string>} List of email addresses for BCC */
-        this.BCC = [];
+        this.bcc = [];
 
         /** @type {string} Subject of the email */
-        this.Subject = '';
+        this.subject = '';
 
         /** @type {string} Body content of the email */
-        this.Body = '';
+        this.body = '';
 
         /** @type {Array<string>} Texts that will be converted to PDF */
-        this.PdfText = [];
+        this.pdfText = [];
 
         /** @type {Array<string>} Names of the files */
-        this.FileName = [];
+        this.fileName = [];
 
         /** @type {Set<string>} Collection of attachment identifiers */
-        this.Attachements = new Set();
+        this.attachements = new Set();
     }
 }

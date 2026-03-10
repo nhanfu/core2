@@ -22,19 +22,19 @@ export class LoginBL extends EditForm {
 
   constructor() {
     super("User");
-    this.Entity = {
-      AutoSignIn: true,
-      TenantCode: "dev",
-      UserName: "",
-      Password: "",
+    this.entity = {
+      autoSignIn: true,
+      tenantCode: "dev",
+      userName: "",
+      password: "",
     };
-    this.Name = "Login";
-    this.Title = "Đăng nhập";
-    this.Login = true;
-    this.Meta.IsPublic = true;
-    this.Meta.Label = "Login";
-    this.Title = "Login";
-    this.Meta.Layout = () => {
+    this.name = "Login";
+    this.title = "Đăng nhập";
+    this.login = true;
+    this.meta.isPublic = true;
+    this.meta.label = "Login";
+    this.title = "Login";
+    this.meta.layout = () => {
       const logIn = async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
@@ -60,15 +60,15 @@ export class LoginBL extends EditForm {
             AllowAnonymous: true,
           });
           Client.Token = res;
-          this.InitFCM();
-          if (this.SignedInHandler) {
-            this.SignedInHandler(Client.Token);
+          this.initFCM();
+          if (this.signedInHandler) {
+            this.signedInHandler(Client.Token);
           }
-          this.Dispose();
+          this.dispose();
           window.history.pushState(null, "Home", "");
-          App.Instance.RenderLayout()
+          App.instance.renderLayout()
             .then(async () => {
-              await this.InitAppIfEmpty();
+              await this.initAppIfEmpty();
             })
             .finally(() => {
               window.setTimeout(() => {
@@ -170,40 +170,40 @@ export class LoginBL extends EditForm {
   }
 
   /** @type {LoginBL} */
-  static get Instance() {
+  static get instance() {
     this._instance = new LoginBL();
     return this._instance;
   }
 
-  get LoginEntity() {
-    return this.Entity;
+  get loginEntity() {
+    return this.entity;
   }
 
-  SignedInHandler = null;
-  InitAppHanlder = null;
-  TokenRefreshedHandler = null;
+  signedInHandler = null;
+  initAppHandler = null;
+  tokenRefreshedHandler = null;
 
-  Render() {
+  render() {
     let oldToken = Client.Token;
     if (!oldToken || new Date(oldToken.RefreshTokenExp) <= Client.EpsilonNow) {
       Html.Take("#app");
-      this.Element = Html.Context;
-      super.Render();
+      this.element = Html.Context;
+      super.render();
       return;
     } else if (
       oldToken &&
       new Date(oldToken.AccessTokenExp) > Client.EpsilonNow
     ) {
-      App.Instance.RenderLayout().then(async () => {
-        await this.InitAppIfEmpty();
+      App.instance.renderLayout().then(async () => {
+        await this.initAppIfEmpty();
       });
     } else if (
       oldToken &&
       new Date(oldToken.RefreshTokenExp) > Client.EpsilonNow
     ) {
       Client.RefreshToken().then((newToken) => {
-        App.Instance.RenderLayout().then(async () => {
-          await this.InitAppIfEmpty();
+        App.instance.renderLayout().then(async () => {
+          await this.initAppIfEmpty();
         });
       });
     }
@@ -213,8 +213,8 @@ export class LoginBL extends EditForm {
    * @param {Event} event
    * @returns {void}
    */
-  KeyCodeEnter(event) {
-    if (event.KeyCodeEnum() !== KeyCodeEnum.Enter) {
+  keyCodeEnter(event) {
+    if (event.keyCodeEnum() !== KeyCodeEnum.Enter) {
       return;
     }
     event.preventDefault();
@@ -222,21 +222,21 @@ export class LoginBL extends EditForm {
     document.getElementById("btnLogin").click();
   }
 
-  async Login() {
+  async login() {
     debugger;
-    let isValid = await this.IsFormValid();
+    let isValid = await this.isFormValid();
     if (!isValid) {
       return false;
     }
-    return this.SubmitLogin();
+    return this.submitLogin();
   }
 
-  async Register() {
-    RegisterBL.Instance.Render();
+  async register() {
+    RegisterBL.instance.render();
   }
 
-  SubmitLogin() {
-    const login = this.LoginEntity;
+  submitLogin() {
+    const login = this.loginEntity;
     const tcs = new Promise((resolve, reject) => {
       // @ts-ignore
       Client.Instance.SubmitAsync({
@@ -252,16 +252,16 @@ export class LoginBL extends EditForm {
             return;
           }
           Client.Token = res;
-          this.InitFCM();
-          if (this.SignedInHandler) {
-            this.SignedInHandler(Client.Token);
+          this.initFCM();
+          if (this.signedInHandler) {
+            this.signedInHandler(Client.Token);
           }
           resolve(true);
-          this.Dispose();
+          this.dispose();
           window.history.pushState(null, "Home", "");
-          App.Instance.RenderLayout()
+          App.instance.renderLayout()
             .then(async () => {
-              await this.InitAppIfEmpty();
+              await this.initAppIfEmpty();
             })
             .finally(() => {
               window.setTimeout(() => {
@@ -277,7 +277,7 @@ export class LoginBL extends EditForm {
     return tcs;
   }
 
-  async ForgotPassword(login) {
+  async forgotPassword(login) {
     return Client.Instance.PostAsync(login, "/user/ForgotPassword").then(
       (res) => {
         if (res) {
@@ -294,7 +294,7 @@ export class LoginBL extends EditForm {
     );
   }
 
-  async InitAppIfEmpty() {
+  async initAppIfEmpty() {
     const systemRoleId = RoleEnum.System;
     Client.Instance.SystemRole = Client.Token.RoleIds.includes(
       systemRoleId.toString()
@@ -303,9 +303,9 @@ export class LoginBL extends EditForm {
       return;
     }
     this._initApp = true;
-    this.LoadByFromUrl();
-    this.InitAppHanlder?.(Client.Token);
-    MenuComponent.Instance.Render();
+    this.loadByFromUrl();
+    this.initAppHandler?.(Client.Token);
+    MenuComponent.instance.render();
   }
 
   async getExchangeRate() {
@@ -365,22 +365,22 @@ export class LoginBL extends EditForm {
     return exchangeRates;
   }
 
-  LoadByFromUrl() {
-    var fName = this.GetFeatureNameFromUrl() || { pathname: "", params: null };
+  loadByFromUrl() {
+    var fName = this.getFeatureNameFromUrl() || { pathname: "", params: null };
     if (fName.pathname == "") {
       return;
     }
     ComponentExt.InitFeatureByName(fName.pathname, true).then((tab) => {
       window.setTimeout(() => {
         if (fName.params.id) {
-          Client.Instance.GetByIdAsync(tab.Meta.EntityId, [
+          Client.Instance.GetByIdAsync(tab.meta.entityId, [
             fName.params.id,
           ]).then((data) => {
             if (data && data.data && data.data[0]) {
-              tab.OpenPopup(fName.params.popup, data.data[0]);
+              tab.openPopup(fName.params.popup, data.data[0]);
               window.setTimeout(() => {
                 if (fName.params.popup2) {
-                  var popup = tab.Children.find((x) => x.Popup);
+                  var popup = tab.children.find((x) => x.popup);
                   Client.Instance.SubmitAsync({
                     Url: `/api/feature/loadFeature`,
                     Method: "POST",
@@ -388,11 +388,11 @@ export class LoginBL extends EditForm {
                       Name: fName.params.popup2,
                     }),
                   }).then((item) => {
-                    Client.Instance.GetByIdAsync(item.EntityId, [
+                    Client.Instance.GetByIdAsync(item.entityId, [
                       fName.params.id2,
                     ]).then((data2) => {
                       if (data2.data[0]) {
-                        popup.OpenPopup(fName.params.popup2, data2.data[0]);
+                        popup.openPopup(fName.params.popup2, data2.data[0]);
                       }
                     });
                   });
@@ -409,7 +409,7 @@ export class LoginBL extends EditForm {
   /**
    * @returns {string | null}
    */
-  GetFeatureNameFromUrl() {
+  getFeatureNameFromUrl() {
     let hash = window.location.hash; // Get the full hash (e.g., '#/chat-editor?Id=-00612540-0000-0000-8000-4782e9f44882')
 
     if (hash.startsWith("#/")) {
@@ -432,28 +432,28 @@ export class LoginBL extends EditForm {
     };
   }
 
-  ToastOki() {
+  toastOki() {
     Toast.Success("OKi");
   }
 
-  InitFCM(signout = false) {
+  initFCM(signout = false) {
     console.log("Init fcm");
     let tenantCode = Client.Token.TenantCode;
     let strUserId = `U${Client.Token.UserId.toString().padStart(7, "0")}`;
   }
 
-  static DiposeAll() {
+  static diposeAll() {
     while (this.Tabs.length > 0) {
-      this.Tabs[0]?.Dispose();
+      this.Tabs[0]?.dispose();
     }
-    if (this.MenuComponent) {
-      this.MenuComponent.Dispose();
+    if (this.menuComponent) {
+      this.menuComponent.dispose();
     }
-    if (this.TaskList) {
-      this.TaskList.Dispose();
+    if (this.taskList) {
+      this.taskList.dispose();
     }
 
-    this.MenuComponent = null;
-    this.TaskList = null;
+    this.menuComponent = null;
+    this.taskList = null;
   }
 }

@@ -23,7 +23,7 @@ const genericSlice = createSlice({
       const { key, item } = action.payload;
       if (Array.isArray(state[key])) {
         state[key] = state[key].map(existingItem =>
-          existingItem.Id === item.Id ? item : existingItem
+          existingItem.id === item.id ? item : existingItem
         );
       }
     },

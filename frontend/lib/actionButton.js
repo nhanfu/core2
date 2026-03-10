@@ -17,7 +17,7 @@ export class ActionButton extends EditableComponent {
         super(ui);
         /** @type {Component} */
         this.Meta = ui;
-        this.ButtonEle = ele;
+        this.buttonEle = ele;
         this.IsAction = true;
         this._textEle = null;
     }
@@ -26,11 +26,11 @@ export class ActionButton extends EditableComponent {
      * Renders the button component into the DOM.
      */
     Render() {
-        if (!this.ButtonEle) {
+        if (!this.buttonEle) {
             Html.Take(this.ParentElement).ClassName("btn-group-view").Render();
-            this.Element = this.ButtonEle = Html.Context;
+            this.Element = this.buttonEle = Html.Context;
         } else {
-            this.Element = this.ButtonEle;
+            this.Element = this.buttonEle;
         }
         var childs = JSON.parse(this.Meta.FormatData) || [];
         for (let i = 0; i < childs.length; i++) {

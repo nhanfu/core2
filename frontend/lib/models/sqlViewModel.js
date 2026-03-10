@@ -7,131 +7,131 @@ export class SqlViewModel {
    * @type {string}
    * @description Service ID.
    */
-  SvcId = "";
+  svcId = "";
 
   /**
    * @type {string}
    * @description Company ID.
    */
-  ComId = "";
+  comId = "";
 
   /**
    * @type {string}
    * @description Action to perform.
    */
-  Action = "";
+  action = "";
 
   /**
    * @type {string}
    * @description Parameters for the action.
    */
-  Params = "";
+  params = "";
 
   /**
    * @type {string[]}
    * @description Array of IDs.
    */
-  Ids = [];
+  ids = [];
 
   /**
    * @type {string}
    * @description Anonymous tenant.
    */
-  AnnonymousTenant = Client.Tenant;
+  annonymousTenant = Client.Tenant;
 
   /**
    * @type {string}
    * @description Anonymous environment.
    */
-  AnnonymousEnv = Client.Env;
+  annonymousEnv = Client.Env;
 
   /**
    * @type {string}
    * @description Paging information.
    */
-  Paging = "";
+  paging = "";
 
   /**
    * @type {string}
    * @description SELECT clause.
    */
-  Select = "";
+  select = "";
 
   /**
    * @type {string}
    * @description WHERE clause.
    */
-  Where = "";
+  where = "";
 
   /**
    * @type {string}
    * @description ORDER BY clause.
    */
-  OrderBy = "";
+  orderBy = "";
 
   /**
    * @type {string}
    * @description GROUP BY clause.
    */
-  GroupBy = "";
+  groupBy = "";
 
   /**
    * @type {string}
    * @description HAVING clause.
    */
-  Having = "";
+  having = "";
 
   /**
    * @type {boolean}
    * @description Indicates whether to include COUNT operation.
    */
-  Count = false;
+  count = false;
 
   /**
    * @type {string[]}
    * @description Array of field names.
    */
-  FieldName = [];
+  fieldName = [];
 
   /**
    * @type {boolean}
    * @description Indicates whether to skip XQuery.
    */
-  SkipXQuery = false;
+  skipXQuery = false;
 
   /**
    * @type {number}
    * @description Meta connection string.
    */
-  Skip = 0;
+  skip = 0;
 
   /**
    * @type {number}
    * @description Meta connection string.
    */
-  Top = 0;
+  top = 0;
 
   /**
    * @type {string}
    * @description Meta connection string.
    */
-  MetaConn = Client.MetaConn;
+  metaConn = Client.MetaConn;
 
   /**
    * @type {string}
    * @description Data connection string.
    */
-  DataConn = Client.DataConn;
+  dataConn = Client.DataConn;
 
   /**
    * @type {string}
    * @description Name of the table.
    */
-  Table = "";
+  table = "";
 
   /**
    * @type {boolean}
    * @description Indicates whether to wrap the query.
    */
-  WrapQuery = true;
+  wrapQuery = true;
 }

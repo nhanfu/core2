@@ -18,15 +18,15 @@ export class RegisterBL extends EditForm {
 
   constructor() {
     super("User");
-    this.Entity = {
-      AutoSignIn: true,
+    this.entity = {
+      autoSignIn: true,
       username: "johndoe2",
       password: "secret",
     };
-    this.Name = "Register";
-    this.Title = "Register";
-    this.Public = true;
-    this.Meta.Layout = () => (
+    this.name = "Register";
+    this.title = "Register";
+    this.public = true;
+    this.meta.layout = () => (
       <>
         <div className="container-login" view="login" bg={7}>
           <div className="wrap-login" type="login">
@@ -104,7 +104,7 @@ export class RegisterBL extends EditForm {
                   className="register-btn"
                   target="_blank"
                   res-key="FormLogin_Register"
-                  onClick={() => this.Login()}
+                  onClick={() => this.login()}
                 >
                   Đăng nhập
                 </a>
@@ -118,94 +118,94 @@ export class RegisterBL extends EditForm {
         <ToastContainer />
       </>
     );
-    this.Meta.Components = [
+    this.meta.components = [
       {
-        ComponentType: "Button",
-        FieldName: "btnRegister",
-        OnClick: async () => {
-          await this.Register();
+        componentType: "Button",
+        fieldName: "btnRegister",
+        onClick: async () => {
+          await this.register();
         },
       },
       {
-        ComponentType: "Input",
-        FieldName: "CompanyName",
-        Label: "Company Name",
-        Validation: `[{"Rule": "required", "Message": "{0} is required"}]`
+        componentType: "Input",
+        fieldName: "CompanyName",
+        label: "Company Name",
+        validation: `[{"Rule": "required", "Message": "{0} is required"}]`
       },
       {
-        ComponentType: "Input",
-        FieldName: "Email",
-        Label: "Email",
-        Validation: `[{"Rule": "required", "Message": "{0} is required"}]`
+        componentType: "Input",
+        fieldName: "Email",
+        label: "Email",
+        validation: `[{"Rule": "required", "Message": "{0} is required"}]`
       },
       {
-        ComponentType: "Input",
-        FieldName: "TaxCode",
-        Label: "Tax Code",
-        Validation: `[{"Rule": "required", "Message": "{0} is required"}]`
+        componentType: "Input",
+        fieldName: "TaxCode",
+        label: "Tax Code",
+        validation: `[{"Rule": "required", "Message": "{0} is required"}]`
       },
       {
-        ComponentType: "Input",
-        FieldName: "TenantCode",
-        Label: "Tanent Code",
-        Validation: `[{"Rule": "required", "Message": "{0} is required"}]`
+        componentType: "Input",
+        fieldName: "TenantCode",
+        label: "Tanent Code",
+        validation: `[{"Rule": "required", "Message": "{0} is required"}]`
       },
       {
-        ComponentType: "Input",
-        FieldName: "PhoneNumber",
-        Label: "Phone Number",
-        Validation: `[{"Rule": "required", "Message": "{0} is required"}]`
+        componentType: "Input",
+        fieldName: "PhoneNumber",
+        label: "Phone Number",
+        validation: `[{"Rule": "required", "Message": "{0} is required"}]`
       },
       {
-        ComponentType: "Input",
-        FieldName: "UserName",
-        Label: "User Name",
-        Validation: `[{"Rule": "required", "Message": "{0} is required"}]`
+        componentType: "Input",
+        fieldName: "UserName",
+        label: "User Name",
+        validation: `[{"Rule": "required", "Message": "{0} is required"}]`
       },
       {
-        ComponentType: "Password",
-        Label: "Password",
-        FieldName: "Password",
-        Validation: `[{"Rule": "required", "Message": "{0} is required"}]`
+        componentType: "Password",
+        label: "Password",
+        fieldName: "Password",
+        validation: `[{"Rule": "required", "Message": "{0} is required"}]`
       }
     ];
   }
 
   /** @type {RegisterBL} */
-  static get Instance() {
+  static get instance() {
     this._instance = new RegisterBL();
     return this._instance;
   }
 
-  get LoginEntity() {
-    return this.Entity;
+  get loginEntity() {
+    return this.entity;
   }
 
-  SignedInHandler = null;
-  InitAppHanlder = null;
-  TokenRefreshedHandler = null;
+  signedInHandler = null;
+  initAppHandler = null;
+  tokenRefreshedHandler = null;
 
-  Render() {
+  render() {
     let oldToken = Client.Token;
     if (!oldToken || new Date(oldToken.RefreshTokenExp) <= Client.EpsilonNow) {
       Html.Take("#app");
-      this.Element = Html.Context;
-      super.Render();
+      this.element = Html.Context;
+      super.render();
       return;
     } else if (
       oldToken &&
       new Date(oldToken.AccessTokenExp) > Client.EpsilonNow
     ) {
-      App.Instance.RenderLayout().then(() => {
-        this.InitAppIfEmpty();
+      App.instance.renderLayout().then(() => {
+        this.initAppIfEmpty();
       });
     } else if (
       oldToken &&
       new Date(oldToken.RefreshTokenExp) > Client.EpsilonNow
     ) {
       Client.RefreshToken().then((newToken) => {
-        App.Instance.RenderLayout().then(() => {
-          this.InitAppIfEmpty();
+        App.instance.renderLayout().then(() => {
+          this.initAppIfEmpty();
         });
       });
     }
@@ -215,28 +215,28 @@ export class RegisterBL extends EditForm {
    * @param {Event} event
    * @returns {void}
    */
-  KeyCodeEnter(event) {
-    if (event.KeyCodeEnum() !== KeyCodeEnum.Enter) {
+  keyCodeEnter(event) {
+    if (event.keyCodeEnum() !== KeyCodeEnum.Enter) {
       return;
     }
     event.preventDefault();
     document.getElementById("btnLogin").click();
   }
 
-  async Register() {
-    let isValid = await this.IsFormValid();
+  async register() {
+    let isValid = await this.isFormValid();
     if (!isValid) {
       return false;
     }
-    return this.SubmitRegister();
+    return this.submitRegister();
   }
 
-  async Login() {
-    LoginBL.Instance.Render();
+  async login() {
+    LoginBL.instance.render();
   }
 
-  SubmitRegister() {
-    const login = this.LoginEntity;
+  submitRegister() {
+    const login = this.loginEntity;
     const tcs = new Promise((resolve, reject) => {
       // @ts-ignore
       Client.Instance.SubmitAsync({
@@ -253,15 +253,15 @@ export class RegisterBL extends EditForm {
         Client.Token = res.token;
         login.UserName = "";
         login.Password = "";
-        this.InitFCM();
-        if (this.SignedInHandler) {
-          this.SignedInHandler(Client.Token);
+        this.initFCM();
+        if (this.signedInHandler) {
+          this.signedInHandler(Client.Token);
         }
         resolve(true);
-        this.Dispose();
-        App.Instance.RenderLayout()
+        this.dispose();
+        App.instance.renderLayout()
           .then(() => {
-            this.InitAppIfEmpty();
+            this.initAppIfEmpty();
           })
           .finally(() => {
             window.setTimeout(() => {
@@ -274,7 +274,7 @@ export class RegisterBL extends EditForm {
     return tcs;
   }
 
-  async ForgotPassword(login) {
+  async forgotPassword(login) {
     return Client.Instance.PostAsync(login, "/user/ForgotPassword").then(
       (res) => {
         if (res) {
@@ -291,7 +291,7 @@ export class RegisterBL extends EditForm {
     );
   }
 
-  InitAppIfEmpty() {
+  initAppIfEmpty() {
     const systemRoleId = RoleEnum.System;
     // @ts-ignore
     Client.Instance.SystemRole = Client.Token.RoleIds.includes(
@@ -301,27 +301,27 @@ export class RegisterBL extends EditForm {
       return;
     }
     this._initApp = true;
-    this.InitAppHanlder?.(Client.Token);
+    this.initAppHandler?.(Client.Token);
   }
 
-  InitFCM(signout = false) {
+  initFCM(signout = false) {
     console.log("Init fcm");
     let tenantCode = Client.Token.TenantCode;
     let strUserId = `U${Client.Token.UserId.toString().padStart(7, "0")}`;
   }
 
-  static DiposeAll() {
+  static diposeAll() {
     while (this.Tabs.length > 0) {
-      this.Tabs[0]?.Dispose();
+      this.Tabs[0]?.dispose();
     }
-    if (this.MenuComponent) {
-      this.MenuComponent.Dispose();
+    if (this.menuComponent) {
+      this.menuComponent.dispose();
     }
-    if (this.TaskList) {
-      this.TaskList.Dispose();
+    if (this.taskList) {
+      this.taskList.dispose();
     }
 
-    this.MenuComponent = null;
-    this.TaskList = null;
+    this.menuComponent = null;
+    this.taskList = null;
   }
 }

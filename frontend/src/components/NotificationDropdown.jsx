@@ -41,13 +41,13 @@ const NotificationDropdown = () => {
 
     const handleMessage = (data) => {
       if (
-        data.detail.TenantCode.toLowerCase() !==
-        Client.Token.TenantCode.toLowerCase()
+        data.detail.tenantCode.toLowerCase() !==
+        Client.Token.tenantCode.toLowerCase()
       )
         return;
-      const message = data.detail.Message;
+      const message = data.detail.message;
       const index = 0;
-      const exists = itemsRef.current.some((x) => x.Id === message.Id);
+      const exists = itemsRef.current.some((x) => x.id === message.id);
       if (exists) return;
       dispatch(addData({ key: NOTIFICATION_KEY, item: message, index }));
       if (
@@ -63,19 +63,19 @@ const NotificationDropdown = () => {
           if (permission === "granted") {
             showNativeNtf(message);
           } else {
-            Toast.Success(message.Title2 || message.Title);
+            Toast.Success(message.title2 || message.title);
           }
         });
       } else {
-        Toast.Success(message.Title2 || message.Title);
+        Toast.Success(message.title2 || message.title);
       }
     };
 
     const showNativeNtf = (task) => {
-      const nativeNtf = new Notification(LangSelect.Get(task.FeatureName), {
-        body: task.Title2,
+      const nativeNtf = new Notification(LangSelect.Get(task.featureName), {
+        body: task.title2,
         icon:
-          task.Avatar ||
+          task.avatar ||
           "https://forwardx.vn/wp-content/uploads/2025/02/cropped-Logo_3-Xlog-32x32.png",
         vibrate: [200, 100, 200],
         badge:
@@ -114,15 +114,15 @@ const NotificationDropdown = () => {
   };
 
   const handleClickView = async () => {
-    var tasks = taskNotification.filter((x) => !x.IsView);
+    var tasks = taskNotification.filter((x) => !x.isView);
     var patchs = tasks.map((task) => {
       const changes = [
-        { Field: "Id", Value: task.Id },
-        { Field: "IsView", Value: "1" },
+        { field: "id", value: task.id },
+        { field: "isView", value: "1" },
       ];
       return {
-        Table: "TaskNotification",
-        Changes: changes,
+        table: "TaskNotification",
+        changes: changes,
       };
     });
     document.querySelector(".notification1 .badge").innerHTML = "";
@@ -130,95 +130,95 @@ const NotificationDropdown = () => {
     dispatch(
       updateData({
         key: NOTIFICATION_KEY,
-        item: taskNotification.map((x) => ({ ...x, IsView: true })),
+        item: taskNotification.map((x) => ({ ...x, isView: true })),
       })
     );
   };
 
   const handleClick = async (taskNotifi) => {
     var prams = getFeatureNameFromUrl();
-    if (taskNotifi.VoucherTypeId == 1) {
+    if (taskNotifi.voucherTypeId == 1) {
       var inquiryDetail = await Client.Instance.GetByIdAsync(
-        taskNotifi.EntityId,
-        [taskNotifi.RecordId]
+        taskNotifi.entityId,
+        [taskNotifi.recordId]
       );
       if (!inquiryDetail.data) {
         Toast.Warning("Record not exists!");
       } else {
         var inquiry = await Client.Instance.GetByIdAsync("Inquiry", [
-          inquiryDetail.data[0].InquiryId,
+          inquiryDetail.data[0].inquiryId,
         ]);
         var tabChrome = ChromeTabs.tabs.find(
-          (x) => x.content.Meta.Name == "inquiry"
+          (x) => x.content.meta.name == "inquiry"
         );
         if (!tabChrome) {
-          ComponentExt.InitFeatureByName("Inquiry", true).then((tab) => {
+          ComponentExt.InitFeatureByName("inquiry", true).then((tab) => {
             window.setTimeout(() => {
-              tab.OpenPopup("inquiry-editor", inquiry.data[0]);
+              tab.openPopup("inquiry-editor", inquiry.data[0]);
             }, 1000);
           });
         } else {
-          if (prams.params.Id != inquiry.data[0].Id) {
-            tabChrome.content.Focus();
-            var popup = tabChrome.content.Children.find((x) => x.Popup);
+          if (prams.params.id != inquiry.data[0].id) {
+            tabChrome.content.focus();
+            var popup = tabChrome.content.children.find((x) => x.popup);
             if (popup) {
-              popup.Dirty = false;
-              popup.Dispose();
+              popup.dirty = false;
+              popup.dispose();
             }
-            tabChrome.content.OpenPopup("inquiry-editor", inquiry.data[0]);
+            tabChrome.content.openPopup("inquiry-editor", inquiry.data[0]);
           }
         }
       }
-    } else if (taskNotifi.VoucherTypeId == 8) {
+    } else if (taskNotifi.voucherTypeId == 8) {
       var inquiryDetail = await Client.Instance.GetByIdAsync(
-        taskNotifi.EntityId,
-        [taskNotifi.RecordId]
+        taskNotifi.entityId,
+        [taskNotifi.recordId]
       );
       if (!inquiryDetail.data) {
         Toast.Warning("Record not exists!");
       } else {
         var tabChrome = ChromeTabs.tabs.find(
-          (x) => x.content.Meta.Name == "advance-request"
+          (x) => x.content.meta.name == "advance-request"
         );
         if (!tabChrome) {
           ComponentExt.InitFeatureByName("advance-request", true).then(
             (tab) => {
               window.setTimeout(() => {
-                tab.OpenPopup("advance-request-editor", inquiryDetail.data[0]);
+                tab.openPopup("advance-request-editor", inquiryDetail.data[0]);
               }, 1000);
             }
           );
         } else {
-          if (prams.params.Id != inquiryDetail.data[0].Id) {
-            tabChrome.content.Focus();
-            var popup = tabChrome.content.Children.find((x) => x.Popup);
+          if (prams.params.id != inquiryDetail.data[0].id) {
+            tabChrome.content.focus();
+            var popup = tabChrome.content.children.find((x) => x.popup);
             if (popup) {
-              popup.Dirty = false;
-              popup.Dispose();
+              popup.dirty = false;
+              popup.dispose();
             }
-            tabChrome.content.OpenPopup(
+            tabChrome.content.openPopup(
               "advance-request-editor",
               inquiryDetail.data[0]
             );
           }
         }
       }
-    } else if (taskNotifi.VoucherTypeId == 9) {
+    } else if (taskNotifi.voucherTypeId == 9) {
       var inquiryDetail = await Client.Instance.GetByIdAsync(
-        taskNotifi.EntityId,
-        [taskNotifi.RecordId]
+        taskNotifi.entityId,
+        [taskNotifi.recordId]
       );
       if (!inquiryDetail.data) {
         Toast.Warning("Record not exists!");
       } else {
         var tabChrome = ChromeTabs.tabs.find(
-          (x) => x.content.Meta.Name == "reimbursement-form"
+          (x) => x.content.meta.name == "reimbursement-form"
         );
         if (!tabChrome) {
           ComponentExt.InitFeatureByName("reimbursement-form", true).then(
             (tab) => {
               window.setTimeout(() => {
-                tab.OpenPopup(
+                tab.openPopup(
                   "reimbursement-form-editor",
                   inquiryDetail.data[0]
                 );
@@ -226,131 +226,131 @@ const NotificationDropdown = () => {
             }
           );
         } else {
-          if (prams.params.Id != inquiryDetail.data[0].Id) {
-            tabChrome.content.Focus();
-            var popup = tabChrome.content.Children.find((x) => x.Popup);
+          if (prams.params.id != inquiryDetail.data[0].id) {
+            tabChrome.content.focus();
+            var popup = tabChrome.content.children.find((x) => x.popup);
             if (popup) {
-              popup.Dirty = false;
-              popup.Dispose();
+              popup.dirty = false;
+              popup.dispose();
             }
-            tabChrome.content.OpenPopup(
+            tabChrome.content.openPopup(
               "reimbursement-form-editor",
               inquiryDetail.data[0]
             );
           }
         }
       }
-    } else if (taskNotifi.VoucherTypeId == 11) {
+    } else if (taskNotifi.voucherTypeId == 11) {
       var inquiryDetail = await Client.Instance.GetByIdAsync(
-        taskNotifi.EntityId,
-        [taskNotifi.RecordId]
+        taskNotifi.entityId,
+        [taskNotifi.recordId]
       );
       if (!inquiryDetail.data) {
         Toast.Warning("Record not exists!");
       } else {
         var tabChrome = ChromeTabs.tabs.find(
-          (x) => x.content.Meta.Name == "payment-request"
+          (x) => x.content.meta.name == "payment-request"
         );
         if (!tabChrome) {
           ComponentExt.InitFeatureByName("payment-request", true).then(
             (tab) => {
               window.setTimeout(() => {
-                tab.OpenPopup("payment-request-editor", inquiryDetail.data[0]);
+                tab.openPopup("payment-request-editor", inquiryDetail.data[0]);
               }, 1000);
             }
           );
         } else {
-          if (prams.params.Id != inquiryDetail.data[0].Id) {
-            tabChrome.content.Focus();
-            var popup = tabChrome.content.Children.find((x) => x.Popup);
+          if (prams.params.id != inquiryDetail.data[0].id) {
+            tabChrome.content.focus();
+            var popup = tabChrome.content.children.find((x) => x.popup);
             if (popup) {
-              popup.Dirty = false;
-              popup.Dispose();
+              popup.dirty = false;
+              popup.dispose();
             }
-            tabChrome.content.OpenPopup(
+            tabChrome.content.openPopup(
               "payment-request-editor",
               inquiryDetail.data[0]
             );
           }
         }
       }
-    } else if (taskNotifi.VoucherTypeId == 3) {
-      var entity = await Client.Instance.GetByIdAsync(taskNotifi.EntityId, [
-        taskNotifi.RecordId,
+    } else if (taskNotifi.voucherTypeId == 3) {
+      var entity = await Client.Instance.GetByIdAsync(taskNotifi.entityId, [
+        taskNotifi.recordId,
       ]);
       if (!entity.data) {
         Toast.Warning("Record not exists!");
       } else {
-        var featureName = taskNotifi.FeatureName3;
-        var featureDetailName = taskNotifi.FeatureName2;
+        var featureName = taskNotifi.featureName3;
+        var featureDetailName = taskNotifi.featureName2;
         var tabChrome = ChromeTabs.tabs.find(
-          (x) => x.content.Meta.Name == featureName
+          (x) => x.content.meta.name == featureName
         );
         if (!tabChrome) {
           ComponentExt.InitFeatureByName(featureName, true).then((tab) => {
             window.setTimeout(() => {
-              tab.OpenPopup(featureDetailName, entity.data[0]);
+              tab.openPopup(featureDetailName, entity.data[0]);
             }, 1000);
           });
         } else {
-          if (prams.params.Id != entity.data[0].Id) {
-            tabChrome.content.Focus();
-            var popup = tabChrome.content.Children.find((x) => x.Popup);
+          if (prams.params.id != entity.data[0].id) {
+            tabChrome.content.focus();
+            var popup = tabChrome.content.children.find((x) => x.popup);
             if (popup) {
-              popup.Dirty = false;
-              popup.Dispose();
+              popup.dirty = false;
+              popup.dispose();
             }
-            tabChrome.content.OpenPopup(featureDetailName, entity.data[0]);
+            tabChrome.content.openPopup(featureDetailName, entity.data[0]);
           }
         }
       }
     } else {
-      var entity = await Client.Instance.GetByIdAsync(taskNotifi.EntityId, [
-        taskNotifi.RecordId,
+      var entity = await Client.Instance.GetByIdAsync(taskNotifi.entityId, [
+        taskNotifi.recordId,
       ]);
       if (!entity.data) {
         Toast.Warning("Record not exists!");
       } else {
-        var featureName = taskNotifi.FeatureName3;
-        var featureDetailName = taskNotifi.FeatureName2;
+        var featureName = taskNotifi.featureName3;
+        var featureDetailName = taskNotifi.featureName2;
         var tabChrome = ChromeTabs.tabs.find(
-          (x) => x.content.Meta.Name == featureName
+          (x) => x.content.meta.name == featureName
         );
         if (!tabChrome) {
           ComponentExt.InitFeatureByName(featureName, true).then((tab) => {
             window.setTimeout(() => {
-              tab.OpenPopup(featureDetailName, entity.data[0]);
+              tab.openPopup(featureDetailName, entity.data[0]);
             }, 1000);
           });
         } else {
-          if (prams.params.Id != entity.data[0].Id) {
-            tabChrome.content.Focus();
-            var popup = tabChrome.content.Children.find((x) => x.Popup);
+          if (prams.params.id != entity.data[0].id) {
+            tabChrome.content.focus();
+            var popup = tabChrome.content.children.find((x) => x.popup);
             if (popup) {
-              popup.Dirty = false;
-              popup.Dispose();
+              popup.dirty = false;
+              popup.dispose();
             }
-            tabChrome.content.OpenPopup(featureDetailName, entity.data[0]);
+            tabChrome.content.openPopup(featureDetailName, entity.data[0]);
           }
         }
       }
     }
-    if (taskNotifi.Read) {
+    if (taskNotifi.read) {
       return;
     }
     dispatch(
       updateData({
         key: NOTIFICATION_KEY,
-        item: { ...taskNotifi, Read: !taskNotifi.Read },
+        item: { ...taskNotifi, read: !taskNotifi.read },
       })
     );
     const changes = [
-      { Field: "Id", Value: taskNotifi.Id },
-      { Field: "Read", Value: "1" },
+      { field: "id", value: taskNotifi.id },
+      { field: "read", value: "1" },
     ];
     const patch = {
-      Table: "TaskNotification",
-      Changes: changes,
+      table: "TaskNotification",
+      changes: changes,
     };
     Client.Instance.PatchAsync(patch).then();
   };
@@ -365,7 +365,7 @@ const NotificationDropdown = () => {
         }}
       ></i>
       <span className="badge">
-        {taskNotification?.filter((x) => !x.IsView).length || ""}
+        {taskNotification?.filter((x) => !x.isView).length || ""}
       </span>
     </>
   );
@@ -380,8 +380,8 @@ const NotificationDropdown = () => {
       <div className="menu-content ps-menu" style={{ overflow: "auto" }}>
         {taskNotification?.map((item) => (
           <a
-            key={item.Id}
-            className={`${item.Read ? "" : "text-unread"}`}
+            key={item.id}
+            className={`${item.read ? "" : "text-unread"}`}
             onClick={(e) => {
               e.preventDefault();
               handleClick(item);
@@ -391,20 +391,20 @@ const NotificationDropdown = () => {
               <img
                 className="img-notifi"
                 src={
-                  item.Avatar ||
+                  item.avatar ||
                   "https://forwardx.vn/wp-content/uploads/2025/03/cropped-Icon-Logo-180x180.png"
                 }
               />
             </div>
-            <div className={`message-content ${item.Read ? "read" : ""}`}>
-              <div className="header2">{LangSelect.Get(item.FeatureName)}</div>
-              <div className="header">{item.Title2}</div>
+            <div className={`message-content ${item.read ? "read" : ""}`}>
+              <div className="header2">{LangSelect.Get(item.featureName)}</div>
+              <div className="header">{item.title2}</div>
               <div
                 className="body"
-                dangerouslySetInnerHTML={{ __html: item.Description }}
+                dangerouslySetInnerHTML={{ __html: item.description }}
               />
               <div className="time">
-                {dayjs(item.InsertedDate).format("DD/MM HH:mm")}
+                {dayjs(item.insertedDate).format("DD/MM HH:mm")}
               </div>
             </div>
           </a>

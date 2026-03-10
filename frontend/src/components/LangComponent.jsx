@@ -11,13 +11,13 @@ const LangComponent = () => {
 
   const calcLang = (data, cul) => {
     const map = data
-      .filter((x) => x.LangCode == cul)
+      .filter((x) => x.langCode == cul)
       .reduce((acc, cur) => {
-        acc[cur.Key] = cur.Value;
+        acc[cur.key] = cur.value;
         return acc;
       }, {});
-    if (!LangSelect.Culture) {
-      LangSelect.Culture = cul;
+    if (!LangSelect.culture) {
+      LangSelect.culture = cul;
     }
     LangSelect._dictionaries = map;
     return map;

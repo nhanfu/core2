@@ -16,7 +16,7 @@ export class Button extends EditableComponent {
     constructor(ui, ele = null) {
         super(ui);
         /** @type {Component} */
-        this.ButtonEle = ele;
+        this.buttonEle = ele;
         this._textEle = null;
     }
 
@@ -24,12 +24,12 @@ export class Button extends EditableComponent {
      * Renders the button component into the DOM.
      */
     Render() {
-        if (!this.ButtonEle) {
+        if (!this.buttonEle) {
             if (!this.ParentElement) throw new Error("ParentElement is required");
             Html.Take(this.ParentElement).Button.Render();
-            this.Element = this.ButtonEle = Html.Context;
+            this.Element = this.buttonEle = Html.Context;
         } else {
-            this.Element = this.ButtonEle;
+            this.Element = this.buttonEle;
         }
 
         Html.Take(this.Element)

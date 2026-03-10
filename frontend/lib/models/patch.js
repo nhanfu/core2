@@ -1,8 +1,8 @@
 export class PatchDetail {
-  Field = "";
-  Label = "";
-  OldVal = "";
-  Value = "";
+  field = "";
+  label = "";
+  oldVal = "";
+  value = "";
 }
 
 /**
@@ -10,26 +10,26 @@ export class PatchDetail {
  */
 export class PatchVM {
   /** @type {string} */
-  ComId;
+  comId;
   /** @type {string} */
-  Table;
+  table;
   /** @type {PatchDetail[]} */
-  Changes = [];
+  changes = [];
 }
 /**
  * Represents a set of changes to be applied to a data entity.
  */
 export class SavePatchVM {
   /** @type {any[][]} */
-  Detail;
+  detail;
   /** @type {string} */
-  Table;
+  table;
   /** @type {string} */
-  ReasonOfChange;
+  reasonOfChange;
   /** @type {any[]} */
-  Changes = [];
+  changes = [];
   /** @type {any[]} */
-  Delete = [];
+  delete = [];
   /** @type {SavePatchVM} */
-  Child;
+  child;
 }

@@ -11,7 +11,7 @@ import EventType from "../../lib/models/eventType.js";
 import { ElementType } from "../../lib/models/elementType.js";
 import Sortable, { Swap } from "sortablejs";
 export class MenuComponent extends EditableComponent {
-  CurrentHref;
+  currentHref;
   /**
    * Creates an instance of the MenuComponent.
    * @param {Component} meta - The UI component.
@@ -19,20 +19,20 @@ export class MenuComponent extends EditableComponent {
    */
   constructor(meta, ele) {
     super(meta, ele);
-    this.CurrentHref = window.location.hash;
-    if (this.CurrentHref.startsWith("#/")) {
-      this.CurrentHref = this.GetFeatureNameFromUrl().pathname;
+    this.currentHref = window.location.hash;
+    if (this.currentHref.startsWith("#/")) {
+      this.currentHref = this.getFeatureNameFromUrl().pathname;
     }
   }
   /** @type {MenuComponent} */
-  static get Instance() {
+  static get instance() {
     this._instance = new MenuComponent();
     return this._instance;
   }
   /**
    * @returns {string | null}
    */
-  GetFeatureNameFromUrl() {
+  getFeatureNameFromUrl() {
     let hash = window.location.hash; // Get the full hash (e.g., '#/chat-editor?Id=-00612540-0000-0000-8000-4782e9f44882')
 
     if (hash.startsWith("#/")) {
@@ -55,7 +55,7 @@ export class MenuComponent extends EditableComponent {
     };
   }
 
-  Render() {
+  render() {
     new Promise(() => {
       Client.Instance.SubmitAsync({
         Url: `/api/feature/getMenu`,
@@ -72,30 +72,30 @@ export class MenuComponent extends EditableComponent {
                 JSON.stringify(
                   actFeature.filter(
                     (x) =>
-                      !x.InverseParent &&
-                      LangSelect.Get(x.Label).toLowerCase().includes(
+                      !x.inverseParent &&
+                      LangSelect.Get(x.label).toLowerCase().includes(
                         e.target.value.trim().toLowerCase()
                       )
                   )
                 )
               );
               newFeatures.forEach((x) => {
-                x.ParentId = null;
-                x.InverseParent = null;
+                x.parentId = null;
+                x.inverseParent = null;
               });
-              this.BuildFeatureTree(newFeatures);
-              this.Features = this.Features.filter(x => !x.ParentId || (x.Parent && t.IsMenu));
-              this.RenderMenu(this.Features);
+              this.buildFeatureTree(newFeatures);
+              this.features = this.features.filter(x => !x.parentId || (x.parent && t.isMenu));
+              this.renderMenu(this.features);
             } else {
-              this.BuildFeatureTree(actFeature);
-              this.RenderMenu(this.Features);
+              this.buildFeatureTree(actFeature);
+              this.renderMenu(this.features);
             }
           })
           .ClassName("form-control")
           .PlaceHolder("Search...")
           .End.Render();
-        this.BuildFeatureTree(cloneFeature);
-        this.RenderMenu(this.Features);
+        this.buildFeatureTree(cloneFeature);
+        this.renderMenu(this.features);
         if (Client.Token.Vendor.Icon) {
           var icon = document.querySelector("#iconweb");
           icon.href = Client.Token.Vendor.Icon;
@@ -104,42 +104,42 @@ export class MenuComponent extends EditableComponent {
     });
   }
 
-  BuildFeatureTree(features) {
+  buildFeatureTree(features) {
     const dic = features
-      .filter((f) => f.IsMenu)
+      .filter((f) => f.isMenu)
       .reduce((acc, f) => {
-        acc[f.Id] = f;
+        acc[f.id] = f;
         return acc;
       }, {});
 
     Object.values(dic).forEach((menu) => {
-      if (menu.ParentId && dic.hasOwnProperty(menu.ParentId)) {
-        const parent = dic[menu.ParentId];
+      if (menu.parentId && dic.hasOwnProperty(menu.parentId)) {
+        const parent = dic[menu.parentId];
         if (
-          parent.InverseParent === undefined ||
-          parent.InverseParent === null
+          parent.inverseParent === undefined ||
+          parent.inverseParent === null
         ) {
-          parent.InverseParent = [];
+          parent.inverseParent = [];
         }
-        parent.InverseParent.push(menu);
+        parent.inverseParent.push(menu);
       }
     });
 
     Object.values(dic).forEach((menu) => {
-      if (menu.InverseParent) {
-        menu.InverseParent.sort((a, b) => a.Order - b.Order);
+      if (menu.inverseParent) {
+        menu.inverseParent.sort((a, b) => a.order - b.order);
       }
     });
 
-    this.Features = features
-      .filter((f) => !f.ParentId && f.IsMenu)
-      .sort((a, b) => a.Order - b.Order);
+    this.features = features
+      .filter((f) => !f.parentId && f.isMenu)
+      .sort((a, b) => a.order - b.order);
   }
   /**
    * Renders the menu using the provided features.
    * @param {Feature[]} features - The array of Feature objects.
    */
-  RenderMenu(features) {
+  renderMenu(features) {
     Html.Take(".sidebar-content").Clear().Ul.Render();
     if (Client.SystemRole) {
       new Sortable(Html.Context, {
@@ -150,7 +150,7 @@ export class MenuComponent extends EditableComponent {
         forceFallback: true, // Dùng clone thay vì native drag
         delay: 500, // Giữ 300ms trước khi kéo (tránh nhấp nhầm)
         delayOnTouchOnly: true, // Chỉ áp dụng delay trên cảm ứng
-        easing: "cubic-bezier(0.2, 0.8, 0.2, 1)", // 
+        easing: "cubic-bezier(0.2, 0.8, 0.2, 1)", //
         onStart: function (evt) {
           let parentGroup = evt.from;
           parentGroup.children.forEach(item => {
@@ -167,16 +167,16 @@ export class MenuComponent extends EditableComponent {
           var items = [];
           evt.from.children.forEach((x, index) => {
             var id = x.getAttribute("data-id");
-            var mapItem = features.find(x => x.Id == id);
-            mapItem.Order = index;
+            var mapItem = features.find(x => x.id == id);
+            mapItem.order = index;
             const dirtyPatch = [
               { Field: "Id", Value: id },
-              { Field: "Order", Value: mapItem.Order }
+              { Field: "Order", Value: mapItem.order }
             ];
             items.push({
-              Changes: dirtyPatch,
-              NotMessage: true,
-              Table: "Feature",
+              changes: dirtyPatch,
+              notMessage: true,
+              table: "Feature",
             })
           });
           Client.Instance.PatchAsync2(items).then();
@@ -192,42 +192,42 @@ export class MenuComponent extends EditableComponent {
        * @param {Feature} item
        */
       (item) => {
-        if (item.IsGroup) {
+        if (item.isGroup) {
           Html.Instance.Li.ClassName("menu-category");
           Html.Instance.Event(EventType.ContextMenu, (e) =>
-            this.MenuItemContextMenu(e, item)
+            this.menuItemContextMenu(e, item)
           );
           Html.Instance.Span.IText(
-            item.Label,
+            item.label,
             "Menu"
           ).End.End.Render();
         } else {
-          var check = item.InverseParent && item.InverseParent.length > 0;
-          Html.Instance.Li.DataAttr("id", item.Id).Render();
+          var check = item.inverseParent && item.inverseParent.length > 0;
+          Html.Instance.Li.DataAttr("id", item.id).Render();
           Html.Instance.Event(EventType.ContextMenu, (e) =>
-            this.MenuItemContextMenu(e, item)
+            this.menuItemContextMenu(e, item)
           );
-          if (item.Name == this.CurrentHref) {
+          if (item.name == this.currentHref) {
             Html.Instance.ClassName("active");
           }
           if (check) {
-            if (item.InverseParent.some((x) => x.Name == this.CurrentHref)) {
+            if (item.inverseParent.some((x) => x.name == this.currentHref)) {
               Html.Instance.ClassName("open");
               Html.Instance.ClassName("active");
             }
           }
-          Html.Instance.A.DataAttr("page", item.Name).ClassName(
+          Html.Instance.A.DataAttr("page", item.name).ClassName(
             check ? "main-menu has-dropdown" : "link"
           );
           Html.Instance.Event(EventType.Click, (e) =>
-            this.MenuItemClick(e, item)
+            this.menuItemClick(e, item)
           )
-            .I.ClassName(item.Icon)
-            .End.Span.IText(item.Label, "Menu")
+            .I.ClassName(item.icon)
+            .End.Span.IText(item.label, "Menu")
             .End.Render();
           Html.Instance.EndOf(ElementType.a);
           if (check) {
-            this.RenderMenuItems(item.InverseParent);
+            this.renderMenuItems(item.inverseParent);
           }
           Html.Instance.End.Render();
         }
@@ -237,7 +237,7 @@ export class MenuComponent extends EditableComponent {
   /**
    * @param {Feature[]} menuItems
    */
-  RenderMenuItems(menuItems) {
+  renderMenuItems(menuItems) {
     Html.Instance.Ul.Render();
     if (Client.SystemRole) {
       var seft = this;
@@ -266,16 +266,16 @@ export class MenuComponent extends EditableComponent {
           var items = [];
           evt.from.children.forEach((x, index) => {
             var id = x.getAttribute("data-id");
-            var mapItem = menuItems.find(x => x.Id == id);
-            mapItem.Order = index;
+            var mapItem = menuItems.find(x => x.id == id);
+            mapItem.order = index;
             const dirtyPatch = [
               { Field: "Id", Value: id },
-              { Field: "Order", Value: mapItem.Order }
+              { Field: "Order", Value: mapItem.order }
             ];
             items.push({
-              Changes: dirtyPatch,
-              NotMessage: true,
-              Table: "Feature",
+              changes: dirtyPatch,
+              notMessage: true,
+              table: "Feature",
             })
           });
           Client.Instance.PatchAsync2(items).then();
@@ -291,34 +291,34 @@ export class MenuComponent extends EditableComponent {
          */
         (item) => {
           var check =
-            item.InverseParent != null && item.InverseParent.Count > 0;
-          Html.Instance.Li.DataAttr("id", item.Id).Render();
+            item.inverseParent != null && item.inverseParent.count > 0;
+          Html.Instance.Li.DataAttr("id", item.id).Render();
           Html.Instance.Event(EventType.ContextMenu, (e) =>
-            this.MenuItemContextMenu(e, item)
+            this.menuItemContextMenu(e, item)
           );
           if (!check) {
-            if (this.CurrentHref == item.Name) {
+            if (this.currentHref == item.name) {
               Html.Instance.ClassName("active");
             }
           }
           if (check) {
-            if (item.InverseParent.some((x) => x.Name == this.CurrentHref)) {
+            if (item.inverseParent.some((x) => x.name == this.currentHref)) {
               Html.Instance.ClassName("open");
               Html.Instance.ClassName("active");
             }
           }
-          Html.Instance.A.DataAttr("page", item.Name).ClassName(
+          Html.Instance.A.DataAttr("page", item.name).ClassName(
             check ? "main-menu has-dropdown" : "link"
           );
           Html.Instance.Event(EventType.Click, (e) =>
-            this.MenuItemClick(e, item)
+            this.menuItemClick(e, item)
           )
-            .I.ClassName(item.Icon)
-            .End.Span.IText(item.Label, "Menu")
+            .I.ClassName(item.icon)
+            .End.Span.IText(item.label, "Menu")
             .End.Render();
           Html.Instance.EndOf(ElementType.a);
           if (check) {
-            this.RenderMenuItems(item.InverseParent);
+            this.renderMenuItems(item.inverseParent);
           }
           Html.Instance.End.Render();
         }
@@ -329,7 +329,7 @@ export class MenuComponent extends EditableComponent {
    * @param {Event} e
    * @param {Feature} feature
    */
-  MenuItemClick(e, feature) {
+  menuItemClick(e, feature) {
     /**
      * @type {HTMLElement}
      */
@@ -343,35 +343,35 @@ export class MenuComponent extends EditableComponent {
      * @type {HTMLElement}
      */
     var li = a.closest(ElementType.li);
-    this.HideAll(a.closest("ul"), li);
+    this.hideAll(a.closest("ul"), li);
     li.classList.add("active");
-    if (feature.InverseParent) {
+    if (feature.inverseParent) {
       li.classList.toggle("open");
       var nestedUl = li.querySelector("ul");
-      nestedUl.style.maxHeight = 44 * feature.InverseParent.length + "px";
+      nestedUl.style.maxHeight = 44 * feature.inverseParent.length + "px";
       return;
     }
     var tab = ChromeTabs.tabs.find(
-      (x) => x.content && x.content.Meta.Name == feature.Name
+      (x) => x.content && x.content.meta.name == feature.name
     );
     if (tab) {
-      tab.content.Focus();
+      tab.content.focus();
       return;
     }
-    ComponentExt.InitFeatureByName(feature.Name, true).then();
+    ComponentExt.InitFeatureByName(feature.name, true).then();
   }
   /**
    * @param {Event} e
    * @param {Feature} feature
    */
-  MenuItemContextMenu(e, feature) {
+  menuItemContextMenu(e, feature) {
     e.preventDefault();
     e.stopPropagation();
   }
   /**
    * @param {HTMLElement} current
    */
-  HideAll(current, ele) {
+  hideAll(current, ele) {
     if (!current) {
       current = document.body;
     }

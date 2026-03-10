@@ -24,7 +24,7 @@ export class Numbox extends EditableComponent {
         this._value = null;
         this._isString = false;
         this._decimalSeparator = '.';
-        this.SetSelection = true;
+        this.setSelection = true;
         this.DefaultValue = 0;
         this.Meta.Precision = this.Meta.GroupTypeId ? parseInt(LangSelect._webConfig[this.Meta.GroupTypeId]) : parseInt(this.Meta.Precision || 0);
     }

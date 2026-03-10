@@ -18,8 +18,8 @@ const Profile = () => {
     Client.Token = null;
     localStorage.removeItem("UserInfo");
     unsubscribeToken();
-    TabEditor.Tabs.forEach((x) => x.Dispose());
-    LoginBL.Instance.Render();
+    TabEditor.tabs.forEach((x) => x.dispose());
+    LoginBL.instance.render();
   };
 
   useEffect(() => {
@@ -54,10 +54,10 @@ const Profile = () => {
                   <div className=" flex user-infor">
                     <div className="header-center">
                       <div className="full-name">
-                        {!Client.Token ? "" : Client.Token.UserName}{" "}
+                        {!Client.Token ? "" : Client.Token.userName}{" "}
                       </div>
                       <div className="infor-account">
-                        {!Client.Token ? "" : Client.Token.Email}
+                        {!Client.Token ? "" : Client.Token.email}
                       </div>
                     </div>
                   </div>

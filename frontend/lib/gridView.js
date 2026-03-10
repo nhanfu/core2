@@ -22,7 +22,7 @@ import { ListViewSearch, ListViewSearchVM } from './listViewSearch.js';
 import { ComponentFactory } from './utils/componentFactory.js';
 import Decimal from 'decimal.js';
 import { GroupViewItem } from './groupViewItem.js';
-import { UserSetting } from './models/userSeting.js';
+import { UserSetting } from './models/userSetting.js';
 import { Textbox } from './textbox.js';
 import { Datepicker } from './datepicker.js';
 import { Select } from './select.js';
@@ -37,18 +37,18 @@ export class GridView extends ListView {
      */
     constructor(ui, el) {
         super(ui, el);
-        this.SummaryClass = "summary";
-        this.CellCountNoSticky = 50;
+        this.summaryClass = "summary";
+        this.cellCountNoSticky = 50;
         this._summarys = [];
-        this.LastThClick = null;
-        this.LastNumClick = null;
-        this.AutoFocus = false;
-        this.LoadRerender = false;
+        this.lastThClick = null;
+        this.lastNumClick = null;
+        this.autoFocus = false;
+        this.loadRerender = false;
         this._waitingLoad = false;
         this._renderPrepareCacheAwaiter = 0;
         /** @type {HTMLElement} */
-        this.DataTable = null;
-        this.LastElementFocus = null;
+        this.dataTable = null;
+        this.lastElementFocus = null;
         this.lastListViewItem = null;
         this._hasFirstLoad = false;
         this._renderIndexAwaiter = 0;
@@ -62,9 +62,9 @@ export class GridView extends ListView {
         Frozen: true
     };
     /** @type {HTMLElement} */
-    MenuGridView;
+    menuGridView;
     /** @type {GridViewItem} */
-    GridViewItemEmpty;
+    gridViewItemEmpty;
     DOMContentLoadedHandler() {
         if (this.Meta.IsSumary) {
             this.AddSummaries();
@@ -72,7 +72,7 @@ export class GridView extends ListView {
     }
 
     Rerender() {
-        this.LoadRerender = true;
+        this.loadRerender = true;
         this.Header = this.Header.filter(x => !x.Hidden);
         this.RenderTableHeader(this.Header);
         if (this.Editable) {
@@ -87,7 +87,7 @@ export class GridView extends ListView {
     }
 
     AddSections() {
-        if (this.HeaderSection && this.HeaderSection.Element != null) {
+        if (this.headerSection && this.headerSection.Element != null) {
             return;
         }
         Html.Take(this.ParentElement);
@@ -103,13 +103,13 @@ export class GridView extends ListView {
         }
         Html.Instance.Div.ClassName("d-grid").Style("grid-template-columns: repeat(12, 1fr)").Div.Style("grid-area: span 1 / span 10;").ClassName("grid-toolbar search").End.Render();
         Html.Instance.Div.Style("grid-area: span 1 / span 2;").ClassName("button-toolbar").Render();
-        this.MenuGridView = Html.Context;
+        this.menuGridView = Html.Context;
         Html.Instance.End.Render();
         var child = (this.EditForm.Meta.Components || []).filter(x => x.ComponentGroupId == this.Meta.Id && (x.ComponentType == "Button" || x.ComponentType == "ImportExcel")).sort((a, b) => (a.Order || 0) - (b.Order || 0));;
         child.forEach(ui => {
             const com = ComponentFactory.GetComponent(ui, this.EditForm);
             if (com == null) return;
-            com.ParentElement = this.MenuGridView;
+            com.ParentElement = this.menuGridView;
             this.Parent.AddChild(com);
             this.EditForm.ChildCom.push(com);
             com.Disabled = ui.Disabled || this.EditForm.Disabled || com.Disabled;
@@ -147,66 +147,66 @@ export class GridView extends ListView {
             Html.Take(this.Element)
                 .Div.ClassName("list-wrapper")
                 .Div.ClassName("list-container").Render();
-            this.DataTable = Html.Context;
+            this.dataTable = Html.Context;
             Html.Instance.Div.ClassName("list-header").TabIndex(-1).Render();
-            this.HeaderSection = new ListViewSection(null, Html.Context);
-            this.HeaderSection.ParentElement = this.DataTable;
-            this.AddChild(this.HeaderSection);
+            this.headerSection = new ListViewSection(null, Html.Context);
+            this.headerSection.ParentElement = this.dataTable;
+            this.AddChild(this.headerSection);
 
-            Html.Take(this.DataTable).Div.ClassName("list-search").Render();
-            this.SearchSection = new ListViewSection(null, Html.Context);
-            this.SearchSection.Entity = { Id: Uuid7.Guid() };
-            this.SearchSection.ParentElement = this.DataTable;
-            this.AddChild(this.SearchSection);
+            Html.Take(this.dataTable).Div.ClassName("list-search").Render();
+            this.searchSection = new ListViewSection(null, Html.Context);
+            this.searchSection.Entity = { Id: Uuid7.Guid() };
+            this.searchSection.ParentElement = this.dataTable;
+            this.AddChild(this.searchSection);
 
-            Html.Take(this.DataTable).Div.ClassName("list-empty").Render();
-            this.EmptySection = new ListViewSection(null, Html.Context);
-            this.EmptySection.ParentElement = this.DataTable;
-            this.AddChild(this.EmptySection);
+            Html.Take(this.dataTable).Div.ClassName("list-empty").Render();
+            this.emptySection = new ListViewSection(null, Html.Context);
+            this.emptySection.ParentElement = this.dataTable;
+            this.AddChild(this.emptySection);
 
-            Html.Take(this.DataTable).Ul.ClassName("list-body").Render();
-            this.MainSection = new ListViewSection(null, Html.Context);
-            this.MainSection.ParentElement = this.DataTable;
-            this.AddChild(this.MainSection);
+            Html.Take(this.dataTable).Ul.ClassName("list-body").Render();
+            this.mainSection = new ListViewSection(null, Html.Context);
+            this.mainSection.ParentElement = this.dataTable;
+            this.AddChild(this.mainSection);
 
             if (!this.AddContentRendered) {
-                this.MainSection.Element.addEventListener('contextmenu', this.BodyContextMenuHandler.bind(this));
-                this.EmptySection.Element.addEventListener('contextmenu', this.BodyContextMenuHandler.bind(this));
+                this.mainSection.Element.addEventListener('contextmenu', this.BodyContextMenuHandler.bind(this));
+                this.emptySection.Element.addEventListener('contextmenu', this.BodyContextMenuHandler.bind(this));
                 this.AddContentRendered = true;
             }
 
-            Html.Take(this.DataTable).Div.ClassName("list-footer").Render();
-            this.FooterSection = new ListViewSection(null, Html.Context);
-            this.FooterSection.ParentElement = this.DataTable;
-            this.AddChild(this.FooterSection);
+            Html.Take(this.dataTable).Div.ClassName("list-footer").Render();
+            this.footerSection = new ListViewSection(null, Html.Context);
+            this.footerSection.ParentElement = this.dataTable;
+            this.AddChild(this.footerSection);
 
             Html.Instance.EndOf(".list-wrapper");
         }
         else {
             Html.Take(this.Element).Div.ClassName("table-wrapper").Table.ClassName("table").Event('keydown', e => this.HotKeyF6Handler(e, e.KeyCodeEnum()))
-            this.DataTable = Html.Context;
+            this.dataTable = Html.Context;
             Html.Instance.Thead.TabIndex(-1).ClassName("tb-header").Render();
-            this.HeaderSection = new ListViewSection(null, Html.Context);
-            this.HeaderSection.ParentElement = this.DataTable;
-            this.AddChild(this.HeaderSection);
-            Html.Take(this.DataTable).Thead.ClassName("tb-search").Render();
-            this.SearchSection = new ListViewSection(null, Html.Context);
-            this.SearchSection.Entity = {
+            this.headerSection = new ListViewSection(null, Html.Context);
+            this.headerSection.ParentElement = this.dataTable;
+            this.AddChild(this.headerSection);
+            Html.Take(this.dataTable).Thead.ClassName("tb-search").Render();
+            this.searchSection = new ListViewSection(null, Html.Context);
+            this.searchSection.Entity = {
                 Id: Uuid7.Guid()
             }
-            this.SearchSection.ParentElement = this.DataTable;
-            this.AddChild(this.SearchSection);
-            Html.Take(this.DataTable).TBody.ClassName("tb-empty").Render();
-            this.EmptySection = new ListViewSection(null, Html.Context);
-            this.EmptySection.ParentElement = this.DataTable;
-            this.AddChild(this.EmptySection);
-            Html.Take(this.DataTable).TBody.ClassName("tb-body").Render();
-            this.MainSection = new ListViewSection(null, Html.Context);
-            this.MainSection.ParentElement = this.DataTable;
-            this.AddChild(this.MainSection);
+            this.searchSection.ParentElement = this.dataTable;
+            this.AddChild(this.searchSection);
+            Html.Take(this.dataTable).TBody.ClassName("tb-empty").Render();
+            this.emptySection = new ListViewSection(null, Html.Context);
+            this.emptySection.ParentElement = this.dataTable;
+            this.AddChild(this.emptySection);
+            Html.Take(this.dataTable).TBody.ClassName("tb-body").Render();
+            this.mainSection = new ListViewSection(null, Html.Context);
+            this.mainSection.ParentElement = this.dataTable;
+            this.AddChild(this.mainSection);
             if (this.Meta.ShowHotKey) {
                 var seft = this;
-                new Sortable(this.MainSection.Element, {
+                new Sortable(this.mainSection.Element, {
                     animation: 150,
                     ghostClass: 'blue-background-class',
                     handle: '.status-bar',
@@ -219,14 +219,14 @@ export class GridView extends ListView {
                 });
             }
             if (!this.AddContentRendered) {
-                this.MainSection.Element.addEventListener('contextmenu', this.BodyContextMenuHandler.bind(this));
-                this.EmptySection.Element.addEventListener('contextmenu', this.BodyContextMenuHandler.bind(this));
+                this.mainSection.Element.addEventListener('contextmenu', this.BodyContextMenuHandler.bind(this));
+                this.emptySection.Element.addEventListener('contextmenu', this.BodyContextMenuHandler.bind(this));
                 this.AddContentRendered = true;
             }
-            Html.Take(this.DataTable).TFooter.ClassName("tb-footer").Render();
-            this.FooterSection = new ListViewSection(null, Html.Context);
-            this.FooterSection.ParentElement = this.DataTable;
-            this.AddChild(this.FooterSection);
+            Html.Take(this.dataTable).TFooter.ClassName("tb-footer").Render();
+            this.footerSection = new ListViewSection(null, Html.Context);
+            this.footerSection.ParentElement = this.dataTable;
+            this.AddChild(this.footerSection);
             Html.Instance.EndOf(".table-wrapper");
         }
         Html.Take(this.Element);
@@ -239,9 +239,9 @@ export class GridView extends ListView {
         if (this.EditForm.DevToolsElement) {
             this.EditForm.UpdateMetaData(header);
         }
-        let index = this.LastNumClick;
-        const table = this.DataTable;
-        if (this.LastNumClick != null) {
+        let index = this.lastNumClick;
+        const table = this.dataTable;
+        if (this.lastNumClick != null) {
             table.querySelectorAll('tr:not(.summary)').forEach(function (row) {
                 if (row.hasAttribute('virtualrow') || row.classList.contains('group-row')) {
                     return;
@@ -260,8 +260,8 @@ export class GridView extends ListView {
         if (index < 0) {
             return;
         }
-        this.LastThClick = th;
-        this.LastNumClick = index;
+        this.lastThClick = th;
+        this.lastNumClick = index;
         table.querySelectorAll('tr:not(.summary)').forEach(function (row) {
             if (row.hasAttribute('virtualrow') || row.classList.contains('group-row')) {
                 return;
@@ -276,9 +276,9 @@ export class GridView extends ListView {
     }
 
     FocusOutHeader(e, header) {
-        let index = this.LastNumClick;
-        const table = this.DataTable;
-        if (this.LastNumClick !== null) {
+        let index = this.lastNumClick;
+        const table = this.dataTable;
+        if (this.lastNumClick !== null) {
             table.querySelectorAll('tr:not(.summary)').forEach(function (row) {
                 if (row.hasAttribute('virtualrow') || row.classList.contains('group-row')) {
                     return;
@@ -370,9 +370,9 @@ export class GridView extends ListView {
     }
 
     SwapSectionHeader(oldIndex, newIndex) {
-        const item = this.HeaderSection.Children[oldIndex];
-        this.HeaderSection.Children.splice(oldIndex, 1);
-        this.HeaderSection.Children.splice(newIndex, 0, item);
+        const item = this.headerSection.Children[oldIndex];
+        this.headerSection.Children.splice(oldIndex, 1);
+        this.headerSection.Children.splice(newIndex, 0, item);
     }
 
     FocusCell(e, header) {
@@ -521,7 +521,7 @@ export class GridView extends ListView {
     MoveFocusUp(fieldName) {
         let currentItem = this.GetItemFocus();
         if (!currentItem) {
-            currentItem = this.GridViewItemEmpty;
+            currentItem = this.gridViewItemEmpty;
         }
         if (!(this.Meta.IsMultiple && this.ComponentType == "GridView")) {
             currentItem.Selected = false;
@@ -556,8 +556,8 @@ export class GridView extends ListView {
             }
         }
         if (nextIndex == -2) {
-            this.GridViewItemEmpty.Focused = true;
-            var com = this.GridViewItemEmpty.Children.find(x => x.Meta.FieldName == fieldName);
+            this.gridViewItemEmpty.Focused = true;
+            var com = this.gridViewItemEmpty.Children.find(x => x.Meta.FieldName == fieldName);
             com.ParentElement.focus();
             com.Focus();
             if (com.Element.tagName === 'INPUT' || com.Element.tagName === 'TEXTAREA') {
@@ -581,7 +581,7 @@ export class GridView extends ListView {
     MoveFocusDown(fieldName) {
         let currentItem = this.GetItemFocus();
         if (!currentItem) {
-            currentItem = this.GridViewItemEmpty;
+            currentItem = this.gridViewItemEmpty;
         }
         if (!(this.Meta.IsMultiple && this.ComponentType == "GridView")) {
             currentItem.Selected = false;
@@ -616,8 +616,8 @@ export class GridView extends ListView {
             }
         }
         if (nextIndex == -2) {
-            this.GridViewItemEmpty.Focused = true;
-            var com = this.GridViewItemEmpty.Children.find(x => x.Meta.FieldName == fieldName);
+            this.gridViewItemEmpty.Focused = true;
+            var com = this.gridViewItemEmpty.Children.find(x => x.Meta.FieldName == fieldName);
             com.ParentElement.focus();
             com.Focus();
             if (com.Element.tagName === 'INPUT' || com.Element.tagName === 'TEXTAREA') {
@@ -644,7 +644,7 @@ export class GridView extends ListView {
     MoveFocusLeft(com) {
         let currentItem = this.GetItemFocus();
         if (!currentItem) {
-            currentItem = this.GridViewItemEmpty;
+            currentItem = this.gridViewItemEmpty;
         }
         var ele = this.PreElement(com.Element.closest('td').previousElementSibling);
         let leftItem = currentItem.Children.find(x => x.Element.closest('td') === ele);
@@ -682,7 +682,7 @@ export class GridView extends ListView {
     MoveFocusRight(com) {
         let currentItem = this.GetItemFocus();
         if (!currentItem) {
-            currentItem = this.GridViewItemEmpty;
+            currentItem = this.gridViewItemEmpty;
         }
         var ele = this.NextElement(com.Element.closest('td').nextElementSibling);
         let leftItem = currentItem.Children.find(x => x.Element.closest('td') === ele);
@@ -702,7 +702,7 @@ export class GridView extends ListView {
     HotKeyF6Handler(e, keyCode) {
         let currentItem = this.GetItemFocus();
         if (!currentItem) {
-            currentItem = this.GridViewItemEmpty;
+            currentItem = this.gridViewItemEmpty;
         }
         switch (keyCode) {
             case KeyCodeEnum.F1:
@@ -752,37 +752,37 @@ export class GridView extends ListView {
                 return;
             }
         }
-        if (this.Disabled || !this.Meta.CanAdd || (this.EmptySection && this.EmptySection.Children.length > 0)) {
+        if (this.Disabled || !this.Meta.CanAdd || (this.emptySection && this.emptySection.Children.length > 0)) {
             return;
         }
         let emptyRowData = {};
         emptyRowData[this.IdField] = Uuid7.NewGuid();
-        this.GridViewItemEmpty = this.RenderRowData(this.Header, emptyRowData, this.EmptySection, null, true);
+        this.gridViewItemEmpty = this.RenderRowData(this.Header, emptyRowData, this.emptySection, null, true);
         if (!this.Meta.TopEmpty) {
-            this.DataTable.insertBefore(this.MainSection.Element, this.EmptySection.Element);
+            this.dataTable.insertBefore(this.mainSection.Element, this.emptySection.Element);
         } else {
-            this.DataTable.insertBefore(this.EmptySection.Element, this.MainSection.Element);
+            this.dataTable.insertBefore(this.emptySection.Element, this.mainSection.Element);
         }
-        this.GridViewItemEmpty.Children.forEach(x => x.SetRequired());
+        this.gridViewItemEmpty.Children.forEach(x => x.SetRequired());
         this.DispatchCustomEvent(this.Meta.Events, 'AfterEmptyRowCreated', emptyRowData).then(() => {
             this.UpdateStickyColumns();
         });
     }
 
     async ApplyFilter() {
-        this.DataTable.parentElement.scrollTop = 0;
+        this.dataTable.parentElement.scrollTop = 0;
         await this.ReloadData(this.cacheHeader = true);
     }
 
     RenderContent() {
-        if (!this.LoadRerender) {
+        if (!this.loadRerender) {
             this.Rerender();
         }
         this.AddSections();
         let viewPort = this.GetViewPortItem();
         this.FormattedRowData = this.Meta.LocalRender ? this.Meta.LocalData : this.RowData.Data;
         if (!this.FormattedRowData || this.FormattedRowData.length === 0) {
-            this.MainSection.DisposeChildren();
+            this.mainSection.DisposeChildren();
             if (!this._hasFirstLoad) {
                 this.DispatchCustomEvent(this.Meta.Events, 'FirstLoad', this).then();
                 this._hasFirstLoad = true;
@@ -790,7 +790,7 @@ export class GridView extends ListView {
             this.DomLoaded();
             return;
         }
-        if (this.MainSection.Children.length > 0) {
+        if (this.mainSection.Children.length > 0) {
             if (this._hasFirstLoad) {
                 this.UpdateExistRowsWrapper(false, 0, viewPort);
             }
@@ -802,13 +802,13 @@ export class GridView extends ListView {
             this.RenderIndex();
             return;
         }
-        this.MainSection.Show = false;
+        this.mainSection.Show = false;
         for (let index = 0; index < this.FormattedRowData.length; index++) {
             const rowData = this.FormattedRowData[index];
-            Html.Take(this.MainSection.Element);
-            this.RenderRowData(this.Header, rowData, this.MainSection, index);
+            Html.Take(this.mainSection.Element);
+            this.RenderRowData(this.Header, rowData, this.mainSection, index);
         }
-        this.MainSection.Show = true;
+        this.mainSection.Show = true;
         this.ContentRendered();
         this.DomLoaded();
         this.UpdateStickyColumns();
@@ -840,10 +840,10 @@ export class GridView extends ListView {
         const shouldAddRow = this.AllListViewItem.length <= updatedData.length;
         if (shouldAddRow) {
             updatedData.slice(dataSections.length).forEach(newRow => {
-                this.RenderRowData(this.Header, newRow, this.MainSection);
+                this.RenderRowData(this.Header, newRow, this.mainSection);
             });
         } else {
-            this.MainSection.Children.slice(updatedData.length).forEach(x => x.Dispose());
+            this.mainSection.Children.slice(updatedData.length).forEach(x => x.Dispose());
         }
 
         if (dirty !== undefined) {
@@ -948,7 +948,7 @@ export class GridView extends ListView {
             .map((item, index) => item.Frozen ? index : -1)
             .filter(index => index !== -1);
         stickyColumns.sort((a, b) => a - b);
-        this.DataTable && this.DataTable.querySelectorAll("th, td").forEach((cell) => {
+        this.dataTable && this.dataTable.querySelectorAll("th, td").forEach((cell) => {
             cell.classList.remove("sticky-column");
             cell.style.left = "";
             cell.classList.remove("sticky-column-right"); // reset phải
@@ -956,37 +956,37 @@ export class GridView extends ListView {
         });
         let leftOffset = 0;
         stickyColumns.forEach((index) => {
-            this.HeaderSection.Element.querySelectorAll(
+            this.headerSection.Element.querySelectorAll(
                 `tr:first-child th:nth-child(${index + 1})`
             ).forEach((cell) => {
                 cell.classList.add("sticky-column");
                 cell.style.left = `${leftOffset}px`;
             });
-            this.SearchSection.Element.querySelectorAll(
+            this.searchSection.Element.querySelectorAll(
                 `td:nth-child(${index + 1})`
             ).forEach((cell) => {
                 cell.classList.add("sticky-column");
                 cell.style.left = `${leftOffset}px`;
             });
-            this.MainSection.Element.querySelectorAll(
+            this.mainSection.Element.querySelectorAll(
                 `td:nth-child(${index + 1})`
             ).forEach((cell) => {
                 cell.classList.add("sticky-column");
                 cell.style.left = `${leftOffset}px`;
             });
-            this.EmptySection.Element.querySelectorAll(
+            this.emptySection.Element.querySelectorAll(
                 `td:nth-child(${index + 1})`
             ).forEach((cell) => {
                 cell.classList.add("sticky-column");
                 cell.style.left = `${leftOffset}px`;
             });
-            this.FooterSection.Element.querySelectorAll(
+            this.footerSection.Element.querySelectorAll(
                 `td:nth-child(${index + 1})`
             ).forEach((cell) => {
                 cell.classList.add("sticky-column");
                 cell.style.left = `${leftOffset}px`;
             });
-            leftOffset += this.HeaderSection.Element.querySelector(
+            leftOffset += this.headerSection.Element.querySelector(
                 `tr:first-child th:nth-child(${index + 1})`
             )?.offsetWidth || 0;
         });
@@ -999,11 +999,11 @@ export class GridView extends ListView {
 
         let rightOffset = 0;
         stickyRightColumns.forEach((index) => {
-            const cellWidth = this.HeaderSection.Element.querySelector(
+            const cellWidth = this.headerSection.Element.querySelector(
                 `tr:first-child th:nth-child(${index + 1})`
             )?.offsetWidth || 0;
 
-            [this.HeaderSection, this.SearchSection, this.MainSection, this.EmptySection, this.FooterSection]
+            [this.headerSection, this.searchSection, this.mainSection, this.emptySection, this.footerSection]
                 .forEach(section => {
                     section.Element.querySelectorAll(
                         `tr td:nth-child(${index + 1}), tr th:nth-child(${index + 1})`
@@ -1022,7 +1022,7 @@ export class GridView extends ListView {
             .map((item, index) => item.Frozen ? index : -1)
             .filter(index => index !== -1);
         stickyColumns.sort((a, b) => a - b);
-        this.FooterSection.Element.querySelectorAll("th, td").forEach((cell) => {
+        this.footerSection.Element.querySelectorAll("th, td").forEach((cell) => {
             cell.classList.remove("sticky-column");
             cell.style.left = "";
             cell.classList.remove("sticky-column-right");
@@ -1031,13 +1031,13 @@ export class GridView extends ListView {
 
         let leftOffset = 0;
         stickyColumns.forEach((index) => {
-            this.FooterSection.Element.querySelectorAll(
+            this.footerSection.Element.querySelectorAll(
                 `td:nth-child(${index + 1})`
             ).forEach((cell) => {
                 cell.classList.add("sticky-column");
                 cell.style.left = `${leftOffset}px`;
             });
-            leftOffset += this.HeaderSection.Element.querySelector(
+            leftOffset += this.headerSection.Element.querySelector(
                 `tr:first-child th:nth-child(${index + 1})`
             )?.offsetWidth || 0;
         });
@@ -1050,11 +1050,11 @@ export class GridView extends ListView {
 
         let rightOffset = 0;
         stickyRightColumns.forEach((index) => {
-            const cellWidth = this.HeaderSection.Element.querySelector(
+            const cellWidth = this.headerSection.Element.querySelector(
                 `tr:first-child th:nth-child(${index + 1})`
             )?.offsetWidth || 0;
 
-            this.FooterSection.Element.querySelectorAll(
+            this.footerSection.Element.querySelectorAll(
                 `td:nth-child(${index + 1})`
             ).forEach((cell) => {
                 cell.classList.add("sticky-column-right");
@@ -1080,16 +1080,16 @@ export class GridView extends ListView {
             }
             const sums = this.Header.filter(x => !Utils.isNullOrWhiteSpace(x.Summary));
             if (!sums || sums.length == 0 || this.Item.length == 0) {
-                if (this.FooterSection && this.FooterSection.Element.firstChild) {
-                    this.FooterSection.Element.firstChild.childNodes.forEach(x => x.innerHTML = '');
+                if (this.footerSection && this.footerSection.Element.firstChild) {
+                    this.footerSection.Element.firstChild.childNodes.forEach(x => x.innerHTML = '');
                 }
                 return;
             }
-            const summaryElements = this.MainSection.Element.querySelectorAll(`.${this.SummaryClass}`);
+            const summaryElements = this.mainSection.Element.querySelectorAll(`.${this.summaryClass}`);
             summaryElements.forEach(x => x.remove());
             const count = new Set(sums.map(x => x.Summary)).size;
             sums.forEach(header => {
-                this.RenderSummaryRow(header, this.Header, this.FooterSection.Element, count);
+                this.RenderSummaryRow(header, this.Header, this.footerSection.Element, count);
             });
             this.UpdateStickySummary();
         }, 100);
@@ -1130,14 +1130,14 @@ export class GridView extends ListView {
         var firstChild = null;
         if (this.Meta.Editable) {
             if (this.Meta.CanAdd) {
-                firstChild = this.EmptySection.Element.firstChild;
+                firstChild = this.emptySection.Element.firstChild;
             }
             else {
-                firstChild = this.MainSection.Children.find(x => !x.GroupRow).Element;
+                firstChild = this.mainSection.Children.find(x => !x.GroupRow).Element;
             }
         }
         else {
-            firstChild = this.MainSection.Children.find(x => !x.GroupRow).Element;
+            firstChild = this.mainSection.Children.find(x => !x.GroupRow).Element;
         }
         if (!firstChild) {
             if (existSumRow != null) {
@@ -1259,7 +1259,7 @@ export class GridView extends ListView {
             rowSection.UpdateView(true);
             rowSection.EmptyRow = false;
             this.MoveEmptyRow(rowSection);
-            this.EmptySection.Children = [];
+            this.emptySection.Children = [];
             this.AddNewEmptyRow();
             this.ClearSelected();
             rowSection.Selected = true;
@@ -1330,17 +1330,17 @@ export class GridView extends ListView {
         var currentIndex = this.AllListViewItem.indexOf(rowSection);
         this.AllListViewItem.splice(currentIndex, 1);
         if (groupSection) {
-            rowSection.Parent = this.MainSection;
-            rowSection.ListViewSection = this.MainSection;
+            rowSection.Parent = this.mainSection;
+            rowSection.ListViewSection = this.mainSection;
             rowSection.GroupSection = groupSection;
             rowSection.Element.classList.add("group-detail");
             var lastChild = groupSection.ChildrenItems[groupSection.ChildrenItems.length - 1];
             var index = this.AllListViewItem.indexOf(lastChild);
             if (this.AllListViewItem.length == index + 1) {
-                this.MainSection.Element.appendChild(rowSection.Element);
+                this.mainSection.Element.appendChild(rowSection.Element);
             }
             else {
-                this.MainSection.Element.insertBefore(rowSection.Element, this.AllListViewItem[index + 1].Element);
+                this.mainSection.Element.insertBefore(rowSection.Element, this.AllListViewItem[index + 1].Element);
             }
             this.AllListViewItem.splice(index + 1, 0, rowSection);
             groupSection.ChildrenItems.push(rowSection);
@@ -1348,15 +1348,15 @@ export class GridView extends ListView {
             return rowSection;
         }
         else {
-            Html.Take(this.MainSection);
+            Html.Take(this.mainSection);
             groupSection = new GroupViewItem(ElementType.tr);
             groupSection.Key = rowSection.Entity[this._groupKey];
             groupSection.Entity = rowSection.Entity;
-            groupSection.ParentElement = this.MainSection.Element;
+            groupSection.ParentElement = this.mainSection.Element;
             groupSection.ListViewSection = true;
-            groupSection.ListViewSection = this.MainSection;
+            groupSection.ListViewSection = this.mainSection;
             groupSection.ListView = this;
-            this.MainSection.AddChild(groupSection);
+            this.mainSection.AddChild(groupSection);
             groupSection.Element.tabIndex = -1;
             var groupText = Utils.IsFunction(this.Meta.GroupFormat, false, rowSection);
             Html.Instance.TData.ClassName("status-cell").TabIndex(-1).Event(EventType.Click, () => groupSection.ShowChildren1 = !groupSection.ShowChildren1).Icon("fal fa-square");
@@ -1375,17 +1375,17 @@ export class GridView extends ListView {
                 Html.Instance.EndOf(ElementType.td);
             });
             Html.Instance.EndOf(ElementType.tr);
-            Html.Take(this.MainSection.Element);
+            Html.Take(this.mainSection.Element);
             rowSection.Element.classList.add("group-detail");
             groupSection.ChildrenItems.push(rowSection);
             rowSection.GroupSection = groupSection;
             var lastChild = groupSection.ChildrenItems[groupSection.ChildrenItems.length - 1];
             var index = this.AllListViewItem.indexOf(groupSection);
             if (this.AllListViewItem.length == index + 1) {
-                this.MainSection.Element.appendChild(rowSection.Element);
+                this.mainSection.Element.appendChild(rowSection.Element);
             }
             else {
-                this.MainSection.Element.insertBefore(rowSection.Element, this.AllListViewItem[index + 1].Element);
+                this.mainSection.Element.insertBefore(rowSection.Element, this.AllListViewItem[index + 1].Element);
             }
             this.AllListViewItem.splice(index + 1, 0, rowSection);
             return rowSection;
@@ -1396,25 +1396,25 @@ export class GridView extends ListView {
      */
     MoveEmptyRow(rowSection) {
         if (this.Meta.TopEmpty) {
-            if (!this.MainSection.Children.includes(this.EmptySection.FirstChild)) {
-                this.MainSection.Children.unshift(this.EmptySection.FirstChild);
+            if (!this.mainSection.Children.includes(this.emptySection.FirstChild)) {
+                this.mainSection.Children.unshift(this.emptySection.FirstChild);
             }
-            this.MainSection.Element.prepend(this.EmptySection.Element.firstElementChild);
+            this.mainSection.Element.prepend(this.emptySection.Element.firstElementChild);
         } else {
-            this.MainSection.Element.appendChild(this.EmptySection.Element.firstElementChild);
-            if (!this.MainSection.Children.includes(this.EmptySection.FirstChild)) {
-                this.MainSection.Children.push(this.EmptySection.FirstChild);
+            this.mainSection.Element.appendChild(this.emptySection.Element.firstElementChild);
+            if (!this.mainSection.Children.includes(this.emptySection.FirstChild)) {
+                this.mainSection.Children.push(this.emptySection.FirstChild);
             }
         }
         if (this.Meta.IsRealtime) {
             rowSection.Element.classList.remove("new-row");
         }
-        rowSection.Parent = this.MainSection;
-        rowSection.ListViewSection = this.MainSection;
+        rowSection.Parent = this.mainSection;
+        rowSection.ListViewSection = this.mainSection;
     }
     HideColumn(...param) {
-        if (this.HeaderSection) {
-            this.HeaderSection.Children.forEach(column => {
+        if (this.headerSection) {
+            this.headerSection.Children.forEach(column => {
                 if (param.includes(column.Meta.FieldName)) {
                     if (column.Element.style.display == "") {
                         var parentElement = this.ThGroup.find(x => x.GroupName == column.Meta.GroupName);
@@ -1444,8 +1444,8 @@ export class GridView extends ListView {
                 }
             })
         }
-        if (this.GridViewItemEmpty) {
-            this.GridViewItemEmpty.Children.forEach(column => {
+        if (this.gridViewItemEmpty) {
+            this.gridViewItemEmpty.Children.forEach(column => {
                 if (param.includes(column.Meta.FieldName)) {
                     column.Element.closest("td").style.display = "none";
                 }
@@ -1454,8 +1454,8 @@ export class GridView extends ListView {
                 }
             })
         }
-        if (this.FooterSection && this.FooterSection.Element.firstChild) {
-            this.FooterSection.Element.firstChild.childNodes.forEach(column => {
+        if (this.footerSection && this.footerSection.Element.firstChild) {
+            this.footerSection.Element.firstChild.childNodes.forEach(column => {
                 if (param.includes(column.getAttribute("data-field"))) {
                     column.style.display = "none";
                 }
@@ -1510,13 +1510,13 @@ export class GridView extends ListView {
         if (headers.Count != this.Header.Count) {
             this.FilterColumns(headers);
         }
-        if (this.HeaderSection.Element === null) {
+        if (this.headerSection.Element === null) {
             this.AddSections();
         }
         headers.forEach((x, index) => x.PostOrder = index);
-        this.HeaderSection.DisposeChildren();
+        this.headerSection.DisposeChildren();
         const anyGroup = headers.some(x => x.GroupName && !Utils.isNullOrWhiteSpace(x.GroupName));
-        Html.Take(this.HeaderSection.Element).Clear().TRow.ForEach(headers, (header, index) => {
+        Html.Take(this.headerSection.Element).Clear().TRow.ForEach(headers, (header, index) => {
             if (anyGroup && !Utils.isNullOrWhiteSpace(header.GroupName)) {
                 if (header !== headers.find(x => x.GroupName === header.GroupName)) {
                     return;
@@ -1552,7 +1552,7 @@ export class GridView extends ListView {
                 .Event(EventType.KeyDown, e => this.ThHotKeyHandler(e, header));
             var sec = new Section(null, Html.Context);
             sec.Meta = header;
-            this.HeaderSection.AddChild(sec);
+            this.headerSection.AddChild(sec);
             if (anyGroup && (!header.GroupName || header.GroupName === "")) {
                 Html.Instance.RowSpan(2);
             }
@@ -1602,17 +1602,17 @@ export class GridView extends ListView {
                         .IHtml(header.Label, this.EditForm.Meta.Label);
                     var sec = new Section(null, Html.Context);
                     sec.Meta = header;
-                    this.HeaderSection.AddChild(sec);
+                    this.headerSection.AddChild(sec);
                     Html.Instance.EndOf(ElementType.th);
                 }
             });
         }
-        this.HeaderSection.Children = this.HeaderSection.Children.sort((a, b) => a.Meta.PostOrder - b.Meta.PostOrder);
+        this.headerSection.Children = this.headerSection.Children.sort((a, b) => a.Meta.PostOrder - b.Meta.PostOrder);
         if (this.Meta.CanSearch) {
-            var headerHeight = this.HeaderSection.Element.clientHeight;
-            this.SearchSection.Element.style.top = `${headerHeight}px`;
-            this.SearchSection.Element.style.position = "sticky";
-            Html.Take(this.SearchSection.Element).Clear().TRow.ForEach(headers, (header, index) => {
+            var headerHeight = this.headerSection.Element.clientHeight;
+            this.searchSection.Element.style.top = `${headerHeight}px`;
+            this.searchSection.Element.style.position = "sticky";
+            Html.Take(this.searchSection.Element).Clear().TRow.ForEach(headers, (header, index) => {
                 Html.TData.TabIndex(-1);
                 if (header.StatusBar) {
                     Html.Instance.Style(`top:${headerHeight}px`).Span.ClassName("fal fa-search").End;
@@ -1623,7 +1623,7 @@ export class GridView extends ListView {
                 var sec = new Section(null, Html.Context);
                 sec.Meta = header;
                 if (header.FieldName == "Id") {
-                    this.SearchSection.AddChild(sec);
+                    this.searchSection.AddChild(sec);
                 }
                 else {
                     switch (header.ComponentType) {
@@ -1642,7 +1642,7 @@ export class GridView extends ListView {
                             txtSearch.OrderMethod = "asc";
                             txtSearch.IsOrderBy = false;
                             txtSearch.Entity = this.ListViewSearch.EntityVM;
-                            this.SearchSection.AddChild(txtSearch);
+                            this.searchSection.AddChild(txtSearch);
                             txtSearch.Element.addEventListener("keydown", (e) => {
                                 let code = e.KeyCodeEnum();
                                 if (code == KeyCodeEnum.Enter) {
@@ -1670,7 +1670,7 @@ export class GridView extends ListView {
                             txtSearch.OrderMethod = "asc";
                             txtSearch.IsOrderBy = false;
                             txtSearch.Entity = this.ListViewSearch.EntityVM;
-                            this.SearchSection.AddChild(txtSearch);
+                            this.searchSection.AddChild(txtSearch);
                             txtSearch.Element.addEventListener("keydown", (e) => {
                                 let code = e.KeyCodeEnum();
                                 if (code == KeyCodeEnum.Enter) {
@@ -1697,7 +1697,7 @@ export class GridView extends ListView {
                             txtSearch.SearchMethod = SearchMethodEnum.Range;
                             txtSearch.OrderMethod = "asc";
                             txtSearch.SearchIcon = "fal fa-arrows-alt-h";
-                            this.SearchSection.AddChild(txtSearch);
+                            this.searchSection.AddChild(txtSearch);
                             txtSearch.Element.addEventListener("keydown", (e) => {
                                 let code = e.KeyCodeEnum();
                                 if (code == KeyCodeEnum.Enter) {
@@ -1730,7 +1730,7 @@ export class GridView extends ListView {
                                             "Name": "Uncheck"
                                         }]`
                             });
-                            this.SearchSection.AddChild(txtSearch);
+                            this.searchSection.AddChild(txtSearch);
                             txtSearch.SearchMethod = SearchMethodEnum.Contain;
                             txtSearch.Element.addEventListener("keydown", (e) => {
                                 let code = e.KeyCodeEnum();
@@ -1745,7 +1745,7 @@ export class GridView extends ListView {
                         default:
                             var sec = new Section(null, Html.Context);
                             sec.Meta = header;
-                            this.SearchSection.AddChild(sec);
+                            this.searchSection.AddChild(sec);
                             break;
                     }
                 }
@@ -1852,7 +1852,7 @@ export class GridView extends ListView {
     ActionSearch(header, type, txtSearch, className, multiple) {
         txtSearch.SearchMethod = type;
         if (type == "OrderBy") {
-            this.SearchSection.Children.forEach(x => x.IsOrderBy = false);
+            this.searchSection.Children.forEach(x => x.IsOrderBy = false);
             txtSearch.OrderMethod = txtSearch.OrderMethod == "asc" ? "desc" : "asc";
             className = txtSearch.OrderMethod == "asc" ? "fas fa-sort-amount-up" : "fas fa-sort-amount-down";
             txtSearch.IsOrderBy = true;
@@ -1947,7 +1947,7 @@ export class GridView extends ListView {
     UpdateHeaders(sticky) {
         window.clearTimeout(this._imeout);
         this._imeout = window.setTimeout(() => {
-            const headerElements = this.HeaderSection.Children.filter(x => x.Meta && x.Meta.Id);
+            const headerElements = this.headerSection.Children.filter(x => x.Meta && x.Meta.Id);
             let index = 0;
             let anyGroup = this.Header.some(x => x.GroupName && !Utils.isNullOrWhiteSpace(x.GroupName));
             if (!anyGroup) {
@@ -2216,9 +2216,9 @@ export class GridView extends ListView {
                 this.AddNewEmptyRow();
             }
             else {
-                if (this.GridViewItemEmpty) {
-                    this.GridViewItemEmpty.Dispose();
-                    this.GridViewItemEmpty = null;
+                if (this.gridViewItemEmpty) {
+                    this.gridViewItemEmpty.Dispose();
+                    this.gridViewItemEmpty = null;
                 }
             }
             return;
@@ -2228,9 +2228,9 @@ export class GridView extends ListView {
             this.AddNewEmptyRow();
         }
         else {
-            if (this.GridViewItemEmpty) {
-                this.GridViewItemEmpty.Dispose();
-                this.GridViewItemEmpty = null;
+            if (this.gridViewItemEmpty) {
+                this.gridViewItemEmpty.Dispose();
+                this.gridViewItemEmpty = null;
             }
         }
     }
@@ -2258,7 +2258,7 @@ export class GridView extends ListView {
                     nextComponent.Focus();
                 }
             }
-            this.EmptySection.Children = [];
+            this.emptySection.Children = [];
             this.AddNewEmptyRow();
             await this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterCreated, rowSection, rowData);
         }
@@ -2271,7 +2271,7 @@ export class GridView extends ListView {
             return this.RowData.Data.length;
         }
         let mainSectionHeight = this.Element.clientHeight
-            - (this.HeaderSection.Element ? this.HeaderSection.Element.clientHeight : 0)
+            - (this.headerSection.Element ? this.headerSection.Element.clientHeight : 0)
             - this.Paginator.Element.clientHeight
             - this._theadTable;
 

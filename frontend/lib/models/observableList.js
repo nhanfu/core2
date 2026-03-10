@@ -1,63 +1,63 @@
 export class ObservableList {
-    constructor(Data = []) {
-        this._data = Data;
-        this.Listeners = [];
+    constructor(data = []) {
+        this._data = data;
+        this.listeners = [];
     }
 
-    Clear() {
+    clear() {
         while (this._data.length) this._data.pop();
     }
-    
+
     // Subscribe to changes
-    Subscribe(callback) {
-        this.Listeners.push(callback);
+    subscribe(callback) {
+        this.listeners.push(callback);
     }
 
     // Unsubscribe from changes
-    Unsubscribe(Callback) {
-        this.Listeners = this.Listeners.filter(listener => listener !== Callback);
+    unsubscribe(callback) {
+        this.listeners = this.listeners.filter(listener => listener !== callback);
     }
 
     // Notify all listeners
-    Notify(Action, Item, Index) {
-        const Args = { ListData: this._data, Item, Index, Action };
-        this.Listeners.forEach(Listener => Listener(Args));
+    notify(action, item, index) {
+        const args = { listData: this._data, item, index, action };
+        this.listeners.forEach(listener => listener(args));
     }
 
-    get Data() {
+    get data() {
         return this._data;
     }
 
-    set Data(Value) {
-        this._data = Value;
-        this.Notify('Render');
+    set data(value) {
+        this._data = value;
+        this.notify('Render');
     }
 
-    Add(Item, Index = this._data.length) {
-        this._data.splice(Index, 0, Item);
-        this.Notify('Add', Item, Index);
+    add(item, index = this._data.length) {
+        this._data.splice(index, 0, item);
+        this.notify('Add', item, index);
     }
 
-    Remove(Item) {
-        const Index = this._data.indexOf(Item);
-        if (Index > -1) {
-            this._data.splice(Index, 1);
-            this.Notify('Remove', Item, Index);
+    remove(item) {
+        const index = this._data.indexOf(item);
+        if (index > -1) {
+            this._data.splice(index, 1);
+            this.notify('Remove', item, index);
         }
     }
 
-    RemoveAt(Index) {
-        if (Index >= 0 && Index < this._data.length) {
-            const Item = this._data[Index];
-            this._data.splice(Index, 1);
-            this.Notify('Remove', Item, Index);
+    removeAt(index) {
+        if (index >= 0 && index < this._data.length) {
+            const item = this._data[index];
+            this._data.splice(index, 1);
+            this.notify('Remove', item, index);
         }
     }
 
-    Update(Item, Index) {
-        if (Index >= 0 && Index < this._data.length) {
-            this._data[Index] = Item;
-            this.Notify('Update', Item, Index);
+    update(item, index) {
+        if (index >= 0 && index < this._data.length) {
+            this._data[index] = item;
+            this.notify('Update', item, index);
         }
     }
 }

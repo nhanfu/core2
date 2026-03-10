@@ -14,11 +14,11 @@ export class ValidationRule {
     static Unique = "unique";
 
     constructor(rule, message, value1, value2, condition, rejectInvalid) {
-        this.Rule = rule;
-        this.Message = message;
-        this.Value1 = value1;
-        this.Value2 = value2;
-        this.Condition = condition;
-        this.RejectInvalid = rejectInvalid;
+        this.rule = rule;
+        this.message = message;
+        this.value1 = value1;
+        this.value2 = value2;
+        this.condition = condition;
+        this.rejectInvalid = rejectInvalid;
     }
 }

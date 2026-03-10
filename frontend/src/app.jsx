@@ -20,56 +20,56 @@ import VNTank from "./components/VnTank.jsx";
 
 export class App {
   /** @type {Page} */
-  static MyApp;
+  static myApp;
   /** @type {App} */
   static _instance;
   /** @type {App} */
-  static get Instance() {
+  static get instance() {
     if (!this._instance) {
       this._instance = new App();
     }
     return this._instance;
   }
   /** @type {Feature} */
-  Meta;
+  meta;
   constructor() {
-    this.Meta = new Feature();
-    this.Meta.ParentElement = document.getElementById("app");
-    this.Meta.Layout = () => {
+    this.meta = new Feature();
+    this.meta.parentElement = document.getElementById("app");
+    this.meta.layout = () => {
       return (
         <>
-          <AppComponent editForm={this.MyApp.EditForm} />
+          <AppComponent editForm={this.myApp.editForm} />
         </>
       );
     };
-    this.MyApp = new Page();
-    this.MyApp.EditForm = new EditForm("MyApp");
-    this.MyApp.EditForm.Policies = [
+    this.myApp = new Page();
+    this.myApp.editForm = new EditForm("MyApp");
+    this.myApp.editForm.policies = [
       {
-        CanRead: true,
+        canRead: true,
       },
     ];
-    this.MyApp.Meta = this.Meta;
-    this.MyApp.EditForm.Meta = this.Meta;
+    this.myApp.meta = this.meta;
+    this.myApp.editForm.meta = this.meta;
   }
 
-  async Init() {
+  async init() {
     Spinner.Init();
-    LoginBL.Instance.Render();
+    LoginBL.instance.render();
   }
 
   removeUser() {
     Client.Token = null;
     localStorage.removeItem("UserInfo");
-    LoginBL.Instance.Render();
+    LoginBL.instance.render();
   }
 
-  async RenderLayout() {
-    await this.MyApp.Render();
+  async renderLayout() {
+    await this.myApp.render();
     var el = document.querySelector(".chrome-tabs");
     if (el != null) {
       ChromeTabs.init(el);
     }
   }
 }
-App.Instance.Init();
+App.instance.init();

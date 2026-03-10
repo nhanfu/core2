@@ -3,21 +3,21 @@
 /** @class ObservableArgs */
 export default class ObservableArgs {
     /** @type {string} -Event type */
-    EvType;
+    evType;
     /** @type {EditableComponent} -Event type */
-    Com;
+    com;
     /** @type {any} */
-    NewData;
+    newData;
     /** @type {any} */
-    OldData;
+    oldData;
     /** @type {any} */
-    NewMatch;
+    newMatch;
     /** @type {any} */
-    OldMatch;
+    oldMatch;
     /** @type {any} */
-    NewEntity;
+    newEntity;
     /** @type {any} */
-    OldEntity;
+    oldEntity;
     /** @type {string} */
-    FieldName;
+    fieldName;
 }

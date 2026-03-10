@@ -4,15 +4,15 @@
 class EntityAction {
     /**
      * Creates an instance of EntityAction.
-     * @param {string} QueueName - The ID of the entity.
+     * @param {string} queueName - The ID of the entity.
      * @param {Function} action - The action function to execute, which accepts an object as an argument.
      */
-    constructor(QueueName, action) {
+    constructor(queueName, action) {
         /**
          * @type {string}
          * @description The ID of the entity.
          */
-        this.QueueName = QueueName;
+        this.queueName = queueName;
         /**
          * @type {Function}
          * @description The action function to execute, which accepts an object as an argument.

@@ -5,84 +5,82 @@ import { Client } from "../clients/client.js";
  */
 export class Token {
     /** @type {string|null} User's unique identifier */
-    UserId = null;
+    userId = null;
     /** @type {string|null} Identifier for the user's cost center */
-    TenantCode = null;
+    tenantCode = null;
     /** @type {string|null} User's username */
-    UserName = null;
+    userName = null;
     /** @type {string|null} User's username */
-    DepartmentId = null;
+    departmentId = null;
     /** @type {string|null} User's email address */
-    Email = null;
+    email = null;
     /** @type {string|null} User's first name */
-    FirstName = null;
+    firstName = null;
     /** @type {string|null} User's last name */
-    LastName = null;
+    lastName = null;
     /** @type {string|null} User's full name */
-    FullName = null;
+    fullName = null;
     /** @type {string|null} User's address */
-    Address = null;
+    address = null;
     /** @type {string|null} URL to the user's avatar image */
-    Avatar = null;
+    avatar = null;
     /** @type {string|null} Access token for user authentication */
-    AccessToken = null;
+    accessToken = null;
     /** @type {string|null} Refresh token for renewing the access token */
-    RefreshToken = null;
+    refreshToken = null;
     /**
      * Expiration time of the access token.
      * @type {Date|null}
      */
-    AccessTokenExp = null;
+    accessTokenExp = null;
     /**
      * Expiration time of the refresh token.
      * @type {Date|null}
      */
-    RefreshTokenExp = null;
+    refreshTokenExp = null;
     /** @type {string|null} Hashed password for the user */
-    HashPassword = null;
+    hashPassword = null;
     /** @type {string|null} Recovery token for password reset */
-    Recovery = null;
+    recovery = null;
     /**
      * Vendor information associated with the user.
      * @type {any}
      */
-    Vendor = null;
+    vendor = null;
     /** @type {Array<string>|null} List of role identifiers for the user */
-    RoleIds = [];
+    roleIds = [];
     /** @type {Array<string>|null} List of role names for the user */
-    RoleNames = [];
+    roleNames = [];
     /** @type {Array<string>|null} List of center identifiers for the user */
-    CenterIds = [];
+    centerIds = [];
     /** @type {string|null} User's social security number */
-    Ssn = null;
+    ssn = null;
     /** @type {string|null} User's phone number */
-    PhoneNumber = null;
+    phoneNumber = null;
     /** @type {string|null} Identifier for the user's team */
-    TeamId = null;
+    teamId = null;
     /** @type {string|null} Identifier for the user's partner entity */
-    PartnerId = null;
+    partnerId = null;
     /** @type {string|null} Identifier for the user's regional entity */
-    RegionId = null;
+    regionId = null;
     /** @type {object|null} Additional arbitrary data associated with the user */
-    Additional = null;
+    additional = null;
     /**
      * Date and time the user signed in.
      * @type {Date|null}
      */
-    SigninDate = new Date();
-    /** @type {string|null} Tenant code for the user's tenant */
-    TenantCode = null;
+    signinDate = new Date();
     /** @type {string|null} Environment context for the user session */
-    Env = null;
+    env = null;
     /** @type {string|null} Connection key used for database connections */
-    ConnKey = null;
-    SystemRole = false;
-    UserAuthorization = [];
+    connKey = null;
+    systemRole = false;
+    userAuthorization = [];
     constructor() {
         // Default values can be initialized here if different from null or empty.
-        this.TenantCode = Client.Tenant; // Assuming Client.Tenant is accessible
-        this.Env = Client.Env;          // Assuming Client.Env is accessible
-        this.ConnKey = Client.MetaConn; // Assuming Client.MetaConn is accessible
+        this.tenantCode = Client.Tenant; // Assuming Client.Tenant is accessible
+        this.env = Client.Env;          // Assuming Client.Env is accessible
+        this.connKey = Client.MetaConn; // Assuming Client.MetaConn is accessible
     }
     /**
      * @param {string} token

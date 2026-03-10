@@ -29,7 +29,7 @@ const AppComponent = ({ editForm }) => {
     return () => window.removeEventListener("resize", checkIsMobile);
   }, []);
 
-  const actionToggle = (e) => {
+  const handleToggle = (e) => {
     e.preventDefault();
     var t = document.querySelector("body");
     var main = document.querySelector(".main-sidebar");
@@ -45,13 +45,13 @@ const AppComponent = ({ editForm }) => {
     }
   };
 
-  const actionBlur = (e) => {
+  const handleBlur = (e) => {
     e.preventDefault();
     var t = document.querySelector("body");
     if (!t.classList.contains("expand-sidebar")) {
       return;
     }
-    actionToggle(e);
+    handleToggle(e);
   };
 
   return (
@@ -61,7 +61,7 @@ const AppComponent = ({ editForm }) => {
           <div className="header-left">
             <div
               className="sidebar-toggle action-toggle"
-              onClick={actionToggle}
+              onClick={handleToggle}
             >
               <i className="fal fa-bars"></i>
             </div>
@@ -77,7 +77,7 @@ const AppComponent = ({ editForm }) => {
           </div>
         </div>
       </header>
-      <nav className="main-sidebar ps-menu" onBlur={actionBlur} tabIndex="-1">
+      <nav className="main-sidebar ps-menu" onBlur={handleBlur} tabIndex="-1">
         <div className="sidebar-header">
           <a className="text">
             <img src={Client.Token.Vendor?.Logo} />

@@ -33,8 +33,8 @@ export class Datepicker extends EditableComponent {
         super(ui, ele);
         this.DefaultValue = dayjs();
         /** @type {Component} */
-        this.InitFormat = this.Meta.FormatData?.includes("{0:") ? this.Meta.FormatData.replace("{0:", "").replace("}", "") : (this.Meta.Precision === 7 ? "DD/MM/YYYY HH:mm" : "DD/MM/YYYY");
-        this.currentFormat = this.InitFormat;
+        this.initFormat = this.Meta.FormatData?.includes("{0:") ? this.Meta.FormatData.replace("{0:", "").replace("}", "") : (this.Meta.Precision === 7 ? "DD/MM/YYYY HH:mm" : "DD/MM/YYYY");
+        this.currentFormat = this.initFormat;
         if (ele != null) {
             if (ele.firstElementChild instanceof HTMLInputElement) {
                 this.Input = ele.firstElementChild;
@@ -49,9 +49,9 @@ export class Datepicker extends EditableComponent {
         this.someday = dayjs();
         this.hour = null;
         this.minute = null;
-        this.SearchMethod = SearchMethodEnum.Equal;
-        this.SearchIcon = "fas fa-equals";
-        this.SearchIconElement = null;
+        this.searchMethod = SearchMethodEnum.Equal;
+        this.searchIcon = "fas fa-equals";
+        this.searchIconElement = null;
     }
 
     /**
@@ -83,7 +83,7 @@ export class Datepicker extends EditableComponent {
             this.Input.value = data;
         }
         else {
-            this.Input.value = this.value.format(this.InitFormat)
+            this.Input.value = this.value.format(this.initFormat)
         }
         this.flatpickr.setDate(this.Input.value);
         this.Input.selectionStart = selectionEnd;
@@ -185,7 +185,7 @@ export class Datepicker extends EditableComponent {
         });
         let str = null;
         if (this.Entity[this.Name]) {
-            str = dayjs(this.Entity[this.Name]).format(this.InitFormat);
+            str = dayjs(this.Entity[this.Name]).format(this.initFormat);
             this.value = dayjs(this.Entity[this.Meta.FieldName]);
             this.flatpickr.setDate(str);
         }
@@ -465,7 +465,7 @@ export class Datepicker extends EditableComponent {
         if (this.ValidationRules.length == 0) {
             return true;
         }
-        this.ValidationResult = [];
+        this.validationResult = [];
         this.ValidateRequired(this.value);
         return this.IsValid;
     }

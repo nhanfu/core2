@@ -321,12 +321,12 @@ export class AdvSearchVM {
      * Constructs an instance of AdvSearchVM.
      */
     constructor() {
-        this.ActiveState = null;
+        this.activeState = null;
         /** @type {FieldCondition[]} */
-        this.Conditions = [];
-        this.AdvSearchConditions = [];
+        this.conditions = [];
+        this.advSearchConditions = [];
         /** @type {OrderBy[]} */
-        this.OrderBy = [];
+        this.orderBy = [];
     }
 }
 
@@ -338,17 +338,17 @@ export class CellSelected {
      * Constructs an instance of CellSelected.
      */
     constructor() {
-        this.FieldName = '';
-        this.FieldText = '';
-        this.ComponentType = '';
-        this.Value = '';
-        this.ValueText = '';
-        this.Operator = null;
-        this.OperatorText = '';
-        this.Logic = null;
-        this.IsSearch = false;
-        this.Group = false;
-        this.Shift = false;
+        this.fieldName = '';
+        this.fieldText = '';
+        this.componentType = '';
+        this.value = '';
+        this.valueText = '';
+        this.operator = null;
+        this.operatorText = '';
+        this.logic = null;
+        this.isSearch = false;
+        this.group = false;
+        this.shift = false;
     }
 }
 
@@ -360,8 +360,8 @@ export class Where {
      * Constructs an instance of Where.
      */
     constructor() {
-        this.Condition = '';
-        this.Group = false;
+        this.condition = '';
+        this.group = false;
     }
 }
 
@@ -373,20 +373,20 @@ export class FieldCondition {
      * Constructs an instance of FieldCondition.
      */
     constructor() {
-        this.Id = '';
-        this.OriginFieldName = '';
-        this.FieldId = '';
+        this.id = '';
+        this.originFieldName = '';
+        this.fieldId = '';
         /** @type {Component} */
-        this.Field = null;
+        this.field = null;
         /** @type {AdvSearchOperation} */
-        this.CompareOperatorId = null;
-        this.Value = '';
-        this.Display = {};
+        this.compareOperatorId = null;
+        this.value = '';
+        this.display = {};
         /** @type {LogicOperation} */
-        this.LogicOperatorId = null;
-        this.LogicOperator = null;
-        this.Level = '';
-        this.Group = false;
+        this.logicOperatorId = null;
+        this.logicOperator = null;
+        this.level = '';
+        this.group = false;
     }
 }
 
@@ -395,11 +395,11 @@ export class FieldCondition {
  */
 export class OrderBy {
     /** @type {String | null | undefined} */
-    Id = '';
-    ComId = '';
-    FieldName = '';
+    id = '';
+    comId = '';
+    fieldName = '';
     /** @type {OrderbyDirection | null | undefined} */
-    OrderbyDirectionId = null;
+    orderbyDirectionId = null;
 }
 
 /**
@@ -410,33 +410,33 @@ export class MQEvent {
      * Constructs an instance of MQEvent.
      */
     constructor() {
-        this.DeviceKey = '';
-        this.QueueName = '';
-        this.Action = '';
-        this.Id = '';
-        this.PrevId = '';
-        this.Time = null; // JavaScript does not have a direct equivalent to DateTimeOffset, using Date instead
-        this.Message = null;
+        this.deviceKey = '';
+        this.queueName = '';
+        this.action = '';
+        this.id = '';
+        this.prevId = '';
+        this.time = null; // JavaScript does not have a direct equivalent to DateTimeOffset, using Date instead
+        this.message = null;
     }
 }
 
 /**
  * @class Entity
- * @property {string} Name
- * @property {string} Description
- * @property {boolean} Active
+ * @property {string} name
+ * @property {string} description
+ * @property {boolean} active
  */
 export class Entity {
-    /** @type {number} Id */
-    Id;
+    /** @type {number} id */
+    id;
     /** @type {string} */
-    Name;
+    name;
     /** @type {any} */
-    Value;
+    value;
     /** @type {any} */
-    Display;
+    display;
     /** @type {boolean} */
-    Active;
+    active;
 }
 
 /**

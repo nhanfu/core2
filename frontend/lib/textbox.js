@@ -19,19 +19,19 @@ export class Textbox extends EditableComponent {
         if (ele && ele.tagName == "INPUT") {
             this.Input = ele;
         } else if (ele && ele.tagName == "TEXTAREA") {
-            this.TextArea = ele;
+            this.textArea = ele;
         }
         this._value = null;
         this.Password = this.Meta.ClassName && this.Meta.ClassName.toLowerCase().includes("password");
         this._text = "";
         this._oldText = "";
-        this.SearchMethod = SearchMethodEnum.Contain;
-        this.SearchIcon = "fas fa-check";
-        this.IsInput = true;
+        this.searchMethod = SearchMethodEnum.Contain;
+        this.searchIcon = "fas fa-check";
+        this.isInput = true;
         /**
          * @type {HTMLElement}
          */
-        this.SearchIconElement = null;
+        this.searchIconElement = null;
     }
     /** @type {String} */
     get Text() {
@@ -44,8 +44,8 @@ export class Textbox extends EditableComponent {
             this.Input.value = this._text;
         }
 
-        if (this.TextArea != null) {
-            this.TextArea.value = this._text;
+        if (this.textArea != null) {
+            this.textArea.value = this._text;
         }
     }
 
@@ -89,21 +89,21 @@ export class Textbox extends EditableComponent {
         this._text = text || "";
         this.OldValue = this._text;
         this._value = this._text;
-        if (this.ComponentType == "Textarea" || this.TextArea != null) {
-            if (this.TextArea == null) {
+        if (this.ComponentType == "Textarea" || this.textArea != null) {
+            if (this.textArea == null) {
                 Html.Take(this.ParentElement).TextArea.Value(this._text).PlaceHolder(this.Meta.PlainText);
                 // @ts-ignore
-                this.Element = this.TextArea = Html.Context;
-            } else if (this.TextArea) {
+                this.Element = this.textArea = Html.Context;
+            } else if (this.textArea) {
                 Html.Take(this.Element);
-                this.Element = this.TextArea;
-                this.TextArea.value = this._text;
+                this.Element = this.textArea;
+                this.textArea.value = this._text;
             }
             if (this.Meta.Row > 0) {
                 Html.Instance.Attr("rows", this.Meta.Row ?? 1);
             }
-            this.TextArea.addEventListener("input", (e) => this.PopulateUIChange(EventType.Input));
-            this.TextArea.addEventListener("change", (e) => this.PopulateUIChange(EventType.Change));
+            this.textArea.addEventListener("input", (e) => this.PopulateUIChange(EventType.Input));
+            this.textArea.addEventListener("change", (e) => this.PopulateUIChange(EventType.Change));
         }
         else {
             if (this.Input == null) {
@@ -138,7 +138,7 @@ export class Textbox extends EditableComponent {
             return;
         }
         this._oldText = this._text;
-        this._text = this.Input ? this.Input.value : this.TextArea.value;
+        this._text = this.Input ? this.Input.value : this.textArea.value;
         this._text = this.Password ? this._text : (shouldTrim ? this._text?.trim() : this._text);
         if (this.Meta.UpperCase && this._text != null) {
             this.Text = this._text.toLocaleUpperCase();
@@ -174,7 +174,7 @@ export class Textbox extends EditableComponent {
             return Promise.resolve(true);
         }
         const tcs = new Promise((resolve, reject) => {
-            this.ValidationResult = [];
+            this.validationResult = [];
             this.Validate(ValidationRule.MinLength, this._text, (value, minLength) => this._text != null && this._text.length >= minLength);
             this.Validate(ValidationRule.CheckLength, this._text, (text, checkLength) => this._text == null || this._text == "" || this._text.length == checkLength);
             this.Validate(ValidationRule.MaxLength, this._text, (text, maxLength) => this._text == null || this._text.length <= maxLength);
@@ -285,9 +285,9 @@ export class Textbox extends EditableComponent {
                 })
                 .then(exists => {
                     if (exists) {
-                        this.ValidationResult[ValidationRule.Unique] = `${rule.Message} ${LangSelect.Get(this.Meta.Label)} ${this._text}`;
+                        this.validationResult[ValidationRule.Unique] = `${rule.Message} ${LangSelect.Get(this.Meta.Label)} ${this._text}`;
                     } else {
-                        delete this.ValidationResult[ValidationRule.Unique];
+                        delete this.validationResult[ValidationRule.Unique];
                     }
                     resolve(true);
                 })
@@ -305,8 +305,8 @@ export class Textbox extends EditableComponent {
             this.Input.readOnly = value;
         }
 
-        if (this.TextArea != null) {
-            this.TextArea.readOnly = value;
+        if (this.textArea != null) {
+            this.textArea.readOnly = value;
         }
     }
 }

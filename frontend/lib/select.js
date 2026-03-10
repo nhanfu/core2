@@ -27,7 +27,7 @@ export class Select extends EditableComponent {
         this.SEntryClass = "search-entry"
         this.Meta.ComponentGroup = null;
         this.Meta.Row = this.Meta.Row ?? 50;
-        this.RowData = new ObservableList();
+        this.rowData = new ObservableList();
         /** @type {HTMLDivElement} */
         this._input = null;
         /** @type {HTMLElement} */
@@ -39,17 +39,17 @@ export class Select extends EditableComponent {
         this._waitForInput = null;
         this._waitForDispose = null;
         this._contextMenu = false;
-        this.SearchResultEle = null;
+        this.searchResultEle = null;
         this._gv = null;
         let containId = Utils.isNullOrWhiteSpace(this.Meta.TabGroup) ? this.Meta.FieldName.substr(this.Meta.FieldName.length - 2) === this.IdField : this.Meta.TabGroup.substr(this.Meta.TabGroup.length - 2) === this.IdField;
         if (containId) {
-            this.DisplayField = Utils.isNullOrWhiteSpace(this.Meta.TabGroup) ? this.Meta.FieldName.substr(0, this.Meta.FieldName.length - 2) : this.Meta.TabGroup.substr(0, this.Meta.TabGroup.length - 2);
+            this.displayField = Utils.isNullOrWhiteSpace(this.Meta.TabGroup) ? this.Meta.FieldName.substr(0, this.Meta.FieldName.length - 2) : this.Meta.TabGroup.substr(0, this.Meta.TabGroup.length - 2);
         }
         else {
-            this.DisplayField = this.Meta.FieldName + "MasterData";
+            this.displayField = this.Meta.FieldName + "MasterData";
         }
         if (this.Meta.FieldName == "CurrencyId") {
-            this.IsCurrency = true;
+            this.isCurrency = true;
         }
     }
 
@@ -137,11 +137,11 @@ export class Select extends EditableComponent {
                 const entityValue = this.Entity?.[this.Meta.FieldName] != null ? this.Entity[this.Meta.FieldName].toString() : null;
                 return xId === entityValue;
             });
-            this.Entity[this.DisplayField] = this.Matched;
+            this.Entity[this.displayField] = this.Matched;
         }
         else {
             this.Entity[this.Meta.FieldName] = null;
-            this.Entity[this.DisplayField] = null;
+            this.Entity[this.displayField] = null;
         }
         this.UpdateValue();
     }
@@ -170,8 +170,8 @@ export class Select extends EditableComponent {
         if (!this.Dirty) {
             this.DOMContentLoaded?.invoke();
         }
-        if (!this.Dirty && !Utils.isNullOrWhiteSpace(this.Meta.FormatData) && this.Entity[this.DisplayField]) {
-            let res = Utils.FormatEntity(this.Meta.FormatData, this.Entity[this.DisplayField]);
+        if (!this.Dirty && !Utils.isNullOrWhiteSpace(this.Meta.FormatData) && this.Entity[this.displayField]) {
+            let res = Utils.FormatEntity(this.Meta.FormatData, this.Entity[this.displayField]);
             this.OriginalText = res;
             this.OldValue = this.Entity[this.Meta.FieldName];
         }
@@ -187,11 +187,11 @@ export class Select extends EditableComponent {
         let oldMatch = this.Matched;
         if (rowData.Id) {
             this.Matched = rowData;
-            this.Entity[this.DisplayField] = this.Matched;
+            this.Entity[this.displayField] = this.Matched;
         }
         else {
             this.Matched = null;
-            this.Entity[this.DisplayField] = null;
+            this.Entity[this.displayField] = null;
         }
         let oldValue = this._value;
         this._value = rowData.Id;
@@ -225,7 +225,7 @@ export class Select extends EditableComponent {
         this._value = this.Entity[this.Meta.FieldName] == null ? null : this.Entity[this.Meta.FieldName].toString();
         if (this._value === null) {
             this.Matched = null;
-            this.Entity[this.DisplayField] = null;
+            this.Entity[this.displayField] = null;
             this.SS.setSelected(this.Data[0].Id);
             this.FindMatchText();
             return;

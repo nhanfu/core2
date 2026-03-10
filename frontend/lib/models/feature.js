@@ -1,5 +1,5 @@
 import { Component } from "./component";
-import { UserSetting } from "./userSeting";
+import { UserSetting } from "./userSetting";
 
 /**
  * Represents a feature.
@@ -7,81 +7,81 @@ import { UserSetting } from "./userSeting";
  */
 export class Feature {
     /** @type {string} */
-    Id = '';
+    id = '';
     /** @type {string} */
-    Name = '';
+    name = '';
     /** @type {string} */
-    Label = '';
+    label = '';
     /** @type {string} */
-    ParentId = '';
+    parentId = '';
     /** @type {number} */
-    Order = 0;
+    order = 0;
     /** @type {string} */
-    ClassName = '';
+    className = '';
     /** @type {string} */
-    Style = '';
+    style = '';
     /** @type {string} */
-    StyleSheet = '';
+    styleSheet = '';
     /** @type {string} */
-    Script = '';
+    script = '';
     /** @type {string} */
-    Events = '';
+    events = '';
     /** @type {string} */
-    Icon = '';
+    icon = '';
     /** @type {boolean} */
-    IsDivider = false;
+    isDivider = false;
     /** @type {boolean} */
-    IsGroup = false;
+    isGroup = false;
     /** @type {boolean} */
-    IsMenu = false;
+    isMenu = false;
     /** @type {boolean} */
-    IsPublic = false;
+    isPublic = false;
     /** @type {boolean} */
-    StartUp = false;
+    startUp = false;
     /** @type {string} */
-    ViewClass = '';
+    viewClass = '';
     /** @type {string} */
-    EntityId = '';
+    entityId = '';
     /** @type {string} */
-    Description = '';
+    description = '';
     /** @type {boolean} */
-    Active = false;
+    active = false;
     /** @type {Date} */
-    InsertedDate = new Date();
+    insertedDate = new Date();
     /** @type {string} */
-    InsertedBy = '';
+    insertedBy = '';
     /** @type {Date} */
-    UpdatedDate = new Date();
+    updatedDate = new Date();
     /** @type {string} */
-    UpdatedBy = '';
+    updatedBy = '';
     /** @type {boolean} */
-    IsSystem = false;
+    isSystem = false;
     /** @type {boolean} */
-    IgnoreEncode = false;
+    ignoreEncode = false;
     /** @type {boolean} */
-    InheritParentFeature = false;
+    inheritParentFeature = false;
     /** @type {boolean} */
-    DeleteTemp = false;
+    deleteTemp = false;
     /** @type {boolean} */
-    CustomNextCell = false;
+    customNextCell = false;
     /** @type {boolean} */
-    IsFullScreen = false;
+    isFullScreen = false;
     /** @type {boolean} */
-    IsSmallScreen = false;
+    isSmallScreen = false;
     /** @type {boolean} */
-    LoadEntity = false;
+    loadEntity = false;
     /** @type {boolean} */
-    IsLock = false;
+    isLock = false;
     /** @type {string} */
-    Html = '';
+    html = '';
     /** @type {Component[]} */
-    Components = [];
+    components = [];
     /** @type {any} */
-    Layout;
+    layout;
     /** @type {HTMLElement} */
-    ParentElement;
+    parentElement;
     /** @type {Feature[]} */
-    InverseParent = [];
+    inverseParent = [];
     /** @type {UserSetting[]} */
-    UserSettings = [];
+    userSettings = [];
 }
