@@ -269,6 +269,9 @@ export class Textbox extends EditableComponent {
         if (rule === null || this._text.trim() === "") {
             return Promise.resolve(true);
         }
+        if (!this.ValidationResult) {
+            this.ValidationResult = {};
+        }
         const params = Utils.IsFunction(this.Meta.PreQuery, false, this);
         var table = !this.Meta.RefName ? this.Meta.RefName : this.EditForm.Meta.EntityName;
         const submit = {
@@ -285,9 +288,9 @@ export class Textbox extends EditableComponent {
                 })
                 .then(exists => {
                     if (exists) {
-                        this.validationResult[ValidationRule.Unique] = `${rule.Message} ${LangSelect.Get(this.Meta.Label)} ${this._text}`;
+                        this.ValidationResult[ValidationRule.Unique] = `${rule.Message} ${LangSelect.Get(this.Meta.Label)} ${this._text}`;
                     } else {
-                        delete this.validationResult[ValidationRule.Unique];
+                        delete this.ValidationResult[ValidationRule.Unique];
                     }
                     resolve(true);
                 })

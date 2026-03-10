@@ -328,7 +328,7 @@ export class EditableComponent {
             eventObj = JSON.parse(events);
         } catch (error) {
             Spinner.Hide();
-            this.EditForm.OpenConfig("JSON parse error:" + error, () => {
+            this.EditForm?.OpenConfig?.("JSON parse error:" + error, () => {
             }, () => { }, false, [], true);
             return Promise.resolve(false);
         }
@@ -347,8 +347,6 @@ export class EditableComponent {
         let form = this.EditForm;
         if (!form) {
             Spinner.Hide();
-            this.EditForm.OpenConfig("EditForm is not defined.", () => {
-            }, () => { }, false, [], true);
             return Promise.resolve(false);
         }
 

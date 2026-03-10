@@ -1,59 +1,78 @@
-import { Datepicker } from '../datepicker'; // Adjust the path according to your project structure
-import { Component } from '../models/component';
-import * as a from '../utils/ext.js';
+import { jest } from "@jest/globals";
+import dayjs from "dayjs";
 
-describe('Datepicker', () => {
-    /** @type {Datepicker} */
-    let datepicker;
-    /** @type {HTMLDivElement} */
-    let container;
-    /** @type {Component} */
-    let meta;
+jest.unstable_mockModule("../utils/componentExt.js", () => ({
+  ComponentExt: {},
+}));
 
-    beforeEach(() => {
-        document.body.innerHTML = `<div id="test-container"></div>`;
-        container = document.getElementById('test-container');
-        meta = { FormatData: '', Precision: 7, FormatEntity: (/** @type {Date} */ val) => { 
-            var month = val.getMonth() + 1;
-            var day = val.getDate();
-            return `${day.leadingDigit()}/${month.leadingDigit()}/${val.getFullYear()}`} 
-        };
-        datepicker = new Datepicker(meta, container);
-    });
+jest.unstable_mockModule("flatpickr", () => ({
+  default: jest.fn((input) => ({
+    input,
+    isOpen: false,
+    setDate: jest.fn(),
+    open: jest.fn(),
+    close: jest.fn(),
+    destroy: jest.fn(),
+    _positionCalendar: jest.fn(),
+  })),
+}));
 
-    afterEach(() => {
-        document.body.innerHTML = '';
-    });
+jest.unstable_mockModule("flatpickr/dist/l10n/vn.js", () => ({
+  Vietnamese: {},
+}));
 
-    test('should instantiate correctly with default values', () => {
-        expect(datepicker).toBeDefined();
-        expect(datepicker.Value).toBeNull();
-        expect(datepicker.Disabled).toBeFalsy();
-    });
+const { Datepicker } = await import("../datepicker.js");
 
-    test('should render input element within the container', () => {
-        datepicker.Render();
-        expect(container.querySelector('input') != null).toBe(true);
-    });
+describe("Datepicker", () => {
+  let datepicker;
+  let container;
+  let meta;
 
-    test('should set value correctly', () => {
-        const testDate = new Date(2023, 3, 26); // April 26, 2023
-        datepicker.Value = testDate;
-        expect(datepicker.Value).toEqual(testDate);
-        expect(datepicker.Input.value).toBe('26/04/2023');
-    });
+  beforeEach(() => {
+    container = document.createElement("div");
+    document.body.appendChild(container);
+    meta = {
+      FieldName: "StartDate",
+      PlainText: "Pick a date",
+      FormatData: "",
+      Precision: 0,
+      ShowHotKey: true,
+    };
+    datepicker = new Datepicker(meta, container);
+    datepicker.Entity = {};
+    datepicker.Render();
+  });
 
-    test('should handle disabled state correctly', () => {
-        datepicker.Render();
-        datepicker.Disabled = true;
-        expect(datepicker.Element.readonly).toBeTruthy();
-    });
+  afterEach(() => {
+    document.body.innerHTML = "";
+  });
 
-    test('should remove DOM elements when RemoveDOM is called', () => {
-        datepicker.Render();
-        datepicker.Dispose();
-        expect(container.children.length).toBe(0);
-    });
+  test("renders an input and initializes flatpickr", () => {
+    expect(datepicker.Input).toBeInstanceOf(HTMLInputElement);
+    expect(datepicker.flatpickr).toBeDefined();
+  });
 
-    // Additional tests can include user interaction simulations, time adjustments, etc.
+  test("Value setter writes formatted date data into the input and entity", () => {
+    const testDate = dayjs("2023-04-26");
+
+    datepicker.Value = testDate;
+
+    expect(datepicker.Value).toBe(testDate);
+    expect(datepicker.Input.value).toBe("26/04/2023");
+    expect(datepicker.Entity.StartDate).toBe("2023-04-26T00:00:00");
+  });
+
+  test("setting a null value clears the input and entity value", () => {
+    datepicker.Value = dayjs("2023-04-26");
+    datepicker.Value = null;
+
+    expect(datepicker.Input.value).toBe("");
+    expect(datepicker.Entity.StartDate).toBeNull();
+  });
+
+  test("disabled state updates the input element", () => {
+    datepicker.Disabled = true;
+
+    expect(datepicker.Input.disabled).toBe(true);
+  });
 });

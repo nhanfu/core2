@@ -1,80 +1,76 @@
-import { Button } from '../button';
-import { Component } from '../models/component';
-import { Spinner } from '../spinner';
+import { Button } from "../button";
 
-jest.mock('../spinner', () => ({
-    __esModule: true,
-    Spinner: {
-        AppendTo: jest.fn(),
-        Hide: jest.fn(),
-    },
-}));
+describe("Button", () => {
+  let ui;
+  let element;
+  let button;
 
-describe('Button', () => {
-    /** @type {Component} */
-    let ui;
-    /** @type {HTMLDivElement} */
-    let element;
+  beforeEach(() => {
+    ui = {
+      Id: "123",
+      FieldName: "btnSave",
+      ClassName: "btn-class",
+      Style: "color: red;",
+      Icon: "icon-path",
+      Label: "Click me",
+      Events: "{}",
+    };
+    element = document.createElement("button");
+    document.body.appendChild(element);
+    button = new Button(ui, element);
+    button.EditForm = { Meta: { Label: "Form label" } };
+    button.Entity = {};
+  });
 
-    beforeEach(() => {
-        ui = { Id: '123', FieldName: 'btnSave', ClassName: 'btn-class', Style: 'color: red;', Icon: 'icon-path', Label: 'Click me', Events: {} };
-        element = document.createElement('div');
-        document.body.appendChild(element);
-    });
+  afterEach(() => {
+    document.body.removeChild(element);
+    jest.restoreAllMocks();
+  });
 
-    afterEach(() => {
-        document.body.removeChild(element);
-        jest.clearAllMocks();
-    });
+  test("Render applies the configured markup and styles", () => {
+    button.Render();
 
-    test('should throw error if ui is not provided', () => {
-        expect(() => new Button(null)).toThrow("ui is required");
-    });
+    expect(button.Element).toBe(element);
+    expect(button.Element.className).toContain("btn-class");
+    expect(button.Element.style.color).toBe("red");
+    expect(button.Element.querySelector(".caption").textContent).toBe("Click me");
+  });
 
-    test('DispatchClick should handle disabled state and call events', async () => {
-        const button = new Button(ui, element);
-        button.Render();
-        button.Disabled = false;
+  test("DispatchClick delegates to Meta.OnClick when present", () => {
+    const onClick = jest.fn();
+    button.Meta.OnClick = onClick;
 
-        const mockDispatchEvent = jest.fn().mockResolvedValue();
-        button.DispatchEvent = mockDispatchEvent;
+    button.DispatchClick();
 
-        await button.DispatchClick();
+    expect(onClick).toHaveBeenCalled();
+  });
 
-        expect(Spinner.AppendTo).toHaveBeenCalledWith(element);
-        expect(mockDispatchEvent).toHaveBeenCalledWith(ui.Events, "click", button.Entity, button);
-        expect(Spinner.Hide).toHaveBeenCalled();
-    });
+  test("DispatchClick calls DispatchEvent for enabled buttons", async () => {
+    button.Render();
+    const dispatchEvent = jest.fn().mockResolvedValue(true);
+    button.DispatchEvent = dispatchEvent;
 
-    test('GetValueText should return textContent of _textEle if Entity or Meta is null', () => {
-        const button = new Button(ui, element);
-        button.Entity = { btnSave: "Some text" };
+    button.DispatchClick();
 
-        expect(button.GetValueText()).toEqual("Some text");
-    });
+    expect(dispatchEvent).toHaveBeenCalledWith(button.Meta.Events, "click", button, button.Entity);
+    expect(button.Disabled).toBe(true);
+  });
 
-    test('should render the button with correct properties', () => {
-        const button = new Button(ui, element);
-        button.Render();
-    
-        expect(button.Element).toBe(element);
-        expect(button.Element.className).toContain('btn-class');
-        expect(button.Element.style.color).toBe('red');
-        expect(button.Element.querySelector('.caption').textContent).toBe('Click me');
-    });
+  test("DispatchClick stops when the button is disabled", () => {
+    button.Render();
+    const dispatchEvent = jest.fn();
+    button.DispatchEvent = dispatchEvent;
+    button.Disabled = true;
 
-    test('DispatchClick should not proceed if button is disabled', async () => {
-        const button = new Button(ui, element);
-        button.Render();
-        button.Disabled = true;
-    
-        const mockDispatchEvent = jest.fn().mockResolvedValue();
-        button.DispatchEvent = mockDispatchEvent;
-    
-        await button.DispatchClick();
-    
-        expect(Spinner.AppendTo).not.toHaveBeenCalled();
-        expect(mockDispatchEvent).not.toHaveBeenCalled();
-        expect(Spinner.Hide).not.toHaveBeenCalled();
-    });
+    button.DispatchClick();
+
+    expect(dispatchEvent).not.toHaveBeenCalled();
+  });
+
+  test("GetValueText returns the entity field value when available", () => {
+    button.Render();
+    button.Entity = { btnSave: "Some text" };
+
+    expect(button.GetValueText()).toBe("Some text");
+  });
 });

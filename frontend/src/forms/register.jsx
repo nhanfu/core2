@@ -26,7 +26,9 @@ export class RegisterBL extends EditForm {
     this.name = "Register";
     this.title = "Register";
     this.public = true;
-    this.meta.layout = () => (
+    this.Meta.isPublic = true;
+    this.Meta.IsPublic = true;
+    this.Meta.layout = () => (
       <>
         <div className="container-login" view="login" bg={7}>
           <div className="wrap-login" type="login">
@@ -118,7 +120,8 @@ export class RegisterBL extends EditForm {
         <ToastContainer />
       </>
     );
-    this.meta.components = [
+    this.Meta.Layout = this.Meta.layout;
+    this.Meta.components = [
       {
         componentType: "Button",
         fieldName: "btnRegister",
@@ -188,9 +191,9 @@ export class RegisterBL extends EditForm {
   render() {
     let oldToken = Client.Token;
     if (!oldToken || new Date(oldToken.RefreshTokenExp) <= Client.EpsilonNow) {
-      Html.Take("#app");
-      this.element = Html.Context;
-      super.render();
+      this.ParentElement = document.getElementById("app");
+      this.Element = this.ParentElement;
+      super.Render();
       return;
     } else if (
       oldToken &&

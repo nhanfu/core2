@@ -21,6 +21,33 @@ const JWT_SECRET = Deno.env.get("JWT_SECRET") || "your-secret-key";
 const JWT_ISSUER = Deno.env.get("JWT_ISSUER") || "CoreAPI";
 const JWT_AUDIENCE = Deno.env.get("JWT_AUDIENCE") || "CoreAPI";
 
+const USER_SELECT = `
+  SELECT
+    u."Id" AS id,
+    u."Code" AS code,
+    u."Email" AS email,
+    u."Password" AS password,
+    u."Salt" AS salt,
+    u."CompanyId" AS "companyId",
+    u."UserName" AS "userName",
+    u."FullName" AS "fullName",
+    u."Address" AS address,
+    u."Avatar" AS avatar,
+    u."Ssn" AS ssn,
+    u."PhoneNumber" AS "phoneNumber",
+    u."TeamId" AS "teamId",
+    u."PartnerId" AS "partnerId",
+    u."Active" AS active,
+    u."DepartmentId" AS "departmentId",
+    u."PositionId" AS "positionId",
+    u."RoleIds" AS "roleIds",
+    u."LoginFailedCount" AS "loginFailedCount",
+    u."LastFailedLogin" AS "lastFailedLogin",
+    u."LastLogin" AS "lastLogin",
+    p."Code" AS tenant_code,
+    p."Name" AS tenant_name
+`;
+
 /**
  * Get expiration date based on expiry string
  * @param expiresIn - Expiry string like "1d", "365d"
@@ -63,25 +90,28 @@ function getExpirationDate(expiresIn: string): Date {
  */
 async function getUserRoleIds(userId: string): Promise<string[]> {
   try {
-    // Try to get from user_roles table first
+    // Try to get from the join table first.
     const roles = await query(
-      `SELECT role_id FROM user_roles WHERE user_id = $1 AND active = true`,
+      `SELECT "RoleId" AS "roleId"
+       FROM "UserRole"
+       WHERE "UserId" = $1 AND "Active" = true`,
       [userId]
     );
 
     if (roles && roles.length > 0) {
-      return roles.map((r: any) => r.role_id);
+      return roles.map((r: any) => r.roleId);
     }
 
-    // Fallback: try to get from users.roleIds field
+    // Fallback: use the denormalized RoleIds field on the user row.
     const users = await query(
-      `SELECT role_ids FROM users WHERE id = $1`,
+      `SELECT "RoleIds" AS "roleIds"
+       FROM "User"
+       WHERE "Id" = $1`,
       [userId]
     );
 
-    if (users && users.length > 0 && users[0].role_ids) {
-      // role_ids might be stored as comma-separated string
-      const roleIdsStr = users[0].role_ids;
+    if (users && users.length > 0 && users[0].roleIds) {
+      const roleIdsStr = users[0].roleIds;
       if (typeof roleIdsStr === "string") {
         return roleIdsStr.split(",").map((id: string) => id.trim()).filter(Boolean);
       }
@@ -108,7 +138,9 @@ async function getRoleNames(roleIds: string[]): Promise<string[]> {
   try {
     const placeholders = roleIds.map((_, i) => `$${i + 1}`).join(", ");
     const roles = await query(
-      `SELECT name FROM roles WHERE id IN (${placeholders}) AND active = true`,
+      `SELECT "Name" AS name
+       FROM "Role"
+       WHERE "Id" IN (${placeholders}) AND "Active" = true`,
       roleIds
     );
 
@@ -150,7 +182,19 @@ async function getUserCenterIds(userId: string): Promise<string[]> {
 async function getTenant(tenantCode: string): Promise<Partner | null> {
   try {
     const partners = await query(
-      `SELECT * FROM partners WHERE code = $1 AND active = true`,
+      `SELECT
+         "Id" AS id,
+         "Name" AS name,
+         "Code" AS code,
+         "Address" AS address,
+         "PhoneNumber" AS "phoneNumber",
+         "Mail" AS mail,
+         "Email" AS email,
+         "Active" AS active,
+         "IsPublic" AS "isPublic",
+         "IsNoDebt" AS "isNoDebt"
+       FROM "Partner"
+       WHERE "Code" = $1 AND "Active" = true`,
       [tenantCode]
     );
 
@@ -181,18 +225,21 @@ export async function SignIn(
   // Step 1: Query user by username and tenantCode
   // The tenantCode maps to company (partners table via companyId)
   const users = await query(
-    `SELECT u.*, p.code as tenant_code, p.name as tenant_name
-     FROM users u
-     LEFT JOIN partners p ON u.company_id = p.id
-     WHERE u.user_name = $1 AND p.code = $2 AND u.active = true`,
-    [userName, tenantCode]
+    `${USER_SELECT}
+     FROM "User" u
+     LEFT JOIN "Partner" p ON u."CompanyId" = p."Id"
+     WHERE u."UserName" = $1 AND u."Active" = true`,
+    [userName]
   );
 
   if (!users || users.length === 0) {
     throw new Error("Invalid username or password");
   }
 
-  const user = users[0] as User & { tenant_code?: string };
+  const user = {
+    ...(users[0] as User & { tenant_code?: string }),
+    tenant_code: (users[0] as { tenant_code?: string }).tenant_code || tenantCode,
+  };
 
   // Check if user is active
   if (!user.active) {
@@ -210,8 +257,10 @@ export async function SignIn(
   if (hashedPassword !== user.password) {
     // Increment failed login count
     await execute(
-      `UPDATE users SET login_failed_count = COALESCE(login_failed_count, 0) + 1,
-       last_failed_login = NOW() WHERE id = $1`,
+      `UPDATE "User"
+       SET "LoginFailedCount" = COALESCE("LoginFailedCount", 0) + 1,
+           "LastFailedLogin" = NOW()
+       WHERE "Id" = $1`,
       [user.id]
     );
     throw new Error("Invalid username or password");
@@ -235,20 +284,23 @@ export async function SignIn(
 
   // Step 5: Store refresh token in database
   try {
-    await insert("user_logins", {
-      user_id: user.id,
-      access_token: accessToken,
-      refresh_token: refreshToken,
-      access_token_exp: accessTokenExp.toISOString(),
-      refresh_token_exp: refreshTokenExp.toISOString(),
-      active: true,
-      inserted_date: new Date().toISOString(),
-      inserted_by: user.id,
+    await insert("\"UserLogin\"", {
+      "\"Id\"": crypto.randomUUID(),
+      "\"UserId\"": user.id,
+      "\"AccessToken\"": accessToken,
+      "\"RefreshToken\"": refreshToken,
+      "\"AccessTokenExp\"": accessTokenExp.toISOString(),
+      "\"RefreshTokenExp\"": refreshTokenExp.toISOString(),
+      "\"Active\"": true,
+      "\"InsertedDate\"": new Date().toISOString(),
+      "\"InsertedBy\"": user.id,
     });
 
     // Update last login
     await execute(
-      `UPDATE users SET last_login = NOW(), login_failed_count = 0 WHERE id = $1`,
+      `UPDATE "User"
+       SET "LastLogin" = NOW(), "LoginFailedCount" = 0
+       WHERE "Id" = $1`,
       [user.id]
     );
   } catch (error) {
@@ -296,15 +348,15 @@ export async function SignIn(
 export async function RefreshToken(refreshToken: string): Promise<Token> {
   // Step 1: Find the login record with this refresh token
   const loginRecords = await query(
-    `SELECT ul.*, u.user_name, u.email, u.full_name, u.code,
-            u.department_id, u.position_id, u.address, u.avatar,
-            u.ssn, u.phone_number, u.team_id, u.partner_id,
-            u.role_ids as user_role_ids, p.code as tenant_code
-     FROM user_logins ul
-     JOIN users u ON ul.user_id = u.id
-     LEFT JOIN partners p ON u.company_id = p.id
-     WHERE ul.refresh_token = $1 AND ul.active = true
-       AND ul.refresh_token_exp > NOW()`,
+    `SELECT
+       ul."UserId" AS "userId",
+       ul."Active" AS active,
+       ${USER_SELECT.replace(/^(\s*SELECT\s*)/m, "")}
+     FROM "UserLogin" ul
+     JOIN "User" u ON ul."UserId" = u."Id"
+     LEFT JOIN "Partner" p ON u."CompanyId" = p."Id"
+     WHERE ul."RefreshToken" = $1 AND ul."Active" = true
+       AND ul."RefreshTokenExp" > NOW()`,
     [refreshToken]
   );
 
@@ -321,11 +373,11 @@ export async function RefreshToken(refreshToken: string): Promise<Token> {
 
   // Step 3: Get fresh user data
   const users = await query(
-    `SELECT u.*, p.code as tenant_code
-     FROM users u
-     LEFT JOIN partners p ON u.company_id = p.id
-     WHERE u.id = $1 AND u.active = true`,
-    [loginRecord.user_id]
+    `${USER_SELECT}
+     FROM "User" u
+     LEFT JOIN "Partner" p ON u."CompanyId" = p."Id"
+     WHERE u."Id" = $1 AND u."Active" = true`,
+    [loginRecord.userId]
   );
 
   if (!users || users.length === 0) {
@@ -353,20 +405,22 @@ export async function RefreshToken(refreshToken: string): Promise<Token> {
   // Step 5: Deactivate old login record and create new one
   try {
     await execute(
-      `UPDATE user_logins SET active = false, updated_date = NOW()
-       WHERE refresh_token = $1`,
+      `UPDATE "UserLogin"
+       SET "Active" = false, "UpdatedDate" = NOW()
+       WHERE "RefreshToken" = $1`,
       [refreshToken]
     );
 
-    await insert("user_logins", {
-      user_id: user.id,
-      access_token: newAccessToken,
-      refresh_token: newRefreshToken,
-      access_token_exp: newAccessTokenExp.toISOString(),
-      refresh_token_exp: newRefreshTokenExp.toISOString(),
-      active: true,
-      inserted_date: new Date().toISOString(),
-      inserted_by: user.id,
+    await insert("\"UserLogin\"", {
+      "\"Id\"": crypto.randomUUID(),
+      "\"UserId\"": user.id,
+      "\"AccessToken\"": newAccessToken,
+      "\"RefreshToken\"": newRefreshToken,
+      "\"AccessTokenExp\"": newAccessTokenExp.toISOString(),
+      "\"RefreshTokenExp\"": newRefreshTokenExp.toISOString(),
+      "\"Active\"": true,
+      "\"InsertedDate\"": new Date().toISOString(),
+      "\"InsertedBy\"": user.id,
     });
   } catch (error) {
     console.error("Error updating login record:", error);
@@ -481,8 +535,9 @@ export async function ValidateAccessToken(token: string): Promise<any> {
 export async function SignOut(refreshToken: string): Promise<void> {
   try {
     await execute(
-      `UPDATE user_logins SET active = false, updated_date = NOW()
-       WHERE refresh_token = $1`,
+      `UPDATE "UserLogin"
+       SET "Active" = false, "UpdatedDate" = NOW()
+       WHERE "RefreshToken" = $1`,
       [refreshToken]
     );
   } catch (error) {
@@ -505,7 +560,10 @@ export async function ChangePassword(
 ): Promise<boolean> {
   // Get current user
   const users = await query(
-    `SELECT * FROM users WHERE id = $1 AND active = true`,
+    `${USER_SELECT}
+     FROM "User" u
+     LEFT JOIN "Partner" p ON u."CompanyId" = p."Id"
+     WHERE u."Id" = $1 AND u."Active" = true`,
     [userId]
   );
 
@@ -533,15 +591,17 @@ export async function ChangePassword(
 
   // Update password
   await execute(
-    `UPDATE users SET password = $1, salt = $2, updated_date = NOW(), updated_by = $3
-     WHERE id = $4`,
+    `UPDATE "User"
+     SET "Password" = $1, "Salt" = $2, "UpdatedDate" = NOW(), "UpdatedBy" = $3
+     WHERE "Id" = $4`,
     [hashedNewPassword, newSalt, userId, userId]
   );
 
   // Invalidate all active login sessions
   await execute(
-    `UPDATE user_logins SET active = false, updated_date = NOW()
-     WHERE user_id = $1 AND active = true`,
+    `UPDATE "UserLogin"
+     SET "Active" = false, "UpdatedDate" = NOW()
+     WHERE "UserId" = $1 AND "Active" = true`,
     [userId]
   );
 
@@ -555,10 +615,10 @@ export async function ChangePassword(
  */
 export async function GetUserById(userId: string): Promise<(User & { tenant_code?: string }) | null> {
   const users = await query(
-    `SELECT u.*, p.code as tenant_code
-     FROM users u
-     LEFT JOIN partners p ON u.company_id = p.id
-     WHERE u.id = $1`,
+    `${USER_SELECT}
+     FROM "User" u
+     LEFT JOIN "Partner" p ON u."CompanyId" = p."Id"
+     WHERE u."Id" = $1`,
     [userId]
   );
 

@@ -32,7 +32,7 @@ export class Page {
         this.Meta = meta || {};
     }
 
-    async Render() {
+    async render() {
         Html.Take(this.ParentElement ?? this.Meta.ParentElement ?? document.body);
         Html.Instance.Clear();
         Html.Instance.Div.Render();

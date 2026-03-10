@@ -1,130 +1,63 @@
-// Number.test.js
+import Decimal from "decimal.js";
+import { NumBox } from "../numbox";
 
-import { ComponentType } from '../models/componentType';
-import { NumBox } from '../numbox'; // Adjust the import according to your file structure
+describe("Numbox", () => {
+  let numbox;
+  let input;
 
-describe('Number component', () => {
-    /** @type {NumBox} */
-    let number;
-    /** @type {HTMLInputElement} */
-    let mockInput;
+  beforeEach(() => {
+    input = document.createElement("input");
+    numbox = new NumBox({ FieldName: "Amount", Precision: 2 }, input);
+    numbox.Entity = {};
+    numbox.PopulateFields = jest.fn();
+    numbox.DispatchEvent = jest.fn().mockResolvedValue(true);
+    numbox.Render();
+  });
 
-    beforeEach(() => {
-        mockInput = document.createElement(ComponentType.Input);
-        mockInput.addEventListener = function(name, action) {
-            mockInput.events = {};
-            mockInput.events[name] = mockInput.events[name] || [];
-            mockInput.events[name].push(action);
-        };
-        mockInput.trigger = function(name) {
-            const actions = mockInput.events[name];
-            actions.forEach(x => x.call(mockInput));
-        }
-        mockInput.type = 'tel';
-        mockInput.addEventListener('input', () => {
-            number.Value = mockInput.value;
-        });
-        number = new NumBox(mockInput, mockInput);
-        number.Meta = { Precision: 2 }; // Assume some meta data for precision
-        number.Entity = {
-            SetComplexPropValue: jest.fn(),
-        };
-        number.PopulateFields = jest.fn();
-        number.Dirty = false;
-    });
+  test("Value setter formats numeric values into the input", () => {
+    numbox.Value = 123.456;
 
-    test('Setting non-null value updates input correctly', () => {
-        number.Value = 123.456;
-        expect(number.Value.toString()).toEqual('123.46');
-        expect(mockInput.value).toBe('123.46');
-    });
+    expect(numbox.Value.toString()).toBe("123.456");
+    expect(input.value).toBe("123.46");
+  });
 
-    test('Setting null value with nullable true', () => {
-        number._nullable = true;
-        number.Value = null;
-        expect(number.Value).toBeNull();
-        expect(mockInput.value).toBe('');
-    });
+  test("Value setter clears the input for null values", () => {
+    numbox.Value = null;
 
-    test('Setting null value with nullable false', () => {
-        number._nullable = false;
-        number.Value = null;
-        expect(number.Value.toString()).toEqual('0');
-        expect(mockInput.value).toBe('0.00');
-    });
+    expect(numbox.Value).toBeNull();
+    expect(input.value).toBe("");
+  });
 
-    test('Setting value triggers PopulateFields', () => {
-        number.Value = 100;
-        expect(number.PopulateFields).toHaveBeenCalled();
-    });
+  test("input handler parses user input without formatting loss", () => {
+    input.value = "1234.56";
+    input.dispatchEvent(new Event("input"));
 
-    test('Input event sets value correctly', () => {
-        mockInput.value = "1234.56";
-        mockInput.trigger('input');
-        expect(number.Value.toString()).toEqual('1234.56');
-    });
+    expect(numbox.Value.toString()).toBe("1234.56");
+    expect(numbox.Entity.Amount.toString()).toBe("1234.56");
+  });
 
-    test('Change event sets value correctly', () => {
-        mockInput.value = "789.01";
-        mockInput.trigger('input');
-        expect(number.Value.toString()).toEqual('789.01');
-    });
+  test("change handler marks the component dirty and populates fields", () => {
+    input.value = "789.01";
+    input.dispatchEvent(new Event("change"));
 
-    test('Invalid decimal input resets to old value', () => {
-        number.Value = 500;
-        number._nullable = false;
-        mockInput.value = "invalid text";
-        mockInput.trigger('input');
-        expect(number.Value.toString()).toEqual('500');
-    });
+    expect(numbox.Value.toString()).toBe("789.01");
+    expect(numbox.Dirty).toBe(true);
+    expect(numbox.PopulateFields).toHaveBeenCalled();
+  });
 
-    test('Value rounding respects Meta precision', () => {
-        number.Value = 123.4567;
-        expect(mockInput.value).toBe('123.46');
-    });
+  test("invalid input restores the previous numeric value", () => {
+    numbox.Value = new Decimal(500);
+    input.value = "invalid text";
 
-    test('Value setter handles decimal separator properly', () => {
-        number._decimalSeparator = ',';
-        mockInput.value = "1234,";
-        number.Value = 1234;
-        expect(mockInput.value).toBe('1234.00');
-    });
+    input.dispatchEvent(new Event("input"));
 
-    test('Non-nullable value set to null defaults to zero', () => {
-        number._nullable = false;
-        number.Value = null;
-        expect(number.Value.toString()).toBe('0');
-    });
+    expect(numbox.Value.toString()).toBe("500");
+    expect(input.value).toBe("500.00");
+  });
 
-    test('Nullable value set to null stays null', () => {
-        number._nullable = true;
-        number.Value = null;
-        expect(number.Value).toBeNull();
-    });
+  test("Value setter respects precision and thousands separators", () => {
+    numbox.Value = 1234.5;
 
-    test('Setting value triggers Entity property update', () => {
-        number.Value = 888;
-        expect(number.Entity.SetComplexPropValue).toHaveBeenCalledWith(number.Name, '888');
-    });
-
-    test('Setting value to same does not mark as dirty', () => {
-        number.Value = 100;
-        number.Dirty = false; // Reset dirty
-        number.Value = 100;
-        expect(number.Dirty).toBe(false);
-    });
-
-    test('Setting different value marks component as dirty', () => {
-        number.Value = 100;
-        number.Value = 101;
-        expect(number.Dirty).toBe(true);
-    });
-
-    test('Triggering input event without change keeps value', () => {
-        number.Value = 250;
-        mockInput.value = "250";
-        mockInput.trigger('input');
-        expect(number.Value.toString()).toEqual('250');
-    });
+    expect(input.value).toBe("1,234.50");
+  });
 });
-

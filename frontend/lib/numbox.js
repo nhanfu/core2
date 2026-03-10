@@ -293,3 +293,5 @@ export class Numbox extends EditableComponent {
         this._input.readOnly = value;
     }
 }
+
+export { Numbox as NumBox };

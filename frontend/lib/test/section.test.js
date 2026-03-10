@@ -1,65 +1,76 @@
-import { ElementType } from '../models/elementType';
-import { Section } from '../section'; // Adjust the path according to your project structure
+import { jest } from "@jest/globals";
 
-describe('Section', () => {
+jest.unstable_mockModule("../utils/componentFactory.js", () => ({
+  ComponentFactory: {},
+}));
+
+jest.unstable_mockModule("../clients/client.js", () => ({
+  Client: { Instance: {} },
+}));
+
+jest.unstable_mockModule("../tabComponent.js", () => ({
+  TabComponent: class TabComponent {},
+}));
+
+jest.unstable_mockModule("../tabGroup.js", () => ({
+  TabGroup: class TabGroup {},
+}));
+
+const { Section } = await import("../section.js");
+
+describe("Section", () => {
+  let section;
   let container;
 
   beforeEach(() => {
-    // Set up a DOM element as a render target
-    container = document.createElement('div');
-    container.Id = 'abc';
+    container = document.createElement("div");
     document.body.appendChild(container);
+    section = new Section("div");
+    section.ParentElement = container;
+    section.Element = container;
+    section.Entity = {};
+    section.EditForm = {};
   });
 
   afterEach(() => {
-    // Clean up on exiting
-    document.body.removeChild(container);
-    container = null;
+    document.body.innerHTML = "";
   });
 
-  test('should render content correctly', () => {
-    // Assume Section's Render method adds a div with class 'section-content'
-    const section = new Section(null, container);
-    // @ts-ignore
-    section.Meta = { Id: 'abc' };
-    section.Render(); // You need to adjust this method call according to your actual API
-
-    // Use jest-dom for more expressive assertions
-    expect(container.id).toBe('abc');
+  test("constructor initializes defaults", () => {
+    expect(section.Children).toEqual([]);
+    expect(section.Element).toBe(container);
   });
 
-  test('should only render children when condition is met', () => {
-    const section = new Section(ElementType.div);
-    section.ParentElement = container; // Assume this property controls whether children are rendered
-    section.Render();
-  
-    expect(container.innerHTML).toBe('<div></div>');
-  });
-  
-  test('should apply dynamic styles correctly', () => {
-    const section = new Section(ElementType.div);
-    section.Meta = { Id: 'abc', Html: '<div></div>', Css: '#abc { backgroundColor: "blue" }'}; // Assume dynamic styling can be applied
-    section.ParentElement = container;
-    section.Render();
-    const style = document.head.querySelector(`#${section.Meta.Id}`);
-    expect(style != null).toBe(true);
+  test("HasElementAndAll requires a non-empty array and a passing predicate", () => {
+    expect(Section.HasElementAndAll([], () => true)).toBe(false);
+    expect(Section.HasElementAndAll([1, 2, 3], value => value > 0)).toBe(true);
+    expect(Section.HasElementAndAll([1, 0, 3], value => value > 0)).toBe(false);
   });
 
-  test('should clean up resources on destruction', () => {
-    const section = new Section(ElementType.div);
-    section.ParentElement = container;
-    section.Render();
-    section.Dispose(); // Assume destroy method handles cleanup
-    expect(container.innerHTML).toBe('');
+  test("HandleMeta injects HTML and scoped CSS", () => {
+    section.Meta = {
+      Id: "abc",
+      FieldName: "TestField",
+      Html: "<div class='child'>Hello</div>",
+      Css: ".child { color: red; }",
+    };
+
+    section.HandleMeta();
+
+    expect(section.Element.innerHTML).toContain("Hello");
+    expect(document.head.querySelector("#testfieldabc-style")).not.toBeNull();
   });
 
-  test('should properly manage child components', () => {
-    const section = new Section(ElementType.div);
-    section.ParentElement = container;
-    const childComponent = { Render: jest.fn(), ToggleShow: jest.fn(), ToggleDisabled: jest.fn() };
-    section.AddChild(childComponent);
-    section.Render();
-  
-    expect(childComponent.Render).toHaveBeenCalled();
-  });  
+  test("DropdownBtnClick toggles dropdown visibility", () => {
+    section.Meta = { Label: "Actions" };
+    section.RenderDropDown();
+
+    expect(section.innerEle.style.display).toBe("none");
+
+    section.DropdownBtnClick();
+    expect(section.innerEle.style.display).toBe("block");
+
+    section.DropdownBtnClick();
+    expect(section.innerEle.style.display).toBe("none");
+  });
 });

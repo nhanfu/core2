@@ -32,13 +32,13 @@ export class Client {
     // @ts-ignore
     static Tenant = import.meta.env?.VITE_TENANT || "System";
     // @ts-ignore
-    static Env = import.meta.env.VITE_ENV || "test";
+    static Env = import.meta.env?.VITE_ENV || "test";
     // @ts-ignore
-    static FileFTP = import.meta.env.VITE_FILE_FTP || "/user";
+    static FileFTP = import.meta.env?.VITE_FILE_FTP || "/user";
     // @ts-ignore
     /** @type {string} */
-    static apiV2 = import.meta.env.VITE_API_V2_URL;
-    static api = import.meta.env.VITE_API_URL;
+    static apiV2 = import.meta.env?.VITE_API_V2_URL;
+    static api = import.meta.env?.VITE_API_URL;
     // @ts-ignore
     static Config = document.head.config?.content || "";
     static BadGatewayRequest = new BadGatewayQueue();

@@ -35,22 +35,27 @@ export class App {
   constructor() {
     this.meta = new Feature();
     this.meta.parentElement = document.getElementById("app");
+    this.meta.ParentElement = this.meta.parentElement;
     this.meta.layout = () => {
       return (
         <>
-          <AppComponent editForm={this.myApp.editForm} />
+          <AppComponent editForm={this.myApp.EditForm} />
         </>
       );
     };
+    this.meta.Layout = this.meta.layout;
     this.myApp = new Page();
-    this.myApp.editForm = new EditForm("MyApp");
-    this.myApp.editForm.policies = [
+    this.myApp.EditForm = new EditForm("MyApp");
+    this.myApp.editForm = this.myApp.EditForm;
+    this.myApp.EditForm.policies = [
       {
         canRead: true,
       },
     ];
+    this.myApp.Meta = this.meta;
     this.myApp.meta = this.meta;
-    this.myApp.editForm.meta = this.meta;
+    this.myApp.EditForm.Meta = this.meta;
+    this.myApp.EditForm.meta = this.meta;
   }
 
   async init() {

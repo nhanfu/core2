@@ -31,10 +31,12 @@ export class LoginBL extends EditForm {
     this.name = "Login";
     this.title = "Đăng nhập";
     this.login = true;
-    this.meta.isPublic = true;
-    this.meta.label = "Login";
+    this.Meta.isPublic = true;
+    this.Meta.IsPublic = true;
+    this.Meta.label = "Login";
+    this.Meta.Label = "Login";
     this.title = "Login";
-    this.meta.layout = () => {
+    this.Meta.layout = () => {
       const logIn = async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
@@ -46,10 +48,10 @@ export class LoginBL extends EditForm {
           return;
         }
         const login = {
-          TenantCode: tanentCode,
-          UserName: userName,
-          Password: password,
-          AutoSignIn: true,
+          tenantCode: tanentCode,
+          userName: userName,
+          password: password,
+          autoSignIn: true,
         };
         try {
           var res = await Client.Instance.SubmitAsync({
@@ -167,6 +169,7 @@ export class LoginBL extends EditForm {
         </>
       );
     };
+    this.Meta.Layout = this.Meta.layout;
   }
 
   /** @type {LoginBL} */
@@ -186,9 +189,9 @@ export class LoginBL extends EditForm {
   render() {
     let oldToken = Client.Token;
     if (!oldToken || new Date(oldToken.RefreshTokenExp) <= Client.EpsilonNow) {
-      Html.Take("#app");
-      this.element = Html.Context;
-      super.render();
+      this.ParentElement = document.getElementById("app");
+      this.Element = this.ParentElement;
+      super.Render();
       return;
     } else if (
       oldToken &&
