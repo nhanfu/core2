@@ -78,26 +78,26 @@ function extractBearerToken(authHeader: string | null): string | null {
 function createUserContext(payload: TokenPayload): UserContext {
   // Extract role IDs - handle both string and array formats
   let roleIds: string[] = [];
-  if (payload.RoleIds) {
-    roleIds = Array.isArray(payload.RoleIds)
-      ? payload.RoleIds
-      : [payload.RoleIds];
+  if (payload.roleIds) {
+    roleIds = Array.isArray(payload.roleIds)
+      ? payload.roleIds
+      : [payload.roleIds];
   }
 
   // Extract role names - handle both string and array formats
   let roleNames: string[] = [];
-  if (payload.RoleNameClaim) {
-    roleNames = Array.isArray(payload.RoleNameClaim)
-      ? payload.RoleNameClaim
-      : [payload.RoleNameClaim];
-  } else if (payload.RoleName) {
-    roleNames = Array.isArray(payload.RoleName)
-      ? payload.RoleName
-      : [payload.RoleName];
+  if (payload.roleNameClaim) {
+    roleNames = Array.isArray(payload.roleNameClaim)
+      ? payload.roleNameClaim
+      : [payload.roleNameClaim];
+  } else if (payload.roleName) {
+    roleNames = Array.isArray(payload.roleName)
+      ? payload.roleName
+      : [payload.roleName];
   }
 
   // Get tenant code from either TenantCode or TenantClaim
-  const tenantCode = payload.TenantCode || payload.TenantClaim || "";
+  const tenantCode = payload.tenantCode || payload.tenantClaim || "";
 
   // Check if user is admin (based on role names)
   const isAdmin = roleNames.some(
@@ -105,19 +105,19 @@ function createUserContext(payload: TokenPayload): UserContext {
   );
 
   return {
-    userId: payload.UserId || "",
+    userId: payload.userId || "",
     tenantCode: tenantCode,
     env: (payload.env as string) || "production",
     connKey: (payload.connKey as string) || "default",
     roles: roleIds,
     roleNames: roleNames,
-    userName: payload.UserName || "",
-    email: payload.Email || "",
-    fullName: payload.FullName || "",
-    departmentId: payload.DepartmentId as string | undefined,
+    userName: payload.userName || "",
+    email: payload.email || "",
+    fullName: payload.fullName || "",
+    departmentId: payload.departmentId as string | undefined,
     positionId: payload.positionId as string | undefined,
-    teamId: payload.TeamId as string | undefined,
-    partnerId: payload.PartnerId as string | undefined,
+    teamId: payload.teamId as string | undefined,
+    partnerId: payload.partnerId as string | undefined,
     centerIds: (payload.centerIds as string[]) || [],
     isAdmin: isAdmin,
   };

@@ -4,7 +4,7 @@
  * Migration from CoreAPI AuthController
  */
 
-import { SignIn, RefreshToken, SignOut } from "../services/authService.ts";
+import { SignIn, refreshToken, SignOut } from "../services/authService.ts";
 import type { Token } from "../types/interfaces.ts";
 
 // ============================================
@@ -18,8 +18,8 @@ export interface LoginRequest {
 }
 
 /** Request body for refresh token endpoint */
-export interface RefreshTokenRequest {
-  RefreshToken: string;
+export interface refreshTokenRequest {
+  refreshToken: string;
 }
 
 /** Request body for logout endpoint */
@@ -97,10 +97,10 @@ export async function login(
  * @returns New Token object with updated tokens
  */
 export async function refreshToken(
-  body: RefreshTokenRequest
+  body: refreshTokenRequest
 ): Promise<ApiResponse<Token>> {
   try {
-    const { RefreshToken: refreshToken } = body;
+    const { refreshToken: refreshToken } = body;
 
     if (!refreshToken) {
       return {
@@ -111,7 +111,7 @@ export async function refreshToken(
     }
 
     // Attempt to refresh token
-    const token = await RefreshToken(refreshToken);
+    const token = await refreshToken(refreshToken);
 
     return {
       success: true,

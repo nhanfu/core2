@@ -51,25 +51,25 @@ export interface TokenPayload extends JWTPayload {
   jti?: string; // JWT ID
 
   // Application-specific claims (matching .NET claims)
-  UserId?: string;
-  UserName?: string;
-  FullName?: string;
-  Email?: string;
-  TenantCode?: string;
-  TenantClaim?: string; // .NET uses this name
-  RoleIds?: string | string[];
-  RoleName?: string | string[];
-  RoleNameClaim?: string | string[]; // .NET uses this name
-  PartnerId?: string;
-  Avatar?: string;
-  TeamId?: string;
-  DepartmentId?: string;
-  CName?: string;
-  CLogo?: string;
-  CIcon?: string;
-  CAddress?: string;
-  CPhoneNumber?: string;
-  CEmail?: string;
+  userId?: string;
+  userName?: string;
+  fullName?: string;
+  email?: string;
+  tenantCode?: string;
+  tenantClaim?: string; // .NET uses this name
+  roleIds?: string | string[];
+  roleName?: string | string[];
+  roleNameClaim?: string | string[]; // .NET uses this name
+  partnerId?: string;
+  avatar?: string;
+  teamId?: string;
+  departmentId?: string;
+  cName?: string;
+  cLogo?: string;
+  cIcon?: string;
+  cAddress?: string;
+  cPhoneNumber?: string;
+  cEmail?: string;
   Dob?: string;
 }
 
@@ -330,18 +330,18 @@ export function createUserTokenPayload(
 ): TokenPayload {
   const payload: TokenPayload = {
     ...additionalClaims,
-    UserId: userId,
-    UserName: userName,
+    userId: userId,
+    userName: userName,
   };
 
   // Add role IDs (multiple values as array)
   if (roleIds.length > 0) {
-    payload.RoleIds = roleIds;
+    payload.roleIds = roleIds;
   }
 
   // Add role names (multiple values as array)
   if (roleNames.length > 0) {
-    payload.RoleNameClaim = roleNames;
+    payload.roleNameClaim = roleNames;
   }
 
   return payload;
@@ -383,14 +383,14 @@ export async function generateAccessToken(
     roleIds,
     roleNames,
     {
-      TenantCode: options.tenantCode,
-      TenantClaim: options.tenantCode,
-      PartnerId: options.partnerId,
-      FullName: options.fullName,
-      Email: options.email,
-      Avatar: options.avatar,
-      TeamId: options.teamId,
-      DepartmentId: options.departmentId,
+      tenantCode: options.tenantCode,
+      tenantClaim: options.tenantCode,
+      partnerId: options.partnerId,
+      fullName: options.fullName,
+      email: options.email,
+      avatar: options.avatar,
+      teamId: options.teamId,
+      departmentId: options.departmentId,
     }
   );
 

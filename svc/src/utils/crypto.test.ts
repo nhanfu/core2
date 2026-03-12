@@ -277,25 +277,25 @@ Deno.test("generateRefreshToken should generate custom length", () => {
 
 Deno.test("createUserTokenPayload should create payload with required fields", () => {
   const payload = createUserTokenPayload("user1", "username", ["role1"], ["Admin"]);
-  assertEquals(payload.UserId, "user1");
-  assertEquals(payload.UserName, "username");
-  assertEquals(payload.RoleIds, ["role1"]);
-  assertEquals(payload.RoleNameClaim, ["Admin"]);
+  assertEquals(payload.userId, "user1");
+  assertEquals(payload.userName, "username");
+  assertEquals(payload.roleIds, ["role1"]);
+  assertEquals(payload.roleNameClaim, ["Admin"]);
 });
 
 Deno.test("createUserTokenPayload should include additional claims", () => {
   const payload = createUserTokenPayload("user1", "username", ["role1"], ["Admin"], {
-    Email: "test@example.com",
-    TenantCode: "tenant1",
+    email: "test@example.com",
+    tenantCode: "tenant1",
   });
-  assertEquals(payload.Email, "test@example.com");
-  assertEquals(payload.TenantCode, "tenant1");
+  assertEquals(payload.email, "test@example.com");
+  assertEquals(payload.tenantCode, "tenant1");
 });
 
 Deno.test("createUserTokenPayload should handle empty roles", () => {
   const payload = createUserTokenPayload("user1", "username", [], []);
-  assertEquals(payload.UserId, "user1");
-  assertEquals(payload.RoleIds, undefined);
+  assertEquals(payload.userId, "user1");
+  assertEquals(payload.roleIds, undefined);
 });
 
 // ============================================

@@ -51,14 +51,18 @@ export class LoginBL extends EditForm {
           autoSignIn: true,
         };
         try {
-          var res = await Client.instance.submitAsync({
+          const res = await Client.instance.submitAsync({
             Url: `/api/auth/login`,
             jsonData: JSON.stringify(login),
             isRawString: true,
             Method: "POST",
             allowAnonymous: true,
           });
-          Client.token = res;
+          const token = res?.data ?? res;
+          if (!token?.accessToken) {
+            throw new Error(res?.message || "Login failed");
+          }
+          Client.token = token;
           this.initFCM();
           if (this.signedInHandler) {
             this.signedInHandler(Client.token);
@@ -75,7 +79,7 @@ export class LoginBL extends EditForm {
               }, 200);
             });
         } catch (error) {
-          Toast.Warning(error.Message);
+          Toast.Warning(error?.message || error?.Message || "Login failed");
         }
       };
       return (
@@ -239,11 +243,13 @@ export class LoginBL extends EditForm {
         allowAnonymous: true,
       })
         .then((res) => {
-          if (!res) {
+          const token = res?.data ?? res;
+          if (!token?.accessToken) {
             resolve(false);
+            Toast.Warning(res?.message || "Invalid username or password");
             return;
           }
-          Client.token = res;
+          Client.token = token;
           this.initFCM();
           if (this.signedInHandler) {
             this.signedInHandler(Client.token);

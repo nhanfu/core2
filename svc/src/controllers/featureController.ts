@@ -94,33 +94,33 @@ async function extractUserContext(headers: Headers): Promise<UserContext> {
   const payload = await verifyToken(token, JWT_SECRET);
 
   // Extract role IDs (can be string or string[])
-  const roleIds = Array.isArray(payload.RoleIds)
-    ? payload.RoleIds
-    : payload.RoleIds
-      ? [payload.RoleIds]
+  const roleIds = Array.isArray(payload.roleIds)
+    ? payload.roleIds
+    : payload.roleIds
+      ? [payload.roleIds]
       : [];
 
   // Extract role names (can be string or string[])
-  const roleNames = Array.isArray(payload.RoleNameClaim)
-    ? payload.RoleNameClaim
-    : payload.RoleNameClaim
-      ? [payload.RoleNameClaim]
+  const roleNames = Array.isArray(payload.roleNameClaim)
+    ? payload.roleNameClaim
+    : payload.roleNameClaim
+      ? [payload.roleNameClaim]
       : [];
 
   // Build user context
   const userContext: UserContext = {
-    userId: payload.UserId || "",
-    tenantCode: payload.TenantCode || payload.TenantClaim || "system",
+    userId: payload.userId || "",
+    tenantCode: payload.tenantCode || payload.tenantClaim || "system",
     env: "prod",
     connKey: "default",
     roles: roleIds,
     roleNames: roleNames,
-    userName: payload.UserName || "",
-    email: payload.Email || "",
-    fullName: payload.FullName || "",
-    departmentId: payload.DepartmentId,
-    teamId: payload.TeamId,
-    partnerId: payload.PartnerId,
+    userName: payload.userName || "",
+    email: payload.email || "",
+    fullName: payload.fullName || "",
+    departmentId: payload.departmentId,
+    teamId: payload.teamId,
+    partnerId: payload.partnerId,
     isAdmin: roleIds.includes("ADMIN") || roleIds.includes("admin"),
   };
 

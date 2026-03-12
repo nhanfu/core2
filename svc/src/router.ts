@@ -6,7 +6,7 @@
 
 import { Application, Router, Context } from "https://deno.land/x/oak@v17.1.3/mod.ts";
 import { authentication } from "./middleware/authentication.ts";
-import { login as authLogin, refreshToken as authRefreshToken, logout as authLogout } from "./controllers/authController.ts";
+import { login as authLogin, refreshToken as authrefreshToken, logout as authLogout } from "./controllers/authController.ts";
 import { default as featureController } from "./controllers/featureController.ts";
 import * as fileController from "./controllers/fileController.ts";
 import type { UserContext } from "./types/interfaces.ts";
@@ -45,7 +45,7 @@ async function signIn(ctx: Context): Promise<void> {
 async function refreshToken(ctx: Context): Promise<void> {
   const bodyText = await ctx.request.body.text();
   const body = JSON.parse(bodyText);
-  const result = await authRefreshToken(body);
+  const result = await authrefreshToken(body);
 
   ctx.response.status = result.statusCode;
   ctx.response.body = result;

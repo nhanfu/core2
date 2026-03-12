@@ -269,7 +269,7 @@ export async function SignIn(
 
   // Step 4: Generate access and refresh tokens
   const accessToken = await GenerateAccessToken(user);
-  const refreshToken = GenerateRefreshToken();
+  const refreshToken = GeneraterefreshToken();
 
   // Calculate expiration dates
   const accessTokenExp = getExpirationDate(ACCESS_TOKEN_EXPIRY);
@@ -289,9 +289,9 @@ export async function SignIn(
       "\"Id\"": crypto.randomUUID(),
       "\"UserId\"": user.id,
       "\"AccessToken\"": accessToken,
-      "\"RefreshToken\"": refreshToken,
+      "\"refreshToken\"": refreshToken,
       "\"AccessTokenExp\"": accessTokenExp.toISOString(),
-      "\"RefreshTokenExp\"": refreshTokenExp.toISOString(),
+      "\"refreshTokenExp\"": refreshTokenExp.toISOString(),
       "\"Active\"": true,
       "\"InsertedDate\"": new Date().toISOString(),
       "\"InsertedBy\"": user.id,
@@ -346,7 +346,7 @@ export async function SignIn(
  * @returns New Token object with updated tokens
  * @throws Error if refresh token is invalid
  */
-export async function RefreshToken(refreshToken: string): Promise<Token> {
+export async function refreshToken(refreshToken: string): Promise<Token> {
   // Step 1: Find the login record with this refresh token
   const loginRecords = await query(
     `SELECT
@@ -356,8 +356,8 @@ export async function RefreshToken(refreshToken: string): Promise<Token> {
      FROM "UserLogin" ul
      JOIN "User" u ON ul."UserId" = u."Id"
      LEFT JOIN "Partner" p ON u."CompanyId" = p."Id"
-     WHERE ul."RefreshToken" = $1 AND ul."Active" = true
-       AND ul."RefreshTokenExp" > NOW()`,
+     WHERE ul."refreshToken" = $1 AND ul."Active" = true
+       AND ul."refreshTokenExp" > NOW()`,
     [refreshToken]
   );
 
@@ -389,11 +389,11 @@ export async function RefreshToken(refreshToken: string): Promise<Token> {
 
   // Step 4: Generate new access token
   const newAccessToken = await GenerateAccessToken(user);
-  const newRefreshToken = GenerateRefreshToken();
+  const newrefreshToken = GeneraterefreshToken();
 
   // Calculate new expiration dates
   const newAccessTokenExp = getExpirationDate(ACCESS_TOKEN_EXPIRY);
-  const newRefreshTokenExp = getExpirationDate(REFRESH_TOKEN_EXPIRY);
+  const newrefreshTokenExp = getExpirationDate(REFRESH_TOKEN_EXPIRY);
 
   // Get role and center info
   const roleIds = await getUserRoleIds(user.id);
@@ -408,7 +408,7 @@ export async function RefreshToken(refreshToken: string): Promise<Token> {
     await execute(
       `UPDATE "UserLogin"
        SET "Active" = false, "UpdatedDate" = NOW()
-       WHERE "RefreshToken" = $1`,
+       WHERE "refreshToken" = $1`,
       [refreshToken]
     );
 
@@ -416,9 +416,9 @@ export async function RefreshToken(refreshToken: string): Promise<Token> {
       "\"Id\"": crypto.randomUUID(),
       "\"UserId\"": user.id,
       "\"AccessToken\"": newAccessToken,
-      "\"RefreshToken\"": newRefreshToken,
+      "\"refreshToken\"": newrefreshToken,
       "\"AccessTokenExp\"": newAccessTokenExp.toISOString(),
-      "\"RefreshTokenExp\"": newRefreshTokenExp.toISOString(),
+      "\"refreshTokenExp\"": newrefreshTokenExp.toISOString(),
       "\"Active\"": true,
       "\"InsertedDate\"": new Date().toISOString(),
       "\"InsertedBy\"": user.id,
@@ -440,9 +440,9 @@ export async function RefreshToken(refreshToken: string): Promise<Token> {
     address: user.address || "",
     avatar: user.avatar || "",
     accessToken: newAccessToken,
-    refreshToken: newRefreshToken,
+    refreshToken: newrefreshToken,
     accessTokenExp: newAccessTokenExp,
-    refreshTokenExp: newRefreshTokenExp,
+    refreshTokenExp: newrefreshTokenExp,
     vendor: tenant || undefined,
     roleIds,
     roleNames,
@@ -494,7 +494,7 @@ export async function GenerateAccessToken(user: User & { tenant_code?: string })
  * Generate a refresh token
  * @returns Random refresh token string
  */
-export function GenerateRefreshToken(): string {
+export function GeneraterefreshToken(): string {
   return generateRefreshToken(32);
 }
 
@@ -538,7 +538,7 @@ export async function SignOut(refreshToken: string): Promise<void> {
     await execute(
       `UPDATE "UserLogin"
        SET "Active" = false, "UpdatedDate" = NOW()
-       WHERE "RefreshToken" = $1`,
+       WHERE "refreshToken" = $1`,
       [refreshToken]
     );
   } catch (error) {

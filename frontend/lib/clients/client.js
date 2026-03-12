@@ -445,11 +445,11 @@ export class Client {
      */
     static async getToken(oldToken) {
         // @ts-ignore
-        const newToken = await Client.instance.submitAsync({
+        const response = await Client.instance.submitAsync({
             noQueue: true,
             Url: `/api/auth/refreshToken?t=${Client.token.tenantCode || Client.Tenant}`,
             Method: "POST",
-            jsonData: JSON.stringify({ refreshToken: oldToken.refreshToken, accessToken: oldToken.accessToken }),
+            jsonData: JSON.stringify({ refreshToken: oldToken.refreshToken }),
             allowAnonymous: true,
             errorHandler: (xhr) => {
                 if (xhr.status === 400) {
@@ -458,7 +458,7 @@ export class Client {
                 }
             },
         });
-        return newToken;
+        return response?.data ?? response;
     }
 
     /**

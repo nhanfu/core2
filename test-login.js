@@ -86,7 +86,7 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
         if (token) {
             const tokenData = JSON.parse(token);
             console.log('AccessTokenExp:', tokenData.AccessTokenExp);
-            console.log('RefreshTokenExp:', tokenData.RefreshTokenExp);
+            console.log('refreshTokenExp:', tokenData.refreshTokenExp);
         }
 
         // Step 2: Refresh the page to trigger token refresh
