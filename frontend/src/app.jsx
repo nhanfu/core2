@@ -1,5 +1,4 @@
 import React from "react";
-import { ToastContainer } from "react-toastify";
 import {
   Page,
   EditForm,
@@ -14,9 +13,9 @@ import { Spinner } from "../lib/spinner.js";
 import { LoginBL } from "./forms/login.jsx";
 import "./slimselect3.css";
 import "./index.css";
-import AppComponent from "./AppComponent.jsx";
+import AppComponent from "./appComponent.jsx";
 import Decimal from "decimal.js";
-import VNTank from "./components/VnTank.jsx";
+import vNTank from "./components/vnTank.jsx";
 
 export class App {
   /** @type {Page} */
@@ -35,27 +34,27 @@ export class App {
   constructor() {
     this.meta = new Feature();
     this.meta.parentElement = document.getElementById("app");
-    this.meta.ParentElement = this.meta.parentElement;
+    this.meta.parentElement = this.meta.parentElement;
     this.meta.layout = () => {
       return (
         <>
-          <AppComponent editForm={this.myApp.EditForm} />
+          <AppComponent editForm={this.myApp.editForm} />
         </>
       );
     };
     this.meta.Layout = this.meta.layout;
     this.myApp = new Page();
-    this.myApp.EditForm = new EditForm("MyApp");
-    this.myApp.editForm = this.myApp.EditForm;
-    this.myApp.EditForm.policies = [
+    this.myApp.editForm = new EditForm("myApp");
+    this.myApp.editForm = this.myApp.editForm;
+    this.myApp.editForm.policies = [
       {
         canRead: true,
       },
     ];
     this.myApp.Meta = this.meta;
     this.myApp.meta = this.meta;
-    this.myApp.EditForm.Meta = this.meta;
-    this.myApp.EditForm.meta = this.meta;
+    this.myApp.editForm.Meta = this.meta;
+    this.myApp.editForm.meta = this.meta;
   }
 
   async init() {
@@ -65,7 +64,7 @@ export class App {
 
   removeUser() {
     Client.token = null;
-    localStorage.removeItem("UserInfo");
+    localStorage.removeItem("userInfo");
     LoginBL.instance.render();
   }
 

@@ -8,9 +8,9 @@ import { Utils } from "./utils/utils";
 import { Component, ExcelExt, ElementType } from "./models";
 
 export class PdfReport extends EditableComponent {
-    static ErrorMessage = "ErrorMessage";
-    static DataNotFound = "Không tìm thấy dữ liệu";
-    static TemplateNotFound = "Template is null or empty";
+    static errorMessage = "errorMessage";
+    static dataNotFound = "Không tìm thấy dữ liệu";
+    static templateNotFound = "Template is null or empty";
 
     /**
     * @param {Component} ui 
@@ -18,31 +18,31 @@ export class PdfReport extends EditableComponent {
     */
     constructor(ui, ele = null) {
         super(ui);
-        if (!ui) throw new Error("ArgumentNullException: ui");
-        this.Element = ele;
+        if (!ui) throw new Error("argumentNullException: ui");
+        this.element = ele;
         this.Selected = null;
         this.Data = null;
-        this.HiddenButton = false;
+        this.hiddenButton = false;
         this._rptContent = null;
     }
 
     Render() {
-        Html.take(this.ParentElement);
+        Html.take(this.parentElement);
         this._rptContent = Html.getContext();
-        this.Element = Html.getContext();
-        this.RenderInternal();
+        this.element = Html.getContext();
+        this.renderInternal();
     }
 
-    RenderInternal() {
-        this.DisposeChildren();
-        this.TemplateLoaded().then();
+    renderInternal() {
+        this.disposeChildren();
+        this.templateLoaded().then();
     }
 
-    async TemplateLoaded() {
-        var html = await this.LoadData();
-        this.ParentElement.innerHTML = html;
+    async templateLoaded() {
+        var html = await this.loadData();
+        this.parentElement.innerHTML = html;
         window.setTimeout(() => {
-            this.Element.querySelectorAll("tbody[data-table]").forEach(ele => {
+            this.element.querySelectorAll("tbody[data-table]").forEach(ele => {
                 if (ele.children.length == 0) {
                     ele.parentElement.remove();
                 }
@@ -50,7 +50,7 @@ export class PdfReport extends EditableComponent {
         }, 100);
     }
 
-    CloneRow(templateRow) {
+    cloneRow(templateRow) {
         let res = [];
         for (let i = 0; i < templateRow.length; i++) {
             res.push(templateRow[i].cloneNode(true));
@@ -58,28 +58,28 @@ export class PdfReport extends EditableComponent {
         return res;
     }
 
-    async LoadData() {
-        var entity2 = this.Entity;
-        if (this.Parent.IsAction) {
-            entity2 = this.Parent.Entity;
+    async loadData() {
+        var entity2 = this.entity;
+        if (this.Parent.isAction) {
+            entity2 = this.Parent.entity;
         }
-        var gridViews = this.EditForm.ChildCom.filter(x => x.IsListView);
+        var gridViews = this.editForm.childCom.filter(x => x.isListView);
         var entity = JSON.parse(JSON.stringify(entity2));
         gridViews.forEach((grid, index) => {
-            entity["t" + index] = grid.AllListViewItem.filter(x => !x.GroupRow).map(x => x.Entity);
+            entity["t" + index] = grid.allListViewItem.filter(x => !x.groupRow).map(x => x.Entity);
             entity["t" + index + "h"] = grid.Header;
         })
         try {
-            var res = await Client.instance.postAsync({ ComId: this.Meta.Id, Data: entity }, "/api/CreateHtml");
+            var res = await Client.instance.postAsync({ comId: this.meta.Id, Data: entity }, "/api/createHtml");
             return res;
         } catch (error) {
             return error.Message;
         }
     }
 
-    UpdateView(force = false, dirty = null, ...componentNames) {
+    updateView(force = false, dirty = null, ...componentNames) {
         this.Data = null;
         window.clearTimeout(this._updateViewAwaiter);
-        this._updateViewAwaiter = window.setTimeout(() => this.RenderInternal(), 200);
+        this._updateViewAwaiter = window.setTimeout(() => this.renderInternal(), 200);
     }
 }

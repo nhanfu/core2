@@ -7,53 +7,53 @@ export class CompareGridView extends GridView {
      */
     constructor(ui) {
         super(ui);
-        this.ContentFieldName = "TextHistory";
-        this.ReasonOfChange = "ReasonOfChange";
-        this.Style = "white-space: pre-wrap;word-break: break-word;";
-        this.Meta.LocalHeader = [
+        this.contentFieldName = "textHistory";
+        this.reasonOfChange = "reasonOfChange";
+        this.style = "white-space: pre-wrap;word-break: break-word;";
+        this.meta.localHeader = [
             {
-                FieldName: "InsertedBy",
-                ComponentType: "Label",
+                fieldName: "insertedBy",
+                componentType: "Label",
                 Label: "Người thao tác",
-                Description: "Người thao tác",
-                ReferenceId: Utils.GetEntity("User")?.Id.toString(),
-                RefName: "User",
-                FormatData: "{" + "FullName" + "}",
-                Active: true,
+                description: "Người thao tác",
+                referenceId: Utils.getEntity("user")?.id.toString(),
+                refName: "user",
+                formatData: "{" + "fullName" + "}",
+                active: true,
             },
             {
-                FieldName: "InsertedDate",
-                ComponentType: "Label",
+                fieldName: "insertedDate",
+                componentType: "Label",
                 Label: "Ngày thao tác",
-                Description: "Ngày thao tác",
-                Active: true,
-                TextAlign: "left",
-                FormatData: "{0:dd/MM/yyyy HH:mm zz}"
+                description: "Ngày thao tác",
+                active: true,
+                textAlign: "left",
+                formatData: "{0:dd/mM/yyyy hH:mm zz}"
             },
             {
-                FieldName: "ReasonOfChange",
-                ComponentType: "Label",
+                fieldName: "reasonOfChange",
+                componentType: "Label",
                 Label: "Nội dung",
-                Description: "Nội dung",
-                HasFilter: true,
-                Active: true,
+                description: "Nội dung",
+                hasFilter: true,
+                active: true,
             },
             {
-                FieldName: "TextHistory",
-                ComponentType: "Label",
-                ChildStyle: this.Style,
-                Label: "Chi tiết thay đổi",
-                Description: "Chi tiết thay đổi",
-                HasFilter: true,
-                Active: true,
+                fieldName: "textHistory",
+                componentType: "Label",
+                childStyle: this.style,
+                Label: "chi tiết thay đổi",
+                description: "chi tiết thay đổi",
+                hasFilter: true,
+                active: true,
             },
         ];
     }
 
-    FilterColumns(component) {
-        super.FilterColumns(component);
-        component.forEach(x => x.Frozen = false);
-        this.Header.Remove(this.Header.find(x => x === GridView.ToolbarColumn));
+    filterColumns(component) {
+        super.filterColumns(component);
+        component.forEach(x => x.frozen = false);
+        this.header.remove(this.header.find(x => x === GridView.toolbarColumn));
         return component;
     }
 }

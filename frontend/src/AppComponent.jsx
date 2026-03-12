@@ -2,12 +2,11 @@ import React, { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import { Client } from "../lib";
 import UserDropdown from "./components/userDropdown.jsx";
-import NotificationDropdown from "./components/NotificationDropdown.jsx";
-import LangComponent from "./components/LangComponent.jsx";
+import NotificationDropdown from "./components/notificationDropdown.jsx";
+import LangComponent from "./components/langComponent.jsx";
 import store from "./redux/store.js";
 import { Provider } from "react-redux";
 import UserActive from "./components/userActive.jsx";
-import ExchangeRate from "./components/ExchangeRate.jsx";
 const AppComponent = ({ editForm }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
 
@@ -88,7 +87,6 @@ const AppComponent = ({ editForm }) => {
       </nav>
       <div className="main-content" id="tab-content"></div>
       <ToastContainer />
-      <ExchangeRate />
     </Provider>
   );
 };

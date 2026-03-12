@@ -2,45 +2,45 @@ import { jest } from "@jest/globals";
 
 class MockListView {
   constructor(ui) {
-    this.Meta = ui;
+    this.meta = ui;
     this.Entity = {};
     this.Header = [];
-    this.Editable = ui.CanWrite;
-    this.DOMContentLoaded = { add: jest.fn() };
+    this.Editable = ui.canWrite;
+    this.dOMContentLoaded = { add: jest.fn() };
   }
 
-  PopulateFields() {
-    if (!this.Meta.PopulateField || !this.EditForm?.UpdateView) {
+  populateFields() {
+    if (!this.meta.populateField || !this.editForm?.updateView) {
       return;
     }
-    this.EditForm.UpdateView(true, this.Meta.PopulateField.split(","));
+    this.editForm.updateView(true, this.meta.populateField.split(","));
   }
 }
 
 class MockListViewSection {
   constructor(element = document.createElement("div")) {
-    this.Element = element;
+    this.element = element;
   }
 }
 
 jest.unstable_mockModule("../listView.js", () => ({
-  ListView: MockListView,
+  listView: MockListView,
 }));
 
 jest.unstable_mockModule("../listViewSection.js", () => ({
-  ListViewSection: MockListViewSection,
+  listViewSection: MockListViewSection,
 }));
 
 jest.unstable_mockModule("../listViewItem.js", () => ({
-  ListViewItem: class ListViewItem {},
+  listViewItem: class ListViewItem {},
 }));
 
 jest.unstable_mockModule("../groupGridView.js", () => ({
-  GroupGridView: class GroupGridView {},
+  groupGridView: class GroupGridView {},
 }));
 
 jest.unstable_mockModule("../multipleSearchEntry.js", () => ({
-  MultipleSearchEntry: class MultipleSearchEntry {},
+  multipleSearchEntry: class MultipleSearchEntry {},
 }));
 
 const { GridView } = await import("../gridView.js");
@@ -57,18 +57,18 @@ describe("GridView", () => {
 
     meta = {
       Id: "testGridView",
-      IsSumary: true,
-      CanWrite: true,
-      PopulateField: "",
+      isSumary: true,
+      canWrite: true,
+      populateField: "",
       Label: "Test GridView",
     };
 
     gridView = new GridView(meta);
-    gridView.ParentElement = container;
-    gridView.EditForm = {
-      UpdateView: jest.fn(),
-      Meta: { FeaturePolicy: [] },
-      ResizeListView: jest.fn(),
+    gridView.parentElement = container;
+    gridView.editForm = {
+      updateView: jest.fn(),
+      Meta: { featurePolicy: [] },
+      resizeListView: jest.fn(),
     };
     gridView.headerSection = new MockListViewSection(document.createElement("div"));
     gridView.searchSection = new MockListViewSection(document.createElement("div"));
@@ -89,51 +89,51 @@ describe("GridView", () => {
     expect(gridView._summarys).toEqual([]);
   });
 
-  test("DOMContentLoadedHandler calls AddSummaries when summary is enabled", () => {
-    gridView.AddSummaries = jest.fn();
+  test("dOMContentLoadedHandler calls addSummaries when summary is enabled", () => {
+    gridView.addSummaries = jest.fn();
 
-    gridView.DOMContentLoadedHandler();
+    gridView.dOMContentLoadedHandler();
 
-    expect(gridView.AddSummaries).toHaveBeenCalled();
+    expect(gridView.addSummaries).toHaveBeenCalled();
   });
 
-  test("PopulateFields forwards requested fields to the edit form", () => {
-    gridView.Meta.PopulateField = "field1,field2";
+  test("populateFields forwards requested fields to the edit form", () => {
+    gridView.Meta.populateField = "field1,field2";
 
-    gridView.PopulateFields();
+    gridView.populateFields();
 
-    expect(gridView.EditForm.UpdateView).toHaveBeenCalledWith(true, ["field1", "field2"]);
+    expect(gridView.editForm.updateView).toHaveBeenCalledWith(true, ["field1", "field2"]);
   });
 
   test("Rerender refreshes visible headers and content", () => {
     gridView.Header = [{ Hidden: false }, { Hidden: true }];
-    gridView.RenderTableHeader = jest.fn();
-    gridView.AddNewEmptyRow = jest.fn();
-    gridView.RenderContent = jest.fn();
-    gridView.UpdateStickyColumns = jest.fn();
+    gridView.renderTableHeader = jest.fn();
+    gridView.addNewEmptyRow = jest.fn();
+    gridView.renderContent = jest.fn();
+    gridView.updateStickyColumns = jest.fn();
 
     gridView.Rerender();
 
     expect(gridView.loadRerender).toBe(true);
-    expect(gridView.RenderTableHeader).toHaveBeenCalledWith([{ Hidden: false }]);
-    expect(gridView.AddNewEmptyRow).toHaveBeenCalled();
-    expect(gridView.RenderContent).toHaveBeenCalled();
-    expect(gridView.UpdateStickyColumns).toHaveBeenCalled();
+    expect(gridView.renderTableHeader).toHaveBeenCalledWith([{ Hidden: false }]);
+    expect(gridView.addNewEmptyRow).toHaveBeenCalled();
+    expect(gridView.renderContent).toHaveBeenCalled();
+    expect(gridView.updateStickyColumns).toHaveBeenCalled();
   });
 
-  test("UpdateStickyColumns applies sticky classes to frozen columns", () => {
+  test("updateStickyColumns applies sticky classes to frozen columns", () => {
     gridView.Header = [{ Frozen: true }, { Frozen: false }];
     gridView.dataTable = document.createElement("table");
     gridView.dataTable.innerHTML = "<tr><th></th><td></td></tr>";
-    gridView.headerSection.Element.innerHTML = "<table><tr><th>Frozen</th><th>Free</th></tr></table>";
-    gridView.searchSection.Element.innerHTML = "<table><tr><td>A</td><td>B</td></tr></table>";
-    gridView.mainSection.Element.innerHTML = "<table><tr><td>C</td><td>D</td></tr></table>";
-    gridView.emptySection.Element.innerHTML = "<table><tr><td>E</td><td>F</td></tr></table>";
-    gridView.footerSection.Element.innerHTML = "<table><tr><td>G</td><td>H</td></tr></table>";
+    gridView.headerSection.element.innerHTML = "<table><tr><th>Frozen</th><th>Free</th></tr></table>";
+    gridView.searchSection.element.innerHTML = "<table><tr><td>A</td><td>B</td></tr></table>";
+    gridView.mainSection.element.innerHTML = "<table><tr><td>C</td><td>D</td></tr></table>";
+    gridView.emptySection.element.innerHTML = "<table><tr><td>E</td><td>F</td></tr></table>";
+    gridView.footerSection.element.innerHTML = "<table><tr><td>G</td><td>H</td></tr></table>";
 
-    gridView.UpdateStickyColumns();
+    gridView.updateStickyColumns();
 
-    expect(gridView.headerSection.Element.querySelector("th").classList.contains("sticky-column")).toBe(true);
-    expect(gridView.mainSection.Element.querySelector("td").classList.contains("sticky-column")).toBe(true);
+    expect(gridView.headerSection.element.querySelector("th").classList.contains("sticky-column")).toBe(true);
+    expect(gridView.mainSection.element.querySelector("td").classList.contains("sticky-column")).toBe(true);
   });
 });

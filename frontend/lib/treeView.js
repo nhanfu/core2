@@ -14,97 +14,97 @@ export class TreeView extends ListView {
     }
 
     Rerender() {
-        this.DisposeNoRecord();
+        this.disposeNoRecord();
         this.Header = this.Header.filter(x => !x.Hidden);
-        this.MainSection.Element.AddClass("overflow");
-        const firstData = this.FormattedRowData.Nothing() ? this.RowData.Data : this.FormattedRowData;
-        this.RenderContent(this.Header, this.MainSection, true, firstData);
-        this.MainSection.DisposeChildren();
+        this.mainSection.element.addClass("overflow");
+        const firstData = this.formattedRowData.nothing() ? this.rowData.Data : this.formattedRowData;
+        this.renderContent(this.Header, this.mainSection, true, firstData);
+        this.mainSection.disposeChildren();
         if (this.Editable) {
-            this.AddNewEmptyRow();
-        } else if (this.RowData.Data.Nothing()) {
-            this.NoRecordFound();
-            this.DomLoaded();
+            this.addNewEmptyRow();
+        } else if (this.rowData.Data.nothing()) {
+            this.noRecordFound();
+            this.domLoaded();
             return;
         }
-        if (this.MainSection.Element instanceof HTMLTableSectionElement) {
-            this.MainSection.Element.addEventListener(EventType.ContextMenu, this.BodyContextMenuHandler.bind(this));
+        if (this.mainSection.element instanceof hTMLTableSectionElement) {
+            this.mainSection.element.addEventListener(EventType.contextMenu, this.bodyContextMenuHandler.bind(this));
         }
-        this.DomLoaded();
+        this.domLoaded();
         Spinner.Hide();
     }
 
-    RenderContent(headers, node, first, rowDatas) {
-        if (rowDatas.Nothing()) {
+    renderContent(headers, node, first, rowDatas) {
+        if (rowDatas.nothing()) {
             return;
         }
-        Html.Take(node.Element).Ul.ClassName((!first ? "d-block " : " ") + (first ? " wtree" : " "));
+        Html.Take(node.element).Ul.className((!first ? "d-block " : " ") + (first ? " wtree" : " "));
         const ul = Html.Context;
         rowDatas.forEach(async (row) => {
-            this.RenderRow(headers, node, row, ul);
+            this.renderRow(headers, node, row, ul);
         });
     }
 
-    RenderRow(headers, node, row, ul) {
-        const params = Utils.IsFunction(this.Meta.PreQuery, false, this);
+    renderRow(headers, node, row, ul) {
+        const params = Utils.isFunction(this.meta.preQuery, false, this);
         // @ts-ignore
-        const data = Client.Instance.ComQuery(new SqlViewModel({
-            MetaConn: this.MetaConn,
-            DataConn: this.DataConn,
-            ComId: this.Meta.Id,
+        const data = Client.Instance.comQuery(new SqlViewModel({
+            metaConn: this.metaConn,
+            dataConn: this.dataConn,
+            comId: this.meta.Id,
             Params: params
         })).Done(ds => {
-            const datas = ds.length > 0 ? ds[0].ToList() : null;
+            const datas = ds.length > 0 ? ds[0].toList() : null;
             const count = ds.length > 1 && ds[1].length > 0 ? ds[1].total : 0;
             Html.Take(ul);
             const rowSection = new ListViewItem(ElementType.li,
                 // @ts-ignore
                 {
                     Entity: row,
-                    ListViewSection: this.MainSection
+                    listViewSection: this.mainSection
                 });
-            node.AddChild(rowSection);
-            Html.Instance.Div.ClassName(count > 0 ? "has" : "").Render();
+            node.addChild(rowSection);
+            Html.Instance.Div.className(count > 0 ? "has" : "").render();
             const label = Html.Context;
             headers.forEach(header => {
                 const com = header;
-                Html.Take(label).P.Render();
-                rowSection.RenderTableCell(row, com);
-                Html.Take(label).EndOf(ElementType.p);
+                Html.Take(label).P.render();
+                rowSection.renderTableCell(row, com);
+                Html.Take(label).endOf(ElementType.p);
             });
             if (count > 0) {
-                rowSection.Element.addEventListener(EventType.Click, () => this.FocusIn(rowSection, row, datas));
+                rowSection.element.addEventListener(EventType.Click, () => this.focusIn(rowSection, row, datas));
             }
         });
     }
 
 
-    FocusIn(listViewItem, row, datas) {
-        const ul = listViewItem.Element.QuerySelector("ul");
-        if (listViewItem.Element.HasClass("expanded")) {
-            ul.RemoveClass("d-block");
-            ul.AddClass("d-none");
-            listViewItem.Element.RemoveClass("expanded");
+    focusIn(listViewItem, row, datas) {
+        const ul = listViewItem.element.querySelector("ul");
+        if (listViewItem.element.hasClass("expanded")) {
+            ul.removeClass("d-block");
+            ul.addClass("d-none");
+            listViewItem.element.removeClass("expanded");
         } else {
-            listViewItem.Element.AddClass("expanded");
+            listViewItem.element.addClass("expanded");
             if (!ul) {
-                this.RenderContent(this.Header, listViewItem, false, datas);
+                this.renderContent(this.Header, listViewItem, false, datas);
             } else {
-                ul.RemoveClass("d-none");
-                ul.AddClass("d-block");
-                listViewItem.Element.AddClass("expanded");
+                ul.removeClass("d-none");
+                ul.addClass("d-block");
+                listViewItem.element.addClass("expanded");
             }
         }
     }
 
-    CalcFilterQuery() {
-        let res = super.CalcFilterQuery();
-        const resetSearch = this.ListViewSearch.EntityVM.SearchTerm && this.AdvSearchVM.Conditions.Nothing();
+    calcFilterQuery() {
+        let res = super.calcFilterQuery();
+        const resetSearch = this.listViewSearch.entityVM.searchTerm && this.advSearchVM.Conditions.nothing();
         if (!resetSearch) {
-            let filterPart = OdataExt.GetClausePart(res, OdataExt.FilterKeyword);
-            filterPart = filterPart.replace(new RegExp("((and|or) )?Parent(\\w|\\W)* eq null( (and|or)$)?", "g"), "");
-            filterPart = filterPart.replace(new RegExp("^Parent(\\w|\\W)* eq null( (and|or))?", "g"), "");
-            res = OdataExt.ApplyClause(res, filterPart);
+            let filterPart = odataExt.getClausePart(res, odataExt.filterKeyword);
+            filterPart = filterPart.replace(new regExp("((and|or) )?Parent(\\w|\\W)* eq null( (and|or)$)?", "g"), "");
+            filterPart = filterPart.replace(new regExp("^Parent(\\w|\\W)* eq null( (and|or))?", "g"), "");
+            res = odataExt.applyClause(res, filterPart);
         }
         return res;
     }

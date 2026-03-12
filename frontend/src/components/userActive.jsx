@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import DropdownComponent from './DropdownComponent';
+import dropdownComponent from './dropdownComponent';
 import { Client } from '../../lib';
 import { fetchData, addData, updateData } from '../redux/genericSlice'; // Update to use the Redux Toolkit slice
 import dayjs from 'dayjs';
@@ -15,12 +15,12 @@ dayjs.extend(localizedFormat);
 
 const USERACTIVE_KEY = 'usersactive';
 
-const UserActive = () => {
+const userActive = () => {
     const dispatch = useDispatch();
     const taskNotification = useSelector(state => state.generic[USERACTIVE_KEY] || []); // Adjusted to use the slice state
     useEffect(() => {
         const fetchNotificationsData = async () => {
-            const response = await Client.instance.postAsync({}, "/api/GetUserActive");
+            const response = await Client.instance.postAsync({}, "/api/getUserActive");
             dispatch(fetchData({ key: USERACTIVE_KEY, data: response }));
         };
         const handleUserConnectMessage = (data) => {
@@ -29,11 +29,11 @@ const UserActive = () => {
         const handleUserDisConnectMessage = (data) => {
             fetchNotificationsData();
         };
-        window.addEventListener("UserConnect", handleUserConnectMessage);
-        window.addEventListener("UserDisconnect", handleUserDisConnectMessage);
+        window.addEventListener("userConnect", handleUserConnectMessage);
+        window.addEventListener("userDisconnect", handleUserDisConnectMessage);
         return () => {
-            window.removeEventListener("UserConnect", handleUserConnectMessage);
-            window.removeEventListener("UserDisconnect", handleUserDisConnectMessage);
+            window.removeEventListener("userConnect", handleUserConnectMessage);
+            window.removeEventListener("userDisconnect", handleUserDisConnectMessage);
         };
     }, [dispatch]);
 
@@ -73,7 +73,7 @@ const UserActive = () => {
     );
 
     return (
-        <DropdownComponent
+        <dropdownComponent
             toggleContent={toggleContent}
             dropdownContent={dropdownContent}
             classNameChild="md"
@@ -82,4 +82,4 @@ const UserActive = () => {
     );
 };
 
-export default UserActive;
+export default userActive;

@@ -9,43 +9,43 @@ import { Utils } from "./utils/utils.js";
 
 export class GroupListView extends ListView {
     static _groupKey = "__groupkey__";
-    static GroupRowClass = "group-row";
+    static groupRowClass = "group-row";
 
     constructor(ui) {
         super(ui);
     }
 
     Render() {
-        super.Render();
-        Html.Take(this.Element).ClassName("group-listview").End.Render();
+        super.render();
+        Html.Take(this.element).className("group-listview").End.render();
     }
 
-    AddRow(item, fromIndex, singleAdd = true) {
+    addRow(item, fromIndex, singleAdd = true) {
         return new Promise((resolve) => {
             fromIndex = 0;
-            this.DisposeNoRecord();
-            const keys = this.Meta.GroupBy.split(",");
+            this.disposeNoRecord();
+            const keys = this.meta.groupBy.split(",");
             item[GroupListView._groupKey] = keys.map(key => item[key]?.toString()).join(" "); 
             const groupKey = item[GroupListView._groupKey]; 
-            const existGroup = this.AllListViewItem.find(group => group.GroupRow && group.Entity.As('GroupRowData').Key === groupKey); 
+            const existGroup = this.allListViewItem.find(group => group.groupRow && group.Entity.As('GroupRowData').Key === groupKey); 
     
             if (existGroup === null) {
                 const groupData = new GroupRowData();
                 groupData.Key = groupKey;
                 groupData.Children.push(item); 
-                this.FormattedRowData.push(groupData);
-                const rowSection = this.RenderRowData(this.Header, groupData, this.MainSection, this.MainSection.Children.length);
+                this.formattedRowData.push(groupData);
+                const rowSection = this.renderRowData(this.Header, groupData, this.mainSection, this.mainSection.Children.length);
                 if (singleAdd) {
-                    this.AddNewEmptyRow(); 
+                    this.addNewEmptyRow(); 
                 }
                 this.Dirty = true; 
                 resolve(rowSection);
             } else {
                 existGroup.Entity.As('GroupRowData').Children.push(item);
-                const index = this.MainSection.Children.indexOf(existGroup);
-                const rowSection = this.RenderRowData(this.Header, item, this.MainSection, index + existGroup.Children.length); // Thực hiện render dữ liệu cho item mới trong nhóm
+                const index = this.mainSection.Children.indexOf(existGroup);
+                const rowSection = this.renderRowData(this.Header, item, this.mainSection, index + existGroup.Children.length); // Thực hiện render dữ liệu cho item mới trong nhóm
                 if (singleAdd) {
-                    this.AddNewEmptyRow(); 
+                    this.addNewEmptyRow(); 
                 }
                 this.Dirty = true; 
                 resolve(rowSection);
@@ -53,52 +53,52 @@ export class GroupListView extends ListView {
         });
     }
 
-    AddRows(rowsData, index = 0) {
+    addRows(rowsData, index = 0) {
         let listItem = [];
         rowsData.forEach(async x => {
-            listItem.push(await this.AddRow(x, 0, false));
+            listItem.push(await this.addRow(x, 0, false));
         });
         return Promise.all(listItem);
     }
 
-    RenderRowData(headers, row, listViewSection, index, emptyRow = false) {
+    renderRowData(headers, row, listViewSection, index, emptyRow = false) {
         if (!(row instanceof GroupRowData)) {
-            return super.RenderRowData(headers, row, listViewSection, index, emptyRow);
+            return super.renderRowData(headers, row, listViewSection, index, emptyRow);
         }
-        let wrapper = listViewSection.Element;
-        if (!row.Key || row.Key.toString().IsNullOrWhiteSpace()) {
+        let wrapper = listViewSection.element;
+        if (!row.Key || row.Key.toString().isNullOrWhiteSpace()) {
             let rowResult = null;
             row.Children.forEach(child => {
                 Html.Take(wrapper);
-                rowResult = this.RenderRowData(headers, child, listViewSection, null);
+                rowResult = this.renderRowData(headers, child, listViewSection, null);
             });
             return rowResult;
         }
         let groupSection = new GroupViewItem(ElementType.div);
         groupSection.Entity = row;
-        groupSection.ParentElement = wrapper;
-        groupSection.GroupRow = true;
-        groupSection.PreQueryFn = this._preQueryFn;
-        groupSection.ListView = this;
-        groupSection.Meta = this.Meta;
-        listViewSection.AddChild(groupSection);
+        groupSection.parentElement = wrapper;
+        groupSection.groupRow = true;
+        groupSection.preQueryFn = this._preQueryFn;
+        groupSection.listView = this;
+        groupSection.Meta = this.meta;
+        listViewSection.addChild(groupSection);
         let first = row.Children[0];
-        let groupText = Utils.FormatEntity2(this.Meta.GroupFormat, null, first, x => "N/A", x => "N/A");
-        Html.Take(groupSection.Element).Event(EventType.Click, this.DispatchClick.bind(this), first)
-            .Event(EventType.DblClick, this.DispatchDblClick.bind(this), first)
+        let groupText = Utils.formatEntity2(this.meta.groupFormat, null, first, x => "N/A", x => "N/A");
+        Html.Take(groupSection.element).Event(EventType.Click, this.dispatchClick.bind(this), first)
+            .Event(EventType.dblClick, this.dispatchDblClick.bind(this), first)
             // @ts-ignore
-            .Icon("fa fa-chevron-right").Event(EventType.Click, this.ToggleGroupRow.bind(this), groupSection).End
-            .Span.InnerHTML(groupText);
-        groupSection.GroupText = Html.Context;
+            .Icon("fa fa-chevron-right").Event(EventType.Click, this.toggleGroupRow.bind(this), groupSection).End
+            .Span.innerHTML(groupText);
+        groupSection.groupText = Html.Context;
         row.Children.forEach(child => {
-            Html.Take(groupSection.Element);
-            let childRow = this.RenderRowData(headers, child, groupSection, null);
-            childRow.GroupSection = groupSection;
-            Html.Take(childRow.Element).SmallCheckbox().Render();
+            Html.Take(groupSection.element);
+            let childRow = this.renderRowData(headers, child, groupSection, null);
+            childRow.groupSection = groupSection;
+            Html.Take(childRow.element).smallCheckbox().render();
             let chk = Html.Context.previousElementSibling;
-            if(chk instanceof HTMLInputElement) {
+            if(chk instanceof hTMLInputElement) {
                 Html.Instance.End.End.Event(EventType.Click, (e) => {
-                    e.PreventDefault();
+                    e.preventDefault();
                     childRow.Selected = !childRow.Selected;
                     chk.checked = childRow.Selected;
                 });
@@ -107,15 +107,15 @@ export class GroupListView extends ListView {
         return groupSection;
     }
 
-    DispatchClick(row) {
-        this.DispatchEvent(this.Meta.GroupEvent, EventType.Click, row).Done();
+    dispatchClick(row) {
+        this.dispatchEvent(this.meta.groupEvent, EventType.Click, row).Done();
     }
 
-    DispatchDblClick(row) {
-        this.DispatchEvent(this.Meta.GroupEvent, EventType.DblClick, row).Done();
+    dispatchDblClick(row) {
+        this.dispatchEvent(this.meta.groupEvent, EventType.dblClick, row).Done();
     }
 
-    ToggleGroupRow(groupSection, e) {
+    toggleGroupRow(groupSection, e) {
         const target = e.target;
         if (!target.classList.contains("fa-chevron-right") && !target.classList.contains("fa-chevron-down")) {
             return;
@@ -129,60 +129,60 @@ export class GroupListView extends ListView {
         }
     }
 
-    RemoveRowById(id) {
-        const index = this.RowData.Data.findIndex(x => x[this.IdField].toString() === id);
+    removeRowById(id) {
+        const index = this.rowData.Data.findIndex(x => x[this.idField].toString() === id);
         if (index < 0) {
             return;
         }
-        this.RowData.Data.splice(index, 1);
-        this.FilterChildren(x => x instanceof ListViewItem && x.Entity[this.IdField].toString() === id)
+        this.rowData.Data.splice(index, 1);
+        this.filterChildren(x => x instanceof ListViewItem && x.Entity[this.idField].toString() === id)
             .forEach(x => {
                 if (x instanceof ListViewItem) {
-                if (x.GroupSection && x.GroupSection.Entity instanceof GroupRowData) {
-                    const groupChildren = x.GroupSection.Entity.Children;
-                    groupChildren.Remove(x.Entity);
+                if (x.groupSection && x.groupSection.Entity instanceof GroupRowData) {
+                    const groupChildren = x.groupSection.Entity.Children;
+                    groupChildren.remove(x.Entity);
                     if (!groupChildren.length) {
-                        this.RowData.Data.Remove(x.GroupSection.Entity);
-                        x.GroupSection.Dispose();
+                        this.rowData.Data.remove(x.groupSection.Entity);
+                        x.groupSection.Dispose();
                     }
                 }
             }
                 x.Dispose();
             });
-        if (!this.RowData.Data.length) {
-            this.NoRecordFound();
+        if (!this.rowData.Data.length) {
+            this.noRecordFound();
         }
     }
 
-    RemoveRange(data) {
-        data.forEach(x => this.RemoveRowById(x[this.IdField].toString()));
+    removeRange(data) {
+        data.forEach(x => this.removeRowById(x[this.idField].toString()));
     }
 
-    async AddOrUpdateRow(rowData, singleAdd = true, force = false, fields = []) {
-        let existRowData = this.FilterChildren(x => x instanceof ListViewItem && x.Entity === rowData).pop(); // pop() lấy phần tử cuối cùng tương đương FirstOrDefault
+    async addOrUpdateRow(rowData, singleAdd = true, force = false, fields = []) {
+        let existRowData = this.filterChildren(x => x instanceof ListViewItem && x.Entity === rowData).pop(); // pop() lấy phần tử cuối cùng tương đương firstOrDefault
 
         if (!existRowData) {
-            await this.AddRow(rowData, 0, singleAdd);
+            await this.addRow(rowData, 0, singleAdd);
             return;
         }
 
-        if (existRowData.EmptyRow) {
+        if (existRowData.emptyRow) {
             existRowData.Entity = null;
-            await this.AddRow(rowData, 0, singleAdd);
+            await this.addRow(rowData, 0, singleAdd);
         } else {
-            existRowData.Entity.CopyPropFrom(rowData);
+            existRowData.Entity.copyPropFrom(rowData);
             // @ts-ignore
-            this.RowAction(x => x instanceof ListViewItem && x.Entity === existRowData.Entity, x => {
+            this.rowAction(x => x instanceof ListViewItem && x.Entity === existRowData.Entity, x => {
                 if (x instanceof ListViewItem) {
-                    x.EmptyRow = false;
-                    x.UpdateView(force, fields);
+                    x.emptyRow = false;
+                    x.updateView(force, fields);
                     x.Dirty = true;
                 }
             });
         }
 
         if (singleAdd) {
-            this.AddNewEmptyRow();
+            this.addNewEmptyRow();
         }
     }
 }

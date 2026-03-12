@@ -1,11 +1,11 @@
 import { Section } from './section.js';
 export class ListViewSection extends Section {
-    /** @typedef {import('./listView.js').ListView} ListView */
+    /** @typedef {import('./listView.js').listView} ListView */
     /** @type {ListView} */
     ListView;
     Render() {
         // @ts-ignore
-        this.ListView = this.Parent;
-        super.Render();
+        this.listView = this.Parent;
+        super.render();
     }
 }

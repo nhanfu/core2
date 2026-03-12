@@ -29,7 +29,7 @@ export class SqlViewModel {
 
   /**
    * @type {string[]}
-   * @description Array of IDs.
+   * @description Array of iDs.
    */
   ids = [];
 
@@ -95,7 +95,7 @@ export class SqlViewModel {
 
   /**
    * @type {boolean}
-   * @description Indicates whether to skip XQuery.
+   * @description Indicates whether to skip xQuery.
    */
   skipXQuery = false;
 
@@ -115,13 +115,13 @@ export class SqlViewModel {
    * @type {string}
    * @description Meta connection string.
    */
-  metaConn = Client.MetaConn;
+  metaConn = Client.metaConn;
 
   /**
    * @type {string}
    * @description Data connection string.
    */
-  dataConn = Client.DataConn;
+  dataConn = Client.dataConn;
 
   /**
    * @type {string}

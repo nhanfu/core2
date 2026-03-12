@@ -1,5 +1,5 @@
 /**
-* Represents a wrapper around an XMLHttpRequest (XHR) object, providing additional functionality and configuration options.
+* Represents a wrapper around an xMLHttpRequest (XHR) object, providing additional functionality and configuration options.
 *
 * The `XHRWrapper` class encapsulates the properties and methods necessary to make HTTP requests, handle responses, and provide customization options.
 *
@@ -19,7 +19,7 @@
 * @property {any} value - The value to be sent with the request.
 * @property {boolean} isRawString - Indicates whether the `value` property should be treated as a raw string.
 * @property {Map<string, string>} headers - The headers to be included in the request.
-* @property {FormData} formData - The form data to be sent with the request.
+* @property {formData} formData - The form data to be sent with the request.
 * @property {File} file - The file to be sent with the request.
 * @property {function} progressHandler - A callback function to handle progress events.
 * @property {function} customParser - A custom parser function for the response.

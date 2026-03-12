@@ -1,7 +1,7 @@
 import { EditableComponent } from './editableComponent.js';
 import { Html } from "./utils/html.js";
 import { Utils } from "./utils/utils.js";
-import { PositionEnum, KeyCodeEnum, ObservableList, Component, EventType, ValidationRule } from "./models/";
+import { positionEnum, keyCodeEnum, ObservableList, Component, EventType, ValidationRule } from "./models/";
 import { LangSelect } from "./utils/langSelect.js";
 import { ComponentExt } from './utils/componentExt.js';
 import { GridView } from './gridView.js';
@@ -9,8 +9,8 @@ import { Client } from './clients/client.js';
 import { Toast } from './toast.js';
 
 export class SearchEntry extends EditableComponent {
-    IsSearchEntry = true;
-    IsMultiple = false;
+    isSearchEntry = true;
+    isMultiple = false;
     /**
      * Create instance of component
      * @param {Component | null} ui 
@@ -18,12 +18,12 @@ export class SearchEntry extends EditableComponent {
      */
     constructor(ui, ele = null) {
         super(ui);
-        this.DefaultValue = '';
-        this.SEntryClass = "search-entry"
-        this.Meta.ComponentGroup = null;
-        this.Meta.Row = this.Meta.Row ?? 50;
-        this.RowData = new ObservableList();
-        /** @type {HTMLInputElement} */
+        this.defaultValue = '';
+        this.sEntryClass = "search-entry"
+        this.meta.componentGroup = null;
+        this.meta.row = this.meta.row ?? 50;
+        this.rowData = new ObservableList();
+        /** @type {hTMLInputElement} */
         this._input = null;
         /** @type {HTMLElement} */
         this._rootResult = null;
@@ -34,92 +34,92 @@ export class SearchEntry extends EditableComponent {
         this._waitForInput = null;
         this._waitForDispose = null;
         this._contextMenu = false;
-        this.SearchResultEle = null;
+        this.searchResultEle = null;
         this._gv = null;
-        let containId = Utils.isNullOrWhiteSpace(this.Meta.TabGroup) ? this.Meta.FieldName.substr(this.Meta.FieldName.length - 2) === this.IdField : this.Meta.TabGroup.substr(this.Meta.TabGroup.length - 2) === this.IdField;
+        let containId = Utils.isNullOrWhiteSpace(this.meta.tabGroup) ? this.meta.fieldName.substr(this.meta.fieldName.length - 2) === this.idField : this.meta.tabGroup.substr(this.meta.tabGroup.length - 2) === this.idField;
         if (containId) {
-            this.DisplayField = Utils.isNullOrWhiteSpace(this.Meta.TabGroup) ? this.Meta.FieldName.substr(0, this.Meta.FieldName.length - 2) : this.Meta.TabGroup.substr(0, this.Meta.TabGroup.length - 2);
+            this.displayField = Utils.isNullOrWhiteSpace(this.meta.tabGroup) ? this.meta.fieldName.substr(0, this.meta.fieldName.length - 2) : this.meta.tabGroup.substr(0, this.meta.tabGroup.length - 2);
         }
         else {
-            this.DisplayField = this.Meta.FieldName + "MasterData";
+            this.displayField = this.meta.fieldName + "masterData";
         }
-        if (this.Meta.FieldName == "CurrencyId") {
-            this.IsCurrency = true;
+        if (this.meta.fieldName == "currencyId") {
+            this.isCurrency = true;
         }
     }
 
     Render() {
-        this.SetDefaultVal();
-        this._value = this.Entity[this.Name];
-        this.RenderInputAndEvents();
-        if (this.Meta.Events && this.Meta.Events.includes('"add"')) {
-            this.RenderIcons();
+        this.setDefaultVal();
+        this._value = this.entity[this.Name];
+        this.renderInputAndEvents();
+        if (this.meta.Events && this.meta.Events.includes('"add"')) {
+            this.renderIcons();
         }
-        this.FindMatchText();
-        this.SearchResultEle = document.body;
+        this.findMatchText();
+        this.searchResultEle = document.body;
     }
 
-    RenderInputAndEvents() {
-        if (this.ParentElement.tagName == "INPUT") {
-            this.Element = this._input = this.ParentElement;
+    renderInputAndEvents() {
+        if (this.parentElement.tagName == "INPUT") {
+            this.element = this._input = this.parentElement;
         }
-        if (this.Element == null) {
-            this.Element = this._input = Html.take(this.ParentElement).div.position(PositionEnum.relative).tabIndex(-1).className(this.SEntryClass).input.getContext();
+        if (this.element == null) {
+            this.element = this._input = Html.take(this.parentElement).div.position(positionEnum.relative).tabIndex(-1).className(this.sEntryClass).input.getContext();
             this._parentInput = this._input.parentElement;
         }
         else {
-            this._input = this.Element;
-            if (!this._input.parentElement.classList.includes(this.SEntryClass)) {
+            this._input = this.element;
+            if (!this._input.parentElement.classList.includes(this.sEntryClass)) {
                 var parent = document.createElement("div");
-                parent.classList.add(this.SEntryClass);
+                parent.classList.add(this.sEntryClass);
                 this._input.parentElement.appendChild(parent);
                 this._input.parentElement.insertBefore(parent, this._input);
             }
         }
         this._input.autocomplete = "off";
-        Html.take(this._input).placeHolder(this.Meta.PlainText || "Select data")
-            .event(EventType.ContextMenu, () => this._contextMenu = true)
-            .event(EventType.Focus, this.FocusIn.bind(this))
-            .event(EventType.FocusOut, this.DiposeGvWrapper.bind(this))
-            .event(EventType.KeyDown, this.SEKeydownHandler.bind(this))
+        Html.take(this._input).placeHolder(this.meta.plainText || "Select data")
+            .event(EventType.contextMenu, () => this._contextMenu = true)
+            .event(EventType.Focus, this.focusIn.bind(this))
+            .event(EventType.focusOut, this.diposeGvWrapper.bind(this))
+            .event(EventType.keyDown, this.sEKeydownHandler.bind(this))
             .event(EventType.Input, () => this.Search(this._input.value, true, null, true, false));
     }
 
-    SEKeydownHandler(e) {
-        if (this.Disabled || e === null) {
+    sEKeydownHandler(e) {
+        if (this.disabled || e === null) {
             return;
         }
-        let code = e.KeyCodeEnum();
+        let code = e.keyCodeEnum();
         switch (code) {
-            case KeyCodeEnum.Escape:
-                if (this._gv && this._gv.Element !== null) {
+            case keyCodeEnum.escape:
+                if (this._gv && this._gv.element !== null) {
                     e.stopPropagation();
                     this._gv.Show = false;
                 }
                 break;
-            case KeyCodeEnum.UpArrow:
-                if (this._gv && this._gv.Element !== null && this._gv.Show) {
+            case keyCodeEnum.upArrow:
+                if (this._gv && this._gv.element !== null && this._gv.Show) {
                     e.stopPropagation();
-                    this._gv.MoveUp();
+                    this._gv.moveUp();
                 }
                 break;
-            case KeyCodeEnum.DownArrow:
-                if (this._gv && this._gv.Element !== null && this._gv.Show) {
+            case keyCodeEnum.downArrow:
+                if (this._gv && this._gv.element !== null && this._gv.Show) {
                     e.stopPropagation();
-                    this._gv.MoveDown();
+                    this._gv.moveDown();
                 }
                 break;
-            case KeyCodeEnum.Enter:
-                this.EnterKeydownHandler(code);
+            case keyCodeEnum.enter:
+                this.enterKeydownHandler(code);
                 break;
-            case KeyCodeEnum.F6:
-                if (this._gv && this._gv.Element !== null && this._gv.Show) {
+            case keyCodeEnum.F6:
+                if (this._gv && this._gv.element !== null && this._gv.Show) {
                     e.preventDefault();
-                    this._gv.HotKeyF6Handler(e, KeyCodeEnum.F6);
+                    this._gv.hotKeyF6Handler(e, keyCodeEnum.F6);
                 }
                 break;
             default:
-                if (e.shiftKey && code === KeyCodeEnum.Delete) {
+                if (e.shiftKey && code === keyCodeEnum.delete) {
                     this._input.value = null;
                     this.Search();
                 }
@@ -127,42 +127,42 @@ export class SearchEntry extends EditableComponent {
         }
     }
 
-    EnterKeydownHandler(code) {
+    enterKeydownHandler(code) {
         if (this._gv !== null && this._gv.Show) {
-            this.EnterKeydownTableStillShow(code);
+            this.enterKeydownTableStillShow(code);
         } else {
             this.Search(null, false, 0);
         }
     }
 
-    EnterKeydownTableStillShow(code) {
-        if (this._gv.SelectedIndex > -1) {
-            let row = this._gv.AllListViewItem[this._gv.SelectedIndex].Entity;
-            this.EntrySelected(row);
+    enterKeydownTableStillShow(code) {
+        if (this._gv.selectedIndex > -1) {
+            let row = this._gv.allListViewItem[this._gv.selectedIndex].entity;
+            this.entrySelected(row);
         } else {
-            if (this._gv.AllListViewItem && this._gv.AllListViewItem.length === 1 && code === KeyCodeEnum.Enter) {
-                this.EntrySelected(this._gv.AllListViewItem[0].Entity);
+            if (this._gv.allListViewItem && this._gv.allListViewItem.length === 1 && code === keyCodeEnum.enter) {
+                this.entrySelected(this._gv.allListViewItem[0].entity);
             }
         }
     }
 
-    FocusIn() {
-        this.ParentElement.classList.add('cell-selected');
+    focusIn() {
+        this.parentElement.classList.add('cell-selected');
         if (this._contextMenu) {
             this._contextMenu = false;
             return;
         }
-        if (this.Disabled || this.Meta.FocusSearch) {
+        if (this.disabled || this.meta.focusSearch) {
             return;
         }
         window.clearTimeout(this._waitForInput);
         this._waitForInput = window.setTimeout(() => {
-            this.TriggerSearch(null);
+            this.triggerSearch(null);
         }, 100);
     }
 
-    FocusOut() {
-        this.ParentElement.classList.remove('cell-selected');
+    focusOut() {
+        this.parentElement.classList.remove('cell-selected');
     }
 
     Dispose() {
@@ -176,12 +176,12 @@ export class SearchEntry extends EditableComponent {
         super.Dispose();
     }
 
-    DiposeGvWrapper(e = null) {
+    diposeGvWrapper(e = null) {
         window.clearTimeout(this._waitForDispose);
-        this._waitForDispose = window.setTimeout(this.DisposeGv.bind(this), 50);
+        this._waitForDispose = window.setTimeout(this.disposeGv.bind(this), 50);
     }
 
-    DisposeGv() {
+    disposeGv() {
 
         if (this._gv !== null) {
             this._gv.Show = false;
@@ -189,368 +189,368 @@ export class SearchEntry extends EditableComponent {
         this._parentInput.appendChild(this._input);
     }
 
-    RenderIcons() {
-        let title = LangSelect.Get('Create new data');
-        Html.take(this.Element.parentElement).div.className('search-icons');
-        let div = Html.Instance.icon('fa fa-plus').title(`${title} ${LangSelect.Get(this.Meta.Label)}`).event('click', this.OpenRefAdd.bind(this)).end.getContext();
-        if (this.Element.nextElementSibling !== null) {
-            this.Element.parentElement.insertBefore(div, this.Element.nextElementSibling);
+    renderIcons() {
+        let title = LangSelect.get('Create new data');
+        Html.take(this.element.parentElement).div.className('search-icons');
+        let div = Html.instance.icon('fa fa-plus').title(`${title} ${LangSelect.get(this.meta.Label)}`).event('click', this.openRefAdd.bind(this)).end.getContext();
+        if (this.element.nextElementSibling !== null) {
+            this.element.parentElement.insertBefore(div, this.element.nextElementSibling);
         } else {
-            this.Element.parentElement.appendChild(div);
+            this.element.parentElement.appendChild(div);
         }
     }
 
-    OpenRefDetail() {
-        if (Utils.isNullOrWhiteSpace(this.Meta.Events)) {
+    openRefDetail() {
+        if (Utils.isNullOrWhiteSpace(this.meta.Events)) {
             return;
         }
-        this.DispatchCustomEvent(this.Meta.Events, "edit", this).then();
+        this.dispatchCustomEvent(this.meta.Events, "edit", this).then();
     }
 
-    OpenRefAdd() {
-        if (Utils.isNullOrWhiteSpace(this.Meta.Events)) {
+    openRefAdd() {
+        if (Utils.isNullOrWhiteSpace(this.meta.Events)) {
             return;
         }
-        this.DispatchCustomEvent(this.Meta.Events, "add", this).then();
+        this.dispatchCustomEvent(this.meta.Events, "add", this).then();
     }
 
     Search(term = null, changeEvent = true, timeout = 500, Delete = false, search = false) {
-        if (!Utils.isNullOrWhiteSpace(this.Meta.TabGroup)) {
-            if (this._input.value != this.OriginalText) {
+        if (!Utils.isNullOrWhiteSpace(this.meta.tabGroup)) {
+            if (this._input.value != this.originalText) {
                 this._value = this._input.value;
-                this.Entity[this.Meta.FieldName] = this._input.value;
-                this.Entity[this.Meta.TabGroup] = null;
-                this.Entity[this.DisplayField] = null;
+                this.entity[this.meta.fieldName] = this._input.value;
+                this.entity[this.meta.tabGroup] = null;
+                this.entity[this.displayField] = null;
                 this.Matched = null;
                 this.Dirty = true;
-                if (this.IsCurrency) {
-                    this.Entity.ExchangeRateVND = null;
-                    this.Entity.ExchangeRateUSD = null;
-                    this.Entity.CurrencyCode = null;
-                    if (this.Parent.IsListViewItem && this.Dirty) {
-                        this.Parent.UpdateView(false, false, "ExchangeRateVND", "ExchangeRateUSD");
+                if (this.isCurrency) {
+                    this.entity.exchangeRateVND = null;
+                    this.entity.exchangeRateUSD = null;
+                    this.entity.currencyCode = null;
+                    if (this.Parent.isListViewItem && this.Dirty) {
+                        this.Parent.updateView(false, false, "exchangeRateVND", "exchangeRateUSD");
                     }
                 }
             }
         }
-        if (this.Meta.HideGrid && !search) {
+        if (this.meta.hideGrid && !search) {
             return;
         }
         window.clearTimeout(this._waitForInput);
         this._waitForInput = window.setTimeout(() => {
             if (this._gv !== null) {
                 this._gv.Wheres = [];
-                this._gv.AdvSearchVM.Conditions = [];
-                this._gv.CellSelected = [];
+                this._gv.advSearchVM.Conditions = [];
+                this._gv.cellSelected = [];
             }
             if (changeEvent && !this._input.value) {
-                this.InputEmptyHandler();
+                this.inputEmptyHandler();
                 return;
             }
             var term2 = this._input.value;
-            this.TriggerSearch(term2);
+            this.triggerSearch(term2);
         }, 100);
     }
 
-    TriggerSearch(term = null) {
-        this.RenderGridView(term);
+    triggerSearch(term = null) {
+        this.renderGridView(term);
     }
 
-    async RenderGridView(term = null) {
+    async renderGridView(term = null) {
         if (this._isRendering) {
             return;
         }
         this._isRendering = true;
         if (this._gv !== null) {
-            this.RenderRootResult();
-            this._gv.ParentElement = this._rootResult;
-            this._gv.Entity = this.Entity;
-            this._gv.ListViewSearch.EntityVM.SearchTerm = term;
-            this._gv.RowData.Data = [];
-            this._gv.ActionFilter();
+            this.renderRootResult();
+            this._gv.parentElement = this._rootResult;
+            this._gv.entity = this.entity;
+            this._gv.listViewSearch.entityVM.searchTerm = term;
+            this._gv.rowData.Data = [];
+            this._gv.actionFilter();
             this._isRendering = false;
             return;
         }
         /**
              * @type {Component}
              */
-        var newMeta = JSON.parse(JSON.stringify(this.Meta));
-        newMeta.DisabledExp = null;
-        newMeta.ShowExp = null;
+        var newMeta = JSON.parse(JSON.stringify(this.meta));
+        newMeta.disabledExp = null;
+        newMeta.showExp = null;
         this._gv = new GridView(newMeta);
-        newMeta.VirtualScroll = true;
-        this._gv.Meta = newMeta;
-        this.RenderRootResult();
-        this._gv.Meta = newMeta;
-        this.ParentElement = this._rootResult;
-        this._gv.EditForm = this.EditForm;
-        this._gv.ParentElement = this._rootResult;
-        this._gv.Entity = this.Entity;
+        newMeta.virtualScroll = true;
+        this._gv.meta = newMeta;
+        this.renderRootResult();
+        this._gv.meta = newMeta;
+        this.parentElement = this._rootResult;
+        this._gv.editForm = this.editForm;
+        this._gv.parentElement = this._rootResult;
+        this._gv.entity = this.entity;
         this._gv.Parent = this;
-        this._gv.AlwaysValid = true;
-        this._gv.PopulateDirty = false;
-        this._gv.ShouldSetEntity = false;
-        this._gv.DOMContentLoaded.add(this.GridResultDomLoaded.bind(this));
-        this._gv.AddSections();
-        this._gv.ListViewSearch.EntityVM.SearchTerm = term;
-        this._gv.RowData.Data = [];
-        this._gv.Render();
+        this._gv.alwaysValid = true;
+        this._gv.populateDirty = false;
+        this._gv.shouldSetEntity = false;
+        this._gv.dOMContentLoaded.add(this.gridResultDomLoaded.bind(this));
+        this._gv.addSections();
+        this._gv.listViewSearch.entityVM.searchTerm = term;
+        this._gv.rowData.Data = [];
+        this._gv.render();
         this._gv.Show = false;
-        this._gv.Element.classList.add('floating');
-        this._gv.RowClick.add(this.EntrySelected.bind(this));
+        this._gv.element.classList.add('floating');
+        this._gv.rowClick.add(this.entrySelected.bind(this));
         this._isRendering = false;
-        if (this._gv.Paginator && this._gv.Paginator?.Element !== null) {
-            this._gv.Paginator.Element.tabIndex = -1;
-            this._gv.Paginator.Element.addEventListener('focusin', () => window.clearTimeout(this._waitForDispose));
-            this._gv.Paginator.Element.addEventListener('focusout', this.DiposeGvWrapper.bind(this));
+        if (this._gv.paginator && this._gv.paginator?.element !== null) {
+            this._gv.paginator.element.tabIndex = -1;
+            this._gv.paginator.element.addEventListener('focusin', () => window.clearTimeout(this._waitForDispose));
+            this._gv.paginator.element.addEventListener('focusout', this.diposeGvWrapper.bind(this));
         }
-        if (this._gv.MainSection && this._gv.MainSection?.Element !== null) {
-            this._gv.MainSection.Element.tabIndex = -1;
-            this._gv.MainSection.Element.addEventListener('focusin', () => window.clearTimeout(this._waitForDispose));
-            this._gv.MainSection.Element.addEventListener('focusout', this.DiposeGvWrapper.bind(this));
+        if (this._gv.mainSection && this._gv.mainSection?.element !== null) {
+            this._gv.mainSection.element.tabIndex = -1;
+            this._gv.mainSection.element.addEventListener('focusin', () => window.clearTimeout(this._waitForDispose));
+            this._gv.mainSection.element.addEventListener('focusout', this.diposeGvWrapper.bind(this));
         }
-        if (this._gv.HeaderSection && this._gv.HeaderSection?.Element !== null) {
-            this._gv.HeaderSection.Element.tabIndex = -1;
-            this._gv.HeaderSection.Element.addEventListener('focusin', () => window.clearTimeout(this._waitForDispose));
-            this._gv.HeaderSection.Element.addEventListener('focusout', this.DiposeGvWrapper.bind(this));
+        if (this._gv.headerSection && this._gv.headerSection?.element !== null) {
+            this._gv.headerSection.element.tabIndex = -1;
+            this._gv.headerSection.element.addEventListener('focusin', () => window.clearTimeout(this._waitForDispose));
+            this._gv.headerSection.element.addEventListener('focusout', this.diposeGvWrapper.bind(this));
         }
-        if (this.Meta.LocalHeader === null) {
-            this.Meta.LocalHeader = Array.from(this._gv.header.filter(x => x.id != null));
+        if (this.meta.localHeader === null) {
+            this.meta.localHeader = Array.from(this._gv.header.filter(x => x.id != null));
         }
-        var crollElement = this.Element.closest(".scroll-content");
+        var crollElement = this.element.closest(".scroll-content");
         if (crollElement != null) {
-            crollElement.addEventListener(EventType.Scroll, this.AlterPositionGV.bind(this));
+            crollElement.addEventListener(EventType.Scroll, this.alterPositionGV.bind(this));
         }
     }
 
-    RenderRootResult() {
+    renderRootResult() {
         if (this._rootResult !== null) {
             return;
         }
         this._rootResult = document.createElement('div');
         this._rootResult.classList.add('result-wrapper');
-        this.SearchResultEle.appendChild(this._rootResult);
+        this.searchResultEle.appendChild(this._rootResult);
     }
 
-    async GridResultDomLoaded() {
-        this.FocusBackWithoutEvent();
-        this._gv.SelectedIndex = -1;
-        this._gv.RowAction(x => {
+    async gridResultDomLoaded() {
+        this.focusBackWithoutEvent();
+        this._gv.selectedIndex = -1;
+        this._gv.rowAction(x => {
             x.Selected = false;
         });
-        this._gv.Element.style.inset = null;
-        this.RenderRootResult();
-        this._rootResult.appendChild(this._gv.Element);
-        if (!this.Meta.HideGrid) {
+        this._gv.element.style.inset = null;
+        this.renderRootResult();
+        this._rootResult.appendChild(this._gv.element);
+        if (!this.meta.hideGrid) {
             this._gv.Show = true;
         }
-        if (this.Meta.HideGrid) {
-            this.EntrySelected(this._gv?.RowData.Data[0]);
+        if (this.meta.hideGrid) {
+            this.entrySelected(this._gv?.rowData.Data[0]);
         }
-        this.FocusBackWithoutEvent();
-        this.AlterPositionGV();
+        this.focusBackWithoutEvent();
+        this.alterPositionGV();
     }
 
-    AlterPositionGV() {
-        ComponentExt.AlterPosition(this._gv.Element, this._input);
+    alterPositionGV() {
+        ComponentExt.alterPosition(this._gv.element, this._input);
     }
 
-    FocusBackWithoutEvent() {
+    focusBackWithoutEvent() {
         window.clearTimeout(this._waitForDispose);
         window.clearTimeout(this._waitForInput);
-        if (!this.Meta.IsPivot) {
+        if (!this.meta.isPivot) {
             this._input.focus();
         }
     }
 
-    InputEmptyHandler() {
+    inputEmptyHandler() {
         let oldValue = this._value;
         let oldMatch = this.Matched;
         this.Matched = null;
-        this.Entity[this.DisplayField] = null;
-        this.Entity[this.Name + "Text"] = null;
+        this.entity[this.displayField] = null;
+        this.entity[this.Name + "Text"] = null;
         this._value = null;
         this._input.value = '';
         this.Dirty = true;
         if (oldMatch !== this.Matched) {
-            this.Entity[this.Name] = null;
-            if (!Utils.isNullOrWhiteSpace(this.Meta.TabGroup)) {
-                this.Entity[this.Meta.TabGroup] = null;
+            this.entity[this.Name] = null;
+            if (!Utils.isNullOrWhiteSpace(this.meta.tabGroup)) {
+                this.entity[this.meta.tabGroup] = null;
             }
-            if (this.IsCurrency) {
-                this.Entity.ExchangeRateVND = null;
-                this.Entity.ExchangeRateUSD = null;
-                this.Entity.CurrencyCode = null;
-                this.Parent.UpdateView(false, false, "ExchangeRateVND", "ExchangeRateUSD");
+            if (this.isCurrency) {
+                this.entity.exchangeRateVND = null;
+                this.entity.exchangeRateUSD = null;
+                this.entity.currencyCode = null;
+                this.Parent.updateView(false, false, "exchangeRateVND", "exchangeRateUSD");
             }
-            this.PopulateFields(this.Matched);
-            this.DispatchEvent(this.Meta.Events, EventType.Change, this, this.Entity, this.Matched, oldMatch).then();
+            this.populateFields(this.Matched);
+            this.dispatchEvent(this.meta.Events, EventType.Change, this, this.entity, this.Matched, oldMatch).then();
             // @ts-ignore
-            this.UserInput?.Invoke({ NewData: this._value, OldData: oldValue, EvType: EventType.Change });
+            this.userInput?.invoke({ newData: this._value, oldData: oldValue, evType: EventType.Change });
         }
-        this.TriggerSearch(null);
+        this.triggerSearch(null);
     }
 
     _findMatchTextAwaiter;
 
-    FindMatchText() {
-        if (!Utils.isNullOrWhiteSpace(this.Meta.TabGroup)) {
-            if (this.Entity[this.Meta.TabGroup]) {
-                if (Utils.isNullOrWhiteSpace(this.Meta.RefName)) {
+    findMatchText() {
+        if (!Utils.isNullOrWhiteSpace(this.meta.tabGroup)) {
+            if (this.entity[this.meta.tabGroup]) {
+                if (Utils.isNullOrWhiteSpace(this.meta.refName)) {
                     window.setTimeout(() => {
-                        var data = Utils.IsFunction(this.Meta.Query, false, this);
+                        var data = Utils.isFunction(this.meta.Query, false, this);
                         this.Matched = data.find(x => {
                             const xId = x?.Id != null ? x.Id.toString() : null;
-                            const entityValue = this.Entity?.[this.Meta.FieldName] != null ? this.Entity[this.Meta.FieldName].toString() : null;
+                            const entityValue = this.entity?.[this.meta.fieldName] != null ? this.entity[this.meta.fieldName].toString() : null;
                             return xId === entityValue;
                         });
-                        this.SetMatchedValue();
+                        this.setMatchedValue();
                     }, 500);
                 }
                 else {
-                    Client.instance.getByIdAsync(this.Meta.RefName, [this.Entity[this.Meta.TabGroup]]).then(data => {
+                    Client.instance.getByIdAsync(this.meta.refName, [this.entity[this.meta.tabGroup]]).then(data => {
                         this.Matched = data.data ? data.data[0] : null;
-                        this.SetMatchedValue();
+                        this.setMatchedValue();
                     })
                 }
             }
             else {
-                this._input.value = this.Entity[this.Meta.FieldName] || '';
-                this.SetMatchedValue();
+                this._input.value = this.entity[this.meta.fieldName] || '';
+                this.setMatchedValue();
             }
             return;
         }
-        if (Utils.isNullOrWhiteSpace(this.Meta.RefName)) {
+        if (Utils.isNullOrWhiteSpace(this.meta.refName)) {
             window.setTimeout(() => {
-                var data = Utils.IsFunction(this.Meta.Query, false, this);
+                var data = Utils.isFunction(this.meta.Query, false, this);
                 this.Matched = data.find(x => {
                     const xId = x?.Id != null ? x.Id.toString() : null;
-                    const entityValue = this.Entity?.[this.Meta.FieldName] != null ? this.Entity[this.Meta.FieldName].toString() : null;
+                    const entityValue = this.entity?.[this.meta.fieldName] != null ? this.entity[this.meta.fieldName].toString() : null;
                     return xId === entityValue;
                 });
-                this.SetMatchedValue();
+                this.setMatchedValue();
             }, 500);
         }
         else {
-            this.Matched = this.Entity[this.DisplayField] || null;
+            this.Matched = this.entity[this.displayField] || null;
             if ((this._value && this.Matched && this.Matched.Id != this._value) || (!this.Matched && this._value)) {
-                Client.instance.getByIdAsync(this.Meta.RefName, [this._value]).then(data => {
+                Client.instance.getByIdAsync(this.meta.refName, [this._value]).then(data => {
                     this.Matched = data.data ? data.data[0] : null;
-                    this.SetMatchedValue();
-                    if (this.IsCurrency) {
-                        var code = this.GetMatchedText(this.Matched);
-                        this.Entity.CurrencyCode = code;
-                        if (this._value != this.Matched.Id || this.EntityId.startsWith("-")) {
-                            this.Entity.ExchangeRateVND = EditableComponent.ExchangeRateVND[code];
-                            this.Entity.ExchangeRateUSD = EditableComponent.ExchangeRateUSD[code];
+                    this.setMatchedValue();
+                    if (this.isCurrency) {
+                        var code = this.getMatchedText(this.Matched);
+                        this.entity.currencyCode = code;
+                        if (this._value != this.Matched.Id || this.entityId.startsWith("-")) {
+                            this.entity.exchangeRateVND = EditableComponent.exchangeRateVND[code];
+                            this.entity.exchangeRateUSD = EditableComponent.exchangeRateUSD[code];
                         }
-                        if (this.Parent.IsListViewItem && this.Dirty) {
-                            this.Parent.UpdateView(false, false, "ExchangeRateVND", "ExchangeRateUSD");
+                        if (this.Parent.isListViewItem && this.Dirty) {
+                            this.Parent.updateView(false, false, "exchangeRateVND", "exchangeRateUSD");
                         }
                     }
                 });
             }
             else {
-                this.SetMatchedValue();
+                this.setMatchedValue();
             }
         }
     }
 
-    SetMatchedValue() {
-        if (!Utils.isNullOrWhiteSpace(this.Meta.TabGroup)) {
-            this._input.value = this.Matched ? this.GetMatchedText(this.Matched) : (this.Entity[this.Meta.FieldName] || '');
-            this.Entity[this.Meta.TabGroup] = this.Matched ? this.Matched[this.IdField] : null;
-            this.Entity[this.Name] = this._input.value;
+    setMatchedValue() {
+        if (!Utils.isNullOrWhiteSpace(this.meta.tabGroup)) {
+            this._input.value = this.Matched ? this.getMatchedText(this.Matched) : (this.entity[this.meta.fieldName] || '');
+            this.entity[this.meta.tabGroup] = this.Matched ? this.Matched[this.idField] : null;
+            this.entity[this.Name] = this._input.value;
         }
         else {
-            this._input.value = this.EmptyRow ? "" : this.GetMatchedText(this.Matched);
-            this.Entity[this.Name + "Text"] = this._input.value;
+            this._input.value = this.emptyRow ? "" : this.getMatchedText(this.Matched);
+            this.entity[this.Name + "Text"] = this._input.value;
         }
-        if (this.IsCurrency) {
-            this.Entity.CurrencyCode = this._input.value;
-            this.Entity.ExchangeRateINV2 = EditableComponent.ExchangeRateUSD[this._input.value];
-            if (!this.Entity.ExchangeRateVND) {
-                this.Entity.ExchangeRateVND = EditableComponent.ExchangeRateVND[this._input.value];
-                this.Entity.ExchangeRateUSD = EditableComponent.ExchangeRateUSD[this._input.value];
+        if (this.isCurrency) {
+            this.entity.currencyCode = this._input.value;
+            this.entity.exchangeRateINV2 = EditableComponent.exchangeRateUSD[this._input.value];
+            if (!this.entity.exchangeRateVND) {
+                this.entity.exchangeRateVND = EditableComponent.exchangeRateVND[this._input.value];
+                this.entity.exchangeRateUSD = EditableComponent.exchangeRateUSD[this._input.value];
             }
         }
-        this.UpdateValue();
+        this.updateValue();
     }
 
-    UpdateValue() {
+    updateValue() {
         if (!this.Dirty) {
-            this.OriginalText = this._input.value;
-            this.DOMContentLoaded?.invoke();
-            this.OldValue = this._value?.toString();
+            this.originalText = this._input.value;
+            this.dOMContentLoaded?.invoke();
+            this.oldValue = this._value?.toString();
         }
     }
 
-    GetMatchedText(matched) {
-        if (matched === null && this.Entity === null || !matched) {
-            this.Entity[this.DisplayField] = null;
+    getMatchedText(matched) {
+        if (matched === null && this.entity === null || !matched) {
+            this.entity[this.displayField] = null;
             return '';
         }
-        this.Entity[this.DisplayField] = matched;
-        let res = Utils.FormatEntity(this.Meta.FormatData, matched);
+        this.entity[this.displayField] = matched;
+        let res = Utils.formatEntity(this.meta.formatData, matched);
         return res || "";
     }
 
-    ActEntrySelected(rowData) {
+    actEntrySelected(rowData) {
         window.clearTimeout(this._waitForDispose);
-        this.EmptyRow = false;
-        if (rowData === null || this.Disabled) {
+        this.emptyRow = false;
+        if (rowData === null || this.disabled) {
             return;
         }
         if ((!this._value && rowData) || (this._value !== rowData.Id)) {
-            if (this.IsCurrency) {
-                var code = this.GetMatchedText(rowData);
-                this.Entity.ExchangeRateVND = EditableComponent.ExchangeRateVND[code];
-                this.Entity.ExchangeRateUSD = EditableComponent.ExchangeRateUSD[code];
-                this.Entity.CurrencyCode = code;
+            if (this.isCurrency) {
+                var code = this.getMatchedText(rowData);
+                this.entity.exchangeRateVND = EditableComponent.exchangeRateVND[code];
+                this.entity.exchangeRateUSD = EditableComponent.exchangeRateUSD[code];
+                this.entity.currencyCode = code;
             }
         }
         let oldMatch = this.Matched;
         this.Matched = rowData;
         let oldValue = this._value;
-        if (!Utils.isNullOrWhiteSpace(this.Meta.TabGroup)) {
-            this._value = rowData[this.IdField];
-            this.Entity[this.Meta.TabGroup] = rowData[this.IdField];
+        if (!Utils.isNullOrWhiteSpace(this.meta.tabGroup)) {
+            this._value = rowData[this.idField];
+            this.entity[this.meta.tabGroup] = rowData[this.idField];
         }
         else {
-            this._value = rowData[this.IdField];
+            this._value = rowData[this.idField];
         }
-        if (this.Entity !== null && this.Name) {
-            if (Utils.isNullOrWhiteSpace(this.Meta.TabGroup)) {
-                this.Entity[this.Name] = this._value;
+        if (this.entity !== null && this.Name) {
+            if (Utils.isNullOrWhiteSpace(this.meta.tabGroup)) {
+                this.entity[this.Name] = this._value;
             }
             else {
-                this.Entity[this.Meta.FieldName] = this.GetMatchedText(this.Matched);
-                this.Entity[this.Meta.TabGroup] = rowData[this.IdField];
+                this.entity[this.meta.fieldName] = this.getMatchedText(this.Matched);
+                this.entity[this.meta.tabGroup] = rowData[this.idField];
             }
         }
         this.Dirty = true;
         this.Matched = rowData;
-        this.SetMatchedValue();
+        this.setMatchedValue();
         if (this._gv !== null) {
             this._gv.Show = false;
         }
-        this.PopulateFields(this.Matched);
-        this.DispatchEvent(this.Meta.Events, EventType.Change, this, this.Entity, rowData, oldMatch).then(() => {
+        this.populateFields(this.Matched);
+        this.dispatchEvent(this.meta.Events, EventType.Change, this, this.entity, rowData, oldMatch).then(() => {
             // @ts-ignore
-            this.UserInput?.Invoke({ NewData: this._value, OldData: oldValue, EvType: EventType.Change });
-            this.DiposeGvWrapper();
+            this.userInput?.invoke({ newData: this._value, oldData: oldValue, evType: EventType.Change });
+            this.diposeGvWrapper();
         });
-        if (this.Parent.IsListViewItem && this.Dirty) {
+        if (this.Parent.isListViewItem && this.Dirty) {
             window.setTimeout(() => {
-                if (this.IsCurrency && this.Dirty) {
-                    this.Parent.UpdateView(false, false, "ExchangeRateVND", "ExchangeRateUSD");
+                if (this.isCurrency && this.Dirty) {
+                    this.Parent.updateView(false, false, "exchangeRateVND", "exchangeRateUSD");
                 }
                 this._input.focus();
             }, 200);
         }
         else {
-            if (!Utils.isNullOrWhiteSpace(this.Meta.GroupBy)) {
-                var groups = this.EditForm.ChildCom.filter(x => x.Meta.GroupBy == this.Meta.GroupBy);
+            if (!Utils.isNullOrWhiteSpace(this.meta.groupBy)) {
+                var groups = this.editForm.childCom.filter(x => x.meta.groupBy == this.meta.groupBy);
                 var index = groups.indexOf(this);
                 if (groups[index + 1]) {
                     groups[index + 1].Focus();
@@ -563,7 +563,7 @@ export class SearchEntry extends EditableComponent {
                 }
             }
             else {
-                var rangeCom = this.EditForm.ChildCom.filter(x => !x.IsButton && !x.IsListView);
+                var rangeCom = this.editForm.childCom.filter(x => !x.isButton && !x.isListView);
                 var index = rangeCom.indexOf(this);
                 if (rangeCom[index + 1]) {
                     rangeCom[index + 1].Focus();
@@ -572,21 +572,21 @@ export class SearchEntry extends EditableComponent {
         }
     }
 
-    EntrySelected(rowData) {
-        if (this.Meta.IsPrivate && (rowData["DebitDay"] || rowData["CreditLimit"])) {
-            if (rowData["DebitDay"] && rowData["DebitDate"] && rowData["DebitDay"] > 0) {
-                var checkDate = this.dayjs(rowData["DebitDate"]).add(rowData["DebitDay"], "day");
+    entrySelected(rowData) {
+        if (this.meta.isPrivate && (rowData["debitDay"] || rowData["creditLimit"])) {
+            if (rowData["debitDay"] && rowData["debitDate"] && rowData["debitDay"] > 0) {
+                var checkDate = this.dayjs(rowData["debitDate"]).add(rowData["debitDay"], "day");
                 if (checkDate.isBefore(this.dayjs(), "day")) {
                     window.clearTimeout(this._waitForDispose);
                     this._waitForDispose = window.setTimeout(() => {
                         this._input.focus();
                     }, 200);
-                    if (!this.SalesFunction["ALLOW_SELECT_OVERDUE_OBJECTS"]) {
+                    if (!this.salesFunction["ALLOW_SELECT_OVERDUE_OBJECTS"]) {
                         this.Matched = null;
-                        this.Entity[this.DisplayField] = null;
+                        this.entity[this.displayField] = null;
                         this._input.value = null;
-                        this.UpdateValue();
-                        this.EditForm.OpenConfig(LangSelect.Get("You cannot select overdue objects"), () => {
+                        this.updateValue();
+                        this.editForm.openConfig(LangSelect.get("You cannot select overdue objects"), () => {
                         }, () => { }, false, [], true);
                         return;
                     }
@@ -594,23 +594,23 @@ export class SearchEntry extends EditableComponent {
                     this._waitForDispose = window.setTimeout(() => {
                         this._input.focus();
                     }, 200);
-                    this.EditForm.OpenConfig(LangSelect.Get("You cannot select overdue objects"), () => {
-                        this.ActEntrySelected(rowData);
+                    this.editForm.openConfig(LangSelect.get("You cannot select overdue objects"), () => {
+                        this.actEntrySelected(rowData);
                     }, () => { }, false, [], true);
                     return;
                 }
             }
-            if (this.Decimal(rowData["DebitAmountVND"] || 0).gt(this.Decimal(rowData["CreditLimit"] || 0))) {
-                if (!this.SalesFunction["ALLOW_SELECT_OVERDUE_OBJECTS"]) {
+            if (this.Decimal(rowData["debitAmountVND"] || 0).gt(this.Decimal(rowData["creditLimit"] || 0))) {
+                if (!this.salesFunction["ALLOW_SELECT_OVERDUE_OBJECTS"]) {
                     window.clearTimeout(this._waitForDispose);
                     this._waitForDispose = window.setTimeout(() => {
                         this._input.focus();
                     }, 200);
                     this.Matched = null;
-                    this.Entity[this.DisplayField] = null;
+                    this.entity[this.displayField] = null;
                     this._input.value = null;
-                    this.UpdateValue();
-                    this.EditForm.OpenConfig(LangSelect.Get("You cannot select overdue objects"), () => {
+                    this.updateValue();
+                    this.editForm.openConfig(LangSelect.get("You cannot select overdue objects"), () => {
                     }, () => { }, false, [], true);
                     return;
                 }
@@ -619,81 +619,81 @@ export class SearchEntry extends EditableComponent {
                     this._waitForDispose = window.setTimeout(() => {
                         this._input.focus();
                     }, 200);
-                    this.EditForm.OpenConfig(LangSelect.Get("You cannot select overdue objects"), () => {
-                        this.ActEntrySelected(rowData);
+                    this.editForm.openConfig(LangSelect.get("You cannot select overdue objects"), () => {
+                        this.actEntrySelected(rowData);
                     }, () => { }, false, [], true);
                     return;
                 }
             }
         }
-        if (!Utils.isNullOrWhiteSpace(rowData["ToastWarning"])) {
-            this.EditForm.OpenConfig(rowData["ToastWarning"], () => {
-                this.ActEntrySelected(rowData);
+        if (!Utils.isNullOrWhiteSpace(rowData["toastWarning"])) {
+            this.editForm.openConfig(rowData["toastWarning"], () => {
+                this.actEntrySelected(rowData);
             }, () => { }, false, [], true)
         }
         else {
-            this.ActEntrySelected(rowData);
+            this.actEntrySelected(rowData);
         }
     }
 
-    UpdateView(force = false, dirty = null, ...componentNames) {
-        var fieldName = Utils.isNullOrWhiteSpace(this.Meta.TabGroup) ? this.Meta.FieldName : this.Meta.TabGroup;
-        var newValue = this.Entity[fieldName];
-        this._value = this.Entity[fieldName];
+    updateView(force = false, dirty = null, ...componentNames) {
+        var fieldName = Utils.isNullOrWhiteSpace(this.meta.tabGroup) ? this.meta.fieldName : this.meta.tabGroup;
+        var newValue = this.entity[fieldName];
+        this._value = this.entity[fieldName];
         if (newValue === null) {
-            if (!Utils.isNullOrWhiteSpace(this.Meta.TabGroup) && this.Entity[this.Name]) {
-                newValue = this.Entity[this.Name];
+            if (!Utils.isNullOrWhiteSpace(this.meta.tabGroup) && this.entity[this.Name]) {
+                newValue = this.entity[this.Name];
             }
             this.Matched = null;
-            this.Entity[this.DisplayField] = null;
+            this.entity[this.displayField] = null;
             this._input.value = newValue;
-            this.UpdateValue();
-            if (this.IsCurrency) {
-                this.Entity.ExchangeRateVND = null;
-                this.Entity.ExchangeRateUSD = null;
-                this.Entity.CurrencyCode = null;
+            this.updateValue();
+            if (this.isCurrency) {
+                this.entity.exchangeRateVND = null;
+                this.entity.exchangeRateUSD = null;
+                this.entity.currencyCode = null;
             }
             return;
         }
-        this.FindMatchText();
+        this.findMatchText();
     }
 
-    async ValidateAsync() {
-        if (this.ValidationRules.length == 0) {
+    async validateAsync() {
+        if (this.validationRules.length == 0) {
             return true;
         }
-        this.ValidationResult = [];
-        this.ValidateRequired(this._value);
+        this.validationResult = [];
+        this.validateRequired(this._value);
         this.Validate(ValidationRule.Equal, this._value, (value, ruleValue) => value === ruleValue);
-        this.Validate(ValidationRule.NotEqual, this._value, (value, ruleValue) => value !== ruleValue);
-        return this.IsValid;
+        this.Validate(ValidationRule.notEqual, this._value, (value, ruleValue) => value !== ruleValue);
+        return this.isValid;
     }
 
-    SetDisableUI(value) {
+    setDisableUI(value) {
         if (this._input !== null) {
             this._input.readOnly = value;
         }
     }
 
-    RemoveDOM() {
+    removeDOM() {
         if (this._input !== null && this._input.parentElement !== null) {
             this._input.parentElement.remove();
         }
     }
 
-    SetDefaultVal() {
-        if (Utils.isNullOrWhiteSpace(this.Meta.DefaultVal)) {
+    setDefaultVal() {
+        if (Utils.isNullOrWhiteSpace(this.meta.defaultVal)) {
             return;
         }
-        var data = this.Meta.DefaultVal;
+        var data = this.meta.defaultVal;
         if (!data) {
-            data = this.Meta.DefaultVal;
+            data = this.meta.defaultVal;
         }
-        if (data && this.Entity && this.Entity[this.Name] == null && this.Entity[this.IdField] && this.Entity[this.IdField].startsWith("-")) {
-            this.Entity[this.Name] = data;
-            this.PopulateFields();
+        if (data && this.entity && this.entity[this.Name] == null && this.entity[this.idField] && this.entity[this.idField].startsWith("-")) {
+            this.entity[this.Name] = data;
+            this.populateFields();
             window.setTimeout(() => {
-                this.PopulateFields();
+                this.populateFields();
             }, 300);
         }
     }

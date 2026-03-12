@@ -22,3 +22,5 @@ export class BadGatewayQueue {
         return this._queue.length;
     }
 }
+
+export { BadGatewayQueue as badGatewayQueue };

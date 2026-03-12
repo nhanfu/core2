@@ -4,8 +4,8 @@ export class PopupEditor extends TabEditor {
     constructor(entity) {
         super(entity);
         this.Popup = true;
-        this.IsTab = false;
-        this.ParentElement = this.TabEditor ? this.TabEditor.Element : null;
-        this.ShouldLoadEntity = false;
+        this.isTab = false;
+        this.parentElement = this.tabEditor ? this.tabEditor.element : null;
+        this.shouldLoadEntity = false;
     }
 }

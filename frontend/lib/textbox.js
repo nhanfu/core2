@@ -1,11 +1,11 @@
 import { EditableComponent } from './editableComponent.js';
-import { Component, EventType, ValidationRule, KeyCodeEnum } from "./models/";
+import { Component, EventType, ValidationRule, keyCodeEnum } from "./models/";
 import { Html } from "./utils/html.js";
 import { Utils } from "./utils/utils.js";
 import { LangSelect } from "./utils/langSelect.js";
 import { Client } from "./clients/client.js";
 import { Str } from './utils/ext.js';
-import { SearchMethodEnum } from './models/enum.js';
+import { searchMethodEnum } from './models/enum.js';
 
 
 export class Textbox extends EditableComponent {
@@ -15,17 +15,17 @@ export class Textbox extends EditableComponent {
      */
     constructor(ui, ele) {
         super(ui, ele);
-        this.DefaultValue = "";
+        this.defaultValue = "";
         if (ele && ele.tagName == "INPUT") {
             this.Input = ele;
         } else if (ele && ele.tagName == "TEXTAREA") {
             this.textArea = ele;
         }
         this._value = null;
-        this.Password = this.Meta.ClassName && this.Meta.ClassName.toLowerCase().includes("password");
+        this.Password = this.meta.className && this.meta.className.toLowerCase().includes("password");
         this._text = "";
         this._oldText = "";
-        this.searchMethod = SearchMethodEnum.Contain;
+        this.searchMethod = searchMethodEnum.contain;
         this.searchIcon = "fas fa-check";
         this.isInput = true;
         /**
@@ -57,130 +57,130 @@ export class Textbox extends EditableComponent {
         }
         this._value = newValue;
         if (this._value !== null && typeof this._value === Str.Type) {
-            if (this.EditForm && this.EditForm.Meta && !this.EditForm.Meta.IgnoreEncode) {
-                this.Entity[this.Name] = this._value;
+            if (this.editForm && this.editForm.meta && !this.editForm.meta.ignoreEncode) {
+                this.entity[this.Name] = this._value;
             }
         }
-        if (this.Entity) {
-            this.Entity[this.Name] = this._value;
+        if (this.entity) {
+            this.entity[this.Name] = this._value;
         }
         let text = this._value;
-        if (this.Meta.FormatData) {
-            text = Utils.FormatEntity(this.Meta.FormatData, this.Entity[this.Name]);
+        if (this.meta.formatData) {
+            text = Utils.formatEntity(this.meta.formatData, this.entity[this.Name]);
         }
 
-        if (this.Meta.FormatEntity) {
-            text = Utils.FormatEntity2(this.Meta.FormatEntity, null, this.Entity, Utils.EmptyFormat, Utils.EmptyFormat);
+        if (this.meta.formatEntity) {
+            text = Utils.formatEntity2(this.meta.formatEntity, null, this.entity, Utils.emptyFormat, Utils.emptyFormat);
         }
         this.Text = text;
-        this.PopulateFields();
+        this.populateFields();
     }
 
     Render() {
-        this.SetDefaultVal();
-        var val = this.Entity && this.Entity[this.Name] || null;
+        this.setDefaultVal();
+        var val = this.entity && this.entity[this.Name] || null;
         var text = val;
-        if (this.Meta.FormatData) {
-            text = Utils.FormatEntity(this.Meta.FormatData, val);
+        if (this.meta.formatData) {
+            text = Utils.formatEntity(this.meta.formatData, val);
         }
-        if (this.Meta.FormatEntity) {
-            text = Utils.FormatEntity(this.Meta.FormatEntity, this.Entity);
+        if (this.meta.formatEntity) {
+            text = Utils.formatEntity(this.meta.formatEntity, this.entity);
         }
         this._text = text || "";
-        this.OldValue = this._text;
+        this.oldValue = this._text;
         this._value = this._text;
-        if (this.ComponentType == "Textarea" || this.textArea != null) {
+        if (this.componentType == "Textarea" || this.textArea != null) {
             if (this.textArea == null) {
-                Html.take(this.ParentElement).textArea.value(this._text).placeHolder(this.Meta.PlainText);
+                Html.take(this.parentElement).textArea.value(this._text).placeHolder(this.meta.plainText);
                 // @ts-ignore
-                this.Element = this.textArea = Html.Context;
+                this.element = this.textArea = Html.context;
             } else if (this.textArea) {
-                Html.take(this.Element);
-                this.Element = this.textArea;
+                Html.take(this.element);
+                this.element = this.textArea;
                 this.textArea.value = this._text;
             }
-            if (this.Meta.Row > 0) {
-                Html.Instance.attr("rows", this.Meta.Row ?? 1);
+            if (this.meta.row > 0) {
+                Html.instance.attr("rows", this.meta.row ?? 1);
             }
-            this.textArea.addEventListener("input", (e) => this.PopulateUIChange(EventType.Input));
-            this.textArea.addEventListener("change", (e) => this.PopulateUIChange(EventType.Change));
+            this.textArea.addEventListener("input", (e) => this.populateUIChange(EventType.Input));
+            this.textArea.addEventListener("change", (e) => this.populateUIChange(EventType.Change));
         }
         else {
             if (this.Input == null) {
-                Html.take(this.ParentElement).input.value(this._text)?.placeHolder(this.Meta.PlainText);
+                Html.take(this.parentElement).input.value(this._text)?.placeHolder(this.meta.plainText);
                 // @ts-ignore
-                this.Element = this.Input = Html.Context;
+                this.element = this.Input = Html.context;
             } else {
-                Html.take(this.Element);
-                this.Element = this.Input;
+                Html.take(this.element);
+                this.element = this.Input;
                 this.Input.value = this._text;
             }
-            this.Input.addEventListener('keydown', this.KeydownHandler.bind(this));
-            this.Input.addEventListener("input", (e) => this.PopulateUIChange(EventType.Input));
-            this.Input.addEventListener("change", (e) => this.PopulateUIChange(EventType.Change));
+            this.Input.addEventListener('keydown', this.keydownHandler.bind(this));
+            this.Input.addEventListener("input", (e) => this.populateUIChange(EventType.Input));
+            this.Input.addEventListener("change", (e) => this.populateUIChange(EventType.Change));
         }
         if (this.Password) {
-            Html.Instance.style("text-security: disc;-webkit-text-security: disc;-moz-text-security: disc;");
+            Html.instance.style("text-security: disc;-webkit-text-security: disc;-moz-text-security: disc;");
         }
-        if (!this.Meta.ShowLabel) {
-            Html.Instance.placeHolder(this.Meta.PlainText);
+        if (!this.meta.showLabel) {
+            Html.instance.placeHolder(this.meta.plainText);
         }
-        if (this.Element && this.Element.closest("td")) {
-            this.Element.closest("td").addEventListener("keydown", this.ListViewItemTab.bind(this));
+        if (this.element && this.element.closest("td")) {
+            this.element.closest("td").addEventListener("keydown", this.listViewItemTab.bind(this));
         }
-        this.Validate(ValidationRule.RegEx, this._text, this.ValidateRegEx);
-        this.Validate(ValidationRule.Replace, this._text, this.ValidateReplace);
-        this.DOMContentLoaded?.Invoke();
+        this.Validate(ValidationRule.regEx, this._text, this.validateRegEx);
+        this.Validate(ValidationRule.Replace, this._text, this.validateReplace);
+        this.dOMContentLoaded?.invoke();
     }
 
-    PopulateUIChange(type, shouldTrim = false) {
-        if (this.Disabled) {
+    populateUIChange(type, shouldTrim = false) {
+        if (this.disabled) {
             return;
         }
         this._oldText = this._text;
         this._text = this.Input ? this.Input.value : this.textArea.value;
         this._text = this.Password ? this._text : (shouldTrim ? this._text?.trim() : this._text);
-        if (this.Meta.UpperCase && this._text != null) {
+        if (this.meta.upperCase && this._text != null) {
             this.Text = this._text.toLocaleUpperCase();
         }
         this._value = this._text;
-        this.Entity[this.Name] = this._value;
+        this.entity[this.Name] = this._value;
         this.Dirty = true;
-        this.UserInput?.Invoke({ NewData: this._text, OldData: this._oldText, EvType: type });
-        this.PopulateFields();
+        this.userInput?.invoke({ newData: this._text, oldData: this._oldText, evType: type });
+        this.populateFields();
         if (type == EventType.Input) {
-            this.Validate(ValidationRule.Replace, this._text, this.ValidateReplace);
+            this.Validate(ValidationRule.Replace, this._text, this.validateReplace);
         }
         if (type == EventType.Change) {
-            this.Validate(ValidationRule.RegEx, this._text, this.ValidateRegEx);
+            this.Validate(ValidationRule.regEx, this._text, this.validateRegEx);
         }
-        this.DispatchEvent(this.Meta.Events, type, this, this.Entity).then();
+        this.dispatchEvent(this.meta.Events, type, this, this.entity).then();
     }
-    UpdateView(force = false, dirty = null, ...componentNames) {
-        var newValue = this.Entity[this.Meta.FieldName];
+    updateView(force = false, dirty = null, ...componentNames) {
+        var newValue = this.entity[this.meta.fieldName];
         if (newValue != this._value) {
             this.Value = newValue;
-            this.SetRequired();
+            this.setRequired();
         }
         if (!this.Dirty) {
-            this.OriginalText = this._text;
-            this.DOMContentLoaded?.Invoke();
-            this.OldValue = this._text;
+            this.originalText = this._text;
+            this.dOMContentLoaded?.invoke();
+            this.oldValue = this._text;
         }
     }
 
-    ValidateAsync() {
-        if (this.ValidationRules.length == 0) {
+    validateAsync() {
+        if (this.validationRules.length == 0) {
             return Promise.resolve(true);
         }
         const tcs = new Promise((resolve, reject) => {
             this.validationResult = [];
-            this.Validate(ValidationRule.MinLength, this._text, (value, minLength) => this._text != null && this._text.length >= minLength);
-            this.Validate(ValidationRule.CheckLength, this._text, (text, checkLength) => this._text == null || this._text == "" || this._text.length == checkLength);
-            this.Validate(ValidationRule.MaxLength, this._text, (text, maxLength) => this._text == null || this._text.length <= maxLength);
-            this.ValidateRequired(this.Text);
-            this.ValidateUnique().then(() => {
-                resolve(this.IsValid);
+            this.Validate(ValidationRule.minLength, this._text, (value, minLength) => this._text != null && this._text.length >= minLength);
+            this.Validate(ValidationRule.checkLength, this._text, (text, checkLength) => this._text == null || this._text == "" || this._text.length == checkLength);
+            this.Validate(ValidationRule.maxLength, this._text, (text, maxLength) => this._text == null || this._text.length <= maxLength);
+            this.validateRequired(this.Text);
+            this.validateUnique().then(() => {
+                resolve(this.isValid);
             });
         });
 
@@ -189,19 +189,19 @@ export class Textbox extends EditableComponent {
 
     /**
      * @param {string} value
-     * @param {string | RegExp} regText
+     * @param {string | regExp} regText
      */
-    ValidateRegEx(value, regText) {
-        if (!this.ValidationRules.hasOwnProperty(ValidationRule.RegEx)) {
+    validateRegEx(value, regText) {
+        if (!this.validationRules.hasOwnProperty(ValidationRule.regEx)) {
             return Promise.resolve(true);
         }
         if (value === null) {
             return true;
         }
-        var regEx = new RegExp(regText);
+        var regEx = new regExp(regText);
         var res = regEx.test(value);
-        var rule = this.ValidationRules[ValidationRule.RegEx];
-        if (rule && !res && rule.RejectInvalid) {
+        var rule = this.validationRules[ValidationRule.regEx];
+        if (rule && !res && rule.rejectInvalid) {
             var end = this.Input.selectionEnd;
             this.Text = this._oldText;
             this._value = this._oldText;
@@ -209,15 +209,15 @@ export class Textbox extends EditableComponent {
             this.Input.selectionEnd = end;
             var rs1 = regEx.test(this._oldText);
             if (rs1) {
-                this.Element.classList.add("reg-text");
+                this.element.classList.add("reg-text");
             }
             return rs1;
         }
         if (!res) {
-            this.Element.classList.add("reg-text");
+            this.element.classList.add("reg-text");
         }
         else {
-            this.Element.classList.remove("reg-text");
+            this.element.classList.remove("reg-text");
         }
         return res;
     }
@@ -227,8 +227,8 @@ export class Textbox extends EditableComponent {
      * @param {string } regText
      * @param {string} format
      */
-    ValidateReplace(value, regText, format) {
-        if (!this.ValidationRules.hasOwnProperty(ValidationRule.Replace)) {
+    validateReplace(value, regText, format) {
+        if (!this.validationRules.hasOwnProperty(ValidationRule.Replace)) {
             return Promise.resolve(true);
         }
         if (value === null) {
@@ -249,36 +249,36 @@ export class Textbox extends EditableComponent {
             formatIndex++;
         }
         const isValid = formattedInput.length == format.length;
-        this.Element.value = formattedInput;
+        this.element.value = formattedInput;
         this._value = formattedInput;
-        this.Entity[this.Name] = formattedInput;
+        this.entity[this.Name] = formattedInput;
         if (isValid) {
-            this.Element.classList.remove("reg-text");
+            this.element.classList.remove("reg-text");
         } else {
-            this.Element.classList.add("reg-text");
+            this.element.classList.add("reg-text");
         }
         return isValid;
     }
 
-    ValidateUnique() {
-        if (!this.ValidationRules.hasOwnProperty(ValidationRule.Unique)) {
+    validateUnique() {
+        if (!this.validationRules.hasOwnProperty(ValidationRule.Unique)) {
             return Promise.resolve(true);
         }
-        var rule = this.ValidationRules[ValidationRule.Unique];
+        var rule = this.validationRules[ValidationRule.Unique];
 
         if (rule === null || this._text.trim() === "") {
             return Promise.resolve(true);
         }
-        if (!this.ValidationResult) {
-            this.ValidationResult = {};
+        if (!this.validationResult) {
+            this.validationResult = {};
         }
-        const params = Utils.IsFunction(this.Meta.PreQuery, false, this);
-        var table = !this.Meta.RefName ? this.Meta.RefName : this.EditForm.Meta.EntityName;
+        const params = Utils.isFunction(this.meta.preQuery, false, this);
+        var table = !this.meta.refName ? this.meta.refName : this.editForm.meta.entityName;
         const submit = {
-            ComId: this.Meta.Id,
+            comId: this.meta.Id,
             Params: params,
-            MetaConn: this.MetaConn,
-            DataConn: this.DataConn,
+            metaConn: this.metaConn,
+            dataConn: this.dataConn,
         };
         var tcs = new Promise((resolve, reject) => {
             Client.instance.comQuery(submit)
@@ -288,9 +288,9 @@ export class Textbox extends EditableComponent {
                 })
                 .then(exists => {
                     if (exists) {
-                        this.ValidationResult[ValidationRule.Unique] = `${rule.Message} ${LangSelect.Get(this.Meta.Label)} ${this._text}`;
+                        this.validationResult[ValidationRule.Unique] = `${rule.Message} ${LangSelect.get(this.meta.Label)} ${this._text}`;
                     } else {
-                        delete this.ValidationResult[ValidationRule.Unique];
+                        delete this.validationResult[ValidationRule.Unique];
                     }
                     resolve(true);
                 })
@@ -303,7 +303,7 @@ export class Textbox extends EditableComponent {
         return tcs;
     }
 
-    SetDisableUI(value) {
+    setDisableUI(value) {
         if (this.Input != null) {
             this.Input.readOnly = value;
         }

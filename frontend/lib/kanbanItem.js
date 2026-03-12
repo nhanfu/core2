@@ -15,8 +15,8 @@ export class KanbanItem extends EditableComponent {
     constructor(ui, entity) {
         super(ui);
         /** @type {Component} */
-        this.Meta = ui;
-        this.Entity = entity;
+        this.meta = ui;
+        this.entity = entity;
         this.Columns = [];
         this._textEle = null;
     }
@@ -24,90 +24,90 @@ export class KanbanItem extends EditableComponent {
      * Renders the button component into the DOM.
      */
     Render() {
-        Html.take(this.ParentElement);
+        Html.take(this.parentElement);
         if (this.Top) {
-            var itemTop = Html.div.className("kanban-item").Context;
-            this.Element = Html.Context;
-            Html.Context["Entity"] = this.Entity;
-            Html.event("dblclick", () => this.DispatchEvent(this.Meta.Events, EventType.DblClick, this, this.Entity))
+            var itemTop = Html.div.className("kanban-item").context;
+            this.element = Html.context;
+            Html.context["Entity"] = this.entity;
+            Html.event("dblclick", () => this.dispatchEvent(this.meta.Events, EventType.dblClick, this, this.entity))
                 .div.className("labels").div.className("labels2");
-            if (this.Entity.CategoryId) {
-                Html.div.className("label").style("background-color:" + this.Entity.CategoryId).attr("title", this.Entity.CategoryIdText).end.render();
+            if (this.entity.categoryId) {
+                Html.div.className("label").style("background-color:" + this.entity.categoryId).attr("title", this.entity.categoryIdText).end.render();
             }
-            if (this.Entity.PriorityLevelId) {
-                Html.div.className("label").style("background-color:" + this.Entity.PriorityLevelId).attr("title", this.Entity.PriorityLevelIdText).end.render();
-            }
-            Html.end.render();
-            if (this.Entity.AvatarReceiver) {
-                Html.div.className("user-avatar label2").img.src(this.Entity.AvatarReceiver).end.a.className("full-name").text(this.Entity.FullNameReceiver).end.end.render();
+            if (this.entity.priorityLevelId) {
+                Html.div.className("label").style("background-color:" + this.entity.priorityLevelId).attr("title", this.entity.priorityLevelIdText).end.render();
             }
             Html.end.render();
-            if (this.Entity.Code) {
-                Html.div.className("bold").text(this.Entity.Code).end.render();
+            if (this.entity.avatarReceiver) {
+                Html.div.className("user-avatar label2").img.src(this.entity.avatarReceiver).end.a.className("full-name").text(this.entity.fullNameReceiver).end.end.render();
             }
-            Html.div.text(this.Entity.JobName).end.render();
-            if (this.Entity.Tags) {
-                Html.div.className("tag text-xs").text(this.Entity.Tags).end.render();
+            Html.end.render();
+            if (this.entity.Code) {
+                Html.div.className("bold").text(this.entity.Code).end.render();
+            }
+            Html.div.text(this.entity.jobName).end.render();
+            if (this.entity.Tags) {
+                Html.div.className("tag text-xs").text(this.entity.Tags).end.render();
             }
             Html.div.className("user-avatar")
-                .img.src(this.Entity.Avatar).end
-                .a.className("full-name").text(this.Entity.FullName).end
-                .span.className("created-date").text(this.dayjs(this.Entity.InsertedDate).format("DD/MM/YY HH:MM"));
-            this.ParentElement.prepend(itemTop);
+                .img.src(this.entity.Avatar).end
+                .a.className("full-name").text(this.entity.fullName).end
+                .span.className("created-date").text(this.dayjs(this.entity.insertedDate).format("DD/MM/YY HH:MM"));
+            this.parentElement.prepend(itemTop);
         }
         else {
             Html.div.className("kanban-item");
-            this.Element = Html.Context;
-            Html.Context["Entity"] = this.Entity;
-            Html.event("dblclick", () => this.DispatchEvent(this.Meta.Events, EventType.DblClick, this, this.Entity))
+            this.element = Html.context;
+            Html.context["Entity"] = this.entity;
+            Html.event("dblclick", () => this.dispatchEvent(this.meta.Events, EventType.dblClick, this, this.entity))
                 .div.className("labels").div.className("labels2");
-            if (this.Entity.CategoryId) {
-                Html.div.className("label").style("background-color:" + this.Entity.CategoryId).attr("title", this.Entity.CategoryIdText).end.render();
+            if (this.entity.categoryId) {
+                Html.div.className("label").style("background-color:" + this.entity.categoryId).attr("title", this.entity.categoryIdText).end.render();
             }
-            if (this.Entity.PriorityLevelId) {
-                Html.div.className("label").style("background-color:" + this.Entity.PriorityLevelId).attr("title", this.Entity.PriorityLevelIdText).end.render();
-            }
-            Html.end.render();
-            if (this.Entity.AvatarReceiver) {
-                Html.div.className("user-avatar label2").img.src(this.Entity.AvatarReceiver).end.a.className("full-name").text(this.Entity.FullNameReceiver).end.end.render();
+            if (this.entity.priorityLevelId) {
+                Html.div.className("label").style("background-color:" + this.entity.priorityLevelId).attr("title", this.entity.priorityLevelIdText).end.render();
             }
             Html.end.render();
-            if (this.Entity.Code) {
-                Html.div.className("bold").text(this.Entity.Code).end.render();
+            if (this.entity.avatarReceiver) {
+                Html.div.className("user-avatar label2").img.src(this.entity.avatarReceiver).end.a.className("full-name").text(this.entity.fullNameReceiver).end.end.render();
             }
-            Html.div.iText(this.Entity.JobName).end.render();
-            if (this.Entity.Tags) {
-                Html.div.className("tag text-xs").text(this.Entity.Tags).end.render();
+            Html.end.render();
+            if (this.entity.Code) {
+                Html.div.className("bold").text(this.entity.Code).end.render();
+            }
+            Html.div.iText(this.entity.jobName).end.render();
+            if (this.entity.Tags) {
+                Html.div.className("tag text-xs").text(this.entity.Tags).end.render();
             }
             Html.div.className("user-avatar")
-                .img.src(this.Entity.Avatar).end
-                .a.className("full-name").text(this.Entity.FullName).end
-                .span.className("created-date").text(this.dayjs(this.Entity.InsertedDate).format("DD/MM/YY HH:mm"));
+                .img.src(this.entity.Avatar).end
+                .a.className("full-name").text(this.entity.fullName).end
+                .span.className("created-date").text(this.dayjs(this.entity.insertedDate).format("DD/MM/YY HH:mm"));
         }
     }
 
     /**
      * Dispatches the click event, handles UI changes for click action.
      */
-    DispatchClick() {
-        if (this.Meta.OnClick) {
-            this.Meta.OnClick.call();
+    dispatchClick() {
+        if (this.meta.onClick) {
+            this.meta.onClick.call();
             return;
         }
 
-        if (this.Disabled || this.Element.hidden) {
+        if (this.disabled || this.element.hidden) {
             return;
         }
-        this.Disabled = true;
+        this.disabled = true;
         try {
-            Spinner.AppendTo();
-            this.DispatchEvent(this.Meta.Events, "click", this, this.Entity).then(() => {
-                this.Disabled = false;
+            Spinner.appendTo();
+            this.dispatchEvent(this.meta.Events, "click", this, this.entity).then(() => {
+                this.disabled = false;
                 Spinner.Hide();
             });
         } finally {
             window.setTimeout(() => {
-                this.Disabled = false;
+                this.disabled = false;
             }, 2000);
         }
     }
@@ -116,36 +116,36 @@ export class KanbanItem extends EditableComponent {
      * Gets the value text from the button component.
      * @returns {string} The text value of the component.
      */
-    GetValueText() {
-        if (!this.Entity || !this.Name) {
+    getValueText() {
+        if (!this.entity || !this.Name) {
             return this._textEle.textContent;
         }
-        return this.FieldVal?.toString();
+        return this.fieldVal?.toString();
     }
 
-    UpdateView() {
-        Html.take(this.Element);
+    updateView() {
+        Html.take(this.element);
         Html.clear();
         Html.div.className("labels").div.className("labels2");
-        if (this.Entity.CategoryId) {
-            Html.div.className("label").style("background-color:" + this.Entity.CategoryId).attr("title", this.Entity.CategoryIdText).end.render();
+        if (this.entity.categoryId) {
+            Html.div.className("label").style("background-color:" + this.entity.categoryId).attr("title", this.entity.categoryIdText).end.render();
         }
-        if (this.Entity.PriorityLevelId) {
-            Html.div.className("label").style("background-color:" + this.Entity.PriorityLevelId).attr("title", this.Entity.PriorityLevelIdText).end.render();
-        }
-        Html.end.render();
-        if (this.Entity.AvatarReceiver) {
-            Html.div.className("user-avatar label2").img.src(this.Entity.AvatarReceiver).end.a.className("full-name").text(this.Entity.FullNameReceiver).end.end.render();
+        if (this.entity.priorityLevelId) {
+            Html.div.className("label").style("background-color:" + this.entity.priorityLevelId).attr("title", this.entity.priorityLevelIdText).end.render();
         }
         Html.end.render();
-        if (this.Entity.Code) {
-            Html.div.className("bold").text(this.Entity.Code).end.render();
+        if (this.entity.avatarReceiver) {
+            Html.div.className("user-avatar label2").img.src(this.entity.avatarReceiver).end.a.className("full-name").text(this.entity.fullNameReceiver).end.end.render();
         }
-        Html.div.iText(this.Entity.JobName).end.render();
-        if (this.Entity.Tags) {
-            Html.div.className("tag text-xs").text(this.Entity.Tags).end.render();
+        Html.end.render();
+        if (this.entity.Code) {
+            Html.div.className("bold").text(this.entity.Code).end.render();
         }
-        Html.div.className("user-avatar").img.src(this.Entity.Avatar).end.a.className("full-name").text(this.Entity.FullName).end.span.className("created-date").text(this.dayjs(this.Entity.InsertedDate).format("DD/MM/YY HH:MM")).end.end
+        Html.div.iText(this.entity.jobName).end.render();
+        if (this.entity.Tags) {
+            Html.div.className("tag text-xs").text(this.entity.Tags).end.render();
+        }
+        Html.div.className("user-avatar").img.src(this.entity.Avatar).end.a.className("full-name").text(this.entity.fullName).end.span.className("created-date").text(this.dayjs(this.entity.insertedDate).format("DD/MM/YY HH:MM")).end.end
         Html.end.render();
     }
 }

@@ -59,7 +59,7 @@ export class MenuComponent extends EditableComponent {
     new Promise(() => {
       Client.instance.submitAsync({
         Url: `/api/feature/getMenu`,
-        IsRawString: true,
+        isRawString: true,
         Method: "GET",
       }).then((features) => {
         var cloneFeature = JSON.parse(JSON.stringify(features));
@@ -73,7 +73,7 @@ export class MenuComponent extends EditableComponent {
                   actFeature.filter(
                     (x) =>
                       !x.inverseParent &&
-                      LangSelect.Get(x.label).toLowerCase().includes(
+                      LangSelect.get(x.label).toLowerCase().includes(
                         e.target.value.trim().toLowerCase()
                       )
                   )
@@ -142,7 +142,7 @@ export class MenuComponent extends EditableComponent {
   renderMenu(features) {
     Html.take(".sidebar-content").clear().ul.render();
     if (Client.systemRole) {
-      new Sortable(Html.Context, {
+      new Sortable(Html.context, {
         animation: 500, // Animation kéo dài hơn
         ghostClass: "blue-background-class",
         handle: "i",
@@ -186,50 +186,50 @@ export class MenuComponent extends EditableComponent {
     /**
      * @param {Feature[]} features
      */
-    Html.Instance.forEach(
+    Html.instance.forEach(
       features,
       /**
        * @param {Feature} item
        */
       (item) => {
         if (item.isGroup) {
-          Html.Instance.li.className("menu-category");
-          Html.Instance.event(EventType.ContextMenu, (e) =>
+          Html.instance.li.className("menu-category");
+          Html.instance.event(EventType.contextMenu, (e) =>
             this.menuItemContextMenu(e, item)
           );
-          Html.Instance.span.iText(
+          Html.instance.span.iText(
             item.label,
             "Menu"
           ).end.end.render();
         } else {
           var check = item.inverseParent && item.inverseParent.length > 0;
-          Html.Instance.li.dataAttr("id", item.id).render();
-          Html.Instance.event(EventType.ContextMenu, (e) =>
+          Html.instance.li.dataAttr("id", item.id).render();
+          Html.instance.event(EventType.contextMenu, (e) =>
             this.menuItemContextMenu(e, item)
           );
           if (item.name == this.currentHref) {
-            Html.Instance.className("active");
+            Html.instance.className("active");
           }
           if (check) {
             if (item.inverseParent.some((x) => x.name == this.currentHref)) {
-              Html.Instance.className("open");
-              Html.Instance.className("active");
+              Html.instance.className("open");
+              Html.instance.className("active");
             }
           }
-          Html.Instance.a.dataAttr("page", item.name).className(
+          Html.instance.a.dataAttr("page", item.name).className(
             check ? "main-menu has-dropdown" : "link"
           );
-          Html.Instance.event(EventType.Click, (e) =>
+          Html.instance.event(EventType.Click, (e) =>
             this.menuItemClick(e, item)
           )
             .i.className(item.icon)
             .end.span.iText(item.label, "Menu")
             .end.render();
-          Html.Instance.endOf(ElementType.a);
+          Html.instance.endOf(ElementType.a);
           if (check) {
             this.renderMenuItems(item.inverseParent);
           }
-          Html.Instance.end.render();
+          Html.instance.end.render();
         }
       }
     );
@@ -238,10 +238,10 @@ export class MenuComponent extends EditableComponent {
    * @param {Feature[]} menuItems
    */
   renderMenuItems(menuItems) {
-    Html.Instance.ul.render();
+    Html.instance.ul.render();
     if (Client.systemRole) {
       var seft = this;
-      new Sortable(Html.Context, {
+      new Sortable(Html.context, {
         animation: 500, // Animation kéo dài hơn
         ghostClass: "blue-background-class",
         handle: "i",
@@ -292,38 +292,38 @@ export class MenuComponent extends EditableComponent {
         (item) => {
           var check =
             item.inverseParent != null && item.inverseParent.count > 0;
-          Html.Instance.li.dataAttr("id", item.id).render();
-          Html.Instance.event(EventType.ContextMenu, (e) =>
+          Html.instance.li.dataAttr("id", item.id).render();
+          Html.instance.event(EventType.contextMenu, (e) =>
             this.menuItemContextMenu(e, item)
           );
           if (!check) {
             if (this.currentHref == item.name) {
-              Html.Instance.className("active");
+              Html.instance.className("active");
             }
           }
           if (check) {
             if (item.inverseParent.some((x) => x.name == this.currentHref)) {
-              Html.Instance.className("open");
-              Html.Instance.className("active");
+              Html.instance.className("open");
+              Html.instance.className("active");
             }
           }
-          Html.Instance.a.dataAttr("page", item.name).className(
+          Html.instance.a.dataAttr("page", item.name).className(
             check ? "main-menu has-dropdown" : "link"
           );
-          Html.Instance.event(EventType.Click, (e) =>
+          Html.instance.event(EventType.Click, (e) =>
             this.menuItemClick(e, item)
           )
             .i.className(item.icon)
             .end.span.iText(item.label, "Menu")
             .end.render();
-          Html.Instance.endOf(ElementType.a);
+          Html.instance.endOf(ElementType.a);
           if (check) {
             this.renderMenuItems(item.inverseParent);
           }
-          Html.Instance.end.render();
+          Html.instance.end.render();
         }
       );
-    Html.Instance.endOf(ElementType.ul);
+    Html.instance.endOf(ElementType.ul);
   }
   /**
    * @param {Event} e
@@ -336,7 +336,7 @@ export class MenuComponent extends EditableComponent {
     e.preventDefault();
     e.stopPropagation();
     var a = e.target;
-    if (!(a instanceof HTMLAnchorElement)) {
+    if (!(a instanceof hTMLAnchorElement)) {
       a = a.closest("a");
     }
     /**
@@ -358,7 +358,7 @@ export class MenuComponent extends EditableComponent {
       tab.content.focus();
       return;
     }
-    ComponentExt.InitFeatureByName(feature.name, true).then();
+    ComponentExt.initFeatureByName(feature.name, true).then();
   }
   /**
    * @param {Event} e

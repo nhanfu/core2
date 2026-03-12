@@ -15,28 +15,28 @@ export class RichTextBox extends EditableComponent {
     constructor(ui, ele = null) {
         super(ui, ele);
         this.defaultValue = "";
-        if (this.Meta.Row <= 0) {
-            this.Meta.Row = 1;
+        if (this.meta.row <= 0) {
+            this.meta.row = 1;
         }
         if (ele != null) {
-            this.ParentElement = ele;
-            this.BindingWebComponent();
+            this.parentElement = ele;
+            this.bindingWebComponent();
         }
         else {
-            this.ParentElement = this.ParentElement ?? Html.Context;
-            this.BindingWebComponent();
+            this.parentElement = this.parentElement ?? Html.context;
+            this.bindingWebComponent();
         }
-        this.ParentElement.appendChild(this.Element);
+        this.parentElement.appendChild(this.element);
     }
 
-    SetOldTextAndVal() {
-        this.OriginalText = new DOMParser().parseFromString(this.Entity[this.Meta.FieldName], 'text/html').body.textContent;
-        this.OldValue = this.OriginalText;
+    setOldTextAndVal() {
+        this.originalText = new dOMParser().parseFromString(this.entity[this.meta.fieldName], 'text/html').body.textContent;
+        this.oldValue = this.originalText;
     }
 
-    BindingWebComponent() {
-        Html.take(this.ParentElement).textArea.id("RE_" + Uuid7.Guid());
-        this.Element = Html.Context;
+    bindingWebComponent() {
+        Html.take(this.parentElement).textArea.id("RE_" + Uuid7.Guid());
+        this.element = Html.context;
     }
 
     Render() {
@@ -48,11 +48,11 @@ export class RichTextBox extends EditableComponent {
     quill;
     async initCkEditor() {
         var self = this;
-        this.SetDefaultVal();
-        this.SetOldTextAndVal();
+        this.setDefaultVal();
+        this.setOldTextAndVal();
         this.quill = (await tinymce.init({
             license_key: 'gpl',
-            selector: '#' + this.Element.id,
+            selector: '#' + this.element.id,
             plugins: [
                 'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
                 'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
@@ -62,20 +62,20 @@ export class RichTextBox extends EditableComponent {
             toolbar: '',
             font_size_formats: '8pt 9pt 10pt 11pt 12pt 13pt 14pt 15pt 16pt 17pt 18pt 24pt 36pt 48pt',
             contextmenu: "margin-page | link image inserttable | table add-background-img gen-table-excel | tablename groupby | classProp titleProp stylesProp | Viewpdf Viewhistory",
-            images_upload_handler: self.ImageHandler.bind(self),
-            height: this.Meta.Precision || 250,
+            images_upload_handler: self.imageHandler.bind(self),
+            height: this.meta.Precision || 250,
             setup: function (editor) {
                 self.quill = editor;
                 editor.on('init', function () {
                     editor.getDoc().body.style.fontFamily = 'Montserrat';
                     editor.getDoc().body.style.fontSize = '10pt';
-                    editor.setContent(self.Entity[self.Meta.FieldName] || '');
+                    editor.setContent(self.entity[self.meta.fieldName] || '');
                 });
                 editor.on('Change', function (e) {
-                    self.Entity[self.Meta.FieldName] = editor.getBody().innerHTML.replace(/<br[^>]*data-mce-bogus="1"[^>]*>/gi, "");
+                    self.entity[self.meta.fieldName] = editor.getBody().innerHTML.replace(/<br[^>]*data-mce-bogus="1"[^>]*>/gi, "");
                     self.Dirty = true;
                 });
-                if (self.Token.RoleNames.some(x => x == "BOD" || x == "ADMIN")) {
+                if (self.Token.roleNames.some(x => x == "BOD" || x == "ADMIN")) {
                     editor.ui.registry.addMenuItem('tablename', {
                         text: 'Table Name',
                         onAction: function () {
@@ -290,7 +290,7 @@ export class RichTextBox extends EditableComponent {
                         }
                     });
                     editor.ui.registry.addMenuItem('titleProp', {
-                        text: 'FieldName',
+                        text: 'fieldName',
                         onAction: function () {
                             var selectedTr = editor.selection.getNode();
                             if (selectedTr) {
@@ -375,7 +375,7 @@ export class RichTextBox extends EditableComponent {
                             }
                         }
                     });
-                    editor.on('ExecCommand', function (e) {
+                    editor.on('execCommand', function (e) {
                         if (e.command === 'mceTableMergeCells') {
                             // Lấy các ô được chọn để merge
                             const selectedCells = editor.dom.select('td.mce-selected, th.mce-selected');
@@ -433,7 +433,7 @@ export class RichTextBox extends EditableComponent {
                                             blob: () => file
                                         };
 
-                                        self.ImageHandler(
+                                        self.imageHandler(
                                             blobInfo,
                                             function success(path) {
                                                 const tableNode = editor.dom.getParent(editor.selection.getStart(), 'table');
@@ -488,14 +488,14 @@ export class RichTextBox extends EditableComponent {
                     editor.ui.registry.addMenuItem('Viewpdf', {
                         text: 'View PDF',
                         onAction: function () {
-                            var btn = self.EditForm.OpenFrom.ChildCom.find(x => x.Meta.Id == self.Entity.Id);
-                            btn.Element.click();
+                            var btn = self.editForm.openFrom.childCom.find(x => x.meta.Id == self.entity.Id);
+                            btn.element.click();
                         }
                     });
                     editor.ui.registry.addMenuItem('Viewhistory', {
                         text: 'View History',
                         onAction: function () {
-                            self.RenderPopup();
+                            self.renderPopup();
                         }
                     });
                 }
@@ -506,50 +506,50 @@ export class RichTextBox extends EditableComponent {
     /**@type {HTMLElement} */
     _backdrop;
     /**@type {HTMLElement} */
-    BodyElement;
-    RenderPopup() {
-        Html.take(this.TabEditor.Element).div.className("backdrop").tabIndex(-1).trigger(EventType.Focus);
-        this._backdrop = Html.Context;
-        Html.Instance.div.className("popup-content").div.className("popup-title").span.iText("History change", this.EditForm.Meta.Label);
-        this.TitleElement = Html.Context;
-        Html.Instance.end.div.className("icon-box").span.className("fa fa-times")
+    bodyElement;
+    renderPopup() {
+        Html.take(this.tabEditor.element).div.className("backdrop").tabIndex(-1).trigger(EventType.Focus);
+        this._backdrop = Html.context;
+        Html.instance.div.className("popup-content").div.className("popup-title").span.iText("History change", this.editForm.meta.Label);
+        this.titleElement = Html.context;
+        Html.instance.end.div.className("icon-box").span.className("fa fa-times")
             .event(EventType.Click, () => {
                 this._backdrop.remove();
             }).end.end.end.div.className("popup-body").div.className("wrapper scroll-content");
-        this.BodyElement = Html.Context;
-        Html.Instance.end.div.className("popup-footer");
-        if (this._backdrop.OutOfViewport().Top) {
+        this.bodyElement = Html.context;
+        Html.instance.end.div.className("popup-footer");
+        if (this._backdrop.outOfViewport().Top) {
             this._backdrop.scrollIntoView(true);
         }
         const res = {
-            ComId: this.Meta.Id,
-            Params: JSON.stringify(Utils.IsFunction(this.Meta.PreQuery, true, this)),
-            OrderBy: (!this.Meta.OrderBy ? "ds.InsertedDate desc" : this.Meta.OrderBy),
+            comId: this.meta.Id,
+            Params: JSON.stringify(Utils.isFunction(this.meta.preQuery, true, this)),
+            orderBy: (!this.meta.orderBy ? "ds.insertedDate desc" : this.meta.orderBy),
             Count: false,
             Skip: 0,
             Top: 10,
         };
         Client.instance.submitAsync({
-            NoQueue: true,
+            noQueue: true,
             Url: `/api/feature/com`,
             Method: "POST",
-            JsonData: JSON.stringify(res),
+            jsonData: JSON.stringify(res),
         }).then(data => {
             /**@type {[]} */
             var dataa = data.value;
             dataa.forEach(item => {
-                Html.take(this.BodyElement);
-                Html.Instance.div.label.className("header").text(this.dayjs(item.InsertedDate).format("DD/MM/YYYY HH:mm")).end.div.className("diff-container").style("height:250px");
+                Html.take(this.bodyElement);
+                Html.instance.div.label.className("header").text(this.dayjs(item.insertedDate).format("DD/MM/YYYY HH:mm")).end.div.className("diff-container").style("height:250px");
                 const modifiedModel = monaco.editor.createModel(
                     item.Value ?? ``,
-                    this.Meta.Lang ?? 'javascript'
+                    this.meta.Lang ?? 'javascript'
                 );
                 const originalModel = monaco.editor.createModel(
-                    item.OldValue ?? ``,
-                    this.Meta.Lang ?? 'javascript'
+                    item.oldValue ?? ``,
+                    this.meta.Lang ?? 'javascript'
                 );
                 const diffEditor = monaco.editor.createDiffEditor(
-                    Html.Context,
+                    Html.context,
                     {
                         originalEditable: true,
                         automaticLayout: true,
@@ -564,20 +564,20 @@ export class RichTextBox extends EditableComponent {
         });
     }
     /**
-     * Handles the image upload process for TinyMCE editor.
+     * Handles the image upload process for tinyMCE editor.
      * 
      * This function takes the image selected by the user, uploads it to the server, 
-     * and then provides the uploaded image's URL to TinyMCE to be embedded into the editor content.
+     * and then provides the uploaded image's URL to tinyMCE to be embedded into the editor content.
      *
-     * @param {BlobInfo} blobInfo - Object containing information about the image blob.
+     * @param {blobInfo} blobInfo - Object containing information about the image blob.
      * @param {Function} success - Callback function to call on a successful upload. Receives the uploaded image URL.
      * @param {Function} failure - Callback function to call on a failed upload. Receives an error message.
      */
-    ImageHandler(blobInfo, success, failure) {
+    imageHandler(blobInfo, success, failure) {
         const file = blobInfo.blob();
         try {
             const uploader = new Image({ Template: "image/*" });
-            return uploader.UploadFile(file).then(path => {
+            return uploader.uploadFile(file).then(path => {
                 if (path) {
                     if (success) success(path);
                     return path;
@@ -597,25 +597,25 @@ export class RichTextBox extends EditableComponent {
         }
     }
 
-    GetValueText() {
-        return new DOMParser().parseFromString(this.quill.getContent(), 'text/html').body.textContent;
+    getValueText() {
+        return new dOMParser().parseFromString(this.quill.getContent(), 'text/html').body.textContent;
     }
 
-    UpdateView(force = false, dirty = null, ...componentNames) {
-        this.Value = this.Entity[this.Meta.FieldName] || '';
+    updateView(force = false, dirty = null, ...componentNames) {
+        this.Value = this.entity[this.meta.fieldName] || '';
         if (this.quill) {
             this.quill.setContent(this.Value || '');
         }
         if (!this.Dirty) {
-            this.OriginalText = this.Value;
-            this.OldValue = this.Value;
+            this.originalText = this.Value;
+            this.oldValue = this.Value;
         }
     }
     awaitTime;
     /**
      * @param {boolean} [disabled]
      */
-    SetDisableUI(disabled) {
+    setDisableUI(disabled) {
         this.awaitTime = window.clearTimeout(this.awaitTime);
         this.awaitTime = window.setTimeout(() => {
             if (!this.quill) {

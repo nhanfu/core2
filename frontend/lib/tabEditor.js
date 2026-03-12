@@ -1,5 +1,5 @@
 import { EditForm } from "./editForm.js";
-import { EventType, KeyCodeEnum } from "./models/";
+import { EventType, keyCodeEnum } from "./models/";
 import { Html } from "./utils/html.js";
 import { GridView } from "./gridView.js";
 import { ListView } from "./listView.js";
@@ -11,7 +11,7 @@ import { Utils } from "./index.js";
  * @extends {EditForm}
  */
 export class TabEditor extends EditForm {
-    static get TabContainer() {
+    static get tabContainer() {
         var container = document.getElementById("tab-content");
         if (container == null) {
             container = document.createElement("div").id("tab-content");
@@ -19,17 +19,17 @@ export class TabEditor extends EditForm {
         }
         return container;
     }
-    static ActiveTab = () => ChromeTabs.tabs.find(x => x.content.Show);
-    static FindTab = (id) => ChromeTabs.tabs.find(x => x.Id === id);
+    static activeTab = () => ChromeTabs.tabs.find(x => x.content.Show);
+    static findTab = (id) => ChromeTabs.tabs.find(x => x.Id === id);
     /** @type {boolean} */
-    static ShowTabText;
-    static ActiveClass = "active";
+    static showTabText;
+    static activeClass = "active";
     constructor(entity = null) {
         super(entity);
-        this.IsTab = true;
-        this.PopulateDirty = false;
+        this.isTab = true;
+        this.populateDirty = false;
         this._hotKeyComponents = [];
-        this.DataSearchEntry = {};
+        this.dataSearchEntry = {};
     }
 
     /**
@@ -42,7 +42,7 @@ export class TabEditor extends EditForm {
 
     set Show(value) {
         super.Show = value;
-        if (value && !this.Popup && this.IsLargeUp) {
+        if (value && !this.Popup && this.isLargeUp) {
             ChromeTabs.setCurrentTab(this._li, this.Pop);
         }
     }
@@ -51,64 +51,64 @@ export class TabEditor extends EditForm {
      * Renders the component to the DOM.
      */
     Render() {
-        if (!this.ParentElement) {
-            this.ParentElement = TabEditor.TabContainer;
+        if (!this.parentElement) {
+            this.parentElement = TabEditor.tabContainer;
         }
         if (!this.Popup) {
-            this.RenderTab();
+            this.renderTab();
         }
         else {
-            super.Render();
+            super.render();
         }
     }
 
-    get TabTitle() {
-        return this.Meta?.Label ?? this.Title;
+    get tabTitle() {
+        return this.meta?.Label ?? this.Title;
     }
 
     /**
      * Renders the tab part of the editor.
      */
-    RenderTab() {
-        Html.take(TabEditor.TabContainer).tabIndex(-1).trigger(EventType.Focus).div.event(EventType.KeyDown, (e) => this.HotKeyHandler(e)).render();
-        this.Element = Html.Context;
-        this.ParentElement = TabEditor.TabContainer;
-        super.Render();
+    renderTab() {
+        Html.take(TabEditor.tabContainer).tabIndex(-1).trigger(EventType.Focus).div.event(EventType.keyDown, (e) => this.hotKeyHandler(e)).render();
+        this.element = Html.context;
+        this.parentElement = TabEditor.tabContainer;
+        super.render();
     }
 
-    TriggerMatchHotKey(e, keyCode, shiftKey, ctrlKey, altKey) {
+    triggerMatchHotKey(e, keyCode, shiftKey, ctrlKey, altKey) {
         if (keyCode == null) {
             return;
         }
         let patternList = [];
         if (shiftKey) {
-            patternList.push(KeyCodeEnum.Shift);
+            patternList.push(keyCodeEnum.shift);
         }
 
         if (ctrlKey) {
-            patternList.push(KeyCodeEnum.Ctrl);
+            patternList.push(keyCodeEnum.ctrl);
         }
 
         if (altKey) {
-            patternList.push(KeyCodeEnum.Alt);
+            patternList.push(keyCodeEnum.alt);
         }
 
-        if (keyCode < KeyCodeEnum.Shift) {
+        if (keyCode < keyCodeEnum.shift) {
             patternList.unshift(keyCode);
-        } else if (keyCode > KeyCodeEnum.Alt) {
+        } else if (keyCode > keyCodeEnum.alt) {
             patternList.push(keyCode);
         }
 
-        this._hotKeyComponents = this.ChildCom.filter(x => x.IsButton && !Utils.isNullOrWhiteSpace(x.Meta.HotKey));
+        this._hotKeyComponents = this.childCom.filter(x => x.isButton && !Utils.isNullOrWhiteSpace(x.meta.hotKey));
         this._hotKeyComponents.forEach(com => {
-            let parts = com.Meta.HotKey.split(",");
+            let parts = com.Meta.hotKey.split(",");
             if (parts.length === 0) {
                 return;
             }
 
             let lastPart = parts[parts.length - 1];
             let configKeys = lastPart.split("-").map(x => {
-                let key = KeyCodeEnum[x.trim()];
+                let key = keyCodeEnum[x.trim()];
                 return key ? key : null;
             }).filter(x => x != null).sort((a, b) => a - b);
             let isMatch = JSON.stringify(patternList) === JSON.stringify(configKeys);
@@ -118,7 +118,7 @@ export class TabEditor extends EditForm {
 
             e.preventDefault();
             e.stopPropagation();
-            com.Element.click();
+            com.element.click();
             return;
         });
     }
@@ -127,35 +127,35 @@ export class TabEditor extends EditForm {
      * Handles hotkey events for the editor.
      * @param {Event} e - The event object.
      */
-    HotKeyHandler(e) {
-        const keyCode = e.KeyCodeEnum();
-        if (keyCode === KeyCodeEnum.F6) {
-            let gridView = this.FindActiveComponent(x => x instanceof GridView).FirstOrDefault();
+    hotKeyHandler(e) {
+        const keyCode = e.keyCodeEnum();
+        if (keyCode === keyCodeEnum.F6) {
+            let gridView = this.findActiveComponent(x => x instanceof GridView).firstOrDefault();
             if (gridView instanceof GridView) {
-                if (gridView && !gridView.AllListViewItem.some(x => x.Selected)) {
-                    if (gridView.AllListViewItem.length) {
-                        gridView.AllListViewItem[0].Focus();
+                if (gridView && !gridView.allListViewItem.some(x => x.Selected)) {
+                    if (gridView.allListViewItem.length) {
+                        gridView.allListViewItem[0].Focus();
                     } else {
-                        gridView.ListViewSearch.Focus();
+                        gridView.listViewSearch.Focus();
                     }
                 }
                 return;
             }
         }
-        const shiftKey = e.ShiftKey();
-        const ctrlKey = e.CtrlOrMetaKey();
-        const altKey = e.AltKey();
-        const defaultKeys = this.DefaultHotKeys(keyCode, shiftKey, ctrlKey, altKey);
+        const shiftKey = e.shiftKey();
+        const ctrlKey = e.ctrlOrMetaKey();
+        const altKey = e.altKey();
+        const defaultKeys = this.defaultHotKeys(keyCode, shiftKey, ctrlKey, altKey);
         if (defaultKeys) {
             e.preventDefault();
             e.stopPropagation();
             return;
         }
-        if (keyCode >= KeyCodeEnum.Shift && keyCode <= KeyCodeEnum.Alt) {
+        if (keyCode >= keyCodeEnum.shift && keyCode <= keyCodeEnum.alt) {
             return;
         }
 
-        this.TriggerMatchHotKey(e, keyCode, shiftKey, ctrlKey, altKey);
+        this.triggerMatchHotKey(e, keyCode, shiftKey, ctrlKey, altKey);
     }
     /**
      * Checks if the default hotkeys are triggered.
@@ -164,22 +164,22 @@ export class TabEditor extends EditForm {
      * @param {boolean} altKey - Indicates if the Alt key is pressed.
      * @returns {boolean} - True if a default hotkey is triggered, otherwise false.
      */
-    DefaultHotKeys(keyCode, shiftKey, ctrlKey, altKey) {
+    defaultHotKeys(keyCode, shiftKey, ctrlKey, altKey) {
         if (!keyCode) {
             return false;
         }
-        if (keyCode === KeyCodeEnum.Escape && !shiftKey && !ctrlKey && !altKey) {
-            this.DirtyCheckAndCancel();
+        if (keyCode === keyCodeEnum.escape && !shiftKey && !ctrlKey && !altKey) {
+            this.dirtyCheckAndCancel();
             return true;
         }
-        if (ctrlKey && shiftKey && keyCode === KeyCodeEnum.F) {
+        if (ctrlKey && shiftKey && keyCode === keyCodeEnum.f) {
             // Trigger search in the grid view
-            let listView = this.FindActiveComponent(x => x instanceof ListView).FirstOrDefault();
+            let listView = this.findActiveComponent(x => x instanceof ListView).firstOrDefault();
             if (listView instanceof ListView) {
-                if (!listView || !listView.Meta.CanSearch) {
+                if (!listView || !listView.meta.canSearch) {
                     return true;
                 }
-                listView.ListViewSearch.AdvancedSearch(null);
+                listView.listViewSearch.advancedSearch(null);
                 return true;
             }
         }
@@ -191,7 +191,7 @@ export class TabEditor extends EditForm {
         const intButton = parseInt(event["button"]?.toString());
         if (intWhich === 2 || intButton === 1) {
             event.preventDefault();
-            this.DirtyCheckAndCancel();
+            this.dirtyCheckAndCancel();
         }
     }
 
@@ -200,16 +200,16 @@ export class TabEditor extends EditForm {
      */
     Dispose() {
         if (!this.Popup && this._li) {
-            this.DisposeTab();
+            this.disposeTab();
         }
-        this.ChildCom.forEach(c => c.Dispose());
+        this.childCom.forEach(c => c.Dispose());
         super.Dispose();
     }
 
     /**
      * Disposes of the tab editor, removing it from the DOM and focusing on the parent form.
      */
-    ForceDispose() {
+    forceDispose() {
         this.Dirty = false;
         this.Dispose();
         let existingTabIndex = ChromeTabs.tabs.findIndex(tab => tab.ul === this._li);
@@ -221,10 +221,10 @@ export class TabEditor extends EditForm {
     /**
      * Disposes of the tab, removing its association from the list of tabs.
      */
-    DisposeTab() {
-        if (this.ParentForm) {
-            this.ParentForm.focus();
-            this.ParentForm = null;
+    disposeTab() {
+        if (this.parentForm) {
+            this.parentForm.focus();
+            this.parentForm = null;
         }
         if (ChromeTabs.tabs.length == 0) {
             window.history.pushState({ page: null }, "/#/home", (window.location.origin || ""));
@@ -234,8 +234,8 @@ export class TabEditor extends EditForm {
     /**
      * Removes DOM elements associated with the tab editor.
      */
-    RemoveDOM() {
-        this.Element?.remove();
+    removeDOM() {
+        this.element?.remove();
         this._backdrop?.remove();
         this._backdropGridView?.remove();
     }

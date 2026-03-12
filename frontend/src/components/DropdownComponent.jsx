@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback, useLayoutEffect } from 'react';
 import { createPortal } from 'react-dom';
 
-const DropdownComponent = ({
+const dropdownComponent = ({
   toggleContent,
   dropdownContent,
   className = '',
@@ -100,8 +100,8 @@ const DropdownComponent = ({
     window.addEventListener('orientationchange', onRecalc);
 
     let ro = null;
-    if (window.ResizeObserver && toggleRef.current) {
-      ro = new ResizeObserver(onRecalc);
+    if (window.resizeObserver && toggleRef.current) {
+      ro = new resizeObserver(onRecalc);
       ro.observe(toggleRef.current);
     }
 
@@ -128,7 +128,7 @@ const DropdownComponent = ({
           style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
           onKeyDown={(e) => {
             if (e.key === 'Escape') closeDropdown();
-            if (e.key === 'ArrowDown' && !open) openDropdown();
+            if (e.key === 'arrowDown' && !open) openDropdown();
           }}
         >
           {toggleContent}
@@ -163,4 +163,4 @@ const DropdownComponent = ({
   );
 };
 
-export default DropdownComponent;
+export default dropdownComponent;

@@ -1,16 +1,16 @@
 import React from "react";
-import DropdownComponent from "./DropdownComponent";
+import dropdownComponent from "./dropdownComponent";
 import { ChromeTabs, Client, TabEditor } from "../../lib";
 import { LoginBL } from "../forms/login";
 
-const UserDropdown = ({ editForm }) => {
+const userDropdown = ({ editForm }) => {
   const handleLogout = (event) => {
     deleteMethod();
   };
 
   const deleteMethod = () => {
     Client.token = null;
-    localStorage.removeItem("UserInfo");
+    localStorage.removeItem("userInfo");
     ChromeTabs.tabs.forEach((x) => x.content.dispose());
     window.location.reload();
   };
@@ -39,7 +39,7 @@ const UserDropdown = ({ editForm }) => {
   );
 
   return (
-    <DropdownComponent
+    <dropdownComponent
       toggleContent={toggleContent}
       dropdownContent={dropdownContent}
       className="user-dropdown dropdown-menu-end"
@@ -47,4 +47,4 @@ const UserDropdown = ({ editForm }) => {
   );
 };
 
-export default UserDropdown;
+export default userDropdown;

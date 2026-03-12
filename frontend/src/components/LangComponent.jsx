@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import DropdownComponent from './DropdownComponent';
+import dropdownComponent from './dropdownComponent';
 import { LangSelect } from '../../lib';
 
-const LangComponent = () => {
+const langComponent = () => {
   const [currentImg, setCurrentImg] = useState('/assets/images/icons-vi.png');
   useEffect(() => {
     const cul = localStorage.getItem('Culture') || 'en';
@@ -109,7 +109,7 @@ const LangComponent = () => {
   );
 
   return (
-    <DropdownComponent
+    <dropdownComponent
       toggleContent={toggleContent}
       dropdownContent={dropdownContent}
       className="user-dropdown dropdown-menu-end"
@@ -117,4 +117,4 @@ const LangComponent = () => {
   );
 };
 
-export default LangComponent;
+export default langComponent;

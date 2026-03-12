@@ -1,46 +1,46 @@
 import { EditableComponent } from "./editableComponent.js";
 import { Component } from "./models/component.js";
-import { Html } from "./utils/html.js";
+import { html } from "./utils/html.js";
 import { ComponentFactory } from "./utils/componentFactory.js";
 
 /**
- * Represents a button component that can be rendered and managed on a web page.
+ * represents a button component that can be rendered and managed on a web page.
  */
 export class ActionButton extends EditableComponent {
-    IsButton = true;
+    isButton = true;
     /**
-     * Create instance of component
+     * create instance of component
      * @param {Component} ui 
      * @param {HTMLElement} ele 
      */
     constructor(ui, ele = null) {
         super(ui);
         /** @type {Component} */
-        this.Meta = ui;
+        this.meta = ui;
         this.buttonEle = ele;
-        this.IsAction = true;
+        this.isAction = true;
         this._textEle = null;
     }
 
     /**
-     * Renders the button component into the DOM.
+     * renders the button component into the dOM.
      */
-    Render() {
+    render() {
         if (!this.buttonEle) {
-            Html.take(this.ParentElement).className("btn-group-view").render();
-            this.Element = this.buttonEle = Html.Context;
+            html.take(this.parentElement).className("btn-group-view").render();
+            this.element = this.buttonEle = html.context;
         } else {
-            this.Element = this.buttonEle;
+            this.element = this.buttonEle;
         }
-        var childs = JSON.parse(this.Meta.FormatData) || [];
+        var childs = JSON.parse(this.meta.formatData) || [];
         for (let i = 0; i < childs.length; i++) {
             const child = childs[i];
-            var newChid = Object.assign({}, this.Meta, child);
-            const childCom = ComponentFactory.GetComponent(newChid, this.EditForm);
+            var newChid = object.assign({}, this.meta, child);
+            const childCom = ComponentFactory.getComponent(newChid, this.editForm);
             if (childCom === null) return;
-            childCom.ParentElement = this.Element;
-            childCom.IsAction = true;
-            this.AddChild(childCom);
+            childCom.parentElement = this.element;
+            childCom.isAction = true;
+            this.addChild(childCom);
         }
     }
 }

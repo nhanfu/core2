@@ -31,28 +31,28 @@ import { ActionButton } from "../actionButton.js";
 export class ComponentFactory {
     /**
      * @typedef {import('../editableComponent.js').default} EditableComponent
-     * @typedef {import('../editForm.js').EditForm} EditForm
+     * @typedef {import('../editForm.js').editForm} EditForm
      * Creates a component based on the UI configuration and edit form context.
      * @param {Component} ui - The UI configuration for the component.
      * @param {EditForm} form - The form in which the component will be used.
      * @param {HTMLElement} [ele=null] - Optional HTML element to associate with the component.
      * @returns {EditableComponent} The created component instance or null if the type is not specified.
      */
-    static GetComponent(ui, form, ele = null, canWrite = false) {
+    static getComponent(ui, form, ele = null, canWrite = false) {
         if (ui === null) {
             throw new Error('ui is required');
         }
 
-        if (!ui.ComponentType) {
+        if (!ui.componentType) {
             return null;
         }
 
-        if (typeof ui.ComponentType === Str.Type) {
-            ui.ComponentType = ui.ComponentType.trim();
+        if (typeof ui.componentType === Str.Type) {
+            ui.componentType = ui.componentType.trim();
         }
         /** @type {EditableComponent} */
         let child;
-        const fullName = ui.ComponentType;
+        const fullName = ui.componentType;
         switch (fullName) {
             case "Input":
             case "Textarea":
@@ -76,20 +76,20 @@ export class ComponentFactory {
             case "Checkbox":
                 child = new Checkbox(ui, ele)
                 break;
-            case "FileUpload":
+            case "fileUpload":
                 child = new Image(ui, ele)
                 break;
             case "Button":
                 child = new Button(ui, ele)
                 break;
-            case "ImportExcel":
+            case "importExcel":
                 child = new ButtonImportExcel(ui, ele)
                 break;
             case "Email":
                 child = new ButtonEmail(ui, ele)
                 break;
-            case "GridView":
-                if (Utils.isNullOrWhiteSpace(ui.GroupBy)) {
+            case "gridView":
+                if (Utils.isNullOrWhiteSpace(ui.groupBy)) {
                     child = new GridView(ui, ele)
                 }
                 else {
@@ -97,14 +97,14 @@ export class ComponentFactory {
                 }
                 break;
             case "Dropdown":
-                if (ui.IsMultiple) {
+                if (ui.isMultiple) {
                     child = new MultipleSearchEntry(ui, ele)
                 }
                 else {
                     child = new SearchEntry(ui, ele)
                 }
                 break;
-            case "CodeEditor":
+            case "codeEditor":
                 child = new CodeEditor(ui, ele)
                 break;
             case "Word":
@@ -116,7 +116,7 @@ export class ComponentFactory {
             case "Kanban":
                 child = new Kanban(ui, ele)
                 break;
-            case "HtmlCode":
+            case "htmlCode":
                 child = new HtmlCode(ui, ele)
                 break;
             case "Chat":
@@ -128,22 +128,22 @@ export class ComponentFactory {
             case "Excel":
                 child = new ButtonExcel(ui, ele)
                 break;
-            case "GoogleMap":
+            case "googleMap":
                 child = new GoogleMap(ui, ele)
                 break;
             default:
-                if (ui.ComponentType instanceof Function) {
-                    child = ui.ComponentType.call(ui);
+                if (ui.componentType instanceof Function) {
+                    child = ui.componentType.call(ui);
                 }
                 else {
                     child = new Textbox(ui, ele)
                 }
                 break;
         }
-        child.Id = Utils.isNullOrWhiteSpace(ui.Id) ? ui.FieldName : (ui.Id + ui.FieldName);
-        child.Name = ui.FieldName;
-        child.ComponentType = ui.ComponentType;
-        child.EditForm = form;
+        child.Id = Utils.isNullOrWhiteSpace(ui.Id) ? ui.fieldName : (ui.Id + ui.fieldName);
+        child.Name = ui.fieldName;
+        child.componentType = ui.componentType;
+        child.editForm = form;
         return child;
     }
 }

@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function VNTank() {
+export default function vNTank() {
   return (
     <>
       <div id="gpmn-body-load">

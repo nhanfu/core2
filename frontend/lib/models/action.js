@@ -13,15 +13,10 @@ export class Action {
     add(handler) {
         this.handler.push(handler);
     }
-    /**
-     * 
-     * @param {ObservableArgs | any} observable 
-     */
-    Invoke(observable) {
-        this.hasTrigger = true;
-        this.handler?.forEach(h => h(observable));
+    
+    remove(handler) {
+        this.handler = this.handler.filter(h => h !== handler);
     }
-
     /**
      * @param {any | import("./observable.js").default} [observable]
      */

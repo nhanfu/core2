@@ -9,7 +9,7 @@ class Textarea extends Textbox {
     */
     constructor(ui, ele = null) {
         super(ui, ele);
-        this.MultipleLine = true;
+        this.multipleLine = true;
     }
 }
 

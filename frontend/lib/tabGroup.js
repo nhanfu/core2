@@ -3,37 +3,37 @@ import { Section } from "./section.js";
 import { Html } from "./utils/html.js";
 
 export class TabGroup extends EditableComponent {
-    ListViewType;
+    listViewType;
     Ul;
-    TabContent;
-    ShouldCountBage;
-    HasRendered;
-    TabGroupElement;
+    tabContent;
+    shouldCountBage;
+    hasRendered;
+    tabGroupElement;
     constructor(ui, ele = null) {
         super(ui);
-        this.ListViewType = ["ListView", "GroupListView", "GridView", "GroupGridView"];
-        /** @type {HTMLUListElement} */
+        this.listViewType = ["ListView", "GroupListView", "GridView", "GroupGridView"];
+        /** @type {hTMLUListElement} */
         this.Ul = null;
-        /** @type {HTMLDivElement} */
-        this.TabContent = null;
-        this.ShouldCountBage = false;
-        this.HasRendered = false;
-        this.TabGroup = true;
+        /** @type {hTMLDivElement} */
+        this.tabContent = null;
+        this.shouldCountBage = false;
+        this.hasRendered = false;
+        this.tabGroup = true;
     }
 
     Render() {
-        Html.take(this.ParentElement).div.className("tab-group")
+        Html.take(this.parentElement).div.className("tab-group")
             .className("tab-horizontal");
-        this.TabGroupElement = Html.Context;
-        Html.Instance.div.className("headers-wrapper").ul.className("nav-config  nav nav-tabs nav-tabs-bottom mb-0");
-        this.Ul = Html.Context;
-        this.Element = this.Ul.parentElement;
-        Html.Instance.end.end.render();
-        if (this.EditForm.ButtonFrozen != null && !this.EditForm.IsLoadButtonFrozen) {
-            Section.RenderGroupContent(this.Parent, this.EditForm.ButtonFrozen, this.EditForm.width);
-            this.EditForm.IsLoadButtonFrozen = true;
+        this.tabGroupElement = Html.context;
+        Html.instance.div.className("headers-wrapper").ul.className("nav-config  nav nav-tabs nav-tabs-bottom mb-0");
+        this.Ul = Html.context;
+        this.element = this.Ul.parentElement;
+        Html.instance.end.end.render();
+        if (this.editForm.buttonFrozen != null && !this.editForm.isLoadButtonFrozen) {
+            Section.renderGroupContent(this.Parent, this.editForm.buttonFrozen, this.editForm.width);
+            this.editForm.isLoadButtonFrozen = true;
         }
-        Html.Instance.div.className("tabs-content");
-        this.TabContent = Html.Context;
+        Html.instance.div.className("tabs-content");
+        this.tabContent = Html.context;
     }
 }

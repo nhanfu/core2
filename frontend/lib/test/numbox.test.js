@@ -1,5 +1,5 @@
 import Decimal from "decimal.js";
-import { NumBox } from "../numbox";
+import { numBox } from "../numbox";
 
 describe("Numbox", () => {
   let numbox;
@@ -7,11 +7,11 @@ describe("Numbox", () => {
 
   beforeEach(() => {
     input = document.createElement("input");
-    numbox = new NumBox({ FieldName: "Amount", Precision: 2 }, input);
+    numbox = new numBox({ fieldName: "Amount", Precision: 2 }, input);
     numbox.Entity = {};
-    numbox.PopulateFields = jest.fn();
-    numbox.DispatchEvent = jest.fn().mockResolvedValue(true);
-    numbox.Render();
+    numbox.populateFields = jest.fn();
+    numbox.dispatchEvent = jest.fn().mockResolvedValue(true);
+    numbox.render();
   });
 
   test("Value setter formats numeric values into the input", () => {
@@ -42,7 +42,7 @@ describe("Numbox", () => {
 
     expect(numbox.Value.toString()).toBe("789.01");
     expect(numbox.Dirty).toBe(true);
-    expect(numbox.PopulateFields).toHaveBeenCalled();
+    expect(numbox.populateFields).toHaveBeenCalled();
   });
 
   test("invalid input restores the previous numeric value", () => {

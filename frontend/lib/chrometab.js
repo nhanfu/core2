@@ -1,27 +1,27 @@
-import Draggabilly from "draggabilly"
+import draggabilly from "draggabilly"
 import { LangSelect } from "./utils/langSelect"
-import { Html } from "./utils/html"
-const TAB_CONTENT_MARGIN = 9
-const TAB_CONTENT_OVERLAP_DISTANCE = 1
+import { html } from "./utils/html"
+const tAB_CONTENT_MARGIN = 9
+const tAB_CONTENT_OVERLAP_DISTANCE = 1
 
-const TAB_OVERLAP_DISTANCE = (TAB_CONTENT_MARGIN * 2) + TAB_CONTENT_OVERLAP_DISTANCE
+const tAB_OVERLAP_DISTANCE = (tAB_CONTENT_MARGIN * 2) + tAB_CONTENT_OVERLAP_DISTANCE
 
-const TAB_CONTENT_MIN_WIDTH = 24
-const TAB_CONTENT_MAX_WIDTH = 240
+const tAB_CONTENT_MIN_WIDTH = 24
+const tAB_CONTENT_MAX_WIDTH = 240
 
-const TAB_SIZE_SMALL = 84
-const TAB_SIZE_SMALLER = 60
-const TAB_SIZE_MINI = 48
+const tAB_SIZE_SMALL = 84
+const tAB_SIZE_SMALLER = 60
+const tAB_SIZE_MINI = 48
 
 const noop = _ => { }
 
 const closest = (value, array) => {
-    let closest = Infinity
+    let closest = infinity
     let closestIndex = -1
 
     array.forEach((v, i) => {
-        if (Math.abs(value - v) < closest) {
-            closest = Math.abs(value - v)
+        if (math.abs(value - v) < closest) {
+            closest = math.abs(value - v)
             closestIndex = i
         }
     })
@@ -33,7 +33,7 @@ const tabTemplate = `
     <div class="chrome-tab">
       <div class="chrome-tab-dividers"></div>
       <div class="chrome-tab-background">
-        <svg version="1.1" xmlns="http://www.w3.org/2000/svg"><defs><symbol id="chrome-tab-geometry-left" viewBox="0 0 214 36"><path d="M17 0h197v36H0v-2c4.5 0 9-3.5 9-8V8c0-4.5 3.5-8 8-8z"/></symbol><symbol id="chrome-tab-geometry-right" viewBox="0 0 214 36"><use xlink:href="#chrome-tab-geometry-left"/></symbol><clipPath id="crop"><rect class="mask" width="100%" height="100%" x="0"/></clipPath></defs><svg width="52%" height="100%"><use xlink:href="#chrome-tab-geometry-left" width="214" height="36" class="chrome-tab-geometry"/></svg><g transform="scale(-1, 1)"><svg width="52%" height="100%" x="-100%" y="0"><use xlink:href="#chrome-tab-geometry-right" width="214" height="36" class="chrome-tab-geometry"/></svg></g></svg>
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg"><defs><symbol id="chrome-tab-geometry-left" viewBox="0 0 214 36"><path d="m17 0h197v36H0v-2c4.5 0 9-3.5 9-8V8c0-4.5 3.5-8 8-8z"/></symbol><symbol id="chrome-tab-geometry-right" viewBox="0 0 214 36"><use xlink:href="#chrome-tab-geometry-left"/></symbol><clipPath id="crop"><rect class="mask" width="100%" height="100%" x="0"/></clipPath></defs><svg width="52%" height="100%"><use xlink:href="#chrome-tab-geometry-left" width="214" height="36" class="chrome-tab-geometry"/></svg><g transform="scale(-1, 1)"><svg width="52%" height="100%" x="-100%" y="0"><use xlink:href="#chrome-tab-geometry-right" width="214" height="36" class="chrome-tab-geometry"/></svg></g></svg>
       </div>
       <div class="chrome-tab-content">
         <div class="chrome-tab-favicon"></div>
@@ -45,7 +45,7 @@ const tabTemplate = `
   `
 
 const defaultTapProperties = {
-    title: 'New tab',
+    title: 'new tab',
     favicon: false
 }
 
@@ -74,11 +74,11 @@ export class ChromeTabs {
     }
 
     static emit(eventName, data) {
-        this.el.dispatchEvent(new CustomEvent(eventName, { detail: data }))
+        this.el.dispatchEvent(new customEvent(eventName, { detail: data }))
     }
 
     static setupCustomProperties() {
-        this.el.style.setProperty('--tab-content-margin', `${TAB_CONTENT_MARGIN}px`)
+        this.el.style.setProperty('--tab-content-margin', `${tAB_CONTENT_MARGIN}px`)
     }
 
     static setupStyleEl() {
@@ -91,7 +91,7 @@ export class ChromeTabs {
     }
 
     static get tabEls() {
-        return Array.prototype.slice.call(this.el.querySelectorAll('.chrome-tab'))
+        return array.prototype.slice.call(this.el.querySelectorAll('.chrome-tab'))
     }
 
     static get tabContentEl() {
@@ -101,18 +101,18 @@ export class ChromeTabs {
     static get tabContentWidths() {
         const numberOfTabs = this.tabEls.length
         const tabsContentWidth = this.tabContentEl.clientWidth
-        const tabsCumulativeOverlappedWidth = (numberOfTabs - 1) * TAB_CONTENT_OVERLAP_DISTANCE
-        const targetWidth = (tabsContentWidth - (2 * TAB_CONTENT_MARGIN) + tabsCumulativeOverlappedWidth) / numberOfTabs
-        const clampedTargetWidth = Math.max(TAB_CONTENT_MIN_WIDTH, Math.min(TAB_CONTENT_MAX_WIDTH, targetWidth))
-        const flooredClampedTargetWidth = Math.floor(clampedTargetWidth)
-        const totalTabsWidthUsingTarget = (flooredClampedTargetWidth * numberOfTabs) + (2 * TAB_CONTENT_MARGIN) - tabsCumulativeOverlappedWidth
+        const tabsCumulativeOverlappedWidth = (numberOfTabs - 1) * tAB_CONTENT_OVERLAP_DISTANCE
+        const targetWidth = (tabsContentWidth - (2 * tAB_CONTENT_MARGIN) + tabsCumulativeOverlappedWidth) / numberOfTabs
+        const clampedTargetWidth = math.max(tAB_CONTENT_MIN_WIDTH, math.min(tAB_CONTENT_MAX_WIDTH, targetWidth))
+        const flooredClampedTargetWidth = math.floor(clampedTargetWidth)
+        const totalTabsWidthUsingTarget = (flooredClampedTargetWidth * numberOfTabs) + (2 * tAB_CONTENT_MARGIN) - tabsCumulativeOverlappedWidth
         const totalExtraWidthDueToFlooring = tabsContentWidth - totalTabsWidthUsingTarget
 
-        // TODO - Support tabs with different widths / e.g. "pinned" tabs
+        // tODO - support tabs with different widths / e.g. "pinned" tabs
         const widths = []
         let extraWidthRemaining = totalExtraWidthDueToFlooring
         for (let i = 0; i < numberOfTabs; i += 1) {
-            const extraWidth = flooredClampedTargetWidth < TAB_CONTENT_MAX_WIDTH && extraWidthRemaining > 0 ? 1 : 0
+            const extraWidth = flooredClampedTargetWidth < tAB_CONTENT_MAX_WIDTH && extraWidthRemaining > 0 ? 1 : 0
             widths.push(flooredClampedTargetWidth + extraWidth)
             if (extraWidthRemaining > 0) extraWidthRemaining -= 1
         }
@@ -124,9 +124,9 @@ export class ChromeTabs {
         const positions = []
         const tabContentWidths = this.tabContentWidths
 
-        let position = TAB_CONTENT_MARGIN
+        let position = tAB_CONTENT_MARGIN
         tabContentWidths.forEach((width, i) => {
-            const offset = i * TAB_CONTENT_OVERLAP_DISTANCE
+            const offset = i * tAB_CONTENT_OVERLAP_DISTANCE
             positions.push(position - offset)
             position += width
         })
@@ -138,7 +138,7 @@ export class ChromeTabs {
         const positions = []
 
         this.tabContentPositions.forEach((contentPosition) => {
-            positions.push(contentPosition - TAB_CONTENT_MARGIN)
+            positions.push(contentPosition - tAB_CONTENT_MARGIN)
         })
 
         return positions
@@ -149,16 +149,16 @@ export class ChromeTabs {
 
         this.tabEls.forEach((tabEl, i) => {
             const contentWidth = tabContentWidths[i]
-            const width = contentWidth + (2 * TAB_CONTENT_MARGIN)
+            const width = contentWidth + (2 * tAB_CONTENT_MARGIN)
 
             tabEl.style.width = width + 'px'
             tabEl.removeAttribute('is-small')
             tabEl.removeAttribute('is-smaller')
             tabEl.removeAttribute('is-mini')
 
-            if (contentWidth < TAB_SIZE_SMALL) tabEl.setAttribute('is-small', '')
-            if (contentWidth < TAB_SIZE_SMALLER) tabEl.setAttribute('is-smaller', '')
-            if (contentWidth < TAB_SIZE_MINI) tabEl.setAttribute('is-mini', '')
+            if (contentWidth < tAB_SIZE_SMALL) tabEl.setAttribute('is-small', '')
+            if (contentWidth < tAB_SIZE_SMALLER) tabEl.setAttribute('is-smaller', '')
+            if (contentWidth < tAB_SIZE_MINI) tabEl.setAttribute('is-mini', '')
         })
 
         let styleHTML = ''
@@ -179,7 +179,7 @@ export class ChromeTabs {
     }
 
     static addTab(tabProperties, { animate = true, background = false } = {}) {
-        const existingIndex = this.tabs.findIndex(t => t.content.Meta.Id === tabProperties.content.Meta.Id);
+        const existingIndex = this.tabs.findIndex(t => t.content.meta.id === tabProperties.content.meta.id);
         if (existingIndex !== -1) {
             this.tabs.splice(existingIndex, 1);
         }
@@ -190,7 +190,7 @@ export class ChromeTabs {
             setTimeout(() => tabEl.classList.remove('chrome-tab-was-just-added'), 500)
         }
 
-        tabProperties = Object.assign({}, defaultTapProperties, tabProperties)
+        tabProperties = object.assign({}, defaultTapProperties, tabProperties)
         this.tabContentEl.appendChild(tabEl)
         this.setTabCloseEventListener(tabEl)
         this.updateTab(tabEl, tabProperties)
@@ -227,7 +227,7 @@ export class ChromeTabs {
         const elementToFind = this.tabs.find(item => item.ul === tabEl);
         if (elementToFind != null) {
             if (!pop) {
-                elementToFind.content.Focus();
+                elementToFind.content.focus();
             }
         }
     }
@@ -248,8 +248,8 @@ export class ChromeTabs {
                     tabEl.parentNode.removeChild(tabEl)
                     this.emit('tabRemove', { tabEl })
                 }
-                elementToFind.content.ForceDispose();
-                if (elementToFind.content.IsRender) {
+                elementToFind.content.forceDispose();
+                if (elementToFind.content.isRender) {
                     this.tabs.splice(existingTabIndex, 1);
                 }
                 return;
@@ -262,10 +262,10 @@ export class ChromeTabs {
 
     static updateTab(tabEl, tabProperties) {
         var context = tabEl.querySelector('.chrome-tab-title');
-        const translated = LangSelect.Get(tabProperties.title);
+        const translated = LangSelect.get(tabProperties.title);
         const textContent = translated;
         const textNode = document.createTextNode(textContent);
-        Html.markLangProp(textNode, tabProperties.title, "textContent");
+        html.markLangProp(textNode, tabProperties.title, "textContent");
         context.appendChild(textNode);
         const faviconEl = tabEl.querySelector('.chrome-tab-favicon')
         if (tabProperties.favicon) {
@@ -301,7 +301,7 @@ export class ChromeTabs {
             this.draggabillyDragging.element.style.transform = ''
             this.draggabillyDragging.dragEnd()
             this.draggabillyDragging.isDragging = false
-            this.draggabillyDragging.positionDrag = noop // Prevent Draggabilly from updating tabEl.style.transform in later frames
+            this.draggabillyDragging.positionDrag = noop // prevent draggabilly from updating tabEl.style.transform in later frames
             this.draggabillyDragging.destroy()
             this.draggabillyDragging = null
         }
@@ -310,7 +310,7 @@ export class ChromeTabs {
 
         tabEls.forEach((tabEl, originalIndex) => {
             const originalTabPositionX = tabPositions[originalIndex]
-            const draggabilly = new Draggabilly(tabEl, {
+            const draggabilly = new draggabilly(tabEl, {
                 axis: 'x',
                 handle: '.chrome-tab-drag-handle',
                 containment: this.tabContentEl
@@ -334,7 +334,7 @@ export class ChromeTabs {
                 const finalTranslateX = parseFloat(tabEl.style.left, 10)
                 tabEl.style.transform = `translate3d(0, 0, 0)`
 
-                // Animate dragged tab back into its place
+                // animate dragged tab back into its place
                 requestAnimationFrame(_ => {
                     tabEl.style.left = '0'
                     tabEl.style.transform = `translate3d(${finalTranslateX}px, 0, 0)`
@@ -356,13 +356,13 @@ export class ChromeTabs {
             })
 
             draggabilly.on('dragMove', (event, pointer, moveVector) => {
-                // Current index be computed within the event since it can change during the dragMove
+                // current index be computed within the event since it can change during the dragMove
                 const tabEls = this.tabEls
                 const currentIndex = tabEls.indexOf(tabEl)
 
                 const currentTabPositionX = originalTabPositionX + moveVector.x
                 const destinationIndexTarget = closest(currentTabPositionX, tabPositions)
-                const destinationIndex = Math.max(0, Math.min(tabEls.length, destinationIndexTarget))
+                const destinationIndex = math.max(0, math.min(tabEls.length, destinationIndexTarget))
 
                 if (currentIndex !== destinationIndex) {
                     this.animateTabMove(tabEl, currentIndex, destinationIndex)

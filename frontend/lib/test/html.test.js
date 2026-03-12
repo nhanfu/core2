@@ -44,14 +44,14 @@ describe('HTML class', () => {
     expect(mockHandler).toHaveBeenCalled();
   });
 
-  test('ClassName method should add a class to the current context element', () => {
-    Html.ClassName('new-class');
+  test('className method should add a class to the current context element', () => {
+    Html.className('new-class');
     expect(Html.Context.classList.contains('new-class')).toBeTruthy();
   });
 
-  test('InnerHTML method should set innerHTML of the context', () => {
+  test('innerHTML method should set innerHTML of the context', () => {
     const markup = '<p>Hello World!</p>';
-    Html.InnerHTML(markup);
+    Html.innerHTML(markup);
     expect(Html.Context.innerHTML).toBe(markup);
   });
 
@@ -85,14 +85,14 @@ describe('HTML class', () => {
   });
 
   // Testing the handling of custom data attributes
-  test('DataAttr method should set a data attribute on the element', () => {
-    Html.Div.DataAttr('key', 'value');
+  test('dataAttr method should set a data attribute on the element', () => {
+    Html.Div.dataAttr('key', 'value');
     expect(Html.Context.getAttribute('data-key')).toBe('value');
   });
 
   // Testing multiple classes addition
-  test('ClassName method should handle multiple classes', () => {
-    Html.Div.ClassName('class1').ClassName('class2');
+  test('className method should handle multiple classes', () => {
+    Html.Div.className('class1').className('class2');
     expect(Html.Context.classList.contains('class1')).toBeTruthy();
     expect(Html.Context.classList.contains('class2')).toBeTruthy();
   });
@@ -111,9 +111,9 @@ describe('HTML class', () => {
   });
 
   // Testing innerHTML method robustness
-  test('InnerHTML method should overwrite existing content', () => {
-    Html.Div.InnerHTML('<p>Initial content</p>');
-    Html.InnerHTML('<span>New content</span>');
+  test('innerHTML method should overwrite existing content', () => {
+    Html.Div.innerHTML('<p>Initial content</p>');
+    Html.innerHTML('<span>New content</span>');
     expect(Html.Context.innerHTML).toBe('<span>New content</span>');
   });
 
@@ -144,8 +144,8 @@ describe('HTML class', () => {
   });
 
   // Testing handling of placeholder via internationalization or simple attribute set
-  test('PlaceHolder method should set placeholder text correctly', () => {
-    Html.Input.PlaceHolder('Enter your name');
+  test('placeHolder method should set placeholder text correctly', () => {
+    Html.Input.placeHolder('Enter your name');
     expect(Html.Context.getAttribute('placeholder')).toBe('Enter your name');
   });
 
@@ -158,7 +158,7 @@ describe('HTML class', () => {
 
   // Testing the addition of a custom element with custom attributes
   test('Custom element addition with attributes', () => {
-    Html.Add('custom-element').Attr('custom-attr', 'value').ClassName('custom-class');
+    Html.Add('custom-element').Attr('custom-attr', 'value').className('custom-class');
     expect(Html.Context.tagName).toBe('CUSTOM-ELEMENT');
     expect(Html.Context.getAttribute('custom-attr')).toBe('value');
     expect(Html.Context.classList.contains('custom-class')).toBeTruthy();
@@ -174,8 +174,8 @@ describe('HTML class', () => {
   });
 
   // Test handling of complex input types like checkbox with additional attributes
-  test('SmallCheckbox method should correctly configure a checkbox input', () => {
-    Html.SmallCheckbox(true);
+  test('smallCheckbox method should correctly configure a checkbox input', () => {
+    Html.smallCheckbox(true);
     const input = container.querySelector('input[type="checkbox"]');
     const span = container.querySelector('span.check.myCheckbox');
     expect(input).not.toBeNull();
@@ -200,8 +200,8 @@ describe('HTML class', () => {
   });
 
   // Test text alignment convenience function
-  test('TextAlign method should set text alignment', () => {
-    Html.P.TextAlign('center');
+  test('textAlign method should set text alignment', () => {
+    Html.P.textAlign('center');
     expect(Html.Context.style.textAlign).toBe('center');
   });
 
@@ -214,16 +214,16 @@ describe('HTML class', () => {
   });
 
   // Testing data attribute specific functionalities
-  test('DataAttr method should set data attributes with correct values', () => {
-    Html.Div.DataAttr('role', 'button').DataAttr('test', 'dataTest');
+  test('dataAttr method should set data attributes with correct values', () => {
+    Html.Div.dataAttr('role', 'button').dataAttr('test', 'dataTest');
     expect(Html.Context.getAttribute('data-role')).toBe('button');
     expect(Html.Context.getAttribute('data-test')).toBe('dataTest');
   });
 
   // Testing the ability to handle custom HTML elements and content safety
-  test('InnerHTML method should handle complex HTML content securely', () => {
+  test('innerHTML method should handle complex HTML content securely', () => {
     const dangerousHTML = `<script>alert('xss')</script><p>Safe Content</p>`;
-    Html.Div.InnerHTML(dangerousHTML);
+    Html.Div.innerHTML(dangerousHTML);
     expect(Html.Context.innerHTML).toBe(dangerousHTML);  // Content set as is; jsdom won't execute scripts
     expect(Html.Context.textContent).toContain('Safe Content');
   });
@@ -236,8 +236,8 @@ describe('HTML class', () => {
   });
 
   // Test adding and checking for presence of multiple classes
-  test('ClassName method should handle adding multiple classes in one call', () => {
-    Html.Div.ClassName('class1 class2');
+  test('className method should handle adding multiple classes in one call', () => {
+    Html.Div.className('class1 class2');
     expect(Html.Context.classList.contains('class1')).toBeTruthy();
     expect(Html.Context.classList.contains('class2')).toBeTruthy();
   });  
@@ -286,12 +286,12 @@ describe('HTML class', () => {
   });
 
   // Test handling and setting of multiple data attributes and classes
-  test('DataAttr and ClassName methods should handle multiple data attributes and classes', () => {
+  test('dataAttr and className methods should handle multiple data attributes and classes', () => {
     Html.Div
-      .DataAttr('role', 'navigation')
-      .DataAttr('test', 'dataTest')
-      .ClassName('class1')
-      .ClassName('class2 class3');
+      .dataAttr('role', 'navigation')
+      .dataAttr('test', 'dataTest')
+      .className('class1')
+      .className('class2 class3');
     expect(Html.Context.getAttribute('data-role')).toBe('navigation');
     expect(Html.Context.getAttribute('data-test')).toBe('dataTest');
     expect(Html.Context.classList.contains('class1')).toBeTruthy();
@@ -300,8 +300,8 @@ describe('HTML class', () => {
   });
 
   // Testing the proper functioning of text alignment in more complex scenarios
-  test('TextAlign should set alignment and handle subsequent changes', () => {
-    Html.Div.TextAlign('left').TextAlign('right');
+  test('textAlign should set alignment and handle subsequent changes', () => {
+    Html.Div.textAlign('left').textAlign('right');
     expect(Html.Context.style.textAlign).toBe('right');
   });
 });

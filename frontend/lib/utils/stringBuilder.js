@@ -8,7 +8,7 @@ export class StringBuilder {
         return this; // for method chaining
     }
 
-    ToString() {
+    toString() {
         return this._buffer.join('');
     }
 }

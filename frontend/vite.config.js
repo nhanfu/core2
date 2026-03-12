@@ -22,8 +22,8 @@ function restartOnEnvChange() {
 export default defineConfig({
   plugins: [restartOnEnvChange()],
   server: {
-    host: true, // Allows the server to be accessed externally
-    strictPort: false, // Disables strict host checking,
+    host: true, // allows the server to be accessed externally
+    strictPort: false, // disables strict host checking,
     allowedHosts: ["logistics.digotech.net", "tms.digotech.net"],
   },
 });

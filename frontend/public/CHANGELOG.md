@@ -3350,7 +3350,7 @@ Npm version bump due to package not being fully updated.
 - Added new flat default skin to make the UI more modern.
 - Added new imagetools plugin, lets you crop/resize and apply filters to images.
 - Added new contextual toolbars support to the API lets you add floating toolbars for specific CSS selectors.
-- Added new promise feature fill as tinymce.util.Promise.
+- Added new Promise feature fill as tinymce.util.Promise.
 - Added new built in image upload feature lets you upload any base64 encoded image within the editor as files.
 
 ### Fixed

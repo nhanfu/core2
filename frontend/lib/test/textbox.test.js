@@ -13,18 +13,18 @@ describe("Textbox", () => {
     element = document.createElement("input");
     meta = {
       Id: "txt-test",
-      FieldName: "testField",
+      fieldName: "testField",
       Label: "Test Field",
-      PlainText: "Enter text",
+      plainText: "Enter text",
       Events: [],
-      ShowLabel: true,
+      showLabel: true,
     };
 
     textbox = new Textbox(meta, element);
     entity = { testField: "Initial Value" };
     textbox.Entity = entity;
-    textbox.EditForm = { Meta: { IgnoreEncode: false, EntityName: "TestEntity" } };
-    textbox.Render();
+    textbox.editForm = { Meta: { ignoreEncode: false, entityName: "testEntity" } };
+    textbox.render();
   });
 
   afterEach(() => {
@@ -54,36 +54,36 @@ describe("Textbox", () => {
     expect(textbox.Entity.testField).toBe("New Value");
   });
 
-  test("ValidateUnique clears unique validation errors when query is empty", async () => {
-    textbox.ValidationRules = {
+  test("validateUnique clears unique validation errors when query is empty", async () => {
+    textbox.validationRules = {
       [ValidationRule.Unique]: { Message: "Must be unique" },
     };
-    textbox.ValidationResult = {
+    textbox.validationResult = {
       [ValidationRule.Unique]: "old error",
     };
     textbox._text = "Candidate";
-    jest.spyOn(Utils, "IsFunction").mockReturnValue(null);
-    Client.Instance.ComQuery = jest.fn().mockResolvedValue([]);
+    jest.spyOn(Utils, "isFunction").mockReturnValue(null);
+    Client.Instance.comQuery = jest.fn().mockResolvedValue([]);
 
-    const result = await textbox.ValidateUnique();
+    const result = await textbox.validateUnique();
 
     expect(result).toBe(true);
-    expect(Client.Instance.ComQuery).toHaveBeenCalled();
-    expect(textbox.ValidationResult[ValidationRule.Unique]).toBeUndefined();
+    expect(Client.Instance.comQuery).toHaveBeenCalled();
+    expect(textbox.validationResult[ValidationRule.Unique]).toBeUndefined();
   });
 
-  test("SetDisableUI toggles readonly state", () => {
-    textbox.SetDisableUI(true);
+  test("setDisableUI toggles readonly state", () => {
+    textbox.setDisableUI(true);
     expect(textbox.Input.readOnly).toBe(true);
 
-    textbox.SetDisableUI(false);
+    textbox.setDisableUI(false);
     expect(textbox.Input.readOnly).toBe(false);
   });
 
-  test("PopulateUIChange updates state from user input", () => {
+  test("populateUIChange updates state from user input", () => {
     textbox.Input.value = "Updated Text";
 
-    textbox.PopulateUIChange("input");
+    textbox.populateUIChange("input");
 
     expect(textbox.Text).toBe("Updated Text");
     expect(textbox.Value).toBe("Updated Text");

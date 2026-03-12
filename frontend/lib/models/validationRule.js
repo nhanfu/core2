@@ -1,15 +1,15 @@
 export class ValidationRule {
     static Required = "required";
-    static MinLength = "minLength";
-    static CheckLength = "checkLength";
-    static MaxLength = "maxLength";
-    static GreaterThanOrEqual = "min";
-    static LessThanOrEqual = "max";
-    static GreaterThan = "gt";
-    static LessThan = "lt";
+    static minLength = "minLength";
+    static checkLength = "checkLength";
+    static maxLength = "maxLength";
+    static greaterThanOrEqual = "min";
+    static lessThanOrEqual = "max";
+    static greaterThan = "gt";
+    static lessThan = "lt";
     static Equal = "eq";
-    static NotEqual = "ne";
-    static RegEx = "regEx";
+    static notEqual = "ne";
+    static regEx = "regEx";
     static Replace = "replace";
     static Unique = "unique";
 

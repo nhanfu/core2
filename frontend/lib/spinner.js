@@ -26,7 +26,7 @@ export class Spinner {
         this._backdrop.style.display = "none";
     }
 
-    static AppendTo() {
+    static appendTo() {
         if (!this._span) {
             return;
         }

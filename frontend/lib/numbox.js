@@ -6,17 +6,17 @@ import { Html } from './utils/html.js';
 import { Component } from './models/component.js';
 import Decimal from 'decimal.js';
 import { LangSelect } from './utils/langSelect.js';
-import { KeyCodeEnum } from './models/enum.js';
+import { keyCodeEnum } from './models/enum.js';
 
 export class Numbox extends EditableComponent {
     /**
      * Create instance of component
      * @param {Component} ui 
-     * @param {HTMLInputElement} ele 
+     * @param {hTMLInputElement} ele 
      */
     constructor(ui, ele = null) {
         super(ui, ele);
-        /** @type {HTMLInputElement} */
+        /** @type {hTMLInputElement} */
         if (ele && ele.tagName == "INPUT") {
             this._input = ele;
         }
@@ -25,8 +25,8 @@ export class Numbox extends EditableComponent {
         this._isString = false;
         this._decimalSeparator = '.';
         this.setSelection = true;
-        this.DefaultValue = 0;
-        this.Meta.Precision = this.Meta.GroupTypeId ? parseInt(LangSelect._webConfig[this.Meta.GroupTypeId]) : parseInt(this.Meta.Precision || 0);
+        this.defaultValue = 0;
+        this.meta.Precision = this.meta.groupTypeId ? parseInt(LangSelect._webConfig[this.meta.groupTypeId]) : parseInt(this.meta.Precision || 0);
     }
 
     /** @type {Decimal} */
@@ -42,10 +42,10 @@ export class Numbox extends EditableComponent {
             this._value = null;
         }
         else {
-            var [success, parsedVal] = Utils.TryParseDecimal(this._value?.toString());
+            var [success, parsedVal] = Utils.tryParseDecimal(this._value?.toString());
             if (success) {
                 this._value = parsedVal;
-                var precision = parseInt(this.Meta.Precision ?? 0);
+                var precision = parseInt(this.meta.Precision ?? 0);
                 const dotCount = (this._input.value?.match(/,/g) || []).length;
                 const selectionEnd = this._input.selectionEnd;
                 var hasDot = false;
@@ -75,12 +75,12 @@ export class Numbox extends EditableComponent {
                 }
             }
             else {
-                var [success, parsedVal] = Utils.TryParseDecimal(oldValue?.toString());
+                var [success, parsedVal] = Utils.tryParseDecimal(oldValue?.toString());
                 if (!success) {
                     this.parsedVal = new Decimal(0);
                 }
                 this._value = new Decimal(parsedVal);
-                this._input.value = parsedVal.toFixed(parseInt(this.Meta.Precision || 0));
+                this._input.value = parsedVal.toFixed(parseInt(this.meta.Precision || 0));
                 if (parsedVal.isNegative()) {
                     this._input.classList.add("negative");
                 }
@@ -89,13 +89,13 @@ export class Numbox extends EditableComponent {
                 }
             }
         }
-        this.Entity[this.Name] = this._value;
-        Utils.IsFunction(this.Meta.Renderer, false, this);
+        this.entity[this.Name] = this._value;
+        Utils.isFunction(this.meta.Renderer, false, this);
     }
 
-    SetValue() {
+    setValue() {
         const oldVal = this._value;
-        this.EmptyRow = false;
+        this.emptyRow = false;
         if (this._input.value == "-") {
             return;
         }
@@ -104,7 +104,7 @@ export class Numbox extends EditableComponent {
         }
         if (Utils.isNullOrWhiteSpace(this._input.value)) {
             this.Value = null;
-            this.DispatchEvent(this.Meta.Events, EventType.Input, this, this.Entity, this._value, oldVal).then();
+            this.dispatchEvent(this.meta.Events, EventType.Input, this, this.entity, this._value, oldVal).then();
             return;
         }
         this._input.value = this._input.value.trim();
@@ -112,60 +112,60 @@ export class Numbox extends EditableComponent {
             this._input.value = this._input.value.substring(0, this._input.value.length - 1);
         }
         const text = this._input.value.replace(/,/g, "");
-        const [success, parsedResult] = Utils.TryParseDecimal(text);
+        const [success, parsedResult] = Utils.tryParseDecimal(text);
         if (!success) {
             this.Value = this._value;
-            this.DispatchEvent(this.Meta.Events, EventType.Input, this, this.Entity, this._value, oldVal).then();
+            this.dispatchEvent(this.meta.Events, EventType.Input, this, this.entity, this._value, oldVal).then();
             return;
         }
         this.Value = parsedResult;
-        this.UserInput?.invoke({ NewData: this._value, OldData: oldVal, EvType: EventType.Input });
-        this.DispatchEvent(this.Meta.Events, EventType.Input, this, this.Entity, this._value, oldVal).then();
+        this.userInput?.invoke({ newData: this._value, oldData: oldVal, evType: EventType.Input });
+        this.dispatchEvent(this.meta.Events, EventType.Input, this, this.entity, this._value, oldVal).then();
     }
 
     Render() {
-        this.SetDefaultVal();
-        if (this.Entity != null) {
-            const fieldVal = this.Entity[this.Name];
+        this.setDefaultVal();
+        if (this.entity != null) {
+            const fieldVal = this.entity[this.Name];
             if (fieldVal != null) {
-                this._value = this.GetDecimalValue();
+                this._value = this.getDecimalValue();
             }
         }
         if (!this._input || this._input === null) {
-            Html.take(this.ParentElement).input.render();
-            const inputElement = Html.Context;
-            if (inputElement instanceof HTMLInputElement) {
-                this.Element = this._input = inputElement;
+            Html.take(this.parentElement).input.render();
+            const inputElement = Html.context;
+            if (inputElement instanceof hTMLInputElement) {
+                this.element = this._input = inputElement;
             }
         } else {
-            this.Element = this._input;
+            this.element = this._input;
         }
         this._input.type = 'tel';
         this._input.setAttribute('autocorrect', 'off');
         this._input.setAttribute('spellcheck', 'false');
-        this._input.addEventListener('input', this.SetValue.bind(this));
-        this._input.addEventListener('keydown', this.KeydownHandler.bind(this));
-        this._input.addEventListener('change', this.ChangeSetValue.bind(this));
+        this._input.addEventListener('input', this.setValue.bind(this));
+        this._input.addEventListener('keydown', this.keydownHandler.bind(this));
+        this._input.addEventListener('change', this.changeSetValue.bind(this));
         this._input.autocomplete = 'off';
-        this.OldValue = this._value;
+        this.oldValue = this._value;
         this.Value = this._value;
-        window.setTimeout(() => Utils.IsFunction(this.Meta.Renderer), 100);
-        this.DOMContentLoaded?.invoke();
+        window.setTimeout(() => Utils.isFunction(this.meta.Renderer), 100);
+        this.dOMContentLoaded?.invoke();
     }
 
-    KeydownHandler(e) {
-        let code = e.KeyCodeEnum();
+    keydownHandler(e) {
+        let code = e.keyCodeEnum();
         switch (code) {
-            case KeyCodeEnum.Enter:
+            case keyCodeEnum.enter:
                 e.preventDefault();
                 if (this._input.value.startsWith("=")) {
-                    this._input.value = Utils.IsFunction("return " + this._input.value.substring(1), false, this);
-                    this.SetValue();
+                    this._input.value = Utils.isFunction("return " + this._input.value.substring(1), false, this);
+                    this.setValue();
                 }
                 else {
-                    if (!this.Parent.IsListViewItem) {
-                        if (!Utils.isNullOrWhiteSpace(this.Meta.GroupBy)) {
-                            var groups = this.EditForm.ChildCom.filter(x => x.Meta.GroupBy == this.Meta.GroupBy);
+                    if (!this.Parent.isListViewItem) {
+                        if (!Utils.isNullOrWhiteSpace(this.meta.groupBy)) {
+                            var groups = this.editForm.childCom.filter(x => x.meta.groupBy == this.meta.groupBy);
                             var index = groups.indexOf(this);
                             if (groups[index + 1]) {
                                 groups[index + 1].Focus();
@@ -197,20 +197,20 @@ export class Numbox extends EditableComponent {
         }
     }
 
-    IsNullable() {
-        const val = this.Entity.GetComplexProp(this.Name);
+    isNullable() {
+        const val = this.entity.getComplexProp(this.Name);
         return val === null || val === undefined;
     }
 
-    ChangeSetValue() {
+    changeSetValue() {
         const oldVal = this._value;
-        this.EmptyRow = false;
+        this.emptyRow = false;
         if (Utils.isNullOrWhiteSpace(this._input.value)) {
             this.Value = null;
             this.Dirty = true;
-            this.PopulateFields();
-            this.DispatchEvent(this.Meta.Events, EventType.Change, this, this.Entity).then(() => {
-                this.UserInput?.Invoke({ NewData: this._value, OldData: oldVal, EvType: EventType.Change });
+            this.populateFields();
+            this.dispatchEvent(this.meta.Events, EventType.Change, this, this.entity).then(() => {
+                this.userInput?.invoke({ newData: this._value, oldData: oldVal, evType: EventType.Change });
             });
             return;
         }
@@ -220,28 +220,28 @@ export class Numbox extends EditableComponent {
         }
 
         const text = this._input.value.replace(",", "");
-        const [success, parsedResult] = Utils.TryParseDecimal(text);
+        const [success, parsedResult] = Utils.tryParseDecimal(text);
         if (!success) {
             this.Dirty = true;
             this.Value = this._value; // Set old value to avoid accept invalid value
-            this.DispatchEvent(this.Meta.Events, EventType.Change, this, this.Entity).then(() => {
-                this.UserInput?.Invoke({ NewData: this._value, OldData: oldVal, EvType: EventType.Change });
+            this.dispatchEvent(this.meta.Events, EventType.Change, this, this.entity).then(() => {
+                this.userInput?.invoke({ newData: this._value, oldData: oldVal, evType: EventType.Change });
             });
             return;
         }
         this.Value = new Decimal(parsedResult);
         this.Dirty = true;
-        this.PopulateFields();
-        this.DispatchEvent(this.Meta.Events, EventType.Change, this, this.Entity).then(() => {
-            this.UserInput?.Invoke({ NewData: this._value, OldData: oldVal, EvType: EventType.Change });
+        this.populateFields();
+        this.dispatchEvent(this.meta.Events, EventType.Change, this, this.entity).then(() => {
+            this.userInput?.invoke({ newData: this._value, oldData: oldVal, evType: EventType.Change });
         });
     }
 
-    GetDecimalValue() {
-        if (this.Entity == null) {
+    getDecimalValue() {
+        if (this.entity == null) {
             return null;
         }
-        const value = this.Entity[this.Meta.FieldName];
+        const value = this.entity[this.meta.fieldName];
         if (value == null) {
             return null;
         }
@@ -252,46 +252,46 @@ export class Numbox extends EditableComponent {
         }
     }
 
-    UpdateView(force = false, dirty = null, ...componentNames) {
-        var newValue = this.GetDecimalValue();
+    updateView(force = false, dirty = null, ...componentNames) {
+        var newValue = this.getDecimalValue();
         if ((this._value && newValue &&
             !newValue.equals(this._value))
             || (this._value && !newValue)
             || (!this._value && newValue)) {
             this.Value = newValue;
-            this.SetRequired();
+            this.setRequired();
             if (!this.Dirty) {
-                this.OriginalText = this._input;
-                this.DOMContentLoaded?.Invoke();
-                this.OldValue = this._input;
+                this.originalText = this._input;
+                this.dOMContentLoaded?.invoke();
+                this.oldValue = this._input;
             }
         }
         else {
             if (newValue) {
                 this._value = newValue;
-                this.Entity[this.Meta.FieldName] = newValue;
+                this.entity[this.meta.fieldName] = newValue;
             }
         }
     }
 
-    async ValidateAsync() {
-        if (this.ValidationRules.length == 0) {
+    async validateAsync() {
+        if (this.validationRules.length == 0) {
             return true;
         }
-        this.ValidationResult = [];
-        this.ValidateRequired(this._value);
-        this.Validate(ValidationRule.GreaterThan, this._value, (value, ruleValue) => ruleValue == null || value != null && value > ruleValue);
-        this.Validate(ValidationRule.LessThan, this._value, (value, ruleValue) => ruleValue == null || value != null && value < ruleValue);
-        this.Validate(ValidationRule.GreaterThanOrEqual, this._value, (value, ruleValue) => ruleValue == null || value != null && value >= ruleValue);
-        this.Validate(ValidationRule.LessThanOrEqual, this._value, (value, ruleValue) => ruleValue == null || value != null && value <= ruleValue);
+        this.validationResult = [];
+        this.validateRequired(this._value);
+        this.Validate(ValidationRule.greaterThan, this._value, (value, ruleValue) => ruleValue == null || value != null && value > ruleValue);
+        this.Validate(ValidationRule.lessThan, this._value, (value, ruleValue) => ruleValue == null || value != null && value < ruleValue);
+        this.Validate(ValidationRule.greaterThanOrEqual, this._value, (value, ruleValue) => ruleValue == null || value != null && value >= ruleValue);
+        this.Validate(ValidationRule.lessThanOrEqual, this._value, (value, ruleValue) => ruleValue == null || value != null && value <= ruleValue);
         this.Validate(ValidationRule.Equal, this._value, (value, ruleValue) => value === ruleValue);
-        this.Validate(ValidationRule.NotEqual, this._value, (value, ruleValue) => value !== ruleValue);
-        return this.IsValid;
+        this.Validate(ValidationRule.notEqual, this._value, (value, ruleValue) => value !== ruleValue);
+        return this.isValid;
     }
 
-    SetDisableUI(value) {
+    setDisableUI(value) {
         this._input.readOnly = value;
     }
 }
 
-export { Numbox as NumBox };
+export { Numbox as numBox };

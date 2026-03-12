@@ -1,4 +1,4 @@
 export class Message {
-    static NotDirty = 'Data was not changed!';
-    static ReasonOfChange = 'Auto change';
+    static notDirty = 'Data was not changed!';
+    static reasonOfChange = 'Auto change';
 }

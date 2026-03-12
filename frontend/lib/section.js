@@ -19,45 +19,45 @@ export class Section extends EditableComponent {
         super(null, ele);
         this.elementType = eleType;
         this.Children = [];
-        this.Element = ele;
+        this.element = ele;
         this.innerEle = null;
         this._chevron = null;
     }
 
     Render() {
         if (this.elementType == null) {
-            this.elementType = this.Element?.tagName?.toLowerCase();
+            this.elementType = this.element?.tagName?.toLowerCase();
         } else {
-            Html.take(this.ParentElement).add(this.elementType.tagName == null ? this.elementType : this.elementType?.tagName?.toLowerCase());
-            this.Element = Html.Context;
+            Html.take(this.parentElement).add(this.elementType.tagName == null ? this.elementType : this.elementType?.tagName?.toLowerCase());
+            this.element = Html.context;
         }
-        if (this.Meta === null) {
+        if (this.meta === null) {
             return;
         }
-        if (this.Meta.ClassName?.includes("ribbon") || this.Meta.ClassName?.includes("title")) {
-            this.RenderComponent2(this.Meta);
+        if (this.meta.className?.includes("ribbon") || this.meta.className?.includes("title")) {
+            this.renderComponent2(this.meta);
         }
         else {
-            this.RenderComponent(this.Meta);
+            this.renderComponent(this.meta);
         }
-        this.RenderChildrenSection(this.Meta);
+        this.renderChildrenSection(this.meta);
     }
 
-    UpdateSection() {
-        var parentElemet = this.Element.parentElement;
+    updateSection() {
+        var parentElemet = this.element.parentElement;
         this.Dispose();
         this.Children = [];
-        this.UpdateGroupContent(parentElemet);
+        this.updateGroupContent(parentElemet);
     }
 
-    HandleMeta() {
-        if (!this.Meta.Html) {
+    handleMeta() {
+        if (!this.meta.Html) {
             return;
         }
 
-        const cssContent = this.Meta.Css;
-        const hard = this.Meta.Id;
-        const section = `${this.Meta.FieldName.toLowerCase()}${hard}`;
+        const cssContent = this.meta.Css;
+        const hard = this.meta.Id;
+        const section = `${this.meta.fieldName.toLowerCase()}${hard}`;
 
         if (cssContent) {
             const styleId = `${section}-style`;
@@ -71,14 +71,14 @@ export class Section extends EditableComponent {
             }
         }
 
-        this.Element.innerHTML = Utils.GetHtmlCode(this.Meta.Html, [this.Entity]);
+        this.element.innerHTML = Utils.getHtmlCode(this.meta.Html, [this.entity]);
 
-        if (this.Meta.Javascript) {
+        if (this.meta.Javascript) {
             try {
-                const fn = new Function('editForm', this.Meta.Javascript);
-                fn.call(this, this.EditForm);
+                const fn = new Function('editForm', this.meta.Javascript);
+                fn.call(this, this.editForm);
             } catch (e) {
-                console.error('Error executing JavaScript:', e);
+                console.error('Error executing javaScript:', e);
             }
         }
     }
@@ -93,11 +93,11 @@ export class Section extends EditableComponent {
     /**
      * Renders the dropdown elements and handles their interactions.
      */
-    RenderDropDown() {
+    renderDropDown() {
         const button = document.createElement('button');
         button.className = 'btn ribbon';
-        button.textContent = this.Meta.Label;
-        button.addEventListener('click', this.DropdownBtnClick.bind(this));
+        button.textContent = this.meta.Label;
+        button.addEventListener('click', this.dropdownBtnClick.bind(this));
 
         const chevron = document.createElement('span');
         chevron.textContent = '▼';
@@ -108,20 +108,20 @@ export class Section extends EditableComponent {
         dropdown.style.display = 'none'; // Initially hidden
         dropdown.tabIndex = -1; // Make it focusable
 
-        this.Element.appendChild(button);
-        this.Element.appendChild(dropdown);
+        this.element.appendChild(button);
+        this.element.appendChild(dropdown);
 
         this.innerEle = dropdown;
         this.Chevron = chevron;
 
         // Add a focus out listener to hide dropdown when focus is lost
-        this.Element.addEventListener('focusout', this.HideDetailIfButtonOnly.bind(this));
+        this.element.addEventListener('focusout', this.hideDetailIfButtonOnly.bind(this));
     }
 
     /**
      * Handles button click to toggle the visibility of the dropdown.
      */
-    DropdownBtnClick() {
+    dropdownBtnClick() {
         const isVisible = this.innerEle.style.display !== 'none';
         this.innerEle.style.display = isVisible ? 'none' : 'block';
         this.Chevron.textContent = isVisible ? '▼' : '▲';
@@ -130,7 +130,7 @@ export class Section extends EditableComponent {
     /**
      * Hides the dropdown if the focus is moved away and only buttons are present.
      */
-    HideDetailIfButtonOnly() {
+    hideDetailIfButtonOnly() {
         // This checks if all children are buttons which could be customized based on actual use case
         if (this._isAllBtn === null) {
             this._isAllBtn = Array.from(this.innerEle.children).every(child => child.tagName === 'BUTTON');
@@ -142,7 +142,7 @@ export class Section extends EditableComponent {
         }
     }
 
-    static HasElementAndAll(source, predicate) {
+    static hasElementAndAll(source, predicate) {
         if (source === null || source.length === 0) {
             return false;
         }
@@ -153,112 +153,112 @@ export class Section extends EditableComponent {
     /**
      * Renders a section based on the provided editable component and group information.
      * @param {EditableComponent} Parent - The parent component.
-     * @param {Component} GroupInfo - The group info component.
+     * @param {Component} groupInfo - The group info component.
      * @param {Object} Entity - Optional entity parameter.
      * @param {EditForm} form - Optional edit form.
      * @returns {Section} - The rendered section, or null if not permitted.
      */
     Width = "";
-    static RenderSection(parent, groupInfo, entity = null, form = null) {
-        form = form ?? parent.EditForm;
+    static renderSection(parent, groupInfo, entity = null, form = null) {
+        form = form ?? parent.editForm;
         this.Width = groupInfo.Width;
-        const OuterColumn = form ? form.GetOuterColumn(groupInfo) : 12;
-        const ParentColumn = form ? form.GetInnerColumn(groupInfo.Parent) : 12;
-        const HasOuterColumn = OuterColumn > 0 && ParentColumn > 0;
-        if (HasOuterColumn) {
-            const Per = (OuterColumn / ParentColumn * 99.9).toFixed(2);
-            if (!groupInfo.ItemInRow) {
-                groupInfo.ItemInRow = 2;
+        const outerColumn = form ? form.getOuterColumn(groupInfo) : 12;
+        const parentColumn = form ? form.getInnerColumn(groupInfo.Parent) : 12;
+        const hasOuterColumn = outerColumn > 0 && parentColumn > 0;
+        if (hasOuterColumn) {
+            const Per = (outerColumn / parentColumn * 99.9).toFixed(2);
+            if (!groupInfo.itemInRow) {
+                groupInfo.itemInRow = 2;
             }
-            this.Width = OuterColumn === ParentColumn ? "100%" : `${Per}%`;
+            this.Width = outerColumn === parentColumn ? "100%" : `${Per}%`;
         }
         else {
             this.Width = "100%";
         }
-        var section = this.RenderGroupContent(parent, groupInfo, this.Width, entity, form);
+        var section = this.renderGroupContent(parent, groupInfo, this.Width, entity, form);
         return section;
     }
     /**@param {EditForm} editForm */
     /**@param {EditForm} parent */
-    static RenderGroupContent(parent, groupInfo, width, entity, editForm) {
+    static renderGroupContent(parent, groupInfo, width, entity, editForm) {
         /**@type {EditForm}*/
-        var form = editForm ?? parent.EditForm;
-        if (groupInfo.ClassName?.includes("ribbon")) {
-            if (form.IsChild) {
-                Html.take(form.BtnGroupConfig);
+        var form = editForm ?? parent.editForm;
+        if (groupInfo.className?.includes("ribbon")) {
+            if (form.isChild) {
+                Html.take(form.btnGroupConfig);
             }
             else {
-                Html.take(form.PopUpMenu);
+                Html.take(form.popUpMenu);
             }
         }
-        else if (groupInfo.ClassName?.includes("title")) {
-            Html.take(form.TitleCenterElement);
+        else if (groupInfo.className?.includes("title")) {
+            Html.take(form.titleCenterElement);
         }
         else {
-            Html.take(parent.Element);
+            Html.take(parent.element);
         }
-        if (groupInfo.IsDropDown) {
-            Html.Instance.details.summary.iText(groupInfo.Label, form.Meta.Label).end.render();
+        if (groupInfo.isDropDown) {
+            Html.instance.details.summary.iText(groupInfo.Label, form.meta.Label).end.render();
         }
         else {
-            Html.Instance.div.render();
+            Html.instance.div.render();
         }
-        if (!groupInfo.IsSimple) {
-            Html.Instance.event(EventType.ContextMenu, (e) => form.SysConfigMenu(e, null, groupInfo, null)).className("section-item card").width(width).div.className(groupInfo.ClassName ?? "");
+        if (!groupInfo.isSimple) {
+            Html.instance.event(EventType.contextMenu, (e) => form.sysConfigMenu(e, null, groupInfo, null)).className("section-item card").width(width).div.className(groupInfo.className ?? "");
         }
-        if (groupInfo.Label && !groupInfo.IsDropDown && !groupInfo.IsTab) {
-            Html.Instance.label.className("header").iText(groupInfo.Label, form.Meta.Label).end.render();
+        if (groupInfo.Label && !groupInfo.isDropDown && !groupInfo.isTab) {
+            Html.instance.label.className("header").iText(groupInfo.Label, form.meta.Label).end.render();
         }
-        if (!groupInfo.ClassName?.includes("ribbon") && !groupInfo.IsSimple) {
-            Html.Instance.className("panel").className("group");
+        if (!groupInfo.className?.includes("ribbon") && !groupInfo.isSimple) {
+            Html.instance.className("panel").className("group");
         }
 
-        Html.Instance.display(!groupInfo.Hidden).style(groupInfo.Style || "");
-        const section = new Section(null, Html.Context);
-        if (groupInfo.ComponentType == "Section") {
-            section.IsSection = true;
-            form.ChildSection.push(section);
+        Html.instance.display(!groupInfo.Hidden).style(groupInfo.Style || "");
+        const section = new Section(null, Html.context);
+        if (groupInfo.componentType == "Section") {
+            section.isSection = true;
+            form.childSection.push(section);
         }
-        section.EditForm = form;
-        section.Id = groupInfo.FieldName + groupInfo.Id;
-        section.Name = groupInfo.FieldName;
-        section.Meta = groupInfo;
-        section.Disabled = parent.Disabled || groupInfo.Disabled;
+        section.editForm = form;
+        section.Id = groupInfo.fieldName + groupInfo.Id;
+        section.Name = groupInfo.fieldName;
+        section.meta = groupInfo;
+        section.disabled = parent.disabled || groupInfo.Disabled;
         // @ts-ignore
-        parent.AddChild(section, null, groupInfo.ShowExp, groupInfo.DisabledExp);
-        Html.take(parent.Element);
-        section.DOMContentLoaded?.Invoke();
+        parent.addChild(section, null, groupInfo.showExp, groupInfo.disabledExp);
+        Html.take(parent.element);
+        section.dOMContentLoaded?.invoke();
         return section;
     }
 
-    UpdateGroupContent(parentElement) {
+    updateGroupContent(parentElement) {
         /**@type {EditForm}*/
-        var form = this.EditForm;
-        var groupInfo = this.Meta;
+        var form = this.editForm;
+        var groupInfo = this.meta;
         Html.take(parentElement);
-        if (!groupInfo.IsSimple) {
-            Html.Instance.event(EventType.ContextMenu, (e) => form.SysConfigMenu(e, null, groupInfo, null)).className("section-item card").div.className(groupInfo.ClassName ?? "");
+        if (!groupInfo.isSimple) {
+            Html.instance.event(EventType.contextMenu, (e) => form.sysConfigMenu(e, null, groupInfo, null)).className("section-item card").div.className(groupInfo.className ?? "");
         }
-        if (groupInfo.Label && !groupInfo.IsDropDown && !groupInfo.IsTab) {
-            Html.Instance.label.className("header").iText(groupInfo.Label, form.Meta.Label).end.render();
+        if (groupInfo.Label && !groupInfo.isDropDown && !groupInfo.isTab) {
+            Html.instance.label.className("header").iText(groupInfo.Label, form.meta.Label).end.render();
         }
-        if (!groupInfo.ClassName?.includes("ribbon") && !groupInfo.IsSimple) {
-            Html.Instance.className("panel").className("group");
+        if (!groupInfo.className?.includes("ribbon") && !groupInfo.isSimple) {
+            Html.instance.className("panel").className("group");
         }
-        Html.Instance.display(!groupInfo.Hidden).style(groupInfo.Style || "");
-        const section = new Section(null, Html.Context);
-        if (groupInfo.ComponentType == "Section") {
-            section.IsSection = true;
-            this.EditForm.ChildSection.push(section);
+        Html.instance.display(!groupInfo.Hidden).style(groupInfo.Style || "");
+        const section = new Section(null, Html.context);
+        if (groupInfo.componentType == "Section") {
+            section.isSection = true;
+            this.editForm.childSection.push(section);
         }
-        section.EditForm = form;
-        section.Id = groupInfo.FieldName + groupInfo.Id;
-        section.Name = groupInfo.FieldName;
-        section.Meta = groupInfo;
-        section.Disabled = parent.Disabled || groupInfo.Disabled;
-        this.Parent.AddChild(section, null, groupInfo.ShowExp, groupInfo.DisabledExp);
-        Html.take(this.Parent.Element);
-        section.DOMContentLoaded?.Invoke();
+        section.editForm = form;
+        section.Id = groupInfo.fieldName + groupInfo.Id;
+        section.Name = groupInfo.fieldName;
+        section.meta = groupInfo;
+        section.disabled = parent.Disabled || groupInfo.Disabled;
+        this.Parent.addChild(section, null, groupInfo.showExp, groupInfo.disabledExp);
+        Html.take(this.Parent.element);
+        section.dOMContentLoaded?.invoke();
         return section;
     }
 
@@ -267,65 +267,65 @@ export class Section extends EditableComponent {
      * @param {EditableComponent} Parent - The parent component.
      * @param {Component} Group - The group of components to be rendered as tabs.
      */
-    static RenderTabGroup(Parent, Group, entity = null) {
-        const disabled = Parent.Disabled || Group.Disabled;
-        if (!Parent.EditForm.TabGroup) {
-            Parent.EditForm.TabGroup = [];
+    static renderTabGroup(Parent, Group, entity = null) {
+        const disabled = Parent.disabled || Group.Disabled;
+        if (!Parent.editForm.tabGroup) {
+            Parent.editForm.tabGroup = [];
         }
 
-        var TabG = Parent.EditForm.TabGroup.find(x => x.Name === (Group.TabGroup || "Default"));
-        if (!TabG) {
+        var tabG = Parent.editForm.tabGroup.find(x => x.Name === (Group.tabGroup || "Default"));
+        if (!tabG) {
             var group = {
-                TabGroup: Group.TabGroup,
+                tabGroup: Group.tabGroup,
                 Label: Group.Label,
                 Order: Group.Order,
-                IsTab: true,
+                isTab: true,
             };
-            TabG = new TabGroup(group);
-            TabG.Name = group.TabGroup || "Default",
-                TabG.Parent = Parent,
-                TabG.ParentElement = Parent.Element,
-                TabG.Entity = entity ?? Parent.Entity,
-                TabG.Meta = group,
-                TabG.Meta.DisabledExp = null,
-                TabG.Meta.ShowExp = null,
-                TabG.EditForm = Parent.EditForm,
-                TabG.Children = [],
-                TabG.Disabled = disabled;
-            var SubTab = new TabComponent(Group)
-            SubTab.Parent = TabG,
-                SubTab.Entity = Parent.Entity,
-                SubTab.Meta = Group,
-                SubTab.Name = Group.FieldName,
-                SubTab.EditForm = Parent.EditForm,
-                SubTab.Disabled = disabled;
+            tabG = new TabGroup(group);
+            tabG.Name = group.tabGroup || "Default",
+                tabG.Parent = Parent,
+                tabG.parentElement = Parent.element,
+                tabG.entity = entity ?? Parent.entity,
+                tabG.meta = group,
+                tabG.meta.disabledExp = null,
+                tabG.meta.showExp = null,
+                tabG.editForm = Parent.editForm,
+                tabG.Children = [],
+                tabG.disabled = disabled;
+            var subTab = new TabComponent(Group)
+            subTab.Parent = tabG,
+                subTab.entity = Parent.entity,
+                subTab.meta = Group,
+                subTab.Name = Group.fieldName,
+                subTab.editForm = Parent.editForm,
+                subTab.disabled = disabled;
             // @ts-ignore
-            TabG.Children.push(SubTab);
-            Parent.EditForm.TabGroup.push(TabG);
-            Parent.Children.push(TabG);
-            if (Group.ComponentType == "Section") {
-                SubTab.IsSection = true;
-                TabG.IsSection = true;
+            tabG.Children.push(subTab);
+            Parent.editForm.tabGroup.push(tabG);
+            Parent.Children.push(tabG);
+            if (Group.componentType == "Section") {
+                subTab.isSection = true;
+                tabG.isSection = true;
             }
-            TabG.Render();
-            SubTab.Render();
-            SubTab.RenderTabContent();
-            SubTab.Focus();
+            tabG.render();
+            subTab.render();
+            subTab.renderTabContent();
+            subTab.Focus();
         } else {
             var subTab = new TabComponent(Group)
-            subTab.Parent = TabG,
-                subTab.ParentElement = TabG.Element,
-                subTab.Entity = Parent.Entity,
-                subTab.Meta = Group,
+            subTab.Parent = tabG,
+                subTab.parentElement = tabG.element,
+                subTab.entity = Parent.entity,
+                subTab.meta = Group,
                 subTab.Name = Group.Name,
-                subTab.EditForm = Parent.EditForm;
-            subTab.Disabled = disabled;
-            TabG.Children.push(subTab);
-            if (Group.ComponentType == "Section") {
-                subTab.IsSection = true;
-                TabG.IsSection = true;
+                subTab.editForm = Parent.editForm;
+            subTab.disabled = disabled;
+            tabG.Children.push(subTab);
+            if (Group.componentType == "Section") {
+                subTab.isSection = true;
+                tabG.isSection = true;
             }
-            subTab.Render();
+            subTab.render();
         }
     }
 
@@ -334,16 +334,16 @@ export class Section extends EditableComponent {
      * Renders child components according to metadata.
      * @param {Component} group - The group of components to render.
      */
-    RenderChildrenSection(group) {
+    renderChildrenSection(group) {
         if (!group.Children || group.Children.length === 0) {
             return;
         }
 
         group.Children.sort((a, b) => a.Order - b.Order).forEach(child => {
-            if (child.IsTab) {
-                Section.RenderTabGroup(this, child);
+            if (child.isTab) {
+                Section.renderTabGroup(this, child);
             } else {
-                Section.RenderSection(this, child);
+                Section.renderSection(this, child);
             }
         });
     }
@@ -353,11 +353,11 @@ export class Section extends EditableComponent {
      * @param {Event} event - The event that triggered the label change.
      * @param {Component} component - The component whose label is being changed.
      */
-    ChangeLabel(event, component) {
+    changeLabel(event, component) {
         clearTimeout(this._imeout);
         this._imeout = setTimeout(() => {
             // @ts-ignore
-            this.SubmitLabelChanged('Component', component.Id, event?.target?.textContent);
+            this.submitLabelChanged('Component', component.Id, event?.target?.textContent);
         }, 1000);
     }
 
@@ -366,12 +366,12 @@ export class Section extends EditableComponent {
      * @param {any} id
      * @param {any} label
      */
-    SubmitLabelChanged(table, id, label) {
+    submitLabelChanged(table, id, label) {
         var patch = new PatchVM();
         patch.Table = table;
         patch.Changes = [
             // @ts-ignore
-            { Field: this.IdField, Value: id },
+            { Field: this.idField, Value: id },
             // @ts-ignore
             { Field: 'Label', Value: label },
         ];
@@ -380,11 +380,11 @@ export class Section extends EditableComponent {
         });
     }
 
-    static SubmitLabelChanged(table, id, label) {
+    static submitLabelChanged(table, id, label) {
         var patch = {
             Table: table,
             Changes: [
-                { Field: "IdField", Value: id },
+                { Field: "idField", Value: id },
                 { Field: "Component.Label", Value: label }
             ]
         };
@@ -400,10 +400,10 @@ export class Section extends EditableComponent {
      * @param {Event} e - The event object.
      * @param {Component} com - The component instance.
      */
-    static ChangeComponentGroupLabel(e, com) {
+    static changeComponentGroupLabel(e, com) {
         window.clearTimeout(Section._imeout1);
         Section._imeout1 = window.setTimeout(() => {
-            this.SubmitLabelChanged('Meta', com.Id, e.target instanceof HTMLElement && e.target.textContent);
+            this.submitLabelChanged('Meta', com.Id, e.target instanceof HTMLElement && e.target.textContent);
         }, 1000);
     }
 
@@ -414,56 +414,56 @@ export class Section extends EditableComponent {
      * @param {FeaturePolicy[]} allComPolicies
      * @returns 
      */
-    RenderCom(ui, column) {
+    renderCom(ui, column) {
         if (ui.Hidden) {
             return;
         }
-        var innerCol = this.EditForm.GetInnerColumn(ui);
-        if (!ui.CanRead) {
+        var innerCol = this.editForm.getInnerColumn(ui);
+        if (!ui.canRead) {
             return;
         }
 
-        Html.take(this.Element);
+        Html.take(this.element);
         const colSpan = innerCol || 2;
         ui.Label = ui.Label || '';
 
         let label = null;
-        if (ui.ShowLabel) {
-            Html.div.iText(ui.Label, this.EditForm.Meta.Label).textAlign(column === 0 ? 'left' : 'right').render();
-            label = Html.Context;
+        if (ui.showLabel) {
+            Html.div.iText(ui.Label, this.editForm.meta.Label).textAlign(column === 0 ? 'left' : 'right').render();
+            label = Html.context;
             Html.end.render();
         }
 
-        const childCom = ComponentFactory.GetComponent(ui, this.EditForm);
+        const childCom = ComponentFactory.getComponent(ui, this.editForm);
         if (childCom === null) return;
 
-        if (childCom.IsListView) {
+        if (childCom.isListView) {
             // @ts-ignore
-            this.EditForm.ListViews.push(childCom);
+            this.editForm.listViews.push(childCom);
         }
-        this.AddChild(childCom);
+        this.addChild(childCom);
         if (childCom instanceof EditableComponent) {
-            childCom.Disabled = ui.Disabled || this.Disabled || !ui.CanWrite || this.EditForm.IsLock || childCom.Disabled;
+            childCom.disabled = ui.Disabled || this.disabled || !ui.canWrite || this.editForm.isLock || childCom.disabled;
         }
 
-        if (childCom.Element) {
-            if (ui.ChildStyle && ui.ComponentType != "GridView") {
-                const current = Html.Context;
-                Html.take(childCom.Element).style(ui.ChildStyle);
+        if (childCom.element) {
+            if (ui.childStyle && ui.componentType != "GridView") {
+                const current = Html.context;
+                Html.take(childCom.element).style(ui.childStyle);
                 Html.take(current);
             }
-            if (ui.ClassName) {
-                childCom.Element.classList.add(ui.ClassName);
+            if (ui.className) {
+                childCom.element.classList.add(ui.className);
             }
 
             if (ui.Row === 1) {
-                childCom.ParentElement.parentElement.classList.add('inline-label');
+                childCom.parentElement.parentElement.classList.add('inline-label');
             }
             if (Client.systemRole) {
-                childCom.Element.addEventListener('contextmenu', e => this.EditForm.SysConfigMenu(e, ui, ui, childCom));
+                childCom.element.addEventListener('contextmenu', e => this.editForm.sysConfigMenu(e, ui, ui, childCom));
             }
-            if (Client.bodRole && ui.ComponentType == "Pdf") {
-                childCom.Element.addEventListener('contextmenu', e => this.EditForm.SysConfigMenu(e, ui, ui, childCom));
+            if (Client.bodRole && ui.componentType == "Pdf") {
+                childCom.element.addEventListener('contextmenu', e => this.editForm.sysConfigMenu(e, ui, ui, childCom));
             }
         }
         if (ui.Focus) {
@@ -475,8 +475,8 @@ export class Section extends EditableComponent {
                 if (label.nextElementSibling instanceof HTMLElement) {
                     label.nextElementSibling.style.gridColumn = `${column + 2}/${column + colSpan + 1}`;
                 }
-            } else if (childCom.Element) {
-                childCom.Element.style.gridColumn = `${column + 2}/${column + colSpan + 1}`;
+            } else if (childCom.element) {
+                childCom.element.style.gridColumn = `${column + 2}/${column + colSpan + 1}`;
             }
             column += colSpan;
         } else {
@@ -487,23 +487,23 @@ export class Section extends EditableComponent {
         }
     }
 
-    async ComponentProperties(component) {
-        const { ComponentBL } = await import('./forms/componentEditor.js');
+    async componentProperties(component) {
+        const { componentBL } = await import('./forms/componentEditor.js');
         const { EditForm } = await import('./editForm.js');
         // @ts-ignore
-        var editor = new ComponentBL({
+        var editor = new componentBL({
             Entity: component,
-            ParentElement: this.Element,
-            OpenFrom: this.FindClosest(editForm => editForm instanceof EditForm),
+            parentElement: this.element,
+            openFrom: this.findClosest(editForm => editForm instanceof EditForm),
         });
-        this.AddChild(editor);
+        this.addChild(editor);
     }
 
     /**
      * @param {boolean} [disabled]
      */
-    SetDisableUI(disabled) {
-        const ele = this.Element;
+    setDisableUI(disabled) {
+        const ele = this.element;
         if (ele == null) {
             return;
         }
@@ -520,16 +520,16 @@ export class Section extends EditableComponent {
      * Renders a component within a group, setting up the necessary HTML structure.
      * @param {Component} group - The component group to render.
      */
-    async RenderIndex2(group) {
+    async renderIndex2(group) {
         window.clearTimeout(this.intAwait);
         this.intAwait = window.setTimeout(async () => {
             if (this.Children.length === 0) {
                 return;
             }
 
-            var chidlds = this.Element.querySelectorAll(".layout-item");
+            var chidlds = this.element.querySelectorAll(".layout-item");
             for (let rowIndex = 0; rowIndex < chidlds.length; rowIndex++) {
-                var item = this.Children.find(x => x.Element.closest(".layout-item") == chidlds[rowIndex]);
+                var item = this.Children.find(x => x.element.closest(".layout-item") == chidlds[rowIndex]);
                 if (item != null) {
                     item.Meta.Order = rowIndex;
                 }
@@ -538,24 +538,24 @@ export class Section extends EditableComponent {
                 const dirtyPatch = [
                     { Field: "Id", Value: header.Id },
                     { Field: "Order", Value: header.Order },
-                    { Field: "FeatureId", Value: header.FeatureId }
+                    { Field: "featureId", Value: header.featureId }
                 ];
                 return {
                     Changes: dirtyPatch,
-                    NotMessage: true,
+                    notMessage: true,
                     Table: "Component",
                 };
             }).filter(x => x != null);
             await Client.instance.patchAsync2(columns);
-            if (this.EditForm && this.EditForm.devTools) {
-                await this.EditForm.devTools.LoadMeta;
+            if (this.editForm && this.editForm.devTools) {
+                await this.editForm.devTools.loadMeta;
                 Html.take(".components").clear();
-                this.EditForm.RenderElements(this.EditForm.GroupTree, true);
-                if (this.EditForm.ConfigEditor) {
-                    var com = this.Children.find(x => x.Meta.Id == this.EditForm.ConfigEditor.Entity.Id);
+                this.editForm.renderElements(this.editForm.groupTree, true);
+                if (this.editForm.configEditor) {
+                    var com = this.Children.find(x => x.Meta.Id == this.editForm.configEditor.Entity.Id);
                     if (com) {
-                        this.EditForm.ConfigEditor.Entity = com.Meta;
-                        this.EditForm.ConfigEditor.UpdateView(true, true);
+                        this.editForm.configEditor.Entity = com.Meta;
+                        this.editForm.configEditor.updateView(true, true);
                     }
                 }
             }
@@ -565,16 +565,16 @@ export class Section extends EditableComponent {
      * Renders a component within a group, setting up the necessary HTML structure.
      * @param {Component} group - The component group to render.
      */
-    async RenderIndex(group) {
+    async renderIndex(group) {
         window.clearTimeout(this.intAwait);
         this.intAwait = window.setTimeout(async () => {
             if (this.Children.length === 0) {
                 return;
             }
 
-            var chidlds = this.Element.querySelectorAll(".layout-item");
+            var chidlds = this.element.querySelectorAll(".layout-item");
             for (let rowIndex = 0; rowIndex < chidlds.length; rowIndex++) {
-                var item = this.Children.find(x => x.Element.closest(".layout-item") == chidlds[rowIndex]);
+                var item = this.Children.find(x => x.element.closest(".layout-item") == chidlds[rowIndex]);
                 if (item != null) {
                     item.Meta.Order = rowIndex;
                 }
@@ -583,22 +583,22 @@ export class Section extends EditableComponent {
                 const dirtyPatch = [
                     { Field: "Id", Value: header.Id },
                     { Field: "Order", Value: header.Order },
-                    { Field: "FeatureId", Value: header.FeatureId }
+                    { Field: "featureId", Value: header.featureId }
                 ];
                 return {
                     Changes: dirtyPatch,
-                    NotMessage: true,
+                    notMessage: true,
                     Table: "Component",
                 };
             }).filter(x => x != null);
             await Client.instance.patchAsync2(columns);
-            if (this.EditForm && this.EditForm.DevToolsElement) {
-                if (this.EditForm.ConfigEditor) {
-                    await this.EditForm.LoadMeta();
-                    var com = this.Children.find(x => x.Meta.Id == this.EditForm.ConfigEditor.Entity.Id);
+            if (this.editForm && this.editForm.devToolsElement) {
+                if (this.editForm.configEditor) {
+                    await this.editForm.loadMeta();
+                    var com = this.Children.find(x => x.Meta.Id == this.editForm.configEditor.Entity.Id);
                     if (com) {
-                        this.EditForm.ConfigEditor.Entity = com.Meta;
-                        this.EditForm.ConfigEditor.UpdateView(true, true);
+                        this.editForm.configEditor.Entity = com.Meta;
+                        this.editForm.configEditor.updateView(true, true);
                     }
                 }
             }
@@ -608,22 +608,22 @@ export class Section extends EditableComponent {
      * Renders a component within a group, setting up the necessary HTML structure.
      * @param {Component} group - The component group to render.
      */
-    RenderComponent(group) {
+    renderComponent(group) {
         if (!group.Components || group.Components.length === 0) {
             return;
         }
-        var colgroup = this.EditForm.GetInnerColumn(group);
+        var colgroup = this.editForm.getInnerColumn(group);
         // Create a wrapper div for the layout
         Html.div.className("ui-layout").div.className("ui-row").style(`grid-template-columns: repeat(${colgroup}, 1fr);`).render();
         let column = 0;
-        if ((group.Components && group.Components.length > 1) || (group.Components && !group.Components[0].CanReadAll)) {
-            group.Components = this.EditForm.GetComPolicies(group.Components);
+        if ((group.Components && group.Components.length > 1) || (group.Components && !group.Components[0].canReadAll)) {
+            group.Components = this.editForm.getComPolicies(group.Components);
         }
         var lastElementButtonGroup = [];
         var seft = this;
-        if (Client.systemRole && Client.token.TenantCode === "forwardx" && this.Token.UserId == "1") {
-            if (!group.IsConfig) {
-                new Sortable(Html.Context, {
+        if (Client.systemRole && Client.token.tenantCode === "forwardx" && this.Token.userId == "1") {
+            if (!group.isConfig) {
+                new Sortable(Html.context, {
                     animation: 500,
                     ghostClass: "blue-background-class",
                     handle: ".header-label",
@@ -650,12 +650,12 @@ export class Section extends EditableComponent {
                             item.classList.remove("same-group");
                         });
                         evt.item.classList.remove("dragging");
-                        await seft.RenderIndex2(Html.Context);
+                        await seft.renderIndex2(Html.context);
                     }
                 });
             }
             else {
-                new Sortable(Html.Context, {
+                new Sortable(Html.context, {
                     animation: 500,
                     ghostClass: "blue-background-class",
                     handle: ".header-label",
@@ -670,20 +670,20 @@ export class Section extends EditableComponent {
                         put: false
                     },
                     onEnd: async function (evt) {
-                        var com = seft.EditForm.ChildCom.find(x => x.ParentElement.parentElement == evt.item);
-                        var sec = seft.EditForm.ChildSection.find(x => x.Element == evt.to.parentElement.parentElement);
-                        com.Meta.ComponentGroupId = sec.Meta.Id;
-                        com.Meta.FeatureId = sec.Meta.FeatureId;
+                        var com = seft.editForm.childCom.find(x => x.parentElement.parentElement == evt.item);
+                        var sec = seft.editForm.childSection.find(x => x.element == evt.to.parentElement.parentElement);
+                        com.meta.componentGroupId = sec.meta.Id;
+                        com.meta.featureId = sec.meta.featureId;
                         sec.Children.push(com);
-                        await sec.RenderIndex2(sec.Element);
-                        var patchModel = seft.EditForm.GetObjectPatchVM(com.Meta, "Component");
+                        await sec.renderIndex2(sec.element);
+                        var patchModel = seft.editForm.getObjectPatchVM(com.meta, "Component");
                         const rs = await Client.instance.patchAsync(patchModel);
-                        com.Meta = rs.updatedItem[0];
-                        if (seft.EditForm.OpenFrom.ConfigEditor) {
-                            seft.EditForm.OpenFrom.ConfigEditor.Entity = com.Meta;
-                            seft.EditForm.OpenFrom.ConfigEditor.UpdateView(true);
+                        com.meta = rs.updatedItem[0];
+                        if (seft.editForm.openFrom.configEditor) {
+                            seft.editForm.openFrom.configEditor.Entity = com.meta;
+                            seft.editForm.openFrom.configEditor.updateView(true);
                         }
-                        seft.EditForm.UpdateConfig();
+                        seft.editForm.updateConfig();
                     },
                     sort: false
                 });
@@ -693,81 +693,81 @@ export class Section extends EditableComponent {
             if (ui.Hidden) {
                 return;
             }
-            if (!ui.CanRead) {
+            if (!ui.canRead) {
                 return;
             }
-            var inner = this.EditForm.GetInnerColumn(ui);
+            var inner = this.editForm.getInnerColumn(ui);
             const colSpan = inner || 1;
-            const rowSpan = ui.RowSpan || 1;
+            const rowSpan = ui.rowSpan || 1;
             ui.Label = ui.Label || '';
             Html.div.className("layout-item").style(`grid-column: span ${colSpan};grid-row: span ${rowSpan}`).visibility(ui.Visibility);
-            if (ui.ShowLabel) {
+            if (ui.showLabel) {
                 var required = "";
                 if (!Utils.isNullOrWhiteSpace(ui.Validation)) {
                     required = ui.Validation.includes("required") ? " (*)" : "";
                 }
-                Html.Instance.div.className("group-control").style(ui.ChildStyle)
+                Html.instance.div.className("group-control").style(ui.childStyle)
                     .div.className('header-label');
                 if (Client.systemRole) {
-                    Html.Instance.className("moved");
+                    Html.instance.className("moved");
                 }
-                Html.Instance.iText(ui.Label, this.EditForm.Meta.Label)
+                Html.instance.iText(ui.Label, this.editForm.meta.Label)
                     .span.text(required).end.end.render();
             }
-            if (ui.Style && ui.ComponentType !== "Word") {
+            if (ui.Style && ui.componentType !== "Word") {
                 Html.style(ui.Style);
             }
             if (ui.Width) {
                 Html.width(ui.Width);
             }
-            if (!Utils.isNullOrWhiteSpace(ui.GroupFormat) && ["Button", "Pdf", "Excel"].some(x => x == ui.ComponentType)) {
-                if (!lastElementButtonGroup.find(x => x.Com.GroupFormat == ui.GroupFormat)) {
-                    Html.Instance.div.className("dropdown-btn")
-                        .button.className(ui.ClassName).icon("mr-1 " + ui.Icon).end.iText(ui.GroupFormat, this.EditForm.Meta.Label)
+            if (!Utils.isNullOrWhiteSpace(ui.groupFormat) && ["Button", "Pdf", "Excel"].some(x => x == ui.componentType)) {
+                if (!lastElementButtonGroup.find(x => x.Com.groupFormat == ui.groupFormat)) {
+                    Html.instance.div.className("dropdown-btn")
+                        .button.className(ui.className).icon("mr-1 " + ui.Icon).end.iText(ui.groupFormat, this.editForm.meta.Label)
                         .end
                         .div.className("dropdown-content dropdown-top");
-                    lastElementButtonGroup.push({ Com: ui, Ele: Html.Context })
+                    lastElementButtonGroup.push({ Com: ui, Ele: Html.context })
                 }
             }
-            const childCom = ComponentFactory.GetComponent(ui, this.EditForm);
-            if (!Utils.isNullOrWhiteSpace(ui.GroupFormat) && ["Button", "Pdf", "Excel"].some(x => x == ui.ComponentType)) {
-                childCom.ParentElement = lastElementButtonGroup.find(x => x.Com.GroupFormat == ui.GroupFormat).Ele;
+            const childCom = ComponentFactory.getComponent(ui, this.editForm);
+            if (!Utils.isNullOrWhiteSpace(ui.groupFormat) && ["Button", "Pdf", "Excel"].some(x => x == ui.componentType)) {
+                childCom.parentElement = lastElementButtonGroup.find(x => x.Com.groupFormat == ui.groupFormat).Ele;
             }
             if (childCom === null) return;
-            this.AddChild(childCom);
-            this.EditForm.ChildCom.push(childCom);
+            this.addChild(childCom);
+            this.editForm.childCom.push(childCom);
             if (childCom) {
                 childCom.Disabled = ui.Disabled || ui.Write || childCom.Disabled;
             }
-            if (childCom.Element) {
-                if (ui.ChildStyle && ui.ComponentType != "GridView") {
-                    const Current = Html.Context;
-                    Html.take(childCom.Element).style(ui.ChildStyle);
+            if (childCom.element) {
+                if (ui.childStyle && ui.componentType != "GridView") {
+                    const Current = Html.context;
+                    Html.take(childCom.element).style(ui.childStyle);
                     Html.take(Current);
                 }
                 if (Client.systemRole) {
-                    Html.take(childCom.Element).event(EventType.Click, (e) => {
-                        if (this.EditForm.DevToolsElement) {
-                            this.EditForm.UpdateMetaData(childCom.Meta);
+                    Html.take(childCom.element).event(EventType.Click, (e) => {
+                        if (this.editForm.devToolsElement) {
+                            this.editForm.updateMetaData(childCom.Meta);
                         }
                     })
                 }
 
                 if (ui.Row === 1) {
-                    childCom.ParentElement.parentElement.classList.add("inline-label");
+                    childCom.parentElement.parentElement.classList.add("inline-label");
                 }
 
-                if (["Input", "Dropdown", "Word", "Number", "Textarea"].some(x => x == ui.ComponentType)) {
-                    if (ui.ComponentType == "Word") {
-                        childCom.Element.parentElement.addEventListener("contextmenu", e => this.EditForm.SysConfigMenu(e, ui, group, childCom));
+                if (["Input", "Dropdown", "Word", "Number", "Textarea"].some(x => x == ui.componentType)) {
+                    if (ui.componentType == "Word") {
+                        childCom.element.parentElement.addEventListener("contextmenu", e => this.editForm.sysConfigMenu(e, ui, group, childCom));
                     }
                     else {
-                        childCom.Element.addEventListener("contextmenu", e => this.EditForm.SysConfigMenu(e, ui, group, childCom));
+                        childCom.element.addEventListener("contextmenu", e => this.editForm.sysConfigMenu(e, ui, group, childCom));
                     }
                 }
                 else {
-                    if (Client.systemRole && ui.ComponentType != "CodeEditor" || Client.bodRole && ui.ComponentType == "Pdf") {
-                        childCom.Element.addEventListener("contextmenu", e => this.EditForm.SysConfigMenu(e, ui, group, childCom));
+                    if (Client.systemRole && ui.componentType != "CodeEditor" || Client.bodRole && ui.componentType == "Pdf") {
+                        childCom.element.addEventListener("contextmenu", e => this.editForm.sysConfigMenu(e, ui, group, childCom));
                     }
                 }
             }
@@ -783,74 +783,74 @@ export class Section extends EditableComponent {
         });
     }
 
-    RenderComponent2(group) {
+    renderComponent2(group) {
         if (!group.Components || group.Components.length == 0) {
             return;
         }
         Html.table.className("ui-layout").tBody.tRow.render();
         let column = 0;
-        group.Components = this.EditForm.GetComPolicies(group.Components);
+        group.Components = this.editForm.getComPolicies(group.Components);
         var lastElementButtonGroup = [];
         group.Components.sort((a, b) => a.Order - b.Order).forEach(ui => {
             if (ui.Hidden) {
                 return;
             }
-            if (!ui.CanRead) {
+            if (!ui.canRead) {
                 return;
             }
-            var inner = this.EditForm.GetInnerColumn(ui);
+            var inner = this.editForm.getInnerColumn(ui);
             const colSpan = inner || 1;
             ui.Label = ui.Label || '';
             Html.tData.colSpan(colSpan).visibility(ui.Visibility);
-            if (ui.ShowLabel) {
-                Html.Instance.div.className("group-control").style(ui.ChildStyle).div.className('header-label').iText(ui.Label, this.EditForm.Meta.Label).end.render();
+            if (ui.showLabel) {
+                Html.instance.div.className("group-control").style(ui.childStyle).div.className('header-label').iText(ui.Label, this.editForm.meta.Label).end.render();
             }
-            if (ui.Style && ui.ComponentType != "Word") {
+            if (ui.Style && ui.componentType != "Word") {
                 Html.style(ui.Style);
             }
             if (ui.Width) {
                 Html.width(ui.Width);
             }
-            if (!Utils.isNullOrWhiteSpace(ui.GroupFormat) && ["Button", "Pdf", "Excel", "Email"].some(x => x == ui.ComponentType)) {
-                if (!lastElementButtonGroup.find(x => x.Com.GroupFormat == ui.GroupFormat)) {
-                    Html.Instance.div.className("dropdown-btn")
-                        .button.className(ui.ClassName).icon("mr-1 " + ui.Icon).end.iText(ui.GroupFormat, this.EditForm.Meta.Label)
+            if (!Utils.isNullOrWhiteSpace(ui.groupFormat) && ["Button", "Pdf", "Excel", "Email"].some(x => x == ui.componentType)) {
+                if (!lastElementButtonGroup.find(x => x.Com.groupFormat == ui.groupFormat)) {
+                    Html.instance.div.className("dropdown-btn")
+                        .button.className(ui.className).icon("mr-1 " + ui.Icon).end.iText(ui.groupFormat, this.editForm.meta.Label)
                         .end
                         .div.className("dropdown-content dropdown-top");
-                    lastElementButtonGroup.push({ Com: ui, Ele: Html.Context })
+                    lastElementButtonGroup.push({ Com: ui, Ele: Html.context })
                 }
             }
-            const childCom = ComponentFactory.GetComponent(ui, this.EditForm);
-            if (!Utils.isNullOrWhiteSpace(ui.GroupFormat) && ["Button", "Pdf", "Excel", "Email"].some(x => x == ui.ComponentType)) {
-                childCom.ParentElement = lastElementButtonGroup.find(x => x.Com.GroupFormat == ui.GroupFormat).Ele;
+            const childCom = ComponentFactory.getComponent(ui, this.editForm);
+            if (!Utils.isNullOrWhiteSpace(ui.groupFormat) && ["Button", "Pdf", "Excel", "Email"].some(x => x == ui.componentType)) {
+                childCom.parentElement = lastElementButtonGroup.find(x => x.Com.groupFormat == ui.groupFormat).Ele;
             }
             if (childCom === null) return;
-            this.AddChild(childCom);
-            this.EditForm.ChildCom.push(childCom);
+            this.addChild(childCom);
+            this.editForm.childCom.push(childCom);
             if (childCom) {
                 childCom.Disabled = ui.Disabled || ui.Write || childCom.Disabled;
             }
-            if (childCom.Element) {
-                if (ui.ChildStyle && ui.ComponentType != "GridView") {
-                    const Current = Html.Context;
-                    Html.take(childCom.Element).style(ui.ChildStyle);
+            if (childCom.element) {
+                if (ui.childStyle && ui.componentType != "GridView") {
+                    const Current = Html.context;
+                    Html.take(childCom.element).style(ui.childStyle);
                     Html.take(Current);
                 }
 
                 if (ui.Row === 1) {
-                    childCom.ParentElement.parentElement.classList.add("inline-label");
+                    childCom.parentElement.parentElement.classList.add("inline-label");
                 }
-                if (["Input", "Dropdown", "Word", "Number"].some(x => x == ui.ComponentType)) {
-                    if (ui.ComponentType == "Word") {
-                        childCom.Element.parentElement.addEventListener("contextmenu", e => this.EditForm.SysConfigMenu(e, ui, group, childCom));
+                if (["Input", "Dropdown", "Word", "Number"].some(x => x == ui.componentType)) {
+                    if (ui.componentType == "Word") {
+                        childCom.element.parentElement.addEventListener("contextmenu", e => this.editForm.sysConfigMenu(e, ui, group, childCom));
                     }
                     else {
-                        childCom.Element.addEventListener("contextmenu", e => this.EditForm.SysConfigMenu(e, ui, group, childCom));
+                        childCom.element.addEventListener("contextmenu", e => this.editForm.sysConfigMenu(e, ui, group, childCom));
                     }
                 }
                 else {
-                    if (Client.systemRole && ui.ComponentType != "CodeEditor" || Client.bodRole && ui.ComponentType == "Pdf") {
-                        childCom.Element.addEventListener("contextmenu", e => this.EditForm.SysConfigMenu(e, ui, group, childCom));
+                    if (Client.systemRole && ui.componentType != "CodeEditor" || Client.bodRole && ui.componentType == "Pdf") {
+                        childCom.element.addEventListener("contextmenu", e => this.editForm.sysConfigMenu(e, ui, group, childCom));
                     }
                 }
             }
@@ -864,19 +864,19 @@ export class Section extends EditableComponent {
                 column += ui.Offset;
             }
             column += colSpan;
-            if (column === this.EditForm.GetInnerColumn(group)) {
+            if (column === this.editForm.getInnerColumn(group)) {
                 column = 0;
                 Html.endOf("tr").tRow.render();
             }
         });
     }
 
-    SetShow(show, ...field) {
-        var childs = this.Children.filter(x => x.IsSection && field.includes(x.Meta.FieldName));
+    setShow(show, ...field) {
+        var childs = this.Children.filter(x => x.isSection && field.includes(x.Meta.fieldName));
         if (childs.length == 0) {
-            childs = this.Children.filter(x => x.IsSection);
+            childs = this.Children.filter(x => x.isSection);
             childs.forEach(item => {
-                item.SetShow(show, ...field);
+                item.setShow(show, ...field);
             })
         }
         else {

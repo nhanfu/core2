@@ -14,23 +14,23 @@ export class HtmlCode extends EditableComponent {
     }
 
     Render() {
-        this.Element = Html.take(this.ParentElement).div.getContext();
-        const submitEntity = Utils.IsFunction(this.Meta.PreQuery, false, this);
+        this.element = Html.take(this.parentElement).div.getContext();
+        const submitEntity = Utils.isFunction(this.meta.preQuery, false, this);
         const entity = {
             Params: submitEntity,
-            ComId: this.Meta.Id,
+            comId: this.meta.Id,
         };
         Client.instance.submitAsync({
             Url: "/api/feature/report",
-            IsRawString: true,
-            JsonData: JSON.stringify(entity, this.getCircularReplacer(), 2),
+            isRawString: true,
+            jsonData: JSON.stringify(entity, this.getCircularReplacer(), 2),
             Method: "POST"
         }).then(data => {
-            this.Element.innerHTML = Utils.GetHtmlCode(this.Meta.Template, data.updatedItem);
+            this.element.innerHTML = Utils.getHtmlCode(this.meta.Template, data.updatedItem);
         })
     }
 
-    UpdateView(force = false, dirty = null, componentNames) {
-        this.Render();
+    updateView(force = false, dirty = null, componentNames) {
+        this.render();
     }
 }

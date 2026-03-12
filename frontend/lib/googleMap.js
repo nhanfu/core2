@@ -13,21 +13,21 @@ export class GoogleMap extends EditableComponent {
      */
     constructor(ui, ele = null) {
         super(ui, ele);
-        this.DefaultValue = '';
+        this.defaultValue = '';
         this.map = null;
         this.marker = null;
         this.infoWindow = null;
         this.geocoder = null;
-        this.defaultZoom = this.Meta.Precision || 15;
+        this.defaultZoom = this.meta.Precision || 15;
         this.defaultCenter = { lat: 10.8231, lng: 106.6297 }; // Default to Ho Chi Minh City
-        this.mapHeight = this.Meta.Height || '400px';
-        this.mapWidth = this.Meta.Width || '100%';
+        this.mapHeight = this.meta.Height || '400px';
+        this.mapWidth = this.meta.Width || '100%';
         this.scriptLoaded = false;
         this.searchBox = null;
-        this.latField = this.Meta.LatField || 'Latitude';
-        this.lngField = this.Meta.LngField || 'Longitude';
-        this.addressField = this.Meta.AddressField || 'Address';
-        this.mapType = this.Meta.MapType || 'roadmap';
+        this.latField = this.meta.latField || 'Latitude';
+        this.lngField = this.meta.lngField || 'Longitude';
+        this.addressField = this.meta.addressField || 'Address';
+        this.mapType = this.meta.mapType || 'roadmap';
     }
 
     /**
@@ -37,8 +37,8 @@ export class GoogleMap extends EditableComponent {
      */
     async getApiKey() {
         // First try to get API key from the component metadata
-        if (this.Meta.ApiKey && this.Meta.ApiKey.trim() !== '') {
-            return this.Meta.ApiKey;
+        if (this.meta.apiKey && this.meta.apiKey.trim() !== '') {
+            return this.meta.apiKey;
         }
 
         if (localStorage.getItem('GOOGLE_MAPS_API_KEY') != null) {
@@ -60,24 +60,24 @@ export class GoogleMap extends EditableComponent {
     }
 
     Render() {
-        this.SetDefaultVal();
+        this.setDefaultVal();
         
         // Create container for map
-        Html.take(this.ParentElement).div.className("google-map-wrapper").style(`height: ${this.mapHeight}; width: ${this.mapWidth}; position: relative;`);
-        this.Element = Html.Context;
+        Html.take(this.parentElement).div.className("google-map-wrapper").style(`height: ${this.mapHeight}; width: ${this.mapWidth}; position: relative;`);
+        this.element = Html.context;
         
         // Create search box
-        if (this.Meta.ShowSearch !== false) {
-            Html.Instance.div.className("map-search-box").style("position: absolute; top: 10px; left: 10px; z-index: 1; width: 70%; max-width: 400px;")
+        if (this.meta.showSearch !== false) {
+            Html.instance.div.className("map-search-box").style("position: absolute; top: 10px; left: 10px; z-index: 1; width: 70%; max-width: 400px;")
                 .input.className("form-control").placeHolder("Search location...").style("width: 100%; padding: 8px; border-radius: 2px; box-shadow: 0 2px 6px rgba(0,0,0,0.3);");
-            this.searchInput = Html.Context;
-            Html.Instance.end.end.render();
+            this.searchInput = Html.context;
+            Html.instance.end.end.render();
         }
         
         // Create map container
-        Html.Instance.div.id(`map-${this.Meta.Id}`).style(`height: 100%; width: 100%;`);
-        this.mapContainer = Html.Context;
-        Html.Instance.end.render();
+        Html.instance.div.id(`map-${this.meta.Id}`).style(`height: 100%; width: 100%;`);
+        this.mapContainer = Html.context;
+        Html.instance.end.render();
         
         // Load Google Maps API
         this.loadGoogleMapsScript();
@@ -100,7 +100,7 @@ export class GoogleMap extends EditableComponent {
             return;
         }
 
-        Spinner.AppendTo();
+        Spinner.appendTo();
         
         try {
             // Get API key from environment or component settings
@@ -149,8 +149,8 @@ export class GoogleMap extends EditableComponent {
         this.geocoder = new google.maps.Geocoder();
         
         // Get initial coordinates
-        let initialLat = this.Entity[this.latField] !== undefined ? parseFloat(this.Entity[this.latField]) : null;
-        let initialLng = this.Entity[this.lngField] !== undefined ? parseFloat(this.Entity[this.lngField]) : null;
+        let initialLat = this.entity[this.latField] !== undefined ? parseFloat(this.entity[this.latField]) : null;
+        let initialLng = this.entity[this.lngField] !== undefined ? parseFloat(this.entity[this.lngField]) : null;
         
         // Set initial center
         const center = (initialLat && initialLng && !isNaN(initialLat) && !isNaN(initialLng))
@@ -161,16 +161,16 @@ export class GoogleMap extends EditableComponent {
         let mapTypeId;
         switch (this.mapType.toLowerCase()) {
             case 'satellite':
-                mapTypeId = google.maps.MapTypeId.SATELLITE;
+                mapTypeId = google.maps.mapTypeId.SATELLITE;
                 break;
             case 'hybrid':
-                mapTypeId = google.maps.MapTypeId.HYBRID;
+                mapTypeId = google.maps.mapTypeId.HYBRID;
                 break;
             case 'terrain':
-                mapTypeId = google.maps.MapTypeId.TERRAIN;
+                mapTypeId = google.maps.mapTypeId.TERRAIN;
                 break;
             default:
-                mapTypeId = google.maps.MapTypeId.ROADMAP;
+                mapTypeId = google.maps.mapTypeId.ROADMAP;
         }
         
         // Create map
@@ -188,11 +188,11 @@ export class GoogleMap extends EditableComponent {
             this.addMarker(center);
             
             // Try to get address for initial coordinates if not already set
-            if (!this.Entity[this.addressField] && this.geocoder) {
+            if (!this.entity[this.addressField] && this.geocoder) {
                 this.geocoder.geocode({ location: center }, (results, status) => {
                     if (status === 'OK' && results[0]) {
                         const address = results[0].formatted_address;
-                        this.Entity[this.addressField] = address;
+                        this.entity[this.addressField] = address;
                         this.addMarker(center, address);
                     }
                 });
@@ -205,7 +205,7 @@ export class GoogleMap extends EditableComponent {
         }
 
         // Set up click event on map
-        if (!this.Disabled) {
+        if (!this.disabled) {
             this.map.addListener('click', (event) => {
                 const latLng = event.latLng;
                 this.updateLocationData(latLng);
@@ -213,7 +213,7 @@ export class GoogleMap extends EditableComponent {
         }
 
         // Dispatch map initialized event
-        this.DispatchEvent(this.Meta.Events, 'mapinitialized', this, this.map);
+        this.dispatchEvent(this.meta.Events, 'mapinitialized', this, this.map);
     }
 
     initSearchBox() {
@@ -222,7 +222,7 @@ export class GoogleMap extends EditableComponent {
         }
 
         try {
-            this.searchBox = new google.maps.places.SearchBox(this.searchInput);
+            this.searchBox = new google.maps.places.searchBox(this.searchInput);
             
             // Bias search results to current map view
             this.map.addListener('bounds_changed', () => {
@@ -269,7 +269,7 @@ export class GoogleMap extends EditableComponent {
         this.marker = new google.maps.Marker({
             position: position,
             map: this.map,
-            draggable: !this.Disabled,
+            draggable: !this.disabled,
             animation: google.maps.Animation.DROP
         });
 
@@ -279,8 +279,8 @@ export class GoogleMap extends EditableComponent {
                 this.infoWindow.close();
             }
             
-            this.infoWindow = new google.maps.InfoWindow({
-                content: `<div>${Utils.EncodeHtml(address)}</div>`
+            this.infoWindow = new google.maps.infoWindow({
+                content: `<div>${Utils.encodeHtml(address)}</div>`
             });
             
             this.infoWindow.open(this.map, this.marker);
@@ -290,7 +290,7 @@ export class GoogleMap extends EditableComponent {
         }
 
         // Add drag event listener for marker
-        if (!this.Disabled) {
+        if (!this.disabled) {
             this.marker.addListener('dragend', (event) => {
                 const latLng = event.latLng;
                 this.updateLocationData(latLng);
@@ -307,16 +307,16 @@ export class GoogleMap extends EditableComponent {
         const lng = latLng.lng();
         
         // Update entity with new coordinates
-        if (this.Entity) {
-            this.Entity[this.latField] = lat;
-            this.Entity[this.lngField] = lng;
+        if (this.entity) {
+            this.entity[this.latField] = lat;
+            this.entity[this.lngField] = lng;
             
             // If address is provided, update it directly
             if (address) {
-                this.Entity[this.addressField] = address;
+                this.entity[this.addressField] = address;
                 this.addMarker({ lat, lng }, address);
                 this.Dirty = true;
-                this.DispatchEvent(this.Meta.Events, EventType.Change, this, this.Entity);
+                this.dispatchEvent(this.meta.Events, EventType.Change, this, this.entity);
                 return;
             }
             
@@ -325,24 +325,24 @@ export class GoogleMap extends EditableComponent {
                 this.geocoder.geocode({ location: { lat, lng } }, (results, status) => {
                     if (status === 'OK' && results[0]) {
                         const address = results[0].formatted_address;
-                        this.Entity[this.addressField] = address;
+                        this.entity[this.addressField] = address;
                         this.addMarker({ lat, lng }, address);
                     } else {
                         this.addMarker({ lat, lng });
                     }
                     
                     this.Dirty = true;
-                    this.DispatchEvent(this.Meta.Events, EventType.Change, this, this.Entity);
+                    this.dispatchEvent(this.meta.Events, EventType.Change, this, this.entity);
                 });
             } else {
                 this.addMarker({ lat, lng });
                 this.Dirty = true;
-                this.DispatchEvent(this.Meta.Events, EventType.Change, this, this.Entity);
+                this.dispatchEvent(this.meta.Events, EventType.Change, this, this.entity);
             }
         }
     }
 
-    UpdateView(force = false, dirty = null, ...componentNames) {
+    updateView(force = false, dirty = null, ...componentNames) {
         if (!this.map) {
             if (this.scriptLoaded) {
                 this.initMap();
@@ -350,9 +350,9 @@ export class GoogleMap extends EditableComponent {
             return;
         }
         
-        let lat = this.Entity[this.latField] !== undefined ? parseFloat(this.Entity[this.latField]) : null;
-        let lng = this.Entity[this.lngField] !== undefined ? parseFloat(this.Entity[this.lngField]) : null;
-        let address = this.Entity[this.addressField];
+        let lat = this.entity[this.latField] !== undefined ? parseFloat(this.entity[this.latField]) : null;
+        let lng = this.entity[this.lngField] !== undefined ? parseFloat(this.entity[this.lngField]) : null;
+        let address = this.entity[this.addressField];
         
         if (lat && lng && !isNaN(lat) && !isNaN(lng)) {
             const position = { lat, lng };
@@ -361,7 +361,7 @@ export class GoogleMap extends EditableComponent {
         }
     }
 
-    SetDisableUI(value) {
+    setDisableUI(value) {
         // If map is already initialized
         if (this.map && this.marker) {
             // Make marker draggable or not based on disabled state
@@ -384,10 +384,10 @@ export class GoogleMap extends EditableComponent {
         }
     }
 
-    GetValueText() {
-        const lat = this.Entity[this.latField];
-        const lng = this.Entity[this.lngField];
-        const address = this.Entity[this.addressField];
+    getValueText() {
+        const lat = this.entity[this.latField];
+        const lng = this.entity[this.lngField];
+        const address = this.entity[this.addressField];
         
         if (address) {
             return address;

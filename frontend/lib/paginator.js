@@ -4,7 +4,7 @@ import { ListView } from "./listView.js";
 import { Numbox } from "./numbox.js";
 import { Html } from "./utils/html.js";
 /**
- * @typedef {import('./listView.js').ListView} ListView
+ * @typedef {import('./listView.js').listView} ListView
  */
 
 /**
@@ -14,25 +14,25 @@ export class PaginationOptions {
     /**
      * Create pagination options.
      * @param {number} Total - Total number of items.
-     * @param {number} PageSize - Number of items per page.
+     * @param {number} pageSize - Number of items per page.
      * @param {number} Selected - Currently selected page index.
-     * @param {number} PageIndex - Index of the current page.
-     * @param {number} PageNumber - Number representation of the current page.
-     * @param {number} CurrentPageCount - Current count of pages.
-     * @param {number} StartIndex - Start index of the pagination.
-     * @param {number} EndIndex - End index of the pagination.
-     * @param {Function} ClickHandler - Function to handle click events on page navigation.
+     * @param {number} pageIndex - Index of the current page.
+     * @param {number} pageNumber - Number representation of the current page.
+     * @param {number} currentPageCount - Current count of pages.
+     * @param {number} startIndex - Start index of the pagination.
+     * @param {number} endIndex - End index of the pagination.
+     * @param {Function} clickHandler - Function to handle click events on page navigation.
      */
-    constructor(Total, PageSize, Selected, PageIndex, PageNumber, CurrentPageCount, StartIndex, EndIndex, ClickHandler) {
+    constructor(Total, pageSize, Selected, pageIndex, pageNumber, currentPageCount, startIndex, endIndex, clickHandler) {
         this.Total = Total;
-        this.PageSize = PageSize;
+        this.pageSize = pageSize;
         this.Selected = Selected;
-        this.PageIndex = PageIndex;
-        this.PageNumber = PageNumber;
-        this.CurrentPageCount = CurrentPageCount;
-        this.StartIndex = StartIndex;
-        this.EndIndex = EndIndex;
-        this.ClickHandler = ClickHandler;
+        this.pageIndex = pageIndex;
+        this.pageNumber = pageNumber;
+        this.currentPageCount = currentPageCount;
+        this.startIndex = startIndex;
+        this.endIndex = endIndex;
+        this.clickHandler = clickHandler;
         this.Disabled = false;
     }
 }
@@ -51,58 +51,58 @@ export class Paginator extends EditableComponent {
     constructor(paginationOptions) {
         super(null, null);
         if (!paginationOptions) throw new Error("paginationOptions is required");
-        this.Entity = paginationOptions;
+        this.entity = paginationOptions;
         this.Options = paginationOptions;
-        this.Options.StartIndex = this.Options.StartIndex || 1;
-        this.Element = null;
-        this.PopulateDirty = false;
-        this.AlwaysValid = true;
+        this.Options.startIndex = this.Options.startIndex || 1;
+        this.element = null;
+        this.populateDirty = false;
+        this.alwaysValid = true;
     }
 
     /**
      * Render the paginator into the DOM.
      */
     Render() {
-        Html.take(this.Parent.Element).div.className("grid-toolbar paging").label.iText("Pagination").end.render();
-        this.Element = Html.Context;
-        var startIndex = new Label({ FieldName: "StartIndex" });
-        var endIndex = new Label({ FieldName: "EndIndex" });
-        var total = new Label({ FieldName: "Total" });
-        var pageNum = new Numbox({ FieldName: "PageNumber" });
-        pageNum.AlwaysValid = true;
-        pageNum.SetSeclection = false;
-        var pageSize = new Numbox({ FieldName: "PageSize" })
-        pageSize.SetSeclection = false;
-        this.AddChild(pageSize);
-        pageSize.Element.addEventListener("change", this.ReloadListView);
-        Html.Instance.end.render();
-        Html.Instance.div.style("display: flex;").render();
-        this.AddChild(startIndex);
-        Html.Instance.text("-");
-        this.AddChild(endIndex);
-        Html.Instance.iText(" of ");
-        this.AddChild(total);
-        Html.take(this.Element).ul.className("pagination").li.text("❮").event("click", this.PrevPage.bind(this)).end.render();
-        this.AddChild(pageNum);
-        pageNum.Element.addEventListener("change", () => {
-            this.Options.PageIndex = this.Options.PageNumber - 1;
-            this.ReloadListView();
+        Html.take(this.Parent.element).div.className("grid-toolbar paging").label.iText("Pagination").end.render();
+        this.element = Html.context;
+        var startIndex = new Label({ fieldName: "startIndex" });
+        var endIndex = new Label({ fieldName: "endIndex" });
+        var total = new Label({ fieldName: "Total" });
+        var pageNum = new Numbox({ fieldName: "pageNumber" });
+        pageNum.alwaysValid = true;
+        pageNum.setSeclection = false;
+        var pageSize = new Numbox({ fieldName: "pageSize" })
+        pageSize.setSeclection = false;
+        this.addChild(pageSize);
+        pageSize.element.addEventListener("change", this.reloadListView);
+        Html.instance.end.render();
+        Html.instance.div.style("display: flex;").render();
+        this.addChild(startIndex);
+        Html.instance.text("-");
+        this.addChild(endIndex);
+        Html.instance.iText(" of ");
+        this.addChild(total);
+        Html.take(this.element).ul.className("pagination").li.text("❮").event("click", this.prevPage.bind(this)).end.render();
+        this.addChild(pageNum);
+        pageNum.element.addEventListener("change", () => {
+            this.Options.pageIndex = this.Options.pageNumber - 1;
+            this.reloadListView();
         });
-        Html.Instance.end.li.text("❯").event("click", this.NextPage.bind(this)).end.render();
+        Html.instance.end.li.text("❯").event("click", this.nextPage.bind(this)).end.render();
     }
 
     /**
      * Create a number input linked to a specified property.
      * @param {string} propertyName - Name of the property that this input represents.
-     * @returns {HTMLInputElement} - The created input element.
+     * @returns {hTMLInputElement} - The created input element.
      */
-    CreateNumberInput(propertyName) {
+    createNumberInput(propertyName) {
         const input = document.createElement('input');
         input.type = 'number';
         input.value = this.Options[propertyName];
         input.addEventListener('change', () => {
             this.Options[propertyName] = parseInt(input.value);
-            this.ReloadListView();
+            this.reloadListView();
         });
         return input;
     }
@@ -111,9 +111,9 @@ export class Paginator extends EditableComponent {
      * Create a label for displaying data.
      * @param {string} propertyName - Name of the property to display.
      * @param {string} [format] - Optional format string.
-     * @returns {HTMLLabelElement} - The created label element.
+     * @returns {hTMLLabelElement} - The created label element.
      */
-    CreateLabel(propertyName, format = "") {
+    createLabel(propertyName, format = "") {
         const label = document.createElement('label');
         label.textContent = format ? format.replace("{0:n0}", this.Options[propertyName].toLocaleString()) : this.Options[propertyName];
         return label;
@@ -122,33 +122,33 @@ export class Paginator extends EditableComponent {
     /**
      * Handle the event for navigating to the next page.
      */
-    NextPage() {
-        const pages = Math.ceil(this.Options.Total / this.Options.PageSize);
-        if (this.Options.PageNumber >= pages) return;
+    nextPage() {
+        const pages = Math.ceil(this.Options.Total / this.Options.pageSize);
+        if (this.Options.pageNumber >= pages) return;
 
-        this.Options.PageIndex++;
-        if (this.Options.ClickHandler) this.Options.ClickHandler(this.Options.PageIndex, null);
-        this.ReloadListView();
+        this.Options.pageIndex++;
+        if (this.Options.clickHandler) this.Options.clickHandler(this.Options.pageIndex, null);
+        this.reloadListView();
     }
 
     /**
      * Handle the event for navigating to the previous page.
      */
-    PrevPage() {
-        if (this.Options.PageIndex <= 0) return;
+    prevPage() {
+        if (this.Options.pageIndex <= 0) return;
 
-        this.Options.PageIndex--;
-        if (this.Options.ClickHandler) this.Options.ClickHandler(this.Options.PageIndex, null);
-        this.ReloadListView();
+        this.Options.pageIndex--;
+        if (this.Options.clickHandler) this.Options.clickHandler(this.Options.pageIndex, null);
+        this.reloadListView();
     }
 
     /**
      * Reload the list view. This is a placeholder for actual implementation.
      */
-    ReloadListView() {
+    reloadListView() {
         // This method should trigger a refresh of the parent list view, dependent on specific implementation.
         if (this.Parent instanceof ListView) {
-            this.Parent.ActionFilter();
+            this.Parent.actionFilter();
         }
     }
 }

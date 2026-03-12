@@ -5,10 +5,10 @@ import { Client } from "./clients/client.js";
 import { Utils } from "./utils/utils.js";
 
 export class TabComponent extends EditableComponent {
-    /** @type {HTMLSpanElement} */
-    BadgeElement;
-    /** @type {HTMLSpanElement} */
-    TextElement;
+    /** @type {hTMLSpanElement} */
+    badgeElement;
+    /** @type {hTMLSpanElement} */
+    textElement;
     /** @type {HTMLElement} */
     _li;
     /**
@@ -32,53 +32,53 @@ export class TabComponent extends EditableComponent {
         if (value) {
             this._li.classList.add("active");
             this._li.querySelector("a").classList.add("active");
-            this.DispatchEvent(this.Meta.Events, "FocusIn", this, this.Entity).then();
+            this.dispatchEvent(this.meta.Events, "focusIn", this, this.entity).then();
         } else {
             this._li.classList.remove("active");
             this._li.querySelector("a").classList.remove("active");
-            this.DispatchEvent(this.Meta.Events, "FocusOut", this, this.Entity).then();
+            this.dispatchEvent(this.meta.Events, "focusOut", this, this.entity).then();
         }
     }
 
     set Badge(value) {
         if (!value || value == 0) {
-            this.BadgeElement.textContent = "";
+            this.badgeElement.textContent = "";
             return;
         }
-        this.BadgeElement.textContent = value;
+        this.badgeElement.textContent = value;
     }
 
     Render() {
         Html.take(this.Parent.Ul).li
             .a.className("nav-link tab-default")
-            .i.className(this.Meta.Icon ?? "").end.span
-            .iHtml(this.Meta.Label ?? this.Meta.Name, this.EditForm.Meta.Label);
-        this.TextElement = Html.Context;
-        Html.Instance.end.span.className("ml-1 badge badge-warning");
-        this.BadgeElement = Html.Context;
-        this.IsTabComponent = true;
-        this.EditForm.TabComponents.push(this);
-        if (this.Meta.DisplayBadge) {
-            Html.Instance.text(this.Badge ?? "");
+            .i.className(this.meta.Icon ?? "").end.span
+            .iHtml(this.meta.Label ?? this.meta.Name, this.editForm.meta.Label);
+        this.textElement = Html.context;
+        Html.instance.end.span.className("ml-1 badge badge-warning");
+        this.badgeElement = Html.context;
+        this.isTabComponent = true;
+        this.editForm.tabComponents.push(this);
+        if (this.meta.displayBadge) {
+            Html.instance.text(this.Badge ?? "");
         }
         else {
-            this.BadgeElement.style.display = "none";
+            this.badgeElement.style.display = "none";
         }
-        this._li = Html.Context.parentElement.parentElement;
-        Html.Instance.end.render();
+        this._li = Html.context.parentElement.parentElement;
+        Html.instance.end.render();
         this._li.addEventListener("click", () => {
-            if (this.HasRendered) {
+            if (this.hasRendered) {
                 this.Focus();
             }
             else {
                 this.Focus();
-                this.RenderTabContent();
+                this.renderTabContent();
             }
         });
-        if (this.Meta.Editable) {
-            this.RenderTabContent();
+        if (this.meta.Editable) {
+            this.renderTabContent();
         }
-        this.CountBadge();
+        this.countBadge();
     }
 
     Focus() {
@@ -88,42 +88,42 @@ export class TabComponent extends EditableComponent {
         this.Show = true;
     }
 
-    RenderTabContent() {
-        Html.take(this.Parent.TabContent).div.className("tab-content").display(!this.Meta.Editable);
-        this.Element = Html.Context;
-        Section.RenderSection(this, this.Meta, null, this.EditForm);
-        this.HasRendered = true;
+    renderTabContent() {
+        Html.take(this.Parent.tabContent).div.className("tab-content").display(!this.meta.Editable);
+        this.element = Html.context;
+        Section.renderSection(this, this.meta, null, this.editForm);
+        this.hasRendered = true;
     }
 
-    CountBadge() {
-        if (!this.Meta.DisplayBadge || !this.Meta.Components) {
+    countBadge() {
+        if (!this.meta.displayBadge || !this.meta.Components) {
             return;
         }
 
         window.setTimeout(async () => {
             const updateBadge = async (meta, grid) => {
-                let submitEntity = Utils.IsFunction(meta.PreQuery, true, grid || this);
+                let submitEntity = Utils.isFunction(meta.preQuery, true, grid || this);
                 const vm = {
-                    ComId: meta.Id,
+                    comId: meta.Id,
                     Params: submitEntity ? JSON.stringify(submitEntity) : null,
-                    OrderBy: (!meta.OrderBy ? "ds.InsertedDate desc" : meta.OrderBy),
+                    orderBy: (!meta.orderBy ? "ds.insertedDate desc" : meta.orderBy),
                 };
 
                 const data = await Client.instance.submitAsync({
-                    NoQueue: true,
-                    Url: `/api/feature/CountBadge`,
+                    noQueue: true,
+                    Url: `/api/feature/countBadge`,
                     Method: "POST",
-                    JsonData: JSON.stringify(vm, this.getCircularReplacer(), 2),
+                    jsonData: JSON.stringify(vm, this.getCircularReplacer(), 2),
                 });
 
                 this.Badge = data.count?.toString();
             };
 
-            let gridView = this.Children.flatMap(x => x.Children).filter(x => x.Meta.ComponentType == "GridView")[0];
+            let gridView = this.Children.flatMap(x => x.Children).filter(x => x.meta.componentType == "GridView")[0];
             if (gridView) {
-                await updateBadge(gridView.Meta, gridView);  // Call sequentially when a GridView is found
+                await updateBadge(gridView.meta, gridView);  // Call sequentially when a GridView is found
             } else {
-                let gridView2 = this.Meta.Components.filter(x => x.ComponentType == "GridView")[0];
+                let gridView2 = this.meta.Components.filter(x => x.componentType == "GridView")[0];
                 if (gridView2) {
                     await updateBadge(gridView2);  // Call sequentially when another GridView is found
                 }
@@ -132,7 +132,7 @@ export class TabComponent extends EditableComponent {
     }
 
 
-    UpdateViewMeta() {
-        Html.take(this.TextElement).iHtml(this.Meta.Label ?? this.Meta.Name, this.EditForm.Meta.Label);
+    updateViewMeta() {
+        Html.take(this.textElement).iHtml(this.meta.Label ?? this.meta.Name, this.editForm.meta.Label);
     }
 }

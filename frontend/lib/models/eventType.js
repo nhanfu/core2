@@ -5,7 +5,7 @@
  */
 export default class EventType {
     /**
-     * UIEvent: The loading of a resource has been aborted.
+     * uIEvent: The loading of a resource has been aborted.
      * @static
      */
     static Abort = "abort";
@@ -14,46 +14,46 @@ export default class EventType {
      * Event: The associated document has started printing or the print preview has been closed.
      * @static
      */
-    static AfterPrint = "afterprint";
+    static afterPrint = "afterprint";
 
     /**
-     * AnimationEvent: A CSS animation has completed.
+     * animationEvent: A CSS animation has completed.
      * @static
      */
-    static AnimationEnd = "animationend";
+    static animationEnd = "animationend";
 
     /**
-     * AnimationEvent: A CSS animation is repeated.
+     * animationEvent: A CSS animation is repeated.
      * @static
      */
-    static AnimationIteration = "animationiteration";
+    static animationIteration = "animationiteration";
 
     /**
-     * AnimationEvent: A CSS animation has started.
+     * animationEvent: A CSS animation has started.
      * @static
      */
-    static AnimationStart = "animationstart";
+    static animationStart = "animationstart";
 
     /**
      * Event: The associated document is about to be printed or previewed for printing.
      * @static
      */
-    static BeforePrint = "beforeprint";
+    static beforePrint = "beforeprint";
 
     /**
-     * BeforeUnloadEvent: The beforeunload event is fired when the window, the document and its resources are about to be unloaded.
+     * beforeUnloadEvent: The beforeunload event is fired when the window, the document and its resources are about to be unloaded.
      * @static
      */
-    static BeforeUnload = "beforeunload";
+    static beforeUnload = "beforeunload";
 
     /**
-     * IndexedDB: An open connection to a database is blocking a versionchange transaction on the same database.
+     * indexedDB: An open connection to a database is blocking a versionchange transaction on the same database.
      * @static
      */
     static Blocked = "blocked";
 
     /**
-     * FocusEvent: An element has lost focus (does not bubble).
+     * focusEvent: An element has lost focus (does not bubble).
      * @static
      */
     static Blur = "blur";
@@ -68,13 +68,13 @@ export default class EventType {
      * Event: The user agent can play the media, but estimates that not enough data has been loaded to play the media up to its end without having to stop for further buffering of content.
      * @static
      */
-    static CanPlay = "canplay";
+    static canPlay = "canplay";
 
     /**
      * Event: The user agent can play the media, and estimates that enough data has been loaded to play the media up to its end without having to stop for further buffering of content.
      * @static
      */
-    static CanPlayThrough = "canplaythrough";
+    static canPlayThrough = "canplaythrough";
 
     /**
      * Event: An element loses focus and its value changed since gaining focus.
@@ -89,100 +89,100 @@ export default class EventType {
     static Checking = "checking";
 
     /**
-     * MouseEvent: A pointing device button has been pressed and released on an element.
+     * mouseEvent: A pointing device button has been pressed and released on an element.
      * @static
      */
     static Click = "click";
 
     /**
-     * Event: A WebSocket connection has been closed.
+     * Event: A webSocket connection has been closed.
      * @static
      */
     static Close = "close";
 
     /**
-     * IndexedDB: The complete handler is executed when a transaction successfully completed.
+     * indexedDB: The complete handler is executed when a transaction successfully completed.
      * @static
      */
     static Complete = "complete";
 
     /**
-     * CompositionEvent: The composition of a passage of text has been completed or canceled.
+     * compositionEvent: The composition of a passage of text has been completed or canceled.
      * @static
      */
-    static CompositionEnd = "compositionend";
+    static compositionEnd = "compositionend";
 
     /**
-     * CompositionEvent: The composition of a passage of text is prepared (similar to keydown for a keyboard input, but works with other inputs such as speech recognition).
+     * compositionEvent: The composition of a passage of text is prepared (similar to keydown for a keyboard input, but works with other inputs such as speech recognition).
      * @static
      */
-    static CompositionStart = "compositionstart";
+    static compositionStart = "compositionstart";
 
     /**
-     * CompositionEvent: A character is added to a passage of text being composed.
+     * compositionEvent: A character is added to a passage of text being composed.
      * @static
      */
-    static CompositionUpdate = "compositionupdate";
+    static compositionUpdate = "compositionupdate";
 
     /**
-     * MouseEvent: The right button of the mouse is clicked (before the context menu is displayed).
+     * mouseEvent: The right button of the mouse is clicked (before the context menu is displayed).
      * @static
      */
     static ContextMenu = "contextmenu";
 
     /**
-     * ClipboardEvent: The text selection has been added to the clipboard.
+     * clipboardEvent: The text selection has been added to the clipboard.
      * @static
      */
     static Copy = "copy";
 
     /**
-     * ClipboardEvent: The text selection has been removed from the document and added to the clipboard.
+     * clipboardEvent: The text selection has been removed from the document and added to the clipboard.
      * @static
      */
     static Cut = "cut";
 
     /**
-     * MouseEvent: A pointing device button is clicked twice on an element.
+     * mouseEvent: A pointing device button is clicked twice on an element.
      * @static
      */
-    static DblClick = "dblclick";
+    static dblClick = "dblclick";
 
     /**
-     * DeviceLightEvent: Fresh data is available from a light sensor.
+     * deviceLightEvent: Fresh data is available from a light sensor.
      * @static
      */
-    static DeviceLight = "devicelight";
+    static deviceLight = "devicelight";
 
     /**
-     * DeviceMotionEvent: Fresh data is available from a motion sensor.
+     * deviceMotionEvent: Fresh data is available from a motion sensor.
      * @static
      */
-    static DeviceMotion = "devicemotion";
+    static deviceMotion = "devicemotion";
 
     /**
- * DeviceOrientationEvent: Fresh data is available from an orientation sensor.
+ * deviceOrientationEvent: Fresh data is available from an orientation sensor.
  * @static
  */
-    static DeviceOrientation = "deviceorientation";
+    static deviceOrientation = "deviceorientation";
 
     /**
-     * DeviceProximityEvent: Fresh data is available from a proximity sensor (indicates an approximated distance between the device and a nearby object).
+     * deviceProximityEvent: Fresh data is available from a proximity sensor (indicates an approximated distance between the device and a nearby object).
      * @static
      */
-    static DeviceProximity = "deviceproximity";
+    static deviceProximity = "deviceproximity";
 
     /**
      * Event: The dischargingTime attribute has been updated.
      * @static
      */
-    static DischargingTimeChange = "dischargingtimechange";
+    static dischargingTimeChange = "dischargingtimechange";
 
     /**
      * Event: The document has finished loading (but not its dependent resources).
      * @static
      */
-    static DOMContentLoaded = "domcontentloaded";
+    static dOMContentLoaded = "domcontentloaded";
 
     /**
      * Event: The user agent has found an update and is fetching it, or is downloading the resources listed by the cache manifest for the first time.
@@ -191,43 +191,43 @@ export default class EventType {
     static Downloading = "downloading";
 
     /**
-     * DragEvent: An element or text selection is being dragged (every 350ms).
+     * dragEvent: An element or text selection is being dragged (every 350ms).
      * @static
      */
     static Drag = "drag";
 
     /**
-     * DragEvent: A drag operation is being ended (by releasing a mouse button or hitting the escape key).
+     * dragEvent: A drag operation is being ended (by releasing a mouse button or hitting the escape key).
      * @static
      */
-    static DragEnd = "dragend";
+    static dragEnd = "dragend";
 
     /**
-     * DragEvent: A dragged element or text selection enters a valid drop target.
+     * dragEvent: A dragged element or text selection enters a valid drop target.
      * @static
      */
-    static DragEnter = "dragenter";
+    static dragEnter = "dragenter";
 
     /**
-     * DragEvent: A dragged element or text selection leaves a valid drop target.
+     * dragEvent: A dragged element or text selection leaves a valid drop target.
      * @static
      */
-    static DragLeave = "dragleave";
+    static dragLeave = "dragleave";
 
     /**
-     * DragEvent: An element or text selection is being dragged over a valid drop target (every 350ms).
+     * dragEvent: An element or text selection is being dragged over a valid drop target (every 350ms).
      * @static
      */
-    static DragOver = "dragover";
+    static dragOver = "dragover";
 
     /**
-     * DragEvent: The user starts dragging an element or text selection.
+     * dragEvent: The user starts dragging an element or text selection.
      * @static
      */
-    static DragStart = "dragstart";
+    static dragStart = "dragstart";
 
     /**
-     * DragEvent: An element is dropped on a valid drop target.
+     * dragEvent: An element is dropped on a valid drop target.
      * @static
      */
     static Drop = "drop";
@@ -236,7 +236,7 @@ export default class EventType {
      * Event: The duration attribute has been updated.
      * @static
      */
-    static DurationChange = "durationchange";
+    static durationChange = "durationchange";
 
     /**
      * Event: The media has become empty; for example, this event is sent if the media has already been loaded (or partially loaded), and the load() method is called to reload it.
@@ -257,52 +257,52 @@ export default class EventType {
     static Error = "error";
 
     /**
-     * FocusEvent: An element has received focus (does not bubble).
+     * focusEvent: An element has received focus (does not bubble).
      * @static
      */
     static Focus = "focus";
 
     /**
-     * FocusEvent: An element is about to receive focus (bubbles).
+     * focusEvent: An element is about to receive focus (bubbles).
      * @static
      */
-    static FocusIn = "focusin";
+    static focusIn = "focusin";
 
     /**
-     * FocusEvent: An element is about to lose focus (bubbles).
+     * focusEvent: An element is about to lose focus (bubbles).
      * @static
      */
-    static FocusOut = "focusout";
+    static focusOut = "focusout";
 
     /**
      * Event: An element was turned to fullscreen mode or back to normal mode.
      * @static
      */
-    static FullScreenChange = "fullscreenchange";
+    static fullScreenChange = "fullscreenchange";
 
     /**
      * Event: It was impossible to switch to fullscreen mode for technical reasons or because the permission was denied.
      * @static
      */
-    static FullScreenError = "fullscreenerror";
+    static fullScreenError = "fullscreenerror";
 
     /**
-     * GamepadEvent: A gamepad has been connected.
+     * gamepadEvent: A gamepad has been connected.
      * @static
      */
-    static GamepadConnected = "gamepadconnected";
+    static gamepadConnected = "gamepadconnected";
 
     /**
-     * GamepadEvent: A gamepad has been disconnected.
+     * gamepadEvent: A gamepad has been disconnected.
      * @static
      */
-    static GamepadDisconnected = "gamepaddisconnected";
+    static gamepadDisconnected = "gamepaddisconnected";
 
     /**
-     * HashChangeEvent: The fragment identifier of the URL has changed (the part of the URL after the #).
+     * hashChangeEvent: The fragment identifier of the URL has changed (the part of the URL after the #).
      * @static
      */
-    static HashChange = "hashchange";
+    static hashChange = "hashchange";
 
     /**
      * Event: The value of an element changes or the content of an element with the attribute contenteditable is modified.
@@ -317,31 +317,31 @@ export default class EventType {
     static Invalid = "invalid";
 
     /**
-     * KeyboardEvent: A key is pressed down.
+     * keyboardEvent: A key is pressed down.
      * @static
      */
-    static KeyDown = "keydown";
+    static keyDown = "keydown";
 
     /**
-     * KeyboardEvent: A key is pressed down and that key normally produces a character value (use input instead).
+     * keyboardEvent: A key is pressed down and that key normally produces a character value (use input instead).
      * @static
      */
-    static KeyPress = "keypress";
+    static keyPress = "keypress";
 
     /**
-     * KeyboardEvent: A key is released.
+     * keyboardEvent: A key is released.
      * @static
      */
-    static KeyUp = "keyup";
+    static keyUp = "keyup";
 
     /**
      * Event: The level attribute has been updated.
      * @static
      */
-    static LevelChange = "levelchange";
+    static levelChange = "levelchange";
 
     /**
-     * UIEvent: A resource and its dependent resources have finished loading.
+     * uIEvent: A resource and its dependent resources have finished loading.
      * @static
      */
     static Load = "load";
@@ -350,79 +350,79 @@ export default class EventType {
      * Event: The first frame of the media has finished loading.
      * @static
      */
-    static LoadedData = "loadeddata";
+    static loadedData = "loadeddata";
 
     /**
      * Event: The metadata has been loaded.
      * @static
      */
-    static LoadedMetaData = "loadedmetadata";
+    static loadedMetaData = "loadedmetadata";
 
     /**
-     * ProgressEvent: Progress has stopped (after "error", "abort" or "load" have been dispatched).
+     * progressEvent: Progress has stopped (after "error", "abort" or "load" have been dispatched).
      * @static
      */
-    static LoadEnd = "loadend";
+    static loadEnd = "loadend";
 
     /**
-     * ProgressEvent: Progress has begun.
+     * progressEvent: Progress has begun.
      * @static
      */
-    static LoadStart = "loadstart";
+    static loadStart = "loadstart";
 
     /**
-     * MessageEvent: A message is received through a WebSocket.
+     * messageEvent: A message is received through a webSocket.
      * @static
      */
     static Message = "message";
 
     /**
-     * MouseEvent: A pointing device button (usually a mouse) is pressed on an element.
+     * mouseEvent: A pointing device button (usually a mouse) is pressed on an element.
      * @static
      */
-    static MouseDown = "mousedown";
+    static mouseDown = "mousedown";
 
     /**
-     * MouseEvent: A pointing device is moved onto the element that has the listener attached.
+     * mouseEvent: A pointing device is moved onto the element that has the listener attached.
      * @static
      */
-    static MouseEnter = "mouseenter";
+    static mouseEnter = "mouseenter";
 
     /**
-     * MouseEvent: A pointing device is moved off the element that has the listener attached.
+     * mouseEvent: A pointing device is moved off the element that has the listener attached.
      * @static
      */
-    static MouseLeave = "mouseleave";
+    static mouseLeave = "mouseleave";
 
     /**
-     * MouseEvent: A pointing device is moved over an element.
+     * mouseEvent: A pointing device is moved over an element.
      * @static
      */
-    static MouseMove = "mousemove";
+    static mouseMove = "mousemove";
 
     /**
-     * MouseEvent: A pointing device is moved off the element that has the listener attached or off one of its children.
+     * mouseEvent: A pointing device is moved off the element that has the listener attached or off one of its children.
      * @static
      */
-    static MouseOut = "mouseout";
+    static mouseOut = "mouseout";
 
     /**
-     * MouseEvent: A pointing device is moved onto the element that has the listener attached or onto one of its children.
+     * mouseEvent: A pointing device is moved onto the element that has the listener attached or onto one of its children.
      * @static
      */
-    static MouseOver = "mouseover";
+    static mouseOver = "mouseover";
 
     /**
-     * MouseEvent: A pointing device button is released over an element.
+     * mouseEvent: A pointing device button is released over an element.
      * @static
      */
-    static MouseUp = "mouseup";
+    static mouseUp = "mouseup";
 
     /**
      * Event: The manifest hadn't changed.
      * @static
      */
-    static NoUpdate = "noupdate";
+    static noUpdate = "noupdate";
 
     /**
      * Event: The manifest was found to have become a 404 or 410 page, so the application cache is being deleted.
@@ -443,7 +443,7 @@ export default class EventType {
     static Online = "online";
 
     /**
-     * Event: A WebSocket connection has been established.
+     * Event: A webSocket connection has been established.
      * @static
      */
     static Open = "open";
@@ -452,22 +452,22 @@ export default class EventType {
      * Event: The orientation of the device (portrait/landscape) has changed.
      * @static
      */
-    static OrientationChange = "orientationchange";
+    static orientationChange = "orientationchange";
 
     /**
-     * PageTransitionEvent: A session history entry is being traversed from.
+     * pageTransitionEvent: A session history entry is being traversed from.
      * @static
      */
-    static PageHide = "pagehide";
+    static pageHide = "pagehide";
 
     /**
-     * PageTransitionEvent: A session history entry is being traversed to.
+     * pageTransitionEvent: A session history entry is being traversed to.
      * @static
      */
-    static PageShow = "pageshow";
+    static pageShow = "pageshow";
 
     /**
-     * ClipboardEvent: Data has been transferred from the system clipboard to the document.
+     * clipboardEvent: Data has been transferred from the system clipboard to the document.
      * @static
      */
     static Paste = "paste";
@@ -482,13 +482,13 @@ export default class EventType {
      * Event: The pointer was locked or released.
      * @static
      */
-    static PointerLockChange = "pointerlockchange";
+    static pointerLockChange = "pointerlockchange";
 
     /**
      * Event: It was impossible to lock the pointer for technical reasons or because the permission was denied.
      * @static
      */
-    static PointerLockError = "pointerlockerror";
+    static pointerLockError = "pointerlockerror";
 
     /**
      * Event: Playback has begun.
@@ -503,13 +503,13 @@ export default class EventType {
     static Playing = "playing";
 
     /**
-     * PopStateEvent: A session history entry is being navigated to (in certain cases).
+     * popStateEvent: A session history entry is being navigated to (in certain cases).
      * @static
      */
-    static PopState = "popstate";
+    static popState = "popstate";
 
     /**
-     * ProgressEvent: In progress.
+     * progressEvent: In progress.
      * @static
      */
     static Progress = "progress";
@@ -518,19 +518,19 @@ export default class EventType {
      * Event: The playback rate has changed.
      * @static
      */
-    static RateChange = "ratechange";
+    static rateChange = "ratechange";
 
     /**
      * Event: The readyState attribute of a document has changed.
      * @static
      */
-    static ReadyStateChange = "readystatechange";
+    static readyStateChange = "readystatechange";
 
     /**
-     * TimeEvent: A SMIL animation element is repeated.
+     * timeEvent: A SMIL animation element is repeated.
      * @static
      */
-    static RepeatEvent = "repeatevent";
+    static repeatEvent = "repeatevent";
 
     /**
      * Event: A form is reset.
@@ -539,13 +539,13 @@ export default class EventType {
     static Reset = "reset";
 
     /**
-     * UIEvent: The document view has been resized.
+     * uIEvent: The document view has been resized.
      * @static
      */
     static Resize = "resize";
 
     /**
-     * UIEvent: The document view or an element has been scrolled.
+     * uIEvent: The document view or an element has been scrolled.
      * @static
      */
     static Scroll = "scroll";
@@ -563,13 +563,13 @@ export default class EventType {
     static Seeking = "seeking";
 
     /**
-     * UIEvent: Some text is being selected.
+     * uIEvent: Some text is being selected.
      * @static
      */
     static Select = "select";
 
     /**
-     * MouseEvent: A context menu event was fired on/bubbled to an element that has a context menu attribute.
+     * mouseEvent: A context menu event was fired on/bubbled to an element that has a context menu attribute.
      * @static
      */
     static Show = "show";
@@ -581,7 +581,7 @@ export default class EventType {
     static Stalled = "stalled";
 
     /**
-     * StorageEvent: A storage area (localStorage or sessionStorage) has changed.
+     * storageEvent: A storage area (localStorage or sessionStorage) has changed.
      * @static
      */
     static Storage = "storage";
@@ -605,49 +605,49 @@ export default class EventType {
     static Suspend = "suspend";
 
     /**
-     * SVGEvent: Page loading has been stopped before the SVG was loaded.
+     * sVGEvent: Page loading has been stopped before the SVG was loaded.
      * @static
      */
-    static SVGAbort = "svgabort";
+    static sVGAbort = "svgabort";
 
     /**
-     * SVGEvent: An error has occurred before the SVG was loaded.
+     * sVGEvent: An error has occurred before the SVG was loaded.
      * @static
      */
-    static SVGError = "svgerror";
+    static sVGError = "svgerror";
 
     /**
-     * SVGEvent: An SVG document has been loaded and parsed.
+     * sVGEvent: An SVG document has been loaded and parsed.
      * @static
      */
-    static SVGLoad = "svgload";
+    static sVGLoad = "svgload";
 
     /**
-     * SVGEvent: An SVG document is being resized.
+     * sVGEvent: An SVG document is being resized.
      * @static
      */
-    static SVGResize = "svgresize";
+    static sVGResize = "svgresize";
 
     /**
-     * SVGEvent: An SVG document is being scrolled.
+     * sVGEvent: An SVG document is being scrolled.
      * @static
      */
-    static SVGScroll = "svgscroll";
+    static sVGScroll = "svgscroll";
 
     /**
-     * SVGEvent: An SVG document has been removed from a window or frame.
+     * sVGEvent: An SVG document has been removed from a window or frame.
      * @static
      */
-    static SVGUnload = "svgunload";
+    static sVGUnload = "svgunload";
 
     /**
-     * SVGZoomEvent: An SVG document is being zoomed.
+     * sVGZoomEvent: An SVG document is being zoomed.
      * @static
      */
-    static SVGZoom = "svgzoom";
+    static sVGZoom = "svgzoom";
 
     /**
-     * ProgressEvent: A request timed out.
+     * progressEvent: A request timed out.
      * @static
      */
     static Timeout = "timeout";
@@ -656,52 +656,52 @@ export default class EventType {
      * Event: The time indicated by the currentTime attribute has been updated.
      * @static
      */
-    static TimeUpdate = "timeupdate";
+    static timeUpdate = "timeupdate";
 
     /**
-     * TouchEvent: A touch point has been disrupted in an implementation-specific manner (too many touch points for example).
+     * touchEvent: A touch point has been disrupted in an implementation-specific manner (too many touch points for example).
      * @static
      */
-    static TouchCancel = "touchcancel";
+    static touchCancel = "touchcancel";
 
     /**
-     * TouchEvent: A touch point is removed from the touch surface.
+     * touchEvent: A touch point is removed from the touch surface.
      * @static
      */
-    static TouchEnd = "touchend";
+    static touchEnd = "touchend";
 
     /**
-     * TouchEvent: A touch point is moved onto the interactive area of an element.
+     * touchEvent: A touch point is moved onto the interactive area of an element.
      * @static
      */
-    static TouchEnter = "touchenter";
+    static touchEnter = "touchenter";
 
     /**
-     * TouchEvent: A touch point is moved off the interactive area of an element.
+     * touchEvent: A touch point is moved off the interactive area of an element.
      * @static
      */
-    static TouchLeave = "touchleave";
+    static touchLeave = "touchleave";
 
     /**
-     * TouchEvent: A touch point is moved along the touch surface.
+     * touchEvent: A touch point is moved along the touch surface.
      * @static
      */
-    static TouchMove = "touchmove";
+    static touchMove = "touchmove";
 
     /**
-     * TouchEvent: A touch point is placed on the touch surface.
+     * touchEvent: A touch point is placed on the touch surface.
      * @static
      */
-    static TouchStart = "touchstart";
+    static touchStart = "touchstart";
 
     /**
-     * TransitionEvent: A CSS transition has completed.
+     * transitionEvent: A CSS transition has completed.
      * @static
      */
-    static TransitionEnd = "transitionend";
+    static transitionEnd = "transitionend";
 
     /**
-     * UIEvent: The document or a dependent resource is being unloaded.
+     * uIEvent: The document or a dependent resource is being unloaded.
      * @static
      */
     static Unload = "unload";
@@ -710,37 +710,37 @@ export default class EventType {
      * Event: The resources listed in the manifest have been newly redownloaded, and the script can use swapCache() to switch to the new cache.
      * @static
      */
-    static UpdateReady = "updateready";
+    static updateReady = "updateready";
 
     /**
-     * IndexedDB: An attempt was made to open a database with a version number higher than its current version. A versionchange transaction has been created.
+     * indexedDB: An attempt was made to open a database with a version number higher than its current version. A versionchange transaction has been created.
      * @static
      */
-    static UpgradeNeeded = "upgradeneeded";
+    static upgradeNeeded = "upgradeneeded";
 
     /**
-     * SensorEvent: Fresh data is available from a proximity sensor (indicates whether the nearby object is near the device or not).
+     * sensorEvent: Fresh data is available from a proximity sensor (indicates whether the nearby object is near the device or not).
      * @static
      */
-    static UserProximity = "userproximity";
+    static userProximity = "userproximity";
 
     /**
      * Event: A versionchange transaction completed.
      * @static
      */
-    static VersionChange = "versionchange";
+    static versionChange = "versionchange";
 
     /**
      * Event: The content of a tab has become visible or has been hidden.
      * @static
      */
-    static VisibilityChange = "visibilitychange";
+    static visibilityChange = "visibilitychange";
 
     /**
      * Event: The volume has changed.
      * @static
      */
-    static VolumeChange = "volumechange";
+    static volumeChange = "volumechange";
 
     /**
      * Event: Playback has stopped because of a temporary lack of data.
@@ -749,14 +749,14 @@ export default class EventType {
     static Waiting = "waiting";
 
     /**
-     * WheelEvent: A wheel button of a pointing device is rotated in any direction.
+     * wheelEvent: A wheel button of a pointing device is rotated in any direction.
      * @static
      */
     static Wheel = "wheel";
 
     /**
-     * WheelEvent: A wheel button of a pointing device is rotated in any direction.
+     * wheelEvent: A wheel button of a pointing device is rotated in any direction.
      * @static
      */
-    static OnSave = "onsave";
+    static onSave = "onsave";
 }

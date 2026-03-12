@@ -5,9 +5,9 @@ import { Utils } from "./utils/utils.js";
 import EventType from "./models/eventType.js";
 
 export class MultipleSearchEntry extends SearchEntry {
-    static MultipleClass = "multiple";
+    static multipleClass = "multiple";
     _toggleButton = null;
-    IsMultiple = true;
+    isMultiple = true;
 
     constructor(ui) {
         super(ui);
@@ -15,79 +15,79 @@ export class MultipleSearchEntry extends SearchEntry {
 
     Render() {
         this._listValues = [];
-        this.SetDefaultVal();
-        this.TryParseData();
-        this.RenderInputAndEvents();
-        this.FindMatchText();
-        this.SearchResultEle = document.body;
-        this.Element.parentElement.classList.add(MultipleSearchEntry.MultipleClass);
-        this.Element.parentElement.addEventListener("click", () => {
+        this.setDefaultVal();
+        this.tryParseData();
+        this.renderInputAndEvents();
+        this.findMatchText();
+        this.searchResultEle = document.body;
+        this.element.parentElement.classList.add(MultipleSearchEntry.multipleClass);
+        this.element.parentElement.addEventListener("click", () => {
             this._input.focus();
         });
     }
 
-    TryParseData() {
-        if (!this.Entity) {
+    tryParseData() {
+        if (!this.entity) {
             return;
         }
-        let source = this.Entity[this.Name];
+        let source = this.entity[this.Name];
         if (!source) {
             this.Matched = null;
             this._listValues = [];
             return;
         }
-        this._listValues = source.toString().split(this.Meta.GroupFormat || ',').filter(x => x.trim().length > 0);
+        this._listValues = source.toString().split(this.meta.groupFormat || ',').filter(x => x.trim().length > 0);
     }
 
     _listValues = [];
 
-    get ListValues() {
+    get listValues() {
         return this._listValues;
     }
 
-    set ListValues(value) {
+    set listValues(value) {
         if (!value) {
             this._listValues = [];
         } else {
             this._listValues = Array.from(new Set(value));
         }
-        this.SetEntityValue();
+        this.setEntityValue();
     }
 
-    SetEntityValue() {
-        this.Entity[this.Name] = this.ListValues.length > 0 ? this.ListValues.join(this.Meta.GroupFormat || ',') : null;
-        this.Entity[this.Name + "Text"] = this.MatchedItems.length > 0 ? this.MatchedItems.map(item => this.GetMatchedText(item)).join(this.Meta.GroupFormat || ',') : this.Entity[this.Name + "Text"];
+    setEntityValue() {
+        this.entity[this.Name] = this.listValues.length > 0 ? this.listValues.join(this.meta.groupFormat || ',') : null;
+        this.entity[this.Name + "Text"] = this.matchedItems.length > 0 ? this.matchedItems.map(item => this.getMatchedText(item)).join(this.meta.groupFormat || ',') : this.entity[this.Name + "Text"];
     }
 
-    MatchedItems = [];
+    matchedItems = [];
 
-    FindMatchText() {
-        if (this.EmptyRow) {
+    findMatchText() {
+        if (this.emptyRow) {
             return;
         }
-        if (!this.ProcessLocalMatch()) {
-            this.SetMatchedValue();
+        if (!this.processLocalMatch()) {
+            this.setMatchedValue();
         }
     }
 
-    ProcessLocalMatch() {
-        if (Utils.isNullOrWhiteSpace(this.Meta.RefName)) {
-            var data = Utils.IsFunction(this.Meta.Query, false, this);
-            this.MatchedItems = data.filter(x => this.ListValues.includes(x.Id.toString()));
-            this.SetMatchedValue();
-            this.Entity[this.Name + "Text"] = this.MatchedItems.length > 0 ? this.MatchedItems.map(item => this.GetMatchedText(item)).join(this.Meta.GroupFormat || ',') : this.Entity[this.Name + "Text"];
+    processLocalMatch() {
+        if (Utils.isNullOrWhiteSpace(this.meta.refName)) {
+            var data = Utils.isFunction(this.meta.Query, false, this);
+            this.matchedItems = data.filter(x => this.listValues.includes(x.Id.toString()));
+            this.setMatchedValue();
+            this.entity[this.Name + "Text"] = this.matchedItems.length > 0 ? this.matchedItems.map(item => this.getMatchedText(item)).join(this.meta.groupFormat || ',') : this.entity[this.Name + "Text"];
             return true;
         }
         else {
-            this.Matched = this.Entity[this.DisplayField] || null;
-            if (this._listValues.length > 0 && this.MatchedItems.filter(x => this._listValues.includes(x.Id)).length < this._listValues.length && (!this.Parent.IsListViewItem || this.Meta.IsMultiple)) {
-                Client.instance.getByIdAsync(this.Meta.RefName, this._listValues).then(data => {
-                    this.MatchedItems = data.data ? data.data : [];
-                    if (this.MatchedItems.length != this._listValues.length) {
-                        this.ListValues = this.MatchedItems.map(x => x[this.IdField].toString());
+            this.Matched = this.entity[this.displayField] || null;
+            if (this._listValues.length > 0 && this.matchedItems.filter(x => this._listValues.includes(x.Id)).length < this._listValues.length && (!this.Parent.isListViewItem || this.meta.isMultiple)) {
+                Client.instance.getByIdAsync(this.meta.refName, this._listValues).then(data => {
+                    this.matchedItems = data.data ? data.data : [];
+                    if (this.matchedItems.length != this._listValues.length) {
+                        this.listValues = this.matchedItems.map(x => x[this.idField].toString());
                     }
-                    this.SetMatchedValue();
-                    this.Entity[this.Name + "Text"] = this.MatchedItems.length > 0 ? this.MatchedItems.map(item => this.GetMatchedText(item)).join(this.Meta.GroupFormat || ',') : this.Entity[this.Name + "Text"];
+                    this.setMatchedValue();
+                    this.entity[this.Name + "Text"] = this.matchedItems.length > 0 ? this.matchedItems.map(item => this.getMatchedText(item)).join(this.meta.groupFormat || ',') : this.entity[this.Name + "Text"];
                 })
                 return true;
             }
@@ -95,85 +95,85 @@ export class MultipleSearchEntry extends SearchEntry {
         return false;
     }
 
-    SetMatchedValue() {
+    setMatchedValue() {
         this._input.value = '';
-        this.ListValues.forEach(value => {
-            let item = this.MatchedItems.find(x => x[this.IdField].toString() === value.toString());
-            this.RenderTag(item);
+        this.listValues.forEach(value => {
+            let item = this.matchedItems.find(x => x[this.idField].toString() === value.toString());
+            this.renderTag(item);
         });
     }
 
-    ClearTagIfNotExists() {
-        Array.from(this.Element.parentElement.querySelectorAll("span")).forEach(ta => {
+    clearTagIfNotExists() {
+        Array.from(this.element.parentElement.querySelectorAll("span")).forEach(ta => {
             ta.remove();
         });
     }
 
-    RenderTag(item) {
+    renderTag(item) {
         if (!item) {
             return;
         }
-        let idAttr = item[this.IdField];
-        let exist = this.Element.parentElement.querySelector(`span[data-id='${idAttr}']`);
+        let idAttr = item[this.idField];
+        let exist = this.element.parentElement.querySelector(`span[data-id='${idAttr}']`);
         if (exist) {
             return;
         }
-        Html.take(this.Element.parentElement).span.attr("data-id", idAttr).i.className("fal fa-tag mr-1").end.text(this.GetMatchedText(item));
-        var tag = Html.Context;
-        this.Element.parentElement.insertBefore(Html.Context, this._input);
-        if (this.Disabled) {
+        Html.take(this.element.parentElement).span.attr("data-id", idAttr).i.className("fal fa-tag mr-1").end.text(this.getMatchedText(item));
+        var tag = Html.context;
+        this.element.parentElement.insertBefore(Html.context, this._input);
+        if (this.disabled) {
             this._input.readOnly = true;
         }
-        Html.Instance.button.className("fa fa-times").event(EventType.Click, async () => {
-            if (this.Disabled) {
+        Html.instance.button.className("fa fa-times").event(EventType.Click, async () => {
+            if (this.disabled) {
                 return;
             }
-            let oldMatch = this.MatchedItems;
-            this.MatchedItems.splice(this.MatchedItems.indexOf(item), 1);
-            var id = item[this.IdField];
-            this.ListValues = this.ListValues.filter(x => x !== id.toString());
-            this.SetEntityValue();
+            let oldMatch = this.matchedItems;
+            this.matchedItems.splice(this.matchedItems.indexOf(item), 1);
+            var id = item[this.idField];
+            this.listValues = this.listValues.filter(x => x !== id.toString());
+            this.setEntityValue();
             this.Dirty = true;
-            if (this.UserInput != null) {
-                this.UserInput?.Invoke({ NewData: this._value, OldData: oldMatch, EvType: EventType.Change });
+            if (this.userInput != null) {
+                this.userInput?.invoke({ newData: this._value, oldData: oldMatch, evType: EventType.Change });
             }
-            await this.DispatchEvent(this.Meta.Events, EventType.Change, this);
+            await this.dispatchEvent(this.meta.Events, EventType.Change, this);
             tag.remove();
         }).end.render();
     }
 
-    EntrySelected(rowData) {
+    entrySelected(rowData) {
         window.clearTimeout(this._waitForDispose);
-        this.EmptyRow = false;
-        if (rowData === null || this.Disabled) {
+        this.emptyRow = false;
+        if (rowData === null || this.disabled) {
             return;
         }
 
-        let oldMatch = this.MatchedItems;
-        var id = rowData[this.IdField];
-        if (this.ListValues.length == 0 || !this.ListValues.includes(id)) {
-            this.ListValues.push(id.toString());
-            this.MatchedItems.push(rowData);
+        let oldMatch = this.matchedItems;
+        var id = rowData[this.idField];
+        if (this.listValues.length == 0 || !this.listValues.includes(id)) {
+            this.listValues.push(id.toString());
+            this.matchedItems.push(rowData);
         }
         else {
             return;
         }
-        this.SetEntityValue();
+        this.setEntityValue();
         this.Dirty = true;
-        this.FindMatchText();
-        this._gv.AllListViewItem.forEach(item => {
-            item.SetChooseCell();
+        this.findMatchText();
+        this._gv.allListViewItem.forEach(item => {
+            item.setChooseCell();
         });
-        if (this.UserInput != null) {
-            this.UserInput?.Invoke({ NewData: this._value, OldData: oldMatch, EvType: EventType.Change });
+        if (this.userInput != null) {
+            this.userInput?.invoke({ newData: this._value, oldData: oldMatch, evType: EventType.Change });
         }
-        this.DispatchEvent(this.Meta.Events, EventType.Change, this).then();
+        this.dispatchEvent(this.meta.Events, EventType.Change, this).then();
     }
 
-    UpdateView(force = false, dirty = null, ...componentNames) {
-        this.TryParseData();
-        this.SetEntityValue();
-        this.ClearTagIfNotExists();
-        this.FindMatchText();
+    updateView(force = false, dirty = null, ...componentNames) {
+        this.tryParseData();
+        this.setEntityValue();
+        this.clearTagIfNotExists();
+        this.findMatchText();
     }
 }

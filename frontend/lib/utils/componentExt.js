@@ -8,22 +8,22 @@ import { TabEditor } from "../tabEditor.js";
 import { Html } from "./html.js";
 import { Feature } from "../models/feature.js";
 import { Textbox } from "../textbox.js";
-import { SearchMethodEnum } from "../models/enum.js";
+import { searchMethodEnum } from "../models/enum.js";
 
 export class ComponentExt {
     /**
      * @param {any} com
      * @returns {PatchVM}
      */
-    static StepPx = 10;
-    static MapToPatch(com, table = null, fields = null) {
+    static stepPx = 10;
+    static mapToPatch(com, table = null, fields = null) {
         /** @type {PatchVM} */
         // @ts-ignore
         const patch = {
             Table: table,
             Changes: [],
         };
-        Utils.ForEachProp(com, (prop, val) => {
+        Utils.forEachProp(com, (prop, val) => {
             if (prop.startsWith("$") || (fields && !fields.includes(prop))) return;
             // @ts-ignore
             patch.Changes.push({
@@ -39,18 +39,18 @@ export class ComponentExt {
      * @param {string} searchTerm
      * @param {Textbox} textbox
      */
-    static MapToFilterOperator(component, searchTerm, textbox) {
+    static mapToFilterOperator(component, searchTerm, textbox) {
         var rs = '';
-        if (Utils.isNullOrWhiteSpace(searchTerm) || !component.FieldName) {
+        if (Utils.isNullOrWhiteSpace(searchTerm) || !component.fieldName) {
             if (!textbox) {
                 return '';
             }
-            let fieldName = component.SearchFieldName ? `${component.SearchFieldName}` : `ds.[${component.FieldName}]`;
-            switch (textbox.SearchMethod) {
-                case SearchMethodEnum.Empty:
+            let fieldName = component.searchFieldName ? `${component.searchFieldName}` : `ds.[${component.fieldName}]`;
+            switch (textbox.searchMethod) {
+                case searchMethodEnum.empty:
                     rs = `(${fieldName} is null or ${fieldName} = '')`
                     break;
-                case SearchMethodEnum.Filled:
+                case searchMethodEnum.filled:
                     rs = `${fieldName} is not null`
                     break;
                 default:
@@ -59,64 +59,64 @@ export class ComponentExt {
             return rs;
         }
         searchTerm = searchTerm.trim();
-        let fieldName = component.SearchFieldName ? `${component.SearchFieldName}` : `ds.[${component.FieldName}]`;
-        let searchParam = component.SearchFieldName ? `@${component.SearchFieldName.replaceAll(".", "").toLocaleLowerCase()}search` : `@${component.FieldName.toLocaleLowerCase()}search`;
-        switch (component.HotKey ? SearchMethodEnum.StartWith : (textbox ? textbox.SearchMethod : SearchMethodEnum.Contain)) {
-            case SearchMethodEnum.Empty:
+        let fieldName = component.searchFieldName ? `${component.searchFieldName}` : `ds.[${component.fieldName}]`;
+        let searchParam = component.searchFieldName ? `@${component.searchFieldName.replaceAll(".", "").toLocaleLowerCase()}search` : `@${component.fieldName.toLocaleLowerCase()}search`;
+        switch (component.hotKey ? searchMethodEnum.startWith : (textbox ? textbox.searchMethod : searchMethodEnum.contain)) {
+            case searchMethodEnum.empty:
                 rs = `(${fieldName} is null or ${fieldName} = '')`;
                 break;
-            case SearchMethodEnum.Filled:
+            case searchMethodEnum.filled:
                 rs = `${fieldName} is not null`;
                 break;
-            case SearchMethodEnum.Equal:
-                if (component.ComponentType === "Dropdown") {
-                    if (Utils.isNullOrWhiteSpace(component.RefName)) {
-                        var sqlmap = this.ExtractStrings(component.FormatData).map(x => {
+            case searchMethodEnum.equal:
+                if (component.componentType === "Dropdown") {
+                    if (Utils.isNullOrWhiteSpace(component.refName)) {
+                        var sqlmap = this.extractStrings(component.formatData).map(x => {
                             return `ds2.[${x}] = ${searchParam}`;
                         });
-                        rs = `exists (select ds2.Id from [${component.RefName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" or ")}))`;
+                        rs = `exists (select ds2.Id from [${component.refName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" or ")}))`;
                     }
                     else {
-                        var sqlmap = this.ExtractStrings(component.FormatData).map(x => {
+                        var sqlmap = this.extractStrings(component.formatData).map(x => {
                             return `ds2.[${x}] = ${searchParam}`;
                         });
-                        rs = `exists (select ds2.Id from [${component.RefName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" or ")}))`;
+                        rs = `exists (select ds2.Id from [${component.refName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" or ")}))`;
                     }
                 }
-                else if (component.ComponentType === "Datepicker") {
+                else if (component.componentType === "Datepicker") {
                     rs = `(${fieldName} >= ${searchParam} AND ${fieldName} < DATEADD(day, 1, ${searchParam}))`;
                 }
                 else {
                     rs = `${fieldName} = ${searchParam}`;
                 }
                 break;
-            case SearchMethodEnum.NotEqual:
-                if (component.ComponentType === "Dropdown") {
-                    if (Utils.isNullOrWhiteSpace(component.RefName)) {
-                        var sqlmap = this.ExtractStrings(component.FormatData).map(x => {
+            case searchMethodEnum.notEqual:
+                if (component.componentType === "Dropdown") {
+                    if (Utils.isNullOrWhiteSpace(component.refName)) {
+                        var sqlmap = this.extractStrings(component.formatData).map(x => {
                             return `ds2.[${x}] != ${searchParam}`;
                         });
-                        rs = `exists (select ds2.Id from [${component.RefName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" or ")}))`;
+                        rs = `exists (select ds2.Id from [${component.refName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" or ")}))`;
                     }
                     else {
-                        var sqlmap = this.ExtractStrings(component.FormatData).map(x => {
+                        var sqlmap = this.extractStrings(component.formatData).map(x => {
                             return `ds2.[${x}] != ${searchParam}`;
                         });
-                        rs = `exists (select ds2.Id from [${component.RefName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" or ")}))`;
+                        rs = `exists (select ds2.Id from [${component.refName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" or ")}))`;
                     }
                 }
-                else if (component.ComponentType === "Datepicker") {
+                else if (component.componentType === "Datepicker") {
                     rs = `(${fieldName} < ${searchParam} OR ${fieldName} >= DATEADD(day, 1, ${searchParam}))`;
                 }
                 else {
                     rs = `${fieldName} != ${searchParam}`;
                 }
                 break;
-            case SearchMethodEnum.Contain:
-                if (component.ComponentType === "Dropdown") {
-                    if (Utils.isNullOrWhiteSpace(component.RefName)) {
+            case searchMethodEnum.contain:
+                if (component.componentType === "Dropdown") {
+                    if (Utils.isNullOrWhiteSpace(component.refName)) {
                         var datas = JSON.parse(component.Query);
-                        var fieldSearch = this.ExtractStrings(component.FormatData)[0];
+                        var fieldSearch = this.extractStrings(component.formatData)[0];
                         var ids = datas.filter(x => x[fieldSearch].toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())).map(x => x.Id);
                         if (ids && ids.length > 0) {
                             rs = `${fieldName} in ('${ids.join("','")}')`;
@@ -126,24 +126,24 @@ export class ComponentExt {
                         }
                     }
                     else {
-                        var sqlmap = this.ExtractStrings(component.FormatData).map(x => {
+                        var sqlmap = this.extractStrings(component.formatData).map(x => {
                             return `charindex(${searchParam}, ds2.[${x}]) >= 1`
                         });
-                        rs = `exists (select ds2.Id from [${component.RefName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" or ")}))`;
+                        rs = `exists (select ds2.Id from [${component.refName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" or ")}))`;
                     }
                 }
-                else if (component.ComponentType === "Checkbox") {
+                else if (component.componentType === "Checkbox") {
                     rs = `${fieldName} in (${searchTerm})`;
                 }
                 else {
                     rs = `charindex(${searchParam}, ${fieldName}) >= 1`;
                 }
                 break;
-            case SearchMethodEnum.StartWith:
-                if (component.ComponentType === "Dropdown") {
-                    if (Utils.isNullOrWhiteSpace(component.RefName)) {
+            case searchMethodEnum.startWith:
+                if (component.componentType === "Dropdown") {
+                    if (Utils.isNullOrWhiteSpace(component.refName)) {
                         var datas = JSON.parse(component.Query);
-                        var fieldSearch = this.ExtractStrings(component.FormatData)[0];
+                        var fieldSearch = this.extractStrings(component.formatData)[0];
                         var ids = datas.filter(x => x[fieldSearch].toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())).map(x => x.Id);
                         if (ids && ids.length > 0) {
                             rs = `${fieldName} in ('${ids.join("','")}')`;
@@ -153,21 +153,21 @@ export class ComponentExt {
                         }
                     }
                     else {
-                        var sqlmap = this.ExtractStrings(component.FormatData).map(x => {
+                        var sqlmap = this.extractStrings(component.formatData).map(x => {
                             return `ds2.[${x}] LIKE ${searchParam} + '%'`;
                         });
-                        rs = `exists (select ds2.Id from [${component.RefName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" or ")}))`;
+                        rs = `exists (select ds2.Id from [${component.refName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" or ")}))`;
                     }
                 }
                 else {
                     rs = `${fieldName} LIKE ${searchParam} + '%'`;
                 }
                 break;
-            case SearchMethodEnum.NotContain:
-                if (component.ComponentType === "Dropdown") {
-                    if (Utils.isNullOrWhiteSpace(component.RefName)) {
+            case searchMethodEnum.notContain:
+                if (component.componentType === "Dropdown") {
+                    if (Utils.isNullOrWhiteSpace(component.refName)) {
                         var datas = JSON.parse(component.Query);
-                        var fieldSearch = this.ExtractStrings(component.FormatData)[0];
+                        var fieldSearch = this.extractStrings(component.formatData)[0];
                         var ids = datas.filter(x => x[fieldSearch].toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())).map(x => x.Id);
                         if (ids && ids.length > 0) {
                             rs = `${fieldName} not in ('${ids.join("','")}')`;
@@ -177,10 +177,10 @@ export class ComponentExt {
                         }
                     }
                     else {
-                        var sqlmap = this.ExtractStrings(component.FormatData).map(x => {
+                        var sqlmap = this.extractStrings(component.formatData).map(x => {
                             return `charindex(${searchParam}, ds2.[${x}]) = 0`
                         });
-                        rs = `exists (select ds2.Id from [${component.RefName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" or ")}))`;
+                        rs = `exists (select ds2.Id from [${component.refName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" or ")}))`;
                     }
 
                 }
@@ -194,14 +194,14 @@ export class ComponentExt {
         return rs;
     }
 
-    static MapToFilterOperatorValue(component, searchTerm) {
-        if (Utils.isNullOrWhiteSpace(searchTerm) || !component.FieldName) {
+    static mapToFilterOperatorValue(component, searchTerm) {
+        if (Utils.isNullOrWhiteSpace(searchTerm) || !component.fieldName) {
             return null;
         }
         searchTerm = searchTerm.trim();
-        var searchParam = `@${component.FieldName.toLocaleLowerCase()}search`;
+        var searchParam = `@${component.fieldName.toLocaleLowerCase()}search`;
         return {
-            FieldName: searchParam,
+            fieldName: searchParam,
             Value: searchTerm
         };
     }
@@ -210,7 +210,7 @@ export class ComponentExt {
      * 
      * @return {string[]}
      */
-    static ExtractStrings(input) {
+    static extractStrings(input) {
         const regex = /\{([^}]+)\}/g;
         const matches = [];
         let match;
@@ -226,10 +226,10 @@ export class ComponentExt {
      * @param {featureName} feature
      * @param {boolean | undefined} portal
      */
-    static async InitFeatureByName(featureName, portal = true) {
+    static async initFeatureByName(featureName, portal = true) {
         const instance = new TabEditor(featureName);
         instance.Portal = portal;
-        instance.Render();
+        instance.render();
         return instance;
     }
 
@@ -240,13 +240,13 @@ export class ComponentExt {
  * @param {string} [id=null] - The optional ID of the feature.
  * @returns {Promise<Component>} A promise that resolves to the loaded Feature object or null if not found.
  */
-    static LoadFeature(name, id = null) {
+    static loadFeature(name, id = null) {
         return new Promise((resolve, reject) => {
             // @ts-ignore
             const featureTask = Client.instance.submitAsync({
                 Url: `/api/feature/loadFeature`,
                 Method: "POST",
-                JsonData: JSON.stringify({
+                jsonData: JSON.stringify({
                     Name: name
                 })
             })
@@ -256,12 +256,12 @@ export class ComponentExt {
         });
     }
 
-    static LoadPublicFeature(name, id = null) {
+    static loadPublicFeature(name, id = null) {
         return new Promise((resolve, reject) => {
             // @ts-ignore
             const featureTask = Client.instance.submitAsync({
                 Url: `/api/feature/getPublicFeature?name=` + name,
-                IsRawString: true,
+                isRawString: true,
                 Method: "GET",
             })
             featureTask.then(ds => {
@@ -272,7 +272,7 @@ export class ComponentExt {
 
 
     // Assign methods to an instance based on a feature's script
-    static AssignMethods(feature, instance) {
+    static assignMethods(feature, instance) {
         try {
             const scriptFunction = new Function(feature.Script).call(instance);
             Object.assign(instance, scriptFunction);
@@ -300,16 +300,16 @@ export class ComponentExt {
     }
 
     // Find a component that has a specific event handler registered
-    static FindComponentEvent(component, eventName) {
-        let parent = component.ParentForm;
+    static findComponentEvent(component, eventName) {
+        let parent = component.parentForm;
         while (parent !== null && !parent[eventName]) {
-            parent = parent.ParentForm;
+            parent = parent.parentForm;
         }
         return parent;
     }
 
     // Modify the visibility of specific fields in a component
-    static SetShow(component, show, ...fieldNames) {
+    static setShow(component, show, ...fieldNames) {
         component.Children.filter(child => fieldNames.includes(child.Name))
             .forEach(child => child.Show = show);
     }
@@ -321,7 +321,7 @@ export class ComponentExt {
     * @param {HTMLElement} parentEle - The date to render in the calendar.
     */
     // Alter position of HTMLElement relative to parent
-    static AlterPosition(element, parentEle) {
+    static alterPosition(element, parentEle) {
         if (!element || !element.parentElement || !parentEle) {
             return;
         }
@@ -332,16 +332,16 @@ export class ComponentExt {
         element.style.bottom = "auto";
         element.style.left = "auto";
         Html.take(element).floating(containerBottom, containerRect.left);
-        if (this.IsOutOfViewport(element).Right) {
-            if (!this.IsOutOfViewport(element).Bottom) {
-                this.BottomCenter(element, parentEle);
+        if (this.isOutOfViewport(element).Right) {
+            if (!this.isOutOfViewport(element).Bottom) {
+                this.bottomCenter(element, parentEle);
             }
             else if (containerRect.Top > element.clientHeight) {
-                this.TopCenter(element, parentEle);
+                this.topCenter(element, parentEle);
             }
         }
-        if (this.IsOutOfViewport(element).Bottom) {
-            this.TopCenter(element, parentEle);
+        if (this.isOutOfViewport(element).Bottom) {
+            this.topCenter(element, parentEle);
         }
     }
 
@@ -349,14 +349,14 @@ export class ComponentExt {
     * @param {HTMLElement} element 
     * @param {HTMLElement} parent
     */
-    static BottomCenter(element, parent) {
+    static bottomCenter(element, parent) {
         const containerRect = parent.getBoundingClientRect();
         element.style.right = 'auto';
         element.style.top = containerRect.bottom + 'px';
-        this.MoveLeft(element);
+        this.moveLeft(element);
     }
 
-    static GetComputedPx(element, prop) {
+    static getComputedPx(element, prop) {
         const computedVal = window.getComputedStyle(element)[prop];
         return computedVal ? parseFloat(computedVal.replace('px', '')) || 0 : 0;
     }
@@ -364,18 +364,18 @@ export class ComponentExt {
     * @param {HTMLElement} element 
     * @param {HTMLElement} parent
     */
-    static TopCenter(element, parent) {
+    static topCenter(element, parent) {
         element.style.right = 'auto';
-        this.MoveLeft(element);
-        this.MoveTop(element, parent);
+        this.moveLeft(element);
+        this.moveTop(element, parent);
     }
     /**
     * @param {HTMLElement} element 
     * @param {HTMLElement} parent
     */
-    static MoveLeft(element) {
-        while (this.IsOutOfViewport(element).Right) {
-            const left = this.GetComputedPx(element, 'left') - this.StepPx;
+    static moveLeft(element) {
+        while (this.isOutOfViewport(element).Right) {
+            const left = this.getComputedPx(element, 'left') - this.stepPx;
             element.style.left = left + 'px';
         }
     }
@@ -383,10 +383,10 @@ export class ComponentExt {
     * @param {HTMLElement} element 
     * @param {HTMLElement} parent
     */
-    static MoveTop(element, parent) {
+    static moveTop(element, parent) {
         const parentTop = parent ? parent.getBoundingClientRect().top : null;
-        while (this.IsOutOfViewport(element).Bottom || (parent && element.getBoundingClientRect().bottom > parentTop)) {
-            const top = this.GetComputedPx(element, 'top') - (parent ? 1 : this.StepPx);
+        while (this.isOutOfViewport(element).Bottom || (parent && element.getBoundingClientRect().bottom > parentTop)) {
+            const top = this.getComputedPx(element, 'top') - (parent ? 1 : this.stepPx);
             element.style.top = top + 'px';
         }
     }
@@ -394,29 +394,29 @@ export class ComponentExt {
     * @param {HTMLElement} element 
     * @param {HTMLElement} parent
     */
-    static LeftMiddle(element, parent) {
+    static leftMiddle(element, parent) {
         const containerRect = parent.getBoundingClientRect();
         element.style.left = 'auto';
         element.style.bottom = 'auto';
         element.style.right = containerRect.left + 'px';
-        this.MoveTop(element);
+        this.moveTop(element);
     }
     /**
     * @param {HTMLElement} element 
     * @param {HTMLElement} parent
     */
-    static RightMiddle(element, parent) {
+    static rightMiddle(element, parent) {
         const containerRect = parent.getBoundingClientRect();
         element.style.right = 'auto';
         element.style.bottom = 'auto';
         element.style.left = containerRect.right + 'px';
-        this.MoveTop(element);
+        this.moveTop(element);
     }
     /**
     * @param {HTMLElement} element 
     * @param {HTMLElement} parent
     */
-    static IsOutOfViewport(element) {
+    static isOutOfViewport(element) {
         const rect = element.getBoundingClientRect();
         return {
             Top: rect.top < 0,
@@ -427,7 +427,7 @@ export class ComponentExt {
     }
 
     // Download a file using Blob and URL.createObjectURL
-    static DownloadFile(filename, blob) {
+    static downloadFile(filename, blob) {
         const a = document.createElement('a');
         a.style.display = 'none';
         a.href = URL.createObjectURL(blob);
@@ -438,7 +438,7 @@ export class ComponentExt {
     }
 
     // Toggle full screen mode for an element
-    static FullScreen(element) {
+    static fullScreen(element) {
         if (element.requestFullscreen) {
             element.requestFullscreen();
         } else if (element.webkitRequestFullscreen) { /* Safari */
@@ -448,7 +448,7 @@ export class ComponentExt {
         }
     }
 
-    static FindClosest(component, Type) {
+    static findClosest(component, Type) {
         if (component instanceof Type) {
             return component;
         }
@@ -467,7 +467,7 @@ export class ComponentExt {
      * @param {EditableComponent} com
      * @param {TabEditor} tab
      */
-    static async OpenTabOrPopup(com, tab) {
+    static async openTabOrPopup(com, tab) {
         const editablMd = await import('../editableComponent.js');
         const { EditForm } = await import('../editForm.js');
         const { TabEditor } = await import('../tabEditor.js');
@@ -475,17 +475,17 @@ export class ComponentExt {
         if (com instanceof EditForm) {
             parentTab = com;
         } else if (com instanceof editablMd.default) {
-            parentTab = EditForm || this.FindClosest(com, EditForm);
+            parentTab = EditForm || this.findClosest(com, EditForm);
         }
         if (tab instanceof TabEditor) {
             if (tab.Popup) {
-                com.AddChild(tab);
+                com.addChild(tab);
             } else {
-                tab.Render();
+                tab.render();
             }
 
-            tab.ParentForm = parentTab;
-            tab.OpenFrom = parentTab instanceof EditForm && parentTab?.FirstOrDefault(x => x.Entity === tab.Entity);
+            tab.parentForm = parentTab;
+            tab.openFrom = parentTab instanceof EditForm && parentTab?.firstOrDefault(x => x.entity === tab.entity);
         }
     }
 
@@ -494,47 +494,47 @@ export class ComponentExt {
      * @param {EditableComponent} com 
      * @param {TabEditor} tab 
      */
-    async OpenTabOrPopup(com, tab) {
+    async openTabOrPopup(com, tab) {
         const { EditForm } = await import('../editForm.js');
         let parentTab;
         if (com instanceof EditForm) {
             parentTab = com;
         } else {
-            parentTab = com.EditForm || com.FindClosest(x => x instanceof EditForm);
+            parentTab = com.editForm || com.findClosest(x => x instanceof EditForm);
         }
 
         if (tab.Popup) {
-            com.AddChild(tab);
+            com.addChild(tab);
         } else {
-            tab.Render();
+            tab.render();
         }
 
-        tab.ParentForm = parentTab;
-        tab.OpenFrom = parentTab?.FilterChildren(x => x.Entity === tab.Entity)?.[0];
+        tab.parentForm = parentTab;
+        tab.openFrom = parentTab?.filterChildren(x => x.Entity === tab.entity)?.[0];
     }
 
     /**
-     * @typedef {import('../tabEditor.js').TabEditor} TabEditor
+     * @typedef {import('../tabEditor.js').tabEditor} TabEditor
      * @param {EditableComponent} com
      * @param {string} id
      * @param {string} featureName
      * @param {() => TabEditor} factory
      */
-    static async OpenTab(com, id, featureName, factory, popup = false, anonymous = false) {
+    static async openTab(com, id, featureName, factory, popup = false, anonymous = false) {
         const md = await import('../tabEditor.js');
-        if (!popup && md.TabEditor.FindTab(id)) {
-            const exists = md.TabEditor.FindTab(id);
+        if (!popup && md.tabEditor.findTab(id)) {
+            const exists = md.tabEditor.findTab(id);
             exists.Focus();
             return exists;
         }
-        const feature = await this.LoadFeature(featureName);
+        const feature = await this.loadFeature(featureName);
         const tab = factory();
         tab.Popup = popup;
         tab.Name = featureName;
         tab.Id = id;
-        tab.Meta = feature;
-        this.AssignMethods(feature, tab);
-        await this.OpenTabOrPopup(com, tab);
+        tab.meta = feature;
+        this.assignMethods(feature, tab);
+        await this.openTabOrPopup(com, tab);
         return tab;
     }
 
@@ -543,7 +543,7 @@ export class ComponentExt {
      * @param {string} featureName
      * @param {{ (): EditableComponent }} factory
      */
-    static OpenPopup(com, featureName, factory, anonymous = false, child = false) {
+    static openPopup(com, featureName, factory, anonymous = false, child = false) {
         const hashCode = () => {
             let hash = 0;
             let str = JSON.stringify(com);
@@ -555,6 +555,6 @@ export class ComponentExt {
             return hash;
         };
         // @ts-ignore
-        return this.OpenTab(com, hashCode().toString(), featureName, factory, true, anonymous);
+        return this.openTab(com, hashCode().toString(), featureName, factory, true, anonymous);
     };
 }

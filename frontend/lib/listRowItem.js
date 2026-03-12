@@ -14,17 +14,17 @@ export class ListRowItem extends ListViewItem {
      * @param {number} index 
      * @param {*} emptyRow 
      */
-    RenderRowData(headers, row, index = null, emptyRow = false) {
-        var newHeaders = headers.filter(x => x.VirtualScroll).OrderBy(x => x.Order);
+    renderRowData(headers, row, index = null, emptyRow = false) {
+        var newHeaders = headers.filter(x => x.virtualScroll).orderBy(x => x.Order);
         if (index !== null) {
-            if (index >= this.Element.parentElement.children.length || index < 0) {
+            if (index >= this.element.parentElement.children.length || index < 0) {
                 index = 0;
             }
-            this.Element.parentElement.insertBefore(this.Element, this.Element.parentElement.children[index]);
+            this.element.parentElement.insertBefore(this.element, this.element.parentElement.children[index]);
         }
         for (let index = 0; index < newHeaders.length; index++) {
             const header = headers[index];
-            this.RenderTableCell(row, header, null, index, index);
+            this.renderTableCell(row, header, null, index, index);
         }
     }
 
@@ -32,14 +32,14 @@ export class ListRowItem extends ListViewItem {
      * @param {any} rowData
      * @param {Component} header
      */
-    RenderTableCell(rowData, header, cellWrapper = null, rowIndex = null, cellIndex = null) {
-        if (header && header.ComponentType == "Number") {
-            header.TextAlign = "right";
+    renderTableCell(rowData, header, cellWrapper = null, rowIndex = null, cellIndex = null) {
+        if (header && header.componentType == "Number") {
+            header.textAlign = "right";
         }
-        Html.Instance.div.className("wrapper-cell-mobile").event("focusin", (e) => {
-            this.ListView.LastComponentFocus = header;
-        }).span.className("cell-label").iText(header.ComponentType == "Button" ? "View" : header.Label).end.div.className("cell-value").render();
-        super.RenderTableCell(rowData, header, cellWrapper ?? Html.Context);
-        Html.Instance.endOf(".wrapper-cell-mobile");
+        Html.instance.div.className("wrapper-cell-mobile").event("focusin", (e) => {
+            this.listView.lastComponentFocus = header;
+        }).span.className("cell-label").iText(header.componentType == "Button" ? "View" : header.Label).end.div.className("cell-value").render();
+        super.renderTableCell(rowData, header, cellWrapper ?? Html.context);
+        Html.instance.endOf(".wrapper-cell-mobile");
     }
 }

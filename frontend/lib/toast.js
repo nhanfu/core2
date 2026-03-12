@@ -4,9 +4,9 @@ import { LangSelect } from './utils/langSelect';
 
 /**
  * Options for creating a toast notification.
- * @typedef {Object} ToastOptions
+ * @typedef {Object} toastOptions
  * @property {number} Timeout - The duration before the toast disappears.
- * @property {string} ClassName - CSS class for styling the toast.
+ * @property {string} className - CSS class for styling the toast.
  * @property {string} Message - The message to display in the toast.
  * @property {Array} Params - Additional parameters for the message.
  */
@@ -22,7 +22,7 @@ export class Toast {
      * @param {...any} parameters - Additional parameters.
      */
     static Success(message, timeout = 2500, ...parameters) {
-        toast.success(LangSelect.Get(message), {
+        toast.success(LangSelect.get(message), {
             position: "top-right",
             autoClose: timeout,
             hideProgressBar: false,
@@ -38,7 +38,7 @@ export class Toast {
      * @param {string} message - Message to display.
      */
     static Warning(message, timeout = 2500, ...parameters) {
-        toast.warning(LangSelect.Get(message), {
+        toast.warning(LangSelect.get(message), {
             position: "top-right",
             autoClose: timeout,
             hideProgressBar: false,

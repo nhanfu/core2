@@ -2,7 +2,7 @@ import { Section } from "./section.js";
 import { Html } from "./utils/html.js";
 import Decimal from "decimal.js";
 import {
-    Action, PatchDetail, PatchVM, CustomEventType,
+    Action, PatchDetail, PatchVM, customEventType,
     ObservableArgs, EventType, Component, SavePatchVM
 } from "./models/";
 import { Utils } from "./utils/utils.js";
@@ -13,20 +13,20 @@ import { Client } from "./clients/client.js";
 import { Toast } from "./toast.js";
 import { ElementType } from './models/elementType.js';
 import { Checkbox } from "./checkbox.js";
-import { KeyCodeEnum } from "./models/";
+import { keyCodeEnum } from "./models/";
 import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
 
 /**
- * @typedef {import('./section.js').ListViewSection} ListViewSection
- * @typedef {import('./listView.js').ListView} ListView
- * @typedef {import('./gridView.js').GridView} GridView
+ * @typedef {import('./section.js').listViewSection} ListViewSection
+ * @typedef {import('./listView.js').listView} ListView
+ * @typedef {import('./gridView.js').gridView} GridView
  * Represents a list view item.
  * @extends Section
  */
 export class ListViewItem extends Section {
-    IsRow = true;
+    isRow = true;
     /**
      * Creates an instance of ListViewItem.
      * @param {ElementType} [elementType=ElementType.tr] - The type of HTML element.
@@ -35,21 +35,21 @@ export class ListViewItem extends Section {
         super(elementType);
         // Initialize properties
         /** @type {ListViewSection} */
-        this.ListViewSection = null;
+        this.listViewSection = null;
         /** @type {GridView} */
-        this.ListView = null;
-        this.PreQueryFn = null;
+        this.listView = null;
+        this.preQueryFn = null;
         this._selected = false;
         this._focused = false;
         this._emptyRow = false;
-        this.RowNo = 0;
-        this.FocusEvent = new Action();
-        this.GroupRow = false;
+        this.rowNo = 0;
+        this.focusEvent = new Action();
+        this.groupRow = false;
         this._focusAwaiter = 0;
         /** @type {PatchDetail[]} */
-        this.PatchModel = [];
-        this.ShowMessage = true;
-        this.IsListViewItem = true;
+        this.patchModel = [];
+        this.showMessage = true;
+        this.isListViewItem = true;
     }
 
     /**
@@ -59,15 +59,15 @@ export class ListViewItem extends Section {
     get Selected() {
         return this._selected;
     }
-    GroupSection;
+    groupSection;
     set Selected(value) {
         this._selected = value;
-        this.SetSelected(value);
+        this.setSelected(value);
         if (this.Checkbox) {
             this.Checkbox.Value = value;
         }
-        const id = this.EntityId;
-        const selectedIds = this.ListView.SelectedIds;
+        const id = this.entityId;
+        const selectedIds = this.listView.selectedIds;
         if (value) {
             if (!selectedIds.includes(id)) {
                 selectedIds.push(id);
@@ -78,15 +78,15 @@ export class ListViewItem extends Section {
                 selectedIds.splice(index, 1);
             }
         }
-        this.ListView.AddSummaries();
+        this.listView.addSummaries();
     }
 
-    static NotCellText = ["Button", "Image", "Checkbox"];
-    static EmptyRowClass = "empty-row";
-    static SelectedClass = "__selected__";
-    static FocusedClass = "focus";
-    static HoveringClass = "hovering";
-    static GroupRowClass = "group-row";
+    static notCellText = ["Button", "Image", "Checkbox"];
+    static emptyRowClass = "empty-row";
+    static selectedClass = "__selected__";
+    static focusedClass = "focus";
+    static hoveringClass = "hovering";
+    static groupRowClass = "group-row";
 
     /**
      * Handles focus event.
@@ -98,10 +98,10 @@ export class ListViewItem extends Section {
         if (value === null) return this._focused;
         this._focused = value;
         if (this._focused) {
-            this.ListView.LastListViewItem = this;
-            this.Element.classList.add(ListViewItem.FocusedClass);
+            this.listView.lastListViewItem = this;
+            this.element.classList.add(ListViewItem.focusedClass);
         } else {
-            this.Element.classList.remove(ListViewItem.FocusedClass);
+            this.element.classList.remove(ListViewItem.focusedClass);
         }
         return this._focused;
     }
@@ -114,15 +114,15 @@ export class ListViewItem extends Section {
      * Sets the selected state of the element.
      * @param {boolean} value - The selected state.
      */
-    SetSelected(value) {
+    setSelected(value) {
         window.setTimeout(() => {
-            if (!this.Element) {
+            if (!this.element) {
                 return;
             }
             if (value) {
-                this.Element.classList.add(ListViewItem.SelectedClass);
+                this.element.classList.add(ListViewItem.selectedClass);
             } else {
-                this.Element.classList.remove(ListViewItem.SelectedClass);
+                this.element.classList.remove(ListViewItem.selectedClass);
             }
         }, 50);
     }
@@ -131,19 +131,19 @@ export class ListViewItem extends Section {
      * Gets or sets whether the item represents an empty row.
      * @type {boolean}
      */
-    get EmptyRow() {
+    get emptyRow() {
         return this._emptyRow;
     }
 
-    set EmptyRow(value) {
+    set emptyRow(value) {
         this._emptyRow = value;
-        this.FilterChildren().forEach(x => x.EmptyRow = value);
-        this.AlwaysValid = value;
-        if (this.Element == null) return;
+        this.filterChildren().forEach(x => x.emptyRow = value);
+        this.alwaysValid = value;
+        if (this.element == null) return;
         if (value) {
-            this.Element.classList.add(ListViewItem.EmptyRowClass);
+            this.element.classList.add(ListViewItem.emptyRowClass);
         } else {
-            this.Element.classList.remove(ListViewItem.EmptyRowClass);
+            this.element.classList.remove(ListViewItem.emptyRowClass);
         }
     }
 
@@ -152,41 +152,41 @@ export class ListViewItem extends Section {
      */
     Render() {
         // @ts-ignore
-        this.ListView = this.ListView ?? this.FindClosest(x => x.IsListView);
-        this.Meta = this.Meta ?? this.ListView.Meta;
-        super.Render();
+        this.listView = this.listView ?? this.findClosest(x => x.isListView);
+        this.meta = this.meta ?? this.listView.meta;
+        super.render();
         if (this._selected) {
-            this.Element.classList.add(ListViewItem.SelectedClass);
+            this.element.classList.add(ListViewItem.selectedClass);
         }
-        Html.Instance.take(this.Element)
-            .event(EventType.Click, this.RowItemClick.bind(this))
-            .event(EventType.DblClick, this.RowDblClick.bind(this))
-            .event(EventType.FocusIn, () => {
-                if (this.Meta.CanAdd) {
-                    this.ListView.EmptySection.Children.ForEach(x => {
+        Html.instance.take(this.element)
+            .event(EventType.Click, this.rowItemClick.bind(this))
+            .event(EventType.dblClick, this.rowDblClick.bind(this))
+            .event(EventType.focusIn, () => {
+                if (this.meta.canAdd) {
+                    this.listView.emptySection.Children.forEach(x => {
                         if (x.Focused) {
                             x.Focused = false;
                         }
                     });
                 }
-                this.ListView.AllListViewItem.ForEach(x => {
+                this.listView.allListViewItem.forEach(x => {
                     if (x.Focused) {
                         x.Focused = false;
                     }
                 });
                 this.Focused = true;
             })
-            .event(EventType.FocusOut, this.RowFocusOut.bind(this))
-            .event(EventType.MouseEnter, this.MouseEnter.bind(this))
-            .event(EventType.MouseLeave, this.MouseLeave.bind(this));
+            .event(EventType.focusOut, this.rowFocusOut.bind(this))
+            .event(EventType.mouseEnter, this.mouseEnter.bind(this))
+            .event(EventType.mouseLeave, this.mouseLeave.bind(this));
     }
 
     /**
      * @param {any} success
      */
-    AfterSaveHandler(success) {
+    afterSaveHandler(success) {
         if (!success) {
-            this.EntityId = null;
+            this.entityId = null;
         }
     }
 
@@ -197,29 +197,29 @@ export class ListViewItem extends Section {
      * @param {number} [index=null] - The index of the row.
      * @param {boolean} [emptyRow=false] - Whether the row is empty.
      */
-    RenderRowData(headers, row, index = null, emptyRow = false) {
+    renderRowData(headers, row, index = null, emptyRow = false) {
         if (index !== null) {
-            if (index >= this.Element.parentElement.children.length || index < 0) {
+            if (index >= this.element.parentElement.children.length || index < 0) {
                 index = 0;
             }
-            this.Element.parentElement.insertBefore(this.Element, this.Element.parentElement.children[index]);
+            this.element.parentElement.insertBefore(this.element, this.element.parentElement.children[index]);
         }
-        const fn = Utils.IsFunction(this.Meta.Renderer);
+        const fn = Utils.isFunction(this.meta.Renderer);
         if (!fn) {
             headers.filter(header => !header.Hidden).forEach(header => {
-                this.RenderTableCell(row, header, this.Element);
+                this.renderTableCell(row, header, this.element);
             });
         }
     }
 
-    SetChooseCell() {
-        var entity = this.ListView.Entity;
-        if (this.ListView.Meta.IsMultiple) {
-            if (entity[this.ListView.Meta.FieldName].toString().split(",").includes(this.Entity[this.IdField].toString())) {
-                this.Element.classList.add('cell-choose');
+    setChooseCell() {
+        var entity = this.listView.entity;
+        if (this.listView.meta.isMultiple) {
+            if (entity[this.listView.meta.fieldName].toString().split(",").includes(this.entity[this.idField].toString())) {
+                this.element.classList.add('cell-choose');
             }
             else {
-                this.Element.classList.remove('cell-choose');
+                this.element.classList.remove('cell-choose');
             }
         }
     }
@@ -233,9 +233,9 @@ export class ListViewItem extends Section {
          * @param {Component} header - The table header component.
          * @param {HTMLElement} [cellWrapper=null] - The wrapper element for the cell.
          */
-    RenderTableCell(rowData, header, cellWrapper = null) {
-        if (header.StatusBar && this.Meta.Validation) {
-            var cont = Utils.IsFunction(this.Meta.Validation, false, this)
+    renderTableCell(rowData, header, cellWrapper = null) {
+        if (header.statusBar && this.meta.Validation) {
+            var cont = Utils.isFunction(this.meta.Validation, false, this)
             tippy(cellWrapper.parentElement, {
                 allowHTML: true,
                 placement: 'right',
@@ -244,131 +244,131 @@ export class ListViewItem extends Section {
                 content: cont
             });
         }
-        if (header.StatusBar && !this.ListView.IsSearchEntry && this.ListView.Meta.IsMultiple) {
-            header.ComponentType = "Checkbox";
+        if (header.statusBar && !this.listView.isSearchEntry && this.listView.meta.isMultiple) {
+            header.componentType = "Checkbox";
             header.Editable = true;
-            header.CanWriteAll = true;
-            header.CanReadAll = true;
-            header.FieldName = "Selected";
+            header.canWriteAll = true;
+            header.canReadAll = true;
+            header.fieldName = "Selected";
             cellWrapper.style.justifyContent = 'center';
         }
-        if (!header.FieldName) {
+        if (!header.fieldName) {
             return;
         }
-        if (this.masterDataComponent.includes(header.ComponentType)) {
-            header.LocalData = header.LocalData;
+        if (this.masterDataComponent.includes(header.componentType)) {
+            header.localData = header.localData;
         }
         var canW = header.Editable;
         var com = ((canW && header.Editable)
-            || (!header.Editable && header.ComponentType == "Button")) ? ComponentFactory.GetComponent(header, this.EditForm, null, canW) : new Label(header);
+            || (!header.Editable && header.componentType == "Button")) ? ComponentFactory.getComponent(header, this.editForm, null, canW) : new Label(header);
         if (!com) return;
         com.Id = header.Id;
-        com.Name = header.FieldName;
+        com.Name = header.fieldName;
         com.Entity = rowData;
-        com.ParentElement = cellWrapper || Html.Context;
-        this.AddChild(com);
-        if (header.StatusBar && !this.IsSearchEntry && this.ListView.Meta.IsMultiple) {
+        com.parentElement = cellWrapper || Html.context;
+        this.addChild(com);
+        if (header.statusBar && !this.isSearchEntry && this.listView.meta.isMultiple) {
             this.Checkbox = com;
-            this.Checkbox.Disabled = false;
-            this.Checkbox.Element.addEventListener(EventType.Change, (e) => {
+            this.Checkbox.disabled = false;
+            this.Checkbox.element.addEventListener(EventType.Change, (e) => {
                 this.Checkbox.Dirty = false;
-                if (this.EmptyRow) {
+                if (this.emptyRow) {
                     return;
                 }
                 e.preventDefault();
                 e.stopPropagation();
                 this.Selected = !this.Selected;
-                this.DispatchEvent(this.Meta.Events, EventType.Click, this, this.Entity).then();
+                this.dispatchEvent(this.meta.Events, EventType.Click, this, this.entity).then();
             });
-            this.Checkbox.Element.parentElement.addEventListener(EventType.KeyDown, (e) => {
-                if (this.EmptyRow) {
+            this.Checkbox.element.parentElement.addEventListener(EventType.keyDown, (e) => {
+                if (this.emptyRow) {
                     return;
                 }
-                let code = e.KeyCodeEnum();
-                if (code == KeyCodeEnum.Space) {
+                let code = e.keyCodeEnum();
+                if (code == keyCodeEnum.space) {
                     e.preventDefault();
                     this.Checkbox.Value = !this.Checkbox.Value;
                     const check = this.Checkbox._input.checked;
-                    this.Checkbox.DataChanged(check);
+                    this.Checkbox.dataChanged(check);
                     this.Selected = !this.Selected;
                 }
             });
         }
-        if (!header.StatusBar && !["IsPaid", "PaidDate", "btnEdit"].includes(header.FieldName) && (this.Disabled
+        if (!header.statusBar && !["isPaid", "paidDate", "btnEdit"].includes(header.fieldName) && (this.disabled
             || header.Disabled
-            || this.Parent.Disabled
-            || rowData["NoSubmit"]
-            || rowData["IsLock"]
-            || rowData["IsPayment"]
-            || rowData["IsInvoice"]
-            || rowData["IsPaymentAcc"]
-            || rowData["IsDebtAcc"]
-            || rowData["IsPaid"]
-            || this.ListView.Disabled)) {
-            com.SetDisabled(true);
+            || this.Parent.disabled
+            || rowData["noSubmit"]
+            || rowData["isLock"]
+            || rowData["isPayment"]
+            || rowData["isInvoice"]
+            || rowData["isPaymentAcc"]
+            || rowData["isDebtAcc"]
+            || rowData["isPaid"]
+            || this.listView.disabled)) {
+            com.setDisabled(true);
         }
-        if (rowData["IsAbs"]) {
+        if (rowData["isAbs"]) {
             cellWrapper.parentElement.parentElement.classList.add('cell-abs')
         }
-        var entity = this.ListView.Entity;
-        if (this.ListView.Meta.ComponentType == "Dropdown" && entity[this.ListView.Meta.FieldName]) {
-            if (this.ListView.Meta.IsMultiple) {
-                if (entity[this.ListView.Meta.FieldName].toString().split(",").includes(rowData[this.IdField].toString())) {
+        var entity = this.listView.entity;
+        if (this.listView.meta.componentType == "Dropdown" && entity[this.listView.meta.fieldName]) {
+            if (this.listView.meta.isMultiple) {
+                if (entity[this.listView.meta.fieldName].toString().split(",").includes(rowData[this.idField].toString())) {
                     cellWrapper.parentElement.parentElement.classList.add('cell-choose');
                 }
             }
             else {
-                if (entity[this.ListView.Meta.FieldName].toString() == rowData[this.IdField].toString()) {
+                if (entity[this.listView.meta.fieldName].toString() == rowData[this.idField].toString()) {
                     cellWrapper.parentElement.parentElement.classList.add('cell-choose');
                 }
             }
         }
-        if (com.Element && header.ChildStyle) {
-            com.Element.style.cssText = header.ChildStyle;
+        if (com.element && header.childStyle) {
+            com.element.style.cssText = header.childStyle;
         }
-        if (!header.StatusBar) {
-            com.UserInput.add(arg => this.UserInputHandler(arg, com));
+        if (!header.statusBar) {
+            com.userInput.add(arg => this.userInputHandler(arg, com));
         }
         if (header.Editable && header.Id) {
-            if (this.ListView.Meta.IsRealtime) {
+            if (this.listView.meta.isRealtime) {
                 return;
             }
             var copyButton = document.createElement("button");
             copyButton.className = "button-copy";
             copyButton.tabIndex = -1;
             copyButton.addEventListener("click", async () => {
-                var value = com.Entity[header.FieldName];
-                var index = this.ListView.Item.indexOf(this);
-                var newUpdate = this.ListView.Item.splice(index + 1);
+                var value = com.Entity[header.fieldName];
+                var index = this.listView.Item.indexOf(this);
+                var newUpdate = this.listView.Item.splice(index + 1);
                 for (const element of newUpdate) {
-                    var comp = element.Children.find(x => x.Meta.FieldName == header.FieldName);
+                    var comp = element.Children.find(x => x.Meta.fieldName == header.fieldName);
                     if (comp.Disabled) {
                         continue;
                     }
-                    comp.Entity[header.FieldName] = value;
-                    if (com.Meta.ComponentType == "Dropdown") {
-                        comp.Entity[comp.DisplayField] = com.Entity[comp.DisplayField];
+                    comp.Entity[header.fieldName] = value;
+                    if (com.Meta.componentType == "Dropdown") {
+                        comp.Entity[comp.displayField] = com.Entity[comp.displayField];
                         comp.Matched = com.Matched;
                     }
-                    element.UpdateView(true, true, header.FieldName);
-                    if (comp.IsCurrency) {
+                    element.updateView(true, true, header.fieldName);
+                    if (comp.isCurrency) {
                         if (comp.Matched) {
-                            var code = comp.GetMatchedText(com.Matched);
-                            comp.Entity.ExchangeRateVND = EditableComponent.ExchangeRateVND[code];
-                            comp.Entity.ExchangeRateUSD = EditableComponent.ExchangeRateUSD[code];
-                            comp.Entity.CurrencyCode = code == "" ? null : code;
+                            var code = comp.getMatchedText(com.Matched);
+                            comp.Entity.exchangeRateVND = EditableComponent.exchangeRateVND[code];
+                            comp.Entity.exchangeRateUSD = EditableComponent.exchangeRateUSD[code];
+                            comp.Entity.currencyCode = code == "" ? null : code;
                         }
                         else {
-                            comp.Entity.ExchangeRateVND = null;
-                            comp.Entity.ExchangeRateUSD = null;
+                            comp.Entity.exchangeRateVND = null;
+                            comp.Entity.exchangeRateUSD = null;
                         }
                     }
-                    comp.PopulateFields(comp.Entity);
-                    await comp.DispatchEvent(comp.Meta.Events, EventType.Input, comp, comp.Entity);
-                    await comp.DispatchEvent(comp.Meta.Events, EventType.Change, comp, comp.Entity);
+                    comp.populateFields(comp.Entity);
+                    await comp.dispatchEvent(comp.Meta.Events, EventType.Input, comp, comp.Entity);
+                    await comp.dispatchEvent(comp.Meta.Events, EventType.Change, comp, comp.Entity);
                     element.Dirty = true;
                 }
-                await this.ListView.DispatchEvent(this.ListView.Meta.Events, EventType.Change, this.ListView);
+                await this.listView.dispatchEvent(this.listView.meta.Events, EventType.Change, this.listView);
             });
             cellWrapper.appendChild(copyButton);
         }
@@ -379,36 +379,36 @@ export class ListViewItem extends Section {
      * @param {ObservableArgs} arg - The observable arguments.
      * @param {EditableComponent} component - The editable component.
      */
-    UserInputHandler(arg, component) {
-        if (component.Disabled || component.StatusBar) {
+    userInputHandler(arg, component) {
+        if (component.disabled || component.statusBar) {
             return;
         }
-        if (component.ComponentType == "Input" || component.ComponentType == "Textarea") {
-            if (arg.EvType == EventType.Abort || arg.EvType == EventType.Change || arg.EvType == EventType.Blur) {
-                if (component.Disabled) {
+        if (component.componentType == "Input" || component.componentType == "Textarea") {
+            if (arg.evType == EventType.Abort || arg.evType == EventType.Change || arg.evType == EventType.Blur) {
+                if (component.disabled) {
                     return;
                 }
-                this.ListView.RowChangeHandler(component.Entity, this, arg, component).then(() => {
-                    this.UpdateValidation();
-                    this.ListView.RealtimeUpdateAsync(this, arg).then();
+                this.listView.rowChangeHandler(component.entity, this, arg, component).then(() => {
+                    this.updateValidation();
+                    this.listView.realtimeUpdateAsync(this, arg).then();
                 })
             }
         }
         else {
-            this.ListView.RowChangeHandler(component.Entity, this, arg, component).then(() => {
-                if (component.ComponentType != "Button" && arg.EvType == EventType.Change) {
-                    if (component.Disabled) {
+            this.listView.rowChangeHandler(component.entity, this, arg, component).then(() => {
+                if (component.componentType != "Button" && arg.evType == EventType.Change) {
+                    if (component.disabled) {
                         return;
                     }
-                    this.UpdateValidation();
-                    this.ListView.RealtimeUpdateAsync(this, arg).then();
+                    this.updateValidation();
+                    this.listView.realtimeUpdateAsync(this, arg).then();
                 }
             });
         }
     }
 
-    UpdateValidation() {
-        this.Children.filter(x => x.Meta.Validation).forEach(x => x.UpdateValidation());
+    updateValidation() {
+        this.Children.filter(x => x.Meta.Validation).forEach(x => x.updateValidation());
     }
 
     /**
@@ -416,25 +416,25 @@ export class ListViewItem extends Section {
      * @param {boolean} [showMessage=true] - Whether to show a message.
      * @returns {Promise<boolean>} A promise that resolves to true if successful, otherwise false.
      */
-    async PatchUpdateOrCreate(showMessage = true) {
+    async patchUpdateOrCreate(showMessage = true) {
         if (!this.Dirty) {
             return false;
         }
         return new Promise((resolve) => {
-            const patchModel = this.GetPatchEntity();
+            const patchModel = this.getPatchEntity();
             if (patchModel.Changes.length == 1) {
                 return;
             }
-            this.DispatchCustomEvent(this.Meta.Events, CustomEventType.BeforePatchUpdate, this.Entity, patchModel, this)
+            this.dispatchCustomEvent(this.meta.Events, customEventType.beforePatchUpdate, this.entity, patchModel, this)
                 .then(() => {
-                    this.Element.classList.add("loading");
-                    this.Element.classList.remove("focus");
-                    this.Element.classList.remove("__selected__");
-                    this.ShowMessage = showMessage;
-                    this.ValidateAsync().then(isValid => {
+                    this.element.classList.add("loading");
+                    this.element.classList.remove("focus");
+                    this.element.classList.remove("__selected__");
+                    this.showMessage = showMessage;
+                    this.validateAsync().then(isValid => {
                         if (!isValid) return;
                         Client.instance.patchAsync(patchModel).then(rs => {
-                            this.PatchUpdateCb(rs);
+                            this.patchUpdateCb(rs);
                             resolve(rs.updatedItem[0]);
                         });
                     });
@@ -442,46 +442,46 @@ export class ListViewItem extends Section {
         });
     }
 
-    GetPatchVM() {
+    getPatchVM() {
         let dirtyPatch = [];
-        Object.getOwnPropertyNames(this.Entity).forEach(cell => {
-            if (this.Entity[cell] instanceof Array || (this.Entity[cell] instanceof Object && !(this.Entity[cell] instanceof Decimal)) || cell == this._groupKey) {
+        Object.getOwnPropertyNames(this.entity).forEach(cell => {
+            if (this.entity[cell] instanceof Array || (this.entity[cell] instanceof Object && !(this.entity[cell] instanceof Decimal)) || cell == this._groupKey) {
                 return;
             }
             let val;
-            if (typeof this.Entity[cell] === "boolean") {
-                val = this.Entity[cell] ? "1" : "0";
+            if (typeof this.entity[cell] === "boolean") {
+                val = this.entity[cell] ? "1" : "0";
             } else {
-                val = this.Entity[cell];
+                val = this.entity[cell];
             }
             let patchDetail = new PatchDetail();
             patchDetail.Label = cell;
             patchDetail.Field = cell;
-            patchDetail.OldVal = null;
+            patchDetail.oldVal = null;
             patchDetail.Value = val;
-            var component = this.Children.find(x => x.Meta.FieldName == cell)
+            var component = this.Children.find(x => x.Meta.fieldName == cell)
             if (component) {
-                let text = component.GetValueText();
+                let text = component.getValueText();
                 let actText = Utils.isNullOrWhiteSpace(text) ? 'N/A' : text;
-                let oldText = Utils.isNullOrWhiteSpace(component.OriginalText) ? 'N/A' : component.OriginalText;
+                let oldText = Utils.isNullOrWhiteSpace(component.originalText) ? 'N/A' : component.originalText;
                 if (actText != oldText) {
-                    patchDetail.HistoryValue = `${component.Meta.Label}: ${oldText} => ${actText}`;
+                    patchDetail.historyValue = `${component.Meta.Label}: ${oldText} => ${actText}`;
                 }
             }
             dirtyPatch.push(patchDetail);
         });
         let patchModel = new SavePatchVM();
         patchModel.Changes = dirtyPatch;
-        patchModel.Table = this.Meta.RefName;
+        patchModel.Table = this.meta.refName;
         patchModel.Detail = [];
         patchModel.Delete = [];
         return patchModel;
     }
 
-    async SendEntity() {
-        this.Entity.StatusId = 2;
-        var patchModel = this.GetPatchVM();
-        var res = await Client.instance.postAsync(patchModel, "/api/feature/SendEntity");
+    async sendEntity() {
+        this.entity.statusId = 2;
+        var patchModel = this.getPatchVM();
+        var res = await Client.instance.postAsync(patchModel, "/api/feature/sendEntity");
         if (res.status == 200) {
             return true;
         }
@@ -490,33 +490,33 @@ export class ListViewItem extends Section {
         }
     }
 
-    PatchUpdateCb(data) {
+    patchUpdateCb(data) {
         if (data && data.status == 200) {
-            this.EntityId = data.updatedItem[0][this.IdField];
+            this.entityId = data.updatedItem[0][this.idField];
             this.Dirty = false;
-            this.EmptyRow = false;
+            this.emptyRow = false;
         }
-        if (this.Entity[this.IdField].startsWith("-")) {
-            this.Entity[this.IdField] = data.updatedItem[0][this.IdField];
+        if (this.entity[this.idField].startsWith("-")) {
+            this.entity[this.idField] = data.updatedItem[0][this.idField];
         }
         var dataEntity = data.updatedItem[0];
-        this.ListView.LoadMasterData([dataEntity]).then(() => {
-            Object.assign(this.Entity, dataEntity);
-            this.UpdateView(true);
-            this.AfterSaved?.invoke(dataEntity);
-            this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterPatchUpdate, this.Entity, this).then();
-            this.Element.classList.remove("loading");
-            this.Element.classList.add("focus");
-            this.Element.classList.add("__selected__");
+        this.listView.loadMasterData([dataEntity]).then(() => {
+            Object.assign(this.entity, dataEntity);
+            this.updateView(true);
+            this.afterSaved?.invoke(dataEntity);
+            this.dispatchCustomEvent(this.meta.Events, customEventType.afterPatchUpdate, this.entity, this).then();
+            this.element.classList.remove("loading");
+            this.element.classList.add("focus");
+            this.element.classList.add("__selected__");
         });
     }
 
-    UpdateView(force = false, dirty = null, ...componentNames) {
-        this.Children.filter(x => x.Meta && !x.Meta.StatusBar).forEach(/**@param {EditableComponent} child **/ child => {
-            child.Entity = this.Entity;
-            child.PrepareUpdateView(force, dirty, componentNames);
-            child.UpdateView(force, dirty, componentNames);
-            child.UpdateValidation();
+    updateView(force = false, dirty = null, ...componentNames) {
+        this.Children.filter(x => x.Meta && !x.Meta.statusBar).forEach(/**@param {EditableComponent} child **/ child => {
+            child.entity = this.entity;
+            child.prepareUpdateView(force, dirty, componentNames);
+            child.updateView(force, dirty, componentNames);
+            child.updateValidation();
         });
     }
 
@@ -524,9 +524,9 @@ export class ListViewItem extends Section {
      * Retrieves the patch entity.
      * @returns {PatchVM} The patch entity.
      */
-    GetPatchEntity() {
+    getPatchEntity() {
         var dirtyPatch = [];
-        var row = this.Entity;
+        var row = this.entity;
         Object.getOwnPropertyNames(row).forEach(cell => {
             if (row[cell] instanceof Array || (row[cell] instanceof Object && !(row[cell] instanceof Decimal) && !(row[cell] instanceof Date)) || cell == this._groupKey) {
                 return;
@@ -541,15 +541,15 @@ export class ListViewItem extends Section {
             let patchDetail = new PatchDetail();
             patchDetail.Label = cell;
             patchDetail.Field = cell;
-            patchDetail.OldVal = null;
+            patchDetail.oldVal = null;
             patchDetail.Value = val;
-            var component = this.Children.find(y => y.Meta.FieldName == cell)
+            var component = this.Children.find(y => y.Meta.fieldName == cell)
             if (component && component.Meta.Editable) {
-                let text = component.ChangeValue || component.GetValueText();
+                let text = component.changeValue || component.getValueText();
                 let actText = Utils.isNullOrWhiteSpace(text) ? 'N/A' : text;
-                let oldText = Utils.isNullOrWhiteSpace(component.OriginalText) ? 'N/A' : component.OriginalText;
+                let oldText = Utils.isNullOrWhiteSpace(component.originalText) ? 'N/A' : component.originalText;
                 if (actText != oldText) {
-                    patchDetail.HistoryValue = `${component.Meta.Label}: ${oldText} => ${actText}`;
+                    patchDetail.historyValue = `${component.Meta.Label}: ${oldText} => ${actText}`;
                 }
             }
             dirtyPatch.push(patchDetail);
@@ -557,7 +557,7 @@ export class ListViewItem extends Section {
         // @ts-ignore
         return {
             Changes: dirtyPatch,
-            Table: this.ListView.Meta.RefName,
+            Table: this.listView.meta.refName,
             Delete: [],
             Detail: []
         };
@@ -567,32 +567,32 @@ export class ListViewItem extends Section {
      * Handles double click event on a row.
      * @param {Event} e - The event object.
      */
-    RowDblClick(e) {
+    rowDblClick(e) {
         e.stopPropagation();
-        this.ListView.DblClick?.invoke(this);
-        this.DispatchEvent(this.Meta.Events, EventType.DblClick, this, this.Entity).then();
+        this.listView.dblClick?.invoke(this);
+        this.dispatchEvent(this.meta.Events, EventType.dblClick, this, this.entity).then();
     }
 
     /**
      * Handles row item click event.
      * @param {Event} e - The event object.
      */
-    RowItemClick(e) {
-        if (this.Meta.IsMultiple && this.ComponentType == "GridView") {
+    rowItemClick(e) {
+        if (this.meta.isMultiple && this.componentType == "GridView") {
             return;
         }
-        const ctrl = e.CtrlOrMetaKey();
-        const shift = e.ShiftKey();
+        const ctrl = e.ctrlOrMetaKey();
+        const shift = e.shiftKey();
         /** @type {HTMLElement} */
         const target = e.target;
-        const focusing = this.FirstOrDefault(x => x.Element === target || x.ParentElement.contains(target)) !== null;
-        this.HotKeySelectRow(ctrl, shift, focusing);
-        if (!e.ShiftKey()) {
-            this.ListView.RowClick?.invoke(this.Entity);
+        const focusing = this.firstOrDefault(x => x.element === target || x.parentElement.contains(target)) !== null;
+        this.hotKeySelectRow(ctrl, shift, focusing);
+        if (!e.shiftKey()) {
+            this.listView.rowClick?.invoke(this.entity);
         }
-        this.ListView.LastListViewItem = this;
+        this.listView.lastListViewItem = this;
         this.Focus = true;
-        this.DispatchEvent(this.Meta.Events, EventType.Click, this, this.Entity).then();
+        this.dispatchEvent(this.meta.Events, EventType.Click, this, this.entity).then();
     }
 
     /**
@@ -601,23 +601,23 @@ export class ListViewItem extends Section {
      * @param {boolean} shift - Whether the shift key is pressed.
      * @param {boolean} focusing - Whether the row is focusing.
      */
-    HotKeySelectRow(ctrl, shift, focusing) {
-        if (this.EmptyRow) {
+    hotKeySelectRow(ctrl, shift, focusing) {
+        if (this.emptyRow) {
             return;
         }
-        let allListView = this.ListView.AllListViewItem;
-        if (this.Meta.IsMultiple) {
-            this.ListView.ClearSelected();
+        let allListView = this.listView.allListViewItem;
+        if (this.meta.isMultiple) {
+            this.listView.clearSelected();
             this.Selected = true;
-            this.ListView.SelectedIndex = allListView.indexOf(this);
+            this.listView.selectedIndex = allListView.indexOf(this);
             return;
         }
         if (!ctrl && !shift) {
-            if (this.ListView.SelectedIds.length <= 1) {
-                this.ListView.ClearSelected();
+            if (this.listView.selectedIds.length <= 1) {
+                this.listView.clearSelected();
                 this.Selected = !this._selected;
                 if (this._selected) {
-                    this.ListView.SelectedIndex = this.ListView.Children.indexOf(this);
+                    this.listView.selectedIndex = this.listView.Children.indexOf(this);
                 }
             }
             return;
@@ -625,7 +625,7 @@ export class ListViewItem extends Section {
         this.Selected = !this._selected;
 
         if (!shift && !ctrl && this._selected) {
-            this.ListView.SelectedIndex = this.ListView.Children.indexOf(this);
+            this.listView.selectedIndex = this.listView.Children.indexOf(this);
         }
         if (shift) {
             const selected = allListView.find(x => x.Selected);
@@ -652,13 +652,13 @@ export class ListViewItem extends Section {
      * @param {number} _lastIndex - The last index.
      * @param {number} currentIndex - The current index.
      */
-    SetSeletedListViewItem(allListView, _lastIndex, currentIndex) {
-        const start = allListView[0].RowNo > _lastIndex ? allListView[0].RowNo : _lastIndex;
-        const items = this.ListView.AllListViewItem.filter(x => x.RowNo >= start && x.RowNo <= currentIndex);
-        this.ListView.SelectedIds = items.map(x => x.EntityId);
+    setSeletedListViewItem(allListView, _lastIndex, currentIndex) {
+        const start = allListView[0].rowNo > _lastIndex ? allListView[0].rowNo : _lastIndex;
+        const items = this.listView.allListViewItem.filter(x => x.rowNo >= start && x.rowNo <= currentIndex);
+        this.listView.selectedIds = items.map(x => x.entityId);
         items.forEach(item => {
-            const id = item.EntityId;
-            if (this.ListView.SelectedIds.includes(id)) {
+            const id = item.entityId;
+            if (this.listView.selectedIds.includes(id)) {
                 item.Selected = this.Selected;
             } else {
                 item.Selected = false;
@@ -668,65 +668,65 @@ export class ListViewItem extends Section {
     /**
      * Handles row focus out event.
      */
-    RowFocusOut() {
+    rowFocusOut() {
         this.Focus = false;
-        return this.DispatchCustomEvent(this.Meta.Events, CustomEventType.RowFocusOut, this.Entity);
+        return this.dispatchCustomEvent(this.meta.Events, customEventType.rowFocusOut, this.entity);
     }
 
     /**
      * Handles mouse enter event.
      */
-    MouseEnter() {
-        this.Element.classList.add(ListViewItem.HoveringClass);
-        return this.DispatchCustomEvent(this.ListView.Meta.Events, CustomEventType.RowMouseEnter, this.Entity);
+    mouseEnter() {
+        this.element.classList.add(ListViewItem.hoveringClass);
+        return this.dispatchCustomEvent(this.listView.meta.Events, customEventType.rowMouseEnter, this.entity);
     }
 
     /**
      * Handles mouse leave event.
      */
-    MouseLeave() {
-        this.Element.classList.remove(ListViewItem.HoveringClass);
-        return this.DispatchCustomEvent(this.ListView.Meta.Events, CustomEventType.RowMouseLeave, this.Entity);
+    mouseLeave() {
+        this.element.classList.remove(ListViewItem.hoveringClass);
+        return this.dispatchCustomEvent(this.listView.meta.Events, customEventType.rowMouseLeave, this.entity);
     }
 
     /**
      * Gets or sets whether to show a message.
      * @type {boolean}
      */
-    get ShowMessage() { return this._showMessage; }
-    set ShowMessage(value) { this._showMessage = value; }
+    get showMessage() { return this._showMessage; }
+    set showMessage(value) { this._showMessage = value; }
 
     /**
      * Validates asynchronously.
      * @returns {Promise<boolean>} A promise that resolves to true if all validations pass, otherwise false.
      */
-    ValidateAsync() {
+    validateAsync() {
         return new Promise((ok, err) => {
-            const allValid = this.FilterChildren(
+            const allValid = this.filterChildren(
                 x => x.Children.length === 0,
-                x => x.AlwaysValid
-            ).ForEachAsync(x => x.ValidateAsync());
+                x => x.alwaysValid
+            ).forEachAsync(x => x.validateAsync());
             allValid.then(res => {
-                const allOk = res.every(x => x.IsValid);
+                const allOk = res.every(x => x.isValid);
                 ok(allOk);
-                if (!allOk && this.ShowMessage) {
-                    const message = res.filter(x => !x.IsValid)
-                        .map(x => Object.values(x.ValidationResult).Combine(null, Utils.BreakLine))
-                        .Combine(null, Utils.BreakLine);
+                if (!allOk && this.showMessage) {
+                    const message = res.filter(x => !x.isValid)
+                        .map(x => Object.values(x.validationResult).Combine(null, Utils.breakLine))
+                        .Combine(null, Utils.breakLine);
                     Toast.Warning(message);
                 }
             }).catch(err);
         });
     }
 
-    async UpdateEntity() {
-        if (!this.EntityId.startsWith("-")) {
-            var updateRow = await Client.instance.getByIdAsync(this.ListView.Meta.RefName, [this.Entity.Id]);
+    async updateEntity() {
+        if (!this.entityId.startsWith("-")) {
+            var updateRow = await Client.instance.getByIdAsync(this.listView.meta.refName, [this.entity.Id]);
             var entity = updateRow.data[0];
             if (entity) {
-                await this.ListView.LoadMasterData([entity]);
-                this.Entity = entity;
-                this.UpdateView(true);
+                await this.listView.loadMasterData([entity]);
+                this.entity = entity;
+                this.updateView(true);
             }
         }
     }

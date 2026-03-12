@@ -16,7 +16,7 @@ export class Kanban extends EditableComponent {
     constructor(ui, ele = null) {
         super(ui);
         /** @type {Component} */
-        this.Meta = ui;
+        this.meta = ui;
         this.Columns = [];
         this._textEle = null;
     }
@@ -24,20 +24,20 @@ export class Kanban extends EditableComponent {
      * Renders the button component into the DOM.
      */
     Render() {
-        var template = this.Meta.Template;
+        var template = this.meta.Template;
         var kanbanColumn = JSON.parse(template || "{}");
-        if (!this.ButtonEle) {
-            if (!this.ParentElement) throw new Error("ParentElement is required");
-            Html.take(this.ParentElement).div.className("kanban-wrapper").div.className("kanban").render();
-            this.Element = Html.Context;
+        if (!this.buttonEle) {
+            if (!this.parentElement) throw new Error("parentElement is required");
+            Html.take(this.parentElement).div.className("kanban-wrapper").div.className("kanban").render();
+            this.element = Html.context;
         } else {
-            this.Element = this.ButtonEle;
+            this.element = this.buttonEle;
         }
         for (const element of kanbanColumn) {
-            var column = new KanbanColumn(this.Meta, element);
-            column.ParentElement = this.Element;
-            column.EditForm = this.EditForm;
-            column.Render();
+            var column = new KanbanColumn(this.meta, element);
+            column.parentElement = this.element;
+            column.editForm = this.editForm;
+            column.render();
             this.Columns.push(column);
         }
     }

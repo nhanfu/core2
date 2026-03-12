@@ -9,16 +9,16 @@ export class ExportCustomData extends PopupEditor {
     static Prefix = "Export";
 
     /**
-     * @param {ListView} ParentListView
+     * @param {ListView} parentListView
      */
-    constructor(ParentListView) {
+    constructor(parentListView) {
         super('Component');
-        this.Name = "Export CustomData";
+        this.Name = "Export customData";
         this.Title = "Xuất excel tùy chọn";
-        document.addEventListener('DOMContentLoaded', () => {
-            this.LocalRender();
+        document.addEventListener('dOMContentLoaded', () => {
+            this.localRender();
         });
-        this.ParentListView = ParentListView;
+        this.parentListView = parentListView;
         this._tbody = null;
         this._headers = [];
         this._userSetting = null;
@@ -165,7 +165,7 @@ export class ExportCustomData extends PopupEditor {
 
             document.removeEventListener('mousemove', mouseMoveHandler);
             document.removeEventListener('mouseup', mouseUpHandler);
-            self.OrderBy();
+            self.orderBy();
         };
 
         table.querySelectorAll('tr').forEach(function (row, index) {
@@ -179,13 +179,13 @@ export class ExportCustomData extends PopupEditor {
     }
 
 
-    LocalRender() {
-        if (this.ParentListView instanceof ListView) {
-            this.ParentListView.GetUserSetting(ExportCustomData.Prefix).then(x => this.UserSettingLoaded(x, true));
+    localRender() {
+        if (this.parentListView instanceof ListView) {
+            this.parentListView.getUserSetting(ExportCustomData.Prefix).then(x => this.userSettingLoaded(x, true));
         }
     }
 
-    UserSettingLoaded(res, render = true) {
+    userSettingLoaded(res, render = true) {
         this._hasLoadSetting = true;
         this._userSetting = res[0].length > 0 ? res[0][0] : null;
         if (this._userSetting) {
@@ -195,42 +195,42 @@ export class ExportCustomData extends PopupEditor {
                     return acc;
                 }, {});
             this._headers.forEach(x => {
-                x.IsExport = true;
+                x.isExport = true;
                 let current = usrHeaders[x.Id];
                 if (current) {
-                    x.IsExport = current.IsExport;
-                    x.OrderExport = current.OrderExport;
+                    x.isExport = current.isExport;
+                    x.orderExport = current.orderExport;
                 }
             });
         }
-        this._headers.sort((a, b) => a.OrderExport - b.OrderExport);
+        this._headers.sort((a, b) => a.orderExport - b.orderExport);
         if (!render) return;
-        let content = this.FindComponentByName('Content');
-        content.Element.classList.add('table');
-        this._table = content.Element;
+        let content = this.findComponentByName('Content');
+        content.element.classList.add('table');
+        this._table = content.element;
         // Rendering of headers and setting up drag-and-drop functionality
-        this.RenderDetails();
+        this.renderDetails();
         this.Move();
     }
 
-    SetChecked(item, e) {
-        item.IsExport = e.target.checked;
+    setChecked(item, e) {
+        item.isExport = e.target.checked;
         this.Dirty = true;
     }
 
-    DirtyCheckAndCancel() {
+    dirtyCheckAndCancel() {
         this.Dirty = true;
-        super.DirtyCheckAndCancel();
+        super.dirtyCheckAndCancel();
     }
 
-    RenderDetails() {
+    renderDetails() {
         Html.take(this._tbody).clear();
         let i = 1;
         for (let item of this._headers) {
-            Html.Instance.tRow.dataAttr("id", item.Id)
-                .tData.dataAttr("id", item.Id).style("padding:0").iText(i.toString(), this.EditForm.Meta.Label).end
-                .tData.style("padding:0").checkbox(item.IsExport).event("input", (e1) => item.IsExport = e1.target.checked).end.end
-                .tData.style("padding:0").className("text-left").iText(item.Label, this.EditForm.Meta.Label).end
+            Html.instance.tRow.dataAttr("id", item.Id)
+                .tData.dataAttr("id", item.Id).style("padding:0").iText(i.toString(), this.editForm.meta.Label).end
+                .tData.style("padding:0").checkbox(item.isExport).event("input", (e1) => item.isExport = e1.target.checked).end.end
+                .tData.style("padding:0").className("text-left").iText(item.Label, this.editForm.meta.Label).end
                 .endOf("tr");
             i++;
         }
@@ -242,58 +242,58 @@ export class ExportCustomData extends PopupEditor {
         Array.from(this._tbody.children).forEach(y => {
             const header = this._headers.find(x => x.Id === y.getAttribute("data-id"));
             if (header) {
-                header.OrderExport = j;
+                header.orderExport = j;
                 j++;
             }
         });
     }
 
-    ExportAll() {
+    exportAll() {
         this.Export();
     }
 
-    ExportSelected() {
-        if (this.ParentListView.SelectedIds.length === 0) {
+    exportSelected() {
+        if (this.parentListView.selectedIds.length === 0) {
             Toast.Warning("Select at least 1 row to export");
             return;
         }
-        this.Export(null, null, this.ParentListView.SelectedIds);
+        this.Export(null, null, this.parentListView.selectedIds);
     }
 
     Export(skip = null, pageSize = null, selectedIds = null) {
         Toast.Success("Đang xuất excel");
         if (this._hasLoadSetting && this.Dirty) {
-            this.ParentListView.UpdateSetting(this._userSetting, ExportCustomData.Prefix, JSON.stringify(this._headers)).then(() => {
-                this.ExportWithSetting(skip, pageSize, selectedIds);
+            this.parentListView.updateSetting(this._userSetting, ExportCustomData.Prefix, JSON.stringify(this._headers)).then(() => {
+                this.exportWithSetting(skip, pageSize, selectedIds);
             });
             return;
         }
-        this.ParentListView.GetUserSetting(ExportCustomData.Prefix).then(x => {
-            this.UserSettingLoaded(x, false);
-            this.ExportWithSetting(skip, pageSize, selectedIds);
+        this.parentListView.getUserSetting(ExportCustomData.Prefix).then(x => {
+            this.userSettingLoaded(x, false);
+            this.exportWithSetting(skip, pageSize, selectedIds);
         });
     }
 
-    ExportWithSetting(skip, pageSize, selectedIds) {
-        let sql = this.ParentListView.GetSql(skip, pageSize);
+    exportWithSetting(skip, pageSize, selectedIds) {
+        let sql = this.parentListView.getSql(skip, pageSize);
         sql.Count = false;
-        if (this._headers.some(x => x.IsExport)) {
-            sql.FieldName = this._headers
-                .filter(x => x.IsExport)
-                .map(x => x.FieldText.trim() === "" ? x.FieldName : x.FieldText);
-            sql.Select = this._headers.some(x => x.FieldName) ? sql.FieldName.join(", ") : null;
+        if (this._headers.some(x => x.isExport)) {
+            sql.fieldName = this._headers
+                .filter(x => x.isExport)
+                .map(x => x.fieldText.trim() === "" ? x.fieldName : x.fieldText);
+            sql.Select = this._headers.some(x => x.fieldName) ? sql.fieldName.join(", ") : null;
         }
         if (selectedIds.length > 0) {
             let ids = selectedIds.join(", ");
             sql.Where = `Id in (${ids})`;
         }
-        sql.Params = this.ParentListView.Meta.Label || this.ParentListView.Meta.RefName;
-        sql.Table = this.ParentListView.Meta.RefName;
+        sql.Params = this.parentListView.meta.Label || this.parentListView.meta.refName;
+        sql.Table = this.parentListView.meta.refName;
 
         let xhrWrapper = {
             Value: JSON.stringify(sql),
-            Url: Utils.ExportExcel,
-            IsRawString: true,
+            Url: Utils.exportExcel,
+            isRawString: true,
             Method: "POST"
         };
 

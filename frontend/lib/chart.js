@@ -1,113 +1,113 @@
 import { EditableComponent } from "./editableComponent.js";
 import { Utils } from "./utils/utils.js";
-import { Html } from "./utils/html.js";
+import { html } from "./utils/html.js";
 import { Client } from "./clients/client.js";
 import { Component } from "./models/component.js";
 import * as echarts from 'echarts';
 import EventType from "./models/eventType.js";
 import { LangSelect } from "./utils/langSelect.js";
 /**
- * Represents a Chart component that can be rendered and updated.
+ * represents a Chart component that can be rendered and updated.
  */
 export class Chart extends EditableComponent {
     /**
-     * Create instance of component
+     * create instance of component
      * @param {Component | null} meta 
      * @param {HTMLElement | null} ele 
      */
     constructor(meta, ele) {
         super(meta, ele);
-        this.Data = [];
+        this.data = [];
     }
     /**
      * @type {HTMLElement}
      */
-    SearchElement;
+    searchElement;
     /**
-     * @type {String}
+     * @type {string}
      */
-    Title;
+    title;
     /**
-     * @type {String}
+     * @type {string}
      */
-    FromDate;
+    fromDate;
     /**
-     * @type {String}
+     * @type {string}
      */
-    ToDate;
+    toDate;
     /**
-     * Renders the chart component by adding an HTML element and setting up the chart.
+     * renders the chart component by adding an HTML element and setting up the chart.
      */
-    Render() {
-        this.AddElement();
+    render() {
+        this.addElement();
         setTimeout(async () => {
-            await this.RenderAsync();
+            await this.renderAsync();
         }, 500);
     }
 
     /**
-     * Adds a div element as the chart wrapper if it doesn't already exist.
+     * adds a div element as the chart wrapper if it doesn't already exist.
      */
-    AddElement() {
-        if (!this.Element) {
-            this.Element = Html.take(this.ParentElement).div.className("chart-wrapper").style(this.Meta.Style || "height:350px").getContext();
+    addElement() {
+        if (!this.element) {
+            this.element = html.take(this.parentElement).div.className("chart-wrapper").style(this.meta.style || "height:350px").getContext();
         }
     }
 
     /**
-     * Asynchronously renders the chart after data and configurations are ready.
+     * asynchronously renders the chart after data and configurations are ready.
      */
-    async RenderAsync() {
-        const formatDate = (date) => this.dayjs(date).format("YYYY-MM-DD");
+    async renderAsync() {
+        const formatDate = (date) => this.dayjs(date).format("yYYY-mM-dD");
 
-        this.Title = "Month";
+        this.title = "month";
 
         let today = this.dayjs();
         let firstDayOfMonth = today.startOf("month");
         let lastDayOfMonth = today.endOf("month").add(1, "day"); // Thêm 1 ngày vào cuối tháng
 
-        this.FromDate = formatDate(firstDayOfMonth);
-        this.ToDate = formatDate(lastDayOfMonth);
-        await this.RenderChart();
-        this.DOMContentLoaded?.Invoke();
+        this.fromDate = formatDate(firstDayOfMonth);
+        this.toDate = formatDate(lastDayOfMonth);
+        await this.renderChart();
+        this.dOMContentLoaded?.invoke();
     }
 
     /**
-     * Renders the chart using data available or fetching it if necessary.
+     * renders the chart using data available or fetching it if necessary.
      */
-    async RenderChart() {
-        this.AddElement();
-        const submitEntity = Utils.IsFunction(this.Meta.PreQuery, false, this);
+    async renderChart() {
+        this.addElement();
+        const submitEntity = Utils.isFunction(this.meta.preQuery, false, this);
         const entity = {
-            Params: submitEntity ? JSON.stringify(submitEntity) : JSON.stringify({
-                FromDate: this.FromDate,
-                ToDate: this.ToDate
+            params: submitEntity ? JSON.stringify(submitEntity) : JSON.stringify({
+                fromDate: this.fromDate,
+                toDate: this.toDate
             }),
-            ComId: this.Meta.Id,
+            comId: this.meta.id,
         };
-        this.Data = this.Meta.LocalData ?? await Client.instance.submitAsync({
-            Url: "/api/feature/report",
-            IsRawString: true,
-            JsonData: JSON.stringify(entity),
-            Method: "POST"
+        this.data = this.meta.localData ?? await Client.instance.submitAsync({
+            url: "/api/feature/report",
+            isRawString: true,
+            jsonData: JSON.stringify(entity),
+            method: "pOST"
         });
-        var options = this.Options;
-        options = Utils.IsFunction(this.Meta.Template, false, this);
-        if (this.Meta.CanSearch) {
+        var options = this.options;
+        options = Utils.isFunction(this.meta.template, false, this);
+        if (this.meta.canSearch) {
             options.toolbox = {
                 feature: {
                     myFilter: {
                         show: true,
-                        title: this.Title,
-                        icon: 'path://M8 2L2 14h12L8 2z',
+                        title: this.title,
+                        icon: 'path://m8 2L2 14h12L8 2z',
                         onclick: () => {
-                            this.ShowSearch();
+                            this.showSearch();
                         },
                     },
                 }
             };
         }
-        var myChart = echarts.init(this.Element, null, {
+        var myChart = echarts.init(this.element, null, {
             renderer: 'canvas',
             useDirtyRect: false
         });
@@ -117,9 +117,9 @@ export class Chart extends EditableComponent {
         window.addEventListener('resize', myChart.resize);
     }
     /**
-     * @type {echarts.EChartsOption}
+     * @type {echarts.eChartsOption}
      */
-    Options = {
+    options = {
         tooltip: {
             trigger: 'item'
         },
@@ -129,7 +129,7 @@ export class Chart extends EditableComponent {
         },
         series: [
             {
-                name: 'Access From',
+                name: 'access from',
                 type: 'pie',
                 radius: ['40%', '70%'],
                 avoidLabelOverlap: false,
@@ -153,45 +153,45 @@ export class Chart extends EditableComponent {
                     show: false
                 },
                 data: [
-                    { value: 1048, name: 'Search Engine' },
-                    { value: 735, name: 'Direct' },
-                    { value: 580, name: 'Email' },
-                    { value: 484, name: 'Union Ads' },
-                    { value: 300, name: 'Video Ads' }
+                    { value: 1048, name: 'search engine' },
+                    { value: 735, name: 'direct' },
+                    { value: 580, name: 'email' },
+                    { value: 484, name: 'union ads' },
+                    { value: 300, name: 'video ads' }
                 ]
             }
         ]
     };;
 
-    async ReloadChart() {
-        const submitEntity = Utils.IsFunction(this.Meta.PreQuery, false, this);
+    async reloadChart() {
+        const submitEntity = Utils.isFunction(this.meta.preQuery, false, this);
         const entity = {
-            Params: submitEntity ? JSON.stringify(submitEntity) : null,
-            ComId: this.Meta.Id,
+            params: submitEntity ? JSON.stringify(submitEntity) : null,
+            comId: this.meta.id,
         };
-        this.Data = this.Meta.LocalData ?? await Client.instance.submitAsync({
-            Url: "/api/feature/report",
-            IsRawString: true,
-            JsonData: JSON.stringify(entity),
-            Method: "POST"
+        this.data = this.meta.localData ?? await Client.instance.submitAsync({
+            url: "/api/feature/report",
+            isRawString: true,
+            jsonData: JSON.stringify(entity),
+            method: "pOST"
         });
-        var options = this.Options;
-        options = Utils.IsFunction(this.Meta.Template, false, this);
-        if (this.Meta.CanSearch) {
+        var options = this.options;
+        options = Utils.isFunction(this.meta.template, false, this);
+        if (this.meta.canSearch) {
             options.toolbox = {
                 feature: {
                     myFilter: {
                         show: true,
-                        title: this.Title,
-                        icon: 'path://M8 2L2 14h12L8 2z',
+                        title: this.title,
+                        icon: 'path://m8 2L2 14h12L8 2z',
                         onclick: () => {
-                            this.ShowSearch();
+                            this.showSearch();
                         },
                     },
                 }
             };
         }
-        var myChart = echarts.init(this.Element, null, {
+        var myChart = echarts.init(this.element, null, {
             renderer: 'canvas',
             useDirtyRect: false
         });
@@ -200,7 +200,7 @@ export class Chart extends EditableComponent {
         }
     }
 
-    CloseSearch() {
+    closeSearch() {
         const menu = document.querySelectorAll(".apexcharts-menu");
         if (menu) {
             menu.forEach(item => {
@@ -211,146 +211,146 @@ export class Chart extends EditableComponent {
         }
     }
 
-    ShowSearch() {
-        Html.take(this.Element).div.style("opacity: 1; pointer-events: all; transition: .15s ease all;")
+    showSearch() {
+        html.take(this.element).div.style("opacity: 1; pointer-events: all; transition: .15s ease all;")
             .tabIndex(-1)
             .className("apexcharts-menu");
-        this.SearchElement = Html.Context;
-        const formatDate = (date) => this.dayjs(date).format("YYYY-MM-DD");
+        this.searchElement = html.context;
+        const formatDate = (date) => this.dayjs(date).format("yYYY-mM-dD");
 
-        Html.Instance
-            .div.className("apexcharts-menu-item").tabIndex(-1).event(EventType.Click, (e) => {
+        html.instance
+            .div.className("apexcharts-menu-item").tabIndex(-1).event(EventType.click, (e) => {
                 e.preventDefault();
-                this.Title = LangSelect.Get("Week", this.EditForm.FeatureName);
+                this.title = LangSelect.get("week", this.editForm.featureName);
 
                 let today = this.dayjs();
                 let firstDayOfWeek = today.startOf("week");
                 let lastDayOfWeek = firstDayOfWeek.add(6, "day").add(1, "day");
 
-                this.FromDate = formatDate(firstDayOfWeek);
-                this.ToDate = formatDate(lastDayOfWeek);
-                this.RenderChart().then();
-                this.CloseSearch();
-            }).iText("Week", this.EditForm.Meta.Label).end
+                this.fromDate = formatDate(firstDayOfWeek);
+                this.toDate = formatDate(lastDayOfWeek);
+                this.renderChart().then();
+                this.closeSearch();
+            }).iText("week", this.editForm.meta.Label).end
 
             // Tuần trước
-            .div.className("apexcharts-menu-item").tabIndex(-1).event(EventType.Click, (e) => {
+            .div.className("apexcharts-menu-item").tabIndex(-1).event(EventType.click, (e) => {
                 e.preventDefault();
-                this.Title = LangSelect.Get("Last Week", this.EditForm.FeatureName);
+                this.title = LangSelect.get("last week", this.editForm.featureName);
 
                 let today = this.dayjs();
                 let firstDayOfLastWeek = today.startOf("week").subtract(7, "day");
                 let lastDayOfLastWeek = firstDayOfLastWeek.add(6, "day").add(1, "day");
 
-                this.FromDate = formatDate(firstDayOfLastWeek);
-                this.ToDate = formatDate(lastDayOfLastWeek);
-                this.RenderChart().then();
-                this.CloseSearch();
-            }).iText("Last Week", this.EditForm.Meta.Label).end
+                this.fromDate = formatDate(firstDayOfLastWeek);
+                this.toDate = formatDate(lastDayOfLastWeek);
+                this.renderChart().then();
+                this.closeSearch();
+            }).iText("last week", this.editForm.meta.Label).end
 
             // Tháng này
-            .div.tabIndex(-1).className("apexcharts-menu-item").event(EventType.Click, (e) => {
+            .div.tabIndex(-1).className("apexcharts-menu-item").event(EventType.click, (e) => {
                 e.preventDefault();
-                this.Title = LangSelect.Get("Month", this.EditForm.FeatureName);
+                this.title = LangSelect.get("month", this.editForm.featureName);
 
                 let today = this.dayjs();
                 let firstDayOfMonth = today.startOf("month");
                 let lastDayOfMonth = today.endOf("month").add(1, "day");
 
-                this.FromDate = formatDate(firstDayOfMonth);
-                this.ToDate = formatDate(lastDayOfMonth);
-                this.RenderChart().then();
-                this.CloseSearch();
-            }).iText("Month", this.EditForm.Meta.Label).end
+                this.fromDate = formatDate(firstDayOfMonth);
+                this.toDate = formatDate(lastDayOfMonth);
+                this.renderChart().then();
+                this.closeSearch();
+            }).iText("month", this.editForm.meta.Label).end
 
             // Tháng trước
-            .div.tabIndex(-1).className("apexcharts-menu-item").event(EventType.Click, (e) => {
+            .div.tabIndex(-1).className("apexcharts-menu-item").event(EventType.click, (e) => {
                 e.preventDefault();
-                this.Title = LangSelect.Get("Last Month", this.EditForm.FeatureName);
+                this.title = LangSelect.get("last month", this.editForm.featureName);
 
                 let today = this.dayjs();
                 let firstDayOfLastMonth = today.subtract(1, "month").startOf("month");
                 let lastDayOfLastMonth = firstDayOfLastMonth.endOf("month").add(1, "day");
 
-                this.FromDate = formatDate(firstDayOfLastMonth);
-                this.ToDate = formatDate(lastDayOfLastMonth);
-                this.RenderChart().then();
-                this.CloseSearch();
-            }).iText("Last Month", this.EditForm.Meta.Label).end
+                this.fromDate = formatDate(firstDayOfLastMonth);
+                this.toDate = formatDate(lastDayOfLastMonth);
+                this.renderChart().then();
+                this.closeSearch();
+            }).iText("last month", this.editForm.meta.Label).end
 
             // Quý này
-            .div.tabIndex(-1).className("apexcharts-menu-item").event(EventType.Click, () => {
-                this.Title = LangSelect.Get("Quarter", this.EditForm.FeatureName);
+            .div.tabIndex(-1).className("apexcharts-menu-item").event(EventType.click, () => {
+                this.title = LangSelect.get("quarter", this.editForm.featureName);
 
                 let today = this.dayjs();
                 let firstDayOfQuarter = today.startOf("quarter");
                 let lastDayOfQuarter = today.endOf("quarter").add(1, "day");
 
-                this.FromDate = formatDate(firstDayOfQuarter);
-                this.ToDate = formatDate(lastDayOfQuarter);
-                this.RenderChart().then();
-                this.CloseSearch();
-            }).iText("Quarter", this.EditForm.Meta.Label).end
+                this.fromDate = formatDate(firstDayOfQuarter);
+                this.toDate = formatDate(lastDayOfQuarter);
+                this.renderChart().then();
+                this.closeSearch();
+            }).iText("quarter", this.editForm.meta.Label).end
 
             // Quý trước
-            .div.tabIndex(-1).className("apexcharts-menu-item").event(EventType.Click, () => {
-                this.Title = LangSelect.Get("Last Quarter", this.EditForm.FeatureName);
+            .div.tabIndex(-1).className("apexcharts-menu-item").event(EventType.click, () => {
+                this.title = LangSelect.get("last quarter", this.editForm.featureName);
 
                 let today = this.dayjs();
                 let firstDayOfLastQuarter = today.subtract(1, "quarter").startOf("quarter");
                 let lastDayOfLastQuarter = firstDayOfLastQuarter.endOf("quarter").add(1, "day");
 
-                this.FromDate = formatDate(firstDayOfLastQuarter);
-                this.ToDate = formatDate(lastDayOfLastQuarter);
-                this.RenderChart().then();
-                this.CloseSearch();
-            }).iText("Last Quarter", this.EditForm.Meta.Label).end
+                this.fromDate = formatDate(firstDayOfLastQuarter);
+                this.toDate = formatDate(lastDayOfLastQuarter);
+                this.renderChart().then();
+                this.closeSearch();
+            }).iText("last quarter", this.editForm.meta.Label).end
 
             // Năm này
-            .div.tabIndex(-1).className("apexcharts-menu-item").event(EventType.Click, () => {
-                this.Title = LangSelect.Get("Year", this.EditForm.FeatureName);
+            .div.tabIndex(-1).className("apexcharts-menu-item").event(EventType.click, () => {
+                this.title = LangSelect.get("year", this.editForm.featureName);
 
                 let today = this.dayjs();
                 let firstDayOfYear = today.startOf("year");
                 let lastDayOfYear = today.endOf("year").add(1, "day");
 
-                this.FromDate = formatDate(firstDayOfYear);
-                this.ToDate = formatDate(lastDayOfYear);
-                this.RenderChart().then();
-                this.CloseSearch();
-            }).iText("Year", this.EditForm.Meta.Label).end
+                this.fromDate = formatDate(firstDayOfYear);
+                this.toDate = formatDate(lastDayOfYear);
+                this.renderChart().then();
+                this.closeSearch();
+            }).iText("year", this.editForm.meta.Label).end
 
             // Năm trước
-            .div.tabIndex(-1).className("apexcharts-menu-item").event(EventType.Click, () => {
-                this.Title = LangSelect.Get("Last Year", this.EditForm.FeatureName);
+            .div.tabIndex(-1).className("apexcharts-menu-item").event(EventType.click, () => {
+                this.title = LangSelect.get("last year", this.editForm.featureName);
 
                 let today = this.dayjs();
                 let firstDayOfLastYear = today.subtract(1, "year").startOf("year");
                 let lastDayOfLastYear = firstDayOfLastYear.endOf("year").add(1, "day");
 
-                this.FromDate = formatDate(firstDayOfLastYear);
-                this.ToDate = formatDate(lastDayOfLastYear);
-                this.RenderChart().then();
-                this.CloseSearch();
-            }).iText("Last Year", this.EditForm.Meta.Label).end
+                this.fromDate = formatDate(firstDayOfLastYear);
+                this.toDate = formatDate(lastDayOfLastYear);
+                this.renderChart().then();
+                this.closeSearch();
+            }).iText("last year", this.editForm.meta.Label).end
 
             .end.render();
-        this.SearchElement.firstElementChild.focus();
+        this.searchElement.firstElementChild.focus();
     }
 
     /**
-     * Updates the view by potentially clearing existing data and re-rendering the chart.
-     * @param {boolean} Force - Forces a data refresh.
-     * @param {boolean} Dirty - Marks the current data as dirty.
-     * @param {Array<string>} ComponentNames - Specific components to update.
+     * updates the view by potentially clearing existing data and re-rendering the chart.
+     * @param {boolean} force - forces a data refresh.
+     * @param {boolean} dirty - marks the current data as dirty.
+     * @param {array<string>} componentNames - specific components to update.
      */
-    UpdateView(Force = false, Dirty = null, ComponentNames = []) {
-        if (Force) {
-            this.Data = null;
+    updateView(force = false, dirty = null, componentNames = []) {
+        if (force) {
+            this.data = null;
         }
-        if (this.Element) {
-            this.Element.innerHTML = null;
+        if (this.element) {
+            this.element.innerHTML = null;
         }
-        setTimeout(() => this.RenderChart().then(), 0);
+        setTimeout(() => this.renderChart().then(), 0);
     }
 }

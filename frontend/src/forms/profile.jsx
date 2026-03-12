@@ -33,9 +33,9 @@ export class ProfileBL extends Page {
         const newPassword = formData.get("new-password");
 
         try {
-          const response = await Client.Instance.PostAsync(
-            { Password: password, NewPassword: newPassword },
-            "/api/User/UpdatePassword"
+          const response = await Client.Instance.postAsync(
+            { Password: password, newPassword: newPassword },
+            "/api/User/updatePassword"
           );
 
           if (response) {
@@ -63,7 +63,7 @@ export class ProfileBL extends Page {
                   <input
                     type="text"
                     placeholder="Enter full name"
-                    defaultValue={Client.Token.FullName}
+                    defaultValue={Client.Token.fullName}
                   />
                 </div>
 
@@ -81,7 +81,7 @@ export class ProfileBL extends Page {
                   <input
                     type="text"
                     placeholder="Enter phone number"
-                    defaultValue={Client.Token.PhoneNumber}
+                    defaultValue={Client.Token.phoneNumber}
                   />
                 </div>
 

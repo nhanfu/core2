@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import DropdownComponent from "./DropdownComponent";
+import dropdownComponent from "./dropdownComponent";
 import { ChromeTabs, ComponentExt } from "../../lib";
 import { Client } from "../../lib";
 import { Toast } from "../../lib/toast";
@@ -18,7 +18,7 @@ dayjs.extend(localizedFormat);
 
 const NOTIFICATION_KEY = "notifications";
 
-const NotificationDropdown = () => {
+const notificationDropdown = () => {
   const dispatch = useDispatch();
   const taskNotification = useSelector(
     (state) => state.generic[NOTIFICATION_KEY] || []
@@ -72,7 +72,7 @@ const NotificationDropdown = () => {
     };
 
     const showNativeNtf = (task) => {
-      const nativeNtf = new Notification(LangSelect.Get(task.featureName), {
+      const nativeNtf = new Notification(LangSelect.get(task.featureName), {
         body: task.title2,
         icon:
           task.avatar ||
@@ -87,9 +87,9 @@ const NotificationDropdown = () => {
       }, 7000);
     };
 
-    window.addEventListener("MessageNotification", handleMessage);
+    window.addEventListener("messageNotification", handleMessage);
     return () => {
-      window.removeEventListener("MessageNotification", handleMessage);
+      window.removeEventListener("messageNotification", handleMessage);
     };
   }, [dispatch]);
 
@@ -121,7 +121,7 @@ const NotificationDropdown = () => {
         { field: "isView", value: "1" },
       ];
       return {
-        table: "TaskNotification",
+        table: "taskNotification",
         changes: changes,
       };
     });
@@ -152,7 +152,7 @@ const NotificationDropdown = () => {
           (x) => x.content.meta.name == "inquiry"
         );
         if (!tabChrome) {
-          ComponentExt.InitFeatureByName("inquiry", true).then((tab) => {
+          ComponentExt.initFeatureByName("inquiry", true).then((tab) => {
             window.setTimeout(() => {
               tab.openPopup("inquiry-editor", inquiry.data[0]);
             }, 1000);
@@ -181,7 +181,7 @@ const NotificationDropdown = () => {
           (x) => x.content.meta.name == "advance-request"
         );
         if (!tabChrome) {
-          ComponentExt.InitFeatureByName("advance-request", true).then(
+          ComponentExt.initFeatureByName("advance-request", true).then(
             (tab) => {
               window.setTimeout(() => {
                 tab.openPopup("advance-request-editor", inquiryDetail.data[0]);
@@ -215,7 +215,7 @@ const NotificationDropdown = () => {
           (x) => x.content.meta.name == "reimbursement-form"
         );
         if (!tabChrome) {
-          ComponentExt.InitFeatureByName("reimbursement-form", true).then(
+          ComponentExt.initFeatureByName("reimbursement-form", true).then(
             (tab) => {
               window.setTimeout(() => {
                 tab.openPopup(
@@ -252,7 +252,7 @@ const NotificationDropdown = () => {
           (x) => x.content.meta.name == "payment-request"
         );
         if (!tabChrome) {
-          ComponentExt.InitFeatureByName("payment-request", true).then(
+          ComponentExt.initFeatureByName("payment-request", true).then(
             (tab) => {
               window.setTimeout(() => {
                 tab.openPopup("payment-request-editor", inquiryDetail.data[0]);
@@ -287,7 +287,7 @@ const NotificationDropdown = () => {
           (x) => x.content.meta.name == featureName
         );
         if (!tabChrome) {
-          ComponentExt.InitFeatureByName(featureName, true).then((tab) => {
+          ComponentExt.initFeatureByName(featureName, true).then((tab) => {
             window.setTimeout(() => {
               tab.openPopup(featureDetailName, entity.data[0]);
             }, 1000);
@@ -317,7 +317,7 @@ const NotificationDropdown = () => {
           (x) => x.content.meta.name == featureName
         );
         if (!tabChrome) {
-          ComponentExt.InitFeatureByName(featureName, true).then((tab) => {
+          ComponentExt.initFeatureByName(featureName, true).then((tab) => {
             window.setTimeout(() => {
               tab.openPopup(featureDetailName, entity.data[0]);
             }, 1000);
@@ -349,7 +349,7 @@ const NotificationDropdown = () => {
       { field: "read", value: "1" },
     ];
     const patch = {
-      table: "TaskNotification",
+      table: "taskNotification",
       changes: changes,
     };
     Client.instance.patchAsync(patch).then();
@@ -397,7 +397,7 @@ const NotificationDropdown = () => {
               />
             </div>
             <div className={`message-content ${item.read ? "read" : ""}`}>
-              <div className="header2">{LangSelect.Get(item.featureName)}</div>
+              <div className="header2">{LangSelect.get(item.featureName)}</div>
               <div className="header">{item.title2}</div>
               <div
                 className="body"
@@ -414,7 +414,7 @@ const NotificationDropdown = () => {
   );
 
   return (
-    <DropdownComponent
+    <dropdownComponent
       toggleContent={toggleContent}
       dropdownContent={dropdownContent}
       classNameChild="md"
@@ -423,4 +423,4 @@ const NotificationDropdown = () => {
   );
 };
 
-export default NotificationDropdown;
+export default notificationDropdown;

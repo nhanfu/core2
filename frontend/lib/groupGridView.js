@@ -19,326 +19,326 @@ export class GroupGridView extends GridView {
         super(ui);
     }
     Render() {
-        super.Render();
-        Html.take(this.Element).className("group-table").end.render();
+        super.render();
+        Html.take(this.element).className("group-table").end.render();
     }
-    RenderContent() {
-        if (!this.LoadRerender) {
+    renderContent() {
+        if (!this.loadRerender) {
             this.Header = this.Header.filter(x => !x.Hidden);
-            this.RenderTableHeader(this.Header);
-            this.LoadRerender = true;
+            this.renderTableHeader(this.Header);
+            this.loadRerender = true;
         }
         if (this.Editable) {
-            this.AddNewEmptyRow();
+            this.addNewEmptyRow();
         }
-        this.AddSections();
-        this.FormattedRowData = this.RowData.Data;
-        if (this.FormattedRowData.length == 0) {
+        this.addSections();
+        this.formattedRowData = this.rowData.Data;
+        if (this.formattedRowData.length == 0) {
             return;
         }
-        this.MainSection.Show = false;
-        this.MainSection.DisposeChildren();
-        this.FormattedRowData.forEach((row, index) => {
-            Html.take(this.MainSection.Element);
-            this.RenderRowData1(this.Header, row, this.MainSection, null);
+        this.mainSection.Show = false;
+        this.mainSection.disposeChildren();
+        this.formattedRowData.forEach((row, index) => {
+            Html.take(this.mainSection.element);
+            this.renderRowData1(this.Header, row, this.mainSection, null);
         });
-        this.UpdateStickyColumns();
-        this.MainSection.Show = true;
-        this.ContentRendered();
+        this.updateStickyColumns();
+        this.mainSection.Show = true;
+        this.contentRendered();
         window.setTimeout(() => {
-            this.RenderIndex();
+            this.renderIndex();
         }, 500);
     }
 
-    async ApplyFilter() {
-        this.MainSection.DisposeChildren();
-        return super.ApplyFilter();
+    async applyFilter() {
+        this.mainSection.disposeChildren();
+        return super.applyFilter();
     }
 
-    NoRowData(list) {
+    noRowData(list) {
         if (this.Editable) {
-            this.AddNewEmptyRow();
-        } else if (list.Nothing()) {
-            this.NoRecordFound();
+            this.addNewEmptyRow();
+        } else if (list.nothing()) {
+            this.noRecordFound();
         }
     }
 
     /**
      * @param {ListViewItem} rowSection
      */
-    MoveEmptyRow(rowSection) {
-        let groupSection1 = this.AllListViewItem.find(group => group.GroupRow && group.Entity[this._groupKey] === rowSection.Entity[this._groupKey]);
+    moveEmptyRow(rowSection) {
+        let groupSection1 = this.allListViewItem.find(group => group.groupRow && group.entity[this._groupKey] === rowSection.entity[this._groupKey]);
         if (groupSection1) {
             var tr = rowSection;
-            tr.Parent = this.MainSection;
-            tr.ListViewSection = this.MainSection;
-            tr.GroupSection = groupSection1;
-            tr.Element.classList.add("group-detail");
-            var lastChild = groupSection1.ChildrenItems[groupSection1.ChildrenItems.length - 1];
-            var index = this.AllListViewItem.indexOf(lastChild);
-            if (this.AllListViewItem.length == index + 1) {
-                this.MainSection.Element.appendChild(tr.Element);
+            tr.Parent = this.mainSection;
+            tr.listViewSection = this.mainSection;
+            tr.groupSection = groupSection1;
+            tr.element.classList.add("group-detail");
+            var lastChild = groupSection1.childrenItems[groupSection1.childrenItems.length - 1];
+            var index = this.allListViewItem.indexOf(lastChild);
+            if (this.allListViewItem.length == index + 1) {
+                this.mainSection.element.appendChild(tr.element);
             }
             else {
-                this.MainSection.Element.insertBefore(tr.Element, this.AllListViewItem[index + 1].Element);
+                this.mainSection.element.insertBefore(tr.element, this.allListViewItem[index + 1].element);
             }
-            this.MainSection.Children.splice(index + 1, 0, tr);
-            groupSection1.ChildrenItems.push(tr);
+            this.mainSection.Children.splice(index + 1, 0, tr);
+            groupSection1.childrenItems.push(tr);
             this.Dirty = true;
             return tr;
         }
         else {
-            Html.take(this.MainSection);
-            let first = rowSection.Entity;
+            Html.take(this.mainSection);
+            let first = rowSection.entity;
             var groupSection = new GroupViewItem(ElementType.tr);
-            groupSection.Key = rowSection.Entity[this._groupKey];
-            groupSection.Entity = first;
-            groupSection.ParentElement = this.MainSection.Element;
-            groupSection.ListViewSection = true;
-            groupSection.ListViewSection = this.MainSection;
-            groupSection.ListView = this;
-            this.MainSection.AddChild(groupSection);
-            groupSection.Element.tabIndex = -1;
-            var groupText = Utils.IsFunction(this.Meta.GroupFormat, false, groupSection);
-            Html.Instance.tData.className("status-cell").tabIndex(-1).event(EventType.Click, () => groupSection.ShowChildren1 = !groupSection.ShowChildren1).icon("fal fa-square");
-            groupSection.Chevron = Html.Context;
-            Html.Instance.end.end.tData.event(EventType.Click, () => this.DispatchClick(first))
-                .event(EventType.DblClick, () => this.DispatchDblClick(first))
+            groupSection.Key = rowSection.entity[this._groupKey];
+            groupSection.entity = first;
+            groupSection.parentElement = this.mainSection.element;
+            groupSection.listViewSection = true;
+            groupSection.listViewSection = this.mainSection;
+            groupSection.listView = this;
+            this.mainSection.addChild(groupSection);
+            groupSection.element.tabIndex = -1;
+            var groupText = Utils.isFunction(this.meta.groupFormat, false, groupSection);
+            Html.instance.tData.className("status-cell").tabIndex(-1).event(EventType.Click, () => groupSection.showChildren1 = !groupSection.showChildren1).icon("fal fa-square");
+            groupSection.Chevron = Html.context;
+            Html.instance.end.end.tData.event(EventType.Click, () => this.dispatchClick(first))
+                .event(EventType.dblClick, () => this.dispatchDblClick(first))
                 .div.className("d-flex");
-            groupSection.GroupText = Html.Context;
-            Html.Instance.innerHTML(groupText);
-            Html.Instance.endOf(ElementType.td);
+            groupSection.groupText = Html.context;
+            Html.instance.innerHTML(groupText);
+            Html.instance.endOf(ElementType.td);
             this.Header.slice(2).forEach(item => {
-                Html.Instance.tData.attr("component", "Number").className("data-summary").style("font-weight:600");
-                var sec = new Section(null, Html.Context);
-                sec.Meta = item;
-                groupSection.AddChild(sec);
-                Html.Instance.endOf(ElementType.td);
+                Html.instance.tData.attr("component", "Number").className("data-summary").style("font-weight:600");
+                var sec = new Section(null, Html.context);
+                sec.meta = item;
+                groupSection.addChild(sec);
+                Html.instance.endOf(ElementType.td);
             });
-            Html.Instance.endOf(ElementType.tr);
-            Html.take(this.MainSection.Element);
-            rowSection.Element.classList.add("group-detail");
-            groupSection.ChildrenItems.push(rowSection);
-            rowSection.GroupSection = groupSection;
-            var lastChild = groupSection.ChildrenItems[groupSection.ChildrenItems.length - 1];
-            var index = this.AllListViewItem.indexOf(groupSection);
-            if (this.AllListViewItem.length == index + 1) {
-                this.MainSection.Element.appendChild(rowSection.Element);
+            Html.instance.endOf(ElementType.tr);
+            Html.take(this.mainSection.element);
+            rowSection.element.classList.add("group-detail");
+            groupSection.childrenItems.push(rowSection);
+            rowSection.groupSection = groupSection;
+            var lastChild = groupSection.childrenItems[groupSection.childrenItems.length - 1];
+            var index = this.allListViewItem.indexOf(groupSection);
+            if (this.allListViewItem.length == index + 1) {
+                this.mainSection.element.appendChild(rowSection.element);
             }
             else {
-                this.MainSection.Element.insertBefore(rowSection.Element, this.AllListViewItem[index + 1].Element);
+                this.mainSection.element.insertBefore(rowSection.element, this.allListViewItem[index + 1].element);
             }
-            this.MainSection.Children.splice(index + 1, 0, rowSection);
+            this.mainSection.Children.splice(index + 1, 0, rowSection);
             return rowSection;
         }
     }
 
-    AddRow(row, fromIndex, singleAdd = true) {
-        if (!Utils.isNullOrWhiteSpace(this.Meta.GroupBy)) {
-            let keys = this.Meta.GroupBy.split(",");
+    addRow(row, fromIndex, singleAdd = true) {
+        if (!Utils.isNullOrWhiteSpace(this.meta.groupBy)) {
+            let keys = this.meta.groupBy.split(",");
             row[this._groupKey] = keys.map(key => row[key]).join(" ");
         }
-        let groupSection1 = this.AllListViewItem.find(group => group.GroupRow && group.Entity[this._groupKey] === row[this._groupKey]);
+        let groupSection1 = this.allListViewItem.find(group => group.groupRow && group.entity[this._groupKey] === row[this._groupKey]);
         if (groupSection1) {
-            var tr = super.RenderRowData(this.Header, row, this.MainSection, fromIndex, false);
-            this.MoveGroupRow(tr);
+            var tr = super.renderRowData(this.Header, row, this.mainSection, fromIndex, false);
+            this.moveGroupRow(tr);
             this.Dirty = true;
             return tr;
         }
         else {
-            Html.take(this.MainSection);
+            Html.take(this.mainSection);
             let first = row;
             var groupSection = new GroupViewItem(ElementType.tr);
             groupSection.Key = row[this._groupKey];
-            groupSection.Entity = row;
-            groupSection.ParentElement = this.MainSection.Element;
-            groupSection.ListViewSection = true;
-            groupSection.ListViewSection = this.MainSection;
-            groupSection.ListView = this;
-            this.MainSection.AddChild(groupSection);
-            groupSection.Element.tabIndex = -1
-            var groupText = Utils.IsFunction(this.Meta.GroupFormat, false, groupSection);
-            Html.Instance.tData.className("status-cell").tabIndex(-1).event(EventType.Click, () => groupSection.ShowChildren1 = !groupSection.ShowChildren1).icon("fal fa-square");
-            groupSection.Chevron = Html.Context;
-            Html.Instance.end.end.tData.event(EventType.Click, () => this.DispatchClick(first))
-                .event(EventType.DblClick, () => this.DispatchDblClick(first))
+            groupSection.entity = row;
+            groupSection.parentElement = this.mainSection.element;
+            groupSection.listViewSection = true;
+            groupSection.listViewSection = this.mainSection;
+            groupSection.listView = this;
+            this.mainSection.addChild(groupSection);
+            groupSection.element.tabIndex = -1
+            var groupText = Utils.isFunction(this.meta.groupFormat, false, groupSection);
+            Html.instance.tData.className("status-cell").tabIndex(-1).event(EventType.Click, () => groupSection.showChildren1 = !groupSection.showChildren1).icon("fal fa-square");
+            groupSection.Chevron = Html.context;
+            Html.instance.end.end.tData.event(EventType.Click, () => this.dispatchClick(first))
+                .event(EventType.dblClick, () => this.dispatchDblClick(first))
                 .div.className("d-flex");
-            groupSection.GroupText = Html.Context;
-            Html.Instance.innerHTML(groupText);
-            Html.Instance.endOf(ElementType.td);
+            groupSection.groupText = Html.context;
+            Html.instance.innerHTML(groupText);
+            Html.instance.endOf(ElementType.td);
             this.Header.slice(2).forEach(item => {
-                Html.Instance.tData.attr("component", "Number").className("data-summary").style("font-weight:600");
-                var sec = new Section(null, Html.Context);
-                sec.Meta = item;
-                groupSection.AddChild(sec);
-                Html.Instance.endOf(ElementType.td);
+                Html.instance.tData.attr("component", "Number").className("data-summary").style("font-weight:600");
+                var sec = new Section(null, Html.context);
+                sec.meta = item;
+                groupSection.addChild(sec);
+                Html.instance.endOf(ElementType.td);
             });
-            Html.Instance.endOf(ElementType.tr);
-            Html.take(this.MainSection.Element);
-            let rowSection = super.RenderRowData(this.Header, row, this.MainSection);
-            rowSection.Element.classList.add("group-detail");
-            groupSection.ChildrenItems.push(rowSection);
-            rowSection.GroupSection = groupSection;
+            Html.instance.endOf(ElementType.tr);
+            Html.take(this.mainSection.element);
+            let rowSection = super.renderRowData(this.Header, row, this.mainSection);
+            rowSection.element.classList.add("group-detail");
+            groupSection.childrenItems.push(rowSection);
+            rowSection.groupSection = groupSection;
             this.Dirty = true;
             return rowSection;
         }
     }
 
     // @ts-ignore
-    RenderRowData1(headers, row, section, index, emptyRow = false) {
-        let groupSection1 = this.AllListViewItem.find(group => group.GroupRow && group.Entity[this._groupKey] === row[this._groupKey]);
+    renderRowData1(headers, row, section, index, emptyRow = false) {
+        let groupSection1 = this.allListViewItem.find(group => group.groupRow && group.entity[this._groupKey] === row[this._groupKey]);
         if (groupSection1) {
-            var tr = super.RenderRowData(headers, row, section, index, emptyRow);
-            tr.GroupSection = groupSection1;
-            tr.Element.classList.add("group-detail");
-            groupSection1.ChildrenItems.push(tr);
+            var tr = super.renderRowData(headers, row, section, index, emptyRow);
+            tr.groupSection = groupSection1;
+            tr.element.classList.add("group-detail");
+            groupSection1.childrenItems.push(tr);
             return tr;
         }
-        Html.take(section.Element);
+        Html.take(section.element);
         let first = row;
         var groupSection = new GroupViewItem(ElementType.tr);
         groupSection.Key = row[this._groupKey];
-        if (this.Meta.IsMultiple) {
-            groupSection.Entity = JSON.parse(JSON.stringify(row[this.Meta.GroupBy.substr(0, this.Meta.GroupBy.length - 2)]));
-            groupSection.Entity[this._groupKey] = row[this._groupKey];
+        if (this.meta.isMultiple) {
+            groupSection.entity = JSON.parse(JSON.stringify(row[this.meta.groupBy.substr(0, this.meta.groupBy.length - 2)]));
+            groupSection.entity[this._groupKey] = row[this._groupKey];
         }
         else {
-            groupSection.Entity = row;
+            groupSection.entity = row;
         }
-        groupSection.ParentElement = section.Element;
-        groupSection.ListViewSection = true;
-        groupSection.ListViewSection = section;
-        groupSection.ListView = this;
-        section.AddChild(groupSection);
-        groupSection.Element.tabIndex = -1;
-        if (!this.Meta.IsMultiple) {
-            var groupText = Utils.IsFunction(this.Meta.GroupFormat, false, groupSection);
-            Html.Instance.tData.className("status-cell").tabIndex(-1).event(EventType.Click, () => groupSection.ShowChildren1 = !groupSection.ShowChildren1).icon("fal fa-square");
-            groupSection.Chevron = Html.Context;
-            Html.Instance.end.end.tData.dataAttr("field", this.Header[1].FieldName).event(EventType.DblClick, () => this.DispatchDblClick(first))
+        groupSection.parentElement = section.element;
+        groupSection.listViewSection = true;
+        groupSection.listViewSection = section;
+        groupSection.listView = this;
+        section.addChild(groupSection);
+        groupSection.element.tabIndex = -1;
+        if (!this.meta.isMultiple) {
+            var groupText = Utils.isFunction(this.meta.groupFormat, false, groupSection);
+            Html.instance.tData.className("status-cell").tabIndex(-1).event(EventType.Click, () => groupSection.showChildren1 = !groupSection.showChildren1).icon("fal fa-square");
+            groupSection.Chevron = Html.context;
+            Html.instance.end.end.tData.dataAttr("field", this.Header[1].fieldName).event(EventType.dblClick, () => this.dispatchDblClick(first))
                 .div.className("d-flex");
-            groupSection.GroupText = Html.Context;
-            Html.Instance.innerHTML(groupText);
-            Html.Instance.event(EventType.Click, () => groupSection.ShowChildren = !groupSection.ShowChildren)
-            Html.Instance.endOf(ElementType.td);
+            groupSection.groupText = Html.context;
+            Html.instance.innerHTML(groupText);
+            Html.instance.event(EventType.Click, () => groupSection.showChildren = !groupSection.showChildren)
+            Html.instance.endOf(ElementType.td);
             this.Header.slice(2).forEach(item => {
-                Html.Instance.tData.attr("component", "Number").dataAttr("field", item.FieldName).tabIndex(-1).event(EventType.Click, () => groupSection.ShowChildren = !groupSection.ShowChildren).className("data-summary").style("font-weight:600");
-                var sec = new Section(null, Html.Context);
-                sec.Meta = item;
-                groupSection.AddChild(sec);
-                Html.Instance.endOf(ElementType.td);
+                Html.instance.tData.attr("component", "Number").dataAttr("field", item.fieldName).tabIndex(-1).event(EventType.Click, () => groupSection.showChildren = !groupSection.showChildren).className("data-summary").style("font-weight:600");
+                var sec = new Section(null, Html.context);
+                sec.meta = item;
+                groupSection.addChild(sec);
+                Html.instance.endOf(ElementType.td);
             });
         }
         else {
-            Html.Instance.tData.className("status-cell").tabIndex(-1).event(EventType.Click, () => groupSection.ShowChildren1 = !groupSection.ShowChildren1).icon("fal fa-square");
-            groupSection.Chevron = Html.Context;
-            Html.Instance.end.endOf(ElementType.td)
+            Html.instance.tData.className("status-cell").tabIndex(-1).event(EventType.Click, () => groupSection.showChildren1 = !groupSection.showChildren1).icon("fal fa-square");
+            groupSection.Chevron = Html.context;
+            Html.instance.end.endOf(ElementType.td)
             this.Header.slice(1).forEach(item => {
-                Html.Instance.tData.attr("component", "Number").tabIndex(-1).event(EventType.Click, () => groupSection.ShowChildren = !groupSection.ShowChildren).className("data-group");
-                groupSection.RenderTableCell(groupSection.Entity, item);
-                Html.Instance.endOf(ElementType.td);
+                Html.instance.tData.attr("component", "Number").tabIndex(-1).event(EventType.Click, () => groupSection.showChildren = !groupSection.showChildren).className("data-group");
+                groupSection.renderTableCell(groupSection.entity, item);
+                Html.instance.endOf(ElementType.td);
             });
         }
-        Html.Instance.endOf(ElementType.tr);
-        Html.take(section.Element);
-        let rowSection = super.RenderRowData(headers, row, section);
-        rowSection.Element.classList.add("group-detail");
-        groupSection.ChildrenItems.push(rowSection);
-        rowSection.GroupSection = groupSection;
+        Html.instance.endOf(ElementType.tr);
+        Html.take(section.element);
+        let rowSection = super.renderRowData(headers, row, section);
+        rowSection.element.classList.add("group-detail");
+        groupSection.childrenItems.push(rowSection);
+        rowSection.groupSection = groupSection;
         return groupSection;
     }
 
-    DispatchClick(row) {
-        this.DispatchEvent(this.Meta.GroupEvent, EventType.Click, row).then();
+    dispatchClick(row) {
+        this.dispatchEvent(this.meta.groupEvent, EventType.Click, row).then();
     }
 
-    DispatchDblClick(row) {
-        this.DispatchEvent(this.Meta.GroupEvent, EventType.DblClick, row).then();
+    dispatchDblClick(row) {
+        this.dispatchEvent(this.meta.groupEvent, EventType.dblClick, row).then();
     }
 
-    ToggleAll() {
-        let allSelected = this.AllListViewItem
-            .filter(x => !x.GroupRow && !x.EmptyRow)
+    toggleAll() {
+        let allSelected = this.allListViewItem
+            .filter(x => !x.groupRow && !x.emptyRow)
             .every(x => x.Selected);
         if (allSelected) {
-            this.ClearSelected();
+            this.clearSelected();
         } else {
-            this.RowAction(x => {
+            this.rowAction(x => {
                 if (x instanceof ListViewItem) {
-                    x.Selected = !x.GroupRow && !x.EmptyRow;
+                    x.Selected = !x.groupRow && !x.emptyRow;
                 }
             });
         }
     }
 
-    RemoveRowById(id) {
-        let index = this.RowData.Data.findIndex(x => x[this.IdField].toString() === id);
+    removeRowById(id) {
+        let index = this.rowData.Data.findIndex(x => x[this.idField].toString() === id);
         if (index < 0) {
             return;
         }
 
-        this.RowData.Data.splice(index, 1);
-        this.FilterChildren(x => x instanceof ListViewItem && x.Entity[this.IdField].toString() === id)
+        this.rowData.Data.splice(index, 1);
+        this.filterChildren(x => x instanceof ListViewItem && x.entity[this.idField].toString() === id)
             .forEach(x => {
-                if (x instanceof ListViewItem && x.GroupSection && x.GroupSection.Entity instanceof GroupRowData) {
-                    let groupChildren = x.GroupSection.Entity.Children;
-                    groupChildren.splice(groupChildren.indexOf(x.Entity), 1);
+                if (x instanceof ListViewItem && x.groupSection && x.groupSection.Entity instanceof GroupRowData) {
+                    let groupChildren = x.groupSection.Entity.Children;
+                    groupChildren.splice(groupChildren.indexOf(x.entity), 1);
                     if (groupChildren.length === 0) {
-                        this.RowData.Data.splice(this.RowData.Data.indexOf(x.GroupSection.Entity), 1);
-                        x.GroupSection.Dispose();
+                        this.rowData.Data.splice(this.rowData.Data.indexOf(x.groupSection.Entity), 1);
+                        x.groupSection.Dispose();
                     }
                 }
                 x.Dispose();
             });
-        this.NoRowData(this.RowData.Data);
+        this.noRowData(this.rowData.Data);
     }
 
-    RemoveRange(data) {
-        data.forEach(x => this.RemoveRowById(x[this.IdField].toString()));
+    removeRange(data) {
+        data.forEach(x => this.removeRowById(x[this.idField].toString()));
     }
 
-    async AddRows(rowsData) {
+    async addRows(rowsData) {
         let listItem = [];
         await Promise.all(rowsData.map(async x => {
-            listItem.push(this.AddRow(x, null, false));
+            listItem.push(this.addRow(x, null, false));
         }));
-        this.RenderIndex();
-        this.DomLoaded();
+        this.renderIndex();
+        this.domLoaded();
         return listItem;
     }
 
-    async AddOrUpdateRow(rowData, singleAdd = true, force = false, ...fields) {
+    async addOrUpdateRow(rowData, singleAdd = true, force = false, ...fields) {
         let existRowData = this
-            .FilterChildren(x => x instanceof ListViewItem && x.Entity[this.IdField] === rowData[this.IdField])
+            .filterChildren(x => x instanceof ListViewItem && x.entity[this.idField] === rowData[this.idField])
             .find(x => true);
         if (!existRowData) {
-            await this.AddRow(rowData, 0, singleAdd);
+            await this.addRow(rowData, 0, singleAdd);
             return;
         }
-        if (existRowData.EmptyRow) {
-            existRowData.Entity = null;
-            await this.AddRow(rowData, 0, singleAdd);
+        if (existRowData.emptyRow) {
+            existRowData.entity = null;
+            await this.addRow(rowData, 0, singleAdd);
         } else {
-            existRowData.Entity.CopyPropFrom(rowData);
+            existRowData.entity.copyPropFrom(rowData);
             // @ts-ignore
-            this.RowAction(x => x.Entity === existRowData.Entity, x => x.UpdateView({ force, componentNames: fields }));
+            this.rowAction(x => x.entity === existRowData.entity, x => x.updateView({ force, componentNames: fields }));
         }
     }
 
     // @ts-ignore
-    RenderRowData(headers, row, section, index, emptyRow = false) {
+    renderRowData(headers, row, section, index, emptyRow = false) {
         if (!(row instanceof GroupRowData)) {
-            return super.RenderRowData(headers, row, section, index, emptyRow);
+            return super.renderRowData(headers, row, section, index, emptyRow);
         }
-        if (!(section.Element instanceof HTMLTableSectionElement)) {
+        if (!(section.element instanceof hTMLTableSectionElement)) {
             throw new Error("The section is not an HTML table element");
         }
-        Html.take(section.Element);
+        Html.take(section.element);
         if (row.Key === null || row.Key.toString().trim() === "") {
             let rowResult = null;
             row.Children.forEach(child => {
-                Html.take(section.Element);
-                rowResult = super.RenderRowData(headers, child, section, null);
+                Html.take(section.element);
+                rowResult = super.renderRowData(headers, child, section, null);
             });
             return rowResult;
         }
@@ -346,85 +346,85 @@ export class GroupGridView extends GridView {
         let groupSection = new GroupViewItem({
             type: ElementType.tr,
             Entity: row,
-            ParentElement: section.Element,
-            GroupRow: true,
-            ListViewSection: section,
-            ListView: this
+            parentElement: section.element,
+            groupRow: true,
+            listViewSection: section,
+            listView: this
         });
 
-        section.AddChild(groupSection);
-        groupSection.Element.tabIndex = -1;
-        var groupText = Utils.IsFunction(this.Meta.GroupFormat, false, this);
+        section.addChild(groupSection);
+        groupSection.element.tabIndex = -1;
+        var groupText = Utils.isFunction(this.meta.groupFormat, false, this);
         if (!groupText) {
-            groupText = Utils.FormatEntity2(this.Meta.GroupFormat, null, first, Utils.EmptyFormat, Utils.EmptyFormat);
+            groupText = Utils.formatEntity2(this.meta.groupFormat, null, first, Utils.emptyFormat, Utils.emptyFormat);
         }
-        if (this.Meta.GroupReferenceId) {
-            let val = first[this.Meta.GroupBy.substr(0, this.Meta.GroupBy.length - 2)];
-            groupSection.Entity = val;
-            groupSection.Entity["ModelName"] = this.Meta.RefName;
+        if (this.meta.groupReferenceId) {
+            let val = first[this.meta.groupBy.substr(0, this.meta.groupBy.length - 2)];
+            groupSection.entity = val;
+            groupSection.entity["modelName"] = this.meta.refName;
             headers.filter(x => !x.Hidden).forEach(header => {
-                Html.Instance.tData.tabIndex(-1)
+                Html.instance.tData.tabIndex(-1)
                     .style(header.Style)
-                    .event(EventType.FocusIn, e => this.FocusCell(e, header))
-                    .dataAttr("field", header.FieldName).render();
-                let td = Html.Context;
-                groupSection.RenderTableCell(val, header, td);
-                Html.Instance.endOf(ElementType.td);
+                    .event(EventType.focusIn, e => this.focusCell(e, header))
+                    .dataAttr("field", header.fieldName).render();
+                let td = Html.context;
+                groupSection.renderTableCell(val, header, td);
+                Html.instance.endOf(ElementType.td);
             });
         } else {
-            Html.Instance.tData.className("status-cell").icon("mif-pencil").endOf(ElementType.td)
+            Html.instance.tData.className("status-cell").icon("mif-pencil").endOf(ElementType.td)
                 .tData.colSpan(headers.length - 1)
-                .event(EventType.Click, () => this.DispatchClick(first))
-                .event(EventType.DblClick, () => this.DispatchDblClick(first))
-                .icon("fa fa-chevron-down").event(EventType.Click, () => groupSection.ShowChildren = !groupSection.ShowChildren).end
+                .event(EventType.Click, () => this.dispatchClick(first))
+                .event(EventType.dblClick, () => this.dispatchDblClick(first))
+                .icon("fa fa-chevron-down").event(EventType.Click, () => groupSection.showChildren = !groupSection.showChildren).end
                 .div.className("d-flex").innerHTML(groupText);
-            groupSection.GroupText = Html.Context;
-            groupSection.Chevron = Html.Context.previousElementSibling;
-            groupSection.Chevron.ParentElement.PreviousElementSibling.AppendChild(groupSection.Chevron);
-            Html.Instance.endOf(ElementType.td);
+            groupSection.groupText = Html.context;
+            groupSection.Chevron = Html.context.previousElementSibling;
+            groupSection.Chevron.parentElement.previousElementSibling.appendChild(groupSection.Chevron);
+            Html.instance.endOf(ElementType.td);
         }
-        Html.Instance.endOf(ElementType.tr);
+        Html.instance.endOf(ElementType.tr);
         row.Children.forEach(child => {
-            Html.take(section.Element);
-            let rowSection = super.RenderRowData(headers, child, section);
-            rowSection.Element.AddClass("group-detail");
-            groupSection.ChildrenItems.push(rowSection);
-            rowSection.GroupSection = groupSection;
+            Html.take(section.element);
+            let rowSection = super.renderRowData(headers, child, section);
+            rowSection.element.addClass("group-detail");
+            groupSection.childrenItems.push(rowSection);
+            rowSection.groupSection = groupSection;
         });
         return groupSection;
     }
     /**
      * Updates pagination details based on the current data state.
      */
-    RenderIndex() {
-        if (this.MainSection.Children.length === 0) {
+    renderIndex() {
+        if (this.mainSection.Children.length === 0) {
             return;
         }
         var indexText = 0;
-        this.AllListViewItem.forEach((row, rowIndex) => {
+        this.allListViewItem.forEach((row, rowIndex) => {
             indexText++;
-            for (let i = 0; i < row.Element.children.length; i++) {
-                const element = row.Element.children[i];
+            for (let i = 0; i < row.element.children.length; i++) {
+                const element = row.element.children[i];
                 element.dataset.row = rowIndex;
                 element.dataset.col = i;
 
                 if (!this.Matrix[rowIndex]) this.Matrix[rowIndex] = [];
                 this.Matrix[rowIndex][i] = element;
             }
-            if (row.GroupRow) {
+            if (row.groupRow) {
                 indexText--;
                 return;
             }
-            var previous = row.FirstChild.Element.closest("td").previousElementSibling;
+            var previous = row.firstChild.element.closest("td").previousElementSibling;
             if (!previous) {
                 return;
             }
-            if (row.EmptyRow) {
+            if (row.emptyRow) {
                 previous.innerHTML = "<i class='fal fa-plus'></i>";
             }
             else {
                 previous.innerHTML = indexText.toString();
-                row.RowNo = indexText - 1;
+                row.rowNo = indexText - 1;
             }
         });
     }

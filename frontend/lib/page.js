@@ -26,19 +26,19 @@ export class Page {
     /**
      * @type {HTMLElement}
      */
-    ParentElement
+    parentElement
 
     constructor(meta) {
-        this.Meta = meta || {};
+        this.meta = meta || {};
     }
 
     async render() {
-        Html.take(this.ParentElement ?? this.Meta.ParentElement ?? document.body);
-        Html.Instance.clear();
-        Html.Instance.div.render();
-        this.Element = Html.Context;
-        let root = createRoot(this.Element);
-        let reactElement = React.createElement(this.Meta.Layout);
+        Html.take(this.parentElement ?? this.meta.parentElement ?? document.body);
+        Html.instance.clear();
+        Html.instance.div.render();
+        this.element = Html.context;
+        let root = createRoot(this.element);
+        let reactElement = React.createElement(this.meta.Layout);
         flushSync(() => root.render(reactElement))
     }
 }

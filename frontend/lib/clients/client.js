@@ -1,5 +1,5 @@
 import { SqlViewModel } from "../models/sqlViewModel.js";
-import { BadGatewayQueue } from "../models/badGatewayQueue.js";
+import { badGatewayQueue } from "../models/badGatewayQueue.js";
 import { Token } from "../models/token.js";
 import { Utils } from "../utils/utils.js";
 import { PatchVM } from "../models/patch.js";
@@ -13,42 +13,42 @@ import { encode, decode } from "@msgpack/msgpack";
 export class Client {
     /** @type {Entity[]} */
     static Entities = [];
-    static EpsilonNow = new Date(Date.now() + (1 * 60 * 1000));
-    static ErrorMessage = "Hệ thống đang cập nhật vui lòng chờ trong 30s!";
-    static ModelNamespace;
+    static epsilonNow = new Date(Date.now() + (1 * 60 * 1000));
+    static errorMessage = "Hệ thống đang cập nhật vui lòng chờ trong 30s!";
+    static modelNamespace;
     static entities;
     static token;
-    static GuidLength = 36;
+    static guidLength = 36;
     // @ts-ignore
     static Host = (import.meta.env?.VITE_API_HOST || window.location.host).toLowerCase();
     // @ts-ignore
-    static BaseUri = (import.meta.env?.VITE_API_BASE_URI || window.location.origin).toLowerCase();
+    static baseUri = (import.meta.env?.VITE_API_BASE_URI || window.location.origin).toLowerCase();
     // @ts-ignore
-    static IsPortal = ((import.meta.env?.VITE_IS_PORTAL || import.meta.env?.VITE_STARTUP || "").toLowerCase() !== "admin");
+    static isPortal = ((import.meta.env?.VITE_IS_PORTAL || import.meta.env?.VITE_STARTUP || "").toLowerCase() !== "admin");
     // @ts-ignore
-    static MetaConn = import.meta.env?.VITE_META_CONN || "default";
+    static metaConn = import.meta.env?.VITE_META_CONN || "default";
     // @ts-ignore
-    static DataConn = import.meta.env?.VITE_DATA_CONN || "bl";
+    static dataConn = import.meta.env?.VITE_DATA_CONN || "bl";
     // @ts-ignore
     static Tenant = import.meta.env?.VITE_TENANT || "System";
     // @ts-ignore
     static Env = import.meta.env?.VITE_ENV || "test";
     // @ts-ignore
-    static FileFTP = import.meta.env?.VITE_FILE_FTP || "/user";
+    static fileFTP = import.meta.env?.VITE_FILE_FTP || "/user";
     // @ts-ignore
     /** @type {string} */
     static apiV2 = import.meta.env?.VITE_API_V2_URL;
     static api = import.meta.env?.VITE_API_URL;
     // @ts-ignore
     static Config = document.head.config?.content || "";
-    static BadGatewayRequest = new BadGatewayQueue();
-    static UnAuthorizedEventHandler = new Action();
-    static SignOutEventHandler = new Action();
+    static badGatewayRequest = new badGatewayQueue();
+    static unAuthorizedEventHandler = new Action();
+    static signOutEventHandler = new Action();
     // @ts-ignore
     static get Origin() { return document.head.origin?.content || window.location.origin; }
     _nameSpace;
     _config;
-    CustomPrefix = (() => {
+    customPrefix = (() => {
         const prefixElement = Array.from(document.head.children).find(x => x instanceof HTMLMetaElement && x.name === "prefix");
         return prefixElement?.content;
     })();
@@ -59,7 +59,7 @@ export class Client {
         if (this._nameSpace && this._nameSpace.charAt(this._nameSpace.length - 1) !== '.') {
             this._nameSpace += '.';
         }
-        this.EntityName = entityName;
+        this.entityName = entityName;
     }
 
     /** @type {Client} */
@@ -73,17 +73,17 @@ export class Client {
     }
     /** @type {Token} */
     static get token() {
-        return JSON.parse(localStorage.getItem('UserInfo'));
+        return JSON.parse(localStorage.getItem('userInfo'));
     }
 
     static set token(value) {
-        localStorage.setItem('UserInfo', JSON.stringify(value));
+        localStorage.setItem('userInfo', JSON.stringify(value));
     }
     static get systemRole() {
-        return Client.token.RoleNames.some(x => x.toLowerCase() == "admin");
+        return Client.token.roleNames.some(x => x.toLowerCase() == "admin");
     }
     static get bodRole() {
-        return Client.token.RoleNames.some(x => x.toLowerCase() == "bod");
+        return Client.token.roleNames.some(x => x.toLowerCase() == "bod");
     }
     /**
      * @param {SqlViewModel} vm
@@ -93,10 +93,10 @@ export class Client {
         // @ts-ignore
         const data = {
             Value: JSON.stringify(vm),
-            Url: Utils.UserSvc,
-            IsRawString: true,
+            Url: Utils.userSvc,
+            isRawString: true,
             Method: "POST",
-            AllowAnonymous: annonymous
+            allowAnonymous: annonymous
         };
         return this.submitAsync(data);
     }
@@ -106,33 +106,33 @@ export class Client {
         // @ts-ignore
         const data = {
             Value: JSON.stringify(vm),
-            Url: Utils.ComQuery,
-            IsRawString: true,
+            Url: Utils.comQuery,
+            isRawString: true,
             Method: "POST"
         };
         return this.submitAsync(data);
     }
 
     async submitAsyncWithToken(options) {
-        const isFormData = !!options.FormData;
+        const isFormData = !!options.formData;
         const useMsgPack = false;
         options.Headers = {
             ...(!options.Headers && !isFormData && !useMsgPack && { "Content-Type": "application/json" }),
             ...(!options.Headers && !isFormData && useMsgPack && { "Content-Type": "application/msgpack" }),
             ...(options.Headers || {}),
-            ...(!options.AllowAnonymous && { Authorization: `Bearer ${Client.token?.AccessToken}` }),
+            ...(!options.allowAnonymous && { Authorization: `Bearer ${Client.token?.accessToken}` }),
             ...(useMsgPack ? { Accept: "application/msgpack, application/json" } : {}),
             "User-Agent": "Mozilla/5.0"
         };
 
-        const url = Client.api + (options.FinalUrl ?? options.Url);
-        console.log('[DEBUG SubmitAsyncWithToken] Client.api:', Client.api, 'Url:', options.Url, 'FinalUrl:', options.FinalUrl, 'Constructed url:', url);
+        const url = Client.api + (options.finalUrl ?? options.Url);
+        console.log('[DEBUG submitAsyncWithToken] Client.api:', Client.api, 'Url:', options.Url, 'finalUrl:', options.finalUrl, 'Constructed url:', url);
 
         try {
             const response = await fetch(url, {
                 method: options.Method,
                 headers: options.Headers,
-                body: isFormData ? options.FormData : options.JsonData
+                body: isFormData ? options.formData : options.jsonData
             });
 
             const contentType = (response.headers.get("Content-Type") || "").toLowerCase();
@@ -141,7 +141,7 @@ export class Client {
             if (!response.ok) {
                 if (contentType.includes("application/msgpack") || contentType.includes("application/x-msgpack")) {
                     const buf = await response.arrayBuffer();
-                    const err = decode(new Uint8Array(buf));
+                    const err = decode(new uint8Array(buf));
                     return Promise.reject(err);
                 }
                 try {
@@ -160,7 +160,7 @@ export class Client {
 
             if (contentType.includes("application/msgpack") || contentType.includes("application/x-msgpack")) {
                 const buf = await response.arrayBuffer();
-                return decode(new Uint8Array(buf));
+                return decode(new uint8Array(buf));
             }
 
             if (contentType.includes("application/json")) {
@@ -178,7 +178,7 @@ export class Client {
      * @returns 
      */
     async submitAsync(options) {
-        if (!options.AllowAnonymous) {
+        if (!options.allowAnonymous) {
             await Client.refreshToken();
         }
         return await this.submitAsyncWithToken(options);
@@ -188,9 +188,9 @@ export class Client {
      */
     async getByIdsAsync(arrays) {
         const data = {
-            JsonData: JSON.stringify(arrays),
-            Url: Utils.ComQuerys,
-            IsRawString: true,
+            jsonData: JSON.stringify(arrays),
+            Url: Utils.comQuerys,
+            isRawString: true,
             Method: "POST"
         };
         return this.submitAsync(data);
@@ -202,9 +202,9 @@ export class Client {
      */
     async getByIdAsync(table, ids) {
         const data = {
-            JsonData: JSON.stringify({ Table: table, Id: ids }),
-            Url: Utils.ComQuery,
-            IsRawString: true,
+            jsonData: JSON.stringify({ Table: table, Id: ids }),
+            Url: Utils.comQuery,
+            isRawString: true,
             Method: "POST"
         };
         return this.submitAsync(data);
@@ -216,9 +216,9 @@ export class Client {
      */
     async getByNameAsync(table, ids, format) {
         const data = {
-            JsonData: JSON.stringify({ Table: table, Id: ids, Format: format }),
-            Url: Utils.ComQueryByName,
-            IsRawString: true,
+            jsonData: JSON.stringify({ Table: table, Id: ids, Format: format }),
+            Url: Utils.comQueryByName,
+            isRawString: true,
             Method: "POST"
         };
         return this.submitAsync(data);
@@ -226,9 +226,9 @@ export class Client {
 
     async notificationUser(entity, ...user) {
         const data = {
-            JsonData: JSON.stringify({ Entity: entity, Rule: user }),
+            jsonData: JSON.stringify({ Entity: entity, Rule: user }),
             Url: "/api/feature/notificationuser",
-            IsRawString: true,
+            isRawString: true,
             Method: "POST"
         };
         return this.submitAsync(data);
@@ -236,9 +236,9 @@ export class Client {
 
     async notificationRole(entity, ...role) {
         const data = {
-            JsonData: JSON.stringify({ Entity: entity, Rule: role }),
+            jsonData: JSON.stringify({ Entity: entity, Rule: role }),
             Url: "/api/feature/notificationrole",
-            IsRawString: true,
+            isRawString: true,
             Method: "POST"
         };
         return this.submitAsync(data);
@@ -249,7 +249,7 @@ export class Client {
      */
     async getService(name) {
         const data = {
-            JsonData: JSON.stringify({ Name: name }),
+            jsonData: JSON.stringify({ Name: name }),
             Url: "/api/feature/getService",
             Method: "POST"
         };
@@ -260,10 +260,10 @@ export class Client {
         /** @type {XHRWrapper} */
         // @ts-ignore
         const data = {
-            JsonData: JSON.stringify(value),
+            jsonData: JSON.stringify(value),
             Url: subUrl,
             Method: "POST",
-            AllowAnonymous: annonymous,
+            allowAnonymous: annonymous,
         };
         return this.submitAsync(data);
     }
@@ -279,13 +279,13 @@ export class Client {
         /** @type {XHRWrapper} */
         // @ts-ignore
         const data = {
-            JsonData: JSON.stringify(value),
-            IsRawString: true,
-            Url: Utils.PatchSvc,
+            jsonData: JSON.stringify(value),
+            isRawString: true,
+            Url: Utils.patchSvc,
             Headers: { "Content-type": "application/json" },
             Method: "PATCH",
-            AllowAnonymous: annonymous,
-            ErrorHandler: errHandler
+            allowAnonymous: annonymous,
+            errorHandler: errHandler
         };
         return this.submitAsync(data);
     }
@@ -301,13 +301,13 @@ export class Client {
         /** @type {XHRWrapper} */
         // @ts-ignore
         const data = {
-            JsonData: JSON.stringify(value),
-            IsRawString: true,
-            Url: Utils.PatchSvcs,
+            jsonData: JSON.stringify(value),
+            isRawString: true,
+            Url: Utils.patchSvcs,
             Headers: { "Content-type": "application/json" },
             Method: "PATCH",
-            AllowAnonymous: annonymous,
-            ErrorHandler: errHandler
+            allowAnonymous: annonymous,
+            errorHandler: errHandler
         };
         return this.submitAsync(data);
     }
@@ -318,9 +318,9 @@ export class Client {
         /** @type {XHRWrapper} */
         // @ts-ignore
         const data = {
-            FormData: formData,
+            formData: formData,
             File: file,
-            ProgressHandler: progressHandler,
+            progressHandler: progressHandler,
             Method: "POST",
             Url: url
         };
@@ -348,15 +348,15 @@ export class Client {
         const vm = {
             Ids: ids,
             Params: table,
-            MetaConn: Client.MetaConn,
-            DataConn: connKey || Client.DataConn
+            metaConn: Client.metaConn,
+            dataConn: connKey || Client.dataConn
         };
         // @ts-ignore
         return this.submitAsync({
-            Url: Utils.DeactivateSvc,
+            Url: Utils.deactivateSvc,
             Value: JSON.stringify(vm),
             Method: "DELETE",
-            IsRawString: true,
+            isRawString: true,
             Headers: {
                 "Content-type": "application/json"
             }
@@ -366,8 +366,8 @@ export class Client {
     async hardDeleteAsync(ids, table, newId, comId) {
         const vm = {
             Table: table,
-            NewId: newId || null,
-            ComId: comId || null,
+            newId: newId || null,
+            comId: comId || null,
             Delete: [
                 {
                     Table: table,
@@ -376,10 +376,10 @@ export class Client {
             ],
         };
         return this.submitAsync({
-            Url: Utils.DeleteSvc,
-            JsonData: JSON.stringify(vm),
+            Url: Utils.deleteSvc,
+            jsonData: JSON.stringify(vm),
             Method: "DELETE",
-            IsRawString: true,
+            isRawString: true,
             Headers: {
                 "Content-type": "application/json"
             }
@@ -388,16 +388,16 @@ export class Client {
 
     async getConfig(name, scope = 'global') {
         return Client.instance.userSvc({
-            MetaConn: this.MetaConn,
-            DataConn: this.DataConn,
-            ComId: "UserSetting",
-            Action: "GetConfig",
+            metaConn: this.metaConn,
+            dataConn: this.dataConn,
+            comId: "UserSetting",
+            Action: "getConfig",
             Params: JSON.stringify({ name: name, scope: scope })
         });
     }
 
     static async loadScript(src) {
-        const scriptExists = Array.from(document.body.children).some(x => x instanceof HTMLScriptElement && x.src.split("/").pop() === src.split("/").pop());
+        const scriptExists = Array.from(document.body.children).some(x => x instanceof hTMLScriptElement && x.src.split("/").pop() === src.split("/").pop());
         if (scriptExists) return true;
         const tcs = new Promise((resolve) => {
             const script = document.createElement("script");
@@ -416,27 +416,27 @@ export class Client {
 
     static async refreshToken(success = null) {
         const oldToken = Client.token;
-        console.log('[DEBUG RefreshToken] oldToken:', oldToken ? { AccessTokenExp: oldToken.AccessTokenExp, RefreshTokenExp: oldToken.RefreshTokenExp } : null);
-        console.log('[DEBUG RefreshToken] EpsilonNow:', Client.EpsilonNow);
-        if (!oldToken || new Date(oldToken.RefreshTokenExp) <= Client.EpsilonNow) {
-            console.log('[DEBUG RefreshToken] Case 1: No token or RefreshToken expired');
+        console.log('[DEBUG refreshToken] oldToken:', oldToken ? { accessTokenExp: oldToken.accessTokenExp, refreshTokenExp: oldToken.refreshTokenExp } : null);
+        console.log('[DEBUG refreshToken] epsilonNow:', Client.epsilonNow);
+        if (!oldToken || new Date(oldToken.refreshTokenExp) <= Client.epsilonNow) {
+            console.log('[DEBUG refreshToken] Case 1: No token or refreshToken expired');
             return null;
         }
-        if (new Date(oldToken.AccessTokenExp) > Client.EpsilonNow) {
-            console.log('[DEBUG RefreshToken] Case 2: AccessToken still valid, returning old token');
+        if (new Date(oldToken.accessTokenExp) > Client.epsilonNow) {
+            console.log('[DEBUG refreshToken] Case 2: accessToken still valid, returning old token');
             return oldToken;
         }
-        if (new Date(oldToken.AccessTokenExp) <= Client.EpsilonNow && new Date(oldToken.RefreshTokenExp) > Client.EpsilonNow) {
-            console.log('[DEBUG RefreshToken] Case 3: Need to refresh token');
+        if (new Date(oldToken.accessTokenExp) <= Client.epsilonNow && new Date(oldToken.refreshTokenExp) > Client.epsilonNow) {
+            console.log('[DEBUG refreshToken] Case 3: Need to refresh token');
             const newToken = await Client.getToken(oldToken);
-            console.log('[DEBUG RefreshToken] Got newToken:', newToken);
+            console.log('[DEBUG refreshToken] Got newToken:', newToken);
             if (newToken) {
                 Client.token = newToken;
                 success?.(newToken);
             }
             return newToken;
         }
-        console.log('[DEBUG RefreshToken] Case 4: RefreshToken also expired');
+        console.log('[DEBUG refreshToken] Case 4: refreshToken also expired');
         return null;
     }
 
@@ -446,12 +446,12 @@ export class Client {
     static async getToken(oldToken) {
         // @ts-ignore
         const newToken = await Client.instance.submitAsync({
-            NoQueue: true,
-            Url: `/api/auth/refreshToken?t=${Client.token.TenantCode || Client.Tenant}`,
+            noQueue: true,
+            Url: `/api/auth/refreshToken?t=${Client.token.tenantCode || Client.Tenant}`,
             Method: "POST",
-            JsonData: JSON.stringify({ RefreshToken: oldToken.RefreshToken, AccessToken: oldToken.AccessToken }),
-            AllowAnonymous: true,
-            ErrorHandler: (xhr) => {
+            jsonData: JSON.stringify({ refreshToken: oldToken.refreshToken, accessToken: oldToken.accessToken }),
+            allowAnonymous: true,
+            errorHandler: (xhr) => {
                 if (xhr.status === 400) {
                     Client.token = null;
                     Toast.Warning("Phiên truy cập đã hết hạn! Vui lòng chờ trong giây lát, hệ thống đang tải lại trang");

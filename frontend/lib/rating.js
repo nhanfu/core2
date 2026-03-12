@@ -12,13 +12,13 @@ export class Rating extends EditableComponent {
 
     constructor(ui, ele = null) {
         super(ui, ele);
-        this.DefaultValue = 0;
+        this.defaultValue = 0;
         if (!ui) throw new Error("UI component is required");
-        this.ParentElement = ele;
-        this.InputList = [];
+        this.parentElement = ele;
+        this.inputList = [];
         this._value = null;
 
-        this.Render();
+        this.render();
     }
 
     get value() {
@@ -30,7 +30,7 @@ export class Rating extends EditableComponent {
             return;
         }
         this._value = val;
-        this.SetSelected(this._value);
+        this.setSelected(this._value);
         this.Entity[this.Name] = this._value;
         this.dirty = true;
     }
@@ -41,26 +41,26 @@ export class Rating extends EditableComponent {
 
     set Disabled(value) {
         super.Disabled = value;
-        this.InputList.forEach(input => {
+        this.inputList.forEach(input => {
             input.Disabled = value;
         });
     }
 
-    SetSelected(value) {
-        if (value === null || value <= 0 || value > this.Meta.Precision) {
+    setSelected(value) {
+        if (value === null || value <= 0 || value > this.meta.Precision) {
             return;
         }
-        this.InputList[this.Meta.Precision - value].checked = true;
+        this.inputList[this.meta.Precision - value].checked = true;
     }
 
     Render() {
         const container = document.createElement('div');
         container.className = 'rate';
-        this.ParentElement.appendChild(container);
-        this.Element = container;
+        this.parentElement.appendChild(container);
+        this.element = container;
 
-        const radioGroup = `${this.Name}_${this.Meta.Id}_${this.HashCode()}`;
-        for (let item = this.Meta.Precision; item >= 1; item--) {
+        const radioGroup = `${this.Name}_${this.meta.Id}_${this.hashCode()}`;
+        for (let item = this.meta.Precision; item >= 1; item--) {
             const radioId = `${radioGroup}_${item}`;
             const input = document.createElement('input');
             input.setAttribute('type', 'radio');
@@ -68,61 +68,61 @@ export class Rating extends EditableComponent {
             input.name = radioGroup;
             input.value = item.toString();
             // @ts-ignore
-            input.style = this.Meta.Style;
-            input.addEventListener('change', this.DispatchChange.bind(this));
+            input.style = this.meta.Style;
+            input.addEventListener('change', this.dispatchChange.bind(this));
 
-            this.InputList.push(input);
-            this.Element.appendChild(input);
+            this.inputList.push(input);
+            this.element.appendChild(input);
 
             const label = document.createElement('label');
             label.setAttribute('for', radioId);
             label.textContent = `${item} stars`;
-            this.Element.appendChild(label);
+            this.element.appendChild(label);
         }
 
-        this._value = Utils.GetPropValue(this.Entity, this.Name);
-        this.SetSelected(this._value);
+        this._value = Utils.getPropValue(this.Entity, this.Name);
+        this.setSelected(this._value);
 
-        this.DOMContentLoaded?.Invoke();
+        this.dOMContentLoaded?.Invoke();
     }
 
-    DispatchChange(event) {
+    dispatchChange(event) {
         if (this.Disabled) return;
 
-        if (!this.InputList.length) return;
+        if (!this.inputList.length) return;
 
-        const checkedInput = this.InputList.find(input => input.checked);
+        const checkedInput = this.inputList.find(input => input.checked);
         if (!checkedInput) return;
 
         const oldValue = this.value;
         this.value = parseInt(checkedInput.value);
-        if (this.UserInput) {
+        if (this.userInput) {
             // @ts-ignore
-            this.UserInput.Invoke(new ObservableArgs({ newData: this.value, oldData: oldValue }));
+            this.userInput.Invoke(new ObservableArgs({ newData: this.value, oldData: oldValue }));
         }
         setTimeout(() => {
-            this.DispatchEvent(this.Meta.Events, 'click', this.Entity).then();
+            this.dispatchEvent(this.meta.Events, 'click', this.Entity).then();
         }, 0);
     }
 
-    UpdateView(force = false, dirty = null, ...componentNames) {
-        this.value = Utils.GetPropValue(this.Entity, this.Name);
+    updateView(force = false, dirty = null, ...componentNames) {
+        this.value = Utils.getPropValue(this.Entity, this.Name);
         this.value = (this.value !== undefined && this.value !== null) ? parseInt(this.value) : null;
     }
 
-    GetValueText() {
+    getValueText() {
         return this._value === null ? "Không đánh giá" : `${this._value} sao`;
     }
 
-    async ValidateAsync() {
-        this.ValidationResult = [];
+    async validateAsync() {
+        this.validationResult = [];
         if (this.value === null) return false;
-        const isValid = this.value !== undefined && this.ValidateRequired(this.value);
+        const isValid = this.value !== undefined && this.validateRequired(this.value);
         return isValid;
     }
 
-    HashCode() {
-        return JSON.stringify(this.Meta).split("").reduce((a, b) => {
+    hashCode() {
+        return JSON.stringify(this.meta).split("").reduce((a, b) => {
             a = ((a << 5) - a) + b.charCodeAt(0);
             return a & a;
         }, 0);

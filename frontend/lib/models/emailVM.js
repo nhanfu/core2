@@ -8,8 +8,8 @@ export class EmailVM {
      * Initializes a new instance of the EmailVM class with default values.
      */
     constructor() {
-        /** @type {string} Connection key, default value fetched from Client.MetaConn */
-        this.connKey = Client.MetaConn;
+        /** @type {string} Connection key, default value fetched from Client.metaConn */
+        this.connKey = Client.metaConn;
 
         /** @type {string} Email from address */
         this.fromAddress = '';

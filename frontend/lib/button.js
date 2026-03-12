@@ -1,15 +1,15 @@
 import { Spinner } from "./spinner.js";
 import { EditableComponent } from "./editableComponent.js";
 import { Component } from "./models/component.js";
-import { Html } from "./utils/html.js";
+import { html } from "./utils/html.js";
 
 /**
- * Represents a button component that can be rendered and managed on a web page.
+ * represents a button component that can be rendered and managed on a web page.
  */
 export class Button extends EditableComponent {
-    IsButton = true;
+    isButton = true;
     /**
-     * Create instance of component
+     * create instance of component
      * @param {Component} ui 
      * @param {HTMLElement} ele 
      */
@@ -21,64 +21,64 @@ export class Button extends EditableComponent {
     }
 
     /**
-     * Renders the button component into the DOM.
+     * renders the button component into the dOM.
      */
-    Render() {
+    render() {
         if (!this.buttonEle) {
-            if (!this.ParentElement) throw new Error("ParentElement is required");
-            Html.take(this.ParentElement).button.render();
-            this.Element = this.buttonEle = Html.Context;
+            if (!this.parentElement) throw new error("parentElement is required");
+            html.take(this.parentElement).button.render();
+            this.element = this.buttonEle = html.context;
         } else {
-            this.Element = this.buttonEle;
+            this.element = this.buttonEle;
         }
 
-        Html.take(this.Element)
-            .className(this.Meta.ClassName)
-            .event("click", () => this.DispatchClick())
-            .style(this.Meta.Style);
+        html.take(this.element)
+            .className(this.meta.className)
+            .event("click", () => this.dispatchClick())
+            .style(this.meta.style);
 
-        if (this.Meta.Icon) {
-            Html.icon(this.Meta.Icon).end.text(" ").render();
+        if (this.meta.icon) {
+            html.icon(this.meta.icon).end.text(" ").render();
         }
 
-        Html.span.className("caption").iText(this.Meta.Label || "", this.EditForm.Meta.Label);
-        this._textEle = Html.Context;
+        html.span.className("caption").iText(this.meta.label || "", this.editForm.meta.label);
+        this._textEle = html.context;
 
-        this.Element.closest("td")?.addEventListener("keydown", e => this.ListViewItemTab(e));
-        this.DOMContentLoaded?.invoke();
+        this.element.closest("td")?.addEventListener("keydown", e => this.listViewItemTab(e));
+        this.dOMContentLoaded?.invoke();
     }
 
     /**
-     * Dispatches the click event, handles UI changes for click action.
+     * dispatches the click event, handles uI changes for click action.
      */
-    DispatchClick() {
-        if (this.Meta.OnClick) {
-            this.Meta.OnClick.call();
+    dispatchClick() {
+        if (this.meta.onClick) {
+            this.meta.onClick.call();
             return;
         }
 
-        if (this.Disabled || this.Element.hidden) {
+        if (this.disabled || this.element.hidden) {
             return;
         }
-        this.Disabled = true;
+        this.disabled = true;
         try {
-            this.DispatchEvent(this.Meta.Events, "click", this, this.Entity).then(() => {
+            this.dispatchEvent(this.meta.events, "click", this, this.entity).then(() => {
             });
         } finally {
             window.setTimeout(() => {
-                this.Disabled = false;
+                this.disabled = false;
             }, 500);
         }
     }
 
     /**
-     * Gets the value text from the button component.
-     * @returns {string} The text value of the component.
+     * gets the value text from the button component.
+     * @returns {string} the text value of the component.
      */
-    GetValueText() {
-        if (!this.Entity || !this.Name) {
+    getValueText() {
+        if (!this.entity || !this.name) {
             return this._textEle.textContent;
         }
-        return this.FieldVal?.toString();
+        return this.fieldVal?.toString();
     }
 }

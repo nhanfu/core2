@@ -60,6 +60,10 @@ const requiredFiles = [
 ] as const;
 
 const requiredBinaries = ["deno"] as const;
+const shutdownSignals = Deno.build.os === "windows"
+  ? ["SIGINT", "SIGBREAK", "SIGHUP"] as const
+  : ["SIGINT", "SIGTERM"] as const;
+const processKillSignal = Deno.build.os === "windows" ? "SIGINT" : "SIGTERM";
 
 function fail(message: string): never {
   console.error(message);
@@ -75,11 +79,19 @@ async function ensureFileExists(path: string): Promise<void> {
 }
 
 async function binaryExists(binary: string): Promise<boolean> {
-  const result = await new Deno.Command("sh", {
-    args: ["-lc", `command -v ${binary}`],
-    stdout: "null",
-    stderr: "null",
-  }).output();
+  const command = Deno.build.os === "windows"
+    ? new Deno.Command("where.exe", {
+      args: [binary],
+      stdout: "null",
+      stderr: "null",
+    })
+    : new Deno.Command("sh", {
+      args: ["-lc", `command -v ${binary}`],
+      stdout: "null",
+      stderr: "null",
+    });
+
+  const result = await command.output();
 
   return result.success;
 }
@@ -116,7 +128,7 @@ function startProcess(spec: CommandSpec): Deno.ChildProcess {
 
 function killProcess(process: Deno.ChildProcess): void {
   try {
-    process.kill("SIGTERM");
+    process.kill(processKillSignal);
   } catch {
     // Process may already be closed.
   }
@@ -145,7 +157,7 @@ async function runConcurrent(specs: readonly CommandSpec[]): Promise<number> {
     setTimeout(() => Deno.exit(code), 200);
   };
 
-  for (const signal of ["SIGINT", "SIGTERM"] as const) {
+  for (const signal of shutdownSignals) {
     Deno.addSignalListener(signal, () => shutdown(0));
   }
 

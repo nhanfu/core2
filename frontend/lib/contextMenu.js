@@ -1,239 +1,239 @@
-import { Html } from "./utils/html.js";
+import { html } from "./utils/html.js";
 import { EditableComponent } from "./editableComponent.js";
 import EventType from "./models/eventType.js";
 
 /**
- * Represents a context menu item.
+ * represents a context menu item.
  */
 export class ContextMenuItem {
-    Ele = null;
-    Icon = '';
-    Line = false;
-    Style = '';
-    Text = '';
-    Shortcut = '';
+    ele = null;
+    icon = '';
+    line = false;
+    style = '';
+    text = '';
+    shortcut = '';
     /**
-     * The click event handler of the item.
-     * @type {Function}
+     * the click event handler of the item.
+     * @type {function}
      */
-    Click = null;
-    Disabled = false;
-    Parameter = null;
+    click = null;
+    disabled = false;
+    parameter = null;
     /**
-     * The sub-menu items of the item.
+     * the sub-menu items of the item.
      * @type {ContextMenuItem[]}
      */
-    MenuItems = [];
+    menuItems = [];
 }
 /**
- * Represents a context menu.
+ * represents a context menu.
  */
 export class ContextMenu extends EditableComponent {
-    PElement = null;
-    Top = 0;
-    Left = 0;
+    pElement = null;
+    top = 0;
+    left = 0;
     _selectedContextMenuItem = null;
     _selectedItem = null;
-    IsRoot = false;
+    isRoot = false;
     _selectedIndex = -1;
     /**
-     * The menu items of the menu.
+     * the menu items of the menu.
      * @type {ContextMenuItem[]}
      */
-    MenuItems = [];
+    menuItems = [];
     _active = 'active';
     static _instance = null;
-    IsSingleton = true;
+    isSingleton = true;
     /**
-     * Gets the singleton instance of the menu.
+     * gets the singleton instance of the menu.
      * @type {ContextMenu}
      */
-    static get Instance() {
+    static get instance() {
         if (!this._instance) {
             // @ts-ignore
             this._instance = new ContextMenu();
-            this._instance.MenuItems = [];
+            this._instance.menuItems = [];
         }
-        this._instance.PElement = null;
+        this._instance.pElement = null;
         return this._instance;
     }
 
     /**
-     * Renders the menu.
+     * renders the menu.
      */
-    Render() {
-        if (this.MenuItems.length == 0) {
+    render() {
+        if (this.menuItems.length == 0) {
             return;
         }
-        if (this.Element == null) {
-            Html.take(this.PElement ?? document.body).div.className("context-menu");
-            this.Element = Html.Instance.Context;
-            this.Element.addEventListener("focusout", () => this.Dispose());
-            this.Element.addEventListener("keydown", (e) => this.HotKeyHandler(e));
+        if (this.element == null) {
+            html.take(this.pElement ?? document.body).div.className("context-menu");
+            this.element = html.instance.context;
+            this.element.addEventListener("focusout", () => this.dispose());
+            this.element.addEventListener("keydown", (e) => this.hotKeyHandler(e));
         }
-        if (this.PElement == null && this.Element != null) {
-            document.body.appendChild(this.Element);
+        if (this.pElement == null && this.element != null) {
+            document.body.appendChild(this.element);
         }
-        if (this.PElement != null && this.Element != null) {
-            this.PElement.appendChild(this.Element);
+        if (this.pElement != null && this.element != null) {
+            this.pElement.appendChild(this.element);
         }
-        Html.take(this.Element).clear().tabIndex(-1).floating(this.Top, this.Left);
-        this.ParentElement = this.Element.ParentElement;
-        this.RenderMenuItems(this.MenuItems);
+        html.take(this.element).clear().tabIndex(-1).floating(this.top, this.left);
+        this.parentElement = this.element.parentElement;
+        this.renderMenuItems(this.menuItems);
         window.setTimeout(() => {
-            if (this.Element != null) {
-                this.Element.style.display = "block";
-                this.AlterPosition();
-                this.Element.focus();
+            if (this.element != null) {
+                this.element.style.display = "block";
+                this.alterPosition();
+                this.element.focus();
             }
         }, 50);
     }
 
     /**
-     * Renders the menu items.
-     * @param {ContextMenuItem[]} items - The menu items to render.
-     * @param {number} level - The level of the menu items.
+     * renders the menu items.
+     * @param {ContextMenuItem[]} items - the menu items to render.
+     * @param {number} level - the level of the menu items.
      */
-    RenderMenuItems(items, level = 0) {
+    renderMenuItems(items, level = 0) {
         for (let i = 0; i < items.length; i++) {
             const item = items[i];
             if (!item) {
                 continue;
             }
-            Html.Instance.div.className("menu-item");
-            item.Ele = Html.Context;
-            if (i == 0 && level == 0 && (items[i].MenuItems == null || items[i].MenuItems.length == 0)) {
+            html.instance.div.className("menu-item");
+            item.ele = html.context;
+            if (i == 0 && level == 0 && (items[i].menuItems == null || items[i].menuItems.length == 0)) {
                 this._selectedIndex = i;
-                this.SetSelectedItem(Html.Context);
+                this.setSelectedItem(html.context);
             }
-            if (item.Disabled) {
-                Html.Instance.attr("disabled", "disabled");
+            if (item.disabled) {
+                html.instance.attr("disabled", "disabled");
             } else {
-                Html.Instance.event("click", (e) => this.MenuItemClickHandler(e, item));
+                html.instance.event("click", (e) => this.menuItemClickHandler(e, item));
             }
-            Html.Instance.div.className("menu-left").span.className("icon").icon(item.Icon).end.end.iText(item.Text, this.EditForm.Meta.Label).end.span.className("shortcut").iText(item.Shortcut).end.render();
-            if (item.MenuItems != null && item.MenuItems.length > 0) {
-                Html.Instance.div.className("submenu context-menu").render();
-                this.RenderMenuItems(item.MenuItems, level + 1);
-                Html.Instance.end.render();
+            html.instance.div.className("menu-left").span.className("icon").icon(item.icon).end.end.iText(item.text, this.editForm.meta.Label).end.span.className("shortcut").iText(item.shortcut).end.render();
+            if (item.menuItems != null && item.menuItems.length > 0) {
+                html.instance.div.className("submenu context-menu").render();
+                this.renderMenuItems(item.menuItems, level + 1);
+                html.instance.end.render();
             }
-            Html.Instance.end.render();
-            if (item.Line) {
-                Html.Instance.hr.render();
+            html.instance.end.render();
+            if (item.line) {
+                html.instance.hr.render();
             }
         }
     }
 
     /**
-     * Sets the selected item.
-     * @param {HTMLElement} ele - The HTML element to set as selected.
+     * sets the selected item.
+     * @param {HTMLElement} ele - the HTML element to set as selected.
      */
-    SetSelectedItem(ele) {
+    setSelectedItem(ele) {
         this._selectedItem = ele;
         this._selectedItem.classList.add(this._active);
     }
 
     /**
-     * Handles the click event of a menu item.
-     * @param {Event} e - The click event.
-     * @param {ContextMenuItem} item - The clicked menu item.
+     * handles the click event of a menu item.
+     * @param {event} e - the click event.
+     * @param {ContextMenuItem} item - the clicked menu item.
      */
-    MenuItemClickHandler(e, item) {
+    menuItemClickHandler(e, item) {
         e.stopPropagation();
-        if (!item || !item.Click) {
+        if (!item || !item.click) {
             return;
         }
-        item.Click(item.Parameter);
-        this.Element.dispatchEvent(new Event('focusout'));
+        item.click(item.parameter);
+        this.element.dispatchEvent(new event('focusout'));
     }
 
     /**
-     * Handles the hotkey event.
-     * @param {Event} e - The hotkey event.
+     * handles the hotkey event.
+     * @param {event} e - the hotkey event.
      */
-    HotKeyHandler(e) {
+    hotKeyHandler(e) {
         e.preventDefault();
-        if (!this.Element || !this.Element.children || this.Element.children.length === 0) {
+        if (!this.element || !this.element.children || this.element.children.length === 0) {
             return;
         }
-        const children = this._selectedItem ? this._selectedItem.parentElement.children : this.Element.children;
-        const code = e.KeyCode();
+        const children = this._selectedItem ? this._selectedItem.parentElement.children : this.element.children;
+        const code = e.keyCode();
         switch (code) {
             case 27:
-                this.Dispose();
+                this.dispose();
                 break;
             case 37:
-                if (this.IsRoot || !this._selectedItem || !this._selectedItem.parentElement) {
+                if (this.isRoot || !this._selectedItem || !this._selectedItem.parentElement) {
                     return;
                 }
-                Array.from(this._selectedItem.parentElement.children).forEach(x => x.classList.remove(this._active));
+                array.from(this._selectedItem.parentElement.children).forEach(x => x.classList.remove(this._active));
                 this._selectedItem = this._selectedItem.parentElement;
                 break;
             case 38:
                 e.preventDefault();
                 e.stopPropagation();
-                Array.from(children).forEach(x => x.classList.remove(this._active));
+                array.from(children).forEach(x => x.classList.remove(this._active));
                 this._selectedIndex = this._selectedIndex > 0 ? this._selectedIndex - 1 : children.length - 1;
-                this.SetSelectedItem(children[this._selectedIndex]);
+                this.setSelectedItem(children[this._selectedIndex]);
                 break;
             case 39:
                 const ul = this._selectedItem ? this._selectedItem.lastElementChild : null;
                 if (!ul || !ul.children || ul.children.length === 0) {
                     return;
                 }
-                Array.from(ul.children).forEach(x => x.classList.remove(this._active));
-                this.SetSelectedItem(ul.firstElementChild);
+                array.from(ul.children).forEach(x => x.classList.remove(this._active));
+                this.setSelectedItem(ul.firstElementChild);
                 break;
             case 40:
                 e.preventDefault();
                 e.stopPropagation();
-                Array.from(children).forEach(x => x.classList.remove(this._active));
+                array.from(children).forEach(x => x.classList.remove(this._active));
                 this._selectedIndex = this._selectedIndex < children.length - 1 ? this._selectedIndex + 1 : 0;
-                this.SetSelectedItem(children[this._selectedIndex]);
+                this.setSelectedItem(children[this._selectedIndex]);
                 break;
             case 13:
-                if (!this._selectedItem && this.Element.firstElementChild instanceof HTMLElement) {
-                    this.SetSelectedItem(this.Element.firstElementChild);
+                if (!this._selectedItem && this.element.firstElementChild instanceof HTMLElement) {
+                    this.setSelectedItem(this.element.firstElementChild);
                 }
-                this.MenuItemClickHandler(e, this.MenuItems.find(x => x.Ele === this._selectedItem));
+                this.menuItemClickHandler(e, this.menuItems.find(x => x.ele === this._selectedItem));
                 break;
         }
     }
 
     /**
-     * Alters the position of the menu.
+     * alters the position of the menu.
      */
-    AlterPosition() {
-        this.Floating(this.Top, this.Left);
-        const clientRect = this.Element.getBoundingClientRect();
-        const outOfViewPort = this.Element.OutOfViewport();
-        if (outOfViewPort.Bottom) {
-            this.Element.style.top = `${this.Top - clientRect.height}px`;
+    alterPosition() {
+        this.floating(this.top, this.left);
+        const clientRect = this.element.getBoundingClientRect();
+        const outOfViewPort = this.element.outOfViewport();
+        if (outOfViewPort.bottom) {
+            this.element.style.top = `${this.top - clientRect.height}px`;
         }
-        if (outOfViewPort.Right) {
-            this.Element.style.left = `${this.Left - clientRect.width}px`;
-            this.Element.style.top = `${this.Top}px`;
+        if (outOfViewPort.right) {
+            this.element.style.left = `${this.left - clientRect.width}px`;
+            this.element.style.top = `${this.top}px`;
         }
-        const updatedOutOfViewPort = this.Element.OutOfViewport();
-        if (updatedOutOfViewPort.Bottom) {
-            this.Element.style.top = `${this.Top - clientRect.height}px`;
-            this.Element.style.top = `${this.Top - clientRect.height - this.Element.clientHeight}px`;
+        const updatedOutOfViewPort = this.element.outOfViewport();
+        if (updatedOutOfViewPort.bottom) {
+            this.element.style.top = `${this.top - clientRect.height}px`;
+            this.element.style.top = `${this.top - clientRect.height - this.element.clientHeight}px`;
         }
     }
     time;
-    Dispose() {
+    dispose() {
         window.clearTimeout(this.time);
         this.time = window.setTimeout(() => {
-            if (this.Element != null) {
-                this.Element.remove();
-                this.Element = null;
+            if (this.element != null) {
+                this.element.remove();
+                this.element = null;
             }
         }, 100);
     }
 
-    Floating(top, left) {
-        this.Element.style.position = 'fixed';
-        this.Element.style.top = `${top}px`;
-        this.Element.style.left = `${left}px`;
+    floating(top, left) {
+        this.element.style.position = 'fixed';
+        this.element.style.top = `${top}px`;
+        this.element.style.left = `${left}px`;
     }
 }

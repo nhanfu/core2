@@ -1,4 +1,4 @@
-import { Html } from "./utils/html.js";
+import { html } from "./utils/html.js";
 import { EventType } from "./models/";
 import { Client } from "./clients/client.js";
 import { Utils } from "./utils/utils.js";
@@ -14,32 +14,32 @@ export class DevTools extends EditableComponent {
     /**
      * @type {HTMLElement}
      */
-    Element;
+    element;
 
     /**
      * @type {HTMLElement}
      */
-    BtnGroupConfig;
+    btnGroupConfig;
 
     /**
-     * @typedef {import('./editForm.js').EditForm} EditForm
+     * @typedef {import('./editForm.js').editForm} EditForm
      */
     EditForm;
 
     /**
-     * @type {Object}
+     * @type {object}
      */
-    ConfigEditor = null;
+    configEditor = null;
 
     /**
-     * @type {Object}
+     * @type {object}
      */
-    ConfigSectionEditor = null;
+    configSectionEditor = null;
 
     /**
      * @type {HTMLElement}
      */
-    DarkOverlay;
+    darkOverlay;
 
     /**
      * @type {number}
@@ -52,12 +52,12 @@ export class DevTools extends EditableComponent {
     w = 0;
 
     /**
-     * @type {MouseEvent}
+     * @type {mouseEvent}
      */
     mouseMoveHandler;
 
     /**
-     * @type {MouseEvent}
+     * @type {mouseEvent}
      */
     mouseUpHandler;
 
@@ -67,416 +67,416 @@ export class DevTools extends EditableComponent {
     _imeout = 0;
 
     /**
-     * @param {EditForm} editForm - The EditForm instance that hosts this DevTools.
+     * @param {EditForm} editForm - the EditForm instance that hosts this DevTools.
      */
     constructor(editForm, group) {
         /** @type {Component} */
         const meta = {
-            Id: "devtools",
+            id: "devtools",
             Label: "DevTools",
-            ClassName: "devtools",
-            Type: "Section",
+            className: "devtools",
+            type: "Section",
         };
         super(meta);
-        this.EditForm = editForm;
+        this.editForm = editForm;
     }
 
     /**
-     * Opens the DevTools for a specific component group.
-     * @param {object} group - The component group to inspect.
+     * opens the DevTools for a specific component group.
+     * @param {object} group - the component group to inspect.
      */
     async show(group) {
-        Html.take(document.body).div.className("popup-config");
-        this.Element = Html.Context;
-        this.AddResizeLines(this.Element);
-        Html.Instance.div.className("devtools-header")
+        html.take(document.body).div.className("popup-config");
+        this.element = html.context;
+        this.addResizeLines(this.element);
+        html.instance.div.className("devtools-header")
             .span.text("DevTools").end
-            .span.className("btn").event(EventType.Click, () => {
-                if (this.ConfigEditor) {
-                    this.ConfigEditor.Dirty = false;
-                    this.ConfigEditor.Dispose();
-                    this.ConfigEditor = null;
+            .span.className("btn").event(EventType.click, () => {
+                if (this.configEditor) {
+                    this.configEditor.dirty = false;
+                    this.configEditor.dispose();
+                    this.configEditor = null;
                 }
-                if (this.ConfigSectionEditor) {
-                    this.ConfigSectionEditor.Dirty = false;
-                    this.ConfigSectionEditor.Dispose();
-                    this.ConfigSectionEditor = null;
+                if (this.configSectionEditor) {
+                    this.configSectionEditor.dirty = false;
+                    this.configSectionEditor.dispose();
+                    this.configSectionEditor = null;
                 }
-                if (this.Element) {
-                    this.Element.remove();
+                if (this.element) {
+                    this.element.remove();
                 }
             }).i.className("fa fa-times").end.end.end;
-        Html.Instance.div.className("devtools-tabs")
+        html.instance.div.className("devtools-tabs")
             .div.className("devtools-left")
-            .div.className("devtools-tab elements2 active").event(EventType.Click, () => this.showTabContent("Elements")).text("Elements").end
-            .div.className("devtools-tab console2").event(EventType.Click, () => this.showTabContent("Console")).text("Console").end
-            .div.className("devtools-tab sources2").event(EventType.Click, () => this.showTabContent("Sources")).text("Sources").end
-            .div.className("devtools-tab network2").event(EventType.Click, () => this.showTabContent("Network")).text("Network").end.end
+            .div.className("devtools-tab elements2 active").event(EventType.click, () => this.showTabContent("elements")).text("elements").end
+            .div.className("devtools-tab console2").event(EventType.click, () => this.showTabContent("console")).text("console").end
+            .div.className("devtools-tab sources2").event(EventType.click, () => this.showTabContent("sources")).text("sources").end
+            .div.className("devtools-tab network2").event(EventType.click, () => this.showTabContent("network")).text("network").end.end
             .div.className("devtools-right").render();
-        this.BtnGroupConfig = Html.Context;
-        Html.Instance.end.end.render();
-        Html.Instance.div.className("devtools-content")
+        this.btnGroupConfig = html.context;
+        html.instance.end.end.render();
+        html.instance.div.className("devtools-content")
             .div.className("devtools-sidebar components");
-        this.SectionComponents = new Section(null, Html.Context);
-        this.SectionComponents.Meta = {
-            Id: group.Id,
-            Column: group.Column
+        this.sectionComponents = new Section(null, html.context);
+        this.sectionComponents.meta = {
+            id: group.id,
+            column: group.column
         };
-        this.AddChild(this.SectionComponents);
-        Html.Instance.end.div.className("devtools-main meta-data").end.end;
-        Html.Instance.div.className("console")
-            .input.className("console-input").placeHolder("> Type JavaScript here...").end.render();
+        this.addChild(this.sectionComponents);
+        html.instance.end.div.className("devtools-main meta-data").end.end;
+        html.instance.div.className("console")
+            .input.className("console-input").placeHolder("> type javaScript here...").end.render();
         this.calculateSidebarHeight();
-        Html.take(".components");
-        this.RenderElements(this.EditForm.GroupTree, true);
+        html.take(".components");
+        this.renderElements(this.editForm.groupTree, true);
     }
 
     /**
     * @type {Section}
     */
-    SectionComponents;
+    sectionComponents;
 
     components = [
         {
-            FieldName: "Button",
+            fieldName: "Button",
             Label: "Button",
-            ShowLabel: true,
-            Visibility: true,
-            ClassName: "btn detail-button primary",
-            Icon: "fal fa-plus",
-            ComponentType: "Button",
-            Column: 12
+            showLabel: true,
+            visibility: true,
+            className: "btn detail-button primary",
+            icon: "fal fa-plus",
+            componentType: "Button",
+            column: 12
         },
         {
-            FieldName: "Input",
-            Label: "Input",
-            ShowLabel: true,
-            Visibility: true,
-            ComponentType: "Input",
-            Column: 12
+            fieldName: "input",
+            Label: "input",
+            showLabel: true,
+            visibility: true,
+            componentType: "input",
+            column: 12
         },
         {
-            FieldName: "Select",
+            fieldName: "Select",
             Label: "Select",
-            Query: "[{Id:1,Name:'Test'},{Id:2,Name:'Test2'}]",
-            FormData: "{Name}",
-            ShowLabel: true,
-            Visibility: true,
-            ComponentType: "Select",
-            Column: 12
+            query: "[{id:1,name:'test'},{id:2,name:'test2'}]",
+            formData: "{name}",
+            showLabel: true,
+            visibility: true,
+            componentType: "Select",
+            column: 12
         },
         {
-            FieldName: "Textarea",
+            fieldName: "Textarea",
             Label: "Textarea",
-            ShowLabel: true,
-            Visibility: true,
-            ComponentType: "Textarea",
-            Column: 12
+            showLabel: true,
+            visibility: true,
+            componentType: "Textarea",
+            column: 12
         },
         {
-            FieldName: "Number",
-            Label: "Number",
-            ShowLabel: true,
-            Visibility: true,
-            ComponentType: "Number",
-            Column: 12
+            fieldName: "number",
+            Label: "number",
+            showLabel: true,
+            visibility: true,
+            componentType: "number",
+            column: 12
         },
         {
-            FieldName: "Checkbox",
+            fieldName: "Checkbox",
             Label: "Checkbox",
-            ShowLabel: true,
-            Visibility: true,
-            ComponentType: "Checkbox",
-            Column: 12
+            showLabel: true,
+            visibility: true,
+            componentType: "Checkbox",
+            column: 12
         },
         {
-            FieldName: "Dropdown",
-            Label: "Dropdown",
-            ShowLabel: true,
-            Visibility: true,
-            Query: "[{Id:1,Name:'Test'},{Id:2,Name:'Test2'}]",
-            FormData: "{Name}",
-            Template: `[{ "FieldName" : "Name", "Label" : "Name", "ComponentType" : "Input" }]`,
-            ComponentType: "Dropdown",
-            FormData: "{Name}",
-            Column: 12
+            fieldName: "dropdown",
+            Label: "dropdown",
+            showLabel: true,
+            visibility: true,
+            query: "[{id:1,name:'test'},{id:2,name:'test2'}]",
+            formData: "{name}",
+            template: `[{ "fieldName" : "name", "Label" : "name", "componentType": "input" }]`,
+            componentType: "dropdown",
+            formData: "{name}",
+            column: 12
         },
         {
-            FieldName: "Datepicker",
+            fieldName: "Datepicker",
             Label: "Datepicker",
-            ShowLabel: true,
-            Visibility: true,
-            ComponentType: "Datepicker",
-            Column: 12
+            showLabel: true,
+            visibility: true,
+            componentType: "Datepicker",
+            column: 12
         },
         {
-            FieldName: "FileUpload",
-            Label: "FileUpload",
-            ShowLabel: true,
-            Visibility: true,
-            ComponentType: "FileUpload",
-            Column: 12
+            fieldName: "fileUpload",
+            Label: "fileUpload",
+            showLabel: true,
+            visibility: true,
+            componentType: "fileUpload",
+            column: 12
         },
         {
-            FieldName: "GridView",
+            fieldName: "GridView",
             Label: "GridView",
-            ShowLabel: true,
-            Visibility: true,
-            ComponentType: "GridView",
-            Column: 12
+            showLabel: true,
+            visibility: true,
+            componentType: "GridView",
+            column: 12
         },
         {
-            FieldName: "Word",
-            Label: "Word",
-            ShowLabel: true,
-            Visibility: true,
-            ComponentType: "Word",
-            Column: 12
+            fieldName: "word",
+            Label: "word",
+            showLabel: true,
+            visibility: true,
+            componentType: "word",
+            column: 12
         },
         {
-            FieldName: "CodeEditor",
+            fieldName: "CodeEditor",
             Label: "CodeEditor",
-            ShowLabel: true,
-            Visibility: true,
-            ComponentType: "CodeEditor",
-            Column: 12
+            showLabel: true,
+            visibility: true,
+            componentType: "CodeEditor",
+            column: 12
         },
         {
-            FieldName: "Label",
+            fieldName: "Label",
             Label: "Label",
-            ShowLabel: true,
-            Visibility: true,
-            ComponentType: "Label",
-            Column: 12
+            showLabel: true,
+            visibility: true,
+            componentType: "Label",
+            column: 12
         },
         {
-            FieldName: "Pdf",
+            fieldName: "Pdf",
             Label: "Pdf",
-            ShowLabel: true,
-            Visibility: true,
-            ClassName: "btn detail-button primary",
-            ComponentType: "Pdf",
-            Column: 12
+            showLabel: true,
+            visibility: true,
+            className: "btn detail-button primary",
+            componentType: "Pdf",
+            column: 12
         },
         {
-            FieldName: "Excel",
-            Label: "Excel",
-            ShowLabel: true,
-            Visibility: true,
-            ClassName: "btn detail-button primary",
-            ComponentType: "Excel",
-            Column: 12
+            fieldName: "excel",
+            Label: "excel",
+            showLabel: true,
+            visibility: true,
+            className: "btn detail-button primary",
+            componentType: "excel",
+            column: 12
         }
     ];
-    UpdateConfig() {
+    updateConfig() {
         for (let index = 0; index < this.components.length; index++) {
-            this.components[index].Id = Uuid7.NewGuid();
-            this.components[index].ReportTypeId = 1;
-            this.components[index].Active = true;
+            this.components[index].id = Uuid7.newGuid();
+            this.components[index].reportTypeId = 1;
+            this.components[index].active = true;
         }
         var sectionInfo = {
-            Components: this.components,
-            Column: 12,
-            IsSimple: true,
-            IsConfig: true,
-            ClassName: 'card-body panel group'
+            components: this.components,
+            column: 12,
+            isSimple: true,
+            isConfig: true,
+            className: 'card-body panel group'
         };
-        this.ComponentsEditor = Section.RenderSection(this.SectionComponents, sectionInfo);
+        this.componentsEditor = Section.renderSection(this.sectionComponents, sectionInfo);
     }
 
     /**
      * 
      * @param {Component[]} groupTree 
      */
-    RenderElements(groupTree) {
-        groupTree = groupTree.sort((a, b) => a.Order - b.Order);
-        Html.Instance.ul.render();
-        Html.Instance.className("devtools-nested active");
+    renderElements(groupTree) {
+        groupTree = groupTree.sort((a, b) => a.order - b.order);
+        html.instance.ul.render();
+        html.instance.className("devtools-nested active");
         groupTree.forEach(group => {
-            Html.Instance.li.className("devtools-care-li").dataAttr("id", group.Id).render();
-            if (this.ConfigEditor && this.ConfigEditor.Entity.Id == group.Id) {
-                Html.Instance.className("active");
+            html.instance.li.className("devtools-care-li").dataAttr("id", group.id).render();
+            if (this.configEditor && this.configEditor.Entity.id == group.id) {
+                html.instance.className("active");
             }
-            if ((group.Children && group.Children.length > 0) ||
-                (group.Components && group.Components.length > 0)) {
-                Html.Instance.span.className("devtools-caret devtools-caret-down");
-                if (this.ConfigSectionEditor && this.ConfigSectionEditor.Entity.Id == group.Id) {
-                    Html.Instance.className("active");
+            if ((group.children && group.children.length > 0) ||
+                (group.components && group.components.length > 0)) {
+                html.instance.span.className("devtools-caret devtools-caret-down");
+                if (this.configSectionEditor && this.configSectionEditor.Entity.id == group.id) {
+                    html.instance.className("active");
                 }
-                Html.Instance.i.event(EventType.Click, async (e) => {
+                html.instance.i.event(EventType.click, async (e) => {
                     var ulElement = e.target.closest("span").nextElementSibling;
                     var spanElement = e.target.closest("span");
                     ulElement.classList.toggle('active');
                     spanElement.classList.toggle('devtools-caret-down');
-                }).className("fas fa-chevron-right").end.span.className("w-100").event(EventType.Click, async (e) => {
+                }).className("fas fa-chevron-right").end.span.className("w-100").event(EventType.click, async (e) => {
                     var spanElement = e.target.closest("span").parentElement;
                     spanElement.classList.toggle('active');
-                    await this.UpdateSectionData(group, e);
-                }).text(group.Label || group.FieldName).end.end.render();
+                    await this.updateSectionData(group, e);
+                }).text(group.Label || group.fieldName).end.end.render();
             }
             else {
                 const iconMap = {
                     Button: "fal fa-plus",
-                    Input: "fal fa-keyboard",
+                    input: "fal fa-keyboard",
                     Select: "fal fa-caret-down",
                     Textarea: "fal fa-comment-alt-lines",
-                    Number: "fal fa-sort-numeric-up-alt",
+                    number: "fal fa-sort-numeric-up-alt",
                     Checkbox: "fal fa-check-square",
-                    Dropdown: "fal fa-caret-down",
+                    dropdown: "fal fa-caret-down",
                     Datepicker: "fal fa-calendar-alt",
-                    FileUpload: "fal fa-file-upload",
+                    fileUpload: "fal fa-file-upload",
                     Pdf: "fal fa-file-pdf",
                     Image: "fal fa-image",
-                    GridView: "fal fa-th-large"
+                    gridView: "fal fa-th-large"
                 };
-                const icon = iconMap[group.ComponentType] || "fal fa-text";
-                Html.Instance.event(EventType.Click, async (e) => await this.UpdateMetaData(group, e));
-                Html.Instance.span.i.className(icon).className("mr-1").end.text(group.Label || group.FieldName).end.render();
+                const icon = iconMap[group.componentType] || "fal fa-text";
+                html.instance.event(EventType.click, async (e) => await this.updateMetaData(group, e));
+                html.instance.span.i.className(icon).className("mr-1").end.text(group.Label || group.fieldName).end.render();
             }
-            if (group.Children && group.Children.length > 0) {
-                this.RenderElements(group.Children);
+            if (group.children && group.children.length > 0) {
+                this.renderElements(group.children);
             }
-            if (group.Components && group.Components.length > 0) {
-                this.RenderElements(group.Components);
+            if (group.components && group.components.length > 0) {
+                this.renderElements(group.components);
             }
-            Html.Instance.end.render();
+            html.instance.end.render();
         });
-        Html.Instance.end.render();
+        html.instance.end.render();
     }
 
-    RerenderUI() {
-        Html.take(".components").clear();
-        Html.Instance.ul.className("devtools-tree")
+    rerenderUI() {
+        html.take(".components").clear();
+        html.instance.ul.className("devtools-tree")
             .li.className("devtools-care-li");
-        Html.Instance.span.className("devtools-caret devtools-caret-down");
-        Html.Instance.i.event(EventType.Click, async (e) => {
+        html.instance.span.className("devtools-caret devtools-caret-down");
+        html.instance.i.event(EventType.click, async (e) => {
             var ulElement = e.target.closest("span").nextElementSibling;
             var spanElement = e.target.closest("span");
             ulElement.classList.toggle('active');
             spanElement.classList.toggle('devtools-caret-down');
-        }).className("fas fa-chevron-right").end.span.className("w-100").event(EventType.Click, async (e) => {
-            await this.UpdateFeatureData(this.Meta, e);
-        }).text(this.Meta.Label).end.end.render();
-        this.RenderElements(this.GroupTree);
-        Html.take(this.Element).clear();
-        this.EditForm.RenderTabOrSection(this.GroupTree.filter(x => x.Active), this);
+        }).className("fas fa-chevron-right").end.span.className("w-100").event(EventType.click, async (e) => {
+            await this.updateFeatureData(this.meta, e);
+        }).text(this.meta.Label).end.end.render();
+        this.renderElements(this.groupTree);
+        html.take(this.element).clear();
+        this.editForm.renderTabOrSection(this.groupTree.filter(x => x.active), this);
     }
 
-    ConfigFeatureEditor = null;
-    ComponentsEditor = null;
+    configFeatureEditor = null;
+    componentsEditor = null;
     /**
-     * Switch between different DevTools tabs.
-     * @param {String} name - The name of the tab to show.
+     * switch between different DevTools tabs.
+     * @param {string} name - the name of the tab to show.
      */
     showTabContent(name) {
-        this.Element.querySelectorAll(".devtools-tab").forEach(tab => tab.classList.remove("active"));
+        this.element.querySelectorAll(".devtools-tab").forEach(tab => tab.classList.remove("active"));
         switch (name) {
-            case "Elements":
-                this.Element.querySelector(".elements2").classList.add("active");
-                Html.take(".meta-data").clear();
-                Html.take(".devtools-right").clear();
-                Html.take(".components").clear();
-                this.RenderElements(this.EditForm.GroupTree, true);
-                if (this.SectionComponents) {
-                    this.SectionComponents.DisposeChildren();
+            case "elements":
+                this.element.querySelector(".elements2").classList.add("active");
+                html.take(".meta-data").clear();
+                html.take(".devtools-right").clear();
+                html.take(".components").clear();
+                this.renderElements(this.editForm.groupTree, true);
+                if (this.sectionComponents) {
+                    this.sectionComponents.disposeChildren();
                 }
-                if (this.ConfigFeatureEditor) {
-                    this.ConfigFeatureEditor.Dispose();
-                    this.ConfigFeatureEditor = null;
+                if (this.configFeatureEditor) {
+                    this.configFeatureEditor.dispose();
+                    this.configFeatureEditor = null;
                 }
-                if (this.ConfigSectionEditor) {
-                    this.ConfigSectionEditor.Dispose();
-                    this.ConfigSectionEditor = null;
+                if (this.configSectionEditor) {
+                    this.configSectionEditor.dispose();
+                    this.configSectionEditor = null;
                 }
-                if (this.ConfigEditor) {
-                    this.ConfigEditor.Dispose();
-                    this.ConfigEditor = null;
+                if (this.configEditor) {
+                    this.configEditor.dispose();
+                    this.configEditor = null;
                 }
                 break;
-            case "Console":
-                if (this.SectionComponents) {
-                    this.SectionComponents.DisposeChildren();
+            case "console":
+                if (this.sectionComponents) {
+                    this.sectionComponents.disposeChildren();
                 }
-                if (this.ConfigFeatureEditor) {
-                    this.ConfigFeatureEditor.Dispose();
-                    this.ConfigFeatureEditor = null;
+                if (this.configFeatureEditor) {
+                    this.configFeatureEditor.dispose();
+                    this.configFeatureEditor = null;
                 }
-                if (this.ConfigSectionEditor) {
-                    this.ConfigSectionEditor.Dispose();
-                    this.ConfigSectionEditor = null;
+                if (this.configSectionEditor) {
+                    this.configSectionEditor.dispose();
+                    this.configSectionEditor = null;
                 }
-                if (this.ConfigEditor) {
-                    this.ConfigEditor.Dispose();
-                    this.ConfigEditor = null;
+                if (this.configEditor) {
+                    this.configEditor.dispose();
+                    this.configEditor = null;
                 }
-                Html.take(".meta-data").clear();
-                Html.take(".components").clear();
-                this.UpdateConfig();
+                html.take(".meta-data").clear();
+                html.take(".components").clear();
+                this.updateConfig();
                 break;
-            case "Sources":
-                this.DevToolsElement.querySelector(".sources2").classList.add("active");
-                Html.take(".meta-data").clear();
-                Html.take(".components").clear();
+            case "sources":
+                this.devToolsElement.querySelector(".sources2").classList.add("active");
+                html.take(".meta-data").clear();
+                html.take(".components").clear();
                 break;
-            case "Network":
-                this.DevToolsElement.querySelector(".network2").classList.add("active");
-                Html.take(".meta-data").clear();
-                Html.take(".components").clear();
+            case "network":
+                this.devToolsElement.querySelector(".network2").classList.add("active");
+                html.take(".meta-data").clear();
+                html.take(".components").clear();
                 break;
         }
     }
 
     /**
-     * Updates metadata for a component in the main panel.
-     * @param {Component} group - The component to update.
-     * @param {Event} e - The event that triggered the update.
+     * updates metadata for a component in the main panel.
+     * @param {Component} group - the component to update.
+     * @param {event} e - the event that triggered the update.
      */
-    async UpdateMetaData(group, e) {
-        if (this.ConfigSectionEditor) {
-            this.ConfigSectionEditor.Dispose();
-            this.ConfigSectionEditor = null;
+    async updateMetaData(group, e) {
+        if (this.configSectionEditor) {
+            this.configSectionEditor.dispose();
+            this.configSectionEditor = null;
         }
-        this.Element.querySelectorAll(".devtools-care-li").forEach(li => li.classList.remove("active"));
+        this.element.querySelectorAll(".devtools-care-li").forEach(li => li.classList.remove("active"));
         const selectedLi = e.target.closest(".devtools-care-li");
         if (selectedLi) {
             selectedLi.closest(".devtools-care-li").classList.add("active");
         }
-        if (this.ConfigEditor) {
-            this.ConfigEditor.Entity = group;
-            this.ConfigEditor.UpdateView(true, true);
+        if (this.configEditor) {
+            this.configEditor.Entity = group;
+            this.configEditor.updateView(true, true);
             return;
         }
-        Html.take(".devtools-right").clear();
-        Html.take(".meta-data").div.render();
-        this.ConfigEditor = await this.EditForm.OpenPopup("component-editor2", group, true, { BtnGroupConfig: this.BtnGroupConfig }, Html.Context);
+        html.take(".devtools-right").clear();
+        html.take(".meta-data").div.render();
+        this.configEditor = await this.editForm.openPopup("component-editor2", group, true, { btnGroupConfig: this.btnGroupConfig }, html.context);
     }
 
     /**
-     * Updates section data in the main panel.
-     * @param {Component} group - The section component to update.
-     * @param {Event} e - The event that triggered the update.
+     * updates section data in the main panel.
+     * @param {Component} group - the section component to update.
+     * @param {event} e - the event that triggered the update.
      */
-    async UpdateSectionData(group, e) {
-        if (this.ConfigEditor) {
-            this.ConfigEditor.Dispose();
-            this.ConfigEditor = null;
+    async updateSectionData(group, e) {
+        if (this.configEditor) {
+            this.configEditor.dispose();
+            this.configEditor = null;
         }
-        this.Element.querySelectorAll(".devtools-care-li").forEach(li => li.classList.remove("active"));
-        if (this.ConfigSectionEditor) {
-            this.ConfigSectionEditor.Entity = group;
-            this.ConfigSectionEditor.UpdateView(true, true);
+        this.element.querySelectorAll(".devtools-care-li").forEach(li => li.classList.remove("active"));
+        if (this.configSectionEditor) {
+            this.configSectionEditor.Entity = group;
+            this.configSectionEditor.updateView(true, true);
             return;
         }
-        Html.take(".devtools-right").clear();
-        Html.take(".meta-data").div.render();
-        this.ConfigSectionEditor = await this.EditForm.OpenPopup("section-editor2", group, true, { BtnGroupConfig: this.BtnGroupConfig }, Html.Context);
+        html.take(".devtools-right").clear();
+        html.take(".meta-data").div.render();
+        this.configSectionEditor = await this.editForm.openPopup("section-editor2", group, true, { btnGroupConfig: this.btnGroupConfig }, html.context);
     }
 
     /**
-     * Adds resize lines to the popup element.
-     * @param {HTMLElement} popup - The popup element to make resizable.
+     * adds resize lines to the popup element.
+     * @param {HTMLElement} popup - the popup element to make resizable.
      */
-    AddResizeLines(popup) {
+    addResizeLines(popup) {
         let isResizing = false;
         let lastMouseY;
         const horizontalLine = document.createElement("div");
@@ -496,7 +496,7 @@ export class DevTools extends EditableComponent {
         document.addEventListener("mousemove", (e) => {
             if (!isResizing) return;
             const dy = lastMouseY - e.clientY;
-            const newHeight = Math.max(popup.offsetHeight + dy, 200);
+            const newHeight = math.max(popup.offsetHeight + dy, 200);
             popup.style.height = `${newHeight}px`;
             lastMouseY = e.clientY;
             this.calculateSidebarHeight();
@@ -507,36 +507,36 @@ export class DevTools extends EditableComponent {
     }
 
     /**
-     * Calculates and sets the height for sidebar and content panels.
+     * calculates and sets the height for sidebar and content panels.
      */
     calculateSidebarHeight() {
-        const headerHeight = this.Element.querySelector(".devtools-header")?.offsetHeight || 0;
-        const tabsHeight = this.Element.querySelector(".devtools-tabs")?.offsetHeight || 0;
-        const consoleHeight = this.Element.querySelector(".console")?.offsetHeight || 0;
+        const headerHeight = this.element.querySelector(".devtools-header")?.offsetHeight || 0;
+        const tabsHeight = this.element.querySelector(".devtools-tabs")?.offsetHeight || 0;
+        const consoleHeight = this.element.querySelector(".console")?.offsetHeight || 0;
 
-        const popupHeight = this.Element.offsetHeight;
+        const popupHeight = this.element.offsetHeight;
         const contentHeight = popupHeight - headerHeight - tabsHeight - consoleHeight;
 
-        // Set height for .devtools-sidebar
-        const sidebar = this.Element.querySelector(".devtools-sidebar");
+        // set height for .devtools-sidebar
+        const sidebar = this.element.querySelector(".devtools-sidebar");
         if (sidebar) {
             sidebar.style.height = `${contentHeight}px`;
-            sidebar.style.overflowY = "auto"; // Allow scrolling
+            sidebar.style.overflowY = "auto"; // allow scrolling
         }
 
-        // Set height for .devtools-main
-        const mainContent = this.Element.querySelector(".devtools-main");
+        // set height for .devtools-main
+        const mainContent = this.element.querySelector(".devtools-main");
         if (mainContent) {
             mainContent.style.height = `${contentHeight}px`;
-            mainContent.style.overflowY = "auto"; // Allow scrolling
+            mainContent.style.overflowY = "auto"; // allow scrolling
         }
     }
 
     /**
-     * Handles mouse movement during resize operations.
-     * @param {MouseEvent} mouse - The mouse event.
-     * @param {HTMLElement} col - The column element being resized.
-     * @param {HTMLElement} resizer - The resizer element.
+     * handles mouse movement during resize operations.
+     * @param {mouseEvent} mouse - the mouse event.
+     * @param {HTMLElement} col - the column element being resized.
+     * @param {HTMLElement} resizer - the resizer element.
      */
     mouseMoveHandler(mouse, col, resizer) {
         mouse.preventDefault();
@@ -548,10 +548,10 @@ export class DevTools extends EditableComponent {
     }
 
     /**
-     * Handles mouse up event after resizing.
-     * @param {MouseEvent} mouse - The mouse event.
-     * @param {HTMLElement} col - The column element being resized.
-     * @param {HTMLElement} resizer - The resizer element.
+     * handles mouse up event after resizing.
+     * @param {mouseEvent} mouse - the mouse event.
+     * @param {HTMLElement} col - the column element being resized.
+     * @param {HTMLElement} resizer - the resizer element.
      */
     mouseUpHandler(mouse, col, resizer) {
         mouse.preventDefault();
@@ -562,43 +562,43 @@ export class DevTools extends EditableComponent {
     }
 
     /**
-     * Updates column headers after resizing.
-     * @param {boolean} sticky - Whether to update sticky columns.
+     * updates column headers after resizing.
+     * @param {boolean} sticky - whether to update sticky columns.
      */
     updateHeaders(sticky) {
         window.clearTimeout(this._imeout);
         this._imeout = window.setTimeout(() => {
-            const headerElements = this.HeaderSection.Children.filter(x => x.Meta && x.Meta.Id);
+            const headerElements = this.headerSection.children.filter(x => x.meta && x.meta.id);
             let index = 0;
-            let anyGroup = this.Header.some(x => x.GroupName && !Utils.isNullOrWhiteSpace(x.GroupName));
+            let anyGroup = this.header.some(x => x.groupName && !Utils.isNullOrWhiteSpace(x.groupName));
             if (!anyGroup) {
                 headerElements.forEach(header => {
-                    header.Order = index;
-                    header.Meta.Order = index;
+                    header.order = index;
+                    header.meta.order = index;
                     index++;
                 });
             }
             if (Client.systemRole) {
                 const columns = headerElements.map(header => {
-                    const match = header.Element;
-                    if (match && !header.Meta.StatusBar && Utils.isNullOrWhiteSpace(match.style.display)) {
+                    const match = header.element;
+                    if (match && !header.meta.statusBar && Utils.isNullOrWhiteSpace(match.style.display)) {
                         const width = `${match.offsetWidth}px`;
                         const dirtyPatch = [
-                            { Field: "Id", Value: header.Meta.Id },
-                            { Field: "FeatureId", Value: header.Meta.FeatureId },
-                            { Field: "Frozen", Value: header.Meta.Frozen },
-                            { Field: "FrozenRight", Value: header.Meta.Frozen },
-                            Utils.isNullOrWhiteSpace(header.GroupName) ? { Field: "Width", Value: width } : { Field: "Width", Value: header.Meta.Width },
-                            Utils.isNullOrWhiteSpace(header.GroupName) ? { Field: "MaxWidth", Value: width } : { Field: "MaxWidth", Value: header.Meta.MaxWidth },
-                            Utils.isNullOrWhiteSpace(header.GroupName) ? { Field: "MinWidth", Value: width } : { Field: "MinWidth", Value: header.Meta.MinWidth },
+                            { field: "id", value: header.meta.id },
+                            { field: "featureId", value: header.meta.featureId },
+                            { field: "frozen", value: header.meta.frozen },
+                            { field: "frozenRight", value: header.meta.frozen },
+                            Utils.isNullOrWhiteSpace(header.groupName) ? { field: "width", value: width } : { field: "width", value: header.meta.width },
+                            Utils.isNullOrWhiteSpace(header.groupName) ? { field: "maxWidth", value: width } : { field: "maxWidth", value: header.meta.maxWidth },
+                            Utils.isNullOrWhiteSpace(header.groupName) ? { field: "minWidth", value: width } : { field: "minWidth", value: header.meta.minWidth },
                         ];
                         if (!anyGroup) {
-                            dirtyPatch.push({ Field: "Order", Value: header.Order })
+                            dirtyPatch.push({ field: "order", value: header.order })
                         }
                         return {
-                            Changes: dirtyPatch,
-                            NotMessage: true,
-                            Table: "Component",
+                            changes: dirtyPatch,
+                            notMessage: true,
+                            table: "Component",
                         };
                     }
                     return null;
@@ -607,24 +607,24 @@ export class DevTools extends EditableComponent {
             }
             else {
                 const columns = headerElements.map(header => {
-                    const match = header.Element;
-                    if (match && !header.Meta.StatusBar && !Utils.isNullOrWhiteSpace(header.Meta.FieldName) && Utils.isNullOrWhiteSpace(match.style.display)) {
+                    const match = header.element;
+                    if (match && !header.meta.statusBar && !Utils.isNullOrWhiteSpace(header.meta.fieldName) && Utils.isNullOrWhiteSpace(match.style.display)) {
                         const width = `${match.offsetWidth}px`;
                         return {
-                            Id: header.Meta.Id,
-                            FieldName: header.Meta.FieldName,
-                            Frozen: header.Meta.Frozen,
-                            Order: header.Order,
-                            Width: width,
+                            id: header.meta.id,
+                            fieldName: header.meta.fieldName,
+                            frozen: header.meta.frozen,
+                            order: header.order,
+                            width: width,
                         };
                     }
                     return null;
                 }).filter(x => x != null);
                 var userSetting = new UserSetting();
-                userSetting.FeatureId = this.EditForm.Meta.Label;
-                userSetting.ComponentId = this.Meta.Id;
-                userSetting.Active = true;
-                userSetting.Value = JSON.stringify(columns);
+                userSetting.featureId = this.editForm.meta.Label;
+                userSetting.componentId = this.meta.id;
+                userSetting.active = true;
+                userSetting.value = JSON.stringify(columns);
                 Client.instance.postAsync(userSetting, "/api/UserSetting").then();
             }
             if (sticky) {
@@ -634,10 +634,10 @@ export class DevTools extends EditableComponent {
     }
 
     /**
-     * Placeholder for updating sticky columns method.
-     * This would be implemented based on the specific requirements.
+     * placeholder for updating sticky columns method.
+     * this would be implemented based on the specific requirements.
      */
     updateStickyColumns() {
-        // Implementation depends on the specific grid/table structure
+        // implementation depends on the specific grid/table structure
     }
 }

@@ -1,7 +1,7 @@
 import { jest } from "@jest/globals";
 
 jest.unstable_mockModule("../utils/componentFactory.js", () => ({
-  ComponentFactory: {},
+  componentFactory: {},
 }));
 
 jest.unstable_mockModule("../clients/client.js", () => ({
@@ -9,11 +9,11 @@ jest.unstable_mockModule("../clients/client.js", () => ({
 }));
 
 jest.unstable_mockModule("../tabComponent.js", () => ({
-  TabComponent: class TabComponent {},
+  tabComponent: class TabComponent {},
 }));
 
 jest.unstable_mockModule("../tabGroup.js", () => ({
-  TabGroup: class TabGroup {},
+  tabGroup: class TabGroup {},
 }));
 
 const { Section } = await import("../section.js");
@@ -26,10 +26,10 @@ describe("Section", () => {
     container = document.createElement("div");
     document.body.appendChild(container);
     section = new Section("div");
-    section.ParentElement = container;
-    section.Element = container;
+    section.parentElement = container;
+    section.element = container;
     section.Entity = {};
-    section.EditForm = {};
+    section.editForm = {};
   });
 
   afterEach(() => {
@@ -38,39 +38,39 @@ describe("Section", () => {
 
   test("constructor initializes defaults", () => {
     expect(section.Children).toEqual([]);
-    expect(section.Element).toBe(container);
+    expect(section.element).toBe(container);
   });
 
-  test("HasElementAndAll requires a non-empty array and a passing predicate", () => {
-    expect(Section.HasElementAndAll([], () => true)).toBe(false);
-    expect(Section.HasElementAndAll([1, 2, 3], value => value > 0)).toBe(true);
-    expect(Section.HasElementAndAll([1, 0, 3], value => value > 0)).toBe(false);
+  test("hasElementAndAll requires a non-empty array and a passing predicate", () => {
+    expect(Section.hasElementAndAll([], () => true)).toBe(false);
+    expect(Section.hasElementAndAll([1, 2, 3], value => value > 0)).toBe(true);
+    expect(Section.hasElementAndAll([1, 0, 3], value => value > 0)).toBe(false);
   });
 
-  test("HandleMeta injects HTML and scoped CSS", () => {
+  test("handleMeta injects HTML and scoped CSS", () => {
     section.Meta = {
       Id: "abc",
-      FieldName: "TestField",
+      fieldName: "testField",
       Html: "<div class='child'>Hello</div>",
       Css: ".child { color: red; }",
     };
 
-    section.HandleMeta();
+    section.handleMeta();
 
-    expect(section.Element.innerHTML).toContain("Hello");
+    expect(section.element.innerHTML).toContain("Hello");
     expect(document.head.querySelector("#testfieldabc-style")).not.toBeNull();
   });
 
-  test("DropdownBtnClick toggles dropdown visibility", () => {
+  test("dropdownBtnClick toggles dropdown visibility", () => {
     section.Meta = { Label: "Actions" };
-    section.RenderDropDown();
+    section.renderDropDown();
 
     expect(section.innerEle.style.display).toBe("none");
 
-    section.DropdownBtnClick();
+    section.dropdownBtnClick();
     expect(section.innerEle.style.display).toBe("block");
 
-    section.DropdownBtnClick();
+    section.dropdownBtnClick();
     expect(section.innerEle.style.display).toBe("none");
   });
 });

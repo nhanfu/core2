@@ -16,11 +16,11 @@ export class KanbanColumn extends EditableComponent {
     /**
      * @type {HTMLElement}
      */
-    MainSection;
+    mainSection;
     /**
      * @type {HTMLElement}
      */
-    PaginationSection;
+    paginationSection;
     /**
      * Create instance of component
      * @param {Component} ui 
@@ -29,52 +29,52 @@ export class KanbanColumn extends EditableComponent {
     constructor(ui, entity) {
         super(ui);
         /** @type {Component} */
-        this.Meta = ui;
-        this.Entity = entity;
+        this.meta = ui;
+        this.entity = entity;
         this.Items = [];
         this._textEle = null;
         this.Options = {
-            PageIndex: 0,
-            PageSize: 50,
+            pageIndex: 0,
+            pageSize: 50,
             Total: 0,
-            CurrentPageCount: 0,
-            StartIndex: 1,
-            EndIndex: 50,
-            ClickHandler: null
+            currentPageCount: 0,
+            startIndex: 1,
+            endIndex: 50,
+            clickHandler: null
         };
     }
 
-    HandleMessage(data) {
-        if (data.Message.UpdatedBy === this.Token.UserId) {
+    handleMessage(data) {
+        if (data.Message.updatedBy === this.Token.userId) {
             const item = this.Items.find(x => x.Entity.Id === data.Message.Id);
             if (item) {
                 item.Entity = data.Message;
-                item.UpdateView();
+                item.updateView();
             }
             return;
         }
         const item = this.Items.find(x => x.Entity.Id === data.Message.Id);
         if (item) {
-            if (this.Entity.Id !== data.Message.ProgressId) {
+            if (this.entity.Id !== data.Message.progressId) {
                 this.Items = this.Items.filter(x => x !== item);
-                item.Element?.remove();
+                item.element?.remove();
             } else {
-                item.Element?.remove();
+                item.element?.remove();
                 this.Items = this.Items.filter(x => x !== item);
-                const column = new KanbanItem(this.Meta, data.Message);
-                column.ParentElement = this.MainSection;
-                column.EditForm = this.EditForm;
+                const column = new KanbanItem(this.meta, data.Message);
+                column.parentElement = this.mainSection;
+                column.editForm = this.editForm;
                 column.Top = true;
-                column.Render();
+                column.render();
                 this.Items.push(column);
             }
         } else {
-            if (this.Entity.Id === data.Message.ProgressId) {
-                const column = new KanbanItem(this.Meta, data.Message);
-                column.ParentElement = this.MainSection;
+            if (this.entity.Id === data.Message.progressId) {
+                const column = new KanbanItem(this.meta, data.Message);
+                column.parentElement = this.mainSection;
                 column.Top = true;
-                column.EditForm = this.EditForm;
-                column.Render();
+                column.editForm = this.editForm;
+                column.render();
                 this.Items.push(column);
             }
         }
@@ -84,13 +84,13 @@ export class KanbanColumn extends EditableComponent {
      * Renders the button component into the DOM.
      */
     Render() {
-        var group = this.Meta.Id;
-        Html.take(this.ParentElement).div.className("kanban-column");
-        this.Element = Html.Context;
-        Html.h2.text(this.Entity.Title).end.div.className("kanban-items").render();
-        Html.Context["Entity"] = this.Entity;
-        this.MainSection = Html.Context;
-        new Sortable(this.MainSection, {
+        var group = this.meta.Id;
+        Html.take(this.parentElement).div.className("kanban-column");
+        this.element = Html.context;
+        Html.h2.text(this.entity.Title).end.div.className("kanban-items").render();
+        Html.context["Entity"] = this.entity;
+        this.mainSection = Html.context;
+        new Sortable(this.mainSection, {
             group: group,
             handle: ".kanban-item",
             animation: 150,
@@ -108,16 +108,16 @@ export class KanbanColumn extends EditableComponent {
                 if (toContainer == fromContainer) {
                     return;
                 }
-                item.Entity.ProgressId = toContainer.Entity.Id;
-                const patchModel = this.GetPatchEntity(item.Entity);
+                item.Entity.progressId = toContainer.Entity.Id;
+                const patchModel = this.getPatchEntity(item.Entity);
                 Client.instance.patchAsync(patchModel);
             }
         });
-        this.RenderItemData();
+        this.renderItemData();
         Html.end.div.className("kanban-pagination");
-        this.PaginationSection = Html.Context;
-        if (this.Entity.CanAdd) {
-            Html.take(this.MainSection.parentElement).button.className("add-task").event("click", () => this.DispatchClick()).iText("+ Add Task").end.render()
+        this.paginationSection = Html.context;
+        if (this.entity.canAdd) {
+            Html.take(this.mainSection.parentElement).button.className("add-task").event("click", () => this.dispatchClick()).iText("+ Add Task").end.render()
         }
     }
 
@@ -126,18 +126,18 @@ export class KanbanColumn extends EditableComponent {
      * @param {number} total The total number of records.
      * @param {number} currentPageCount The number of records in the current page.
      */
-    UpdatePagination(total, currentPageCount) {
+    updatePagination(total, currentPageCount) {
         this.Options.Total = total;
-        this.Options.CurrentPageCount = currentPageCount;
-        this.Options.PageNumber = (this.Options.PageIndex || 0) + 1;
-        this.Options.StartIndex = (this.Options.PageIndex || 0) * (this.Options.PageSize || 50) + 1;
-        this.Options.EndIndex = this.Options.StartIndex + this.Options.CurrentPageCount - 1;
-        Html.take(this.PaginationSection);
+        this.Options.currentPageCount = currentPageCount;
+        this.Options.pageNumber = (this.Options.pageIndex || 0) + 1;
+        this.Options.startIndex = (this.Options.pageIndex || 0) * (this.Options.pageSize || 50) + 1;
+        this.Options.endIndex = this.Options.startIndex + this.Options.currentPageCount - 1;
+        Html.take(this.paginationSection);
         Html.clear();
-        Html.button.className("prev-page").event("click", this.PrevPage.bind(this)).text("←").end.span.className("page-info").text(this.Options.StartIndex + " - " + this.Options.EndIndex + " of " + this.Options.Total).end.button.className("next-page").event("click", this.NextPage.bind(this)).text("→").end.end.render();
+        Html.button.className("prev-page").event("click", this.prevPage.bind(this)).text("←").end.span.className("page-info").text(this.Options.startIndex + " - " + this.Options.endIndex + " of " + this.Options.Total).end.button.className("next-page").event("click", this.nextPage.bind(this)).text("→").end.end.render();
     }
 
-    GetPatchEntity(entity) {
+    getPatchEntity(entity) {
         var dirtyPatch = [];
         var row = entity;
         Object.getOwnPropertyNames(row).forEach(cell => {
@@ -154,45 +154,45 @@ export class KanbanColumn extends EditableComponent {
             let patchDetail = {};
             patchDetail.Label = cell;
             patchDetail.Field = cell;
-            patchDetail.OldVal = null;
+            patchDetail.oldVal = null;
             patchDetail.Value = val;
             dirtyPatch.push(patchDetail);
         });
         return {
             Changes: dirtyPatch,
-            Table: "ShipmentTask"
+            Table: "shipmentTask"
         };
     }
 
-    RenderItemData() {
+    renderItemData() {
         this.Items = [];
-        this.MainSection.innerHTML = "";
-        this.ReloadData().then((data) => {
+        this.mainSection.innerHTML = "";
+        this.reloadData().then((data) => {
             if (Array.isArray(data) && data.length > 0) {
                 for (const item of data) {
-                    var column = new KanbanItem(this.Meta, item);
-                    column.ParentElement = this.MainSection;
-                    column.EditForm = this.EditForm;
-                    column.Render();
+                    var column = new KanbanItem(this.meta, item);
+                    column.parentElement = this.mainSection;
+                    column.editForm = this.editForm;
+                    column.render();
                     this.Items.push(column);
                 }
             }
         });
     }
 
-    async ReloadData() {
-        let sql = this.GetSql(JSON.stringify(this.Entity));
-        return await this.CustomQuery(sql);
+    async reloadData() {
+        let sql = this.getSql(JSON.stringify(this.entity));
+        return await this.customQuery(sql);
     }
 
-    async CustomQuery(vm) {
+    async customQuery(vm) {
         const data = await Client.instance.submitAsync({
-            NoQueue: true,
+            noQueue: true,
             Url: `/api/feature/com`,
             Method: "POST",
-            JsonData: JSON.stringify(vm),
+            jsonData: JSON.stringify(vm),
         });
-        this.UpdatePagination(data.count, !data.value ? 0 : data.value.length);
+        this.updatePagination(data.count, !data.value ? 0 : data.value.length);
         if (!data.value || data.value.length === 0) {
             return [];
         }
@@ -205,37 +205,37 @@ export class KanbanColumn extends EditableComponent {
     /**
      * Handle the event for navigating to the next page.
      */
-    NextPage() {
-        const pages = Math.ceil(this.Options.Total / this.Options.PageSize);
-        if (this.Options.PageNumber >= pages) return;
+    nextPage() {
+        const pages = Math.ceil(this.Options.Total / this.Options.pageSize);
+        if (this.Options.pageNumber >= pages) return;
 
-        this.Options.PageIndex++;
-        if (this.Options.ClickHandler) this.Options.ClickHandler(this.Options.PageIndex, null);
-        this.RenderItemData();
+        this.Options.pageIndex++;
+        if (this.Options.clickHandler) this.Options.clickHandler(this.Options.pageIndex, null);
+        this.renderItemData();
     }
 
     /**
      * Handle the event for navigating to the previous page.
      */
-    PrevPage() {
-        if (this.Options.PageIndex <= 0) return;
+    prevPage() {
+        if (this.Options.pageIndex <= 0) return;
 
-        this.Options.PageIndex--;
-        if (this.Options.ClickHandler) this.Options.ClickHandler(this.Options.PageIndex, null);
-        this.RenderItemData();
+        this.Options.pageIndex--;
+        if (this.Options.clickHandler) this.Options.clickHandler(this.Options.pageIndex, null);
+        this.renderItemData();
     }
 
-    GetSql(vm) {
-        let submitEntity = Utils.IsFunction(vm, true, this);
+    getSql(vm) {
+        let submitEntity = Utils.isFunction(vm, true, this);
         if (!submitEntity) {
             submitEntity = {};
         }
-        var skip = this.Options.PageIndex * this.Options.PageSize;
+        var skip = this.Options.pageIndex * this.Options.pageSize;
         /** @type {SqlViewModel} */
         var res = {
-            ComId: this.Meta.Id,
+            comId: this.meta.Id,
             Params: submitEntity ? JSON.stringify(submitEntity) : null,
-            OrderBy: "ds.InsertedDate desc",
+            orderBy: "ds.insertedDate desc",
             Count: true,
             Skip: skip || 0,
             Top: 50
@@ -246,25 +246,25 @@ export class KanbanColumn extends EditableComponent {
     /**
      * Dispatches the click event, handles UI changes for click action.
      */
-    DispatchClick() {
-        if (this.Meta.OnClick) {
-            this.Meta.OnClick.call();
+    dispatchClick() {
+        if (this.meta.onClick) {
+            this.meta.onClick.call();
             return;
         }
 
-        if (this.Disabled || this.Element.hidden) {
+        if (this.disabled || this.element.hidden) {
             return;
         }
-        this.Disabled = true;
+        this.disabled = true;
         try {
-            Spinner.AppendTo();
-            this.DispatchEvent(this.Meta.Events, "click", this, this.Entity).then(() => {
-                this.Disabled = false;
+            Spinner.appendTo();
+            this.dispatchEvent(this.meta.Events, "click", this, this.entity).then(() => {
+                this.disabled = false;
                 Spinner.Hide();
             });
         } finally {
             window.setTimeout(() => {
-                this.Disabled = false;
+                this.disabled = false;
             }, 2000);
         }
     }
@@ -273,10 +273,10 @@ export class KanbanColumn extends EditableComponent {
      * Gets the value text from the button component.
      * @returns {string} The text value of the component.
      */
-    GetValueText() {
-        if (!this.Entity || !this.Name) {
+    getValueText() {
+        if (!this.entity || !this.Name) {
             return this._textEle.textContent;
         }
-        return this.FieldVal?.toString();
+        return this.fieldVal?.toString();
     }
 }

@@ -1,8 +1,8 @@
-import { KeyCodeEnum, Entity } from "../models/enum.js";
+import { keyCodeEnum, Entity } from "../models/enum.js";
 import { Utils } from "./utils.js";
 import { OutOfViewPort } from "./outOfViewPort.js";
 
-export function HasNonSpaceChar() { return this.trim() !== ''; }
+export function hasNonSpaceChar() { return this.trim() !== ''; }
 
 export class Str {
     static Empty = '';
@@ -12,7 +12,7 @@ export class Str {
      * @param {string} template
      * @param {(string | any[])[]} args
      */
-    static Format(template, ...args) {
+    static format(template, ...args) {
         return template.replace(/{(\d+)}/g, (/** @type {any} */ match, /** @type {string | number} */ index) => {
             return typeof args[index] != 'undefined' ? args[index] : match;
         });
@@ -29,11 +29,11 @@ export class Str {
 /**
  * @returns true if array contains at least one element
  */
-function HasElement() {
+function hasElement() {
     return this != null && this.length > 0;
 }
 
-Array.prototype.Nothing = function () {
+Array.prototype.nothing = function () {
     return this.length === 0;
 };
 
@@ -42,15 +42,15 @@ Array.prototype.Nothing = function () {
  * @param {(value: T) => K[]} getChildren
  * @returns {K[]}
  */
-Array.prototype.Flattern = function (getChildren) {
-    if (this.Nothing()) return this;
-    var firstLevel = this.Select(x => getChildren(x)).Where(x => x != null).SelectMany((/** @type {any} */ x) => x);
-    if (firstLevel.Nothing()) {
+Array.prototype.flattern = function (getChildren) {
+    if (this.nothing()) return this;
+    var firstLevel = this.select(x => getChildren(x)).where(x => x != null).selectMany((/** @type {any} */ x) => x);
+    if (firstLevel.nothing()) {
         return this;
     }
     return this.concat(firstLevel.Flattern(getChildren));
 };
-Array.prototype.Any = function (/** @type {(arg0: any) => any} */ predicate) {
+Array.prototype.any = function (/** @type {(arg0: any) => any} */ predicate) {
     if (!predicate) {
         return this.length > 0;
     }
@@ -61,34 +61,34 @@ Array.prototype.Any = function (/** @type {(arg0: any) => any} */ predicate) {
     }
 };
 Array.prototype.Where = Array.prototype.filter;
-Array.prototype.SelectMany = Array.prototype.flatMap;
-Array.prototype.SelectForEach = Array.prototype.map;
+Array.prototype.selectMany = Array.prototype.flatMap;
+Array.prototype.selectForEach = Array.prototype.map;
 Array.prototype.Select = Array.prototype.map;
-Array.prototype.HasElement = HasElement;
-Array.prototype.ToArray = function () { return this; }
-Array.prototype.Contains = function (/** @type {any} */ item) {
+Array.prototype.hasElement = hasElement;
+Array.prototype.toArray = function () { return this; }
+Array.prototype.contains = function (/** @type {any} */ item) {
     return this.indexOf(item) !== -1;
 };
-Array.prototype.Remove = function (/** @type {any} */ item) {
+Array.prototype.remove = function (/** @type {any} */ item) {
     var index = this.indexOf(item);
     if (index !== -1) {
         this.splice(index, 1);
     }
 };
-Array.prototype.ToDictionary = function (/** @type {(arg0: any) => string | number} */ keySelector, /** @type {(x: any) => any} */ valueSelector) {
+Array.prototype.toDictionary = function (/** @type {(arg0: any) => string | number} */ keySelector, /** @type {(x: any) => any} */ valueSelector) {
     if (valueSelector == null) valueSelector = (/** @type {any} */ x) => x;
     return this.reduce((acc, curr) => {
         acc[keySelector(curr)] = valueSelector(curr);
         return acc;
     }, {});
 };
-Array.prototype.FirstOrDefault = function (predicate = null) {
+Array.prototype.firstOrDefault = function (predicate = null) {
     if (!predicate) return this.length > 0 ? this[0] : null;
     for (let i = 0; i < this.length; i++) {
         if (predicate(this[i])) return this[i];
     }
 }
-Array.prototype.GroupBy = function (/** @type {(arg0: any) => any} */ keyFunction) {
+Array.prototype.groupBy = function (/** @type {(arg0: any) => any} */ keyFunction) {
     const map = this.reduce((accumulator, item) => {
         const keyObj = keyFunction(item);
         const key = JSON.stringify(keyObj);
@@ -106,23 +106,23 @@ Array.prototype.GroupBy = function (/** @type {(arg0: any) => any} */ keyFunctio
         return items;
     });
 };
-Array.prototype.ForEach = Array.prototype.forEach;
+Array.prototype.forEach = Array.prototype.forEach;
 /**
  * @template T, K
  * @param {(item: T) => K} keySelector 
  * @returns 
  */
-Array.prototype.DistinctBy = function (/** @type {(item: T) => K} */ keySelector) {
-    return this.GroupBy(keySelector).FirstOrDefault();
+Array.prototype.distinctBy = function (/** @type {(item: T) => K} */ keySelector) {
+    return this.groupBy(keySelector).firstOrDefault();
 };
 /**
  * @template T, K
  * @returns 
  */
-Array.prototype.Distinct = function () {
-    return this.GroupBy(x => x).FirstOrDefault();
+Array.prototype.distinct = function () {
+    return this.groupBy(x => x).firstOrDefault();
 };
-Array.prototype.ForEachAsync = async function (/** @type {(value: any, index: number, array: any[]) => any} */ map2Promise) {
+Array.prototype.forEachAsync = async function (/** @type {(value: any, index: number, array: any[]) => any} */ map2Promise) {
     var promises = this.map(map2Promise);
     await Promise.all(promises);
     return this;
@@ -130,7 +130,7 @@ Array.prototype.ForEachAsync = async function (/** @type {(value: any, index: nu
 Array.prototype.Clear = function () {
     while (this.length) this.pop();
 };
-Array.prototype.AddRange = Array.prototype.push;
+Array.prototype.addRange = Array.prototype.push;
 Array.prototype.Combine = function (/** @type {(value: any, index: number, array: any[]) => any} */ mapper = null, /** @type {string} */ separator = ',') {
     if (mapper) {
         return this.map(mapper).join(separator);
@@ -146,7 +146,7 @@ Array.prototype.Combine = function (/** @type {(value: any, index: number, array
  * @param {boolean} asc2 
  * @returns {T[]}
  */
-Array.prototype.OrderBy = function (keySelector, keySelector2, asc1 = true, asc2 = true) {
+Array.prototype.orderBy = function (keySelector, keySelector2, asc1 = true, asc2 = true) {
     return this.slice().sort((a, b) => {
         const ra = keySelector(a);
         const rb = keySelector(b);
@@ -157,8 +157,7 @@ Array.prototype.OrderBy = function (keySelector, keySelector2, asc1 = true, asc2
     });
 };
 Array.prototype.All = Array.prototype.every;
-Array.prototype.IndexOf = Array.prototype.findIndex;
-Array.prototype.LastOrDefault = function (predicate = null) {
+Array.prototype.lastOrDefault = function (predicate = null) {
     if (predicate) return this.findLast(predicate);
     return this.length > 0 ? this[this.length - 1] : null;
 };
@@ -194,10 +193,10 @@ Date.prototype.addYears = function (/** @type {number} */ years) {
     date.setFullYear(date.getFullYear() + years);
     return date;
 };
-HTMLElement.prototype.HasClass = function (/** @type {string} */ str) {
+HTMLElement.prototype.hasClass = function (/** @type {string} */ str) {
     return this.classList.contains(str);
 };
-HTMLElement.prototype.ReplaceClass = function (/** @type {string} */ cls, /** @type {string} */ byCls) {
+HTMLElement.prototype.replaceClass = function (/** @type {string} */ cls, /** @type {string} */ byCls) {
     this.classList.remove(cls);
     this.classList.add(byCls);
 };
@@ -231,16 +230,16 @@ Event.prototype.Left = function () {
  * Gets the keyCode from the event.
  * @returns {number} The keyCode or -1 if undefined.
  */
-Event.prototype.KeyCode = function () {
+Event.prototype.keyCode = function () {
     // @ts-ignore
     return this.keyCode ?? -1;
 };
 
 /**
  * Attempts to parse keyCode to an enum value.
- * @returns {KeyCodeEnum|null} Parsed KeyCodeEnum or null if unable to parse.
+ * @returns {keyCodeEnum|null} Parsed keyCodeEnum or null if unable to parse.
  */
-Event.prototype.KeyCodeEnum = function () {
+Event.prototype.keyCodeEnum = function () {
     // @ts-ignore
     return this.keyCode ?? -1;
 };
@@ -249,7 +248,7 @@ Event.prototype.KeyCodeEnum = function () {
  * Checks if the Shift key was pressed during the event.
  * @returns {boolean} True if Shift key was pressed.
  */
-Event.prototype.ShiftKey = function () {
+Event.prototype.shiftKey = function () {
     // @ts-ignore
     return this.shiftKey;
 };
@@ -258,7 +257,7 @@ Event.prototype.ShiftKey = function () {
  * Detects if the user pressed Ctrl or Command key while the event occurs.
  * @returns {boolean} True if Ctrl or Meta key was pressed.
  */
-Event.prototype.CtrlOrMetaKey = function () {
+Event.prototype.ctrlOrMetaKey = function () {
     // @ts-ignore
     return this.ctrlKey || this.metaKey;
 };
@@ -267,7 +266,7 @@ Event.prototype.CtrlOrMetaKey = function () {
  * Checks if the Alt key was pressed during the event.
  * @returns {boolean} True if Alt key was pressed.
  */
-Event.prototype.AltKey = function () {
+Event.prototype.altKey = function () {
     // @ts-ignore
     return this.altKey;
 };
@@ -276,7 +275,7 @@ Event.prototype.AltKey = function () {
  * Gets the checked status from the target element of the event, assuming the target is an input element.
  * @returns {boolean} Checked status.
  */
-Event.prototype.GetChecked = function () {
+Event.prototype.getChecked = function () {
     // @ts-ignore
     if (this.target && this.target.type === "checkbox") {
         // @ts-ignore
@@ -289,7 +288,7 @@ Event.prototype.GetChecked = function () {
  * Gets the input text from the target element of the event, assuming the target is an input element.
  * @returns {string} Input text value.
  */
-Event.prototype.GetInputText = function () {
+Event.prototype.getInputText = function () {
     // @ts-ignore
     if (this.target && typeof this.target.value === "string") {
         // @ts-ignore
@@ -302,7 +301,7 @@ Event.prototype.GetInputText = function () {
  * Calculates the full height of an element, including margins.
  * @returns {number} The total height in pixels.
  */
-HTMLElement.prototype.GetFullHeight = function () {
+HTMLElement.prototype.getFullHeight = function () {
     if (!this) {
         return 0;
     }
@@ -316,7 +315,7 @@ HTMLElement.prototype.GetFullHeight = function () {
  * Add a class to the element.
  * @param {string} className - The class name to add.
  */
-HTMLElement.prototype.AddClass = function (className) {
+HTMLElement.prototype.addClass = function (className) {
     if (!this || !className) {
         return;
     }
@@ -327,7 +326,7 @@ HTMLElement.prototype.AddClass = function (className) {
  * Removes a class from the element.
  * @param {string} className - The class name to remove.
  */
-HTMLElement.prototype.RemoveClass = function (className) {
+HTMLElement.prototype.removeClass = function (className) {
     if (!this || !className) {
         return;
     }
@@ -338,7 +337,7 @@ HTMLElement.prototype.RemoveClass = function (className) {
  * Toggles a class on the element based on its presence.
  * @param {string} className - The class to toggle.
  */
-HTMLElement.prototype.ToggleClass = function (className) {
+HTMLElement.prototype.toggleClass = function (className) {
     if (!this || !className) {
         return;
     }
@@ -357,9 +356,9 @@ HTMLElement.prototype.Show = function () {
 
 /**
  * Gets the computed style of the element.
- * @returns {CSSStyleDeclaration} The computed style of the element.
+ * @returns {cSSStyleDeclaration} The computed style of the element.
  */
-HTMLElement.prototype.GetComputedStyle = function () {
+HTMLElement.prototype.getComputedStyle = function () {
     return window.getComputedStyle(this);
 };
 
@@ -390,7 +389,7 @@ HTMLElement.prototype.Hidden = function () {
  * Determines if the element is outside the viewport.
  * @returns {OutOfViewPort} An object indicating which sides are out of the viewport.
  */
-HTMLElement.prototype.OutOfViewport = function () {
+HTMLElement.prototype.outOfViewport = function () {
     const bounding = this.getBoundingClientRect();
     const outOfViewPort = new OutOfViewPort();
     outOfViewPort.Top = bounding.top < 0;

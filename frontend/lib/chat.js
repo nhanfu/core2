@@ -2,11 +2,11 @@ import { EditableComponent } from "./editableComponent.js";
 import EventType from "./models/eventType.js";
 import { PatchVM } from "./models/patch.js";
 import { Uuid7 } from "./structs/uuidv7.js";
-import { Html } from "./utils/html";
+import { html } from "./utils/html";
 import { Utils } from "./utils/utils.js";
 import { Client } from "./clients/client.js";
-import { KeyCodeEnum } from "./models/index.js";
-import { Picker, Data } from 'emoji-mart';
+import { keyCodeEnum } from "./models/index.js";
+import { Picker, Data as data } from 'emoji-mart';
 import { ComponentExt } from "./utils/componentExt.js";
 import { Spinner } from "./spinner.js";
 import { ComponentFactory } from "./utils/componentFactory.js";
@@ -15,50 +15,50 @@ export class Chat extends EditableComponent {
     constructor(ui, ele = null) {
         super(ui);
         /** @type {Component} */
-        this.Meta = ui;
+        this.meta = ui;
     }
 
     /**
      * @type {HTMLElement}
      */
-    HtmlContentChat;
+    htmlContentChat;
     /**
      * @type {HTMLElement}
      */
-    HtmlEmoji;
+    htmlEmoji;
     /**
-     * @type {HTMLInputElement}
+     * @type {hTMLInputElement}
      */
-    UserParentElement;
+    userParentElement;
     /**
-     * @type {HTMLInputElement}
+     * @type {hTMLInputElement}
      */
-    HtmlIputChat;
+    htmlIputChat;
     /**
      * @type {HTMLElement}
      */
-    HtmlHeaderChat;
+    htmlHeaderChat;
     /**
      * @type {[]}
      */
-    ChatData;
+    chatData;
     /**
     * @type {[]}
     */
-    Conversation;
+    conversation;
 
-    Render() {
-        this.Title = Utils.FormatEntity(this.Meta.FormatData, this.Entity);
-        Html.take(this.ParentElement).div.className("chat-container");
-        this.Element = Html.Context;
-        this.LoadData();
+    render() {
+        this.title = Utils.formatEntity(this.meta.formatData, this.entity);
+        html.take(this.parentElement).div.className("chat-container");
+        this.element = html.context;
+        this.loadData();
     }
 
-    HandleMessage(data) {
-        var evt = "UpdateViewEntity" + this.Entity.Id.replaceAll("-", "");
-        if (data.QueueName != evt) {
-            this.UpdateData().then(() => {
-                this.RenderBodyDiscussions();
+    handleMessage(data) {
+        var evt = "updateViewEntity" + this.entity.id.replaceAll("-", "");
+        if (data.queueName != evt) {
+            this.updateData().then(() => {
+                this.renderBodyDiscussions();
             });
             window.setTimeout(() => {
                 this.updateBadge();
@@ -66,17 +66,17 @@ export class Chat extends EditableComponent {
             return;
         }
         const message = data.Message;
-        const existingMessage = this.ChatData.find(msg => msg.Id === message.Id);
+        const existingMessage = this.chatData.find(msg => msg.id === message.id);
         if (existingMessage) {
             existingMessage.Message = message.Message;
-            const existingElement = document.querySelector(`[data-id="${message.Id}"] p`);
+            const existingElement = document.querySelector(`[data-id="${message.id}"] p`);
             if (existingElement) {
                 existingElement.innerHTML = message.Message;
             }
         } else {
-            const lastMessage = this.ChatData.length ? this.ChatData[this.ChatData.length - 1] : null;
-            if (lastMessage && lastMessage.FromId === message.FromId) {
-                const prevEl = document.querySelector(`[data-id="${lastMessage.Id}"]`);
+            const lastMessage = this.chatData.length ? this.chatData[this.chatData.length - 1] : null;
+            if (lastMessage && lastMessage.fromId === message.fromId) {
+                const prevEl = document.querySelector(`[data-id="${lastMessage.id}"]`);
                 if (prevEl) {
                     const photoEl = prevEl.querySelector(".photo");
                     if (photoEl) {
@@ -91,18 +91,18 @@ export class Chat extends EditableComponent {
                 }
             }
 
-            this.ChatData.push(message);
-            this.AddMessageToDOM(message, true);
+            this.chatData.push(message);
+            this.addMessageToDOM(message, true);
         }
         window.setTimeout(() => {
-            if (this.HtmlContentChat && this.HtmlContentChat.parentElement) {
-                this.HtmlContentChat.parentElement.scrollTop = this.HtmlContentChat.clientHeight;
+            if (this.htmlContentChat && this.htmlContentChat.parentElement) {
+                this.htmlContentChat.parentElement.scrollTop = this.htmlContentChat.clientHeight;
             }
         }, 100);
-        this.HtmlIputChat.value = "";
-        this.LastUserId = message.FromId;
-        this.UpdateData().then(() => {
-            this.RenderBodyDiscussions();
+        this.htmlIputChat.value = "";
+        this.lastUserId = message.fromId;
+        this.updateData().then(() => {
+            this.renderBodyDiscussions();
         });
         window.setTimeout(() => {
             this.updateBadge();
@@ -110,74 +110,74 @@ export class Chat extends EditableComponent {
     }
 
     /**
-     * Add message vào DOM.
+     * add message vào dOM.
      * isLastInGroup: nếu true thì render avatar + time/name, ngược lại render spacer thay avatar (để giữ căn lề) và ẩn time.
      */
-    AddMessageToDOM(item, isLastInGroup = true) {
-        Html.take(this.HtmlContentChat);
-        const isImage = Utils.IsImage(item.Message);
+    addMessageToDOM(item, isLastInGroup = true) {
+        html.take(this.htmlContentChat);
+        const isImage = Utils.isImage(item.Message);
 
-        if (this.Token.UserId == item.FromId) {
-            Html.Instance.div.dataAttr("id", item.Id).className("message text-only").div.className("response")
+        if (this.Token.userId == item.fromId) {
+            html.instance.div.dataAttr("id", item.id).className("message text-only").div.className("response")
                 .p.className("text2");
             if (isImage) {
-                Html.Instance.event(EventType.Click, () => this.ShowPreview(item));
+                html.instance.event(EventType.click, () => this.showPreview(item));
             }
-            Html.Instance.innerHTML(item.Message).end.render();
-            if (item.Message != "Tin nhắn đã được thu hồi") {
-                Html.Instance.i.className("icon fa fa-trash clickable").event(EventType.Click, async () => await this.DeleteMessage(item)).end.render();
+            html.instance.innerHTML(item.Message).end.render();
+            if (item.Message != "tin nhắn đã được thu hồi") {
+                html.instance.i.className("icon fa fa-trash clickable").event(EventType.click, async () => await this.deleteMessage(item)).end.render();
             }
-            Html.Instance.end.end.render();
+            html.instance.end.end.render();
 
             if (isLastInGroup) {
-                Html.Instance.p.className("response-time time").i.text(this.dayjs(item.InsertedDate).format("HH:mm DD/MM/YYYY")).end.end.render();
+                html.instance.p.className("response-time time").i.text(this.dayjs(item.insertedDate).format("hH:mm dD/mM/yYYY")).end.end.render();
             }
         }
         else {
-            Html.Instance.div.dataAttr("id", item.Id).className("message");
+            html.instance.div.dataAttr("id", item.id).className("message");
 
             if (isLastInGroup) {
-                Html.Instance.div.className("photo").style(`background-image: url('${item.Avatar}');`)
+                html.instance.div.className("photo").style(`background-image: url('${item.avatar}');`)
                     .div.className("online").end.end;
             } else {
-                Html.Instance.div.className("photo spacer").end;
+                html.instance.div.className("photo spacer").end;
             }
 
-            Html.Instance.p.className("text");
-            Html.Instance.innerHTML(item.Message);
+            html.instance.p.className("text");
+            html.instance.innerHTML(item.Message);
             if (isImage) {
-                Html.Instance.event(EventType.Click, () => this.ShowPreview(item));
+                html.instance.event(EventType.click, () => this.showPreview(item));
             }
-            Html.Instance.end.end.render();
+            html.instance.end.end.render();
 
             if (isLastInGroup) {
-                Html.Instance.p.className("time").i.text(item.FromName + ' - ' + this.dayjs(item.InsertedDate).format("HH:mm DD/MM/YYYY")).end.end.render();
+                html.instance.p.className("time").i.text(item.fromName + ' - ' + this.dayjs(item.insertedDate).format("hH:mm dD/mM/yYYY")).end.end.render();
             }
         }
     }
 
-    LoadData() {
-        this.RunQuerys().then(data => {
-            this.ChatData = data[0];
-            this.Conversation = data[1];
-            this.Users = data[2];
-            this.RenderDiscussions();
-            this.RenderChat();
-            if (!this.Entity || !this.EntityId || this.EntityId.startsWith("-")) {
-                this.HandlerClickBot();
+    loadData() {
+        this.runQuerys().then(data => {
+            this.chatData = data[0];
+            this.conversation = data[1];
+            this.users = data[2];
+            this.renderDiscussions();
+            this.renderChat();
+            if (!this.entity || !this.entityId || this.entityId.startsWith("-")) {
+                this.handlerClickBot();
             }
         })
     }
 
-    async UpdateData() {
-        var data = await this.RunQuerys();
-        this.ChatData = data[0];
-        this.Conversation = data[1];
-        this.Users = data[2];
+    async updateData() {
+        var data = await this.runQuerys();
+        this.chatData = data[0];
+        this.conversation = data[1];
+        this.users = data[2];
     }
 
-    RenderMenu() {
-        Html.take(this.Element).nav.className("chat-menu").ul.className("chat-items")
+    renderMenu() {
+        html.take(this.element).nav.className("chat-menu").ul.className("chat-items")
             .li.className("chat-item").i.className("fal fa-home").end.end
             .li.className("chat-item").i.className("fal fa-user").end.end
             .li.className("chat-item").i.className("fal fa-pencil").end.end
@@ -189,61 +189,61 @@ export class Chat extends EditableComponent {
     /**
      * @type {HTMLElement}
      */
-    BodyDiscussions;
+    bodyDiscussions;
 
-    RenderDiscussions() {
-        Html.take(this.Element).section.className("discussions").div.className("header-discussions").div.tabIndex(-1).event(EventType.Click, (evt) => this.HandlerClickBot(evt)).className("discussion " + (("-1" == this.Entity.Id) ? "message-active" : "") + "")
-            .div.className("photo").style("background-image: url('https://forwardx.vn/wp-content/uploads/2025/03/cropped-Icon-Logo-180x180.png');").end
+    renderDiscussions() {
+        html.take(this.element).section.className("discussions").div.className("header-discussions").div.tabIndex(-1).event(EventType.click, (evt) => this.handlerClickBot(evt)).className("discussion " + (("-1" == this.entity.id) ? "message-active" : "") + "")
+            .div.className("photo").style("background-image: url('https://forwardx.vn/wp-content/uploads/2025/03/cropped-icon-logo-180x180.png');").end
             .div.className("desc-contact")
-            .span.className("name").iText("Forwardx").end
-            .span.className("description").text("Bot Assistant").end
+            .span.className("name").iText("forwardx").end
+            .span.className("description").text("bot assistant").end
             .p.className("message").innerHTML('....').end
             .p.className("message").innerHTML('').end.end
             .end.render();
-        Html.Instance.div.render();
-        this.BodyDiscussions = Html.Context;
-        this.RenderBodyDiscussions();
-        Html.Instance.endOf(".discussions");
+        html.instance.div.render();
+        this.bodyDiscussions = html.context;
+        this.renderBodyDiscussions();
+        html.instance.endOf(".discussions");
     }
 
-    HandlerClickBot() {
+    handlerClickBot() {
         document.querySelector(".footer-chat").classList.add("d-none");
-        this.OptionsElement.classList.add("d-none");
-        Html.take(this.HtmlContentChat).clear();
-        Html.take(this.TitleText).clear().text("Forwardx");
-        Html.take(this.FeatureText).clear().iText("Bot Assistant");
-        var rsSaleFunction = localStorage.getItem("SalesFunction2") ? JSON.parse(localStorage.getItem("SalesFunction2")) : [];
-        const aiEntry = rsSaleFunction.find((x) => x.Code == "AI_ID");
-        const chatbotId = aiEntry && aiEntry.Value;
+        this.optionsElement.classList.add("d-none");
+        html.take(this.htmlContentChat).clear();
+        html.take(this.titleText).clear().text("forwardx");
+        html.take(this.featureText).clear().iText("bot assistant");
+        var rsSaleFunction = localStorage.getItem("salesFunction2") ? JSON.parse(localStorage.getItem("salesFunction2")) : [];
+        const aiEntry = rsSaleFunction.find((x) => x.code == "aI_ID");
+        const chatbotId = aiEntry && aiEntry.value;
         const el = document.createElement("zapier-interfaces-chatbot-embed");
         el.setAttribute("chatbot-id", chatbotId.toString());
         el.style.height = "calc(100vh - 14rem)";
-        this.HtmlContentChat.appendChild(el);
+        this.htmlContentChat.appendChild(el);
     }
 
-    LastFromId;
-    LastUserId;
+    lastFromId;
+    lastUserId;
     /**
-     * @type {String}
+     * @type {string}
      */
-    Title = null;
+    title = null;
 
-    RenderBodyChat() {
-        Html.take(this.HtmlContentChat).clear();
-        this.LastFromId = this.ChatData.find(x => x.FromId != this.Token.UserId);
-        this.LastUserId = this.ChatData.find(x => x.FromId != this.Token.UserId);
+    renderBodyChat() {
+        html.take(this.htmlContentChat).clear();
+        this.lastFromId = this.chatData.find(x => x.fromId != this.Token.userId);
+        this.lastUserId = this.chatData.find(x => x.fromId != this.Token.userId);
 
-        // render theo nhóm: nếu message tiếp theo cùng FromId -> current không phải cuối nhóm
-        for (let i = 0; i < (this.ChatData || []).length; i++) {
-            const item = this.ChatData[i];
-            const next = (i + 1 < this.ChatData.length) ? this.ChatData[i + 1] : null;
-            const isLastInGroup = !(next && next.FromId === item.FromId);
-            this.AddMessageToDOM(item, isLastInGroup);
+        // render theo nhóm: nếu message tiếp theo cùng fromId -> current không phải cuối nhóm
+        for (let i = 0; i < (this.chatData || []).length; i++) {
+            const item = this.chatData[i];
+            const next = (i + 1 < this.chatData.length) ? this.chatData[i + 1] : null;
+            const isLastInGroup = !(next && next.fromId === item.fromId);
+            this.addMessageToDOM(item, isLastInGroup);
         }
 
         window.setTimeout(() => {
-            if (this.HtmlContentChat && this.HtmlContentChat.parentElement) {
-                this.HtmlContentChat.parentElement.scrollTop = this.HtmlContentChat.clientHeight;
+            if (this.htmlContentChat && this.htmlContentChat.parentElement) {
+                this.htmlContentChat.parentElement.scrollTop = this.htmlContentChat.clientHeight;
             }
         }, 100);
     }
@@ -251,183 +251,183 @@ export class Chat extends EditableComponent {
     /**
      * @type {HTMLElement}
      */
-    TitleText;
+    titleText;
     /**
      * @type {HTMLElement}
      */
-    FeatureText;
+    featureText;
     /**
      * @type {HTMLElement}
      */
-    ContainerPicker;
+    containerPicker;
     /**
      * @type {HTMLElement}
      */
-    UserElement;
+    userElement;
     /**
      * @type {HTMLElement}
      */
-    OptionsElement;
+    optionsElement;
     /**
      * @type {HTMLElement}
      */
-    DarkOverlay;
+    darkOverlay;
     /**
     * @type {Picker}
     */
     Picker;
 
-    RenderChat() {
-        Html.take(this.Element).section.className("chat")
+    renderChat() {
+        html.take(this.element).section.className("chat")
             .div.className("header-chat");
-        this.HtmlHeaderChat = Html.Context;
-        Html.Instance.div.className("name2").style("width: 100%; display: flex ; align-items: center; gap: 10px;").span.iText(this.Entity.Label)
-        this.FeatureText = Html.Context;
-        Html.Instance.end.span.text(" : ").end.a.style("color:#fff").className("mr-1").event(EventType.Click, this.OpenPopup.bind(this)).text(this.Entity.FormatChat ? this.Entity.FormatChat.replaceAll("<br>", "") : "");
-        this.TitleText = Html.Context;
-        Html.end.div.className("d-flex align-items-center");
-        this.OptionsElement = Html.Context;
-        Html.span.className("d-flex").render();
-        this.UserElement = Html.Context;
-        Html.Instance.end.i.event(EventType.Click, this.AddUser.bind(this)).className("fas fa-user-plus").end.render();
-        Html.Instance.end.end.end.div.className("messages-chat").div.render();
-        this.HtmlContentChat = Html.Context;
-        this.RenderBodyChat();
-        Html.Instance.end.end.div.className("footer-chat")
-            .input.type("file").className("attach-file").style("display: none;").event(EventType.Change, this.AttachFile.bind(this)).end
-            .i.className("icon fa fa-paperclip clickable").event(EventType.Click, () => this.Element.querySelector(".attach-file").click()).end
-            .i.className("icon fa fa-smile clickable").event(EventType.Click, this.ShowEmojiPicker.bind(this)).end
-            .textArea.className("write-message").placeHolder("Type your message here");
-        this.HtmlIputChat = Html.Context;
-        this.HtmlIputChat.addEventListener("keydown", (e) => {
-            if (e.KeyCodeEnum() == KeyCodeEnum.Enter && !e.shiftKey) {
+        this.htmlHeaderChat = html.context;
+        html.instance.div.className("name2").style("width: 100%; display: flex ; align-items: center; gap: 10px;").span.iText(this.entity.Label)
+        this.featureText = html.context;
+        html.instance.end.span.text(" : ").end.a.style("color:#fff").className("mr-1").event(EventType.click, this.openPopup.bind(this)).text(this.entity.formatChat ? this.entity.formatChat.replaceAll("<br>", "") : "");
+        this.titleText = html.context;
+        html.end.div.className("d-flex align-items-center");
+        this.optionsElement = html.context;
+        html.span.className("d-flex").render();
+        this.userElement = html.context;
+        html.instance.end.i.event(EventType.click, this.addUser.bind(this)).className("fas fa-user-plus").end.render();
+        html.instance.end.end.end.div.className("messages-chat").div.render();
+        this.htmlContentChat = html.context;
+        this.renderBodyChat();
+        html.instance.end.end.div.className("footer-chat")
+            .input.type("file").className("attach-file").style("display: none;").event(EventType.change, this.attachFile.bind(this)).end
+            .i.className("icon fa fa-paperclip clickable").event(EventType.click, () => this.element.querySelector(".attach-file").click()).end
+            .i.className("icon fa fa-smile clickable").event(EventType.click, this.showEmojiPicker.bind(this)).end
+            .textArea.className("write-message").placeHolder("type your message here");
+        this.htmlIputChat = html.context;
+        this.htmlIputChat.addEventListener("keydown", (e) => {
+            if (e.keyCodeEnum() == keyCodeEnum.enter && !e.shiftKey) {
                 e.preventDefault();
-                this.SendChat();
+                this.sendChat();
             }
         });
-        this.HtmlIputChat.addEventListener("paste", this.HandlePaste.bind(this));
-        this.HtmlIputChat.addEventListener("input", function () {
+        this.htmlIputChat.addEventListener("paste", this.handlePaste.bind(this));
+        this.htmlIputChat.addEventListener("input", function () {
             this.style.height = "36px";
             this.style.height = this.scrollHeight + "px";
         });
-        Html.Instance.end.i.className("icon send fal fa-arrow-circle-right clickable").event(EventType.Click, this.SendChat.bind(this)).end.render();
-        this.RenderUsers();
+        html.instance.end.i.className("icon send fal fa-arrow-circle-right clickable").event(EventType.click, this.sendChat.bind(this)).end.render();
+        this.renderUsers();
     }
 
-    RenderUsers() {
-        Html.take(this.UserElement).clear();
-        Html.take(this.UserElement).forEach(this.Users || [], (item) => {
-            Html.Instance.div.className("photo").style("background-image: url('" + item.Avatar + "');").end.render();
+    renderUsers() {
+        html.take(this.userElement).clear();
+        html.take(this.userElement).forEach(this.users || [], (item) => {
+            html.instance.div.className("photo").style("background-image: url('" + item.avatar + "');").end.render();
         })
     }
 
-    OpenPopup() {
-        if (this.Entity && this.Entity.FeatureName) {
-            this.TabEditor.OpenPopup(this.Entity.FeatureName2 || this.Entity.FeatureName, { Id: this.Entity.RecordId }, true);
+    openPopup() {
+        if (this.entity && this.entity.featureName) {
+            this.tabEditor.openPopup(this.entity.featureName2 || this.entity.featureName, { id: this.entity.recordId }, true);
         }
     }
 
-    AddUser() {
-        if (this.Entity && this.Entity.FeatureName) {
-            var com = this.TabEditor.Meta.GridPolicies.find(x => x.FieldName == "ReceiverIds");
-            this.EditForm.OpenConfig("Invite user to the conversation", async () => {
-                if (!this.EditForm.Dirty) {
+    addUser() {
+        if (this.entity && this.entity.featureName) {
+            var com = this.tabEditor.meta.gridPolicies.find(x => x.fieldName == "receiverIds");
+            this.editForm.openConfig("invite user to the conversation", async () => {
+                if (!this.editForm.dirty) {
                     return;
                 }
-                var com = this.GET("ReceiverIds");
+                var com = this.gET("receiverIds");
                 if (com !== null) {
-                    com.Dispose();
+                    com.dispose();
                 }
                 let dirtyPatchDetail = [
                     {
-                        Label: "Id",
-                        Field: "Id",
-                        OldVal: null,
-                        Value: this.Entity.Id,
+                        Label: "id",
+                        field: "id",
+                        oldVal: null,
+                        value: this.entity.id,
                     },
                     {
-                        Label: "IsSend",
-                        Field: "IsSend",
-                        OldVal: null,
-                        Value: 0,
+                        Label: "isSend",
+                        field: "isSend",
+                        oldVal: null,
+                        value: 0,
                     },
                     {
-                        Label: "FeatureName",
-                        Field: "FeatureName",
-                        OldVal: null,
-                        Value: this.Entity.Label,
+                        Label: "featureName",
+                        field: "featureName",
+                        oldVal: null,
+                        value: this.entity.Label,
                     },
                     {
-                        Label: "FeatureName2",
-                        Field: "FeatureName2",
-                        OldVal: null,
-                        Value: this.Entity.FeatureName2,
+                        Label: "featureName2",
+                        field: "featureName2",
+                        oldVal: null,
+                        value: this.entity.featureName2,
                     },
                     {
-                        Label: "FeatureName3",
-                        Field: "FeatureName3",
-                        OldVal: null,
-                        Value: this.Entity.FeatureName3,
+                        Label: "featureName3",
+                        field: "featureName3",
+                        oldVal: null,
+                        value: this.entity.featureName3,
                     },
                     {
-                        Label: "FormatChat",
-                        Field: "FormatChat",
-                        OldVal: null,
-                        Value: this.Entity.FormatChat,
+                        Label: "formatChat",
+                        field: "formatChat",
+                        oldVal: null,
+                        value: this.entity.formatChat,
                     },
                     {
-                        Label: "VoucherTypeId",
-                        Field: "VoucherTypeId",
-                        OldVal: null,
-                        Value: 20,
+                        Label: "voucherTypeId",
+                        field: "voucherTypeId",
+                        oldVal: null,
+                        value: 20,
                     },
                     {
-                        Label: "ReceiverIds",
-                        Field: "ReceiverIds",
-                        OldVal: null,
-                        Value: this.EditForm.Entity.ReceiverIds,
+                        Label: "receiverIds",
+                        field: "receiverIds",
+                        oldVal: null,
+                        value: this.editForm.entity.receiverIds,
                     }
                 ]
                 let patchModelDetail = {
-                    Changes: dirtyPatchDetail,
-                    Table: "Conversation",
-                    NotMessage: true
+                    changes: dirtyPatchDetail,
+                    table: "conversation",
+                    notMessage: true
                 };
                 await Client.instance.patchAsync(patchModelDetail);
-                this.Dirty = false;
-                this.UpdateView(true);
+                this.dirty = false;
+                this.updateView(true);
             }, () => { }, true, [com], null, null);
         }
     }
 
-    ShowPreview(item) {
+    showPreview(item) {
         var rotate = 0;
         var img = null;
-        Html.take(document.body).div.className("dark-overlay zoom");
-        this.DarkOverlay = Html.Context;
-        Html.Instance.innerHTML(item.Message);
-        img = Html.Context.querySelector("img");
-        Html.Instance.span.className("close").event(EventType.Click, () => {
-            this.DarkOverlay.remove();
+        html.take(document.body).div.className("dark-overlay zoom");
+        this.darkOverlay = html.context;
+        html.instance.innerHTML(item.Message);
+        img = html.context.querySelector("img");
+        html.instance.span.className("close").event(EventType.click, () => {
+            this.darkOverlay.remove();
         }).i.className("fa fa-times").end.end
             .div.className("toolbar")
-            .span.className("icon fa fa-undo ro-left").event(EventType.Click, () => {
+            .span.className("icon fa fa-undo ro-left").event(EventType.click, () => {
                 rotate -= 90;
                 img.style.transform = `rotate(${rotate}deg)`;
             }).end
-            .span.className("icon fa fa-cloud-download-alt").event(EventType.Click, () => this.DownloadFile(item)).end
-            .span.className("icon fa fa-redo ro-right").event(EventType.Click, () => {
+            .span.className("icon fa fa-cloud-download-alt").event(EventType.click, () => this.downloadFile(item)).end
+            .span.className("icon fa fa-redo ro-right").event(EventType.click, () => {
                 rotate += 90;
                 img.style.transform = `rotate(${rotate}deg)`;
             }).end.end
     }
 
-    DownloadFile(item) {
+    downloadFile(item) {
         var file = document.querySelector(".dark-overlay img");
         Client.download(file.getAttribute("src"));
     }
 
-    ShowEmojiPicker() {
+    showEmojiPicker() {
         const pickerContainer = document.createElement('div');
         pickerContainer.style.position = 'absolute';
         pickerContainer.style.bottom = '50px';
@@ -435,39 +435,39 @@ export class Chat extends EditableComponent {
         pickerContainer.style.zIndex = '1000';
 
         this.Picker = new Picker({
-            data: Data,
+            data: data,
             onEmojiSelect: emoji => {
-                this.HtmlIputChat.value += emoji.native;
+                this.htmlIputChat.value += emoji.native;
             },
         });
 
         pickerContainer.appendChild(this.Picker);
         document.body.appendChild(pickerContainer);
-        this.ContainerPicker = pickerContainer;
-        this.CalcPosition();
-        document.addEventListener('click', this.HideEmojiPicker.bind(this), true);
+        this.containerPicker = pickerContainer;
+        this.calcPosition();
+        document.addEventListener('click', this.hideEmojiPicker.bind(this), true);
     }
 
-    HideEmojiPicker(event) {
-        if (this.ContainerPicker && !this.ContainerPicker.contains(event.target) && !this.HtmlIputChat.contains(event.target)) {
-            this.ContainerPicker.remove();
-            document.removeEventListener('click', this.HideEmojiPicker.bind(this), true);
+    hideEmojiPicker(event) {
+        if (this.containerPicker && !this.containerPicker.contains(event.target) && !this.htmlIputChat.contains(event.target)) {
+            this.containerPicker.remove();
+            document.removeEventListener('click', this.hideEmojiPicker.bind(this), true);
         }
     }
 
-    CalcPosition() {
-        ComponentExt.AlterPosition(this.ContainerPicker, this.HtmlIputChat);
+    calcPosition() {
+        ComponentExt.alterPosition(this.containerPicker, this.htmlIputChat);
     }
 
-    AttachFile(event) {
+    attachFile(event) {
         const files = event.target.files;
-        this.UploadAllFiles(files).then(() => {
+        this.uploadAllFiles(files).then(() => {
         }).catch(error => {
-            console.error("Failed to upload files:", error);
+            console.error("failed to upload files:", error);
         });
     }
 
-    RemoveGuid(path) {
+    removeGuid(path) {
         let fileName = path.replace(/^.*[\\\/]/, '');
         let extension = '';
         let nameWithoutExt = fileName;
@@ -476,213 +476,213 @@ export class Chat extends EditableComponent {
             extension = fileName.substring(lastDotIndex + 1);
             nameWithoutExt = fileName.substring(0, lastDotIndex);
         }
-        const uuidRegex = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/g;
+        const uuidRegex = /[0-9a-fA-f]{8}-[0-9a-fA-f]{4}-[0-9a-fA-f]{4}-[0-9a-fA-f]{4}-[0-9a-fA-f]{12}/g;
         const cleanedName = nameWithoutExt.replace(uuidRegex, '').replace(/\s+/g, ' ').trim();
         return `${cleanedName}.${extension}`;
     }
 
-    async UploadAllFiles(filesSelected) {
-        Spinner.AppendTo();
-        const files = Array.from(filesSelected).map(this.UploadFile.bind(this));
-        let allPath = await Promise.all(files);
+    async uploadAllFiles(filesSelected) {
+        Spinner.appendTo();
+        const files = array.from(filesSelected).map(this.uploadFile.bind(this));
+        let allPath = await promise.all(files);
         var thumbText = allPath[0];
-        const isImage = Utils.IsImage(thumbText);
-        const fileName = this.RemoveGuid(thumbText);
+        const isImage = Utils.isImage(thumbText);
+        const fileName = this.removeGuid(thumbText);
         var format = `<a href="${thumbText}" target="_blank" style="color: red; font-weight: 700;"><i class="fal fa-file-alt mr-1"></i>${fileName}</a>`;
         if (isImage) {
             format = `<img src="${thumbText}">`;
         }
         var patch = new PatchVM();
-        patch.Table = "ConversationDetail";
-        patch.Changes = [{
-            Field: "Id",
-            Value: Uuid7.NewGuid(),
+        patch.table = "conversationDetail";
+        patch.changes = [{
+            field: "id",
+            value: Uuid7.newGuid(),
         },
         {
-            Field: "FromId",
-            Value: this.Token.UserId,
+            field: "fromId",
+            value: this.Token.userId,
         },
         {
-            Field: "FromName",
-            Value: this.Token.NickName,
+            field: "fromName",
+            value: this.Token.nickName,
         },
         {
-            Field: "Message",
-            Value: format,
+            field: "Message",
+            value: format,
         },
         {
-            Field: "RecordId",
-            Value: this.Entity.RecordId,
+            field: "recordId",
+            value: this.entity.recordId,
         },
         {
-            Field: "FormatChat",
-            Value: this.Title,
+            field: "formatChat",
+            value: this.title,
         },
         {
-            Field: "Icon",
-            Value: this.Entity.Icon,
+            field: "icon",
+            value: this.entity.icon,
         },
         {
-            Field: "Avatar",
-            Value: this.Token.Avatar || "/assets/images/avatar1.png",
+            field: "avatar",
+            value: this.Token.avatar || "/assets/images/avatar1.png",
         },
         {
-            Field: "ConversationId",
-            Value: this.Entity.Id,
+            field: "conversationId",
+            value: this.entity.id,
         },
         {
-            Field: "EntityId",
-            Value: this.Entity.EntityId,
+            field: "entityId",
+            value: this.entity.entityId,
         }];
         await Client.instance.patchAsync(patch);
-        Spinner.Hide();
+        Spinner.hide();
     }
 
     async updateBadge() {
-        const response = await Client.instance.postAsync(null, "/api/ChatBadge");
+        const response = await Client.instance.postAsync(null, "/api/chatBadge");
         document.querySelector("#badgeMessage").textContent = response > 0 ? response.toString() : "";
     };
 
     /**
-     * @param {File} file
+     * @param {file} file
      */
-    async UploadFile(file) {
+    async uploadFile(file) {
         try {
-            const path = await Client.instance.postFilesAsync(file, Utils.FileSvc);
+            const path = await Client.instance.postFilesAsync(file, Utils.fileSvc);
             return path;
         } catch (error) {
-            console.error("Error posting file:", error);
+            console.error("error posting file:", error);
             throw error;
         }
     }
 
-    async DeleteMessage(item) {
-        Spinner.AppendTo();
+    async deleteMessage(item) {
+        Spinner.appendTo();
         var patch = new PatchVM();
-        patch.Table = "ConversationDetail";
-        patch.Changes = [{
-            Field: "Id",
-            Value: item.Id,
+        patch.table = "conversationDetail";
+        patch.changes = [{
+            field: "id",
+            value: item.id,
         },
         {
-            Field: "Message",
-            Value: "Tin nhắn đã được thu hồi",
+            field: "Message",
+            value: "tin nhắn đã được thu hồi",
         }];
         await Client.instance.patchAsync(patch);
-        Spinner.Hide();
+        Spinner.hide();
     }
 
-    UpdateView(force = false, dirty = null, ...componentNames) {
-        this.UpdateData().then(() => {
-            this.Title = this.Entity.FormatChat ? this.Entity.FormatChat.replaceAll("<br>", "") : "";
-            this.RenderBodyDiscussions();
+    updateView(force = false, dirty = null, ...componentNames) {
+        this.updateData().then(() => {
+            this.title = this.entity.formatChat ? this.entity.formatChat.replaceAll("<br>", "") : "";
+            this.renderBodyDiscussions();
             if (force) {
-                this.RenderBodyChat();
-                Html.take(this.TitleText).clear().text(this.Entity.FormatChat ? this.Entity.FormatChat.replaceAll("<br>", "") : "");
-                Html.take(this.FeatureText).clear().iText(this.Entity.Label);
-                this.RenderUsers();
+                this.renderBodyChat();
+                html.take(this.titleText).clear().text(this.entity.formatChat ? this.entity.formatChat.replaceAll("<br>", "") : "");
+                html.take(this.featureText).clear().iText(this.entity.Label);
+                this.renderUsers();
             }
         });
     }
 
-    RenderBodyDiscussions() {
-        Html.take(this.BodyDiscussions).clear();
-        this.Conversation.forEach(item => {
-            Html.Instance.div.tabIndex(-1).event(EventType.Click, (evt) => this.HandlerClick(evt, item)).className("discussion " + ((item.Id == this.Entity.Id) ? "message-active" : "") + ((!item.Read) ? "text-unread" : ""))
-                .div.className("photo").style("background-image: url('" + item.Icon + "');").end
+    renderBodyDiscussions() {
+        html.take(this.bodyDiscussions).clear();
+        this.conversation.forEach(item => {
+            html.instance.div.tabIndex(-1).event(EventType.click, (evt) => this.handlerClick(evt, item)).className("discussion " + ((item.id == this.entity.id) ? "message-active" : "") + ((!item.read) ? "text-unread" : ""))
+                .div.className("photo").style("background-image: url('" + item.icon + "');").end
                 .div.className("desc-contact")
                 .span.className("name").iText(item.Label).end
-                .span.className("description").text(item.FormatChat ? item.FormatChat.replaceAll("<br>", "") : "").end
+                .span.className("description").text(item.formatChat ? item.formatChat.replaceAll("<br>", "") : "").end
                 .p.className("message").innerHTML(item.Message || '').end
-                .p.className("message").innerHTML(item.Time).end.end
+                .p.className("message").innerHTML(item.time).end.end
                 .end.render();
         });
     }
 
     /**
-    * @param {Event} e 
+    * @param {event} e 
     * @param {{}} item
     */
-    HandlerClick(e, item) {
+    handlerClick(e, item) {
         document.querySelector(".footer-chat").classList.remove("d-none");
-        this.OptionsElement.classList.remove("d-none");
-        if (item.ConversationReadId) {
+        this.optionsElement.classList.remove("d-none");
+        if (item.conversationReadId) {
             var patch = new PatchVM();
-            patch.Table = "ConversationRead";
-            patch.Changes = [{
-                Field: "Id",
-                Value: item.ConversationReadId,
+            patch.table = "conversationRead";
+            patch.changes = [{
+                field: "id",
+                value: item.conversationReadId,
             },
             {
-                Field: "Read",
-                Value: "1",
+                field: "read",
+                value: "1",
             }];
             Client.instance.patchAsync(patch).then(async () => {
-                this.Element.querySelectorAll(".discussion").forEach(x => x.classList.remove("message-active"));
+                this.element.querySelectorAll(".discussion").forEach(x => x.classList.remove("message-active"));
                 e.target.closest(".discussion").classList.add("message-active");
-                this.Entity = item;
-                this.EditForm.Entity = item;
-                this.UpdateView(true);
+                this.entity = item;
+                this.editForm.entity = item;
+                this.updateView(true);
                 await this.updateBadge();
             });
         }
         else {
-            this.Element.querySelectorAll(".discussion").forEach(x => x.classList.remove("message-active"));
+            this.element.querySelectorAll(".discussion").forEach(x => x.classList.remove("message-active"));
             e.target.closest(".discussion").classList.add("message-active");
-            this.Entity = item;
-            this.EditForm.Entity = item;
-            this.UpdateView(true);
+            this.entity = item;
+            this.editForm.entity = item;
+            this.updateView(true);
             this.updateBadge();
         }
     }
 
-    SendChat() {
-        this.Title = Utils.FormatEntity(this.Meta.FormatData, this.Entity);
-        var text = this.HtmlIputChat.value;
+    sendChat() {
+        this.title = Utils.formatEntity(this.meta.formatData, this.entity);
+        var text = this.htmlIputChat.value;
         if (Utils.isNullOrWhiteSpace(text)) {
             return;
         }
         var patch = new PatchVM();
-        patch.Table = "ConversationDetail";
-        patch.Changes = [{
-            Field: "Id",
-            Value: Uuid7.NewGuid(),
+        patch.table = "conversationDetail";
+        patch.changes = [{
+            field: "id",
+            value: Uuid7.newGuid(),
         },
         {
-            Field: "FromId",
-            Value: this.Token.UserId,
+            field: "fromId",
+            value: this.Token.userId,
         },
         {
-            Field: "FromName",
-            Value: this.Token.NickName,
+            field: "fromName",
+            value: this.Token.nickName,
         },
         {
-            Field: "Message",
-            Value: text,
+            field: "Message",
+            value: text,
         },
         {
-            Field: "RecordId",
-            Value: this.Entity.RecordId,
+            field: "recordId",
+            value: this.entity.recordId,
         },
         {
-            Field: "FormatChat",
-            Value: this.Title,
+            field: "formatChat",
+            value: this.title,
         },
         {
-            Field: "Icon",
-            Value: this.Entity.Icon,
+            field: "icon",
+            value: this.entity.icon,
         },
         {
-            Field: "Avatar",
-            Value: this.Token.Avatar || "/assets/images/avatar1.png",
+            field: "avatar",
+            value: this.Token.avatar || "/assets/images/avatar1.png",
         },
         {
-            Field: "ConversationId",
-            Value: this.Entity.Id,
+            field: "conversationId",
+            value: this.entity.id,
         },
         {
-            Field: "EntityId",
-            Value: this.Entity.EntityId,
+            field: "entityId",
+            value: this.entity.entityId,
         }];
         Client.instance.patchAsync(patch).then();
         window.setTimeout(() => {
@@ -690,13 +690,13 @@ export class Chat extends EditableComponent {
         }, 500);
     }
 
-    async HandlePaste(event) {
+    async handlePaste(event) {
         const items = (event.clipboardData || window.clipboardData).items;
         if (items[0].type.indexOf("image") !== -1) {
             const file = items[0].getAsFile();
-            this.UploadAllFiles([file]).then(() => {
+            this.uploadAllFiles([file]).then(() => {
             }).catch(error => {
-                console.error("Failed to upload files:", error);
+                console.error("failed to upload files:", error);
             });
         }
     }

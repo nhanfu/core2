@@ -8,7 +8,7 @@ export class SecurityBL extends TabEditor {
     constructor() {
         super("FeaturePolicy");
         this.Popup = true;
-        this.Name = "SecurityEditor";
+        this.Name = "securityEditor";
         this.Title = "Permissions";
         this.Icon = "mif-security";
     }
@@ -29,10 +29,10 @@ export class SecurityEditorBL extends TabEditor {
     constructor() {
         super("FeaturePolicy");
         this.Popup = true;
-        this.Name = "CreateSecurity";
+        this.Name = "createSecurity";
         this.Title = "Permissions";
         this.Icon = "mif-security";
-        document.addEventListener("DOMContentLoaded", this.CheckAllPolicy.bind(this));
+        document.addEventListener("dOMContentLoaded", this.checkAllPolicy.bind(this));
     }
 
     /**
@@ -42,28 +42,28 @@ export class SecurityEditorBL extends TabEditor {
     Entity;
 
     /**
-     * Sets all permissions based on the AllPermission flag.
+     * Sets all permissions based on the allPermission flag.
      */
-    CheckAllPolicy() {
+    checkAllPolicy() {
         const security = this.Entity;
         if (security) {
-            security.CanDelete = security.AllPermission;
-            security.CanDeactivate = security.AllPermission;
-            security.CanRead = security.AllPermission;
-            security.CanWrite = security.AllPermission;
-            security.CanShare = security.AllPermission;
-            this.FindComponentByName("Properties").UpdateView();
+            security.canDelete = security.allPermission;
+            security.canDeactivate = security.allPermission;
+            security.canRead = security.allPermission;
+            security.canWrite = security.allPermission;
+            security.canShare = security.allPermission;
+            this.findComponentByName("Properties").updateView();
         }
     }
 
     /**
-     * Checks if all permissions are true to set AllPermission flag.
+     * Checks if all permissions are true to set allPermission flag.
      */
-    CheckPolicy() {
+    checkPolicy() {
         const security = this.Entity;
         if (security) {
-            security.AllPermission = security.CanDeactivate && security.CanDelete && security.CanRead && security.CanShare && security.CanWrite;
-            this.FindComponentByName("Properties").UpdateView();
+            security.allPermission = security.canDeactivate && security.canDelete && security.canRead && security.canShare && security.canWrite;
+            this.findComponentByName("Properties").updateView();
         }
     }
 }

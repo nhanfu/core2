@@ -14,16 +14,16 @@ export class GridViewItem extends ListViewItem {
      * @param {number} index 
      * @param {*} emptyRow 
      */
-    RenderRowData(headers, row, index = null, emptyRow = false) {
+    renderRowData(headers, row, index = null, emptyRow = false) {
         if (index !== null) {
-            if (index >= this.Element.parentElement.children.length || index < 0) {
+            if (index >= this.element.parentElement.children.length || index < 0) {
                 index = 0;
             }
-            this.Element.parentElement.insertBefore(this.Element, this.Element.parentElement.children[index]);
+            this.element.parentElement.insertBefore(this.element, this.element.parentElement.children[index]);
         }
         for (let index = 0; index < headers.length; index++) {
             const header = headers[index];
-            this.RenderTableCell(row, header, null, index, index);
+            this.renderTableCell(row, header, null, index, index);
         }
     }
 
@@ -31,27 +31,27 @@ export class GridViewItem extends ListViewItem {
      * @param {any} rowData
      * @param {Component} header
      */
-    RenderTableCell(rowData, header, cellWrapper = null, rowIndex = null, cellIndex = null) {
-        if (header && header.ComponentType == "Number") {
-            header.TextAlign = "right";
+    renderTableCell(rowData, header, cellWrapper = null, rowIndex = null, cellIndex = null) {
+        if (header && header.componentType == "Number") {
+            header.textAlign = "right";
         }
-        Html.take(this.Element).tData.attr("component", header.ComponentType || "Number").tabIndex(-1).dataAttr("field", header.FieldName || "NonField").textAlign(header.TextAlign || 'left').event("focusin", (e) => this.FocusCell(e, header));;
-        if (header.StatusBar && this.Meta.ShowHotKey) {
-            Html.Instance.className("status-bar");
+        Html.take(this.element).tData.attr("component", header.componentType || "Number").tabIndex(-1).dataAttr("field", header.fieldName || "nonField").textAlign(header.textAlign || 'left').event("focusin", (e) => this.focusCell(e, header));;
+        if (header.statusBar && this.meta.showHotKey) {
+            Html.instance.className("status-bar");
         }
-        var td = Html.Instance.getContext();
-        Html.Instance.event("keydown", (e) => this.ListViewItemTab(e, td, header));
-        if (header.FieldName && header.ComponentType != 'Button' && !header.StatusBar) {
-            Html.Instance.event("mousedown", (e) => {
-                this.ListView.ClearSelection();
-                this.ListView.IsMouseDown = true;
-                this.ListView.StartCell = e.target.closest("td");
+        var td = Html.instance.getContext();
+        Html.instance.event("keydown", (e) => this.listViewItemTab(e, td, header));
+        if (header.fieldName && header.componentType != 'Button' && !header.statusBar) {
+            Html.instance.event("mousedown", (e) => {
+                this.listView.clearSelection();
+                this.listView.isMouseDown = true;
+                this.listView.startCell = e.target.closest("td");
             });
-            Html.Instance.event("mouseover",/**@param {Event} e */(e) => {
-                if (this.ListView.IsMouseDown && this.ListView.StartCell) {
+            Html.instance.event("mouseover",/**@param {Event} e */(e) => {
+                if (this.listView.isMouseDown && this.listView.startCell) {
                     window.getSelection().removeAllRanges();
-                    const startRow = parseInt(this.ListView.StartCell.dataset.row);
-                    const startCol = parseInt(this.ListView.StartCell.dataset.col);
+                    const startRow = parseInt(this.listView.startCell.dataset.row);
+                    const startCol = parseInt(this.listView.startCell.dataset.col);
                     const endRow = parseInt(td.dataset.row);
                     const endCol = parseInt(td.dataset.col);
 
@@ -59,56 +59,56 @@ export class GridViewItem extends ListViewItem {
                     const maxRow = Math.max(startRow, endRow);
                     const minCol = Math.min(startCol, endCol);
                     const maxCol = Math.max(startCol, endCol);
-                    for (let i = 0; i < this.ListView.Matrix.length; i++) {
-                        for (let j = 0; j < this.ListView.Matrix[i].length; j++) {
-                            this.ListView.Matrix[i][j].classList.remove('cell-matrix');
+                    for (let i = 0; i < this.listView.Matrix.length; i++) {
+                        for (let j = 0; j < this.listView.Matrix[i].length; j++) {
+                            this.listView.Matrix[i][j].classList.remove('cell-matrix');
                         }
                     }
                     for (let i = minRow; i <= maxRow; i++) {
                         for (let j = minCol; j <= maxCol; j++) {
-                            this.ListView.Matrix[i][j].classList.add('cell-matrix');
+                            this.listView.Matrix[i][j].classList.add('cell-matrix');
                         }
                     }
                 }
             });
-            Html.Instance.event("mouseup", (e) => {
-                this.ListView.IsMouseDown = false;
-                this.ListView.StartCell = null;
+            Html.instance.event("mouseup", (e) => {
+                this.listView.isMouseDown = false;
+                this.listView.startCell = null;
             });
         }
-        Html.Instance.div.className("wrapper-cell").render();
-        if (header.ComponentType == "Checkbox") {
-            Html.Instance.style("justify-content: center;");
+        Html.instance.div.className("wrapper-cell").render();
+        if (header.componentType == "Checkbox") {
+            Html.instance.style("justify-content: center;");
         }
-        header.FocusSearch = !header.IsMultiple;
-        super.RenderTableCell(rowData, header, cellWrapper ?? Html.Context);
-        Html.Instance.endOf(ElementType.td);
+        header.focusSearch = !header.isMultiple;
+        super.renderTableCell(rowData, header, cellWrapper ?? Html.context);
+        Html.instance.endOf(ElementType.td);
     }
 
     /**
      * @param {Event} e
      * @param {Component} header
      */
-    FocusCell(e, header) {
-        if (this.ListView == null) {
+    focusCell(e, header) {
+        if (this.listView == null) {
             return;
         }
-        if (this.ListView.LastElementFocus) {
-            this.ListView.LastElementFocus?.closest("td").classList.remove("cell-copy");
-            this.ListView.LastElementFocus?.closest("td").classList.remove("cell-selected");
+        if (this.listView.lastElementFocus) {
+            this.listView.lastElementFocus?.closest("td").classList.remove("cell-copy");
+            this.listView.lastElementFocus?.closest("td").classList.remove("cell-selected");
         }
         let td = e.target;
         /**
-         * @type {HTMLTableCellElement}
+         * @type {hTMLTableCellElement}
          */
         var tdElement = td.closest("td");
         tdElement.classList.add("cell-selected");
-        this.ListView.LastElementFocus = td;
-        this.ListView.LastComponentFocus = header;
-        this.ListView.EntityFocusId = this.EntityId;
+        this.listView.lastElementFocus = td;
+        this.listView.lastComponentFocus = header;
+        this.listView.entityFocusId = this.entityId;
         if (!tdElement._hasCopyListener) {
             tdElement._hasCopyListener = true;
-            tdElement.addEventListener(EventType.KeyDown, (ev) => {
+            tdElement.addEventListener(EventType.keyDown, (ev) => {
                 if (ev.ctrlKey && ev.key.toLowerCase() === "c") {
                     const selectedText = window.getSelection()?.toString() || "";
                     if (selectedText.length > 0) return;

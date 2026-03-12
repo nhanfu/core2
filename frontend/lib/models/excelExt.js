@@ -1,5 +1,5 @@
 export default class ExcelExt {
-    static ExportTableToExcel(tableId, filename, table = null, border = false) {
+    static exportTableToExcel(tableId, filename, table = null, border = false) {
         if (border) {
             table.querySelectorAll('td').forEach(x => {
                 x.style = "border:1px solid; white-space: nowrap; font-family: 'times new roman', times, serif;";
@@ -14,7 +14,7 @@ export default class ExcelExt {
         const base64 = function(s) {
             return window.btoa(unescape(encodeURIComponent(s)));
         };
-        const template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>';
+        const template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:excelWorkbook><x:excelWorksheets><x:excelWorksheet><x:Name>{worksheet}</x:Name><x:worksheetOptions><x:displayGridlines/></x:worksheetOptions></x:excelWorksheet></x:excelWorksheets></x:excelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>';
         const render = function(template, content) {
             return template.replace(/{(\w+)}/g, (m, p) => content[p]);
         };

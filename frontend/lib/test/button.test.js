@@ -8,8 +8,8 @@ describe("Button", () => {
   beforeEach(() => {
     ui = {
       Id: "123",
-      FieldName: "btnSave",
-      ClassName: "btn-class",
+      fieldName: "btnSave",
+      className: "btn-class",
       Style: "color: red;",
       Icon: "icon-path",
       Label: "Click me",
@@ -18,7 +18,7 @@ describe("Button", () => {
     element = document.createElement("button");
     document.body.appendChild(element);
     button = new Button(ui, element);
-    button.EditForm = { Meta: { Label: "Form label" } };
+    button.editForm = { Meta: { Label: "Form label" } };
     button.Entity = {};
   });
 
@@ -28,49 +28,49 @@ describe("Button", () => {
   });
 
   test("Render applies the configured markup and styles", () => {
-    button.Render();
+    button.render();
 
-    expect(button.Element).toBe(element);
-    expect(button.Element.className).toContain("btn-class");
-    expect(button.Element.style.color).toBe("red");
-    expect(button.Element.querySelector(".caption").textContent).toBe("Click me");
+    expect(button.element).toBe(element);
+    expect(button.element.className).toContain("btn-class");
+    expect(button.element.style.color).toBe("red");
+    expect(button.element.querySelector(".caption").textContent).toBe("Click me");
   });
 
-  test("DispatchClick delegates to Meta.OnClick when present", () => {
+  test("dispatchClick delegates to Meta.onClick when present", () => {
     const onClick = jest.fn();
-    button.Meta.OnClick = onClick;
+    button.Meta.onClick = onClick;
 
-    button.DispatchClick();
+    button.dispatchClick();
 
     expect(onClick).toHaveBeenCalled();
   });
 
-  test("DispatchClick calls DispatchEvent for enabled buttons", async () => {
-    button.Render();
+  test("dispatchClick calls dispatchEvent for enabled buttons", async () => {
+    button.render();
     const dispatchEvent = jest.fn().mockResolvedValue(true);
-    button.DispatchEvent = dispatchEvent;
+    button.dispatchEvent = dispatchEvent;
 
-    button.DispatchClick();
+    button.dispatchClick();
 
     expect(dispatchEvent).toHaveBeenCalledWith(button.Meta.Events, "click", button, button.Entity);
     expect(button.Disabled).toBe(true);
   });
 
-  test("DispatchClick stops when the button is disabled", () => {
-    button.Render();
+  test("dispatchClick stops when the button is disabled", () => {
+    button.render();
     const dispatchEvent = jest.fn();
-    button.DispatchEvent = dispatchEvent;
+    button.dispatchEvent = dispatchEvent;
     button.Disabled = true;
 
-    button.DispatchClick();
+    button.dispatchClick();
 
     expect(dispatchEvent).not.toHaveBeenCalled();
   });
 
-  test("GetValueText returns the entity field value when available", () => {
-    button.Render();
+  test("getValueText returns the entity field value when available", () => {
+    button.render();
     button.Entity = { btnSave: "Some text" };
 
-    expect(button.GetValueText()).toBe("Some text");
+    expect(button.getValueText()).toBe("Some text");
   });
 });

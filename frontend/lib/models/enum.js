@@ -4,7 +4,7 @@ import { Component } from "./component.js";
  * Represents system roles.
  * @enum {number}
  */
-export const RoleEnum = {
+export const roleEnum = {
     /** @type {string} System role. */
     System: "8",
 };
@@ -13,9 +13,9 @@ export const RoleEnum = {
  * Enum for task states.
  * @enum {number}
  */
-export const TaskStateEnum = {
+export const taskStateEnum = {
     /** @type {number} Unread status. */
-    UnreadStatus: 339,
+    unreadStatus: 339,
     /** @type {number} Read status. */
     Read: 340,
     /** @type {number} Processing status. */
@@ -24,91 +24,91 @@ export const TaskStateEnum = {
     Proceeded: 342,
 };
 
-export const PositionEnum = {
+export const positionEnum = {
     absolute: "absolute",
-    fixed: "fixed", // '@' không được sử dụng trong tên biến JavaScript
+    fixed: "fixed", // '@' không được sử dụng trong tên biến javaScript
     inherit: "inherit",
     initial: "initial",
     relative: "relative",
-    static: "static", // 'static' là từ khóa trong JavaScript, cần trích dẫn nó nếu dùng như tên thuộc tính không bị trích dẫn
+    static: "static", // 'static' là từ khóa trong javaScript, cần trích dẫn nó nếu dùng như tên thuộc tính không bị trích dẫn
     sticky: "sticky",
     unset: "unset"
 };
 
-export const KeyCodeEnum = {
-    Backspace: 8,
-    Tab: 9,
-    Enter: 13,
-    Shift: 16,
-    Ctrl: 17,
-    Alt: 18,
-    PauseBreak: 19,
-    CapsLock: 20,
-    Escape: 27,
-    PageUp: 33,
-    Space: 32,
-    PageDown: 34,
-    End: 35,
-    Home: 36,
-    LeftArrow: 37,
-    UpArrow: 38,
-    RightArrow: 39,
-    DownArrow: 40,
-    Insert: 45,
-    Delete: 46,
-    Zero: 48,
-    One: 49,
-    Two: 50,
-    Three: 51,
-    Four: 52,
-    Five: 53,
-    Six: 54,
-    Seven: 55,
-    Eight: 56,
-    Nine: 57,
-    A: 65,
-    B: 66,
-    C: 67,
-    D: 68,
-    E: 69,
-    F: 70,
-    G: 71,
-    H: 72,
-    I: 73,
-    J: 74,
-    K: 75,
-    L: 76,
-    M: 77,
-    N: 78,
-    O: 79,
-    P: 80,
-    Q: 81,
-    R: 82,
-    S: 83,
-    T: 84,
-    U: 85,
-    V: 86,
-    W: 87,
-    X: 88,
-    Y: 89,
-    Z: 90,
-    LeftWindowKey: 91,
-    RightWindowKey: 92,
-    SelectKey: 93,
-    Numpad0: 96,
-    Numpad1: 97,
-    Numpad2: 98,
-    Numpad3: 99,
-    Numpad4: 100,
-    Numpad5: 101,
-    Numpad6: 102,
-    Numpad7: 103,
-    Numpad8: 104,
-    Numpad9: 105,
-    Multiply: 106,
-    Add: 107,
-    Subtract: 109,
-    DecimalPoint: 110,
+export const keyCodeEnum = {
+    backspace: 8,
+    tab: 9,
+    enter: 13,
+    shift: 16,
+    ctrl: 17,
+    alt: 18,
+    pauseBreak: 19,
+    capsLock: 20,
+    escape: 27,
+    pageUp: 33,
+    space: 32,
+    pageDown: 34,
+    end: 35,
+    home: 36,
+    leftArrow: 37,
+    upArrow: 38,
+    rightArrow: 39,
+    downArrow: 40,
+    insert: 45,
+    delete: 46,
+    zero: 48,
+    one: 49,
+    two: 50,
+    three: 51,
+    four: 52,
+    five: 53,
+    six: 54,
+    seven: 55,
+    eight: 56,
+    nine: 57,
+    a: 65,
+    b: 66,
+    c: 67,
+    d: 68,
+    e: 69,
+    f: 70,
+    g: 71,
+    h: 72,
+    i: 73,
+    j: 74,
+    k: 75,
+    l: 76,
+    m: 77,
+    n: 78,
+    o: 79,
+    p: 80,
+    q: 81,
+    r: 82,
+    s: 83,
+    t: 84,
+    u: 85,
+    v: 86,
+    w: 87,
+    x: 88,
+    y: 89,
+    z: 90,
+    leftWindowKey: 91,
+    rightWindowKey: 92,
+    selectKey: 93,
+    numpad0: 96,
+    numpad1: 97,
+    numpad2: 98,
+    numpad3: 99,
+    numpad4: 100,
+    numpad5: 101,
+    numpad6: 102,
+    numpad7: 103,
+    numpad8: 104,
+    numpad9: 105,
+    multiply: 106,
+    add: 107,
+    subtract: 109,
+    decimalPoint: 110,
     Divide: 111,
     F1: 112,
     F2: 113,
@@ -122,24 +122,24 @@ export const KeyCodeEnum = {
     F10: 121,
     F11: 122,
     F12: 123,
-    NumLock: 144,
-    ScrollLock: 145,
-    SemiColon: 186,
-    EqualSign: 187,
+    numLock: 144,
+    scrollLock: 145,
+    semiColon: 186,
+    equalSign: 187,
     Comma: 188,
     Dash: 189,
     Period: 190,
-    ForwardSlash: 191,
-    GraveAccent: 192,
-    OpenBracket: 219,
-    BackSlash: 220,
-    CloseBraket: 221,
-    SingleQuote: 222
+    forwardSlash: 191,
+    graveAccent: 192,
+    openBracket: 219,
+    backSlash: 220,
+    closeBraket: 221,
+    singleQuote: 222
 };
 
-export const OperatorEnum = {
+export const operatorEnum = {
     In: 1,
-    NotIn: 2,
+    notIn: 2,
     Gt: 3,
     Ge: 4,
     Lt: 5,
@@ -148,143 +148,130 @@ export const OperatorEnum = {
     Rl: 8
 };
 
-export const SearchMethodEnum = {
-    Empty: 1,
-    Filled: 2,
-    Equal: 3,
-    NotEqual: 4,
-    Contain: 5,
-    NotContain: 6,
-    StartWith: 7,
-    EndWith: 8,
-    Smaller: 9,
-    SmallerEqual: 10,
-    Greater: 11,
-    GreaterEqual: 12,
-    Range: 13
+export const searchMethodEnum = {
+    empty: 1,
+    filled: 2,
+    equal: 3,
+    notEqual: 4,
+    contain: 5,
+    notContain: 6,
+    startWith: 7,
+    endWith: 8,
+    smaller: 9,
+    smallerEqual: 10,
+    greater: 11,
+    greaterEqual: 12,
+    range: 13
 };
 
 /**
  * Types of UI components.
  * @enum {number}
  */
-export const ComponentTypeTypeEnum = {
-    /** @type {number} Dropdown component. */
-    Dropdown: 1,
-    /** @type {number} Search entry component. */
-    SearchEntry: 1,
-    /** @type {number} Multiple search entry component. */
-    MultipleSearchEntry: 1,
-    /** @type {number} Datepicker component. */
-    Datepicker: 2,
-    /** @type {number} Number input component. */
-    Number: 3,
-    /** @type {number} Textbox component. */
-    Textbox: 4,
-    /** @type {number} Checkbox component. */
-    Checkbox: 5,
+export const componentTypeTypeEnum = {
+    
 };
 
 /**
  * Enum for active states.
  * @enum {number}
  */
-export const ActiveStateEnum = {
+export const activeStateEnum = {
     /** @type {number} Represents all statuses. */
-    All: 2,
+    all: 2,
     /** @type {number} Active status. */
-    Yes: 1,
+    yes: 1,
     /** @type {number} Inactive status. */
-    No: 0,
+    no: 0,
 };
 
 /**
  * Enum for advanced search operations.
  * @enum {number}
  */
-export const AdvSearchOperation = {
+export const advSearchOperation = {
     /** @type {number} Equals. */
-    Equal: 1,
+    equal: 1,
     /** @type {number} Not equal. */
-    NotEqual: 2,
+    notEqual: 2,
     /** @type {number} Greater than. */
-    GreaterThan: 3,
+    greaterThan: 3,
     /** @type {number} Greater than or equal. */
-    GreaterThanOrEqual: 4,
+    greaterThanOrEqual: 4,
     /** @type {number} Less than. */
-    LessThan: 5,
+    lessThan: 5,
     /** @type {number} Less than or equal. */
-    LessThanOrEqual: 6,
+    lessThanOrEqual: 6,
     /** @type {number} Contains. */
-    Contains: 7,
+    contains: 7,
     /** @type {number} Does not contain. */
-    NotContains: 8,
+    notContains: 8,
     /** @type {number} Starts with. */
-    StartWith: 9,
+    startWith: 9,
     /** @type {number} Does not start with. */
-    NotStartWith: 10,
+    notStartWith: 10,
     /** @type {number} Ends with. */
-    EndWidth: 11,
+    endWidth: 11,
     /** @type {number} Does not end with. */
-    NotEndWidth: 12,
+    notEndWidth: 12,
     /** @type {number} In a set. */
     In: 13,
     /** @type {number} Not in a set. */
-    NotIn: 14,
+    notIn: 14,
     /** @type {number} Equals date. */
-    EqualDatime: 15,
+    equalDatime: 15,
     /** @type {number} Greater than date. */
-    GreaterThanDatime: 21,
+    greaterThanDatime: 21,
     /** @type {number} Less than date. */
-    LessThanDatime: 22,
+    lessThanDatime: 22,
     /** @type {number} Not equal date. */
-    NotEqualDatime: 16,
+    notEqualDatime: 16,
     /** @type {number} Equals null. */
-    EqualNull: 17,
+    equalNull: 17,
     /** @type {number} Not equal null. */
-    NotEqualNull: 18,
+    notEqualNull: 18,
     /** @type {number} Like. */
     Like: 19,
     /** @type {number} Not like. */
-    NotLike: 20,
+    notLike: 20,
     /** @type {number} Greater than or equal date. */
-    GreaterEqualDatime: 23,
+    greaterEqualDatime: 23,
     /** @type {number} Less than or equal date. */
-    LessEqualDatime: 24,
+    lessEqualDatime: 24,
 };
 
-export const OperationToSql = {
-    [AdvSearchOperation.Equal]: "{0} = N'{1}'",
-    [AdvSearchOperation.NotEqual]: "{0} != N'{1}'",
-    [AdvSearchOperation.GreaterThan]: "{0} > N'{1}'",
-    [AdvSearchOperation.GreaterThanOrEqual]: "{0} >= N'{1}'",
-    [AdvSearchOperation.LessThan]: "{0} < N'{1}'",
-    [AdvSearchOperation.LessThanOrEqual]: "{0} <= N'{1}'",
-    [AdvSearchOperation.Contains]: "charindex(N'{1}', {0}) >= 1",
-    [AdvSearchOperation.NotContains]: "contains({0}, N'{1}') eq false",
-    [AdvSearchOperation.StartWith]: "charindex(N'{1}', {0}) = 1",
-    [AdvSearchOperation.NotStartWith]: "charindex(N'{1}', {0}) > 1",
-    [AdvSearchOperation.EndWidth]: "{0} like N'%{1}')",
-    [AdvSearchOperation.NotEndWidth]: "{0} not like N'%{1}'",
-    [AdvSearchOperation.In]: "{0} in ({1})",
-    [AdvSearchOperation.Like]: "{0} like N'%{1}%'",
-    [AdvSearchOperation.NotLike]: "{0} not like N'{1}'",
-    [AdvSearchOperation.NotIn]: "{0} not in ({1})",
-    [AdvSearchOperation.EqualDatime]: "cast(date, {0}) = N'{1}'",
-    [AdvSearchOperation.NotEqualDatime]: "cast(date, {0}) != N'{1}'",
-    [AdvSearchOperation.EqualNull]: "{0} is null",
-    [AdvSearchOperation.NotEqualNull]: "{0} is not null",
-    [AdvSearchOperation.GreaterThanDatime]: "cast(date, {0}) > N'{1}'",
-    [AdvSearchOperation.GreaterEqualDatime]: "cast(date, {0}) >= N'{1}'",
-    [AdvSearchOperation.LessThanDatime]: "cast(date, {0}) < N'{1}'",
-    [AdvSearchOperation.LessEqualDatime]: "cast(date, {0}) <= N'{1}'",
+export const operationToSql = {
+    [advSearchOperation.equal]: "{0} = N'{1}'",
+    [advSearchOperation.notEqual]: "{0} != N'{1}'",
+    [advSearchOperation.greaterThan]: "{0} > N'{1}'",
+    [advSearchOperation.greaterThanOrEqual]: "{0} >= N'{1}'",
+    [advSearchOperation.lessThan]: "{0} < N'{1}'",
+    [advSearchOperation.lessThanOrEqual]: "{0} <= N'{1}'",
+    [advSearchOperation.contains]: "charindex(N'{1}', {0}) >= 1",
+    [advSearchOperation.notContains]: "contains({0}, N'{1}') eq false",
+    [advSearchOperation.startWith]: "charindex(N'{1}', {0}) = 1",
+    [advSearchOperation.notStartWith]: "charindex(N'{1}', {0}) > 1",
+    [advSearchOperation.endWidth]: "{0} like N'%{1}')",
+    [advSearchOperation.notEndWidth]: "{0} not like N'%{1}'",
+    [advSearchOperation.In]: "{0} in ({1})",
+    [advSearchOperation.Like]: "{0} like N'%{1}%'",
+    [advSearchOperation.notLike]: "{0} not like N'{1}'",
+    [advSearchOperation.notIn]: "{0} not in ({1})",
+    [advSearchOperation.equalDatime]: "cast(date, {0}) = N'{1}'",
+    [advSearchOperation.notEqualDatime]: "cast(date, {0}) != N'{1}'",
+    [advSearchOperation.equalNull]: "{0} is null",
+    [advSearchOperation.notEqualNull]: "{0} is not null",
+    [advSearchOperation.greaterThanDatime]: "cast(date, {0}) > N'{1}'",
+    [advSearchOperation.greaterEqualDatime]: "cast(date, {0}) >= N'{1}'",
+    [advSearchOperation.lessThanDatime]: "cast(date, {0}) < N'{1}'",
+    [advSearchOperation.lessEqualDatime]: "cast(date, {0}) <= N'{1}'",
 };
 
 /**
  * Logical operations for combining conditions.
  * @enum {number}
  */
-export const LogicOperation = {
+export const logicOperation = {
     /** @type {number} Logical AND. */
     And: 0,
     /** @type {number} Logical OR. */
@@ -295,7 +282,7 @@ export const LogicOperation = {
  * Directions for sorting.
  * @enum {number}
  */
-export const OrderbyDirection = {
+export const orderbyDirection = {
     /** @type {number} Ascending order. */
     ASC: 1,
     /** @type {number} Descending order. */
@@ -306,11 +293,11 @@ export const OrderbyDirection = {
  * Role selection options.
  * @enum {number}
  */
-export const RoleSelection = {
+export const roleSelection = {
     /** @type {number} Top first selection. */
-    TopFirst: 1,
+    topFirst: 1,
     /** @type {number} Bottom first selection. */
-    BottomFirst: 2,
+    bottomFirst: 2,
 };
 
 /**
@@ -378,11 +365,11 @@ export class FieldCondition {
         this.fieldId = '';
         /** @type {Component} */
         this.field = null;
-        /** @type {AdvSearchOperation} */
+        /** @type {advSearchOperation} */
         this.compareOperatorId = null;
         this.value = '';
         this.display = {};
-        /** @type {LogicOperation} */
+        /** @type {logicOperation} */
         this.logicOperatorId = null;
         this.logicOperator = null;
         this.level = '';
@@ -398,7 +385,7 @@ export class OrderBy {
     id = '';
     comId = '';
     fieldName = '';
-    /** @type {OrderbyDirection | null | undefined} */
+    /** @type {orderbyDirection | null | undefined} */
     orderbyDirectionId = null;
 }
 
@@ -415,7 +402,7 @@ export class MQEvent {
         this.action = '';
         this.id = '';
         this.prevId = '';
-        this.time = null; // JavaScript does not have a direct equivalent to DateTimeOffset, using Date instead
+        this.time = null; // javaScript does not have a direct equivalent to dateTimeOffset, using Date instead
         this.message = null;
     }
 }
@@ -443,7 +430,7 @@ export class Entity {
  * HTTP methods used in web requests.
  * @enum {string}
  */
-export const HttpMethod = {
+export const httpMethod = {
     GET: 'GET',
     POST: 'POST',
     PUT: 'PUT',
@@ -455,61 +442,61 @@ export const HttpMethod = {
  * HTTP status codes as per the HTTP specification.
  * @enum {number}
  */
-export const HttpStatusCode = {
+export const httpStatusCode = {
     // Informational 1xx
     Continue: 100,
-    SwitchingProtocols: 101,
+    switchingProtocols: 101,
 
     // Successful 2xx
     OK: 200,
     Created: 201,
     Accepted: 202,
-    NonAuthoritativeInformation: 203,
-    NoContent: 204,
-    ResetContent: 205,
-    PartialContent: 206,
+    nonAuthoritativeInformation: 203,
+    noContent: 204,
+    resetContent: 205,
+    partialContent: 206,
 
     // Redirection 3xx
-    MultipleChoices: 300,
+    multipleChoices: 300,
     Ambiguous: 300,
-    MovedPermanently: 301,
+    movedPermanently: 301,
     Moved: 301,
     Found: 302,
     Redirect: 302,
-    SeeOther: 303,
-    RedirectMethod: 303,
-    NotModified: 304,
-    UseProxy: 305,
+    seeOther: 303,
+    redirectMethod: 303,
+    notModified: 304,
+    useProxy: 305,
     Unused: 306,
-    TemporaryRedirect: 307,
-    RedirectKeepVerb: 307,
+    temporaryRedirect: 307,
+    redirectKeepVerb: 307,
 
     // Client Error 4xx
-    BadRequest: 400,
+    badRequest: 400,
     Unauthorized: 401,
-    PaymentRequired: 402,
+    paymentRequired: 402,
     Forbidden: 403,
-    NotFound: 404,
-    MethodNotAllowed: 405,
-    NotAcceptable: 406,
-    ProxyAuthenticationRequired: 407,
-    RequestTimeout: 408,
+    notFound: 404,
+    methodNotAllowed: 405,
+    notAcceptable: 406,
+    proxyAuthenticationRequired: 407,
+    requestTimeout: 408,
     Conflict: 409,
     Gone: 410,
-    LengthRequired: 411,
-    PreconditionFailed: 412,
-    RequestEntityTooLarge: 413,
-    RequestUriTooLong: 414,
-    UnsupportedMediaType: 415,
-    RequestedRangeNotSatisfiable: 416,
-    ExpectationFailed: 417,
-    UpgradeRequired: 426,
+    lengthRequired: 411,
+    preconditionFailed: 412,
+    requestEntityTooLarge: 413,
+    requestUriTooLong: 414,
+    unsupportedMediaType: 415,
+    requestedRangeNotSatisfiable: 416,
+    expectationFailed: 417,
+    upgradeRequired: 426,
 
     // Server Error 5xx
-    InternalServerError: 500,
-    NotImplemented: 501,
-    BadGateway: 502,
-    ServiceUnavailable: 503,
-    GatewayTimeout: 504,
-    HttpVersionNotSupported: 505
+    internalServerError: 500,
+    notImplemented: 501,
+    badGateway: 502,
+    serviceUnavailable: 503,
+    gatewayTimeout: 504,
+    httpVersionNotSupported: 505
 };

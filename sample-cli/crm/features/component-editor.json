@@ -421,7 +421,7 @@
                     "Style": "height:650px;max-height:650px;position: relative;",
                     "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                     "RefName": "History",
-                    "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
+                    "PreQuery": "{ \"ComponentId\": this.meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
                     "Lang": "json"
                 },
                 {
@@ -456,7 +456,7 @@
                     "Style": "height:650px;max-height:650px;position: relative;",
                     "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                     "RefName": "History",
-                    "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
+                    "PreQuery": "{ \"ComponentId\": this.meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
                     "Lang": "sql"
                 }
             ]
@@ -510,7 +510,7 @@
                             "Style": "height:350px;max-height:350px;position: relative;",
                             "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                             "RefName": "History",
-                            "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
+                            "PreQuery": "{ \"ComponentId\": this.meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
                             "Lang": "json"
                         }
                     ]
@@ -588,7 +588,7 @@
                             "ShowLabel": true,
                             "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                             "RefName": "History",
-                            "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
+                            "PreQuery": "{ \"ComponentId\": this.meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
                             "Lang": "javascript"
                         },
                         {
@@ -1018,7 +1018,7 @@
                             "ShowLabel": true,
                             "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                             "RefName": "History",
-                            "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
+                            "PreQuery": "{ \"ComponentId\": this.meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
                             "Lang": "json"
                         }
                     ]
@@ -1144,7 +1144,7 @@
                             "ShowLabel": true,
                             "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                             "RefName": "History",
-                            "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
+                            "PreQuery": "{ \"ComponentId\": this.meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
                             "Lang": "json"
                         },
                         {
@@ -1166,7 +1166,7 @@
                             "ShowLabel": true,
                             "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                             "RefName": "History",
-                            "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
+                            "PreQuery": "{ \"ComponentId\": this.meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
                             "Lang": "javascript"
                         },
                         {
@@ -1179,7 +1179,7 @@
                             "ShowLabel": true,
                             "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                             "RefName": "History",
-                            "PreQuery": "{\r\n    \"ComponentId\": this.Meta.Id,\r\n    \"RecordId\": this.EditForm.Entity.Id\r\n}",
+                            "PreQuery": "{\r\n    \"ComponentId\": this.meta.Id,\r\n    \"RecordId\": this.EditForm.Entity.Id\r\n}",
                             "Lang": "json"
                         },
                         {
@@ -1223,7 +1223,7 @@
                             "Label": "Component Group",
                             "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                             "RefName": "History",
-                            "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
+                            "PreQuery": "{ \"ComponentId\": this.meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
                             "Lang": "json"
                         }
                     ]
@@ -1258,7 +1258,7 @@
                             "Label": "Component Group",
                             "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                             "RefName": "History",
-                            "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
+                            "PreQuery": "{ \"ComponentId\": this.meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
                             "Lang": "json"
                         }
                     ]
@@ -1293,7 +1293,7 @@
                             "Label": "Component Group",
                             "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                             "RefName": "History",
-                            "PreQuery": "{ \"ComponentId\": this.Meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
+                            "PreQuery": "{ \"ComponentId\": this.meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
                             "Lang": "json"
                         }
                     ]

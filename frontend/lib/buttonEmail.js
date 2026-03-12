@@ -5,105 +5,105 @@ import { Spinner } from "./spinner.js";
 
 export class ButtonEmail extends Button {
     /**
-     * Create instance of component
+     * create instance of component
      * @param {Component} ui 
      * @param {HTMLElement} ele 
      */
     constructor(ui, ele = null) {
         super(ui, ele);
-        this.Preview = null;
-        this.PdfReport = null;
+        this.preview = null;
+        this.pdfReport = null;
     }
     /**
-     * Dispatches the click event.
+     * dispatches the click event.
      */
-    DispatchClick() {
-        if (this.Meta.Precision == 7) {
-            this.DispatchEvent(this.Meta.Events, "click", this, this.Entity).then(() => {
-                this.Disabled = false;
-                Spinner.Hide();
+    dispatchClick() {
+        if (this.meta.precision == 7) {
+            this.dispatchEvent(this.meta.events, "click", this, this.entity).then(() => {
+                this.disabled = false;
+                Spinner.hide();
             });
         }
         else {
-            setTimeout(() => this.DispatchClickAsync(), 0);
+            setTimeout(() => this.dispatchClickAsync(), 0);
         }
     }
     /**
-    @type {HTMLIFrameElement}
+    @type {hTMLIFrameElement}
     */
-    IFrameElement
+    iFrameElement
     /**
-     * Asynchronously handles the click dispatch.
+     * asynchronously handles the click dispatch.
      */
-    async DispatchClickAsync() {
-        this.SendMail();
+    async dispatchClickAsync() {
+        this.sendMail();
     }
     /**
-     * Closes the preview.
+     * closes the preview.
      */
-    ClosePreview() {
-        this.Preview.remove();
+    closePreview() {
+        this.preview.remove();
     }
 
-    PrintPdf() {
-        this.IFrameElement.contentWindow.print();
+    printPdf() {
+        this.iFrameElement.contentWindow.print();
     }
 
-    ExportPdf() {
-        Spinner.AppendTo();
-        Client.instance.postAsync({ Html: this.Entity["PdfTemplate"], FileName: this.Entity.FormatChat || this.Entity.Code || this.Entity.Id }, "/api/GenPdf").then(response => {
-            Spinner.Hide();
+    exportPdf() {
+        Spinner.appendTo();
+        Client.instance.postAsync({ html: this.entity["pdfTemplate"], fileName: this.entity.formatChat || this.entity.code || this.entity.id }, "/api/genPdf").then(response => {
+            Spinner.hide();
             Client.download(response);
         });
     }
 
-    async SendMail() {
-        var planEmail = await Client.instance.getService("Get PlanEmail");
-        var partner = await Client.instance.getService("Get Partner");
+    async sendMail() {
+        var planEmail = await Client.instance.getService("get planEmail");
+        var partner = await Client.instance.getService("get partner");
         var com1 = planEmail[0][0];
-        com1.ComponentType = "Dropdown";
-        com1.ShowLabel = true;
-        com1.FieldName = "PdfPlanEmailId";
-        com1.Label = "Template mail";
-        com1.Template = `[
+        com1.componentType = "dropdown";
+        com1.showLabel = true;
+        com1.fieldName = "pdfPlanEmailId";
+        com1.Label = "template mail";
+        com1.template = `[
             {
-                "FieldName": "Name",
-                "Label": "Name",
-                "ComponentType": "Input"
+                "fieldName": "name",
+                "Label": "name",
+                "componentType": "input"
             }
         ]`;
-        com1.Column = 6;
-        com1.Events = `{"change":"UpdateEmailTemplate"}`;
+        com1.column = 6;
+        com1.events = `{"change":"updateEmailTemplate"}`;
         var com2 = partner[0][0];
-        com2.ComponentType = "Dropdown";
-        com2.ShowLabel = true;
-        com2.Column = 6;
-        com2.Label = "Partner";
-        com2.FieldName = "PdfPartnerId";
-        com2.Events = `{"change":"UpdateEmailTo"}`;
-        com2.Template = `[
+        com2.componentType = "dropdown";
+        com2.showLabel = true;
+        com2.column = 6;
+        com2.Label = "partner";
+        com2.fieldName = "pdfPartnerId";
+        com2.events = `{"change":"updateEmailTo"}`;
+        com2.template = `[
                 {
-                    "FieldName": "Name",
-                    "Label": "Name",
-                    "ComponentType": "Input",
-                    "MaxWidth": "300px",
-                    "MinWidth": "300px",
-                    "Width": "300px"
+                    "fieldName": "name",
+                    "Label": "name",
+                    "componentType": "input",
+                    "maxWidth": "300px",
+                    "minWidth": "300px",
+                    "width": "300px"
                 },
                 {
-                    "FieldName": "TaxCode",
-                    "Label": "TaxCode",
-                    "ComponentType": "Input"
+                    "fieldName": "taxCode",
+                    "Label": "taxCode",
+                    "componentType": "input"
                 },
                 {
-                    "FieldName": "Email",
-                    "Label": "Email",
-                    "ComponentType": "Input"
+                    "fieldName": "email",
+                    "Label": "email",
+                    "componentType": "input"
                 }
             ]`;
-        this.EditForm.OpenConfig("Choose mail template!", async () => {
+        this.editForm.openConfig("choose mail template!", async () => {
             await this.createEMLFromFileUrl();
-        }, () => { }, true, [com2, com1, { FieldName: "PdfToEmail", Label: "Send To", ComponentType: "Input", Column: 6 }, { FieldName: "PdfToName", Label: "To Name", ComponentType: "Input", Column: 6, Events: `{"change":"UpdateEmailTemplate2"}` }, { FieldName: "PdfSubjectMail", Label: "Subject", ComponentType: "Input", Column: 12 }, { FieldName: "PdfTemplate", Label: "Template", ComponentType: "Word", Precision: 400 }], null, null, "824px");
+        }, () => { }, true, [com2, com1, { fieldName: "pdfToEmail", Label: "send to", componentType: "input", column: 6 }, { fieldName: "pdfToName", Label: "to name", componentType: "input", column: 6, events: `{"change":"updateEmailTemplate2"}` }, { fieldName: "pdfSubjectMail", Label: "subject", componentType: "input", column: 12 }, { fieldName: "pdfTemplate", Label: "template", componentType: "word", precision: 400 }], null, null, "824px");
     }
 
     inlineAllStyles(html) {
@@ -157,16 +157,16 @@ export class ButtonEmail extends Button {
     }
 
     async createEMLFromFileUrl() {
-        Spinner.AppendTo();
-        Client.instance.postAsync({ Html: this.Entity["PdfTemplate"], FileName: this.Entity.FormatChat || this.Entity.Code || this.Entity.Id }, "/api/GenPdf").then(async (response2) => {
-            Spinner.Hide();
+        Spinner.appendTo();
+        Client.instance.postAsync({ html: this.entity["pdfTemplate"], fileName: this.entity.formatChat || this.entity.code || this.entity.id }, "/api/genPdf").then(async (response2) => {
+            Spinner.hide();
             const removePath = Client.removeGuid(response2);
             const fileUrl = response2;
             const fileName = removePath;
-            const subject = this.EditForm.Entity.PdfSubjectMail || '';
-            const htmlBody = this.EditForm.Entity.PdfTemplate || '';
-            const toEmail = this.EditForm.Entity.PdfToEmail || '';
-            const toName = this.EditForm.Entity.PdfToName || this.EditForm.Entity.PdfPartnerIdText;
+            const subject = this.editForm.entity.pdfSubjectMail || '';
+            const htmlBody = this.editForm.entity.pdfTemplate || '';
+            const toEmail = this.editForm.entity.pdfToEmail || '';
+            const toName = this.editForm.entity.pdfToName || this.editForm.entity.pdfPartnerIdText;
             var styledHtml = `
         <html>
         <head>
@@ -194,60 +194,60 @@ export class ButtonEmail extends Button {
         <body>${htmlBody}</body>
         </html>`;
             if (!htmlBody) {
-                styledHtml = this.IFrameElement.contentWindow.document.documentElement.outerHTML;
+                styledHtml = this.iFrameElement.contentWindow.document.documentElement.outerHTML;
             }
             const htmlWithInline = await this.inlineAllStyles(styledHtml);
             try {
                 if (htmlBody) {
                     const response = await fetch(fileUrl);
                     const blob = await response.blob();
-                    const eml = `To: ${toName} <${toEmail}>
-Subject: ${subject}
-X-Unsent: 1
-Content-Type: multipart/mixed; boundary=--boundary_text_string
+                    const eml = `to: ${toName} <${toEmail}>
+subject: ${subject}
+x-unsent: 1
+content-type: multipart/mixed; boundary=--boundary_text_string
 
 ----boundary_text_string
-Content-Type: text/html; charset=UTF-8
+content-type: text/html; charset=uTF-8
 
 ${htmlWithInline}
 
 ----boundary_text_string`;
 
-                    const emlBlob = new Blob([eml], { type: "message/rfc822" });
+                    const emlBlob = new blob([eml], { type: "message/rfc822" });
                     const a = document.createElement("a");
-                    a.href = URL.createObjectURL(emlBlob);
+                    a.href = uRL.createObjectURL(emlBlob);
                     a.download = removePath.replaceAll("pdf", "eml");
                     a.click();
                 }
                 else {
-                    const eml = `To: ${toName} <${toEmail}>
-Subject: ${subject}
-X-Unsent: 1
-Content-Type: multipart/mixed; boundary=--boundary_text_string
+                    const eml = `to: ${toName} <${toEmail}>
+subject: ${subject}
+x-unsent: 1
+content-type: multipart/mixed; boundary=--boundary_text_string
 
 ----boundary_text_string
-Content-Type: text/html; charset=UTF-8
+content-type: text/html; charset=uTF-8
 
 ${htmlWithInline}
 
 ----boundary_text_string--`;
 
-                    const emlBlob = new Blob([eml], { type: "message/rfc822" });
+                    const emlBlob = new blob([eml], { type: "message/rfc822" });
                     const a = document.createElement("a");
-                    a.href = URL.createObjectURL(emlBlob);
+                    a.href = uRL.createObjectURL(emlBlob);
                     a.download = removePath.replaceAll("pdf", "eml");
                     a.click();
                 }
 
             } catch (err) {
-                console.error("Lỗi khi tạo EML:", err);
+                console.error("Lỗi khi tạo eML:", err);
             }
         });
     }
 
     blobToBase64(blob) {
         return new Promise((resolve, reject) => {
-            const reader = new FileReader();
+            const reader = new fileReader();
             reader.onloadend = () => {
                 const base64 = reader.result.split(',')[1];
                 resolve(base64);

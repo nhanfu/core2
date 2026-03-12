@@ -218,7 +218,7 @@
             "FieldName": "ContainerTypeId",
             "Order": 13,
             "ComponentType": "Number",
-            "FormatData": "const vndAmount = this.Meta.ChildHeader.reduce((sum, header) => {\r\n    const fieldValue =header.GroupName == \"20\" ? this.Entity[header.FieldName] || 0 : (this.Entity[header.FieldName] || 0)*2;\r\n    return sum + Number(fieldValue);\r\n}, 0).toFixed(0).replace(/\\B(?=(\\d{3})+(?!\\d))/g, ',');\r\nreturn vndAmount == '0' ? '' : vndAmount;",
+            "FormatData": "const vndAmount = this.meta.ChildHeader.reduce((sum, header) => {\r\n    const fieldValue =header.GroupName == \"20\" ? this.Entity[header.FieldName] || 0 : (this.Entity[header.FieldName] || 0)*2;\r\n    return sum + Number(fieldValue);\r\n}, 0).toFixed(0).replace(/\\B(?=(\\d{3})+(?!\\d))/g, ',');\r\nreturn vndAmount == '0' ? '' : vndAmount;",
             "Column": 1,
             "Row": 50,
             "Precision": 2,

@@ -2,72 +2,72 @@ import { EditableComponent } from "./editableComponent.js";
 import { Component } from "./models/component.js";
 import { ComponentExt } from "./utils/componentExt.js";
 import { Str } from "./utils/ext.js";
-import { Html } from "./utils/html.js";
+import { html } from "./utils/html.js";
 import { Utils } from "./utils/utils.js";
 import { Client } from "./clients/client.js";
 import EventType from "./models/eventType.js";
 
 /**
- * Represents a code editor component.
+ * represents a code editor component.
  */
 export class CodeEditor extends EditableComponent {
     /**
-     * Creates an instance of a CodeEditor.
-     * @param {Component} ui - The UI component.
-     * @param {HTMLElement} [ele=null] - The HTML element associated with the editor.
+     * creates an instance of a CodeEditor.
+     * @param {Component} ui - the uI component.
+     * @param {HTMLElement} [ele=null] - the HTML element associated with the editor.
      */
     constructor(ui, ele = null) {
         super(ui);
-        this.Element = ele || null;
-        this.DefaultValue = '';
+        this.element = ele || null;
+        this.defaultValue = '';
         this.editor = null;
     }
 
-    SetOldTextAndVal() {
-        this.OriginalText = this.Entity[this.Name] || "";
-        this.OldValue = this.OriginalText;
+    setOldTextAndVal() {
+        this.originalText = this.entity[this.name] || "";
+        this.oldValue = this.originalText;
     }
 
     /**
-     * Renders the code editor.
+     * renders the code editor.
      */
-    Render() {
-        this.SetOldTextAndVal();
-        if (!this.Element) {
-            this.ParentElement.style.textAlign = 'unset';
-            Html.take(this.ParentElement).div.className("code-editor").style(this.Meta.Style || "height:150px;max-height:150px;position: relative;");
-            this.Element = Html.Context;
+    render() {
+        this.setOldTextAndVal();
+        if (!this.element) {
+            this.parentElement.style.textAlign = 'unset';
+            html.take(this.parentElement).div.className("code-editor").style(this.meta.style || "height:150px;max-height:150px;position: relative;");
+            this.element = html.context;
         }
-        this.Config().then(() => {
+        this.config().then(() => {
             if (typeof (require) === 'undefined') return;
             // @ts-ignore
-            require(["vs/editor/editor.main"], this.EditorLoaded.bind(this));
+            require(["vs/editor/editor.main"], this.editorLoaded.bind(this));
         });
     }
 
     static _hasConfig;
-    async Config() {
+    async config() {
         if (typeof (require) === 'undefined') return;
         if (CodeEditor._hasConfig) return;
         CodeEditor._hasConfig = true;
         // @ts-ignore
         require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs' } });
         // @ts-ignore
-        window.MonacoEnvironment = { getWorkerUrl: () => proxy };
+        window.monacoEnvironment = { getWorkerUrl: () => proxy };
 
-        let proxy = URL.createObjectURL(new Blob([`
-            self.MonacoEnvironment = {
+        let proxy = uRL.createObjectURL(new blob([`
+            self.monacoEnvironment = {
                 baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/'
             };
             importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/base/worker/workerMain.js');
             `], { type: 'text/javascript' }));
     }
 
-    GetValueText() {
+    getValueText() {
         return this.editor.getValue();
     }
 
-    EditorLoaded() {
+    editorLoaded() {
         monaco.languages.register({ id: 'javascript' });
         const jsKeywords = [
             'break', 'case', 'catch', 'class', 'const', 'continue', 'debugger', 'default', 'delete',
@@ -79,41 +79,41 @@ export class CodeEditor extends EditableComponent {
             keywords: jsKeywords,
             tokenizer: {
                 root: [
-                    [/[a-zA-Z_$][\w$]*/, {
+                    [/[a-zA-z_$][\w$]*/, {
                         cases: {
                             '@keywords': 'keyword',
                             '@default': 'identifier'
                         }
                     }],
-                    [/(\.EditForm\.)/, 'custom-editform'],
+                    [/(\.editForm\.)/, 'custom-editform'],
                     [/(\.filter\()/, 'custom-filter'],
                     [/(\.find\()/, 'custom-find'],
-                    [/(\.FirstCom\()/, 'custom-firstcom'],
-                    [/(\.LoadMasterData\()/, 'custom-loadmasterdata'],
-                    [/(\.ClearSelected\()/, 'custom-loadmasterdata'],
+                    [/(\.firstCom\()/, 'custom-firstcom'],
+                    [/(\.loadMasterData\()/, 'custom-loadmasterdata'],
+                    [/(\.clearSelected\()/, 'custom-loadmasterdata'],
                     [/(\.forEach\()/, 'custom-reduce'],
                     [/(\.reduce\()/, 'custom-reduce'],
-                    [/(\.OpenConfig\()/, 'custom-openconfig'],
-                    [/(\.Item)/, 'custom-item'],
-                    [/(\.Element)/, 'custom-item'],
+                    [/(\.openConfig\()/, 'custom-openconfig'],
+                    [/(\.item)/, 'custom-item'],
+                    [/(\.element)/, 'custom-item'],
                     [/(\.length)/, 'custom-length'],
-                    [/(\.UpdateView2\()/, 'custom-updateview2'],
-                    [/(\.UpdateView\()/, 'custom-updateview2'],
-                    [/(\.Decimal\()/, 'custom-decimal'],
+                    [/(\.updateView2\()/, 'custom-updateview2'],
+                    [/(\.updateView\()/, 'custom-updateview2'],
+                    [/(\.decimal\()/, 'custom-decimal'],
                     [/(\.times\()/, 'custom-times'],
                     [/(\.isNegative\()/, 'custom-isnegative'],
                     [/(\.abs\()/, 'custom-abs'],
                     [/(\.plus\()/, 'custom-plus'],
                     [/(\.div\()/, 'custom-div'],
-                    [/(\.Parent)/, 'custom-parent'],
-                    // Default JavaScript tokens
+                    [/(\.parent)/, 'custom-parent'],
+                    // default javaScript tokens
                     [/[{}[\]()]/, '@brackets'],
                     [/\/\/.*$/, 'comment'],
-                    [/"([^"\\]|\\.)*$/, 'string.invalid'], // Non-terminated string
+                    [/"([^"\\]|\\.)*$/, 'string.invalid'], // non-terminated string
                     [/"([^"\\]|\\.)*"/, 'string'],
-                    [/'([^'\\]|\\.)*$/, 'string.invalid'], // Non-terminated string
+                    [/'([^'\\]|\\.)*$/, 'string.invalid'], // non-terminated string
                     [/'([^'\\]|\\.)*'/, 'string'],
-                    [/`([^`\\]|\\.)*$/, 'string.invalid'], // Non-terminated template
+                    [/`([^`\\]|\\.)*$/, 'string.invalid'], // non-terminated template
                     [/`([^`\\]|\\.)*`/, 'string'],
                     [/[+-/*=<>!~&|%]+/, 'operator']
                 ]
@@ -123,48 +123,48 @@ export class CodeEditor extends EditableComponent {
             base: 'vs', // Nền sáng
             inherit: true, // Kế thừa các thiết lập mặc định
             rules: [
-                // Quy tắc màu cho các token tùy chỉnh
-                { token: 'keyword', foreground: '0000FF' }, // Xanh dương đậm
+                // quy tắc màu cho các token tùy chỉnh
+                { token: 'keyword', foreground: '0000FF' }, // xanh dương đậm
                 { token: 'identifier', foreground: '1E1E1E' }, // Đen đậm
-                { token: 'custom-editform', foreground: 'A31515' }, // Đỏ sẫm
+                { token: 'custom-editform', foreground: 'a31515' }, // Đỏ sẫm
                 { token: 'custom-filter', foreground: '795E26' }, // Nâu vàng
                 { token: 'custom-find', foreground: '5A5A5A' }, // Xám đậm
-                { token: 'custom-firstcom', foreground: '4B8BBE' }, // Xanh lam nhẹ
-                { token: 'custom-loadmasterdata', foreground: 'B4009E' }, // Tím đậm
-                { token: 'custom-reduce', foreground: '00008B' }, // Xanh dương sẫm
-                { token: 'custom-openconfig', foreground: '2B91AF' }, // Xanh lam sáng
+                { token: 'custom-firstcom', foreground: '4B8BBE' }, // xanh lam nhẹ
+                { token: 'custom-loadmasterdata', foreground: 'b4009E' }, // Tím đậm
+                { token: 'custom-reduce', foreground: '00008B' }, // xanh dương sẫm
+                { token: 'custom-openconfig', foreground: '2B91AF' }, // xanh lam sáng
                 { token: 'custom-item', foreground: '9932CC' }, // Tím nhạt
-                { token: 'custom-length', foreground: '6A8759' }, // Xanh lá
-                { token: 'custom-updateview2', foreground: '007ACC' }, // Xanh Visual Studio
-                { token: 'custom-decimal', foreground: 'C75C6A' }, // Đỏ hồng
-                { token: 'custom-times', foreground: 'FF4500' }, // Cam đỏ
+                { token: 'custom-length', foreground: '6A8759' }, // xanh lá
+                { token: 'custom-updateview2', foreground: '007ACC' }, // xanh visual studio
+                { token: 'custom-decimal', foreground: 'c75C6A' }, // Đỏ hồng
+                { token: 'custom-times', foreground: 'fF4500' }, // cam đỏ
                 { token: 'custom-isnegative', foreground: '9B59B6' }, // Tím sáng
-                { token: 'custom-abs', foreground: '2ECC71' }, // Xanh lá sáng
-                { token: 'custom-plus', foreground: 'FF6347' }, // Đỏ cam nhạt
-                { token: 'custom-div', foreground: '4682B4' }, // Xanh thép
-                { token: 'custom-parent', foreground: '1ABC9C' }, // Xanh ngọc sáng
+                { token: 'custom-abs', foreground: '2ECC71' }, // xanh lá sáng
+                { token: 'custom-plus', foreground: 'fF6347' }, // Đỏ cam nhạt
+                { token: 'custom-div', foreground: '4682B4' }, // xanh thép
+                { token: 'custom-parent', foreground: '1ABC9C' }, // xanh ngọc sáng
 
-                // Quy tắc màu mặc định
-                { token: 'comment', foreground: '008000', fontStyle: 'italic' }, // Xanh lá đậm
-                { token: 'string', foreground: 'A31515' }, // Đỏ sẫm
+                // quy tắc màu mặc định
+                { token: 'comment', foreground: '008000', fontStyle: 'italic' }, // xanh lá đậm
+                { token: 'string', foreground: 'a31515' }, // Đỏ sẫm
                 { token: 'operator', foreground: '000000' }, // Đen
-                { token: 'number', foreground: '098658' }, // Xanh lục đậm
+                { token: 'number', foreground: '098658' }, // xanh lục đậm
                 { token: 'delimiter', foreground: '1E1E1E' }, // Đen xám
                 { token: 'brackets', foreground: '1E1E1E' }, // Đen xám
             ],
             colors: {
                 'editor.foreground': '#333333', // Màu chữ chung - Đen xám
-                'editor.background': '#FFFFFF', // Nền trắng
+                'editor.background': '#fFFFFF', // Nền trắng
                 'editorLineNumber.foreground': '#5A5A5A', // Số dòng - Xám đậm
-                'editorCursor.foreground': '#007ACC', // Con trỏ - Xanh lam Visual Studio
-                'editor.selectionBackground': '#ADD6FF', // Nền vùng chọn - Xanh nhạt
-                'editor.inactiveSelectionBackground': '#E5EBF1', // Nền vùng chọn không hoạt động - Xám xanh
+                'editorCursor.foreground': '#007ACC', // con trỏ - xanh lam visual studio
+                'editor.selectionBackground': '#aDD6FF', // Nền vùng chọn - xanh nhạt
+                'editor.inactiveSelectionBackground': '#e5EBF1', // Nền vùng chọn không hoạt động - Xám xanh
             }
         });
-        this.editor = monaco.editor.create(this.Element, {
-            value: this.FieldVal ?? Str.Empty,
-            language: this.Meta.Lang ?? 'javascript',
-            theme: this.Meta.Theme ?? 'light-soft',
+        this.editor = monaco.editor.create(this.element, {
+            value: this.fieldVal ?? Str.empty,
+            language: this.meta.lang ?? 'javascript',
+            theme: this.meta.theme ?? 'light-soft',
             automaticLayout: true,
             foldingStrategy: "indentation",
             wordWrap: "on",
@@ -173,7 +173,7 @@ export class CodeEditor extends EditableComponent {
                 enabled: false,
             }
         });
-        if (this.Meta.Lang ?? 'javascript' == "javascript") {
+        if (this.meta.lang ?? 'javascript' == "javascript") {
             if (this.editor.getModel()) {
                 this.editor.getAction("editor.foldLevel2").run();
             } else {
@@ -182,80 +182,80 @@ export class CodeEditor extends EditableComponent {
                 });
             }
         }
-        window.addEventListener('resize', this.ResizeHandler.bind(this));
+        window.addEventListener('resize', this.resizeHandler.bind(this));
         this.editor.getModel().onDidChangeContent(() => {
             const currentValue = this.editor.getValue();
-            if (currentValue !== this.OriginalText) {
-                this.FieldVal = currentValue;
-                this.Dirty = true;
+            if (currentValue !== this.originalText) {
+                this.fieldVal = currentValue;
+                this.dirty = true;
             }
         });
         this.editor.onContextMenu(function (e) {
             e.event.preventDefault();
             e.event.stopPropagation();
         });
-        this.Element.classList.add('code-editor');
-        this.Element.style.resize = 'both';
-        this.Element.style.border = '1px solid #dde';
-        Html.take(this.Element).icon('fal fal fa-compress-wide').style("position: absolute; z-index: 1; top: 0; right: 0;")
+        this.element.classList.add('code-editor');
+        this.element.style.resize = 'both';
+        this.element.style.border = '1px solid #dde';
+        html.take(this.element).icon('fal fal fa-compress-wide').style("position: absolute; z-index: 1; top: 0; right: 0;")
             .event('click', () => {
-                ComponentExt.FullScreen(this.Element);
+                ComponentExt.fullScreen(this.element);
             }).end
-            .select.event("change", /**@param {Event} e */(e) => {
+            .select.event("change", /**@param {event} e */(e) => {
                 var newLanguage = e.target.value;
                 monaco.editor.setModelLanguage(this.editor.getModel(), newLanguage);
             }).style("position: absolute; z-index: 1; left: 0; bottom: 0;")
-            .option.attr("value", "javascript").attr(this.Meta.Lang == "javascript" ? "selected" : "no", "").iText("javascript").end
-            .option.attr("value", "json").attr(this.Meta.Lang == "json" ? "selected" : "no", "").iText("json").end
-            .option.attr("value", "sql").attr(this.Meta.Lang == "sql" ? "selected" : "no", "").iText("sql").end
-            .option.attr("value", "html").attr(this.Meta.Lang == "html" ? "selected" : "no", "").iText("html").end
-            .option.attr("value", "css").attr(this.Meta.Lang == "css" ? "selected" : "no", "").iText("css").end
-            .option.attr("value", "text").attr(this.Meta.Lang == "text" ? "selected" : "no", "").iText("text").end.end
+            .option.attr("value", "javascript").attr(this.meta.lang == "javascript" ? "selected" : "no", "").iText("javascript").end
+            .option.attr("value", "json").attr(this.meta.lang == "json" ? "selected" : "no", "").iText("json").end
+            .option.attr("value", "sql").attr(this.meta.lang == "sql" ? "selected" : "no", "").iText("sql").end
+            .option.attr("value", "html").attr(this.meta.lang == "html" ? "selected" : "no", "").iText("html").end
+            .option.attr("value", "css").attr(this.meta.lang == "css" ? "selected" : "no", "").iText("css").end
+            .option.attr("value", "text").attr(this.meta.lang == "text" ? "selected" : "no", "").iText("text").end.end
             .icon('fal fa-history').style("position: absolute; z-index: 1; bottom: 0; right: 0;")
             .event('click', () => {
-                this.RenderPopup();
-            }).event('contextmenu', (e) => this.EditForm.SysConfigMenu(e, this.Meta, null, null));
+                this.renderPopup();
+            }).event('contextmenu', (e) => this.editForm.sysConfigMenu(e, this.meta, null, null));
     }
     time;
 
-    ResizeHandler() {
+    resizeHandler() {
         window.clearTimeout(this.time);
         this.time = window.setTimeout(() => {
-            const minWidth = this.Parent.Element.clientWidth - 30; // adjust as needed
-            this.Element.style.width = minWidth + 'px';
+            const minWidth = this.parent.element.clientWidth - 30; // adjust as needed
+            this.element.style.width = minWidth + 'px';
         }, 200);
     }
     /**@type {HTMLElement} */
     _backdrop;
     /**@type {HTMLElement} */
-    BodyElement;
-    RenderPopup() {
-        Html.take(this.EditForm.Element).div.className("backdrop");
-        this._backdrop = Html.Context;
-        Html.Instance.div.className("popup-content").div.className("popup-title").span.iText("History change");
-        this.TitleElement = Html.Context;
-        Html.Instance.end.div.className("icon-box").span.className("fa fa-times")
-            .event(EventType.Click, () => {
+    bodyElement;
+    renderPopup() {
+        html.take(this.editForm.element).div.className("backdrop");
+        this._backdrop = html.context;
+        html.instance.div.className("popup-content").div.className("popup-title").span.iText("history change");
+        this.titleElement = html.context;
+        html.instance.end.div.className("icon-box").span.className("fa fa-times")
+            .event(EventType.click, () => {
                 this._backdrop.remove();
             }).end.end.end.div.className("popup-body").div.className("wrapper scroll-content");
-        this.BodyElement = Html.Context;
-        Html.Instance.end.div.className("popup-footer");
-        if (this._backdrop.OutOfViewport().Top) {
+        this.bodyElement = html.context;
+        html.instance.end.div.className("popup-footer");
+        if (this._backdrop.outOfViewport().top) {
             this._backdrop.scrollIntoView(true);
         }
         const res = {
-            ComId: this.Meta.Id,
-            Params: JSON.stringify(Utils.IsFunction(this.Meta.PreQuery, true, this)),
-            OrderBy: (!this.Meta.OrderBy ? "ds.InsertedDate desc" : this.Meta.OrderBy),
-            Count: false,
-            Skip: 0,
-            Top: 110,
+            comId: this.meta.id,
+            params: JSON.stringify(Utils.isFunction(this.meta.preQuery, true, this)),
+            orderBy: (!this.meta.orderBy ? "ds.insertedDate desc" : this.meta.orderBy),
+            count: false,
+            skip: 0,
+            top: 110,
         };
         Client.instance.submitAsync({
-            NoQueue: true,
-            Url: `/api/feature/com`,
-            Method: "POST",
-            JsonData: JSON.stringify(res),
+            noQueue: true,
+            url: `/api/feature/com`,
+            method: "pOST",
+            jsonData: JSON.stringify(res),
         }).then(data => {
             /**@type {[]} */
             var dataa = data.value;
@@ -263,18 +263,18 @@ export class CodeEditor extends EditableComponent {
                 return;
             }
             dataa.forEach(item => {
-                Html.take(this.BodyElement);
-                Html.Instance.div.label.className("header").text(this.dayjs(item.InsertedDate).format("DD/MM/YYYY HH:mm")).end.div.className("diff-container").style("height:250px");
+                html.take(this.bodyElement);
+                html.instance.div.label.className("header").text(this.dayjs(item.insertedDate).format("dD/mM/yYYY hH:mm")).end.div.className("diff-container").style("height:250px");
                 const modifiedModel = monaco.editor.createModel(
-                    item.Value ?? ``,
-                    this.Meta.Lang ?? 'javascript'
+                    item.value ?? ``,
+                    this.meta.lang ?? 'javascript'
                 );
                 const originalModel = monaco.editor.createModel(
-                    item.OldValue ?? ``,
-                    this.Meta.Lang ?? 'javascript'
+                    item.oldValue ?? ``,
+                    this.meta.lang ?? 'javascript'
                 );
                 const diffEditor = monaco.editor.createDiffEditor(
-                    Html.Context,
+                    html.context,
                     {
                         originalEditable: true,
                         automaticLayout: true,
@@ -289,19 +289,19 @@ export class CodeEditor extends EditableComponent {
         });
     }
     /**
-     * Updates the view of the Checkbox based on the current state.
-     * @param {boolean} [force=false] - Force the update regardless of changes.
-     * @param {?boolean} [dirty=null] - The new dirty state.
-     * @param {...string} componentNames - Additional component names to update.
+     * updates the view of the Checkbox based on the current state.
+     * @param {boolean} [force=false] - force the update regardless of changes.
+     * @param {?boolean} [dirty=null] - the new dirty state.
+     * @param {...string} componentNames - additional component names to update.
      */
-    UpdateView(force = false, dirty = null, ...componentNames) {
-        this.Value = this.Entity[this.Meta.FieldName];
-        if (!this.Dirty) {
-            this.OriginalText = this.Value || "";
-            this.OldValue = this.Value;
+    updateView(force = false, dirty = null, ...componentNames) {
+        this.value = this.entity[this.meta.fieldName];
+        if (!this.dirty) {
+            this.originalText = this.value || "";
+            this.oldValue = this.value;
         }
-        this.editor.setValue(this.Value || "");
-        if (this.Meta.Lang ?? 'javascript' == "javascript") {
+        this.editor.setValue(this.value || "");
+        if (this.meta.lang ?? 'javascript' == "javascript") {
             if (this.editor.getModel()) {
                 this.editor.getAction("editor.foldLevel2").run();
             } else {

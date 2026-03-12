@@ -4,8 +4,8 @@ const renderSection = jest.fn();
 
 jest.unstable_mockModule("../section.js", () => ({
   Section: {
-    RenderSection: renderSection,
-    RenderGroupContent: jest.fn(),
+    renderSection: renderSection,
+    renderGroupContent: jest.fn(),
   },
 }));
 
@@ -17,25 +17,25 @@ describe("TabGroup", () => {
 
   beforeEach(() => {
     tabGroup = new TabGroup();
-    tabGroup.Meta = { IsVertialTab: false, Children: [] };
-    tabGroup.ParentElement = document.createElement("div");
-    tabGroup.EditForm = { ButtonFrozen: null, IsLoadButtonFrozen: false };
+    tabGroup.Meta = { isVertialTab: false, Children: [] };
+    tabGroup.parentElement = document.createElement("div");
+    tabGroup.editForm = { buttonFrozen: null, isLoadButtonFrozen: false };
   });
 
   test("initializes default values", () => {
-    expect(tabGroup.ListViewType).toEqual(["ListView", "GroupListView", "GridView", "GroupGridView"]);
+    expect(tabGroup.listViewType).toEqual(["ListView", "GroupListView", "GridView", "GroupGridView"]);
     expect(tabGroup.Ul).toBeNull();
-    expect(tabGroup.TabContent).toBeNull();
-    expect(tabGroup.ShouldCountBage).toBe(false);
-    expect(tabGroup.HasRendered).toBe(false);
+    expect(tabGroup.tabContent).toBeNull();
+    expect(tabGroup.shouldCountBage).toBe(false);
+    expect(tabGroup.hasRendered).toBe(false);
   });
 
   test("renders the tab group scaffold", () => {
-    tabGroup.Render();
+    tabGroup.render();
 
-    expect(tabGroup.Ul).toBeInstanceOf(HTMLUListElement);
-    expect(tabGroup.Element).toBeInstanceOf(HTMLDivElement);
-    expect(tabGroup.TabContent).toBeInstanceOf(HTMLDivElement);
+    expect(tabGroup.Ul).toBeInstanceOf(hTMLUListElement);
+    expect(tabGroup.element).toBeInstanceOf(hTMLDivElement);
+    expect(tabGroup.tabContent).toBeInstanceOf(hTMLDivElement);
   });
 });
 
@@ -45,7 +45,7 @@ describe("TabComponent", () => {
 
   beforeEach(() => {
     mockGroup = {
-      FieldName: "TestTab",
+      fieldName: "testTab",
       Id: "test-id",
       Icon: "test-icon",
       Label: "Test Label",
@@ -56,12 +56,12 @@ describe("TabComponent", () => {
     tabComponent = new TabComponent(mockGroup);
     tabComponent.Parent = new TabGroup();
     tabComponent.Parent.Ul = document.createElement("ul");
-    tabComponent.Parent.TabContent = document.createElement("div");
+    tabComponent.Parent.tabContent = document.createElement("div");
     tabComponent.Parent.Children = [tabComponent];
-    tabComponent.EditForm = {
+    tabComponent.editForm = {
       Meta: { Label: "Form label" },
-      TabComponents: [],
-      ResizeListView: jest.fn(),
+      tabComponents: [],
+      resizeListView: jest.fn(),
     };
   });
 
@@ -71,30 +71,30 @@ describe("TabComponent", () => {
 
   test("initializes default values", () => {
     expect(tabComponent.Meta).toEqual(mockGroup);
-    expect(tabComponent.Name).toBe(mockGroup.FieldName);
+    expect(tabComponent.Name).toBe(mockGroup.fieldName);
     expect(tabComponent._li).toBeUndefined();
-    expect(tabComponent.BadgeElement).toBeUndefined();
+    expect(tabComponent.badgeElement).toBeUndefined();
   });
 
   test("renders the tab header", () => {
-    tabComponent.Render();
+    tabComponent.render();
 
-    expect(tabComponent._li).toBeInstanceOf(HTMLLIElement);
-    expect(tabComponent.TextElement.textContent).toContain("Test Label");
+    expect(tabComponent._li).toBeInstanceOf(hTMLLIElement);
+    expect(tabComponent.textElement.textContent).toContain("Test Label");
   });
 
   test("Focus toggles active state", () => {
-    tabComponent.Render();
+    tabComponent.render();
     tabComponent.Focus();
 
     expect(tabComponent._li.classList.contains("active")).toBe(true);
   });
 
-  test("RenderTabContent delegates to Section.RenderSection", () => {
-    tabComponent.Render();
-    tabComponent.RenderTabContent();
+  test("renderTabContent delegates to Section.renderSection", () => {
+    tabComponent.render();
+    tabComponent.renderTabContent();
 
-    expect(renderSection).toHaveBeenCalledWith(tabComponent, mockGroup, null, tabComponent.EditForm);
-    expect(tabComponent.HasRendered).toBe(true);
+    expect(renderSection).toHaveBeenCalledWith(tabComponent, mockGroup, null, tabComponent.editForm);
+    expect(tabComponent.hasRendered).toBe(true);
   });
 });

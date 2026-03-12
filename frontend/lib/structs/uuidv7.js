@@ -1,6 +1,6 @@
 import { v7 as uuidv7 } from 'uuid';
 export class Uuid7 {
-    static NewGuid() {
+    static newGuid() {
         return "-" + this.Guid();
     }
     static Guid(asOfNs = null) {

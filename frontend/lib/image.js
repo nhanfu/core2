@@ -10,10 +10,10 @@ import { Client } from './clients/client.js';
 import { Html } from './utils/html.js';
 
 export class Image extends EditableComponent {
-    static PathSeparator = "    ";
-    static PNGUrlPrefix = "data:image/png;base64,";
-    static JpegUrlPrefix = "data:image/jpeg;base64,";
-    static GuidLength = 36;
+    static pathSeparator = "    ";
+    static pNGUrlPrefix = "data:image/png;base64,";
+    static jpegUrlPrefix = "data:image/jpeg;base64,";
+    static guidLength = 36;
     /**
      * Create instance of component
      * @param {Component} ui 
@@ -22,15 +22,15 @@ export class Image extends EditableComponent {
     constructor(ui, el) {
         super(ui, el);
         this._path = '';
-        /** @type {HTMLInputElement} */
+        /** @type {hTMLInputElement} */
         this._input = document.createElement('input');
         this._preview = null;
         this._disabledDelete = false;
-        /** @type {HTMLDivElement} */
+        /** @type {hTMLDivElement} */
         this._gallerys = document.createElement('div');
-        this.DataSource = this.Meta.Template || "image/*";
-        this.DefaultValue = '';
-        this.FileUploaded = new Action();
+        this.dataSource = this.meta.Template || "image/*";
+        this.defaultValue = '';
+        this.fileUploaded = new Action();
         this.zoomLevel = 0;
         this.flagZoomIn = 1;
         this.zoomMaxLevel = 3;
@@ -43,67 +43,67 @@ export class Image extends EditableComponent {
     set Path(value) {
         this._gallerys.innerHTML = '';
         this._path = value;
-        if (this.Entity) {
-            this.Entity[this.Name] = this._path;
+        if (this.entity) {
+            this.entity[this.Name] = this._path;
         }
 
         if (!this._path || this._path.trim() === '') {
             return;
         }
 
-        const updatedImages = this._path.split(Image.PathSeparator);
+        const updatedImages = this._path.split(Image.pathSeparator);
         if (!updatedImages || updatedImages.length === 0) {
             return;
         }
 
         updatedImages.forEach(x => {
-            this.RenderFileThumb(x);
+            this.renderFileThumb(x);
         });
     }
 
-    get ImageSources() {
-        return this.Path ? this.Path.split(Image.PathSeparator) : null;
+    get imageSources() {
+        return this.Path ? this.Path.split(Image.pathSeparator) : null;
     }
 
     Render() {
-        this._path = this.Entity[this.Name] || null;
-        this.RenderUploadForm();
+        this._path = this.entity[this.Name] || null;
+        this.renderUploadForm();
         this.Path = this._path;
-        this.DOMContentLoaded?.invoke();
-        this.Element.closest("td")?.addEventListener("keydown", this.ListViewItemTab);
+        this.dOMContentLoaded?.invoke();
+        this.element.closest("td")?.addEventListener("keydown", this.listViewItemTab);
     }
 
-    RenderFileThumb(path) {
+    renderFileThumb(path) {
         const gallery = document.createElement('div');
         gallery.className = "gallery";
         this._gallerys.appendChild(gallery);
-        const thumbText = this.RemoveGuid(path).toLowerCase();
-        const isImage = Utils.IsImage(thumbText);
-        var linkF = (path.includes("http") ? path : Client.api + "/" + Utils.DecodeSpecialChar(path));
+        const thumbText = this.removeGuid(path).toLowerCase();
+        const isImage = Utils.isImage(thumbText);
+        var linkF = (path.includes("http") ? path : Client.api + "/" + Utils.decodeSpecialChar(path));
         if (isImage) {
             const img = document.createElement('img');
             img.className = "image";
-            Object.assign(img.style, this.Meta.ChildStyle);
+            Object.assign(img.style, this.meta.childStyle);
             img.src = linkF;
             gallery.appendChild(img);
-            img.addEventListener('click', () => this.PreviewImage(path));
+            img.addEventListener('click', () => this.previewImage(path));
         } else {
             const link = document.createElement('a');
             var icon = document.createElement('i');
             if (thumbText.includes(".pdf")) {
                 icon.className = "fal fa-file-pdf mr-1";
-                link.addEventListener("click", () => this.PreviewPDF(linkF));
+                link.addEventListener("click", () => this.previewPDF(linkF));
             } else if (thumbText.includes(".xls") || thumbText.includes(".xlsx")) {
                 icon.className = "fal fa-file-excel mr-1";
-                link.addEventListener("click", () => this.DowloadPdf(linkF));
+                link.addEventListener("click", () => this.dowloadPdf(linkF));
             }
             else if (thumbText.includes(".doc") || thumbText.includes(".docx")) {
                 icon.className = "fal fa-file-word mr-1";
-                link.addEventListener("click", () => this.PreviewOfficeFile(linkF));
+                link.addEventListener("click", () => this.previewOfficeFile(linkF));
             }
             else if (thumbText.includes(".txt")) {
                 icon.className = "fal fa-file-alt mr-1";
-                link.addEventListener("click", () => this.PreviewTextFile(linkF));
+                link.addEventListener("click", () => this.previewTextFile(linkF));
             } else {
                 icon.className = "fal fa-file mr-1";
             }
@@ -114,10 +114,10 @@ export class Image extends EditableComponent {
             gallery.appendChild(link);
         }
 
-        if (!this.Disabled) {
+        if (!this.disabled) {
             const deleteBtn = document.createElement('i');
             deleteBtn.className = "fas fa-trash-alt";
-            deleteBtn.addEventListener('click', () => this.RemoveFile(path, thumbText));
+            deleteBtn.addEventListener('click', () => this.removeFile(path, thumbText));
             gallery.appendChild(deleteBtn);
         }
 
@@ -125,80 +125,80 @@ export class Image extends EditableComponent {
     }
 
     /**
-    @type {HTMLIFrameElement}
+    @type {hTMLIFrameElement}
     */
-    IFrameElement
+    iFrameElement
     /**
      */
     /**
     @type {HTMLElement}
     */
-    DarkOverlay
+    darkOverlay
     /**
      */
     openPopupIFrame(url, img) {
         var rotate = 0;
         var img2 = null;
         Html.take(document.body).div.className("dark-overlay zoom");
-        this.DarkOverlay = Html.Context;
+        this.darkOverlay = Html.context;
         if (img) {
-            Html.Instance.img.src(url);
-            img2 = Html.Context;
-            Html.Instance.end.render();
-            Html.Instance.span.className("close").event(EventType.Click, () => {
-                this.DarkOverlay.remove();
+            Html.instance.img.src(url);
+            img2 = Html.context;
+            Html.instance.end.render();
+            Html.instance.span.className("close").event(EventType.Click, () => {
+                this.darkOverlay.remove();
             }).i.className("fa fa-times").end.end
                 .div.className("toolbar")
                 .span.className("icon fa fa-undo ro-left").event(EventType.Click, () => {
                     rotate -= 90;
                     img2.style.transform = `rotate(${rotate}deg)`;
                 }).end
-                .span.className("icon fa fa-cloud-download-alt").event(EventType.Click, () => this.DownloadFile()).end
+                .span.className("icon fa fa-cloud-download-alt").event(EventType.Click, () => this.downloadFile()).end
                 .span.className("icon fa fa-redo ro-right").event(EventType.Click, () => {
                     rotate += 90;
                     img2.style.transform = `rotate(${rotate}deg)`;
                 }).end.end.render();
         }
         else {
-            Html.Instance.span.className("close").event(EventType.Click, () => {
-                this.DarkOverlay.remove();
+            Html.instance.span.className("close").event(EventType.Click, () => {
+                this.darkOverlay.remove();
             }).i.className("fa fa-times").end.end.render();
-            Html.Instance.iFrame.className("container-rpt").style("margin-top: 4rem; background: rgb(255, 255, 255); overflow: auto; min-height: calc(-4rem + 100vh); width: 100%;").width("100%");
-            this.IFrameElement = Html.Context;
-            this.IFrameElement.src = url;
+            Html.instance.iFrame.className("container-rpt").style("margin-top: 4rem; background: rgb(255, 255, 255); overflow: auto; min-height: calc(-4rem + 100vh); width: 100%;").width("100%");
+            this.iFrameElement = Html.context;
+            this.iFrameElement.src = url;
         }
     }
 
-    DownloadFile() {
+    downloadFile() {
         var file = document.querySelector(".dark-overlay img");
         Client.download(file.getAttribute("src"));
     }
 
-    ClosePreview() {
+    closePreview() {
         this.Preview.remove();
     }
 
-    DowloadPdf(url) {
+    dowloadPdf(url) {
         Client.download(url);
     }
 
-    PreviewPDF(link) {
+    previewPDF(link) {
         window.open(link, "_blank");
     }
 
-    PreviewImage(link) {
+    previewImage(link) {
         this.openPopupIFrame(link, true);
     }
 
-    PreviewOfficeFile(link) {
+    previewOfficeFile(link) {
         this.openPopupIFrame(`https://docs.google.com/viewer?url=${encodeURIComponent(link)}&embedded=true`);
     }
 
-    PreviewTextFile(link) {
+    previewTextFile(link) {
         this.openPopupIFrame(link);
     }
 
-    RemoveGuid(path) {
+    removeGuid(path) {
         let fileName = path.replace(/^.*[\\\/]/, '');
         let extension = '';
         let nameWithoutExt = fileName;
@@ -219,10 +219,10 @@ export class Image extends EditableComponent {
         return `${cleanedName}.${extension}`;
     }
 
-    SetCanDeleteImage(canDelete) {
+    setCanDeleteImage(canDelete) {
         this._disabledDelete = !canDelete;
         if (canDelete) {
-            this.UpdateView();
+            this.updateView();
         }
     }
 
@@ -230,29 +230,29 @@ export class Image extends EditableComponent {
         this.openPopupIFrame(path);
     }
 
-    RenderUploadForm() {
-        const handler = this.UploadSelectedImages.bind(this);
-        Html.take(this.ParentElement).div.className("ms-upload")
+    renderUploadForm() {
+        const handler = this.uploadSelectedImages.bind(this);
+        Html.take(this.parentElement).div.className("ms-upload")
             .span
             .div.className("ms-img-upload")
             .div.className("ms-input-upload")
-        Html.Instance.div.className("w-full-100").span.className("text-input far fa-cloud-upload").input.type("file").attr("title", "").attr("accept", "");
-        if (this.Meta.IsMultiple) {
-            Html.Instance.attr("multiple", "multiple");
+        Html.instance.div.className("w-full-100").span.className("text-input far fa-cloud-upload").input.type("file").attr("title", "").attr("accept", "");
+        if (this.meta.isMultiple) {
+            Html.instance.attr("multiple", "multiple");
         }
-        this.Element = this._input = Html.Context;
+        this.element = this._input = Html.context;
         this._input.accept = ".txt, .jpg, .jpeg, .png, .doc, .docx, .xls, .xlsx, .pdf";
-        this.Element.addEventListener("drop", (e) => this.UploadDropImages(e));
-        this.Element.addEventListener("change", handler);
-        if (!this.CanWrite) {
+        this.element.addEventListener("drop", (e) => this.uploadDropImages(e));
+        this.element.addEventListener("change", handler);
+        if (!this.canWrite) {
             this._input.readOnly = true;
         }
-        Html.Instance.end.end.div.className("img-upload");
-        this._gallerys = Html.Context;
+        Html.instance.end.end.div.className("img-upload");
+        this._gallerys = Html.context;
     }
 
-    RemoveFile(removedPath, thumbText) {
-        if (this.Disabled) {
+    removeFile(removedPath, thumbText) {
+        if (this.disabled) {
             return;
         }
         if (!removedPath || removedPath.trim() === '') {
@@ -261,25 +261,25 @@ export class Image extends EditableComponent {
         const message = `Do you want delete ${thumbText}`;
         const confirmDialog = new ConfirmDialog();
         confirmDialog.Title = message;
-        confirmDialog.EditForm = this.EditForm;
-        confirmDialog.PElement = this.EditForm.Element;
-        confirmDialog.Render();
-        confirmDialog.YesConfirmed.add(() => {
+        confirmDialog.editForm = this.editForm;
+        confirmDialog.pElement = this.editForm.element;
+        confirmDialog.render();
+        confirmDialog.yesConfirmed.add(() => {
             const oldVal = this._path;
-            const newPath = this._path.replace(removedPath, Image.PathSeparator)
-                .replace(Image.PathSeparator + Image.PathSeparator, Image.PathSeparator)
-                .split(Image.PathSeparator).filter(x => x != null && x != "");
-            this.Path = newPath.join(Image.PathSeparator);
+            const newPath = this._path.replace(removedPath, Image.pathSeparator)
+                .replace(Image.pathSeparator + Image.pathSeparator, Image.pathSeparator)
+                .split(Image.pathSeparator).filter(x => x != null && x != "");
+            this.Path = newPath.join(Image.pathSeparator);
             this.Dirty = true;
-            const observable = { NewData: this._path, OldData: oldVal, FieldName: this.Name, EvType: EventType.Change };
-            this.UserInput?.Invoke(observable);
-            this.DispatchEvent(this.Meta.Events, EventType.Change, this, this.Entity).then();
+            const observable = { newData: this._path, oldData: oldVal, fieldName: this.Name, evType: EventType.Change };
+            this.userInput?.invoke(observable);
+            this.dispatchEvent(this.meta.Events, EventType.Change, this, this.entity).then();
         });
     }
 
-    UploadSelectedImages(event) {
+    uploadSelectedImages(event) {
         event.preventDefault();
-        if (this.EditForm.IsLock) {
+        if (this.editForm.isLock) {
             console.log("Edit form is locked.");
             return;
         }
@@ -290,38 +290,38 @@ export class Image extends EditableComponent {
             return;
         }
         const oldVal = this._path;
-        this.UploadAllFiles(files).then(() => {
+        this.uploadAllFiles(files).then(() => {
             this.Dirty = true;
             this._input.value = '';
-            const observable = { NewData: this._path, OldData: oldVal, FieldName: this.Name, EvType: EventType.Change };
-            this.UserInput?.Invoke(observable);
-            this.DispatchEvent(this.Meta.Events, EventType.Change, this, this.Entity).then();
+            const observable = { newData: this._path, oldData: oldVal, fieldName: this.Name, evType: EventType.Change };
+            this.userInput?.invoke(observable);
+            this.dispatchEvent(this.meta.Events, EventType.Change, this, this.entity).then();
         }).catch(error => {
             console.error("Failed to upload files:", error);
         });
     }
 
-    UpdateView(force = false, dirty = null, ...componentNames) {
-        this.Path = this.Entity[this.Meta.FieldName];
-        super.UpdateView(force, dirty, ...componentNames);
+    updateView(force = false, dirty = null, ...componentNames) {
+        this.Path = this.entity[this.meta.fieldName];
+        super.updateView(force, dirty, ...componentNames);
     }
 
     /**
      * @param {File} file
      */
-    async UploadFile(file) {
+    async uploadFile(file) {
         try {
-            const path = await Client.instance.postFilesAsync(file, Utils.FileSvc);
+            const path = await Client.instance.postFilesAsync(file, Utils.fileSvc);
             await Client.instance.patchAsync({
-                Table: "FileUpload",
+                Table: "fileUpload",
                 Changes: [
-                    { Field: "Id", Value: Uuid7.NewGuid() },
-                    { Field: "EntityName", Value: this.Meta.RefName },
-                    { Field: "RecordId", Value: this.EntityId },
-                    { Field: "SectionId", Value: this.Meta.ComponentGroupId },
-                    { Field: "FieldName", Value: this.Name },
-                    { Field: "FileName", Value: file.name },
-                    { Field: "FilePath", Value: path }
+                    { Field: "Id", Value: Uuid7.newGuid() },
+                    { Field: "entityName", Value: this.meta.refName },
+                    { Field: "recordId", Value: this.entityId },
+                    { Field: "sectionId", Value: this.meta.componentGroupId },
+                    { Field: "fieldName", Value: this.Name },
+                    { Field: "fileName", Value: file.name },
+                    { Field: "filePath", Value: path }
                 ],
             });
             return path;
@@ -332,34 +332,34 @@ export class Image extends EditableComponent {
     }
 
     /**
-     * @param {Iterable<any> | ArrayLike<any>} filesSelected
+     * @param {Iterable<any> | arrayLike<any>} filesSelected
      */
-    async UploadAllFiles(filesSelected) {
-        Spinner.AppendTo();
-        const files = Array.from(filesSelected).map(this.UploadFile.bind(this));
+    async uploadAllFiles(filesSelected) {
+        Spinner.appendTo();
+        const files = Array.from(filesSelected).map(this.uploadFile.bind(this));
         let allPath = await Promise.all(files);
         if (!allPath.length) {
             return;
         }
-        if (this.Meta.IsMultiple) {
+        if (this.meta.isMultiple) {
             if (Utils.isNullOrWhiteSpace(this.Path)) {
-                allPath = [...new Set(allPath.join(Image.PathSeparator).trim().split(Image.PathSeparator))];
+                allPath = [...new Set(allPath.join(Image.pathSeparator).trim().split(Image.pathSeparator))];
             }
             else {
-                allPath = [...new Set((this.Path + Image.PathSeparator + allPath.join(Image.PathSeparator)).trim().split(Image.PathSeparator))];
+                allPath = [...new Set((this.Path + Image.pathSeparator + allPath.join(Image.pathSeparator)).trim().split(Image.pathSeparator))];
             }
         }
-        this.Path = allPath.join(Image.PathSeparator);
+        this.Path = allPath.join(Image.pathSeparator);
         Spinner.Hide();
-        this.FileUploaded?.Invoke();
+        this.fileUploaded?.invoke();
     }
 
-    GetValueText() {
-        if (!this.ImageSources || this.ImageSources.length === 0) {
+    getValueText() {
+        if (!this.imageSources || this.imageSources.length === 0) {
             return null;
         }
-        return this.ImageSources.map(path => {
-            const label = this.RemoveGuid(path);
+        return this.imageSources.map(path => {
+            const label = this.removeGuid(path);
             return `<a target="_blank" href="${path}">${label}</a>`;
         }).join(",");
     }

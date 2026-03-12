@@ -1,5 +1,5 @@
 import {
-    EventType, HttpMethod, LogicOperation, OperatorEnum
+    EventType, httpMethod, logicOperation, operatorEnum
 } from './models/';
 import { Section } from './section.js';
 import { EditableComponent } from './editableComponent.js';
@@ -14,17 +14,17 @@ import { ComponentExt } from './utils/componentExt.js';
 import { Textbox } from './textbox.js';
 import { Datepicker } from './datepicker.js';
 import { SearchEntry } from './searchEntry.js';
-import { SearchMethodEnum, Where } from './models/enum.js';
+import { searchMethodEnum, Where } from './models/enum.js';
 import { Checkbox } from './checkbox.js';
 import { Select } from "./select.js";
 import { Spinner } from './spinner.js';
 /**
  * @typedef {import('./models/component.js').Component} Component
- * @typedef {import('./listView.js').ListView} ListView
- * @typedef {import('./gridView.js').GridView} GridView
- * @typedef {import('./tabEditor.js').TabEditor} TabEditor
+ * @typedef {import('./listView.js').listView} ListView
+ * @typedef {import('./gridView.js').gridView} GridView
+ * @typedef {import('./tabEditor.js').tabEditor} TabEditor
  * @typedef {import('./datepicker.js').Datepicker} Datepicker
- * @typedef {import('./searchEntry.js').SearchEntry} SearchEntry
+ * @typedef {import('./searchEntry.js').searchEntry} SearchEntry
  */
 
 /**
@@ -34,12 +34,12 @@ import { Spinner } from './spinner.js';
 export class ListViewSearchVM {
     constructor() {
         this.Id = Uuid7.Id25();
-        this.SearchTerm = '';
-        this.FullTextSearch = '';
-        this.ScanTerm = '';
-        this.StartDate = null;
-        this.DateTimeField = '';
-        this.EndDate = null;
+        this.searchTerm = '';
+        this.fullTextSearch = '';
+        this.scanTerm = '';
+        this.startDate = null;
+        this.dateTimeField = '';
+        this.endDate = null;
     }
 }
 
@@ -53,15 +53,15 @@ export class ListViewSearch extends EditableComponent {
     Parent;
 
     /** @type {GridView} */
-    ParentGridView;
+    parentGridView;
     /**
-     * @type {HTMLInputElement}
+     * @type {hTMLInputElement}
      * @private
      */
     _uploader;
 
     /**
-     * @type {HTMLInputElement}
+     * @type {hTMLInputElement}
      * @private
      */
     _fullTextSearch;
@@ -69,28 +69,28 @@ export class ListViewSearch extends EditableComponent {
     /**
      * @type {ListViewSearchVM}
      */
-    get EntityVM() {
-        return this.Entity;
+    get entityVM() {
+        return this.entity;
     }
 
     /**
      * @type {string}
      */
-    get DateTimeField() {
+    get dateTimeField() {
         return this._dateTimeField;
     }
 
     /**
      * @param {string} value
      */
-    set DateTimeField(value) {
+    set dateTimeField(value) {
         this._dateTimeField = value;
     }
 
     /**
      * @type {Component[]}
      */
-    BasicSearch;
+    basicSearch;
 
     /**
      * @type {boolean}
@@ -103,98 +103,98 @@ export class ListViewSearch extends EditableComponent {
      */
     constructor(ui) {
         super(ui, null);
-        this.PopulateDirty = false;
-        this.AlwaysValid = true;
-        this.Meta = ui;
-        this.DateTimeField = ui.DateTimeField ?? 'InsertedDate';
-        this.Entity = new ListViewSearchVM();
-        this.Disabled = false;
+        this.populateDirty = false;
+        this.alwaysValid = true;
+        this.meta = ui;
+        this.dateTimeField = ui.dateTimeField ?? 'insertedDate';
+        this.entity = new ListViewSearchVM();
+        this.disabled = false;
     }
 
     Render() {
-        if (!this.Meta.CanSearch) {
-            var coms = this.EditForm.Meta.ComponentOptions && this.EditForm.Meta.ComponentOptions.filter(x => x.ComponentId == this.Meta.Id && x.TypeId == 1);
+        if (!this.meta.canSearch) {
+            var coms = this.editForm.meta.componentOptions && this.editForm.meta.componentOptions.filter(x => x.componentId == this.meta.Id && x.typeId == 1);
             if (coms && coms.length > 0) {
-                Html.take(this.Parent.Element.firstChild.firstChild).tabIndex(-1).event(EventType.KeyPress, this.EnterSearch.bind(this));
-                this.Element = Html.Context;
-                Html.take(this.Element).div.className('searching-block');
+                Html.take(this.Parent.element.firstChild.firstChild).tabIndex(-1).event(EventType.keyPress, this.enterSearch.bind(this));
+                this.element = Html.context;
+                Html.take(this.element).div.className('searching-block');
                 Html.button.className("btn btn-light btn-sm mr-1").event(EventType.Click, (e) => {
-                    this.ExcelOptions(e, coms);
+                    this.excelOptions(e, coms);
                 }).icon('fal fa-file-excel mr-1').end.end.render();
             }
-            var coms2 = this.EditForm.Meta.ComponentOptions && this.EditForm.Meta.ComponentOptions.filter(x => x.ComponentId == this.Meta.Id && x.TypeId == 2);
+            var coms2 = this.editForm.meta.componentOptions && this.editForm.meta.componentOptions.filter(x => x.componentId == this.meta.Id && x.typeId == 2);
             if (coms2 && coms2.length > 0) {
                 Html.button.className("btn btn-light btn-sm").event(EventType.Click, (e) => {
-                    this.ExcelOptions(e, coms2);
+                    this.excelOptions(e, coms2);
                 }).icon('fal fal fa-print mr-1').end.end.render();
             }
             return;
         }
         // @ts-ignore
-        Html.take(this.Parent.Element.firstChild.firstChild).tabIndex(-1).event(EventType.KeyPress, this.EnterSearch.bind(this));
-        this.Element = Html.Context;
-        this.RenderImportBtn();
-        Html.take(this.Element).div.render();
-        Html.take(this.Element).div.className('searching-block')
+        Html.take(this.Parent.element.firstChild.firstChild).tabIndex(-1).event(EventType.keyPress, this.enterSearch.bind(this));
+        this.element = Html.context;
+        this.renderImportBtn();
+        Html.take(this.element).div.render();
+        Html.take(this.element).div.className('searching-block')
             .button.className("btn btn-light btn-sm mr-1").event(EventType.Click, () => {
-                this.Parent.ClearSelected();
-                this.Parent.ReloadData().then();
+                this.Parent.clearSelected();
+                this.Parent.reloadData().then();
             }).icon('fal fa-search')
             .end.end
-            .button.className("btn btn-light btn-sm mr-1").event(EventType.Click, this.RefreshListView.bind(this)).icon('fal fa-undo').end.end
-            .button.className("btn btn-light btn-sm mr-1").event(EventType.Click, this.ExportExcel.bind(this)).icon('fal fa-file-excel').end.end
+            .button.className("btn btn-light btn-sm mr-1").event(EventType.Click, this.refreshListView.bind(this)).icon('fal fa-undo').end.end
+            .button.className("btn btn-light btn-sm mr-1").event(EventType.Click, this.exportExcel.bind(this)).icon('fal fa-file-excel').end.end
             .render();
-        var coms = this.EditForm.Meta.ComponentOptions && this.EditForm.Meta.ComponentOptions.filter(x => x.ComponentId == this.Meta.Id && x.TypeId == 1);
+        var coms = this.editForm.meta.componentOptions && this.editForm.meta.componentOptions.filter(x => x.componentId == this.meta.Id && x.typeId == 1);
         if (coms && coms.length > 0) {
             Html.button.className("btn btn-light btn-sm mr-1").event(EventType.Click, (e) => {
-                this.ExcelOptions(e, coms2);
+                this.excelOptions(e, coms2);
             }).icon('fal fa-file-excel mr-1').end.end.render();
         }
-        var coms2 = this.EditForm.Meta.ComponentOptions && this.EditForm.Meta.ComponentOptions.filter(x => x.ComponentId == this.Meta.Id && x.TypeId == 2);
+        var coms2 = this.editForm.meta.componentOptions && this.editForm.meta.componentOptions.filter(x => x.componentId == this.meta.Id && x.typeId == 2);
         if (coms2 && coms2.length > 0) {
             Html.button.className("btn btn-light btn-sm").event(EventType.Click, (e) => {
-                this.ExcelOptions(e, coms2);
+                this.excelOptions(e, coms2);
             }).icon('fal fal fa-print mr-1').end.end.render();
         }
     }
 
-    RefreshListView() {
-        this.EntityVM.SearchTerm = '';
-        this.EntityVM.StartDate = null;
-        this.EntityVM.EndDate = null;
-        this.UpdateView();
+    refreshListView() {
+        this.entityVM.searchTerm = '';
+        this.entityVM.startDate = null;
+        this.entityVM.endDate = null;
+        this.updateView();
 
         if (!(this.Parent)) {
             return;
         }
         const listView = this.Parent;
-        listView.ClearSelected();
-        listView.CellSelected = [];
-        listView.AdvSearchVM.Conditions = [];
-        listView.AdvSearchVM.AdvSearchConditions = [];
+        listView.clearSelected();
+        listView.cellSelected = [];
+        listView.advSearchVM.Conditions = [];
+        listView.advSearchVM.advSearchConditions = [];
         listView.Wheres = [];
-        let newVM = { ...this.EntityVM };
+        let newVM = { ...this.entityVM };
         Object.keys(newVM).forEach(key => {
             newVM[key] = null;
         });
-        this.Entity = newVM;
-        this.Parent.SearchSection.Children.forEach(x => x.IsOrderBy = false);
-        this.Parent.SearchSection.Children.forEach(txtSearch => {
-            txtSearch.Entity = this.Entity;
-            txtSearch.MultipleData = null;
-            txtSearch.UpdateView();
+        this.entity = newVM;
+        this.Parent.searchSection.Children.forEach(x => x.isOrderBy = false);
+        this.Parent.searchSection.Children.forEach(txtSearch => {
+            txtSearch.Entity = this.entity;
+            txtSearch.multipleData = null;
+            txtSearch.updateView();
         });
-        listView.ApplyFilter();
+        listView.applyFilter();
     }
 
 
-    ExportExcel() {
+    exportExcel() {
         const listView = this.Parent;
-        listView.ExcelData(false, 0, 100, true).then();
+        listView.excelData(false, 0, 100, true).then();
     }
 
-    FilterListView() {
-        var json = JSON.parse(this.Parent.Meta.Query);
+    filterListView() {
+        var json = JSON.parse(this.Parent.meta.Query);
         if (json.search) {
             /**
              * @type {any[]}
@@ -203,39 +203,39 @@ export class ListViewSearch extends EditableComponent {
             var filterComs = json.search;
             var coms = filterComs.map(x => {
                 return {
-                    ComponentType: 'Input',
+                    componentType: 'Input',
                     Label: x.Label,
-                    FieldName: x.FieldName,
+                    fieldName: x.fieldName,
                     Query: x.Where
                 }
             });
-            this.EditForm.OpenConfig("Advanced filter", () => {
+            this.editForm.openConfig("Advanced filter", () => {
                 coms.forEach(item => {
-                    const existingConditionIndex = this.Parent.AdvSearchVM.AdvSearchConditions.findIndex(
-                        condition => condition.FieldName === item.FieldName
+                    const existingConditionIndex = this.Parent.advSearchVM.advSearchConditions.findIndex(
+                        condition => condition.fieldName === item.fieldName
                     );
 
                     if (existingConditionIndex > -1) {
-                        this.Parent.AdvSearchVM.AdvSearchConditions[existingConditionIndex] = {
-                            ...this.Parent.AdvSearchVM.AdvSearchConditions[existingConditionIndex],
+                        this.Parent.advSearchVM.advSearchConditions[existingConditionIndex] = {
+                            ...this.Parent.advSearchVM.advSearchConditions[existingConditionIndex],
                             Where: item.Query,
-                            Value: this.EditForm.Entity[item.FieldName]
+                            Value: this.editForm.entity[item.fieldName]
                         };
                     } else {
-                        this.Parent.AdvSearchVM.AdvSearchConditions.push({
-                            FieldName: item.FieldName,
+                        this.Parent.advSearchVM.advSearchConditions.push({
+                            fieldName: item.fieldName,
                             Where: item.Query,
-                            Value: this.EditForm.Entity[item.FieldName]
+                            Value: this.editForm.entity[item.fieldName]
                         });
                     }
                 });
-                this.Parent.ApplyFilter();
+                this.Parent.applyFilter();
             }, () => { }, true, coms);
         }
     }
 
-    FullScreen() {
-        var elem = this.Parent.Element;
+    fullScreen() {
+        var elem = this.Parent.element;
         if (elem.requestFullscreen) {
             elem.requestFullscreen();
         }
@@ -244,35 +244,35 @@ export class ListViewSearch extends EditableComponent {
     /**
      * @param {Event} e
      */
-    EnterSearch(e) {
-        if (e.KeyCode() !== 13) {
+    enterSearch(e) {
+        if (e.keyCode() !== 13) {
             return;
         }
 
-        this.Parent.ApplyFilter().Done();
+        this.Parent.applyFilter().Done();
     }
 
     /**
      * @param {Event} e
      */
-    UploadCsv(e) {
+    uploadCsv(e) {
         /** @type {File[]} */
         var files = e.target['files'];
         if (!files || files.length === 0) {
             return;
         }
 
-        /** @type {HTMLFormElement} */
+        /** @type {hTMLFormElement} */
         // @ts-ignore
         var uploadForm = this._uploader.parentElement;
         var formData = new FormData(uploadForm);
-        var meta = this.Parent.Meta;
+        var meta = this.Parent.meta;
         // @ts-ignore
         Client.instance.submitAsync({
-            FormData: formData,
-            Url: `/user/importCsv?table=${meta.RefName}&comId=${meta.Id}&connKey=${meta.MetaConn}`,
-            Method: HttpMethod.POST,
-            ResponseMimeType: Utils.GetMimeType('csv')
+            formData: formData,
+            Url: `/user/importCsv?table=${meta.refName}&comId=${meta.Id}&connKey=${meta.metaConn}`,
+            Method: httpMethod.POST,
+            responseMimeType: Utils.getMimeType('csv')
         }).Done(() => {
             Toast.Success('Import excel success');
             this._uploader.value = '';
@@ -285,57 +285,57 @@ export class ListViewSearch extends EditableComponent {
     /**
      * @param {Event} e
      */
-    ExcelOptions(e, coms) {
+    excelOptions(e, coms) {
         /** @type {HTMLElement} */
         const ele = e.target;
         var buttonRect = ele.getBoundingClientRect();
         var ctxMenu = ContextMenu.Instance;
         ctxMenu.Top = buttonRect.bottom;
         ctxMenu.Left = buttonRect.left;
-        ctxMenu.EditForm = this.EditForm;
-        ctxMenu.MenuItems = coms.map(x => ({
+        ctxMenu.editForm = this.editForm;
+        ctxMenu.menuItems = coms.map(x => ({
             Icon: 'fa fa-download mr-1',
             Text: x.Title || 'Dowload',
-            Click: this.DispatchClickAsync.bind(this, x)
+            Click: this.dispatchClickAsync.bind(this, x)
         }));
-        ctxMenu.Render();
+        ctxMenu.render();
     }
-    MetaData;
-    DispatchClickAsync(meta) {
-        this.MetaData = meta;
-        Spinner.AppendTo();
-        this.LoadData(meta).then(response => {
+    metaData;
+    dispatchClickAsync(meta) {
+        this.metaData = meta;
+        Spinner.appendTo();
+        this.loadData(meta).then(response => {
             Spinner.Hide();
-            if (Utils.IsPath(response)) {
+            if (Utils.isPath(response)) {
                 const pdfUrl = response;
                 const a = document.createElement('a');
                 a.style.display = 'none';
                 a.href = pdfUrl;
-                a.download = this.Meta.PlainText || 'output.xlsx';
+                a.download = this.meta.plainText || 'output.xlsx';
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
             }
             else {
-                const handlerClose = this.ClosePreview.bind(this);
-                const handlerPrint = this.PrintPdf.bind(this);
-                const handlerPdf = this.ExportPdf.bind(this);
-                const handlerSendMail = this.SendMail.bind(this);
-                Html.take(this.TabEditor?.Element ?? document.body).div.className("backdrop").style("align-items: center;");
-                this.Preview = Html.Context;
-                Html.Instance.div.escape(handlerClose).className("popup-content");
-                this.PopupContent = Html.Context;
-                Html.Instance.div.className("popup-title").span.iText(this.Meta.PlainText || "Report PDF", this.EditForm.Meta.Label);
-                this.TitleElement = Html.Context;
-                Html.Instance.end.div.className("title-center");
-                this.TitleCenterElement = Html.Context;
-                Html.Instance.end.div.className("icon-box d-flex").style("display: flex; gap: 20px; align-items: center;")
+                const handlerClose = this.closePreview.bind(this);
+                const handlerPrint = this.printPdf.bind(this);
+                const handlerPdf = this.exportPdf.bind(this);
+                const handlerSendMail = this.sendMail.bind(this);
+                Html.take(this.tabEditor?.element ?? document.body).div.className("backdrop").style("align-items: center;");
+                this.Preview = Html.context;
+                Html.instance.div.escape(handlerClose).className("popup-content");
+                this.popupContent = Html.context;
+                Html.instance.div.className("popup-title").span.iText(this.meta.plainText || "Report PDF", this.editForm.meta.Label);
+                this.titleElement = Html.context;
+                Html.instance.end.div.className("title-center");
+                this.titleCenterElement = Html.context;
+                Html.instance.end.div.className("icon-box d-flex").style("display: flex; gap: 20px; align-items: center;")
                     .span.className("fal fa-at").event("click", handlerSendMail).end
                     .span.className("fal fa-file-pdf").event("click", handlerPdf).end
                     .span.className("fal fa-print").event("click", handlerPrint).end
                     .span.className("fa fa-times").event("click", handlerClose).end.end.end.div.className("popup-body scroll-content").style("padding-bottom: 1rem;max-height:calc(100vh - 10rem) !important;display: flex; align-items: center;background-color:#525659");
                 var width = "794px";
-                switch (this.Meta.ReportTypeId) {
+                switch (this.meta.reportTypeId) {
                     case 1: // A4 Portrait
                         width = "794px";
                         break;
@@ -351,8 +351,8 @@ export class ListViewSearch extends EditableComponent {
                     default:
                         width = "794px"; // fallback
                 }
-                Html.Instance.iFrame.className("container-rpt").style("margin:auto;background:#fff;overflow: auto;min-height:calc(-13rem + 100vh);").width(width);
-                this.IFrameElement = Html.Context;
+                Html.instance.iFrame.className("container-rpt").style("margin:auto;background:#fff;overflow: auto;min-height:calc(-13rem + 100vh);").width(width);
+                this.iFrameElement = Html.context;
                 var css = document.createElement('style');
                 css.textContent = `body {
                                         font-family: 'Montserrat';
@@ -408,18 +408,18 @@ export class ListViewSearch extends EditableComponent {
                 var link = document.createElement('link');
                 link.rel = "stylesheet";
                 link.href = "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap";
-                if (this.IFrameElement.onload) {
-                    this.IFrameElement.onload = () => {
-                        this.IFrameElement.contentWindow.document.head.appendChild(link);
-                        this.IFrameElement.contentWindow.document.head.appendChild(css);
-                        const iframeDoc = this.IFrameElement.contentWindow.document;
+                if (this.iFrameElement.onload) {
+                    this.iFrameElement.onload = () => {
+                        this.iFrameElement.contentWindow.document.head.appendChild(link);
+                        this.iFrameElement.contentWindow.document.head.appendChild(css);
+                        const iframeDoc = this.iFrameElement.contentWindow.document;
                         iframeDoc.body.innerHTML = response;
                     };
                 }
                 else {
-                    this.IFrameElement.contentWindow.document.head.appendChild(link);
-                    this.IFrameElement.contentWindow.document.head.appendChild(css);
-                    this.IFrameElement.contentWindow.document.body.innerHTML = response;
+                    this.iFrameElement.contentWindow.document.head.appendChild(link);
+                    this.iFrameElement.contentWindow.document.head.appendChild(css);
+                    this.iFrameElement.contentWindow.document.body.innerHTML = response;
                 }
             }
 
@@ -427,75 +427,75 @@ export class ListViewSearch extends EditableComponent {
     }
 
     /**
-    @type {HTMLIFrameElement}
+    @type {hTMLIFrameElement}
     */
-    IFrameElement
+    iFrameElement
     /**
      * Closes the preview.
      */
-    ClosePreview() {
+    closePreview() {
         this.Preview.remove();
     }
 
-    PrintPdf() {
-        this.IFrameElement.contentWindow.print();
+    printPdf() {
+        this.iFrameElement.contentWindow.print();
     }
 
-    ExportPdf() {
-        Spinner.AppendTo();
-        Client.instance.postAsync({ Html: this.IFrameElement.contentWindow.document.documentElement.outerHTML, FileName: this.MetaData.FileName }, "/api/GenPdf").then(response => {
+    exportPdf() {
+        Spinner.appendTo();
+        Client.instance.postAsync({ Html: this.iFrameElement.contentWindow.document.documentElement.outerHTML, fileName: this.metaData.fileName }, "/api/genPdf").then(response => {
             Spinner.Hide();
             Client.download(response);
         });
     }
 
-    async SendMail() {
-        var planEmail = await Client.instance.getService("Get PlanEmail");
+    async sendMail() {
+        var planEmail = await Client.instance.getService("Get planEmail");
         var partner = await Client.instance.getService("Get Partner");
         var com1 = planEmail[0][0];
-        com1.ComponentType = "Dropdown";
-        com1.ShowLabel = true;
-        com1.FieldName = "PdfPlanEmailId";
+        com1.componentType = "Dropdown";
+        com1.showLabel = true;
+        com1.fieldName = "pdfPlanEmailId";
         com1.Label = "Template mail";
         com1.Template = `[
                 {
-                    "FieldName": "Name",
+                    "fieldName": "Name",
                     "Label": "Name",
-                    "ComponentType": "Input"
+                    "componentType": "Input"
                 }
             ]`;
         com1.Column = 6;
-        com1.Events = `{"change":"UpdateEmailTemplate"}`;
+        com1.Events = `{"change":"updateEmailTemplate"}`;
         var com2 = partner[0][0];
-        com2.ComponentType = "Dropdown";
-        com2.ShowLabel = true;
+        com2.componentType = "Dropdown";
+        com2.showLabel = true;
         com2.Column = 6;
         com2.Label = "Partner";
-        com2.FieldName = "PdfPartnerId";
-        com2.Events = `{"change":"UpdateEmailTo"}`;
+        com2.fieldName = "pdfPartnerId";
+        com2.Events = `{"change":"updateEmailTo"}`;
         com2.Template = `[
                     {
-                        "FieldName": "Name",
+                        "fieldName": "Name",
                         "Label": "Name",
-                        "ComponentType": "Input",
-                        "MaxWidth": "300px",
-                        "MinWidth": "300px",
+                        "componentType": "Input",
+                        "maxWidth": "300px",
+                        "minWidth": "300px",
                         "Width": "300px"
                     },
                     {
-                        "FieldName": "TaxCode",
-                        "Label": "TaxCode",
-                        "ComponentType": "Input"
+                        "fieldName": "taxCode",
+                        "Label": "taxCode",
+                        "componentType": "Input"
                     },
                     {
-                        "FieldName": "Email",
+                        "fieldName": "Email",
                         "Label": "Email",
-                        "ComponentType": "Input"
+                        "componentType": "Input"
                     }
                 ]`;
-        this.EditForm.OpenConfig("Choose mail template!", async () => {
+        this.editForm.openConfig("Choose mail template!", async () => {
             await this.createEMLFromFileUrl();
-        }, () => { }, true, [com2, com1, { FieldName: "PdfToEmail", Label: "Send To", ComponentType: "Input", Column: 6 }, { FieldName: "PdfToName", Label: "To Name", ComponentType: "Input", Column: 6 }, { FieldName: "PdfSubjectMail", Label: "Subject", ComponentType: "Input", Column: 12 }, { FieldName: "PdfTemplate", Label: "Template", ComponentType: "Word", Precision: 400 }], null, null, "824px");
+        }, () => { }, true, [com2, com1, { fieldName: "pdfToEmail", Label: "Send To", componentType: "Input", Column: 6 }, { fieldName: "pdfToName", Label: "To Name", componentType: "Input", Column: 6 }, { fieldName: "pdfSubjectMail", Label: "Subject", componentType: "Input", Column: 12 }, { fieldName: "pdfTemplate", Label: "Template", componentType: "Word", Precision: 400 }], null, null, "824px");
     }
 
     inlineAllStyles(html) {
@@ -549,16 +549,16 @@ export class ListViewSearch extends EditableComponent {
     }
 
     async createEMLFromFileUrl() {
-        Spinner.AppendTo();
-        Client.instance.postAsync({ Html: this.IFrameElement.contentWindow.document.documentElement.outerHTML, FileName: this.Entity.FormatChat || this.Entity.Code || this.Entity.Id }, "/api/GenPdf").then(async (response2) => {
+        Spinner.appendTo();
+        Client.instance.postAsync({ Html: this.iFrameElement.contentWindow.document.documentElement.outerHTML, fileName: this.entity.formatChat || this.entity.Code || this.entity.Id }, "/api/genPdf").then(async (response2) => {
             Spinner.Hide();
             const removePath = Client.removeGuid(response2);
             const fileUrl = response2;
             const fileName = removePath;
-            const subject = this.EditForm.Entity.PdfSubjectMail || '';
-            const htmlBody = this.EditForm.Entity.PdfTemplate || '';
-            const toEmail = this.EditForm.Entity.PdfToEmail || '';
-            const toName = this.EditForm.Entity.PdfToName || this.EditForm.Entity.PdfPartnerIdText;
+            const subject = this.editForm.entity.pdfSubjectMail || '';
+            const htmlBody = this.editForm.entity.pdfTemplate || '';
+            const toEmail = this.editForm.entity.pdfToEmail || '';
+            const toName = this.editForm.entity.pdfToName || this.editForm.entity.pdfPartnerIdText;
             var styledHtml = `
             <html>
             <head>
@@ -587,7 +587,7 @@ export class ListViewSearch extends EditableComponent {
             <body>${htmlBody}</body>
             </html>`;
             if (!htmlBody) {
-                styledHtml = this.IFrameElement.contentWindow.document.documentElement.outerHTML;
+                styledHtml = this.iFrameElement.contentWindow.document.documentElement.outerHTML;
             }
             const htmlWithInline = await this.inlineAllStyles(styledHtml);
             try {
@@ -649,7 +649,7 @@ export class ListViewSearch extends EditableComponent {
 
     blobToBase64(blob) {
         return new Promise((resolve, reject) => {
-            const reader = new FileReader();
+            const reader = new fileReader();
             reader.onloadend = () => {
                 const base64 = reader.result.split(',')[1];
                 resolve(base64);
@@ -659,11 +659,11 @@ export class ListViewSearch extends EditableComponent {
         });
     }
 
-    LoadData(meta) {
-        let submitEntity = Utils.IsFunction(this.Meta.PreQuery, true, this);
+    loadData(meta) {
+        let submitEntity = Utils.isFunction(this.meta.preQuery, true, this);
         var params = submitEntity ? JSON.stringify(submitEntity) : null;
         let promise = new Promise((resolve, reject) => {
-            Client.instance.postAsync({ ComId: this.Meta.Id, PathTemplate: meta.TypeId == 1 ? meta.ExcelUrl : meta.Template, FileName: meta.FileName, Params: params, Report: true }, meta.TypeId == 1 ? "/api/CreateExcel" : "/api/CreateHtml").then(res => {
+            Client.instance.postAsync({ comId: this.meta.Id, pathTemplate: meta.typeId == 1 ? meta.excelUrl : meta.Template, fileName: meta.fileName, Params: params, Report: true }, meta.typeId == 1 ? "/api/createExcel" : "/api/createHtml").then(res => {
                 resolve(res);
             }).catch(e => {
                 Spinner.Hide();
@@ -676,76 +676,76 @@ export class ListViewSearch extends EditableComponent {
     /**
      * @param {Event} e
      */
-    AdvancedOptions(e) {
+    advancedOptions(e) {
         /** @type {HTMLElement} */
         // @ts-ignore
         const ele = e.target;
         var buttonRect = ele.getBoundingClientRect();
-        var show = localStorage.getItem(`Show${this.Meta.Id}`) ?? false;
+        var show = localStorage.getItem(`Show${this.meta.Id}`) ?? false;
         var ctxMenu = ContextMenu.Instance;
         ctxMenu.Top = buttonRect.bottom;
         ctxMenu.Left = buttonRect.left;
-        if (this.Meta.CanExport) {
-            ctxMenu.MenuItems = [
-                { Icon: 'fa fa-download mr-1', Text: 'Export excel', Click: this.ExportAllData.bind(this) },
+        if (this.meta.canExport) {
+            ctxMenu.menuItems = [
+                { Icon: 'fa fa-download mr-1', Text: 'Export excel', Click: this.exportAllData.bind(this) },
             ];
         }
-        ctxMenu.Render();
+        ctxMenu.render();
     }
 
-    RenderImportBtn() {
-        Html.take(this.Element).form.attr('method', 'POST').attr('enctype', 'multipart/form-data')
+    renderImportBtn() {
+        Html.take(this.element).form.attr('method', 'POST').attr('enctype', 'multipart/form-data')
             .display(false).input.type('file').id(`id_${Uuid7.Id25()}`).attr('name', 'files').attr('accept', '.csv');
         // @ts-ignore
-        this._uploader = Html.Context;
-        this._uploader.addEventListener(EventType.Change, (/** @type {Event} */ ev) => this.UploadCsv(ev));
+        this._uploader = Html.context;
+        this._uploader.addEventListener(EventType.Change, (/** @type {Event} */ ev) => this.uploadCsv(ev));
     }
 
     /**
      * @param {object} arg
      */
-    FilterSelected(arg) {
-        var selectedIds = this.Parent.SelectedIds;
+    filterSelected(arg) {
+        var selectedIds = this.Parent.selectedIds;
         if (!selectedIds || selectedIds.length === 0) {
             Toast.Warning('Select rows to filter');
             return;
         }
-        if (this.Parent.CellSelected.some(x => x.FieldName === this.IdField)) {
-            this.Parent.CellSelected.find(x => x.FieldName === this.IdField).Value = selectedIds.join();
-            this.Parent.CellSelected.find(x => x.FieldName === this.IdField).ValueText = selectedIds.join();
+        if (this.Parent.cellSelected.some(x => x.fieldName === this.idField)) {
+            this.Parent.cellSelected.find(x => x.fieldName === this.idField).Value = selectedIds.join();
+            this.Parent.cellSelected.find(x => x.fieldName === this.idField).valueText = selectedIds.join();
         } else {
             // @ts-ignore
-            this.Parent.CellSelected.push({
-                FieldName: this.IdField,
-                FieldText: 'Mã',
-                ComponentType: 'Input',
+            this.Parent.cellSelected.push({
+                fieldName: this.idField,
+                fieldText: 'Mã',
+                componentType: 'Input',
                 Value: selectedIds.join(),
-                ValueText: selectedIds.join(),
-                Operator: OperatorEnum.In,
-                OperatorText: 'Chứa',
-                Logic: LogicOperation.And,
+                valueText: selectedIds.join(),
+                Operator: operatorEnum.In,
+                operatorText: 'Chứa',
+                Logic: logicOperation.And,
             });
-            this.ParentGridView._summarys.push(new HTMLElement());
+            this.parentGridView._summarys.push(new HTMLElement());
         }
-        this.Parent.ActionFilter();
+        this.Parent.actionFilter();
     }
 
     /**
      * @param {object} arg
      */
     ExportCustomData(arg) {
-        this.TabEditor?.OpenPopup('Export CustomData', () => this.Exporter()).Done();
+        this.tabEditor?.openPopup('Export customData', () => this.Exporter()).Done();
     }
 
     /**
-     * @typedef {import('./exportCustomData.js').ExportCustomData} ExportCustomData
+     * @typedef {import('./exportCustomData.js').exportCustomData} ExportCustomData
      * @returns {Promise<ExportCustomData>}
      */
     async Exporter() {
         const { ExportCustomData } = await import('./exportCustomData.js');
         if (!this._export) {
             this._export = new ExportCustomData(this.Parent);
-            this._export.ParentElement = this.TabEditor?.Element;
+            this._export.parentElement = this.tabEditor?.element;
             this._export.Disposed.add(() => this._export = null);
         }
         return this._export;
@@ -754,7 +754,7 @@ export class ListViewSearch extends EditableComponent {
     /**
      * @param {object} arg
      */
-    async ExportAllData(arg) {
+    async exportAllData(arg) {
         const exporter = await this.Exporter();
         exporter.Export();
     }
@@ -762,19 +762,19 @@ export class ListViewSearch extends EditableComponent {
     /**
      * @param {object} arg
      */
-    async ExportSelectedData(arg) {
-        if (!this.Parent.SelectedIds || this.Parent.SelectedIds.length === 0) {
+    async exportSelectedData(arg) {
+        if (!this.Parent.selectedIds || this.Parent.selectedIds.length === 0) {
             Toast.Warning('Select at least 1 one to export excel');
             return;
         }
         const exporter = await this.Exporter();
-        exporter.Export(this.Parent.SelectedIds);
+        exporter.Export(this.Parent.selectedIds);
     }
 
     /**
      * @param {object} arg
      */
-    OpenExcelFileDialog(arg) {
+    openExcelFileDialog(arg) {
         this._uploader.click();
     }
 
@@ -782,91 +782,91 @@ export class ListViewSearch extends EditableComponent {
      * Calculates the filter query based on the search terms and date range.
      * @returns {string} The final filter query.
      */
-    CalcFilterQuery() {
-        if (this.EntityVM.DateTimeField) {
-            this.DateTimeField = this.Parent.Header.find(x => x.Id === this.EntityVM.DateTimeField).FieldName;
+    calcFilterQuery() {
+        if (this.entityVM.dateTimeField) {
+            this.dateTimeField = this.Parent.Header.find(x => x.Id === this.entityVM.dateTimeField).fieldName;
         }
-        var headers = this.Parent.Header.filter(x => ["Dropdown", "Textarea", "Input", "Datepicker", "Checkbox", "Number"].includes(x.ComponentType));
-        const searchTerm = this.EntityVM.SearchTerm ? this.EntityVM.SearchTerm.trim() : '';
+        var headers = this.Parent.Header.filter(x => ["Dropdown", "Textarea", "Input", "Datepicker", "Checkbox", "Number"].includes(x.componentType));
+        const searchTerm = this.entityVM.searchTerm ? this.entityVM.searchTerm.trim() : '';
         var operators = headers.map(x => {
             /**
              * @type {Textbox}
              */
-            var mapCom = this.Parent.SearchSection.Children.find(y => y.Meta && y.Meta.Id && y.Meta.Id == x.Id);
-            var textFilter = ComponentExt.MapToFilterOperator(x, searchTerm, mapCom);
+            var mapCom = this.Parent.searchSection.Children.find(y => y.Meta && y.Meta.Id && y.Meta.Id == x.Id);
+            var textFilter = ComponentExt.mapToFilterOperator(x, searchTerm, mapCom);
             var val = null;
             var operator = " OR ";
-            if (this.Parent.ComponentType != "Dropdown") {
+            if (this.Parent.componentType != "Dropdown") {
                 operator = " AND ";
             }
-            if (mapCom && !Utils.isNullOrWhiteSpace(mapCom.GetValueText() ? mapCom.GetValueText().trim() : '')) {
+            if (mapCom && !Utils.isNullOrWhiteSpace(mapCom.getValueText() ? mapCom.getValueText().trim() : '')) {
                 if (mapCom instanceof Datepicker) {
-                    if (mapCom.SearchMethod == SearchMethodEnum.Filled) {
-                        textFilter = mapCom.Meta.SearchFieldName ? `${(mapCom.Meta.SearchFieldName)} is not null` : `ds.[${(mapCom.Meta.FieldName)}] is not null`;
+                    if (mapCom.searchMethod == searchMethodEnum.filled) {
+                        textFilter = mapCom.meta.searchFieldName ? `${(mapCom.meta.searchFieldName)} is not null` : `ds.[${(mapCom.meta.fieldName)}] is not null`;
                     }
-                    else if (mapCom.SearchMethod == SearchMethodEnum.Empty) {
-                        textFilter = mapCom.Meta.SearchFieldName ? `${(mapCom.Meta.SearchFieldName)} is not null` : `ds.[${(mapCom.Meta.FieldName)}] is null`;
+                    else if (mapCom.searchMethod == searchMethodEnum.empty) {
+                        textFilter = mapCom.meta.searchFieldName ? `${(mapCom.meta.searchFieldName)} is not null` : `ds.[${(mapCom.meta.fieldName)}] is null`;
                     }
                     else {
-                        var fromDate = new Date(mapCom.Entity[mapCom.Meta.FieldName]);
+                        var fromDate = new Date(mapCom.entity[mapCom.meta.fieldName]);
                         fromDate.setHours(0, 0, 0, 0);
-                        var toDate = new Date(mapCom.Entity[mapCom.Meta.FieldName + "To"]);
-                        if (!mapCom.Entity[mapCom.Meta.FieldName + "To"]) {
-                            toDate = new Date(mapCom.Entity[mapCom.Meta.FieldName]);
+                        var toDate = new Date(mapCom.entity[mapCom.meta.fieldName + "To"]);
+                        if (!mapCom.entity[mapCom.meta.fieldName + "To"]) {
+                            toDate = new Date(mapCom.entity[mapCom.meta.fieldName]);
                             toDate.setHours(23, 59, 59, 999);
                         }
                         textFilter =
-                            textFilter = mapCom.Meta.SearchFieldName
-                                ? `(${(mapCom.Meta.SearchFieldName)} >= '${this.dayjs(fromDate).format("YYYY-MM-DD HH:mm")}' and ${((mapCom.Meta.SearchFieldName))} <= '${this.dayjs(toDate).format("YYYY-MM-DD HH:mm")}')`
+                            textFilter = mapCom.meta.searchFieldName
+                                ? `(${(mapCom.meta.searchFieldName)} >= '${this.dayjs(fromDate).format("YYYY-MM-DD HH:mm")}' and ${((mapCom.meta.searchFieldName))} <= '${this.dayjs(toDate).format("YYYY-MM-DD HH:mm")}')`
                                 :
-                                `(ds.[${(mapCom.Meta.FieldName)}] >= '${this.dayjs(fromDate).format("YYYY-MM-DD HH:mm")}' and ds.[${((mapCom.Meta.FieldName))}] <= '${this.dayjs(toDate).format("YYYY-MM-DD HH:mm")}')`;
+                                `(ds.[${(mapCom.meta.fieldName)}] >= '${this.dayjs(fromDate).format("YYYY-MM-DD HH:mm")}' and ds.[${((mapCom.meta.fieldName))}] <= '${this.dayjs(toDate).format("YYYY-MM-DD HH:mm")}')`;
                     }
                 }
                 else if (mapCom instanceof Select) {
-                    textFilter = ComponentExt.MapToFilterOperator(x, mapCom.GetValue() || "", mapCom);
-                    val = mapCom.GetValue();
+                    textFilter = ComponentExt.mapToFilterOperator(x, mapCom.getValue() || "", mapCom);
+                    val = mapCom.getValue();
                 }
                 else {
-                    textFilter = ComponentExt.MapToFilterOperator(x, (mapCom.GetValueText() ? mapCom.GetValueText().trim() : ''), mapCom);
-                    val = mapCom.GetValue();
+                    textFilter = ComponentExt.mapToFilterOperator(x, (mapCom.getValueText() ? mapCom.getValueText().trim() : ''), mapCom);
+                    val = mapCom.getValue();
                 }
                 operator = " AND ";
                 return {
                     Where: textFilter,
                     Value: val,
-                    FieldName: x.SearchFieldName ? `@${x.SearchFieldName.replaceAll(".", "").toLocaleLowerCase()}search` : `@${x.FieldName.toLocaleLowerCase()}search`,
+                    fieldName: x.searchFieldName ? `@${x.searchFieldName.replaceAll(".", "").toLocaleLowerCase()}search` : `@${x.fieldName.toLocaleLowerCase()}search`,
                     Operator: operator
                 };
             }
             else {
-                if (mapCom && mapCom.MultipleData) {
+                if (mapCom && mapCom.multipleData) {
                     const esc = s => s.replace(/'/g, "''");
-                    const values = (mapCom.MultipleData.toString())
+                    const values = (mapCom.multipleData.toString())
                         .split(/\r?\n/)
                         .map(s => s.trim())
                         .filter(Boolean);
 
                     if (values.length === 0) {
-                    } else if (x.ComponentType !== "Dropdown") {
+                    } else if (x.componentType !== "Dropdown") {
                         const inList = values.map(v => `N'${esc(v)}'`).join(", ");
-                        textFilter = x.SearchFieldName ? `${x.FieldName} IN (${inList})` : `ds.[${x.FieldName}] IN (${inList})`;
+                        textFilter = x.searchFieldName ? `${x.fieldName} IN (${inList})` : `ds.[${x.fieldName}] IN (${inList})`;
                     } else {
-                        const refName = (x.RefName || '').trim();
+                        const refName = (x.refName || '').trim();
                         if (refName) {
-                            const cols = ComponentExt.ExtractStrings(x.FormatData) || [];
+                            const cols = ComponentExt.extractStrings(x.formatData) || [];
                             const inList = values.map(v => `N'${esc(v)}'`).join(", ");
                             const matchCols = (cols.length > 0 ? cols : ["Name"]).map(c => `ds2.[${c}] IN (${inList})`);
-                            const fieldName = x.SearchFieldName ? `${x.SearchFieldName}` : `ds.[${x.FieldName}]`;
+                            const fieldName = x.searchFieldName ? `${x.searchFieldName}` : `ds.[${x.fieldName}]`;
                             textFilter = `EXISTS (SELECT 1 FROM [${refName}] ds2 WHERE ds2.Id = ${fieldName} AND (${matchCols.join(" OR ")}))`;
                         }
                     }
                 }
                 else {
-                    if (mapCom && mapCom.SearchMethod == SearchMethodEnum.Filled) {
-                        textFilter = x.SearchFieldName ? `${x.FieldName} is not null` : `ds.[${x.FieldName}] is not null`;
+                    if (mapCom && mapCom.searchMethod == searchMethodEnum.filled) {
+                        textFilter = x.searchFieldName ? `${x.fieldName} is not null` : `ds.[${x.fieldName}] is not null`;
                     }
-                    else if (mapCom && mapCom.SearchMethod == SearchMethodEnum.Empty) {
-                        textFilter = x.SearchFieldName ? `${x.FieldName} is null` : `ds.[${x.FieldName}] is null`;
+                    else if (mapCom && mapCom.searchMethod == searchMethodEnum.empty) {
+                        textFilter = x.searchFieldName ? `${x.fieldName} is null` : `ds.[${x.fieldName}] is null`;
                     }
                 }
 
@@ -874,20 +874,20 @@ export class ListViewSearch extends EditableComponent {
             return {
                 Where: textFilter,
                 Value: searchTerm,
-                FieldName: x.SearchFieldName ? `@${x.SearchFieldName.replaceAll(".", "").toLocaleLowerCase()}search` : `@${x.FieldName.toLocaleLowerCase()}search`,
+                fieldName: x.searchFieldName ? `@${x.searchFieldName.replaceAll(".", "").toLocaleLowerCase()}search` : `@${x.fieldName.toLocaleLowerCase()}search`,
                 Operator: operator
             };
 
         }).filter(x => !Utils.isNullOrWhiteSpace(x.Where));
-        if (this.EntityVM.StartDate) {
-            const fromDate = new Date(this.EntityVM.StartDate);
+        if (this.entityVM.startDate) {
+            const fromDate = new Date(this.entityVM.startDate);
             fromDate.setHours(0, 0, 0, 0);
-            operators.push({ Where: `ds.[${this.DateTimeField}] >= '${fromDate}'` });
+            operators.push({ Where: `ds.[${this.dateTimeField}] >= '${fromDate}'` });
         }
-        if (this.EntityVM.EndDate) {
-            const toDate = new Date(mapCom.Entity[mapCom.Meta.FieldName + "To"]);
+        if (this.entityVM.endDate) {
+            const toDate = new Date(mapCom.Entity[mapCom.Meta.fieldName + "To"]);
             toDate.setHours(23, 59, 59, 999);
-            operators.push({ Where: `ds.[${this.DateTimeField}] <= '${toDate}'` });
+            operators.push({ Where: `ds.[${this.dateTimeField}] <= '${toDate}'` });
         }
         return operators;
     }
@@ -896,20 +896,20 @@ export class ListViewSearch extends EditableComponent {
      * Gets or sets whether the component is disabled.
      * Always returns false indicating that it cannot be disabled.
      */
-    get Disabled() {
+    get disabled() {
         return false;
     }
 
-    set Disabled(value) {
+    set disabled(value) {
         // Components are never disabled, ignore the input.
     }
 
     AdvancedSearch(arg) {
-        ComponentExt.OpenPopup(this.TabEditor, "AdvancedSearch", () => {
+        ComponentExt.openPopup(this.tabEditor, "AdvancedSearch", () => {
             // @ts-ignore
-            var editor = new AdvancedSearch(this.ParentListView);
+            var editor = new AdvancedSearch(this.parentListView);
             editor.Parent = this.Parent,
-                editor.ParentElement = this.TabEditor.Element
+                editor.parentElement = this.tabEditor.element
             return editor;
         }).Done();
     }

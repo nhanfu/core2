@@ -1,7 +1,7 @@
 import { Action } from './action';
 
 /**
- * @typedef {import('../index').EditableComponent} EditableComponent
+ * @typedef {import('../index').editableComponent} EditableComponent
  * Represents a component.
  * @class
  */

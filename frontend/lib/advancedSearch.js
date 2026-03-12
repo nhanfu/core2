@@ -1,7 +1,7 @@
 import { EditableComponent } from "./editableComponent.js";
 import {
-    AdvSearchVM, ActiveStateEnum, AdvSearchOperation, FieldCondition, LogicOperation, OperationToSql,
-    OrderBy, OrderbyDirection, Entity, ElementType, Component, ComponentType, EventType, KeyCodeEnum,
+    AdvSearchVM, activeStateEnum, advSearchOperation, FieldCondition, logicOperation, operationToSql,
+    OrderBy, orderbyDirection, Entity, ElementType, Component, ComponentType, EventType, keyCodeEnum,
     FeaturePolicy
 } from "./models/";
 import { Section } from "./section.js";
@@ -12,45 +12,45 @@ import { Textbox } from "./textbox.js";
 import { Numbox } from "./numbox.js";
 import { Datepicker } from "./datepicker.js";
 
-/** @typedef {import("./gridView.js").GridView} GridView */
-/** @typedef {import("./listView.js").ListView} ListView */
+/** @typedef {import("./gridView.js").gridView} GridView */
+/** @typedef {import("./listView.js").listView} ListView */
 
 export class AdvancedSearch extends EditableComponent {
     /** @type {ListView} */
     // @ts-ignore
-    Parent;
+    parent;
     /** @type {AdvSearchVM} */
     // @ts-ignore
-    Entity;
+    entity;
     /**
-     * @param {import("./listView.js").ListView} parent
+     * @param {import("./listView.js").listView} parent
      */
     constructor(parent) {
         super(null);
-        this.Name = "AdvancedSearch";
-        this.Title = "Tìm kiếm nâng cao";
-        this.Icon = "fa fa-search-plus";
-        this.Parent = parent;
+        this.name = "AdvancedSearch";
+        this.title = "Tìm kiếm nâng cao";
+        this.icon = "fa fa-search-plus";
+        this.parent = parent;
     }
 
-    LocalRender() {
-        this._headers = this.Parent.Header
-            .filter(x => x.Id != null && x.Label && x.Active && !x.Hidden);
+    localRender() {
+        this._headers = this.parent.header
+            .filter(x => x.id != null && x.Label && x.active && !x.hidden);
         const fp = new FeaturePolicy();
-        fp.CanRead = true;
-        fp.CanWrite = true;
-        fp.CanDelete = true;
-        this.Entity = this.Parent.AdvSearchVM;
-        var orderby = this.Parent.Meta.OrderBy;
-        this.Parent.OrderBy = !orderby ? this.Parent.OrderBy :
+        fp.canRead = true;
+        fp.canWrite = true;
+        fp.canDelete = true;
+        this.entity = this.parent.advSearchVM;
+        var orderby = this.parent.meta.orderBy;
+        this.parent.orderBy = !orderby ? this.parent.orderBy :
             orderby.split(",").map(x => {
                 if (!x) return null;
-                var orderField = x.trim().replace(new RegExp("\\s+", "g"), " ").replace("ds.", "").split(" ");
+                var orderField = x.trim().replace(new regExp("\\s+", "g"), " ").replace("ds.", "").split(" ");
                 if (orderField.length < 1) {
                     return null;
                 }
 
-                var field = this._headers.find(header => header.FieldName == orderField[0]);
+                var field = this._headers.find(header => header.fieldName == orderField[0]);
                 if (field == null) {
                     return null;
                 }
@@ -58,320 +58,320 @@ export class AdvancedSearch extends EditableComponent {
                 /** @type {OrderBy} */
                 // @ts-ignore
                 var result = {
-                    ComId: field.Id,
-                    FieldName: field.FieldName
+                    comId: field.id,
+                    fieldName: field.fieldName
                 };
                 if (orderField.length == 1) {
-                    result.OrderbyDirectionId = OrderbyDirection.ASC;
+                    result.orderbyDirectionId = orderbyDirection.aSC;
                 } else {
-                    result.OrderbyDirectionId = orderField[1].toLowerCase() === 'asc' ? OrderbyDirection.ASC : OrderbyDirection.DESC;
+                    result.orderbyDirectionId = orderField[1].toLowerCase() === 'asc' ? orderbyDirection.aSC : orderbyDirection.dESC;
                 }
                 return result;
             }).filter(x => x != null);
-        var section = this.AddSection();
-        this.AddFilters(section);
-        this.AddOrderByGrid(section);
+        var section = this.addSection();
+        this.addFilters(section);
+        this.addOrderByGrid(section);
     }
 
-    AddSection() {
+    addSection() {
         var section = new Section(ElementType.div);
         // @ts-ignore
-        section.Meta = {
-            Column: 4,
-            Label: "Filter",
-            Active: true,
-            ClassName: "scroll-content"
+        section.meta = {
+            column: 4,
+            Label: "filter",
+            active: true,
+            className: "scroll-content"
         };
-        this.AddChild(section);
-        var label = new HTMLLabelElement();
-        section.Element.appendChild(label);
-        label.textContent = "Status";
-        section.ClassName = "filter-warpper panel group wrapper";
+        this.addChild(section);
+        var label = new hTMLLabelElement();
+        section.element.appendChild(label);
+        label.textContent = "status";
+        section.className = "filter-warpper panel group wrapper";
         return section;
     }
 
     /**
-     * Add basic filter to the top of GridView or ListView
+     * add basic filter to the top of GridView or ListView
      * @param {Section} section 
      */
-    AddFilters(section) {
+    addFilters(section) {
         /** @type {GridView} */
         // @ts-ignore
         this._filterGrid = new GridView({
-            Id: Uuid7.Id25(),
-            FieldName: "Conditions",
-            Column: 4,
-            RefName: "FieldCondition",
-            LocalRender: true,
-            IgnoreConfirmHardDelete: true,
-            CanAdd: true,
-            Events: "{'DOMContentLoaded': 'FilterDomLoaded'}"
+            id: Uuid7.id25(),
+            fieldName: "conditions",
+            column: 4,
+            refName: "FieldCondition",
+            localRender: true,
+            ignoreConfirmHardDelete: true,
+            canAdd: true,
+            events: "{'dOMContentLoaded': 'filterDomLoaded'}"
         });
         // @ts-ignore
-        this._filterGrid.OnDeleteConfirmed = () => {
+        this._filterGrid.onDeleteConfirmed = () => {
             // @ts-ignore
-            this._filterGrid.GetSelectedRows().forEach(row => {
+            this._filterGrid.getSelectedRows().forEach(row => {
                 // @ts-ignore
-                this._filterGrid.RowData.remove(row);
+                this._filterGrid.rowData.remove(row);
             });
         };
-        this._filterGrid.Header = this._filterGrid.Meta.LocalHeader = [
+        this._filterGrid.header = this._filterGrid.meta.localHeader = [
             {
-                Id: "1",
-                FieldName: "FieldId",
-                Events: "{'change': 'FieldId_Changed'}",
+                id: "1",
+                fieldName: "fieldId",
+                events: "{'change': 'fieldId_Changed'}",
                 Label: "Tên cột",
-                RefName: "Component",
-                FormatData: "ShortDesc",
-                Active: true,
-                Editable: true,
-                ComponentType: "SearchEntry",
-                MinWidth: "100px",
-                MaxWidth: "200px",
-                LocalRender: true,
-                LocalData: this._headers,
+                refName: "Component",
+                formatData: "shortDesc",
+                active: true,
+                editable: true,
+                componentType: "SearchEntry",
+                minWidth: "100px",
+                maxWidth: "200px",
+                localRender: true,
+                localData: this._headers,
                 // @ts-ignore
-                LocalHeader: [
+                localHeader: [
                     // @ts-ignore
                     {
-                        FieldName: "ShortDesc",
-                        Label: "Column",
-                        Active: true
+                        fieldName: "shortDesc",
+                        Label: "column",
+                        active: true
                     }
                 ],
-                Validation: "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
+                validation: "[{\"rule\": \"required\", \"Message\": \"{0} is required\"}]"
             },
             {
-                Id: "2",
-                FieldName: "CompareOperatorId",
+                id: "2",
+                fieldName: "compareOperatorId",
                 Label: "Toán tử",
                 // @ts-ignore
-                ReferenceId: this._entityId,
-                RefName: "Entity",
-                ComponentType: "SearchEntry",
-                FormatData: "Description",
-                Active: true,
-                Editable: true,
-                MinWidth: "150px",
-                LocalRender: true,
+                referenceId: this._entityId,
+                refName: "Entity",
+                componentType: "SearchEntry",
+                formatData: "description",
+                active: true,
+                editable: true,
+                minWidth: "150px",
+                localRender: true,
                 // @ts-ignore
-                LocalData: IEnumerableExtensions.ToEntity(AdvSearchOperation),
-                LocalHeader: [
+                localData: iEnumerableExtensions.toEntity(advSearchOperation),
+                localHeader: [
                     // @ts-ignore
                     {
                         // @ts-ignore
-                        EntityId: this._entityId,
-                        FieldName: "Name",
-                        Label: "Operator",
-                        Active: true
+                        entityId: this._entityId,
+                        fieldName: "name",
+                        Label: "operator",
+                        active: true
                     },
                     // @ts-ignore
                     {
                         // @ts-ignore
-                        EntityId: this._entityId,
-                        FieldName: "Description",
-                        Label: "Allias",
-                        Active: true
+                        entityId: this._entityId,
+                        fieldName: "description",
+                        Label: "allias",
+                        active: true
                     }
                 ],
-                Validation: "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
+                validation: "[{\"rule\": \"required\", \"Message\": \"{0} is required\"}]"
             },
             // @ts-ignore
             {
-                Id: "3",
-                FieldName: "Value",
-                Label: "Value",
+                id: "3",
+                fieldName: "value",
+                Label: "value",
                 // @ts-ignore
-                ReferenceId: this._entityId,
-                RefName: "Entity",
-                ComponentType: "Input",
-                Active: true,
-                Editable: true,
-                MinWidth: "450px",
-                Validation: "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
+                referenceId: this._entityId,
+                refName: "Entity",
+                componentType: "input",
+                active: true,
+                editable: true,
+                minWidth: "450px",
+                validation: "[{\"rule\": \"required\", \"Message\": \"{0} is required\"}]"
             },
             {
-                Id: "2",
-                FieldName: "LogicOperatorId",
+                id: "2",
+                fieldName: "logicOperatorId",
                 Label: "logic",
                 // @ts-ignore
-                ReferenceId: this._entityId,
-                RefName: "Entity",
-                ComponentType: "SearchEntry",
-                FormatData: "Description",
-                Active: true,
-                Editable: true,
-                DefaultVal: "0",
-                LocalRender: true,
-                LocalData: LogicOperation.ToEntity(),
-                LocalHeader: [
+                referenceId: this._entityId,
+                refName: "Entity",
+                componentType: "SearchEntry",
+                formatData: "description",
+                active: true,
+                editable: true,
+                defaultVal: "0",
+                localRender: true,
+                localData: logicOperation.toEntity(),
+                localHeader: [
                     // @ts-ignore
                     {
                         // @ts-ignore
-                        EntityId: this._entityId,
-                        FieldName: "Name",
-                        Label: "Logic",
-                        Active: true
+                        entityId: this._entityId,
+                        fieldName: "name",
+                        Label: "logic",
+                        active: true
                     },
                     // @ts-ignore
                     {
                         // @ts-ignore
-                        EntityId: this._entityId,
-                        FieldName: "Value",
-                        Label: "Value",
-                        Active: true
+                        entityId: this._entityId,
+                        fieldName: "value",
+                        Label: "value",
+                        active: true
                     }
                 ]
             }
         ];
-        this._filterGrid.RowData.Data = this._filterGrid.Meta.LocalData = this.Entity.Conditions;
-        this._filterGrid.ParentElement = section.Element;
-        section.AddChild(this._filterGrid);
-        this._filterGrid.Element.addEventListener(EventType.KeyDown, this.ToggleIndent.bind(this));
+        this._filterGrid.rowData.data = this._filterGrid.meta.localData = this.entity.conditions;
+        this._filterGrid.parentElement = section.element;
+        section.addChild(this._filterGrid);
+        this._filterGrid.element.addEventListener(EventType.keyDown, this.toggleIndent.bind(this));
     }
 
-    FilterDomLoaded() {
-        this._filterGrid.MainSection.Children.forEach(x => {
+    filterDomLoaded() {
+        this._filterGrid.mainSection.children.forEach(x => {
             var condition = x.Entity;
-            this.FieldId_Changed(condition, condition.Field);
+            this.fieldId_Changed(condition, condition.field);
         });
     }
 
-    HeaderForAdvSearch() {
-        return this.Parent.Header
-            .filter(x => x.Id != null && x.Label && x.Active && !x.Hidden);
+    headerForAdvSearch() {
+        return this.parent.header
+            .filter(x => x.id != null && x.Label && x.active && !x.hidden);
     }
 
     /**
      * 
      * @param {Section} section 
      */
-    AddOrderByGrid(section) {
+    addOrderByGrid(section) {
         /** @type {ListView} */
         // @ts-ignore
         this._orderByGrid = new GridView({
-            FieldName: "OrderBy",
-            Column: 4,
+            fieldName: "OrderBy",
+            column: 4,
             // @ts-ignore
-            ReferenceId: this._orderById,
-            RefName: "Entity",
-            CanAdd: true,
-            IgnoreConfirmHardDelete: true,
-            LocalRender: true
+            referenceId: this._orderById,
+            refName: "Entity",
+            canAdd: true,
+            ignoreConfirmHardDelete: true,
+            localRender: true
         });
         // @ts-ignore
-        this._orderByGrid.OnDeleteConfirmed = () => {
+        this._orderByGrid.onDeleteConfirmed = () => {
             // @ts-ignore
-            this._orderByGrid.GetSelectedRows().forEach(row => {
-                this._orderByGrid.RowData.Remove(row);
+            this._orderByGrid.getSelectedRows().forEach(row => {
+                this._orderByGrid.rowData.remove(row);
             });
         };
-        this._orderByGrid.Meta.LocalHeader = [
+        this._orderByGrid.meta.localHeader = [
             {
-                Id: "1",
-                FieldName: "FieldId",
-                Events: "{'change': 'FieldId_Changed'}",
+                id: "1",
+                fieldName: "fieldId",
+                events: "{'change': 'fieldId_Changed'}",
                 Label: "Tên cột",
                 // @ts-ignore
-                ReferenceId: this._ComponentId,
-                RefName: "Component",
-                FormatData: "ShortDesc",
-                Active: true,
-                Editable: true,
-                ComponentType: "SearchEntry",
-                MinWidth: "100px",
-                MaxWidth: "200px",
-                LocalData: this._headers,
-                LocalRender: true,
-                LocalHeader: [
+                referenceId: this._ComponentId,
+                refName: "Component",
+                formatData: "shortDesc",
+                active: true,
+                editable: true,
+                componentType: "SearchEntry",
+                minWidth: "100px",
+                maxWidth: "200px",
+                localData: this._headers,
+                localRender: true,
+                localHeader: [
                     // @ts-ignore
                     {
                         // @ts-ignore
-                        EntityId: this._ComponentId,
-                        FieldName: "ShortDesc",
+                        entityId: this._ComponentId,
+                        fieldName: "shortDesc",
                         Label: "Tên cột",
-                        Active: true
+                        active: true
                     }
                 ]
             },
             {
-                Id: "2",
+                id: "2",
                 // @ts-ignore
-                EntityId: this._orderById,
-                FieldName: "OrderbyDirectionId",
+                entityId: this._orderById,
+                fieldName: "orderbyDirectionId",
                 Label: "Thứ tự",
                 // @ts-ignore
-                ReferenceId: this._entityId,
-                RefName: "Entity",
-                ComponentType: "SearchEntry",
-                FormatData: "Description",
-                Active: true,
-                Editable: true,
-                MinWidth: "100px",
-                MaxWidth: "120px",
-                LocalData: OrderbyDirection.ToEntity(),
-                LocalHeader: [
+                referenceId: this._entityId,
+                refName: "Entity",
+                componentType: "SearchEntry",
+                formatData: "description",
+                active: true,
+                editable: true,
+                minWidth: "100px",
+                maxWidth: "120px",
+                localData: orderbyDirection.toEntity(),
+                localHeader: [
                     // @ts-ignore
                     {
                         // @ts-ignore
-                        EntityId: this._entityId,
-                        FieldName: "Name",
+                        entityId: this._entityId,
+                        fieldName: "name",
                         Label: "Thứ tự",
-                        Active: true
+                        active: true
                     }
                 ],
-                LocalRender: true
+                localRender: true
             }
         ];
-        this._orderByGrid.Meta.LocalData = this.Entity.OrderBy;
-        this._orderByGrid.ParentElement = section.Element;
-        section.AddChild(this._orderByGrid);
+        this._orderByGrid.meta.localData = this.entity.orderBy;
+        this._orderByGrid.parentElement = section.element;
+        section.addChild(this._orderByGrid);
     }
 
     /**
-     * @param {Event} e
+     * @param {event} e
      */
-    ToggleIndent(e) {
-        var keyCode = e.KeyCodeEnum();
-        if (keyCode != KeyCodeEnum.Tab) {
+    toggleIndent(e) {
+        var keyCode = e.keyCodeEnum();
+        if (keyCode != keyCodeEnum.tab) {
             return;
         }
 
         e.preventDefault();
-        var reducing = e.ShiftKey();
+        var reducing = e.shiftKey();
         // @ts-ignore
-        var selectedRows = this._filterGrid.GetSelectedRows();
-        var idMap = selectedRows.reduce((/** @type {{ [x: string]: any; }} */ map, /** @type {{ Id: string | number; }} */ row) => {
-            map[row.Id] = row;
+        var selectedRows = this._filterGrid.getSelectedRows();
+        var idMap = selectedRows.reduce((/** @type {{ [x: string]: any; }} */ map, /** @type {{ id: string | number; }} */ row) => {
+            map[row.id] = row;
             return map;
         }, {});
-        this._filterGrid.RowAction(row => {
-            var fieldCondition = row.Entity;
-            fieldCondition.Level += reducing ? -1 : 1;
-            Array.from(row.Element.querySelectorAll("td")).forEach(td => {
-                td.style.paddingLeft = fieldCondition.Level + "rem";
+        this._filterGrid.rowAction(row => {
+            var fieldCondition = row.entity;
+            fieldCondition.level += reducing ? -1 : 1;
+            array.from(row.element.querySelectorAll("td")).forEach(td => {
+                td.style.paddingLeft = fieldCondition.level + "rem";
             });
-        }, row => idMap.hasOwnProperty(row.Entity.Id));
+        }, row => idMap.hasOwnProperty(row.entity.id));
     }
 
-    DirtyCheckAndCancel() {
-        super.Dispose();
+    dirtyCheckAndCancel() {
+        super.dispose();
     }
 
-    async ApplyAdvSearch() {
-        const isValid = await this.ValidateAsync();
+    async applyAdvSearch() {
+        const isValid = await this.validateAsync();
         if (!isValid) return;
-        this.CalcAdvSearchQuery();
-        this.Parent.ReloadData(false, 0).Done();
+        this.calcAdvSearchQuery();
+        this.parent.reloadData(false, 0).done();
     }
 
-    CalcAdvSearchQuery() {
+    calcAdvSearchQuery() {
         // @ts-ignore
-        this.Parent.Wheres = this.Entity.Conditions.map((x, index) => {
+        this.parent.wheres = this.entity.conditions.map((x, index) => {
             return {
-                Condition: this.GetSearchValue(x)
+                condition: this.getSearchValue(x)
             };
-        }).filter(x => x.Condition);
+        }).filter(x => x.condition);
     }
 
     /**
@@ -379,23 +379,23 @@ export class AdvancedSearch extends EditableComponent {
      * @param {FieldCondition} condition 
      * @returns 
      */
-    GetSearchValue(condition) {
+    getSearchValue(condition) {
         var ignoreSearch = false;
-        var value = condition.Value;
-        if (value == null && condition.CompareOperatorId != AdvSearchOperation.EqualNull && condition.CompareOperatorId != AdvSearchOperation.NotEqualNull) {
+        var value = condition.value;
+        if (value == null && condition.compareOperatorId != advSearchOperation.equalNull && condition.compareOperatorId != advSearchOperation.notEqualNull) {
             return null;
         }
-        if (condition.Field.ComponentType.includes(ComponentType.Datepicker) && value) {
+        if (condition.field.componentType.includes(ComponentType.Datepicker) && value) {
             value = value;
             // @ts-ignore
-        } else if (condition.Field.ComponentType == nameof(Number)) {
+        } else if (condition.field.componentType == nameof(number)) {
             value = value + "";
         } else {
             // @ts-ignore
             value = value + "";
         }
-        var func = OperationToSql[condition.CompareOperatorId];
-        var formattedFunc = ignoreSearch ? Str.Empty : Str.Format(func, condition.OriginFieldName, value);
+        var func = operationToSql[condition.compareOperatorId];
+        var formattedFunc = ignoreSearch ? Str.empty : Str.format(func, condition.originFieldName, value);
         return formattedFunc;
     }
 
@@ -405,68 +405,68 @@ export class AdvancedSearch extends EditableComponent {
      * @param {Component} field 
      * @returns 
      */
-    FieldId_Changed(condition, field) {
+    fieldId_Changed(condition, field) {
         if (condition == null || field == null) {
             return;
         }
-        condition.OriginFieldName = field.FieldName;
-        condition.Field = field;
+        condition.originFieldName = field.fieldName;
+        condition.field = field;
 
-        var cell = this._filterGrid.FirstOrDefault(x => x.Entity == condition && x.Name == "Value");
+        var cell = this._filterGrid.firstOrDefault(x => x.entity == condition && x.name == "value");
         /** @type {EditableComponent} */
         // @ts-ignore
         var compareCell = this._filterGrid.find(x => x.Entity == condition
-            && x.FieldName == "CompareOperatorId");
+            && x.fieldName == "compareOperatorId");
         if (cell == null) {
             return;
         }
 
-        var parentCellElement = cell.ParentElement;
-        var parentCell = cell.Parent;
-        cell.Dispose();
+        var parentCellElement = cell.parentElement;
+        var parentCell = cell.parent;
+        cell.dispose();
         /** @type {EditableComponent} */
         var component = null;
-        if (field.ComponentType.includes(ComponentType.Datepicker)) {
-            component = this.SetSearchDateTime(compareCell, field);
+        if (field.componentType.includes(ComponentType.Datepicker)) {
+            component = this.setSearchDateTime(compareCell, field);
             // @ts-ignore
-            condition.Value = new dayjs().format('YYYY/MM/DD');
-        } else if (field.ComponentType.includes(ComponentType.SearchEntry) || field.ComponentType.includes(ComponentType.MultipleSearchEntry)) {
-            component = this.SetSearchId(compareCell, field);
-            condition.Value = "";
-        } else if (field.ComponentType.includes(ComponentType.Checkbox)) {
-            component = this.SetSearchBool(compareCell, field);
+            condition.value = new dayjs().format('yYYY/mM/dD');
+        } else if (field.componentType.includes(ComponentType.searchEntry) || field.componentType.includes(ComponentType.multipleSearchEntry)) {
+            component = this.setSearchId(compareCell, field);
+            condition.value = "";
+        } else if (field.componentType.includes(ComponentType.Checkbox)) {
+            component = this.setSearchBool(compareCell, field);
             // @ts-ignore
-            condition.Value = ActiveStateEnum.All;
-            condition.Display.ValueText = 'All';
-        } else if (field.ComponentType.includes(ComponentType.Numbox)) {
-            component = this.SetSearchDecimal(compareCell, field);
-            condition.Value = "0";
+            condition.value = activeStateEnum.all;
+            condition.display.valueText = 'all';
+        } else if (field.componentType.includes(ComponentType.Numbox)) {
+            component = this.setSearchDecimal(compareCell, field);
+            condition.value = "0";
         } else {
             // @ts-ignore
-            component = AdvancedSearch.SetSearchString(compareCell, field);
+            component = AdvancedSearch.setSearchString(compareCell, field);
         }
-        // Binding data manually because of field name confliction
+        // binding data manually because of field name confliction
         // @ts-ignore
-        component.UserInput += (e) => {
-            component.Entity.Value = e.NewData;
+        component.userInput += (e) => {
+            component.entity.value = e.newData;
         };
-        condition.LogicOperatorId = condition.LogicOperatorId || LogicOperation.And;
-        this._filterGrid.FirstOrDefault(x => x.Meta != null && x.Entity == condition
-            && x.Name == "LogicOperatorId")?.UpdateView();
-        condition.CompareOperatorId = compareCell.Meta.LocalData.find(x => x.Id == condition.CompareOperatorId)?.Id;
+        condition.logicOperatorId = condition.logicOperatorId || logicOperation.and;
+        this._filterGrid.firstOrDefault(x => x.meta != null && x.entity == condition
+            && x.name == "logicOperatorId")?.updateView();
+        condition.compareOperatorId = compareCell.meta.localData.find(x => x.id == condition.compareOperatorId)?.id;
         // @ts-ignore
-        compareCell.Value = condition.CompareOperatorId;
+        compareCell.value = condition.compareOperatorId;
         // @ts-ignore
-        compareCell.Display.ValueText = Object.keys(AdvSearchOperation).find(key => AdvSearchOperation[key] === condition.CompareOperatorId);
-        compareCell.UpdateView();
-        component.Entity = condition;
+        compareCell.display.valueText = object.keys(advSearchOperation).find(key => advSearchOperation[key] === condition.compareOperatorId);
+        compareCell.updateView();
+        component.entity = condition;
         // @ts-ignore
-        component.Value = condition.Value;
-        component.Parent = parentCell;
-        parentCell.Children.splice(2, 0, component);
-        component.ParentElement = parentCellElement;
+        component.value = condition.value;
+        component.parent = parentCell;
+        parentCell.children.splice(2, 0, component);
+        component.parentElement = parentCellElement;
         // @ts-ignore
-        component.Render();
+        component.render();
     }
 
     /**
@@ -474,119 +474,119 @@ export class AdvancedSearch extends EditableComponent {
      * @param {string} componentType 
      * @returns {Entity[]}
      */
-    static OperatorFactory(componentType) {
+    static operatorFactory(componentType) {
         // @ts-ignore
-        var entities = AdvSearchOperation;
+        var entities = advSearchOperation;
         switch (componentType) {
-            case ComponentType.Dropdown:
+            case ComponentType.dropdown:
                 return entities.In;
         }
         return null;
     }
 
-    static SetSearchString(compareCell, comInfo) {
+    static setSearchString(compareCell, comInfo) {
         var component;
         var com = new Component();
-        com.CopyPropFrom(comInfo);
-        com.ComponentType = ComponentType.Textbox;
+        com.copyPropFrom(comInfo);
+        com.componentType = ComponentType.Textbox;
         component = new Textbox(comInfo);
-        compareCell.Meta.LocalData = AdvancedSearch.OperatorFactory(ComponentType.Textbox);
+        compareCell.meta.localData = AdvancedSearch.operatorFactory(ComponentType.Textbox);
         return component;
     }
 
     /**
-     * Create component for search decimal
+     * create component for search decimal
      * @param {EditableComponent} compareCell 
      * @param {Component} comInfo 
      * @returns {EditableComponent}
      */
-    SetSearchDecimal(compareCell, comInfo) {
+    setSearchDecimal(compareCell, comInfo) {
         var component;
         var com = new Component();
-        com.CopyPropFrom(comInfo);
-        com.ComponentType = ComponentType.Numbox;
+        com.copyPropFrom(comInfo);
+        com.componentType = ComponentType.Numbox;
         // @ts-ignore
         component = new Numbox(comInfo);
-        compareCell.Meta.LocalData = AdvancedSearch.OperatorFactory(ComponentType.Number);
+        compareCell.meta.localData = AdvancedSearch.operatorFactory(ComponentType.number);
         return component;
     }
 
     /**
-     * Create component for search boolean
+     * create component for search boolean
      * @param {EditableComponent} compareCell 
      * @param {Component} com 
      * @returns {EditableComponent}
      */
-    SetSearchBool(compareCell, com) {
+    setSearchBool(compareCell, com) {
         var comInfo = new Component();
-        comInfo.CopyPropFrom(com);
+        comInfo.copyPropFrom(com);
         var component;
-        comInfo.FormatData = '{Description}';
-        comInfo.ComponentType = ComponentType.MultipleSearchEntry;
-        comInfo.LocalRender = true;
-        comInfo.LocalData = ActiveStateEnum.ToEntity();
+        comInfo.formatData = '{description}';
+        comInfo.componentType = ComponentType.multipleSearchEntry;
+        comInfo.localRender = true;
+        comInfo.localData = activeStateEnum.toEntity();
         // @ts-ignore
-        comInfo.LocalHeader = AdvancedSearch.GetBooleanSearchHeader();
+        comInfo.localHeader = AdvancedSearch.getBooleanSearchHeader();
         // @ts-ignore
         component = new MultipleSearchEntry(comInfo);
-        compareCell.Meta.LocalData = AdvancedSearch.OperatorFactory(ComponentType.SearchEntry);
+        compareCell.meta.localData = AdvancedSearch.operatorFactory(ComponentType.searchEntry);
         return component;
     }
 
-    static GetBooleanSearchHeader() {
+    static getBooleanSearchHeader() {
         return [
             {
                 // @ts-ignore
-                FieldName: nameof(Models.Entity.Name),
+                fieldName: nameof(models.Entity.name),
                 Label: "Trạng thái",
-                Active: true
+                active: true
             },
             {
                 // @ts-ignore
-                FieldName: nameof(Models.Entity.Description),
+                fieldName: nameof(models.Entity.description),
                 Label: "Miêu tả",
-                Active: true
+                active: true
             }
         ];
     }
 
     /**
-     * Create component for search dropdown
+     * create component for search dropdown
      * @param {EditableComponent} compareCell 
      * @param {Component} field 
      * @returns {EditableComponent}
      */
-    SetSearchId(compareCell, field) {
-        compareCell.Meta.LocalData = AdvancedSearch.OperatorFactory(ComponentType.SearchEntry);
-        compareCell.FieldVal = AdvSearchOperation.In;
-        compareCell.Entity.Display = compareCell.Entity.Display
-            ?? { OperationText: AdvSearchOperation.GetFieldNameByVal(AdvSearchOperation.In) };
+    setSearchId(compareCell, field) {
+        compareCell.meta.localData = AdvancedSearch.operatorFactory(ComponentType.searchEntry);
+        compareCell.fieldVal = advSearchOperation.In;
+        compareCell.entity.display = compareCell.entity.display
+            ?? { operationText: advSearchOperation.getFieldNameByVal(advSearchOperation.In) };
 
         var comInfo = new Component();
-        comInfo.CopyPropFrom(field);
-        comInfo.ComponentType = ComponentType.MultipleSearchEntry;
+        comInfo.copyPropFrom(field);
+        comInfo.componentType = ComponentType.multipleSearchEntry;
         // @ts-ignore
         var component = new MultipleSearchEntry(comInfo);
         return component;
     }
 
     /**
-     * Create component for search dropdown
+     * create component for search dropdown
      * @param {EditableComponent} compareCell 
      * @param {Component} comInfo 
      * @returns {EditableComponent}
      */
-    SetSearchDateTime(compareCell, comInfo) {
+    setSearchDateTime(compareCell, comInfo) {
         var component;
         var com = new Component();
-        com.CopyPropFrom(comInfo);
+        com.copyPropFrom(comInfo);
         // @ts-ignore
-        com.ComponentType = nameof(Datepicker);
-        com.Precision = 7; // add time picker
+        com.componentType = nameof(Datepicker);
+        com.precision = 7; // add time picker
         // @ts-ignore
         component = new Datepicker(com);
-        compareCell.Meta.LocalData =
-            AdvSearchOperation.ToEntity().filter(x => x.Id < AdvSearchOperation.Contains);
+        compareCell.meta.localData =
+            advSearchOperation.toEntity().filter(x => x.id < advSearchOperation.contains);
         return component;
     }
 }

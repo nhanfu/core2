@@ -1,116 +1,116 @@
-import { ObservableArgs, EventType, Component, KeyCodeEnum } from "./models/";
+import { ObservableArgs, EventType, Component, keyCodeEnum } from "./models/";
 import { EditableComponent } from "./editableComponent.js";
-import { Html } from "./utils/html.js";
+import { html } from "./utils/html.js";
 import { Utils } from "./utils/utils.js";
 
 /**
- * Represents a Checkbox component.
+ * represents a Checkbox component.
  */
 export class Checkbox extends EditableComponent {
     /** @type {?boolean} */
     _value = null;
 
-    /** @type {HTMLInputElement} */
+    /** @type {hTMLInputElement} */
     _input = null;
 
     /**
-     * Constructs a Checkbox component.
-     * @param {Component} ui - The UI component associated with the checkbox.
-     * @param {HTMLElement} [ele=null] - The HTML element to which the checkbox belongs.
-     * @throws {Error} If the UI component is not provided.
+     * constructs a Checkbox component.
+     * @param {Component} ui - the uI component associated with the checkbox.
+     * @param {HTMLElement} [ele=null] - the HTML element to which the checkbox belongs.
+     * @throws {error} if the uI component is not provided.
      */
     constructor(ui, ele = null) {
         super(ui);
-        if (!ui) throw new Error("ui is required");
-        this.Meta = ui;
-        this.ParentElement = ele;
+        if (!ui) throw new error("ui is required");
+        this.meta = ui;
+        this.parentElement = ele;
         if (ele && ele.tagName.toLowerCase() === 'input') {
-            this.Element = ele;
+            this.element = ele;
             // @ts-ignore
             this._input = ele;
         }
-        else this.ParentElement = ele;
-        this.DefaultValue = false;
+        else this.parentElement = ele;
+        this.defaultValue = false;
     }
 
     /**
-     * Renders the Checkbox into the DOM.
+     * renders the Checkbox into the dOM.
      */
-    Render() {
+    render() {
 
-        if (this.ParentElement != null && this.Element == null) {
-            Html.take(this.ParentElement).tabIndex(-1).smallCheckbox(this._value ?? false);
-            this._input = Html.Context.previousElementSibling;
+        if (this.parentElement != null && this.element == null) {
+            html.take(this.parentElement).tabIndex(-1).smallCheckbox(this._value ?? false);
+            this._input = html.context.previousElementSibling;
         }
-        this.Element = this._input.parentElement ?? this._input;
-        Html.take(this._input).event('input', this.UserChange.bind(this));
-        this.SetDisableUI(!this.Meta.Editable);
-        this.SetDefaultVal();
-        this.Value = Utils.GetPropValue(this.Entity, this.Name);
-        this.Entity[this.Name] = this._value;
-        if (!this.Entity[this.Name]) {
-            this.Entity[this.Name] = false;
+        this.element = this._input.parentElement ?? this._input;
+        html.take(this._input).event('input', this.userChange.bind(this));
+        this.setDisableUI(!this.meta.editable);
+        this.setDefaultVal();
+        this.value = Utils.getPropValue(this.entity, this.name);
+        this.entity[this.name] = this._value;
+        if (!this.entity[this.name]) {
+            this.entity[this.name] = false;
         }
 
-        this.Element.closest('td')?.addEventListener('keydown', this.UserKeyDown.bind(this));
-        this.DOMContentLoaded?.invoke();
+        this.element.closest('td')?.addEventListener('keydown', this.userKeyDown.bind(this));
+        this.dOMContentLoaded?.invoke();
     }
 
     /**
-     * Gets the value of the Checkbox as a string.
-     * @returns {string} The string representation of the Checkbox's value.
+     * gets the value of the Checkbox as a string.
+     * @returns {string} the string representation of the Checkbox's value.
      */
-    GetValueText() {
-        return this._value === null ? "N/A" : (this._value ? "Check" : "Not check");
+    getValueText() {
+        return this._value === null ? "n/A" : (this._value ? "check" : "not check");
     }
 
     /**
-     * Handles user interactions with the Checkbox.
-     * @param {Event} e - The event object.
+     * handles user interactions with the Checkbox.
+     * @param {event} e - the event object.
      */
-    UserChange(e) {
-        if (this.Disabled) {
+    userChange(e) {
+        if (this.disabled) {
             e.preventDefault();
             return;
         }
         const check = this._input.checked;
-        this.DataChanged(check);
+        this.dataChanged(check);
     }
 
-    UserKeyDown(e) {
-        let code = e.KeyCodeEnum();
-        if (code == KeyCodeEnum.Space && !this.Disabled) {
+    userKeyDown(e) {
+        let code = e.keyCodeEnum();
+        if (code == keyCodeEnum.space && !this.disabled) {
             e.preventDefault();
-            this.Value = !this.Value;
+            this.value = !this.value;
             const check = this._input.checked;
-            this.DataChanged(check);
+            this.dataChanged(check);
         }
     }
 
     /**
-     * Handles data changes in the Checkbox.
-     * @param {boolean} check - The new checked state of the Checkbox.
+     * handles data changes in the Checkbox.
+     * @param {boolean} check - the new checked state of the Checkbox.
      */
-    DataChanged(check) {
+    dataChanged(check) {
         const oldVal = this._value;
         this._value = check;
-        if (this.Entity) {
-            this.Entity[this.Name] = check;
+        if (this.entity) {
+            this.entity[this.name] = check;
         }
-        this.Dirty = true;
+        this.dirty = true;
         // @ts-ignore
-        var arg = new ObservableArgs({ NewData: this._value, OldData: oldVal, EvType: EventType.Change });
+        var arg = new ObservableArgs({ newData: this._value, oldData: oldVal, evType: EventType.change });
         /** @type {ObservableArgs} */
         // @ts-ignore
-        var arg = { NewData: this._value, OldData: oldVal, EvType: EventType.Change };
-        this.UserInput?.invoke(arg);
-        this.PopulateFields();
-        this.CascadeField();
-        this.DispatchEvent(this.Meta.Events, EventType.Change, this, this.Entity).then();
+        var arg = { newData: this._value, oldData: oldVal, evType: EventType.change };
+        this.userInput?.invoke(arg);
+        this.populateFields();
+        this.cascadeField();
+        this.dispatchEvent(this.meta.events, EventType.change, this, this.entity).then();
     }
 
-    get Value() { return this._value; }
-    set Value(val) {
+    get value() { return this._value; }
+    set value(val) {
         if (val == undefined) {
             val = false;
         }
@@ -118,29 +118,29 @@ export class Checkbox extends EditableComponent {
         this._input.checked = val;
     }
     /**
-     * Updates the view of the Checkbox based on the current state.
-     * @param {boolean} [force=false] - Force the update regardless of changes.
-     * @param {?boolean} [dirty=null] - The new dirty state.
-     * @param {...string} componentNames - Additional component names to update.
+     * updates the view of the Checkbox based on the current state.
+     * @param {boolean} [force=false] - force the update regardless of changes.
+     * @param {?boolean} [dirty=null] - the new dirty state.
+     * @param {...string} componentNames - additional component names to update.
      */
-    UpdateView(force = false, dirty = null, ...componentNames) {
-        this.Value = this.Entity[this.Meta.FieldName];
-        if (!this.Dirty) {
-            this.OriginalText = this._input.value;
-            this.DOMContentLoaded?.Invoke();
-            this.OldValue = this.Value;
+    updateView(force = false, dirty = null, ...componentNames) {
+        this.value = this.entity[this.meta.fieldName];
+        if (!this.dirty) {
+            this.originalText = this._input.value;
+            this.dOMContentLoaded?.invoke();
+            this.oldValue = this.value;
         }
     }
 
     /**
-     * Sets the UI disabled state for the Checkbox.
-     * @param {boolean} value - Whether to disable the UI.
+     * sets the uI disabled state for the Checkbox.
+     * @param {boolean} value - whether to disable the uI.
      */
-    SetDisableUI(value) {
+    setDisableUI(value) {
         if (value) {
-            this.Element.setAttribute('disabled', 'disabled');
+            this.element.setAttribute('disabled', 'disabled');
         } else {
-            this.Element.removeAttribute('disabled');
+            this.element.removeAttribute('disabled');
         }
         this._input.disabled = value;
     }

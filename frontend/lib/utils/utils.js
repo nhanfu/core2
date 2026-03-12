@@ -1,7 +1,7 @@
 import Decimal from "decimal.js";
 import { Component } from "../models/component.js";
 import { Client } from '../clients/client.js';
-import { HttpMethod } from '../models/enum.js';
+import { httpMethod } from '../models/enum.js';
 import { LangSelect } from "./langSelect.js";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone.js";
@@ -14,18 +14,18 @@ dayjs.extend(timezone);
 dayjs.extend(customParseFormat);
 
 export class Utils {
-    static SystemId = "1";
-    static TenantField = "t";
+    static systemId = "1";
+    static tenantField = "t";
     static Pixel = "px";
-    static FeatureField = "f";
-    static QuestionMark = "?";
+    static featureField = "f";
+    static questionMark = "?";
     static Amp = "&";
-    static BreakLine = "<br />";
-    static ApplicationJson = "application/json";
+    static breakLine = "<br />";
+    static applicationJson = "application/json";
     static Authorization = "Authorization";
-    static SelfVendorId = "65";
-    static IdField = "Id";
-    static NewLine = "\r\n";
+    static selfVendorId = "65";
+    static idField = "Id";
+    static newLine = "\r\n";
     static Indent = "\t";
     static Dot = ".";
     static Slash = "/";
@@ -33,44 +33,44 @@ export class Utils {
     static Comma = ";";
     static Semicolon = ";";
     static Space = " ";
-    static ComponentId = "20";
-    static ComponentGroupId = "30";
-    static HistoryId = "4199";
-    static InsertedBy = "InsertedBy";
-    static OwnerUserIds = "OwnerUserIds";
-    static OwnerRoleIds = "OwnerRoleIds";
-    static ComQuery = "/api/feature/go";
-    static ComQuerys = "/api/feature/gos";
-    static ComQueryByName = "/api/feature/gobyname";
-    static PatchSvc = "/api/feature/run";
-    static PatchSvcs = "/api/feature/runs";
-    static PatchesSvc = "user/SavePatches";
-    static UserSvc = "/user/svc";
-    static DeleteSvc = "/api/feature/delete";
-    static DeactivateSvc = "/user/Deactivate";
-    static ExportExcel = "/user/excel";
-    static FileSvc = "/api/fileUpload/file";
+    static componentId = "20";
+    static componentGroupId = "30";
+    static historyId = "4199";
+    static insertedBy = "insertedBy";
+    static ownerUserIds = "ownerUserIds";
+    static ownerRoleIds = "ownerRoleIds";
+    static comQuery = "/api/feature/go";
+    static comQuerys = "/api/feature/gos";
+    static comQueryByName = "/api/feature/gobyname";
+    static patchSvc = "/api/feature/run";
+    static patchSvcs = "/api/feature/runs";
+    static patchesSvc = "user/savePatches";
+    static userSvc = "/user/svc";
+    static deleteSvc = "/api/feature/delete";
+    static deactivateSvc = "/user/Deactivate";
+    static exportExcel = "/user/excel";
+    static fileSvc = "/api/fileUpload/file";
     static Return = "return ";
-    static SpecialChar = {
+    static specialChar = {
         '+': "%2B",
         '/': "%2F",
         '?': "%3F",
         '#': "%23",
         '&': "%26"
     };
-    static ReverseSpecialChar = {
+    static reverseSpecialChar = {
         "%2B": '+',
         "%2F": '/',
         "%3F": '?',
         "%23": '#',
         "%26": '&'
     }
-    static get HeadChildren() { return document.head.children; }
-    static EncodeSpecialChar(str) {
+    static get headChildren() { return document.head.children; }
+    static encodeSpecialChar(str) {
         if (!str) return null;
-        return str.split('').map(ch => Utils.SpecialChar[ch] || ch).join('');
+        return str.split('').map(ch => Utils.specialChar[ch] || ch).join('');
     }
-    static DecodeSpecialChar(str) {
+    static decodeSpecialChar(str) {
         if (!str || str == undefined || str === null) {
             return null;
         }
@@ -81,22 +81,22 @@ export class Utils {
             .replaceAll('%26', '&');
 
     }
-    static GenerateRandomToken(maxLength = 32) {
+    static generateRandomToken(maxLength = 32) {
         let builder = '';
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const chars = 'aBCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         const charsLength = chars.length;
         for (let i = 0; i < maxLength; i++) {
             builder += chars.charAt(Math.floor(Math.random() * charsLength));
         }
         return builder;
     }
-    static ToJson(value) {
+    static toJson(value) {
         return JSON.stringify(value);
     }
     static Clone(value) {
         return JSON.parse(JSON.stringify(value));
     }
-    static TryParseInt(value) {
+    static tryParseInt(value) {
         const parsed = parseInt(value, 10);
         return isNaN(parsed) ? null : parsed;
     }
@@ -105,7 +105,7 @@ export class Utils {
      * @param {string} value - String value to parsed
      * @returns {[boolean, Decimal?]} - Returns an array with a boolean indicating if the parsing was successful and the parsed decimal value
      */
-    static TryParseDecimal(value) {
+    static tryParseDecimal(value) {
         try {
             let res = new Decimal(value);
             return [true, res];
@@ -120,51 +120,51 @@ export class Utils {
             return null;
         }
     }
-    static TryParse(value) {
+    static tryParse(value) {
         try {
             return JSON.parse(value);
         } catch {
             return null;
         }
     }
-    static ChangeType(value, type) {
+    static changeType(value, type) {
         switch (type) {
             case 'int':
             case 'number':
-                return Utils.TryParseInt(value);
+                return Utils.tryParseInt(value);
             case 'decimal':
-                return Utils.TryParseDecimal(value);
+                return Utils.tryParseDecimal(value);
             case 'boolean':
                 return value === 'true';
             default:
                 return value;
         }
     }
-    static EncodeProperties(value) {
+    static encodeProperties(value) {
         if (!value || typeof value !== 'object') return value;
 
         Object.keys(value).forEach(prop => {
             if (typeof value[prop] === 'string') {
-                value[prop] = Utils.EncodeSpecialChar(value[prop]);
+                value[prop] = Utils.encodeSpecialChar(value[prop]);
             }
         });
 
         return value;
     }
 
-    static DecodeProperties(value) {
+    static decodeProperties(value) {
         if (!value || typeof value !== 'object') return value;
 
         Object.keys(value).forEach(prop => {
             if (typeof value[prop] === 'string') {
-                value[prop] = Utils.DecodeSpecialChar(value[prop]);
+                value[prop] = Utils.decodeSpecialChar(value[prop]);
             }
         });
 
         return value;
     }
 
-    static GetUrlParam(key = Utils.FeatureField, origin = null) {
+    static getUrlParam(key = Utils.featureField, origin = null) {
         const search = new URLSearchParams(origin || window.location.search);
         return search.get(key);
     }
@@ -174,13 +174,13 @@ export class Utils {
     * @param {Object} obj - The object containing the property.
     * @returns {boolean} True if the property is nullable, false otherwise.
     */
-    static IsNullable(fieldName, obj) {
-        const type = Utils.GetPropValue(fieldName, obj);
+    static isNullable(fieldName, obj) {
+        const type = Utils.getPropValue(fieldName, obj);
         return !type || type === typeof (null);
     }
 
 
-    static GetComplexPropType(fieldName, obj) {
+    static getComplexPropType(fieldName, obj) {
         if (!fieldName || !obj || typeof obj !== 'object') return null;
 
         const props = fieldName.split('.');
@@ -196,7 +196,7 @@ export class Utils {
         return typeof current;
     }
 
-    static GetPropValue(obj, propName) {
+    static getPropValue(obj, propName) {
         if (!obj || !propName || typeof obj !== 'object') return null;
 
         const props = propName.split('.');
@@ -212,7 +212,7 @@ export class Utils {
         return current;
     }
 
-    static FormatEntity(format, source, number = false, pre = 0) {
+    static formatEntity(format, source, number = false, pre = 0) {
         if (!format) return null;
         if (!source) return null;
 
@@ -229,7 +229,7 @@ export class Utils {
         if (!number) {
             return this.Format(replaced, objList);
         } else {
-            return this.FormatNumber(replaced, pre, objList);
+            return this.formatNumber(replaced, pre, objList);
         }
     }
 
@@ -239,13 +239,13 @@ export class Utils {
         });
     }
 
-    static FormatNumber(template, pre, args) {
+    static formatNumber(template, pre, args) {
         return template.replace(/{(\d+)}/g, (/** @type {any} */ match, /** @type {string | number} */ index) => {
             return typeof args[index] != 'undefined' ? new Decimal(args[index]).toFixed(pre || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
         });
     }
 
-    static GetValues(source, field, objList = []) {
+    static getValues(source, field, objList = []) {
         if (field === null || field === undefined || field === "") {
             return;
         }
@@ -253,30 +253,30 @@ export class Utils {
         objList.push(value);
     }
 
-    static GetHtmlValues(source, field, objList = []) {
+    static getHtmlValues(source, field, objList = []) {
         if (field === null || field === undefined || field === "") {
             return;
         }
-        var value = this.IsFunction(field, source);
+        var value = this.isFunction(field, source);
         if (!value) {
             value = source[field];
         }
         objList.push(value);
     }
 
-    static NullFormatHandler = x => "null";
-    static NotFoundHandler = x => "{" + x + "}";
-    static EmptyFormat = x => "";
+    static nullFormatHandler = x => "null";
+    static notFoundHandler = x => "{" + x + "}";
+    static emptyFormat = x => "";
 
-    static SetPropValue(instance, propertyName, value) {
+    static setPropValue(instance, propertyName, value) {
         if (!propertyName || propertyName.trim() === '') return;
         if (instance && typeof instance === 'object') {
             instance[propertyName] = value;
         }
     }
 
-    static GetCellText(header, cellData, row, emptyRow = false, editForm = null) {
-        return this.GetCellTextInternal(header, cellData, row, emptyRow, editForm);
+    static getCellText(header, cellData, row, emptyRow = false, editForm = null) {
+        return this.getCellTextInternal(header, cellData, row, emptyRow, editForm);
     }
 
     /**
@@ -287,42 +287,42 @@ export class Utils {
      * @param {boolean} emptyRow 
      * @returns 
      */
-    static GetCellTextInternal(header, cellData, row, emptyRow = false, editForm = null) {
+    static getCellTextInternal(header, cellData, row, emptyRow = false, editForm = null) {
         let text = '';
-        if (emptyRow || (cellData !== null && header.FieldName === this.IdField && typeof cellData === 'number' && cellData <= 0)) {
+        if (emptyRow || (cellData !== null && header.fieldName === this.idField && typeof cellData === 'number' && cellData <= 0)) {
             return '';
         }
         if (cellData === null) {
-            if (!this.isNullOrWhiteSpace(header.FormatEntity)) {
-                text = this.IsFunction(header.FormatEntity);
+            if (!this.isNullOrWhiteSpace(header.formatEntity)) {
+                text = this.isFunction(header.formatEntity);
                 if (!text) {
-                    text = this.GetFormattedRow(header.FormatEntity, row);
+                    text = this.getFormattedRow(header.formatEntity, row);
                 }
             }
             return text;
         }
-        switch (header.ComponentType) {
+        switch (header.componentType) {
             case 'Datepicker':
                 if (!cellData) {
                     text = '';
                 }
                 else {
-                    text = !cellData ? '' : dayjs.tz(cellData, dayjs.tz.guess()).format(this.isNullOrWhiteSpace(header.FormatData) ? 'DD/MM/YYYY' : header.FormatData);
+                    text = !cellData ? '' : dayjs.tz(cellData, dayjs.tz.guess()).format(this.isNullOrWhiteSpace(header.formatData) ? 'DD/MM/YYYY' : header.formatData);
                 }
                 break;
             case 'Dropdown':
             case 'Select2':
-                if (header.IsMultiple) {
+                if (header.isMultiple) {
                     try {
-                        let source = header.LocalData;
+                        let source = header.localData;
                         let list = cellData.split(',');
                         let strings = list.map(data => {
                             let found = source && source.find(x => x.Id == data);
                             if (!found) {
                                 return '';
                             }
-                            if (!this.isNullOrWhiteSpace(header.FormatData)) {
-                                return this.FormatEntity(header.FormatData, found);
+                            if (!this.isNullOrWhiteSpace(header.formatData)) {
+                                return this.formatEntity(header.formatData, found);
                             } else {
                                 return '';
                             }
@@ -335,24 +335,24 @@ export class Utils {
                 }
                 else {
                     try {
-                        let objField = header.FieldName;
-                        let containId = header.FieldName.substr(header.FieldName.length - 2) === this.IdField;
+                        let objField = header.fieldName;
+                        let containId = header.fieldName.substr(header.fieldName.length - 2) === this.idField;
                         if (containId) {
-                            objField = header.FieldName.substr(0, header.FieldName.length - 2);
+                            objField = header.fieldName.substr(0, header.fieldName.length - 2);
                         }
                         else {
-                            objField = header.FieldName + "MasterData";
+                            objField = header.fieldName + "masterData";
                         }
                         let found = row[objField];
                         if (found === null || typeof found === 'number') {
-                            let sourceD = header.LocalData;
+                            let sourceD = header.localData;
                             found = sourceD && sourceD.find(x => compareIdField(x, cellData));
                         }
                         if (found === null) {
                             text = '';
                         } else {
-                            if (!this.isNullOrWhiteSpace(header.FormatData)) {
-                                text = this.FormatEntity(header.FormatData, found);
+                            if (!this.isNullOrWhiteSpace(header.formatData)) {
+                                text = this.formatEntity(header.formatData, found);
                             } else {
                                 text = '';
                             }
@@ -367,9 +367,9 @@ export class Utils {
                     text = '';
                 }
                 else {
-                    var pre = header.GroupTypeId ? parseInt(LangSelect._webConfig[header.GroupTypeId]) : header.Precision
-                    if (!this.isNullOrWhiteSpace(header.FormatData)) {
-                        text = this.FormatEntity(header.FormatData, row, true, pre);
+                    var pre = header.groupTypeId ? parseInt(LangSelect._webConfig[header.groupTypeId]) : header.Precision
+                    if (!this.isNullOrWhiteSpace(header.formatData)) {
+                        text = this.formatEntity(header.formatData, row, true, pre);
                     }
                     else {
                         var fixedValue = new Decimal(cellData).toFixed(pre || 0);
@@ -381,8 +381,8 @@ export class Utils {
                 break;
             default:
                 text = cellData?.toString() ?? "";
-                if (!this.isNullOrWhiteSpace(header.FormatData)) {
-                    text = this.FormatEntity(header.FormatData, row);
+                if (!this.isNullOrWhiteSpace(header.formatData)) {
+                    text = this.formatEntity(header.formatData, row);
                 }
                 break;
         }
@@ -417,7 +417,7 @@ export class Utils {
         return format.replace('{0}', cellData);
     }
 
-    static GetHtmlCode(format, source, nullHandler = Utils.NullFormatHandler, notFoundHandler = Utils.NotFoundHandler) {
+    static getHtmlCode(format, source, nullHandler = Utils.nullFormatHandler, notFoundHandler = Utils.notFoundHandler) {
         if (!format) return null;
 
         const objList = [];
@@ -446,7 +446,7 @@ export class Utils {
                         isInGroup = false;
                         formatted += ch;
                         index++;
-                        Utils.GetHtmlValues(source[0], field, objList);
+                        Utils.getHtmlValues(source[0], field, objList);
                         field = '';
                     } else {
                         formatted += ch;
@@ -467,21 +467,21 @@ export class Utils {
         return formatted;
     }
 
-    static GetFormattedRow(exp, row) {
-        const isFunc = Utils.IsFunction(exp);
+    static getFormattedRow(exp, row) {
+        const isFunc = Utils.isFunction(exp);
         if (!isFunc) {
-            return Utils.FormatEntity2(exp, null, row, Utils.EmptyFormat, Utils.EmptyFormat);
+            return Utils.formatEntity2(exp, null, row, Utils.emptyFormat, Utils.emptyFormat);
         }
         return isFunc?.toString();
     }
 
-    static ForEachProp(obj, action) {
+    static forEachProp(obj, action) {
         if (!obj || typeof obj !== 'object' || typeof action !== 'function') return;
         const props = Object.keys(obj);
         props.forEach(prop => action(prop, obj[prop]));
     }
 
-    static LastDayOfMonth(time = null) {
+    static lastDayOfMonth(time = null) {
         const current = time ? new Date(time) : new Date();
         const year = current.getFullYear();
         const month = current.getMonth() + 1;
@@ -494,7 +494,7 @@ export class Utils {
      * @param {boolean} shouldAddReturn - if true then append 'return ' before evaluating
      * @returns {Function} The function itself or evaluated function
      */
-    static IsFunction(exp, shouldAddReturn = false, params) {
+    static isFunction(exp, shouldAddReturn = false, params) {
         if (exp instanceof Function) {
             return exp;
         }
@@ -515,67 +515,67 @@ export class Utils {
      * @param   {string}    path
      * @return  {string}
      */
-    static GetFileNameWithoutExtension(path) {
+    static getFileNameWithoutExtension(path) {
         if (!path) {
             return "";
         }
         return path.replace(/^.*[\\\/]/, '');
     }
 
-    static IsImage(path) {
+    static isImage(path) {
         const imgExt = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp'];
         return imgExt.some(x => path.toLowerCase().includes(x));
     }
 
-    static IsPath(path) {
+    static isPath(path) {
         const imgExt = ['http'];
         return imgExt.some(x => path.toLowerCase().includes(x));
     }
 
-    static GetExtension(path) {
+    static getExtension(path) {
         if (!path) {
             return '';
         }
         return path.substring(path.lastIndexOf('.'));
     }
 
-    static IsOwner(entity, defaultOwnership = true) {
-        const IdField = "Id"; // Define IdField as per your requirements
-        const OwnerUserIds = "OwnerUserIds"; // Define OwnerUserIds as per your requirements
-        const OwnerRoleIds = "OwnerRoleIds"; // Define OwnerRoleIds as per your requirements
-        const InsertedBy = "InsertedBy"; // Define InsertedBy as per your requirements
+    static isOwner(entity, defaultOwnership = true) {
+        const idField = "Id"; // Define idField as per your requirements
+        const ownerUserIdsField = "ownerUserIds"; // Define ownerUserIds as per your requirements
+        const ownerRoleIdsField = "ownerRoleIds"; // Define ownerRoleIds as per your requirements
+        const insertedBy = "insertedBy"; // Define insertedBy as per your requirements
         const Comma = ","; // Separator for splitting strings
 
-        if (!entity || entity[IdField] !== null) {
+        if (!entity || entity[idField] !== null) {
             return defaultOwnership;
         }
 
         if (!Client.token) return defaultOwnership; // Adjust as per your application's context
 
-        const ownerUserIds = entity[OwnerUserIds]?.toString();
-        const isOwnerUser = ownerUserIds?.trim() !== "" && ownerUserIds.split(Comma).includes(Client.token.UserId);
+        const ownerUserIds = entity[ownerUserIdsField]?.toString();
+        const isOwnerUser = ownerUserIds?.trim() !== "" && ownerUserIds.split(Comma).includes(Client.token.userId);
 
-        const ownerRoleIds = entity[OwnerRoleIds]?.toString();
+        const ownerRoleIds = entity[ownerRoleIdsField]?.toString();
         const isOwnerRole = ownerRoleIds?.trim() !== "" &&
-            ownerRoleIds.split(Comma).some(entityRole => Client.token.RoleIds.some(k => k == entityRole));
+            ownerRoleIds.split(Comma).some(entityRole => Client.token.roleIds.some(k => k == entityRole));
 
-        const createdId = entity[InsertedBy]?.toString();
-        const isOwner = (!ownerUserIds && createdId === Client.token.UserId) || isOwnerRole || isOwnerUser;
+        const createdId = entity[insertedBy]?.toString();
+        const isOwner = (!ownerUserIds && createdId === Client.token.userId) || isOwnerRole || isOwnerUser;
 
         return isOwner;
     }
 
-    static CastProp(obj, type) {
+    static castProp(obj, type) {
         if (obj === null || obj === undefined) {
             return null;
         }
 
         const res = new type();
-        this.CopyPropsFrom(obj, res);
+        this.copyPropsFrom(obj, res);
         return res;
     }
 
-    static CopyPropsFrom(source, target) {
+    static copyPropsFrom(source, target) {
         for (let key in source) {
             if (source.hasOwnProperty(key)) {
                 target[key] = source[key];
@@ -592,22 +592,22 @@ export class Utils {
     }
 
     /**
-     * @param {string | ArrayBuffer} base64Image
+     * @param {string | arrayBuffer} base64Image
      * @param {any} fileName
      */
-    static UploadBase64Image(base64Image, fileName) {
+    static uploadBase64Image(base64Image, fileName) {
         /** @type {XHRWrapper} */
         // @ts-ignore
         const p = {
             Value: base64Image,
             Url: `/user/image/?name=${fileName}`,
-            IsRawString: true,
-            Method: HttpMethod.POST
+            isRawString: true,
+            Method: httpMethod.POST
         };
         return Client.instance.submitAsync(p);
     }
 
-    static GetMimeType(extension) {
+    static getMimeType(extension) {
         if (extension === null) {
             throw new Error("extension cannot be null");
         }
@@ -707,7 +707,7 @@ export class Utils {
             case "cur": return "application/octet-stream";
             case "cxx": return "text/plain";
             case "dat": return "application/octet-stream";
-            case "DataSourceFilter": return "application/xml";
+            case "dataSourceFilter": return "application/xml";
             case "dbproj": return "text/plain";
             case "dcr": return "application/x-director";
             case "def": return "text/plain";

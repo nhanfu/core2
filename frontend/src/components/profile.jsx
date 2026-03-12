@@ -16,7 +16,7 @@ const Profile = () => {
 
   const handleLogout = (event) => {
     Client.Token = null;
-    localStorage.removeItem("UserInfo");
+    localStorage.removeItem("userInfo");
     unsubscribeToken();
     TabEditor.tabs.forEach((x) => x.dispose());
     LoginBL.instance.render();
@@ -33,7 +33,7 @@ const Profile = () => {
     <div className="action" ref={menuRef}>
       <div className="profile avatar" onClick={() => setState(!state)}>
         <img
-          src="https://amisplatform.misacdn.net/APIS/PlatformAPI/api/Avatar/8a05ea46-eb2d-4af5-b5da-8863c324c89f/BS27GS4Q.jpg?avatarID=2a14a261-f827-4f35-9861-b922a9001b1f&amp;imageType=jpg&amp;appCode=Accounting&amp;width=64&amp;height=64"
+          src="https://amisplatform.misacdn.net/APIS/platformAPI/api/Avatar/8a05ea46-eb2d-4af5-b5da-8863c324c89f/BS27GS4Q.jpg?avatarID=2a14a261-f827-4f35-9861-b922a9001b1f&amp;imageType=jpg&amp;appCode=Accounting&amp;width=64&amp;height=64"
           className="h-full w-full"
         />
       </div>
@@ -46,7 +46,7 @@ const Profile = () => {
                   <div className=" flex user-icon">
                     <div className="mi mi-64 mi-avatar avatar">
                       <img
-                        src="https://amisplatform.misacdn.net/APIS/PlatformAPI/api/Avatar/8a05ea46-eb2d-4af5-b5da-8863c324c89f/BS27GS4Q.jpg?avatarID=2a14a261-f827-4f35-9861-b922a9001b1f&amp;imageType=jpg&amp;appCode=Accounting&amp;width=64&amp;height=64"
+                        src="https://amisplatform.misacdn.net/APIS/platformAPI/api/Avatar/8a05ea46-eb2d-4af5-b5da-8863c324c89f/BS27GS4Q.jpg?avatarID=2a14a261-f827-4f35-9861-b922a9001b1f&amp;imageType=jpg&amp;appCode=Accounting&amp;width=64&amp;height=64"
                         className="h-full w-full"
                       />
                     </div>

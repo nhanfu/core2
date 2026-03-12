@@ -2,16 +2,16 @@
  * Utilities for working with file and URL paths.
  */
 export const Path = {
-    ImgExt: ["tif", "pjp", "xbm", "jxl", "svgz", "jpeg", "ico", "tiff", "gif", "svg", "jfif", "webp", "png", "bmp", "pjpeg", "avif", "jpg"],
+    imgExt: ["tif", "pjp", "xbm", "jxl", "svgz", "jpeg", "ico", "tiff", "gif", "svg", "jfif", "webp", "png", "bmp", "pjpeg", "avif", "jpg"],
   
     /**
      * Check if the path corresponds to an image file.
      * @param {string} path - The file path.
      * @returns {boolean} - Returns true if the file is an image.
      */
-    IsImage(path) {
-      const extension = this.GetExtension(path).toLowerCase().substring(1);
-      return this.ImgExt.includes(extension);
+    isImage(path) {
+      const extension = this.getExtension(path).toLowerCase().substring(1);
+      return this.imgExt.includes(extension);
     },
   
     /**
@@ -20,8 +20,8 @@ export const Path = {
      * @param {string} path - The path URL.
      * @returns {string} - The combined URL.
      */
-    CombineHostAndPath(host, path) {
-      const containHost = this.ContainHost(path);
+    combineHostAndPath(host, path) {
+      const containHost = this.containHost(path);
       return containHost ? path : this.Combine(host, path);
     },
   
@@ -30,7 +30,7 @@ export const Path = {
      * @param {string} path - The path to check.
      * @returns {boolean} - Returns true if the path contains a host.
      */
-    ContainHost(path) {
+    containHost(path) {
       return path.includes("http://") || path.includes("https://");
     },
   
@@ -39,7 +39,7 @@ export const Path = {
      * @param {string} path - The path to extract from.
      * @returns {string} - The file extension, including the leading '.'.
      */
-    GetExtension(path) {
+    getExtension(path) {
       if (!path) return '';
       return path.substring(path.lastIndexOf("."));
     },
@@ -49,7 +49,7 @@ export const Path = {
      * @param {string} path - The path to extract from.
      * @returns {string} - The filename.
      */
-    GetFileName(path) {
+    getFileName(path) {
       if (!path) return '';
       const lastSlash = path.lastIndexOf("/");
       return lastSlash >= 0 ? path.substring(lastSlash + 1) : path;
@@ -60,7 +60,7 @@ export const Path = {
      * @param {string} path - The path to extract from.
      * @returns {string} - The filename without the extension.
      */
-    GetFileNameWithoutExtension(path) {
+    getFileNameWithoutExtension(path) {
       if (!path) return '';
       const lastSlashIndex = path.lastIndexOf("/");
       const lastDotIndex = path.lastIndexOf(".");

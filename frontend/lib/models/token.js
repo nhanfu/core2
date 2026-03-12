@@ -80,7 +80,7 @@ export class Token {
         // Default values can be initialized here if different from null or empty.
         this.tenantCode = Client.Tenant; // Assuming Client.Tenant is accessible
         this.env = Client.Env;          // Assuming Client.Env is accessible
-        this.connKey = Client.MetaConn; // Assuming Client.MetaConn is accessible
+        this.connKey = Client.metaConn; // Assuming Client.metaConn is accessible
     }
     /**
      * @param {string} token

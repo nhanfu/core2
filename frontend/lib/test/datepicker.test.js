@@ -2,7 +2,7 @@ import { jest } from "@jest/globals";
 import dayjs from "dayjs";
 
 jest.unstable_mockModule("../utils/componentExt.js", () => ({
-  ComponentExt: {},
+  componentExt: {},
 }));
 
 jest.unstable_mockModule("flatpickr", () => ({
@@ -32,15 +32,15 @@ describe("Datepicker", () => {
     container = document.createElement("div");
     document.body.appendChild(container);
     meta = {
-      FieldName: "StartDate",
-      PlainText: "Pick a date",
-      FormatData: "",
+      fieldName: "startDate",
+      plainText: "Pick a date",
+      formatData: "",
       Precision: 0,
-      ShowHotKey: true,
+      showHotKey: true,
     };
     datepicker = new Datepicker(meta, container);
     datepicker.Entity = {};
-    datepicker.Render();
+    datepicker.render();
   });
 
   afterEach(() => {
@@ -48,7 +48,7 @@ describe("Datepicker", () => {
   });
 
   test("renders an input and initializes flatpickr", () => {
-    expect(datepicker.Input).toBeInstanceOf(HTMLInputElement);
+    expect(datepicker.Input).toBeInstanceOf(hTMLInputElement);
     expect(datepicker.flatpickr).toBeDefined();
   });
 
@@ -59,7 +59,7 @@ describe("Datepicker", () => {
 
     expect(datepicker.Value).toBe(testDate);
     expect(datepicker.Input.value).toBe("26/04/2023");
-    expect(datepicker.Entity.StartDate).toBe("2023-04-26T00:00:00");
+    expect(datepicker.Entity.startDate).toBe("2023-04-26T00:00:00");
   });
 
   test("setting a null value clears the input and entity value", () => {
@@ -67,7 +67,7 @@ describe("Datepicker", () => {
     datepicker.Value = null;
 
     expect(datepicker.Input.value).toBe("");
-    expect(datepicker.Entity.StartDate).toBeNull();
+    expect(datepicker.Entity.startDate).toBeNull();
   });
 
   test("disabled state updates the input element", () => {

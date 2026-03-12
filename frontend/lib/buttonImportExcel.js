@@ -1,137 +1,137 @@
 import { Spinner } from "./spinner.js";
 import { EditableComponent } from "./editableComponent.js";
 import { Component } from "./models/component.js";
-import { Html } from "./utils/html.js";
+import { html } from "./utils/html.js";
 import { Client } from "./clients/index.js";
 import { Toast } from "./toast.js";
 
 /**
- * Represents a button component that can be rendered and managed on a web page.
+ * represents a button component that can be rendered and managed on a web page.
  */
 export class ButtonImportExcel extends EditableComponent {
-    IsButton = true;
+    isButton = true;
     /**
-     * Create instance of component
+     * create instance of component
      * @param {Component} ui 
      * @param {HTMLElement} ele 
      */
     constructor(ui, ele = null) {
         super(ui);
         /** @type {Component} */
-        this.Meta = ui;
-        this.ButtonEle = ele;
+        this.meta = ui;
+        this.buttonEle = ele;
         this._textEle = null;
     }
 
     /**
-     * Renders the button component into the DOM.
+     * renders the button component into the dOM.
      */
-    Render() {
-        if (!this.ButtonEle) {
-            if (!this.ParentElement) throw new Error("ParentElement is required");
-            Html.take(this.ParentElement).button.render();
-            this.Element = this.ButtonEle = Html.Context;
+    render() {
+        if (!this.buttonEle) {
+            if (!this.parentElement) throw new error("parentElement is required");
+            html.take(this.parentElement).button.render();
+            this.element = this.buttonEle = html.context;
         } else {
-            this.Element = this.ButtonEle;
+            this.element = this.buttonEle;
         }
 
-        Html.take(this.Element)
-            .className(this.Meta.ClassName)
-            .event("click", () => this.DispatchClick())
-            .style(this.Meta.Style);
+        html.take(this.element)
+            .className(this.meta.className)
+            .event("click", () => this.dispatchClick())
+            .style(this.meta.style);
 
-        if (this.Meta.Icon) {
-            Html.icon(this.Meta.Icon).end.text(" ").render();
+        if (this.meta.icon) {
+            html.icon(this.meta.icon).end.text(" ").render();
         }
 
-        Html.span.className("caption").iText(this.Meta.Label || "", this.EditForm.Meta.Label);
-        this._textEle = Html.Context;
+        html.span.className("caption").iText(this.meta.Label || "", this.editForm.meta.Label);
+        this._textEle = html.context;
 
-        this.Element.closest("td")?.addEventListener("keydown", e => this.ListViewItemTab(e));
-        this.DOMContentLoaded?.invoke();
+        this.element.closest("td")?.addEventListener("keydown", e => this.listViewItemTab(e));
+        this.dOMContentLoaded?.invoke();
     }
 
     /**
-     * Dispatches the click event, handles UI changes for click action.
+     * dispatches the click event, handles uI changes for click action.
      */
-    DispatchClick() {
-        if (this.Meta.OnClick) {
-            this.Meta.OnClick.call();
+    dispatchClick() {
+        if (this.meta.onClick) {
+            this.meta.onClick.call();
             return;
         }
 
-        if (this.Disabled || this.Element.hidden) {
+        if (this.disabled || this.element.hidden) {
             return;
         }
-        this.Disabled = true;
+        this.disabled = true;
         try {
-            this.ImportExcelTemplate().then(() => {
-                this.Disabled = false;
+            this.importExcelTemplate().then(() => {
+                this.disabled = false;
             });
         } finally {
             window.setTimeout(() => {
-                this.Disabled = false;
+                this.disabled = false;
             }, 2000);
         }
     }
 
     /**
-     * @param {Event} e
+     * @param {event} e
      */
-    async ImportExcelTemplate(e) {
+    async importExcelTemplate(e) {
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
         fileInput.accept = '.xlsx, .xls';
         fileInput.addEventListener('change', (event) => {
             if (event.target.files.length > 0) {
-                this.ActImportExcelTemplate(event);
+                this.actImportExcelTemplate(event);
             }
         });
         fileInput.click();
     }
 
     /**
-    * @param {Event} e
+    * @param {event} e
     */
-    async ActImportExcelTemplate(e) {
+    async actImportExcelTemplate(e) {
         const file = e.target.files[0];
         if (!file) {
-            alert("No file selected.");
+            alert("no file selected.");
             return;
         }
-        Spinner.AppendTo();
+        Spinner.appendTo();
         try {
-            var rs = await Client.instance.postFilesAsync(file, this.Meta.FormatData);
-            Spinner.Hide();
+            var rs = await Client.instance.postFilesAsync(file, this.meta.formatData);
+            Spinner.hide();
             if (this.isBlob(rs)) {
                 const ext = this.inferExtByType(rs.type);
                 const fileName =
-                    (this.Meta && this.Meta.FileName ? this.Meta.FileName : "download") +
+                    (this.meta && this.meta.fileName ? this.meta.fileName : "download") +
                     (ext || "");
                 this.downloadBlob(rs, fileName);
             }
             else {
-                var grid = this.EditForm.ChildCom.find(c => c.Meta.ComponentType === "GridView");
-                Toast.Success("Excel file imported successfully.", 5000);
-                await grid.ActionFilter();
+                var grid = this.editForm.childCom.find(c => c.meta.componentType === "GridView");
+                Toast.success("excel file imported successfully.", 5000);
+                await grid.actionFilter();
             }
         } catch (error) {
-            Spinner.Hide();
-            this.EditForm.OpenConfig(error.detail, () => {
+            Spinner.hide();
+            this.editForm.openConfig(error.detail, () => {
             }, () => { }, false, [], true)
         }
 
     }
 
     downloadBlob(blob, fileName) {
-        const url = URL.createObjectURL(blob);
+        const url = uRL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
         a.download = fileName || "download";
         document.body.appendChild(a);
         a.click();
         a.remove();
-        URL.revokeObjectURL(url);
+        uRL.revokeObjectURL(url);
     }
 
     isBlob(x) {

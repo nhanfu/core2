@@ -1,10 +1,10 @@
 import { Str } from "./utils/ext.js";
 import { Utils } from "./utils/utils.js";
-import { Component, Action, EventType, ValidationRule, KeyCodeEnum } from "./models/";
+import { Component, Action, EventType, ValidationRule, keyCodeEnum } from "./models/";
 import { Uuid7 } from "./structs/uuidv7.js";
-import { Html } from "./utils/html.js";
+import { html } from "./utils/html.js";
 import { LangSelect } from "./utils/langSelect.js";
-import Decimal from "decimal.js";
+import decimal from "decimal.js";
 import { Toast } from "./toast.js";
 import { Client } from "./clients/";
 import { Token } from "./models/";
@@ -21,117 +21,117 @@ dayjs.extend(timezone);
 dayjs.extend(customParseFormat);
 dayjs.extend(quarterOfYear);
 /**
- * @typedef {import('./gridView.js').GridView} GridView
- * @typedef {import('./listViewItem.js').ListViewItem} ListViewItem
- * @typedef {import('./searchEntry.js').SearchEntry} SearchEntry
+ * @typedef {import('./gridView.js').gridView} GridView
+ * @typedef {import('./listViewItem.js').listViewItem} ListViewItem
+ * @typedef {import('./searchEntry.js').searchEntry} SearchEntry
  * @typedef {import('./section.js').Section} Section
  * @typedef {import('./label.js').Label} Label
- * @typedef {import('./editForm.js').EditForm} EditForm
- * @typedef {import('./tabEditor.js').TabEditor} TabEditor
+ * @typedef {import('./editForm.js').editForm} EditForm
+ * @typedef {import('./tabEditor.js').tabEditor} TabEditor
  * @typedef {import('./models/observable.js').default} ObservableArgs
- * @typedef {{ [key: string] : (ValidationRule) }} Validation
+ * @typedef {{ [key: string] : (ValidationRule) }} validation
  */
 /**
  * @class
  */
 export class EditableComponent {
-    static ExchangeRateVND = {};
-    static ExchangeRateSaleVND = {};
-    static ExchangeRateProfitVND = {};
-    static ExchangeRateUSD = {};
-    static ExchangeRateSaleUSD = {};
-    static ExchangeRateProfitUSD = {};
+    static exchangeRateVND = {};
+    static exchangeRateSaleVND = {};
+    static exchangeRateProfitVND = {};
+    static exchangeRateUSD = {};
+    static exchangeRateSaleUSD = {};
+    static exchangeRateProfitUSD = {};
     /** @type {Client} */
     Client = Client.instance;
     /** @type {Uuid7} */
     Uuid7 = Uuid7;
-    /** @type {Decimal} */
-    Decimal = Decimal;
+    /** @type {decimal} */
+    decimal = decimal;
     /** @type {dayjs} */
     dayjs = dayjs;
     /** @type {LangSelect} */
     LangSelect = LangSelect;
     /** @type {any} */
-    SalesFunction;
+    salesFunction;
     /** @type {Toast} */
     Toast = Toast;
     /**
      * @type {number}
      */
-    static SmallScreen = 768;
-    DefaultObject = {};
+    static smallScreen = 768;
+    defaultObject = {};
     /**
      * @type {boolean}
      */
-    IsListViewItem = false;
+    isListViewItem = false;
     /**
      * @type {boolean}
      */
-    IsAction = false;
+    isAction = false;
     /**
      * @type {boolean}
      */
-    IsInput = false;
+    isInput = false;
     /**
      * @type {boolean}
      */
-    IsVND = false;
+    isVND = false;
     /**
      * @type {boolean}
      */
-    IsSection = false;
+    isSection = false;
     /**
      * @type {number}
      */
-    static ExSmallScreen = 567;
+    static exSmallScreen = 567;
 
     /**
      * @type {number}
      */
-    static MediumScreen = 992;
+    static mediumScreen = 992;
     /**
      * @type {number}
      */
-    static LargeScreen = 1200;
+    static largeScreen = 1200;
     /**
      * @type {number}
      */
-    static ExLargeScreen = 1452;
+    static exLargeScreen = 1452;
     /** @type {EditableComponent} */
-    Parent;
+    parent;
     /** @type {EditableComponent[]} */
-    Children = [];
+    children = [];
     /** @type {HTMLElement}*/
-    ParentElement;
+    parentElement;
     /** @type {HTMLElement} */
-    Element;
-    /** @type {Object} */
-    Entity = null;
+    element;
+    /** @type {object} */
+    entity = null;
     /** @type {Component} */
-    Meta;
+    meta;
     /** @type {any} */
-    DefaultValue;
-    /** @type {string[]} Classes - Represent hierarchy class of the component instance. */
-    Classes = [];
-    /** @type {boolean} emptyRow - True if the component is in empty row or screen, otherwise false. */
+    defaultValue;
+    /** @type {string[]} classes - represent hierarchy class of the component instance. */
+    classes = [];
+    /** @type {boolean} emptyRow - true if the component is in empty row or screen, otherwise false. */
     #emptyRow;
-    /** @type {Action} Disposed - Handle after dispose event. */
-    Disposed = new Action();
-    /** @type {Action} Disposed - Handle DOM Content loaded event. */
-    DOMContentLoaded = new Action();
-    /** @type {Action} Handle toggle event. */
-    OnToggle = new Action();
-    /** @type {TabEditor} Handle toggle event. */
+    /** @type {Action} disposed - handle after dispose event. */
+    disposed = new Action();
+    /** @type {Action} disposed - handle dOM content loaded event. */
+    dOMContentLoaded = new Action();
+    /** @type {Action} handle toggle event. */
+    onToggle = new Action();
+    /** @type {TabEditor} handle toggle event. */
     #rootTab;
-    UserInput = new Action();
-    /** @type {Decimal} */
-    OldValue;
+    userInput = new Action();
+    /** @type {decimal} */
+    oldValue;
     /** @type {{[key: string]: string}} */
-    ValidationResult = {};
-    get ClassName() { return this.Element.className; }
-    set ClassName(value) { this.Element.className = value; }
-    /** @type {Validation} */
-    ValidationRules = {};
+    validationResult = {};
+    get className() { return this.element.className; }
+    set className(value) { this.element.className = value; }
+    /** @type {validation} */
+    validationRules = {};
     /** @type {boolean} */
     #disabled;
     /** @type {EditForm} */
@@ -141,27 +141,27 @@ export class EditableComponent {
     /** @type {boolean} */
     _dirtyEntity;
     /** @type {boolean} */
-    AlwaysValid;
-    IdField = 'Id';
-    StatusIdField = 'StatusId';
-    AfterSaved = new Action();
-    BeforeSaved = new Action();
-    PopulateDirty = true;
-    LocalData = [];
-    IsListViewItem = false;
-    IsButton = false;
-    IsRow = false;
-    IsListView = false;
-    IsSearchEntry = false;
-    IsTabComponent = false;
-    IsEditForm = false;
+    alwaysValid;
+    idField = 'id';
+    statusIdField = 'statusId';
+    afterSaved = new Action();
+    beforeSaved = new Action();
+    populateDirty = true;
+    localData = [];
+    isListViewItem = false;
+    isButton = false;
+    isRow = false;
+    isListView = false;
+    isSearchEntry = false;
+    isTabComponent = false;
+    isEditForm = false;
     /** @type {Token} */
     get Token() {
         return Client.token;
     }
-    /** @type {TabEditor} Handle toggle event. */
+    /** @type {TabEditor} handle toggle event. */
     get TabEditor() {
-        return this.FindClosest(x => x.IsTab);
+        return this.findClosest(x => x.isTab);
     }
     /** @type {EditForm} */
     get EditForm() {
@@ -173,137 +173,137 @@ export class EditableComponent {
     set EditForm(editor) {
         this.#editForm = editor;
     }
-    get IsSmallUp() { return document.body.clientWidth > 768 }
-    get IsMediumUp() { return document.body.clientWidth > 992 }
-    get IsLargeUp() { return document.body.clientWidth > 1200 }
+    get isSmallUp() { return document.body.clientWidth > 768 }
+    get isMediumUp() { return document.body.clientWidth > 992 }
+    get isLargeUp() { return document.body.clientWidth > 1200 }
     /** @type {boolean} */
-    get Disabled() {
+    get disabled() {
         return this.#disabled;
     }
-    set Disabled(value) {
+    set disabled(value) {
         this.#disabled = value;
-        this.SetDisableUI(value);
-        this.Children.Flattern(x => x.Children).filter(y => y.Meta && Utils.isNullOrWhiteSpace(y.Meta.DisabledExp) && !y.Meta.Disabled).forEach(x => {
+        this.setDisableUI(value);
+        this.children.flattern(x => x.children).filter(y => y.meta && Utils.isNullOrWhiteSpace(y.meta.disabledExp) && !y.meta.disabled).forEach(x => {
             x.#disabled = value;
-            x.SetDisableUI(value);
+            x.setDisableUI(value);
         });
     }
-    get Dirty() {
-        var check = this._dirty && !this.AlwaysValid || this.FilterChildren(x => x._dirty, x => !x.PopulateDirty || x.AlwaysValid).length > 0;
+    get dirty() {
+        var check = this._dirty && !this.alwaysValid || this.filterChildren(x => x._dirty, x => !x.populateDirty || x.alwaysValid).length > 0;
         return check;
     }
-    set Dirty(value) {
+    set dirty(value) {
         this._dirty = value;
         var name = "_dirty";
-        if (!Utils.isNullOrWhiteSpace(this.Meta.EntityName)) {
-            name = name + this.Meta.EntityName;
+        if (!Utils.isNullOrWhiteSpace(this.meta.entityName)) {
+            name = name + this.meta.entityName;
             this[name] = value;
         }
         if (!value) {
-            this.FilterChildren(x => x._dirty, x => !x.PopulateDirty || x.AlwaysValid).forEach(x => x[name] = false);
+            this.filterChildren(x => x._dirty, x => !x.populateDirty || x.alwaysValid).forEach(x => x[name] = false);
         }
     }
 
-    DirtyEntity(entityName) {
+    dirtyEntity(entityName) {
         var name = "_dirty";
-        var check = this[name + entityName] && !this.AlwaysValid || this.FilterChildren(x => x[name + entityName], x => !x.PopulateDirty || x.AlwaysValid).length > 0;
+        var check = this[name + entityName] && !this.alwaysValid || this.filterChildren(x => x[name + entityName], x => !x.populateDirty || x.alwaysValid).length > 0;
         return check;
     }
-    get IsValid() {
-        return Object.keys(this.ValidationResult).length === 0;
+    get isValid() {
+        return object.keys(this.validationResult).length === 0;
     }
-    get CacheName() {
-        var exp = this.Meta?.CacheName;
+    get cacheName() {
+        var exp = this.meta?.cacheName;
         if (!exp) return null;
-        var data = Utils.IsFunction(exp, false, this);
+        var data = Utils.isFunction(exp, false, this);
         return data ? data : exp;
     }
-    get QueueName() {
-        return this.Meta?.QueueName;
+    get queueName() {
+        return this.meta?.queueName;
     }
-    /** @returns {string} Entity's Id */
-    get EntityId() {
-        return this.Entity?.Id;
+    /** @returns {string} Entity's id */
+    get entityId() {
+        return this.entity?.id;
     }
-    set EntityId(value) {
-        if (this.Entity == null) return;
-        this.Entity.Id = value;
+    set entityId(value) {
+        if (this.entity == null) return;
+        this.entity.id = value;
     }
-    /** @returns {string} Meta Label */
-    get ComLabel() {
-        return this.Meta?.Label;
+    /** @returns {string} meta Label */
+    get comLabel() {
+        return this.meta?.Label;
     }
-    /** @returns {string} Meta fieldname */
-    get Name() {
-        return this.Meta?.FieldName;
+    /** @returns {string} meta fieldname */
+    get name() {
+        return this.meta?.fieldName;
     }
-    set Name(val) {
-        if (this.Meta == null)
-            this.Meta = new Component();
-        this.Meta.FieldName = val || null;
+    set name(val) {
+        if (this.meta == null)
+            this.meta = new Component();
+        this.meta.fieldName = val || null;
     }
     get ComponentType() {
-        return this.Meta?.ComponentType;
+        return this.meta?.componentType;
     }
     set ComponentType(val) {
-        if (this.Meta == null)
-            this.Meta = new Component();
-        this.Meta.ComponentType = val;
+        if (this.meta == null)
+            this.meta = new Component();
+        this.meta.componentType = val;
     }
-    /** @type {boolean} emptyRow - True if the component is in empty row or screen, otherwise false. */
-    get EmptyRow() {
+    /** @type {boolean} emptyRow - true if the component is in empty row or screen, otherwise false. */
+    get emptyRow() {
         return this.#emptyRow;
     }
-    set EmptyRow(val) {
+    set emptyRow(val) {
         this.#emptyRow = val;
     }
-    get MetaConn() {
-        return this.Meta?.MetaConn;
+    get metaConn() {
+        return this.meta?.metaConn;
     }
-    get DataConn() {
-        return this.Meta?.DataConn;
+    get dataConn() {
+        return this.meta?.dataConn;
     }
-    get FieldVal() { return !this.Entity || !this.Name ? null : this.Entity[this.Name]; }
-    set FieldVal(val) {
-        if (this.Entity == null || this.Name == null) return;
-        this.Entity[this.Name] = val;
+    get fieldVal() { return !this.entity || !this.name ? null : this.entity[this.name]; }
+    set fieldVal(val) {
+        if (this.entity == null || this.name == null) return;
+        this.entity[this.name] = val;
     }
-    static TabContainer = document.getElementById("tab-content");
-    Popup = false;
-    IsTab = false;
-    get FirstChild() { return this.Children.FirstOrDefault(); }
+    static tabContainer = document.getElementById("tab-content");
+    popup = false;
+    isTab = false;
+    get firstChild() { return this.children.firstOrDefault(); }
     constructor(meta, element = null) {
-        this.Meta = meta;
-        this.AlwaysValid = false;
-        this.ParentElement = this.Meta?.ParentElement;
-        this.Element = element;
-        this.AlwaysLogHistory = false;
-        this.Entity = {};
-        this.SalesFunction = JSON.parse(localStorage.getItem("SalesFunction"));
-        this.DOMContentLoaded.add(() => {
-            this.UpdateValidation();
-            this.SetRequired();
-            this.SendQueueAction("Subscribe");
-            if (meta != null && meta.Events) {
-                this.DispatchEvent(meta.Events, EventType.DOMContentLoaded, this, this.Entity).then();
+        this.meta = meta;
+        this.alwaysValid = false;
+        this.parentElement = this.meta?.parentElement;
+        this.element = element;
+        this.alwaysLogHistory = false;
+        this.entity = {};
+        this.salesFunction = JSON.parse(localStorage.getItem("salesFunction"));
+        this.dOMContentLoaded.add(() => {
+            this.updateValidation();
+            this.setRequired();
+            this.sendQueueAction("subscribe");
+            if (meta != null && meta.events) {
+                this.dispatchEvent(meta.events, EventType.dOMContentLoaded, this, this.entity).then();
             }
-            this.SetOldTextAndVal();
+            this.setOldTextAndVal();
         });
     }
 
-    UpdateValidation(setRequired) {
-        if (!Utils.isNullOrWhiteSpace(this.Meta?.Validation)) {
-            /** @type {Validation[]} */
-            var rules = Utils.IsFunction(this.Meta.Validation, false, this);
+    updateValidation(setRequired) {
+        if (!Utils.isNullOrWhiteSpace(this.meta?.validation)) {
+            /** @type {validation[]} */
+            var rules = Utils.isFunction(this.meta.validation, false, this);
             if (rules.length > 0) {
-                this.ValidationRules = rules.ToDictionary(x => x.Rule, x => x);
+                this.validationRules = rules.toDictionary(x => x.rule, x => x);
             }
             else {
-                this.ValidationRules = [];
+                this.validationRules = [];
             }
         }
         if (setRequired) {
-            this.SetRequired();
+            this.setRequired();
         }
     }
     /**
@@ -311,49 +311,49 @@ export class EditableComponent {
      * @param {string} eventType
      * @param {any[]} parameters
      */
-    DispatchEvent(events, eventType, ...parameters) {
+    dispatchEvent(events, eventType, ...parameters) {
         if (!events) {
-            return Promise.resolve(true);
+            return promise.resolve(true);
         }
-        return Promise.resolve(this.InvokeEvent(events, eventType, ...parameters));
+        return promise.resolve(this.invokeEvent(events, eventType, ...parameters));
     }
     /**
      * @param {any} events
      * @param {string} eventType
      * @param {any[]} parameters
      */
-    InvokeEvent(events, eventTypeName, ...parameters) {
+    invokeEvent(events, eventTypeName, ...parameters) {
         let eventObj;
         try {
             eventObj = JSON.parse(events);
         } catch (error) {
-            Spinner.Hide();
-            this.EditForm?.OpenConfig?.("JSON parse error:" + error, () => {
+            Spinner.hide();
+            this.editForm?.openConfig?.("JSON parse error:" + error, () => {
             }, () => { }, false, [], true);
-            return Promise.resolve(false);
+            return promise.resolve(false);
         }
 
         const eventName = eventObj[eventTypeName];
         if (!eventName) {
-            return Promise.resolve(false);
+            return promise.resolve(false);
         }
 
-        const data = Utils.IsFunction(eventName, false, this);
+        const data = Utils.isFunction(eventName, false, this);
         if (data) {
-            Spinner.Hide();
-            return Promise.resolve(true);
+            Spinner.hide();
+            return promise.resolve(true);
         }
 
-        let form = this.EditForm;
+        let form = this.editForm;
         if (!form) {
-            Spinner.Hide();
-            return Promise.resolve(false);
+            Spinner.hide();
+            return promise.resolve(false);
         }
 
         const method = form[eventName];
         if (!method) {
-            Spinner.Hide();
-            return Promise.resolve(false);
+            Spinner.hide();
+            return promise.resolve(false);
         }
 
         const tcs = new Promise((resolve, reject) => {
@@ -363,21 +363,21 @@ export class EditableComponent {
                     resolve(task);
                 } else {
                     task.then(() => resolve(task)).catch(e => {
-                        Spinner.Hide();
-                        this.EditForm.OpenConfig(e, () => {
+                        Spinner.hide();
+                        this.editForm.openConfig(e, () => {
                         }, () => { }, false, [], true);
                         reject(e);
                     });
                 }
             } catch (invokeError) {
-                Spinner.Hide();
-                this.EditForm.OpenConfig(invokeError, () => {
+                Spinner.hide();
+                this.editForm.openConfig(invokeError, () => {
                 }, () => { }, false, [], true);
                 reject(invokeError);
             }
         }).catch(finalError => {
-            Spinner.Hide();
-            this.EditForm.OpenConfig(finalError, () => {
+            Spinner.hide();
+            this.editForm.openConfig(finalError, () => {
             }, () => { }, false, [], true);
         });;
 
@@ -389,27 +389,27 @@ export class EditableComponent {
      * @param {string} eventType
      * @param {any[]} parameters
      */
-    DispatchCustomEvent(events, eventType, ...parameters) {
+    dispatchCustomEvent(events, eventType, ...parameters) {
         if (!events) {
-            return Promise.resolve(true);
+            return promise.resolve(true);
         }
         const eventTypeName = eventType.toString();
-        return Promise.resolve(this.InvokeEvent(events, eventTypeName, ...parameters));
+        return promise.resolve(this.invokeEvent(events, eventTypeName, ...parameters));
     }
 
-    SetOldTextAndVal() {
-        this.OriginalText = this.GetValueText();
-        this.OldValue = this.Entity[this.Meta.FieldName];
+    setOldTextAndVal() {
+        this.originalText = this.getValueText();
+        this.oldValue = this.entity[this.meta.fieldName];
     }
 
-    SetRequired() {
-        const ele = this.Element;
+    setRequired() {
+        const ele = this.element;
         if (ele == null) return;
-        if (this.ValidationRules?.hasOwnProperty(ValidationRule.Required)) {
-            ele.setAttribute(ValidationRule.Required, true.toString());
+        if (this.validationRules?.hasOwnProperty(ValidationRule.required)) {
+            ele.setAttribute(ValidationRule.required, true.toString());
         }
         else {
-            ele.removeAttribute(ValidationRule.Required);
+            ele.removeAttribute(ValidationRule.required);
         }
     }
     /**
@@ -419,45 +419,45 @@ export class EditableComponent {
      * @param {(item: any, rule: any) => boolean} validPredicate 
      * @returns 
      */
-    Validate(ruleType, value, validPredicate) {
-        if (!this.ValidationRules.hasOwnProperty(ruleType)) {
+    validate(ruleType, value, validPredicate) {
+        if (!this.validationRules.hasOwnProperty(ruleType)) {
             return true;
         }
-        let rule = this.ValidationRules[ruleType];
-        if (rule === null || rule.Value1 === null) {
+        let rule = this.validationRules[ruleType];
+        if (rule === null || rule.value1 === null) {
             return true;
         }
-        let field = rule.Value1.toString();
+        let field = rule.value1.toString();
         if (field === "") {
             return true;
         }
-        let ruleValue = rule.Value1;
-        let rule2Value = rule.Value2;
+        let ruleValue = rule.value1;
+        let rule2Value = rule.value2;
         let label = ruleValue;
-        let fieldVal = this.Entity[field];
+        let fieldVal = this.entity[field];
         if (fieldVal) {
-            label = this.Meta?.Label;
+            label = this.meta?.Label;
             ruleValue = fieldVal;
         }
         if (!validPredicate.bind(this)(value, ruleValue, rule2Value)) {
-            if (![ValidationRule.RegEx, ValidationRule.Replace].some(x => x == ruleType)) {
-                this.ValidationResult[ruleType] = Str.Format(rule.Message, this.Meta.Label, label);
+            if (![ValidationRule.regEx, ValidationRule.replace].some(x => x == ruleType)) {
+                this.validationResult[ruleType] = Str.format(rule.Message, this.meta.Label, label);
             }
             else {
-                delete this.ValidationResult[ruleType];
+                delete this.validationResult[ruleType];
             }
             return true;
         }
         else {
-            delete this.ValidationResult[ruleType];
+            delete this.validationResult[ruleType];
         }
         return false;
     }
     /**
      * @param {boolean} [disabled]
      */
-    SetDisableUI(disabled) {
-        const ele = this.Element;
+    setDisableUI(disabled) {
+        const ele = this.element;
         if (ele == null) {
             return;
         }
@@ -470,19 +470,19 @@ export class EditableComponent {
         }
     }
 
-    SetDefaultVal() {
-        if (Utils.isNullOrWhiteSpace(this.Meta.DefaultVal)) {
+    setDefaultVal() {
+        if (Utils.isNullOrWhiteSpace(this.meta.defaultVal)) {
             return;
         }
-        var data = Utils.IsFunction(this.Meta.DefaultVal, true, this);
+        var data = Utils.isFunction(this.meta.defaultVal, true, this);
         if (!data) {
-            data = this.Meta.DefaultVal;
+            data = this.meta.defaultVal;
         }
-        if (data && this.Entity && this.Entity[this.Name] == null && this.Entity[this.IdField] && this.Entity[this.IdField].startsWith("-")) {
-            this.Entity[this.Name] = data;
-            this.PopulateFields();
+        if (data && this.entity && this.entity[this.name] == null && this.entity[this.idField] && this.entity[this.idField].startsWith("-")) {
+            this.entity[this.name] = data;
+            this.populateFields();
             window.setTimeout(() => {
-                this.PopulateFields();
+                this.populateFields();
             }, 300);
         }
         else {
@@ -490,63 +490,63 @@ export class EditableComponent {
         }
     }
 
-    async ValidateRequired(value) {
-        if (this.Element === null || Object.keys(this.ValidationRules).length === 0 || this.EmptyRow || this.AlwaysValid) {
+    async validateRequired(value) {
+        if (this.element === null || object.keys(this.validationRules).length === 0 || this.emptyRow || this.alwaysValid) {
             return true;
         }
 
-        if (!this.ValidationRules.hasOwnProperty(ValidationRule.Required)) {
-            this.Element.removeAttribute(ValidationRule.Required);
+        if (!this.validationRules.hasOwnProperty(ValidationRule.required)) {
+            this.element.removeAttribute(ValidationRule.required);
             return true;
         }
 
-        const requiredRule = this.ValidationRules[ValidationRule.Required];
-        this.Element.setAttribute(ValidationRule.Required, true.toString());
+        const requiredRule = this.validationRules[ValidationRule.required];
+        this.element.setAttribute(ValidationRule.required, true.toString());
 
         if (value === null || value === undefined || value.toString().trim() === "") {
-            this.ValidationResult[ValidationRule.Required] = requiredRule.Message.replace("{0}", LangSelect.Get(this.Meta.Label)).replace("{1}", this.Entity);
+            this.validationResult[ValidationRule.required] = requiredRule.Message.replace("{0}", LangSelect.get(this.meta.Label)).replace("{1}", this.entity);
             return false;
         } else {
-            delete this.ValidationResult[ValidationRule.Required];
+            delete this.validationResult[ValidationRule.required];
             return true;
         }
     }
 
-    AddRule(rule) {
-        this.ValidationRules[rule.Rule] = rule;
-        if (rule.Rule === ValidationRule.Required) {
-            this.Element.setAttribute(ValidationRule.Required, true.toString());
+    addRule(rule) {
+        this.validationRules[rule.rule] = rule;
+        if (rule.rule === ValidationRule.required) {
+            this.element.setAttribute(ValidationRule.required, true.toString());
         }
     }
 
-    KeydownHandler(e) {
-        let code = e.KeyCodeEnum();
+    keydownHandler(e) {
+        let code = e.keyCodeEnum();
         switch (code) {
-            case KeyCodeEnum.Enter:
+            case keyCodeEnum.enter:
                 e.preventDefault();
-                if (!this.Parent.IsListViewItem) {
-                    if (!Utils.isNullOrWhiteSpace(this.Meta.GroupBy)) {
-                        var groups = this.EditForm.ChildCom.filter(x => x.Meta.GroupBy == this.Meta.GroupBy);
+                if (!this.parent.isListViewItem) {
+                    if (!Utils.isNullOrWhiteSpace(this.meta.groupBy)) {
+                        var groups = this.editForm.childCom.filter(x => x.meta.groupBy == this.meta.groupBy);
                         var index = groups.indexOf(this);
                         if (groups[index + 1]) {
-                            groups[index + 1].Focus();
+                            groups[index + 1].focus();
                         }
                         else {
-                            var groupIndex = this.Parent.Parent.Children.indexOf(this.Parent);
-                            if (this.Parent.Parent.Children[groupIndex + 1] && this.Parent.Parent.Children[groupIndex + 1].Children[0]) {
-                                this.Parent.Parent.Children[groupIndex + 1].Children[0].Focus();
+                            var groupIndex = this.parent.parent.children.indexOf(this.parent);
+                            if (this.parent.parent.children[groupIndex + 1] && this.parent.parent.children[groupIndex + 1].children[0]) {
+                                this.parent.parent.children[groupIndex + 1].children[0].focus();
                             }
                         }
                     }
                     else {
-                        var index = this.Parent.Children.indexOf(this);
-                        if (this.Parent.Children[index + 1]) {
-                            this.Parent.Children[index + 1].Focus();
+                        var index = this.parent.children.indexOf(this);
+                        if (this.parent.children[index + 1]) {
+                            this.parent.children[index + 1].focus();
                         }
                         else {
-                            var groupIndex = this.Parent.Parent.Children.indexOf(this.Parent);
-                            if (this.Parent.Parent.Children[groupIndex + 1] && this.Parent.Parent.Children[groupIndex + 1].Children[0]) {
-                                this.Parent.Parent.Children[groupIndex + 1].Children[0].Focus();
+                            var groupIndex = this.parent.parent.children.indexOf(this.parent);
+                            if (this.parent.parent.children[groupIndex + 1] && this.parent.parent.children[groupIndex + 1].children[0]) {
+                                this.parent.parent.children[groupIndex + 1].children[0].focus();
                             }
                         }
                     }
@@ -557,67 +557,67 @@ export class EditableComponent {
         }
     }
 
-    RemoveRule(ruleName) {
-        delete this.ValidationRules[ruleName];
-        if (!Object.keys(this.ValidationRules).includes(ValidationRule.Required)) {
-            this.Element.removeAttribute(ValidationRule.Required);
+    removeRule(ruleName) {
+        delete this.validationRules[ruleName];
+        if (!object.keys(this.validationRules).includes(ValidationRule.required)) {
+            this.element.removeAttribute(ValidationRule.required);
         }
     }
 
-    GetInvalid() {
-        return this.Children.Flattern(x => x.AlwaysValid ? null : x.Children).Where(x => !x.IsValid);
+    getInvalid() {
+        return this.children.flattern(x => x.alwaysValid ? null : x.children).where(x => !x.isValid);
     }
 
-    CascadeField() {
-        if (!this.Meta.CascadeField) {
+    cascadeField() {
+        if (!this.meta.cascadeField) {
             return;
         }
 
-        const root = this.FindClosest(x => x.IsRow) ?? this.EditForm;
-        const cascadeFields = this.Meta.CascadeField.split(",").map(field => field.trim()).filter(x => x !== "");
+        const root = this.findClosest(x => x.isRow) ?? this.editForm;
+        const cascadeFields = this.meta.cascadeField.split(",").map(field => field.trim()).filter(x => x !== "");
         if (cascadeFields.length === 0) {
             return;
         }
 
         cascadeFields.forEach(field => {
-            root.FilterChildren(x => x.Name === field).forEach(target => {
+            root.filterChildren(x => x.name === field).forEach(target => {
                 // @ts-ignore
                 if (target instanceof SearchEntry && target !== null) {
                     // @ts-ignore
-                    target.Value = null;
-                    target.Meta.LocalData = null;
+                    target.value = null;
+                    target.meta.localData = null;
                 } else {
-                    target.UpdateView();
+                    target.updateView();
                 }
             });
         });
     }
 
-    PopulateFields(entity = null) {
-        if (this.Entity == null || this.Meta.PopulateField == null) {
+    populateFields(entity = null) {
+        if (this.entity == null || this.meta.populateField == null) {
             return;
         }
-        var isGrid = this.Parent.IsListViewItem;
-        var root = this.EditForm;
+        var isGrid = this.parent.isListViewItem;
+        var root = this.editForm;
         if (isGrid) {
-            root = this.Parent;
+            root = this.parent;
         }
-        Utils.IsFunction(this.Meta.PopulateField, false, this);
+        Utils.isFunction(this.meta.populateField, false, this);
     }
 
-    AddIdToPatch(details) {
-        const idFieldIndex = details.findIndex(x => x.Field === Utils.IdField);
+    addIdToPatch(details) {
+        const idFieldIndex = details.findIndex(x => x.field === Utils.idField);
         if (idFieldIndex !== -1) details.splice(idFieldIndex, 1);
-        if (this.EntityId === null) {
-            details.push({ Field: Utils.IdField, Value: Uuid7.Id25() });
+        if (this.entityId === null) {
+            details.push({ field: Utils.idField, value: Uuid7.id25() });
         } else {
-            details.push({ Field: Utils.IdField, Value: this.EntityId, OldVal: this.EntityId });
+            details.push({ field: Utils.idField, value: this.entityId, oldVal: this.entityId });
         }
     }
 
     _events = {};
     addEventListener(name, handler) {
-        if (handler === null) throw new Error("Handler cannot be null");
+        if (handler === null) throw new error("handler cannot be null");
         const handlers = this._events[name] || null;
         if (handlers == null) {
             this._events[name] = [handler];
@@ -627,78 +627,78 @@ export class EditableComponent {
     }
 
     removeEventListener(name, handler) {
-        if (handler === null) throw new Error("Handler cannot be null");
+        if (handler === null) throw new error("handler cannot be null");
         const handlers = this._events[name] || null;
         if (handlers !== null) {
             delete this._events[name];
         }
     }
 
-    FindComponentByName(name, type) {
-        return this.FirstOrDefault(x => x.Name === name && (type == null || x.Classes.includes(type)));
+    findComponentByName(name, type) {
+        return this.firstOrDefault(x => x.name === name && (type == null || x.classes.includes(type)));
     }
 
     /**
-     * Find closeset component
-     * @param {(value: EditableComponent) => boolean} filter - Filter component
-     * @returns {EditableComponent} Returns the closeset EditableComponent of the specified type
+     * find closeset component
+     * @param {(value: EditableComponent) => boolean} filter - filter component
+     * @returns {EditableComponent} returns the closeset EditableComponent of the specified type
      */
-    FindClosest(filter = null) {
+    findClosest(filter = null) {
         /** @type {EditableComponent} */
         let found = this;
         while (found != null) {
             if (filter == null || filter(found)) return found;
-            found = found.Parent;
+            found = found.parent;
         }
         return null;
     }
     /** @type {boolean} */
     _show;
-    get Show() {
+    get show() {
         return this._show;
     }
-    set Show(val) {
-        this.Toggle(val);
+    set show(val) {
+        this.toggle(val);
     }
     /** @param {boolean} value */
-    Toggle(value) {
-        if (!this.Element) {
+    toggle(value) {
+        if (!this.element) {
             return;
         }
         this._show = value;
         if (!this._show) {
-            if (this.Meta && this.Meta.ShowLabel && !this.IsSection) {
-                this.Element.parentElement.style.display = "none";
+            if (this.meta && this.meta.showLabel && !this.isSection) {
+                this.element.parentElement.style.display = "none";
             }
             else {
-                this.Element.style.display = "none";
+                this.element.style.display = "none";
             }
         }
         else {
-            if (this.Meta && this.Meta.ShowLabel && !this.IsSection) {
-                this.Element.parentElement.style.display = "";
+            if (this.meta && this.meta.showLabel && !this.isSection) {
+                this.element.parentElement.style.display = "";
             }
             else {
-                this.Element.style.display = "";
+                this.element.style.display = "";
             }
         }
     }
 
     /**
-     * Show / hide the component
+     * show / hide the component
      * @param {string|boolean} showExp 
      */
-    ToggleShow(showExp) {
-        if (showExp instanceof Boolean) {
-            this.Show = showExp;
+    toggleShow(showExp) {
+        if (showExp instanceof boolean) {
+            this.show = showExp;
             return;
         }
-        var shown = Utils.IsFunction(showExp, false, this);
-        this.Show = shown;
-        if (this.Element.parentElement && this.Element.parentElement.parentElement && ["Button", "Pdf", "Excel", "Email"].some(x => x == this.Meta.ComponentType) && this.Meta.GroupFormat) {
-            var parentElement = this.Element.parentElement;
+        var shown = Utils.isFunction(showExp, false, this);
+        this.show = shown;
+        if (this.element.parentElement && this.element.parentElement.parentElement && ["Button", "Pdf", "excel", "email"].some(x => x == this.meta.componentType) && this.meta.groupFormat) {
+            var parentElement = this.element.parentElement;
             var child = parentElement.querySelectorAll(".dropdown-content button");
-            var parentArray = Array.from(child);
+            var parentArray = array.from(child);
             if (parentArray.some(x => x.style.display !== "none")) {
                 parentElement.parentElement.style.display = "";
             } else {
@@ -709,52 +709,52 @@ export class EditableComponent {
 
     /**
      * 
-     * @param {Boolean | String | Function} disabled 
+     * @param {boolean | string | function} disabled 
      */
-    ToggleDisabled(disabled) {
-        if (this.Entity && this.Entity.IsLockEdit && this.Meta && !["Button", "Pdf", "Excel", "Email"].includes(this.Meta.ComponentType)) {
+    toggleDisabled(disabled) {
+        if (this.entity && this.entity.isLockEdit && this.meta && !["Button", "Pdf", "excel", "email"].includes(this.meta.componentType)) {
             return;
         }
-        if (disabled instanceof Boolean) {
-            this.Disabled = disabled;
+        if (disabled instanceof boolean) {
+            this.disabled = disabled;
             return;
         }
-        if (!["IsPaid", "PaidDate", "btnEdit"].includes(this.Meta.FieldName)
-            && !this.Entity["IsLock"] && ((this.Parent && this.Parent.IsListViewItem
-                && !this.Entity["NoSubmit"] && !this.Entity["IsPayment"] && !this.Entity["IsInvoice"])
-                || (this.Parent && !this.Parent.IsListViewItem)) && !this.Meta.Disabled || this.Meta.CanWriteAll) {
-            var disabledFn = Utils.IsFunction(disabled, false, this);
-            this.Disabled = disabledFn || false;
+        if (!["isPaid", "paidDate", "btnEdit"].includes(this.meta.fieldName)
+            && !this.entity["isLock"] && ((this.parent && this.parent.isListViewItem
+                && !this.entity["noSubmit"] && !this.entity["isPayment"] && !this.entity["isInvoice"])
+                || (this.parent && !this.parent.isListViewItem)) && !this.meta.disabled || this.meta.canWriteAll) {
+            var disabledFn = Utils.isFunction(disabled, false, this);
+            this.disabled = disabledFn || false;
         }
     }
     /**
      * 
-     * @param {Eve} e 
+     * @param {eve} e 
      */
-    ListViewItemTab(e) {
+    listViewItemTab(e) {
     }
 
-    UpdateView(force = false, dirty = null, ...componentNames) {
-        this.PrepareUpdateView(force, dirty);
-        if (!this.Children || this.Children.length === 0) {
+    updateView(force = false, dirty = null, ...componentNames) {
+        this.prepareUpdateView(force, dirty);
+        if (!this.children || this.children.length === 0) {
             return;
         }
         if (componentNames && componentNames.length > 0) {
-            const coms = this.FilterChildren(x => x.IsSection && componentNames.includes(x.Meta.FieldName))
-                .flatMap(x => x.FilterChildren(x => !x.IsSection));
-            const coms2 = this.FilterChildren(x => componentNames.includes(x.Meta.FieldName) && !x.IsSection);
-            const shouldUpdate = [...new Set([...coms, ...coms2].filter(x => !x.IsSection))];
+            const coms = this.filterChildren(x => x.isSection && componentNames.includes(x.meta.fieldName))
+                .flatMap(x => x.filterChildren(x => !x.isSection));
+            const coms2 = this.filterChildren(x => componentNames.includes(x.meta.fieldName) && !x.isSection);
+            const shouldUpdate = [...new set([...coms, ...coms2].filter(x => !x.isSection))];
             shouldUpdate.forEach(child => {
-                child.PrepareUpdateView(force, dirty);
-                child.Entity = this.Entity;
-                child.UpdateView(force, dirty, ...componentNames);
+                child.prepareUpdateView(force, dirty);
+                child.Entity = this.entity;
+                child.updateView(force, dirty, ...componentNames);
             });
         } else {
-            const shouldUpdate = this.FilterChildren(x => !x.IsSection && !x.IsListView);
+            const shouldUpdate = this.filterChildren(x => !x.isSection && !x.isListView);
             shouldUpdate.forEach(child => {
-                child.PrepareUpdateView(force, dirty);
-                child.Entity = this.Entity;
-                child.UpdateView(force, dirty, ...componentNames);
+                child.prepareUpdateView(force, dirty);
+                child.entity = this.entity;
+                child.updateView(force, dirty, ...componentNames);
             });
         }
     }
@@ -764,145 +764,145 @@ export class EditableComponent {
     }
 
     resetObject(res) {
-        this.setPropValue(res, this.StatusIdField, 1);
-        if (res["NoSubmit"] != undefined || res["NoSubmit"] != null) {
-            this.setPropValue(res, "ParentId", null);
+        this.setPropValue(res, this.statusIdField, 1);
+        if (res["noSubmit"] != undefined || res["noSubmit"] != null) {
+            this.setPropValue(res, "parentId", null);
         }
-        this.setPropValue(res, "TariffChargeId", null);
-        this.setPropValue(res, "HblNo", null);
-        this.setPropValue(res, "Code", null);
-        this.setPropValue(res, "AllocationId", null);
-        this.setPropValue(res, "NoSubmit", false);
-        this.setPropValue(res, "EntityContainerId", null);
-        this.setPropValue(res, "IsAllocation", false);
-        this.setPropValue(res, "AllocationId", null);
-        this.setPropValue(res, "IsLock", false);
-        this.setPropValue(res, "IsSend", false);
-        this.setPropValue(res, "IsObh", false);
-        this.setPropValue(res, "IsLockEdit", false);
-        this.setPropValue(res, "ShipmentRequestId", null);
-        this.setPropValue(res, "IsLockExchange", false);
-        this.setPropValue(res, "ShipmentInvoiceDetailId", null);
-        this.setPropValue(res, "ShipmentInvoiceId", null);
-        this.setPropValue(res, "ShipmentInvoiceCode", null);
-        this.setPropValue(res, "ShipmentInvoiceDate", null);
-        this.setPropValue(res, "PaymentRequestId", null);
-        this.setPropValue(res, "PaymentRequestDetailId", null);
-        this.setPropValue(res, "PaymentCode", null);
-        this.setPropValue(res, "PaymentDate", null);
-        this.setPropValue(res, "IsPayment", false);
-        this.setPropValue(res, "InvoiceId", null);
-        this.setPropValue(res, "InvoiceDetailId", null);
-        this.setPropValue(res, "InvoiceCode", null);
-        this.setPropValue(res, "InvoiceDate", null);
-        this.setPropValue(res, "IsPaid", false);
-        this.setPropValue(res, "PaidDate", null);
-        this.setPropValue(res, "DebtCode", null);
-        this.setPropValue(res, "DebtDate", null);
-        this.setPropValue(res, "DebtId", null);
-        this.setPropValue(res, "IsDebtAcc", false);
-        this.setPropValue(res, "PaymentAccId", null);
-        this.setPropValue(res, "PaymentAccCode", null);
-        this.setPropValue(res, "PaymentAccDate", null);
-        this.setPropValue(res, "IsPaymentAcc", false);
+        this.setPropValue(res, "tariffChargeId", null);
+        this.setPropValue(res, "hblNo", null);
+        this.setPropValue(res, "code", null);
+        this.setPropValue(res, "allocationId", null);
+        this.setPropValue(res, "noSubmit", false);
+        this.setPropValue(res, "entityContainerId", null);
+        this.setPropValue(res, "isAllocation", false);
+        this.setPropValue(res, "allocationId", null);
+        this.setPropValue(res, "isLock", false);
+        this.setPropValue(res, "isSend", false);
+        this.setPropValue(res, "isObh", false);
+        this.setPropValue(res, "isLockEdit", false);
+        this.setPropValue(res, "shipmentRequestId", null);
+        this.setPropValue(res, "isLockExchange", false);
+        this.setPropValue(res, "shipmentInvoiceDetailId", null);
+        this.setPropValue(res, "shipmentInvoiceId", null);
+        this.setPropValue(res, "shipmentInvoiceCode", null);
+        this.setPropValue(res, "shipmentInvoiceDate", null);
+        this.setPropValue(res, "paymentRequestId", null);
+        this.setPropValue(res, "paymentRequestDetailId", null);
+        this.setPropValue(res, "paymentCode", null);
+        this.setPropValue(res, "paymentDate", null);
+        this.setPropValue(res, "isPayment", false);
+        this.setPropValue(res, "invoiceId", null);
+        this.setPropValue(res, "invoiceDetailId", null);
+        this.setPropValue(res, "invoiceCode", null);
+        this.setPropValue(res, "invoiceDate", null);
+        this.setPropValue(res, "isPaid", false);
+        this.setPropValue(res, "paidDate", null);
+        this.setPropValue(res, "debtCode", null);
+        this.setPropValue(res, "debtDate", null);
+        this.setPropValue(res, "debtId", null);
+        this.setPropValue(res, "isDebtAcc", false);
+        this.setPropValue(res, "paymentAccId", null);
+        this.setPropValue(res, "paymentAccCode", null);
+        this.setPropValue(res, "paymentAccDate", null);
+        this.setPropValue(res, "isPaymentAcc", false);
     }
 
-    U(force = false, dirty = null, ...componentNames) {
-        this.UpdateView(force, dirty, componentNames);
+    u(force = false, dirty = null, ...componentNames) {
+        this.updateView(force, dirty, componentNames);
     }
 
     /**
      * @param {boolean} force
      * @param {boolean} dirty
      */
-    PrepareUpdateView(force, dirty) {
-        if (this.Meta && this.Meta.DisabledExp) {
-            this.ToggleDisabled(this.Meta.DisabledExp);
+    prepareUpdateView(force, dirty) {
+        if (this.meta && this.meta.disabledExp) {
+            this.toggleDisabled(this.meta.disabledExp);
         }
-        if (this.Meta
-            && !Utils.isNullOrWhiteSpace(this.Meta.ComponentType)
-            && !Utils.isNullOrWhiteSpace(this.Entity["InsertedBy"])
-            && !this.IsSection
-            && !this.IsListViewItem
-            && this.Entity && this.EntityId && !this.EntityId.startsWith("-")
-            && !this.IsTabComponent
-            && !this.Meta.CanWriteAll
-            && !this.Meta.Editable
-            && !this.IsButton
-            && !["IsPaid", "PaidDate", "btnEdit"].includes(this.Meta.FieldName)
-            && ((this.EditForm && this.EditForm.Entity && this.EditForm.Entity["InsertedBy"] != this.Token.UserId && this.EditForm.Entity["AssignId"] != this.Token.UserId && !this.Parent.IsListViewItem)
-                || this.Entity["NoSubmit"] || this.Entity["IsLock"] || this.Entity["IsPayment"] || this.Entity["IsInvoice"] || (this.Entity["IsPaid"] && this.Parent.IsListViewItem))) {
-            this.Disabled = true;
+        if (this.meta
+            && !Utils.isNullOrWhiteSpace(this.meta.componentType)
+            && !Utils.isNullOrWhiteSpace(this.entity["insertedBy"])
+            && !this.isSection
+            && !this.isListViewItem
+            && this.entity && this.entityId && !this.entityId.startsWith("-")
+            && !this.isTabComponent
+            && !this.meta.canWriteAll
+            && !this.meta.editable
+            && !this.isButton
+            && !["isPaid", "paidDate", "btnEdit"].includes(this.meta.fieldName)
+            && ((this.editForm && this.editForm.entity && this.editForm.entity["insertedBy"] != this.Token.userId && this.editForm.entity["assignId"] != this.Token.userId && !this.parent.isListViewItem)
+                || this.entity["noSubmit"] || this.entity["isLock"] || this.entity["isPayment"] || this.entity["isInvoice"] || (this.entity["isPaid"] && this.parent.isListViewItem))) {
+            this.disabled = true;
         }
-        var userAuthentication = this.Token.UserAuthorization && this.Token.UserAuthorization.length > 0 ? this.Token.UserAuthorization.filter(x => x.CanWrite).map(x => x.UserId) : [];
-        if (this.Meta
-            && !Utils.isNullOrWhiteSpace(this.Meta.ComponentType)
-            && !Utils.isNullOrWhiteSpace(this.Entity["InsertedBy"])
-            && !this.IsSection
-            && !this.IsListViewItem
-            && !this.IsTabComponent
-            && !this.Meta.CanWriteAll
-            && ((this.Parent.IsListViewItem && this.Parent.Parent.IsListView && !this.Parent.Parent.Disabled) || !this.Parent.IsListViewItem)
-            && this.Entity && this.EntityId && !this.EntityId.startsWith("-")
-            && !this.IsButton
-            && !["IsPaid", "PaidDate", "btnEdit"].includes(this.Meta.FieldName)
-            && !this.IsTabComponent && userAuthentication.length > 0
-            && !((this.Entity["NoSubmit"] || this.Entity["IsLock"] || this.Entity["IsPayment"] || this.Entity["IsInvoice"] || (this.Entity["IsPaid"] && this.Parent.IsListViewItem)))
-            && userAuthentication.includes(this.Entity["InsertedBy"])) {
-            this.Disabled = false;
+        var userAuthentication = this.Token.userAuthorization && this.Token.userAuthorization.length > 0 ? this.Token.userAuthorization.filter(x => x.canWrite).map(x => x.userId) : [];
+        if (this.meta
+            && !Utils.isNullOrWhiteSpace(this.meta.componentType)
+            && !Utils.isNullOrWhiteSpace(this.entity["insertedBy"])
+            && !this.isSection
+            && !this.isListViewItem
+            && !this.isTabComponent
+            && !this.meta.canWriteAll
+            && ((this.parent.isListViewItem && this.parent.parent.isListView && !this.parent.parent.disabled) || !this.parent.isListViewItem)
+            && this.entity && this.entityId && !this.entityId.startsWith("-")
+            && !this.isButton
+            && !["isPaid", "paidDate", "btnEdit"].includes(this.meta.fieldName)
+            && !this.isTabComponent && userAuthentication.length > 0
+            && !((this.entity["noSubmit"] || this.entity["isLock"] || this.entity["isPayment"] || this.entity["isInvoice"] || (this.entity["isPaid"] && this.parent.isListViewItem)))
+            && userAuthentication.includes(this.entity["insertedBy"])) {
+            this.disabled = false;
         }
-        if (this.Meta && this.Meta.DisabledExp && (this.Meta.DisabledExp.includes("CanWrite") || this.Meta.DisabledExp.includes("InsertedBy") || this.Meta.DisabledExp.includes("StatusId") || this.Meta.DisabledExp.includes("ProgressId") || this.Meta.DisabledExp.includes("ActionId") || this.Meta.DisabledExp.includes("this.Token"))) {
-            this.ToggleDisabled(this.Meta.DisabledExp);
+        if (this.meta && this.meta.disabledExp && (this.meta.disabledExp.includes("canWrite") || this.meta.disabledExp.includes("insertedBy") || this.meta.disabledExp.includes("statusId") || this.meta.disabledExp.includes("progressId") || this.meta.disabledExp.includes("actionId") || this.meta.disabledExp.includes("this.Token"))) {
+            this.toggleDisabled(this.meta.disabledExp);
         }
         if (force) {
-            this.EmptyRow = false;
+            this.emptyRow = false;
         }
-        if (this.Meta && this.Meta.DefaultVal) {
-            this.SetDefaultVal();
+        if (this.meta && this.meta.defaultVal) {
+            this.setDefaultVal();
         }
-        if (this.Meta && this.Meta.ShowExp) {
-            this.ToggleShow(this.Meta.ShowExp);
+        if (this.meta && this.meta.showExp) {
+            this.toggleShow(this.meta.showExp);
         }
-        if (this.Meta && this.Meta.AddRowExp) {
-            this.ToggleAddRow(this.Meta.AddRowExp);
+        if (this.meta && this.meta.addRowExp) {
+            this.toggleAddRow(this.meta.addRowExp);
         }
         if (dirty) {
             this._setDirty = dirty;
         }
-        if (this.Entity && this.Entity.IsLockEdit && this.Meta && !["Button", "Pdf", "Excel", "Email"].includes(this.Meta.ComponentType)) {
-            this.Disabled = true;
+        if (this.entity && this.entity.isLockEdit && this.meta && !["Button", "Pdf", "excel", "email"].includes(this.meta.componentType)) {
+            this.disabled = true;
         }
     }
 
-    Nothing() {
-        return !this.Children || this.Children.length === 0;
+    nothing() {
+        return !this.children || this.children.length === 0;
     }
 
-    DisposeChildren() {
-        if (this.Nothing()) {
+    disposeChildren() {
+        if (this.nothing()) {
             return;
         }
-        let leaves = this.Flatten(node => node.Children)
-            .filter(node => node.Element !== null && node.Parent !== null && node.Nothing());
+        let leaves = this.flatten(node => node.children)
+            .filter(node => node.element !== null && node.parent !== null && node.nothing());
 
         while (leaves.length > 0 && (leaves == 1 && leaves[0] != this)) {
             leaves.forEach(node => {
                 if (node === null) {
                     return;
                 }
-                node.Dispose();
-                if (node.Parent && node.Parent.Children) {
-                    node.Parent.Children = node.Parent.Children.filter(child => child !== node);
+                node.dispose();
+                if (node.parent && node.parent.children) {
+                    node.parent.children = node.parent.children.filter(child => child !== node);
                 }
             });
 
-            // Recalculate leaves after disposing the current leaves
-            leaves = this.Flatten(node => node.Children)
-                .filter(node => node.Element !== null && node.Parent !== null && node.Nothing());
+            // recalculate leaves after disposing the current leaves
+            leaves = this.flatten(node => node.children)
+                .filter(node => node.element !== null && node.parent !== null && node.nothing());
         }
     }
 
-    Flatten(fn) {
+    flatten(fn) {
         const result = [];
         const stack = [this];
         while (stack.length > 0) {
@@ -916,66 +916,66 @@ export class EditableComponent {
         return result;
     }
 
-    Dispose() {
-        this.SendQueueAction("Unsubscribe");
-        this.DisposeChildren();
-        this.RemoveDOM();
-        this.Children = [];
-        this.DOMContentLoaded = null;
-        this.OnToggle = null;
-        if (this.Parent != null && this.Parent.Children != null
-            && this.Parent.Children.ToArray().HasElement()
-            && this.Parent.Children.ToArray().Contains(this)) {
-            this.Parent.Children.ToArray().Remove(this);
+    dispose() {
+        this.sendQueueAction("unsubscribe");
+        this.disposeChildren();
+        this.removeDOM();
+        this.children = [];
+        this.dOMContentLoaded = null;
+        this.onToggle = null;
+        if (this.parent != null && this.parent.children != null
+            && this.parent.children.toArray().hasElement()
+            && this.parent.children.toArray().contains(this)) {
+            this.parent.children.toArray().remove(this);
         }
-        if (this.EditForm && this.EditForm.ChildCom) {
-            this.EditForm.ChildCom.ToArray().Remove(this);
-        }
-    }
-
-    RemoveDOM() {
-        if (this.Element != null) {
-            this.Element.remove();
-            this.Element = null;
+        if (this.editForm && this.editForm.childCom) {
+            this.editForm.childCom.toArray().remove(this);
         }
     }
 
-    SendQueueAction(action) {
-        var queueName = this.QueueName;
+    removeDOM() {
+        if (this.element != null) {
+            this.element.remove();
+            this.element = null;
+        }
+    }
+
+    sendQueueAction(action) {
+        var queueName = this.queueName;
         if (!queueName) return;
-        const param = { QueueName: queueName, Action: action };
+        const param = { queueName: queueName, Action: action };
         // @ts-ignore
-        this.EditForm?.NotificationClient?.Send(JSON.stringify(param));
-        if (action == "Subscribe")
+        this.editForm?.notificationClient?.send(JSON.stringify(param));
+        if (action == "subscribe")
             // @ts-ignore
-            window.addEventListener(queueName, this.QueueHandler);
+            window.addEventListener(queueName, this.queueHandler);
         else
             // @ts-ignore
-            window.removeEventListener(queueName, this.QueueHandler);
+            window.removeEventListener(queueName, this.queueHandler);
     }
 
-    GetValueText() {
-        if (this.Element === null) {
+    getValueText() {
+        if (this.element === null) {
             return "";
         }
-        if (this.Element instanceof HTMLInputElement) {
-            return this.Element.value;
+        if (this.element instanceof hTMLInputElement) {
+            return this.element.value;
         }
-        if (this.Element instanceof HTMLTextAreaElement) {
-            return this.Element.value;
+        if (this.element instanceof hTMLTextAreaElement) {
+            return this.element.value;
         }
-        return this.Element.textContent;
+        return this.element.textContent;
     }
 
-    GetValue() {
-        return this.Entity[this.Name];
+    getValue() {
+        return this.entity[this.name];
     }
 
-    ValidateAsync() {
-        return Promise.resolve(true);
+    validateAsync() {
+        return promise.resolve(true);
     }
 
-    static IsEmpty(array) {
+    static isEmpty(array) {
         return array && array.length === 0;
     }
 
@@ -985,25 +985,25 @@ export class EditableComponent {
      * @param {(item: EditableComponent) => boolean} ignore 
      * @returns {EditableComponent[] | null}
      */
-    FilterChildren(predicate, ignoree, stopWhere = null) {
-        return this.FilterChildrenTyped(predicate, ignoree, stopWhere);
+    filterChildren(predicate, ignoree, stopWhere = null) {
+        return this.filterChildrenTyped(predicate, ignoree, stopWhere);
     }
     /**
      * @returns {EditableComponent[] | null}
      */
-    FilterChildrenTyped(predicate = null, ignorePredicate = null, visited = new Set()) {
-        visited = visited == null ? new Set() : visited;
-        if (EditableComponent.IsEmpty(this.Children) || !this.Children) {
+    filterChildrenTyped(predicate = null, ignorePredicate = null, visited = new set()) {
+        visited = visited == null ? new set() : visited;
+        if (EditableComponent.isEmpty(this.children) || !this.children) {
             return [];
         }
         /**
          * @type {EditableComponent[]}
          */
         let result = [];
-        for (const child of this.Children) {
+        for (const child of this.children) {
             let t = child instanceof EditableComponent ? child : null;
 
-            if (t === null && EditableComponent.IsEmpty(child.Children)) {
+            if (t === null && EditableComponent.isEmpty(child.children)) {
                 continue;
             }
 
@@ -1016,7 +1016,7 @@ export class EditableComponent {
                 result.push(t);
             }
 
-            result = result.concat(child.FilterChildrenTyped(predicate, ignorePredicate, visited));
+            result = result.concat(child.filterChildrenTyped(predicate, ignorePredicate, visited));
         }
         return result;
     }
@@ -1025,124 +1025,124 @@ export class EditableComponent {
      * @param {(ele: HTMLElement) => boolean} predicate 
      * @returns {EditableComponent[]}
      */
-    FindActiveComponent(predicate) {
+    findActiveComponent(predicate) {
         const showPredicate = (/** @type {HTMLElement} */ e) => {
             return !e.hidden() && predicate(e);
         }
         // @ts-ignore
-        return this.Children.Where(showPredicate).Flattern(x => showPredicate(x) ? x.Children : null);
+        return this.children.where(showPredicate).flattern(x => showPredicate(x) ? x.children : null);
     }
     /**
-     * Returns the first element of the collection that satisfies the specified condition, or null if no such element is found.
-     * @param {(item: EditableComponent) => boolean} filter - The condition to check for each element.
-     * @returns {EditableComponent|null} The first element that satisfies the condition, or null if no such element is found.
+     * returns the first element of the collection that satisfies the specified condition, or null if no such element is found.
+     * @param {(item: EditableComponent) => boolean} filter - the condition to check for each element.
+     * @returns {EditableComponent|null} the first element that satisfies the condition, or null if no such element is found.
      */
-    FirstOrDefault(filter) {
-        return this.Children.Flattern(x => x.Children).FirstOrDefault(filter);
+    firstOrDefault(filter) {
+        return this.children.flattern(x => x.children).firstOrDefault(filter);
     }
     /**
      * 
      * @param {EditableComponent} child 
-     * @param {Number} index 
+     * @param {number} index 
      * @param {(e: EditableComponent) => boolean | string} showExp 
      * @param {(e: EditableComponent) => boolean | string} disabledExp 
      * @returns 
      */
-    AddChild(child, index = null, showExp = null, disabledExp = null) {
-        if (child.IsSingleton) {
-            child.Render();
+    addChild(child, index = null, showExp = null, disabledExp = null) {
+        if (child.isSingleton) {
+            child.render();
             return;
         }
-        if (!child.ParentElement) {
-            if (child.ComponentType == null && this.TabEditor) {
-                if (child.Popup) {
-                    child.ParentElement = Element || this.TabEditor.TabContainer;
+        if (!child.parentElement) {
+            if (child.componentType == null && this.tabEditor) {
+                if (child.popup) {
+                    child.parentElement = element || this.tabEditor.tabContainer;
                 } else {
-                    child.ParentElement = this.TabEditor.TabContainer;
+                    child.parentElement = this.tabEditor.tabContainer;
                 }
             } else {
-                child.ParentElement = Html.Context;
+                child.parentElement = html.context;
             }
         }
 
-        if (!child.EditForm && !child.Popup) {
-            child.EditForm = this.EditForm;
+        if (!child.editForm && !child.popup) {
+            child.editForm = this.editForm;
         }
-        if (child.Meta && child.Meta.EntityName) {
-            if (!child.Entity || this.DeepEqual(child.Entity, this.DefaultObject)) {
-                child.Entity = child.EditForm[child.Meta.EntityName] ?? {
-                    Id: Uuid7.NewGuid()
+        if (child.meta && child.meta.entityName) {
+            if (!child.entity || this.deepEqual(child.entity, this.defaultObject)) {
+                child.entity = child.editForm[child.meta.entityName] ?? {
+                    id: Uuid7.newGuid()
                 };
             }
         }
         else {
-            if (!child.Entity || this.DeepEqual(child.Entity, this.DefaultObject)) {
-                child.Entity = child.EditForm.Entity ?? {
-                    Id: Uuid7.NewGuid()
+            if (!child.entity || this.deepEqual(child.entity, this.defaultObject)) {
+                child.entity = child.editForm.entity ?? {
+                    id: Uuid7.newGuid()
                 };
             }
         }
 
-        if (index === null || index >= this.Children.length || index < 0) {
-            this.Children.push(child);
+        if (index === null || index >= this.children.length || index < 0) {
+            this.children.push(child);
         } else {
-            this.Children.splice(index, 0, child);
+            this.children.splice(index, 0, child);
         }
 
-        if (!child.Parent) {
-            child.Parent = this;
+        if (!child.parent) {
+            child.parent = this;
         }
-        Html.take(child.ParentElement);
-        child.Render();
-        if (disabledExp || (child.Meta && child.Meta.DisabledExp && child.Entity)) {
-            child.ToggleDisabled(disabledExp || child.Meta.DisabledExp);
+        html.take(child.parentElement);
+        child.render();
+        if (disabledExp || (child.meta && child.meta.disabledExp && child.entity)) {
+            child.toggleDisabled(disabledExp || child.meta.disabledExp);
         }
-        if (child.Meta
-            && !Utils.isNullOrWhiteSpace(child.Meta.ComponentType)
-            && !Utils.isNullOrWhiteSpace(child.Entity["InsertedBy"])
-            && !child.IsSection
-            && !child.IsListViewItem
-            && !child.IsTabComponent
-            && child.Entity && child.EntityId && !child.EntityId.startsWith("-")
-            && !child.Meta.CanWriteAll
-            && !child.IsButton
-            && !["IsPaid", "PaidDate", "btnEdit"].includes(child.Meta.FieldName)
-            && ((child.EditForm && child.EditForm.Entity && child.EditForm.Entity["InsertedBy"] != this.Token.UserId && child.EditForm.Entity["AssignId"] != this.Token.UserId && !child.Parent.IsListViewItem)
-                || child.Entity["NoSubmit"] || child.Entity["IsLock"] || child.Entity["IsPayment"] || child.Entity["IsInvoice"] || (child.Entity["IsPaid"] && child.Parent.IsListViewItem))) {
-            child.Disabled = true;
+        if (child.meta
+            && !Utils.isNullOrWhiteSpace(child.meta.componentType)
+            && !Utils.isNullOrWhiteSpace(child.entity["insertedBy"])
+            && !child.isSection
+            && !child.isListViewItem
+            && !child.isTabComponent
+            && child.entity && child.entityId && !child.entityId.startsWith("-")
+            && !child.meta.canWriteAll
+            && !child.isButton
+            && !["isPaid", "paidDate", "btnEdit"].includes(child.meta.fieldName)
+            && ((child.editForm && child.editForm.entity && child.editForm.entity["insertedBy"] != this.Token.userId && child.editForm.entity["assignId"] != this.Token.userId && !child.parent.isListViewItem)
+                || child.entity["noSubmit"] || child.entity["isLock"] || child.entity["isPayment"] || child.entity["isInvoice"] || (child.entity["isPaid"] && child.parent.isListViewItem))) {
+            child.disabled = true;
         }
-        if (child.Parent && child.Parent.Meta && child.Parent.Meta.IsPublic) {
-            child.Disabled = false;
+        if (child.parent && child.parent.meta && child.parent.meta.isPublic) {
+            child.disabled = false;
         }
-        var userAuthentication = this.Token.UserAuthorization && this.Token.UserAuthorization.length > 0 ? this.Token.UserAuthorization.filter(x => x.CanWrite).map(x => x.UserId) : [];
-        if (child.Meta
-            && !Utils.isNullOrWhiteSpace(child.Meta.ComponentType)
-            && !Utils.isNullOrWhiteSpace(child.Entity["InsertedBy"])
-            && !child.IsSection
-            && !child.IsListViewItem
-            && !child.IsTabComponent
-            && !child.Meta.CanWriteAll
-            && ((child.Parent.IsListViewItem && child.Parent.Parent.IsListView && !child.Parent.Parent.Disabled) || !child.Parent.IsListViewItem)
-            && !child.IsButton
-            && child.Entity && child.EntityId && !child.EntityId.startsWith("-")
-            && !["IsPaid", "PaidDate", "btnEdit"].includes(child.Meta.FieldName)
-            && !((child.Entity["NoSubmit"] || child.Entity["IsLock"] || child.Entity["IsPayment"] || child.Entity["IsInvoice"] || (child.Entity["IsPaid"] && this.Parent.IsListViewItem)))
-            && userAuthentication.includes(child.Entity["InsertedBy"])) {
-            child.Disabled = false;
+        var userAuthentication = this.Token.userAuthorization && this.Token.userAuthorization.length > 0 ? this.Token.userAuthorization.filter(x => x.canWrite).map(x => x.userId) : [];
+        if (child.meta
+            && !Utils.isNullOrWhiteSpace(child.meta.componentType)
+            && !Utils.isNullOrWhiteSpace(child.entity["insertedBy"])
+            && !child.isSection
+            && !child.isListViewItem
+            && !child.isTabComponent
+            && !child.meta.canWriteAll
+            && ((child.parent.isListViewItem && child.parent.parent.isListView && !child.parent.parent.disabled) || !child.parent.isListViewItem)
+            && !child.isButton
+            && child.entity && child.entityId && !child.entityId.startsWith("-")
+            && !["isPaid", "paidDate", "btnEdit"].includes(child.meta.fieldName)
+            && !((child.entity["noSubmit"] || child.entity["isLock"] || child.entity["isPayment"] || child.entity["isInvoice"] || (child.entity["isPaid"] && this.parent.isListViewItem)))
+            && userAuthentication.includes(child.entity["insertedBy"])) {
+            child.disabled = false;
         }
-        if (child.Meta && child.Meta.DisabledExp && (child.Meta.DisabledExp.includes("CanWrite") || child.Meta.DisabledExp.includes("InsertedBy") || child.Meta.DisabledExp.includes("StatusId") || child.Meta.DisabledExp.includes("this.Token"))) {
-            child.ToggleDisabled(disabledExp || child.Meta.DisabledExp);
+        if (child.meta && child.meta.disabledExp && (child.meta.disabledExp.includes("canWrite") || child.meta.disabledExp.includes("insertedBy") || child.meta.disabledExp.includes("statusId") || child.meta.disabledExp.includes("this.Token"))) {
+            child.toggleDisabled(disabledExp || child.meta.disabledExp);
         }
         // @ts-ignore
-        if (showExp || (child.Meta && child.Meta.ShowExp)) {
-            child.ToggleShow(showExp || child.Meta.ShowExp);
+        if (showExp || (child.meta && child.meta.showExp)) {
+            child.toggleShow(showExp || child.meta.showExp);
         }
-        if (child.Entity.IsLockEdit && child.Meta && !["Button", "Pdf", "Excel", "Email"].includes(child.Meta.ComponentType)) {
-            child.Disabled = true;
+        if (child.entity.isLockEdit && child.meta && !["Button", "Pdf", "excel", "email"].includes(child.meta.componentType)) {
+            child.disabled = true;
         }
     }
 
-    DeepEqual(obj1, obj2) {
+    deepEqual(obj1, obj2) {
         if (obj1 === obj2) {
             return true;
         }
@@ -1151,8 +1151,8 @@ export class EditableComponent {
             return false;
         }
 
-        let keys1 = Object.keys(obj1);
-        let keys2 = Object.keys(obj2);
+        let keys1 = object.keys(obj1);
+        let keys2 = object.keys(obj2);
 
         if (keys1.length !== keys2.length) {
             return false;
@@ -1167,31 +1167,31 @@ export class EditableComponent {
         return true;
     }
 
-    RemoveChild(child) {
-        const index = this.Children.indexOf(child);
+    removeChild(child) {
+        const index = this.children.indexOf(child);
         if (index > -1) {
-            this.Children.splice(index, 1);
+            this.children.splice(index, 1);
         }
     }
 
-    Focus() {
+    focus() {
         // @ts-ignore
-        this.Element?.focus();
+        this.element?.focus();
     }
 
     /**
      * @param {boolean} disabled
      * @param {string[]} name
      */
-    SetDisabled(disabled, ...name) {
-        if (name == null || name.length == 0) this.Disabled = disabled;
+    setDisabled(disabled, ...name) {
+        if (name == null || name.length == 0) this.disabled = disabled;
         else {
-            this.FilterChildren(x => name.includes(x.Name)).forEach(x => x.Disabled = disabled);
+            this.filterChildren(x => name.includes(x.name)).forEach(x => x.disabled = disabled);
         }
     }
 
     getCircularReplacer() {
-        const seen = new WeakSet();
+        const seen = new weakSet();
         return (key, value) => {
             if (typeof value === "object" && value !== null) {
                 if (seen.has(value)) {
@@ -1203,42 +1203,42 @@ export class EditableComponent {
         };
     }
 
-    async RunQuery() {
-        const submitEntity = Utils.IsFunction(this.Meta.PreQuery, false, this);
+    async runQuery() {
+        const submitEntity = Utils.isFunction(this.meta.preQuery, false, this);
         const entity = {
-            Params: submitEntity ? JSON.stringify(submitEntity) : null,
-            ComId: this.Meta.Id,
+            params: submitEntity ? JSON.stringify(submitEntity) : null,
+            comId: this.meta.id,
         };
         return await Client.instance.submitAsync({
             Url: "/api/feature/report",
-            IsRawString: true,
-            JsonData: JSON.stringify(entity),
-            Method: "POST"
+            isRawString: true,
+            jsonData: JSON.stringify(entity),
+            method: "pOST"
         });
     }
 
-    async RunQuerys() {
-        const submitEntity = Utils.IsFunction(this.Meta.PreQuery, false, this);
+    async runQuerys() {
+        const submitEntity = Utils.isFunction(this.meta.preQuery, false, this);
         const entity = {
-            Params: submitEntity ? JSON.stringify(submitEntity) : null,
-            ComId: this.Meta.Id,
+            params: submitEntity ? JSON.stringify(submitEntity) : null,
+            comId: this.meta.id,
         };
         return await Client.instance.submitAsync({
             Url: "/api/feature/sql",
-            IsRawString: true,
-            JsonData: JSON.stringify(entity),
-            Method: "POST"
+            isRawString: true,
+            jsonData: JSON.stringify(entity),
+            method: "pOST"
         });
     }
 
-    async SubmitObject(component, tablename) {
-        Spinner.AppendTo();
-        if (component.Id && component.Id.startsWith("-")) {
+    async submitObject(component, tablename) {
+        Spinner.appendTo();
+        if (component.id && component.id.startsWith("-")) {
             this.resetObject(component);
         }
         let componentPatch = [];
-        Object.getOwnPropertyNames(component).forEach(cell => {
-            if (component[cell] instanceof Array || (component[cell] instanceof Object && !(component[cell] instanceof Decimal))) {
+        object.getOwnPropertyNames(component).forEach(cell => {
+            if (component[cell] instanceof array || (component[cell] instanceof object && !(component[cell] instanceof decimal))) {
                 return;
             }
             let val;
@@ -1249,42 +1249,42 @@ export class EditableComponent {
             }
             let prop = {
                 Label: cell,
-                Field: cell,
-                Value: val,
+                field: cell,
+                value: val,
             };
             componentPatch.push(prop);
         });
         let componentModel = {
-            Changes: componentPatch,
-            Table: tablename
+            changes: componentPatch,
+            table: tablename
         };
         await Client.instance.patchAsync(componentModel);
-        Spinner.Hide();
+        Spinner.hide();
     }
 
-    ReadObject(component, tableName) {
-        if (component.Id && component.Id.startsWith("-")) {
+    readObject(component, tableName) {
+        if (component.id && component.id.startsWith("-")) {
             this.resetObject(component);
         }
         const changes = [];
-        Object.getOwnPropertyNames(component).forEach((key) => {
+        object.getOwnPropertyNames(component).forEach((key) => {
             const v = component[key];
 
-            if (Array.isArray(v) || (v instanceof Object && !(v instanceof Decimal))) return;
+            if (array.isArray(v) || (v instanceof object && !(v instanceof decimal))) return;
 
             changes.push({
                 Label: key,
-                Field: key,
-                Value: (typeof v === "boolean") ? (v ? "1" : "0") : v
+                field: key,
+                value: (typeof v === "boolean") ? (v ? "1" : "0") : v
             });
         });
 
-        return { Changes: changes, Table: tableName };
+        return { changes: changes, table: tableName };
     }
 
-    async ReadObjects(components, tableName, pre) {
-        if (!Array.isArray(components) || components.length === 0) return;
-        const client = this.EditForm.Client;
+    async readObjects(components, tableName, pre) {
+        if (!array.isArray(components) || components.length === 0) return;
+        const client = this.editForm.Client;
         const batchSize = 200;
         const chunks = (arr, size) => {
             const out = [];
@@ -1300,20 +1300,20 @@ export class EditableComponent {
             return obj;
         });
 
-        const models = prepared.map(o => this.ReadObject(o, tableName));
+        const models = prepared.map(o => this.readObject(o, tableName));
         for (const batch of chunks(models, batchSize)) {
-            Spinner.AppendTo();
+            Spinner.appendTo();
             await client.patchAsync2(batch);
         }
-        Spinner.Hide();
+        Spinner.hide();
     }
 
     GET(fieldName) {
-        return this.EditForm.ChildCom.find(x => x.Meta.FieldName == fieldName);
+        return this.editForm.childCom.find(x => x.meta.fieldName == fieldName);
     }
 
-    ReloadUI() {
-        this.Dispose();
-        this.Render();
+    reloadUI() {
+        this.dispose();
+        this.render();
     }
 }

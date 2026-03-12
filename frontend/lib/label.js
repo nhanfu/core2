@@ -17,93 +17,93 @@ export class Label extends EditableComponent {
     }
 
     Render() {
-        this.SetDefaultVal();
-        const cellData = this.Entity[this.Meta.FieldName];
+        this.setDefaultVal();
+        const cellData = this.entity[this.meta.fieldName];
         let cellText = '';
-        if (!this.Element) {
-            this.RenderNewEle(cellText, cellData);
+        if (!this.element) {
+            this.renderNewEle(cellText, cellData);
         }
-        if (this.Meta && this.Meta.ComponentType == "Checkbox") {
-            Html.take(this.Element).smallCheckbox(cellData, true);
-            this.OriginalText = cellData ? "✅" : "☐";
+        if (this.meta && this.meta.componentType == "Checkbox") {
+            Html.take(this.element).smallCheckbox(cellData, true);
+            this.originalText = cellData ? "✅" : "☐";
             return;
         }
-        var textCalc = this.Meta && this.Meta.FormatData && (this.Meta.FormatData.includes(".") || this.Meta.FormatData.includes("return")) ? Utils.IsFunction(this.Meta.FormatData || '', false, this) : "";
+        var textCalc = this.meta && this.meta.formatData && (this.meta.formatData.includes(".") || this.meta.formatData.includes("return")) ? Utils.isFunction(this.meta.formatData || '', false, this) : "";
         if (textCalc) {
             cellText = textCalc;
-            if (this.Meta.ComponentType == "Input") {
-                this.Element.textContent = this.getTextContent(cellText);
+            if (this.meta.componentType == "Input") {
+                this.element.textContent = this.getTextContent(cellText);
             }
             else {
-                this.Element.innerHTML = cellText;
+                this.element.innerHTML = cellText;
             }
-            this.Element.title = cellText;
+            this.element.title = cellText;
         }
         else {
-            this.CalcCellText(cellData);
+            this.calcCellText(cellData);
         }
-        this.SetOldTextAndVal();
+        this.setOldTextAndVal();
     }
 
-    RenderNewEle(cellText, cellData) {
-        if (this.Meta.ComponentType == "Number") {
-            Html.Instance.style("justify-content: end;");
+    renderNewEle(cellText, cellData) {
+        if (this.meta.componentType == "Number") {
+            Html.instance.style("justify-content: end;");
         }
-        if (!this.Meta.IsMultiple) {
-            if (!cellText.includes("<div") && this.Meta.ComponentType != "Checkbox" && ((this.Meta.FormatData && !this.Meta.FormatData.includes("<div")) || !this.Meta.FormatData)) {
-                Html.Instance.span.className("cell-text").render();
+        if (!this.meta.isMultiple) {
+            if (!cellText.includes("<div") && this.meta.componentType != "Checkbox" && ((this.meta.formatData && !this.meta.formatData.includes("<div")) || !this.meta.formatData)) {
+                Html.instance.span.className("cell-text").render();
             }
-            if (this.Meta.ComponentType == "Input") {
-                Html.Instance.title(cellText).text(this.getTextContent(cellText));
+            if (this.meta.componentType == "Input") {
+                Html.instance.title(cellText).text(this.getTextContent(cellText));
             }
             else {
-                Html.Instance.title(cellText).innerHTML(cellText);
+                Html.instance.title(cellText).innerHTML(cellText);
             }
         }
-        this.Element = Html.Context;
-        Html.Instance.end.render();
+        this.element = Html.context;
+        Html.instance.end.render();
     }
 
-    CalcCellText(cellData) {
-        if (this.Meta && this.Meta.ComponentType == "Checkbox") {
-            Html.take(this.Element).clear();
-            Html.take(this.Element).smallCheckbox(cellData, true);
-            this.OriginalText = cellData ? "✅" : "☐";
+    calcCellText(cellData) {
+        if (this.meta && this.meta.componentType == "Checkbox") {
+            Html.take(this.element).clear();
+            Html.take(this.element).smallCheckbox(cellData, true);
+            this.originalText = cellData ? "✅" : "☐";
             return;
         }
-        if (this.Meta.Query && this.Meta.ComponentType == "Label") {
-            this.RunQuerys().then((data) => {
+        if (this.meta.Query && this.meta.componentType == "Label") {
+            this.runQuerys().then((data) => {
                 if (data[0]) {
-                    var cellText = Utils.GetCellText(this.Meta, cellData, data[0][0], false, this.EmptyRow, this.EditForm?.Entity);
+                    var cellText = Utils.getCellText(this.meta, cellData, data[0][0], false, this.emptyRow, this.editForm?.entity);
                     if (!cellText || cellText == "null") {
                         cellText = "";
                     }
-                    this.Element.innerHTML = cellText;
+                    this.element.innerHTML = cellText;
                 }
             });
         }
         else {
-            var cellText = Utils.GetCellText(this.Meta, cellData, this.Entity, false, this.EmptyRow, this.EditForm?.Entity);
+            var cellText = Utils.getCellText(this.meta, cellData, this.entity, false, this.emptyRow, this.editForm?.entity);
             if (!cellText || cellText == "null") {
                 cellText = "";
             }
-            if (this.Meta.ComponentType == "Input") {
-                this.Element.textContent = this.getTextContent(cellText);
+            if (this.meta.componentType == "Input") {
+                this.element.textContent = this.getTextContent(cellText);
             }
             else {
-                this.Element.innerHTML = cellText;
+                this.element.innerHTML = cellText;
             }
-            this.Element.title = cellText;
+            this.element.title = cellText;
         }
     }
 
     getTextContent(element) {
-        const doc = new DOMParser().parseFromString(element, 'text/html');
+        const doc = new dOMParser().parseFromString(element, 'text/html');
         return doc.body.textContent || '';
     }
 
-    LabelClickHandler(e) {
-        this.DispatchEvent(this.Meta.Events, "click", this, this.Entity).then();
+    labelClickHandler(e) {
+        this.dispatchEvent(this.meta.Events, "click", this, this.entity).then();
     }
 
     /**
@@ -112,12 +112,12 @@ export class Label extends EditableComponent {
      * @param {any} cellData 
      * @returns {string}
      */
-    CalcTextAlign(header, cellData) {
-        const textAlign = header.TextAlignEnum;
+    calcTextAlign(header, cellData) {
+        const textAlign = header.textAlignEnum;
         if (textAlign) {
             return textAlign;
         }
-        if (header.ComponentType == "Dropdown" || header.ComponentType == "Select2" || cellData === null || typeof cellData === "string") {
+        if (header.componentType == "Dropdown" || header.componentType == "Select2" || cellData === null || typeof cellData === "string") {
             return "left";
         }
         if (typeof cellData === "number") {
@@ -129,33 +129,33 @@ export class Label extends EditableComponent {
         return "center";
     }
 
-    UpdateView(force = false, dirty = null, componentNames) {
-        this.PrepareUpdateView(force, dirty);
-        const cellData = this.Entity[this.Meta.FieldName];
+    updateView(force = false, dirty = null, componentNames) {
+        this.prepareUpdateView(force, dirty);
+        const cellData = this.entity[this.meta.fieldName];
         var cellText = "";
-        var textCalc = this.Meta && this.Meta.FormatData && (this.Meta.FormatData.includes(".") || this.Meta.FormatData.includes("return")) ? Utils.IsFunction(this.Meta.FormatData || '', false, this) : "";
+        var textCalc = this.meta && this.meta.formatData && (this.meta.formatData.includes(".") || this.meta.formatData.includes("return")) ? Utils.isFunction(this.meta.formatData || '', false, this) : "";
         if (textCalc) {
             cellText = textCalc;
-            if (this.Meta.ComponentType == "Input") {
-                this.Element.textContent = this.getTextContent(cellText);
+            if (this.meta.componentType == "Input") {
+                this.element.textContent = this.getTextContent(cellText);
             }
             else {
-                this.Element.innerHTML = cellText;
+                this.element.innerHTML = cellText;
             }
-            this.Element.title = cellText;
+            this.element.title = cellText;
         }
         else {
-            this.CalcCellText(cellData);
-            this.Element.title = "";
+            this.calcCellText(cellData);
+            this.element.title = "";
         }
         if (!this.Dirty) {
-            this.OriginalText = this.getTextContent(cellText);
-            this.DOMContentLoaded?.Invoke();
-            this.OldValue = this.getTextContent(cellText);
+            this.originalText = this.getTextContent(cellText);
+            this.dOMContentLoaded?.invoke();
+            this.oldValue = this.getTextContent(cellText);
         }
     }
 
-    GetValueText() {
-        return this.Element.textContent;
+    getValueText() {
+        return this.element.textContent;
     }
 }

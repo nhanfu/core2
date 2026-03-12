@@ -1,7 +1,7 @@
 import React from "react";
 import { ToastContainer } from "react-toastify";
 import { Client, Html, EditForm } from "../../lib";
-import { KeyCodeEnum, RoleEnum } from "../../lib/models/enum.js";
+import { keyCodeEnum, roleEnum } from "../../lib/models/enum.js";
 import { Toast } from "../../lib/toast.js";
 import { MenuComponent } from "../components/menu.js";
 import "../../lib/css/login.css";
@@ -13,7 +13,7 @@ export class RegisterBL extends EditForm {
   static _initApp;
   /** @type {MenuComponent} */
   static Menu;
-  static TaskList;
+  static taskList;
   static _backdrop;
 
   constructor() {
@@ -26,9 +26,9 @@ export class RegisterBL extends EditForm {
     this.name = "Register";
     this.title = "Register";
     this.public = true;
-    this.Meta.isPublic = true;
-    this.Meta.IsPublic = true;
-    this.Meta.layout = () => (
+    this.meta.isPublic = true;
+    this.meta.isPublic = true;
+    this.meta.layout = () => (
       <>
         <div className="container-login" view="login" bg={7}>
           <div className="wrap-login" type="login">
@@ -39,7 +39,7 @@ export class RegisterBL extends EditForm {
                   <input
                     className="input ap-lg-input"
                     type="text"
-                    name="CompanyName"
+                    name="companyName"
                     placeholder="Company Name"
                   />
                 </div>
@@ -47,7 +47,7 @@ export class RegisterBL extends EditForm {
                   <input
                     className="input ap-lg-input"
                     type="text"
-                    name="TenantCode"
+                    name="tenantCode"
                     placeholder="Tanent Code"
                   />
                 </div>
@@ -55,7 +55,7 @@ export class RegisterBL extends EditForm {
                   <input
                     className="input ap-lg-input"
                     type="text"
-                    name="TaxCode"
+                    name="taxCode"
                     placeholder="Tax code"
                   />
                 </div>
@@ -71,7 +71,7 @@ export class RegisterBL extends EditForm {
                   <input
                     className="input ap-lg-input"
                     type="text"
-                    name="PhoneNumber"
+                    name="phoneNumber"
                     placeholder="Phone Number"
                   />
                 </div>
@@ -79,7 +79,7 @@ export class RegisterBL extends EditForm {
                   <input
                     className="input ap-lg-input"
                     type="text"
-                    name="UserName"
+                    name="userName"
                     placeholder="Số điện thoại/email"
                   />
                 </div>
@@ -98,14 +98,14 @@ export class RegisterBL extends EditForm {
                 </button>
               </div>
               <div className="register-block login-class">
-                <span res-key="FormLogin_DontHaveAccount">
+                <span res-key="formLogin_DontHaveAccount">
                   Chưa đã có công ty?
                 </span>
                 <a
                   objname="jRegister"
                   className="register-btn"
                   target="_blank"
-                  res-key="FormLogin_Register"
+                  res-key="formLogin_Register"
                   onClick={() => this.login()}
                 >
                   Đăng nhập
@@ -120,8 +120,8 @@ export class RegisterBL extends EditForm {
         <ToastContainer />
       </>
     );
-    this.Meta.Layout = this.Meta.layout;
-    this.Meta.components = [
+    this.meta.Layout = this.meta.layout;
+    this.meta.components = [
       {
         componentType: "Button",
         fieldName: "btnRegister",
@@ -131,7 +131,7 @@ export class RegisterBL extends EditForm {
       },
       {
         componentType: "Input",
-        fieldName: "CompanyName",
+        fieldName: "companyName",
         label: "Company Name",
         validation: `[{"Rule": "required", "Message": "{0} is required"}]`
       },
@@ -143,25 +143,25 @@ export class RegisterBL extends EditForm {
       },
       {
         componentType: "Input",
-        fieldName: "TaxCode",
+        fieldName: "taxCode",
         label: "Tax Code",
         validation: `[{"Rule": "required", "Message": "{0} is required"}]`
       },
       {
         componentType: "Input",
-        fieldName: "TenantCode",
+        fieldName: "tenantCode",
         label: "Tanent Code",
         validation: `[{"Rule": "required", "Message": "{0} is required"}]`
       },
       {
         componentType: "Input",
-        fieldName: "PhoneNumber",
+        fieldName: "phoneNumber",
         label: "Phone Number",
         validation: `[{"Rule": "required", "Message": "{0} is required"}]`
       },
       {
         componentType: "Input",
-        fieldName: "UserName",
+        fieldName: "userName",
         label: "User Name",
         validation: `[{"Rule": "required", "Message": "{0} is required"}]`
       },
@@ -190,21 +190,21 @@ export class RegisterBL extends EditForm {
 
   render() {
     let oldToken = Client.token;
-    if (!oldToken || new Date(oldToken.RefreshTokenExp) <= Client.EpsilonNow) {
-      this.ParentElement = document.getElementById("app");
-      this.Element = this.ParentElement;
-      super.Render();
+    if (!oldToken || new Date(oldToken.refreshTokenExp) <= Client.epsilonNow) {
+      this.parentElement = document.getElementById("app");
+      this.element = this.parentElement;
+      super.render();
       return;
     } else if (
       oldToken &&
-      new Date(oldToken.AccessTokenExp) > Client.EpsilonNow
+      new Date(oldToken.accessTokenExp) > Client.epsilonNow
     ) {
       App.instance.renderLayout().then(() => {
         this.initAppIfEmpty();
       });
     } else if (
       oldToken &&
-      new Date(oldToken.RefreshTokenExp) > Client.EpsilonNow
+      new Date(oldToken.refreshTokenExp) > Client.epsilonNow
     ) {
       Client.refreshToken().then((newToken) => {
         App.instance.renderLayout().then(() => {
@@ -219,7 +219,7 @@ export class RegisterBL extends EditForm {
    * @returns {void}
    */
   keyCodeEnter(event) {
-    if (event.keyCodeEnum() !== KeyCodeEnum.Enter) {
+    if (event.keyCodeEnum() !== keyCodeEnum.Enter) {
       return;
     }
     event.preventDefault();
@@ -244,17 +244,17 @@ export class RegisterBL extends EditForm {
       // @ts-ignore
       Client.instance.submitAsync({
         Url: `/api/auth/register`,
-        JsonData: JSON.stringify(login),
-        IsRawString: true,
+        jsonData: JSON.stringify(login),
+        isRawString: true,
         Method: "POST",
-        AllowAnonymous: true,
+        allowAnonymous: true,
       }).then((res) => {
         if (!res) {
           resolve(false);
           return;
         }
         Client.token = res.token;
-        login.UserName = "";
+        login.userName = "";
         login.Password = "";
         this.initFCM();
         if (this.signedInHandler) {
@@ -268,7 +268,7 @@ export class RegisterBL extends EditForm {
           })
           .finally(() => {
             window.setTimeout(() => {
-              Toast.Success(`Xin chào ` + Client.token.FullName);
+              Toast.Success(`Xin chào ` + Client.token.fullName);
             }, 200);
           });
       })
@@ -278,7 +278,7 @@ export class RegisterBL extends EditForm {
   }
 
   async forgotPassword(login) {
-    return Client.instance.postAsync(login, "/user/ForgotPassword").then(
+    return Client.instance.postAsync(login, "/user/forgotPassword").then(
       (res) => {
         if (res) {
           Toast.Warning(
@@ -295,9 +295,9 @@ export class RegisterBL extends EditForm {
   }
 
   initAppIfEmpty() {
-    const systemRoleId = RoleEnum.System;
+    const systemRoleId = roleEnum.System;
     // @ts-ignore
-    Client.instance.SystemRole = Client.token.RoleIds.includes(
+    Client.instance.systemRole = Client.token.roleIds.includes(
       systemRoleId.toString()
     );
     if (this._initApp) {
@@ -309,8 +309,8 @@ export class RegisterBL extends EditForm {
 
   initFCM(signout = false) {
     console.log("Init fcm");
-    let tenantCode = Client.token.TenantCode;
-    let strUserId = `U${Client.token.UserId.toString().padStart(7, "0")}`;
+    let tenantCode = Client.token.tenantCode;
+    let strUserId = `U${Client.token.userId.toString().padStart(7, "0")}`;
   }
 
   static diposeAll() {

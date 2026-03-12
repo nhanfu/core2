@@ -1,7 +1,7 @@
 import { Client } from '../clients/client.js';
 import { Str } from './ext.js';
 import { LangSelect } from './langSelect.js';
-import { PositionEnum, ElementType } from '../models/';
+import { positionEnum, ElementType } from '../models/';
 
 export class HtmlEvent {
     static click = 'click';
@@ -16,10 +16,10 @@ export const Direction =
 
 export class HTML {
     /** @type {HTMLElement} */
-    Context;
+    context;
 
     /** @type {HTML} */
-    get Instance() {
+    get instance() {
         return this; // This method is for backward compatibility
     }
     /**
@@ -29,13 +29,13 @@ export class HTML {
      */
     take(ele) {
         if (ele == null) return this;
-        if (typeof (ele) === 'string') this.Context = document.querySelector(ele);
-        else this.Context = ele;
+        if (typeof (ele) === 'string') this.context = document.querySelector(ele);
+        else this.context = ele;
         return this;
     }
 
     getContext() {
-        return this.Context;
+        return this.context;
     }
 
     /**
@@ -43,11 +43,11 @@ export class HTML {
      */
     add(node) {
         const ele = document.createElement(node);
-        if (this.Context) {
-            this.Context.appendChild(ele);
-            this.Context = ele;
+        if (this.context) {
+            this.context.appendChild(ele);
+            this.context = ele;
         } else {
-            this.Context = ele;
+            this.context = ele;
         }
         return this;
     }
@@ -158,12 +158,12 @@ export class HTML {
     }
     get br() {
         var br = document.createElement("br");
-        this.Context.appendChild(br);
+        this.context.appendChild(br);
         return this;
     }
     get hr() {
         var hr = document.createElement("hr");
-        this.Context.appendChild(hr);
+        this.context.appendChild(hr);
         return this;
     }
     get ul() {
@@ -185,7 +185,7 @@ export class HTML {
         return this.add('label');
     }
     get end() {
-        this.Context = this.Context.parentElement;
+        this.context = this.context.parentElement;
         return this;
     }
     render() {
@@ -197,7 +197,7 @@ export class HTML {
      * @param {any[]} args
      */
     event(name, handler, ...args) {
-        this.Context.addEventListener(name, (e) => handler(e, ...args));
+        this.context.addEventListener(name, (e) => handler(e, ...args));
         return this;
     }
     /**
@@ -205,7 +205,7 @@ export class HTML {
      */
     trigger(type) {
         var e = new Event(type);
-        this.Context.dispatchEvent(e);
+        this.context.dispatchEvent(e);
         return this;
     }
 
@@ -213,11 +213,11 @@ export class HTML {
      * @param {string} cls
      */
     className(cls) {
-        if (this.Context.className != "") {
-            this.Context.className += (' ' + cls);
+        if (this.context.className != "") {
+            this.context.className += (' ' + cls);
         }
         else {
-            this.Context.className = cls;
+            this.context.className = cls;
         }
         return this;
     }
@@ -226,7 +226,7 @@ export class HTML {
      * @param {string} id
      */
     id(id) {
-        this.Context.id = id;
+        this.context.id = id;
         return this;
     }
 
@@ -235,14 +235,14 @@ export class HTML {
      */
     style(style) {
         if (style == null) return this;
-        this.Context.style.cssText += style;
+        this.context.style.cssText += style;
         return this;
     }
     /**
      * @param {string} width
      */
     width(width) {
-        this.Context.style.width = width;
+        this.context.style.width = width;
         return this;
     }
 
@@ -267,7 +267,7 @@ export class HTML {
     text(text) {
         if (text === null || text === undefined) return this;
         var node = new Text(text);
-        this.Context.appendChild(node);
+        this.context.appendChild(node);
         return this;
     }
 
@@ -286,8 +286,8 @@ export class HTML {
         if (!langKey) {
             return this;
         }
-        this.markLangProp(this.Context, langKey, "title");
-        return this.attr("title", LangSelect.Get(langKey));
+        this.markLangProp(this.context, langKey, "title");
+        return this.attr("title", LangSelect.get(langKey));
     }
 
     /**
@@ -316,12 +316,12 @@ export class HTML {
         if (!langKey) {
             return this;
         }
-        const translated = LangSelect.Get(langKey, featureId);
-        const textContent = parameters.length > 0 ? Str.Format(translated, parameters) : translated;
+        const translated = LangSelect.get(langKey, featureId);
+        const textContent = parameters.length > 0 ? Str.format(translated, parameters) : translated;
         const textNode = document.createTextNode(textContent);
         this.markLangProp(textNode, langKey, "textContent", parameters);
         textNode["featurename"] = featureId;
-        this.Context.appendChild(textNode);
+        this.context.appendChild(textNode);
         return this;
     }
 
@@ -329,7 +329,7 @@ export class HTML {
      * @param {string} html
      */
     innerHTML(html) {
-        this.Context.innerHTML = html;
+        this.context.innerHTML = html;
         return this;
     }
     /**
@@ -341,7 +341,7 @@ export class HTML {
             .input.attr(attr, attr).attr("type", "checkbox").type("checkbox").end
             .span.className("check myCheckbox");
         // @ts-ignore
-        this.Context.previousElementSibling.checked = val;
+        this.context.previousElementSibling.checked = val;
         return this;
     }
     /**
@@ -349,7 +349,7 @@ export class HTML {
      */
     type(name) {
         // @ts-ignore
-        this.Context.type = name;
+        this.context.type = name;
         return this;
     }
     /**
@@ -357,17 +357,17 @@ export class HTML {
      * @param {string} value
      */
     attr(name, value) {
-        this.Context.setAttribute(name, value);
+        this.context.setAttribute(name, value);
         return this;
     }
 
     href(value) {
-        this.Context.setAttribute("href", value);
+        this.context.setAttribute("href", value);
         return this;
     }
 
     src(value) {
-        this.Context.setAttribute("src", value);
+        this.context.setAttribute("src", value);
         return this;
     }
 
@@ -375,7 +375,7 @@ export class HTML {
      * @param {number} index
      */
     tabIndex(index) {
-        this.Context.setAttribute('tabindex', index.toString());
+        this.context.setAttribute('tabindex', index.toString());
         return this;
     }
 
@@ -384,7 +384,7 @@ export class HTML {
      * @param {string} value
      */
     dataAttr(name, value) {
-        this.Context.setAttribute('data-' + name, value);
+        this.context.setAttribute('data-' + name, value);
         return this;
     }
 
@@ -395,8 +395,8 @@ export class HTML {
         if (!langKey || langKey.trim() === '') {
             return this;
         }
-        this.markLangProp(this.Context, langKey, "placeholder");
-        return this.attr("placeholder", LangSelect.Get(langKey));
+        this.markLangProp(this.context, langKey, "placeholder");
+        return this.attr("placeholder", LangSelect.get(langKey));
     }
 
 
@@ -410,26 +410,26 @@ export class HTML {
     markLangProp(ctx, langKey, propName, ...parameters) {
         if (!ctx) return;
 
-        const langKeyProperty = LangSelect.LangKey + propName;
-        const langParamProperty = LangSelect.LangParam + propName;
+        const langKeyProperty = LangSelect.langKey + propName;
+        const langParamProperty = LangSelect.langParam + propName;
 
         ctx[langKeyProperty] = langKey;
         if (parameters.length > 0) {
             ctx[langParamProperty] = parameters;
         }
 
-        const prop = ctx[LangSelect.LangProp];
+        const prop = ctx[LangSelect.langProp];
         const newProp = prop ? prop + "," + propName : propName;
         const propArray = newProp.split(",").filter((value, index, self) => self.indexOf(value) === index);
-        ctx[LangSelect.LangProp] = propArray.join(",");
+        ctx[LangSelect.langProp] = propArray.join(",");
     }
     /**
      * @param {string} val
      */
     value(val) {
-        /** @type {HTMLInputElement} */
+        /** @type {hTMLInputElement} */
         // @ts-ignore
-        const input = this.Context;
+        const input = this.context;
         input.value = val;
         return this;
     }
@@ -449,7 +449,7 @@ export class HTML {
         return this;
     }
     /**
-     * @param {PositionEnum | string} position
+     * @param {positionEnum | string} position
      * @param {string | number} distance
      * @param {string} unit
      */
@@ -466,7 +466,7 @@ export class HTML {
      * @returns {Html} Returns this for chaining.
      */
     escape(action) {
-        const div = this.Context;
+        const div = this.context;
         div.tabIndex = -1;
         div.focus();
         div.addEventListener('keydown', (e) => {
@@ -489,7 +489,7 @@ export class HTML {
             return this;
         }
         iconClass = iconClass.trim();
-        const span = this.Context;
+        const span = this.context;
         this.className("icon");
         const isIconClass = iconClass.includes("mif") || iconClass.includes("fa") || iconClass.includes("fa-");
         if (isIconClass) {
@@ -507,7 +507,7 @@ export class HTML {
      * @returns {Html} Returns this for chaining.
      */
     floating(top, left) {
-        return this.position(PositionEnum.fixed)
+        return this.position(positionEnum.fixed)
             .position(Direction.top, top)
             .position(Direction.left, left);
     }
@@ -521,8 +521,8 @@ export class HTML {
         if (!langKey) {
             return this;
         }
-        const ctx = this.Context;
-        const translated = LangSelect.Get(langKey, featureId);
+        const ctx = this.context;
+        const translated = LangSelect.get(langKey, featureId);
         this.markLangProp(ctx, langKey, 'innerHTML', parameters);
         ctx.innerHTML = translated;
         return this;
@@ -555,7 +555,7 @@ export class HTML {
             selector = selector.toString();
         }
 
-        let result = this.Context;
+        let result = this.context;
         while (result !== null) {
             // @ts-ignore
             if (result.querySelector(selector) !== null) {
@@ -569,7 +569,7 @@ export class HTML {
             throw new Error("Cannot find the element of selector " + selector);
         }
 
-        this.Context = result;
+        this.context = result;
         return this;
     }
 
@@ -579,21 +579,21 @@ export class HTML {
      * @returns {Html} Returns this for chaining.
      */
     closest(type) {
-        if (this.Context && typeof this.Context.closest === 'function') {
-            this.Context = this.Context.closest(type.toString());
+        if (this.context && typeof this.context.closest === 'function') {
+            this.context = this.context.closest(type.toString());
         }
         return this;
     }
 
     clear() {
-        this.Context.innerHTML = '';
+        this.context.innerHTML = '';
         return this;
     }
 
     checkbox(value) {
         this.add(ElementType.input);
-        var checkbox = this.Context;
-        if (checkbox instanceof HTMLInputElement) {
+        var checkbox = this.context;
+        if (checkbox instanceof hTMLInputElement) {
             checkbox.setAttribute("type", "checkbox");
             checkbox.checked = value ?? false;
         }
@@ -607,7 +607,7 @@ export class HTML {
      * @returns {HTML} Returns the instance of the class for chaining.
      */
     sticky(top = null, left = null) {
-        const ctx = this.Context;
+        const ctx = this.context;
         if (!ctx) {
             return this;
         }
@@ -639,16 +639,17 @@ export class HTML {
     }
 
     display(shouldShow) {
-        const ele = this.Context;
+        const ele = this.context;
         ele.style.display = shouldShow ? '' : 'none';
         return this;
     }
 
     visibility(visible) {
-        var ele = this.Context;
+        var ele = this.context;
         ele.style.visibility = visible ? "" : "hidden";
         return this;
     }
 }
 
 export const Html = new HTML();
+export const html = Html;

@@ -4,7 +4,7 @@ export class HeaderManageBL extends TabEditor {
     /**
      * @type {import("../models/component.js").Component}
      */
-    FeatureComponent;
+    featureComponent;
     /**
      * Creates an instance of HeaderManageBL with predefined settings.
      */

@@ -13,15 +13,15 @@ export const getComName = (root) => {
 
 export async function comQuery(meta, com) {
     if (meta.Query == null) return null;
-    var params = Utils.IsFunction(meta.PreQuery);
+    var params = Utils.isFunction(meta.preQuery);
     var body = {
-        ComId: meta.Id,
+        comId: meta.Id,
         Params: params,
-        AnnonymousTenant: meta.TenantCode ?? 'system',
-        AnnonymousEnv: meta.Env ?? 'test',
-        MetaConn: 'default',
-        DataConn: 'bl',
-        WrapQuery: false
+        annonymousTenant: meta.tenantCode ?? 'system',
+        annonymousEnv: meta.Env ?? 'test',
+        metaConn: 'default',
+        dataConn: 'bl',
+        wrapQuery: false
     };
     var res = await fetch('/api/user/comquery', {
         method: 'POST', headers: { "Content-Type": "application/json", }, body: JSON.stringify(body)
@@ -44,10 +44,10 @@ export async function resolveComponents(root) {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                ComId: 'Com',
+                comId: 'Com',
                 Action: feature,
-                AnnonymousTenant: tenant,
-                AnnonymousEnv: env,
+                annonymousTenant: tenant,
+                annonymousEnv: env,
                 Params: JSON.stringify(params)
             }),
         });
@@ -55,9 +55,9 @@ export async function resolveComponents(root) {
             const res = await response.json();
             const components = res[0];
             components.map((/** @type {Component} */ com) => {
-                const isRendererFn = Utils.IsFunction(com.Renderer, false, root);
+                const isRendererFn = Utils.isFunction(com.Renderer, false, root);
                 if (!isRendererFn) return;
-                const container = meta.find(x => x.dataset.meta == com.FieldName);
+                const container = meta.find(x => x.dataset.meta == com.fieldName);
                 if (container == null) return;
                 isRendererFn.call(null, container, com, comQuery);
             });

@@ -1,7 +1,7 @@
 import React from "react";
 import { ToastContainer } from "react-toastify";
 import { Client, Html, EditForm } from "../../lib";
-import { KeyCodeEnum, RoleEnum } from "../../lib/models/enum.js";
+import { keyCodeEnum, roleEnum } from "../../lib/models/enum.js";
 import { Toast } from "../../lib/toast.js";
 import { MenuComponent } from "../components/menu.js";
 import { RegisterBL } from "./register.jsx";
@@ -17,7 +17,7 @@ export class LoginBL extends EditForm {
   static _initApp;
   /** @type {MenuComponent} */
   static Menu;
-  static TaskList;
+  static taskList;
   static _backdrop;
 
   constructor() {
@@ -30,19 +30,19 @@ export class LoginBL extends EditForm {
     this.name = "Login";
     this.title = "Đăng nhập";
     this.login = true;
-    this.Meta.isPublic = true;
-    this.Meta.IsPublic = true;
-    this.Meta.label = "Login";
-    this.Meta.Label = "Login";
+    this.meta.isPublic = true;
+    this.meta.isPublic = true;
+    this.meta.label = "Login";
+    this.meta.Label = "Login";
     this.title = "Login";
-    this.Meta.layout = () => {
+    this.meta.layout = () => {
       const logIn = async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
-        const userName = formData.get("UserName");
+        const userName = formData.get("userName");
         const password = formData.get("Password");
         if (!userName || !password) {
-          Toast.Warning("UserName or Password is required!");
+          Toast.Warning("userName or Password is required!");
           return;
         }
         const login = {
@@ -53,10 +53,10 @@ export class LoginBL extends EditForm {
         try {
           var res = await Client.instance.submitAsync({
             Url: `/api/auth/login`,
-            JsonData: JSON.stringify(login),
-            IsRawString: true,
+            jsonData: JSON.stringify(login),
+            isRawString: true,
             Method: "POST",
-            AllowAnonymous: true,
+            allowAnonymous: true,
           });
           Client.token = res;
           this.initFCM();
@@ -71,7 +71,7 @@ export class LoginBL extends EditForm {
             })
             .finally(() => {
               window.setTimeout(() => {
-                Toast.Success(`Hello ` + Client.token.FullName);
+                Toast.Success(`Hello ` + Client.token.fullName);
               }, 200);
             });
         } catch (error) {
@@ -97,7 +97,7 @@ export class LoginBL extends EditForm {
                     <input
                       className="input ap-lg-input"
                       type="text"
-                      name="UserName"
+                      name="userName"
                     />
                   </div>
                   <div className="wrap-input pass-wrap validate-input">
@@ -123,7 +123,7 @@ export class LoginBL extends EditForm {
                       objname="jForgot"
                       className="forgot-password"
                       target="_blank"
-                      res-key="FormLogin_ForgotPassword"
+                      res-key="formLogin_ForgotPassword"
                     >
                       Forgot password?
                     </a>
@@ -135,14 +135,14 @@ export class LoginBL extends EditForm {
                     </button>
                   </div>
                   <div className="register-block login-class">
-                    <span res-key="FormLogin_DontHaveAccount">
+                    <span res-key="formLogin_DontHaveAccount">
                       Dont have account?
                     </span>
                     <a
                       objname="jRegister"
                       className="register-btn"
                       target="_blank"
-                      res-key="FormLogin_Register"
+                      res-key="formLogin_Register"
                     >
                       Register
                     </a>
@@ -158,7 +158,7 @@ export class LoginBL extends EditForm {
         </>
       );
     };
-    this.Meta.Layout = this.Meta.layout;
+    this.meta.Layout = this.meta.layout;
   }
 
   /** @type {LoginBL} */
@@ -177,21 +177,21 @@ export class LoginBL extends EditForm {
 
   render() {
     let oldToken = Client.token;
-    if (!oldToken || new Date(oldToken.RefreshTokenExp) <= Client.EpsilonNow) {
-      this.ParentElement = document.getElementById("app");
-      this.Element = this.ParentElement;
-      super.Render();
+    if (!oldToken || new Date(oldToken.refreshTokenExp) <= Client.epsilonNow) {
+      this.parentElement = document.getElementById("app");
+      this.element = this.parentElement;
+      super.render();
       return;
     } else if (
       oldToken &&
-      new Date(oldToken.AccessTokenExp) > Client.EpsilonNow
+      new Date(oldToken.accessTokenExp) > Client.epsilonNow
     ) {
       App.instance.renderLayout().then(async () => {
         await this.initAppIfEmpty();
       });
     } else if (
       oldToken &&
-      new Date(oldToken.RefreshTokenExp) > Client.EpsilonNow
+      new Date(oldToken.refreshTokenExp) > Client.epsilonNow
     ) {
       Client.refreshToken().then((newToken) => {
         App.instance.renderLayout().then(async () => {
@@ -206,7 +206,7 @@ export class LoginBL extends EditForm {
    * @returns {void}
    */
   keyCodeEnter(event) {
-    if (event.keyCodeEnum() !== KeyCodeEnum.Enter) {
+    if (event.keyCodeEnum() !== keyCodeEnum.Enter) {
       return;
     }
     event.preventDefault();
@@ -233,10 +233,10 @@ export class LoginBL extends EditForm {
       // @ts-ignore
       Client.instance.submitAsync({
         Url: `/api/auth/login`,
-        JsonData: JSON.stringify(login),
-        IsRawString: true,
+        jsonData: JSON.stringify(login),
+        isRawString: true,
         Method: "POST",
-        AllowAnonymous: true,
+        allowAnonymous: true,
       })
         .then((res) => {
           if (!res) {
@@ -257,7 +257,7 @@ export class LoginBL extends EditForm {
             })
             .finally(() => {
               window.setTimeout(() => {
-                Toast.Success(`Hello ` + Client.token.FullName);
+                Toast.Success(`Hello ` + Client.token.fullName);
               }, 200);
             });
         })
@@ -270,7 +270,7 @@ export class LoginBL extends EditForm {
   }
 
   async forgotPassword(login) {
-    return Client.instance.postAsync(login, "/user/ForgotPassword").then(
+    return Client.instance.postAsync(login, "/user/forgotPassword").then(
       (res) => {
         if (res) {
           Toast.Warning(
@@ -287,8 +287,8 @@ export class LoginBL extends EditForm {
   }
 
   async initAppIfEmpty() {
-    const systemRoleId = RoleEnum.System;
-    Client.instance.SystemRole = Client.token.RoleIds.includes(
+    const systemRoleId = roleEnum.System;
+    Client.instance.systemRole = Client.token.roleIds.includes(
       systemRoleId.toString()
     );
     if (this._initApp) {
@@ -300,69 +300,12 @@ export class LoginBL extends EditForm {
     MenuComponent.instance.render();
   }
 
-  async getExchangeRate() {
-    try {
-      const json3 = {
-        Value: null,
-        Url: "/api/VCBExchangeRate",
-        IsRawString: true,
-        Method: "GET",
-      };
-      var xmlString = await Client.instance.submitAsync(json3);
-      const parser = new DOMParser();
-      const xmlDoc = parser.parseFromString(xmlString, "text/xml");
-      const json = this.extractExchangeRates(xmlDoc);
-      json.push({
-        CurrencyCode: "VND",
-        CurrencyName: "VND",
-        Buy: "1",
-        Transfer: "1",
-        Sell: "1",
-      });
-      const ext = json.reduce((acc, cur) => {
-        acc[cur.CurrencyCode] = Decimal(cur.Sell.replace(/,/g, ""));
-        return acc;
-      }, {});
-      var exUSD = Decimal(
-        json.find((x) => x.CurrencyCode == "USD").Sell.replace(/,/g, "")
-      );
-      const ext1 = json.reduce((acc, cur) => {
-        const eurToUsdRate = Decimal(cur.Sell.replace(/,/g, "")).div(exUSD);
-        acc[cur.CurrencyCode] = eurToUsdRate;
-        return acc;
-      }, {});
-      EditableComponent.ExchangeRateVND = ext;
-      localStorage.setItem("ExchangeRateVND", JSON.stringify(ext));
-      EditableComponent.ExchangeRateUSD = ext1;
-      localStorage.setItem("ExchangeRateUSD", JSON.stringify(ext1));
-    } catch {}
-  }
-
-  extractExchangeRates(xmlDoc) {
-    const exchangeRates = [];
-    const exrateElements = xmlDoc.getElementsByTagName("Exrate");
-
-    for (let i = 0; i < exrateElements.length; i++) {
-      const exrate = exrateElements[i];
-      const rate = {
-        CurrencyCode: exrate.getAttribute("CurrencyCode"),
-        CurrencyName: exrate.getAttribute("CurrencyName").trim(),
-        Buy: exrate.getAttribute("Buy"),
-        Transfer: exrate.getAttribute("Transfer"),
-        Sell: exrate.getAttribute("Sell"),
-      };
-      exchangeRates.push(rate);
-    }
-
-    return exchangeRates;
-  }
-
   loadByFromUrl() {
     var fName = this.getFeatureNameFromUrl() || { pathname: "", params: null };
     if (fName.pathname == "") {
       return;
     }
-    ComponentExt.InitFeatureByName(fName.pathname, true).then((tab) => {
+    ComponentExt.initFeatureByName(fName.pathname, true).then((tab) => {
       window.setTimeout(() => {
         if (fName.params.id) {
           Client.instance.getByIdAsync(tab.meta.entityId, [
@@ -376,7 +319,7 @@ export class LoginBL extends EditForm {
                   Client.instance.submitAsync({
                     Url: `/api/feature/loadFeature`,
                     Method: "POST",
-                    JsonData: JSON.stringify({
+                    jsonData: JSON.stringify({
                       Name: fName.params.popup2,
                     }),
                   }).then((item) => {
@@ -425,13 +368,13 @@ export class LoginBL extends EditForm {
   }
 
   toastOki() {
-    Toast.Success("OKi");
+    Toast.Success("oKi");
   }
 
   initFCM(signout = false) {
     console.log("Init fcm");
-    let tenantCode = Client.token.TenantCode;
-    let strUserId = `U${Client.token.UserId.toString().padStart(7, "0")}`;
+    let tenantCode = Client.token.tenantCode;
+    let strUserId = `U${Client.token.userId.toString().padStart(7, "0")}`;
   }
 
   static diposeAll() {
