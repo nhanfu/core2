@@ -243,10 +243,10 @@ export class RegisterBL extends EditForm {
     const tcs = new Promise((resolve, reject) => {
       // @ts-ignore
       Client.instance.submitAsync({
-        Url: `/api/auth/register`,
+        url: `/api/auth/register`,
         jsonData: JSON.stringify(login),
         isRawString: true,
-        Method: "POST",
+        method: "POST",
         allowAnonymous: true,
       }).then((res) => {
         if (!res) {
@@ -281,7 +281,7 @@ export class RegisterBL extends EditForm {
     return Client.instance.postAsync(login, "/user/forgotPassword").then(
       (res) => {
         if (res) {
-          Toast.Warning(
+          Toast.warning(
             "An error occurs. Please contact the administrator to get your password!"
           );
         } else {

@@ -13,9 +13,9 @@ import { Html } from "./utils/html.js";
 export class PaginationOptions {
     /**
      * Create pagination options.
-     * @param {number} Total - Total number of items.
+     * @param {number} total - Total number of items.
      * @param {number} pageSize - Number of items per page.
-     * @param {number} Selected - Currently selected page index.
+     * @param {number} selected - Currently selected page index.
      * @param {number} pageIndex - Index of the current page.
      * @param {number} pageNumber - Number representation of the current page.
      * @param {number} currentPageCount - Current count of pages.
@@ -23,17 +23,17 @@ export class PaginationOptions {
      * @param {number} endIndex - End index of the pagination.
      * @param {Function} clickHandler - Function to handle click events on page navigation.
      */
-    constructor(Total, pageSize, Selected, pageIndex, pageNumber, currentPageCount, startIndex, endIndex, clickHandler) {
-        this.Total = Total;
+    constructor(total, pageSize, selected, pageIndex, pageNumber, currentPageCount, startIndex, endIndex, clickHandler) {
+        this.total = total;
         this.pageSize = pageSize;
-        this.Selected = Selected;
+        this.selected = selected;
         this.pageIndex = pageIndex;
         this.pageNumber = pageNumber;
         this.currentPageCount = currentPageCount;
         this.startIndex = startIndex;
         this.endIndex = endIndex;
         this.clickHandler = clickHandler;
-        this.Disabled = false;
+        this.disabled = false;
     }
 }
 
@@ -43,7 +43,7 @@ export class PaginationOptions {
 export class Paginator extends EditableComponent {
     /** @type {ListView} */
     // @ts-ignore
-    Parent;
+    parent;
     /**
      * Create a paginator.
      * @param {PaginationOptions} paginationOptions - Options for pagination.
@@ -52,8 +52,8 @@ export class Paginator extends EditableComponent {
         super(null, null);
         if (!paginationOptions) throw new Error("paginationOptions is required");
         this.entity = paginationOptions;
-        this.Options = paginationOptions;
-        this.Options.startIndex = this.Options.startIndex || 1;
+        this.options = paginationOptions;
+        this.options.startIndex = this.options.startIndex || 1;
         this.element = null;
         this.populateDirty = false;
         this.alwaysValid = true;
@@ -85,7 +85,7 @@ export class Paginator extends EditableComponent {
         Html.take(this.element).ul.className("pagination").li.text("❮").event("click", this.prevPage.bind(this)).end.render();
         this.addChild(pageNum);
         pageNum.element.addEventListener("change", () => {
-            this.Options.pageIndex = this.Options.pageNumber - 1;
+            this.options.pageIndex = this.options.pageNumber - 1;
             this.reloadListView();
         });
         Html.instance.end.li.text("❯").event("click", this.nextPage.bind(this)).end.render();
@@ -99,9 +99,9 @@ export class Paginator extends EditableComponent {
     createNumberInput(propertyName) {
         const input = document.createElement('input');
         input.type = 'number';
-        input.value = this.Options[propertyName];
+        input.value = this.options[propertyName];
         input.addEventListener('change', () => {
-            this.Options[propertyName] = parseInt(input.value);
+            this.options[propertyName] = parseInt(input.value);
             this.reloadListView();
         });
         return input;
@@ -115,7 +115,7 @@ export class Paginator extends EditableComponent {
      */
     createLabel(propertyName, format = "") {
         const label = document.createElement('label');
-        label.textContent = format ? format.replace("{0:n0}", this.Options[propertyName].toLocaleString()) : this.Options[propertyName];
+        label.textContent = format ? format.replace("{0:n0}", this.options[propertyName].toLocaleString()) : this.options[propertyName];
         return label;
     }
 
@@ -123,11 +123,11 @@ export class Paginator extends EditableComponent {
      * Handle the event for navigating to the next page.
      */
     nextPage() {
-        const pages = Math.ceil(this.Options.Total / this.Options.pageSize);
-        if (this.Options.pageNumber >= pages) return;
+        const pages = Math.ceil(this.options.Total / this.options.pageSize);
+        if (this.options.pageNumber >= pages) return;
 
-        this.Options.pageIndex++;
-        if (this.Options.clickHandler) this.Options.clickHandler(this.Options.pageIndex, null);
+        this.options.pageIndex++;
+        if (this.options.clickHandler) this.options.clickHandler(this.options.pageIndex, null);
         this.reloadListView();
     }
 
@@ -135,10 +135,10 @@ export class Paginator extends EditableComponent {
      * Handle the event for navigating to the previous page.
      */
     prevPage() {
-        if (this.Options.pageIndex <= 0) return;
+        if (this.options.pageIndex <= 0) return;
 
-        this.Options.pageIndex--;
-        if (this.Options.clickHandler) this.Options.clickHandler(this.Options.pageIndex, null);
+        this.options.pageIndex--;
+        if (this.options.clickHandler) this.options.clickHandler(this.options.pageIndex, null);
         this.reloadListView();
     }
 

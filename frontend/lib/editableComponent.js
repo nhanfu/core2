@@ -164,13 +164,13 @@ export class EditableComponent {
         return this.findClosest(x => x.isTab);
     }
     /** @type {EditForm} */
-    get EditForm() {
+    get editForm() {
         return this.#editForm;
     }
     /**
      * @param {EditForm} editor
      */
-    set EditForm(editor) {
+    set editForm(editor) {
         this.#editForm = editor;
     }
     get isSmallUp() { return document.body.clientWidth > 768 }
@@ -746,7 +746,7 @@ export class EditableComponent {
             const shouldUpdate = [...new set([...coms, ...coms2].filter(x => !x.isSection))];
             shouldUpdate.forEach(child => {
                 child.prepareUpdateView(force, dirty);
-                child.Entity = this.entity;
+                child.entity = this.entity;
                 child.updateView(force, dirty, ...componentNames);
             });
         } else {
@@ -1210,7 +1210,7 @@ export class EditableComponent {
             comId: this.meta.id,
         };
         return await Client.instance.submitAsync({
-            Url: "/api/feature/report",
+            url: "/api/feature/report",
             isRawString: true,
             jsonData: JSON.stringify(entity),
             method: "pOST"
@@ -1224,7 +1224,7 @@ export class EditableComponent {
             comId: this.meta.id,
         };
         return await Client.instance.submitAsync({
-            Url: "/api/feature/sql",
+            url: "/api/feature/sql",
             isRawString: true,
             jsonData: JSON.stringify(entity),
             method: "pOST"

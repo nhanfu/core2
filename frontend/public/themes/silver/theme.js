@@ -8711,7 +8711,7 @@
         get ToolbarMode () { return ToolbarMode$1; },
         get ToolbarLocation () { return ToolbarLocation$1; },
         register: register$e,
-        getSkinUrl: getSkinUrl,
+        getSkinurl: getSkinUrl,
         getSkinUrlOption: getSkinUrlOption,
         isReadOnly: isReadOnly,
         isSkinDisabled: isSkinDisabled,
@@ -29453,7 +29453,7 @@
         const extraction = extract(structure);
         return factory(extraction.internalDialog, extraction.initialData, extraction.dataValidator);
       },
-      openUrl: (factory, structure) => {
+      openurl: (factory, structure) => {
         const internalDialog = getOrDie(createUrlDialog(structure));
         return factory(internalDialog);
       },

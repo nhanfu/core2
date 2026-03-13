@@ -75,7 +75,7 @@ export class GoogleMap extends EditableComponent {
         }
         
         // Create map container
-        Html.instance.div.id(`map-${this.meta.Id}`).style(`height: 100%; width: 100%;`);
+        Html.instance.div.id(`map-${this.meta.id}`).style(`height: 100%; width: 100%;`);
         this.mapContainer = Html.context;
         Html.instance.end.render();
         
@@ -116,12 +116,12 @@ export class GoogleMap extends EditableComponent {
             script.addEventListener('load', () => {
                 this.scriptLoaded = true;
                 this.initMap();
-                Spinner.Hide();
+                Spinner.hide();
             });
             
             script.addEventListener('error', (e) => {
                 console.error('Failed to load Google Maps API:', e);
-                Spinner.Hide();
+                Spinner.hide();
                 
                 // Show user-friendly error message
                 if (apiKey) {
@@ -134,7 +134,7 @@ export class GoogleMap extends EditableComponent {
             document.head.appendChild(script);
         } catch (error) {
             console.error('Error loading Google Maps API:', error);
-            Spinner.Hide();
+            Spinner.hide();
             Html.take(this.mapContainer).clear().div.className("alert alert-danger").text("Error loading Google Maps API: " + error.message);
         }
     }

@@ -34,7 +34,7 @@ export class Spinner {
         this._backdrop.style.display = "";
     }
 
-    static Hide() {
+    static hide() {
         if (this._span) {
             this._span.style.display = "none";
             this._backdrop.style.display = "none";

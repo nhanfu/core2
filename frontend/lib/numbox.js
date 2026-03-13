@@ -103,7 +103,7 @@ export class Numbox extends EditableComponent {
             return;
         }
         if (Utils.isNullOrWhiteSpace(this._input.value)) {
-            this.Value = null;
+            this.value = null;
             this.dispatchEvent(this.meta.events, EventType.Input, this, this.entity, this._value, oldVal).then();
             return;
         }
@@ -114,11 +114,11 @@ export class Numbox extends EditableComponent {
         const text = this._input.value.replace(/,/g, "");
         const [success, parsedResult] = Utils.tryParseDecimal(text);
         if (!success) {
-            this.Value = this._value;
+            this.value = this._value;
             this.dispatchEvent(this.meta.events, EventType.Input, this, this.entity, this._value, oldVal).then();
             return;
         }
-        this.Value = parsedResult;
+        this.value = parsedResult;
         this.userInput?.invoke({ newData: this._value, oldData: oldVal, evType: EventType.Input });
         this.dispatchEvent(this.meta.events, EventType.Input, this, this.entity, this._value, oldVal).then();
     }
@@ -148,7 +148,7 @@ export class Numbox extends EditableComponent {
         this._input.addEventListener('change', this.changeSetValue.bind(this));
         this._input.autocomplete = 'off';
         this.oldValue = this._value;
-        this.Value = this._value;
+        this.value = this._value;
         window.setTimeout(() => Utils.isFunction(this.meta.Renderer), 100);
         this.dOMContentLoaded?.invoke();
     }
@@ -206,7 +206,7 @@ export class Numbox extends EditableComponent {
         const oldVal = this._value;
         this.emptyRow = false;
         if (Utils.isNullOrWhiteSpace(this._input.value)) {
-            this.Value = null;
+            this.value = null;
             this.Dirty = true;
             this.populateFields();
             this.dispatchEvent(this.meta.events, EventType.Change, this, this.entity).then(() => {
@@ -223,13 +223,13 @@ export class Numbox extends EditableComponent {
         const [success, parsedResult] = Utils.tryParseDecimal(text);
         if (!success) {
             this.Dirty = true;
-            this.Value = this._value; // Set old value to avoid accept invalid value
+            this.value = this._value; // Set old value to avoid accept invalid value
             this.dispatchEvent(this.meta.events, EventType.Change, this, this.entity).then(() => {
                 this.userInput?.invoke({ newData: this._value, oldData: oldVal, evType: EventType.Change });
             });
             return;
         }
-        this.Value = new Decimal(parsedResult);
+        this.value = new Decimal(parsedResult);
         this.Dirty = true;
         this.populateFields();
         this.dispatchEvent(this.meta.events, EventType.Change, this, this.entity).then(() => {
@@ -258,7 +258,7 @@ export class Numbox extends EditableComponent {
             !newValue.equals(this._value))
             || (this._value && !newValue)
             || (!this._value && newValue)) {
-            this.Value = newValue;
+            this.value = newValue;
             this.setRequired();
             if (!this.Dirty) {
                 this.originalText = this._input;

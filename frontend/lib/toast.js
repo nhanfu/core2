@@ -21,7 +21,7 @@ export class Toast {
      * @param {number} [timeout=2500] - Duration before the toast disappears.
      * @param {...any} parameters - Additional parameters.
      */
-    static Success(message, timeout = 2500, ...parameters) {
+    static success(message, timeout = 2500, ...parameters) {
         toast.success(LangSelect.get(message), {
             position: "top-right",
             autoClose: timeout,
@@ -37,7 +37,7 @@ export class Toast {
      * Creates a warning toast.
      * @param {string} message - Message to display.
      */
-    static Warning(message, timeout = 2500, ...parameters) {
+    static warning(message, timeout = 2500, ...parameters) {
         toast.warning(LangSelect.get(message), {
             position: "top-right",
             autoClose: timeout,

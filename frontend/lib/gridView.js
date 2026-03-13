@@ -71,7 +71,7 @@ export class GridView extends ListView {
         }
     }
 
-    Rerender() {
+    reRender() {
         this.loadRerender = true;
         this.header = this.header.filter(x => !x.Hidden);
         this.renderTableHeader(this.header);
@@ -105,7 +105,7 @@ export class GridView extends ListView {
         Html.instance.div.style("grid-area: span 1 / span 2;").className("button-toolbar").render();
         this.menuGridView = Html.context;
         Html.instance.end.render();
-        var child = (this.editForm.meta.Components || []).filter(x => x.componentGroupId == this.meta.Id && (x.componentType == "Button" || x.componentType == "importExcel")).sort((a, b) => (a.Order || 0) - (b.Order || 0));;
+        var child = (this.editForm.meta.Components || []).filter(x => x.componentGroupId == this.meta.id && (x.componentType == "Button" || x.componentType == "importExcel")).sort((a, b) => (a.Order || 0) - (b.Order || 0));;
         child.forEach(ui => {
             const com = ComponentFactory.getComponent(ui, this.editForm);
             if (com == null) return;
@@ -130,7 +130,7 @@ export class GridView extends ListView {
             let pre = this.meta.defaultAddStart;
             this.listViewSearch.entityVM.startDate = new Date(Date.now() + pre * 24 * 3600 * 1000);
         }
-        let lFrom = window.localStorage.getItem("fromDate" + this.meta.Id);
+        let lFrom = window.localStorage.getItem("fromDate" + this.meta.id);
         if (lFrom != null) {
             this.listViewSearch.entityVM.startDate = new Date(lFrom);
         }
@@ -138,7 +138,7 @@ export class GridView extends ListView {
             let pre = this.meta.defaultAddEnd;
             this.listViewSearch.entityVM.endDate = new Date(Date.now() + pre * 24 * 3600 * 1000);
         }
-        let lTo = window.localStorage.getItem("toDate" + this.meta.Id);
+        let lTo = window.localStorage.getItem("toDate" + this.meta.id);
         if (lTo != null) {
             this.listViewSearch.entityVM.endDate = new Date(lTo);
         }
@@ -524,7 +524,7 @@ export class GridView extends ListView {
             currentItem = this.gridViewItemEmpty;
         }
         if (!(this.meta.isMultiple && this.componentType == "GridView")) {
-            currentItem.Selected = false;
+            currentItem.selected = false;
         }
         var nextIndex = -2;
         if (currentItem.emptyRow) {
@@ -556,7 +556,7 @@ export class GridView extends ListView {
             }
         }
         if (nextIndex == -2) {
-            this.gridViewItemEmpty.Focused = true;
+            this.gridViewItemEmpty.focused = true;
             var com = this.gridViewItemEmpty.Children.find(x => x.Meta.fieldName == fieldName);
             com.parentElement.focus();
             com.Focus();
@@ -565,9 +565,9 @@ export class GridView extends ListView {
             }
         }
         else {
-            this.allListViewItem[nextIndex].Focused = true
+            this.allListViewItem[nextIndex].focused = true
             if (!(this.meta.isMultiple && this.componentType == "GridView")) {
-                this.allListViewItem[nextIndex].Selected = true;
+                this.allListViewItem[nextIndex].selected = true;
             }
             var com = this.allListViewItem[nextIndex].Children.find(x => x.Meta.fieldName == fieldName);
             com.parentElement.focus();
@@ -584,7 +584,7 @@ export class GridView extends ListView {
             currentItem = this.gridViewItemEmpty;
         }
         if (!(this.meta.isMultiple && this.componentType == "GridView")) {
-            currentItem.Selected = false;
+            currentItem.selected = false;
         }
         var nextIndex = -2;
         if (currentItem.emptyRow) {
@@ -616,7 +616,7 @@ export class GridView extends ListView {
             }
         }
         if (nextIndex == -2) {
-            this.gridViewItemEmpty.Focused = true;
+            this.gridViewItemEmpty.focused = true;
             var com = this.gridViewItemEmpty.Children.find(x => x.Meta.fieldName == fieldName);
             com.parentElement.focus();
             com.Focus();
@@ -628,9 +628,9 @@ export class GridView extends ListView {
             if (!this.allListViewItem[nextIndex]) {
                 nextIndex = 0;
             }
-            this.allListViewItem[nextIndex].Focused = true;
+            this.allListViewItem[nextIndex].focused = true;
             if (!(this.meta.isMultiple && this.componentType == "GridView")) {
-                this.allListViewItem[nextIndex].Selected = true;
+                this.allListViewItem[nextIndex].selected = true;
             }
             var com = this.allListViewItem[nextIndex].Children.find(x => x.Meta.fieldName == fieldName);
             com.parentElement.focus();
@@ -716,7 +716,7 @@ export class GridView extends ListView {
         if (!currentItem || !currentItem.Children) {
             return;
         }
-        let com = currentItem.Children.find(x => x.Meta.Id === this.lastComponentFocus?.Id);
+        let com = currentItem.Children.find(x => x.Meta.id === this.lastComponentFocus?.id);
         this.actionKeyHandler(e, this.lastComponentFocus, currentItem, com, com.element.closest('td'), keyCode);
     }
 
@@ -776,11 +776,11 @@ export class GridView extends ListView {
 
     renderContent() {
         if (!this.loadRerender) {
-            this.Rerender();
+            this.reRender();
         }
         this.addSections();
         let viewPort = this.getViewPortItem();
-        this.formattedRowData = this.meta.localRender ? this.meta.localData : this.rowData.Data;
+        this.formattedRowData = this.meta.localRender ? this.meta.localData : this.rowData.data;
         if (!this.formattedRowData || this.formattedRowData.length === 0) {
             this.mainSection.disposeChildren();
             if (!this._hasFirstLoad) {
@@ -832,7 +832,7 @@ export class GridView extends ListView {
         dataSections.forEach((child, index) => {
             child.entity = updatedData[index];
             this.flattenChildren(child).forEach(x => {
-                x.Entity = updatedData[index];
+                x.entity = updatedData[index];
             });
             child.updateView();
         });
@@ -843,7 +843,7 @@ export class GridView extends ListView {
                 this.renderRowData(this.header, newRow, this.mainSection);
             });
         } else {
-            this.mainSection.Children.slice(updatedData.length).forEach(x => x.Dispose());
+            this.mainSection.Children.slice(updatedData.length).forEach(x => x.dispose());
         }
 
         if (dirty !== undefined) {
@@ -1262,8 +1262,8 @@ export class GridView extends ListView {
             this.emptySection.Children = [];
             this.addNewEmptyRow();
             this.clearSelected();
-            rowSection.Selected = true;
-            rowSection.Focused = true;
+            rowSection.selected = true;
+            rowSection.focused = true;
             this.lastListViewItem = rowSection;
             this.renderIndex();
             await this.dispatchCustomEvent(this.meta.events, customEventType.afterCreated, rowSection, rowData, this);
@@ -1274,7 +1274,7 @@ export class GridView extends ListView {
                 rowSection.entity[this._groupKey] = keys.map(key => rowSection.entity[key]).join(" ");
             }
             if (rowSection.groupSection) {
-                if (rowSection.entity[this._groupKey] != rowSection.groupSection.Key) {
+                if (rowSection.entity[this._groupKey] != rowSection.groupSection.key) {
                     const index = rowSection.groupSection.childrenItems.indexOf(rowSection);
                     if (index > -1) {
                         rowSection.groupSection.childrenItems.splice(index, 1);
@@ -1282,7 +1282,7 @@ export class GridView extends ListView {
                     if (rowSection.groupSection.childrenItems.length == 0) {
                         const index1 = this.allListViewItem.indexOf(rowSection.groupSection);
                         this.allListViewItem.splice(index1, 1);
-                        rowSection.groupSection.Dispose();
+                        rowSection.groupSection.dispose();
                     }
                     this.moveGroupRow(rowSection);
                     this.clearSelected();
@@ -1299,11 +1299,11 @@ export class GridView extends ListView {
         if (this.lastComponentFocus.componentType == "Dropdown" && rowData[this.lastComponentFocus.fieldName]) {
             window.setTimeout(() => {
                 const headers = this.header.filter(x => x.virtualScroll).orderBy(x => x.Order);
-                const currentComponent = headers.find(y => y.Id === this.lastComponentFocus.Id);
+                const currentComponent = headers.find(y => y.id === this.lastComponentFocus.id);
                 const index = headers.indexOf(currentComponent);
                 if (headers.length > index + 1) {
                     const nextGrid = headers[index + 1];
-                    const nextComponent = rowSection.Children.find(y => y.Meta.Id === nextGrid.Id);
+                    const nextComponent = rowSection.Children.find(y => y.Meta.id === nextGrid.id);
                     if (nextComponent) {
                         nextComponent.Focus();
                     }
@@ -1311,7 +1311,7 @@ export class GridView extends ListView {
             }, 200);
         }
         if (component && component.componentType == "GridView") {
-            await this.dispatchEvent(component.Meta.Events, observableArgs.evType, this, rowSection, rowData);
+            await this.dispatchEvent(component.Meta.events, observableArgs.evType, this, rowSection, rowData);
         }
         await this.dispatchEvent(this.meta.events, observableArgs.evType, this, rowSection, rowData);
         if (observableArgs.evType === EventType.Change) {
@@ -1326,7 +1326,7 @@ export class GridView extends ListView {
      * @param {ListViewItem} rowSection
      */
     moveGroupRow(rowSection) {
-        let groupSection = this.allListViewItem.find(group => group.groupRow && group.Key === rowSection.entity[this._groupKey]);
+        let groupSection = this.allListViewItem.find(group => group.groupRow && group.key === rowSection.entity[this._groupKey]);
         var currentIndex = this.allListViewItem.indexOf(rowSection);
         this.allListViewItem.splice(currentIndex, 1);
         if (groupSection) {
@@ -1350,7 +1350,7 @@ export class GridView extends ListView {
         else {
             Html.take(this.mainSection);
             groupSection = new GroupViewItem(ElementType.tr);
-            groupSection.Key = rowSection.entity[this._groupKey];
+            groupSection.key = rowSection.entity[this._groupKey];
             groupSection.entity = rowSection.entity;
             groupSection.parentElement = this.mainSection.element;
             groupSection.listViewSection = true;
@@ -1507,7 +1507,7 @@ export class GridView extends ListView {
         if (!headers || headers.length == 0) {
             headers = this.header;
         }
-        if (headers.Count != this.header.Count) {
+        if (headers.count != this.header.count) {
             this.filterColumns(headers);
         }
         if (this.headerSection.element === null) {
@@ -1634,7 +1634,7 @@ export class GridView extends ListView {
                                 Visibility: true,
                                 plainText: 'Input search...',
                                 showLabel: false,
-                                Id: header.Id,
+                                Id: header.id,
                                 searchFieldName: header.searchFieldName
                             });
                             txtSearch.searchIcon = "fal fa-search";
@@ -1662,7 +1662,7 @@ export class GridView extends ListView {
                                 Visibility: true,
                                 plainText: 'Input search...',
                                 showLabel: false,
-                                Id: header.Id,
+                                Id: header.id,
                                 searchFieldName: header.searchFieldName
                             });
                             txtSearch.searchIcon = "fal fa-search";
@@ -1691,7 +1691,7 @@ export class GridView extends ListView {
                                 showLabel: false,
                                 Precision: 2,
                                 showHotKey: true,
-                                Id: header.Id,
+                                Id: header.id,
                                 searchFieldName: header.searchFieldName
                             });
                             txtSearch.searchMethod = searchMethodEnum.range;
@@ -1715,7 +1715,7 @@ export class GridView extends ListView {
                                 fieldName: header.fieldName,
                                 Visibility: true,
                                 showLabel: false,
-                                Id: header.Id,
+                                Id: header.id,
                                 searchFieldName: header.searchFieldName,
                                 Query: `[{
                                             "Id": "1,0",
@@ -1947,32 +1947,32 @@ export class GridView extends ListView {
     updateHeaders(sticky) {
         window.clearTimeout(this._imeout);
         this._imeout = window.setTimeout(() => {
-            const headerElements = this.headerSection.Children.filter(x => x.Meta && x.Meta.Id);
+            const headerElements = this.headerSection.Children.filter(x => x.Meta && x.Meta.id);
             let index = 0;
             let anyGroup = this.header.some(x => x.groupName && !Utils.isNullOrWhiteSpace(x.groupName));
             if (!anyGroup) {
                 headerElements.forEach(header => {
                     header.Order = index;
-                    header.Meta.Order = index;
+                    header.meta.Order = index;
                     index++;
                 });
             }
             if (Client.systemRole) {
                 const columns = headerElements.map(header => {
                     const match = header.element;
-                    if (match && !header.Meta.statusBar && Utils.isNullOrWhiteSpace(match.style.display)) {
+                    if (match && !header.meta.statusBar && Utils.isNullOrWhiteSpace(match.style.display)) {
                         const width = `${match.offsetWidth}px`;
                         const dirtyPatch = [
-                            { Field: "Id", Value: header.Meta.Id },
-                            { Field: "featureId", Value: header.Meta.featureId },
-                            { Field: "Frozen", Value: header.Meta.Frozen },
-                            { Field: "frozenRight", Value: header.Meta.frozenRight },
-                            Utils.isNullOrWhiteSpace(header.groupName) ? { Field: "Width", Value: width } : { Field: "Width", Value: header.Meta.Width },
-                            Utils.isNullOrWhiteSpace(header.groupName) ? { Field: "maxWidth", Value: width } : { Field: "maxWidth", Value: header.Meta.maxWidth },
-                            Utils.isNullOrWhiteSpace(header.groupName) ? { Field: "minWidth", Value: width } : { Field: "minWidth", Value: header.Meta.minWidth },
+                            { field: "Id", value: header.meta.id },
+                            { field: "featureId", value: header.meta.featureId },
+                            { field: "Frozen", value: header.meta.Frozen },
+                            { field: "frozenRight", value: header.meta.frozenRight },
+                            Utils.isNullOrWhiteSpace(header.groupName) ? { field: "Width", value: width } : { field: "Width", value: header.meta.Width },
+                            Utils.isNullOrWhiteSpace(header.groupName) ? { field: "maxWidth", value: width } : { field: "maxWidth", value: header.meta.maxWidth },
+                            Utils.isNullOrWhiteSpace(header.groupName) ? { field: "minWidth", value: width } : { field: "minWidth", value: header.meta.minWidth },
                         ];
                         if (!anyGroup) {
-                            dirtyPatch.push({ Field: "Order", Value: header.Order })
+                            dirtyPatch.push({ field: "Order", value: header.Order })
                         }
                         return {
                             Changes: dirtyPatch,
@@ -1987,13 +1987,13 @@ export class GridView extends ListView {
             else {
                 const columns = headerElements.map(header => {
                     const match = header.element;
-                    if (match && !header.Meta.statusBar && !Utils.isNullOrWhiteSpace(header.Meta.fieldName) && Utils.isNullOrWhiteSpace(match.style.display)) {
+                    if (match && !header.meta.statusBar && !Utils.isNullOrWhiteSpace(header.meta.fieldName) && Utils.isNullOrWhiteSpace(match.style.display)) {
                         const width = `${match.offsetWidth}px`;
                         return {
-                            Id: header.Meta.Id,
-                            fieldName: header.Meta.fieldName,
-                            Frozen: header.Meta.Frozen,
-                            frozenRight: header.Meta.frozenRight,
+                            Id: header.meta.id,
+                            fieldName: header.meta.fieldName,
+                            Frozen: header.meta.Frozen,
+                            frozenRight: header.meta.frozenRight,
                             Order: header.Order,
                             Width: width,
                         };
@@ -2001,10 +2001,10 @@ export class GridView extends ListView {
                     return null;
                 }).filter(x => x != null);
                 var userSetting = new UserSetting();
-                userSetting.featureId = this.editForm.meta.Id;
-                userSetting.componentId = this.meta.Id;
+                userSetting.featureId = this.editForm.meta.id;
+                userSetting.componentId = this.meta.id;
                 userSetting.Active = true;
-                userSetting.Value = JSON.stringify(columns);
+                userSetting.value = JSON.stringify(columns);
                 Client.instance.postAsync(userSetting, "/api/UserSetting").then();
             }
             if (sticky) {
@@ -2020,8 +2020,8 @@ export class GridView extends ListView {
             let patchVM = {
                 Table: "Component",
                 Changes: [
-                    { Field: "Component.Id", Value: header.Id, oldVal: header.Id },
-                    { Field: "Component.Label", Value: html.textContent.trim(), oldVal: header.Label }
+                    { field: "Component.id", value: header.id, oldVal: header.id },
+                    { field: "Component.Label", value: html.textContent.trim(), oldVal: header.Label }
                 ]
             };
             // @ts-ignore
@@ -2033,7 +2033,7 @@ export class GridView extends ListView {
         if (!this.paginator) {
             return;
         }
-        var options = this.paginator.Options;
+        var options = this.paginator.options;
         options.Total = total;
         options.currentPageCount = currentPageCount;
         options.pageNumber = (options.pageIndex || 0) + 1;
@@ -2049,14 +2049,14 @@ export class GridView extends ListView {
     }
 
     toggleAll() {
-        const anySelected = this.allListViewItem.some(x => x.Selected);
+        const anySelected = this.allListViewItem.some(x => x.selected);
         if (anySelected) {
             this.clearSelected();
             this.dispatchEvent(this.meta.events, EventType.Click, this, this.entity).then();
             return;
         }
         this.allListViewItem.forEach(x => {
-            x.Selected = true;
+            x.selected = true;
         });
         this.dispatchEvent(this.meta.events, EventType.Click, this, this.entity).then();
     }
@@ -2113,21 +2113,21 @@ export class GridView extends ListView {
             let dirtyPatchDetail = [
                 {
                     Label: "Id",
-                    Field: "Id",
+                    field: "Id",
                     oldVal: null,
-                    Value: com.Id,
+                    value: com.id,
                 },
                 {
                     Label: "featureId",
-                    Field: "featureId",
+                    field: "featureId",
                     oldVal: null,
-                    Value: com.featureId,
+                    value: com.featureId,
                 },
                 {
                     Label: "defaultVal",
-                    Field: "defaultVal",
+                    field: "defaultVal",
                     oldVal: null,
-                    Value: this[name][com.fieldName],
+                    value: this[name][com.fieldName],
                 }
             ]
             let patchModelDetail = {
@@ -2157,7 +2157,7 @@ export class GridView extends ListView {
 
     frozenColumn(arg) {
         const entity = arg.header;
-        const header = this.header.find(x => x.Id === entity.Id);
+        const header = this.header.find(x => x.id === entity.id);
         if (header) {
             header.Frozen = !header.Frozen;
         }
@@ -2197,7 +2197,7 @@ export class GridView extends ListView {
      */
     prepareUpdateView(force, dirty) {
         super.prepareUpdateView(force, dirty);
-        if (this.entity.Id && this.entity.Id.startsWith("-") && this.meta.editable && this.meta.canAdd) {
+        if (this.entity.id && this.entity.id.startsWith("-") && this.meta.editable && this.meta.canAdd) {
             this.toggleAddRow(true);
         }
         else {
@@ -2217,7 +2217,7 @@ export class GridView extends ListView {
             }
             else {
                 if (this.gridViewItemEmpty) {
-                    this.gridViewItemEmpty.Dispose();
+                    this.gridViewItemEmpty.dispose();
                     this.gridViewItemEmpty = null;
                 }
             }
@@ -2229,7 +2229,7 @@ export class GridView extends ListView {
         }
         else {
             if (this.gridViewItemEmpty) {
-                this.gridViewItemEmpty.Dispose();
+                this.gridViewItemEmpty.dispose();
                 this.gridViewItemEmpty = null;
             }
         }
@@ -2268,7 +2268,7 @@ export class GridView extends ListView {
 
     getViewPortItem() {
         if (!this.element || !this.element.classList.contains('sticky')) {
-            return this.rowData.Data.length;
+            return this.rowData.data.length;
         }
         let mainSectionHeight = this.element.clientHeight
             - (this.headerSection.element ? this.headerSection.element.clientHeight : 0)

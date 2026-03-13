@@ -53,11 +53,11 @@ export class CodeEditor extends EditableComponent {
         // @ts-ignore
         require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs' } });
         // @ts-ignore
-        window.monacoEnvironment = { getWorkerUrl: () => proxy };
+        window.monacoEnvironment = { getWorkerurl: () => proxy };
 
         let proxy = uRL.createObjectURL(new blob([`
             self.monacoEnvironment = {
-                baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/'
+                baseurl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/'
             };
             importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/base/worker/workerMain.js');
             `], { type: 'text/javascript' }));

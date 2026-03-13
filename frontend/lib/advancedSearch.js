@@ -232,7 +232,7 @@ export class AdvancedSearch extends EditableComponent {
 
     filterDomLoaded() {
         this._filterGrid.mainSection.children.forEach(x => {
-            var condition = x.Entity;
+            var condition = x.entity;
             this.fieldId_Changed(condition, condition.field);
         });
     }
@@ -415,7 +415,7 @@ export class AdvancedSearch extends EditableComponent {
         var cell = this._filterGrid.firstOrDefault(x => x.entity == condition && x.name == "value");
         /** @type {EditableComponent} */
         // @ts-ignore
-        var compareCell = this._filterGrid.find(x => x.Entity == condition
+        var compareCell = this._filterGrid.find(x => x.entity == condition
             && x.fieldName == "compareOperatorId");
         if (cell == null) {
             return;
@@ -537,13 +537,13 @@ export class AdvancedSearch extends EditableComponent {
         return [
             {
                 // @ts-ignore
-                fieldName: nameof(models.Entity.name),
+                fieldName: nameof(models.entity.name),
                 Label: "Trạng thái",
                 active: true
             },
             {
                 // @ts-ignore
-                fieldName: nameof(models.Entity.description),
+                fieldName: nameof(models.entity.description),
                 Label: "Miêu tả",
                 active: true
             }

@@ -19625,7 +19625,7 @@
       };
       return {
         open: unimplemented,
-        openUrl: unimplemented,
+        openurl: unimplemented,
         alert: unimplemented,
         confirm: unimplemented,
         close: unimplemented

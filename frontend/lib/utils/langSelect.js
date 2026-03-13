@@ -67,8 +67,8 @@ export class LangSelect {
     }
 
     static dictionaryLoaded(dictionaryItems) {
-        const map = dictionaryItems.filter((x, i, arr) => arr.findIndex(y => y.Key === x.Key) === i).reduce((acc, cur) => {
-            acc[cur.Key] = cur.Value;
+        const map = dictionaryItems.filter((x, i, arr) => arr.findIndex(y => y.key === x.key) === i).reduce((acc, cur) => {
+            acc[cur.key] = cur.value;
             return acc;
         }, {});
         LangSelect._dictionaries = map;

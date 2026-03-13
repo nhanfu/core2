@@ -4,7 +4,7 @@ export class BadGatewayQueue {
     }
 
     Enqueue(options) {
-        if (!options.NoQueue && options.Method !== 'GET') {
+        if (!options.NoQueue && options.method !== 'GET') {
             options.Retry = true;
             this._queue.push(options);
         }

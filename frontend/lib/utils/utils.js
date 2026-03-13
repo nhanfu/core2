@@ -317,7 +317,7 @@ export class Utils {
                         let source = header.localData;
                         let list = cellData.split(',');
                         let strings = list.map(data => {
-                            let found = source && source.find(x => x.Id == data);
+                            let found = source && source.find(x => x.id == data);
                             if (!found) {
                                 return '';
                             }
@@ -599,10 +599,10 @@ export class Utils {
         /** @type {XHRWrapper} */
         // @ts-ignore
         const p = {
-            Value: base64Image,
-            Url: `/user/image/?name=${fileName}`,
+            value: base64Image,
+            url: `/user/image/?name=${fileName}`,
             isRawString: true,
-            Method: httpMethod.POST
+            method: httpMethod.POST
         };
         return Client.instance.submitAsync(p);
     }

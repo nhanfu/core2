@@ -464,7 +464,7 @@ export const httpStatusCode = {
     Found: 302,
     Redirect: 302,
     seeOther: 303,
-    redirectMethod: 303,
+    redirectmethod: 303,
     notModified: 304,
     useProxy: 305,
     Unused: 306,

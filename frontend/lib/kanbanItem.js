@@ -17,7 +17,7 @@ export class KanbanItem extends EditableComponent {
         /** @type {Component} */
         this.meta = ui;
         this.entity = entity;
-        this.Columns = [];
+        this.columns = [];
         this._textEle = null;
     }
     /**
@@ -103,7 +103,7 @@ export class KanbanItem extends EditableComponent {
             Spinner.appendTo();
             this.dispatchEvent(this.meta.events, "click", this, this.entity).then(() => {
                 this.disabled = false;
-                Spinner.Hide();
+                Spinner.hide();
             });
         } finally {
             window.setTimeout(() => {

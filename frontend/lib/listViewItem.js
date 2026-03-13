@@ -56,15 +56,15 @@ export class ListViewItem extends Section {
      * Gets or sets whether the item is selected.
      * @type {boolean}
      */
-    get Selected() {
+    get selected() {
         return this._selected;
     }
     groupSection;
-    set Selected(value) {
+    set selected(value) {
         this._selected = value;
         this.setSelected(value);
-        if (this.Checkbox) {
-            this.Checkbox.Value = value;
+        if (this.checkbox) {
+            this.checkbox.value = value;
         }
         const id = this.entityId;
         const selectedIds = this.listView.selectedIds;
@@ -94,7 +94,7 @@ export class ListViewItem extends Section {
      * @param {boolean} [triggerEvent=true] - Whether to trigger the focus event.
      * @returns {boolean} The focus state.
      */
-    set Focused(value) {
+    set focused(value) {
         if (value === null) return this._focused;
         this._focused = value;
         if (this._focused) {
@@ -106,7 +106,7 @@ export class ListViewItem extends Section {
         return this._focused;
     }
 
-    get Focused() {
+    get focused() {
         return this._focused;
     }
 
@@ -164,17 +164,17 @@ export class ListViewItem extends Section {
             .event(EventType.focusIn, () => {
                 if (this.meta.canAdd) {
                     this.listView.emptySection.Children.forEach(x => {
-                        if (x.Focused) {
-                            x.Focused = false;
+                        if (x.focused) {
+                            x.focused = false;
                         }
                     });
                 }
                 this.listView.allListViewItem.forEach(x => {
-                    if (x.Focused) {
-                        x.Focused = false;
+                    if (x.focused) {
+                        x.focused = false;
                     }
                 });
-                this.Focused = true;
+                this.focused = true;
             })
             .event(EventType.focusOut, this.rowFocusOut.bind(this))
             .event(EventType.mouseEnter, this.mouseEnter.bind(this))
@@ -225,7 +225,7 @@ export class ListViewItem extends Section {
     }
 
     /**@type {Checkbox} */
-    Checkbox;
+    checkbox;
     masterDataComponent = ["Dropdown", "Select2", "MultipleSearchEntry", "SearchEntry"];
     /**
          * Renders a table cell.
@@ -262,35 +262,35 @@ export class ListViewItem extends Section {
         var com = ((canW && header.Editable)
             || (!header.Editable && header.componentType == "Button")) ? ComponentFactory.getComponent(header, this.editForm, null, canW) : new Label(header);
         if (!com) return;
-        com.Id = header.Id;
+        com.id = header.id;
         com.Name = header.fieldName;
-        com.Entity = rowData;
+        com.entity = rowData;
         com.parentElement = cellWrapper || Html.context;
         this.addChild(com);
         if (header.statusBar && !this.isSearchEntry && this.listView.meta.isMultiple) {
-            this.Checkbox = com;
-            this.Checkbox.disabled = false;
-            this.Checkbox.element.addEventListener(EventType.Change, (e) => {
-                this.Checkbox.Dirty = false;
+            this.checkbox = com;
+            this.checkbox.disabled = false;
+            this.checkbox.element.addEventListener(EventType.Change, (e) => {
+                this.checkbox.Dirty = false;
                 if (this.emptyRow) {
                     return;
                 }
                 e.preventDefault();
                 e.stopPropagation();
-                this.Selected = !this.Selected;
+                this.selected = !this.selected;
                 this.dispatchEvent(this.meta.events, EventType.Click, this, this.entity).then();
             });
-            this.Checkbox.element.parentElement.addEventListener(EventType.keyDown, (e) => {
+            this.checkbox.element.parentElement.addEventListener(EventType.keyDown, (e) => {
                 if (this.emptyRow) {
                     return;
                 }
                 let code = e.keyCodeEnum();
                 if (code == keyCodeEnum.space) {
                     e.preventDefault();
-                    this.Checkbox.Value = !this.Checkbox.Value;
-                    const check = this.Checkbox._input.checked;
-                    this.Checkbox.dataChanged(check);
-                    this.Selected = !this.Selected;
+                    this.checkbox.value = !this.checkbox.value;
+                    const check = this.checkbox._input.checked;
+                    this.checkbox.dataChanged(check);
+                    this.selected = !this.selected;
                 }
             });
         }
@@ -329,7 +329,7 @@ export class ListViewItem extends Section {
         if (!header.statusBar) {
             com.userInput.add(arg => this.userInputHandler(arg, com));
         }
-        if (header.Editable && header.Id) {
+        if (header.Editable && header.id) {
             if (this.listView.meta.isRealtime) {
                 return;
             }
@@ -337,7 +337,7 @@ export class ListViewItem extends Section {
             copyButton.className = "button-copy";
             copyButton.tabIndex = -1;
             copyButton.addEventListener("click", async () => {
-                var value = com.Entity[header.fieldName];
+                var value = com.entity[header.fieldName];
                 var index = this.listView.Item.indexOf(this);
                 var newUpdate = this.listView.Item.splice(index + 1);
                 for (const element of newUpdate) {
@@ -345,27 +345,27 @@ export class ListViewItem extends Section {
                     if (comp.Disabled) {
                         continue;
                     }
-                    comp.Entity[header.fieldName] = value;
+                    comp.entity[header.fieldName] = value;
                     if (com.Meta.componentType == "Dropdown") {
-                        comp.Entity[comp.displayField] = com.Entity[comp.displayField];
+                        comp.entity[comp.displayField] = com.entity[comp.displayField];
                         comp.Matched = com.Matched;
                     }
                     element.updateView(true, true, header.fieldName);
                     if (comp.isCurrency) {
                         if (comp.Matched) {
                             var code = comp.getMatchedText(com.Matched);
-                            comp.Entity.exchangeRateVND = EditableComponent.exchangeRateVND[code];
-                            comp.Entity.exchangeRateUSD = EditableComponent.exchangeRateUSD[code];
-                            comp.Entity.currencyCode = code == "" ? null : code;
+                            comp.entity.exchangeRateVND = EditableComponent.exchangeRateVND[code];
+                            comp.entity.exchangeRateUSD = EditableComponent.exchangeRateUSD[code];
+                            comp.entity.currencyCode = code == "" ? null : code;
                         }
                         else {
-                            comp.Entity.exchangeRateVND = null;
-                            comp.Entity.exchangeRateUSD = null;
+                            comp.entity.exchangeRateVND = null;
+                            comp.entity.exchangeRateUSD = null;
                         }
                     }
-                    comp.populateFields(comp.Entity);
-                    await comp.dispatchEvent(comp.Meta.Events, EventType.Input, comp, comp.Entity);
-                    await comp.dispatchEvent(comp.Meta.Events, EventType.Change, comp, comp.Entity);
+                    comp.populateFields(comp.entity);
+                    await comp.dispatchEvent(comp.Meta.events, EventType.Input, comp, comp.entity);
+                    await comp.dispatchEvent(comp.Meta.events, EventType.Change, comp, comp.entity);
                     element.Dirty = true;
                 }
                 await this.listView.dispatchEvent(this.listView.meta.events, EventType.Change, this.listView);
@@ -458,7 +458,7 @@ export class ListViewItem extends Section {
             patchDetail.Label = cell;
             patchDetail.Field = cell;
             patchDetail.oldVal = null;
-            patchDetail.Value = val;
+            patchDetail.value = val;
             var component = this.Children.find(x => x.Meta.fieldName == cell)
             if (component) {
                 let text = component.getValueText();
@@ -472,7 +472,7 @@ export class ListViewItem extends Section {
         });
         let patchModel = new SavePatchVM();
         patchModel.Changes = dirtyPatch;
-        patchModel.Table = this.meta.refName;
+        patchModel.table = this.meta.refName;
         patchModel.Detail = [];
         patchModel.Delete = [];
         return patchModel;
@@ -542,7 +542,7 @@ export class ListViewItem extends Section {
             patchDetail.Label = cell;
             patchDetail.Field = cell;
             patchDetail.oldVal = null;
-            patchDetail.Value = val;
+            patchDetail.value = val;
             var component = this.Children.find(y => y.Meta.fieldName == cell)
             if (component && component.Meta.Editable) {
                 let text = component.changeValue || component.getValueText();
@@ -608,27 +608,27 @@ export class ListViewItem extends Section {
         let allListView = this.listView.allListViewItem;
         if (this.meta.isMultiple) {
             this.listView.clearSelected();
-            this.Selected = true;
+            this.selected = true;
             this.listView.selectedIndex = allListView.indexOf(this);
             return;
         }
         if (!ctrl && !shift) {
             if (this.listView.selectedIds.length <= 1) {
                 this.listView.clearSelected();
-                this.Selected = !this._selected;
+                this.selected = !this._selected;
                 if (this._selected) {
                     this.listView.selectedIndex = this.listView.Children.indexOf(this);
                 }
             }
             return;
         }
-        this.Selected = !this._selected;
+        this.selected = !this._selected;
 
         if (!shift && !ctrl && this._selected) {
             this.listView.selectedIndex = this.listView.Children.indexOf(this);
         }
         if (shift) {
-            const selected = allListView.find(x => x.Selected);
+            const selected = allListView.find(x => x.selected);
             let _lastIndex = allListView.indexOf(selected);
             var currentIndex = allListView.indexOf(this);
             if (currentIndex < _lastIndex) {
@@ -640,7 +640,7 @@ export class ListViewItem extends Section {
                 /** @type {ListViewItem} */
                 let listViewItem = allListView[i];
                 if (listViewItem instanceof ListViewItem) {
-                    listViewItem.Selected = true;
+                    listViewItem.selected = true;
                 }
             }
         }
@@ -659,9 +659,9 @@ export class ListViewItem extends Section {
         items.forEach(item => {
             const id = item.entityId;
             if (this.listView.selectedIds.includes(id)) {
-                item.Selected = this.Selected;
+                item.selected = this.selected;
             } else {
-                item.Selected = false;
+                item.selected = false;
             }
         });
     }
@@ -713,7 +713,7 @@ export class ListViewItem extends Section {
                     const message = res.filter(x => !x.isValid)
                         .map(x => Object.values(x.validationResult).Combine(null, Utils.breakLine))
                         .Combine(null, Utils.breakLine);
-                    Toast.Warning(message);
+                    Toast.warning(message);
                 }
             }).catch(err);
         });
@@ -721,7 +721,7 @@ export class ListViewItem extends Section {
 
     async updateEntity() {
         if (!this.entityId.startsWith("-")) {
-            var updateRow = await Client.instance.getByIdAsync(this.listView.meta.refName, [this.entity.Id]);
+            var updateRow = await Client.instance.getByIdAsync(this.listView.meta.refName, [this.entity.id]);
             var entity = updateRow.data[0];
             if (entity) {
                 await this.listView.loadMasterData([entity]);

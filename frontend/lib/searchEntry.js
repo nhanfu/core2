@@ -167,13 +167,13 @@ export class SearchEntry extends EditableComponent {
 
     Dispose() {
         if (this._gv !== null) {
-            this._gv.Dispose();
+            this._gv.dispose();
         }
         if (this._rootResult !== null) {
             this._rootResult.remove();
             this._rootResult = null;
         }
-        super.Dispose();
+        super.dispose();
     }
 
     diposeGvWrapper(e = null) {
@@ -239,7 +239,7 @@ export class SearchEntry extends EditableComponent {
         window.clearTimeout(this._waitForInput);
         this._waitForInput = window.setTimeout(() => {
             if (this._gv !== null) {
-                this._gv.Wheres = [];
+                this._gv.wheres = [];
                 this._gv.advSearchVM.Conditions = [];
                 this._gv.cellSelected = [];
             }
@@ -266,7 +266,7 @@ export class SearchEntry extends EditableComponent {
             this._gv.parentElement = this._rootResult;
             this._gv.entity = this.entity;
             this._gv.listViewSearch.entityVM.searchTerm = term;
-            this._gv.rowData.Data = [];
+            this._gv.rowData.data = [];
             this._gv.actionFilter();
             this._isRendering = false;
             return;
@@ -293,7 +293,7 @@ export class SearchEntry extends EditableComponent {
         this._gv.dOMContentLoaded.add(this.gridResultDomLoaded.bind(this));
         this._gv.addSections();
         this._gv.listViewSearch.entityVM.searchTerm = term;
-        this._gv.rowData.Data = [];
+        this._gv.rowData.data = [];
         this._gv.render();
         this._gv.Show = false;
         this._gv.element.classList.add('floating');
@@ -336,7 +336,7 @@ export class SearchEntry extends EditableComponent {
         this.focusBackWithoutEvent();
         this._gv.selectedIndex = -1;
         this._gv.rowAction(x => {
-            x.Selected = false;
+            x.selected = false;
         });
         this._gv.element.style.inset = null;
         this.renderRootResult();
@@ -345,7 +345,7 @@ export class SearchEntry extends EditableComponent {
             this._gv.Show = true;
         }
         if (this.meta.hideGrid) {
-            this.entrySelected(this._gv?.rowData.Data[0]);
+            this.entrySelected(this._gv?.rowData.data[0]);
         }
         this.focusBackWithoutEvent();
         this.alterPositionGV();
@@ -400,7 +400,7 @@ export class SearchEntry extends EditableComponent {
                     window.setTimeout(() => {
                         var data = Utils.isFunction(this.meta.Query, false, this);
                         this.Matched = data.find(x => {
-                            const xId = x?.Id != null ? x.Id.toString() : null;
+                            const xId = x?.id != null ? x.id.toString() : null;
                             const entityValue = this.entity?.[this.meta.fieldName] != null ? this.entity[this.meta.fieldName].toString() : null;
                             return xId === entityValue;
                         });
@@ -424,7 +424,7 @@ export class SearchEntry extends EditableComponent {
             window.setTimeout(() => {
                 var data = Utils.isFunction(this.meta.Query, false, this);
                 this.Matched = data.find(x => {
-                    const xId = x?.Id != null ? x.Id.toString() : null;
+                    const xId = x?.id != null ? x.id.toString() : null;
                     const entityValue = this.entity?.[this.meta.fieldName] != null ? this.entity[this.meta.fieldName].toString() : null;
                     return xId === entityValue;
                 });
@@ -433,14 +433,14 @@ export class SearchEntry extends EditableComponent {
         }
         else {
             this.Matched = this.entity[this.displayField] || null;
-            if ((this._value && this.Matched && this.Matched.Id != this._value) || (!this.Matched && this._value)) {
+            if ((this._value && this.Matched && this.Matched.id != this._value) || (!this.Matched && this._value)) {
                 Client.instance.getByIdAsync(this.meta.refName, [this._value]).then(data => {
                     this.Matched = data.data ? data.data[0] : null;
                     this.setMatchedValue();
                     if (this.isCurrency) {
                         var code = this.getMatchedText(this.Matched);
                         this.entity.currencyCode = code;
-                        if (this._value != this.Matched.Id || this.entityId.startsWith("-")) {
+                        if (this._value != this.Matched.id || this.entityId.startsWith("-")) {
                             this.entity.exchangeRateVND = EditableComponent.exchangeRateVND[code];
                             this.entity.exchangeRateUSD = EditableComponent.exchangeRateUSD[code];
                         }
@@ -501,7 +501,7 @@ export class SearchEntry extends EditableComponent {
         if (rowData === null || this.disabled) {
             return;
         }
-        if ((!this._value && rowData) || (this._value !== rowData.Id)) {
+        if ((!this._value && rowData) || (this._value !== rowData.id)) {
             if (this.isCurrency) {
                 var code = this.getMatchedText(rowData);
                 this.entity.exchangeRateVND = EditableComponent.exchangeRateVND[code];

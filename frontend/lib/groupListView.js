@@ -17,7 +17,7 @@ export class GroupListView extends ListView {
 
     render() {
         super.render();
-        Html.take(this.element).className("group-listview").End.render();
+        Html.take(this.element).className("group-listview").end.render();
     }
 
     addRow(item, fromIndex, singleAdd = true) {
@@ -27,11 +27,11 @@ export class GroupListView extends ListView {
             const keys = this.meta.groupBy.split(",");
             item[GroupListView._groupKey] = keys.map(key => item[key]?.toString()).join(" "); 
             const groupKey = item[GroupListView._groupKey]; 
-            const existGroup = this.allListViewItem.find(group => group.groupRow && group.Entity.As('GroupRowData').Key === groupKey); 
+            const existGroup = this.allListViewItem.find(group => group.groupRow && group.entity.As('GroupRowData').key === groupKey); 
     
             if (existGroup === null) {
                 const groupData = new GroupRowData();
-                groupData.Key = groupKey;
+                groupData.key = groupKey;
                 groupData.Children.push(item); 
                 this.formattedRowData.push(groupData);
                 const rowSection = this.renderRowData(this.header, groupData, this.mainSection, this.mainSection.Children.length);
@@ -41,7 +41,7 @@ export class GroupListView extends ListView {
                 this.Dirty = true; 
                 resolve(rowSection);
             } else {
-                existGroup.Entity.As('GroupRowData').Children.push(item);
+                existGroup.entity.As('GroupRowData').Children.push(item);
                 const index = this.mainSection.Children.indexOf(existGroup);
                 const rowSection = this.renderRowData(this.header, item, this.mainSection, index + existGroup.Children.length); // Thực hiện render dữ liệu cho item mới trong nhóm
                 if (singleAdd) {
@@ -66,7 +66,7 @@ export class GroupListView extends ListView {
             return super.renderRowData(headers, row, listViewSection, index, emptyRow);
         }
         let wrapper = listViewSection.element;
-        if (!row.Key || row.Key.toString().isNullOrWhiteSpace()) {
+        if (!row.key || row.key.toString().isNullOrWhiteSpace()) {
             let rowResult = null;
             row.Children.forEach(child => {
                 Html.take(wrapper);
@@ -75,7 +75,7 @@ export class GroupListView extends ListView {
             return rowResult;
         }
         let groupSection = new GroupViewItem(ElementType.div);
-        groupSection.Entity = row;
+        groupSection.entity = row;
         groupSection.parentElement = wrapper;
         groupSection.groupRow = true;
         groupSection.preQueryFn = this._preQueryFn;
@@ -84,23 +84,23 @@ export class GroupListView extends ListView {
         listViewSection.addChild(groupSection);
         let first = row.Children[0];
         let groupText = Utils.formatEntity2(this.meta.groupFormat, null, first, x => "N/A", x => "N/A");
-        Html.take(groupSection.element).Event(EventType.Click, this.dispatchClick.bind(this), first)
-            .Event(EventType.dblClick, this.dispatchDblClick.bind(this), first)
+        Html.take(groupSection.element).event(EventType.Click, this.dispatchClick.bind(this), first)
+            .event(EventType.dblClick, this.dispatchDblClick.bind(this), first)
             // @ts-ignore
-            .Icon("fa fa-chevron-right").Event(EventType.Click, this.toggleGroupRow.bind(this), groupSection).End
+            .Icon("fa fa-chevron-right").event(EventType.Click, this.toggleGroupRow.bind(this), groupSection).end
             .Span.innerHTML(groupText);
-        groupSection.groupText = Html.Context;
+        groupSection.groupText = Html.context;
         row.Children.forEach(child => {
             Html.take(groupSection.element);
             let childRow = this.renderRowData(headers, child, groupSection, null);
             childRow.groupSection = groupSection;
             Html.take(childRow.element).smallCheckbox().render();
-            let chk = Html.Context.previousElementSibling;
+            let chk = Html.context.previousElementSibling;
             if(chk instanceof hTMLInputElement) {
-                Html.Instance.End.End.Event(EventType.Click, (e) => {
+                Html.instance.end.end.event(EventType.Click, (e) => {
                     e.preventDefault();
-                    childRow.Selected = !childRow.Selected;
-                    chk.checked = childRow.Selected;
+                    childRow.selected = !childRow.selected;
+                    chk.checked = childRow.selected;
                 });
             }
         });
@@ -108,11 +108,11 @@ export class GroupListView extends ListView {
     }
 
     dispatchClick(row) {
-        this.dispatchEvent(this.meta.groupEvent, EventType.Click, row).Done();
+        this.dispatchEvent(this.meta.groupEvent, EventType.Click, row).then();
     }
 
     dispatchDblClick(row) {
-        this.dispatchEvent(this.meta.groupEvent, EventType.dblClick, row).Done();
+        this.dispatchEvent(this.meta.groupEvent, EventType.dblClick, row).then();
     }
 
     toggleGroupRow(groupSection, e) {
@@ -130,26 +130,26 @@ export class GroupListView extends ListView {
     }
 
     removeRowById(id) {
-        const index = this.rowData.Data.findIndex(x => x[this.idField].toString() === id);
+        const index = this.rowData.data.findIndex(x => x[this.idField].toString() === id);
         if (index < 0) {
             return;
         }
-        this.rowData.Data.splice(index, 1);
-        this.filterChildren(x => x instanceof ListViewItem && x.Entity[this.idField].toString() === id)
+        this.rowData.data.splice(index, 1);
+        this.filterChildren(x => x instanceof ListViewItem && x.entity[this.idField].toString() === id)
             .forEach(x => {
                 if (x instanceof ListViewItem) {
-                if (x.groupSection && x.groupSection.Entity instanceof GroupRowData) {
-                    const groupChildren = x.groupSection.Entity.Children;
-                    groupChildren.remove(x.Entity);
+                if (x.groupSection && x.groupSection.entity instanceof GroupRowData) {
+                    const groupChildren = x.groupSection.entity.children;
+                    groupChildren.remove(x.entity);
                     if (!groupChildren.length) {
-                        this.rowData.Data.remove(x.groupSection.Entity);
-                        x.groupSection.Dispose();
+                        this.rowData.data.remove(x.groupSection.entity);
+                        x.groupSection.dispose();
                     }
                 }
             }
-                x.Dispose();
+                x.dispose();
             });
-        if (!this.rowData.Data.length) {
+        if (!this.rowData.data.length) {
             this.noRecordFound();
         }
     }
@@ -159,7 +159,7 @@ export class GroupListView extends ListView {
     }
 
     async addOrUpdateRow(rowData, singleAdd = true, force = false, fields = []) {
-        let existRowData = this.filterChildren(x => x instanceof ListViewItem && x.Entity === rowData).pop(); // pop() lấy phần tử cuối cùng tương đương firstOrDefault
+        let existRowData = this.filterChildren(x => x instanceof ListViewItem && x.entity === rowData).pop(); // pop() lấy phần tử cuối cùng tương đương firstOrDefault
 
         if (!existRowData) {
             await this.addRow(rowData, 0, singleAdd);
@@ -167,12 +167,12 @@ export class GroupListView extends ListView {
         }
 
         if (existRowData.emptyRow) {
-            existRowData.Entity = null;
+            existRowData.entity = null;
             await this.addRow(rowData, 0, singleAdd);
         } else {
-            existRowData.Entity.copyPropFrom(rowData);
+            existRowData.entity.copyPropFrom(rowData);
             // @ts-ignore
-            this.rowAction(x => x instanceof ListViewItem && x.Entity === existRowData.Entity, x => {
+            this.rowAction(x => x instanceof ListViewItem && x.entity === existRowData.entity, x => {
                 if (x instanceof ListViewItem) {
                     x.emptyRow = false;
                     x.updateView(force, fields);

@@ -28,7 +28,7 @@ export class Image extends EditableComponent {
         this._disabledDelete = false;
         /** @type {hTMLDivElement} */
         this._gallerys = document.createElement('div');
-        this.dataSource = this.meta.Template || "image/*";
+        this.dataSource = this.meta.template || "image/*";
         this.defaultValue = '';
         this.fileUploaded = new Action();
         this.zoomLevel = 0;
@@ -315,13 +315,13 @@ export class Image extends EditableComponent {
             await Client.instance.patchAsync({
                 Table: "fileUpload",
                 Changes: [
-                    { Field: "Id", Value: Uuid7.newGuid() },
-                    { Field: "entityName", Value: this.meta.refName },
-                    { Field: "recordId", Value: this.entityId },
-                    { Field: "sectionId", Value: this.meta.componentGroupId },
-                    { Field: "fieldName", Value: this.Name },
-                    { Field: "fileName", Value: file.name },
-                    { Field: "filePath", Value: path }
+                    { field: "Id", value: Uuid7.newGuid() },
+                    { field: "entityName", value: this.meta.refName },
+                    { field: "recordId", value: this.entityId },
+                    { field: "sectionId", value: this.meta.componentGroupId },
+                    { field: "fieldName", value: this.Name },
+                    { field: "fileName", value: file.name },
+                    { field: "filePath", value: path }
                 ],
             });
             return path;
@@ -350,7 +350,7 @@ export class Image extends EditableComponent {
             }
         }
         this.Path = allPath.join(Image.pathSeparator);
-        Spinner.Hide();
+        Spinner.hide();
         this.fileUploaded?.invoke();
     }
 

@@ -17,14 +17,14 @@ export class Kanban extends EditableComponent {
         super(ui);
         /** @type {Component} */
         this.meta = ui;
-        this.Columns = [];
+        this.columns = [];
         this._textEle = null;
     }
     /**
      * Renders the button component into the DOM.
      */
     render() {
-        var template = this.meta.Template;
+        var template = this.meta.template;
         var kanbanColumn = JSON.parse(template || "{}");
         if (!this.buttonEle) {
             if (!this.parentElement) throw new Error("parentElement is required");
@@ -38,7 +38,7 @@ export class Kanban extends EditableComponent {
             column.parentElement = this.element;
             column.editForm = this.editForm;
             column.render();
-            this.Columns.push(column);
+            this.columns.push(column);
         }
     }
 }

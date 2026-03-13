@@ -60,10 +60,10 @@ Array.prototype.any = function (/** @type {(arg0: any) => any} */ predicate) {
         }
     }
 };
-Array.prototype.Where = Array.prototype.filter;
+Array.prototype.where = Array.prototype.filter;
 Array.prototype.selectMany = Array.prototype.flatMap;
 Array.prototype.selectForEach = Array.prototype.map;
-Array.prototype.Select = Array.prototype.map;
+Array.prototype.select = Array.prototype.map;
 Array.prototype.hasElement = hasElement;
 Array.prototype.toArray = function () { return this; }
 Array.prototype.contains = function (/** @type {any} */ item) {
@@ -102,7 +102,7 @@ Array.prototype.groupBy = function (/** @type {(arg0: any) => any} */ keyFunctio
     }, {});
     return Object.keys(map).map(key => {
         const items = map[key];
-        items.Key = map[key].keyObj;
+        items.key = map[key].keyObj;
         return items;
     });
 };
@@ -156,13 +156,10 @@ Array.prototype.orderBy = function (keySelector, keySelector2, asc1 = true, asc2
         return ra2 > rb2 ? (asc2 ? 1 : -1) : (asc2 ? -1 : 1);
     });
 };
-Array.prototype.All = Array.prototype.every;
 Array.prototype.lastOrDefault = function (predicate = null) {
     if (predicate) return this.findLast(predicate);
     return this.length > 0 ? this[this.length - 1] : null;
 };
-Promise.prototype.Done = Promise.prototype.then;
-Promise.prototype.done = Promise.prototype.then;
 Date.prototype.addSeconds = function (/** @type {number} */ seconds) {
     var date = new Date(this.valueOf());
     date.setSeconds(date.getSeconds() + seconds);
@@ -392,12 +389,12 @@ HTMLElement.prototype.Hidden = function () {
 HTMLElement.prototype.outOfViewport = function () {
     const bounding = this.getBoundingClientRect();
     const outOfViewPort = new OutOfViewPort();
-    outOfViewPort.Top = bounding.top < 0;
-    outOfViewPort.Left = bounding.left < 0;
-    outOfViewPort.Bottom = bounding.bottom > window.innerHeight;
-    outOfViewPort.Right = bounding.right > window.innerWidth;
-    outOfViewPort.Any = outOfViewPort.Top || outOfViewPort.Left || outOfViewPort.Bottom || outOfViewPort.Right;
-    outOfViewPort.All = outOfViewPort.Top && outOfViewPort.Left && outOfViewPort.Bottom && outOfViewPort.Right;
+    outOfViewPort.top = bounding.top < 0;
+    outOfViewPort.left = bounding.left < 0;
+    outOfViewPort.bottom = bounding.bottom > window.innerHeight;
+    outOfViewPort.right = bounding.right > window.innerWidth;
+    outOfViewPort.any = outOfViewPort.top || outOfViewPort.left || outOfViewPort.bottom || outOfViewPort.right;
+    outOfViewPort.all = outOfViewPort.top && outOfViewPort.left && outOfViewPort.bottom && outOfViewPort.right;
     return outOfViewPort;
 };
 

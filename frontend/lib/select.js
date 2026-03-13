@@ -68,7 +68,7 @@ export class Select extends EditableComponent {
         });
         this.SS = new slimSelect({
             select: this.element.firstElementChild,
-            data: this.Data.map(x => ({ text: x.Name, value: x.Id == null ? null : x.Id.toString(), html: x.Description || x.Name })),
+            data: this.Data.map(x => ({ text: x.Name, value: x.id == null ? null : x.id.toString(), html: x.Description || x.Name })),
             settings: {
                 disabled: this.meta.Disabled,
                 showSearch: this.Data.length >= 5
@@ -76,11 +76,11 @@ export class Select extends EditableComponent {
             events: {
                 afterChange: (newVal) => {
                     var mapEntity = this.Data.find(x => {
-                        const xId = x.Id != null ? x.Id.toString() : null;
+                        const xId = x.id != null ? x.id.toString() : null;
                         const entityValue = newVal[0].value != null ? newVal[0].value.toString() : null;
                         return xId === entityValue;
                     });
-                    if (mapEntity && (mapEntity.Id == null ? null : mapEntity.Id.toString()) != (this.entity[this.Name] == null ? null : this.entity[this.Name].toString())) {
+                    if (mapEntity && (mapEntity.id == null ? null : mapEntity.id.toString()) != (this.entity[this.Name] == null ? null : this.entity[this.Name].toString())) {
                         this.entrySelected(mapEntity);
                     }
                 }
@@ -127,13 +127,13 @@ export class Select extends EditableComponent {
     }
 
     Dispose() {
-        super.Dispose();
+        super.dispose();
     }
 
     findMatchText() {
         if (this.entity[this.meta.fieldName] != null && this.entity[this.meta.fieldName] !== undefined) {
             this.Matched = this.Data.find(x => {
-                const xId = x.Id != null ? x.Id.toString() : null;
+                const xId = x.id != null ? x.id.toString() : null;
                 const entityValue = this.entity?.[this.meta.fieldName] != null ? this.entity[this.meta.fieldName].toString() : null;
                 return xId === entityValue;
             });
@@ -154,7 +154,7 @@ export class Select extends EditableComponent {
         const selected = this.SS.getSelected()[0];
         if (selected) {
             this.Matched = this.Data.find(x => {
-                const xId = x.Id != null ? x.Id.toString() : null;
+                const xId = x.id != null ? x.id.toString() : null;
                 const entityValue = selected != null ? selected.toString() : null;
                 return xId === entityValue;
             });
@@ -185,7 +185,7 @@ export class Select extends EditableComponent {
         }
         this.Dirty = true;
         let oldMatch = this.Matched;
-        if (rowData.Id) {
+        if (rowData.id) {
             this.Matched = rowData;
             this.entity[this.displayField] = this.Matched;
         }
@@ -194,7 +194,7 @@ export class Select extends EditableComponent {
             this.entity[this.displayField] = null;
         }
         let oldValue = this._value;
-        this._value = rowData.Id;
+        this._value = rowData.id;
         this.entity[this.Name] = this._value;
         this.Matched = rowData;
         if (this._gv !== null) {
@@ -221,12 +221,12 @@ export class Select extends EditableComponent {
             Name: 'Selected Option',
             Description: 'Selected Option'
         });
-        this.SS.setData(this.Data.map(x => ({ text: x.Name, value: x.Id == null ? null : x.Id.toString(), html: x.Description || x.Name })));
+        this.SS.setData(this.Data.map(x => ({ text: x.Name, value: x.id == null ? null : x.id.toString(), html: x.Description || x.Name })));
         this._value = this.entity[this.meta.fieldName] == null ? null : this.entity[this.meta.fieldName].toString();
         if (this._value === null) {
             this.Matched = null;
             this.entity[this.displayField] = null;
-            this.SS.setSelected(this.Data[0].Id);
+            this.SS.setSelected(this.Data[0].id);
             this.findMatchText();
             return;
         }

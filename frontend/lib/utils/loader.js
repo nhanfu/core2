@@ -15,7 +15,7 @@ export async function comQuery(meta, com) {
     if (meta.Query == null) return null;
     var params = Utils.isFunction(meta.preQuery);
     var body = {
-        comId: meta.Id,
+        comId: meta.id,
         params: params,
         annonymousTenant: meta.tenantCode ?? 'system',
         annonymousEnv: meta.Env ?? 'test',

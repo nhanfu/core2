@@ -18,7 +18,7 @@ export class QRCode extends EditableComponent {
         }
         this.parentElement = ele;
         this.defaultValue = '';
-        this.Value = '';
+        this.value = '';
     }
 
     /**
@@ -28,12 +28,12 @@ export class QRCode extends EditableComponent {
         const ctx = Html.take(this.parentElement)
             .clear()
             .Div.Style(`width:${this.meta.Width}px;margin:auto`)
-            .Id("barcode" + this.meta.Id);
+            .id("barcode" + this.meta.id);
         // @ts-ignore
         this.element = ctx;
-        this.Value = this.fieldVal;
-        new QR("barcode" + this.meta.Id, {
-            text: this.Value,
+        this.value = this.fieldVal;
+        new QR("barcode" + this.meta.id, {
+            text: this.value,
             width: this.meta.Width,
             height: this.meta.Width,
             colorDark: "#000000",
@@ -48,7 +48,7 @@ export class QRCode extends EditableComponent {
      * @param {...string} componentNames - Additional components to consider in the update.
      */
     updateView(Force = false, Dirty = null, ...componentNames) {
-        if (this.fieldVal === this.Value) {
+        if (this.fieldVal === this.value) {
             return;
         }
         this.render();

@@ -59,7 +59,7 @@ export class Rating extends EditableComponent {
         this.parentElement.appendChild(container);
         this.element = container;
 
-        const radioGroup = `${this.Name}_${this.meta.Id}_${this.hashCode()}`;
+        const radioGroup = `${this.Name}_${this.meta.id}_${this.hashCode()}`;
         for (let item = this.meta.Precision; item >= 1; item--) {
             const radioId = `${radioGroup}_${item}`;
             const input = document.createElement('input');
@@ -87,7 +87,7 @@ export class Rating extends EditableComponent {
     }
 
     dispatchChange(event) {
-        if (this.Disabled) return;
+        if (this.disabled) return;
 
         if (!this.inputList.length) return;
 

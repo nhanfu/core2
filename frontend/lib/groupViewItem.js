@@ -25,8 +25,8 @@ export class GroupViewItem extends ListViewItem {
         this.element.classList.add(ListViewItem.groupRowClass);
     }
 
-    get Selected() { return false; }
-    set Selected(value) { this._selected = false; }
+    get selected() { return false; }
+    set selected(value) { this._selected = false; }
 
     get parentItem() { return this.#parentItem; }
     set parentItem(value) { this.#parentItem = value; }
@@ -59,7 +59,7 @@ export class GroupViewItem extends ListViewItem {
     get showChildren1() { return this.#showChildren1; }
     set showChildren1(value) {
         this.#showChildren1 = value;
-        this.#childrenItems.forEach(x => x.Selected = value);
+        this.#childrenItems.forEach(x => x.selected = value);
         if (!value) {
             this._chevron.replaceClass(GroupViewItem.#chevronRight, GroupViewItem.#chevronDown);
         } else {

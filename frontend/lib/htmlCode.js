@@ -18,15 +18,15 @@ export class HtmlCode extends EditableComponent {
         const submitEntity = Utils.isFunction(this.meta.preQuery, false, this);
         const entity = {
             params: submitEntity,
-            comId: this.meta.Id,
+            comId: this.meta.id,
         };
         Client.instance.submitAsync({
-            Url: "/api/feature/report",
+            url: "/api/feature/report",
             isRawString: true,
             jsonData: JSON.stringify(entity, this.getCircularReplacer(), 2),
-            Method: "POST"
+            method: "POST"
         }).then(data => {
-            this.element.innerHTML = Utils.getHtmlCode(this.meta.Template, data.updatedItem);
+            this.element.innerHTML = Utils.getHtmlCode(this.meta.template, data.updatedItem);
         })
     }
 

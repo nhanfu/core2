@@ -143,7 +143,7 @@ const notificationDropdown = () => {
         [taskNotifi.recordId]
       );
       if (!inquiryDetail.data) {
-        Toast.Warning("Record not exists!");
+        Toast.warning("Record not exists!");
       } else {
         var inquiry = await Client.instance.getByIdAsync("Inquiry", [
           inquiryDetail.data[0].inquiryId,
@@ -175,7 +175,7 @@ const notificationDropdown = () => {
         [taskNotifi.recordId]
       );
       if (!inquiryDetail.data) {
-        Toast.Warning("Record not exists!");
+        Toast.warning("Record not exists!");
       } else {
         var tabChrome = ChromeTabs.tabs.find(
           (x) => x.content.meta.name == "advance-request"
@@ -209,7 +209,7 @@ const notificationDropdown = () => {
         [taskNotifi.recordId]
       );
       if (!inquiryDetail.data) {
-        Toast.Warning("Record not exists!");
+        Toast.warning("Record not exists!");
       } else {
         var tabChrome = ChromeTabs.tabs.find(
           (x) => x.content.meta.name == "reimbursement-form"
@@ -246,7 +246,7 @@ const notificationDropdown = () => {
         [taskNotifi.recordId]
       );
       if (!inquiryDetail.data) {
-        Toast.Warning("Record not exists!");
+        Toast.warning("Record not exists!");
       } else {
         var tabChrome = ChromeTabs.tabs.find(
           (x) => x.content.meta.name == "payment-request"
@@ -279,7 +279,7 @@ const notificationDropdown = () => {
         taskNotifi.recordId,
       ]);
       if (!entity.data) {
-        Toast.Warning("Record not exists!");
+        Toast.warning("Record not exists!");
       } else {
         var featureName = taskNotifi.featureName3;
         var featureDetailName = taskNotifi.featureName2;
@@ -309,7 +309,7 @@ const notificationDropdown = () => {
         taskNotifi.recordId,
       ]);
       if (!entity.data) {
-        Toast.Warning("Record not exists!");
+        Toast.warning("Record not exists!");
       } else {
         var featureName = taskNotifi.featureName3;
         var featureDetailName = taskNotifi.featureName2;

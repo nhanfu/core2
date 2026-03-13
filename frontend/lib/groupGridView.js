@@ -8,7 +8,7 @@ import { Section } from "./index.js";
 
 export class GroupRowData {
     constructor() {
-        this.Key = null;
+        this.key = null;
         this.Children = [];
     }
 }
@@ -32,7 +32,7 @@ export class GroupGridView extends GridView {
             this.addNewEmptyRow();
         }
         this.addSections();
-        this.formattedRowData = this.rowData.Data;
+        this.formattedRowData = this.rowData.data;
         if (this.formattedRowData.length == 0) {
             return;
         }
@@ -91,7 +91,7 @@ export class GroupGridView extends GridView {
             Html.take(this.mainSection);
             let first = rowSection.entity;
             var groupSection = new GroupViewItem(ElementType.tr);
-            groupSection.Key = rowSection.entity[this._groupKey];
+            groupSection.key = rowSection.entity[this._groupKey];
             groupSection.entity = first;
             groupSection.parentElement = this.mainSection.element;
             groupSection.listViewSection = true;
@@ -149,7 +149,7 @@ export class GroupGridView extends GridView {
             Html.take(this.mainSection);
             let first = row;
             var groupSection = new GroupViewItem(ElementType.tr);
-            groupSection.Key = row[this._groupKey];
+            groupSection.key = row[this._groupKey];
             groupSection.entity = row;
             groupSection.parentElement = this.mainSection.element;
             groupSection.listViewSection = true;
@@ -197,7 +197,7 @@ export class GroupGridView extends GridView {
         Html.take(section.element);
         let first = row;
         var groupSection = new GroupViewItem(ElementType.tr);
-        groupSection.Key = row[this._groupKey];
+        groupSection.key = row[this._groupKey];
         if (this.meta.isMultiple) {
             groupSection.entity = JSON.parse(JSON.stringify(row[this.meta.groupBy.substr(0, this.meta.groupBy.length - 2)]));
             groupSection.entity[this._groupKey] = row[this._groupKey];
@@ -259,38 +259,38 @@ export class GroupGridView extends GridView {
     toggleAll() {
         let allSelected = this.allListViewItem
             .filter(x => !x.groupRow && !x.emptyRow)
-            .every(x => x.Selected);
+            .every(x => x.selected);
         if (allSelected) {
             this.clearSelected();
         } else {
             this.rowAction(x => {
                 if (x instanceof ListViewItem) {
-                    x.Selected = !x.groupRow && !x.emptyRow;
+                    x.selected = !x.groupRow && !x.emptyRow;
                 }
             });
         }
     }
 
     removeRowById(id) {
-        let index = this.rowData.Data.findIndex(x => x[this.idField].toString() === id);
+        let index = this.rowData.data.findIndex(x => x[this.idField].toString() === id);
         if (index < 0) {
             return;
         }
 
-        this.rowData.Data.splice(index, 1);
+        this.rowData.data.splice(index, 1);
         this.filterChildren(x => x instanceof ListViewItem && x.entity[this.idField].toString() === id)
             .forEach(x => {
-                if (x instanceof ListViewItem && x.groupSection && x.groupSection.Entity instanceof GroupRowData) {
-                    let groupChildren = x.groupSection.Entity.Children;
+                if (x instanceof ListViewItem && x.groupSection && x.groupSection.entity instanceof GroupRowData) {
+                    let groupChildren = x.groupSection.entity.children;
                     groupChildren.splice(groupChildren.indexOf(x.entity), 1);
                     if (groupChildren.length === 0) {
-                        this.rowData.Data.splice(this.rowData.Data.indexOf(x.groupSection.Entity), 1);
-                        x.groupSection.Dispose();
+                        this.rowData.data.splice(this.rowData.data.indexOf(x.groupSection.entity), 1);
+                        x.groupSection.dispose();
                     }
                 }
-                x.Dispose();
+                x.dispose();
             });
-        this.noRowData(this.rowData.Data);
+        this.noRowData(this.rowData.data);
     }
 
     removeRange(data) {
@@ -334,7 +334,7 @@ export class GroupGridView extends GridView {
             throw new Error("The section is not an HTML table element");
         }
         Html.take(section.element);
-        if (row.Key === null || row.Key.toString().trim() === "") {
+        if (row.key === null || row.key.toString().trim() === "") {
             let rowResult = null;
             row.Children.forEach(child => {
                 Html.take(section.element);

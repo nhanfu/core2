@@ -27,8 +27,8 @@ export class ComponentExt {
             if (prop.startsWith("$") || (fields && !fields.includes(prop))) return;
             // @ts-ignore
             patch.Changes.push({
-                Field: prop,
-                Value: val?.toString()
+                field: prop,
+                value: val?.toString()
             });
         });
         return patch;
@@ -74,13 +74,13 @@ export class ComponentExt {
                         var sqlmap = this.extractStrings(component.formatData).map(x => {
                             return `ds2.[${x}] = ${searchParam}`;
                         });
-                        rs = `exists (select ds2.Id from [${component.refName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" or ")}))`;
+                        rs = `exists (select ds2.id from [${component.refName}] ds2 where ds2.id = ${fieldName} and (${sqlmap.join(" or ")}))`;
                     }
                     else {
                         var sqlmap = this.extractStrings(component.formatData).map(x => {
                             return `ds2.[${x}] = ${searchParam}`;
                         });
-                        rs = `exists (select ds2.Id from [${component.refName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" or ")}))`;
+                        rs = `exists (select ds2.id from [${component.refName}] ds2 where ds2.id = ${fieldName} and (${sqlmap.join(" or ")}))`;
                     }
                 }
                 else if (component.componentType === "Datepicker") {
@@ -96,13 +96,13 @@ export class ComponentExt {
                         var sqlmap = this.extractStrings(component.formatData).map(x => {
                             return `ds2.[${x}] != ${searchParam}`;
                         });
-                        rs = `exists (select ds2.Id from [${component.refName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" or ")}))`;
+                        rs = `exists (select ds2.id from [${component.refName}] ds2 where ds2.id = ${fieldName} and (${sqlmap.join(" or ")}))`;
                     }
                     else {
                         var sqlmap = this.extractStrings(component.formatData).map(x => {
                             return `ds2.[${x}] != ${searchParam}`;
                         });
-                        rs = `exists (select ds2.Id from [${component.refName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" or ")}))`;
+                        rs = `exists (select ds2.id from [${component.refName}] ds2 where ds2.id = ${fieldName} and (${sqlmap.join(" or ")}))`;
                     }
                 }
                 else if (component.componentType === "Datepicker") {
@@ -117,7 +117,7 @@ export class ComponentExt {
                     if (Utils.isNullOrWhiteSpace(component.refName)) {
                         var datas = JSON.parse(component.Query);
                         var fieldSearch = this.extractStrings(component.formatData)[0];
-                        var ids = datas.filter(x => x[fieldSearch].toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())).map(x => x.Id);
+                        var ids = datas.filter(x => x[fieldSearch].toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())).map(x => x.id);
                         if (ids && ids.length > 0) {
                             rs = `${fieldName} in ('${ids.join("','")}')`;
                         }
@@ -129,7 +129,7 @@ export class ComponentExt {
                         var sqlmap = this.extractStrings(component.formatData).map(x => {
                             return `charindex(${searchParam}, ds2.[${x}]) >= 1`
                         });
-                        rs = `exists (select ds2.Id from [${component.refName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" or ")}))`;
+                        rs = `exists (select ds2.id from [${component.refName}] ds2 where ds2.id = ${fieldName} and (${sqlmap.join(" or ")}))`;
                     }
                 }
                 else if (component.componentType === "Checkbox") {
@@ -144,7 +144,7 @@ export class ComponentExt {
                     if (Utils.isNullOrWhiteSpace(component.refName)) {
                         var datas = JSON.parse(component.Query);
                         var fieldSearch = this.extractStrings(component.formatData)[0];
-                        var ids = datas.filter(x => x[fieldSearch].toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())).map(x => x.Id);
+                        var ids = datas.filter(x => x[fieldSearch].toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())).map(x => x.id);
                         if (ids && ids.length > 0) {
                             rs = `${fieldName} in ('${ids.join("','")}')`;
                         }
@@ -156,7 +156,7 @@ export class ComponentExt {
                         var sqlmap = this.extractStrings(component.formatData).map(x => {
                             return `ds2.[${x}] LIKE ${searchParam} + '%'`;
                         });
-                        rs = `exists (select ds2.Id from [${component.refName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" or ")}))`;
+                        rs = `exists (select ds2.id from [${component.refName}] ds2 where ds2.id = ${fieldName} and (${sqlmap.join(" or ")}))`;
                     }
                 }
                 else {
@@ -168,7 +168,7 @@ export class ComponentExt {
                     if (Utils.isNullOrWhiteSpace(component.refName)) {
                         var datas = JSON.parse(component.Query);
                         var fieldSearch = this.extractStrings(component.formatData)[0];
-                        var ids = datas.filter(x => x[fieldSearch].toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())).map(x => x.Id);
+                        var ids = datas.filter(x => x[fieldSearch].toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())).map(x => x.id);
                         if (ids && ids.length > 0) {
                             rs = `${fieldName} not in ('${ids.join("','")}')`;
                         }
@@ -180,7 +180,7 @@ export class ComponentExt {
                         var sqlmap = this.extractStrings(component.formatData).map(x => {
                             return `charindex(${searchParam}, ds2.[${x}]) = 0`
                         });
-                        rs = `exists (select ds2.Id from [${component.refName}] ds2 where ds2.Id = ${fieldName} and (${sqlmap.join(" or ")}))`;
+                        rs = `exists (select ds2.id from [${component.refName}] ds2 where ds2.id = ${fieldName} and (${sqlmap.join(" or ")}))`;
                     }
 
                 }
@@ -202,7 +202,7 @@ export class ComponentExt {
         var searchParam = `@${component.fieldName.toLocaleLowerCase()}search`;
         return {
             fieldName: searchParam,
-            Value: searchTerm
+            value: searchTerm
         };
     }
     /**
@@ -244,8 +244,8 @@ export class ComponentExt {
         return new Promise((resolve, reject) => {
             // @ts-ignore
             const featureTask = Client.instance.submitAsync({
-                Url: `/api/feature/loadFeature`,
-                Method: "POST",
+                url: `/api/feature/loadFeature`,
+                method: "POST",
                 jsonData: JSON.stringify({
                     Name: name
                 })
@@ -260,9 +260,9 @@ export class ComponentExt {
         return new Promise((resolve, reject) => {
             // @ts-ignore
             const featureTask = Client.instance.submitAsync({
-                Url: `/api/feature/getPublicFeature?name=` + name,
+                url: `/api/feature/getPublicFeature?name=` + name,
                 isRawString: true,
-                Method: "GET",
+                method: "GET",
             })
             featureTask.then(ds => {
                 resolve(ds);
@@ -510,7 +510,7 @@ export class ComponentExt {
         }
 
         tab.parentForm = parentTab;
-        tab.openFrom = parentTab?.filterChildren(x => x.Entity === tab.entity)?.[0];
+        tab.openFrom = parentTab?.filterChildren(x => x.entity === tab.entity)?.[0];
     }
 
     /**
@@ -531,7 +531,7 @@ export class ComponentExt {
         const tab = factory();
         tab.Popup = popup;
         tab.Name = featureName;
-        tab.Id = id;
+        tab.id = id;
         tab.meta = feature;
         this.assignMethods(feature, tab);
         await this.openTabOrPopup(com, tab);

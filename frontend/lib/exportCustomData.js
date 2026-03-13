@@ -189,14 +189,14 @@ export class ExportCustomData extends PopupEditor {
         this._hasLoadSetting = true;
         this._userSetting = res[0].length > 0 ? res[0][0] : null;
         if (this._userSetting) {
-            let usrHeaders = JSON.parse(this._userSetting.Value)
+            let usrHeaders = JSON.parse(this._userSetting.value)
                 .reduce((acc, x) => {
-                    acc[x.Id] = x;
+                    acc[x.id] = x;
                     return acc;
                 }, {});
             this._headers.forEach(x => {
                 x.isExport = true;
-                let current = usrHeaders[x.Id];
+                let current = usrHeaders[x.id];
                 if (current) {
                     x.isExport = current.isExport;
                     x.orderExport = current.orderExport;
@@ -210,7 +210,7 @@ export class ExportCustomData extends PopupEditor {
         this._table = content.element;
         // Rendering of headers and setting up drag-and-drop functionality
         this.renderDetails();
-        this.Move();
+        this.move();
     }
 
     setChecked(item, e) {
@@ -227,20 +227,20 @@ export class ExportCustomData extends PopupEditor {
         Html.take(this._tbody).clear();
         let i = 1;
         for (let item of this._headers) {
-            Html.instance.tRow.dataAttr("id", item.Id)
-                .tData.dataAttr("id", item.Id).style("padding:0").iText(i.toString(), this.editForm.meta.label).end
+            Html.instance.tRow.dataAttr("id", item.id)
+                .tData.dataAttr("id", item.id).style("padding:0").iText(i.toString(), this.editForm.meta.label).end
                 .tData.style("padding:0").checkbox(item.isExport).event("input", (e1) => item.isExport = e1.target.checked).end.end
                 .tData.style("padding:0").className("text-left").iText(item.Label, this.editForm.meta.label).end
                 .endOf("tr");
             i++;
         }
-        this.Move();
+        this.move();
     }
 
-    OrderBy() {
+    orderBy() {
         let j = 1;
         Array.from(this._tbody.children).forEach(y => {
-            const header = this._headers.find(x => x.Id === y.getAttribute("data-id"));
+            const header = this._headers.find(x => x.id === y.getAttribute("data-id"));
             if (header) {
                 header.orderExport = j;
                 j++;
@@ -249,19 +249,19 @@ export class ExportCustomData extends PopupEditor {
     }
 
     exportAll() {
-        this.Export();
+        this.export();
     }
 
     exportSelected() {
         if (this.parentListView.selectedIds.length === 0) {
-            Toast.Warning("Select at least 1 row to export");
+            Toast.warning("Select at least 1 row to export");
             return;
         }
-        this.Export(null, null, this.parentListView.selectedIds);
+        this.export(null, null, this.parentListView.selectedIds);
     }
 
-    Export(skip = null, pageSize = null, selectedIds = null) {
-        Toast.Success("Đang xuất excel");
+    export(skip = null, pageSize = null, selectedIds = null) {
+        Toast.success("Đang xuất excel");
         if (this._hasLoadSetting && this.Dirty) {
             this.parentListView.updateSetting(this._userSetting, ExportCustomData.Prefix, JSON.stringify(this._headers)).then(() => {
                 this.exportWithSetting(skip, pageSize, selectedIds);
@@ -276,32 +276,32 @@ export class ExportCustomData extends PopupEditor {
 
     exportWithSetting(skip, pageSize, selectedIds) {
         let sql = this.parentListView.getSql(skip, pageSize);
-        sql.Count = false;
+        sql.count = false;
         if (this._headers.some(x => x.isExport)) {
             sql.fieldName = this._headers
                 .filter(x => x.isExport)
                 .map(x => x.fieldText.trim() === "" ? x.fieldName : x.fieldText);
-            sql.Select = this._headers.some(x => x.fieldName) ? sql.fieldName.join(", ") : null;
+            sql.select = this._headers.some(x => x.fieldName) ? sql.fieldName.join(", ") : null;
         }
         if (selectedIds.length > 0) {
             let ids = selectedIds.join(", ");
-            sql.Where = `Id in (${ids})`;
+            sql.where = `Id in (${ids})`;
         }
-        sql.Params = this.parentListView.meta.label || this.parentListView.meta.refName;
-        sql.Table = this.parentListView.meta.refName;
+        sql.params = this.parentListView.meta.label || this.parentListView.meta.refName;
+        sql.table = this.parentListView.meta.refName;
 
         let xhrWrapper = {
-            Value: JSON.stringify(sql),
-            Url: Utils.exportExcel,
+            value: JSON.stringify(sql),
+            url: Utils.exportExcel,
             isRawString: true,
-            Method: "POST"
+            method: "POST"
         };
 
         // @ts-ignore
         Client.instance.submitAsync(xhrWrapper)
             .then(path => {
                 Client.download(`/excel/Download/${path}`);
-                Toast.Success("Xuất file thành công");
+                Toast.success("Xuất file thành công");
             });
     }
 

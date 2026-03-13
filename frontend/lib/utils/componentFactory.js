@@ -140,7 +140,7 @@ export class ComponentFactory {
                 }
                 break;
         }
-        child.Id = Utils.isNullOrWhiteSpace(ui.Id) ? ui.fieldName : (ui.Id + ui.fieldName);
+        child.id = Utils.isNullOrWhiteSpace(ui.id) ? ui.fieldName : (ui.id + ui.fieldName);
         child.Name = ui.fieldName;
         child.componentType = ui.componentType;
         child.editForm = form;

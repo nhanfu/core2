@@ -42,7 +42,7 @@ export class LoginBL extends EditForm {
         const userName = formData.get("userName");
         const password = formData.get("Password");
         if (!userName || !password) {
-          Toast.Warning("userName or Password is required!");
+          Toast.warning("userName or Password is required!");
           return;
         }
         const login = {
@@ -52,10 +52,10 @@ export class LoginBL extends EditForm {
         };
         try {
           const res = await Client.instance.submitAsync({
-            Url: `/api/auth/login`,
+            url: `/api/auth/login`,
             jsonData: JSON.stringify(login),
             isRawString: true,
-            Method: "POST",
+            method: "POST",
             allowAnonymous: true,
           });
           const token = res?.data ?? res;
@@ -79,7 +79,7 @@ export class LoginBL extends EditForm {
               }, 200);
             });
         } catch (error) {
-          Toast.Warning(error?.message || error?.Message || "Login failed");
+          Toast.warning(error?.message || error?.Message || "Login failed");
         }
       };
       return (
@@ -236,17 +236,17 @@ export class LoginBL extends EditForm {
     const tcs = new Promise((resolve, reject) => {
       // @ts-ignore
       Client.instance.submitAsync({
-        Url: `/api/auth/login`,
+        url: `/api/auth/login`,
         jsonData: JSON.stringify(login),
         isRawString: true,
-        Method: "POST",
+        method: "POST",
         allowAnonymous: true,
       })
         .then((res) => {
           const token = res?.data ?? res;
           if (!token?.accessToken) {
             resolve(false);
-            Toast.Warning(res?.message || "Invalid username or password");
+            Toast.warning(res?.message || "Invalid username or password");
             return;
           }
           Client.token = token;
@@ -269,7 +269,7 @@ export class LoginBL extends EditForm {
         })
         .catch(() => {
           resolve(false);
-          Toast.Warning("Invalid username or password");
+          Toast.warning("Invalid username or password");
         });
     });
     return tcs;
@@ -279,7 +279,7 @@ export class LoginBL extends EditForm {
     return Client.instance.postAsync(login, "/user/forgotPassword").then(
       (res) => {
         if (res) {
-          Toast.Warning(
+          Toast.warning(
             "An error occurs. Please contact the administrator to get your password!"
           );
         } else {
@@ -323,8 +323,8 @@ export class LoginBL extends EditForm {
                 if (fName.params.popup2) {
                   var popup = tab.children.find((x) => x.popup);
                   Client.instance.submitAsync({
-                    Url: `/api/feature/loadFeature`,
-                    Method: "POST",
+                    url: `/api/feature/loadFeature`,
+                    method: "POST",
                     jsonData: JSON.stringify({
                       Name: fName.params.popup2,
                     }),

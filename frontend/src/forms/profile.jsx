@@ -43,7 +43,7 @@ export class ProfileBL extends Page {
             Client.Token = null;
             LoginBL.instance.render();
           } else {
-            Toast.Warning("Failed to update password.");
+            Toast.warning("Failed to update password.");
           }
         } catch (error) {
           Toast.Success("An error occurred while updating the password.");

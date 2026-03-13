@@ -20,7 +20,7 @@ export class PdfReport extends EditableComponent {
         super(ui);
         if (!ui) throw new Error("argumentNullException: ui");
         this.element = ele;
-        this.Selected = null;
+        this.selected = null;
         this.Data = null;
         this.hiddenButton = false;
         this._rptContent = null;
@@ -66,11 +66,11 @@ export class PdfReport extends EditableComponent {
         var gridViews = this.editForm.childCom.filter(x => x.isListView);
         var entity = JSON.parse(JSON.stringify(entity2));
         gridViews.forEach((grid, index) => {
-            entity["t" + index] = grid.allListViewItem.filter(x => !x.groupRow).map(x => x.Entity);
-            entity["t" + index + "h"] = grid.Header;
+            entity["t" + index] = grid.allListViewItem.filter(x => !x.groupRow).map(x => x.entity);
+            entity["t" + index + "h"] = grid.header;
         })
         try {
-            var res = await Client.instance.postAsync({ comId: this.meta.Id, Data: entity }, "/api/createHtml");
+            var res = await Client.instance.postAsync({ comId: this.meta.id, Data: entity }, "/api/createHtml");
             return res;
         } catch (error) {
             return error.Message;

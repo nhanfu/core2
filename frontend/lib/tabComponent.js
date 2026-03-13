@@ -104,15 +104,15 @@ export class TabComponent extends EditableComponent {
             const updateBadge = async (meta, grid) => {
                 let submitEntity = Utils.isFunction(meta.preQuery, true, grid || this);
                 const vm = {
-                    comId: meta.Id,
+                    comId: meta.id,
                     params: submitEntity ? JSON.stringify(submitEntity) : null,
                     orderBy: (!meta.orderBy ? "ds.insertedDate desc" : meta.orderBy),
                 };
 
                 const data = await Client.instance.submitAsync({
                     noQueue: true,
-                    Url: `/api/feature/countBadge`,
-                    Method: "POST",
+                    url: `/api/feature/countBadge`,
+                    method: "POST",
                     jsonData: JSON.stringify(vm, this.getCircularReplacer(), 2),
                 });
 

@@ -73,14 +73,14 @@ export class MultipleSearchEntry extends SearchEntry {
     processLocalMatch() {
         if (Utils.isNullOrWhiteSpace(this.meta.refName)) {
             var data = Utils.isFunction(this.meta.Query, false, this);
-            this.matchedItems = data.filter(x => this.listValues.includes(x.Id.toString()));
+            this.matchedItems = data.filter(x => this.listValues.includes(x.id.toString()));
             this.setMatchedValue();
             this.entity[this.Name + "Text"] = this.matchedItems.length > 0 ? this.matchedItems.map(item => this.getMatchedText(item)).join(this.meta.groupFormat || ',') : this.entity[this.Name + "Text"];
             return true;
         }
         else {
             this.Matched = this.entity[this.displayField] || null;
-            if (this._listValues.length > 0 && this.matchedItems.filter(x => this._listValues.includes(x.Id)).length < this._listValues.length && (!this.parent.isListViewItem || this.meta.isMultiple)) {
+            if (this._listValues.length > 0 && this.matchedItems.filter(x => this._listValues.includes(x.id)).length < this._listValues.length && (!this.parent.isListViewItem || this.meta.isMultiple)) {
                 Client.instance.getByIdAsync(this.meta.refName, this._listValues).then(data => {
                     this.matchedItems = data.data ? data.data : [];
                     if (this.matchedItems.length != this._listValues.length) {

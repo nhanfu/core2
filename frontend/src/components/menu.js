@@ -58,9 +58,9 @@ export class MenuComponent extends EditableComponent {
   render() {
     new Promise(() => {
       Client.instance.submitAsync({
-        Url: `/api/feature/getMenu`,
+        url: `/api/feature/getMenu`,
         isRawString: true,
-        Method: "GET",
+        method: "GET",
       }).then((features) => {
         var cloneFeature = JSON.parse(JSON.stringify(features));
         Html.take(".search-content")
@@ -170,8 +170,8 @@ export class MenuComponent extends EditableComponent {
             var mapItem = features.find(x => x.id == id);
             mapItem.order = index;
             const dirtyPatch = [
-              { Field: "Id", Value: id },
-              { Field: "Order", Value: mapItem.order }
+              { field: "Id", value: id },
+              { field: "Order", value: mapItem.order }
             ];
             items.push({
               changes: dirtyPatch,
@@ -269,8 +269,8 @@ export class MenuComponent extends EditableComponent {
             var mapItem = menuItems.find(x => x.id == id);
             mapItem.order = index;
             const dirtyPatch = [
-              { Field: "Id", Value: id },
-              { Field: "Order", Value: mapItem.order }
+              { field: "Id", value: id },
+              { field: "Order", value: mapItem.order }
             ];
             items.push({
               changes: dirtyPatch,

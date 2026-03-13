@@ -62,7 +62,7 @@ export class ListView extends EditableComponent {
         this.isListView = true;
         this.deleteTempIds = [];
         this.meta = ui;
-        this.Id = ui.Id;
+        this.id = ui.id;
         this.Name = ui.fieldName;
         /** @type {Component[]} */
         this.header = [];
@@ -73,11 +73,11 @@ export class ListView extends EditableComponent {
             activeState: activeStateEnum.yes,
             Conditions: [],
             advSearchConditions: [],
-            orderBy: localStorage.getItem('OrderBy' + this.meta.Id) ?? []
+            orderBy: localStorage.getItem('orderBy' + this.meta.id) ?? []
         };
         this._hasLoadRef = false;
         if (ele !== null) {
-            this.Resolve(ui, ele);
+            this.resolve(ui, ele);
         }
         this.canDelete = true;
         this._rowHeight = this.meta.bodyItemHeight ?? 26;
@@ -111,7 +111,7 @@ export class ListView extends EditableComponent {
      * @param {Component} com The component to configure.
      * @param {HTMLElement} [ele] Optional HTML element to use in the resolution.
      */
-    Resolve(com, ele = null) {
+    resolve(com, ele = null) {
         let txtArea = document.createElement('textarea');
         txtArea.innerHTML = ele.innerHTML;
         com.formatEntity = txtArea.value;
@@ -145,18 +145,18 @@ export class ListView extends EditableComponent {
      */
     localRender() {
         // Setting the header from the local metadata configuration
-        this.header = this.header ?? this.meta.localHeader ?? this.meta.Columns;
+        this.header = this.header ?? this.meta.localHeader ?? this.meta.columns;
 
         if (this.meta.localRender) {
             // If local rendering is enabled, re-render the view
-            this.Rerender();
+            this.reRender();
         } else {
             // If local rendering is not enabled, use the local data directly
-            this.rowData.Data = this.meta.localData;
+            this.rowData.data = this.meta.localData;
         }
     }
 
-    Rerender() {
+    reRender() {
         this.mainSection.disposeChildren();
         Html.take(this.mainSection.element).clear();
         this.renderContent();
@@ -207,17 +207,17 @@ export class ListView extends EditableComponent {
             await this.loadMasterData(rows);
             this.setRowData(rows);
             this.paginator.Show = false;
-            Spinner.Hide();
+            Spinner.hide();
             return rows;
         }
         if (this.paginator != null) {
-            this.paginator.Options.pageSize = this.paginator.Options.pageSize === 0 ? (this.meta.row ?? 12) : this.paginator.Options.pageSize;
+            this.paginator.options.pageSize = this.paginator.options.pageSize === 0 ? (this.meta.row ?? 12) : this.paginator.options.pageSize;
         }
-        pageSize = (pageSize ?? this.paginator?.Options?.pageSize ?? this.meta.row) ?? 20;
-        skip = !skip ? (this.paginator?.Options?.pageIndex * pageSize) : 0;
+        pageSize = (pageSize ?? this.paginator?.options?.pageSize ?? this.meta.row) ?? 20;
+        skip = !skip ? (this.paginator?.options?.pageIndex * pageSize) : 0;
         let sql = this.getSql(skip, pageSize, cacheHeader);
         var rsLoad = await this.customQuery(sql);
-        Spinner.Hide();
+        Spinner.hide();
         return rsLoad;
     }
 
@@ -226,8 +226,8 @@ export class ListView extends EditableComponent {
         sql.exportExcel = true;
         const data = await Client.instance.submitAsync({
             noQueue: true,
-            Url: `/api/feature/com`,
-            Method: "POST",
+            url: `/api/feature/com`,
+            method: "POST",
             jsonData: JSON.stringify(sql),
         });
         if (this.findClosest(x => x.isTabComponent)) {
@@ -247,8 +247,8 @@ export class ListView extends EditableComponent {
         const htmlWithInline = await this.inlineAllStyles(this.element.outerHTML);
         const response = await Client.instance.submitAsync({
             noQueue: true,
-            Url: `/api/htmlToExcel/export`,
-            Method: "POST",
+            url: `/api/htmlToExcel/export`,
+            method: "POST",
             jsonData: JSON.stringify({
                 htmlTable: htmlWithInline,
                 fileName: this.meta.plainText
@@ -329,7 +329,7 @@ export class ListView extends EditableComponent {
         for (let index = 0; index < headers.length; index++) {
             if (headers[index].componentType == "Dropdown") {
                 const ws_master_data = [];
-                var headers_master = JSON.parse(headers[index].Template);
+                var headers_master = JSON.parse(headers[index].template);
                 ws_master_data.push(headers_master.map(x => x.Label));
                 if (!headers[index].refName) {
                     const data = JSON.parse(headers[index].Query);
@@ -342,10 +342,10 @@ export class ListView extends EditableComponent {
                 else {
                     const data = await Client.instance.submitAsync({
                         noQueue: true,
-                        Url: `/api/feature/com`,
-                        Method: "POST",
+                        url: `/api/feature/com`,
+                        method: "POST",
                         jsonData: JSON.stringify({
-                            comId: headers[index].Id,
+                            comId: headers[index].id,
                             Count: false,
                             Top: 100000,
                             Skip: 0,
@@ -422,14 +422,14 @@ export class ListView extends EditableComponent {
                         existing = { tableName: curr.tableName, Format: curr.Format, Id: [] };
                         acc.push(existing);
                     }
-                    if (!existing.Id.includes(curr.Id)) {
-                        existing.Id.push(curr.Id);
+                    if (!existing.id.includes(curr.id)) {
+                        existing.id.push(curr.id);
                     }
                     return acc;
                 }, []));
                 let dataTasks = groupedList.map(x => ({
                     Header: x.tableName,
-                    Data: Client.instance.getByNameAsync(x.tableName, x.Id, x.Format)
+                    Data: Client.instance.getByNameAsync(x.tableName, x.id, x.Format)
                 }));
                 let results = await Promise.all(dataTasks.map(x => x.Data));
                 dataTasks.forEach((task, index) => {
@@ -439,12 +439,12 @@ export class ListView extends EditableComponent {
                     }
                     newObject.forEach(item => {
                         Object.getOwnPropertyNames(item).forEach(x => {
-                            var com = this.header.find(y => y.fieldName == x && y.refName == task.Header);
+                            var com = this.header.find(y => y.fieldName == x && y.refName == task.header);
                             if (com) {
                                 var format = com.formatData.replaceAll("{", "").replaceAll("}", "");
                                 var mapItem = task.Data.data.find(x => x[format] == item[com.fieldName]);
                                 if (mapItem) {
-                                    item[com.fieldName] = mapItem.Id;
+                                    item[com.fieldName] = mapItem.id;
                                 }
                                 else {
                                     item[com.fieldName] = null;
@@ -490,22 +490,22 @@ export class ListView extends EditableComponent {
         if (!submitEntity) {
             submitEntity = {};
         }
-        var operatorsValue = basicCondition.filter(x => x.Value).map(item => {
+        var operatorsValue = basicCondition.filter(x => x.value).map(item => {
             return {
                 fieldName: item.fieldName,
-                Value: item.Value,
+                value: item.value,
             }
         }) || {};
         let finalCon = basicCondition
-            .filter(x => x.Where)
+            .filter(x => x.where)
             .map((x, index) => {
-                return index === 0 ? x.Where : `${x.Operator} ${x.Where}`;
+                return index === 0 ? x.where : `${x.Operator} ${x.where}`;
             })
             .join(" ");
         var orderby = this.searchSection.Children.filter(x => x.isOrderBy).map(x => "ds." + x.Meta.fieldName + " " + x.orderMethod).Combine(x => x, ", ");
         /** @type {SqlViewModel} */
         var res = {
-            comId: this.meta.Id,
+            comId: this.meta.id,
             params: submitEntity ? JSON.stringify(submitEntity) : null,
             whereparams: JSON.stringify(operatorsValue),
             orderBy: !orderby ? (!this.meta.orderBy ? ((!this.meta.editable || this.meta.componentType == "Dropdown") ? "ds.insertedDate desc" : "ds.insertedDate asc") : this.meta.orderBy) : orderby,
@@ -541,8 +541,8 @@ export class ListView extends EditableComponent {
     async customQuery(vm) {
         const data = await Client.instance.submitAsync({
             noQueue: true,
-            Url: `/api/feature/com`,
-            Method: "POST",
+            url: `/api/feature/com`,
+            method: "POST",
             jsonData: JSON.stringify(vm),
         });
         if (!data.value || data.value.length === 0) {
@@ -603,7 +603,7 @@ export class ListView extends EditableComponent {
             this.loadLocalData(rows)
             return;
         }
-        rows = rows || this.rowData.Data;
+        rows = rows || this.rowData.data;
         let dataSource = headers.filter((obj, index, self) =>
             index === self.findIndex((t) => (
                 t.refName === obj.refName
@@ -624,7 +624,7 @@ export class ListView extends EditableComponent {
             if (task && task.length == 0) {
                 return;
             }
-            this.setRemoteSource(task, dataTasks[index].Header.refName, dataTasks[index].Header);
+            this.setRemoteSource(task, dataTasks[index].header.refName, dataTasks[index].header);
         });
         this.syncMasterData(rows, headers);
     }
@@ -647,7 +647,7 @@ export class ListView extends EditableComponent {
     }
 
     syncMasterData(rows = null, headers = null) {
-        rows = rows || this.rowData.Data;
+        rows = rows || this.rowData.data;
         headers = headers || this.header;
 
         headers.filter(x => x.refName).forEach(header => {
@@ -742,7 +742,7 @@ export class ListView extends EditableComponent {
         if (!this.paginator) {
             return;
         }
-        let options = this.paginator.Options;
+        let options = this.paginator.options;
         options.Total = total;
         options.currentPageCount = currentPageCount;
         options.pageNumber = options.pageIndex + 1;
@@ -791,7 +791,7 @@ export class ListView extends EditableComponent {
     renderContent() {
         this.mainSection.disposeChildren();
         this.emptySection?.disposeChildren();
-        this.formattedRowData = this.formattedRowData.length == 0 ? this.rowData.Data : this.formattedRowData;
+        this.formattedRowData = this.formattedRowData.length == 0 ? this.rowData.data : this.formattedRowData;
         if (this.formattedRowData.length == 0) {
             return;
         }
@@ -829,7 +829,7 @@ export class ListView extends EditableComponent {
      */
     clearRowData() {
         this.rowData.clear();
-        this.mainSection.Children.forEach(x => x.Dispose());
+        this.mainSection.Children.forEach(x => x.dispose());
         this.mainSection.Children = [];
         this.mainSection.element.innerHTML = null;
         this.formattedRowData = [];
@@ -837,7 +837,7 @@ export class ListView extends EditableComponent {
             return;
         }
         if (this.shouldSetEntity) {
-            this.entity[this.Name] = this.rowData.Data;
+            this.entity[this.Name] = this.rowData.data;
         }
     }
 
@@ -902,7 +902,7 @@ export class ListView extends EditableComponent {
         } else {
             this.mainSection.element.appendChild(this.emptySection.element.firstElementChild);
         }
-        this.dispatchCustomEvent(this.meta.events, customEventType.afterEmptyRowCreated, emptyRowData).Done();
+        this.dispatchCustomEvent(this.meta.events, customEventType.afterEmptyRowCreated, emptyRowData).then();
     }
 
     /**
@@ -933,7 +933,7 @@ export class ListView extends EditableComponent {
     }
 
     get updatedRows() {
-        return this.allListViewItem.orderBy(x => x.rowNo).where(x => x.Dirty).select(x => x.Entity).distinct();
+        return this.allListViewItem.orderBy(x => x.rowNo).where(x => x.Dirty).select(x => x.entity).distinct();
     };
 
     get updatedListItems() {
@@ -1002,19 +1002,19 @@ export class ListView extends EditableComponent {
     }
 
     getSelectedRows() {
-        return this.allListViewItem.filter(x => !x.groupRow && x.Selected).map(x => x.entity);
+        return this.allListViewItem.filter(x => !x.groupRow && x.selected).map(x => x.entity);
     }
 
     itemSelected() {
-        return this.allListViewItem.filter(x => !x.groupRow && x.Selected).map(x => x.entity);
+        return this.allListViewItem.filter(x => !x.groupRow && x.selected).map(x => x.entity);
     }
 
     getRowFocus() {
-        return this.allListViewItem.filter(x => !x.groupRow && x.Focused);
+        return this.allListViewItem.filter(x => !x.groupRow && x.focused);
     }
 
     getRowSelected() {
-        return this.allListViewItem.find(x => !x.groupRow && x.Selected);
+        return this.allListViewItem.find(x => !x.groupRow && x.selected);
     }
 
     bodyContextMenuShow = new Action();
@@ -1029,7 +1029,7 @@ export class ListView extends EditableComponent {
         ContextMenu.Instance.menuItems.clear();
         let ctxMenu = ContextMenu.Instance;
         var addFn = Utils.isFunction(this.meta.addRowExp, false, this);
-        var some = this.allListViewItem.some(x => x.Selected && (x.entity["assignId"] == this.Token.userId || x.entity["insertedBy"] == this.Token.userId)) || (this.meta.editable && this.editForm.entityId && this.editForm.entityId.startsWith("-")) || e.target.closest('.tb-empty') != null || addFn;
+        var some = this.allListViewItem.some(x => x.selected && (x.entity["assignId"] == this.Token.userId || x.entity["insertedBy"] == this.Token.userId)) || (this.meta.editable && this.editForm.entityId && this.editForm.entityId.startsWith("-")) || e.target.closest('.tb-empty') != null || addFn;
         if ((this.disabled || (!this.meta.canWrite && !some)) || (this.meta.canWrite && !this.meta.canWriteAll && !some) && this.editForm.entityId) {
             ContextMenu.Instance.menuItems.push({
                 Icon: "fal fa-undo",
@@ -1060,7 +1060,7 @@ export class ListView extends EditableComponent {
     }
 
     async renderRelatedDataMenu() {
-        const targetRef = await Client.instance.getByIdAsync('EntityRef', this.dataConn, [this.meta.Id]);
+        const targetRef = await Client.instance.getByIdAsync('EntityRef', this.dataConn, [this.meta.id]);
         if (targetRef.nothing()) {
             return;
         }
@@ -1090,7 +1090,7 @@ export class ListView extends EditableComponent {
     Filter(tab, entityRef) {
         /** @type {GridView} */
         // @ts-ignore
-        let gridView1 = tab.filterChildren(x => x instanceof EditableComponent.gridViewMd.gridView).find(X => X.meta.Id === entityRef.targetComId);
+        let gridView1 = tab.filterChildren(x => x instanceof EditableComponent.gridViewMd.gridView).find(X => X.meta.id === entityRef.targetComId);
         if (!gridView1) {
             return;
         }
@@ -1101,14 +1101,14 @@ export class ListView extends EditableComponent {
         gridView1.listViewSearch.entityVM.endDate = null;
 
         this.getRealTimeSelectedRows().then(Selecteds => {
-            let Com = gridView1.Header.find(X => X.fieldName === entityRef.targetFieldName);
+            let Com = gridView1.header.find(X => X.fieldName === entityRef.targetFieldName);
             if (!Com) return;
 
             let cellSelecteds = Selecteds.map(Selected => ({
                 fieldName: entityRef.targetFieldName,
                 fieldText: Com.Label,
                 componentType: Com.componentType,
-                Value: Selected[entityRef.fieldName].toString(),
+                value: Selected[entityRef.fieldName].toString(),
                 valueText: Selected[entityRef.fieldName].toString(),
                 Operator: operatorEnum.In,  // Assuming operatorEnum is predefined
                 operatorText: "Contains",
@@ -1137,7 +1137,7 @@ export class ListView extends EditableComponent {
                 if (this.selectedIds.length === 1) {
                     this.clearSelected();
                 }
-                currentRow.Selected = true;
+                currentRow.selected = true;
                 this.lastListViewItem = currentRow;
                 this.selectedIndex = currentRow.rowNo;
             }
@@ -1156,24 +1156,24 @@ export class ListView extends EditableComponent {
     Dropdown = "Dropdown";
 
     async loadHeader() {
-        var columns = this.loadGridPolicy().length > 0 ? this.loadGridPolicy() : (this.meta.Columns ?? []);
+        var columns = this.loadGridPolicy().length > 0 ? this.loadGridPolicy() : (this.meta.columns ?? []);
         var pivotRow = columns.find(x => x.componentType == "Number" && x.isMultiple && x.groupFormat);
         if (pivotRow) {
             var index = columns.indexOf(pivotRow);
             const submitEntity = Utils.isFunction(pivotRow.preQuery, false, this);
             const entity = {
                 params: submitEntity ? JSON.stringify(submitEntity) : null,
-                comId: pivotRow.Id,
+                comId: pivotRow.id,
             };
             var data = await Client.instance.submitAsync({
-                Url: "/api/feature/sql",
+                url: "/api/feature/sql",
                 isRawString: true,
                 jsonData: JSON.stringify(entity),
-                Method: "POST"
+                method: "POST"
             });
             var pivotData = data[0];
             var headers = pivotData.map(x => ({
-                fieldName: x.Id,
+                fieldName: x.id,
                 Label: Utils.formatEntity(pivotRow.Label, x),
                 componentType: "Number",
                 isChild: true,
@@ -1185,7 +1185,7 @@ export class ListView extends EditableComponent {
                 Summary: pivotRow.Summary,
                 summaryColSpan: pivotRow.summaryColSpan,
                 groupFormat: `const vndAmount = this.childrenItems
-                    .map(x => x.Entity).reduce((a, b) => a.plus(b["${x.Id}"] || 0), new this.Decimal(0))
+                    .map(x => x.entity).reduce((a, b) => a.plus(b["${x.id}"] || 0), new this.Decimal(0))
                         .toFixed(0)
                         .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                 return vndAmount == '0' ? '' : vndAmount;`
@@ -1210,7 +1210,7 @@ export class ListView extends EditableComponent {
             columns.splice(index, 1, ...headers);
         }
         this.dispatchCustomEvent(this.meta.events, customEventType.updateHeader, columns);
-        if (!this.meta.Columns) {
+        if (!this.meta.columns) {
             columns = this.filterColumns(columns);
         }
         this.header = columns;
@@ -1225,12 +1225,12 @@ export class ListView extends EditableComponent {
     Matrix = [];
     loadGridPolicy() {
         var sysSetting = [];
-        if (this.meta.Columns?.length > 0) {
-            sysSetting = this.meta.Columns;
+        if (this.meta.columns?.length > 0) {
+            sysSetting = this.meta.columns;
         }
         else {
-            if (!Utils.isNullOrWhiteSpace(this.meta.Template) && ["Dropdown", "Select"].some(x => x == this.meta.componentType)) {
-                sysSetting = JSON.parse(this.meta.Template, null, 2);
+            if (!Utils.isNullOrWhiteSpace(this.meta.template) && ["Dropdown", "Select"].some(x => x == this.meta.componentType)) {
+                sysSetting = JSON.parse(this.meta.template, null, 2);
                 sysSetting.forEach((x, index) => {
                     x.Active = true;
                     x.virtualScroll = true;
@@ -1242,9 +1242,9 @@ export class ListView extends EditableComponent {
             }
         }
         if (this.editForm.meta.userSettings) {
-            var userSetting = this.editForm.meta.userSettings.find(x => x.componentId == this.meta.Id);
+            var userSetting = this.editForm.meta.userSettings.find(x => x.componentId == this.meta.id);
             if (userSetting) {
-                var policys = JSON.parse(userSetting.Value);
+                var policys = JSON.parse(userSetting.value);
                 sysSetting.forEach(item => {
                     var map = policys.find(x => x.fieldName == item.fieldName);
                     if (map) {
@@ -1374,10 +1374,10 @@ export class ListView extends EditableComponent {
                 }
             }
         });
-        Toast.Success("Copying...");
+        Toast.success("Copying...");
         this.dispatchCustomEvent(this.meta.events, customEventType.beforePasted, copyRows).then(() => {
             var index = this.allListViewItem.reduceRight((acc, x2, index) => {
-                if (acc === -1 && x2.Selected) {
+                if (acc === -1 && x2.selected) {
                     return index;
                 }
                 return acc;
@@ -1386,14 +1386,14 @@ export class ListView extends EditableComponent {
                 if (this.meta.isRealtime) {
                     Promise.all(list.select(x => x.patchUpdateOrCreate())).then(() => {
                         this.copyData = [];
-                        Toast.Success("Data pasted successfully !");
+                        Toast.success("Data pasted successfully !");
                         super.Dirty = false;
                         this.clearSelected();
                     });
                 }
                 else {
                     this.copyData = [];
-                    Toast.Success("Data pasted successfully !");
+                    Toast.success("Data pasted successfully !");
                 }
                 this.dispatchCustomEvent(this.meta.events, customEventType.afterPasted, copyRows).then();
             });
@@ -1511,10 +1511,10 @@ export class ListView extends EditableComponent {
         var com = coms[0][0];
         com.Row = 50;
         var params = {
-            recordId: currentItem.Id,
+            recordId: currentItem.id,
             tableName: this.meta.refName,
         }
-        com.Columns = [
+        com.columns = [
             {
                 statusBar: true,
                 Order: 0,
@@ -1590,7 +1590,7 @@ export class ListView extends EditableComponent {
         confirmDialog.editForm = this;
         confirmDialog.render();
         confirmDialog.yesConfirmed += async () => {
-            confirmDialog.Dispose();
+            confirmDialog.dispose();
             const deactivatedIds = await this.Deactivate();
             this.dispatchCustomEvent(this.meta.events, customEventType.deactivated, this.entity);
         };
@@ -1603,9 +1603,9 @@ export class ListView extends EditableComponent {
         const ids = this.getSelectedRows().map(x => x[this.idField].toString());
         const deactivatedIds = await Client.instance.deactivateAsync(ids, this.meta.refName, this.dataConn);
         if (deactivatedIds.length > 0) {
-            Toast.Success("Data deactivated successfully");
+            Toast.success("Data deactivated successfully");
         } else {
-            Toast.Warning("An error occurred during deactivation");
+            Toast.warning("An error occurred during deactivation");
         }
         return deactivatedIds;
     }
@@ -1634,7 +1634,7 @@ export class ListView extends EditableComponent {
                     Client.instance.postAsync({
                         entityIds: ids,
                         params: submitEntity ? JSON.stringify(submitEntity) : null,
-                        comId: this.meta.Id
+                        comId: this.meta.id
                     }, "/api/checkDelete").then((rs) => {
                         if (rs.status == 200) {
                             this.hardDeleteConfirmed(deletedItems).then(async (rs) => {
@@ -1652,7 +1652,7 @@ export class ListView extends EditableComponent {
                             else {
                                 var searchEntry = JSON.parse(JSON.stringify(this.meta));
                                 searchEntry.componentType = "Dropdown";
-                                searchEntry.Events = null;
+                                searchEntry.events = null;
                                 searchEntry.Style = null;
                                 searchEntry.childStyle = null;
                                 searchEntry.canSearch = false;
@@ -1702,32 +1702,32 @@ export class ListView extends EditableComponent {
             ids.forEach(x => {
                 this.deleteTempIds.push(x);
             });
-            this.allListViewItem.filter(x => x.Selected).forEach(x => {
-                x.Dispose();
+            this.allListViewItem.filter(x => x.selected).forEach(x => {
+                x.dispose();
                 if (x.groupSection && x.groupSection.childrenItems.length > 0) {
                     const index = x.groupSection.childrenItems.indexOf(x);
                     if (index > -1) {
                         x.groupSection.childrenItems.splice(index, 1);
                     }
                     if (x.groupSection.childrenItems.length == 0) {
-                        x.groupSection.Dispose();
+                        x.groupSection.dispose();
                     }
                 }
             });
             this.clearSelected();
             this.Dirty = true;
-            Toast.Success("Deleted successfully");
+            Toast.success("Deleted successfully");
             return true;
         }
         else {
-            const result = await Client.instance.hardDeleteAsync(ids, this.meta.refName, newId, this.meta.Id);
+            const result = await Client.instance.hardDeleteAsync(ids, this.meta.refName, newId, this.meta.id);
             if (result) {
-                this.allListViewItem.filter(x => x.Selected).forEach(x => x.Dispose());
+                this.allListViewItem.filter(x => x.selected).forEach(x => x.dispose());
                 this.clearSelected();
                 if (this.meta.isRealtime) {
                     this.Dirty = false;
                 }
-                Toast.Success("Deleted successfully");
+                Toast.success("Deleted successfully");
                 return true;
             } else {
                 this.editForm.openConfig("The selected data cannot be deleted. Please check the data.", () => {
@@ -1762,7 +1762,7 @@ export class ListView extends EditableComponent {
                 this.addNewEmptyRow();
                 this.renderIndex();
                 this.clearSelected();
-                results.forEach(x => x.Selected = true);
+                results.forEach(x => x.selected = true);
                 ok(results);
                 this.dispatchCustomEvent(this.meta.events, customEventType.afterCreated, rows).then();
             }).catch(err);
@@ -1794,10 +1794,10 @@ export class ListView extends EditableComponent {
             if (previous === null) {
                 return;
             }
-            const index = this.paginator.Options.startIndex + rowIndex;
+            const index = this.paginator.options.startIndex + rowIndex;
             if (!this.meta.isMultiple) {
                 previous.innerHTML = index.toString();
-                row.Selected = this.selectedIds.some(x => x == row.entity[this.idField]);
+                row.selected = this.selectedIds.some(x => x == row.entity[this.idField]);
             }
             row.rowNo = index;
         });
@@ -1815,7 +1815,7 @@ export class ListView extends EditableComponent {
             var item = this.Item.find(x => x.element == trElement);
             var tdIndex = trElement.children[0];
             if (tdIndex != null) {
-                const index = this.paginator.Options.startIndex + rowIndex;
+                const index = this.paginator.options.startIndex + rowIndex;
                 tdIndex.innerHTML = index.toString();
                 if (item != null) {
                     item.entity[this.meta.hotKey || "Order"] = index;
@@ -1825,9 +1825,9 @@ export class ListView extends EditableComponent {
         }
         const columns = this.Item.map(x => x.entity).map(header => {
             const dirtyPatch = [
-                { Field: "Id", Value: header.Id },
-                { Field: "Order", Value: header.Order },
-                { Field: "featureId", Value: header.featureId }
+                { field: "Id", value: header.id },
+                { field: "Order", value: header.Order },
+                { field: "featureId", value: header.featureId }
             ];
             return {
                 Changes: dirtyPatch,
@@ -1854,7 +1854,7 @@ export class ListView extends EditableComponent {
                 });
             } else {
                 this.dispatchCustomEvent(this.meta.events, customEventType.beforeCreated, rowData, this).then(() => {
-                    this.rowData.Data.push(rowData);
+                    this.rowData.data.push(rowData);
                     rowSection.filterChildren(child => true).forEach(child => {
                         child.emptyRow = false;
                         child.updateView(true);
@@ -1877,7 +1877,7 @@ export class ListView extends EditableComponent {
     removeRowById(id) {
         const listViewItem = this.mainSection.Children.find(x => x.entityId === id);
         if (listViewItem) {
-            listViewItem.Dispose();
+            listViewItem.dispose();
         }
     }
 
@@ -1890,7 +1890,7 @@ export class ListView extends EditableComponent {
      */
     async addRow(rowData, index = 0, singleAdd = true) {
         if (singleAdd) {
-            this.rowData.Data.splice(index, 0, rowData);
+            this.rowData.data.splice(index, 0, rowData);
         }
         await this.dispatchCustomEvent(this.meta.events, customEventType.beforeCreated, rowData, this);
         const row = this.renderRowData(this.header, rowData, this.mainSection, index);
@@ -1923,14 +1923,14 @@ export class ListView extends EditableComponent {
      * Clears selected rows based on provided criteria or clears all if no criteria provided.
      */
     clearSelected() {
-        this.allListViewItem.forEach(x => x.Selected = false);
+        this.allListViewItem.forEach(x => x.selected = false);
         /** @type {string[]} */
         this.selectedIds = [];
         this.lastListViewItem = null;
     }
 
     clearFocused() {
-        this.allListViewItem.forEach(x => x.Focused = false);
+        this.allListViewItem.forEach(x => x.focused = false);
     }
 
     /**
@@ -1965,7 +1965,7 @@ export class ListView extends EditableComponent {
     }
 
     getItemFocus() {
-        return this.allListViewItem.find(x => x.Focused);
+        return this.allListViewItem.find(x => x.focused);
     }
 
     getRealTimeSelectedRows() {
@@ -1991,8 +1991,8 @@ export class ListView extends EditableComponent {
         if (row === null) {
             return;
         }
-        this.rowData.Data.remove(row);
-        this.mainSection.firstOrDefault(x => x.entity == row)?.Dispose();
+        this.rowData.data.remove(row);
+        this.mainSection.firstOrDefault(x => x.entity == row)?.dispose();
     }
 
     calcTextAlign(header) {
@@ -2023,7 +2023,7 @@ export class ListView extends EditableComponent {
             return sysSetting;
         }
         const userSettings = column.reduce((acc, current) => {
-            acc[current.Id] = current;
+            acc[current.id] = current;
             return acc;
         }, {});
 
@@ -2056,8 +2056,8 @@ export class ListView extends EditableComponent {
         }
         if (!selected) {
             if (this.allListViewItem[this.allListViewItem.length - 1]) {
-                this.allListViewItem[this.allListViewItem.length - 1].Selected = true;
-                this.allListViewItem[this.allListViewItem.length - 1].Focused = true;
+                this.allListViewItem[this.allListViewItem.length - 1].selected = true;
+                this.allListViewItem[this.allListViewItem.length - 1].focused = true;
                 this.dataTable.parentElement.scrollTop = this.dataTable.parentElement.scrollHeight;
                 this.selectedIndex = this.allListViewItem.length - 1;
                 this.Ele
@@ -2066,14 +2066,14 @@ export class ListView extends EditableComponent {
         else {
             var indexCurrent = this.allListViewItem.indexOf(selected);
             if (!this.allListViewItem[indexCurrent - 1]) {
-                this.allListViewItem[this.allListViewItem.length - 1].Selected = true;
-                this.allListViewItem[this.allListViewItem.length - 1].Focused = true;
+                this.allListViewItem[this.allListViewItem.length - 1].selected = true;
+                this.allListViewItem[this.allListViewItem.length - 1].focused = true;
                 this.dataTable.parentElement.scrollTop = this.dataTable.parentElement.scrollHeight;
                 this.selectedIndex = this.allListViewItem.length - 1;
             }
             else {
-                this.allListViewItem[indexCurrent - 1].Selected = true;
-                this.allListViewItem[indexCurrent - 1].Focused = true;
+                this.allListViewItem[indexCurrent - 1].selected = true;
+                this.allListViewItem[indexCurrent - 1].focused = true;
                 this.dataTable.parentElement.scrollTop = this.dataTable.parentElement.scrollTop - height;
                 this.selectedIndex = indexCurrent - 1;
             }
@@ -2091,8 +2091,8 @@ export class ListView extends EditableComponent {
         }
         if (!selected) {
             if (this.allListViewItem[0]) {
-                this.allListViewItem[0].Selected = true;
-                this.allListViewItem[0].Focused = true;
+                this.allListViewItem[0].selected = true;
+                this.allListViewItem[0].focused = true;
                 this.dataTable.parentElement.scrollTop = 0;
                 this.selectedIndex = 0;
             }
@@ -2100,14 +2100,14 @@ export class ListView extends EditableComponent {
         else {
             var indexCurrent = this.allListViewItem.indexOf(selected);
             if (!this.allListViewItem[indexCurrent + 1]) {
-                this.allListViewItem[0].Selected = true;
-                this.allListViewItem[0].Focused = true;
+                this.allListViewItem[0].selected = true;
+                this.allListViewItem[0].focused = true;
                 this.dataTable.parentElement.scrollTop = 0;
                 this.selectedIndex = 0;
             }
             else {
-                this.allListViewItem[indexCurrent + 1].Selected = true;
-                this.allListViewItem[indexCurrent + 1].Focused = true;
+                this.allListViewItem[indexCurrent + 1].selected = true;
+                this.allListViewItem[indexCurrent + 1].focused = true;
                 this.dataTable.parentElement.scrollTop = this.dataTable.parentElement.scrollTop + height;
                 this.selectedIndex = indexCurrent + 1;
             }
@@ -2121,7 +2121,7 @@ export class ListView extends EditableComponent {
             dataConn: this.dataConn,
             comId: "UserSetting",
             Action: "getByComId",
-            params: JSON.stringify({ comId: this.meta.Id, Prefix: prefix })
+            params: JSON.stringify({ comId: this.meta.id, Prefix: prefix })
         });
     }
 

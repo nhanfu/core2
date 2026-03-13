@@ -17,12 +17,12 @@ export class TreeView extends ListView {
         this.disposeNoRecord();
         this.header = this.header.filter(x => !x.Hidden);
         this.mainSection.element.addClass("overflow");
-        const firstData = this.formattedRowData.nothing() ? this.rowData.Data : this.formattedRowData;
+        const firstData = this.formattedRowData.nothing() ? this.rowData.data : this.formattedRowData;
         this.renderContent(this.header, this.mainSection, true, firstData);
         this.mainSection.disposeChildren();
         if (this.editable) {
             this.addNewEmptyRow();
-        } else if (this.rowData.Data.nothing()) {
+        } else if (this.rowData.data.nothing()) {
             this.noRecordFound();
             this.domLoaded();
             return;
@@ -31,7 +31,7 @@ export class TreeView extends ListView {
             this.mainSection.element.addEventListener(EventType.contextMenu, this.bodyContextMenuHandler.bind(this));
         }
         this.domLoaded();
-        Spinner.Hide();
+        Spinner.hide();
     }
 
     renderContent(headers, node, first, rowDatas) {
@@ -39,7 +39,7 @@ export class TreeView extends ListView {
             return;
         }
         Html.take(node.element).ul.className((!first ? "d-block " : " ") + (first ? " wtree" : " "));
-        const ul = Html.Context;
+        const ul = Html.context;
         rowDatas.forEach(async (row) => {
             this.renderRow(headers, node, row, ul);
         });
@@ -51,9 +51,9 @@ export class TreeView extends ListView {
         const data = Client.Instance.comQuery(new SqlViewModel({
             metaConn: this.metaConn,
             dataConn: this.dataConn,
-            comId: this.meta.Id,
+            comId: this.meta.id,
             params: params
-        })).Done(ds => {
+        })).then(ds => {
             const datas = ds.length > 0 ? ds[0].toList() : null;
             const count = ds.length > 1 && ds[1].length > 0 ? ds[1].total : 0;
             Html.take(ul);
@@ -64,8 +64,8 @@ export class TreeView extends ListView {
                     listViewSection: this.mainSection
                 });
             node.addChild(rowSection);
-            Html.Instance.Div.className(count > 0 ? "has" : "").render();
-            const label = Html.Context;
+            Html.instance.Div.className(count > 0 ? "has" : "").render();
+            const label = Html.context;
             headers.forEach(header => {
                 const com = header;
                 Html.take(label).P.render();

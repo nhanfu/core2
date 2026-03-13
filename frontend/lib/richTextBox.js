@@ -488,7 +488,7 @@ export class RichTextBox extends EditableComponent {
                     editor.ui.registry.addMenuItem('Viewpdf', {
                         text: 'View PDF',
                         onAction: function () {
-                            var btn = self.editForm.openFrom.childCom.find(x => x.meta.Id == self.entity.Id);
+                            var btn = self.editForm.openFrom.childCom.find(x => x.meta.id == self.entity.id);
                             btn.element.click();
                         }
                     });
@@ -522,7 +522,7 @@ export class RichTextBox extends EditableComponent {
             this._backdrop.scrollIntoView(true);
         }
         const res = {
-            comId: this.meta.Id,
+            comId: this.meta.id,
             params: JSON.stringify(Utils.isFunction(this.meta.preQuery, true, this)),
             orderBy: (!this.meta.orderBy ? "ds.insertedDate desc" : this.meta.orderBy),
             Count: false,
@@ -531,8 +531,8 @@ export class RichTextBox extends EditableComponent {
         };
         Client.instance.submitAsync({
             noQueue: true,
-            Url: `/api/feature/com`,
-            Method: "POST",
+            url: `/api/feature/com`,
+            method: "POST",
             jsonData: JSON.stringify(res),
         }).then(data => {
             /**@type {[]} */
@@ -541,7 +541,7 @@ export class RichTextBox extends EditableComponent {
                 Html.take(this.bodyElement);
                 Html.instance.div.label.className("header").text(this.dayjs(item.insertedDate).format("DD/MM/YYYY HH:mm")).end.div.className("diff-container").style("height:250px");
                 const modifiedModel = monaco.editor.createModel(
-                    item.Value ?? ``,
+                    item.value ?? ``,
                     this.meta.Lang ?? 'javascript'
                 );
                 const originalModel = monaco.editor.createModel(
@@ -602,13 +602,13 @@ export class RichTextBox extends EditableComponent {
     }
 
     updateView(force = false, dirty = null, ...componentNames) {
-        this.Value = this.entity[this.meta.fieldName] || '';
+        this.value = this.entity[this.meta.fieldName] || '';
         if (this.quill) {
-            this.quill.setContent(this.Value || '');
+            this.quill.setContent(this.value || '');
         }
         if (!this.Dirty) {
-            this.originalText = this.Value;
-            this.oldValue = this.Value;
+            this.originalText = this.value;
+            this.oldValue = this.value;
         }
     }
     awaitTime;
@@ -633,6 +633,6 @@ export class RichTextBox extends EditableComponent {
     Dispose() {
         tinymce.remove(this.quill);
         this.quill.remove();
-        super.Dispose();
+        super.dispose();
     }
 }

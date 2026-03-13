@@ -975,7 +975,7 @@
         classList,
         hasAdvTab: hasAdvTab$1,
         hasUploadTab: hasUploadTab$1,
-        hasUploadUrl: hasUploadUrl$1,
+        hasUploadurl: hasUploadUrl$1,
         hasUploadHandler: hasUploadHandler$1,
         hasDescription: hasDescription$1,
         hasImageTitle: hasImageTitle$1,

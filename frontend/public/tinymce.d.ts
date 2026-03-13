@@ -544,7 +544,7 @@ interface CustomEditorNewSpec extends FormComponentSpec {
     type: 'customeditor';
     tag?: string;
     scriptId: string;
-    scriptUrl: string;
+    scripturl: string;
     onFocus?: (e: HTMLElement) => void;
     settings?: any;
 }
@@ -1459,14 +1459,14 @@ interface WindowParams {
 type InstanceApi<T extends DialogData> = UrlDialogInstanceApi | DialogInstanceApi<T>;
 interface WindowManagerImpl {
     open: <T extends DialogData>(config: DialogSpec<T>, params: WindowParams | undefined, closeWindow: (dialog: DialogInstanceApi<T>) => void) => DialogInstanceApi<T>;
-    openUrl: (config: UrlDialogSpec, closeWindow: (dialog: UrlDialogInstanceApi) => void) => UrlDialogInstanceApi;
+    openurl: (config: UrlDialogSpec, closeWindow: (dialog: UrlDialogInstanceApi) => void) => UrlDialogInstanceApi;
     alert: (message: string, callback: () => void) => void;
     confirm: (message: string, callback: (state: boolean) => void) => void;
     close: (dialog: InstanceApi<any>) => void;
 }
 interface WindowManager {
     open: <T extends DialogData>(config: DialogSpec<T>, params?: WindowParams) => DialogInstanceApi<T>;
-    openUrl: (config: UrlDialogSpec) => UrlDialogInstanceApi;
+    openurl: (config: UrlDialogSpec) => UrlDialogInstanceApi;
     alert: (message: string, callback?: () => void, scope?: any) => void;
     confirm: (message: string, callback?: (state: boolean) => void, scope?: any) => void;
     close: () => void;
@@ -2525,7 +2525,7 @@ interface URISettings {
 interface URIConstructor {
     readonly prototype: URI;
     new (url: string, settings?: URISettings): URI;
-    getDocumentBaseUrl: (loc: {
+    getDocumentBaseurl: (loc: {
         protocol: string;
         host?: string;
         href?: string;
@@ -2604,7 +2604,7 @@ interface EditorManager extends Observable<EditorManagerEventMap> {
     setup(this: EditorManager): void;
     translate: (text: Untranslated) => TranslatedString;
     triggerSave: () => void;
-    _setBaseUrl(this: EditorManager, baseUrl: string): void;
+    _setBaseUrl(this: EditorManager, baseurl: string): void;
 }
 interface EditorObservable extends Observable<EditorEventMap> {
     bindPendingEventDelegates(this: Editor): void;
@@ -2781,7 +2781,7 @@ interface EditorConstructor {
     new (id: string, options: RawEditorOptions, editorManager: EditorManager): Editor;
 }
 declare class Editor implements EditorObservable {
-    documentBaseUrl: string;
+    documentBaseurl: string;
     baseUri: URI;
     id: string;
     plugins: Record<string, Plugin>;
@@ -2928,8 +2928,8 @@ interface AddOnManager<T> {
     requireLangPack: (name: string, languages?: string) => void;
     add: (id: string, addOn: AddOnConstructor<T>) => AddOnConstructor<T>;
     remove: (name: string) => void;
-    createUrl: (baseUrl: UrlObject, dep: string | UrlObject) => UrlObject;
-    load: (name: string, addOnUrl: string | UrlObject) => Promise<void>;
+    createurl: (baseurl: UrlObject, dep: string | UrlObject) => UrlObject;
+    load: (name: string, addOnurl: string | UrlObject) => Promise<void>;
     waitFor: (name: string, state?: WaitState) => Promise<void>;
 }
 interface RangeUtils {

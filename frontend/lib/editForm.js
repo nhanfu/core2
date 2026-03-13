@@ -122,7 +122,7 @@ export class EditForm extends EditableComponent {
             if (typeof child['getPatchDetail'] === 'function') {
                 return child['getPatchDetail']();
             }
-            const value = Utils.getPropValue(child.Entity, child.name);
+            const value = Utils.getPropValue(child.entity, child.name);
             /**
              * @type {PatchDetail}
              */
@@ -274,15 +274,15 @@ export class EditForm extends EditableComponent {
                 });
             }
             item.allListViewItem.filter(x => !x.groupRow).forEach((it, index) => {
-                it.Entity.order = index + 1;
+                it.entity.order = index + 1;
             });
-            var allItem = item.allListViewItem.filter(x => !x.groupRow && !x.Entity.noSubmit && !x.Entity.isLock);
+            var allItem = item.allListViewItem.filter(x => !x.groupRow && !x.entity.noSubmit && !x.entity.isLock);
             if (allItem && allItem.length > 0) {
                 allItem.forEach(it => {
                     var multiples = it.children.filter(x => x.isMultiple);
                     if (multiples && multiples.length > 0) {
                         multiples.forEach(item1 => {
-                            it.Entity[item1.meta.fieldName + "text"] = item1.matchedItems && item1.matchedItems.length > 0 ? item1.matchedItems.map(item2 => item1.getMatchedText(item2)).join(item1.meta.groupFormat || ',') : null;
+                            it.entity[item1.meta.fieldName + "text"] = item1.matchedItems && item1.matchedItems.length > 0 ? item1.matchedItems.map(item2 => item1.getMatchedText(item2)).join(item1.meta.groupFormat || ',') : null;
                         })
                     }
                 })
@@ -291,7 +291,7 @@ export class EditForm extends EditableComponent {
                  * @type {object[]}
                  */
                 var itemEntity = rowData.map((rowItem, index3) => {
-                    var row = rowItem.Entity;
+                    var row = rowItem.entity;
                     if (row.id.startsWith("-")) {
                         row.departmentId = Client.token.departmentId;
                     }
@@ -413,7 +413,7 @@ export class EditForm extends EditableComponent {
                 });
             }
             item.allListViewItem.filter(x => !x.groupRow).forEach((it, index) => {
-                it.Entity.order = index + 1;
+                it.entity.order = index + 1;
             });
             var allItem = item.allListViewItem.filter(x => !x.groupRow);
             if (allItem && allItem.length > 0) {
@@ -421,12 +421,12 @@ export class EditForm extends EditableComponent {
                     var multiples = it.children.filter(x => x.isMultiple);
                     if (multiples && multiples.length > 0) {
                         multiples.forEach(item1 => {
-                            it.Entity[item1.meta.fieldName + "text"] = item1.matchedItems && item1.matchedItems.length > 0 ? item1.matchedItems.map(item2 => item1.getMatchedText(item2)).join(item1.meta.groupFormat || ',') : null;
+                            it.entity[item1.meta.fieldName + "text"] = item1.matchedItems && item1.matchedItems.length > 0 ? item1.matchedItems.map(item2 => item1.getMatchedText(item2)).join(item1.meta.groupFormat || ',') : null;
                         })
                     }
                 })
                 var itemEntity = allItem.map((rowItem, index3) => {
-                    var row = rowItem.Entity;
+                    var row = rowItem.entity;
                     let dirtyPatchDetail = [];
                     if (row.id.startsWith("-")) {
                         row.departmentId = Client.token.departmentId;
@@ -528,20 +528,20 @@ export class EditForm extends EditableComponent {
                 });
             }
             item.allListViewItem.filter(x => !x.groupRow).forEach((it, index) => {
-                it.Entity.order = index + 1;
+                it.entity.order = index + 1;
             });
-            var allItem = item.allListViewItem.filter(x => !x.groupRow && !x.Entity.noSubmit && !x.Entity.isLock && x.selected);
+            var allItem = item.allListViewItem.filter(x => !x.groupRow && !x.entity.noSubmit && !x.entity.isLock && x.selected);
             if (allItem && allItem.length > 0) {
                 allItem.forEach(it => {
                     var multiples = it.children.filter(x => x.isMultiple);
                     if (multiples && multiples.length > 0) {
                         multiples.forEach(item1 => {
-                            it.Entity[item1.meta.fieldName + "text"] = item1.matchedItems && item1.matchedItems.length > 0 ? item1.matchedItems.map(item2 => item1.getMatchedText(item2)).join(item1.meta.groupFormat || ',') : null;
+                            it.entity[item1.meta.fieldName + "text"] = item1.matchedItems && item1.matchedItems.length > 0 ? item1.matchedItems.map(item2 => item1.getMatchedText(item2)).join(item1.meta.groupFormat || ',') : null;
                         })
                     }
                 })
                 var itemEntity = allItem.map((rowItem, index3) => {
-                    var row = rowItem.Entity;
+                    var row = rowItem.entity;
                     if (row.id.startsWith("-")) {
                         row.departmentId = Client.token.departmentId;
                     }
@@ -591,7 +591,7 @@ export class EditForm extends EditableComponent {
         return patchModel;
     }
 
-    async rerenderUI() {
+    async reRenderUI() {
         this.childCom = [];
         this.childSection = [];
         this.tabGroup = [];
@@ -854,7 +854,7 @@ export class EditForm extends EditableComponent {
                 this.entity = rs.updatedItem[0];
                 this.dirty = false;
                 if (this.openFrom && this.openFrom.devTools) {
-                    await this.openFrom.devTools.rerenderUI();
+                    await this.openFrom.devTools.reRenderUI();
                 }
                 if (rs.detail && rs.detail.length > 0) {
                     for (const grid of gridItem) {
@@ -902,10 +902,10 @@ export class EditForm extends EditableComponent {
                         }
                         else {
                             if (gridDetail) {
-                                var listViewItem = gridDetail.allListViewItem.find(x => x.Entity.id == this.entity.id);
+                                var listViewItem = gridDetail.allListViewItem.find(x => x.entity.id == this.entity.id);
                                 if (listViewItem != null) {
-                                    listViewItem.Entity = this.entity;
-                                    await gridDetail.loadMasterData([listViewItem.Entity]);
+                                    listViewItem.entity = this.entity;
+                                    await gridDetail.loadMasterData([listViewItem.entity]);
                                     listViewItem.updateView(false);
                                 }
                                 else {
@@ -923,10 +923,10 @@ export class EditForm extends EditableComponent {
                                     gridDetail.reloadData();
                                 }
                                 else {
-                                    var listViewItem = gridDetail.allListViewItem.find(x => x.Entity.id == this.entity.id);
+                                    var listViewItem = gridDetail.allListViewItem.find(x => x.entity.id == this.entity.id);
                                     if (listViewItem != null) {
-                                        listViewItem.Entity = this.entity;
-                                        await gridDetail.loadMasterData([listViewItem.Entity]);
+                                        listViewItem.entity = this.entity;
+                                        await gridDetail.loadMasterData([listViewItem.entity]);
                                         listViewItem.updateView(false);
                                     }
                                     else {
@@ -1027,8 +1027,8 @@ export class EditForm extends EditableComponent {
                 if (comListView) {
                     if (!addRow) {
                         comListView.allListViewItem.forEach(listItem => {
-                            if (listItem.Entity.id == rs.updatedItem[0].id) {
-                                listItem.Entity = rs.updatedItem[0];
+                            if (listItem.entity.id == rs.updatedItem[0].id) {
+                                listItem.entity = rs.updatedItem[0];
                             }
                             listItem.updateView(true);
                         });
@@ -1054,8 +1054,8 @@ export class EditForm extends EditableComponent {
                     if (comListView) {
                         if (!addRow) {
                             comListView.allListViewItem.forEach(listItem => {
-                                if (listItem.Entity.id == rs.updatedItem[0].id) {
-                                    listItem.Entity = rs.updatedItem[0];
+                                if (listItem.entity.id == rs.updatedItem[0].id) {
+                                    listItem.entity = rs.updatedItem[0];
                                 }
                                 listItem.updateView(true);
                             });
@@ -1936,7 +1936,7 @@ export class EditForm extends EditableComponent {
         }
         if (!child) return null;
         child.parentElement = child.parentElement || ele;
-        child.Entity = entity || child.editForm?.Entity || this.entity;
+        child.entity = entity || child.editForm?.entity || this.entity;
         parent.addChild(child);
         return child;
     }
@@ -2884,7 +2884,7 @@ export class EditForm extends EditableComponent {
         var gridViews = this.editForm.childCom.filter(x => x.isListView);
         var entity = JSON.parse(JSON.stringify(this.entity));
         gridViews.forEach((grid, index) => {
-            entity["t" + index] = grid.allListViewItem.filter(x => !x.groupRow).map(x => x.Entity);
+            entity["t" + index] = grid.allListViewItem.filter(x => !x.groupRow).map(x => x.entity);
             entity["t" + index + "h"] = grid.header;
         })
         try {

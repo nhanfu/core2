@@ -24,7 +24,7 @@ export class DevTools extends EditableComponent {
     /**
      * @typedef {import('./editForm.js').editForm} EditForm
      */
-    EditForm;
+    editForm;
 
     /**
      * @type {object}
@@ -294,13 +294,13 @@ export class DevTools extends EditableComponent {
         html.instance.className("devtools-nested active");
         groupTree.forEach(group => {
             html.instance.li.className("devtools-care-li").dataAttr("id", group.id).render();
-            if (this.configEditor && this.configEditor.Entity.id == group.id) {
+            if (this.configEditor && this.configEditor.entity.id == group.id) {
                 html.instance.className("active");
             }
             if ((group.children && group.children.length > 0) ||
                 (group.components && group.components.length > 0)) {
                 html.instance.span.className("devtools-caret devtools-caret-down");
-                if (this.configSectionEditor && this.configSectionEditor.Entity.id == group.id) {
+                if (this.configSectionEditor && this.configSectionEditor.entity.id == group.id) {
                     html.instance.className("active");
                 }
                 html.instance.i.event(EventType.click, async (e) => {
@@ -344,7 +344,7 @@ export class DevTools extends EditableComponent {
         html.instance.end.render();
     }
 
-    rerenderUI() {
+    reRenderUI() {
         html.take(".components").clear();
         html.instance.ul.className("devtools-tree")
             .li.className("devtools-care-li");
@@ -442,7 +442,7 @@ export class DevTools extends EditableComponent {
             selectedLi.closest(".devtools-care-li").classList.add("active");
         }
         if (this.configEditor) {
-            this.configEditor.Entity = group;
+            this.configEditor.entity = group;
             this.configEditor.updateView(true, true);
             return;
         }
@@ -463,7 +463,7 @@ export class DevTools extends EditableComponent {
         }
         this.element.querySelectorAll(".devtools-care-li").forEach(li => li.classList.remove("active"));
         if (this.configSectionEditor) {
-            this.configSectionEditor.Entity = group;
+            this.configSectionEditor.entity = group;
             this.configSectionEditor.updateView(true, true);
             return;
         }

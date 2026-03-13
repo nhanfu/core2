@@ -115,10 +115,10 @@ export class Client {
         /** @type {XHRWrapper} */
         // @ts-ignore
         const data = {
-            Value: JSON.stringify(vm),
-            Url: Utils.userSvc,
+            value: JSON.stringify(vm),
+            url: Utils.userSvc,
             isRawString: true,
-            Method: "POST",
+            method: "POST",
             allowAnonymous: annonymous
         };
         return this.submitAsync(data);
@@ -128,10 +128,10 @@ export class Client {
         /** @type {XHRWrapper} */
         // @ts-ignore
         const data = {
-            Value: JSON.stringify(vm),
-            Url: Utils.comQuery,
+            value: JSON.stringify(vm),
+            url: Utils.comQuery,
             isRawString: true,
-            Method: "POST"
+            method: "POST"
         };
         return this.submitAsync(data);
     }
@@ -139,22 +139,22 @@ export class Client {
     async submitAsyncWithToken(options) {
         const isFormData = !!options.formData;
         const useMsgPack = false;
-        options.Headers = {
-            ...(!options.Headers && !isFormData && !useMsgPack && { "Content-Type": "application/json" }),
-            ...(!options.Headers && !isFormData && useMsgPack && { "Content-Type": "application/msgpack" }),
-            ...(options.Headers || {}),
+        options.headers = {
+            ...(!options.headers && !isFormData && !useMsgPack && { "Content-Type": "application/json" }),
+            ...(!options.headers && !isFormData && useMsgPack && { "Content-Type": "application/msgpack" }),
+            ...(options.headers || {}),
             ...(!options.allowAnonymous && { Authorization: `Bearer ${Client.token?.accessToken}` }),
             ...(useMsgPack ? { Accept: "application/msgpack, application/json" } : {}),
             "User-Agent": "Mozilla/5.0"
         };
 
         const url = Client.buildUrl(Client.api, options.finalUrl ?? options.Url);
-        console.log('[DEBUG submitAsyncWithToken] Client.api:', Client.api, 'Url:', options.Url, 'finalUrl:', options.finalUrl, 'Constructed url:', url);
+        console.log('[DEBUG submitAsyncWithToken] Client.api:', Client.api, 'url:', options.Url, 'finalurl:', options.finalUrl, 'Constructed url:', url);
 
         try {
             const response = await fetch(url, {
-                method: options.Method,
-                headers: options.Headers,
+                method: options.method,
+                headers: options.headers,
                 body: isFormData ? options.formData : options.jsonData
             });
 
@@ -212,9 +212,9 @@ export class Client {
     async getByIdsAsync(arrays) {
         const data = {
             jsonData: JSON.stringify(arrays),
-            Url: Utils.comQuerys,
+            url: Utils.comQuerys,
             isRawString: true,
-            Method: "POST"
+            method: "POST"
         };
         return this.submitAsync(data);
     }
@@ -226,9 +226,9 @@ export class Client {
     async getByIdAsync(table, ids) {
         const data = {
             jsonData: JSON.stringify({ Table: table, Id: ids }),
-            Url: Utils.comQuery,
+            url: Utils.comQuery,
             isRawString: true,
-            Method: "POST"
+            method: "POST"
         };
         return this.submitAsync(data);
     }
@@ -240,9 +240,9 @@ export class Client {
     async getByNameAsync(table, ids, format) {
         const data = {
             jsonData: JSON.stringify({ Table: table, Id: ids, Format: format }),
-            Url: Utils.comQueryByName,
+            url: Utils.comQueryByName,
             isRawString: true,
-            Method: "POST"
+            method: "POST"
         };
         return this.submitAsync(data);
     }
@@ -250,9 +250,9 @@ export class Client {
     async notificationUser(entity, ...user) {
         const data = {
             jsonData: JSON.stringify({ Entity: entity, Rule: user }),
-            Url: "/api/feature/notificationuser",
+            url: "/api/feature/notificationuser",
             isRawString: true,
-            Method: "POST"
+            method: "POST"
         };
         return this.submitAsync(data);
     }
@@ -260,9 +260,9 @@ export class Client {
     async notificationRole(entity, ...role) {
         const data = {
             jsonData: JSON.stringify({ Entity: entity, Rule: role }),
-            Url: "/api/feature/notificationrole",
+            url: "/api/feature/notificationrole",
             isRawString: true,
-            Method: "POST"
+            method: "POST"
         };
         return this.submitAsync(data);
     }
@@ -273,8 +273,8 @@ export class Client {
     async getService(name) {
         const data = {
             jsonData: JSON.stringify({ Name: name }),
-            Url: "/api/feature/getService",
-            Method: "POST"
+            url: "/api/feature/getService",
+            method: "POST"
         };
         return this.submitAsync(data);
     }
@@ -284,8 +284,8 @@ export class Client {
         // @ts-ignore
         const data = {
             jsonData: JSON.stringify(value),
-            Url: subUrl,
-            Method: "POST",
+            url: subUrl,
+            method: "POST",
             allowAnonymous: annonymous,
         };
         return this.submitAsync(data);
@@ -304,9 +304,9 @@ export class Client {
         const data = {
             jsonData: JSON.stringify(value),
             isRawString: true,
-            Url: Utils.patchSvc,
+            url: Utils.patchSvc,
             Headers: { "Content-type": "application/json" },
-            Method: "PATCH",
+            method: "PATCH",
             allowAnonymous: annonymous,
             errorHandler: errHandler
         };
@@ -326,9 +326,9 @@ export class Client {
         const data = {
             jsonData: JSON.stringify(value),
             isRawString: true,
-            Url: Utils.patchSvcs,
+            url: Utils.patchSvcs,
             Headers: { "Content-type": "application/json" },
-            Method: "PATCH",
+            method: "PATCH",
             allowAnonymous: annonymous,
             errorHandler: errHandler
         };
@@ -344,8 +344,8 @@ export class Client {
             formData: formData,
             File: file,
             progressHandler: progressHandler,
-            Method: "POST",
-            Url: url
+            method: "POST",
+            url: url
         };
         return await this.submitAsync(data);
     }
@@ -356,9 +356,9 @@ export class Client {
     async sendMail(email) {
         // @ts-ignore
         return this.submitAsync({
-            Value: email,
-            Method: "POST",
-            Url: "Email"
+            value: email,
+            method: "POST",
+            url: "Email"
         });
     }
 
@@ -376,9 +376,9 @@ export class Client {
         };
         // @ts-ignore
         return this.submitAsync({
-            Url: Utils.deactivateSvc,
-            Value: JSON.stringify(vm),
-            Method: "DELETE",
+            url: Utils.deactivateSvc,
+            value: JSON.stringify(vm),
+            method: "DELETE",
             isRawString: true,
             Headers: {
                 "Content-type": "application/json"
@@ -399,9 +399,9 @@ export class Client {
             ],
         };
         return this.submitAsync({
-            Url: Utils.deleteSvc,
+            url: Utils.deleteSvc,
             jsonData: JSON.stringify(vm),
-            Method: "DELETE",
+            method: "DELETE",
             isRawString: true,
             Headers: {
                 "Content-type": "application/json"
@@ -470,14 +470,14 @@ export class Client {
         // @ts-ignore
         const response = await Client.instance.submitAsync({
             noQueue: true,
-            Url: `/api/auth/refreshToken?t=${Client.token.tenantCode || Client.Tenant}`,
-            Method: "POST",
+            url: `/api/auth/refreshToken?t=${Client.token.tenantCode || Client.Tenant}`,
+            method: "POST",
             jsonData: JSON.stringify({ refreshToken: oldToken.refreshToken }),
             allowAnonymous: true,
             errorHandler: (xhr) => {
                 if (xhr.status === 400) {
                     Client.token = null;
-                    Toast.Warning("Phiên truy cập đã hết hạn! Vui lòng chờ trong giây lát, hệ thống đang tải lại trang");
+                    Toast.warning("Phiên truy cập đã hết hạn! Vui lòng chờ trong giây lát, hệ thống đang tải lại trang");
                 }
             },
         });

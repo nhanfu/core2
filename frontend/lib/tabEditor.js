@@ -20,7 +20,7 @@ export class TabEditor extends EditForm {
         return container;
     }
     static activeTab = () => ChromeTabs.tabs.find(x => x.content.Show);
-    static findTab = (id) => ChromeTabs.tabs.find(x => x.Id === id);
+    static findTab = (id) => ChromeTabs.tabs.find(x => x.id === id);
     /** @type {boolean} */
     static showTabText;
     static activeClass = "active";
@@ -132,7 +132,7 @@ export class TabEditor extends EditForm {
         if (keyCode === keyCodeEnum.F6) {
             let gridView = this.findActiveComponent(x => x instanceof GridView).firstOrDefault();
             if (gridView instanceof GridView) {
-                if (gridView && !gridView.allListViewItem.some(x => x.Selected)) {
+                if (gridView && !gridView.allListViewItem.some(x => x.selected)) {
                     if (gridView.allListViewItem.length) {
                         gridView.allListViewItem[0].Focus();
                     } else {
@@ -202,8 +202,8 @@ export class TabEditor extends EditForm {
         if (!this.Popup && this._li) {
             this.disposeTab();
         }
-        this.childCom.forEach(c => c.Dispose());
-        super.Dispose();
+        this.childCom.forEach(c => c.dispose());
+        super.dispose();
     }
 
     /**
@@ -211,7 +211,7 @@ export class TabEditor extends EditForm {
      */
     forceDispose() {
         this.Dirty = false;
-        this.Dispose();
+        this.dispose();
         let existingTabIndex = ChromeTabs.tabs.findIndex(tab => tab.ul === this._li);
         if (existingTabIndex !== -1) {
             ChromeTabs.tabs.splice(existingTabIndex, 1);

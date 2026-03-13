@@ -33,7 +33,7 @@ import { Spinner } from './spinner.js';
 // @ts-ignore
 export class ListViewSearchVM {
     constructor() {
-        this.Id = Uuid7.Id25();
+        this.id = Uuid7.id25();
         this.searchTerm = '';
         this.fullTextSearch = '';
         this.scanTerm = '';
@@ -50,7 +50,7 @@ export class ListViewSearchVM {
 export class ListViewSearch extends EditableComponent {
     /** @type {ListView} */
     // @ts-ignore
-    Parent;
+    parent;
 
     /** @type {GridView} */
     parentGridView;
@@ -113,7 +113,7 @@ export class ListViewSearch extends EditableComponent {
 
     render() {
         if (!this.meta.canSearch) {
-            var coms = this.editForm.meta.componentOptions && this.editForm.meta.componentOptions.filter(x => x.componentId == this.meta.Id && x.typeId == 1);
+            var coms = this.editForm.meta.componentOptions && this.editForm.meta.componentOptions.filter(x => x.componentId == this.meta.id && x.typeId == 1);
             if (coms && coms.length > 0) {
                 Html.take(this.parent.element.firstChild.firstChild).tabIndex(-1).event(EventType.keyPress, this.enterSearch.bind(this));
                 this.element = Html.context;
@@ -122,7 +122,7 @@ export class ListViewSearch extends EditableComponent {
                     this.excelOptions(e, coms);
                 }).icon('fal fa-file-excel mr-1').end.end.render();
             }
-            var coms2 = this.editForm.meta.componentOptions && this.editForm.meta.componentOptions.filter(x => x.componentId == this.meta.Id && x.typeId == 2);
+            var coms2 = this.editForm.meta.componentOptions && this.editForm.meta.componentOptions.filter(x => x.componentId == this.meta.id && x.typeId == 2);
             if (coms2 && coms2.length > 0) {
                 Html.button.className("btn btn-light btn-sm").event(EventType.Click, (e) => {
                     this.excelOptions(e, coms2);
@@ -144,13 +144,13 @@ export class ListViewSearch extends EditableComponent {
             .button.className("btn btn-light btn-sm mr-1").event(EventType.Click, this.refreshListView.bind(this)).icon('fal fa-undo').end.end
             .button.className("btn btn-light btn-sm mr-1").event(EventType.Click, this.exportExcel.bind(this)).icon('fal fa-file-excel').end.end
             .render();
-        var coms = this.editForm.meta.componentOptions && this.editForm.meta.componentOptions.filter(x => x.componentId == this.meta.Id && x.typeId == 1);
+        var coms = this.editForm.meta.componentOptions && this.editForm.meta.componentOptions.filter(x => x.componentId == this.meta.id && x.typeId == 1);
         if (coms && coms.length > 0) {
             Html.button.className("btn btn-light btn-sm mr-1").event(EventType.Click, (e) => {
                 this.excelOptions(e, coms2);
             }).icon('fal fa-file-excel mr-1').end.end.render();
         }
-        var coms2 = this.editForm.meta.componentOptions && this.editForm.meta.componentOptions.filter(x => x.componentId == this.meta.Id && x.typeId == 2);
+        var coms2 = this.editForm.meta.componentOptions && this.editForm.meta.componentOptions.filter(x => x.componentId == this.meta.id && x.typeId == 2);
         if (coms2 && coms2.length > 0) {
             Html.button.className("btn btn-light btn-sm").event(EventType.Click, (e) => {
                 this.excelOptions(e, coms2);
@@ -172,7 +172,7 @@ export class ListViewSearch extends EditableComponent {
         listView.cellSelected = [];
         listView.advSearchVM.Conditions = [];
         listView.advSearchVM.advSearchConditions = [];
-        listView.Wheres = [];
+        listView.wheres = [];
         let newVM = { ...this.entityVM };
         Object.keys(newVM).forEach(key => {
             newVM[key] = null;
@@ -180,7 +180,7 @@ export class ListViewSearch extends EditableComponent {
         this.entity = newVM;
         this.parent.searchSection.Children.forEach(x => x.isOrderBy = false);
         this.parent.searchSection.Children.forEach(txtSearch => {
-            txtSearch.Entity = this.entity;
+            txtSearch.entity = this.entity;
             txtSearch.multipleData = null;
             txtSearch.updateView();
         });
@@ -206,7 +206,7 @@ export class ListViewSearch extends EditableComponent {
                     componentType: 'Input',
                     Label: x.Label,
                     fieldName: x.fieldName,
-                    Query: x.Where
+                    Query: x.where
                 }
             });
             this.editForm.openConfig("Advanced filter", () => {
@@ -219,13 +219,13 @@ export class ListViewSearch extends EditableComponent {
                         this.parent.advSearchVM.advSearchConditions[existingConditionIndex] = {
                             ...this.parent.advSearchVM.advSearchConditions[existingConditionIndex],
                             Where: item.Query,
-                            Value: this.editForm.entity[item.fieldName]
+                            value: this.editForm.entity[item.fieldName]
                         };
                     } else {
                         this.parent.advSearchVM.advSearchConditions.push({
                             fieldName: item.fieldName,
                             Where: item.Query,
-                            Value: this.editForm.entity[item.fieldName]
+                            value: this.editForm.entity[item.fieldName]
                         });
                     }
                 });
@@ -249,7 +249,7 @@ export class ListViewSearch extends EditableComponent {
             return;
         }
 
-        this.parent.applyFilter().Done();
+        this.parent.applyFilter().then();
     }
 
     /**
@@ -270,14 +270,14 @@ export class ListViewSearch extends EditableComponent {
         // @ts-ignore
         Client.instance.submitAsync({
             formData: formData,
-            Url: `/user/importCsv?table=${meta.refName}&comId=${meta.Id}&connKey=${meta.metaConn}`,
-            Method: httpMethod.POST,
+            url: `/user/importCsv?table=${meta.refName}&comId=${meta.id}&connKey=${meta.metaConn}`,
+            method: httpMethod.POST,
             responseMimeType: Utils.getMimeType('csv')
-        }).Done(() => {
-            Toast.Success('Import excel success');
+        }).then(() => {
+            Toast.success('Import excel success');
             this._uploader.value = '';
         }).catch(error => {
-            Toast.Warning(error.Message);
+            Toast.warning(error.Message);
             this._uploader.value = '';
         });
     }
@@ -305,7 +305,7 @@ export class ListViewSearch extends EditableComponent {
         this.metaData = meta;
         Spinner.appendTo();
         this.loadData(meta).then(response => {
-            Spinner.Hide();
+            Spinner.hide();
             if (Utils.isPath(response)) {
                 const pdfUrl = response;
                 const a = document.createElement('a');
@@ -444,7 +444,7 @@ export class ListViewSearch extends EditableComponent {
     exportPdf() {
         Spinner.appendTo();
         Client.instance.postAsync({ Html: this.iFrameElement.contentWindow.document.documentElement.outerHTML, fileName: this.metaData.fileName }, "/api/genPdf").then(response => {
-            Spinner.Hide();
+            Spinner.hide();
             Client.download(response);
         });
     }
@@ -457,23 +457,23 @@ export class ListViewSearch extends EditableComponent {
         com1.showLabel = true;
         com1.fieldName = "pdfPlanEmailId";
         com1.Label = "Template mail";
-        com1.Template = `[
+        com1.template = `[
                 {
                     "fieldName": "Name",
                     "Label": "Name",
                     "componentType": "Input"
                 }
             ]`;
-        com1.Column = 6;
-        com1.Events = `{"change":"updateEmailTemplate"}`;
+        com1.column = 6;
+        com1.events = `{"change":"updateEmailTemplate"}`;
         var com2 = partner[0][0];
         com2.componentType = "Dropdown";
         com2.showLabel = true;
-        com2.Column = 6;
+        com2.column = 6;
         com2.Label = "Partner";
         com2.fieldName = "pdfPartnerId";
-        com2.Events = `{"change":"updateEmailTo"}`;
-        com2.Template = `[
+        com2.events = `{"change":"updateEmailTo"}`;
+        com2.template = `[
                     {
                         "fieldName": "Name",
                         "Label": "Name",
@@ -550,8 +550,8 @@ export class ListViewSearch extends EditableComponent {
 
     async createEMLFromFileUrl() {
         Spinner.appendTo();
-        Client.instance.postAsync({ Html: this.iFrameElement.contentWindow.document.documentElement.outerHTML, fileName: this.entity.formatChat || this.entity.Code || this.entity.Id }, "/api/genPdf").then(async (response2) => {
-            Spinner.Hide();
+        Client.instance.postAsync({ Html: this.iFrameElement.contentWindow.document.documentElement.outerHTML, fileName: this.entity.formatChat || this.entity.Code || this.entity.id }, "/api/genPdf").then(async (response2) => {
+            Spinner.hide();
             const removePath = Client.removeGuid(response2);
             const fileUrl = response2;
             const fileName = removePath;
@@ -663,11 +663,11 @@ export class ListViewSearch extends EditableComponent {
         let submitEntity = Utils.isFunction(this.meta.preQuery, true, this);
         var params = submitEntity ? JSON.stringify(submitEntity) : null;
         let promise = new Promise((resolve, reject) => {
-            Client.instance.postAsync({ comId: this.meta.Id, pathTemplate: meta.typeId == 1 ? meta.excelUrl : meta.Template, fileName: meta.fileName, params: params, Report: true }, meta.typeId == 1 ? "/api/createExcel" : "/api/createHtml").then(res => {
+            Client.instance.postAsync({ comId: this.meta.id, pathTemplate: meta.typeId == 1 ? meta.excelUrl : meta.template, fileName: meta.fileName, params: params, Report: true }, meta.typeId == 1 ? "/api/createExcel" : "/api/createHtml").then(res => {
                 resolve(res);
             }).catch(e => {
-                Spinner.Hide();
-                Toast.Warning(e.Message);
+                Spinner.hide();
+                Toast.warning(e.Message);
             });
         });
         return promise;
@@ -681,7 +681,7 @@ export class ListViewSearch extends EditableComponent {
         // @ts-ignore
         const ele = e.target;
         var buttonRect = ele.getBoundingClientRect();
-        var show = localStorage.getItem(`Show${this.meta.Id}`) ?? false;
+        var show = localStorage.getItem(`Show${this.meta.id}`) ?? false;
         var ctxMenu = ContextMenu.Instance;
         ctxMenu.Top = buttonRect.bottom;
         ctxMenu.Left = buttonRect.left;
@@ -695,7 +695,7 @@ export class ListViewSearch extends EditableComponent {
 
     renderImportBtn() {
         Html.take(this.element).form.attr('method', 'POST').attr('enctype', 'multipart/form-data')
-            .display(false).input.type('file').id(`id_${Uuid7.Id25()}`).attr('name', 'files').attr('accept', '.csv');
+            .display(false).input.type('file').id(`id_${Uuid7.id25()}`).attr('name', 'files').attr('accept', '.csv');
         // @ts-ignore
         this._uploader = Html.context;
         this._uploader.addEventListener(EventType.Change, (/** @type {Event} */ ev) => this.uploadCsv(ev));
@@ -707,11 +707,11 @@ export class ListViewSearch extends EditableComponent {
     filterSelected(arg) {
         var selectedIds = this.parent.selectedIds;
         if (!selectedIds || selectedIds.length === 0) {
-            Toast.Warning('Select rows to filter');
+            Toast.warning('Select rows to filter');
             return;
         }
         if (this.parent.cellSelected.some(x => x.fieldName === this.idField)) {
-            this.parent.cellSelected.find(x => x.fieldName === this.idField).Value = selectedIds.join();
+            this.parent.cellSelected.find(x => x.fieldName === this.idField).value = selectedIds.join();
             this.parent.cellSelected.find(x => x.fieldName === this.idField).valueText = selectedIds.join();
         } else {
             // @ts-ignore
@@ -719,7 +719,7 @@ export class ListViewSearch extends EditableComponent {
                 fieldName: this.idField,
                 fieldText: 'Mã',
                 componentType: 'Input',
-                Value: selectedIds.join(),
+                value: selectedIds.join(),
                 valueText: selectedIds.join(),
                 Operator: operatorEnum.In,
                 operatorText: 'Chứa',
@@ -734,7 +734,7 @@ export class ListViewSearch extends EditableComponent {
      * @param {object} arg
      */
     ExportCustomData(arg) {
-        this.tabEditor?.openPopup('Export customData', () => this.Exporter()).Done();
+        this.tabEditor?.openPopup('Export customData', () => this.Exporter()).then();
     }
 
     /**
@@ -764,7 +764,7 @@ export class ListViewSearch extends EditableComponent {
      */
     async exportSelectedData(arg) {
         if (!this.parent.selectedIds || this.parent.selectedIds.length === 0) {
-            Toast.Warning('Select at least 1 one to export excel');
+            Toast.warning('Select at least 1 one to export excel');
             return;
         }
         const exporter = await this.Exporter();
@@ -784,15 +784,15 @@ export class ListViewSearch extends EditableComponent {
      */
     calcFilterQuery() {
         if (this.entityVM.dateTimeField) {
-            this.dateTimeField = this.parent.Header.find(x => x.Id === this.entityVM.dateTimeField).fieldName;
+            this.dateTimeField = this.parent.header.find(x => x.id === this.entityVM.dateTimeField).fieldName;
         }
-        var headers = this.parent.Header.filter(x => ["Dropdown", "Textarea", "Input", "Datepicker", "Checkbox", "Number"].includes(x.componentType));
+        var headers = this.parent.header.filter(x => ["Dropdown", "Textarea", "Input", "Datepicker", "Checkbox", "Number"].includes(x.componentType));
         const searchTerm = this.entityVM.searchTerm ? this.entityVM.searchTerm.trim() : '';
         var operators = headers.map(x => {
             /**
              * @type {Textbox}
              */
-            var mapCom = this.parent.searchSection.Children.find(y => y.Meta && y.Meta.Id && y.Meta.Id == x.Id);
+            var mapCom = this.parent.searchSection.Children.find(y => y.Meta && y.Meta.id && y.Meta.id == x.id);
             var textFilter = ComponentExt.mapToFilterOperator(x, searchTerm, mapCom);
             var val = null;
             var operator = " OR ";
@@ -833,7 +833,7 @@ export class ListViewSearch extends EditableComponent {
                 operator = " AND ";
                 return {
                     Where: textFilter,
-                    Value: val,
+                    value: val,
                     fieldName: x.searchFieldName ? `@${x.searchFieldName.replaceAll(".", "").toLocaleLowerCase()}search` : `@${x.fieldName.toLocaleLowerCase()}search`,
                     Operator: operator
                 };
@@ -857,7 +857,7 @@ export class ListViewSearch extends EditableComponent {
                             const inList = values.map(v => `N'${esc(v)}'`).join(", ");
                             const matchCols = (cols.length > 0 ? cols : ["Name"]).map(c => `ds2.[${c}] IN (${inList})`);
                             const fieldName = x.searchFieldName ? `${x.searchFieldName}` : `ds.[${x.fieldName}]`;
-                            textFilter = `EXISTS (SELECT 1 FROM [${refName}] ds2 WHERE ds2.Id = ${fieldName} AND (${matchCols.join(" OR ")}))`;
+                            textFilter = `EXISTS (SELECT 1 FROM [${refName}] ds2 WHERE ds2.id = ${fieldName} AND (${matchCols.join(" OR ")}))`;
                         }
                     }
                 }
@@ -873,19 +873,19 @@ export class ListViewSearch extends EditableComponent {
             }
             return {
                 Where: textFilter,
-                Value: searchTerm,
+                value: searchTerm,
                 fieldName: x.searchFieldName ? `@${x.searchFieldName.replaceAll(".", "").toLocaleLowerCase()}search` : `@${x.fieldName.toLocaleLowerCase()}search`,
                 Operator: operator
             };
 
-        }).filter(x => !Utils.isNullOrWhiteSpace(x.Where));
+        }).filter(x => !Utils.isNullOrWhiteSpace(x.where));
         if (this.entityVM.startDate) {
             const fromDate = new Date(this.entityVM.startDate);
             fromDate.setHours(0, 0, 0, 0);
             operators.push({ Where: `ds.[${this.dateTimeField}] >= '${fromDate}'` });
         }
         if (this.entityVM.endDate) {
-            const toDate = new Date(mapCom.Entity[mapCom.Meta.fieldName + "To"]);
+            const toDate = new Date(mapCom.entity[mapCom.Meta.fieldName + "To"]);
             toDate.setHours(23, 59, 59, 999);
             operators.push({ Where: `ds.[${this.dateTimeField}] <= '${toDate}'` });
         }
@@ -911,7 +911,7 @@ export class ListViewSearch extends EditableComponent {
             editor.Parent = this.parent,
                 editor.parentElement = this.tabEditor.element
             return editor;
-        }).Done();
+        }).then();
     }
 }
 

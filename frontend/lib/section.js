@@ -45,7 +45,7 @@ export class Section extends EditableComponent {
 
     updateSection() {
         var parentElemet = this.element.parentElement;
-        this.Dispose();
+        this.dispose();
         this.Children = [];
         this.updateGroupContent(parentElemet);
     }
@@ -56,7 +56,7 @@ export class Section extends EditableComponent {
         }
 
         const cssContent = this.meta.Css;
-        const hard = this.meta.Id;
+        const hard = this.meta.id;
         const section = `${this.meta.fieldName.toLowerCase()}${hard}`;
 
         if (cssContent) {
@@ -220,7 +220,7 @@ export class Section extends EditableComponent {
             form.childSection.push(section);
         }
         section.editForm = form;
-        section.Id = groupInfo.fieldName + groupInfo.Id;
+        section.id = groupInfo.fieldName + groupInfo.id;
         section.Name = groupInfo.fieldName;
         section.meta = groupInfo;
         section.disabled = parent.disabled || groupInfo.Disabled;
@@ -252,7 +252,7 @@ export class Section extends EditableComponent {
             this.editForm.childSection.push(section);
         }
         section.editForm = form;
-        section.Id = groupInfo.fieldName + groupInfo.Id;
+        section.id = groupInfo.fieldName + groupInfo.id;
         section.Name = groupInfo.fieldName;
         section.meta = groupInfo;
         section.disabled = parent.Disabled || groupInfo.Disabled;
@@ -357,7 +357,7 @@ export class Section extends EditableComponent {
         clearTimeout(this._imeout);
         this._imeout = setTimeout(() => {
             // @ts-ignore
-            this.submitLabelChanged('Component', component.Id, event?.target?.textContent);
+            this.submitLabelChanged('Component', component.id, event?.target?.textContent);
         }, 1000);
     }
 
@@ -368,12 +368,12 @@ export class Section extends EditableComponent {
      */
     submitLabelChanged(table, id, label) {
         var patch = new PatchVM();
-        patch.Table = table;
+        patch.table = table;
         patch.Changes = [
             // @ts-ignore
-            { Field: this.idField, Value: id },
+            { field: this.idField, value: id },
             // @ts-ignore
-            { Field: 'Label', Value: label },
+            { field: 'Label', value: label },
         ];
         Client.instance.patchAsync(patch).then(x => {
             console.log('patch success');
@@ -384,12 +384,12 @@ export class Section extends EditableComponent {
         var patch = {
             Table: table,
             Changes: [
-                { Field: "idField", Value: id },
-                { Field: "Component.Label", Value: label }
+                { field: "idField", value: id },
+                { field: "Component.Label", value: label }
             ]
         };
         // @ts-ignore
-        Client.instance.patchAsync(patch).Done();
+        Client.instance.patchAsync(patch).then();
     }
 
     static _imeout1;
@@ -403,7 +403,7 @@ export class Section extends EditableComponent {
     static changeComponentGroupLabel(e, com) {
         window.clearTimeout(Section._imeout1);
         Section._imeout1 = window.setTimeout(() => {
-            this.submitLabelChanged('Meta', com.Id, e.target instanceof HTMLElement && e.target.textContent);
+            this.submitLabelChanged('Meta', com.id, e.target instanceof HTMLElement && e.target.textContent);
         }, 1000);
     }
 
@@ -536,9 +536,9 @@ export class Section extends EditableComponent {
             }
             const columns = this.Children.map(x => x.Meta).map(header => {
                 const dirtyPatch = [
-                    { Field: "Id", Value: header.Id },
-                    { Field: "Order", Value: header.Order },
-                    { Field: "featureId", Value: header.featureId }
+                    { field: "Id", value: header.id },
+                    { field: "Order", value: header.Order },
+                    { field: "featureId", value: header.featureId }
                 ];
                 return {
                     Changes: dirtyPatch,
@@ -552,9 +552,9 @@ export class Section extends EditableComponent {
                 Html.take(".components").clear();
                 this.editForm.renderElements(this.editForm.groupTree, true);
                 if (this.editForm.configEditor) {
-                    var com = this.Children.find(x => x.Meta.Id == this.editForm.configEditor.Entity.Id);
+                    var com = this.Children.find(x => x.Meta.id == this.editForm.configEditor.entity.id);
                     if (com) {
-                        this.editForm.configEditor.Entity = com.Meta;
+                        this.editForm.configEditor.entity = com.Meta;
                         this.editForm.configEditor.updateView(true, true);
                     }
                 }
@@ -581,9 +581,9 @@ export class Section extends EditableComponent {
             }
             const columns = this.Children.map(x => x.Meta).map(header => {
                 const dirtyPatch = [
-                    { Field: "Id", Value: header.Id },
-                    { Field: "Order", Value: header.Order },
-                    { Field: "featureId", Value: header.featureId }
+                    { field: "Id", value: header.id },
+                    { field: "Order", value: header.Order },
+                    { field: "featureId", value: header.featureId }
                 ];
                 return {
                     Changes: dirtyPatch,
@@ -595,9 +595,9 @@ export class Section extends EditableComponent {
             if (this.editForm && this.editForm.devToolsElement) {
                 if (this.editForm.configEditor) {
                     await this.editForm.loadMeta();
-                    var com = this.Children.find(x => x.Meta.Id == this.editForm.configEditor.Entity.Id);
+                    var com = this.Children.find(x => x.Meta.id == this.editForm.configEditor.entity.id);
                     if (com) {
-                        this.editForm.configEditor.Entity = com.Meta;
+                        this.editForm.configEditor.entity = com.Meta;
                         this.editForm.configEditor.updateView(true, true);
                     }
                 }
@@ -640,7 +640,7 @@ export class Section extends EditableComponent {
                         evt.item.classList.add("dragging");
                     },
                     group: {
-                        name: group.Id,
+                        name: group.id,
                         pull: true,
                         put: true
                     },
@@ -665,14 +665,14 @@ export class Section extends EditableComponent {
                     delayOnTouchOnly: true,
                     easing: "cubic-bezier(0.2, 0.8, 0.2, 1)",
                     group: {
-                        name: group.Id,
+                        name: group.id,
                         pull: "clone",
                         put: false
                     },
                     onEnd: async function (evt) {
                         var com = seft.editForm.childCom.find(x => x.parentElement.parentElement == evt.item);
                         var sec = seft.editForm.childSection.find(x => x.element == evt.to.parentElement.parentElement);
-                        com.meta.componentGroupId = sec.meta.Id;
+                        com.meta.componentGroupId = sec.meta.id;
                         com.meta.featureId = sec.meta.featureId;
                         sec.Children.push(com);
                         await sec.renderIndex2(sec.element);
@@ -680,7 +680,7 @@ export class Section extends EditableComponent {
                         const rs = await Client.instance.patchAsync(patchModel);
                         com.meta = rs.updatedItem[0];
                         if (seft.editForm.openFrom.configEditor) {
-                            seft.editForm.openFrom.configEditor.Entity = com.meta;
+                            seft.editForm.openFrom.configEditor.entity = com.meta;
                             seft.editForm.openFrom.configEditor.updateView(true);
                         }
                         seft.editForm.updateConfig();

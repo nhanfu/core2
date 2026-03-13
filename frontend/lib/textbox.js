@@ -159,7 +159,7 @@ export class Textbox extends EditableComponent {
     updateView(force = false, dirty = null, ...componentNames) {
         var newValue = this.entity[this.meta.fieldName];
         if (newValue != this._value) {
-            this.Value = newValue;
+            this.value = newValue;
             this.setRequired();
         }
         if (!this.Dirty) {
@@ -275,7 +275,7 @@ export class Textbox extends EditableComponent {
         const params = Utils.isFunction(this.meta.preQuery, false, this);
         var table = !this.meta.refName ? this.meta.refName : this.editForm.meta.entityName;
         const submit = {
-            comId: this.meta.Id,
+            comId: this.meta.id,
             params: params,
             metaConn: this.metaConn,
             dataConn: this.dataConn,
