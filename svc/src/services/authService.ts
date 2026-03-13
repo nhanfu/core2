@@ -4,13 +4,12 @@
  * Compatible with CoreAPI's AuthService.cs
  */
 
-import { query, execute, insert, update } from "../database/postgresClient.ts";
-import { HashPassword, SHA256 } from "../utils/crypto.ts";
+import { query, execute, insert } from "../database/postgresClient.ts";
+import { HashPassword } from "../utils/crypto.ts";
 import {
   generateAccessToken,
   generateRefreshToken,
   verifyToken,
-  getPayload,
   ACCESS_TOKEN_EXPIRY,
   REFRESH_TOKEN_EXPIRY,
 } from "../utils/jwt.ts";
@@ -20,6 +19,27 @@ import type { User, Token, UserLogin, Partner } from "../types/interfaces.ts";
 const JWT_SECRET = Deno.env.get("JWT_SECRET") || "your-secret-key";
 const JWT_ISSUER = Deno.env.get("JWT_ISSUER") || "CoreAPI";
 const JWT_AUDIENCE = Deno.env.get("JWT_AUDIENCE") || "CoreAPI";
+const AUTH_DEBUG = (Deno.env.get("AUTH_DEBUG") || "true").toLowerCase() !== "false";
+
+function authDebug(step: string, details: Record<string, unknown> = {}): void {
+  if (!AUTH_DEBUG) {
+    return;
+  }
+
+  console.log(`[AUTH][SERVICE] ${step}`, details);
+}
+
+function maskToken(token: string | null | undefined): string {
+  if (!token) {
+    return "";
+  }
+
+  if (token.length <= 12) {
+    return `${token.slice(0, 4)}...`;
+  }
+
+  return `${token.slice(0, 8)}...${token.slice(-4)}`;
+}
 
 const USER_SELECT = `
   SELECT
@@ -220,10 +240,12 @@ async function getTenant(tenantCode: string): Promise<Partner | null> {
  * @returns Token object with user data and tokens
  * @throws Error if credentials are invalid
  */
-export async function SignIn(
+export async function signIn(
   userName: string,
   password: string
 ): Promise<Token> {
+  authDebug("signin:start", { userName });
+
   const users = await query(
     `${USER_SELECT}
      FROM "User" u
@@ -232,7 +254,13 @@ export async function SignIn(
     [userName]
   );
 
+  authDebug("signin:user-query-complete", {
+    userName,
+    userCount: users?.length || 0,
+  });
+
   if (!users || users.length === 0) {
+    authDebug("signin:user-not-found", { userName });
     throw new Error("Invalid username or password");
   }
 
@@ -244,30 +272,36 @@ export async function SignIn(
 
   // Check if user is active
   if (!user.active) {
+    authDebug("signin:user-inactive", { userId: user.id, userName });
     throw new Error("User account is inactive");
   }
 
   // Step 2: Hash provided password with user's salt
   if (!user.salt) {
+    authDebug("signin:missing-salt", { userId: user.id, userName });
     throw new Error("User has no salt configured");
   }
 
   const hashedPassword = await HashPassword(password, user.salt);
+  authDebug("signin:password-hashed", { userId: user.id, userName });
 
   // Step 3: Compare with stored password
   if (hashedPassword !== user.password) {
+    authDebug("signin:password-mismatch", { userId: user.id, userName });
     // Increment failed login count
     await execute(
       `UPDATE "User"
        SET "LoginFailedCount" = COALESCE("LoginFailedCount", 0) + 1,
            "LastFailedLogin" = NOW()
-       WHERE "Id" = $1`,
+      WHERE "Id" = $1`,
       [user.id]
     );
+    authDebug("signin:failed-login-count-incremented", { userId: user.id });
     throw new Error("Invalid username or password");
   }
 
   // Step 4: Generate access and refresh tokens
+  authDebug("signin:password-verified", { userId: user.id, userName });
   const accessToken = await GenerateAccessToken(user);
   const refreshToken = GeneraterefreshToken();
 
@@ -279,9 +313,20 @@ export async function SignIn(
   const roleIds = await getUserRoleIds(user.id);
   const roleNames = await getRoleNames(roleIds);
   const centerIds = await getUserCenterIds(user.id);
+  authDebug("signin:user-metadata-loaded", {
+    userId: user.id,
+    roleCount: roleIds.length,
+    roleNames,
+    centerCount: centerIds.length,
+  });
 
   // Get tenant/company info
   const tenant = await getTenant(user.tenant_code || "");
+  authDebug("signin:tenant-loaded", {
+    userId: user.id,
+    tenantCode: user.tenant_code || "",
+    tenantFound: !!tenant,
+  });
 
   // Step 5: Store refresh token in database
   try {
@@ -304,12 +349,28 @@ export async function SignIn(
        WHERE "Id" = $1`,
       [user.id]
     );
+    authDebug("signin:login-record-stored", {
+      userId: user.id,
+      accessToken: maskToken(accessToken),
+      refreshToken: maskToken(refreshToken),
+      accessTokenExp: accessTokenExp.toISOString(),
+      refreshTokenExp: refreshTokenExp.toISOString(),
+    });
   } catch (error) {
     console.error("Error storing login record:", error);
+    authDebug("signin:login-record-store-failed", {
+      userId: user.id,
+      error: error instanceof Error ? error.message : String(error),
+    });
     // Continue even if login record fails
   }
 
   // Step 6: Return Token object
+  authDebug("signin:success", {
+    userId: user.id,
+    userName,
+    tenantCode: user.tenant_code || "system",
+  });
   return {
     userId: user.id,
     userName: user.userName,
@@ -347,6 +408,7 @@ export async function SignIn(
  * @throws Error if refresh token is invalid
  */
 export async function refreshToken(refreshToken: string): Promise<Token> {
+  authDebug("refresh:start", { refreshToken: maskToken(refreshToken) });
   // Step 1: Find the login record with this refresh token
   const loginRecords = await query(
     `SELECT
@@ -361,7 +423,13 @@ export async function refreshToken(refreshToken: string): Promise<Token> {
     [refreshToken]
   );
 
+  authDebug("refresh:lookup-complete", {
+    refreshToken: maskToken(refreshToken),
+    recordCount: loginRecords?.length || 0,
+  });
+
   if (!loginRecords || loginRecords.length === 0) {
+    authDebug("refresh:token-not-found", { refreshToken: maskToken(refreshToken) });
     throw new Error("Invalid or expired refresh token");
   }
 
@@ -369,6 +437,7 @@ export async function refreshToken(refreshToken: string): Promise<Token> {
 
   // Step 2: Check if user is still active
   if (!loginRecord.active) {
+    authDebug("refresh:user-inactive", { userId: loginRecord.userId });
     throw new Error("User account is inactive");
   }
 
@@ -382,6 +451,7 @@ export async function refreshToken(refreshToken: string): Promise<Token> {
   );
 
   if (!users || users.length === 0) {
+    authDebug("refresh:user-not-found", { userId: loginRecord.userId });
     throw new Error("User not found or inactive");
   }
 
@@ -399,6 +469,11 @@ export async function refreshToken(refreshToken: string): Promise<Token> {
   const roleIds = await getUserRoleIds(user.id);
   const roleNames = await getRoleNames(roleIds);
   const centerIds = await getUserCenterIds(user.id);
+  authDebug("refresh:user-metadata-loaded", {
+    userId: user.id,
+    roleCount: roleIds.length,
+    centerCount: centerIds.length,
+  });
 
   // Get tenant/company info
   const tenant = user.tenant_code ? await getTenant(user.tenant_code) : null;
@@ -423,12 +498,26 @@ export async function refreshToken(refreshToken: string): Promise<Token> {
       "\"InsertedDate\"": new Date().toISOString(),
       "\"InsertedBy\"": user.id,
     });
+    authDebug("refresh:login-record-rotated", {
+      userId: user.id,
+      oldRefreshToken: maskToken(refreshToken),
+      newRefreshToken: maskToken(newrefreshToken),
+      accessToken: maskToken(newAccessToken),
+    });
   } catch (error) {
     console.error("Error updating login record:", error);
+    authDebug("refresh:login-record-rotate-failed", {
+      userId: user.id,
+      error: error instanceof Error ? error.message : String(error),
+    });
     // Continue even if update fails
   }
 
   // Step 6: Return new Token object
+  authDebug("refresh:success", {
+    userId: user.id,
+    tenantCode: user.tenant_code || "",
+  });
   return {
     userId: user.id,
     userName: user.userName,
@@ -469,6 +558,12 @@ export async function GenerateAccessToken(user: User & { tenant_code?: string })
   // Get role IDs and role names
   const roleIds = await getUserRoleIds(user.id);
   const roleNames = await getRoleNames(roleIds);
+  authDebug("access-token:generate", {
+    userId: user.id,
+    userName: user.userName,
+    roleCount: roleIds.length,
+    tenantCode: (user as any).tenant_code || user.companyId,
+  });
 
   return await generateAccessToken(
     user.id,
@@ -506,6 +601,7 @@ export function GeneraterefreshToken(): string {
  */
 export async function ValidateAccessToken(token: string): Promise<any> {
   try {
+    authDebug("access-token:validate-start", { token: maskToken(token) });
     const payload = await verifyToken(token, JWT_SECRET);
 
     // Verify issuer and audience if configured
@@ -520,8 +616,16 @@ export async function ValidateAccessToken(token: string): Promise<any> {
       }
     }
 
+    authDebug("access-token:validate-success", {
+      token: maskToken(token),
+      userId: payload.userId || "",
+    });
     return payload;
   } catch (error) {
+    authDebug("access-token:validate-failed", {
+      token: maskToken(token),
+      error: error instanceof Error ? error.message : String(error),
+    });
     if (error instanceof Error) {
       throw new Error(`Token validation failed: ${error.message}`);
     }
@@ -533,16 +637,22 @@ export async function ValidateAccessToken(token: string): Promise<any> {
  * Sign out a user by invalidating their refresh token
  * @param refreshToken - The refresh token to invalidate
  */
-export async function SignOut(refreshToken: string): Promise<void> {
+export async function signOut(refreshToken: string): Promise<void> {
   try {
+    authDebug("signout:start", { refreshToken: maskToken(refreshToken) });
     await execute(
       `UPDATE "UserLogin"
        SET "Active" = false, "UpdatedDate" = NOW()
        WHERE "refreshToken" = $1`,
       [refreshToken]
     );
+    authDebug("signout:success", { refreshToken: maskToken(refreshToken) });
   } catch (error) {
     console.error("Error signing out:", error);
+    authDebug("signout:failed", {
+      refreshToken: maskToken(refreshToken),
+      error: error instanceof Error ? error.message : String(error),
+    });
   }
 }
 

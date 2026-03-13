@@ -39,14 +39,14 @@ export class ProfileBL extends Page {
           );
 
           if (response) {
-            Toast.Success("Password updated successfully.");
+            Toast.success("Password updated successfully.");
             Client.Token = null;
             LoginBL.instance.render();
           } else {
             Toast.warning("Failed to update password.");
           }
         } catch (error) {
-          Toast.Success("An error occurred while updating the password.");
+          Toast.success("An error occurred while updating the password.");
         }
       };
       return (

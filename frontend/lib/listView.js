@@ -231,11 +231,11 @@ export class ListView extends EditableComponent {
             jsonData: JSON.stringify(sql),
         });
         if (this.findClosest(x => x.isTabComponent)) {
-            Client.download(data.Url, LangSelect.get(this.editForm.meta.label, this.meta.name) + "-" + LangSelect.get(this.parent.meta.label) + ".xlsx");
+            Client.download(data.url, LangSelect.get(this.editForm.meta.label, this.meta.name) + "-" + LangSelect.get(this.parent.meta.label) + ".xlsx");
 
         }
         else {
-            Client.download(data.Url, LangSelect.get(this.editForm.meta.label, this.meta.name) + ".xlsx");
+            Client.download(data.url, LangSelect.get(this.editForm.meta.label, this.meta.name) + ".xlsx");
         }
     }
 
@@ -256,14 +256,14 @@ export class ListView extends EditableComponent {
         });
 
         let filename = this.meta.plainText || "Export.xlsx";
-        const url = window.URL.createObjectURL(response);
+        const url = window.url.createObjectURL(response);
         const a = document.createElement("a");
         a.href = url;
         a.download = filename;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
+        window.url.revokeObjectURL(url);
     }
 
     inlineAllStyles(html) {

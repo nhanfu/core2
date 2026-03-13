@@ -148,8 +148,8 @@ export class Client {
             "User-Agent": "Mozilla/5.0"
         };
 
-        const url = Client.buildUrl(Client.api, options.finalUrl ?? options.Url);
-        console.log('[DEBUG submitAsyncWithToken] Client.api:', Client.api, 'url:', options.Url, 'finalurl:', options.finalUrl, 'Constructed url:', url);
+        const url = Client.buildUrl(Client.api, options.finalUrl ?? options.url);
+        console.log('[DEBUG submitAsyncWithToken] Client.api:', Client.api, 'url:', options.url, 'finalurl:', options.finalUrl, 'Constructed url:', url);
 
         try {
             const response = await fetch(url, {
@@ -171,8 +171,7 @@ export class Client {
                     const errJson = await response.json();
                     return Promise.reject(errJson);
                 } catch (e) {
-                    const errText = await response.text();
-                    return Promise.reject(errText);
+                    return Promise.reject(e);
                 }
             }
 

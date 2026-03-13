@@ -4,8 +4,18 @@
  * Migration from CoreAPI AuthController
  */
 
-import { SignIn, refreshToken, SignOut } from "../services/authService.ts";
+import { signIn, refreshToken, signOut } from "../services/authService.ts";
 import type { Token } from "../types/interfaces.ts";
+
+const AUTH_DEBUG = (Deno.env.get("AUTH_DEBUG") || "true").toLowerCase() !== "false";
+
+function authDebug(step: string, details: Record<string, unknown> = {}): void {
+  if (!AUTH_DEBUG) {
+    return;
+  }
+
+  console.log(`[AUTH][CONTROLLER] ${step}`, details);
+}
 
 // ============================================
 // Request/Response Types
@@ -51,8 +61,13 @@ export async function login(
 ): Promise<ApiResponse<Token>> {
   try {
     const { userName, password } = body;
+    authDebug("login:request", {
+      userName,
+      hasPassword: !!password,
+    });
 
     if (!userName) {
+      authDebug("login:validation-failed", { reason: "missing-username" });
       return {
         success: false,
         message: "Username is required",
@@ -61,6 +76,7 @@ export async function login(
     }
 
     if (!password) {
+      authDebug("login:validation-failed", { reason: "missing-password", userName });
       return {
         success: false,
         message: "Password is required",
@@ -69,7 +85,12 @@ export async function login(
     }
 
     // Attempt to sign in
-    const token = await SignIn(userName, password);
+    const token = await signIn(userName, password);
+    authDebug("login:success", {
+      userId: token.userId,
+      userName: token.userName,
+      tenantCode: token.tenantCode,
+    });
 
     return {
       success: true,
@@ -79,6 +100,9 @@ export async function login(
     };
   } catch (error) {
     console.error("Login error:", error);
+    authDebug("login:failed", {
+      error: error instanceof Error ? error.message : "Login failed",
+    });
 
     const message = error instanceof Error ? error.message : "Login failed";
 
@@ -101,8 +125,10 @@ export async function refreshToken(
 ): Promise<ApiResponse<Token>> {
   try {
     const { refreshToken: refreshToken } = body;
+    authDebug("refresh:request", { hasRefreshToken: !!refreshToken });
 
     if (!refreshToken) {
+      authDebug("refresh:validation-failed", { reason: "missing-refresh-token" });
       return {
         success: false,
         message: "Refresh token is required",
@@ -112,6 +138,10 @@ export async function refreshToken(
 
     // Attempt to refresh token
     const token = await refreshToken(refreshToken);
+    authDebug("refresh:success", {
+      userId: token.userId,
+      userName: token.userName,
+    });
 
     return {
       success: true,
@@ -121,6 +151,9 @@ export async function refreshToken(
     };
   } catch (error) {
     console.error("Refresh token error:", error);
+    authDebug("refresh:failed", {
+      error: error instanceof Error ? error.message : "Token refresh failed",
+    });
 
     const message = error instanceof Error ? error.message : "Token refresh failed";
 
@@ -142,8 +175,10 @@ export async function logout(
 ): Promise<ApiResponse<void>> {
   try {
     const { refreshToken } = body;
+    authDebug("logout:request", { hasRefreshToken: !!refreshToken });
 
     if (!refreshToken) {
+      authDebug("logout:validation-failed", { reason: "missing-refresh-token" });
       return {
         success: false,
         message: "Refresh token is required",
@@ -152,7 +187,8 @@ export async function logout(
     }
 
     // Attempt to sign out
-    await SignOut(refreshToken);
+    await signOut(refreshToken);
+    authDebug("logout:success");
 
     return {
       success: true,
@@ -161,6 +197,9 @@ export async function logout(
     };
   } catch (error) {
     console.error("Logout error:", error);
+    authDebug("logout:failed", {
+      error: error instanceof Error ? error.message : "Logout failed",
+    });
 
     const message = error instanceof Error ? error.message : "Logout failed";
 

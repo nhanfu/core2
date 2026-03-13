@@ -1741,7 +1741,7 @@ div {
   animation: 0.5s swivel;
 }
 
-.toast.success {
+.Toast.success {
   background-color: #4caf50;
 }
 

@@ -75,7 +75,7 @@ export class LoginBL extends EditForm {
             })
             .finally(() => {
               window.setTimeout(() => {
-                Toast.Success(`Hello ` + Client.token.fullName);
+                Toast.success(`Hello ` + Client.token.fullName);
               }, 200);
             });
         } catch (error) {
@@ -263,7 +263,7 @@ export class LoginBL extends EditForm {
             })
             .finally(() => {
               window.setTimeout(() => {
-                Toast.Success(`Hello ` + Client.token.fullName);
+                Toast.success(`Hello ` + Client.token.fullName);
               }, 200);
             });
         })
@@ -283,7 +283,7 @@ export class LoginBL extends EditForm {
             "An error occurs. Please contact the administrator to get your password!"
           );
         } else {
-          Toast.Success(
+          Toast.success(
             "A recovery email has been sent to your email address. Please check and follow the steps in the email!"
           );
         }
@@ -374,7 +374,7 @@ export class LoginBL extends EditForm {
   }
 
   toastOki() {
-    Toast.Success("oKi");
+    Toast.success("oKi");
   }
 
   initFCM(signout = false) {

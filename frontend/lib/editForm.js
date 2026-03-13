@@ -763,7 +763,7 @@ export class EditForm extends EditableComponent {
     _groupKey = "__groupkey__";
     async savePatch(element, entity, dirty, reloadData, message = true) {
         if (this.openFrom && this.openFrom.isTab) {
-            this.entity.Url = `${Client.baseUri}/#/${(!this.Token ? "app" : this.Token.tenantCode)}/${this.openFrom.featureName}?popup=${this.featureName}&id=${(this.entity.id.startsWith("-") ? "" : "")}`;
+            this.entity.url = `${Client.baseUri}/#/${(!this.Token ? "app" : this.Token.tenantCode)}/${this.openFrom.featureName}?popup=${this.featureName}&id=${(this.entity.id.startsWith("-") ? "" : "")}`;
         }
         if (!this.dirty && !dirty && this.entityId && !this.entityId.startsWith("-")) {
             Toast.warning(Message.notDirty);

@@ -6,6 +6,7 @@
 
 import { Application, Router, Context } from "https://deno.land/x/oak@v17.1.3/mod.ts";
 import { authentication } from "./middleware/authentication.ts";
+import { cors } from "./middleware/cors.ts";
 import { login as authLogin, refreshToken as authrefreshToken, logout as authLogout } from "./controllers/authController.ts";
 import { default as featureController } from "./controllers/featureController.ts";
 import * as fileController from "./controllers/fileController.ts";
@@ -237,15 +238,7 @@ export function createRouter(): Router {
 export function createApp(): Application {
   const app = new Application();
 
-  // Add authentication middleware (handles public endpoints automatically)
-  app.use(authentication());
-
-  // Add the router
-  const router = createRouter();
-  app.use(router.routes());
-  app.use(router.allowedMethods());
-
-  // Error handling middleware
+  // Error handling should wrap the full middleware chain.
   app.use(async (ctx, next) => {
     try {
       await next();
@@ -259,6 +252,14 @@ export function createApp(): Application {
       };
     }
   });
+
+  app.use(cors);
+  app.use(authentication());
+
+  // Add the router
+  const router = createRouter();
+  app.use(router.routes());
+  app.use(router.allowedMethods());
 
   return app;
 }

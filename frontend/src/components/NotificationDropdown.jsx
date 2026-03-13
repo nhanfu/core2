@@ -63,11 +63,11 @@ const notificationDropdown = () => {
           if (permission === "granted") {
             showNativeNtf(message);
           } else {
-            Toast.Success(message.title2 || message.title);
+            Toast.success(message.title2 || message.title);
           }
         });
       } else {
-        Toast.Success(message.title2 || message.title);
+        Toast.success(message.title2 || message.title);
       }
     };
 

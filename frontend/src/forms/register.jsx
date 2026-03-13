@@ -268,7 +268,7 @@ export class RegisterBL extends EditForm {
           })
           .finally(() => {
             window.setTimeout(() => {
-              Toast.Success(`Xin chào ` + Client.token.fullName);
+              Toast.success(`Xin chào ` + Client.token.fullName);
             }, 200);
           });
       })
@@ -285,7 +285,7 @@ export class RegisterBL extends EditForm {
             "An error occurs. Please contact the administrator to get your password!"
           );
         } else {
-          Toast.Success(
+          Toast.success(
             "A recovery email has been sent to your email address. Please check and follow the steps in the email!"
           );
         }

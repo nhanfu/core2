@@ -696,7 +696,7 @@ body {
     animation: swivel 0.5s;
   }
   
-  .toast.success {
+  .Toast.success {
     background-color: #4CAF50;
     /* Green */
   }

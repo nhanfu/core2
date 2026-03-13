@@ -47,6 +47,11 @@ function isPublicEndpoint(path: string): boolean {
     return true;
   }
 
+  // Allow the API to be mounted behind a path prefix such as /core/api/auth/login.
+  if (PUBLIC_ENDPOINTS.some((endpoint) => normalizedPath.endsWith(endpoint))) {
+    return true;
+  }
+
   // Check if path starts with any public prefix
   const publicPrefixes = ["/public/", "/static/"];
   if (publicPrefixes.some((prefix) => normalizedPath.startsWith(prefix))) {
@@ -142,6 +147,11 @@ function createUserContext(payload: TokenPayload): UserContext {
  */
 export function authentication(): Middleware {
   return async (ctx: Context, next: () => Promise<unknown>): Promise<void> => {
+    if (ctx.request.method === "OPTIONS") {
+      await next();
+      return;
+    }
+
     // Get the request path
     const path = ctx.request.url.pathname;
 
