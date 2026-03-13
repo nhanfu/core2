@@ -48,11 +48,11 @@ export class SearchEntry extends EditableComponent {
         }
     }
 
-    Render() {
+    render() {
         this.setDefaultVal();
         this._value = this.entity[this.Name];
         this.renderInputAndEvents();
-        if (this.meta.Events && this.meta.Events.includes('"add"')) {
+        if (this.meta.events && this.meta.events.includes('"add"')) {
             this.renderIcons();
         }
         this.findMatchText();
@@ -192,7 +192,7 @@ export class SearchEntry extends EditableComponent {
     renderIcons() {
         let title = LangSelect.get('Create new data');
         Html.take(this.element.parentElement).div.className('search-icons');
-        let div = Html.instance.icon('fa fa-plus').title(`${title} ${LangSelect.get(this.meta.Label)}`).event('click', this.openRefAdd.bind(this)).end.getContext();
+        let div = Html.instance.icon('fa fa-plus').title(`${title} ${LangSelect.get(this.meta.label)}`).event('click', this.openRefAdd.bind(this)).end.getContext();
         if (this.element.nextElementSibling !== null) {
             this.element.parentElement.insertBefore(div, this.element.nextElementSibling);
         } else {
@@ -201,17 +201,17 @@ export class SearchEntry extends EditableComponent {
     }
 
     openRefDetail() {
-        if (Utils.isNullOrWhiteSpace(this.meta.Events)) {
+        if (Utils.isNullOrWhiteSpace(this.meta.events)) {
             return;
         }
-        this.dispatchCustomEvent(this.meta.Events, "edit", this).then();
+        this.dispatchCustomEvent(this.meta.events, "edit", this).then();
     }
 
     openRefAdd() {
-        if (Utils.isNullOrWhiteSpace(this.meta.Events)) {
+        if (Utils.isNullOrWhiteSpace(this.meta.events)) {
             return;
         }
-        this.dispatchCustomEvent(this.meta.Events, "add", this).then();
+        this.dispatchCustomEvent(this.meta.events, "add", this).then();
     }
 
     Search(term = null, changeEvent = true, timeout = 500, Delete = false, search = false) {
@@ -227,8 +227,8 @@ export class SearchEntry extends EditableComponent {
                     this.entity.exchangeRateVND = null;
                     this.entity.exchangeRateUSD = null;
                     this.entity.currencyCode = null;
-                    if (this.Parent.isListViewItem && this.Dirty) {
-                        this.Parent.updateView(false, false, "exchangeRateVND", "exchangeRateUSD");
+                    if (this.parent.isListViewItem && this.Dirty) {
+                        this.parent.updateView(false, false, "exchangeRateVND", "exchangeRateUSD");
                     }
                 }
             }
@@ -381,10 +381,10 @@ export class SearchEntry extends EditableComponent {
                 this.entity.exchangeRateVND = null;
                 this.entity.exchangeRateUSD = null;
                 this.entity.currencyCode = null;
-                this.Parent.updateView(false, false, "exchangeRateVND", "exchangeRateUSD");
+                this.parent.updateView(false, false, "exchangeRateVND", "exchangeRateUSD");
             }
             this.populateFields(this.Matched);
-            this.dispatchEvent(this.meta.Events, EventType.Change, this, this.entity, this.Matched, oldMatch).then();
+            this.dispatchEvent(this.meta.events, EventType.Change, this, this.entity, this.Matched, oldMatch).then();
             // @ts-ignore
             this.userInput?.invoke({ newData: this._value, oldData: oldValue, evType: EventType.Change });
         }
@@ -444,8 +444,8 @@ export class SearchEntry extends EditableComponent {
                             this.entity.exchangeRateVND = EditableComponent.exchangeRateVND[code];
                             this.entity.exchangeRateUSD = EditableComponent.exchangeRateUSD[code];
                         }
-                        if (this.Parent.isListViewItem && this.Dirty) {
-                            this.Parent.updateView(false, false, "exchangeRateVND", "exchangeRateUSD");
+                        if (this.parent.isListViewItem && this.Dirty) {
+                            this.parent.updateView(false, false, "exchangeRateVND", "exchangeRateUSD");
                         }
                     }
                 });
@@ -535,15 +535,15 @@ export class SearchEntry extends EditableComponent {
             this._gv.Show = false;
         }
         this.populateFields(this.Matched);
-        this.dispatchEvent(this.meta.Events, EventType.Change, this, this.entity, rowData, oldMatch).then(() => {
+        this.dispatchEvent(this.meta.events, EventType.Change, this, this.entity, rowData, oldMatch).then(() => {
             // @ts-ignore
             this.userInput?.invoke({ newData: this._value, oldData: oldValue, evType: EventType.Change });
             this.diposeGvWrapper();
         });
-        if (this.Parent.isListViewItem && this.Dirty) {
+        if (this.parent.isListViewItem && this.Dirty) {
             window.setTimeout(() => {
                 if (this.isCurrency && this.Dirty) {
-                    this.Parent.updateView(false, false, "exchangeRateVND", "exchangeRateUSD");
+                    this.parent.updateView(false, false, "exchangeRateVND", "exchangeRateUSD");
                 }
                 this._input.focus();
             }, 200);
@@ -556,9 +556,9 @@ export class SearchEntry extends EditableComponent {
                     groups[index + 1].Focus();
                 }
                 else {
-                    var groupIndex = this.Parent.Parent.Children.indexOf(this.Parent);
-                    if (this.Parent.Parent.Children[groupIndex + 1] && this.Parent.Parent.Children[groupIndex + 1].Children[0]) {
-                        this.Parent.Parent.Children[groupIndex + 1].Children[0].Focus();
+                    var groupIndex = this.parent.Parent.Children.indexOf(this.parent);
+                    if (this.parent.Parent.Children[groupIndex + 1] && this.parent.Parent.Children[groupIndex + 1].Children[0]) {
+                        this.parent.Parent.Children[groupIndex + 1].Children[0].Focus();
                     }
                 }
             }

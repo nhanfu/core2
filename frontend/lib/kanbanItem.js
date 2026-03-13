@@ -23,13 +23,13 @@ export class KanbanItem extends EditableComponent {
     /**
      * Renders the button component into the DOM.
      */
-    Render() {
+    render() {
         Html.take(this.parentElement);
         if (this.Top) {
             var itemTop = Html.div.className("kanban-item").context;
             this.element = Html.context;
             Html.context["Entity"] = this.entity;
-            Html.event("dblclick", () => this.dispatchEvent(this.meta.Events, EventType.dblClick, this, this.entity))
+            Html.event("dblclick", () => this.dispatchEvent(this.meta.events, EventType.dblClick, this, this.entity))
                 .div.className("labels").div.className("labels2");
             if (this.entity.categoryId) {
                 Html.div.className("label").style("background-color:" + this.entity.categoryId).attr("title", this.entity.categoryIdText).end.render();
@@ -59,7 +59,7 @@ export class KanbanItem extends EditableComponent {
             Html.div.className("kanban-item");
             this.element = Html.context;
             Html.context["Entity"] = this.entity;
-            Html.event("dblclick", () => this.dispatchEvent(this.meta.Events, EventType.dblClick, this, this.entity))
+            Html.event("dblclick", () => this.dispatchEvent(this.meta.events, EventType.dblClick, this, this.entity))
                 .div.className("labels").div.className("labels2");
             if (this.entity.categoryId) {
                 Html.div.className("label").style("background-color:" + this.entity.categoryId).attr("title", this.entity.categoryIdText).end.render();
@@ -101,7 +101,7 @@ export class KanbanItem extends EditableComponent {
         this.disabled = true;
         try {
             Spinner.appendTo();
-            this.dispatchEvent(this.meta.Events, "click", this, this.entity).then(() => {
+            this.dispatchEvent(this.meta.events, "click", this, this.entity).then(() => {
                 this.disabled = false;
                 Spinner.Hide();
             });

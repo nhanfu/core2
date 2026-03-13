@@ -21,7 +21,7 @@ export class TabGroup extends EditableComponent {
         this.tabGroup = true;
     }
 
-    Render() {
+    render() {
         Html.take(this.parentElement).div.className("tab-group")
             .className("tab-horizontal");
         this.tabGroupElement = Html.context;
@@ -30,7 +30,7 @@ export class TabGroup extends EditableComponent {
         this.element = this.ul.parentElement;
         Html.instance.end.end.render();
         if (this.editForm.buttonFrozen != null && !this.editForm.isLoadButtonFrozen) {
-            Section.renderGroupContent(this.Parent, this.editForm.buttonFrozen, this.editForm.width);
+            Section.renderGroupContent(this.parent, this.editForm.buttonFrozen, this.editForm.width);
             this.editForm.isLoadButtonFrozen = true;
         }
         Html.instance.div.className("tabs-content");

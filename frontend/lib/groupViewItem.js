@@ -20,7 +20,7 @@ export class GroupViewItem extends ListViewItem {
         this.#childrenItems = [];
     }
     Key;
-    Render() {
+    render() {
         super.render();
         this.element.classList.add(ListViewItem.groupRowClass);
     }

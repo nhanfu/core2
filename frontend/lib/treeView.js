@@ -52,7 +52,7 @@ export class TreeView extends ListView {
             metaConn: this.metaConn,
             dataConn: this.dataConn,
             comId: this.meta.Id,
-            Params: params
+            params: params
         })).Done(ds => {
             const datas = ds.length > 0 ? ds[0].toList() : null;
             const count = ds.length > 1 && ds[1].length > 0 ? ds[1].total : 0;

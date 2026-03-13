@@ -18,7 +18,7 @@ export class GroupGridView extends GridView {
     constructor(ui) {
         super(ui);
     }
-    Render() {
+    render() {
         super.render();
         Html.take(this.element).className("group-table").end.render();
     }

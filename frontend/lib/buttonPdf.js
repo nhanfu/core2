@@ -51,7 +51,7 @@ export class ButtonPdf extends Button {
         this.preview = html.context;
         html.instance.div.escape(handlerClose).className("popup-content");
         this.popupContent = html.context;
-        html.instance.div.className("popup-title").span.iText(this.meta.plainText || "report pDF", this.editForm.meta.Label);
+        html.instance.div.className("popup-title").span.iText(this.meta.plainText || "report pDF", this.editForm.meta.label);
         this.titleElement = html.context;
         html.instance.end.div.className("title-center");
         this.titleCenterElement = html.context;

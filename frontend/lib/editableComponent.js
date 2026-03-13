@@ -441,7 +441,7 @@ export class EditableComponent {
         }
         if (!validPredicate.bind(this)(value, ruleValue, rule2Value)) {
             if (![ValidationRule.regEx, ValidationRule.replace].some(x => x == ruleType)) {
-                this.validationResult[ruleType] = Str.format(rule.Message, this.meta.Label, label);
+                this.validationResult[ruleType] = Str.format(rule.Message, this.meta.label, label);
             }
             else {
                 delete this.validationResult[ruleType];
@@ -504,7 +504,7 @@ export class EditableComponent {
         this.element.setAttribute(ValidationRule.required, true.toString());
 
         if (value === null || value === undefined || value.toString().trim() === "") {
-            this.validationResult[ValidationRule.required] = requiredRule.Message.replace("{0}", LangSelect.get(this.meta.Label)).replace("{1}", this.entity);
+            this.validationResult[ValidationRule.required] = requiredRule.Message.replace("{0}", LangSelect.get(this.meta.label)).replace("{1}", this.entity);
             return false;
         } else {
             delete this.validationResult[ValidationRule.required];

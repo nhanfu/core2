@@ -52,13 +52,13 @@ export class ConfirmDialog extends EditableComponent {
         this.element = html.context;
         this.parentElement = this.element.parentElement;
         html.instance.div.escape(() => this.dispose()).className("popup-content " + (this.componentGroup ? "form-dialog" : "confirm-dialog")).style((this.componentGroup ? "" : "top: auto;min-width: 350px;"))
-            .div.className("popup-title").div.i.className("fas fa-question-circle mr-1").end.iText("confirm", this.editForm.meta.Label).end
+            .div.className("popup-title").div.i.className("fas fa-question-circle mr-1").end.iText("confirm", this.editForm.meta.label).end
             .div.className("icon-box").span.className("fa fa-times")
             .event("click", () => this.closeDispose())
             .endOf(".popup-title")
             .div.className("popup-body");
         this.bodyElement = html.context;
-        html.instance.div.className("bold").iText(this.title, this.editForm.meta.Label).end.div.className("card card-config").event("keydown", (e) => this.hotKeyHandler(e)).marginRem("top", 1).textAlign(this.componentGroup ? "" : "center");
+        html.instance.div.className("bold").iText(this.title, this.editForm.meta.label).end.div.className("card card-config").event("keydown", (e) => this.hotKeyHandler(e)).marginRem("top", 1).textAlign(this.componentGroup ? "" : "center");
         this.divElement = html.context;
         if (this.needAnswer) {
             if (this.componentGroup && this.componentGroup.componentType == "Section") {

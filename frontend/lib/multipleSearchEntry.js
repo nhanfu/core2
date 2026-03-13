@@ -13,7 +13,7 @@ export class MultipleSearchEntry extends SearchEntry {
         super(ui);
     }
 
-    Render() {
+    render() {
         this._listValues = [];
         this.setDefaultVal();
         this.tryParseData();
@@ -80,7 +80,7 @@ export class MultipleSearchEntry extends SearchEntry {
         }
         else {
             this.Matched = this.entity[this.displayField] || null;
-            if (this._listValues.length > 0 && this.matchedItems.filter(x => this._listValues.includes(x.Id)).length < this._listValues.length && (!this.Parent.isListViewItem || this.meta.isMultiple)) {
+            if (this._listValues.length > 0 && this.matchedItems.filter(x => this._listValues.includes(x.Id)).length < this._listValues.length && (!this.parent.isListViewItem || this.meta.isMultiple)) {
                 Client.instance.getByIdAsync(this.meta.refName, this._listValues).then(data => {
                     this.matchedItems = data.data ? data.data : [];
                     if (this.matchedItems.length != this._listValues.length) {
@@ -137,7 +137,7 @@ export class MultipleSearchEntry extends SearchEntry {
             if (this.userInput != null) {
                 this.userInput?.invoke({ newData: this._value, oldData: oldMatch, evType: EventType.Change });
             }
-            await this.dispatchEvent(this.meta.Events, EventType.Change, this);
+            await this.dispatchEvent(this.meta.events, EventType.Change, this);
             tag.remove();
         }).end.render();
     }
@@ -167,7 +167,7 @@ export class MultipleSearchEntry extends SearchEntry {
         if (this.userInput != null) {
             this.userInput?.invoke({ newData: this._value, oldData: oldMatch, evType: EventType.Change });
         }
-        this.dispatchEvent(this.meta.Events, EventType.Change, this).then();
+        this.dispatchEvent(this.meta.events, EventType.Change, this).then();
     }
 
     updateView(force = false, dirty = null, ...componentNames) {

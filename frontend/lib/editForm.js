@@ -231,7 +231,7 @@ export class EditForm extends EditableComponent {
 
     getEntityPatchVM(entityForm, tableName) {
         var entity = this[entityForm];
-        entity.featureName = this.meta.Label;
+        entity.featureName = this.meta.label;
         entity.featureName2 = this.meta.name;
         if (entity.id.startsWith("-")) {
             entity.departmentId = Client.token.departmentId;
@@ -260,7 +260,7 @@ export class EditForm extends EditableComponent {
                 let actText = Utils.isNullOrWhiteSpace(text) ? 'n/A' : text;
                 let oldText = Utils.isNullOrWhiteSpace(component.originalText) ? 'n/A' : component.originalText;
                 if (actText != oldText) {
-                    patchDetail.historyValue = `[${component.meta.Label}]: ${oldText} => ${actText}`;
+                    patchDetail.historyValue = `[${component.meta.label}]: ${oldText} => ${actText}`;
                 }
             }
             dirtyPatch.push(patchDetail);
@@ -319,7 +319,7 @@ export class EditForm extends EditableComponent {
                             let oldText = Utils.isNullOrWhiteSpace(component.originalText) ? 'n/A' : component.originalText;
                             var index2 = index3 + 1;
                             if (actText != oldText) {
-                                patchDetail.historyValue = `table: [${(item.parent.meta.Label || item.meta.Label)}] row: [${index2}] [${component.meta.Label}]: ${oldText} => ${actText}`;
+                                patchDetail.historyValue = `table: [${(item.parent.meta.label || item.meta.label)}] row: [${index2}] [${component.meta.label}]: ${oldText} => ${actText}`;
                             }
                         }
                         dirtyPatchDetail.push(patchDetail);
@@ -396,7 +396,7 @@ export class EditForm extends EditableComponent {
                 let actText = Utils.isNullOrWhiteSpace(text) ? 'n/A' : text;
                 let oldText = Utils.isNullOrWhiteSpace(component.originalText) ? 'n/A' : component.originalText;
                 if (actText != oldText) {
-                    patchDetail.historyValue = `[${component.meta.Label}]: ${oldText} => ${actText}`;
+                    patchDetail.historyValue = `[${component.meta.label}]: ${oldText} => ${actText}`;
                 }
                 if (component.isInput) {
                     patchDetail.value = patchDetail.value ? patchDetail.value?.toString().trim() : patchDetail.value;
@@ -454,7 +454,7 @@ export class EditForm extends EditableComponent {
                             let oldText = Utils.isNullOrWhiteSpace(component.originalText) ? 'n/A' : component.originalText;
                             var index2 = index3 + 1;
                             if (actText != oldText) {
-                                patchDetail.historyValue = `table: [${(item.parent.meta.Label || item.meta.Label)}] row: [${index2}] [${component.meta.Label}]: ${oldText} => ${actText}`;
+                                patchDetail.historyValue = `table: [${(item.parent.meta.label || item.meta.label)}] row: [${index2}] [${component.meta.label}]: ${oldText} => ${actText}`;
                             }
                             if (component.isInput) {
                                 if (patchDetail.value instanceof string) {
@@ -514,7 +514,7 @@ export class EditForm extends EditableComponent {
                 let actText = Utils.isNullOrWhiteSpace(text) ? 'n/A' : text;
                 let oldText = Utils.isNullOrWhiteSpace(component.originalText) ? 'n/A' : component.originalText;
                 if (actText != oldText) {
-                    patchDetail.historyValue = `[${component.meta.Label}]: ${oldText} => ${actText}`;
+                    patchDetail.historyValue = `[${component.meta.label}]: ${oldText} => ${actText}`;
                 }
             }
             dirtyPatch.push(patchDetail);
@@ -569,7 +569,7 @@ export class EditForm extends EditableComponent {
                             let oldText = Utils.isNullOrWhiteSpace(component.originalText) ? 'n/A' : component.originalText;
                             var index2 = index3 + 1;
                             if (actText != oldText) {
-                                patchDetail.historyValue = `table: [${(item.parent.meta.Label || item.meta.Label)}] row: [${index2}] [${component.meta.Label}]: ${oldText} => ${actText}`;
+                                patchDetail.historyValue = `table: [${(item.parent.meta.label || item.meta.label)}] row: [${index2}] [${component.meta.label}]: ${oldText} => ${actText}`;
                             }
                         }
                         dirtyPatchDetail.push(patchDetail);
@@ -782,7 +782,7 @@ export class EditForm extends EditableComponent {
                 this.entity.isSend = false;
                 this.entity.isLockEdit = false;
             }
-            this.entity.featureName = this.meta.Label;
+            this.entity.featureName = this.meta.label;
             this.entity.featureName2 = this.meta.name;
             this.entity.featureName3 = this.meta.name.includes("editor") ? this.meta.name.replace("-editor", "") : (this.openFrom ? this.tabEditor.meta.name : "");
             /** @type {GridView[]}*/
@@ -975,7 +975,7 @@ export class EditForm extends EditableComponent {
                 Spinner.hide();
                 return false;
             }
-            this.entity.featureName = this.meta.Label;
+            this.entity.featureName = this.meta.label;
             this.entity.featureName2 = this.meta.name;
             this.entity.featureName3 = this.meta.name.includes("editor") ? this.meta.name.replace("-editor", "") : (this.openFrom ? this.tabEditor.meta.name : "");
             var patchModel = this.getPatchSelectVM();
@@ -1262,7 +1262,7 @@ export class EditForm extends EditableComponent {
                 canReadAll: true,
                 canWriteAll: true,
                 componentType: "Datepicker",
-                formatData: "dD/mM/yYYY hH:mm",
+                formatData: "DD/MM/YYYY hH:mm",
                 Label: "inserted date",
                 width: "10%",
                 minWidth: "10%",
@@ -2907,7 +2907,7 @@ export class EditForm extends EditableComponent {
             this.loadData().then(template => {
                 for (let index = 0; index < matches.length; index++) {
                     const element = matches[index];
-                    var mapComponent = this.childCom.find(x => LangSelect.get(x.meta.Label, this.meta.name) == element);
+                    var mapComponent = this.childCom.find(x => LangSelect.get(x.meta.label, this.meta.name) == element);
                     if (mapComponent) {
                         var text = mapComponent.getValueText();
                         subject = subject.replaceAll(`{${element}}`, text);
@@ -2997,7 +2997,7 @@ export class EditForm extends EditableComponent {
     }
 
     async actSendEntity() {
-        this.entity.featureName = this.meta.Label;
+        this.entity.featureName = this.meta.label;
         this.entity.featureName2 = this.meta.name;
         this.entity.featureName3 = this.meta.name.includes("editor") ? this.meta.name.replace("-editor", "") : (this.openFrom ? this.tabEditor.meta.name : "");
         await this.dispatchCustomEvent(this.meta.events, "onsend", this);
@@ -3038,7 +3038,7 @@ export class EditForm extends EditableComponent {
     }
 
     async actForwordEntity() {
-        this.entity.featureName = this.meta.Label;
+        this.entity.featureName = this.meta.label;
         this.entity.featureName2 = this.meta.name;
         this.entity.featureName3 = this.meta.name.includes("editor") ? this.meta.name.replace("-editor", "") : (this.openFrom ? this.tabEditor.meta.name : "");
         var code = this.entity.code;
@@ -3077,7 +3077,7 @@ export class EditForm extends EditableComponent {
     }
 
     async actApprovedEntity(change) {
-        this.entity.featureName = this.meta.Label;
+        this.entity.featureName = this.meta.label;
         this.entity.featureName2 = this.meta.name;
         this.entity.featureName3 = this.meta.name.includes("editor") ? this.meta.name.replace("-editor", "") : (this.openFrom ? this.tabEditor.meta.name : "");
         var code = this.entity.code;
@@ -3122,7 +3122,7 @@ export class EditForm extends EditableComponent {
         if (!Utils.isNullOrWhiteSpace(code) && this.entity.formatChat && !this.entity.formatChat.includes(code)) {
             this.entity.formatChat = this.entity.formatChat + " " + code;
         }
-        this.entity.featureName = this.meta.Label;
+        this.entity.featureName = this.meta.label;
         this.entity.featureName2 = this.meta.name;
         this.entity.featureName3 = this.meta.name.includes("editor") ? this.meta.name.replace("-editor", "") : (this.openFrom ? this.tabEditor.meta.name : "");
         await this.dispatchCustomEvent(this.meta.events, "ondecline", this);
@@ -3165,7 +3165,7 @@ export class EditForm extends EditableComponent {
         if (!Utils.isNullOrWhiteSpace(code) && this.entity.formatChat && !this.entity.formatChat.includes(code)) {
             this.entity.formatChat = this.entity.formatChat + " " + code;
         }
-        this.entity.featureName = this.meta.Label;
+        this.entity.featureName = this.meta.label;
         this.entity.featureName2 = this.meta.name;
         this.entity.featureName3 = this.meta.name.includes("editor") ? this.meta.name.replace("-editor", "") : (this.openFrom ? this.tabEditor.meta.name : "");
         await this.dispatchCustomEvent(this.meta.events, "onunlock", this);

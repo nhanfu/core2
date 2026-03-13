@@ -1,9 +1,5 @@
 import { jest } from "@jest/globals";
 
-jest.unstable_mockModule("../utils/componentFactory.js", () => ({
-  componentFactory: {},
-}));
-
 jest.unstable_mockModule("../clients/client.js", () => ({
   Client: { Instance: {} },
 }));

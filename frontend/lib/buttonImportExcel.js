@@ -44,7 +44,7 @@ export class ButtonImportExcel extends EditableComponent {
             html.icon(this.meta.icon).end.text(" ").render();
         }
 
-        html.span.className("caption").iText(this.meta.Label || "", this.editForm.meta.Label);
+        html.span.className("caption").iText(this.meta.label || "", this.editForm.meta.label);
         this._textEle = html.context;
 
         this.element.closest("td")?.addEventListener("keydown", e => this.listViewItemTab(e));

@@ -228,9 +228,9 @@ export class ExportCustomData extends PopupEditor {
         let i = 1;
         for (let item of this._headers) {
             Html.instance.tRow.dataAttr("id", item.Id)
-                .tData.dataAttr("id", item.Id).style("padding:0").iText(i.toString(), this.editForm.meta.Label).end
+                .tData.dataAttr("id", item.Id).style("padding:0").iText(i.toString(), this.editForm.meta.label).end
                 .tData.style("padding:0").checkbox(item.isExport).event("input", (e1) => item.isExport = e1.target.checked).end.end
-                .tData.style("padding:0").className("text-left").iText(item.Label, this.editForm.meta.Label).end
+                .tData.style("padding:0").className("text-left").iText(item.Label, this.editForm.meta.label).end
                 .endOf("tr");
             i++;
         }
@@ -287,7 +287,7 @@ export class ExportCustomData extends PopupEditor {
             let ids = selectedIds.join(", ");
             sql.Where = `Id in (${ids})`;
         }
-        sql.Params = this.parentListView.meta.Label || this.parentListView.meta.refName;
+        sql.Params = this.parentListView.meta.label || this.parentListView.meta.refName;
         sql.Table = this.parentListView.meta.refName;
 
         let xhrWrapper = {

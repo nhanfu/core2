@@ -58,7 +58,7 @@ export class Chart extends EditableComponent {
      * asynchronously renders the chart after data and configurations are ready.
      */
     async renderAsync() {
-        const formatDate = (date) => this.dayjs(date).format("yYYY-mM-dD");
+        const formatDate = (date) => this.dayjs(date).format("YYYY-MM-DD");
 
         this.title = "month";
 
@@ -216,7 +216,7 @@ export class Chart extends EditableComponent {
             .tabIndex(-1)
             .className("apexcharts-menu");
         this.searchElement = html.context;
-        const formatDate = (date) => this.dayjs(date).format("yYYY-mM-dD");
+        const formatDate = (date) => this.dayjs(date).format("YYYY-MM-DD");
 
         html.instance
             .div.className("apexcharts-menu-item").tabIndex(-1).event(EventType.click, (e) => {
@@ -231,7 +231,7 @@ export class Chart extends EditableComponent {
                 this.toDate = formatDate(lastDayOfWeek);
                 this.renderChart().then();
                 this.closeSearch();
-            }).iText("week", this.editForm.meta.Label).end
+            }).iText("week", this.editForm.meta.label).end
 
             // Tuần trước
             .div.className("apexcharts-menu-item").tabIndex(-1).event(EventType.click, (e) => {
@@ -246,7 +246,7 @@ export class Chart extends EditableComponent {
                 this.toDate = formatDate(lastDayOfLastWeek);
                 this.renderChart().then();
                 this.closeSearch();
-            }).iText("last week", this.editForm.meta.Label).end
+            }).iText("last week", this.editForm.meta.label).end
 
             // Tháng này
             .div.tabIndex(-1).className("apexcharts-menu-item").event(EventType.click, (e) => {
@@ -261,7 +261,7 @@ export class Chart extends EditableComponent {
                 this.toDate = formatDate(lastDayOfMonth);
                 this.renderChart().then();
                 this.closeSearch();
-            }).iText("month", this.editForm.meta.Label).end
+            }).iText("month", this.editForm.meta.label).end
 
             // Tháng trước
             .div.tabIndex(-1).className("apexcharts-menu-item").event(EventType.click, (e) => {
@@ -276,7 +276,7 @@ export class Chart extends EditableComponent {
                 this.toDate = formatDate(lastDayOfLastMonth);
                 this.renderChart().then();
                 this.closeSearch();
-            }).iText("last month", this.editForm.meta.Label).end
+            }).iText("last month", this.editForm.meta.label).end
 
             // Quý này
             .div.tabIndex(-1).className("apexcharts-menu-item").event(EventType.click, () => {
@@ -290,7 +290,7 @@ export class Chart extends EditableComponent {
                 this.toDate = formatDate(lastDayOfQuarter);
                 this.renderChart().then();
                 this.closeSearch();
-            }).iText("quarter", this.editForm.meta.Label).end
+            }).iText("quarter", this.editForm.meta.label).end
 
             // Quý trước
             .div.tabIndex(-1).className("apexcharts-menu-item").event(EventType.click, () => {
@@ -304,7 +304,7 @@ export class Chart extends EditableComponent {
                 this.toDate = formatDate(lastDayOfLastQuarter);
                 this.renderChart().then();
                 this.closeSearch();
-            }).iText("last quarter", this.editForm.meta.Label).end
+            }).iText("last quarter", this.editForm.meta.label).end
 
             // Năm này
             .div.tabIndex(-1).className("apexcharts-menu-item").event(EventType.click, () => {
@@ -318,7 +318,7 @@ export class Chart extends EditableComponent {
                 this.toDate = formatDate(lastDayOfYear);
                 this.renderChart().then();
                 this.closeSearch();
-            }).iText("year", this.editForm.meta.Label).end
+            }).iText("year", this.editForm.meta.label).end
 
             // Năm trước
             .div.tabIndex(-1).className("apexcharts-menu-item").event(EventType.click, () => {
@@ -332,7 +332,7 @@ export class Chart extends EditableComponent {
                 this.toDate = formatDate(lastDayOfLastYear);
                 this.renderChart().then();
                 this.closeSearch();
-            }).iText("last year", this.editForm.meta.Label).end
+            }).iText("last year", this.editForm.meta.label).end
 
             .end.render();
         this.searchElement.firstElementChild.focus();

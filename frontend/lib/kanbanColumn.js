@@ -83,7 +83,7 @@ export class KanbanColumn extends EditableComponent {
     /**
      * Renders the button component into the DOM.
      */
-    Render() {
+    render() {
         var group = this.meta.Id;
         Html.take(this.parentElement).div.className("kanban-column");
         this.element = Html.context;
@@ -234,7 +234,7 @@ export class KanbanColumn extends EditableComponent {
         /** @type {SqlViewModel} */
         var res = {
             comId: this.meta.Id,
-            Params: submitEntity ? JSON.stringify(submitEntity) : null,
+            params: submitEntity ? JSON.stringify(submitEntity) : null,
             orderBy: "ds.insertedDate desc",
             Count: true,
             Skip: skip || 0,
@@ -258,7 +258,7 @@ export class KanbanColumn extends EditableComponent {
         this.disabled = true;
         try {
             Spinner.appendTo();
-            this.dispatchEvent(this.meta.Events, "click", this, this.entity).then(() => {
+            this.dispatchEvent(this.meta.events, "click", this, this.entity).then(() => {
                 this.disabled = false;
                 Spinner.Hide();
             });

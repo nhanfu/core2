@@ -53,7 +53,7 @@ export class Select extends EditableComponent {
         }
     }
 
-    Render() {
+    render() {
         this.setDefaultVal();
         this._value = this.entity[this.Name] == null ? null : this.entity[this.Name].toString();
         this.renderInputAndEvents();
@@ -104,7 +104,7 @@ export class Select extends EditableComponent {
         else {
             this._input = this.element.firstElementChild;
         }
-        if (this.Parent.isListViewItem) {
+        if (this.parent.isListViewItem) {
             Html.take(this.element.parentElement).event(EventType.keyDown, (e) => this.sEKeydownHandler(e));
         }
         else {
@@ -201,11 +201,11 @@ export class Select extends EditableComponent {
             this._gv.Show = false;
         }
         this.populateFields(this.Matched);
-        this.dispatchEvent(this.meta.Events, EventType.Change, this, this.entity, rowData, oldMatch).then(() => {
+        this.dispatchEvent(this.meta.events, EventType.Change, this, this.entity, rowData, oldMatch).then(() => {
             this.userInput?.invoke({ newData: this._value, oldData: oldValue, evType: EventType.Change });
         });
         window.setTimeout(() => {
-            if (this.Parent.isListViewItem) {
+            if (this.parent.isListViewItem) {
                 this.element.parentElement.focus()
             }
             else {

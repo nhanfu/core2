@@ -65,7 +65,7 @@ export class Image extends EditableComponent {
         return this.Path ? this.Path.split(Image.pathSeparator) : null;
     }
 
-    Render() {
+    render() {
         this._path = this.entity[this.Name] || null;
         this.renderUploadForm();
         this.Path = this._path;
@@ -273,7 +273,7 @@ export class Image extends EditableComponent {
             this.Dirty = true;
             const observable = { newData: this._path, oldData: oldVal, fieldName: this.Name, evType: EventType.Change };
             this.userInput?.invoke(observable);
-            this.dispatchEvent(this.meta.Events, EventType.Change, this, this.entity).then();
+            this.dispatchEvent(this.meta.events, EventType.Change, this, this.entity).then();
         });
     }
 
@@ -295,7 +295,7 @@ export class Image extends EditableComponent {
             this._input.value = '';
             const observable = { newData: this._path, oldData: oldVal, fieldName: this.Name, evType: EventType.Change };
             this.userInput?.invoke(observable);
-            this.dispatchEvent(this.meta.Events, EventType.Change, this, this.entity).then();
+            this.dispatchEvent(this.meta.events, EventType.Change, this, this.entity).then();
         }).catch(error => {
             console.error("Failed to upload files:", error);
         });

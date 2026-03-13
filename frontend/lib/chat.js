@@ -130,7 +130,7 @@ export class Chat extends EditableComponent {
             html.instance.end.end.render();
 
             if (isLastInGroup) {
-                html.instance.p.className("response-time time").i.text(this.dayjs(item.insertedDate).format("hH:mm dD/mM/yYYY")).end.end.render();
+                html.instance.p.className("response-time time").i.text(this.dayjs(item.insertedDate).format("hH:mm DD/MM/YYYY")).end.end.render();
             }
         }
         else {
@@ -151,7 +151,7 @@ export class Chat extends EditableComponent {
             html.instance.end.end.render();
 
             if (isLastInGroup) {
-                html.instance.p.className("time").i.text(item.fromName + ' - ' + this.dayjs(item.insertedDate).format("hH:mm dD/mM/yYYY")).end.end.render();
+                html.instance.p.className("time").i.text(item.fromName + ' - ' + this.dayjs(item.insertedDate).format("hH:mm DD/MM/YYYY")).end.end.render();
             }
         }
     }

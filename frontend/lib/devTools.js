@@ -356,7 +356,7 @@ export class DevTools extends EditableComponent {
             spanElement.classList.toggle('devtools-caret-down');
         }).className("fas fa-chevron-right").end.span.className("w-100").event(EventType.click, async (e) => {
             await this.updateFeatureData(this.meta, e);
-        }).text(this.meta.Label).end.end.render();
+        }).text(this.meta.label).end.end.render();
         this.renderElements(this.groupTree);
         html.take(this.element).clear();
         this.editForm.renderTabOrSection(this.groupTree.filter(x => x.active), this);
@@ -621,7 +621,7 @@ export class DevTools extends EditableComponent {
                     return null;
                 }).filter(x => x != null);
                 var userSetting = new UserSetting();
-                userSetting.featureId = this.editForm.meta.Label;
+                userSetting.featureId = this.editForm.meta.label;
                 userSetting.componentId = this.meta.id;
                 userSetting.active = true;
                 userSetting.value = JSON.stringify(columns);

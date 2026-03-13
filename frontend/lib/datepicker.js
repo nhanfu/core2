@@ -33,7 +33,7 @@ export class Datepicker extends EditableComponent {
         super(ui, ele);
         this.defaultValue = dayjs();
         /** @type {Component} */
-        this.initFormat = this.meta.formatData?.includes("{0:") ? this.meta.formatData.replace("{0:", "").replace("}", "") : (this.meta.precision === 7 ? "dD/mM/yYYY hH:mm" : "dD/mM/yYYY");
+        this.initFormat = this.meta.formatData?.includes("{0:") ? this.meta.formatData.replace("{0:", "").replace("}", "") : (this.meta.precision === 7 ? "DD/MM/YYYY hH:mm" : "DD/MM/YYYY");
         this.currentFormat = this.initFormat;
         if (ele != null) {
             if (ele.firstElementChild instanceof hTMLInputElement) {
@@ -90,10 +90,10 @@ export class Datepicker extends EditableComponent {
         this.input.selectionStart = selectionEnd;
         this.input.selectionEnd = selectionEnd;
         if (this.meta.precision == 7) {
-            this.entity[this.name] = this._value.format('yYYY-mM-dDTHH:mm:ss');
+            this.entity[this.name] = this._value.format('YYYY-MM-DDTHH:mm:ss');
         }
         else {
-            this.entity[this.name] = this.dayjs(this._value.format('yYYY-mM-dD'), 'yYYY-mM-dD').format('yYYY-mM-dDTHH:mm:ss');
+            this.entity[this.name] = this.dayjs(this._value.format('YYYY-MM-DD'), 'YYYY-MM-DD').format('YYYY-MM-DDTHH:mm:ss');
         }
     }
     /**
@@ -198,7 +198,7 @@ export class Datepicker extends EditableComponent {
         this.originalText = str;
         this.oldValue = this.entity[this.meta.fieldName];
         if (this.meta.precision !== 7 && this.value) {
-            this.entity[this.name] = this.dayjs(this.value.format('yYYY-mM-dD'), 'yYYY-mM-dD').format('yYYY-mM-dDTHH:mm:ss');
+            this.entity[this.name] = this.dayjs(this.value.format('YYYY-MM-DD'), 'YYYY-MM-DD').format('YYYY-MM-DDTHH:mm:ss');
         }
         this.dOMContentLoaded?.invoke();
     }
@@ -293,17 +293,17 @@ export class Datepicker extends EditableComponent {
                 }
                 break;
             case 10:
-                dateTime = dayjs(value, "dD/mM/yYYY", dayjs()); // true for strict parsing
+                dateTime = dayjs(value, "DD/MM/YYYY", dayjs()); // true for strict parsing
                 if (dateTime.isValid()) {
                     parsed = true;
-                    format = "dD/mM/yYYY";
+                    format = "DD/MM/YYYY";
                 }
                 break;
             case 16:
-                dateTime = dayjs(value, "dD/mM/yYYY hH:mm", dayjs()); // true for strict parsing
+                dateTime = dayjs(value, "DD/MM/YYYY hH:mm", dayjs()); // true for strict parsing
                 if (dateTime.isValid()) {
                     parsed = true;
-                    format = "dD/mM/yYYY hH:mm";
+                    format = "DD/MM/YYYY hH:mm";
                 }
                 break;
             default:
@@ -513,7 +513,7 @@ export class Datepicker extends EditableComponent {
         if (newValue != this.oldValue) {
             if (newValue) {
                 try {
-                    this.value = dayjs(newValue, 'yYYY-mM-dDTHH:mm:ss');
+                    this.value = dayjs(newValue, 'YYYY-MM-DDTHH:mm:ss');
                 } catch {
                     this.value = null;
                 }
@@ -540,10 +540,10 @@ export class Datepicker extends EditableComponent {
         if (data && this.entity[this.name] == null && this.entity[this.idField].toString().startsWith("-")) {
             if (dayjs.isDayjs(this.entity[this.name])) {
                 if (this.meta.precision == 7) {
-                    this.entity[this.name] = this.value.format('yYYY-mM-dDTHH:mm:ss');
+                    this.entity[this.name] = this.value.format('YYYY-MM-DDTHH:mm:ss');
                 }
                 else {
-                    this.entity[this.name] = this.dayjs(this.value.format('yYYY-mM-dD'), 'yYYY-mM-dD').format('yYYY-mM-dDTHH:mm:ss');
+                    this.entity[this.name] = this.dayjs(this.value.format('YYYY-MM-DD'), 'YYYY-MM-DD').format('YYYY-MM-DDTHH:mm:ss');
                 }
             }
             else {

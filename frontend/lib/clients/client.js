@@ -370,7 +370,7 @@ export class Client {
     async deactivateAsync(ids, table, connKey) {
         const vm = {
             Ids: ids,
-            Params: table,
+            params: table,
             metaConn: Client.metaConn,
             dataConn: connKey || Client.dataConn
         };
@@ -415,7 +415,7 @@ export class Client {
             dataConn: this.dataConn,
             comId: "UserSetting",
             Action: "getConfig",
-            Params: JSON.stringify({ name: name, scope: scope })
+            params: JSON.stringify({ name: name, scope: scope })
         });
     }
 

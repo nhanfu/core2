@@ -39,7 +39,7 @@ export class RichTextBox extends EditableComponent {
         this.element = Html.context;
     }
 
-    Render() {
+    render() {
         this.initCkEditor().then();
     }
     /**
@@ -510,7 +510,7 @@ export class RichTextBox extends EditableComponent {
     renderPopup() {
         Html.take(this.tabEditor.element).div.className("backdrop").tabIndex(-1).trigger(EventType.Focus);
         this._backdrop = Html.context;
-        Html.instance.div.className("popup-content").div.className("popup-title").span.iText("History change", this.editForm.meta.Label);
+        Html.instance.div.className("popup-content").div.className("popup-title").span.iText("History change", this.editForm.meta.label);
         this.titleElement = Html.context;
         Html.instance.end.div.className("icon-box").span.className("fa fa-times")
             .event(EventType.Click, () => {
@@ -523,7 +523,7 @@ export class RichTextBox extends EditableComponent {
         }
         const res = {
             comId: this.meta.Id,
-            Params: JSON.stringify(Utils.isFunction(this.meta.preQuery, true, this)),
+            params: JSON.stringify(Utils.isFunction(this.meta.preQuery, true, this)),
             orderBy: (!this.meta.orderBy ? "ds.insertedDate desc" : this.meta.orderBy),
             Count: false,
             Skip: 0,

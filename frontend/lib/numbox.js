@@ -104,7 +104,7 @@ export class Numbox extends EditableComponent {
         }
         if (Utils.isNullOrWhiteSpace(this._input.value)) {
             this.Value = null;
-            this.dispatchEvent(this.meta.Events, EventType.Input, this, this.entity, this._value, oldVal).then();
+            this.dispatchEvent(this.meta.events, EventType.Input, this, this.entity, this._value, oldVal).then();
             return;
         }
         this._input.value = this._input.value.trim();
@@ -115,15 +115,15 @@ export class Numbox extends EditableComponent {
         const [success, parsedResult] = Utils.tryParseDecimal(text);
         if (!success) {
             this.Value = this._value;
-            this.dispatchEvent(this.meta.Events, EventType.Input, this, this.entity, this._value, oldVal).then();
+            this.dispatchEvent(this.meta.events, EventType.Input, this, this.entity, this._value, oldVal).then();
             return;
         }
         this.Value = parsedResult;
         this.userInput?.invoke({ newData: this._value, oldData: oldVal, evType: EventType.Input });
-        this.dispatchEvent(this.meta.Events, EventType.Input, this, this.entity, this._value, oldVal).then();
+        this.dispatchEvent(this.meta.events, EventType.Input, this, this.entity, this._value, oldVal).then();
     }
 
-    Render() {
+    render() {
         this.setDefaultVal();
         if (this.entity != null) {
             const fieldVal = this.entity[this.Name];
@@ -163,7 +163,7 @@ export class Numbox extends EditableComponent {
                     this.setValue();
                 }
                 else {
-                    if (!this.Parent.isListViewItem) {
+                    if (!this.parent.isListViewItem) {
                         if (!Utils.isNullOrWhiteSpace(this.meta.groupBy)) {
                             var groups = this.editForm.childCom.filter(x => x.meta.groupBy == this.meta.groupBy);
                             var index = groups.indexOf(this);
@@ -171,21 +171,21 @@ export class Numbox extends EditableComponent {
                                 groups[index + 1].Focus();
                             }
                             else {
-                                var groupIndex = this.Parent.Parent.Children.indexOf(this.Parent);
-                                if (this.Parent.Parent.Children[groupIndex + 1] && this.Parent.Parent.Children[groupIndex + 1].Children[0]) {
-                                    this.Parent.Parent.Children[groupIndex + 1].Children[0].Focus();
+                                var groupIndex = this.parent.Parent.Children.indexOf(this.parent);
+                                if (this.parent.Parent.Children[groupIndex + 1] && this.parent.Parent.Children[groupIndex + 1].Children[0]) {
+                                    this.parent.Parent.Children[groupIndex + 1].Children[0].Focus();
                                 }
                             }
                         }
                         else {
-                            var index = this.Parent.Children.indexOf(this);
-                            if (this.Parent.Children[index + 1]) {
-                                this.Parent.Children[index + 1].Focus();
+                            var index = this.parent.children.indexOf(this);
+                            if (this.parent.children[index + 1]) {
+                                this.parent.children[index + 1].Focus();
                             }
                             else {
-                                var groupIndex = this.Parent.Parent.Children.indexOf(this.Parent);
-                                if (this.Parent.Parent.Children[groupIndex + 1] && this.Parent.Parent.Children[groupIndex + 1].Children[0]) {
-                                    this.Parent.Parent.Children[groupIndex + 1].Children[0].Focus();
+                                var groupIndex = this.parent.Parent.Children.indexOf(this.parent);
+                                if (this.parent.Parent.Children[groupIndex + 1] && this.parent.Parent.Children[groupIndex + 1].Children[0]) {
+                                    this.parent.Parent.Children[groupIndex + 1].Children[0].Focus();
                                 }
                             }
                         }
@@ -209,7 +209,7 @@ export class Numbox extends EditableComponent {
             this.Value = null;
             this.Dirty = true;
             this.populateFields();
-            this.dispatchEvent(this.meta.Events, EventType.Change, this, this.entity).then(() => {
+            this.dispatchEvent(this.meta.events, EventType.Change, this, this.entity).then(() => {
                 this.userInput?.invoke({ newData: this._value, oldData: oldVal, evType: EventType.Change });
             });
             return;
@@ -224,7 +224,7 @@ export class Numbox extends EditableComponent {
         if (!success) {
             this.Dirty = true;
             this.Value = this._value; // Set old value to avoid accept invalid value
-            this.dispatchEvent(this.meta.Events, EventType.Change, this, this.entity).then(() => {
+            this.dispatchEvent(this.meta.events, EventType.Change, this, this.entity).then(() => {
                 this.userInput?.invoke({ newData: this._value, oldData: oldVal, evType: EventType.Change });
             });
             return;
@@ -232,7 +232,7 @@ export class Numbox extends EditableComponent {
         this.Value = new Decimal(parsedResult);
         this.Dirty = true;
         this.populateFields();
-        this.dispatchEvent(this.meta.Events, EventType.Change, this, this.entity).then(() => {
+        this.dispatchEvent(this.meta.events, EventType.Change, this, this.entity).then(() => {
             this.userInput?.invoke({ newData: this._value, oldData: oldVal, evType: EventType.Change });
         });
     }

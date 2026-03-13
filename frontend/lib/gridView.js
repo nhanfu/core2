@@ -110,7 +110,7 @@ export class GridView extends ListView {
             const com = ComponentFactory.getComponent(ui, this.editForm);
             if (com == null) return;
             com.parentElement = this.menuGridView;
-            this.Parent.addChild(com);
+            this.parent.addChild(com);
             this.editForm.childCom.push(com);
             com.Disabled = ui.Disabled || this.editForm.disabled || com.Disabled;
             if (ui.Focus) {
@@ -738,7 +738,7 @@ export class GridView extends ListView {
         await Promise.all(rowsData.map(async x => {
             listItem.push(this.addRow(x, null, false));
         }));
-        await this.dispatchCustomEvent(this.meta.Events, EventType.Change, this);
+        await this.dispatchCustomEvent(this.meta.events, EventType.Change, this);
         this.renderIndex();
         this.addSummaries();
         this.domLoaded();
@@ -764,7 +764,7 @@ export class GridView extends ListView {
             this.dataTable.insertBefore(this.emptySection.element, this.mainSection.element);
         }
         this.gridViewItemEmpty.Children.forEach(x => x.setRequired());
-        this.dispatchCustomEvent(this.meta.Events, 'afterEmptyRowCreated', emptyRowData).then(() => {
+        this.dispatchCustomEvent(this.meta.events, 'afterEmptyRowCreated', emptyRowData).then(() => {
             this.updateStickyColumns();
         });
     }
@@ -784,7 +784,7 @@ export class GridView extends ListView {
         if (!this.formattedRowData || this.formattedRowData.length === 0) {
             this.mainSection.disposeChildren();
             if (!this._hasFirstLoad) {
-                this.dispatchCustomEvent(this.meta.Events, 'firstLoad', this).then();
+                this.dispatchCustomEvent(this.meta.events, 'firstLoad', this).then();
                 this._hasFirstLoad = true;
             }
             this.domLoaded();
@@ -795,7 +795,7 @@ export class GridView extends ListView {
                 this.updateExistRowsWrapper(false, 0, viewPort);
             }
             if (!this._hasFirstLoad) {
-                this.dispatchCustomEvent(this.meta.Events, 'firstLoad', this).then();
+                this.dispatchCustomEvent(this.meta.events, 'firstLoad', this).then();
                 this._hasFirstLoad = true;
             }
             this.domLoaded();
@@ -1128,7 +1128,7 @@ export class GridView extends ListView {
          * @type {hTMLTableRowElement}
          */
         var firstChild = null;
-        if (this.meta.Editable) {
+        if (this.meta.editable) {
             if (this.meta.canAdd) {
                 firstChild = this.emptySection.element.firstChild;
             }
@@ -1238,7 +1238,7 @@ export class GridView extends ListView {
                 }
             }
             rowSection.entity["insertedBy"] = this.Token.userId;
-            await this.dispatchCustomEvent(this.meta.Events, customEventType.beforeCreated, rowSection, rowData, this);
+            await this.dispatchCustomEvent(this.meta.events, customEventType.beforeCreated, rowSection, rowData, this);
             if (!Utils.isNullOrWhiteSpace(this.meta.groupBy)) {
                 let keys = this.meta.groupBy.split(",");
                 rowSection.entity[this._groupKey] = keys.map(key => rowSection.entity[key]).join(" ");
@@ -1266,7 +1266,7 @@ export class GridView extends ListView {
             rowSection.Focused = true;
             this.lastListViewItem = rowSection;
             this.renderIndex();
-            await this.dispatchCustomEvent(this.meta.Events, customEventType.afterCreated, rowSection, rowData, this);
+            await this.dispatchCustomEvent(this.meta.events, customEventType.afterCreated, rowSection, rowData, this);
         }
         else {
             if (!Utils.isNullOrWhiteSpace(this.meta.groupBy)) {
@@ -1313,7 +1313,7 @@ export class GridView extends ListView {
         if (component && component.componentType == "GridView") {
             await this.dispatchEvent(component.Meta.Events, observableArgs.evType, this, rowSection, rowData);
         }
-        await this.dispatchEvent(this.meta.Events, observableArgs.evType, this, rowSection, rowData);
+        await this.dispatchEvent(this.meta.events, observableArgs.evType, this, rowSection, rowData);
         if (observableArgs.evType === EventType.Change) {
             this.renderIndex();
             if (this.meta.isSumary) {
@@ -1539,7 +1539,7 @@ export class GridView extends ListView {
                     Html.endOf("th");
                 }
                 else {
-                    Html.iHtml(header.groupName, this.editForm.meta.Label).end.render();
+                    Html.iHtml(header.groupName, this.editForm.meta.label).end.render();
                 }
                 return;
             }
@@ -1577,7 +1577,7 @@ export class GridView extends ListView {
                         }
                     });
                 }
-                Html.instance.iHtml(header.Label, this.editForm.meta.Label).render();
+                Html.instance.iHtml(header.Label, this.editForm.meta.label).render();
             }
             if (header.componentType === "Number") {
                 Html.instance.div.end.render();
@@ -1599,7 +1599,7 @@ export class GridView extends ListView {
                     Html.instance.th.attr("component", header.componentType || "Number").style(`min-width: ${header.minWidth}; max-width: ${header.maxWidth}`)
                         .textAlign(header.textAlignEnum)
                         .event(EventType.contextMenu, this.headerContextMenu.bind(this), header)
-                        .iHtml(header.Label, this.editForm.meta.Label);
+                        .iHtml(header.Label, this.editForm.meta.label);
                     var sec = new Section(null, Html.context);
                     sec.meta = header;
                     this.headerSection.addChild(sec);
@@ -2052,13 +2052,13 @@ export class GridView extends ListView {
         const anySelected = this.allListViewItem.some(x => x.Selected);
         if (anySelected) {
             this.clearSelected();
-            this.dispatchEvent(this.meta.Events, EventType.Click, this, this.entity).then();
+            this.dispatchEvent(this.meta.events, EventType.Click, this, this.entity).then();
             return;
         }
         this.allListViewItem.forEach(x => {
             x.Selected = true;
         });
-        this.dispatchEvent(this.meta.Events, EventType.Click, this, this.entity).then();
+        this.dispatchEvent(this.meta.events, EventType.Click, this, this.entity).then();
     }
 
     headerContextMenu(e, header) {
@@ -2197,7 +2197,7 @@ export class GridView extends ListView {
      */
     prepareUpdateView(force, dirty) {
         super.prepareUpdateView(force, dirty);
-        if (this.entity.Id && this.entity.Id.startsWith("-") && this.meta.Editable && this.meta.canAdd) {
+        if (this.entity.Id && this.entity.Id.startsWith("-") && this.meta.editable && this.meta.canAdd) {
             this.toggleAddRow(true);
         }
         else {
@@ -2245,7 +2245,7 @@ export class GridView extends ListView {
     async rowChangeHandlerGrid(rowData, rowSection, observableArgs, component = null) {
         await new Promise(resolve => setTimeout(resolve, this.cellCountNoSticky));
         if (rowSection.emptyRow && observableArgs.evType === EventType.Change) {
-            await this.dispatchCustomEvent(this.meta.Events, customEventType.beforeCreated, rowSection, rowData);
+            await this.dispatchCustomEvent(this.meta.events, customEventType.beforeCreated, rowSection, rowData);
             rowSection.emptyRow = false;
             this.moveEmptyRow(rowSection);
             const headers = this.Header.filter(y => y.Editable);
@@ -2260,10 +2260,10 @@ export class GridView extends ListView {
             }
             this.emptySection.Children = [];
             this.addNewEmptyRow();
-            await this.dispatchCustomEvent(this.meta.Events, customEventType.afterCreated, rowSection, rowData);
+            await this.dispatchCustomEvent(this.meta.events, customEventType.afterCreated, rowSection, rowData);
         }
         this.addSummaries();
-        await this.dispatchEvent(this.meta.Events, EventType.Change, rowSection, rowData);
+        await this.dispatchEvent(this.meta.events, EventType.Change, rowSection, rowData);
     }
 
     getViewPortItem() {

@@ -24,7 +24,7 @@ export class Section extends EditableComponent {
         this._chevron = null;
     }
 
-    Render() {
+    render() {
         if (this.elementType == null) {
             this.elementType = this.element?.tagName?.toLowerCase();
         } else {
@@ -96,7 +96,7 @@ export class Section extends EditableComponent {
     renderDropDown() {
         const button = document.createElement('button');
         button.className = 'btn ribbon';
-        button.textContent = this.meta.Label;
+        button.textContent = this.meta.label;
         button.addEventListener('click', this.dropdownBtnClick.bind(this));
 
         const chevron = document.createElement('span');
@@ -198,7 +198,7 @@ export class Section extends EditableComponent {
             Html.take(parent.element);
         }
         if (groupInfo.isDropDown) {
-            Html.instance.details.summary.iText(groupInfo.Label, form.meta.Label).end.render();
+            Html.instance.details.summary.iText(groupInfo.Label, form.meta.label).end.render();
         }
         else {
             Html.instance.div.render();
@@ -207,7 +207,7 @@ export class Section extends EditableComponent {
             Html.instance.event(EventType.contextMenu, (e) => form.sysConfigMenu(e, null, groupInfo, null)).className("section-item card").width(width).div.className(groupInfo.className ?? "");
         }
         if (groupInfo.Label && !groupInfo.isDropDown && !groupInfo.isTab) {
-            Html.instance.label.className("header").iText(groupInfo.Label, form.meta.Label).end.render();
+            Html.instance.label.className("header").iText(groupInfo.Label, form.meta.label).end.render();
         }
         if (!groupInfo.className?.includes("ribbon") && !groupInfo.isSimple) {
             Html.instance.className("panel").className("group");
@@ -240,7 +240,7 @@ export class Section extends EditableComponent {
             Html.instance.event(EventType.contextMenu, (e) => form.sysConfigMenu(e, null, groupInfo, null)).className("section-item card").div.className(groupInfo.className ?? "");
         }
         if (groupInfo.Label && !groupInfo.isDropDown && !groupInfo.isTab) {
-            Html.instance.label.className("header").iText(groupInfo.Label, form.meta.Label).end.render();
+            Html.instance.label.className("header").iText(groupInfo.Label, form.meta.label).end.render();
         }
         if (!groupInfo.className?.includes("ribbon") && !groupInfo.isSimple) {
             Html.instance.className("panel").className("group");
@@ -256,8 +256,8 @@ export class Section extends EditableComponent {
         section.Name = groupInfo.fieldName;
         section.meta = groupInfo;
         section.disabled = parent.Disabled || groupInfo.Disabled;
-        this.Parent.addChild(section, null, groupInfo.showExp, groupInfo.disabledExp);
-        Html.take(this.Parent.element);
+        this.parent.addChild(section, null, groupInfo.showExp, groupInfo.disabledExp);
+        Html.take(this.parent.element);
         section.dOMContentLoaded?.invoke();
         return section;
     }
@@ -310,7 +310,7 @@ export class Section extends EditableComponent {
             tabG.render();
             subTab.render();
             subTab.renderTabContent();
-            subTab.Focus();
+            subTab.focus();
         } else {
             var subTab = new TabComponent(Group)
             subTab.Parent = tabG,
@@ -429,7 +429,7 @@ export class Section extends EditableComponent {
 
         let label = null;
         if (ui.showLabel) {
-            Html.div.iText(ui.Label, this.editForm.meta.Label).textAlign(column === 0 ? 'left' : 'right').render();
+            Html.div.iText(ui.Label, this.editForm.meta.label).textAlign(column === 0 ? 'left' : 'right').render();
             label = Html.context;
             Html.end.render();
         }
@@ -711,7 +711,7 @@ export class Section extends EditableComponent {
                 if (Client.systemRole) {
                     Html.instance.className("moved");
                 }
-                Html.instance.iText(ui.Label, this.editForm.meta.Label)
+                Html.instance.iText(ui.Label, this.editForm.meta.label)
                     .span.text(required).end.end.render();
             }
             if (ui.Style && ui.componentType !== "Word") {
@@ -723,7 +723,7 @@ export class Section extends EditableComponent {
             if (!Utils.isNullOrWhiteSpace(ui.groupFormat) && ["Button", "Pdf", "Excel"].some(x => x == ui.componentType)) {
                 if (!lastElementButtonGroup.find(x => x.Com.groupFormat == ui.groupFormat)) {
                     Html.instance.div.className("dropdown-btn")
-                        .button.className(ui.className).icon("mr-1 " + ui.Icon).end.iText(ui.groupFormat, this.editForm.meta.Label)
+                        .button.className(ui.className).icon("mr-1 " + ui.Icon).end.iText(ui.groupFormat, this.editForm.meta.label)
                         .end
                         .div.className("dropdown-content dropdown-top");
                     lastElementButtonGroup.push({ Com: ui, Ele: Html.context })
@@ -803,7 +803,7 @@ export class Section extends EditableComponent {
             ui.Label = ui.Label || '';
             Html.tData.colSpan(colSpan).visibility(ui.Visibility);
             if (ui.showLabel) {
-                Html.instance.div.className("group-control").style(ui.childStyle).div.className('header-label').iText(ui.Label, this.editForm.meta.Label).end.render();
+                Html.instance.div.className("group-control").style(ui.childStyle).div.className('header-label').iText(ui.Label, this.editForm.meta.label).end.render();
             }
             if (ui.Style && ui.componentType != "Word") {
                 Html.style(ui.Style);
@@ -814,7 +814,7 @@ export class Section extends EditableComponent {
             if (!Utils.isNullOrWhiteSpace(ui.groupFormat) && ["Button", "Pdf", "Excel", "Email"].some(x => x == ui.componentType)) {
                 if (!lastElementButtonGroup.find(x => x.Com.groupFormat == ui.groupFormat)) {
                     Html.instance.div.className("dropdown-btn")
-                        .button.className(ui.className).icon("mr-1 " + ui.Icon).end.iText(ui.groupFormat, this.editForm.meta.Label)
+                        .button.className(ui.className).icon("mr-1 " + ui.Icon).end.iText(ui.groupFormat, this.editForm.meta.label)
                         .end
                         .div.className("dropdown-content dropdown-top");
                     lastElementButtonGroup.push({ Com: ui, Ele: Html.context })

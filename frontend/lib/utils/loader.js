@@ -16,7 +16,7 @@ export async function comQuery(meta, com) {
     var params = Utils.isFunction(meta.preQuery);
     var body = {
         comId: meta.Id,
-        Params: params,
+        params: params,
         annonymousTenant: meta.tenantCode ?? 'system',
         annonymousEnv: meta.Env ?? 'test',
         metaConn: 'default',
@@ -48,7 +48,7 @@ export async function resolveComponents(root) {
                 Action: feature,
                 annonymousTenant: tenant,
                 annonymousEnv: env,
-                Params: JSON.stringify(params)
+                params: JSON.stringify(params)
             }),
         });
         if (response.ok) {

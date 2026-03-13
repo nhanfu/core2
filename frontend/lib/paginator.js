@@ -62,8 +62,8 @@ export class Paginator extends EditableComponent {
     /**
      * Render the paginator into the DOM.
      */
-    Render() {
-        Html.take(this.Parent.element).div.className("grid-toolbar paging").label.iText("Pagination").end.render();
+    render() {
+        Html.take(this.parent.element).div.className("grid-toolbar paging").label.iText("Pagination").end.render();
         this.element = Html.context;
         var startIndex = new Label({ fieldName: "startIndex" });
         var endIndex = new Label({ fieldName: "endIndex" });
@@ -147,8 +147,8 @@ export class Paginator extends EditableComponent {
      */
     reloadListView() {
         // This method should trigger a refresh of the parent list view, dependent on specific implementation.
-        if (this.Parent instanceof ListView) {
-            this.Parent.actionFilter();
+        if (this.parent instanceof ListView) {
+            this.parent.actionFilter();
         }
     }
 }

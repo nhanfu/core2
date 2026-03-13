@@ -26,7 +26,7 @@ export class PdfReport extends EditableComponent {
         this._rptContent = null;
     }
 
-    Render() {
+    render() {
         Html.take(this.parentElement);
         this._rptContent = Html.getContext();
         this.element = Html.getContext();
@@ -60,8 +60,8 @@ export class PdfReport extends EditableComponent {
 
     async loadData() {
         var entity2 = this.entity;
-        if (this.Parent.isAction) {
-            entity2 = this.Parent.entity;
+        if (this.parent.isAction) {
+            entity2 = this.parent.entity;
         }
         var gridViews = this.editForm.childCom.filter(x => x.isListView);
         var entity = JSON.parse(JSON.stringify(entity2));

@@ -13,11 +13,11 @@ export class HtmlCode extends EditableComponent {
         super(ui, ele);
     }
 
-    Render() {
+    render() {
         this.element = Html.take(this.parentElement).div.getContext();
         const submitEntity = Utils.isFunction(this.meta.preQuery, false, this);
         const entity = {
-            Params: submitEntity,
+            params: submitEntity,
             comId: this.meta.Id,
         };
         Client.instance.submitAsync({

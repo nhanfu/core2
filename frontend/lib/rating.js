@@ -53,7 +53,7 @@ export class Rating extends EditableComponent {
         this.inputList[this.meta.Precision - value].checked = true;
     }
 
-    Render() {
+    render() {
         const container = document.createElement('div');
         container.className = 'rate';
         this.parentElement.appendChild(container);
@@ -83,7 +83,7 @@ export class Rating extends EditableComponent {
         this._value = Utils.getPropValue(this.Entity, this.Name);
         this.setSelected(this._value);
 
-        this.dOMContentLoaded?.Invoke();
+        this.dOMContentLoaded?.invoke();
     }
 
     dispatchChange(event) {
@@ -98,10 +98,10 @@ export class Rating extends EditableComponent {
         this.value = parseInt(checkedInput.value);
         if (this.userInput) {
             // @ts-ignore
-            this.userInput.Invoke(new ObservableArgs({ newData: this.value, oldData: oldValue }));
+            this.userInput.invoke(new ObservableArgs({ newData: this.value, oldData: oldValue }));
         }
         setTimeout(() => {
-            this.dispatchEvent(this.meta.Events, 'click', this.Entity).then();
+            this.dispatchEvent(this.meta.events, 'click', this.Entity).then();
         }, 0);
     }
 

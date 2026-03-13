@@ -20,27 +20,27 @@ export class TabComponent extends EditableComponent {
         super(ui);
     }
 
-    get Show() {
+    get show() {
         return this._show;
     }
 
-    set Show(value) {
+    set show(value) {
         if (!this._li) {
             return;
         }
-        super.Show = value;
+        super.show = value;
         if (value) {
             this._li.classList.add("active");
             this._li.querySelector("a").classList.add("active");
-            this.dispatchEvent(this.meta.Events, "focusIn", this, this.entity).then();
+            this.dispatchEvent(this.meta.events, "focusIn", this, this.entity).then();
         } else {
             this._li.classList.remove("active");
             this._li.querySelector("a").classList.remove("active");
-            this.dispatchEvent(this.meta.Events, "focusOut", this, this.entity).then();
+            this.dispatchEvent(this.meta.events, "focusOut", this, this.entity).then();
         }
     }
 
-    set Badge(value) {
+    set badge(value) {
         if (!value || value == 0) {
             this.badgeElement.textContent = "";
             return;
@@ -48,18 +48,18 @@ export class TabComponent extends EditableComponent {
         this.badgeElement.textContent = value;
     }
 
-    Render() {
-        Html.take(this.Parent.ul).li
+    render() {
+        Html.take(this.parent.ul).li
             .a.className("nav-link tab-default")
-            .i.className(this.meta.Icon ?? "").end.span
-            .iHtml(this.meta.Label ?? this.meta.Name, this.editForm.meta.Label);
+            .i.className(this.meta.icon ?? "").end.span
+            .iHtml(this.meta.label ?? this.meta.name, this.editForm.meta.label);
         this.textElement = Html.context;
         Html.instance.end.span.className("ml-1 badge badge-warning");
         this.badgeElement = Html.context;
         this.isTabComponent = true;
         this.editForm.tabComponents.push(this);
         if (this.meta.displayBadge) {
-            Html.instance.text(this.Badge ?? "");
+            Html.instance.text(this.badge ?? "");
         }
         else {
             this.badgeElement.style.display = "none";
@@ -68,28 +68,28 @@ export class TabComponent extends EditableComponent {
         Html.instance.end.render();
         this._li.addEventListener("click", () => {
             if (this.hasRendered) {
-                this.Focus();
+                this.focus();
             }
             else {
-                this.Focus();
+                this.focus();
                 this.renderTabContent();
             }
         });
-        if (this.meta.Editable) {
+        if (this.meta.editable) {
             this.renderTabContent();
         }
         this.countBadge();
     }
 
-    Focus() {
-        this.Parent.Children.forEach(element => {
-            element.Show = false;
+    focus() {
+        this.parent.children.forEach(element => {
+            element.show = false;
         });
-        this.Show = true;
+        this.show = true;
     }
 
     renderTabContent() {
-        Html.take(this.Parent.tabContent).div.className("tab-content").display(!this.meta.Editable);
+        Html.take(this.parent.tabContent).div.className("tab-content").display(!this.meta.editable);
         this.element = Html.context;
         Section.renderSection(this, this.meta, null, this.editForm);
         this.hasRendered = true;
@@ -105,7 +105,7 @@ export class TabComponent extends EditableComponent {
                 let submitEntity = Utils.isFunction(meta.preQuery, true, grid || this);
                 const vm = {
                     comId: meta.Id,
-                    Params: submitEntity ? JSON.stringify(submitEntity) : null,
+                    params: submitEntity ? JSON.stringify(submitEntity) : null,
                     orderBy: (!meta.orderBy ? "ds.insertedDate desc" : meta.orderBy),
                 };
 
@@ -116,7 +116,7 @@ export class TabComponent extends EditableComponent {
                     jsonData: JSON.stringify(vm, this.getCircularReplacer(), 2),
                 });
 
-                this.Badge = data.count?.toString();
+                this.badge = data.count?.toString();
             };
 
             let gridView = this.Children.flatMap(x => x.Children).filter(x => x.meta.componentType == "GridView")[0];
@@ -133,6 +133,6 @@ export class TabComponent extends EditableComponent {
 
 
     updateViewMeta() {
-        Html.take(this.textElement).iHtml(this.meta.Label ?? this.meta.Name, this.editForm.meta.Label);
+        Html.take(this.textElement).iHtml(this.meta.label ?? this.meta.name, this.editForm.meta.label);
     }
 }

@@ -76,7 +76,7 @@ export class Textbox extends EditableComponent {
         this.populateFields();
     }
 
-    Render() {
+    render() {
         this.setDefaultVal();
         var val = this.entity && this.entity[this.Name] || null;
         var text = val;
@@ -154,7 +154,7 @@ export class Textbox extends EditableComponent {
         if (type == EventType.Change) {
             this.Validate(ValidationRule.regEx, this._text, this.validateRegEx);
         }
-        this.dispatchEvent(this.meta.Events, type, this, this.entity).then();
+        this.dispatchEvent(this.meta.events, type, this, this.entity).then();
     }
     updateView(force = false, dirty = null, ...componentNames) {
         var newValue = this.entity[this.meta.fieldName];
@@ -276,7 +276,7 @@ export class Textbox extends EditableComponent {
         var table = !this.meta.refName ? this.meta.refName : this.editForm.meta.entityName;
         const submit = {
             comId: this.meta.Id,
-            Params: params,
+            params: params,
             metaConn: this.metaConn,
             dataConn: this.dataConn,
         };
@@ -288,7 +288,7 @@ export class Textbox extends EditableComponent {
                 })
                 .then(exists => {
                     if (exists) {
-                        this.validationResult[ValidationRule.Unique] = `${rule.Message} ${LangSelect.get(this.meta.Label)} ${this._text}`;
+                        this.validationResult[ValidationRule.Unique] = `${rule.Message} ${LangSelect.get(this.meta.label)} ${this._text}`;
                     } else {
                         delete this.validationResult[ValidationRule.Unique];
                     }

@@ -111,7 +111,7 @@ export class ContextMenu extends EditableComponent {
             } else {
                 html.instance.event("click", (e) => this.menuItemClickHandler(e, item));
             }
-            html.instance.div.className("menu-left").span.className("icon").icon(item.icon).end.end.iText(item.text, this.editForm.meta.Label).end.span.className("shortcut").iText(item.shortcut).end.render();
+            html.instance.div.className("menu-left").span.className("icon").icon(item.icon).end.end.iText(item.text, this.editForm.meta.label).end.span.className("shortcut").iText(item.shortcut).end.render();
             if (item.menuItems != null && item.menuItems.length > 0) {
                 html.instance.div.className("submenu context-menu").render();
                 this.renderMenuItems(item.menuItems, level + 1);

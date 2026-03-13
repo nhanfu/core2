@@ -125,7 +125,7 @@ export class ListView extends EditableComponent {
     /**
      * Renders the list view, setting up necessary configurations and data bindings.
      */
-    Render() {
+    render() {
         if (this.editForm) {
             this.generalPolicies = this.editForm.Policies;
         }
@@ -185,7 +185,7 @@ export class ListView extends EditableComponent {
 
             return data;
         }
-        if (this.meta.Editable && this.entity[this.meta.fieldName] && this.entity[this.meta.fieldName] instanceof Array && this.entity[this.meta.fieldName].length > 0) {
+        if (this.meta.editable && this.entity[this.meta.fieldName] && this.entity[this.meta.fieldName] instanceof Array && this.entity[this.meta.fieldName].length > 0) {
             var rows = this.entity[this.meta.fieldName];
             var rows = this.entity[this.meta.fieldName];
             if (!Utils.isNullOrWhiteSpace(this.meta.defaultVal)) {
@@ -231,11 +231,11 @@ export class ListView extends EditableComponent {
             jsonData: JSON.stringify(sql),
         });
         if (this.findClosest(x => x.isTabComponent)) {
-            Client.download(data.Url, LangSelect.get(this.editForm.meta.Label, this.meta.Name) + "-" + LangSelect.get(this.Parent.meta.Label) + ".xlsx");
+            Client.download(data.Url, LangSelect.get(this.editForm.meta.label, this.meta.name) + "-" + LangSelect.get(this.parent.meta.label) + ".xlsx");
 
         }
         else {
-            Client.download(data.Url, LangSelect.get(this.editForm.meta.Label, this.meta.Name) + ".xlsx");
+            Client.download(data.Url, LangSelect.get(this.editForm.meta.label, this.meta.name) + ".xlsx");
         }
     }
 
@@ -361,7 +361,7 @@ export class ListView extends EditableComponent {
 
             }
         }
-        XLSX.writeFile(wb, 'templateImport' + this.meta.Label + '.xlsx');
+        XLSX.writeFile(wb, 'templateImport' + this.meta.label + '.xlsx');
     }
     /**
      * @param {Event} e
@@ -460,7 +460,7 @@ export class ListView extends EditableComponent {
                 this.editForm[this.meta.entityName || "Entity"][this.meta.fieldName] = newObject;
                 await this.reloadData();
                 this.Dirty = true;
-                this.dispatchEvent(this.meta.Events, EventType.Change, this).then(() => {
+                this.dispatchEvent(this.meta.events, EventType.Change, this).then(() => {
                     resolve(false);
                 });
             };
@@ -506,9 +506,9 @@ export class ListView extends EditableComponent {
         /** @type {SqlViewModel} */
         var res = {
             comId: this.meta.Id,
-            Params: submitEntity ? JSON.stringify(submitEntity) : null,
-            whereParams: JSON.stringify(operatorsValue),
-            orderBy: !orderby ? (!this.meta.orderBy ? ((!this.meta.Editable || this.meta.componentType == "Dropdown") ? "ds.insertedDate desc" : "ds.insertedDate asc") : this.meta.orderBy) : orderby,
+            params: submitEntity ? JSON.stringify(submitEntity) : null,
+            whereparams: JSON.stringify(operatorsValue),
+            orderBy: !orderby ? (!this.meta.orderBy ? ((!this.meta.editable || this.meta.componentType == "Dropdown") ? "ds.insertedDate desc" : "ds.insertedDate asc") : this.meta.orderBy) : orderby,
             Where: finalCon,
             Count: count,
             Skip: skip,
@@ -833,7 +833,7 @@ export class ListView extends EditableComponent {
         this.mainSection.Children = [];
         this.mainSection.element.innerHTML = null;
         this.formattedRowData = [];
-        if (this.entity == null || this.Parent.isSearchEntry) {
+        if (this.entity == null || this.parent.isSearchEntry) {
             return;
         }
         if (this.shouldSetEntity) {
@@ -902,7 +902,7 @@ export class ListView extends EditableComponent {
         } else {
             this.mainSection.element.appendChild(this.emptySection.element.firstElementChild);
         }
-        this.dispatchCustomEvent(this.meta.Events, customEventType.afterEmptyRowCreated, emptyRowData).Done();
+        this.dispatchCustomEvent(this.meta.events, customEventType.afterEmptyRowCreated, emptyRowData).Done();
     }
 
     /**
@@ -1029,7 +1029,7 @@ export class ListView extends EditableComponent {
         ContextMenu.Instance.menuItems.clear();
         let ctxMenu = ContextMenu.Instance;
         var addFn = Utils.isFunction(this.meta.addRowExp, false, this);
-        var some = this.allListViewItem.some(x => x.Selected && (x.entity["assignId"] == this.Token.userId || x.entity["insertedBy"] == this.Token.userId)) || (this.meta.Editable && this.editForm.entityId && this.editForm.entityId.startsWith("-")) || e.target.closest('.tb-empty') != null || addFn;
+        var some = this.allListViewItem.some(x => x.Selected && (x.entity["assignId"] == this.Token.userId || x.entity["insertedBy"] == this.Token.userId)) || (this.meta.editable && this.editForm.entityId && this.editForm.entityId.startsWith("-")) || e.target.closest('.tb-empty') != null || addFn;
         if ((this.disabled || (!this.meta.canWrite && !some)) || (this.meta.canWrite && !this.meta.canWriteAll && !some) && this.editForm.entityId) {
             ContextMenu.Instance.menuItems.push({
                 Icon: "fal fa-undo",
@@ -1047,7 +1047,7 @@ export class ListView extends EditableComponent {
             return;
         }
         this.bodyContextMenuShow?.invoke();
-        this.dispatchEvent(this.meta.Events, EventType.contextMenu, this, ctxMenu).then(() => {
+        this.dispatchEvent(this.meta.events, EventType.contextMenu, this, ctxMenu).then(() => {
             this.renderCopyPasteMenu(this.Editable);
             this.renderEditMenu();
             ctxMenu.Top = e.Top();
@@ -1162,7 +1162,7 @@ export class ListView extends EditableComponent {
             var index = columns.indexOf(pivotRow);
             const submitEntity = Utils.isFunction(pivotRow.preQuery, false, this);
             const entity = {
-                Params: submitEntity ? JSON.stringify(submitEntity) : null,
+                params: submitEntity ? JSON.stringify(submitEntity) : null,
                 comId: pivotRow.Id,
             };
             var data = await Client.instance.submitAsync({
@@ -1209,7 +1209,7 @@ export class ListView extends EditableComponent {
             }
             columns.splice(index, 1, ...headers);
         }
-        this.dispatchCustomEvent(this.meta.Events, customEventType.updateHeader, columns);
+        this.dispatchCustomEvent(this.meta.events, customEventType.updateHeader, columns);
         if (!this.meta.Columns) {
             columns = this.filterColumns(columns);
         }
@@ -1288,7 +1288,7 @@ export class ListView extends EditableComponent {
             rowData: this.copyRowWithoutId(selected)
         }
         this.copyData = dataCopy;
-        this.dispatchCustomEvent(this.meta.Events, customEventType.afterCopied, selected, this._copiedRows);
+        this.dispatchCustomEvent(this.meta.events, customEventType.afterCopied, selected, this._copiedRows);
     }
 
     set copyData(data) {
@@ -1375,7 +1375,7 @@ export class ListView extends EditableComponent {
             }
         });
         Toast.Success("Copying...");
-        this.dispatchCustomEvent(this.meta.Events, customEventType.beforePasted, copyRows).then(() => {
+        this.dispatchCustomEvent(this.meta.events, customEventType.beforePasted, copyRows).then(() => {
             var index = this.allListViewItem.reduceRight((acc, x2, index) => {
                 if (acc === -1 && x2.Selected) {
                     return index;
@@ -1395,7 +1395,7 @@ export class ListView extends EditableComponent {
                     this.copyData = [];
                     Toast.Success("Data pasted successfully !");
                 }
-                this.dispatchCustomEvent(this.meta.Events, customEventType.afterPasted, copyRows).then();
+                this.dispatchCustomEvent(this.meta.events, customEventType.afterPasted, copyRows).then();
             });
         });
     }
@@ -1592,7 +1592,7 @@ export class ListView extends EditableComponent {
         confirmDialog.yesConfirmed += async () => {
             confirmDialog.Dispose();
             const deactivatedIds = await this.Deactivate();
-            this.dispatchCustomEvent(this.meta.Events, customEventType.deactivated, this.entity);
+            this.dispatchCustomEvent(this.meta.events, customEventType.deactivated, this.entity);
         };
     }
     /**
@@ -1633,14 +1633,14 @@ export class ListView extends EditableComponent {
                     let submitEntity = Utils.isFunction(this.meta.preQuery, true, this);
                     Client.instance.postAsync({
                         entityIds: ids,
-                        Params: submitEntity ? JSON.stringify(submitEntity) : null,
+                        params: submitEntity ? JSON.stringify(submitEntity) : null,
                         comId: this.meta.Id
                     }, "/api/checkDelete").then((rs) => {
                         if (rs.status == 200) {
                             this.hardDeleteConfirmed(deletedItems).then(async (rs) => {
                                 if (rs) {
-                                    await this.dispatchCustomEvent(this.meta.Events, customEventType.afterDeleted, this, deletedItems);
-                                    await this.dispatchCustomEvent(this.meta.Events, EventType.Change, this);
+                                    await this.dispatchCustomEvent(this.meta.events, customEventType.afterDeleted, this, deletedItems);
+                                    await this.dispatchCustomEvent(this.meta.events, EventType.Change, this);
                                 }
                             });
                         }
@@ -1661,8 +1661,8 @@ export class ListView extends EditableComponent {
                                     this.hardDeleteConfirmed(deletedItems, this.editForm.entity.newEntityId).then(async rs => {
                                         if (rs) {
                                             this.editForm.entity.newEntityId = null;
-                                            await this.dispatchCustomEvent(this.meta.Events, customEventType.afterDeleted, this, deletedItems);
-                                            await this.dispatchCustomEvent(this.meta.Events, EventType.Change, this);
+                                            await this.dispatchCustomEvent(this.meta.events, customEventType.afterDeleted, this, deletedItems);
+                                            await this.dispatchCustomEvent(this.meta.events, EventType.Change, this);
                                             this.actionFilter();
                                         }
                                     });
@@ -1674,8 +1674,8 @@ export class ListView extends EditableComponent {
                 else {
                     this.hardDeleteConfirmed(deletedItems).then(async rs => {
                         if (rs) {
-                            await this.dispatchCustomEvent(this.meta.Events, customEventType.afterDeleted, this, deletedItems);
-                            await this.dispatchCustomEvent(this.meta.Events, EventType.Change, this);
+                            await this.dispatchCustomEvent(this.meta.events, customEventType.afterDeleted, this, deletedItems);
+                            await this.dispatchCustomEvent(this.meta.events, EventType.Change, this);
                         }
                     });
                 }
@@ -1683,8 +1683,8 @@ export class ListView extends EditableComponent {
             else {
                 this.hardDeleteConfirmed(deletedItems).then(async rs => {
                     if (rs) {
-                        await this.dispatchCustomEvent(this.meta.Events, customEventType.afterDeleted, this, deletedItems);
-                        await this.dispatchCustomEvent(this.meta.Events, EventType.Change, this);
+                        await this.dispatchCustomEvent(this.meta.events, customEventType.afterDeleted, this, deletedItems);
+                        await this.dispatchCustomEvent(this.meta.events, EventType.Change, this);
                     }
                 });
             }
@@ -1698,7 +1698,7 @@ export class ListView extends EditableComponent {
      */
     async hardDeleteConfirmed(deletedItems, newId) {
         const ids = deletedItems.map(x => x[this.idField]).filter(x => !x.startsWith('-'));
-        if (this.meta.Editable) {
+        if (this.meta.editable) {
             ids.forEach(x => {
                 this.deleteTempIds.push(x);
             });
@@ -1756,7 +1756,7 @@ export class ListView extends EditableComponent {
     addRowsNo(rows, index = 0) {
         let ok, err;
         let promise = new Promise((a, b) => { ok = a; err = b; });
-        this.dispatchCustomEvent(this.meta.Events, customEventType.beforeCreated, rows, this).then(() => {
+        this.dispatchCustomEvent(this.meta.events, customEventType.beforeCreated, rows, this).then(() => {
             const tasks = rows.map((data, i) => this.addRow(data, index + i + 1, false));
             Promise.all(tasks).then(results => {
                 this.addNewEmptyRow();
@@ -1764,7 +1764,7 @@ export class ListView extends EditableComponent {
                 this.clearSelected();
                 results.forEach(x => x.Selected = true);
                 ok(results);
-                this.dispatchCustomEvent(this.meta.Events, customEventType.afterCreated, rows).then();
+                this.dispatchCustomEvent(this.meta.events, customEventType.afterCreated, rows).then();
             }).catch(err);
         });
         return promise;
@@ -1849,11 +1849,11 @@ export class ListView extends EditableComponent {
     rowChangeHandler(rowData, rowSection, observableArgs, component = null) {
         const tcs = new Promise((resolve, reject) => {
             if (!rowSection.emptyRow || !this.Editable) {
-                this.dispatchEvent(this.meta.Events, EventType.Change, this, rowSection, rowData).then(() => {
+                this.dispatchEvent(this.meta.events, EventType.Change, this, rowSection, rowData).then(() => {
                     resolve(false);
                 });
             } else {
-                this.dispatchCustomEvent(this.meta.Events, customEventType.beforeCreated, rowData, this).then(() => {
+                this.dispatchCustomEvent(this.meta.events, customEventType.beforeCreated, rowData, this).then(() => {
                     this.rowData.Data.push(rowData);
                     rowSection.filterChildren(child => true).forEach(child => {
                         child.emptyRow = false;
@@ -1861,7 +1861,7 @@ export class ListView extends EditableComponent {
                     });
                     this.emptySection.Children.clear();
                     this.addNewEmptyRow();
-                    this.dispatchCustomEvent(this.meta.Events, customEventType.afterCreated, rowData, this).then(() => {
+                    this.dispatchCustomEvent(this.meta.events, customEventType.afterCreated, rowData, this).then(() => {
                         resolve(true);
                     });
                 });
@@ -1892,9 +1892,9 @@ export class ListView extends EditableComponent {
         if (singleAdd) {
             this.rowData.Data.splice(index, 0, rowData);
         }
-        await this.dispatchCustomEvent(this.meta.Events, customEventType.beforeCreated, rowData, this);
+        await this.dispatchCustomEvent(this.meta.events, customEventType.beforeCreated, rowData, this);
         const row = this.renderRowData(this.Header, rowData, this.mainSection, index);
-        await this.dispatchCustomEvent(this.meta.Events, customEventType.afterCreated, rowData);
+        await this.dispatchCustomEvent(this.meta.events, customEventType.afterCreated, rowData);
         return row;
     }
 
@@ -1905,15 +1905,15 @@ export class ListView extends EditableComponent {
      * @returns {Promise<Array<ListViewItem>>} A promise that resolves to an array of ListViewItem instances.
      */
     async addRows(rows, index = 0) {
-        await this.dispatchCustomEvent(this.meta.Events, customEventType.beforeCreatedList, this, rows);
+        await this.dispatchCustomEvent(this.meta.events, customEventType.beforeCreatedList, this, rows);
         const listItems = [];
         await this.loadMasterData(rows);
         for (let i = 0; i < rows.length; i++) {
             const row = await this.addRow(rows[i], index + i, false);
             listItems.push(row);
         }
-        await this.dispatchCustomEvent(this.meta.Events, EventType.Change, this);
-        await this.dispatchCustomEvent(this.meta.Events, customEventType.afterCreatedList, this, this, rows);
+        await this.dispatchCustomEvent(this.meta.events, EventType.Change, this);
+        await this.dispatchCustomEvent(this.meta.events, customEventType.afterCreatedList, this, this, rows);
         this.addNewEmptyRow();
         this.renderIndex();
         return listItems;
@@ -2121,7 +2121,7 @@ export class ListView extends EditableComponent {
             dataConn: this.dataConn,
             comId: "UserSetting",
             Action: "getByComId",
-            Params: JSON.stringify({ comId: this.meta.Id, Prefix: prefix })
+            params: JSON.stringify({ comId: this.meta.Id, Prefix: prefix })
         });
     }
 

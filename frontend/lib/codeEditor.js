@@ -264,7 +264,7 @@ export class CodeEditor extends EditableComponent {
             }
             dataa.forEach(item => {
                 html.take(this.bodyElement);
-                html.instance.div.label.className("header").text(this.dayjs(item.insertedDate).format("dD/mM/yYYY hH:mm")).end.div.className("diff-container").style("height:250px");
+                html.instance.div.label.className("header").text(this.dayjs(item.insertedDate).format("DD/MM/YYYY hH:mm")).end.div.className("diff-container").style("height:250px");
                 const modifiedModel = monaco.editor.createModel(
                     item.value ?? ``,
                     this.meta.lang ?? 'javascript'

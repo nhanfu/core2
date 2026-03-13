@@ -150,7 +150,7 @@ export class ListViewItem extends Section {
     /**
      * Renders the item.
      */
-    Render() {
+    render() {
         // @ts-ignore
         this.listView = this.listView ?? this.findClosest(x => x.isListView);
         this.meta = this.meta ?? this.listView.meta;
@@ -278,7 +278,7 @@ export class ListViewItem extends Section {
                 e.preventDefault();
                 e.stopPropagation();
                 this.Selected = !this.Selected;
-                this.dispatchEvent(this.meta.Events, EventType.Click, this, this.entity).then();
+                this.dispatchEvent(this.meta.events, EventType.Click, this, this.entity).then();
             });
             this.Checkbox.element.parentElement.addEventListener(EventType.keyDown, (e) => {
                 if (this.emptyRow) {
@@ -296,7 +296,7 @@ export class ListViewItem extends Section {
         }
         if (!header.statusBar && !["isPaid", "paidDate", "btnEdit"].includes(header.fieldName) && (this.disabled
             || header.Disabled
-            || this.Parent.disabled
+            || this.parent.disabled
             || rowData["noSubmit"]
             || rowData["isLock"]
             || rowData["isPayment"]
@@ -368,7 +368,7 @@ export class ListViewItem extends Section {
                     await comp.dispatchEvent(comp.Meta.Events, EventType.Change, comp, comp.Entity);
                     element.Dirty = true;
                 }
-                await this.listView.dispatchEvent(this.listView.meta.Events, EventType.Change, this.listView);
+                await this.listView.dispatchEvent(this.listView.meta.events, EventType.Change, this.listView);
             });
             cellWrapper.appendChild(copyButton);
         }
@@ -425,7 +425,7 @@ export class ListViewItem extends Section {
             if (patchModel.Changes.length == 1) {
                 return;
             }
-            this.dispatchCustomEvent(this.meta.Events, customEventType.beforePatchUpdate, this.entity, patchModel, this)
+            this.dispatchCustomEvent(this.meta.events, customEventType.beforePatchUpdate, this.entity, patchModel, this)
                 .then(() => {
                     this.element.classList.add("loading");
                     this.element.classList.remove("focus");
@@ -504,7 +504,7 @@ export class ListViewItem extends Section {
             Object.assign(this.entity, dataEntity);
             this.updateView(true);
             this.afterSaved?.invoke(dataEntity);
-            this.dispatchCustomEvent(this.meta.Events, customEventType.afterPatchUpdate, this.entity, this).then();
+            this.dispatchCustomEvent(this.meta.events, customEventType.afterPatchUpdate, this.entity, this).then();
             this.element.classList.remove("loading");
             this.element.classList.add("focus");
             this.element.classList.add("__selected__");
@@ -570,7 +570,7 @@ export class ListViewItem extends Section {
     rowDblClick(e) {
         e.stopPropagation();
         this.listView.dblClick?.invoke(this);
-        this.dispatchEvent(this.meta.Events, EventType.dblClick, this, this.entity).then();
+        this.dispatchEvent(this.meta.events, EventType.dblClick, this, this.entity).then();
     }
 
     /**
@@ -592,7 +592,7 @@ export class ListViewItem extends Section {
         }
         this.listView.lastListViewItem = this;
         this.Focus = true;
-        this.dispatchEvent(this.meta.Events, EventType.Click, this, this.entity).then();
+        this.dispatchEvent(this.meta.events, EventType.Click, this, this.entity).then();
     }
 
     /**
@@ -670,7 +670,7 @@ export class ListViewItem extends Section {
      */
     rowFocusOut() {
         this.Focus = false;
-        return this.dispatchCustomEvent(this.meta.Events, customEventType.rowFocusOut, this.entity);
+        return this.dispatchCustomEvent(this.meta.events, customEventType.rowFocusOut, this.entity);
     }
 
     /**
@@ -678,7 +678,7 @@ export class ListViewItem extends Section {
      */
     mouseEnter() {
         this.element.classList.add(ListViewItem.hoveringClass);
-        return this.dispatchCustomEvent(this.listView.meta.Events, customEventType.rowMouseEnter, this.entity);
+        return this.dispatchCustomEvent(this.listView.meta.events, customEventType.rowMouseEnter, this.entity);
     }
 
     /**
@@ -686,7 +686,7 @@ export class ListViewItem extends Section {
      */
     mouseLeave() {
         this.element.classList.remove(ListViewItem.hoveringClass);
-        return this.dispatchCustomEvent(this.listView.meta.Events, customEventType.rowMouseLeave, this.entity);
+        return this.dispatchCustomEvent(this.listView.meta.events, customEventType.rowMouseLeave, this.entity);
     }
 
     /**

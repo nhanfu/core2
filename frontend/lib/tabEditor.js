@@ -36,12 +36,12 @@ export class TabEditor extends EditForm {
      * Gets or sets the visibility of the tab editor.
      * @property
      */
-    get Show() {
-        return super.Show;
+    get show() {
+        return super.show;
     }
 
     set Show(value) {
-        super.Show = value;
+        super.show = value;
         if (value && !this.Popup && this.isLargeUp) {
             ChromeTabs.setCurrentTab(this._li, this.Pop);
         }
@@ -50,7 +50,7 @@ export class TabEditor extends EditForm {
     /**
      * Renders the component to the DOM.
      */
-    Render() {
+    render() {
         if (!this.parentElement) {
             this.parentElement = TabEditor.tabContainer;
         }

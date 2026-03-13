@@ -15,7 +15,7 @@ export class GroupListView extends ListView {
         super(ui);
     }
 
-    Render() {
+    render() {
         super.render();
         Html.take(this.element).className("group-listview").End.render();
     }

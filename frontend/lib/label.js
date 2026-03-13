@@ -16,7 +16,7 @@ export class Label extends EditableComponent {
         super(ui, ele);
     }
 
-    Render() {
+    render() {
         this.setDefaultVal();
         const cellData = this.entity[this.meta.fieldName];
         let cellText = '';
@@ -103,7 +103,7 @@ export class Label extends EditableComponent {
     }
 
     labelClickHandler(e) {
-        this.dispatchEvent(this.meta.Events, "click", this, this.entity).then();
+        this.dispatchEvent(this.meta.events, "click", this, this.entity).then();
     }
 
     /**

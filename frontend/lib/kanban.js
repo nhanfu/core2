@@ -23,7 +23,7 @@ export class Kanban extends EditableComponent {
     /**
      * Renders the button component into the DOM.
      */
-    Render() {
+    render() {
         var template = this.meta.Template;
         var kanbanColumn = JSON.parse(template || "{}");
         if (!this.buttonEle) {

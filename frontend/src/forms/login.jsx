@@ -33,7 +33,7 @@ export class LoginBL extends EditForm {
     this.meta.isPublic = true;
     this.meta.isPublic = true;
     this.meta.label = "Login";
-    this.meta.Label = "Login";
+    this.meta.label = "Login";
     this.title = "Login";
     this.meta.layout = () => {
       const logIn = async (e) => {

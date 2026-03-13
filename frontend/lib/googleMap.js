@@ -59,7 +59,7 @@ export class GoogleMap extends EditableComponent {
         return '';
     }
 
-    Render() {
+    render() {
         this.setDefaultVal();
         
         // Create container for map
@@ -213,7 +213,7 @@ export class GoogleMap extends EditableComponent {
         }
 
         // Dispatch map initialized event
-        this.dispatchEvent(this.meta.Events, 'mapinitialized', this, this.map);
+        this.dispatchEvent(this.meta.events, 'mapinitialized', this, this.map);
     }
 
     initSearchBox() {
@@ -316,7 +316,7 @@ export class GoogleMap extends EditableComponent {
                 this.entity[this.addressField] = address;
                 this.addMarker({ lat, lng }, address);
                 this.Dirty = true;
-                this.dispatchEvent(this.meta.Events, EventType.Change, this, this.entity);
+                this.dispatchEvent(this.meta.events, EventType.Change, this, this.entity);
                 return;
             }
             
@@ -332,12 +332,12 @@ export class GoogleMap extends EditableComponent {
                     }
                     
                     this.Dirty = true;
-                    this.dispatchEvent(this.meta.Events, EventType.Change, this, this.entity);
+                    this.dispatchEvent(this.meta.events, EventType.Change, this, this.entity);
                 });
             } else {
                 this.addMarker({ lat, lng });
                 this.Dirty = true;
-                this.dispatchEvent(this.meta.Events, EventType.Change, this, this.entity);
+                this.dispatchEvent(this.meta.events, EventType.Change, this, this.entity);
             }
         }
     }
