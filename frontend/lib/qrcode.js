@@ -25,7 +25,7 @@ export class QRCode extends EditableComponent {
      * Renders the barcode into the parent element.
      */
     Render() {
-        const ctx = Html.Take(this.parentElement)
+        const ctx = Html.take(this.parentElement)
             .clear()
             .Div.Style(`width:${this.meta.Width}px;margin:auto`)
             .Id("barcode" + this.meta.Id);

@@ -1,14 +1,14 @@
-import { textDecoder, textEncoder } from "node:util";
+import { TextDecoder, TextEncoder } from "node:util";
 import { jest } from "@jest/globals";
 
 globalThis.jest = jest;
 
-if (!globalThis.textEncoder) {
-  globalThis.textEncoder = textEncoder;
+if (!globalThis.TextEncoder) {
+  globalThis.TextEncoder = TextEncoder;
 }
 
-if (!globalThis.textDecoder) {
-  globalThis.textDecoder = textDecoder;
+if (!globalThis.TextDecoder) {
+  globalThis.TextDecoder = TextDecoder;
 }
 
 if (!globalThis.window.matchMedia) {

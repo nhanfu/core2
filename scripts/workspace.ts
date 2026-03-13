@@ -41,10 +41,9 @@ const workflows: Record<WorkflowName, readonly CommandSpec[]> = {
       name: "frontend-tests",
       cwd: "frontend",
       command: [
-        "deno",
-        "run",
-        "-A",
-        "npm:jest",
+        "node",
+        "--experimental-vm-modules",
+        "./node_modules/.deno/jest@30.3.0/node_modules/jest/bin/jest.js",
         "lib/test",
         "--runInBand",
         "--config",

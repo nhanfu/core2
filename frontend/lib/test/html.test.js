@@ -6,7 +6,7 @@ describe('HTML class', () => {
   beforeEach(() => {
     document.body.innerHTML = `<div id="test-container"></div>`;
     container = document.getElementById("test-container");
-    Html.Take("#test-container");
+    Html.take("#test-container");
   });
 
   afterEach(() => {
@@ -277,7 +277,7 @@ describe('HTML class', () => {
 
   // Testing addition of list items in an unordered list
   test('Ul and Li methods should add list items correctly', () => {
-    Html.Ul.Li.Text('Item 1').End.Li.Text('Item 2');
+    Html.ul.Li.Text('Item 1').End.Li.Text('Item 2');
     const ul = container.querySelector('ul');
     const lis = ul.querySelectorAll('li');
     expect(lis.length).toBe(2);

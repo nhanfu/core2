@@ -24,7 +24,7 @@ describe("TabGroup", () => {
 
   test("initializes default values", () => {
     expect(tabGroup.listViewType).toEqual(["ListView", "GroupListView", "GridView", "GroupGridView"]);
-    expect(tabGroup.Ul).toBeNull();
+    expect(tabGroup.ul).toBeNull();
     expect(tabGroup.tabContent).toBeNull();
     expect(tabGroup.shouldCountBage).toBe(false);
     expect(tabGroup.hasRendered).toBe(false);
@@ -33,7 +33,7 @@ describe("TabGroup", () => {
   test("renders the tab group scaffold", () => {
     tabGroup.render();
 
-    expect(tabGroup.Ul).toBeInstanceOf(hTMLUListElement);
+    expect(tabGroup.ul).toBeInstanceOf(hTMLUListElement);
     expect(tabGroup.element).toBeInstanceOf(hTMLDivElement);
     expect(tabGroup.tabContent).toBeInstanceOf(hTMLDivElement);
   });
@@ -55,7 +55,7 @@ describe("TabComponent", () => {
     };
     tabComponent = new TabComponent(mockGroup);
     tabComponent.Parent = new TabGroup();
-    tabComponent.Parent.Ul = document.createElement("ul");
+    tabComponent.Parent.ul = document.createElement("ul");
     tabComponent.Parent.tabContent = document.createElement("div");
     tabComponent.Parent.Children = [tabComponent];
     tabComponent.editForm = {

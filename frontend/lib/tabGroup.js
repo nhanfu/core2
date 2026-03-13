@@ -13,7 +13,7 @@ export class TabGroup extends EditableComponent {
         super(ui);
         this.listViewType = ["ListView", "GroupListView", "GridView", "GroupGridView"];
         /** @type {hTMLUListElement} */
-        this.Ul = null;
+        this.ul = null;
         /** @type {hTMLDivElement} */
         this.tabContent = null;
         this.shouldCountBage = false;
@@ -26,8 +26,8 @@ export class TabGroup extends EditableComponent {
             .className("tab-horizontal");
         this.tabGroupElement = Html.context;
         Html.instance.div.className("headers-wrapper").ul.className("nav-config  nav nav-tabs nav-tabs-bottom mb-0");
-        this.Ul = Html.context;
-        this.element = this.Ul.parentElement;
+        this.ul = Html.context;
+        this.element = this.ul.parentElement;
         Html.instance.end.end.render();
         if (this.editForm.buttonFrozen != null && !this.editForm.isLoadButtonFrozen) {
             Section.renderGroupContent(this.Parent, this.editForm.buttonFrozen, this.editForm.width);

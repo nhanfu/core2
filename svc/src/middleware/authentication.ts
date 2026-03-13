@@ -38,14 +38,18 @@ export interface AuthState {
  * @returns true if the path is public
  */
 function isPublicEndpoint(path: string): boolean {
+  const normalizedPath = path
+    .replace(/\/{2,}/g, "/")
+    .replace(/\/$/, "") || "/";
+
   // Check exact matches
-  if (PUBLIC_ENDPOINTS.some((endpoint) => path === endpoint)) {
+  if (PUBLIC_ENDPOINTS.some((endpoint) => normalizedPath === endpoint)) {
     return true;
   }
 
   // Check if path starts with any public prefix
   const publicPrefixes = ["/public/", "/static/"];
-  if (publicPrefixes.some((prefix) => path.startsWith(prefix))) {
+  if (publicPrefixes.some((prefix) => normalizedPath.startsWith(prefix))) {
     return true;
   }
 

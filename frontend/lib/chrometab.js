@@ -20,8 +20,8 @@ const closest = (value, array) => {
     let closestIndex = -1
 
     array.forEach((v, i) => {
-        if (math.abs(value - v) < closest) {
-            closest = math.abs(value - v)
+        if (Math.abs(value - v) < closest) {
+            closest = Math.abs(value - v)
             closestIndex = i
         }
     })
@@ -91,7 +91,7 @@ export class ChromeTabs {
     }
 
     static get tabEls() {
-        return array.prototype.slice.call(this.el.querySelectorAll('.chrome-tab'))
+        return Array.prototype.slice.call(this.el.querySelectorAll('.chrome-tab'))
     }
 
     static get tabContentEl() {
@@ -103,8 +103,8 @@ export class ChromeTabs {
         const tabsContentWidth = this.tabContentEl.clientWidth
         const tabsCumulativeOverlappedWidth = (numberOfTabs - 1) * tAB_CONTENT_OVERLAP_DISTANCE
         const targetWidth = (tabsContentWidth - (2 * tAB_CONTENT_MARGIN) + tabsCumulativeOverlappedWidth) / numberOfTabs
-        const clampedTargetWidth = math.max(tAB_CONTENT_MIN_WIDTH, math.min(tAB_CONTENT_MAX_WIDTH, targetWidth))
-        const flooredClampedTargetWidth = math.floor(clampedTargetWidth)
+        const clampedTargetWidth = Math.max(tAB_CONTENT_MIN_WIDTH, Math.min(tAB_CONTENT_MAX_WIDTH, targetWidth))
+        const flooredClampedTargetWidth = Math.floor(clampedTargetWidth)
         const totalTabsWidthUsingTarget = (flooredClampedTargetWidth * numberOfTabs) + (2 * tAB_CONTENT_MARGIN) - tabsCumulativeOverlappedWidth
         const totalExtraWidthDueToFlooring = tabsContentWidth - totalTabsWidthUsingTarget
 
@@ -362,7 +362,7 @@ export class ChromeTabs {
 
                 const currentTabPositionX = originalTabPositionX + moveVector.x
                 const destinationIndexTarget = closest(currentTabPositionX, tabPositions)
-                const destinationIndex = math.max(0, math.min(tabEls.length, destinationIndexTarget))
+                const destinationIndex = Math.max(0, Math.min(tabEls.length, destinationIndexTarget))
 
                 if (currentIndex !== destinationIndex) {
                     this.animateTabMove(tabEl, currentIndex, destinationIndex)

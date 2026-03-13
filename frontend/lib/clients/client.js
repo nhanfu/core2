@@ -19,6 +19,11 @@ export class Client {
     static entities;
     static token;
     static guidLength = 36;
+    static resolveApiBase() {
+        const metaApi = document.querySelector('meta[name="api"]')?.content?.trim();
+        const envApi = import.meta.env?.VITE_API_URL?.trim();
+        return metaApi || envApi || window.location.origin;
+    }
     // @ts-ignore
     static Host = (import.meta.env?.VITE_API_HOST || window.location.host).toLowerCase();
     // @ts-ignore
@@ -38,7 +43,7 @@ export class Client {
     // @ts-ignore
     /** @type {string} */
     static apiV2 = import.meta.env?.VITE_API_V2_URL;
-    static api = import.meta.env?.VITE_API_URL;
+    static api = Client.resolveApiBase();
     // @ts-ignore
     static Config = document.head.config?.content || "";
     static badGatewayRequest = new badGatewayQueue();
@@ -52,6 +57,24 @@ export class Client {
         const prefixElement = Array.from(document.head.children).find(x => x instanceof HTMLMetaElement && x.name === "prefix");
         return prefixElement?.content;
     })();
+
+    static buildUrl(baseUrl, requestUrl) {
+        if (!baseUrl) {
+            return requestUrl;
+        }
+
+        if (!requestUrl) {
+            return baseUrl;
+        }
+
+        if (/^https?:\/\//i.test(requestUrl)) {
+            return requestUrl;
+        }
+
+        const normalizedBase = baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl;
+        const normalizedRequest = requestUrl.startsWith("/") ? requestUrl : `/${requestUrl}`;
+        return `${normalizedBase}${normalizedRequest}`;
+    }
 
     constructor(entityName, ns = "", config = false) {
         this._nameSpace = ns;
@@ -125,7 +148,7 @@ export class Client {
             "User-Agent": "Mozilla/5.0"
         };
 
-        const url = Client.api + (options.finalUrl ?? options.Url);
+        const url = Client.buildUrl(Client.api, options.finalUrl ?? options.Url);
         console.log('[DEBUG submitAsyncWithToken] Client.api:', Client.api, 'Url:', options.Url, 'finalUrl:', options.finalUrl, 'Constructed url:', url);
 
         try {
@@ -147,7 +170,7 @@ export class Client {
                 try {
                     const errJson = await response.json();
                     return Promise.reject(errJson);
-                } catch {
+                } catch (e) {
                     const errText = await response.text();
                     return Promise.reject(errText);
                 }

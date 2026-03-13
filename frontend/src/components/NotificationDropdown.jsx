@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import dropdownComponent from "./dropdownComponent";
+import DropdownComponent from "./DropdownComponent";
 import { ChromeTabs, ComponentExt } from "../../lib";
 import { Client } from "../../lib";
 import { Toast } from "../../lib/toast";
@@ -414,7 +414,7 @@ const notificationDropdown = () => {
   );
 
   return (
-    <dropdownComponent
+    <DropdownComponent
       toggleContent={toggleContent}
       dropdownContent={dropdownContent}
       classNameChild="md"

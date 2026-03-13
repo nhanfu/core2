@@ -49,7 +49,7 @@ export class TabComponent extends EditableComponent {
     }
 
     Render() {
-        Html.take(this.Parent.Ul).li
+        Html.take(this.Parent.ul).li
             .a.className("nav-link tab-default")
             .i.className(this.meta.Icon ?? "").end.span
             .iHtml(this.meta.Label ?? this.meta.Name, this.editForm.meta.Label);

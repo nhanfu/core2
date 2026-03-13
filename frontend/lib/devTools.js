@@ -496,7 +496,7 @@ export class DevTools extends EditableComponent {
         document.addEventListener("mousemove", (e) => {
             if (!isResizing) return;
             const dy = lastMouseY - e.clientY;
-            const newHeight = math.max(popup.offsetHeight + dy, 200);
+            const newHeight = Math.max(popup.offsetHeight + dy, 200);
             popup.style.height = `${newHeight}px`;
             lastMouseY = e.clientY;
             this.calculateSidebarHeight();

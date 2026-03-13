@@ -38,7 +38,7 @@ export class TreeView extends ListView {
         if (rowDatas.nothing()) {
             return;
         }
-        Html.Take(node.element).Ul.className((!first ? "d-block " : " ") + (first ? " wtree" : " "));
+        Html.take(node.element).ul.className((!first ? "d-block " : " ") + (first ? " wtree" : " "));
         const ul = Html.Context;
         rowDatas.forEach(async (row) => {
             this.renderRow(headers, node, row, ul);
@@ -56,7 +56,7 @@ export class TreeView extends ListView {
         })).Done(ds => {
             const datas = ds.length > 0 ? ds[0].toList() : null;
             const count = ds.length > 1 && ds[1].length > 0 ? ds[1].total : 0;
-            Html.Take(ul);
+            Html.take(ul);
             const rowSection = new ListViewItem(ElementType.li,
                 // @ts-ignore
                 {
@@ -68,9 +68,9 @@ export class TreeView extends ListView {
             const label = Html.Context;
             headers.forEach(header => {
                 const com = header;
-                Html.Take(label).P.render();
+                Html.take(label).P.render();
                 rowSection.renderTableCell(row, com);
-                Html.Take(label).endOf(ElementType.p);
+                Html.take(label).endOf(ElementType.p);
             });
             if (count > 0) {
                 rowSection.element.addEventListener(EventType.Click, () => this.focusIn(rowSection, row, datas));

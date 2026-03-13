@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import dropdownComponent from './dropdownComponent';
+import DropdownComponent from './DropdownComponent';
 import { Client } from '../../lib';
 import { fetchData, addData, updateData } from '../redux/genericSlice'; // Update to use the Redux Toolkit slice
 import dayjs from 'dayjs';
@@ -73,7 +73,7 @@ const userActive = () => {
     );
 
     return (
-        <dropdownComponent
+        <DropdownComponent
             toggleContent={toggleContent}
             dropdownContent={dropdownContent}
             classNameChild="md"

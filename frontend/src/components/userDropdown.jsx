@@ -1,5 +1,5 @@
 import React from "react";
-import dropdownComponent from "./dropdownComponent";
+import DropdownComponent from "./DropdownComponent";
 import { ChromeTabs, Client, TabEditor } from "../../lib";
 import { LoginBL } from "../forms/login";
 
@@ -39,7 +39,7 @@ const userDropdown = ({ editForm }) => {
   );
 
   return (
-    <dropdownComponent
+    <DropdownComponent
       toggleContent={toggleContent}
       dropdownContent={dropdownContent}
       className="user-dropdown dropdown-menu-end"

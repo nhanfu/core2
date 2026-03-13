@@ -17,7 +17,7 @@ export class GroupListView extends ListView {
 
     Render() {
         super.render();
-        Html.Take(this.element).className("group-listview").End.render();
+        Html.take(this.element).className("group-listview").End.render();
     }
 
     addRow(item, fromIndex, singleAdd = true) {
@@ -69,7 +69,7 @@ export class GroupListView extends ListView {
         if (!row.Key || row.Key.toString().isNullOrWhiteSpace()) {
             let rowResult = null;
             row.Children.forEach(child => {
-                Html.Take(wrapper);
+                Html.take(wrapper);
                 rowResult = this.renderRowData(headers, child, listViewSection, null);
             });
             return rowResult;
@@ -84,17 +84,17 @@ export class GroupListView extends ListView {
         listViewSection.addChild(groupSection);
         let first = row.Children[0];
         let groupText = Utils.formatEntity2(this.meta.groupFormat, null, first, x => "N/A", x => "N/A");
-        Html.Take(groupSection.element).Event(EventType.Click, this.dispatchClick.bind(this), first)
+        Html.take(groupSection.element).Event(EventType.Click, this.dispatchClick.bind(this), first)
             .Event(EventType.dblClick, this.dispatchDblClick.bind(this), first)
             // @ts-ignore
             .Icon("fa fa-chevron-right").Event(EventType.Click, this.toggleGroupRow.bind(this), groupSection).End
             .Span.innerHTML(groupText);
         groupSection.groupText = Html.Context;
         row.Children.forEach(child => {
-            Html.Take(groupSection.element);
+            Html.take(groupSection.element);
             let childRow = this.renderRowData(headers, child, groupSection, null);
             childRow.groupSection = groupSection;
-            Html.Take(childRow.element).smallCheckbox().render();
+            Html.take(childRow.element).smallCheckbox().render();
             let chk = Html.Context.previousElementSibling;
             if(chk instanceof hTMLInputElement) {
                 Html.Instance.End.End.Event(EventType.Click, (e) => {

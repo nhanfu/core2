@@ -1,8 +1,10 @@
 import { jest } from "@jest/globals";
 import dayjs from "dayjs";
 
+globalThis.hTMLInputElement = HTMLInputElement;
+
 jest.unstable_mockModule("../utils/componentExt.js", () => ({
-  componentExt: {},
+  ComponentExt: {},
 }));
 
 jest.unstable_mockModule("flatpickr", () => ({
@@ -18,7 +20,7 @@ jest.unstable_mockModule("flatpickr", () => ({
 }));
 
 jest.unstable_mockModule("flatpickr/dist/l10n/vn.js", () => ({
-  Vietnamese: {},
+  vietnamese: {},
 }));
 
 const { Datepicker } = await import("../datepicker.js");
@@ -35,11 +37,11 @@ describe("Datepicker", () => {
       fieldName: "startDate",
       plainText: "Pick a date",
       formatData: "",
-      Precision: 0,
+      precision: 0,
       showHotKey: true,
     };
     datepicker = new Datepicker(meta, container);
-    datepicker.Entity = {};
+    datepicker.entity = {};
     datepicker.render();
   });
 
@@ -48,31 +50,31 @@ describe("Datepicker", () => {
   });
 
   test("renders an input and initializes flatpickr", () => {
-    expect(datepicker.Input).toBeInstanceOf(hTMLInputElement);
+    expect(datepicker.input).toBeInstanceOf(hTMLInputElement);
     expect(datepicker.flatpickr).toBeDefined();
   });
 
   test("Value setter writes formatted date data into the input and entity", () => {
     const testDate = dayjs("2023-04-26");
 
-    datepicker.Value = testDate;
+    datepicker.value = testDate;
 
-    expect(datepicker.Value).toBe(testDate);
-    expect(datepicker.Input.value).toBe("26/04/2023");
-    expect(datepicker.Entity.startDate).toBe("2023-04-26T00:00:00");
+    expect(datepicker.value).toBe(testDate);
+    expect(datepicker.input.value).toBe("26/04/2023");
+    expect(datepicker.entity.startDate).toBe("2023-04-26T00:00:00");
   });
 
   test("setting a null value clears the input and entity value", () => {
-    datepicker.Value = dayjs("2023-04-26");
-    datepicker.Value = null;
+    datepicker.value = dayjs("2023-04-26");
+    datepicker.value = null;
 
-    expect(datepicker.Input.value).toBe("");
-    expect(datepicker.Entity.startDate).toBeNull();
+    expect(datepicker.input.value).toBe("");
+    expect(datepicker.entity.startDate).toBeNull();
   });
 
   test("disabled state updates the input element", () => {
-    datepicker.Disabled = true;
+    datepicker.disabled = true;
 
-    expect(datepicker.Input.disabled).toBe(true);
+    expect(datepicker.input.disabled).toBe(true);
   });
 });

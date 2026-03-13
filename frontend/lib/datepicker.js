@@ -22,8 +22,8 @@ export class Datepicker extends EditableComponent {
     calendar = null;
     renderAwaiter = null;
     closeAwaiter = null;
-    /** @type {dayjs.dayjs} */
-    value;
+    /** @type {dayjs.dayjs | null} */
+    _value = null;
     /**
      * create instance of component
      * @param {Component} ui 
@@ -42,7 +42,7 @@ export class Datepicker extends EditableComponent {
                 this.input = html.take(ele).input.context;
             }
         }
-        this.value = null;
+        this._value = null;
         this.nullable = false;
         this.simpleNoEvent = false;
         this.show = false;
@@ -59,7 +59,7 @@ export class Datepicker extends EditableComponent {
      * @returns {dayjs.dayjs | null}
      */
     get value() {
-        return this.value;
+        return this._value;
     }
 
     /**
@@ -67,32 +67,33 @@ export class Datepicker extends EditableComponent {
      * @param {dayjs.dayjs | null} value - the new date value.
      */
     set value(value) {
-        if (this.value === value) {
+        if (this._value === value) {
             return;
         }
         if (!value) {
+            this._value = null;
             this.input.value = "";
             this.entity[this.name] = null;
-            this.flatpickr.setDate(null);
+            this.flatpickr?.setDate(null);
             return;
         }
-        this.value = value;
+        this._value = value;
         const selectionEnd = this.input.selectionEnd;
         var data = Utils.isFunction(this.meta.formatEntity, false, this);
         if (data) {
             this.input.value = data;
         }
         else {
-            this.input.value = this.value.format(this.initFormat)
+            this.input.value = this._value.format(this.initFormat)
         }
-        this.flatpickr.setDate(this.input.value);
+        this.flatpickr?.setDate(this.input.value);
         this.input.selectionStart = selectionEnd;
         this.input.selectionEnd = selectionEnd;
         if (this.meta.precision == 7) {
-            this.entity[this.name] = this.value.format('yYYY-mM-dDTHH:mm:ss');
+            this.entity[this.name] = this._value.format('yYYY-mM-dDTHH:mm:ss');
         }
         else {
-            this.entity[this.name] = this.dayjs(this.value.format('yYYY-mM-dD'), 'yYYY-mM-dD').format('yYYY-mM-dDTHH:mm:ss');
+            this.entity[this.name] = this.dayjs(this._value.format('yYYY-mM-dD'), 'yYYY-mM-dD').format('yYYY-mM-dDTHH:mm:ss');
         }
     }
     /**

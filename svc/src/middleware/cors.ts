@@ -9,17 +9,19 @@ import { Context, Next } from "https://deno.land/x/oak@v17.1.3/mod.ts";
  * - Handles preflight OPTIONS requests
  */
 export async function cors(ctx: Context, next: Next): Promise<void> {
+  const requestHeaders = ctx.request.headers.get("Access-Control-Request-Headers");
+  const allowHeaders = requestHeaders ||
+    "Content-Type, Authorization, X-Requested-With, Accept, Origin, Cache-Control, Pragma";
+
   // Set CORS headers for all responses
   ctx.response.headers.set("Access-Control-Allow-Origin", "*");
   ctx.response.headers.set(
     "Access-Control-Allow-Methods",
     "GET, POST, PUT, DELETE, PATCH, OPTIONS",
   );
-  ctx.response.headers.set(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization, X-Requested-With, Accept, Origin",
-  );
+  ctx.response.headers.set("Access-Control-Allow-Headers", allowHeaders);
   ctx.response.headers.set("Access-Control-Max-Age", "86400");
+  ctx.response.headers.set("Vary", "Origin, Access-Control-Request-Headers");
 
   // Handle preflight OPTIONS requests
   if (ctx.request.method === "OPTIONS") {
