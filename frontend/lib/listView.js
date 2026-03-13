@@ -65,7 +65,7 @@ export class ListView extends EditableComponent {
         this.Id = ui.Id;
         this.Name = ui.fieldName;
         /** @type {Component[]} */
-        this.Header = [];
+        this.header = [];
         this.rowData = new ObservableList();
         /** @type {AdvSearchVM} */
         // @ts-ignore
@@ -145,7 +145,7 @@ export class ListView extends EditableComponent {
      */
     localRender() {
         // Setting the header from the local metadata configuration
-        this.Header = this.Header ?? this.meta.localHeader ?? this.meta.Columns;
+        this.header = this.header ?? this.meta.localHeader ?? this.meta.Columns;
 
         if (this.meta.localRender) {
             // If local rendering is enabled, re-render the view
@@ -322,7 +322,7 @@ export class ListView extends EditableComponent {
     async exportExcelTemplate(e) {
         const wb = XLSX.utils.book_new();
         const ws_data = [];
-        var headers = this.Header.filter(x => x.Label);
+        var headers = this.header.filter(x => x.Label);
         ws_data.push(headers.map(x => x.Label));
         const ws = XLSX.utils.aoa_to_sheet(ws_data);
         XLSX.utils.book_append_sheet(wb, ws, 'templateImport');
@@ -402,7 +402,7 @@ export class ListView extends EditableComponent {
                 var newObject = jsonData.map(rsObj => {
                     var item = {};
                     Object.getOwnPropertyNames(rsObj).forEach(x => {
-                        var com = this.Header.find(y => y.Label == x);
+                        var com = this.header.find(y => y.Label == x);
                         if (com) {
                             item[com.fieldName] = rsObj[x];
                             if (!Utils.isNullOrWhiteSpace(com.refName)) {
@@ -439,7 +439,7 @@ export class ListView extends EditableComponent {
                     }
                     newObject.forEach(item => {
                         Object.getOwnPropertyNames(item).forEach(x => {
-                            var com = this.Header.find(y => y.fieldName == x && y.refName == task.Header);
+                            var com = this.header.find(y => y.fieldName == x && y.refName == task.Header);
                             if (com) {
                                 var format = com.formatData.replaceAll("{", "").replaceAll("}", "");
                                 var mapItem = task.Data.data.find(x => x[format] == item[com.fieldName]);
@@ -564,7 +564,7 @@ export class ListView extends EditableComponent {
     }
 
     loadLocalData(rows) {
-        var locals = this.Header.filter(x => ["Dropdown", "Select"].some(y => y == x.componentType) && Utils.isNullOrWhiteSpace(x.refName));
+        var locals = this.header.filter(x => ["Dropdown", "Select"].some(y => y == x.componentType) && Utils.isNullOrWhiteSpace(x.refName));
         for (const header of locals) {
             let containId = header.fieldName.substr(header.fieldName.length - 2) === this.idField;
             let objField = "";
@@ -598,7 +598,7 @@ export class ListView extends EditableComponent {
                 }
             });
         }
-        var headers = this.Header.filter(x => !Utils.isNullOrWhiteSpace(x.refName));
+        var headers = this.header.filter(x => !Utils.isNullOrWhiteSpace(x.refName));
         if (headers.length == 0) {
             this.loadLocalData(rows)
             return;
@@ -640,7 +640,7 @@ export class ListView extends EditableComponent {
                 }
             });
         }
-        var headers = this.Header.filter(x => x.refName == header.refName);
+        var headers = this.header.filter(x => x.refName == header.refName);
         headers.forEach(item => {
             item.localData = remoteData;
         })
@@ -648,7 +648,7 @@ export class ListView extends EditableComponent {
 
     syncMasterData(rows = null, headers = null) {
         rows = rows || this.rowData.Data;
-        headers = headers || this.Header;
+        headers = headers || this.header;
 
         headers.filter(x => x.refName).forEach(header => {
             if (!header.fieldName || header.fieldName.length <= 2) {
@@ -678,7 +678,7 @@ export class ListView extends EditableComponent {
                 }
             });
         });
-        var locals = this.Header.filter(x => ["Dropdown", "Select"].some(y => y == x.componentType) && Utils.isNullOrWhiteSpace(x.refName));
+        var locals = this.header.filter(x => ["Dropdown", "Select"].some(y => y == x.componentType) && Utils.isNullOrWhiteSpace(x.refName));
         for (const header of locals) {
             let containId = header.fieldName.substr(header.fieldName.length - 2) === this.idField;
             let objField = "";
@@ -796,7 +796,7 @@ export class ListView extends EditableComponent {
             return;
         }
         this.formattedRowData.forEach((rowData, index) => {
-            this.renderRowData(this.Header, rowData, this.mainSection);
+            this.renderRowData(this.header, rowData, this.mainSection);
         });
         this.contentRendered();
     }
@@ -872,7 +872,7 @@ export class ListView extends EditableComponent {
      * @param {string[]} componentNames Component names to specifically update.
      */
     updateView(force = false, dirty = null, componentNames = []) {
-        if (!this.Editable) {
+        if (!this.editable) {
             if (force) {
                 this.listViewSearch.refreshListView();
             }
@@ -896,7 +896,7 @@ export class ListView extends EditableComponent {
             });
         }
         emptyRowData[this.idField] = null;
-        this.renderRowData(this.Header, emptyRowData, this.emptySection, null, true);
+        this.renderRowData(this.header, emptyRowData, this.emptySection, null, true);
         if (!this.meta.topEmpty) {
             this.mainSection.element.insertBefore(this.mainSection.element, this.emptySection.element);
         } else {
@@ -980,16 +980,16 @@ export class ListView extends EditableComponent {
             return this.calcTextAlign(x);
         }).sort((a, b) => (b.componentType === "Button" ? 1 : 0) - (a.componentType === "Button" ? 1 : 0) || a.Order - b.Order)
         this.orderHeaderGroup(headers);
-        this.Header = [];
+        this.header = [];
         if (!["Dropdown", "Select"].some(x => x === this.meta.componentType)) {
-            this.Header.push(this.toolbarColumn);
+            this.header.push(this.toolbarColumn);
         }
-        this.Header.push(...headers);
+        this.header.push(...headers);
         if (!["Dropdown", "Select"].some(x => x === this.meta.componentType)) {
-            this.Header.push(this.lastColumn);
+            this.header.push(this.lastColumn);
         }
-        this.Header = this.Header.filter(x => x !== null && !x.topEmpty);
-        return this.Header;
+        this.header = this.header.filter(x => x !== null && !x.topEmpty);
+        return this.header;
     }
 
     /**
@@ -1048,7 +1048,7 @@ export class ListView extends EditableComponent {
         }
         this.bodyContextMenuShow?.invoke();
         this.dispatchEvent(this.meta.events, EventType.contextMenu, this, ctxMenu).then(() => {
-            this.renderCopyPasteMenu(this.Editable);
+            this.renderCopyPasteMenu(this.editable);
             this.renderEditMenu();
             ctxMenu.Top = e.Top();
             ctxMenu.Left = e.Left();
@@ -1213,7 +1213,7 @@ export class ListView extends EditableComponent {
         if (!this.meta.Columns) {
             columns = this.filterColumns(columns);
         }
-        this.Header = columns;
+        this.header = columns;
     }
 
     isMouseDown = false;
@@ -1848,7 +1848,7 @@ export class ListView extends EditableComponent {
      */
     rowChangeHandler(rowData, rowSection, observableArgs, component = null) {
         const tcs = new Promise((resolve, reject) => {
-            if (!rowSection.emptyRow || !this.Editable) {
+            if (!rowSection.emptyRow || !this.editable) {
                 this.dispatchEvent(this.meta.events, EventType.Change, this, rowSection, rowData).then(() => {
                     resolve(false);
                 });
@@ -1893,7 +1893,7 @@ export class ListView extends EditableComponent {
             this.rowData.Data.splice(index, 0, rowData);
         }
         await this.dispatchCustomEvent(this.meta.events, customEventType.beforeCreated, rowData, this);
-        const row = this.renderRowData(this.Header, rowData, this.mainSection, index);
+        const row = this.renderRowData(this.header, rowData, this.mainSection, index);
         await this.dispatchCustomEvent(this.meta.events, customEventType.afterCreated, rowData);
         return row;
     }
@@ -1948,7 +1948,7 @@ export class ListView extends EditableComponent {
 
     domLoaded() {
         if (!this.meta.localRender) {
-            this.Header.forEach(x => x.localData = null);
+            this.header.forEach(x => x.localData = null);
         }
         this.dOMContentLoaded?.invoke();
     }
@@ -1959,7 +1959,7 @@ export class ListView extends EditableComponent {
     contentRendered() {
         this.renderIndex();
         this.domLoaded();
-        if (this.Editable) {
+        if (this.editable) {
             this.addNewEmptyRow();
         }
     }

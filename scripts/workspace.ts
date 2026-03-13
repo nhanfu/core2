@@ -1,4 +1,4 @@
-type WorkflowName = "dev" | "start" | "test";
+type WorkflowName = "dev" | "start" | "test" | "build";
 
 type CommandSpec = {
   name: string;
@@ -37,18 +37,12 @@ const workflows: Record<WorkflowName, readonly CommandSpec[]> = {
       cwd: "svc",
       command: ["deno", "test", "--allow-all"],
     },
+  ],
+  build: [
     {
-      name: "frontend-tests",
+      name: "frontend-build",
       cwd: "frontend",
-      command: [
-        "node",
-        "--experimental-vm-modules",
-        "./node_modules/.deno/jest@30.3.0/node_modules/jest/bin/jest.js",
-        "lib/test",
-        "--runInBand",
-        "--config",
-        "jest.config.cjs",
-      ],
+      command: ["deno", "run", "-A", "npm:vite", "build"],
     },
   ],
 };
@@ -204,7 +198,7 @@ if (!(workflow in workflows)) {
 
 await runPreflightChecks();
 
-const exitCode = workflow === "test"
+const exitCode = workflow === "test" || workflow === "build"
   ? await runSequential(workflows[workflow])
   : await runConcurrent(workflows[workflow]);
 

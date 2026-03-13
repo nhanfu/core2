@@ -31,7 +31,7 @@ export class Rating extends EditableComponent {
         }
         this._value = val;
         this.setSelected(this._value);
-        this.Entity[this.Name] = this._value;
+        this.entity[this.Name] = this._value;
         this.dirty = true;
     }
 
@@ -80,7 +80,7 @@ export class Rating extends EditableComponent {
             this.element.appendChild(label);
         }
 
-        this._value = Utils.getPropValue(this.Entity, this.Name);
+        this._value = Utils.getPropValue(this.entity, this.Name);
         this.setSelected(this._value);
 
         this.dOMContentLoaded?.invoke();
@@ -101,12 +101,12 @@ export class Rating extends EditableComponent {
             this.userInput.invoke(new ObservableArgs({ newData: this.value, oldData: oldValue }));
         }
         setTimeout(() => {
-            this.dispatchEvent(this.meta.events, 'click', this.Entity).then();
+            this.dispatchEvent(this.meta.events, 'click', this.entity).then();
         }, 0);
     }
 
     updateView(force = false, dirty = null, ...componentNames) {
-        this.value = Utils.getPropValue(this.Entity, this.Name);
+        this.value = Utils.getPropValue(this.entity, this.Name);
         this.value = (this.value !== undefined && this.value !== null) ? parseInt(this.value) : null;
     }
 

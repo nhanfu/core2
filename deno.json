@@ -2,6 +2,7 @@
   "tasks": {
     "dev": "deno run --allow-run --allow-env --allow-read scripts/workspace.ts dev",
     "start": "deno run --allow-run --allow-env --allow-read scripts/workspace.ts start",
-    "test": "deno run --allow-run --allow-env --allow-read scripts/workspace.ts test"
+    "test": "deno run --allow-run --allow-env --allow-read scripts/workspace.ts test",
+    "build": "deno run --allow-run --allow-env --allow-read scripts/workspace.ts build"
   }
 }

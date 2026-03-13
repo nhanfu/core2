@@ -18,7 +18,7 @@ export class SecurityBL extends TabEditor {
      * @returns {SecurityVM | null} The security entity if it exists.
      */
     get Security() {
-        return this.Entity instanceof SecurityVM ? this.Entity : null;
+        return this.entity instanceof SecurityVM ? this.entity : null;
     }
 }
 
@@ -45,7 +45,7 @@ export class SecurityEditorBL extends TabEditor {
      * Sets all permissions based on the allPermission flag.
      */
     checkAllPolicy() {
-        const security = this.Entity;
+        const security = this.entity;
         if (security) {
             security.canDelete = security.allPermission;
             security.canDeactivate = security.allPermission;
@@ -60,7 +60,7 @@ export class SecurityEditorBL extends TabEditor {
      * Checks if all permissions are true to set allPermission flag.
      */
     checkPolicy() {
-        const security = this.Entity;
+        const security = this.entity;
         if (security) {
             security.allPermission = security.canDeactivate && security.canDelete && security.canRead && security.canShare && security.canWrite;
             this.findComponentByName("Properties").updateView();

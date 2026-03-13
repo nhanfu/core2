@@ -15,12 +15,12 @@ export class TreeView extends ListView {
 
     Rerender() {
         this.disposeNoRecord();
-        this.Header = this.Header.filter(x => !x.Hidden);
+        this.header = this.header.filter(x => !x.Hidden);
         this.mainSection.element.addClass("overflow");
         const firstData = this.formattedRowData.nothing() ? this.rowData.Data : this.formattedRowData;
-        this.renderContent(this.Header, this.mainSection, true, firstData);
+        this.renderContent(this.header, this.mainSection, true, firstData);
         this.mainSection.disposeChildren();
-        if (this.Editable) {
+        if (this.editable) {
             this.addNewEmptyRow();
         } else if (this.rowData.Data.nothing()) {
             this.noRecordFound();
@@ -88,7 +88,7 @@ export class TreeView extends ListView {
         } else {
             listViewItem.element.addClass("expanded");
             if (!ul) {
-                this.renderContent(this.Header, listViewItem, false, datas);
+                this.renderContent(this.header, listViewItem, false, datas);
             } else {
                 ul.removeClass("d-none");
                 ul.addClass("d-block");

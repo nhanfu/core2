@@ -24,11 +24,11 @@ export class GroupGridView extends GridView {
     }
     renderContent() {
         if (!this.loadRerender) {
-            this.Header = this.Header.filter(x => !x.Hidden);
-            this.renderTableHeader(this.Header);
+            this.header = this.header.filter(x => !x.Hidden);
+            this.renderTableHeader(this.header);
             this.loadRerender = true;
         }
-        if (this.Editable) {
+        if (this.editable) {
             this.addNewEmptyRow();
         }
         this.addSections();
@@ -40,7 +40,7 @@ export class GroupGridView extends GridView {
         this.mainSection.disposeChildren();
         this.formattedRowData.forEach((row, index) => {
             Html.take(this.mainSection.element);
-            this.renderRowData1(this.Header, row, this.mainSection, null);
+            this.renderRowData1(this.header, row, this.mainSection, null);
         });
         this.updateStickyColumns();
         this.mainSection.Show = true;
@@ -56,7 +56,7 @@ export class GroupGridView extends GridView {
     }
 
     noRowData(list) {
-        if (this.Editable) {
+        if (this.editable) {
             this.addNewEmptyRow();
         } else if (list.nothing()) {
             this.noRecordFound();
@@ -108,7 +108,7 @@ export class GroupGridView extends GridView {
             groupSection.groupText = Html.context;
             Html.instance.innerHTML(groupText);
             Html.instance.endOf(ElementType.td);
-            this.Header.slice(2).forEach(item => {
+            this.header.slice(2).forEach(item => {
                 Html.instance.tData.attr("component", "Number").className("data-summary").style("font-weight:600");
                 var sec = new Section(null, Html.context);
                 sec.meta = item;
@@ -140,7 +140,7 @@ export class GroupGridView extends GridView {
         }
         let groupSection1 = this.allListViewItem.find(group => group.groupRow && group.entity[this._groupKey] === row[this._groupKey]);
         if (groupSection1) {
-            var tr = super.renderRowData(this.Header, row, this.mainSection, fromIndex, false);
+            var tr = super.renderRowData(this.header, row, this.mainSection, fromIndex, false);
             this.moveGroupRow(tr);
             this.Dirty = true;
             return tr;
@@ -166,7 +166,7 @@ export class GroupGridView extends GridView {
             groupSection.groupText = Html.context;
             Html.instance.innerHTML(groupText);
             Html.instance.endOf(ElementType.td);
-            this.Header.slice(2).forEach(item => {
+            this.header.slice(2).forEach(item => {
                 Html.instance.tData.attr("component", "Number").className("data-summary").style("font-weight:600");
                 var sec = new Section(null, Html.context);
                 sec.meta = item;
@@ -175,7 +175,7 @@ export class GroupGridView extends GridView {
             });
             Html.instance.endOf(ElementType.tr);
             Html.take(this.mainSection.element);
-            let rowSection = super.renderRowData(this.Header, row, this.mainSection);
+            let rowSection = super.renderRowData(this.header, row, this.mainSection);
             rowSection.element.classList.add("group-detail");
             groupSection.childrenItems.push(rowSection);
             rowSection.groupSection = groupSection;
@@ -215,13 +215,13 @@ export class GroupGridView extends GridView {
             var groupText = Utils.isFunction(this.meta.groupFormat, false, groupSection);
             Html.instance.tData.className("status-cell").tabIndex(-1).event(EventType.Click, () => groupSection.showChildren1 = !groupSection.showChildren1).icon("fal fa-square");
             groupSection.Chevron = Html.context;
-            Html.instance.end.end.tData.dataAttr("field", this.Header[1].fieldName).event(EventType.dblClick, () => this.dispatchDblClick(first))
+            Html.instance.end.end.tData.dataAttr("field", this.header[1].fieldName).event(EventType.dblClick, () => this.dispatchDblClick(first))
                 .div.className("d-flex");
             groupSection.groupText = Html.context;
             Html.instance.innerHTML(groupText);
             Html.instance.event(EventType.Click, () => groupSection.showChildren = !groupSection.showChildren)
             Html.instance.endOf(ElementType.td);
-            this.Header.slice(2).forEach(item => {
+            this.header.slice(2).forEach(item => {
                 Html.instance.tData.attr("component", "Number").dataAttr("field", item.fieldName).tabIndex(-1).event(EventType.Click, () => groupSection.showChildren = !groupSection.showChildren).className("data-summary").style("font-weight:600");
                 var sec = new Section(null, Html.context);
                 sec.meta = item;
@@ -233,7 +233,7 @@ export class GroupGridView extends GridView {
             Html.instance.tData.className("status-cell").tabIndex(-1).event(EventType.Click, () => groupSection.showChildren1 = !groupSection.showChildren1).icon("fal fa-square");
             groupSection.Chevron = Html.context;
             Html.instance.end.endOf(ElementType.td)
-            this.Header.slice(1).forEach(item => {
+            this.header.slice(1).forEach(item => {
                 Html.instance.tData.attr("component", "Number").tabIndex(-1).event(EventType.Click, () => groupSection.showChildren = !groupSection.showChildren).className("data-group");
                 groupSection.renderTableCell(groupSection.entity, item);
                 Html.instance.endOf(ElementType.td);

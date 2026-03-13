@@ -73,9 +73,9 @@ export class GridView extends ListView {
 
     Rerender() {
         this.loadRerender = true;
-        this.Header = this.Header.filter(x => !x.Hidden);
-        this.renderTableHeader(this.Header);
-        if (this.Editable) {
+        this.header = this.header.filter(x => !x.Hidden);
+        this.renderTableHeader(this.header);
+        if (this.editable) {
             this.addNewEmptyRow();
         }
         this.renderContent();
@@ -91,7 +91,7 @@ export class GridView extends ListView {
             return;
         }
         Html.take(this.parentElement);
-        Html.instance.div.style(this.meta.childStyle).className("grid-wrapper").className(this.meta.virtualScroll && this.isMobile() ? "" : this.meta.className).className(this.Editable ? "editable" : "");
+        Html.instance.div.style(this.meta.childStyle).className("grid-wrapper").className(this.meta.virtualScroll && this.isMobile() ? "" : this.meta.className).className(this.editable ? "editable" : "");
         this.element = Html.context;
         if (this.meta.virtualScroll && this.isMobile()) {
             const style = this.element.style.height;
@@ -293,7 +293,7 @@ export class GridView extends ListView {
     }
 
     thHotKeyHandler(e, header) {
-        var hasGroup = this.Header.some(x => !Utils.isNullOrWhiteSpace(x.groupName));
+        var hasGroup = this.header.some(x => !Utils.isNullOrWhiteSpace(x.groupName));
         if (this.meta.Focus || hasGroup) {
             return;
         }
@@ -364,9 +364,9 @@ export class GridView extends ListView {
     }
 
     swapHeader(oldIndex, newIndex) {
-        const item = this.Header[oldIndex];
-        this.Header.splice(oldIndex, 1);
-        this.Header.splice(newIndex, 0, item);
+        const item = this.header[oldIndex];
+        this.header.splice(oldIndex, 1);
+        this.header.splice(newIndex, 0, item);
     }
 
     swapSectionHeader(oldIndex, newIndex) {
@@ -757,7 +757,7 @@ export class GridView extends ListView {
         }
         let emptyRowData = {};
         emptyRowData[this.idField] = Uuid7.newGuid();
-        this.gridViewItemEmpty = this.renderRowData(this.Header, emptyRowData, this.emptySection, null, true);
+        this.gridViewItemEmpty = this.renderRowData(this.header, emptyRowData, this.emptySection, null, true);
         if (!this.meta.topEmpty) {
             this.dataTable.insertBefore(this.mainSection.element, this.emptySection.element);
         } else {
@@ -806,7 +806,7 @@ export class GridView extends ListView {
         for (let index = 0; index < this.formattedRowData.length; index++) {
             const rowData = this.formattedRowData[index];
             Html.take(this.mainSection.element);
-            this.renderRowData(this.Header, rowData, this.mainSection, index);
+            this.renderRowData(this.header, rowData, this.mainSection, index);
         }
         this.mainSection.Show = true;
         this.contentRendered();
@@ -840,7 +840,7 @@ export class GridView extends ListView {
         const shouldAddRow = this.allListViewItem.length <= updatedData.length;
         if (shouldAddRow) {
             updatedData.slice(dataSections.length).forEach(newRow => {
-                this.renderRowData(this.Header, newRow, this.mainSection);
+                this.renderRowData(this.header, newRow, this.mainSection);
             });
         } else {
             this.mainSection.Children.slice(updatedData.length).forEach(x => x.Dispose());
@@ -944,7 +944,7 @@ export class GridView extends ListView {
     intWaitingSticky = 0;
     intWaitingSticky = 0;
     updateStickyColumns() {
-        const stickyColumns = this.Header
+        const stickyColumns = this.header
             .map((item, index) => item.Frozen ? index : -1)
             .filter(index => index !== -1);
         stickyColumns.sort((a, b) => a - b);
@@ -992,7 +992,7 @@ export class GridView extends ListView {
         });
 
         // --- Thêm xử lý frozenRight ---
-        const stickyRightColumns = this.Header
+        const stickyRightColumns = this.header
             .map((item, index) => item.frozenRight ? index : -1)
             .filter(index => index !== -1)
             .sort((a, b) => b - a); // xử lý từ phải qua trái
@@ -1018,7 +1018,7 @@ export class GridView extends ListView {
     }
 
     updateStickySummary() {
-        const stickyColumns = this.Header
+        const stickyColumns = this.header
             .map((item, index) => item.Frozen ? index : -1)
             .filter(index => index !== -1);
         stickyColumns.sort((a, b) => a - b);
@@ -1043,7 +1043,7 @@ export class GridView extends ListView {
         });
 
         // --- Thêm xử lý frozenRight ---
-        const stickyRightColumns = this.Header
+        const stickyRightColumns = this.header
             .map((item, index) => item.frozenRight ? index : -1)
             .filter(index => index !== -1)
             .sort((a, b) => b - a);
@@ -1069,7 +1069,7 @@ export class GridView extends ListView {
     addSummaries() {
         window.clearTimeout(this.intChangeSummary);
         this.intChangeSummary = window.setTimeout(() => {
-            if (this.Header.some(x => !Utils.isNullOrWhiteSpace(x.groupFormat))) {
+            if (this.header.some(x => !Utils.isNullOrWhiteSpace(x.groupFormat))) {
                 this.allListViewItem.filter(x => x.groupRow).forEach(item => {
                     item.Children.filter(x => !Utils.isNullOrWhiteSpace(x.Meta.groupFormat)).forEach(cell => {
                         item.Cell = cell;
@@ -1078,7 +1078,7 @@ export class GridView extends ListView {
                     });
                 })
             }
-            const sums = this.Header.filter(x => !Utils.isNullOrWhiteSpace(x.Summary));
+            const sums = this.header.filter(x => !Utils.isNullOrWhiteSpace(x.Summary));
             if (!sums || sums.length == 0 || this.Item.length == 0) {
                 if (this.footerSection && this.footerSection.element.firstChild) {
                     this.footerSection.element.firstChild.childNodes.forEach(x => x.innerHTML = '');
@@ -1089,7 +1089,7 @@ export class GridView extends ListView {
             summaryElements.forEach(x => x.remove());
             const count = new Set(sums.map(x => x.Summary)).size;
             sums.forEach(header => {
-                this.renderSummaryRow(header, this.Header, this.footerSection.element, count);
+                this.renderSummaryRow(header, this.header, this.footerSection.element, count);
             });
             this.updateStickySummary();
         }, 100);
@@ -1298,7 +1298,7 @@ export class GridView extends ListView {
         }
         if (this.lastComponentFocus.componentType == "Dropdown" && rowData[this.lastComponentFocus.fieldName]) {
             window.setTimeout(() => {
-                const headers = this.Header.filter(x => x.virtualScroll).orderBy(x => x.Order);
+                const headers = this.header.filter(x => x.virtualScroll).orderBy(x => x.Order);
                 const currentComponent = headers.find(y => y.Id === this.lastComponentFocus.Id);
                 const index = headers.indexOf(currentComponent);
                 if (headers.length > index + 1) {
@@ -1367,7 +1367,7 @@ export class GridView extends ListView {
             groupSection.groupText = Html.context;
             Html.instance.innerHTML(groupText);
             Html.instance.endOf(ElementType.td);
-            this.Header.slice(2).forEach(item => {
+            this.header.slice(2).forEach(item => {
                 Html.instance.tData.className("data-summary").style("font-weight:600");
                 var sec = new Section(null, Html.context);
                 sec.meta = item;
@@ -1505,9 +1505,9 @@ export class GridView extends ListView {
             return;
         }
         if (!headers || headers.length == 0) {
-            headers = this.Header;
+            headers = this.header;
         }
-        if (headers.Count != this.Header.Count) {
+        if (headers.Count != this.header.Count) {
             this.filterColumns(headers);
         }
         if (this.headerSection.element === null) {
@@ -1556,7 +1556,7 @@ export class GridView extends ListView {
             if (anyGroup && (!header.groupName || header.groupName === "")) {
                 Html.instance.rowSpan(2);
             }
-            if (!anyGroup && this.Header.some(x => x.groupName && x.groupName.length)) {
+            if (!anyGroup && this.header.some(x => x.groupName && x.groupName.length)) {
                 Html.instance.className("header-group");
             }
             if (header.statusBar) {
@@ -1949,7 +1949,7 @@ export class GridView extends ListView {
         this._imeout = window.setTimeout(() => {
             const headerElements = this.headerSection.Children.filter(x => x.Meta && x.Meta.Id);
             let index = 0;
-            let anyGroup = this.Header.some(x => x.groupName && !Utils.isNullOrWhiteSpace(x.groupName));
+            let anyGroup = this.header.some(x => x.groupName && !Utils.isNullOrWhiteSpace(x.groupName));
             if (!anyGroup) {
                 headerElements.forEach(header => {
                     header.Order = index;
@@ -2157,7 +2157,7 @@ export class GridView extends ListView {
 
     frozenColumn(arg) {
         const entity = arg.header;
-        const header = this.Header.find(x => x.Id === entity.Id);
+        const header = this.header.find(x => x.Id === entity.Id);
         if (header) {
             header.Frozen = !header.Frozen;
         }
@@ -2235,7 +2235,7 @@ export class GridView extends ListView {
         }
     }
     updateView(force = false, dirty = null, componentNames = []) {
-        if (!this.Editable && !this.meta.canCache) {
+        if (!this.editable && !this.meta.canCache) {
             this.actionFilter();
         } else {
             this.rowAction(row => !row.emptyRow, row => row.updateView(force, dirty, componentNames));
@@ -2248,7 +2248,7 @@ export class GridView extends ListView {
             await this.dispatchCustomEvent(this.meta.events, customEventType.beforeCreated, rowSection, rowData);
             rowSection.emptyRow = false;
             this.moveEmptyRow(rowSection);
-            const headers = this.Header.filter(y => y.Editable);
+            const headers = this.header.filter(y => y.Editable);
             const currentComponent = headers.find(y => y.fieldName === component.fieldName);
             const index = headers.indexOf(currentComponent);
             if (headers.length > index + 1) {
@@ -2275,9 +2275,9 @@ export class GridView extends ListView {
             - this.paginator.element.clientHeight
             - this._theadTable;
 
-        this.Header = this.Header.filter(x => x != null);
+        this.header = this.header.filter(x => x != null);
 
-        if (this.Header.some(x => x.Summary && x.Summary.trim() !== "")) {
+        if (this.header.some(x => x.Summary && x.Summary.trim() !== "")) {
             mainSectionHeight -= this._tfooterTable;
         }
         if (this.meta.canAdd) {

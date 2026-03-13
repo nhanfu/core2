@@ -34,7 +34,7 @@ export class GroupListView extends ListView {
                 groupData.Key = groupKey;
                 groupData.Children.push(item); 
                 this.formattedRowData.push(groupData);
-                const rowSection = this.renderRowData(this.Header, groupData, this.mainSection, this.mainSection.Children.length);
+                const rowSection = this.renderRowData(this.header, groupData, this.mainSection, this.mainSection.Children.length);
                 if (singleAdd) {
                     this.addNewEmptyRow(); 
                 }
@@ -43,7 +43,7 @@ export class GroupListView extends ListView {
             } else {
                 existGroup.Entity.As('GroupRowData').Children.push(item);
                 const index = this.mainSection.Children.indexOf(existGroup);
-                const rowSection = this.renderRowData(this.Header, item, this.mainSection, index + existGroup.Children.length); // Thực hiện render dữ liệu cho item mới trong nhóm
+                const rowSection = this.renderRowData(this.header, item, this.mainSection, index + existGroup.Children.length); // Thực hiện render dữ liệu cho item mới trong nhóm
                 if (singleAdd) {
                     this.addNewEmptyRow(); 
                 }

@@ -14,7 +14,7 @@ Script: |
         { 
           id: this.urlQuery.userId ?? this.Token?.UserId 
         });
-      this.Entity = ds.data[0];
+      this.entity = ds.data[0];
       this.UpdateView(true)
     },
     ChangePassword: function (btn, entity) {
