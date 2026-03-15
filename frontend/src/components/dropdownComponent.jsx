@@ -127,7 +127,7 @@ const DropdownComponent = ({
           className="bg-transparent border-0 p-0 m-0"
           style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
           onKeyDown={(e) => {
-            if (e.key === 'Escape') closeDropdown();
+            if (e.key === 'escape') closeDropdown();
             if (e.key === 'arrowDown' && !open) openDropdown();
           }}
         >

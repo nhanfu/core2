@@ -17,28 +17,18 @@
 - `svc/`: active backend runtime on Deno + Oak.
 - `sample-cli/crm/features/`: sample CRM metadata files.
 - `sample-cli/crm/db/`: PostgreSQL schema, seed, and local setup scripts.
-- `compose.yml`, `compose.release.yml`: container workflows that still reflect the legacy `CoreAPI` setup.
-- `CoreAPI/`: legacy path referenced by roadmap and compose assets; this checkout does not currently include the usable ASP.NET source tree.
-- `ROADMAP.md`: migration phases and architectural direction.
+- `compose.yml`, `compose.release.yml`: container workflows
+- `ROADMAP.md`: migration phases and architectural direction
 
 ## Architecture Overview
 - Frontend/backend interaction is metadata-driven, not screen-specific service glue.
-- Frontend components are real classes built on `htmljs` and are responsible for their own `Render` and re-render flow.
-- Runtime state is usually shared through global `Entity` and `Meta` objects loaded once and reused across components.
+- Frontend components are real classes built on `htmljs` and are responsible for their own `render` and re-render flow.
+- Runtime state is usually shared through global `entity` and `meta` objects loaded once and reused across components.
 - Backend services load metadata, enforce permissions from metadata rules, resolve runtime parameters/functions, and execute database operations safely.
-- The platform is in migration from a legacy `.NET` runtime toward the Deno runtime in `svc/`.
 
 ## Build, Test, and Development Commands
-- Root dev runner: `deno task dev`
 - Root start runner: `deno task start`
 - Root test runner: `deno task test`
-- Frontend dev flow: use the root Deno runner instead of calling `pnpm` or `bun` directly
-- Frontend production build: `deno task start`
-- Frontend preview build output: served by `scripts/static_server.ts` through the root Deno runner
-- Deno runtime dev server: `cd svc && deno task dev`
-- Deno runtime start: `cd svc && deno task start`
-- Frontend tests: `deno task test`
-- Deno tests: `cd svc && deno test --allow-all`
 
 ## Coding Style & Naming Conventions
 - Keep files feature-scoped and avoid unrelated cross-cutting edits.
@@ -47,7 +37,6 @@
 
 ## Testing Guidelines
 - Add or update tests when changing shared runtime behavior in `frontend/lib/` or `svc/src/`.
-- Frontend tests use Jest-style APIs in `frontend/lib/test/*.test.js`.
 - Backend tests live beside runtime modules in `svc/src/**/*.test.ts`.
 - If you change metadata transformation, query building, auth, or file services, run the relevant Deno tests before finishing.
 
@@ -61,10 +50,8 @@
   - Screenshots for UI work when applicable.
 
 ## Roadmap Direction
-- Roadmap ownership is in `ROADMAP.md`.
-- Priority order remains runtime rewrite, then database migration, then expanded YAML-first workflows.
-
-## Security & Configuration Tips
+- Full roadmap is in `ROADMAP.md` & Configuration Tips
+- Do not ask about security concerns unless explicitly asked by the user.
 - Do not commit real secrets.
 - Prefer local environment variables for runtime configuration.
 - Treat any credentials in compose files or sample scripts as local-only defaults.

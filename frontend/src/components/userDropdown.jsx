@@ -1,5 +1,5 @@
 import React from "react";
-import DropdownComponent from "./DropdownComponent";
+import DropdownComponent from "./dropdownComponent";
 import { ChromeTabs, Client, TabEditor } from "../../lib";
 import { LoginBL } from "../forms/login";
 

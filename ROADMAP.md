@@ -1,30 +1,37 @@
 # Roadmap
 
-## Principles
-- Priority order is fixed: runtime rewrite, then database migration, then YAML support.
-- Backward compatibility is required during roadmap execution.
-- Development workflow is TDD-first (`red -> green -> refactor`) for runtime and metadata transformation logic.
+## Vision
+Build a platform where businesses can describe their needs in plain language—"I want a CRM for my sales team"—and get a fully functional application deployed instantly.
 
-### Scope
+## Why This Matters for Business in the AI Era
 
-## Phase 1
-- Refactor UserService.cs, it's really big - done
-- Let user code calc query using Jint runtime, the function is declared at json file in JSScript property, not to use CalcFinalQuery - done
-- Support yaml, similar to json. See a sample yaml file in /CoreAPI/wwwroot/upload/crm/features/profile.yaml and an original JSON file in /CoreAPI/wwwroot/upload/crm/features/profile.json - done
-    - The system should convert yaml to json before sending to the client.
-    - All properties start with _ should be clear before sending to the client
-- Using PostgreSQL (via Supabase) instead of SQL Server, no need to support SQL Server at this point - done
-    - Convert all scripts in CoreAPI/wwwroot/upload/crm/db folder to postgreSQL scripts
-    - Use PostgreSqlProvider instead of SqlServerProvider in Program.cs
-    - Replace all sql server query to postgreSQL query
-- Migrate core runtime from `CoreAPI (.NET)` toward a native JS runtime on `Deno`. The new runtime is under `svc` folder - working
-- Add connection pool to PostgreSqlProvider, so that we don't have to create too many connection to the database - in ReadDataSet
+Traditional software procurement is broken:
+- **Months of waiting**: Custom software takes 3-12 months to build
+- **Expensive developers**: Senior developers cost $150+/hour
+- **Rigid systems**: Off-the-shelf software doesn't fit your business
+- **Maintenance burden**: You own the bugs, upgrades, and infrastructure
 
-## Phase 2
-- Build an AI-driven system that enables users to generate complete applications via natural language prompts (e.g., "create CRM system"). The system will:
-  - Use AI CLI tools to generate YAML-based metadata and code following the new architecture.
-  - Automatically deploy generated systems for clients.
-  - Allow clients to upload/download and modify generated code.
-  - Focus on YAML as the primary code format for rapid, declarative development.
-  - Include a billing system to charge clients for auto-generated features.
-- AI Agents can sign in the system, act as a user, access metadata file and know how to inteact with the system.
+This platform changes the equation:
+- **Minutes, not months**: Describe what you need → get a working app
+- **No coding required**: Business users speak business language, not Python or SQL
+- **Pay for what you use**: Built-in billing means no wasted spend on features you don't need
+- **AI does the work**: Your AI agent handles data entry, follow-ups, and reporting—so your team focuses on selling, not typing
+
+**In short**: Every business can have custom software that evolves with their needs, at a fraction of the traditional cost, powered by AI that works while you sleep.
+
+## Phase 1: Foundation (In Progress)
+- **YAML Metadata Support**: Users define their app structure in simple YAML files (complete)
+- **Database Connection Pooling**: Improved performance for data operations (in progress)
+
+## Phase 2: AI-Powered App Generation (Next)
+- **Natural Language → App**: Users describe what they need in plain language; AI generates the complete application
+- **Instant Deployment**: Generated apps are automatically deployed and ready to use
+- **Customizable Code**: Clients can download, modify, and re-deploy their generated applications
+- **Usage-Based Billing**: Built-in billing system to charge clients based on features used
+- **AI Agents as Users**: AI agents can work autonomously within the system, performing tasks on behalf of users
+
+## Long-Term Vision
+1. **No-Code Platform**: Any business user can build applications without writing code
+2. **Reusable Core**: Package the core as an installable library for other developers
+3. **Multi-Tenant SaaS**: Offer generated applications as a service with per-tenant billing
+4. **Agent Workforce**: AI agents that handle ongoing tasks—data entry, reports, follow-ups—autonomously

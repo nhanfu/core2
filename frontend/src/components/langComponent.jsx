@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import DropdownComponent from './DropdownComponent';
+import DropdownComponent from './dropdownComponent';
 import { LangSelect } from '../../lib';
 
 const LangComponent = () => {
