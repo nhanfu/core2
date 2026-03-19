@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import DropdownComponent from "./DropdownComponent";
+import DropdownComponent from "./dropdownComponent";
 import { ChromeTabs, ComponentExt } from "../../lib";
 import { Client } from "../../lib";
 import { Toast } from "../../lib/toast";

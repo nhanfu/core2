@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import DropdownComponent from './DropdownComponent';
+import DropdownComponent from './dropdownComponent';
 import { Client } from '../../lib';
 import { fetchData, addData, updateData } from '../redux/genericSlice'; // Update to use the Redux Toolkit slice
 import dayjs from 'dayjs';
