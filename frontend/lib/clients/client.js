@@ -102,6 +102,75 @@ export class Client {
     static set token(value) {
         localStorage.setItem('userInfo', JSON.stringify(value));
     }
+
+    static get epsilonDate() {
+        return new Date(Date.now() + (1 * 60 * 1000));
+    }
+
+    static toDate(value) {
+        if (!value) {
+            return null;
+        }
+        if (value instanceof Date) {
+            return Number.isNaN(value.getTime()) ? null : value;
+        }
+        const dateValue = new Date(value);
+        return Number.isNaN(dateValue.getTime()) ? null : dateValue;
+    }
+
+    static getJwtExpDate(accessToken) {
+        try {
+            if (!accessToken || typeof accessToken !== "string") {
+                return null;
+            }
+            const jwtPayload = Token.parse(accessToken);
+            if (!jwtPayload?.exp) {
+                return null;
+            }
+            const expDate = new Date(Number(jwtPayload.exp) * 1000);
+            return Number.isNaN(expDate.getTime()) ? null : expDate;
+        } catch {
+            return null;
+        }
+    }
+
+    static getAccessTokenExpDate(token) {
+        if (!token) {
+            return null;
+        }
+        return Client.toDate(token.accessTokenExp) || Client.getJwtExpDate(token.accessToken);
+    }
+
+    static getRefreshTokenExpDate(token) {
+        if (!token) {
+            return null;
+        }
+        return Client.toDate(token.refreshTokenExp);
+    }
+
+    static hasUsableAccessToken(token = Client.token) {
+        if (!token?.accessToken) {
+            return false;
+        }
+        const accessExp = Client.getAccessTokenExpDate(token);
+        if (!accessExp) {
+            // If no explicit exp is available, keep current behavior leniently.
+            return true;
+        }
+        return accessExp > Client.epsilonDate;
+    }
+
+    static hasUsableRefreshToken(token = Client.token) {
+        if (!token?.refreshToken) {
+            return false;
+        }
+        const refreshExp = Client.getRefreshTokenExpDate(token);
+        if (!refreshExp) {
+            // Some environments do not return refreshTokenExp consistently.
+            return true;
+        }
+        return refreshExp > Client.epsilonDate;
+    }
     static get systemRole() {
         return Client.token.roleNames.some(x => x.toLowerCase() == "admin");
     }
@@ -438,27 +507,20 @@ export class Client {
 
     static async refreshToken(success = null) {
         const oldToken = Client.token;
-        console.log('[DEBUG refreshToken] oldToken:', oldToken ? { accessTokenExp: oldToken.accessTokenExp, refreshTokenExp: oldToken.refreshTokenExp } : null);
-        console.log('[DEBUG refreshToken] epsilonNow:', Client.epsilonNow);
-        if (!oldToken || new Date(oldToken.refreshTokenExp) <= Client.epsilonNow) {
-            console.log('[DEBUG refreshToken] Case 1: No token or refreshToken expired');
+        if (!Client.hasUsableRefreshToken(oldToken)) {
             return null;
         }
-        if (new Date(oldToken.accessTokenExp) > Client.epsilonNow) {
-            console.log('[DEBUG refreshToken] Case 2: accessToken still valid, returning old token');
+        if (Client.hasUsableAccessToken(oldToken)) {
             return oldToken;
         }
-        if (new Date(oldToken.accessTokenExp) <= Client.epsilonNow && new Date(oldToken.refreshTokenExp) > Client.epsilonNow) {
-            console.log('[DEBUG refreshToken] Case 3: Need to refresh token');
+        if (!Client.hasUsableAccessToken(oldToken) && Client.hasUsableRefreshToken(oldToken)) {
             const newToken = await Client.getToken(oldToken);
-            console.log('[DEBUG refreshToken] Got newToken:', newToken);
             if (newToken) {
                 Client.token = newToken;
                 success?.(newToken);
             }
             return newToken;
         }
-        console.log('[DEBUG refreshToken] Case 4: refreshToken also expired');
         return null;
     }
 

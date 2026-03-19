@@ -190,23 +190,23 @@ export class RegisterBL extends EditForm {
 
   render() {
     let oldToken = Client.token;
-    if (!oldToken || new Date(oldToken.refreshTokenExp) <= Client.epsilonNow) {
+    if (!Client.hasUsableRefreshToken(oldToken)) {
       this.parentElement = document.getElementById("app");
       this.element = this.parentElement;
       super.render();
       return;
-    } else if (
-      oldToken &&
-      new Date(oldToken.accessTokenExp) > Client.epsilonNow
-    ) {
+    } else if (Client.hasUsableAccessToken(oldToken)) {
       App.instance.renderLayout().then(() => {
         this.initAppIfEmpty();
       });
-    } else if (
-      oldToken &&
-      new Date(oldToken.refreshTokenExp) > Client.epsilonNow
-    ) {
-      Client.refreshToken().then((newToken) => {
+    } else if (Client.hasUsableRefreshToken(oldToken)) {
+      Client.refreshToken().then(() => {
+        if (!Client.hasUsableRefreshToken(Client.token)) {
+          this.parentElement = document.getElementById("app");
+          this.element = this.parentElement;
+          super.render();
+          return;
+        }
         App.instance.renderLayout().then(() => {
           this.initAppIfEmpty();
         });
