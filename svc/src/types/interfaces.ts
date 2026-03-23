@@ -670,3 +670,4 @@ export interface Server {
   type: 'mssql' | 'postgresql' | 'mysql';
   active: boolean;
 }
+

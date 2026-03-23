@@ -17,3 +17,4 @@ export function parseYaml(content: string): unknown {
 export function stringifyYaml(obj: unknown): string {
   return stringifyYamlFn(obj);
 }
+

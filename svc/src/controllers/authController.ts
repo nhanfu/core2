@@ -4,7 +4,7 @@
  * Migration from CoreAPI AuthController
  */
 
-import { signIn, refreshToken, signOut } from "../services/authService.ts";
+import { signIn, refreshToken as refreshTokenService, signOut } from "../services/authService.ts";
 import type { Token } from "../types/interfaces.ts";
 
 const AUTH_DEBUG = (Deno.env.get("AUTH_DEBUG") || "true").toLowerCase() !== "false";
@@ -124,7 +124,7 @@ export async function refreshToken(
   body: refreshTokenRequest
 ): Promise<ApiResponse<Token>> {
   try {
-    const { refreshToken: refreshToken } = body;
+    const { refreshToken} = body;
     authDebug("refresh:request", { hasRefreshToken: !!refreshToken });
 
     if (!refreshToken) {
@@ -137,7 +137,7 @@ export async function refreshToken(
     }
 
     // Attempt to refresh token
-    const token = await refreshToken(refreshToken);
+    const token = await refreshTokenService(refreshToken);
     authDebug("refresh:success", {
       userId: token.userId,
       userName: token.userName,
@@ -210,3 +210,4 @@ export async function logout(
     };
   }
 }
+

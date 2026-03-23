@@ -346,3 +346,4 @@ export class MetadataService {
 
 // Export singleton instance
 export const metadataService = new MetadataService();
+

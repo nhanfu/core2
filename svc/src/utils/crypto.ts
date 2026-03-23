@@ -49,3 +49,4 @@ export async function SHA256(input: string): Promise<string> {
 export async function HashPassword(password: string, salt: string): Promise<string> {
   return SHA256(password + salt);
 }
+

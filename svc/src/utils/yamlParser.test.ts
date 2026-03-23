@@ -82,3 +82,4 @@ Deno.test("stringifyYaml should handle empty object", () => {
   const result = stringifyYaml({});
   assertEquals(result, "{}\n");
 });
+

@@ -235,7 +235,7 @@ Deno.test("PatchDetail interface should accept optional properties", () => {
     label: "Name",
     oldVal: "Old Value",
     value: "New Value",
-    historyValue: "History",
+    historyValue: "history",
   };
 
   assertEquals(detail.label, "Name");
@@ -253,7 +253,7 @@ Deno.test("UserContext interface should have required properties", () => {
     env: "production",
     connKey: "default",
     roles: ["admin", "user"],
-    roleNames: ["Admin", "User"],
+    roleNames: ["Admin", "user"],
     userName: "testuser",
     email: "test@example.com",
     fullName: "Test User",
@@ -540,3 +540,4 @@ Deno.test("Component interface should have required properties", () => {
   assertEquals(component.showLabel, true);
   assertEquals(component.active, true);
 });
+

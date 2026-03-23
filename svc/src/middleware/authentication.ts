@@ -319,3 +319,4 @@ export function isAdmin(ctx: Context): boolean {
   const user = getCurrentUser(ctx);
   return user?.isAdmin || false;
 }
+

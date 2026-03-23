@@ -266,3 +266,4 @@ export function createApp(): Application {
 
 // Export default
 export default createApp;
+

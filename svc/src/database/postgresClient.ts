@@ -108,3 +108,4 @@ export async function remove(table: string, filters: object): Promise<any> {
   const result = await query(sql, Object.values(filters));
   return result;
 }
+

@@ -47,3 +47,4 @@ export async function cors(ctx: Context, next: Next): Promise<void> {
   // Continue to the next middleware
   await next();
 }
+

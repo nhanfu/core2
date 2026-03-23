@@ -48,3 +48,4 @@ Deno.test("authentication should reject protected routes without authorization h
   assertEquals(body.message, "Authorization token not provided");
   assertEquals(body.error, "MISSING_TOKEN");
 });
+

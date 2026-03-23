@@ -328,3 +328,4 @@ Deno.test("ClaimTypes should have all required claims", () => {
   assertEquals(ClaimTypes.ROLE_IDS, "RoleIds");
   assertEquals(ClaimTypes.ROLE_NAME_CLAIM, "RoleName");
 });
+
