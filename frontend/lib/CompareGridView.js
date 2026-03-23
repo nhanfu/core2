@@ -2,58 +2,73 @@ import { GridView } from './gridView.js';
 import { Utils } from './utils/utils.js';
 
 export class CompareGridView extends GridView {
-    /**
-     * @param {import("./models/component.js").Component} ui
-     */
-    constructor(ui) {
-        super(ui);
-        this.contentFieldName = "textHistory";
-        this.reasonOfChange = "reasonOfChange";
-        this.style = "white-space: pre-wrap;word-break: break-word;";
-        this.meta.localHeader = [
-            {
-                fieldName: "insertedBy",
-                componentType: "Label",
-                Label: "Người thao tác",
-                description: "Người thao tác",
-                referenceId: Utils.getEntity("user")?.id.toString(),
-                refName: "user",
-                formatData: "{" + "fullName" + "}",
-                active: true,
-            },
-            {
-                fieldName: "insertedDate",
-                componentType: "Label",
-                Label: "Ngày thao tác",
-                description: "Ngày thao tác",
-                active: true,
-                textAlign: "left",
-                formatData: "{0:dd/mM/yyyy hH:mm zz}"
-            },
-            {
-                fieldName: "reasonOfChange",
-                componentType: "Label",
-                Label: "Nội dung",
-                description: "Nội dung",
-                hasFilter: true,
-                active: true,
-            },
-            {
-                fieldName: "textHistory",
-                componentType: "Label",
-                childStyle: this.style,
-                Label: "chi tiết thay đổi",
-                description: "chi tiết thay đổi",
-                hasFilter: true,
-                active: true,
-            },
-        ];
+    constructor(containerId, options) {
+        super(containerId, options);
+        this.compareFields = options.compareFields || [];
+        this.comparing = false;
     }
 
-    filterColumns(component) {
-        super.filterColumns(component);
-        component.forEach(x => x.frozen = false);
-        this.header.remove(this.header.find(x => x === GridView.toolbarColumn));
-        return component;
+    init() {
+        super.init();
+        this.setupCompareMode();
+    }
+
+    setupCompareMode() {
+        if (this.options.enableCompare) {
+            this.addEventListener('onToolbarReady', (toolbar) => {
+                const compareBtn = this.createCompareButton();
+                toolbar.addItem(compareBtn);
+            });
+        }
+    }
+
+    createCompareButton() {
+        return {
+            id: 'btnCompare',
+            text: Utils.translate('So sánh'),
+            icon: 'fa fa-balance-scale',
+            onClick: () => this.toggleCompare()
+        };
+    }
+
+    toggleCompare() {
+        this.comparing = !this.comparing;
+        if (this.comparing) {
+            this.enterCompareMode();
+        } else {
+            this.exitCompareMode();
+        }
+    }
+
+    enterCompareMode() {
+        this.originalRows = [...this.rows];
+        this.rows.forEach((row, idx) => {
+            row._compareIdx = idx;
+        });
+        this.comparing = true;
+        this.render();
+    }
+
+    exitCompareMode() {
+        this.comparing = false;
+        this.render();
+    }
+
+    render() {
+        super.render();
+        if (this.comparing) {
+            this.highlightCompareColumns();
+        }
+    }
+
+    highlightCompareColumns() {
+        if (!this.compareFields || !this.compareFields.length) return;
+        
+        this.compareFields.forEach(field => {
+            const colIdx = this.columns.findIndex(c => c.field === field);
+            if (colIdx >= 0) {
+                // Highlight logic would be implemented here
+            }
+        });
     }
 }

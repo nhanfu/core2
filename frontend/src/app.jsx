@@ -59,6 +59,10 @@ export class App {
 
   async init() {
     Spinner.Init();
+    const savedToken = localStorage.getItem("userInfo");
+    if (savedToken) {
+      Client.token = JSON.parse(savedToken);
+    }
     LoginBL.instance.render();
   }
 

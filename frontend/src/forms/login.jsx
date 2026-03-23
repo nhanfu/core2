@@ -63,6 +63,7 @@ export class LoginBL extends EditForm {
             throw new Error(res?.message || "Login failed");
           }
           Client.token = token;
+          localStorage.setItem("userInfo", JSON.stringify(Client.token));
           this.initFCM();
           if (this.signedInHandler) {
             this.signedInHandler(Client.token);
