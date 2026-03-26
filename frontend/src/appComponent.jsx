@@ -7,7 +7,7 @@ import LangComponent from "./components/langComponent.jsx";
 import store from "./redux/store.js";
 import { Provider } from "react-redux";
 import UserActive from "./components/userActive.jsx";
-const AppComponent = ({ editForm }) => {
+const appComponent = ({ editForm }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
 
   useEffect(() => {
@@ -90,4 +90,4 @@ const AppComponent = ({ editForm }) => {
     </Provider>
   );
 };
-export default AppComponent;
+export default appComponent;

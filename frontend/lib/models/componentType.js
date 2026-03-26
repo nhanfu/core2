@@ -1,15 +1,15 @@
 export class ComponentType {
-    static Datepicker = 'Datepicker';
-    static ListView = 'ListView';
-    static GridView = 'GridView';
-    static ListViewItem = 'ListViewItem';
-    static EditForm = 'EditForm';
-    static Checkbox = 'Checkbox';
-    static Numbox = 'Numbox';
-    static Number = 'Numbox';
-    static Textbox = 'Textbox';
-    static Textarea = 'Textarea';
-    static Dropdown = 'SearchEntry';
-    static Section = 'Section';
-    static MultipleSearchEntry = 'MultipleSearchEntry';
+    static datepicker = 'datepicker';
+    static listView = 'listView';
+    static gridView = 'gridView';
+    static listViewItem = 'listViewItem';
+    static editForm = 'editForm';
+    static checkbox = 'checkbox';
+    static numbox = 'numbox';
+    static number = 'number';
+    static textbox = 'textbox';
+    static textarea = 'textarea';
+    static dropdown = 'searchEntry';
+    static section = 'section';
+    static multipleSearchEntry = 'multipleSearchEntry';
 }

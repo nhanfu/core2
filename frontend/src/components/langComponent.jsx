@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import DropdownComponent from './dropdownComponent';
 import { LangSelect } from '../../lib';
 
-const LangComponent = () => {
+const langComponent = () => {
   const [currentImg, setCurrentImg] = useState('/assets/images/icons-vi.png');
   useEffect(() => {
     const cul = localStorage.getItem('Culture') || 'en';
@@ -45,11 +45,11 @@ const LangComponent = () => {
       }
       props.split(',').forEach((propName) => {
         const template = item['langkey' + propName];
-        const featurename = item['featurename'];
-        if (dictionaryItems[template + '_' + featurename]) {
+        const featureName = item['featurename'];
+        if (dictionaryItems[template + '_' + featureName]) {
           const translated =
-            dictionaryItems[template + '_' + featurename] !== undefined
-              ? dictionaryItems[template + '_' + featurename]
+            dictionaryItems[template + '_' + featureName] !== undefined
+              ? dictionaryItems[template + '_' + featureName]
               : template;
           item[propName] = translated;
         } else {
@@ -117,4 +117,4 @@ const LangComponent = () => {
   );
 };
 
-export default LangComponent;
+export default langComponent;

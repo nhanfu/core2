@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback, useLayoutEffect } from 'react';
 import { createPortal } from 'react-dom';
 
-const DropdownComponent = ({
+const dropdownComponent = ({
   toggleContent,
   dropdownContent,
   className = '',
@@ -163,4 +163,4 @@ const DropdownComponent = ({
   );
 };
 
-export default DropdownComponent;
+export default dropdownComponent;

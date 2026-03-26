@@ -4,7 +4,7 @@ import { Client, TabEditor } from "../../lib";
 import { LoginBL } from "../forms/login";
 import { unsubscribeToken } from "./firebase";
 
-const Profile = () => {
+const profile = () => {
   const [state, setState] = useState(false);
   const menuRef = useRef(null);
 
@@ -126,4 +126,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default profile;

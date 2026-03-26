@@ -1,5 +1,5 @@
 export class ValidationRule {
-    static Required = "required";
+    static required = "required";
     static minLength = "minLength";
     static checkLength = "checkLength";
     static maxLength = "maxLength";
@@ -7,11 +7,11 @@ export class ValidationRule {
     static lessThanOrEqual = "max";
     static greaterThan = "gt";
     static lessThan = "lt";
-    static Equal = "eq";
+    static equal = "eq";
     static notEqual = "ne";
     static regEx = "regEx";
-    static Replace = "replace";
-    static Unique = "unique";
+    static replace = "replace";
+    static unique = "unique";
 
     constructor(rule, message, value1, value2, condition, rejectInvalid) {
         this.rule = rule;

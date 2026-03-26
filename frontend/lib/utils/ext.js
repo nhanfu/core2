@@ -5,9 +5,9 @@ import { OutOfViewPort } from "./outOfViewPort.js";
 export function hasNonSpaceChar() { return this.trim() !== ''; }
 
 export class Str {
-    static Empty = '';
-    static Comma = ',';
-    static Type = 'string';
+    static empty = '';
+    static comma = ',';
+    static type = 'string';
     /**
      * @param {string} template
      * @param {(string | any[])[]} args
@@ -21,7 +21,7 @@ export class Str {
      * @param {string} separator
      * @param {any[]} str
      */
-    static Join(separator, ...str) {
+    static join(separator, ...str) {
         str.join(separator)
     }
 }
@@ -127,11 +127,11 @@ Array.prototype.forEachAsync = async function (/** @type {(value: any, index: nu
     await Promise.all(promises);
     return this;
 };
-Array.prototype.Clear = function () {
+Array.prototype.clear = function () {
     while (this.length) this.pop();
 };
 Array.prototype.addRange = Array.prototype.push;
-Array.prototype.Combine = function (/** @type {(value: any, index: number, array: any[]) => any} */ mapper = null, /** @type {string} */ separator = ',') {
+Array.prototype.combine = function (/** @type {(value: any, index: number, array: any[]) => any} */ mapper = null, /** @type {string} */ separator = ',') {
     if (mapper) {
         return this.map(mapper).join(separator);
     } else {

@@ -9,9 +9,9 @@ export class ConfirmDialog extends EditableComponent {
         this._yesBtn = null;
         this.pElement = null;
         this.openEditForm = null;
-        this.Textbox = null;
+        this.textbox = null;
         this.number = null;
-        this.Datepicker = null;
+        this.datepicker = null;
         this.precision = null;
         this.searchEntry = null;
         this.canceled = null;
@@ -22,7 +22,7 @@ export class ConfirmDialog extends EditableComponent {
         this.cancelText = "close";
         this.needAnswer = false;
         this.comType = "Textbox";
-        this.Component = [];
+        this.component = [];
         this.componentGroup = null;
         this.ignoreCancelButton = true;
         this.populateDirty = false;

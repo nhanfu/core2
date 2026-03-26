@@ -43,14 +43,14 @@ export class MenuComponent extends EditableComponent {
       return null; // Return null if the hash is empty or undefined
     }
 
-    let [pathname, queryString] = hash.split("?"); // Split the hash into pathname and query string
+    let [pathName, queryString] = hash.split("?"); // Split the hash into pathname and query string
     let params = new URLSearchParams(queryString); // Parse the query string into a URLSearchParams object
-    if (pathname.includes("/")) {
-      let segments = pathname.split("/");
-      pathname = segments[segments.length - 1] || segments[segments.length - 2];
+    if (pathName.includes("/")) {
+      let segments = pathName.split("/");
+      pathName = segments[segments.length - 1] || segments[segments.length - 2];
     }
     return {
-      pathname: pathname || null, // Pathname (e.g., 'chat-editor')
+      pathName: pathName || null, // Pathname (e.g., 'chat-editor')
       params: Object.fromEntries(params.entries()), // Query parameters (e.g., { Id: '-00612540-0000-0000-8000-4782e9f44882' })
     };
   }

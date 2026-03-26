@@ -12,7 +12,7 @@ import { encode, decode } from "@msgpack/msgpack";
 
 export class Client {
     /** @type {Entity[]} */
-    static Entities = [];
+    static entities = [];
     static epsilonNow = new Date(Date.now() + (1 * 60 * 1000));
     static errorMessage = "Hệ thống đang cập nhật vui lòng chờ trong 30s!";
     static modelNamespace;
@@ -25,7 +25,7 @@ export class Client {
         return metaApi || envApi || window.location.origin;
     }
     // @ts-ignore
-    static Host = (import.meta.env?.VITE_API_HOST || window.location.host).toLowerCase();
+    static host = (import.meta.env?.VITE_API_HOST || window.location.host).toLowerCase();
     // @ts-ignore
     static baseUri = (import.meta.env?.VITE_API_BASE_URI || window.location.origin).toLowerCase();
     // @ts-ignore
@@ -35,9 +35,9 @@ export class Client {
     // @ts-ignore
     static dataConn = import.meta.env?.VITE_DATA_CONN || "bl";
     // @ts-ignore
-    static Tenant = import.meta.env?.VITE_TENANT || "System";
+    static tenant = import.meta.env?.VITE_TENANT || "System";
     // @ts-ignore
-    static Env = import.meta.env?.VITE_ENV || "test";
+    static env = import.meta.env?.VITE_ENV || "test";
     // @ts-ignore
     static fileFTP = import.meta.env?.VITE_FILE_FTP || "/user";
     // @ts-ignore
@@ -45,12 +45,12 @@ export class Client {
     static apiV2 = import.meta.env?.VITE_API_V2_URL;
     static api = Client.resolveApiBase();
     // @ts-ignore
-    static Config = document.head.config?.content || "";
+    static config = document.head.config?.content || "";
     static badGatewayRequest = new badGatewayQueue();
     static unAuthorizedEventHandler = new Action();
     static signOutEventHandler = new Action();
     // @ts-ignore
-    static get Origin() { return document.head.origin?.content || window.location.origin; }
+    static get origin() { return document.head.origin?.content || window.location.origin; }
     _nameSpace;
     _config;
     customPrefix = (() => {

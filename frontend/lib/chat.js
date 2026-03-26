@@ -33,7 +33,7 @@ export class Chat extends EditableComponent {
     /**
      * @type {hTMLInputElement}
      */
-    htmlIputChat;
+    htmlInputChat;
     /**
      * @type {HTMLElement}
      */

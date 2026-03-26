@@ -104,11 +104,11 @@ const notificationDropdown = () => {
       return null;
     }
 
-    let [pathname, queryString] = hash.split("?");
+    let [pathName, queryString] = hash.split("?");
     let params = new URLSearchParams(queryString);
 
     return {
-      pathname: pathname || null,
+      pathName: pathName || null,
       params: Object.fromEntries(params.entries()),
     };
   };

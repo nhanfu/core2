@@ -8,7 +8,7 @@ export default class EventType {
      * uIEvent: The loading of a resource has been aborted.
      * @static
      */
-    static Abort = "abort";
+    static abort = "abort";
 
     /**
      * Event: The associated document has started printing or the print preview has been closed.
@@ -50,19 +50,19 @@ export default class EventType {
      * indexedDB: An open connection to a database is blocking a versionchange transaction on the same database.
      * @static
      */
-    static Blocked = "blocked";
+    static blocked = "blocked";
 
     /**
      * focusEvent: An element has lost focus (does not bubble).
      * @static
      */
-    static Blur = "blur";
+    static blur = "blur";
 
     /**
      * Event: The resources listed in the manifest have been downloaded, and the application is now cached.
      * @static
      */
-    static Cached = "cached";
+    static cached = "cached";
 
     /**
      * Event: The user agent can play the media, but estimates that not enough data has been loaded to play the media up to its end without having to stop for further buffering of content.
@@ -80,31 +80,31 @@ export default class EventType {
      * Event: An element loses focus and its value changed since gaining focus.
      * @static
      */
-    static Change = "change";
+    static change = "change";
 
     /**
      * Event: The user agent is checking for an update, or attempting to download the cache manifest for the first time.
      * @static
      */
-    static Checking = "checking";
+    static checking = "checking";
 
     /**
      * mouseEvent: A pointing device button has been pressed and released on an element.
      * @static
      */
-    static Click = "click";
+    static click = "click";
 
     /**
      * Event: A webSocket connection has been closed.
      * @static
      */
-    static Close = "close";
+    static close = "close";
 
     /**
      * indexedDB: The complete handler is executed when a transaction successfully completed.
      * @static
      */
-    static Complete = "complete";
+    static complete = "complete";
 
     /**
      * compositionEvent: The composition of a passage of text has been completed or canceled.
@@ -128,19 +128,19 @@ export default class EventType {
      * mouseEvent: The right button of the mouse is clicked (before the context menu is displayed).
      * @static
      */
-    static ContextMenu = "contextmenu";
+    static contextMenu = "contextmenu";
 
     /**
      * clipboardEvent: The text selection has been added to the clipboard.
      * @static
      */
-    static Copy = "copy";
+    static copy = "copy";
 
     /**
      * clipboardEvent: The text selection has been removed from the document and added to the clipboard.
      * @static
      */
-    static Cut = "cut";
+    static cut = "cut";
 
     /**
      * mouseEvent: A pointing device button is clicked twice on an element.
@@ -182,19 +182,19 @@ export default class EventType {
      * Event: The document has finished loading (but not its dependent resources).
      * @static
      */
-    static dOMContentLoaded = "domcontentloaded";
+    static domContentLoaded = "domcontentloaded";
 
     /**
      * Event: The user agent has found an update and is fetching it, or is downloading the resources listed by the cache manifest for the first time.
      * @static
      */
-    static Downloading = "downloading";
+    static downLoading = "downloading";
 
     /**
      * dragEvent: An element or text selection is being dragged (every 350ms).
      * @static
      */
-    static Drag = "drag";
+    static drag = "drag";
 
     /**
      * dragEvent: A drag operation is being ended (by releasing a mouse button or hitting the escape key).
@@ -230,7 +230,7 @@ export default class EventType {
      * dragEvent: An element is dropped on a valid drop target.
      * @static
      */
-    static Drop = "drop";
+    static drop = "drop";
 
     /**
      * Event: The duration attribute has been updated.
@@ -242,25 +242,25 @@ export default class EventType {
      * Event: The media has become empty; for example, this event is sent if the media has already been loaded (or partially loaded), and the load() method is called to reload it.
      * @static
      */
-    static Emptied = "emptied";
+    static emptied = "emptied";
 
     /**
      * Event: Playback has stopped because the end of the media was reached.
      * @static
      */
-    static Ended = "ended";
+    static ended = "ended";
 
     /**
      * Event: An error occurred during the loading of an event.
      * @static
      */
-    static Error = "error";
+    static error = "error";
 
     /**
      * focusEvent: An element has received focus (does not bubble).
      * @static
      */
-    static Focus = "focus";
+    static focus = "focus";
 
     /**
      * focusEvent: An element is about to receive focus (bubbles).
@@ -308,13 +308,13 @@ export default class EventType {
      * Event: The value of an element changes or the content of an element with the attribute contenteditable is modified.
      * @static
      */
-    static Input = "input";
+    static input = "input";
 
     /**
      * Event: A submittable element has been checked and doesn't satisfy its constraints.
      * @static
      */
-    static Invalid = "invalid";
+    static invalid = "invalid";
 
     /**
      * keyboardEvent: A key is pressed down.
@@ -344,7 +344,7 @@ export default class EventType {
      * uIEvent: A resource and its dependent resources have finished loading.
      * @static
      */
-    static Load = "load";
+    static load = "load";
 
     /**
      * Event: The first frame of the media has finished loading.
@@ -374,7 +374,7 @@ export default class EventType {
      * messageEvent: A message is received through a webSocket.
      * @static
      */
-    static Message = "message";
+    static message = "message";
 
     /**
      * mouseEvent: A pointing device button (usually a mouse) is pressed on an element.
@@ -428,25 +428,25 @@ export default class EventType {
      * Event: The manifest was found to have become a 404 or 410 page, so the application cache is being deleted.
      * @static
      */
-    static Obsolete = "obsolete";
+    static obsolete = "obsolete";
 
     /**
      * Event: The browser has lost access to the network.
      * @static
      */
-    static Offline = "offline";
+    static offline = "offline";
 
     /**
      * Event: The browser has gained access to the network (but particular websites might be unreachable).
      * @static
      */
-    static Online = "online";
+    static online = "online";
 
     /**
      * Event: A webSocket connection has been established.
      * @static
      */
-    static Open = "open";
+    static open = "open";
 
     /**
      * Event: The orientation of the device (portrait/landscape) has changed.
@@ -470,13 +470,13 @@ export default class EventType {
      * clipboardEvent: Data has been transferred from the system clipboard to the document.
      * @static
      */
-    static Paste = "paste";
+    static paste = "paste";
 
     /**
      * Event: Playback has been paused.
      * @static
      */
-    static Pause = "pause";
+    static pause = "pause";
 
     /**
      * Event: The pointer was locked or released.
@@ -494,13 +494,13 @@ export default class EventType {
      * Event: Playback has begun.
      * @static
      */
-    static Play = "play";
+    static play = "play";
 
     /**
      * Event: Playback is ready to start after having been paused or delayed due to lack of data.
      * @static
      */
-    static Playing = "playing";
+    static playing = "playing";
 
     /**
      * popStateEvent: A session history entry is being navigated to (in certain cases).
@@ -512,7 +512,7 @@ export default class EventType {
      * progressEvent: In progress.
      * @static
      */
-    static Progress = "progress";
+    static progress = "progress";
 
     /**
      * Event: The playback rate has changed.
@@ -536,73 +536,73 @@ export default class EventType {
      * Event: A form is reset.
      * @static
      */
-    static Reset = "reset";
+    static reset = "reset";
 
     /**
      * uIEvent: The document view has been resized.
      * @static
      */
-    static Resize = "resize";
+    static resize = "resize";
 
     /**
      * uIEvent: The document view or an element has been scrolled.
      * @static
      */
-    static Scroll = "scroll";
+    static scroll = "scroll";
 
     /**
      * Event: A seek operation completed.
      * @static
      */
-    static Seeked = "seeked";
+    static seeked = "seeked";
 
     /**
      * Event: A seek operation began.
      * @static
      */
-    static Seeking = "seeking";
+    static seeking = "seeking";
 
     /**
      * uIEvent: Some text is being selected.
      * @static
      */
-    static Select = "select";
+    static select = "select";
 
     /**
      * mouseEvent: A context menu event was fired on/bubbled to an element that has a context menu attribute.
      * @static
      */
-    static Show = "show";
+    static show = "show";
 
     /**
      * Event: The user agent is trying to fetch media data, but data is unexpectedly not forthcoming.
      * @static
      */
-    static Stalled = "stalled";
+    static stalled = "stalled";
 
     /**
      * storageEvent: A storage area (localStorage or sessionStorage) has changed.
      * @static
      */
-    static Storage = "storage";
+    static storage = "storage";
 
     /**
      * Event: A form is submitted.
      * @static
      */
-    static Submit = "submit";
+    static submit = "submit";
 
     /**
      * Event: A request successfully completed.
      * @static
      */
-    static Success = "success";
+    static success = "success";
 
     /**
      * Event: Media data loading has been suspended.
      * @static
      */
-    static Suspend = "suspend";
+    static suspend = "suspend";
 
     /**
      * sVGEvent: Page loading has been stopped before the SVG was loaded.
@@ -650,7 +650,7 @@ export default class EventType {
      * progressEvent: A request timed out.
      * @static
      */
-    static Timeout = "timeout";
+    static timeout = "timeout";
 
     /**
      * Event: The time indicated by the currentTime attribute has been updated.
@@ -704,7 +704,7 @@ export default class EventType {
      * uIEvent: The document or a dependent resource is being unloaded.
      * @static
      */
-    static Unload = "unload";
+    static unload = "unload";
 
     /**
      * Event: The resources listed in the manifest have been newly redownloaded, and the script can use swapCache() to switch to the new cache.
@@ -746,13 +746,13 @@ export default class EventType {
      * Event: Playback has stopped because of a temporary lack of data.
      * @static
      */
-    static Waiting = "waiting";
+    static waiting = "waiting";
 
     /**
      * wheelEvent: A wheel button of a pointing device is rotated in any direction.
      * @static
      */
-    static Wheel = "wheel";
+    static wheel = "wheel";
 
     /**
      * wheelEvent: A wheel button of a pointing device is rotated in any direction.

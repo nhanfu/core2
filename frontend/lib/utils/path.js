@@ -73,7 +73,7 @@ export const Path = {
      * @param {...string} path - An array of path segments to combine.
      * @returns {string} - The combined path.
      */
-    Combine(...path) {
+    combine(...path) {
       if (!path.length) return '';
       const nonEmptyPath = path.filter(x => x).map(x => {
         const heading = x[0] === '/' ? 1 : 0;

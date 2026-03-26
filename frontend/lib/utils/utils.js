@@ -16,23 +16,23 @@ dayjs.extend(customParseFormat);
 export class Utils {
     static systemId = "1";
     static tenantField = "t";
-    static Pixel = "px";
+    static pixel = "px";
     static featureField = "f";
     static questionMark = "?";
-    static Amp = "&";
+    static amp = "&";
     static breakLine = "<br />";
     static applicationJson = "application/json";
-    static Authorization = "Authorization";
+    static authorization = "Authorization";
     static selfVendorId = "65";
     static idField = "Id";
     static newLine = "\r\n";
-    static Indent = "\t";
-    static Dot = ".";
-    static Slash = "/";
-    static Hash = "#";
-    static Comma = ";";
-    static Semicolon = ";";
-    static Space = " ";
+    static indent = "\t";
+    static dot = ".";
+    static slash = "/";
+    static hash = "#";
+    static comma = ";";
+    static semicolon = ";";
+    static space = " ";
     static componentId = "20";
     static componentGroupId = "30";
     static historyId = "4199";
@@ -50,7 +50,7 @@ export class Utils {
     static deactivateSvc = "/user/Deactivate";
     static exportExcel = "/user/excel";
     static fileSvc = "/api/fileUpload/file";
-    static Return = "return ";
+    static return = "return ";
     static specialChar = {
         '+': "%2B",
         '/': "%2F",
@@ -93,7 +93,7 @@ export class Utils {
     static toJson(value) {
         return JSON.stringify(value);
     }
-    static Clone(value) {
+    static clone(value) {
         return JSON.parse(JSON.stringify(value));
     }
     static tryParseInt(value) {
@@ -113,7 +113,7 @@ export class Utils {
             return [false, null];
         }
     }
-    static Parse(value) {
+    static parse(value) {
         try {
             return JSON.parse(value);
         } catch {
@@ -233,7 +233,7 @@ export class Utils {
         }
     }
 
-    static Format(template, args) {
+    static format(template, args) {
         return template.replace(/{(\d+)}/g, (/** @type {any} */ match, /** @type {string | number} */ index) => {
             return typeof args[index] != 'undefined' ? args[index] : '';
         });
