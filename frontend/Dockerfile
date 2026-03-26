@@ -1,12 +1,9 @@
-FROM oven/bun:1-alpine
+FROM denoland/deno:latest
 
 WORKDIR /app
 
-# Copy package files first to leverage Docker cache
-COPY package.json bun.lockb* ./
-
-# Install dependencies using bun
-RUN bun install
+# Copy dependency files first to leverage Docker cache
+COPY deno.json deno.lock ./
 
 # Copy source code
 COPY . .
@@ -14,5 +11,5 @@ COPY . .
 # Expose port Vite uses
 EXPOSE 5173
 
-# Command to run Vite with host flag to ensure it listens on all interfaces
-CMD ["bun", "run", "dev", "--", "--host", "0.0.0.0"]
+# Run Vite dev server with host flag to ensure it listens on all interfaces
+CMD ["deno", "run", "-A", "npm:vite", "--host", "0.0.0.0"]

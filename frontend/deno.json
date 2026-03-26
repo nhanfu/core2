@@ -1,0 +1,12 @@
+{
+  "tasks": {
+    "dev": "deno run -A npm:vite",
+    "build": "deno run -A npm:vite build",
+    "preview": "deno run -A npm:vite preview"
+  },
+  "imports": {
+    "vite": "npm:vite@6.2.1"
+  },
+  "nodeModulesDir": true,
+  "lock": "deno.lock"
+}

@@ -3,7 +3,7 @@ services:
   postgres:
     image: postgres:16-alpine
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
       - POSTGRES_DB=crm
       - POSTGRES_USER=postgres
@@ -19,7 +19,7 @@ services:
   db-init:
     image: postgres:16-alpine
     volumes:
-      - ./CoreAPI/wwwroot/upload/crm/db:/scripts
+      - ./sample-cli/crm/db:/scripts
     environment:
       - POSTGRES_HOST=postgres
       - POSTGRES_DB=crm
@@ -30,18 +30,18 @@ services:
         condition: service_healthy
     command: bash /scripts/init_pg.sh
 
-  coreapi:
+  backend:
     build:
-      context: ./CoreAPI
+      context: ./svc
       dockerfile: Dockerfile
-    volumes:
-      - ./CoreAPI:/app
     ports:
-      - "8080:80"
-      - "2222:2222"
+      - "8000:8000"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80
+      - HOST=0.0.0.0
+      - PORT=8000
+      - DATABASE_URL=postgres://postgres:YourStrongPassword123!@postgres:5432/crm
+      - JWT_SECRET=your-super-secret-jwt-key-change-in-production
+      - NODE_ENV=development
     logging:
       driver: "json-file"
       options:
@@ -56,19 +56,17 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     volumes:
-      - ./frontend/src:/app/src
-      - ./frontend/lib:/app/lib
-      - ./frontend/index.html:/app/index.html
-      - ./frontend/vite.config.js:/app/vite.config.js
-      - ./frontend/.env:/app/.env
-      - ./frontend/public:/app/public
-      - ./frontend/images:/app/images
+      - ./frontend:/app
+      - /app/node_modules
     ports:
       - "5173:5173"
     environment:
       - NODE_ENV=development
+      - VITE_API_URL=http://localhost:8000
     depends_on:
-      - coreapi
+      - backend
+    stdin_open: true
+    tty: true
 
 volumes:
   postgres_data:

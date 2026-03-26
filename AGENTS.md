@@ -17,7 +17,7 @@
 - `svc/`: active backend runtime on Deno + Oak.
 - `sample-cli/crm/features/`: sample CRM metadata files.
 - `sample-cli/crm/db/`: PostgreSQL schema, seed, and local setup scripts.
-- `compose.yml`, `compose.release.yml`: container workflows
+- `compose.yml`: container workflows
 - `ROADMAP.md`: migration phases and architectural direction
 
 ## Architecture Overview

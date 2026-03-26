@@ -1,0 +1,22 @@
+# Docker
+Dockerfile
+.dockerignore
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test
+*.test.ts

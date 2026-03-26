@@ -31,7 +31,9 @@
     "npm:tinymce@^7.7.1": "7.9.2",
     "npm:tippy.js@^6.3.7": "6.3.7",
     "npm:uuid@^11.1.0": "11.1.0",
-    "npm:vite@^6.2.1": "6.4.1",
+    "npm:vite@*": "6.2.1",
+    "npm:vite@6.2.1": "6.2.1",
+    "npm:vite@^6.2.1": "6.2.1",
     "npm:xlsx@~0.18.5": "0.18.5"
   },
   "npm": {
@@ -1598,15 +1600,6 @@
       "integrity": "sha512-p5161BqbuCaSnB8jIbzQHOlpgsPmK5rJVDfDKO91Axs5NC1uu3HRQm6wt9cd9/+GtQQIO53JdGXXoyDpTAsgYA==",
       "dependencies": [
         "bser"
-      ]
-    },
-    "fdir@6.5.0_picomatch@4.0.3": {
-      "integrity": "sha512-tIbYtZbucOs0BRGqPJkshJUYdL+SDH7dVM8gjy+ERp3WAUjLEFJE+02kanyHtwjWOnwrKYBiwAmM0p4kLJAnXg==",
-      "dependencies": [
-        "picomatch@4.0.3"
-      ],
-      "optionalPeers": [
-        "picomatch@4.0.3"
       ]
     },
     "find-up@4.1.0": {
@@ -3266,13 +3259,6 @@
         "minimatch@3.1.5"
       ]
     },
-    "tinyglobby@0.2.15": {
-      "integrity": "sha512-j2Zq4NyQYG5XMST4cbs02Ak8iJUdxRM0XI5QyxXuZOzKOINmWurp3smXu3y5wDcJrptwpSjgXHzIQxR0omXljQ==",
-      "dependencies": [
-        "fdir",
-        "picomatch@4.0.3"
-      ]
-    },
     "tinymce@7.9.2": {
       "integrity": "sha512-zS2gn2CPQmZhUqLzkhwYH+WGsx/DIRY/mS18RVzsIcuQg2lN2uzaqoHSJU6DdMUpvXBtBFnLNpumC3QrDwLBzA=="
     },
@@ -3455,15 +3441,12 @@
         "vfile-message"
       ]
     },
-    "vite@6.4.1": {
-      "integrity": "sha512-+Oxm7q9hDoLMyJOYfUYBuHQo+dkAloi33apOPP56pzj+vsdJDzr+j1NISE5pyaAuKL4A3UD34qd0lx5+kfKp2g==",
+    "vite@6.2.1": {
+      "integrity": "sha512-n2GnqDb6XPhlt9B8olZPrgMD/es/Nd1RdChF6CBD/fHW6pUyUTt2sQW2fPRX5GiD9XEa6+8A6A4f2vT6pSsE7Q==",
       "dependencies": [
         "esbuild",
-        "fdir",
-        "picomatch@4.0.3",
         "postcss",
-        "rollup",
-        "tinyglobby"
+        "rollup"
       ],
       "optionalDependencies": [
         "fsevents"
@@ -3598,6 +3581,9 @@
     }
   },
   "workspace": {
+    "dependencies": [
+      "npm:vite@6.2.1"
+    ],
     "packageJson": {
       "dependencies": [
         "npm:@fortawesome/fontawesome-svg-core@^6.7.2",

@@ -15,6 +15,7 @@ import { createRouter } from "./src/router.ts";
 
 // Get port from environment or use default
 const PORT = parseInt(Deno.env.get("PORT") || "8000", 10);
+const HOST = Deno.env.get("HOST") || "0.0.0.0";
 
 // Create Oak application
 const app = new Application();
@@ -48,10 +49,10 @@ app.use(async (ctx, next) => {
 });
 
 // Log startup message
-console.log(`🚀 CoreAPI server starting on port ${PORT}`);
+console.log(`🚀 Core server starting on ${HOST}:${PORT}`);
 console.log(`📋 Health check available at http://localhost:${PORT}/health`);
 
 // Start the server
-await app.listen({ port: PORT });
+await app.listen({ hostname: HOST, port: PORT });
 
 console.log(`✅ Server stopped`);
