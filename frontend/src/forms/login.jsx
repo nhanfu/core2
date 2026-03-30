@@ -163,7 +163,7 @@ export class LoginBL extends EditForm {
         </>
       );
     };
-    this.meta.Layout = this.meta.layout;
+    this.meta.layout = this.meta.layout;
   }
 
   /** @type {LoginBL} */

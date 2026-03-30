@@ -63,7 +63,7 @@ export class RichTextBox extends EditableComponent {
             font_size_formats: '8pt 9pt 10pt 11pt 12pt 13pt 14pt 15pt 16pt 17pt 18pt 24pt 36pt 48pt',
             contextmenu: "margin-page | link image inserttable | table add-background-img gen-table-excel | tablename groupby | classProp titleProp stylesProp | Viewpdf Viewhistory",
             images_upload_handler: self.imageHandler.bind(self),
-            height: this.meta.Precision || 250,
+            height: this.meta.precision || 250,
             setup: function (editor) {
                 self.quill = editor;
                 editor.on('init', function () {
@@ -518,7 +518,7 @@ export class RichTextBox extends EditableComponent {
             }).end.end.end.div.className("popup-body").div.className("wrapper scroll-content");
         this.bodyElement = Html.context;
         Html.instance.end.div.className("popup-footer");
-        if (this._backdrop.outOfViewport().Top) {
+        if (this._backdrop.outOfViewport().top) {
             this._backdrop.scrollIntoView(true);
         }
         const res = {
@@ -542,11 +542,11 @@ export class RichTextBox extends EditableComponent {
                 Html.instance.div.label.className("header").text(this.dayjs(item.insertedDate).format("DD/MM/YYYY HH:mm")).end.div.className("diff-container").style("height:250px");
                 const modifiedModel = monaco.editor.createModel(
                     item.value ?? ``,
-                    this.meta.Lang ?? 'javascript'
+                    this.meta.lang ?? 'javascript'
                 );
                 const originalModel = monaco.editor.createModel(
                     item.oldValue ?? ``,
-                    this.meta.Lang ?? 'javascript'
+                    this.meta.lang ?? 'javascript'
                 );
                 const diffEditor = monaco.editor.createDiffEditor(
                     Html.context,

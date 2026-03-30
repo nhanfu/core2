@@ -311,7 +311,7 @@ export class ComponentExt {
     // Modify the visibility of specific fields in a component
     static setShow(component, show, ...fieldNames) {
         component.Children.filter(child => fieldNames.includes(child.Name))
-            .forEach(child => child.Show = show);
+            .forEach(child => child.show = show);
     }
 
 
@@ -332,15 +332,15 @@ export class ComponentExt {
         element.style.bottom = "auto";
         element.style.left = "auto";
         Html.take(element).floating(containerBottom, containerRect.left);
-        if (this.isOutOfViewport(element).Right) {
-            if (!this.isOutOfViewport(element).Bottom) {
+        if (this.isOutOfViewport(element).right) {
+            if (!this.isOutOfViewport(element).bottom) {
                 this.bottomCenter(element, parentEle);
             }
-            else if (containerRect.Top > element.clientHeight) {
+            else if (containerRect.top > element.clientHeight) {
                 this.topCenter(element, parentEle);
             }
         }
-        if (this.isOutOfViewport(element).Bottom) {
+        if (this.isOutOfViewport(element).bottom) {
             this.topCenter(element, parentEle);
         }
     }
@@ -374,7 +374,7 @@ export class ComponentExt {
     * @param {HTMLElement} parent
     */
     static moveLeft(element) {
-        while (this.isOutOfViewport(element).Right) {
+        while (this.isOutOfViewport(element).right) {
             const left = this.getComputedPx(element, 'left') - this.stepPx;
             element.style.left = left + 'px';
         }
@@ -385,7 +385,7 @@ export class ComponentExt {
     */
     static moveTop(element, parent) {
         const parentTop = parent ? parent.getBoundingClientRect().top : null;
-        while (this.isOutOfViewport(element).Bottom || (parent && element.getBoundingClientRect().bottom > parentTop)) {
+        while (this.isOutOfViewport(element).bottom || (parent && element.getBoundingClientRect().bottom > parentTop)) {
             const top = this.getComputedPx(element, 'top') - (parent ? 1 : this.stepPx);
             element.style.top = top + 'px';
         }
@@ -419,10 +419,10 @@ export class ComponentExt {
     static isOutOfViewport(element) {
         const rect = element.getBoundingClientRect();
         return {
-            Top: rect.top < 0,
-            Right: rect.right > (window.innerWidth || document.documentElement.clientWidth),
-            Bottom: rect.bottom > (window.innerHeight || document.documentElement.clientHeight),
-            Left: rect.left < 0
+            top: rect.top < 0,
+            right: rect.right > (window.innerWidth || document.documentElement.clientWidth),
+            bottom: rect.bottom > (window.innerHeight || document.documentElement.clientHeight),
+            left: rect.left < 0
         };
     }
 

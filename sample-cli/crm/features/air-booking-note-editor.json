@@ -2,7 +2,7 @@
     "Id": "air_booking_note_editor",
     "Name": "air-booking-note-editor",
     "Label": "Air Booking Note Editor",
-    "Style": "width:99%;",
+    "style": "width:99%;",
     "Script": "return {\r\n    CalcWeight: function (form, gridview) {\r\n        var detail = this.EditForm.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"EntityDimension\");\r\n        if ((detail && detail.AllListViewItem.length > 0)) {\r\n            var rowData = detail.AllListViewItem.map(x => x.Entity);\r\n            var volumeWeight = rowData.reduce((a, b) => a.plus(((new this.Decimal(b.Width || 0)).times(new this.Decimal(b.Height || 0)).times(new this.Decimal(b.Length || 0))).times((new this.Decimal(b.Quantity || 0))).div(new this.Decimal(6000))), new this.Decimal(0));\r\n            var kgs = rowData.reduce((a, b) => a.plus(((new this.Decimal(b.Width || 0)).times(new this.Decimal(b.Height || 0)).times(new this.Decimal(b.Length || 0))).times((new this.Decimal(b.Quantity || 0))).div(new this.Decimal(1000000))), new this.Decimal(0));\r\n            this.EditForm.Entity.VolumeWeight = volumeWeight || new this.Decimal(0);\r\n            this.EditForm.Entity.Kgs = kgs || new this.Decimal(0);\r\n            this.EditForm.UpdateView(false, false, \"VolumeWeight\", \"Kgs\");\r\n        }\r\n    },\r\n    SetDefaultCW: function (form, gridview) {\r\n        var cw = this.EditForm.Entity.VolumeWeight > this.EditForm.Entity.GW ? this.EditForm.Entity.VolumeWeight : this.EditForm.Entity.GW;\r\n        this.EditForm.Entity.CW = this.EditForm.Entity.CW || cw;\r\n        this.EditForm.Entity.CBM = this.EditForm.Entity.CBM || this.EditForm.Entity.Kgs;\r\n        this.EditForm.UpdateView(false, false, \"CBM\", \"CW\");\r\n        this.EditForm.Dirty = true;\r\n    }\r\n}",
     "Events": "{\r\n    \"onsave\": \"OnSave\",\r\n    \"onsaveadd\": \"OnSaveAdd\",\r\n    \"saved\": \"UpdateParent\"\r\n}",
     "EntityId": "Booking",
@@ -11,12 +11,12 @@
         {
             "Id": "air_booking_note_editor.Height.2",
             "FieldName": "Height",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Number",
             "Label": "Height",
-            "Width": "96px",
+            "width": "96px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "96px",
             "MaxWidth": "96px",
             "EntityId": "EntityDimension"
@@ -24,12 +24,12 @@
         {
             "Id": "air_booking_note_editor.Quantity.3",
             "FieldName": "Quantity",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Number",
             "Label": "PCS",
-            "Width": "112px",
+            "width": "112px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "112px",
             "MaxWidth": "112px",
             "EntityId": "EntityDimension"
@@ -37,12 +37,12 @@
         {
             "Id": "air_booking_note_editor.Length.0",
             "FieldName": "Length",
-            "Order": 0,
+            "order": 0,
             "ComponentType": "Number",
             "Label": "Length",
-            "Width": "138px",
+            "width": "138px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "138px",
             "MaxWidth": "138px",
             "EntityId": "EntityDimension"
@@ -50,12 +50,12 @@
         {
             "Id": "air_booking_note_editor.Width.1",
             "FieldName": "Width",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Number",
             "Label": "Width",
-            "Width": "97px",
+            "width": "97px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "97px",
             "MaxWidth": "97px",
             "EntityId": "EntityDimension"
@@ -63,13 +63,13 @@
         {
             "Id": "air_booking_note_editor.Quantity.0",
             "FieldName": "Quantity",
-            "Order": 0,
+            "order": 0,
             "ComponentType": "Number",
-            "Precision": 3,
+            "precision": 3,
             "Label": "Quantity",
-            "Width": "206px",
+            "width": "206px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "206px",
             "MaxWidth": "206px",
             "EntityId": "EntityContainer"
@@ -77,18 +77,18 @@
         {
             "Id": "air_booking_note_editor.ContainerTypeId.1",
             "FieldName": "ContainerTypeId",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Dropdown",
             "FormatData": "{Name}",
             "PlainText": "Select data",
             "Row": 100,
             "Label": "Container Type",
-            "Width": "168px",
-            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Container Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Container Type'\"\r\n}",
+            "width": "168px",
+            "query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Container Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Container Type'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "168px",
             "MaxWidth": "168px",
             "EntityId": "EntityContainer"
@@ -96,18 +96,18 @@
         {
             "Id": "air_booking_note_editor.FromId.0",
             "FieldName": "FromId",
-            "Order": 0,
+            "order": 0,
             "ComponentType": "Dropdown",
             "FormatData": "{Name}",
             "PlainText": "Select data",
             "Row": 100,
             "Label": "From",
-            "Width": "111px",
-            "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
+            "width": "111px",
+            "query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "111px",
             "MaxWidth": "111px",
             "EntityId": "EntityTransit"
@@ -115,18 +115,18 @@
         {
             "Id": "air_booking_note_editor.ToId.1",
             "FieldName": "ToId",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Dropdown",
             "FormatData": "{Name}",
             "PlainText": "Select data",
             "Row": 100,
             "Label": "To",
-            "Width": "143px",
-            "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
+            "width": "143px",
+            "query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "143px",
             "MaxWidth": "143px",
             "EntityId": "EntityTransit"
@@ -134,11 +134,11 @@
         {
             "Id": "air_booking_note_editor.TransitNo.2",
             "FieldName": "TransitNo",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Input",
             "Label": "Flight",
-            "Width": "158px",
-            "Editable": true,
+            "width": "158px",
+            "editable": true,
             "MinWidth": "158px",
             "MaxWidth": "158px",
             "EntityId": "EntityTransit"
@@ -146,13 +146,13 @@
         {
             "Id": "air_booking_note_editor.EtdTsDate.3",
             "FieldName": "EtdTsDate",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Datepicker",
-            "Precision": 7,
+            "precision": 7,
             "Label": "ETD",
-            "Width": "164px",
+            "width": "164px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "164px",
             "MaxWidth": "164px",
             "EntityId": "EntityTransit"
@@ -160,40 +160,40 @@
         {
             "Id": "air_booking_note_editor.EtaTsDate.4",
             "FieldName": "EtaTsDate",
-            "Order": 4,
+            "order": 4,
             "ComponentType": "Datepicker",
-            "Precision": 7,
+            "precision": 7,
             "Label": "ETA",
-            "Width": "145px",
+            "width": "145px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "145px",
             "MaxWidth": "145px",
             "EntityId": "EntityTransit"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "air_booking_note_editor.Container.2",
             "FieldName": "Container",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 8,
-            "Components": [
+            "components": [
                 {
                     "Id": "Container.Left.1_2",
                     "FieldName": "Left",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "Section",
                     "ClassName": "card-body",
                     "XxlCol": 12,
                     "XxlOuterColumn": 4,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Left.VendorId.3",
                             "FieldName": "VendorId",
-                            "Order": 3,
+                            "order": 3,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -203,7 +203,7 @@
                             "ShowLabel": true,
                             "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('provider-editor',{ ServiceId: 3, ActionId: 1})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('provider-editor',this.Matched)\"\r\n}",
                             "PopulateField": "this.EditForm.Entity.PicVendor = this.Matched.ContactName;\r\nthis.EditForm.UpdateView(false, false, \"PicVendor\");\r\nreturn null;",
-                            "Query": "{     \"sql\": \"select * from Partner as ds where ServiceId = 3 and ActionId = 1 and IsNoDebt = 0\",     \"total\": \"select count(ds.Id) as total from Partner as ds  where ServiceId = 3 and ActionId = 1 and IsNoDebt = 0\" }",
+                            "query": "{     \"sql\": \"select * from Partner as ds where ServiceId = 3 and ActionId = 1 and IsNoDebt = 0\",     \"total\": \"select count(ds.Id) as total from Partner as ds  where ServiceId = 3 and ActionId = 1 and IsNoDebt = 0\" }",
                             "RefName": "Partner",
                             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
                             "PreQuery": "{ \"UserId\": this.Token.UserId }",
@@ -212,7 +212,7 @@
                         {
                             "Id": "Left.CustomerId.5",
                             "FieldName": "CustomerId",
-                            "Order": 5,
+                            "order": 5,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -221,9 +221,9 @@
                             "Label": "Customer",
                             "ShowLabel": true,
                             "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('customer-editor',{ ServiceId : 1, TypeId : 3, ActionId : 1, SaleId: this.Token.UserId })\",\r\n    \"edit\": \"this.EditForm.OpenPopup('customer-editor',this.Matched)\"\r\n}",
-                            "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
+                            "validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
                             "PopulateField": "this.EditForm.Entity.Pic = this.Matched.ContactName;\r\nthis.EditForm.Entity.Sale = null;\r\nthis.EditForm.Entity.SaleId = this.Matched.SaleId;\r\nthis.EditForm.UpdateView(false, false, \"Pic\", \"SaleId\", \"PhoneNumber\");\r\nreturn null;",
-                            "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 1 and TypeId in (2,3) and (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.DistributeInformationIds like N'%{TokenUserId}%'))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 1 and TypeId in (2,3) and (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.DistributeInformationIds like N'%{TokenUserId}%'))\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 1 and TypeId in (2,3) and (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.DistributeInformationIds like N'%{TokenUserId}%'))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 1 and TypeId in (2,3) and (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.DistributeInformationIds like N'%{TokenUserId}%'))\"\r\n}",
                             "RefName": "Partner",
                             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
                             "PreQuery": "{\r\n    \"UserId\": this.Token.UserId,\r\n    \"UserName\": this.Token.UserName\r\n}",
@@ -232,7 +232,7 @@
                         {
                             "Id": "Left.Pic.6",
                             "FieldName": "Pic",
-                            "Order": 6,
+                            "order": 6,
                             "ComponentType": "Input",
                             "Column": 6,
                             "Row": 50,
@@ -242,7 +242,7 @@
                         {
                             "Id": "Left.PicVendor.4",
                             "FieldName": "PicVendor",
-                            "Order": 4,
+                            "order": 4,
                             "ComponentType": "Input",
                             "Column": 6,
                             "Row": 50,
@@ -252,7 +252,7 @@
                         {
                             "Id": "Left.BookingNo.1_1",
                             "FieldName": "BookingNo",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "Input",
                             "Column": 6,
                             "Label": "Booking No",
@@ -261,7 +261,7 @@
                         {
                             "Id": "Left.BookingDate.2",
                             "FieldName": "BookingDate",
-                            "Order": 2,
+                            "order": 2,
                             "ComponentType": "Datepicker",
                             "Column": 6,
                             "Label": "Booking Date",
@@ -270,7 +270,7 @@
                         {
                             "Id": "Left.CarrierId.7",
                             "FieldName": "CarrierId",
-                            "Order": 7,
+                            "order": 7,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -279,7 +279,7 @@
                             "Label": "Carrier",
                             "ShowLabel": true,
                             "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('provider-editor',{ ServiceId: 3, ActionId: 1,PartnerTypeIds: '00671858-0000-0000-8000-d917e69b0ea0',PartnerTypeIdsText: 'Carrier'})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('provider-editor',this.Matched)\"\r\n}",
-                            "Query": "{     \"sql\": \"select * from Partner as ds where ServiceId = 3 and ActionId = 1 and IsNoDebt = 0\",     \"total\": \"select count(ds.Id) as total from Partner as ds  where ServiceId = 3 and ActionId = 1 and IsNoDebt = 0\" }",
+                            "query": "{     \"sql\": \"select * from Partner as ds where ServiceId = 3 and ActionId = 1 and IsNoDebt = 0\",     \"total\": \"select count(ds.Id) as total from Partner as ds  where ServiceId = 3 and ActionId = 1 and IsNoDebt = 0\" }",
                             "RefName": "Partner",
                             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
                             "PreQuery": "{ \"UserId\": this.Token.UserId }",
@@ -290,16 +290,16 @@
                 {
                     "Id": "Container.Main.2_2",
                     "FieldName": "Main",
-                    "Order": 2,
+                    "order": 2,
                     "ComponentType": "Section",
                     "ClassName": "card-body",
                     "XxlCol": 12,
                     "XxlOuterColumn": 4,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Main.ServiceText.4_1",
                             "FieldName": "ServiceText",
-                            "Order": 4,
+                            "order": 4,
                             "ComponentType": "Input",
                             "Column": 6,
                             "Label": "Service",
@@ -308,7 +308,7 @@
                         {
                             "Id": "Main.SaleId.6",
                             "FieldName": "SaleId",
-                            "Order": 6,
+                            "order": 6,
                             "ComponentType": "Dropdown",
                             "FormatData": "{FullName}",
                             "PlainText": "Select data",
@@ -316,14 +316,14 @@
                             "Row": 100,
                             "Label": "Sale man",
                             "ShowLabel": true,
-                            "Query": "{\r\n    \"sql\": \"select ds.* from [User] as ds where (TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 1)\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select ds.* from [User] as ds where (TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 1)\"\r\n}",
                             "RefName": "User",
                             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]"
                         },
                         {
                             "Id": "Main.HblNo.1",
                             "FieldName": "HblNo",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "Input",
                             "Column": 6,
                             "Label": "HBL No",
@@ -332,7 +332,7 @@
                         {
                             "Id": "Main.ShipmentTypeId.5_1",
                             "FieldName": "ShipmentTypeId",
-                            "Order": 5,
+                            "order": 5,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -341,13 +341,13 @@
                             "Label": "Shipment type",
                             "ShowLabel": true,
                             "Events": "{\"change\":\"ShowHideDetail\"}",
-                            "Query": "[\r\n    {\r\n        \"Id\": 0,\r\n        \"Name\": \"FREE-HAND\"\r\n    },\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"NOMINATE\"\r\n    }\r\n]",
+                            "query": "[\r\n    {\r\n        \"Id\": 0,\r\n        \"Name\": \"FREE-HAND\"\r\n    },\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"NOMINATE\"\r\n    }\r\n]",
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
                             "Id": "Main.ReferenceNo.2",
                             "FieldName": "ReferenceNo",
-                            "Order": 2,
+                            "order": 2,
                             "ComponentType": "Input",
                             "Column": 6,
                             "Label": "Reference No",
@@ -356,7 +356,7 @@
                         {
                             "Id": "Main.CommodityId.3_1",
                             "FieldName": "CommodityId",
-                            "Order": 3,
+                            "order": 3,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -364,7 +364,7 @@
                             "Row": 100,
                             "Label": "Commodity",
                             "ShowLabel": true,
-                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Commodity Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Commodity Type'\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Commodity Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Commodity Type'\"\r\n}",
                             "RefName": "MasterData",
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         }
@@ -373,17 +373,17 @@
                 {
                     "Id": "Container.Left1.5_1",
                     "FieldName": "Left1",
-                    "Order": 5,
+                    "order": 5,
                     "ComponentType": "Section",
                     "Label": "Shipment details",
                     "ClassName": "card-body",
                     "XxlCol": 12,
                     "XxlOuterColumn": 4,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Left1.PolId.1",
                             "FieldName": "PolId",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -391,14 +391,14 @@
                             "Row": 100,
                             "Label": "Air of Loading",
                             "ShowLabel": true,
-                            "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
+                            "query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                             "RefName": "Terminal",
                             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
                             "Id": "Left1.EtaDate.4",
                             "FieldName": "EtaDate",
-                            "Order": 4,
+                            "order": 4,
                             "ComponentType": "Datepicker",
                             "Column": 6,
                             "Label": "ETA",
@@ -407,7 +407,7 @@
                         {
                             "Id": "Left1.EtdDate.2",
                             "FieldName": "EtdDate",
-                            "Order": 2,
+                            "order": 2,
                             "ComponentType": "Datepicker",
                             "Column": 6,
                             "Label": "ETD",
@@ -416,7 +416,7 @@
                         {
                             "Id": "Left1.WarehouseId.5",
                             "FieldName": "WarehouseId",
-                            "Order": 5,
+                            "order": 5,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -424,14 +424,14 @@
                             "Row": 100,
                             "Label": "Warehouse",
                             "ShowLabel": true,
-                            "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
+                            "query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                             "RefName": "Terminal",
                             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
                             "Id": "Left1.PodId.3",
                             "FieldName": "PodId",
-                            "Order": 3,
+                            "order": 3,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -439,34 +439,34 @@
                             "Row": 100,
                             "Label": "Air of Discharge",
                             "ShowLabel": true,
-                            "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
+                            "query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                             "RefName": "Terminal",
                             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
                             "Id": "Left1.CutOffDate.7",
                             "FieldName": "CutOffDate",
-                            "Order": 7,
+                            "order": 7,
                             "ComponentType": "Datepicker",
                             "Column": 6,
-                            "Precision": 7,
+                            "precision": 7,
                             "Label": "Cutt-off time",
                             "ShowLabel": true
                         },
                         {
                             "Id": "Left1.DocsCutOffDate.8",
                             "FieldName": "DocsCutOffDate",
-                            "Order": 8,
+                            "order": 8,
                             "ComponentType": "Datepicker",
                             "Column": 6,
-                            "Precision": 7,
+                            "precision": 7,
                             "Label": "Cutt-off Docs",
                             "ShowLabel": true
                         },
                         {
                             "Id": "Left1.PickupAt.12",
                             "FieldName": "PickupAt",
-                            "Order": 12,
+                            "order": 12,
                             "ComponentType": "Textarea",
                             "Column": 6,
                             "Row": 3,
@@ -476,7 +476,7 @@
                         {
                             "Id": "Left1.DropOffAt.13",
                             "FieldName": "DropOffAt",
-                            "Order": 13,
+                            "order": 13,
                             "ComponentType": "Textarea",
                             "Column": 6,
                             "Row": 3,
@@ -486,7 +486,7 @@
                         {
                             "Id": "Left1.EntityTransit.18",
                             "FieldName": "EntityTransit",
-                            "Order": 18,
+                            "order": 18,
                             "ComponentType": "GridView",
                             "Column": 12,
                             "Row": 50,
@@ -494,10 +494,10 @@
                             "ShowLabel": true,
                             "DefaultVal": "{\r\n    \"EntityId\": this.EditForm.Entity.Id\r\n}",
                             "CanAdd": true,
-                            "Query": "{\r\n    \"sql\": \"select * from EntityTransit as ds where EntityId = '{EntityId}'\",\r\n    \"total\": \"select count(ds.Id) as total from EntityTransit as ds where EntityId = '{EntityId}'\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select * from EntityTransit as ds where EntityId = '{EntityId}'\",\r\n    \"total\": \"select count(ds.Id) as total from EntityTransit as ds where EntityId = '{EntityId}'\"\r\n}",
                             "RefName": "EntityTransit",
                             "PreQuery": "{\r\n    \"EntityId\": this.EditForm.Entity.Id\r\n}",
-                            "Editable": true,
+                            "editable": true,
                             "OrderBy": "ds.InsertedDate desc"
                         }
                     ]
@@ -505,26 +505,26 @@
                 {
                     "Id": "Container.Sea_Container.8",
                     "FieldName": "Sea Container",
-                    "Order": 8,
+                    "order": 8,
                     "ComponentType": "Section",
                     "ClassName": "card-body",
                     "XxlCol": 12,
                     "XxlOuterColumn": 4,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Sea_Container.Quantity.1",
                             "FieldName": "Quantity",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "Number",
                             "Column": 6,
                             "Label": "Quantity",
                             "ShowLabel": true,
-                            "Style": " height: 30px;"
+                            "style": " height: 30px;"
                         },
                         {
                             "Id": "Sea_Container.UnitId.2",
                             "FieldName": "UnitId",
-                            "Order": 2,
+                            "order": 2,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -532,14 +532,14 @@
                             "Row": 100,
                             "Label": "Unit",
                             "ShowLabel": true,
-                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where ds1.Name in (N'Unit Type','LTL Type','Container Type')\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where ds1.Name in (N'Unit Type','LTL Type','Container Type')\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where ds1.Name in (N'Unit Type','LTL Type','Container Type')\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where ds1.Name in (N'Unit Type','LTL Type','Container Type')\"\r\n}",
                             "RefName": "MasterData",
                             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]"
                         },
                         {
                             "Id": "Sea_Container.GW.3",
                             "FieldName": "GW",
-                            "Order": 3,
+                            "order": 3,
                             "ComponentType": "Number",
                             "Column": 4,
                             "Label": "GW",
@@ -548,7 +548,7 @@
                         {
                             "Id": "Sea_Container.CW.4",
                             "FieldName": "CW",
-                            "Order": 4,
+                            "order": 4,
                             "ComponentType": "Number",
                             "Column": 4,
                             "Label": "CW",
@@ -557,7 +557,7 @@
                         {
                             "Id": "Sea_Container.CBM.5",
                             "FieldName": "CBM",
-                            "Order": 5,
+                            "order": 5,
                             "ComponentType": "Number",
                             "Column": 4,
                             "Label": "CBM",
@@ -566,7 +566,7 @@
                         {
                             "Id": "Sea_Container.RateComfirm.6",
                             "FieldName": "RateComfirm",
-                            "Order": 6,
+                            "order": 6,
                             "ComponentType": "Number",
                             "Column": 6,
                             "Label": "Rate Comfirm",
@@ -575,7 +575,7 @@
                         {
                             "Id": "Sea_Container.PoNo.7",
                             "FieldName": "PoNo",
-                            "Order": 7,
+                            "order": 7,
                             "ComponentType": "Input",
                             "Column": 6,
                             "Label": "PO No",
@@ -584,7 +584,7 @@
                         {
                             "Id": "Sea_Container.EntityDimension.9",
                             "FieldName": "EntityDimension",
-                            "Order": 9,
+                            "order": 9,
                             "ComponentType": "GridView",
                             "Column": 12,
                             "Row": 200,
@@ -593,15 +593,15 @@
                             "Events": "{\"change\":\"CalcWeight\"}",
                             "DefaultVal": "{\r\n    \"EntityId\": this.EditForm.Entity.Id,\r\n    \"TableName\": \"Booking Note\"\r\n}",
                             "CanAdd": true,
-                            "Query": "{\r\n    \"sql\": \"select * from EntityDimension as ds where EntityId = '{EntityId}'\",\r\n    \"total\": \"select count(ds.Id) as total from EntityDimension as ds where EntityId = '{EntityId}'\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select * from EntityDimension as ds where EntityId = '{EntityId}'\",\r\n    \"total\": \"select count(ds.Id) as total from EntityDimension as ds where EntityId = '{EntityId}'\"\r\n}",
                             "RefName": "EntityDimension",
                             "PreQuery": "{ \"EntityId\": this.EditForm.Entity.Id}",
-                            "Editable": true
+                            "editable": true
                         },
                         {
                             "Id": "Sea_Container.btnSetCW.10",
                             "FieldName": "btnSetCW",
-                            "Order": 10,
+                            "order": 10,
                             "ComponentType": "Button",
                             "Column": 12,
                             "Label": "Volume weight",
@@ -611,42 +611,42 @@
                         {
                             "Id": "Sea_Container.VolumeWeight.11",
                             "FieldName": "VolumeWeight",
-                            "Order": 11,
+                            "order": 11,
                             "ComponentType": "Number",
                             "Column": 6,
                             "Label": "KGS",
                             "ShowLabel": true,
-                            "Style": "display: flex; flex-flow: row-reverse; white-space: nowrap; align-items: center;gap: 35px;",
-                            "Disabled": true
+                            "style": "display: flex; flex-flow: row-reverse; white-space: nowrap; align-items: center;gap: 35px;",
+                            "disabled": true
                         },
                         {
                             "Id": "Sea_Container.Kgs.12",
                             "FieldName": "Kgs",
-                            "Order": 12,
+                            "order": 12,
                             "ComponentType": "Number",
                             "Column": 6,
                             "Label": "CBM",
                             "ShowLabel": true,
-                            "Style": "display: flex; flex-flow: row-reverse; white-space: nowrap; align-items: center;gap: 35px;",
-                            "Disabled": true
+                            "style": "display: flex; flex-flow: row-reverse; white-space: nowrap; align-items: center;gap: 35px;",
+                            "disabled": true
                         },
                         {
                             "Id": "Sea_Container.Remark.13",
                             "FieldName": "Remark",
-                            "Order": 13,
+                            "order": 13,
                             "ComponentType": "Word",
                             "Column": 12,
                             "Row": 1,
                             "Label": "Remark",
                             "ShowLabel": true,
-                            "Style": "height: 160px;"
+                            "style": "height: 160px;"
                         }
                     ]
                 },
                 {
                     "Id": "Container.btnSetCW.10_1",
                     "FieldName": "btnSetCW",
-                    "Order": 10,
+                    "order": 10,
                     "ComponentType": "Button",
                     "Column": 12,
                     "Label": "Volume weight",
@@ -656,11 +656,11 @@
                 {
                     "Id": "Container.btnApprove.4_2",
                     "FieldName": "btnApprove",
-                    "Order": 4,
+                    "order": 4,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Approve",
-                    "Icon": "fal fa-check-circle",
+                    "icon": "fal fa-check-circle",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"ApprovedEntity\" }",
                     "ShowExp": "this.Entity.StatusId == 2"
@@ -668,11 +668,11 @@
                 {
                     "Id": "Container.btnSendEntity.2_2",
                     "FieldName": "btnSendEntity",
-                    "Order": 2,
+                    "order": 2,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Send",
-                    "Icon": "far fa-share-all",
+                    "icon": "far fa-share-all",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"SendEntity\" }",
                     "ShowExp": "this.Entity.StatusId == 1 || this.Entity.StatusId == 4"
@@ -680,11 +680,11 @@
                 {
                     "Id": "Container.btnDecline.3_2",
                     "FieldName": "btnDecline",
-                    "Order": 3,
+                    "order": 3,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Decline",
-                    "Icon": "fal fa-comment-alt-slash",
+                    "icon": "fal fa-comment-alt-slash",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"DeclineEntity\" }",
                     "ShowExp": "this.Entity.StatusId == 2"
@@ -692,35 +692,35 @@
                 {
                     "Id": "Container.btnSaveAdd.0_1",
                     "FieldName": "btnSaveAdd",
-                    "Order": 0,
+                    "order": 0,
                     "ComponentType": "Button",
                     "Column": 1,
                     "GroupFormat": "Options",
                     "Label": "Save As",
-                    "Icon": "fas fa-sliders-h-square",
+                    "icon": "fas fa-sliders-h-square",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"SaveAs\" }"
                 },
                 {
                     "Id": "Container.btnSaveAdd.1_1",
                     "FieldName": "btnSaveAdd",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "Button",
                     "Column": 1,
                     "GroupFormat": "Options",
                     "Label": "Save & Add",
-                    "Icon": "fas fa-sliders-h-square",
+                    "icon": "fas fa-sliders-h-square",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"SaveAdd\" }"
                 },
                 {
                     "Id": "Container.btnSave.5_2",
                     "FieldName": "btnSave",
-                    "Order": 5,
+                    "order": 5,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Save",
-                    "Icon": "fal fa-save",
+                    "icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }"
@@ -730,20 +730,20 @@
         {
             "Id": "air_booking_note_editor.Button.1",
             "FieldName": "Button",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "ClassName": "ribbon-group",
-            "Style": "margin-bottom: 0px;padding: 0;",
+            "style": "margin-bottom: 0px;padding: 0;",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Button.btnApprove.4_2",
                     "FieldName": "btnApprove",
-                    "Order": 4,
+                    "order": 4,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Approve",
-                    "Icon": "fal fa-check-circle",
+                    "icon": "fal fa-check-circle",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"ApprovedEntity\" }",
                     "ShowExp": "this.Entity.StatusId == 2"
@@ -751,11 +751,11 @@
                 {
                     "Id": "Button.btnSendEntity.2_2",
                     "FieldName": "btnSendEntity",
-                    "Order": 2,
+                    "order": 2,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Send",
-                    "Icon": "far fa-share-all",
+                    "icon": "far fa-share-all",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"SendEntity\" }",
                     "ShowExp": "this.Entity.StatusId == 1 || this.Entity.StatusId == 4"
@@ -763,11 +763,11 @@
                 {
                     "Id": "Button.btnDecline.3_2",
                     "FieldName": "btnDecline",
-                    "Order": 3,
+                    "order": 3,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Decline",
-                    "Icon": "fal fa-comment-alt-slash",
+                    "icon": "fal fa-comment-alt-slash",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"DeclineEntity\" }",
                     "ShowExp": "this.Entity.StatusId == 2"
@@ -775,35 +775,35 @@
                 {
                     "Id": "Button.btnSaveAdd.0_1",
                     "FieldName": "btnSaveAdd",
-                    "Order": 0,
+                    "order": 0,
                     "ComponentType": "Button",
                     "Column": 1,
                     "GroupFormat": "Options",
                     "Label": "Save As",
-                    "Icon": "fas fa-sliders-h-square",
+                    "icon": "fas fa-sliders-h-square",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"SaveAs\" }"
                 },
                 {
                     "Id": "Button.btnSaveAdd.1_1",
                     "FieldName": "btnSaveAdd",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "Button",
                     "Column": 1,
                     "GroupFormat": "Options",
                     "Label": "Save & Add",
-                    "Icon": "fas fa-sliders-h-square",
+                    "icon": "fas fa-sliders-h-square",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"SaveAdd\" }"
                 },
                 {
                     "Id": "Button.btnSave.5_2",
                     "FieldName": "btnSave",
-                    "Order": 5,
+                    "order": 5,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Save",
-                    "Icon": "fal fa-save",
+                    "icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }"
@@ -813,16 +813,16 @@
         {
             "Id": "air_booking_note_editor.Center.4",
             "FieldName": "Center",
-            "Order": 4,
+            "order": 4,
             "ComponentType": "Section",
             "ClassName": "title-option",
-            "Style": "margin-bottom: 0px;padding: 0;",
+            "style": "margin-bottom: 0px;padding: 0;",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Center.ServiceId.1_1",
                     "FieldName": "ServiceId",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "Select",
                     "FormatData": "{Description}",
                     "PlainText": "Select data",
@@ -830,24 +830,24 @@
                     "Row": 50,
                     "Label": "Service mode",
                     "ShowLabel": true,
-                    "Style": "display: flex;align-items: center;gap: 1rem;",
+                    "style": "display: flex;align-items: center;gap: 1rem;",
                     "Events": "{\"change\":\"ShowHideDetail\"}",
-                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
+                    "validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
                     "PopulateField": "this.EditForm.ShowHideDetail();\r\nreturn null;",
-                    "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Air Export\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-plane-departure mr-1'></i>Air Export</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"Air Import\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-plane-arrival mr-1'></i>Air Import</span>\"\r\n    }\r\n]",
+                    "query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Air Export\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-plane-departure mr-1'></i>Air Export</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"Air Import\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-plane-arrival mr-1'></i>Air Import</span>\"\r\n    }\r\n]",
                     "Template": "[{ \"FieldName\" : \"Description\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "Center.BookingLocalId.2",
                     "FieldName": "BookingLocalId",
-                    "Order": 2,
+                    "order": 2,
                     "ComponentType": "Input",
                     "Column": 6,
                     "Row": 50,
                     "Label": "Ref",
                     "ShowLabel": true,
-                    "Style": "display: flex;align-items: center;gap: 1rem;",
-                    "Disabled": true,
+                    "style": "display: flex;align-items: center;gap: 1rem;",
+                    "disabled": true,
                     "PopulateField": "this.EditForm.ShowHideDetail();\r\nreturn null;",
                     "Template": "[{ \"FieldName\" : \"Description\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 }

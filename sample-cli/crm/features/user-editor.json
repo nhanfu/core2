@@ -2,46 +2,46 @@
     "Id": "user_editor",
     "Name": "user-editor",
     "Label": "User Editor",
-    "Order": 0,
-    "Style": "width:99%;",
+    "order": 0,
+    "style": "width:99%;",
     "EntityId": "User",
     "GridPolicies": [
         {
             "Id": "user_editor.RoleId.0",
             "FieldName": "RoleId",
-            "Order": 0,
+            "order": 0,
             "ComponentType": "Dropdown",
             "FormatData": "{Name}",
             "PlainText": "Select data",
             "Row": 100,
             "Label": "Role",
-            "Width": "536px",
-            "Query": "{\r\n    \"sql\": \"select * from Role as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Role as ds\"\r\n}",
+            "width": "536px",
+            "query": "{\r\n    \"sql\": \"select * from Role as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Role as ds\"\r\n}",
             "RefName": "Role",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-            "Editable": true,
+            "editable": true,
             "MinWidth": "536px",
             "MaxWidth": "536px",
             "EntityId": "UserRole"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "user_editor.Button.1",
             "FieldName": "Button",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "ClassName": "ribbon-group",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Button.btnSave.1_12",
                     "FieldName": "btnSave",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Save",
-                    "Icon": "fal fa-save",
+                    "icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }"
@@ -49,11 +49,11 @@
                 {
                     "Id": "Button.btnSave.1_13",
                     "FieldName": "btnSave",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Save",
-                    "Icon": "fal fa-save",
+                    "icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }"
@@ -63,23 +63,23 @@
         {
             "Id": "user_editor.Container.3",
             "FieldName": "Container ",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Container.Right.1",
                     "FieldName": "Right",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "Section",
                     "ClassName": "card-body",
                     "XxlCol": 12,
                     "XxlOuterColumn": 2,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Right.Avatar.1",
                             "FieldName": "Avatar",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "FileUpload",
                             "Column": 12,
                             "VirtualScroll": true
@@ -89,16 +89,16 @@
                 {
                     "Id": "Container.Left.2",
                     "FieldName": "Left",
-                    "Order": 2,
+                    "order": 2,
                     "ComponentType": "Section",
                     "ClassName": "card-body",
                     "XxlCol": 12,
                     "XxlOuterColumn": 4,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Left.Dob.4",
                             "FieldName": "Dob",
-                            "Order": 4,
+                            "order": 4,
                             "ComponentType": "Datepicker",
                             "Column": 6,
                             "Label": "Brithday",
@@ -107,7 +107,7 @@
                         {
                             "Id": "Left.NickName.2",
                             "FieldName": "NickName",
-                            "Order": 2,
+                            "order": 2,
                             "ComponentType": "Input",
                             "Column": 6,
                             "Label": "Nick Name",
@@ -116,17 +116,17 @@
                         {
                             "Id": "Left.FullName.1",
                             "FieldName": "FullName",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "Input",
                             "Column": 6,
                             "Label": "Full Name",
                             "ShowLabel": true,
-                            "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
+                            "validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                         },
                         {
                             "Id": "Left.IdentityCard.5",
                             "FieldName": "IdentityCard",
-                            "Order": 5,
+                            "order": 5,
                             "ComponentType": "Input",
                             "Column": 4,
                             "Row": 50,
@@ -138,7 +138,7 @@
                         {
                             "Id": "Left.GenderId.3",
                             "FieldName": "GenderId",
-                            "Order": 3,
+                            "order": 3,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -146,14 +146,14 @@
                             "Row": 100,
                             "Label": "Sex",
                             "ShowLabel": true,
-                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Gender'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Gender'\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Gender'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Gender'\"\r\n}",
                             "RefName": "MasterData",
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
                             "Id": "Left.IdentityCardDate.6",
                             "FieldName": "IdentityCardDate",
-                            "Order": 6,
+                            "order": 6,
                             "ComponentType": "Datepicker",
                             "Column": 4,
                             "Row": 50,
@@ -163,7 +163,7 @@
                         {
                             "Id": "Left.PlaceIssue.7",
                             "FieldName": "PlaceIssue",
-                            "Order": 7,
+                            "order": 7,
                             "ComponentType": "Datepicker",
                             "Column": 4,
                             "Label": "Place of Issue",
@@ -174,16 +174,16 @@
                 {
                     "Id": "Container.Full.7",
                     "FieldName": "Full",
-                    "Order": 7,
+                    "order": 7,
                     "ComponentType": "Section",
                     "ClassName": "card-body",
                     "XxlCol": 12,
                     "XxlOuterColumn": 6,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Full.JointDate.5",
                             "FieldName": "JointDate",
-                            "Order": 5,
+                            "order": 5,
                             "ComponentType": "Datepicker",
                             "Column": 4,
                             "Label": "Joint Date",
@@ -192,7 +192,7 @@
                         {
                             "Id": "Full.TeamId.4",
                             "FieldName": "TeamId",
-                            "Order": 4,
+                            "order": 4,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -200,15 +200,15 @@
                             "Row": 100,
                             "Label": "Group",
                             "ShowLabel": true,
-                            "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Team Group'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Team Group'\"\r\n}",
+                            "validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
+                            "query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Team Group'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Team Group'\"\r\n}",
                             "RefName": "MasterData",
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
                             "Id": "Full.DepartmentId.1",
                             "FieldName": "DepartmentId",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -216,15 +216,15 @@
                             "Row": 100,
                             "Label": "Department",
                             "ShowLabel": true,
-                            "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Department Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Department Type'\"\r\n}",
+                            "validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
+                            "query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Department Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Department Type'\"\r\n}",
                             "RefName": "MasterData",
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
                             "Id": "Full.Knowledge.6",
                             "FieldName": "Knowledge",
-                            "Order": 6,
+                            "order": 6,
                             "ComponentType": "Input",
                             "Column": 4,
                             "Row": 50,
@@ -234,7 +234,7 @@
                         {
                             "Id": "Full.RoleIds.2",
                             "FieldName": "RoleIds",
-                            "Order": 2,
+                            "order": 2,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -242,7 +242,7 @@
                             "Row": 100,
                             "Label": "Role",
                             "ShowLabel": true,
-                            "Query": "{\r\n    \"sql\": \"select ds.* from [Role] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [Role] as ds\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select ds.* from [Role] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [Role] as ds\"\r\n}",
                             "RefName": "Role",
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
                             "IsMultiple": true
@@ -250,7 +250,7 @@
                         {
                             "Id": "Full.IsDepartment.8",
                             "FieldName": "IsDepartment",
-                            "Order": 8,
+                            "order": 8,
                             "ComponentType": "Checkbox",
                             "Column": 2,
                             "Row": 50,
@@ -260,7 +260,7 @@
                         {
                             "Id": "Full.IsTeam.9",
                             "FieldName": "IsTeam",
-                            "Order": 9,
+                            "order": 9,
                             "ComponentType": "Checkbox",
                             "Column": 2,
                             "Row": 50,
@@ -270,7 +270,7 @@
                         {
                             "Id": "Full.CompanyId.7",
                             "FieldName": "CompanyId",
-                            "Order": 7,
+                            "order": 7,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -278,15 +278,15 @@
                             "Row": 100,
                             "Label": "Company",
                             "ShowLabel": true,
-                            "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                            "Query": "{\r\n    \"sql\": \"select * from [Partner] as ds where ServiceId = 5\",\r\n    \"total\": \"select count(ds.Id) as total from [Partner] as ds where ServiceId = 5\"\r\n}",
+                            "validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
+                            "query": "{\r\n    \"sql\": \"select * from [Partner] as ds where ServiceId = 5\",\r\n    \"total\": \"select count(ds.Id) as total from [Partner] as ds where ServiceId = 5\"\r\n}",
                             "RefName": "Partner",
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
                             "Id": "Full.PositionId.3",
                             "FieldName": "PositionId",
-                            "Order": 3,
+                            "order": 3,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -294,8 +294,8 @@
                             "Row": 100,
                             "Label": "Position",
                             "ShowLabel": true,
-                            "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Position Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Position Type'\"\r\n}",
+                            "validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
+                            "query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Position Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Position Type'\"\r\n}",
                             "RefName": "MasterData",
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         }
@@ -303,18 +303,18 @@
                 },
                 {
                     "Id": "Container.Section.9_5",
-                    "Order": 9,
+                    "order": 9,
                     "ComponentType": "Section",
                     "Label": "Contact info",
-                    "Icon": "fal fa-info mr-1",
+                    "icon": "fal fa-info mr-1",
                     "ClassName": "card-body",
                     "XxlCol": 12,
                     "XxlOuterColumn": 3,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Section.Address.1_1",
                             "FieldName": "Address",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "Input",
                             "Column": 12,
                             "Label": "Address",
@@ -323,17 +323,17 @@
                         {
                             "Id": "Section.Email.4_1",
                             "FieldName": "Email",
-                            "Order": 4,
+                            "order": 4,
                             "ComponentType": "Input",
                             "Column": 12,
                             "Label": "Email",
                             "ShowLabel": true,
-                            "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
+                            "validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                         },
                         {
                             "Id": "Section.PhoneNumber.3_1",
                             "FieldName": "PhoneNumber",
-                            "Order": 3,
+                            "order": 3,
                             "ComponentType": "Input",
                             "Column": 12,
                             "Label": "Phone",
@@ -342,29 +342,29 @@
                         {
                             "Id": "Section.UserName.2_1",
                             "FieldName": "UserName",
-                            "Order": 2,
+                            "order": 2,
                             "ComponentType": "Input",
                             "Column": 12,
                             "Label": "User Name",
                             "ShowLabel": true,
-                            "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
+                            "validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                         }
                     ]
                 },
                 {
                     "Id": "Container.Section.10",
-                    "Order": 10,
+                    "order": 10,
                     "ComponentType": "Section",
                     "Label": "Staffing details",
-                    "Icon": "fal fa-university mr-1",
+                    "icon": "fal fa-university mr-1",
                     "ClassName": "card-body",
                     "XxlCol": 12,
                     "XxlOuterColumn": 3,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Section.TargetLocalCurr.1",
                             "FieldName": "TargetLocalCurr",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "Number",
                             "Column": 6,
                             "Label": "Target Local Curr",
@@ -373,17 +373,17 @@
                         {
                             "Id": "Section.TargetUSDCurr.2",
                             "FieldName": "TargetUSDCurr",
-                            "Order": 2,
+                            "order": 2,
                             "ComponentType": "Number",
                             "Column": 6,
-                            "Precision": 2,
+                            "precision": 2,
                             "Label": "Target USD Curr",
                             "ShowLabel": true
                         },
                         {
                             "Id": "Section.SalaryAmount.4",
                             "FieldName": "SalaryAmount",
-                            "Order": 4,
+                            "order": 4,
                             "ComponentType": "Number",
                             "Column": 6,
                             "Label": "Salary Amount",
@@ -392,7 +392,7 @@
                         {
                             "Id": "Section.SalaryCoefficient.5",
                             "FieldName": "SalaryCoefficient",
-                            "Order": 5,
+                            "order": 5,
                             "ComponentType": "Number",
                             "Column": 6,
                             "Label": "Salary Coefficient",
@@ -401,7 +401,7 @@
                         {
                             "Id": "Section.InsuranceAmount.6",
                             "FieldName": "InsuranceAmount",
-                            "Order": 6,
+                            "order": 6,
                             "ComponentType": "Number",
                             "Column": 6,
                             "Label": "Insurance Amount",
@@ -410,7 +410,7 @@
                         {
                             "Id": "Section.TaxCode.7",
                             "FieldName": "TaxCode",
-                            "Order": 7,
+                            "order": 7,
                             "ComponentType": "Input",
                             "Column": 6,
                             "Label": "TaxCode",
@@ -419,7 +419,7 @@
                         {
                             "Id": "Section.Dependents.9",
                             "FieldName": "Dependents",
-                            "Order": 9,
+                            "order": 9,
                             "ComponentType": "Number",
                             "Column": 6,
                             "Label": "Dependents",
@@ -428,7 +428,7 @@
                         {
                             "Id": "Section.TypeBonusId.3",
                             "FieldName": "TypeBonusId",
-                            "Order": 3,
+                            "order": 3,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -436,14 +436,14 @@
                             "Row": 100,
                             "Label": "Type Bonus",
                             "ShowLabel": true,
-                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Type Bonus'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Type Bonus'\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Type Bonus'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Type Bonus'\"\r\n}",
                             "RefName": "MasterData",
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
                             "Id": "Section.TypeContractId.8",
                             "FieldName": "TypeContractId",
-                            "Order": 8,
+                            "order": 8,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -451,7 +451,7 @@
                             "Row": 100,
                             "Label": "Type Contract",
                             "ShowLabel": true,
-                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Type Contract'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Type Contract'\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Type Contract'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Type Contract'\"\r\n}",
                             "RefName": "MasterData",
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         }
@@ -459,19 +459,19 @@
                 },
                 {
                     "Id": "Container.Section.11",
-                    "Order": 11,
+                    "order": 11,
                     "ComponentType": "Section",
                     "Label": "Bank information",
-                    "Icon": "fal fa-users-cog mr-1",
+                    "icon": "fal fa-users-cog mr-1",
                     "ClassName": "card-body",
                     "XxlCol": 12,
                     "XxlOuterColumn": 3,
                     "DisplayBadge": true,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Section.AccNumber.1_1",
                             "FieldName": "AccNumber",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "Input",
                             "Column": 12,
                             "Label": "Acc Number",
@@ -480,7 +480,7 @@
                         {
                             "Id": "Section.AccName.2_1",
                             "FieldName": "AccName",
-                            "Order": 2,
+                            "order": 2,
                             "ComponentType": "Input",
                             "Column": 12,
                             "Label": "Acc Name",
@@ -489,7 +489,7 @@
                         {
                             "Id": "Section.BankId.3_1",
                             "FieldName": "BankId",
-                            "Order": 3,
+                            "order": 3,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -497,7 +497,7 @@
                             "Row": 100,
                             "Label": "Bank Name",
                             "ShowLabel": true,
-                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Bank'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Bank'\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Bank'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Bank'\"\r\n}",
                             "RefName": "MasterData",
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         }
@@ -505,19 +505,19 @@
                 },
                 {
                     "Id": "Container.Section.12",
-                    "Order": 12,
+                    "order": 12,
                     "ComponentType": "Section",
                     "Label": "Email Config",
-                    "Icon": "fal fa-users-cog mr-1",
+                    "icon": "fal fa-users-cog mr-1",
                     "ClassName": "card-body",
                     "XxlCol": 12,
                     "XxlOuterColumn": 3,
                     "DisplayBadge": true,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Section.LoginFailedCount.3",
                             "FieldName": "LoginFailedCount",
-                            "Order": 3,
+                            "order": 3,
                             "ComponentType": "Number",
                             "Column": 12,
                             "Label": "Login Failed",
@@ -526,7 +526,7 @@
                         {
                             "Id": "Section.PassEmail.2",
                             "FieldName": "PassEmail",
-                            "Order": 2,
+                            "order": 2,
                             "ComponentType": "Input",
                             "Column": 12,
                             "Label": "Email key",
@@ -535,7 +535,7 @@
                         {
                             "Id": "Section.MailServer.1",
                             "FieldName": "MailServer",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "Input",
                             "Column": 12,
                             "Label": "Mail Server",
@@ -544,7 +544,7 @@
                         {
                             "Id": "Section.PortServer.1",
                             "FieldName": "PortServer",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "Input",
                             "Column": 12,
                             "Label": "Port Server",

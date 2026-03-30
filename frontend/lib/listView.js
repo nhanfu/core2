@@ -175,10 +175,10 @@ export class ListView extends EditableComponent {
         if (Utils.isNullOrWhiteSpace(this.meta.refName)) {
             const data = await new Promise((resolve) => {
                 window.setTimeout(async () => {
-                    var raw = Utils.isFunction(this.meta.Query, false, this);
+                    var raw = Utils.isFunction(this.meta.query, false, this);
                     await this.loadMasterData(raw);
                     this.setRowData(raw);
-                    this.paginator.Show = false;
+                    this.paginator.show = false;
                     resolve(raw);
                 }, 500);
             });
@@ -206,7 +206,7 @@ export class ListView extends EditableComponent {
             }
             await this.loadMasterData(rows);
             this.setRowData(rows);
-            this.paginator.Show = false;
+            this.paginator.show = false;
             Spinner.hide();
             return rows;
         }
@@ -321,23 +321,23 @@ export class ListView extends EditableComponent {
      */
     async exportExcelTemplate(e) {
         const wb = XLSX.utils.book_new();
-        const ws_data = [];
+        const wsData = [];
         var headers = this.header.filter(x => x.Label);
-        ws_data.push(headers.map(x => x.Label));
-        const ws = XLSX.utils.aoa_to_sheet(ws_data);
+        wsData.push(headers.map(x => x.Label));
+        const ws = XLSX.utils.aoa_to_sheet(wsData);
         XLSX.utils.book_append_sheet(wb, ws, 'templateImport');
         for (let index = 0; index < headers.length; index++) {
             if (headers[index].componentType == "Dropdown") {
-                const ws_master_data = [];
-                var headers_master = JSON.parse(headers[index].template);
-                ws_master_data.push(headers_master.map(x => x.Label));
+                const wsMasterData = [];
+                var headersMaster = JSON.parse(headers[index].template);
+                wsMasterData.push(headersMaster.map(x => x.Label));
                 if (!headers[index].refName) {
                     const data = JSON.parse(headers[index].Query);
                     data.forEach(item => {
-                        ws_master_data.push(headers_master.map(x => item[x.fieldName] || ""));
+                        wsMasterData.push(headersMaster.map(x => item[x.fieldName] || ""));
                     })
-                    const ws_master = XLSX.utils.aoa_to_sheet(ws_master_data);
-                    XLSX.utils.book_append_sheet(wb, ws_master, headers[index].Label);
+                    const wsMaster = XLSX.utils.aoa_to_sheet(wsMasterData);
+                    XLSX.utils.book_append_sheet(wb, wsMaster, headers[index].Label);
                 }
                 else {
                     const data = await Client.instance.submitAsync({
@@ -353,10 +353,10 @@ export class ListView extends EditableComponent {
                         }),
                     });
                     data.value.forEach(item => {
-                        ws_master_data.push(headers_master.map(x => item[x.fieldName] || ""));
+                        wsMasterData.push(headersMaster.map(x => item[x.fieldName] || ""));
                     })
-                    const ws_master = XLSX.utils.aoa_to_sheet(ws_master_data);
-                    XLSX.utils.book_append_sheet(wb, ws_master, headers[index].Label);
+                    const wsMaster = XLSX.utils.aoa_to_sheet(wsMasterData);
+                    XLSX.utils.book_append_sheet(wb, wsMaster, headers[index].Label);
                 }
 
             }
@@ -546,7 +546,7 @@ export class ListView extends EditableComponent {
             jsonData: JSON.stringify(vm),
         });
         if (!data.value || data.value.length === 0) {
-            this.paginator.Show = false;
+            this.paginator.show = false;
             this.clearRowData();
             this.setRowData([]);
             this.domLoaded();
@@ -575,7 +575,7 @@ export class ListView extends EditableComponent {
                 objField = header.fieldName + "masterData";
             }
             rows.forEach(row => {
-                var data = Utils.isFunction(header.Query, false, this);
+                var data = Utils.isFunction(header.query, false, this);
                 let found = data.find(source => source[this.idField] === row[header.fieldName]);
                 if (found) {
                     row[objField] = found;
@@ -689,7 +689,7 @@ export class ListView extends EditableComponent {
                 objField = header.fieldName + "masterData";
             }
             rows.forEach(row => {
-                var data = Utils.isFunction(header.Query, false, this);
+                var data = Utils.isFunction(header.query, false, this);
                 if (data) {
                     let found = data.find(source => source[this.idField] === row[header.fieldName]);
                     if (found) {
@@ -911,7 +911,7 @@ export class ListView extends EditableComponent {
     renderPaginator() {
         if (this.meta.localRender || this.meta.liteGrid) {
             if (this.paginator) {
-                this.paginator.Show = false;
+                this.paginator.show = false;
             }
             return;
         }
@@ -1038,8 +1038,8 @@ export class ListView extends EditableComponent {
                 Line: true,
                 Click: () => this.actionFilter()
             });
-            ctxMenu.Top = e.Top();
-            ctxMenu.Left = e.Left();
+            ctxMenu.top = e.top();
+            ctxMenu.left = e.left();
             ctxMenu.editForm = this.editForm;
             ctxMenu.render();
             document.body.appendChild(ctxMenu.element);
@@ -1050,8 +1050,8 @@ export class ListView extends EditableComponent {
         this.dispatchEvent(this.meta.events, EventType.contextMenu, this, ctxMenu).then(() => {
             this.renderCopyPasteMenu(this.editable);
             this.renderEditMenu();
-            ctxMenu.Top = e.Top();
-            ctxMenu.Left = e.Left();
+            ctxMenu.top = e.top();
+            ctxMenu.left = e.left();
             ctxMenu.editForm = this.editForm;
             ctxMenu.render();
             document.body.appendChild(ctxMenu.element);
@@ -1248,10 +1248,10 @@ export class ListView extends EditableComponent {
                 sysSetting.forEach(item => {
                     var map = policys.find(x => x.fieldName == item.fieldName);
                     if (map) {
-                        item.Width = map.Width;
+                        item.width = map.Width;
                         item.minWidth = map.Width;
                         item.maxWidth = map.Width;
-                        item.Order = map.Order || item.Order;
+                        item.order = map.Order || item.order;
                     }
                 });
             }
@@ -1625,7 +1625,7 @@ export class ListView extends EditableComponent {
         confirmDialog.editForm = this.editForm;
         confirmDialog.render();
         confirmDialog.yesConfirmed.add(() => {
-            const cleaned = this.meta.Query.replace(/[\u0000-\u001F]+/g, '')
+            const cleaned = this.meta.query.replace(/[\u0000-\u001F]+/g, '')
             var jsonQuery = JSON.parse(cleaned);
             if (jsonQuery && jsonQuery.delete) {
                 const ids = deletedItems.map(x => x[this.idField]).filter(x => !x.startsWith('-'));
@@ -1826,7 +1826,7 @@ export class ListView extends EditableComponent {
         const columns = this.Item.map(x => x.entity).map(header => {
             const dirtyPatch = [
                 { field: "Id", value: header.id },
-                { field: "Order", value: header.Order },
+                { field: "Order", value: header.order },
                 { field: "featureId", value: header.featureId }
             ];
             return {

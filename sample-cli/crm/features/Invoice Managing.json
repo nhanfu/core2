@@ -2,8 +2,8 @@
     "Id": "Invoice_Managing",
     "Name": "Invoice Managing",
     "Label": "Invoice Managing",
-    "Order": 6,
-    "Icon": "fal fa-receipt",
+    "order": 6,
+    "icon": "fal fa-receipt",
     "IsPublic": true,
     "IgnoreEncode": true,
     "FeaturePolicies": [

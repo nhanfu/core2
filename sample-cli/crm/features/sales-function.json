@@ -2,20 +2,20 @@
     "Id": "sales_function",
     "Name": "sales-function",
     "Label": "Sales Function",
-    "Order": 6,
-    "Icon": "fal fa-function",
+    "order": 6,
+    "icon": "fal fa-function",
     "IsMenu": true,
     "IgnoreEncode": true,
     "GridPolicies": [
         {
             "Id": "sales_function.Description.1",
             "FieldName": "Description",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Input",
             "Label": "Description",
-            "Width": "671px",
+            "width": "671px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "671px",
             "MaxWidth": "671px",
             "EntityId": "SaleFunction"
@@ -23,12 +23,12 @@
         {
             "Id": "sales_function.Value.3",
             "FieldName": "Value",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Input",
             "Label": "Value",
-            "Width": "166px",
+            "width": "166px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "166px",
             "MaxWidth": "166px",
             "EntityId": "SaleFunction"
@@ -36,12 +36,12 @@
         {
             "Id": "sales_function.Code.0",
             "FieldName": "Code",
-            "Order": 0,
+            "order": 0,
             "ComponentType": "Input",
             "Label": "Code",
-            "Width": "285px",
+            "width": "285px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "285px",
             "MaxWidth": "285px",
             "EntityId": "SaleFunction"
@@ -49,12 +49,12 @@
         {
             "Id": "sales_function.IsYes.2",
             "FieldName": "IsYes",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Checkbox",
             "Label": "No",
-            "Width": "80px",
+            "width": "80px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "80px",
             "MaxWidth": "80px",
             "EntityId": "SaleFunction"
@@ -62,11 +62,11 @@
         {
             "Id": "sales_function.GroupName.3",
             "FieldName": "GroupName",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Input",
             "Label": "Group Name",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "166px",
             "MaxWidth": "166px",
             "EntityId": "SaleFunction"
@@ -120,19 +120,19 @@
             "TableName": "Feature"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "sales_function.Container.1",
             "FieldName": "Container",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Container.SaleFunction.1",
                     "FieldName": "SaleFunction",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "GridView",
                     "Column": 12,
                     "Row": 50,
@@ -142,7 +142,7 @@
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from SaleFunction as ds\",\r\n    \"total\": \"select count(ds.Id) as total from SaleFunction as ds\"\r\n}",
+                    "query": "{\r\n    \"sql\": \"select * from SaleFunction as ds\",\r\n    \"total\": \"select count(ds.Id) as total from SaleFunction as ds\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "SaleFunction",
                     "TopEmpty": true,

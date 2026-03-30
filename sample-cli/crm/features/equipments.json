@@ -2,8 +2,8 @@
     "Id": "equipments",
     "Name": "equipments",
     "Label": "Equipments",
-    "Order": 8,
-    "Icon": "fal fa-tools",
+    "order": 8,
+    "icon": "fal fa-tools",
     "IsPublic": true,
     "IgnoreEncode": true,
     "FeaturePolicies": [

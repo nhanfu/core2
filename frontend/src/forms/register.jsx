@@ -120,7 +120,7 @@ export class RegisterBL extends EditForm {
         <ToastContainer />
       </>
     );
-    this.meta.Layout = this.meta.layout;
+    this.meta.layout = this.meta.layout;
     this.meta.components = [
       {
         componentType: "Button",

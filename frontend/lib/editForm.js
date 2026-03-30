@@ -71,9 +71,9 @@ export class EditForm extends EditableComponent {
     get allCom() {
         if (this._allCom !== null) return this._allCom;
         if (EditForm.layoutForm === null) {
-            this._allCom = this.meta.Component.slice(); // assuming Feature.Component is an array
+            this._allCom = this.meta.component.slice(); // assuming Feature.Component is an array
         } else {
-            this._allCom = this.meta.Component.concat(EditForm.layoutForm.meta.Component);
+            this._allCom = this.meta.component.concat(EditForm.layoutForm.meta.Component);
         }
         return this._allCom;
     }
@@ -1296,9 +1296,9 @@ export class EditForm extends EditableComponent {
             let reactElement = react.createElement(this.meta.layout);
             root.render(reactElement);
             new Promise(resolve => setTimeout(resolve, 0)).then(() => {
-                if (this.meta.Javascript && !Utils.isNullOrWhiteSpace(this.meta.Javascript)) {
+                if (this.meta.javascript && !Utils.isNullOrWhiteSpace(this.meta.javascript)) {
                     try {
-                        let fn = new Function("editForm", this.meta.Javascript);
+                        let fn = new Function("editForm", this.meta.javascript);
                         let obj = fn.call(null, this.editForm);
                         for (let prop in obj) {
                             this[prop] = obj[prop].bind(this);

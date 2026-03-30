@@ -2,8 +2,8 @@
     "Id": "booking_order",
     "Name": "booking-order",
     "Label": "Booking Order",
-    "Order": 10,
-    "Icon": "fal fa-file-spreadsheet",
+    "order": 10,
+    "icon": "fal fa-file-spreadsheet",
     "IsPublic": true,
     "EntityId": "Booking",
     "IgnoreEncode": true,
@@ -59,21 +59,21 @@
             "TableName": "Feature"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "booking_order.Container.1",
             "FieldName": "Container",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Container.Report1.1",
                     "FieldName": "Report1",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "HtmlCode",
                     "Column": 12,
-                    "Query": "select * from Partner as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.PicId = '{TokenUserId}')",
+                    "query": "select * from Partner as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.PicId = '{TokenUserId}')",
                     "RefName": "Partner",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }"
                 }

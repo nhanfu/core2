@@ -7,6 +7,5 @@
   "imports": {
     "vite": "npm:vite@6.2.1"
   },
-  "nodeModulesDir": true,
   "lock": "deno.lock"
 }

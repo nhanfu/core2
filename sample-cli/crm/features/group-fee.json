@@ -2,18 +2,18 @@
     "Id": "group_fee",
     "Name": "group-fee",
     "Label": "Group Fee",
-    "Order": 5,
-    "Icon": "fal fa-ball-pile",
+    "order": 5,
+    "icon": "fal fa-ball-pile",
     "IgnoreEncode": true,
     "GridPolicies": [
         {
             "Id": "group_fee.Name.1",
             "FieldName": "Name",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Input",
             "Label": "Name",
-            "Width": "191px",
-            "Editable": true,
+            "width": "191px",
+            "editable": true,
             "MinWidth": "191px",
             "MaxWidth": "191px",
             "EntityId": "MasterData"
@@ -21,11 +21,11 @@
         {
             "Id": "group_fee.Description.2",
             "FieldName": "Description",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Input",
             "Label": "Description",
-            "Width": "209px",
-            "Editable": true,
+            "width": "209px",
+            "editable": true,
             "MinWidth": "209px",
             "MaxWidth": "209px",
             "EntityId": "MasterData"
@@ -33,11 +33,11 @@
         {
             "Id": "group_fee.Code.0",
             "FieldName": "Code",
-            "Order": 0,
+            "order": 0,
             "ComponentType": "Input",
             "Label": "Code",
-            "Width": "187px",
-            "Editable": true,
+            "width": "187px",
+            "editable": true,
             "MinWidth": "187px",
             "MaxWidth": "187px",
             "EntityId": "MasterData"
@@ -45,11 +45,11 @@
         {
             "Id": "group_fee.Enum.3",
             "FieldName": "Enum",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Number",
             "Label": "Order",
-            "Width": "209px",
-            "Editable": true,
+            "width": "209px",
+            "editable": true,
             "MinWidth": "209px",
             "MaxWidth": "209px",
             "EntityId": "MasterData"
@@ -103,19 +103,19 @@
             "TableName": "Feature"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "group_fee.Container.1",
             "FieldName": "Container",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Container.MasterData.1_5",
                     "FieldName": "MasterData",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "GridView",
                     "Column": 12,
                     "Row": 50,
@@ -124,7 +124,7 @@
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "DefaultVal": "{\r\n    \"ParentId\":\"0040025c-0000-0000-8000-982675bc7dc8\"\r\n}",
                     "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from MasterData as ds where ds.ParentId = '0040025c-0000-0000-8000-982675bc7dc8'\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds where ds.ParentId = '0040025c-0000-0000-8000-982675bc7dc8'\"\r\n}",
+                    "query": "{\r\n    \"sql\": \"select * from MasterData as ds where ds.ParentId = '0040025c-0000-0000-8000-982675bc7dc8'\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds where ds.ParentId = '0040025c-0000-0000-8000-982675bc7dc8'\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "MasterData",
                     "TopEmpty": true,

@@ -2,8 +2,8 @@
     "Id": "purchase",
     "Name": "purchase",
     "Label": "Purchase",
-    "Order": 4,
-    "Icon": "fal fa-shopping-bag",
+    "order": 4,
+    "icon": "fal fa-shopping-bag",
     "IsPublic": true,
     "IgnoreEncode": true,
     "FeaturePolicies": [

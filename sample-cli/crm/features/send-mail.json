@@ -2,21 +2,21 @@
     "Id": "send_mail",
     "Name": "send-mail",
     "Label": "Send Mail",
-    "Order": 0,
+    "order": 0,
     "Script": "return {\r\n    SendMail: async () => {\r\n        var rs = await this.Client.PostAsync(this.Entity, \"/api/sendEmail\");\r\n        this.Toast.Success(\"Send mail success\");\r\n    }\r\n}",
-    "Components": [
+    "components": [
         {
             "Id": "send_mail.Container.1",
             "FieldName": "Container",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Container.To.1",
                     "FieldName": "To",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "Input",
                     "Column": 12,
                     "Label": "To",
@@ -25,7 +25,7 @@
                 {
                     "Id": "Container.Subject.2",
                     "FieldName": "Subject",
-                    "Order": 2,
+                    "order": 2,
                     "ComponentType": "Input",
                     "Column": 12,
                     "Label": "Subject",
@@ -34,7 +34,7 @@
                 {
                     "Id": "Container.Text.3",
                     "FieldName": "Text",
-                    "Order": 3,
+                    "order": 3,
                     "ComponentType": "Word",
                     "Column": 12,
                     "Label": "Text",
@@ -43,11 +43,11 @@
                 {
                     "Id": "Container.btnSend.1",
                     "FieldName": "btnSend",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Send",
-                    "Icon": "fal fa-envelope",
+                    "icon": "fal fa-envelope",
                     "ClassName": "btn detail-button primary",
                     "Events": "{\"click\":\"SendMail\"}"
                 }
@@ -56,19 +56,19 @@
         {
             "Id": "send_mail.Button.2",
             "FieldName": "Button",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Section",
             "ClassName": "ribbon-group",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Button.btnSend.1",
                     "FieldName": "btnSend",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Send",
-                    "Icon": "fal fa-envelope",
+                    "icon": "fal fa-envelope",
                     "ClassName": "btn detail-button primary",
                     "Events": "{\"click\":\"SendMail\"}"
                 }

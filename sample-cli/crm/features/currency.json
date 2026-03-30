@@ -2,20 +2,20 @@
     "Id": "currency",
     "Name": "currency",
     "Label": "Currency",
-    "Order": 9,
-    "Icon": "fal fa-usd-circle",
+    "order": 9,
+    "icon": "fal fa-usd-circle",
     "IsMenu": true,
     "IgnoreEncode": true,
     "GridPolicies": [
         {
             "Id": "currency.IsLocal.4",
             "FieldName": "IsLocal",
-            "Order": 4,
+            "order": 4,
             "ComponentType": "Checkbox",
             "Label": "Local",
-            "Width": "211px",
+            "width": "211px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "211px",
             "MaxWidth": "211px",
             "EntityId": "MasterData"
@@ -23,12 +23,12 @@
         {
             "Id": "currency.Enum.2",
             "FieldName": "Enum",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Number",
             "Label": "Enum",
-            "Width": "211px",
+            "width": "211px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "211px",
             "MaxWidth": "211px",
             "EntityId": "MasterData"
@@ -36,12 +36,12 @@
         {
             "Id": "currency.Description.3",
             "FieldName": "Description",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Input",
             "Label": "Description",
-            "Width": "211px",
+            "width": "211px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "211px",
             "MaxWidth": "211px",
             "EntityId": "MasterData"
@@ -49,12 +49,12 @@
         {
             "Id": "currency.Code.0",
             "FieldName": "Code",
-            "Order": 0,
+            "order": 0,
             "ComponentType": "Input",
             "Label": "Code",
-            "Width": "117px",
+            "width": "117px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "117px",
             "MaxWidth": "117px",
             "EntityId": "MasterData"
@@ -62,12 +62,12 @@
         {
             "Id": "currency.Name.1",
             "FieldName": "Name",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Input",
             "Label": "Name",
-            "Width": "122px",
+            "width": "122px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "122px",
             "MaxWidth": "122px",
             "EntityId": "MasterData"
@@ -121,19 +121,19 @@
             "TableName": "Feature"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "currency.Container.1",
             "FieldName": "Container",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Container.MasterData.1_4",
                     "FieldName": "MasterData",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "GridView",
                     "Column": 12,
                     "Row": 50,
@@ -142,7 +142,7 @@
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "DefaultVal": "{\r\n    \"ParentId\":\"00e2025c-0000-0000-8000-1ea76ef31b31\"\r\n}",
                     "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from MasterData as ds where ds.ParentId = '00e2025c-0000-0000-8000-1ea76ef31b31'\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds where ds.ParentId = '00e2025c-0000-0000-8000-1ea76ef31b31'\"\r\n}",
+                    "query": "{\r\n    \"sql\": \"select * from MasterData as ds where ds.ParentId = '00e2025c-0000-0000-8000-1ea76ef31b31'\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds where ds.ParentId = '00e2025c-0000-0000-8000-1ea76ef31b31'\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "MasterData",
                     "TopEmpty": true,

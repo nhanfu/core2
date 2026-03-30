@@ -2,18 +2,18 @@
     "Id": "unit",
     "Name": "unit",
     "Label": "Unit",
-    "Order": 1,
-    "Icon": "fal fa-square",
+    "order": 1,
+    "icon": "fal fa-square",
     "IgnoreEncode": true,
     "GridPolicies": [
         {
             "Id": "unit.Description.3",
             "FieldName": "Description",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Input",
             "Label": "Description",
-            "Width": "305px",
-            "Editable": true,
+            "width": "305px",
+            "editable": true,
             "MinWidth": "305px",
             "MaxWidth": "305px",
             "EntityId": "MasterData"
@@ -21,11 +21,11 @@
         {
             "Id": "unit.Code.1",
             "FieldName": "Code",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Input",
             "Label": "Code",
-            "Width": "102px",
-            "Editable": true,
+            "width": "102px",
+            "editable": true,
             "MinWidth": "102px",
             "MaxWidth": "102px",
             "EntityId": "MasterData"
@@ -33,11 +33,11 @@
         {
             "Id": "unit.Name.2",
             "FieldName": "Name",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Input",
             "Label": "Name",
-            "Width": "131px",
-            "Editable": true,
+            "width": "131px",
+            "editable": true,
             "MinWidth": "131px",
             "MaxWidth": "131px",
             "EntityId": "MasterData"
@@ -45,11 +45,11 @@
         {
             "Id": "unit.IsKGS.6",
             "FieldName": "IsKGS",
-            "Order": 6,
+            "order": 6,
             "ComponentType": "Checkbox",
             "Label": "KGS",
-            "Width": "124px",
-            "Editable": true,
+            "width": "124px",
+            "editable": true,
             "MinWidth": "124px",
             "MaxWidth": "124px",
             "EntityId": "MasterData"
@@ -57,11 +57,11 @@
         {
             "Id": "unit.IsContainer.4",
             "FieldName": "IsContainer",
-            "Order": 4,
+            "order": 4,
             "ComponentType": "Checkbox",
             "Label": "Container",
-            "Width": "94px",
-            "Editable": true,
+            "width": "94px",
+            "editable": true,
             "MinWidth": "94px",
             "MaxWidth": "94px",
             "EntityId": "MasterData"
@@ -69,11 +69,11 @@
         {
             "Id": "unit.IsCBM.5",
             "FieldName": "IsCBM",
-            "Order": 5,
+            "order": 5,
             "ComponentType": "Checkbox",
             "Label": "CBM",
-            "Width": "95px",
-            "Editable": true,
+            "width": "95px",
+            "editable": true,
             "MinWidth": "95px",
             "MaxWidth": "95px",
             "EntityId": "MasterData"
@@ -127,19 +127,19 @@
             "TableName": "Feature"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "unit.Container.1",
             "FieldName": "Container",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Container.MasterData.1_8",
                     "FieldName": "MasterData",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "GridView",
                     "Column": 12,
                     "Row": 50,
@@ -148,7 +148,7 @@
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "DefaultVal": "{\r\n    \"ParentId\":\"00ff0174-0000-0000-8000-117c2b1fb653\"\r\n}",
                     "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from MasterData as ds where (ds.ParentId in ('00ff0174-0000-0000-8000-117c2b1fb653','006f1b9c-0000-0000-8000-55553171db6a'))\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds where (ds.ParentId in ('00ff0174-0000-0000-8000-117c2b1fb653','006f1b9c-0000-0000-8000-55553171db6a'))\"\r\n}",
+                    "query": "{\r\n    \"sql\": \"select * from MasterData as ds where (ds.ParentId in ('00ff0174-0000-0000-8000-117c2b1fb653','006f1b9c-0000-0000-8000-55553171db6a'))\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds where (ds.ParentId in ('00ff0174-0000-0000-8000-117c2b1fb653','006f1b9c-0000-0000-8000-55553171db6a'))\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "MasterData",
                     "TopEmpty": true,

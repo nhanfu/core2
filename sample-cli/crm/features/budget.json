@@ -2,8 +2,8 @@
     "Id": "budget",
     "Name": "budget",
     "Label": "Budget",
-    "Order": 15,
-    "Icon": "fal fa-badge-dollar",
+    "order": 15,
+    "icon": "fal fa-badge-dollar",
     "IsPublic": true,
     "IgnoreEncode": true,
     "FeaturePolicies": [

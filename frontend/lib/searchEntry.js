@@ -94,17 +94,17 @@ export class SearchEntry extends EditableComponent {
             case keyCodeEnum.escape:
                 if (this._gv && this._gv.element !== null) {
                     e.stopPropagation();
-                    this._gv.Show = false;
+                    this._gv.show = false;
                 }
                 break;
             case keyCodeEnum.upArrow:
-                if (this._gv && this._gv.element !== null && this._gv.Show) {
+                if (this._gv && this._gv.element !== null && this._gv.show) {
                     e.stopPropagation();
                     this._gv.moveUp();
                 }
                 break;
             case keyCodeEnum.downArrow:
-                if (this._gv && this._gv.element !== null && this._gv.Show) {
+                if (this._gv && this._gv.element !== null && this._gv.show) {
                     e.stopPropagation();
                     this._gv.moveDown();
                 }
@@ -113,7 +113,7 @@ export class SearchEntry extends EditableComponent {
                 this.enterKeydownHandler(code);
                 break;
             case keyCodeEnum.F6:
-                if (this._gv && this._gv.element !== null && this._gv.Show) {
+                if (this._gv && this._gv.element !== null && this._gv.show) {
                     e.preventDefault();
                     this._gv.hotKeyF6Handler(e, keyCodeEnum.F6);
                 }
@@ -128,7 +128,7 @@ export class SearchEntry extends EditableComponent {
     }
 
     enterKeydownHandler(code) {
-        if (this._gv !== null && this._gv.Show) {
+        if (this._gv !== null && this._gv.show) {
             this.enterKeydownTableStillShow(code);
         } else {
             this.Search(null, false, 0);
@@ -184,7 +184,7 @@ export class SearchEntry extends EditableComponent {
     disposeGv() {
 
         if (this._gv !== null) {
-            this._gv.Show = false;
+            this._gv.show = false;
         }
         this._parentInput.appendChild(this._input);
     }
@@ -295,7 +295,7 @@ export class SearchEntry extends EditableComponent {
         this._gv.listViewSearch.entityVM.searchTerm = term;
         this._gv.rowData.data = [];
         this._gv.render();
-        this._gv.Show = false;
+        this._gv.show = false;
         this._gv.element.classList.add('floating');
         this._gv.rowClick.add(this.entrySelected.bind(this));
         this._isRendering = false;
@@ -342,7 +342,7 @@ export class SearchEntry extends EditableComponent {
         this.renderRootResult();
         this._rootResult.appendChild(this._gv.element);
         if (!this.meta.hideGrid) {
-            this._gv.Show = true;
+            this._gv.show = true;
         }
         if (this.meta.hideGrid) {
             this.entrySelected(this._gv?.rowData.data[0]);
@@ -398,7 +398,7 @@ export class SearchEntry extends EditableComponent {
             if (this.entity[this.meta.tabGroup]) {
                 if (Utils.isNullOrWhiteSpace(this.meta.refName)) {
                     window.setTimeout(() => {
-                        var data = Utils.isFunction(this.meta.Query, false, this);
+                        var data = Utils.isFunction(this.meta.query, false, this);
                         this.Matched = data.find(x => {
                             const xId = x?.id != null ? x.id.toString() : null;
                             const entityValue = this.entity?.[this.meta.fieldName] != null ? this.entity[this.meta.fieldName].toString() : null;
@@ -422,7 +422,7 @@ export class SearchEntry extends EditableComponent {
         }
         if (Utils.isNullOrWhiteSpace(this.meta.refName)) {
             window.setTimeout(() => {
-                var data = Utils.isFunction(this.meta.Query, false, this);
+                var data = Utils.isFunction(this.meta.query, false, this);
                 this.Matched = data.find(x => {
                     const xId = x?.id != null ? x.id.toString() : null;
                     const entityValue = this.entity?.[this.meta.fieldName] != null ? this.entity[this.meta.fieldName].toString() : null;
@@ -532,7 +532,7 @@ export class SearchEntry extends EditableComponent {
         this.Matched = rowData;
         this.setMatchedValue();
         if (this._gv !== null) {
-            this._gv.Show = false;
+            this._gv.show = false;
         }
         this.populateFields(this.Matched);
         this.dispatchEvent(this.meta.events, EventType.Change, this, this.entity, rowData, oldMatch).then(() => {

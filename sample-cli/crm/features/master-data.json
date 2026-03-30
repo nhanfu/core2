@@ -2,19 +2,19 @@
     "Id": "master_data",
     "Name": "master-data",
     "Label": "Master Data",
-    "Order": 11,
-    "Icon": "far fa-th-list",
+    "order": 11,
+    "icon": "far fa-th-list",
     "IsMenu": true,
     "IgnoreEncode": true,
     "GridPolicies": [
         {
             "Id": "master_data.Name.1",
             "FieldName": "Name",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Input",
             "Label": "Name",
-            "Width": "243px",
-            "Editable": true,
+            "width": "243px",
+            "editable": true,
             "MinWidth": "243px",
             "MaxWidth": "243px",
             "EntityId": "MasterData"
@@ -22,11 +22,11 @@
         {
             "Id": "master_data.Code.0",
             "FieldName": "Code",
-            "Order": 0,
+            "order": 0,
             "ComponentType": "Input",
             "Label": "Code",
-            "Width": "241px",
-            "Editable": true,
+            "width": "241px",
+            "editable": true,
             "MinWidth": "241px",
             "MaxWidth": "241px",
             "EntityId": "MasterData"
@@ -34,12 +34,12 @@
         {
             "Id": "master_data.Enum.3",
             "FieldName": "Enum",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Number",
             "Label": "Enum",
-            "Width": "123px",
+            "width": "123px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "123px",
             "MaxWidth": "123px",
             "EntityId": "MasterData"
@@ -47,12 +47,12 @@
         {
             "Id": "master_data.GroupEnum.4",
             "FieldName": "GroupEnum",
-            "Order": 4,
+            "order": 4,
             "ComponentType": "Number",
             "Label": "Group Enum",
-            "Width": "104px",
+            "width": "104px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "104px",
             "MaxWidth": "104px",
             "EntityId": "MasterData"
@@ -60,11 +60,11 @@
         {
             "Id": "master_data.Description.2",
             "FieldName": "Description",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Input",
             "Label": "Description",
-            "Width": "389px",
-            "Editable": true,
+            "width": "389px",
+            "editable": true,
             "MinWidth": "389px",
             "MaxWidth": "389px",
             "EntityId": "MasterData"
@@ -72,17 +72,17 @@
         {
             "Id": "master_data.ParentId.5",
             "FieldName": "ParentId",
-            "Order": 5,
+            "order": 5,
             "ComponentType": "Dropdown",
             "FormatData": "{Name}",
             "PlainText": "Select data",
             "Row": 100,
             "Label": "Parent",
-            "Width": "212px",
-            "Query": "{\r\n    \"sql\": \"select * from MasterData as ds\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds\"\r\n}",
+            "width": "212px",
+            "query": "{\r\n    \"sql\": \"select * from MasterData as ds\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-            "Editable": true,
+            "editable": true,
             "MinWidth": "212px",
             "MaxWidth": "212px",
             "EntityId": "MasterData"
@@ -136,19 +136,19 @@
             "TableName": "Feature"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "master_data.Container.1",
             "FieldName": "Container",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Container.MasterData.1_6",
                     "FieldName": "MasterData",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "GridView",
                     "Column": 12,
                     "Row": 150,
@@ -156,7 +156,7 @@
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from MasterData as ds\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds\"\r\n}",
+                    "query": "{\r\n    \"sql\": \"select * from MasterData as ds\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "MasterData",
                     "TopEmpty": true,

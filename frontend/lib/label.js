@@ -71,7 +71,7 @@ export class Label extends EditableComponent {
             this.originalText = cellData ? "✅" : "☐";
             return;
         }
-        if (this.meta.Query && this.meta.componentType == "Label") {
+        if (this.meta.query && this.meta.componentType == "Label") {
             this.runQuerys().then((data) => {
                 if (data[0]) {
                     var cellText = Utils.getCellText(this.meta, cellData, data[0][0], false, this.emptyRow, this.editForm?.entity);

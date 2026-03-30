@@ -591,7 +591,7 @@ export class Chat extends EditableComponent {
             html.instance.div.tabIndex(-1).event(EventType.click, (evt) => this.handlerClick(evt, item)).className("discussion " + ((item.id == this.entity.id) ? "message-active" : "") + ((!item.read) ? "text-unread" : ""))
                 .div.className("photo").style("background-image: url('" + item.icon + "');").end
                 .div.className("desc-contact")
-                .span.className("name").iText(item.Label).end
+                .span.className("name").iText(item.label).end
                 .span.className("description").text(item.formatChat ? item.formatChat.replaceAll("<br>", "") : "").end
                 .p.className("message").innerHTML(item.Message || '').end
                 .p.className("message").innerHTML(item.time).end.end

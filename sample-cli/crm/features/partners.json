@@ -2,9 +2,9 @@
     "Id": "partners",
     "Name": "partners",
     "Label": "Partners",
-    "Order": 3,
+    "order": 3,
     "Script": "return {\r\n    Add: function () {\r\n        var cus = {\r\n            ServiceId: 2\r\n        }\r\n        this.OpenPopup(\"partner-editor\", cus);\r\n    },\r\n    Edit: function (btn, entity) {\r\n        debugger;\r\n        this.OpenPopup(\"partner-editor\", entity);\r\n    }\r\n}",
-    "Icon": "far fa-users-crown",
+    "icon": "far fa-users-crown",
     "FeaturePolicies": [
         {
             "RoleId": "DOCS",

@@ -2,18 +2,18 @@
     "Id": "web_config",
     "Name": "web-config",
     "Label": "Web Config",
-    "Order": 7,
-    "Icon": "fal fa-solar-system",
+    "order": 7,
+    "icon": "fal fa-solar-system",
     "IsMenu": true,
     "GridPolicies": [
         {
             "Id": "web_config.Value.1",
             "FieldName": "Value",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Input",
-            "Width": "829px",
+            "width": "829px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "829px",
             "MaxWidth": "829px",
             "EntityId": "WebConfig"
@@ -21,10 +21,10 @@
         {
             "Id": "web_config.Key.0",
             "FieldName": "Key",
-            "Order": 0,
+            "order": 0,
             "ComponentType": "Input",
             "Label": "Key",
-            "Width": "165px",
+            "width": "165px",
             "FocusSearch": true,
             "MinWidth": "165px",
             "MaxWidth": "165px",
@@ -77,25 +77,25 @@
             "TableName": "Feature"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "web_config.Lang.1",
             "FieldName": "Lang",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Lang.WebConfig.1",
                     "FieldName": "WebConfig",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "GridView",
                     "Column": 12,
                     "Row": 50,
                     "CanSearch": true,
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from WebConfig as ds\",\r\n    \"total\": \"select count(ds.Id) as total from WebConfig as ds\"\r\n}",
+                    "query": "{\r\n    \"sql\": \"select * from WebConfig as ds\",\r\n    \"total\": \"select count(ds.Id) as total from WebConfig as ds\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "WebConfig",
                     "TopEmpty": true,

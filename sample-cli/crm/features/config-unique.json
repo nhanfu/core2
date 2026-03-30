@@ -2,25 +2,25 @@
     "Id": "config_unique",
     "Name": "config-unique",
     "Label": "Config Unique",
-    "Order": 4,
-    "Icon": "fal fa-table",
+    "order": 4,
+    "icon": "fal fa-table",
     "IsMenu": true,
     "EntityId": "ConfigUnique",
     "GridPolicies": [
         {
             "Id": "config_unique.ObjectId.1",
             "FieldName": "ObjectId",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Dropdown",
             "FormatData": "{Name}",
             "Row": 100,
             "Label": "Object",
-            "Width": "469px",
-            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Object Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Object Type'\"\r\n}",
+            "width": "469px",
+            "query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Object Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Object Type'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "469px",
             "MaxWidth": "469px",
             "EntityId": "ConfigUnique"
@@ -28,12 +28,12 @@
         {
             "Id": "config_unique.IsSave.0",
             "FieldName": "IsSave",
-            "Order": 0,
+            "order": 0,
             "ComponentType": "Checkbox",
             "Label": "Save",
-            "Width": "165px",
+            "width": "165px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "165px",
             "MaxWidth": "165px",
             "EntityId": "ConfigUnique"
@@ -41,15 +41,15 @@
         {
             "Id": "config_unique.ComponentIds.1",
             "FieldName": "ComponentIds",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Dropdown",
             "Row": 100,
             "Label": "Field",
-            "Width": "469px",
-            "Query": "{    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Object Type'\",    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Object Type'\"}",
+            "width": "469px",
+            "query": "{    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Object Type'\",    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Object Type'\"}",
             "RefName": "MasterData",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "469px",
             "MaxWidth": "469px",
             "EntityId": "ConfigUnique"
@@ -103,25 +103,25 @@
             "TableName": "Feature"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "config_unique.Lang.1",
             "FieldName": "Lang",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Lang.ConfigUnique.1",
                     "FieldName": "ConfigUnique",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "GridView",
                     "Column": 12,
                     "Row": 50,
                     "CanSearch": true,
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from ConfigUnique as ds\",\r\n    \"total\": \"select count(ds.Id) as total from ConfigUnique as ds\"\r\n}",
+                    "query": "{\r\n    \"sql\": \"select * from ConfigUnique as ds\",\r\n    \"total\": \"select count(ds.Id) as total from ConfigUnique as ds\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "ConfigUnique",
                     "TopEmpty": true,

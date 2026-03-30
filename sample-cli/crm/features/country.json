@@ -2,20 +2,20 @@
     "Id": "country",
     "Name": "country",
     "Label": "Country",
-    "Order": 2,
-    "Icon": "fal fa-globe-asia",
+    "order": 2,
+    "icon": "fal fa-globe-asia",
     "IsMenu": true,
     "IgnoreEncode": true,
     "GridPolicies": [
         {
             "Id": "country.Name.1",
             "FieldName": "Name",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Input",
             "Label": "Name",
-            "Width": "227px",
+            "width": "227px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "227px",
             "MaxWidth": "227px",
             "EntityId": "MasterData"
@@ -23,12 +23,12 @@
         {
             "Id": "country.Description.2",
             "FieldName": "Description",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Input",
             "Label": "Description",
-            "Width": "229px",
+            "width": "229px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "229px",
             "MaxWidth": "229px",
             "EntityId": "MasterData"
@@ -36,12 +36,12 @@
         {
             "Id": "country.Code.0",
             "FieldName": "Code",
-            "Order": 0,
+            "order": 0,
             "ComponentType": "Input",
             "Label": "Code",
-            "Width": "238px",
+            "width": "238px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "238px",
             "MaxWidth": "238px",
             "EntityId": "MasterData"
@@ -49,12 +49,12 @@
         {
             "Id": "country.IsLocal.3",
             "FieldName": "IsLocal",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Checkbox",
             "Label": "Local",
-            "Width": "70px",
+            "width": "70px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "70px",
             "MaxWidth": "70px",
             "EntityId": "MasterData"
@@ -108,19 +108,19 @@
             "TableName": "Feature"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "country.Container.1",
             "FieldName": "Container",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Container.MasterData.1_3",
                     "FieldName": "MasterData",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "GridView",
                     "Column": 12,
                     "Row": 50,
@@ -129,7 +129,7 @@
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "DefaultVal": "{\r\n    \"ParentId\":\"000a1a24-0000-0000-8000-c157c2c56579\"\r\n}",
                     "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from MasterData as ds where (ds.ParentId = '000a1a24-0000-0000-8000-c157c2c56579')\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds where (ds.ParentId = '000a1a24-0000-0000-8000-c157c2c56579')\"\r\n}",
+                    "query": "{\r\n    \"sql\": \"select * from MasterData as ds where (ds.ParentId = '000a1a24-0000-0000-8000-c157c2c56579')\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds where (ds.ParentId = '000a1a24-0000-0000-8000-c157c2c56579')\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "MasterData",
                     "TopEmpty": true,

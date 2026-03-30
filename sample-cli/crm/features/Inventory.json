@@ -2,8 +2,8 @@
     "Id": "Inventory",
     "Name": "Inventory",
     "Label": "Inventory",
-    "Order": 7,
-    "Icon": "fal fa-inventory",
+    "order": 7,
+    "icon": "fal fa-inventory",
     "IsPublic": true,
     "IgnoreEncode": true,
     "FeaturePolicies": [

@@ -2,43 +2,43 @@
     "Id": "table_manage",
     "Name": "table-manage",
     "Label": "Table Manage",
-    "Order": 111,
+    "order": 111,
     "Script": "return {\r\n    EditTable: (entity) => {\r\n        this.OpenPopup(\"table-editor\", entity);\r\n    }\r\n}",
     "GridPolicies": [
         {
             "Id": "table_manage.TableName.1",
             "FieldName": "TableName",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Input",
             "Label": "TableName",
-            "Editable": true,
+            "editable": true,
             "created_by": "TableName",
             "EntityId": "TableName"
         },
         {
             "Id": "table_manage.Description.2",
             "FieldName": "Description",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Input",
             "Label": "Description",
-            "Editable": true,
+            "editable": true,
             "created_by": "TableName",
             "EntityId": "TableName"
         },
         {
             "Id": "table_manage.TableTrigger.3",
             "FieldName": "TableTrigger",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Input",
             "Label": "Trigger",
-            "Editable": true,
+            "editable": true,
             "created_by": "TableName",
             "EntityId": "TableName"
         },
         {
             "Id": "table_manage.InsertedDate.4",
             "FieldName": "InsertedDate",
-            "Order": 4,
+            "order": 4,
             "ComponentType": "Datepicker",
             "Label": "Inserted Date",
             "created_by": "TableName",
@@ -47,7 +47,7 @@
         {
             "Id": "table_manage.InsertedBy.5",
             "FieldName": "InsertedBy",
-            "Order": 5,
+            "order": 5,
             "ComponentType": "Dropdown",
             "FormatData": "{FullName}",
             "PlainText": "Select data",
@@ -61,28 +61,28 @@
         {
             "Id": "table_manage.btnEdit.0",
             "FieldName": "btnEdit",
-            "Order": 0,
+            "order": 0,
             "ComponentType": "Button",
-            "Icon": "fal fa-expand-alt",
+            "icon": "fal fa-expand-alt",
             "ClassName": "btn",
             "Events": "{\"click\":\"EditTable\"}",
-            "Editable": true,
+            "editable": true,
             "created_by": "TableName",
             "EntityId": "TableName"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "table_manage.wrapper_scroll_content.1",
             "FieldName": "wrapper scroll-content",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "wrapper_scroll_content.TableName.1",
                     "FieldName": "TableName",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "GridView",
                     "Column": 12,
                     "Row": 50,
@@ -90,7 +90,7 @@
                     "ClassName": "sticky",
                     "DefaultVal": "{\r\n    \"TanentId\": this.EditForm.Entity.Id,\r\n}",
                     "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from TableName as ds\",\r\n    \"total\": \"select count(ds.Id) as total from TableName as ds\"\r\n}",
+                    "query": "{\r\n    \"sql\": \"select * from TableName as ds\",\r\n    \"total\": \"select count(ds.Id) as total from TableName as ds\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "TableName",
                     "TopEmpty": true,

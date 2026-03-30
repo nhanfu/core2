@@ -2,21 +2,21 @@
     "Id": "personal_contact",
     "Name": "personal-contact",
     "Label": "Personal Contact",
-    "Order": 3,
+    "order": 3,
     "Script": "return {\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"Personal-contact-editor\", entity);\r\n    }\r\n}",
-    "Icon": "fal fa-address-card",
+    "icon": "fal fa-address-card",
     "IsMenu": true,
     "EntityId": "PartnerContact",
     "GridPolicies": [
         {
             "Id": "personal_contact.btnEdit.0",
             "FieldName": "btnEdit",
-            "Order": 0,
+            "order": 0,
             "ComponentType": "Button",
-            "Icon": "fal fa-expand",
+            "icon": "fal fa-expand",
             "ClassName": "btn",
             "Events": "{\"click\":\"Edit\"}",
-            "Width": "56px",
+            "width": "56px",
             "FocusSearch": true,
             "MinWidth": "56px",
             "MaxWidth": "56px",
@@ -26,10 +26,10 @@
         {
             "Id": "personal_contact.ContactName.1",
             "FieldName": "ContactName",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Input",
             "Label": "Name",
-            "Width": "146px",
+            "width": "146px",
             "MinWidth": "146px",
             "MaxWidth": "146px",
             "EntityId": "PartnerContact"
@@ -37,10 +37,10 @@
         {
             "Id": "personal_contact.ContactEmail.3",
             "FieldName": "ContactEmail",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Input",
             "Label": "Email",
-            "Width": "158px",
+            "width": "158px",
             "MinWidth": "158px",
             "MaxWidth": "158px",
             "EntityId": "PartnerContact"
@@ -48,10 +48,10 @@
         {
             "Id": "personal_contact.ContactPhoneNumber.4",
             "FieldName": "ContactPhoneNumber",
-            "Order": 4,
+            "order": 4,
             "ComponentType": "Input",
             "Label": "Phone",
-            "Width": "175px",
+            "width": "175px",
             "MinWidth": "175px",
             "MaxWidth": "175px",
             "EntityId": "PartnerContact"
@@ -59,10 +59,10 @@
         {
             "Id": "personal_contact.Birthday.5",
             "FieldName": "Birthday",
-            "Order": 5,
+            "order": 5,
             "ComponentType": "Datepicker",
             "Label": "Birthday",
-            "Width": "188px",
+            "width": "188px",
             "MinWidth": "188px",
             "MaxWidth": "188px",
             "EntityId": "PartnerContact"
@@ -70,10 +70,10 @@
         {
             "Id": "personal_contact.JobTitles.6",
             "FieldName": "JobTitles",
-            "Order": 6,
+            "order": 6,
             "ComponentType": "Input",
             "Label": "Job Titles",
-            "Width": "180px",
+            "width": "180px",
             "MinWidth": "180px",
             "MaxWidth": "180px",
             "EntityId": "PartnerContact"
@@ -81,10 +81,10 @@
         {
             "Id": "personal_contact.Note.8",
             "FieldName": "Note",
-            "Order": 8,
+            "order": 8,
             "ComponentType": "Input",
             "Label": "Note",
-            "Width": "230px",
+            "width": "230px",
             "MinWidth": "230px",
             "MaxWidth": "230px",
             "EntityId": "PartnerContact"
@@ -92,12 +92,12 @@
         {
             "Id": "personal_contact.PartnerId.2",
             "FieldName": "PartnerId",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Dropdown",
             "FormatData": "{Name}",
             "Row": 100,
             "Label": "Object",
-            "Width": "381px",
+            "width": "381px",
             "RefName": "Partner",
             "FocusSearch": true,
             "MinWidth": "381px",
@@ -107,29 +107,29 @@
         {
             "Id": "personal_contact.IsMain.7",
             "FieldName": "IsMain",
-            "Order": 7,
+            "order": 7,
             "ComponentType": "Checkbox",
             "Label": "Main",
-            "Width": "65px",
+            "width": "65px",
             "MinWidth": "65px",
             "MaxWidth": "65px",
             "EntityId": "PartnerContact"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "personal_contact.Section.1",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
-            "Icon": "fal fa-border-all mr-1",
+            "icon": "fal fa-border-all mr-1",
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "DisplayBadge": true,
-            "Components": [
+            "components": [
                 {
                     "Id": "Section.PartnerContact.1_3",
                     "FieldName": "PartnerContact",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "GridView",
                     "FormatData": "{Name}",
                     "Column": 12,
@@ -138,7 +138,7 @@
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Events": "{\"dblclick\":\"Edit\"}",
-                    "Query": "{\r\n    \"sql\": \"select * from PartnerContact as ds\",\r\n    \"total\": \"select count(ds.Id) as total from PartnerContact as ds\"\r\n}",
+                    "query": "{\r\n    \"sql\": \"select * from PartnerContact as ds\",\r\n    \"total\": \"select count(ds.Id) as total from PartnerContact as ds\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "PartnerContact",
                     "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",

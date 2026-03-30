@@ -21,8 +21,8 @@ export const Path = {
      * @returns {string} - The combined URL.
      */
     combineHostAndPath(host, path) {
-      const containHost = this.containHost(path);
-      return containHost ? path : this.Combine(host, path);
+      const containsHost = this.containsHost(path);
+      return containsHost ? path : this.combine(host, path);
     },
   
     /**
@@ -30,7 +30,7 @@ export const Path = {
      * @param {string} path - The path to check.
      * @returns {boolean} - Returns true if the path contains a host.
      */
-    containHost(path) {
+    containsHost(path) {
       return path.includes("http://") || path.includes("https://");
     },
   
@@ -73,7 +73,7 @@ export const Path = {
      * @param {...string} path - An array of path segments to combine.
      * @returns {string} - The combined path.
      */
-    Combine(...path) {
+    combine(...path) {
       if (!path.length) return '';
       const nonEmptyPath = path.filter(x => x).map(x => {
         const heading = x[0] === '/' ? 1 : 0;

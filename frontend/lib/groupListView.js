@@ -122,10 +122,10 @@ export class GroupListView extends ListView {
         }
         if (target.classList.contains("fa-chevron-right")) {
             target.classList.replace("fa-chevron-right", "fa-chevron-down");
-            groupSection.Children.forEach(x => x.Show = false);
+            groupSection.Children.forEach(x => x.show = false);
         } else {
             target.classList.replace("fa-chevron-down", "fa-chevron-right");
-            groupSection.Children.forEach(x => x.Show = true);
+            groupSection.Children.forEach(x => x.show = true);
         }
     }
 

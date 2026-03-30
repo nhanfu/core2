@@ -230,7 +230,7 @@ export class ExportCustomData extends PopupEditor {
             Html.instance.tRow.dataAttr("id", item.id)
                 .tData.dataAttr("id", item.id).style("padding:0").iText(i.toString(), this.editForm.meta.label).end
                 .tData.style("padding:0").checkbox(item.isExport).event("input", (e1) => item.isExport = e1.target.checked).end.end
-                .tData.style("padding:0").className("text-left").iText(item.Label, this.editForm.meta.label).end
+                .tData.style("padding:0").className("text-left").iText(item.label, this.editForm.meta.label).end
                 .endOf("tr");
             i++;
         }

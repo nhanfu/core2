@@ -280,7 +280,7 @@ export class Client {
     async getByIdsAsync(arrays) {
         const data = {
             jsonData: JSON.stringify(arrays),
-            url: Utils.comQuerys,
+            url: Utils.comQueries,
             isRawString: true,
             method: "POST"
         };
@@ -559,7 +559,7 @@ export class Client {
      */
     static async download(path, fileName = null) {
         const removePath = this.removeGuid(path);
-        const url = path.includes("http") ? path : Path.Combine(Client.Origin, path);
+        const url = path.includes("http") ? path : Path.combine(Client.Origin, path);
         try {
             const response = await fetch(url);
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);

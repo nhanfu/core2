@@ -2,8 +2,8 @@
     "Id": "tax",
     "Name": "tax",
     "Label": "Tax",
-    "Order": 11,
-    "Icon": "fal fa-gavel",
+    "order": 11,
+    "icon": "fal fa-gavel",
     "IsPublic": true,
     "IgnoreEncode": true,
     "FeaturePolicies": [

@@ -2,22 +2,22 @@
     "Id": "users",
     "Name": "users",
     "Label": "Users",
-    "Order": 1,
+    "order": 1,
     "Script": "return {\r\n    AddUser: function () {\r\n        var entity = {\r\n            Password: \"977c9c433f8e0bd9d948982f9c4b3430ff2ba08a5bd36d1da32a17ceb9717762\",\r\n            Salt: \"KMDBMXNJMANYKNXBWBRNSKZEPYUJOEFV\",\r\n            Avatar: \"https://api.nguyenduyphong.id.vn/icons/default-avatar.webp\",\r\n            TypeId: 1,\r\n        };\r\n        this.OpenPopup(\"user-editor\", entity);\r\n    },\r\n    EditUser: function (btn, entity) {\r\n        entity.Avatar = entity.Avatar || \"https://api.nguyenduyphong.id.vn/icons/default-avatar.webp\";\r\n        this.OpenPopup(\"user-editor\", entity);\r\n    }\r\n}",
-    "Icon": "fal fa-users-cog",
+    "icon": "fal fa-users-cog",
     "IsMenu": true,
     "EntityId": "User",
     "GridPolicies": [
         {
             "Id": "users.TeamId.10",
             "FieldName": "TeamId",
-            "Order": 10,
+            "order": 10,
             "ComponentType": "Dropdown",
             "FormatData": "{Name}",
             "PlainText": "Select data",
             "Row": 100,
             "Label": "Group",
-            "Width": "200px",
+            "width": "200px",
             "RefName": "MasterData",
             "MinWidth": "200px",
             "MaxWidth": "200px",
@@ -26,10 +26,10 @@
         {
             "Id": "users.IdentityCard.6",
             "FieldName": "IdentityCard",
-            "Order": 6,
+            "order": 6,
             "ComponentType": "Input",
             "Label": "Identity Card",
-            "Width": "143px",
+            "width": "143px",
             "MinWidth": "143px",
             "MaxWidth": "143px",
             "EntityId": "User"
@@ -37,10 +37,10 @@
         {
             "Id": "users.FullName.3",
             "FieldName": "FullName",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Input",
             "Label": "Full Name",
-            "Width": "206px",
+            "width": "206px",
             "MinWidth": "206px",
             "MaxWidth": "206px",
             "EntityId": "User"
@@ -48,10 +48,10 @@
         {
             "Id": "users.Address.7",
             "FieldName": "Address",
-            "Order": 7,
+            "order": 7,
             "ComponentType": "Input",
             "Label": "Address",
-            "Width": "127px",
+            "width": "127px",
             "MinWidth": "127px",
             "MaxWidth": "127px",
             "EntityId": "User"
@@ -59,10 +59,10 @@
         {
             "Id": "users.PhoneNumber.8",
             "FieldName": "PhoneNumber",
-            "Order": 8,
+            "order": 8,
             "ComponentType": "Input",
             "Label": "Phone Number",
-            "Width": "142px",
+            "width": "142px",
             "MinWidth": "142px",
             "MaxWidth": "142px",
             "EntityId": "User"
@@ -70,13 +70,13 @@
         {
             "Id": "users.GenderId.5",
             "FieldName": "GenderId",
-            "Order": 5,
+            "order": 5,
             "ComponentType": "Dropdown",
             "FormatData": "{Name}",
             "PlainText": "Select data",
             "Row": 100,
             "Label": "Sex",
-            "Width": "118px",
+            "width": "118px",
             "RefName": "MasterData",
             "MinWidth": "118px",
             "MaxWidth": "118px",
@@ -85,10 +85,10 @@
         {
             "Id": "users.Code.1",
             "FieldName": "Code",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Input",
             "Label": "ID",
-            "Width": "180px",
+            "width": "180px",
             "FocusSearch": true,
             "MinWidth": "180px",
             "MaxWidth": "180px",
@@ -97,12 +97,12 @@
         {
             "Id": "users.btnEdit.0",
             "FieldName": "btnEdit",
-            "Order": 0,
+            "order": 0,
             "ComponentType": "Button",
-            "Icon": "fal fa-expand",
+            "icon": "fal fa-expand",
             "ClassName": "btn",
             "Events": "{\"click\":\"EditUser\"}",
-            "Width": "65px",
+            "width": "65px",
             "MinWidth": "65px",
             "MaxWidth": "65px",
             "EntityId": "User"
@@ -110,10 +110,10 @@
         {
             "Id": "users.NickName.2",
             "FieldName": "NickName",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Input",
             "Label": "Nick Name",
-            "Width": "143px",
+            "width": "143px",
             "MinWidth": "143px",
             "MaxWidth": "143px",
             "EntityId": "User"
@@ -121,10 +121,10 @@
         {
             "Id": "users.RoleIdsText.9",
             "FieldName": "RoleIdsText",
-            "Order": 9,
+            "order": 9,
             "ComponentType": "Input",
             "Label": "Job Position",
-            "Width": "208px",
+            "width": "208px",
             "FocusSearch": true,
             "MinWidth": "208px",
             "MaxWidth": "208px",
@@ -134,36 +134,36 @@
         {
             "Id": "users.Brithday.4",
             "FieldName": "Brithday",
-            "Order": 4,
+            "order": 4,
             "ComponentType": "Input",
             "Label": "Brithday",
-            "Width": "143px",
+            "width": "143px",
             "MinWidth": "143px",
             "MaxWidth": "143px",
             "EntityId": "User"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "users.Section.1",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "Label": "System User",
             "XxlCol": 12,
             "IsTab": true,
             "DisplayBadge": true,
-            "Components": [
+            "components": [
                 {
                     "Id": "Section.User.1_1",
                     "FieldName": "User",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "GridView",
                     "Column": 12,
                     "Row": 50,
                     "CanSearch": true,
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Events": "{\"dblclick\":\"EditUser\"}",
-                    "Query": "{\r\n    \"sql\": \"select * from [User] as ds where (TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 1)\"\r\n}",
+                    "query": "{\r\n    \"sql\": \"select * from [User] as ds where (TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 1)\"\r\n}",
                     "RefName": "User",
                     "OrderBy": "ds.InsertedDate desc"
                 }
@@ -171,24 +171,24 @@
         },
         {
             "Id": "users.Section.1_1",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "Label": "Customer User",
             "XxlCol": 12,
             "IsTab": true,
             "DisplayBadge": true,
-            "Components": [
+            "components": [
                 {
                     "Id": "Section.User.1_2",
                     "FieldName": "User",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "GridView",
                     "Column": 12,
                     "Row": 50,
                     "CanSearch": true,
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Events": "{\"dblclick\":\"EditUser\"}",
-                    "Query": "{\r\n    \"sql\": \"select * from [User] as ds where (TypeId = 2)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 2)\"\r\n}",
+                    "query": "{\r\n    \"sql\": \"select * from [User] as ds where (TypeId = 2)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 2)\"\r\n}",
                     "RefName": "User",
                     "OrderBy": "ds.InsertedDate desc"
                 }

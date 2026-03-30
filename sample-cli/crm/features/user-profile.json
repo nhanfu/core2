@@ -3,7 +3,7 @@
     "Name": "user-profile",
     "Label": "User Profile",
     "Script": "return {\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"feature-editor\", entity);\r\n    },\r\n    EditComponent: function (btn, entity) {\r\n        this.OpenPopup(\"component-editor\", entity);\r\n    }\r\n}",
-    "Icon": "fal fa-user",
+    "icon": "fal fa-user",
     "IsPublic": true,
     "EntityId": "User",
     "IgnoreEncode": true,
@@ -55,11 +55,11 @@
             "TableName": "Feature"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "user_profile.Main.1",
             "FieldName": "Main",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "ClassName": "scroll-content"
         }

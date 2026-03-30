@@ -51,11 +51,11 @@ export class Section extends EditableComponent {
     }
 
     handleMeta() {
-        if (!this.meta.Html) {
+        if (!this.meta.html) {
             return;
         }
 
-        const cssContent = this.meta.Css;
+        const cssContent = this.meta.css;
         const hard = this.meta.id;
         const section = `${this.meta.fieldName.toLowerCase()}${hard}`;
 
@@ -71,11 +71,11 @@ export class Section extends EditableComponent {
             }
         }
 
-        this.element.innerHTML = Utils.getHtmlCode(this.meta.Html, [this.entity]);
+        this.element.innerHTML = Utils.getHtmlCode(this.meta.html, [this.entity]);
 
-        if (this.meta.Javascript) {
+        if (this.meta.javascript) {
             try {
-                const fn = new Function('editForm', this.meta.Javascript);
+                const fn = new Function('editForm', this.meta.javascript);
                 fn.call(this, this.editForm);
             } catch (e) {
                 console.error('Error executing javaScript:', e);
@@ -537,7 +537,7 @@ export class Section extends EditableComponent {
             const columns = this.Children.map(x => x.Meta).map(header => {
                 const dirtyPatch = [
                     { field: "Id", value: header.id },
-                    { field: "Order", value: header.Order },
+                    { field: "Order", value: header.order },
                     { field: "featureId", value: header.featureId }
                 ];
                 return {
@@ -582,7 +582,7 @@ export class Section extends EditableComponent {
             const columns = this.Children.map(x => x.Meta).map(header => {
                 const dirtyPatch = [
                     { field: "Id", value: header.id },
-                    { field: "Order", value: header.Order },
+                    { field: "Order", value: header.order },
                     { field: "featureId", value: header.featureId }
                 ];
                 return {
@@ -881,7 +881,7 @@ export class Section extends EditableComponent {
         }
         else {
             childs.forEach(item => {
-                item.Show = show;
+                item.show = show;
             })
         }
     }

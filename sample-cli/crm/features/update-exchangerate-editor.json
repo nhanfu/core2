@@ -2,27 +2,27 @@
     "Id": "update_exchangerate_editor",
     "Name": "update-exchangerate-editor",
     "Label": "Update ExchangeRate Editor",
-    "Order": 0,
-    "Style": "width:700px;",
+    "order": 0,
+    "style": "width:700px;",
     "Script": "return {\r\n    SaveAs: function (btn) {\r\n        var newEntity = JSON.parse(JSON.stringify(this.Entity));\r\n        this.Entity = newEntity;\r\n        this.Entity.Id = this.Uuid7.NewGuid();\r\n        this.Entity.FromDate = null;\r\n        this.Entity.ToDate = null;\r\n        this.Entity.PostDate = this.dayjs();\r\n        var detailGrid = this.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"ExchangeRateHistoryDetail\");\r\n        if (detailGrid && detailGrid.AllListViewItem.length > 0) {\r\n            detailGrid.AllListViewItem.forEach(row => {\r\n                row.Entity.Id = this.Uuid7.NewGuid();\r\n                row.Entity.HistoryId = this.Entity.Id;\r\n                row.Children.forEach(cell => {\r\n                    cell.Entity = row.Entity;\r\n                });\r\n                row.UpdateView(true);\r\n            });\r\n        }\r\n        this.UpdateView(true);\r\n        this.Dirty = true;\r\n        this.Toast.Success(\"Save as success\");\r\n    },\r\n    CalcRateUSD: function (btn, entity) {\r\n        var exUSD = this.Decimal(this.Entity.RateVND);\r\n        var exVND = this.Decimal(1);\r\n        entity.RateUSD = this.Decimal(1).div(entity.RateVND);\r\n        var detailGrid = this.ChildCom.find(x => x.IsListView && x.Meta.FieldName == \"ExchangeRateHistoryDetail\");\r\n        detailGrid.Item.forEach(item => {\r\n            item.Entity.RateVND = this.Decimal(item.Entity.RateVND);\r\n            item.Entity.RateUSD = item.Entity.RateVND.div(exUSD);\r\n            item.UpdateView(false, false, \"RateUSD\");\r\n        });\r\n    },\r\n    UpdateExchangeRate: function (btn, entity) {\r\n        var exUSD = this.Decimal(this.EditForm.Entity.RateVND);\r\n        var exVND = this.Decimal(1);\r\n        entity.RateVND = this.Decimal(entity.RateVND);\r\n        entity.RateUSD = entity.RateVND.div(exUSD);\r\n        btn.Parent.UpdateView(false, false, \"RateUSD\");\r\n    },\r\n    UpdateExchangeRate2: function (btn, entity) {\r\n        debugger;\r\n        var exUSD = this.Decimal(this.EditForm.Entity.RateVND);\r\n        var exVND = this.Decimal(1);\r\n        entity.RateVND = this.Decimal(JSON.parse(localStorage.getItem(\"ExchangeRateVND\"))[entity.CurrencyCode]);\r\n        entity.RateUSD = entity.RateVND.div(exUSD);\r\n        btn.Parent.UpdateView(false, false, \"RateUSD\");\r\n    }\r\n}",
     "EntityId": "ExchangeRateHistory",
     "GridPolicies": [
         {
             "Id": "update_exchangerate_editor.CurrencyId.0",
             "FieldName": "CurrencyId",
-            "Order": 0,
+            "order": 0,
             "ComponentType": "Dropdown",
             "FormatData": "{Code}",
             "PlainText": "Select data",
             "Row": 100,
             "Label": "Currency",
             "Events": "{\r\n    \"change\":\"UpdateExchangeRate2\"\r\n}",
-            "Width": "158px",
-            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where (ds1.Name = N'Currency' and ds.Code not in ('USD','VND'))\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where (ds1.Name = N'Currency' and ds.Code not in ('USD','VND'))\"\r\n}",
+            "width": "158px",
+            "query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where (ds1.Name = N'Currency' and ds.Code not in ('USD','VND'))\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where (ds1.Name = N'Currency' and ds.Code not in ('USD','VND'))\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Currency\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "158px",
             "MaxWidth": "158px",
             "OrderBy": "ds.Enum asc",
@@ -31,14 +31,14 @@
         {
             "Id": "update_exchangerate_editor.RateVND.2",
             "FieldName": "RateVND",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Number",
-            "Precision": 2,
+            "precision": 2,
             "Label": "Rate VND",
             "Events": "{\r\n    \"input\":\"UpdateExchangeRate\"\r\n}",
-            "Width": "186px",
+            "width": "186px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "186px",
             "MaxWidth": "186px",
             "EntityId": "ExchangeRateHistoryDetail"
@@ -46,35 +46,35 @@
         {
             "Id": "update_exchangerate_editor.RateUSD.1",
             "FieldName": "RateUSD",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Number",
-            "Precision": 24,
+            "precision": 24,
             "Label": "Rate USD",
-            "Width": "200px",
+            "width": "200px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "200px",
             "MaxWidth": "200px",
             "EntityId": "ExchangeRateHistoryDetail"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "update_exchangerate_editor.Button.1",
             "FieldName": "Button",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "ClassName": "ribbon-group",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Button.btnSave.1_10",
                     "FieldName": "btnSave",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Save",
-                    "Icon": "fal fa-save",
+                    "icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }"
@@ -82,22 +82,22 @@
                 {
                     "Id": "Button.btnSaveAdd.0_20",
                     "FieldName": "btnSaveAdd",
-                    "Order": 0,
+                    "order": 0,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Save As",
-                    "Icon": "fas fa-sliders-h-square",
+                    "icon": "fas fa-sliders-h-square",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{\r\n    \"click\": \"SaveAs\"\r\n}"
                 },
                 {
                     "Id": "Button.btnSave.1_11",
                     "FieldName": "btnSave",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Save",
-                    "Icon": "fal fa-save",
+                    "icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }"
@@ -105,11 +105,11 @@
                 {
                     "Id": "Button.btnSaveAdd.0_21",
                     "FieldName": "btnSaveAdd",
-                    "Order": 0,
+                    "order": 0,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Save As",
-                    "Icon": "fas fa-sliders-h-square",
+                    "icon": "fas fa-sliders-h-square",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{\r\n    \"click\": \"SaveAs\"\r\n}"
                 }
@@ -118,24 +118,24 @@
         {
             "Id": "update_exchangerate_editor.Container.2",
             "FieldName": "Container ",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Container.Right.3_5",
                     "FieldName": "Right",
-                    "Order": 3,
+                    "order": 3,
                     "ComponentType": "Section",
                     "ClassName": "card-body profile",
                     "XxlCol": 12,
                     "DisabledExp": "!this.Entity.Id.startsWith('-')",
                     "XxlOuterColumn": 12,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Right.ExchangeRateHistoryDetail.7",
                             "FieldName": "ExchangeRateHistoryDetail",
-                            "Order": 7,
+                            "order": 7,
                             "ComponentType": "GridView",
                             "Column": 12,
                             "Row": 20,
@@ -144,63 +144,63 @@
                             "Events": "{\r\n    \"AfterCreated\": \"UpdateExchangeRate2\"\r\n}",
                             "DefaultVal": "{\r\n    \"HistoryId\": this.EditForm.Entity.Id\r\n}",
                             "CanAdd": true,
-                            "Query": "{\r\n    \"sql\": \"select * from ExchangeRateHistoryDetail as ds where HistoryId = '{HistoryId}'\",\r\n    \"total\": \"select count(ds.Id) as total from ExchangeRateHistoryDetail as ds where HistoryId = '{HistoryId}'\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select * from ExchangeRateHistoryDetail as ds where HistoryId = '{HistoryId}'\",\r\n    \"total\": \"select count(ds.Id) as total from ExchangeRateHistoryDetail as ds where HistoryId = '{HistoryId}'\"\r\n}",
                             "RefName": "ExchangeRateHistoryDetail",
                             "PreQuery": "{\r\n    \"HistoryId\": this.EditForm.Entity.Id\r\n}",
-                            "Editable": true
+                            "editable": true
                         },
                         {
                             "Id": "Right.FromDate.1",
                             "FieldName": "FromDate",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "Datepicker",
                             "Column": 3,
                             "Row": 50,
                             "Label": "From Date",
                             "ShowLabel": true,
                             "Events": "{    \"change\": \"ChangeDataFee\"}",
-                            "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
+                            "validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                         },
                         {
                             "Id": "Right.PostDate.4",
                             "FieldName": "PostDate",
-                            "Order": 4,
+                            "order": 4,
                             "ComponentType": "Datepicker",
                             "Column": 3,
                             "Row": 50,
                             "Label": "Post Date",
                             "ShowLabel": true,
                             "Events": "{    \"change\": \"ChangeDataFee\"}",
-                            "Disabled": true
+                            "disabled": true
                         },
                         {
                             "Id": "Right.ToDate.2",
                             "FieldName": "ToDate",
-                            "Order": 2,
+                            "order": 2,
                             "ComponentType": "Datepicker",
                             "Column": 3,
                             "Row": 50,
                             "Label": "To Date",
                             "ShowLabel": true,
                             "Events": "{    \"change\": \"ChangeDataFee\"}",
-                            "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
+                            "validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]"
                         },
                         {
                             "Id": "Right.Id.3",
                             "FieldName": "Id",
-                            "Order": 3,
+                            "order": 3,
                             "ComponentType": "Input",
                             "Column": 3,
                             "Row": 50,
                             "Label": "Ref No",
                             "ShowLabel": true,
                             "Events": "{    \"change\": \"ChangeDataFee\"}",
-                            "Disabled": true
+                            "disabled": true
                         },
                         {
                             "Id": "Right.FileIds.6",
                             "FieldName": "FileIds",
-                            "Order": 6,
+                            "order": 6,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Code}",
                             "PlainText": "Select data",
@@ -209,7 +209,7 @@
                             "Label": "File No",
                             "ShowLabel": true,
                             "Events": "{\r\n    \"change\": \"ChangeDataFee\"\r\n}",
-                            "Query": "{\r\n    \"sql\": \"select * from Shipment ds where ParentId is null\",\r\n    \"total\": \"select count(ds.Id) as total from Shipment ds where ParentId is null\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select * from Shipment ds where ParentId is null\",\r\n    \"total\": \"select count(ds.Id) as total from Shipment ds where ParentId is null\"\r\n}",
                             "RefName": "Shipment",
                             "Template": "[\r\n    {\r\n        \"FieldName\": \"Code\",\r\n        \"Label\": \"Code\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
                             "PreQuery": "{\r\n    \"VendorIds\": this.Entity.VendorIds \r\n}",
@@ -218,10 +218,10 @@
                         {
                             "Id": "Right.RateVND.5",
                             "FieldName": "RateVND",
-                            "Order": 5,
+                            "order": 5,
                             "ComponentType": "Number",
                             "Column": 3,
-                            "Precision": 2,
+                            "precision": 2,
                             "Label": "USD => VND",
                             "ShowLabel": true,
                             "Events": "{\r\n    \"input\": \"CalcRateUSD\"\r\n}"

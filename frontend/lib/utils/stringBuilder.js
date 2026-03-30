@@ -3,7 +3,7 @@ export class StringBuilder {
         this._buffer = [initialString];
     }
 
-    Append(str) {
+    append(str) {
         this._buffer.push(str);
         return this; // for method chaining
     }

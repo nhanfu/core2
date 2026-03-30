@@ -2,21 +2,21 @@
     "Id": "role",
     "Name": "role",
     "Label": "Role",
-    "Order": 2,
+    "order": 2,
     "Script": "return {\r\n    AddUser: function () {\r\n        var entity = {\r\n        };\r\n        this.OpenPopup(\"role-editor\", entity);\r\n    },\r\n    EditUser: function (btn, entity) {\r\n        this.OpenPopup(\"role-editor\", entity);\r\n    }\r\n}",
-    "Icon": "fal fa-user-tag",
+    "icon": "fal fa-user-tag",
     "IsMenu": true,
     "EntityId": "Role",
     "GridPolicies": [
         {
             "Id": "role.btnEdit.1",
             "FieldName": "btnEdit",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Button",
-            "Icon": "fal fa-expand",
+            "icon": "fal fa-expand",
             "ClassName": "btn",
             "Events": "{\"click\":\"EditUser\"}",
-            "Width": "65px",
+            "width": "65px",
             "FocusSearch": true,
             "MinWidth": "65px",
             "MaxWidth": "65px",
@@ -25,10 +25,10 @@
         {
             "Id": "role.Description.3",
             "FieldName": "Description",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Input",
             "Label": "Description",
-            "Width": "143px",
+            "width": "143px",
             "FocusSearch": true,
             "MinWidth": "143px",
             "MaxWidth": "143px",
@@ -37,13 +37,13 @@
         {
             "Id": "role.Name.2",
             "FieldName": "Name",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Input",
             "PlainText": "Select data",
             "Label": "Name",
-            "Width": "504px",
+            "width": "504px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "504px",
             "MaxWidth": "504px",
             "EntityId": "Role"
@@ -51,29 +51,29 @@
         {
             "Id": "role.Hidden.3",
             "FieldName": "Hidden",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Checkbox",
             "Label": "Hidden",
-            "Width": "143px",
+            "width": "143px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "143px",
             "MaxWidth": "143px",
             "EntityId": "Role"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "role.Container.1",
             "FieldName": "Container",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Container.Role.1",
                     "FieldName": "Role",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "GridView",
                     "Column": 12,
                     "Row": 50,
@@ -81,7 +81,7 @@
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Events": "{\r\n    \"dblclick\": \"EditUser\"\r\n}",
                     "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from [Role] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [Role] as ds\"\r\n}",
+                    "query": "{\r\n    \"sql\": \"select * from [Role] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [Role] as ds\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "Role",
                     "OrderBy": "ds.Hidden asc"

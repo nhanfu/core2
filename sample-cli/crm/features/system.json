@@ -2,8 +2,8 @@
     "Id": "system",
     "Name": "system",
     "Label": "System",
-    "Order": 3,
-    "Icon": "fal fa-cogs",
+    "order": 3,
+    "icon": "fal fa-cogs",
     "IsMenu": true,
     "IsPublic": true,
     "IgnoreEncode": true,
@@ -55,21 +55,21 @@
             "TableName": "Feature"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "system.Container.1",
             "FieldName": "Container",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Container.Report1.1_2",
                     "FieldName": "Report1",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "HtmlCode",
                     "Column": 12,
-                    "Query": "select * from Partner as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.PicId = '{TokenUserId}')",
+                    "query": "select * from Partner as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.PicId = '{TokenUserId}')",
                     "RefName": "Partner",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }"
                 }

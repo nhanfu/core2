@@ -380,3 +380,4 @@ FodyWeavers.xsd
 /svc/dist
 /worktrees
 .worktrees
+.omc

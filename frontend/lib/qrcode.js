@@ -27,15 +27,15 @@ export class QRCode extends EditableComponent {
     render() {
         const ctx = Html.take(this.parentElement)
             .clear()
-            .Div.Style(`width:${this.meta.Width}px;margin:auto`)
+            .Div.Style(`width:${this.meta.width}px;margin:auto`)
             .id("barcode" + this.meta.id);
         // @ts-ignore
         this.element = ctx;
         this.value = this.fieldVal;
         new QR("barcode" + this.meta.id, {
             text: this.value,
-            width: this.meta.Width,
-            height: this.meta.Width,
+            width: this.meta.width,
+            height: this.meta.width,
             colorDark: "#000000",
             colorLight: "#ffffff",
         });

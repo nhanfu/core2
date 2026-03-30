@@ -60,7 +60,7 @@ export class Select extends EditableComponent {
         if (this.meta.showHotKey) {
             this.renderIcons();
         }
-        this.Data = Utils.isFunction(this.meta.Query, false, this);
+        this.Data = Utils.isFunction(this.meta.query, false, this);
         this.Data.unshift({
             Id: null,
             Name: 'Selected Option',
@@ -70,7 +70,7 @@ export class Select extends EditableComponent {
             select: this.element.firstElementChild,
             data: this.Data.map(x => ({ text: x.Name, value: x.id == null ? null : x.id.toString(), html: x.Description || x.Name })),
             settings: {
-                disabled: this.meta.Disabled,
+                disabled: this.meta.disabled,
                 showSearch: this.Data.length >= 5
             },
             events: {
@@ -198,7 +198,7 @@ export class Select extends EditableComponent {
         this.entity[this.Name] = this._value;
         this.Matched = rowData;
         if (this._gv !== null) {
-            this._gv.Show = false;
+            this._gv.show = false;
         }
         this.populateFields(this.Matched);
         this.dispatchEvent(this.meta.events, EventType.Change, this, this.entity, rowData, oldMatch).then(() => {
@@ -215,7 +215,7 @@ export class Select extends EditableComponent {
     }
 
     updateView(force = false, dirty = null, ...componentNames) {
-        this.Data = Utils.isFunction(this.meta.Query, false, this);
+        this.Data = Utils.isFunction(this.meta.query, false, this);
         this.Data.unshift({
             Id: null,
             Name: 'Selected Option',

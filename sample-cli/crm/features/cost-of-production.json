@@ -2,8 +2,8 @@
     "Id": "cost_of_production",
     "Name": "cost-of-production",
     "Label": "Cost of Production",
-    "Order": 12,
-    "Icon": "fal fa-tag",
+    "order": 12,
+    "icon": "fal fa-tag",
     "IsPublic": true,
     "IgnoreEncode": true,
     "FeaturePolicies": [

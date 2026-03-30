@@ -2,25 +2,25 @@
     "Id": "company_editor",
     "Name": "company-editor",
     "Label": "Company-Editor",
-    "Order": 0,
-    "Style": "width:220mm;",
+    "order": 0,
+    "style": "width:220mm;",
     "EntityId": "Partner",
     "GridPolicies": [
         {
             "Id": "company_editor.BankId.0",
             "FieldName": "BankId",
-            "Order": 0,
+            "order": 0,
             "ComponentType": "Dropdown",
             "FormatData": "{Name}",
             "PlainText": "Select data",
             "Row": 100,
             "Label": "Bank",
-            "Width": "112px",
-            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Bank'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Bank'\"\r\n}",
+            "width": "112px",
+            "query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Bank'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Bank'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "112px",
             "MaxWidth": "112px",
             "EntityId": "PartnerBankAccount"
@@ -28,16 +28,16 @@
         {
             "Id": "company_editor.AccountNumber.1",
             "FieldName": "AccountNumber",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Input",
             "Row": 50,
             "Label": "Number",
-            "Width": "102px",
-            "Query": "{\r\n    \"sql\": \"select * from Role as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Role as ds\"\r\n}",
+            "width": "102px",
+            "query": "{\r\n    \"sql\": \"select * from Role as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Role as ds\"\r\n}",
             "RefName": "Role",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "102px",
             "MaxWidth": "102px",
             "EntityId": "PartnerBankAccount"
@@ -45,16 +45,16 @@
         {
             "Id": "company_editor.AccountName.2",
             "FieldName": "AccountName",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Input",
             "Row": 50,
             "Label": "Name",
-            "Width": "94px",
-            "Query": "{\r\n    \"sql\": \"select * from Role as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Role as ds\"\r\n}",
+            "width": "94px",
+            "query": "{\r\n    \"sql\": \"select * from Role as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Role as ds\"\r\n}",
             "RefName": "Role",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "94px",
             "MaxWidth": "94px",
             "EntityId": "PartnerBankAccount"
@@ -62,14 +62,14 @@
         {
             "Id": "company_editor.SwiftCode.3",
             "FieldName": "SwiftCode",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Input",
             "Row": 50,
             "Label": "Swift Code",
-            "Width": "127px",
+            "width": "127px",
             "RefName": "Role",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "127px",
             "MaxWidth": "127px",
             "EntityId": "PartnerBankAccount"
@@ -77,14 +77,14 @@
         {
             "Id": "company_editor.IsMain.4",
             "FieldName": "IsMain",
-            "Order": 4,
+            "order": 4,
             "ComponentType": "Checkbox",
             "Row": 50,
             "Label": "Main",
-            "Width": "94px",
+            "width": "94px",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "94px",
             "MaxWidth": "94px",
             "EntityId": "PartnerBankAccount"
@@ -92,41 +92,41 @@
         {
             "Id": "company_editor.IsReceives.4",
             "FieldName": "IsReceives",
-            "Order": 4,
+            "order": 4,
             "ComponentType": "Checkbox",
             "Row": 50,
             "Label": "Receives",
-            "Width": "94px",
+            "width": "94px",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "94px",
             "MaxWidth": "94px",
             "EntityId": "PartnerBankAccount"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "company_editor.Container.3",
             "FieldName": "Container ",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Container.Right.5",
                     "FieldName": "Right",
-                    "Order": 5,
+                    "order": 5,
                     "ComponentType": "Section",
                     "ClassName": "card-body profile",
                     "XxlCol": 10,
                     "XxlOuterColumn": 12,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Right.Logo.1",
                             "FieldName": "Logo",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "FileUpload",
                             "Column": 4,
                             "Label": "Logo",
@@ -137,7 +137,7 @@
                         {
                             "Id": "Right.PartnerBankAccount.2",
                             "FieldName": "PartnerBankAccount",
-                            "Order": 2,
+                            "order": 2,
                             "ComponentType": "GridView",
                             "Column": 6,
                             "RowSpan": 2,
@@ -145,15 +145,15 @@
                             "Label": "PartnerBankAccount",
                             "DefaultVal": "{ PartnerId: this.EditForm.Entity.Id}",
                             "CanAdd": true,
-                            "Query": "{\r\n    \"sql\": \"select * from PartnerBankAccount as ds where PartnerId = '{PartnerId}'\",\r\n    \"total\": \"select count(ds.Id) as total from PartnerBankAccount as ds where PartnerId = '{PartnerId}'\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select * from PartnerBankAccount as ds where PartnerId = '{PartnerId}'\",\r\n    \"total\": \"select count(ds.Id) as total from PartnerBankAccount as ds where PartnerId = '{PartnerId}'\"\r\n}",
                             "RefName": "PartnerBankAccount",
                             "PreQuery": "{ PartnerId: this.EditForm.Entity.Id}",
-                            "Editable": true
+                            "editable": true
                         },
                         {
                             "Id": "Right.Icon.3",
                             "FieldName": "Icon",
-                            "Order": 3,
+                            "order": 3,
                             "ComponentType": "FileUpload",
                             "Column": 4,
                             "Label": "Icon",
@@ -165,18 +165,18 @@
                 },
                 {
                     "Id": "Container.Section.6",
-                    "Order": 6,
+                    "order": 6,
                     "ComponentType": "Section",
                     "Label": "Info",
-                    "Icon": "fal fa-info mr-1",
+                    "icon": "fal fa-info mr-1",
                     "ClassName": "card-body",
                     "XxlCol": 12,
                     "XxlOuterColumn": 12,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Section.Name.1",
                             "FieldName": "Name",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "Input",
                             "Column": 6,
                             "Label": "Name VN",
@@ -185,7 +185,7 @@
                         {
                             "Id": "Section.PhoneNumber.5_1",
                             "FieldName": "PhoneNumber",
-                            "Order": 5,
+                            "order": 5,
                             "ComponentType": "Input",
                             "Column": 6,
                             "Label": "Phone",
@@ -194,7 +194,7 @@
                         {
                             "Id": "Section.CompanyName.2",
                             "FieldName": "CompanyName",
-                            "Order": 2,
+                            "order": 2,
                             "ComponentType": "Input",
                             "Column": 6,
                             "Label": "Name EN",
@@ -203,7 +203,7 @@
                         {
                             "Id": "Section.Address.4",
                             "FieldName": "Address",
-                            "Order": 4,
+                            "order": 4,
                             "ComponentType": "Textarea",
                             "Column": 6,
                             "Label": "Address VN",
@@ -212,7 +212,7 @@
                         {
                             "Id": "Section.Email.8",
                             "FieldName": "Email",
-                            "Order": 8,
+                            "order": 8,
                             "ComponentType": "Input",
                             "Column": 6,
                             "Label": "Email",
@@ -221,7 +221,7 @@
                         {
                             "Id": "Section.TaxCode.6",
                             "FieldName": "TaxCode",
-                            "Order": 6,
+                            "order": 6,
                             "ComponentType": "Input",
                             "Column": 6,
                             "Label": "TaxCode",
@@ -230,7 +230,7 @@
                         {
                             "Id": "Section.Fax.7",
                             "FieldName": "Fax",
-                            "Order": 7,
+                            "order": 7,
                             "ComponentType": "Input",
                             "Column": 6,
                             "Label": "Fax",
@@ -239,7 +239,7 @@
                         {
                             "Id": "Section.WebSite.9",
                             "FieldName": "WebSite",
-                            "Order": 9,
+                            "order": 9,
                             "ComponentType": "Input",
                             "Column": 6,
                             "Label": "Web",
@@ -248,7 +248,7 @@
                         {
                             "Id": "Section.AddressInv.3",
                             "FieldName": "AddressInv",
-                            "Order": 3,
+                            "order": 3,
                             "ComponentType": "Textarea",
                             "Column": 6,
                             "Label": "Address EN",
@@ -259,15 +259,15 @@
                 {
                     "Id": "Container.Header.7",
                     "FieldName": "Header",
-                    "Order": 7,
+                    "order": 7,
                     "ComponentType": "Section",
                     "Label": "Header",
                     "ClassName": "card-body",
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Header.Header.9",
                             "FieldName": "Header",
-                            "Order": 9,
+                            "order": 9,
                             "ComponentType": "Word",
                             "Column": 6,
                             "Label": "Header"
@@ -277,15 +277,15 @@
                 {
                     "Id": "Container.Footer.8",
                     "FieldName": "Footer",
-                    "Order": 8,
+                    "order": 8,
                     "ComponentType": "Section",
                     "Label": "Footer",
                     "ClassName": "card-body",
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Footer.Footer.9",
                             "FieldName": "Footer",
-                            "Order": 9,
+                            "order": 9,
                             "ComponentType": "Word",
                             "Column": 6,
                             "Label": "Footer"
@@ -295,11 +295,11 @@
                 {
                     "Id": "Container.btnSave.1_1",
                     "FieldName": "btnSave",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Save",
-                    "Icon": "fal fa-save",
+                    "icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }"
@@ -309,19 +309,19 @@
         {
             "Id": "company_editor.Button.2",
             "FieldName": "Button",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Section",
             "ClassName": "ribbon-group",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Button.btnSave.1_3",
                     "FieldName": "btnSave",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Save",
-                    "Icon": "fal fa-save",
+                    "icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }"

@@ -18,10 +18,10 @@ export class GoogleMap extends EditableComponent {
         this.marker = null;
         this.infoWindow = null;
         this.geocoder = null;
-        this.defaultZoom = this.meta.Precision || 15;
+        this.defaultZoom = this.meta.precision || 15;
         this.defaultCenter = { lat: 10.8231, lng: 106.6297 }; // Default to Ho Chi Minh City
-        this.mapHeight = this.meta.Height || '400px';
-        this.mapWidth = this.meta.Width || '100%';
+        this.mapHeight = this.meta.height || '400px';
+        this.mapWidth = this.meta.width || '100%';
         this.scriptLoaded = false;
         this.searchBox = null;
         this.latField = this.meta.latField || 'Latitude';

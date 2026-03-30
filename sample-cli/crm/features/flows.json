@@ -2,8 +2,8 @@
     "Id": "flows",
     "Name": "flows",
     "Label": "Flows",
-    "Order": -1,
-    "Icon": "fal fa-network-wired",
+    "order": -1,
+    "icon": "fal fa-network-wired",
     "IsPublic": true,
     "IgnoreEncode": true,
     "FeaturePolicies": [

@@ -72,7 +72,7 @@ export class MultipleSearchEntry extends SearchEntry {
 
     processLocalMatch() {
         if (Utils.isNullOrWhiteSpace(this.meta.refName)) {
-            var data = Utils.isFunction(this.meta.Query, false, this);
+            var data = Utils.isFunction(this.meta.query, false, this);
             this.matchedItems = data.filter(x => this.listValues.includes(x.id.toString()));
             this.setMatchedValue();
             this.entity[this.Name + "Text"] = this.matchedItems.length > 0 ? this.matchedItems.map(item => this.getMatchedText(item)).join(this.meta.groupFormat || ',') : this.entity[this.Name + "Text"];

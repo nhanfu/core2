@@ -1,8 +1,8 @@
 Id: profile
 Name: profile
 Label: Profile
-Order: 18
-Query:
+order: 18
+query:
   Global: |
     // js
     (vm) => `select * from "Users" where "Id" = ${vm.id}`
@@ -21,30 +21,30 @@ Script: |
         this.OpenPopup("change-password-editor", entity);
     }
   }
-Icon: fal fa-user
+icon: fal fa-user
 IsMenu: true
 EntityId: User
-Components:
+components:
   - Id: profile.FullPage.1
     FieldName: FullPage
-    Order: 1
+    order: 1
     ComponentType: Section
     ClassName: scroll-content
-    Style: "width: 375px;margin: auto;padding-bottom:10rem;"
+    style: "width: 375px;margin: auto;padding-bottom:10rem;"
     XxlCol: 12
     XxlOuterColumn: 12
-    Components:
+    components:
       - Id: FullPage.General.1
         FieldName: General
-        Order: 1
+        order: 1
         ComponentType: Section
         ClassName: card-body
         XxlCol: 12
         XxlOuterColumn: 12
-        Components:
+        components:
           - Id: General.DepartmentId.1
             FieldName: DepartmentId
-            Order: 1
+            order: 1
             ComponentType: Dropdown
             FormatData: "{Name}"
             PlainText: Select data
@@ -52,10 +52,10 @@ Components:
             Row: 100
             Label: Department
             ShowLabel: true
-            Disabled: true
-            Validation: '[{"Rule": "required", "Message": "{0} is required"}]'
+            disabled: true
+            validation: '[{"Rule": "required", "Message": "{0} is required"}]'
             SmCol: 6
-            Query: |
+            query: |
               // js
               (vm) => `select ds.* from "MasterData" as ds left join
                 "MasterData" ds1 on ds."ParentId" = ds1."Id" where ds1."Name" = 'Department Type',
@@ -67,16 +67,16 @@ Components:
             Template: '[{ "FieldName" : "Name", "Label" : "Name", "ComponentType" : "Input" }]'
           - Id: General.JointDate.5
             FieldName: JointDate
-            Order: 5
+            order: 5
             ComponentType: Datepicker
             Column: 6
             Label: Joint Date
             ShowLabel: true
-            Disabled: true
+            disabled: true
             SmCol: 6
           - Id: General.Knowledge.6
             FieldName: Knowledge
-            Order: 6
+            order: 6
             ComponentType: Input
             Column: 6
             Row: 50
@@ -85,7 +85,7 @@ Components:
             SmCol: 6
           - Id: General.CompanyId.7
             FieldName: CompanyId
-            Order: 7
+            order: 7
             ComponentType: Dropdown
             FormatData: "{Name}"
             PlainText: Select data
@@ -93,10 +93,10 @@ Components:
             Row: 100
             Label: Company
             ShowLabel: true
-            Disabled: true
-            Validation: '[{"Rule": "required", "Message": "{0} is required"}]'
+            disabled: true
+            validation: '[{"Rule": "required", "Message": "{0} is required"}]'
             SmCol: 6
-            Query: |
+            query: |
               // js
               (vm) => `select * from "Partner" as ds where "ServiceId" = 5;
                 select count(ds."Id") as total from "Partner" as ds where "ServiceId" = 5`
@@ -104,30 +104,30 @@ Components:
             Template: '[{ "FieldName" : "Name", "Label" : "Name", "ComponentType" : "Input" }]'
           - Id: General.Avatar.0
             FieldName: Avatar
-            Order: 0
+            order: 0
             ComponentType: FileUpload
             Column: 12
             SmCol: 12
             VirtualScroll: true
       - Id: FullPage.Section.2
-        Order: 2
+        order: 2
         ComponentType: Section
         ClassName: card-body
         XxlCol: 12
         XxlOuterColumn: 12
-        Components:
+        components:
           - Id: Section.FullName.1
             FieldName: FullName
-            Order: 1
+            order: 1
             ComponentType: Input
             Column: 6
             Label: Full Name
             ShowLabel: true
-            Validation: '[{"Rule": "required", "Message": "{0} is required"}]'
+            validation: '[{"Rule": "required", "Message": "{0} is required"}]'
             SmCol: 6
           - Id: Section.NickName.2
             FieldName: NickName
-            Order: 2
+            order: 2
             ComponentType: Input
             Column: 6
             Label: Nick Name
@@ -135,7 +135,7 @@ Components:
             SmCol: 6
           - Id: Section.identityCardDate.6
             FieldName: IdentityCardDate
-            Order: 6
+            order: 6
             ComponentType: Datepicker
             Column: 4
             Row: 50
@@ -144,53 +144,53 @@ Components:
             SmCol: 6
           - Id: Section.PlaceIssue.7
             FieldName: PlaceIssue
-            Order: 7
+            order: 7
             ComponentType: Datepicker
             Column: 4
             Label: Place of Issue
             ShowLabel: true
             SmCol: 6
       - Id: FullPage.Section.3
-        Order: 3
+        order: 3
         ComponentType: Section
         Label: Contact Info
         ClassName: card-body
         XxlCol: 12
         XxlOuterColumn: 12
-        Components:
+        components:
           - Id: Section.Address.1
             FieldName: Address
-            Order: 1
+            order: 1
             ComponentType: Textarea
             Column: 12
             Label: Address
             ShowLabel: true
           - Id: Section.UserName.2
             FieldName: UserName
-            Order: 2
+            order: 2
             ComponentType: Input
             Column: 6
             Label: User Name
             ShowLabel: true
-            Disabled: true
-            Validation: '[{"Rule": "required", "Message": "{0} is required"}]'
+            disabled: true
+            validation: '[{"Rule": "required", "Message": "{0} is required"}]'
           - Id: Section.PhoneNumber.3
             FieldName: PhoneNumber
-            Order: 3
+            order: 3
             ComponentType: Input
             Column: 6
             Label: Phone
             ShowLabel: true
           - Id: Section.Email.4
             FieldName: Email
-            Order: 4
+            order: 4
             ComponentType: Input
             Column: 12
             Label: Email
             ShowLabel: true
-            Validation: '[{"Rule": "required", "Message": "{0} is required"}]'
+            validation: '[{"Rule": "required", "Message": "{0} is required"}]'
       - Id: FullPage.Section.4
-        Order: 4
+        order: 4
         ComponentType: Section
         Label: Bank
         ClassName: card-body
@@ -198,21 +198,21 @@ Components:
         XxlOuterColumn: 12
       - Id: FullPage.btnChangePassword.5
         FieldName: btnChangePassword
-        Order: 5
+        order: 5
         ComponentType: Button
         Column: 1
         Label: Password
-        Icon: fal fa-edit
+        icon: fal fa-edit
         ClassName: btn btn-sm btn-secondary
         HotKey: Ctrl-S
         Events: '{ "click" : "ChangePassword" }'
       - Id: FullPage.btnSave.4
         FieldName: btnSave
-        Order: 4
+        order: 4
         ComponentType: Button
         Column: 1
         Label: Save
-        Icon: fal fa-save
+        icon: fal fa-save
         ClassName: btn btn-sm btn-primary
         HotKey: Ctrl-S
         Events: '{ "click" : "SavePatch" }'

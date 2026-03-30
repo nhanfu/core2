@@ -48,7 +48,7 @@ export class TreeView extends ListView {
     renderRow(headers, node, row, ul) {
         const params = Utils.isFunction(this.meta.preQuery, false, this);
         // @ts-ignore
-        const data = Client.Instance.comQuery(new SqlViewModel({
+        const data = Client.instance.comQuery(new SqlViewModel({
             metaConn: this.metaConn,
             dataConn: this.dataConn,
             comId: this.meta.id,

@@ -2,7 +2,7 @@
     "Id": "payment_editor",
     "Name": "payment-editor",
     "Label": "Payment Editor",
-    "Order": 0,
+    "order": 0,
     "FeaturePolicies": [
         {
             "RoleId": "PRICING",

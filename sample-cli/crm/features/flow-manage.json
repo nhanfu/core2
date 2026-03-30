@@ -2,20 +2,20 @@
     "Id": "flow_manage",
     "Name": "flow-manage",
     "Label": "Flows Manage",
-    "Order": 1,
+    "order": 1,
     "Script": "return {\r\n    Add: function () {\r\n        var entity = {\r\n            IsFlow: true,\r\n            IsMenu: true,\r\n            Order: -999,\r\n            ParentId: this.EditForm.Meta.ParentId\r\n        }\r\n        this.OpenPopup(\"flows-editor\", entity);\r\n    },\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"flows-editor\", entity);\r\n    }\r\n}",
-    "Icon": "fal fa-ellipsis-h-alt",
+    "icon": "fal fa-ellipsis-h-alt",
     "IsMenu": true,
     "IgnoreEncode": true,
     "GridPolicies": [
         {
             "Id": "flow_manage.Name.1",
             "FieldName": "Name",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Number",
-            "Precision": 0,
+            "precision": 0,
             "Label": "Name",
-            "Width": "178px",
+            "width": "178px",
             "FocusSearch": true,
             "MinWidth": "178px",
             "MaxWidth": "178px",
@@ -24,10 +24,10 @@
         {
             "Id": "flow_manage.Active.3",
             "FieldName": "Active",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Checkbox",
             "Label": "Active",
-            "Width": "95px",
+            "width": "95px",
             "FocusSearch": true,
             "MinWidth": "95px",
             "MaxWidth": "95px",
@@ -36,10 +36,10 @@
         {
             "Id": "flow_manage.Id.0",
             "FieldName": "Id",
-            "Order": 0,
+            "order": 0,
             "ComponentType": "Input",
             "Label": "Id",
-            "Width": "266px",
+            "width": "266px",
             "FocusSearch": true,
             "MinWidth": "266px",
             "MaxWidth": "266px",
@@ -48,29 +48,29 @@
         {
             "Id": "flow_manage.Label.2",
             "FieldName": "Label",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Input",
             "Label": "Label",
-            "Width": "290px",
+            "width": "290px",
             "FocusSearch": true,
             "MinWidth": "290px",
             "MaxWidth": "290px",
             "EntityId": "Feature"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "flow_manage.Container.1",
             "FieldName": "Container",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Container.Feature.1",
                     "FieldName": "Feature",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "GridView",
                     "Column": 12,
                     "Row": 50,
@@ -78,7 +78,7 @@
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Events": "{\"dblclick\":\"Edit\"}",
-                    "Query": "{\r\n    \"sql\": \"select * from Feature as ds where IsFlow = 1\",\r\n    \"total\": \"select count(ds.Id) as total from Feature as ds where IsFlow = 1\"\r\n}",
+                    "query": "{\r\n    \"sql\": \"select * from Feature as ds where IsFlow = 1\",\r\n    \"total\": \"select count(ds.Id) as total from Feature as ds where IsFlow = 1\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "Feature",
                     "OrderBy": "ds.InsertedDate desc"

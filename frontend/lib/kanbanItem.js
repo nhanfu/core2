@@ -25,7 +25,7 @@ export class KanbanItem extends EditableComponent {
      */
     render() {
         Html.take(this.parentElement);
-        if (this.Top) {
+        if (this.top) {
             var itemTop = Html.div.className("kanban-item").context;
             this.element = Html.context;
             Html.context["Entity"] = this.entity;

@@ -2,20 +2,20 @@
     "Id": "submit_si",
     "Name": "submit-si",
     "Label": "Submit SI",
-    "Order": 1,
+    "order": 1,
     "Script": "return {\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"submit-si-editor\", entity);\r\n    }\r\n}",
-    "Icon": "fas fa-file-import",
+    "icon": "fas fa-file-import",
     "EntityId": "ShipmentSI",
     "GridPolicies": [
         {
             "Id": "submit_si.btnEdit.0",
             "FieldName": "btnEdit",
-            "Order": 0,
+            "order": 0,
             "ComponentType": "Button",
-            "Icon": "fal fa-expand",
+            "icon": "fal fa-expand",
             "ClassName": "btn",
             "Events": "{\"click\":\"Edit\"}",
-            "Width": "56px",
+            "width": "56px",
             "FocusSearch": true,
             "MinWidth": "56px",
             "MaxWidth": "56px",
@@ -25,13 +25,13 @@
         {
             "Id": "submit_si.CustomerId.3",
             "FieldName": "CustomerId",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Dropdown",
             "FormatData": "{Name}",
             "PlainText": "Select data",
             "Row": 100,
             "Label": "Customer",
-            "Width": "245px",
+            "width": "245px",
             "RefName": "Partner",
             "FocusSearch": true,
             "ShowHotKey": true,
@@ -42,14 +42,14 @@
         {
             "Id": "submit_si.ProgressId.1",
             "FieldName": "ProgressId",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Dropdown",
             "FormatData": "{Description}",
             "PlainText": "Select data",
             "Row": 100,
             "Label": "Progress",
-            "Width": "175px",
-            "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"To Do\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #95a5a6; display: inline-block;'> <i class='fal fa-clipboard-list mr-1'></i> To Do</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"In Progress\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #3498db; display: inline-block;'><i class='fal fa-spinner fa-spin mr-1'></i> In Progress</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Complete\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #28a745; display: inline-block;'><i class='fal fa-check-circle mr-1'></i> Complete</span>\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Decline\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #e74c3c; display: inline-block;'><i class='fal fa-times-circle mr-1'></i> Cancel</span>\"\r\n    }\r\n]",
+            "width": "175px",
+            "query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"To Do\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #95a5a6; display: inline-block;'> <i class='fal fa-clipboard-list mr-1'></i> To Do</span>\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"In Progress\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #3498db; display: inline-block;'><i class='fal fa-spinner fa-spin mr-1'></i> In Progress</span>\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Complete\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #28a745; display: inline-block;'><i class='fal fa-check-circle mr-1'></i> Complete</span>\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Decline\",\r\n        \"Description\": \"<span style='padding: 5px 8px; border-radius: 10px; color: #fff; background-color: #e74c3c; display: inline-block;'><i class='fal fa-times-circle mr-1'></i> Cancel</span>\"\r\n    }\r\n]",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
             "TextAlign": "center",
@@ -60,13 +60,13 @@
         {
             "Id": "submit_si.PolId.4",
             "FieldName": "PolId",
-            "Order": 4,
+            "order": 4,
             "ComponentType": "Dropdown",
             "FormatData": "{Name}",
             "PlainText": "Select data",
             "Row": 100,
             "Label": "<i class=\"fas fa-map-marker-alt\"></i> POL",
-            "Width": "176px",
+            "width": "176px",
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
@@ -77,13 +77,13 @@
         {
             "Id": "submit_si.PodId.5",
             "FieldName": "PodId",
-            "Order": 5,
+            "order": 5,
             "ComponentType": "Dropdown",
             "FormatData": "{Name}",
             "PlainText": "Select data",
             "Row": 100,
             "Label": "<i class=\"fas fa-map-marker-alt\"></i> POD",
-            "Width": "243px",
+            "width": "243px",
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
@@ -94,10 +94,10 @@
         {
             "Id": "submit_si.BookingNo.2",
             "FieldName": "BookingNo",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Input",
             "Label": "ID Booking Note",
-            "Width": "162px",
+            "width": "162px",
             "FocusSearch": true,
             "MinWidth": "162px",
             "MaxWidth": "162px",
@@ -105,22 +105,22 @@
             "EntityId": "ShipmentSI"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "submit_si.Section.1",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "Label": "All",
-            "Icon": "fal fa-border-all mr-1",
+            "icon": "fal fa-border-all mr-1",
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "IsTab": true,
             "DisplayBadge": true,
-            "Components": [
+            "components": [
                 {
                     "Id": "Section.ShipmentSI.1",
                     "FieldName": "ShipmentSI",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "GridView",
                     "Column": 12,
                     "Row": 50,
@@ -128,7 +128,7 @@
                     "Label": "ShipmentSI",
                     "ClassName": "sticky",
                     "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select * from ShipmentSI as ds where (TypeId = 2 and CustomerId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentSI as ds where (TypeId = 2 and CustomerId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}')\"\r\n}",
+                    "query": "{\r\n    \"sql\": \"select * from ShipmentSI as ds where (TypeId = 2 and CustomerId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentSI as ds where (TypeId = 2 and CustomerId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}')\"\r\n}",
                     "RefName": "Inquiry",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
                     "OrderBy": "ds.InsertedDate desc"
@@ -137,18 +137,18 @@
         },
         {
             "Id": "submit_si.Section.2",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Section",
             "Label": "New",
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "IsTab": true,
             "DisplayBadge": true,
-            "Components": [
+            "components": [
                 {
                     "Id": "Section.ShipmentSI.1_1",
                     "FieldName": "ShipmentSI",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "GridView",
                     "Column": 12,
                     "Row": 50,
@@ -156,7 +156,7 @@
                     "Label": "QuoteALL",
                     "ClassName": "sticky",
                     "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select * from ShipmentSI as ds where (TypeId = 2 and ProgressId = 1 and CustomerId = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentSI as ds where (TypeId = 2 and ProgressId = 1 and CustomerId = '{TokenUserId}')\"\r\n}",
+                    "query": "{\r\n    \"sql\": \"select * from ShipmentSI as ds where (TypeId = 2 and ProgressId = 1 and CustomerId = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentSI as ds where (TypeId = 2 and ProgressId = 1 and CustomerId = '{TokenUserId}')\"\r\n}",
                     "RefName": "ShipmentSI",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
                     "OrderBy": "ds.InsertedDate desc"
@@ -165,18 +165,18 @@
         },
         {
             "Id": "submit_si.Section.3",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Section",
             "Label": "Approving",
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "IsTab": true,
             "DisplayBadge": true,
-            "Components": [
+            "components": [
                 {
                     "Id": "Section.ShipmentSI.1_2",
                     "FieldName": "ShipmentSI",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "GridView",
                     "Column": 12,
                     "Row": 50,
@@ -184,7 +184,7 @@
                     "Label": "QuoteALL",
                     "ClassName": "sticky",
                     "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select * from ShipmentSI as ds where (TypeId = 2 and ProgressId = 1 and IsSend = 1 and CustomerId = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentSI as ds where (TypeId = 2 and ProgressId = 1 and IsSend = 1 and CustomerId = '{TokenUserId}')\"\r\n}",
+                    "query": "{\r\n    \"sql\": \"select * from ShipmentSI as ds where (TypeId = 2 and ProgressId = 1 and IsSend = 1 and CustomerId = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentSI as ds where (TypeId = 2 and ProgressId = 1 and IsSend = 1 and CustomerId = '{TokenUserId}')\"\r\n}",
                     "RefName": "ShipmentSI",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
                     "OrderBy": "ds.InsertedDate desc"
@@ -193,18 +193,18 @@
         },
         {
             "Id": "submit_si.Section.4",
-            "Order": 4,
+            "order": 4,
             "ComponentType": "Section",
             "Label": "Confirm",
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "IsTab": true,
             "DisplayBadge": true,
-            "Components": [
+            "components": [
                 {
                     "Id": "Section.ShipmentSI.1_3",
                     "FieldName": "ShipmentSI",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "GridView",
                     "Column": 12,
                     "Row": 50,
@@ -212,7 +212,7 @@
                     "Label": "QuoteALL",
                     "ClassName": "sticky",
                     "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select * from ShipmentSI as ds where (TypeId = 2 and ProgressId = 2 and CustomerId = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentSI as ds where (TypeId = 2 and ProgressId = 2 and CustomerId = '{TokenUserId}')\"\r\n}",
+                    "query": "{\r\n    \"sql\": \"select * from ShipmentSI as ds where (TypeId = 2 and ProgressId = 2 and CustomerId = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentSI as ds where (TypeId = 2 and ProgressId = 2 and CustomerId = '{TokenUserId}')\"\r\n}",
                     "RefName": "ShipmentSI",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
                     "OrderBy": "ds.InsertedDate desc"
@@ -221,18 +221,18 @@
         },
         {
             "Id": "submit_si.Section.5",
-            "Order": 5,
+            "order": 5,
             "ComponentType": "Section",
             "Label": "Approved 1",
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "IsTab": true,
             "DisplayBadge": true,
-            "Components": [
+            "components": [
                 {
                     "Id": "Section.ShipmentSI.1_4",
                     "FieldName": "ShipmentSI",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "GridView",
                     "Column": 12,
                     "Row": 50,
@@ -240,7 +240,7 @@
                     "Label": "QuoteALL",
                     "ClassName": "sticky",
                     "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select * from ShipmentSI as ds where (TypeId = 2 and ProgressId = 3 and CustomerId = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentSI as ds where (TypeId = 2 and ProgressId = 3 and CustomerId = '{TokenUserId}')\"\r\n}",
+                    "query": "{\r\n    \"sql\": \"select * from ShipmentSI as ds where (TypeId = 2 and ProgressId = 3 and CustomerId = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentSI as ds where (TypeId = 2 and ProgressId = 3 and CustomerId = '{TokenUserId}')\"\r\n}",
                     "RefName": "ShipmentSI",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
                     "OrderBy": "ds.InsertedDate desc"
@@ -249,18 +249,18 @@
         },
         {
             "Id": "submit_si.Section.6",
-            "Order": 6,
+            "order": 6,
             "ComponentType": "Section",
             "Label": "Decline",
             "ClassName": "scroll-content",
             "XxlCol": 12,
             "IsTab": true,
             "DisplayBadge": true,
-            "Components": [
+            "components": [
                 {
                     "Id": "Section.ShipmentSI.1_5",
                     "FieldName": "ShipmentSI",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "GridView",
                     "Column": 12,
                     "Row": 50,
@@ -268,7 +268,7 @@
                     "Label": "QuoteALL",
                     "ClassName": "sticky",
                     "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select * from ShipmentSI as ds where (TypeId = 2 and ProgressId = 4 and CustomerId = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentSI as ds where (TypeId = 2 and ProgressId = 4 and CustomerId = '{TokenUserId}')\"\r\n}",
+                    "query": "{\r\n    \"sql\": \"select * from ShipmentSI as ds where (TypeId = 2 and ProgressId = 4 and CustomerId = '{TokenUserId}')\",\r\n    \"total\": \"select count(ds.Id) as total from ShipmentSI as ds where (TypeId = 2 and ProgressId = 4 and CustomerId = '{TokenUserId}')\"\r\n}",
                     "RefName": "ShipmentSI",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }",
                     "OrderBy": "ds.InsertedDate desc"

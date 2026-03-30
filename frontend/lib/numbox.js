@@ -26,7 +26,7 @@ export class Numbox extends EditableComponent {
         this._decimalSeparator = '.';
         this.setSelection = true;
         this.defaultValue = 0;
-        this.meta.Precision = this.meta.groupTypeId ? parseInt(LangSelect._webConfig[this.meta.groupTypeId]) : parseInt(this.meta.Precision || 0);
+        this.meta.precision = this.meta.groupTypeId ? parseInt(LangSelect._webConfig[this.meta.groupTypeId]) : parseInt(this.meta.precision || 0);
     }
 
     /** @type {Decimal} */
@@ -45,7 +45,7 @@ export class Numbox extends EditableComponent {
             var [success, parsedVal] = Utils.tryParseDecimal(this._value?.toString());
             if (success) {
                 this._value = parsedVal;
-                var precision = parseInt(this.meta.Precision ?? 0);
+                var precision = parseInt(this.meta.precision ?? 0);
                 const dotCount = (this._input.value?.match(/,/g) || []).length;
                 const selectionEnd = this._input.selectionEnd;
                 var hasDot = false;
@@ -80,7 +80,7 @@ export class Numbox extends EditableComponent {
                     this.parsedVal = new Decimal(0);
                 }
                 this._value = new Decimal(parsedVal);
-                this._input.value = parsedVal.toFixed(parseInt(this.meta.Precision || 0));
+                this._input.value = parsedVal.toFixed(parseInt(this.meta.precision || 0));
                 if (parsedVal.isNegative()) {
                     this._input.classList.add("negative");
                 }
@@ -90,7 +90,7 @@ export class Numbox extends EditableComponent {
             }
         }
         this.entity[this.Name] = this._value;
-        Utils.isFunction(this.meta.Renderer, false, this);
+        Utils.isFunction(this.meta.renderer, false, this);
     }
 
     setValue() {
@@ -149,7 +149,7 @@ export class Numbox extends EditableComponent {
         this._input.autocomplete = 'off';
         this.oldValue = this._value;
         this.value = this._value;
-        window.setTimeout(() => Utils.isFunction(this.meta.Renderer), 100);
+        window.setTimeout(() => Utils.isFunction(this.meta.renderer), 100);
         this.dOMContentLoaded?.invoke();
     }
 

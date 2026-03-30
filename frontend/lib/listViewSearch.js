@@ -218,13 +218,13 @@ export class ListViewSearch extends EditableComponent {
                     if (existingConditionIndex > -1) {
                         this.parent.advSearchVM.advSearchConditions[existingConditionIndex] = {
                             ...this.parent.advSearchVM.advSearchConditions[existingConditionIndex],
-                            Where: item.Query,
+                            Where: item.query,
                             value: this.editForm.entity[item.fieldName]
                         };
                     } else {
                         this.parent.advSearchVM.advSearchConditions.push({
                             fieldName: item.fieldName,
-                            Where: item.Query,
+                            Where: item.query,
                             value: this.editForm.entity[item.fieldName]
                         });
                     }
@@ -290,8 +290,8 @@ export class ListViewSearch extends EditableComponent {
         const ele = e.target;
         var buttonRect = ele.getBoundingClientRect();
         var ctxMenu = ContextMenu.Instance;
-        ctxMenu.Top = buttonRect.bottom;
-        ctxMenu.Left = buttonRect.left;
+        ctxMenu.top = buttonRect.bottom;
+        ctxMenu.left = buttonRect.left;
         ctxMenu.editForm = this.editForm;
         ctxMenu.menuItems = coms.map(x => ({
             Icon: 'fa fa-download mr-1',
@@ -683,8 +683,8 @@ export class ListViewSearch extends EditableComponent {
         var buttonRect = ele.getBoundingClientRect();
         var show = localStorage.getItem(`Show${this.meta.id}`) ?? false;
         var ctxMenu = ContextMenu.Instance;
-        ctxMenu.Top = buttonRect.bottom;
-        ctxMenu.Left = buttonRect.left;
+        ctxMenu.top = buttonRect.bottom;
+        ctxMenu.left = buttonRect.left;
         if (this.meta.canExport) {
             ctxMenu.menuItems = [
                 { Icon: 'fa fa-download mr-1', Text: 'Export excel', Click: this.exportAllData.bind(this) },
@@ -733,7 +733,7 @@ export class ListViewSearch extends EditableComponent {
     /**
      * @param {object} arg
      */
-    ExportCustomData(arg) {
+    exportCustomData(arg) {
         this.tabEditor?.openPopup('Export customData', () => this.Exporter()).then();
     }
 
@@ -904,7 +904,7 @@ export class ListViewSearch extends EditableComponent {
         // Components are never disabled, ignore the input.
     }
 
-    AdvancedSearch(arg) {
+    advancedSearch(arg) {
         ComponentExt.openPopup(this.tabEditor, "AdvancedSearch", () => {
             // @ts-ignore
             var editor = new AdvancedSearch(this.parentListView);

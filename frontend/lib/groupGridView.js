@@ -36,14 +36,14 @@ export class GroupGridView extends GridView {
         if (this.formattedRowData.length == 0) {
             return;
         }
-        this.mainSection.Show = false;
+        this.mainSection.show = false;
         this.mainSection.disposeChildren();
         this.formattedRowData.forEach((row, index) => {
             Html.take(this.mainSection.element);
             this.renderRowData1(this.header, row, this.mainSection, null);
         });
         this.updateStickyColumns();
-        this.mainSection.Show = true;
+        this.mainSection.show = true;
         this.contentRendered();
         window.setTimeout(() => {
             this.renderIndex();
@@ -364,7 +364,7 @@ export class GroupGridView extends GridView {
             groupSection.entity["modelName"] = this.meta.refName;
             headers.filter(x => !x.Hidden).forEach(header => {
                 Html.instance.tData.tabIndex(-1)
-                    .style(header.Style)
+                    .style(header.style)
                     .event(EventType.focusIn, e => this.focusCell(e, header))
                     .dataAttr("field", header.fieldName).render();
                 let td = Html.context;

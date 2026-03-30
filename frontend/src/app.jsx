@@ -42,7 +42,7 @@ export class App {
         </>
       );
     };
-    this.meta.Layout = this.meta.layout;
+    this.meta.layout = this.meta.layout;
     this.myApp = new Page();
     this.myApp.editForm = new EditForm("myApp");
     this.myApp.editForm = this.myApp.editForm;

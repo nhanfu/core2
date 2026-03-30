@@ -47,10 +47,10 @@ export class Rating extends EditableComponent {
     }
 
     setSelected(value) {
-        if (value === null || value <= 0 || value > this.meta.Precision) {
+        if (value === null || value <= 0 || value > this.meta.precision) {
             return;
         }
-        this.inputList[this.meta.Precision - value].checked = true;
+        this.inputList[this.meta.precision - value].checked = true;
     }
 
     render() {
@@ -60,7 +60,7 @@ export class Rating extends EditableComponent {
         this.element = container;
 
         const radioGroup = `${this.Name}_${this.meta.id}_${this.hashCode()}`;
-        for (let item = this.meta.Precision; item >= 1; item--) {
+        for (let item = this.meta.precision; item >= 1; item--) {
             const radioId = `${radioGroup}_${item}`;
             const input = document.createElement('input');
             input.setAttribute('type', 'radio');
@@ -68,7 +68,7 @@ export class Rating extends EditableComponent {
             input.name = radioGroup;
             input.value = item.toString();
             // @ts-ignore
-            input.style = this.meta.Style;
+            input.style = this.meta.style;
             input.addEventListener('change', this.dispatchChange.bind(this));
 
             this.inputList.push(input);

@@ -2,46 +2,46 @@
     "Id": "terminal_editor",
     "Name": "terminal-editor",
     "Label": "Terminal Editor",
-    "Order": 0,
-    "Style": "width:500px",
+    "order": 0,
+    "style": "width:500px",
     "EntityId": "Terminal",
     "GridPolicies": [
         {
             "Id": "terminal_editor.ServiceId.0",
             "FieldName": "ServiceId",
-            "Order": 0,
+            "order": 0,
             "ComponentType": "Dropdown",
             "FormatData": "{Name}",
             "PlainText": "Select data",
             "Row": 100,
             "Label": "Service",
-            "Width": "357px",
-            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Terminal Service'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Terminal Service'\"\r\n}",
+            "width": "357px",
+            "query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Terminal Service'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Terminal Service'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-            "Editable": true,
+            "editable": true,
             "MinWidth": "357px",
             "MaxWidth": "357px",
             "EntityId": "TerminalService"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "terminal_editor.Button.3",
             "FieldName": "Button",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Section",
             "ClassName": "ribbon-group",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Button.btnSave.1_8",
                     "FieldName": "btnSave",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Save",
-                    "Icon": "fal fa-save",
+                    "icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }"
@@ -49,11 +49,11 @@
                 {
                     "Id": "Button.btnSave.1_9",
                     "FieldName": "btnSave",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Save",
-                    "Icon": "fal fa-save",
+                    "icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }"
@@ -63,24 +63,24 @@
         {
             "Id": "terminal_editor.Container.1",
             "FieldName": "Container",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
             "XxlOuterColumn": 0,
-            "Components": [
+            "components": [
                 {
                     "Id": "Container.Left.1_18",
                     "FieldName": "Left",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "Section",
                     "ClassName": "card-body",
                     "XxlCol": 12,
                     "XxlOuterColumn": 12,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Left.Code.1_2",
                             "FieldName": "Code",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "Input",
                             "Column": 12,
                             "Label": "Code",
@@ -89,7 +89,7 @@
                         {
                             "Id": "Left.Name.2",
                             "FieldName": "Name",
-                            "Order": 2,
+                            "order": 2,
                             "ComponentType": "Input",
                             "Column": 12,
                             "Label": "Name",
@@ -98,7 +98,7 @@
                         {
                             "Id": "Left.Address.3",
                             "FieldName": "Address",
-                            "Order": 3,
+                            "order": 3,
                             "ComponentType": "Textarea",
                             "Column": 12,
                             "Row": 3,
@@ -108,7 +108,7 @@
                         {
                             "Id": "Left.CountryId.3",
                             "FieldName": "CountryId",
-                            "Order": 3,
+                            "order": 3,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -116,7 +116,7 @@
                             "Row": 100,
                             "Label": "Country",
                             "ShowLabel": true,
-                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Country Manage'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Country Manage'\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Country Manage'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Country Manage'\"\r\n}",
                             "RefName": "MasterData",
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
                             "EntityId": "Terminal"
@@ -124,7 +124,7 @@
                         {
                             "Id": "Left.ZoneId.4",
                             "FieldName": "ZoneId",
-                            "Order": 4,
+                            "order": 4,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -132,7 +132,7 @@
                             "Row": 100,
                             "Label": "Zone",
                             "ShowLabel": true,
-                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Country Manage'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Country Manage'\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Country Manage'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Country Manage'\"\r\n}",
                             "RefName": "MasterData",
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
                             "EntityId": "Terminal"
@@ -140,7 +140,7 @@
                         {
                             "Id": "Left.ServiceIds.5",
                             "FieldName": "ServiceIds",
-                            "Order": 5,
+                            "order": 5,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Code}",
                             "PlainText": "Select data",
@@ -148,7 +148,7 @@
                             "Row": 100,
                             "Label": "Service",
                             "ShowLabel": true,
-                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Terminal Service'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Terminal Service'\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Terminal Service'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Terminal Service'\"\r\n}",
                             "RefName": "MasterData",
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
                             "EntityId": "Terminal",

@@ -38,7 +38,7 @@ export class ListRowItem extends ListViewItem {
         }
         Html.instance.div.className("wrapper-cell-mobile").event("focusin", (e) => {
             this.listView.lastComponentFocus = header;
-        }).span.className("cell-label").iText(header.componentType == "Button" ? "View" : header.Label).end.div.className("cell-value").render();
+        }).span.className("cell-label").iText(header.componentType == "Button" ? "View" : header.label).end.div.className("cell-value").render();
         super.renderTableCell(rowData, header, cellWrapper ?? Html.context);
         Html.instance.endOf(".wrapper-cell-mobile");
     }

@@ -21,7 +21,7 @@ export class Str {
      * @param {string} separator
      * @param {any[]} str
      */
-    static Join(separator, ...str) {
+    static join(separator, ...str) {
         str.join(separator)
     }
 }
@@ -209,7 +209,7 @@ Number.prototype.leadingDigit = function () {
  * Gets the top position (Y-coordinate) of the event.
  * @returns {number} The Y-coordinate.
  */
-Event.prototype.Top = function () {
+Event.prototype.top = function () {
     // @ts-ignore
     return this.clientY;
 };
@@ -218,7 +218,7 @@ Event.prototype.Top = function () {
  * Gets the left position (X-coordinate) of the event.
  * @returns {number} The X-coordinate.
  */
-Event.prototype.Left = function () {
+Event.prototype.left = function () {
     // @ts-ignore
     return parseFloat(this.clientX);
 };
@@ -344,7 +344,7 @@ HTMLElement.prototype.toggleClass = function (className) {
 /**
  * Sets the display style to empty, effectively showing the element.
  */
-HTMLElement.prototype.Show = function () {
+HTMLElement.prototype.show = function () {
     if (!this) {
         return;
     }

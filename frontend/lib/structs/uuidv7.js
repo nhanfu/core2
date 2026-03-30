@@ -1,13 +1,13 @@
 import { v7 as uuidv7 } from 'uuid';
 export class Uuid7 {
     static newGuid() {
-        return "-" + this.Guid();
+        return "-" + this.guid();
     }
-    static Guid(asOfNs = null) {
+    static guid(asOfNs = null) {
         return uuidv7();
     }
 
-    static Id25(asOfNs = null) {
-        return this.Guid();
+    static id25(asOfNs = null) {
+        return this.guid();
     }
 }

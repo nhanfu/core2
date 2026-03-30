@@ -2,16 +2,16 @@
     "Id": "category",
     "Name": "category",
     "Label": "Category",
-    "Order": 2,
+    "order": 2,
     "Script": "return {\r\n    AddNew() {\r\n        this.OpenPopup(\"component-editor\", null);\r\n    },\r\n    Hello() {\r\n        alert(\"Hello\");\r\n    }\r\n}\r\n",
-    "Icon": "fal fa-list",
+    "icon": "fal fa-list",
     "IsMenu": true,
     "IgnoreEncode": true,
     "GridPolicies": [
         {
             "Id": "category.Name.3",
             "FieldName": "Name",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Input",
             "Label": "Name",
             "ShowLabel": true,
@@ -21,7 +21,7 @@
         {
             "Id": "category.Label.3",
             "FieldName": "Label",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Input",
             "Label": "Name",
             "ShowLabel": true,
@@ -31,7 +31,7 @@
         {
             "Id": "category.IsPublic.3",
             "FieldName": "IsPublic",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Checkbox",
             "Label": "IsPublic",
             "ShowLabel": true,
@@ -41,7 +41,7 @@
         {
             "Id": "category.LoadEntity.3",
             "FieldName": "LoadEntity",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Checkbox",
             "Label": "LoadEntity",
             "ShowLabel": true,
@@ -51,7 +51,7 @@
         {
             "Id": "category.EntityName.3",
             "FieldName": "EntityName",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Input",
             "Label": "Entity",
             "ShowLabel": true,
@@ -61,7 +61,7 @@
         {
             "Id": "category.IsPublic.3_1",
             "FieldName": "IsPublic",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Checkbox",
             "Label": "IsPublic",
             "ShowLabel": true,
@@ -71,7 +71,7 @@
         {
             "Id": "category.Style.3",
             "FieldName": "Style",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Input",
             "Label": "Style",
             "ShowLabel": true,
@@ -81,7 +81,7 @@
         {
             "Id": "6e63c20d-2788-4776-9da0-4cfe7c98rrrr",
             "FieldName": "Id",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Input",
             "Label": "Id",
             "ShowLabel": true,
@@ -89,33 +89,33 @@
             "EntityId": "GridView"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "category.Section.8",
-            "Order": 8,
+            "order": 8,
             "ComponentType": "Section",
             "ClassName": "wrapper scroll-content",
-            "Width": "100%",
+            "width": "100%",
             "XxlCol": 3,
-            "Components": [
+            "components": [
                 {
                     "Id": "Section.Section.9_1",
-                    "Order": 9,
+                    "order": 9,
                     "ComponentType": "Section",
                     "Label": "Component",
                     "ClassName": "wrapper",
                     "IsTab": true,
                     "XxlOuterColumn": 3,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Section.GridView.1",
                             "FieldName": "GridView",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "GridView",
                             "Row": 50,
                             "CanSearch": true,
                             "ClassName": "sticky",
-                            "Query": "{ \"sql\" : \"select * from Component as ds\" , \"total\" : \"select count(ds.Id) as total from Component as ds\" }",
+                            "query": "{ \"sql\" : \"select * from Component as ds\" , \"total\" : \"select count(ds.Id) as total from Component as ds\" }",
                             "RefName": "Component",
                             "ShowHotKey": true,
                             "OrderBy": "ds.InsertedDate desc"

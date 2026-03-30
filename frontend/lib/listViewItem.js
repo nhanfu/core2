@@ -204,9 +204,9 @@ export class ListViewItem extends Section {
             }
             this.element.parentElement.insertBefore(this.element, this.element.parentElement.children[index]);
         }
-        const fn = Utils.isFunction(this.meta.Renderer);
+        const fn = Utils.isFunction(this.meta.renderer);
         if (!fn) {
-            headers.filter(header => !header.Hidden).forEach(header => {
+            headers.filter(header => !header.hidden).forEach(header => {
                 this.renderTableCell(row, header, this.element);
             });
         }
@@ -234,8 +234,8 @@ export class ListViewItem extends Section {
          * @param {HTMLElement} [cellWrapper=null] - The wrapper element for the cell.
          */
     renderTableCell(rowData, header, cellWrapper = null) {
-        if (header.statusBar && this.meta.Validation) {
-            var cont = Utils.isFunction(this.meta.Validation, false, this)
+        if (header.statusBar && this.meta.validation) {
+            var cont = Utils.isFunction(this.meta.validation, false, this)
             tippy(cellWrapper.parentElement, {
                 allowHTML: true,
                 placement: 'right',
@@ -246,7 +246,7 @@ export class ListViewItem extends Section {
         }
         if (header.statusBar && !this.listView.isSearchEntry && this.listView.meta.isMultiple) {
             header.componentType = "Checkbox";
-            header.Editable = true;
+            header.editable = true;
             header.canWriteAll = true;
             header.canReadAll = true;
             header.fieldName = "Selected";
@@ -258,9 +258,9 @@ export class ListViewItem extends Section {
         if (this.masterDataComponent.includes(header.componentType)) {
             header.localData = header.localData;
         }
-        var canW = header.Editable;
-        var com = ((canW && header.Editable)
-            || (!header.Editable && header.componentType == "Button")) ? ComponentFactory.getComponent(header, this.editForm, null, canW) : new Label(header);
+        var canW = header.editable;
+        var com = ((canW && header.editable)
+            || (!header.editable && header.componentType == "Button")) ? ComponentFactory.getComponent(header, this.editForm, null, canW) : new Label(header);
         if (!com) return;
         com.id = header.id;
         com.Name = header.fieldName;
@@ -295,7 +295,7 @@ export class ListViewItem extends Section {
             });
         }
         if (!header.statusBar && !["isPaid", "paidDate", "btnEdit"].includes(header.fieldName) && (this.disabled
-            || header.Disabled
+            || header.disabled
             || this.parent.disabled
             || rowData["noSubmit"]
             || rowData["isLock"]
@@ -329,7 +329,7 @@ export class ListViewItem extends Section {
         if (!header.statusBar) {
             com.userInput.add(arg => this.userInputHandler(arg, com));
         }
-        if (header.Editable && header.id) {
+        if (header.editable && header.id) {
             if (this.listView.meta.isRealtime) {
                 return;
             }

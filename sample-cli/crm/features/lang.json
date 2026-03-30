@@ -2,18 +2,18 @@
     "Id": "lang",
     "Name": "lang",
     "Label": "Lang",
-    "Order": 5,
-    "Icon": "fal fa-globe-americas",
+    "order": 5,
+    "icon": "fal fa-globe-americas",
     "IsMenu": true,
     "GridPolicies": [
         {
             "Id": "lang.LangCode.0",
             "FieldName": "LangCode",
-            "Order": 0,
+            "order": 0,
             "ComponentType": "Input",
             "Label": "Lang Code",
-            "Width": "84px",
-            "Editable": true,
+            "width": "84px",
+            "editable": true,
             "MinWidth": "84px",
             "MaxWidth": "84px",
             "EntityId": "Dictionary"
@@ -21,11 +21,11 @@
         {
             "Id": "lang.Key.1",
             "FieldName": "Key",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Input",
             "Label": "Key",
-            "Width": "417px",
-            "Editable": true,
+            "width": "417px",
+            "editable": true,
             "MinWidth": "417px",
             "MaxWidth": "417px",
             "EntityId": "Dictionary"
@@ -33,11 +33,11 @@
         {
             "Id": "lang.Value.2",
             "FieldName": "Value",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Input",
             "Label": "Value",
-            "Width": "197px",
-            "Editable": true,
+            "width": "197px",
+            "editable": true,
             "MinWidth": "197px",
             "MaxWidth": "197px",
             "EntityId": "Dictionary"
@@ -91,25 +91,25 @@
             "TableName": "Feature"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "lang.Lang.1",
             "FieldName": "Lang",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Lang.Dictionary.1",
                     "FieldName": "Dictionary",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "GridView",
                     "Column": 12,
                     "Row": 50,
                     "CanSearch": true,
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from Dictionary as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Dictionary as ds\"\r\n}",
+                    "query": "{\r\n    \"sql\": \"select * from Dictionary as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Dictionary as ds\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "Dictionary",
                     "TopEmpty": true,

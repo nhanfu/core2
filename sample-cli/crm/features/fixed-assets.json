@@ -2,8 +2,8 @@
     "Id": "fixed_assets",
     "Name": "fixed-assets",
     "Label": "Fixed Assets",
-    "Order": 10,
-    "Icon": "fal fa-car-garage",
+    "order": 10,
+    "icon": "fal fa-car-garage",
     "IsPublic": true,
     "IgnoreEncode": true,
     "FeaturePolicies": [

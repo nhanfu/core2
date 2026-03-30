@@ -55,7 +55,7 @@ export async function resolveComponents(root) {
             const res = await response.json();
             const components = res[0];
             components.map((/** @type {Component} */ com) => {
-                const isRendererFn = Utils.isFunction(com.Renderer, false, root);
+                const isRendererFn = Utils.isFunction(com.renderer, false, root);
                 if (!isRendererFn) return;
                 const container = meta.find(x => x.dataset.meta == com.fieldName);
                 if (container == null) return;

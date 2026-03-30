@@ -64,7 +64,7 @@ export class KanbanColumn extends EditableComponent {
                 const column = new KanbanItem(this.meta, data.Message);
                 column.parentElement = this.mainSection;
                 column.editForm = this.editForm;
-                column.Top = true;
+                column.top = true;
                 column.render();
                 this.Items.push(column);
             }
@@ -72,7 +72,7 @@ export class KanbanColumn extends EditableComponent {
             if (this.entity.id === data.Message.progressId) {
                 const column = new KanbanItem(this.meta, data.Message);
                 column.parentElement = this.mainSection;
-                column.Top = true;
+                column.top = true;
                 column.editForm = this.editForm;
                 column.render();
                 this.Items.push(column);

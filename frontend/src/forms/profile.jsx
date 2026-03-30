@@ -33,7 +33,7 @@ export class ProfileBL extends Page {
         const newPassword = formData.get("new-password");
 
         try {
-          const response = await Client.Instance.postAsync(
+          const response = await Client.instance.postAsync(
             { Password: password, newPassword: newPassword },
             "/api/User/updatePassword"
           );

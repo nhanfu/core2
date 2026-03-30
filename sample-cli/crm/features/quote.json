@@ -2,8 +2,8 @@
     "Id": "quote",
     "Name": "quote",
     "Label": "Quote",
-    "Order": 8,
-    "Icon": "fal fa-quote-left",
+    "order": 8,
+    "icon": "fal fa-quote-left",
     "IsPublic": true,
     "IgnoreEncode": true,
     "FeaturePolicies": [
@@ -57,21 +57,21 @@
             "TableName": "Feature"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "quote.Container.1",
             "FieldName": "Container",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Container.Report1.1_1",
                     "FieldName": "Report1",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "HtmlCode",
                     "Column": 12,
-                    "Query": "select * from Partner as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.PicId = '{TokenUserId}')",
+                    "query": "select * from Partner as ds where (ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.PicId = '{TokenUserId}')",
                     "RefName": "Partner",
                     "PreQuery": "{ \"UserId\": this.Token.UserId }"
                 }

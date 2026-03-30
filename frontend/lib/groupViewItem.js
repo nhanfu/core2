@@ -53,7 +53,7 @@ export class GroupViewItem extends ListViewItem {
     get showChildren() { return this.#showChildren; }
     set showChildren(value) {
         this.#showChildren = value;
-        this.#childrenItems.forEach(x => x.Show = value);
+        this.#childrenItems.forEach(x => x.show = value);
     }
 
     get showChildren1() { return this.#showChildren1; }

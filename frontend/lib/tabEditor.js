@@ -19,7 +19,7 @@ export class TabEditor extends EditForm {
         }
         return container;
     }
-    static activeTab = () => ChromeTabs.tabs.find(x => x.content.Show);
+    static activeTab = () => ChromeTabs.tabs.find(x => x.content.show);
     static findTab = (id) => ChromeTabs.tabs.find(x => x.id === id);
     /** @type {boolean} */
     static showTabText;
@@ -40,7 +40,7 @@ export class TabEditor extends EditForm {
         return super.show;
     }
 
-    set Show(value) {
+    set show(value) {
         super.show = value;
         if (value && !this.Popup && this.isLargeUp) {
             ChromeTabs.setCurrentTab(this._li, this.Pop);
@@ -186,7 +186,7 @@ export class TabEditor extends EditForm {
         return false;
     }
 
-    Close(event) {
+    close(event) {
         const intWhich = parseInt(event["which"]?.toString());
         const intButton = parseInt(event["button"]?.toString());
         if (intWhich === 2 || intButton === 1) {
@@ -198,7 +198,7 @@ export class TabEditor extends EditForm {
     /**
      * Disposes of the tab editor, removing it from the DOM and focusing on the parent form.
      */
-    Dispose() {
+    dispose() {
         if (!this.Popup && this._li) {
             this.disposeTab();
         }

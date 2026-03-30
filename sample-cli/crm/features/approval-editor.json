@@ -2,21 +2,21 @@
     "Id": "approval_editor",
     "Name": "approval-editor",
     "Label": "Approval Editor",
-    "Order": 0,
-    "Style": "width:900px;",
+    "order": 0,
+    "style": "width:900px;",
     "EntityId": "ApprovalConfig",
     "GridPolicies": [
         {
             "Id": "approval_editor.IsTeam.3",
             "FieldName": "IsTeam",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Checkbox",
             "Row": 50,
             "Label": "Team Lead",
-            "Width": "97px",
+            "width": "97px",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "97px",
             "MaxWidth": "97px",
             "EntityId": "ApprovalConfig",
@@ -25,14 +25,14 @@
         {
             "Id": "approval_editor.IsDepartment.4",
             "FieldName": "IsDepartment",
-            "Order": 4,
+            "order": 4,
             "ComponentType": "Checkbox",
             "Row": 50,
             "Label": "Head of Department",
-            "Width": "136px",
+            "width": "136px",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "136px",
             "MaxWidth": "136px",
             "EntityId": "ApprovalConfig",
@@ -41,12 +41,12 @@
         {
             "Id": "approval_editor.Level.0",
             "FieldName": "Level",
-            "Order": 0,
+            "order": 0,
             "ComponentType": "Number",
             "Label": "Level",
-            "Width": "63px",
+            "width": "63px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "63px",
             "MaxWidth": "63px",
             "EntityId": "ApprovalConfig"
@@ -54,18 +54,18 @@
         {
             "Id": "approval_editor.UserIds.1",
             "FieldName": "UserIds",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Dropdown",
             "FormatData": "{FullName}",
             "PlainText": "Select datas",
             "Row": 100,
             "Label": "User",
-            "Width": "222px",
-            "Query": "{\r\n    \"sql\": \"select ds.* from [User] as ds where (TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 1)\"\r\n}",
+            "width": "222px",
+            "query": "{\r\n    \"sql\": \"select ds.* from [User] as ds where (TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 1)\"\r\n}",
             "RefName": "User",
             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "222px",
             "MaxWidth": "222px",
             "EntityId": "ApprovalConfig",
@@ -74,57 +74,57 @@
         {
             "Id": "approval_editor.RoleIds.2",
             "FieldName": "RoleIds",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Dropdown",
             "FormatData": "{Name}",
             "PlainText": "Select datas",
             "Row": 100,
             "Label": "Role",
-            "Width": "245px",
-            "Query": "{\r\n    \"sql\": \"select ds.* from [Role] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [Role] as ds\"\r\n}",
+            "width": "245px",
+            "query": "{\r\n    \"sql\": \"select ds.* from [Role] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [Role] as ds\"\r\n}",
             "RefName": "Role",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "245px",
             "MaxWidth": "245px",
             "EntityId": "ApprovalConfig",
             "IsMultiple": true
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "approval_editor.Container.1",
             "FieldName": "Container",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
             "XxlOuterColumn": 0,
-            "Components": [
+            "components": [
                 {
                     "Id": "Container.Left.1_6",
                     "FieldName": "Left",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "Section",
                     "ClassName": "card-body",
                     "XxlCol": 12,
                     "XxlOuterColumn": 12,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Left.VoucherTypeId.2",
                             "FieldName": "VoucherTypeId",
-                            "Order": 2,
+                            "order": 2,
                             "ComponentType": "Number",
                             "Column": 6,
-                            "Precision": 0,
+                            "precision": 0,
                             "Label": "Type",
                             "ShowLabel": true,
-                            "Disabled": true
+                            "disabled": true
                         },
                         {
                             "Id": "Left.NameId.1",
                             "FieldName": "NameId",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -133,7 +133,7 @@
                             "Label": "Name",
                             "ShowLabel": true,
                             "PopulateField": "this.EditForm.Entity.VoucherTypeId = this.Matched.Enum;\r\nthis.EditForm.UpdateView(false, false, \"VoucherTypeId\");\r\nreturn null;",
-                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Voucher Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Voucher Type'\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Voucher Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Voucher Type'\"\r\n}",
                             "RefName": "MasterData",
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         }
@@ -142,36 +142,36 @@
                 {
                     "Id": "Container.Right.2",
                     "FieldName": "Right",
-                    "Order": 2,
+                    "order": 2,
                     "ComponentType": "Section",
                     "ClassName": "card-body",
                     "XxlCol": 12,
                     "XxlOuterColumn": 12,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Right.ApprovalConfig.1",
                             "FieldName": "ApprovalConfig",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "GridView",
                             "Column": 12,
                             "Row": 200,
                             "DefaultVal": "{\r\n    \"ParentId\": this.EditForm.Entity.Id,\r\n    \"VoucherTypeId\": this.EditForm.Entity.VoucherTypeId\r\n}",
                             "CanAdd": true,
-                            "Query": "{\r\n    \"sql\": \"select * from ApprovalConfig as ds where ParentId = '{ParentId}' and ParentId is not null\",\r\n    \"total\": \"select count(ds.Id) as total from ApprovalConfig as ds where ParentId = '{ParentId}' and ParentId is not null\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select * from ApprovalConfig as ds where ParentId = '{ParentId}' and ParentId is not null\",\r\n    \"total\": \"select count(ds.Id) as total from ApprovalConfig as ds where ParentId = '{ParentId}' and ParentId is not null\"\r\n}",
                             "RefName": "ApprovalConfig",
                             "PreQuery": "{\r\n    \"ParentId\": this.EditForm.Entity.Id\r\n}",
-                            "Editable": true
+                            "editable": true
                         }
                     ]
                 },
                 {
                     "Id": "Container.btnSave.1",
                     "FieldName": "btnSave",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Save",
-                    "Icon": "fal fa-save",
+                    "icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }"
@@ -181,19 +181,19 @@
         {
             "Id": "approval_editor.Button.3",
             "FieldName": "Button",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Section",
             "ClassName": "ribbon-group",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Button.btnSave.1_2",
                     "FieldName": "btnSave",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Save",
-                    "Icon": "fal fa-save",
+                    "icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }"

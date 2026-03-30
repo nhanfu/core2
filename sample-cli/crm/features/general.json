@@ -2,8 +2,8 @@
     "Id": "general",
     "Name": "general",
     "Label": "General",
-    "Order": 14,
-    "Icon": "fal fa-envelope-open-dollar",
+    "order": 14,
+    "icon": "fal fa-envelope-open-dollar",
     "IsPublic": true,
     "IgnoreEncode": true,
     "FeaturePolicies": [

@@ -2,67 +2,67 @@
     "Id": "chart_of_Accounts",
     "Name": "chart-of-Accounts ",
     "Label": "Chart of Accounts ",
-    "Order": 0,
-    "Icon": "fal fa-code",
+    "order": 0,
+    "icon": "fal fa-code",
     "GridPolicies": [
         {
             "Id": "chart_of_Accounts.No.1",
             "FieldName": "No",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Number",
             "Label": "No",
-            "Editable": true,
+            "editable": true,
             "EntityId": "AccountNo"
         },
         {
             "Id": "chart_of_Accounts.Code.2",
             "FieldName": "Code",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Input",
             "Label": "Code",
-            "Editable": true,
+            "editable": true,
             "EntityId": "AccountNo"
         },
         {
             "Id": "chart_of_Accounts.Name.3",
             "FieldName": "Name",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Input",
             "Label": "Name",
-            "Editable": true,
+            "editable": true,
             "EntityId": "AccountNo"
         },
         {
             "Id": "chart_of_Accounts.NameEnglish.4",
             "FieldName": "NameEnglish",
-            "Order": 4,
+            "order": 4,
             "ComponentType": "Input",
             "Label": "NameEnglish",
-            "Editable": true,
+            "editable": true,
             "EntityId": "AccountNo"
         },
         {
             "Id": "chart_of_Accounts.TypeId.5",
             "FieldName": "TypeId",
-            "Order": 5,
+            "order": 5,
             "ComponentType": "Dropdown",
             "FormatData": "{Name}",
             "PlainText": "Select data",
             "Row": 100,
             "Label": "Type",
-            "Query": "{\r\n    \"sql\": \"select * from MasterData as ds where ParentId = '00f4ff84-0000-0000-8000-23de57f90690'\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds where ParentId = '00f4ff84-0000-0000-8000-23de57f90690'\"\r\n}",
+            "query": "{\r\n    \"sql\": \"select * from MasterData as ds where ParentId = '00f4ff84-0000-0000-8000-23de57f90690'\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds where ParentId = '00f4ff84-0000-0000-8000-23de57f90690'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
-            "Editable": true,
+            "editable": true,
             "EntityId": "AccountNo"
         },
         {
             "Id": "chart_of_Accounts.Reason.6",
             "FieldName": "Reason",
-            "Order": 6,
+            "order": 6,
             "ComponentType": "Input",
             "Label": "Reason",
-            "Editable": true,
+            "editable": true,
             "EntityId": "AccountNo"
         }
     ],
@@ -114,17 +114,17 @@
             "TableName": "Feature"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "chart_of_Accounts.Container.1",
             "FieldName": "Container",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
-            "Components": [
+            "components": [
                 {
                     "Id": "Container.AccountNo.1_1",
                     "FieldName": "AccountNo",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "GridView",
                     "Column": 12,
                     "Row": 50,
@@ -132,7 +132,7 @@
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 11rem)",
                     "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from AccountNo as ds\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds\"\r\n}",
+                    "query": "{\r\n    \"sql\": \"select * from AccountNo as ds\",\r\n    \"total\": \"select count(ds.Id) as total from AccountNo as ds\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "AccountNo",
                     "OrderBy": "ds.InsertedDate desc"

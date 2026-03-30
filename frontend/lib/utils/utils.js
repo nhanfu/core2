@@ -16,23 +16,23 @@ dayjs.extend(customParseFormat);
 export class Utils {
     static systemId = "1";
     static tenantField = "t";
-    static Pixel = "px";
+    static pixel = "px";
     static featureField = "f";
     static questionMark = "?";
-    static Amp = "&";
+    static amp = "&";
     static breakLine = "<br />";
     static applicationJson = "application/json";
-    static Authorization = "Authorization";
+    static authorization = "Authorization";
     static selfVendorId = "65";
     static idField = "Id";
     static newLine = "\r\n";
-    static Indent = "\t";
-    static Dot = ".";
-    static Slash = "/";
-    static Hash = "#";
-    static Comma = ";";
-    static Semicolon = ";";
-    static Space = " ";
+    static indent = "\t";
+    static dot = ".";
+    static slash = "/";
+    static hash = "#";
+    static comma = ",";
+    static semicolon = ";";
+    static space = " ";
     static componentId = "20";
     static componentGroupId = "30";
     static historyId = "4199";
@@ -40,7 +40,7 @@ export class Utils {
     static ownerUserIds = "ownerUserIds";
     static ownerRoleIds = "ownerRoleIds";
     static comQuery = "/api/feature/go";
-    static comQuerys = "/api/feature/gos";
+    static comQueries = "/api/feature/gos";
     static comQueryByName = "/api/feature/gobyname";
     static patchSvc = "/api/feature/run";
     static patchSvcs = "/api/feature/runs";
@@ -50,7 +50,7 @@ export class Utils {
     static deactivateSvc = "/user/Deactivate";
     static exportExcel = "/user/excel";
     static fileSvc = "/api/fileUpload/file";
-    static Return = "return ";
+    static returnKeyword = "return ";
     static specialChar = {
         '+': "%2B",
         '/': "%2F",
@@ -227,13 +227,13 @@ export class Utils {
         });
 
         if (!number) {
-            return this.Format(replaced, objList);
+            return this.format(replaced, objList);
         } else {
             return this.formatNumber(replaced, pre, objList);
         }
     }
 
-    static Format(template, args) {
+    static format(template, args) {
         return template.replace(/{(\d+)}/g, (/** @type {any} */ match, /** @type {string | number} */ index) => {
             return typeof args[index] != 'undefined' ? args[index] : '';
         });
@@ -345,8 +345,8 @@ export class Utils {
                         }
                         let found = row[objField];
                         if (found === null || typeof found === 'number') {
-                            let sourceD = header.localData;
-                            found = sourceD && sourceD.find(x => compareIdField(x, cellData));
+                            let sourceData = header.localData;
+                            found = sourceData && sourceData.find(x => compareIdField(x, cellData));
                         }
                         if (found === null) {
                             text = '';
@@ -367,7 +367,7 @@ export class Utils {
                     text = '';
                 }
                 else {
-                    var pre = header.groupTypeId ? parseInt(LangSelect._webConfig[header.groupTypeId]) : header.Precision
+                    var pre = header.groupTypeId ? parseInt(LangSelect._webConfig[header.groupTypeId]) : header.precision
                     if (!this.isNullOrWhiteSpace(header.formatData)) {
                         text = this.formatEntity(header.formatData, row, true, pre);
                     }

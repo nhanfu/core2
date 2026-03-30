@@ -2,18 +2,18 @@
     "Id": "container_type",
     "Name": "container-type",
     "Label": "Container Type",
-    "Order": 4,
-    "Icon": "fal fa-container-storage",
+    "order": 4,
+    "icon": "fal fa-container-storage",
     "IgnoreEncode": true,
     "GridPolicies": [
         {
             "Id": "container_type.IsContainer.4",
             "FieldName": "IsContainer",
-            "Order": 4,
+            "order": 4,
             "ComponentType": "Checkbox",
             "Label": "Container",
-            "Width": "94px",
-            "Editable": true,
+            "width": "94px",
+            "editable": true,
             "MinWidth": "94px",
             "MaxWidth": "94px",
             "EntityId": "MasterData"
@@ -21,11 +21,11 @@
         {
             "Id": "container_type.Description.2",
             "FieldName": "Description",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Input",
             "Label": "Description",
-            "Width": "228px",
-            "Editable": true,
+            "width": "228px",
+            "editable": true,
             "MinWidth": "228px",
             "MaxWidth": "228px",
             "EntityId": "MasterData"
@@ -33,11 +33,11 @@
         {
             "Id": "container_type.Code.0",
             "FieldName": "Code",
-            "Order": 0,
+            "order": 0,
             "ComponentType": "Input",
             "Label": "Code",
-            "Width": "118px",
-            "Editable": true,
+            "width": "118px",
+            "editable": true,
             "MinWidth": "118px",
             "MaxWidth": "118px",
             "EntityId": "MasterData"
@@ -45,11 +45,11 @@
         {
             "Id": "container_type.Name.1",
             "FieldName": "Name",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Input",
             "Label": "Name",
-            "Width": "105px",
-            "Editable": true,
+            "width": "105px",
+            "editable": true,
             "MinWidth": "105px",
             "MaxWidth": "105px",
             "EntityId": "MasterData"
@@ -57,11 +57,11 @@
         {
             "Id": "container_type.Active.4",
             "FieldName": "Active",
-            "Order": 4,
+            "order": 4,
             "ComponentType": "Checkbox",
             "Label": "Active",
-            "Width": "94px",
-            "Editable": true,
+            "width": "94px",
+            "editable": true,
             "MinWidth": "94px",
             "MaxWidth": "94px",
             "EntityId": "MasterData"
@@ -69,11 +69,11 @@
         {
             "Id": "container_type.CodeMn.4",
             "FieldName": "CodeMn",
-            "Order": 4,
+            "order": 4,
             "ComponentType": "Input",
             "Label": "Group",
-            "Width": "94px",
-            "Editable": true,
+            "width": "94px",
+            "editable": true,
             "MinWidth": "94px",
             "MaxWidth": "94px",
             "EntityId": "MasterData"
@@ -127,19 +127,19 @@
             "TableName": "Feature"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "container_type.Container.1",
             "FieldName": "Container",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Container.MasterData.1_2",
                     "FieldName": "MasterData",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "GridView",
                     "Column": 12,
                     "Row": 50,
@@ -148,7 +148,7 @@
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "DefaultVal": "{\r\n    \"ParentId\":\"00a10160-0000-0000-8000-117700e7cf7e\",\r\n        \"IsContainer\":true\r\n}",
                     "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from MasterData as ds where ds.ParentId = '00a10160-0000-0000-8000-117700e7cf7e'\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds where ds.ParentId = '00a10160-0000-0000-8000-117700e7cf7e'\"\r\n}",
+                    "query": "{\r\n    \"sql\": \"select * from MasterData as ds where ds.ParentId = '00a10160-0000-0000-8000-117700e7cf7e'\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds where ds.ParentId = '00a10160-0000-0000-8000-117700e7cf7e'\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "MasterData",
                     "TopEmpty": true,

@@ -2,19 +2,19 @@
     "Id": "company",
     "Name": "company",
     "Label": "Company",
-    "Order": 0,
+    "order": 0,
     "Script": "return {\r\n    EditCompany: function (btn, entity) {\r\n        entity.Logo = entity.Logo || \"https://api.nguyenduyphong.id.vn/icons/default-avatar.webp\";\r\n        this.OpenPopup(\"company-editor\", entity);\r\n    }\r\n}",
-    "Icon": "fal fa-building",
+    "icon": "fal fa-building",
     "IsMenu": true,
     "EntityId": "User",
     "GridPolicies": [
         {
             "Id": "company.Name.1",
             "FieldName": "Name",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Input",
             "Label": "Abbreviation",
-            "Width": "356px",
+            "width": "356px",
             "FocusSearch": true,
             "MinWidth": "356px",
             "MaxWidth": "356px",
@@ -23,12 +23,12 @@
         {
             "Id": "company.btnEdit.0",
             "FieldName": "btnEdit",
-            "Order": 0,
+            "order": 0,
             "ComponentType": "Button",
-            "Icon": "fal fa-expand",
+            "icon": "fal fa-expand",
             "ClassName": "btn",
             "Events": "{\r\n    \"click\": \"EditCompany\"\r\n}",
-            "Width": "65px",
+            "width": "65px",
             "FocusSearch": true,
             "MinWidth": "65px",
             "MaxWidth": "65px",
@@ -37,10 +37,10 @@
         {
             "Id": "company.Address.3",
             "FieldName": "Address",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Input",
             "Label": "Address",
-            "Width": "620px",
+            "width": "620px",
             "FocusSearch": true,
             "MinWidth": "620px",
             "MaxWidth": "620px",
@@ -49,10 +49,10 @@
         {
             "Id": "company.CompanyName.2",
             "FieldName": "CompanyName",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Input",
             "Label": "Company Name",
-            "Width": "328px",
+            "width": "328px",
             "FocusSearch": true,
             "MinWidth": "328px",
             "MaxWidth": "328px",
@@ -61,35 +61,35 @@
         {
             "Id": "company.PhoneNumber.4",
             "FieldName": "PhoneNumber",
-            "Order": 4,
+            "order": 4,
             "ComponentType": "Input",
             "Label": "Phone Number",
-            "Width": "153px",
+            "width": "153px",
             "FocusSearch": true,
             "MinWidth": "153px",
             "MaxWidth": "153px",
             "EntityId": "Partner"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "company.Container.1",
             "FieldName": "Container",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Container.Partner.1",
                     "FieldName": "Partner",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "GridView",
                     "Column": 12,
                     "Row": 50,
                     "CanSearch": true,
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Events": "{\r\n    \"dblclick\": \"EditCompany\"\r\n}",
-                    "Query": "{\r\n    \"sql\": \"select * from [Partner] as ds where ServiceId = 5\",\r\n    \"total\": \"select count(ds.Id) as total from [Partner] as ds where ServiceId = 5\"\r\n}",
+                    "query": "{\r\n    \"sql\": \"select * from [Partner] as ds where ServiceId = 5\",\r\n    \"total\": \"select count(ds.Id) as total from [Partner] as ds where ServiceId = 5\"\r\n}",
                     "RefName": "Partner",
                     "OrderBy": "ds.InsertedDate desc"
                 }

@@ -2,8 +2,8 @@
     "Id": "loan_connection",
     "Name": "loan-connection",
     "Label": "Loan connection",
-    "Order": 13,
-    "Icon": "fal fa-waveform-path",
+    "order": 13,
+    "icon": "fal fa-waveform-path",
     "IsPublic": true,
     "IgnoreEncode": true,
     "FeaturePolicies": [

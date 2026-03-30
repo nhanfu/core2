@@ -2,21 +2,21 @@
     "Id": "menu",
     "Name": "menu",
     "Label": "Menu",
-    "Order": 12,
+    "order": 12,
     "Script": "return {\r\n    Edit: function (btn, entity) {\r\n        this.OpenPopup(\"feature-editor\", entity);\r\n    }\r\n}",
-    "Icon": "fal fa-ellipsis-h-alt",
+    "icon": "fal fa-ellipsis-h-alt",
     "IsMenu": true,
     "IgnoreEncode": true,
     "GridPolicies": [
         {
             "Id": "menu.Order.2",
             "FieldName": "Order",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Number",
             "Label": "Order",
-            "Width": "59px",
+            "width": "59px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "59px",
             "MaxWidth": "59px",
             "EntityId": "Feature"
@@ -24,12 +24,12 @@
         {
             "Id": "menu.Active.8",
             "FieldName": "Active",
-            "Order": 8,
+            "order": 8,
             "ComponentType": "Checkbox",
             "Label": "Active",
-            "Width": "95px",
+            "width": "95px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "95px",
             "MaxWidth": "95px",
             "EntityId": "Feature"
@@ -37,12 +37,12 @@
         {
             "Id": "menu.EntityId.4",
             "FieldName": "EntityId",
-            "Order": 4,
+            "order": 4,
             "ComponentType": "Input",
             "Label": "Entity",
-            "Width": "129px",
+            "width": "129px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "129px",
             "MaxWidth": "129px",
             "EntityId": "Feature"
@@ -50,12 +50,12 @@
         {
             "Id": "menu.IsMenu.1",
             "FieldName": "IsMenu",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Checkbox",
             "Label": "Menu",
-            "Width": "88px",
+            "width": "88px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "88px",
             "MaxWidth": "88px",
             "EntityId": "Feature"
@@ -63,12 +63,12 @@
         {
             "Id": "menu.Icon.6",
             "FieldName": "Icon",
-            "Order": 6,
+            "order": 6,
             "ComponentType": "Input",
             "Label": "Icon",
-            "Width": "168px",
+            "width": "168px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "168px",
             "MaxWidth": "168px",
             "EntityId": "Feature"
@@ -76,18 +76,18 @@
         {
             "Id": "menu.ParentId.7",
             "FieldName": "ParentId",
-            "Order": 7,
+            "order": 7,
             "ComponentType": "Dropdown",
             "FormatData": "{Name}",
             "PlainText": "Select data",
             "Row": 100,
             "Label": "Parent",
-            "Width": "85px",
-            "Query": "{\r\n    \"sql\": \"select * from Feature as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Feature as ds\"\r\n}",
+            "width": "85px",
+            "query": "{\r\n    \"sql\": \"select * from Feature as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Feature as ds\"\r\n}",
             "RefName": "Feature",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "85px",
             "MaxWidth": "85px",
             "EntityId": "Feature"
@@ -95,12 +95,12 @@
         {
             "Id": "menu.Name.5",
             "FieldName": "Name",
-            "Order": 5,
+            "order": 5,
             "ComponentType": "Input",
             "Label": "Name",
-            "Width": "290px",
+            "width": "290px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "290px",
             "MaxWidth": "290px",
             "EntityId": "Feature"
@@ -108,10 +108,10 @@
         {
             "Id": "menu.Id.0",
             "FieldName": "Id",
-            "Order": 0,
+            "order": 0,
             "ComponentType": "Input",
             "Label": "Id",
-            "Width": "266px",
+            "width": "266px",
             "FocusSearch": true,
             "MinWidth": "266px",
             "MaxWidth": "266px",
@@ -120,12 +120,12 @@
         {
             "Id": "menu.Label.3",
             "FieldName": "Label",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Input",
             "Label": "Label",
-            "Width": "290px",
+            "width": "290px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "290px",
             "MaxWidth": "290px",
             "EntityId": "Feature"
@@ -133,12 +133,12 @@
         {
             "Id": "menu.IsLock.1",
             "FieldName": "IsLock",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Checkbox",
             "Label": "Lock",
-            "Width": "88px",
+            "width": "88px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "88px",
             "MaxWidth": "88px",
             "EntityId": "Feature"
@@ -192,19 +192,19 @@
             "TableName": "Feature"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "menu.Container.1",
             "FieldName": "Container",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Container.Feature.1_1",
                     "FieldName": "Feature",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "GridView",
                     "Column": 12,
                     "Row": 50,
@@ -213,7 +213,7 @@
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "Events": "{\r\n    \"dblclick\": \"Edit\"\r\n}",
                     "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from Feature as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Feature as ds\"\r\n}",
+                    "query": "{\r\n    \"sql\": \"select * from Feature as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Feature as ds\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "Feature",
                     "OrderBy": "ds.InsertedDate desc"

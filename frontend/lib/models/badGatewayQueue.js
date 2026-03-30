@@ -3,22 +3,22 @@ export class BadGatewayQueue {
         this._queue = [];
     }
 
-    Enqueue(options) {
+    enqueue(options) {
         if (!options.NoQueue && options.method !== 'GET') {
             options.Retry = true;
             this._queue.push(options);
         }
     }
 
-    Dequeue() {
+    dequeue() {
         return this._queue.shift();
     }
 
-    Peek() {
+    peek() {
         return this._queue[0];
     }
 
-    get Count() {
+    get count() {
         return this._queue.length;
     }
 }

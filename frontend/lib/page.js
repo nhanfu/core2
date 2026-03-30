@@ -38,7 +38,7 @@ export class Page {
         Html.instance.div.render();
         this.element = Html.context;
         let root = createRoot(this.element);
-        let reactElement = React.createElement(this.meta.Layout);
+        let reactElement = React.createElement(this.meta.layout);
         flushSync(() => root.render(reactElement))
     }
 }

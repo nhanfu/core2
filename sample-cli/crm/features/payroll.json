@@ -2,8 +2,8 @@
     "Id": "payroll",
     "Name": "payroll",
     "Label": "Payroll",
-    "Order": 9,
-    "Icon": "fal fa-file-invoice-dollar",
+    "order": 9,
+    "icon": "fal fa-file-invoice-dollar",
     "IsPublic": true,
     "IgnoreEncode": true,
     "FeaturePolicies": [

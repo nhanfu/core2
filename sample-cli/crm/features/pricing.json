@@ -2,8 +2,8 @@
     "Id": "pricing",
     "Name": "pricing",
     "Label": "Pricing",
-    "Order": 7,
-    "Icon": "fal fa-usd-circle",
+    "order": 7,
+    "icon": "fal fa-usd-circle",
     "IsPublic": true,
     "IgnoreEncode": true,
     "FeaturePolicies": [

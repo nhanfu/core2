@@ -2,21 +2,21 @@
     "Id": "shipping_instruction_editor",
     "Name": "shipping-instruction-editor",
     "Label": "Shipping Instruction Editor",
-    "Order": 0,
-    "Style": "width:1200px;",
+    "order": 0,
+    "style": "width:1200px;",
     "EntityId": "ShipmentSI",
     "GridPolicies": [
         {
             "Id": "shipping_instruction_editor.Quantity.0",
             "FieldName": "Quantity",
-            "Order": 0,
+            "order": 0,
             "ComponentType": "Number",
-            "Precision": 2,
+            "precision": 2,
             "Label": "Q'ty",
-            "Width": "49px",
+            "width": "49px",
             "DefaultVal": "1",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "49px",
             "MaxWidth": "49px",
             "EntityId": "EntityContainer"
@@ -24,18 +24,18 @@
         {
             "Id": "shipping_instruction_editor.ContainerTypeId.1",
             "FieldName": "ContainerTypeId",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Dropdown",
             "FormatData": "{Name}",
             "PlainText": "Select data",
             "Row": 100,
             "Label": "Size",
-            "Width": "90px",
-            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Container Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Container Type'\"\r\n}",
+            "width": "90px",
+            "query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Container Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Container Type'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "90px",
             "MaxWidth": "90px",
             "EntityId": "EntityContainer"
@@ -43,13 +43,13 @@
         {
             "Id": "shipping_instruction_editor.ContainerNo.2",
             "FieldName": "ContainerNo",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Input",
-            "Precision": 3,
+            "precision": 3,
             "Label": "Container No",
-            "Width": "105px",
+            "width": "105px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "105px",
             "MaxWidth": "105px",
             "EntityId": "EntityContainer"
@@ -57,13 +57,13 @@
         {
             "Id": "shipping_instruction_editor.SealNo.3",
             "FieldName": "SealNo",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Input",
-            "Precision": 3,
+            "precision": 3,
             "Label": "Seal No",
-            "Width": "84px",
+            "width": "84px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "84px",
             "MaxWidth": "84px",
             "EntityId": "EntityContainer"
@@ -71,13 +71,13 @@
         {
             "Id": "shipping_instruction_editor.PKG.4",
             "FieldName": "PKG",
-            "Order": 4,
+            "order": 4,
             "ComponentType": "Number",
-            "Precision": 3,
+            "precision": 3,
             "Label": "PKG",
-            "Width": "54px",
+            "width": "54px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "54px",
             "MaxWidth": "54px",
             "EntityId": "EntityContainer"
@@ -85,13 +85,13 @@
         {
             "Id": "shipping_instruction_editor.Weight.5",
             "FieldName": "Weight",
-            "Order": 5,
+            "order": 5,
             "ComponentType": "Number",
-            "Precision": 3,
+            "precision": 3,
             "Label": "Weight",
-            "Width": "68px",
+            "width": "68px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "68px",
             "MaxWidth": "68px",
             "EntityId": "EntityContainer"
@@ -99,13 +99,13 @@
         {
             "Id": "shipping_instruction_editor.CBM.6",
             "FieldName": "CBM",
-            "Order": 6,
+            "order": 6,
             "ComponentType": "Number",
-            "Precision": 2,
+            "precision": 2,
             "Label": "Measurement",
-            "Width": "87px",
+            "width": "87px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "87px",
             "MaxWidth": "87px",
             "EntityId": "EntityContainer"
@@ -113,13 +113,13 @@
         {
             "Id": "shipping_instruction_editor.Tare.7",
             "FieldName": "Tare",
-            "Order": 7,
+            "order": 7,
             "ComponentType": "Number",
-            "Precision": 3,
+            "precision": 3,
             "Label": "Tare",
-            "Width": "50px",
+            "width": "50px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "50px",
             "MaxWidth": "50px",
             "EntityId": "EntityContainer"
@@ -127,13 +127,13 @@
         {
             "Id": "shipping_instruction_editor.Description.8",
             "FieldName": "Description",
-            "Order": 8,
+            "order": 8,
             "ComponentType": "Input",
-            "Precision": 3,
+            "precision": 3,
             "Label": "Description",
-            "Width": "98px",
+            "width": "98px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "98px",
             "MaxWidth": "98px",
             "EntityId": "EntityContainer"
@@ -141,13 +141,13 @@
         {
             "Id": "shipping_instruction_editor.HSCode.9",
             "FieldName": "HSCode",
-            "Order": 9,
+            "order": 9,
             "ComponentType": "Input",
-            "Precision": 3,
+            "precision": 3,
             "Label": "HS Code",
-            "Width": "112px",
+            "width": "112px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "112px",
             "MaxWidth": "112px",
             "EntityId": "EntityContainer"
@@ -155,45 +155,45 @@
         {
             "Id": "shipping_instruction_editor.UnitId.4",
             "FieldName": "UnitId",
-            "Order": 4,
+            "order": 4,
             "ComponentType": "Dropdown",
             "FormatData": "{Name}",
             "PlainText": "Select data",
             "Row": 100,
             "Label": "Unit",
-            "Width": "77px",
-            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Unit Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Unit Type'\"\r\n}",
+            "width": "77px",
+            "query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Unit Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Unit Type'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "77px",
             "MaxWidth": "77px",
             "EntityId": "EntityContainer"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "shipping_instruction_editor.Container.2",
             "FieldName": "Container ",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Container.Section.1_5",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "Section",
                     "Label": "Parties",
                     "ClassName": "card-body",
                     "XxlCol": 12,
                     "XxlOuterColumn": 12,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Section.PaymentTermId.13",
                             "FieldName": "PaymentTermId",
-                            "Order": 13,
+                            "order": 13,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -201,13 +201,13 @@
                             "Row": 100,
                             "Label": "Payment term",
                             "ShowLabel": true,
-                            "Query": "[\r\n    {\r\n        \"Id\": 0,\r\n        \"Name\": \"Collect\"\r\n    },\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Prepaid\"\r\n    }\r\n]",
+                            "query": "[\r\n    {\r\n        \"Id\": 0,\r\n        \"Name\": \"Collect\"\r\n    },\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Prepaid\"\r\n    }\r\n]",
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
                             "Id": "Section.IssueDate.4",
                             "FieldName": "IssueDate",
-                            "Order": 4,
+                            "order": 4,
                             "ComponentType": "Datepicker",
                             "Column": 3,
                             "Label": "Date issue",
@@ -216,7 +216,7 @@
                         {
                             "Id": "Section.BookingNo.2",
                             "FieldName": "BookingNo",
-                            "Order": 2,
+                            "order": 2,
                             "ComponentType": "Input",
                             "Column": 3,
                             "Label": "Booking No",
@@ -225,7 +225,7 @@
                         {
                             "Id": "Section.Code.1_6",
                             "FieldName": "Code",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "Input",
                             "Column": 3,
                             "Label": "Ref No",
@@ -234,7 +234,7 @@
                         {
                             "Id": "Section.LoadingDate.10",
                             "FieldName": "LoadingDate",
-                            "Order": 10,
+                            "order": 10,
                             "ComponentType": "Datepicker",
                             "Column": 3,
                             "Row": 4,
@@ -244,7 +244,7 @@
                         {
                             "Id": "Section.PodId.7",
                             "FieldName": "PodId",
-                            "Order": 7,
+                            "order": 7,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -252,7 +252,7 @@
                             "Row": 100,
                             "Label": "Port of Discharge",
                             "ShowLabel": true,
-                            "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
+                            "query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                             "RefName": "Terminal",
                             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
                             "ShowHotKey": true
@@ -260,7 +260,7 @@
                         {
                             "Id": "Section.FinalDestinationId.9",
                             "FieldName": "FinalDestinationId",
-                            "Order": 9,
+                            "order": 9,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -268,14 +268,14 @@
                             "Row": 100,
                             "Label": "Final destination",
                             "ShowLabel": true,
-                            "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
+                            "query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                             "RefName": "Terminal",
                             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
                             "Id": "Section.Vessel.11",
                             "FieldName": "Vessel",
-                            "Order": 11,
+                            "order": 11,
                             "ComponentType": "Input",
                             "Column": 3,
                             "Label": "Vessel",
@@ -284,7 +284,7 @@
                         {
                             "Id": "Section.VesselVoy.12",
                             "FieldName": "VesselVoy",
-                            "Order": 12,
+                            "order": 12,
                             "ComponentType": "Input",
                             "Column": 3,
                             "Label": "Voy",
@@ -293,7 +293,7 @@
                         {
                             "Id": "Section.PlaceDeliveryId.8",
                             "FieldName": "PlaceDeliveryId",
-                            "Order": 8,
+                            "order": 8,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -301,7 +301,7 @@
                             "Row": 100,
                             "Label": "Place of Delivery",
                             "ShowLabel": true,
-                            "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
+                            "query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                             "RefName": "Terminal",
                             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
                             "ShowHotKey": true
@@ -309,7 +309,7 @@
                         {
                             "Id": "Section.PolId.6",
                             "FieldName": "PolId",
-                            "Order": 6,
+                            "order": 6,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -317,14 +317,14 @@
                             "Row": 100,
                             "Label": "Port of Loading",
                             "ShowLabel": true,
-                            "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
+                            "query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                             "RefName": "Terminal",
                             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
                             "Id": "Section.MblTypeId.5",
                             "FieldName": "MblTypeId",
-                            "Order": 5,
+                            "order": 5,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -332,24 +332,24 @@
                             "Row": 100,
                             "Label": "MBL Type",
                             "ShowLabel": true,
-                            "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"COPY\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"ORIGINAL\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"SURRENDERED\"\r\n    }\r\n]",
+                            "query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"COPY\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"ORIGINAL\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"SURRENDERED\"\r\n    }\r\n]",
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         }
                     ]
                 },
                 {
                     "Id": "Container.Section.2_4",
-                    "Order": 2,
+                    "order": 2,
                     "ComponentType": "Section",
                     "Label": "Parties",
                     "ClassName": "card-body",
                     "XxlCol": 12,
                     "XxlOuterColumn": 12,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Section.ConsigneeIdText.4",
                             "FieldName": "ConsigneeIdText",
-                            "Order": 4,
+                            "order": 4,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -359,7 +359,7 @@
                             "ShowLabel": true,
                             "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('provider-editor',{ ServiceId: 3, ActionId: 1})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('provider-editor',this.Matched)\"\r\n}",
                             "PopulateField": "let shipper = this.EditForm.Entity.Consignee;\r\nlet shipperText = \"\";\r\nif (shipper.CompanyName) shipperText += shipper.Name + \"\\n\";\r\nif (shipper.Address) shipperText += shipper.Address + \"\\n\";\r\nthis.EditForm.Entity.ConsigneeDes = shipperText.trim(); // Loại bỏ khoảng trắng thừa cuối chuỗi\r\nthis.EditForm.UpdateView(false, false, \"ConsigneeDes\");\r\nreturn null;",
-                            "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\"\r\n}",
                             "RefName": "Partner",
                             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
                             "ShowHotKey": true,
@@ -368,7 +368,7 @@
                         {
                             "Id": "Section.NotifyPartyIdText.5",
                             "FieldName": "NotifyPartyIdText",
-                            "Order": 5,
+                            "order": 5,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -378,7 +378,7 @@
                             "ShowLabel": true,
                             "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('provider-editor',{ ServiceId: 3, ActionId: 1})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('provider-editor',this.Matched)\"\r\n}",
                             "PopulateField": "let shipper = this.EditForm.Entity.NotifyParty;\r\nlet shipperText = \"\";\r\n\r\nif (shipper.CompanyName) shipperText += shipper.Name + \"\\n\";\r\nif (shipper.Address) shipperText += shipper.Address + \"\\n\";\r\n\r\nthis.EditForm.Entity.NotifyPartyDes = shipperText.trim(); // Loại bỏ khoảng trắng thừa cuối chuỗi\r\nthis.EditForm.UpdateView(false, false, \"NotifyPartyDes\");\r\nreturn null;",
-                            "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\"\r\n}",
                             "RefName": "Partner",
                             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
                             "ShowHotKey": true,
@@ -387,7 +387,7 @@
                         {
                             "Id": "Section.VendorId.1",
                             "FieldName": "VendorId",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -397,7 +397,7 @@
                             "ShowLabel": true,
                             "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('provider-editor',{ ServiceId: 3, ActionId: 1})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('provider-editor',this.Matched)\"\r\n}",
                             "PopulateField": "this.EditForm.Entity.Pic = this.Matched.ContactName;\r\nthis.EditForm.UpdateView(false, false, \"Pic\");\r\nreturn null;",
-                            "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\"\r\n}",
                             "RefName": "Partner",
                             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
                             "ShowHotKey": true
@@ -405,7 +405,7 @@
                         {
                             "Id": "Section.RealConsigneeIdText.9",
                             "FieldName": "RealConsigneeIdText",
-                            "Order": 9,
+                            "order": 9,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -415,7 +415,7 @@
                             "ShowLabel": true,
                             "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('provider-editor',{ ServiceId: 3, ActionId: 1})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('provider-editor',this.Matched)\"\r\n}",
                             "PopulateField": "let shipper = this.EditForm.Entity.RealConsignee;\r\nlet shipperText = \"\";\r\n\r\nif (shipper.CompanyName) shipperText += shipper.Name + \"\\n\";\r\nif (shipper.Address) shipperText += shipper.Address + \"\\n\";\r\n\r\nthis.EditForm.Entity.RealConsigneeDes = shipperText.trim(); // Loại bỏ khoảng trắng thừa cuối chuỗi\r\nthis.EditForm.UpdateView(false, false, \"RealConsigneeDes\");\r\nreturn null;",
-                            "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\"\r\n}",
                             "RefName": "Partner",
                             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
                             "ShowHotKey": true,
@@ -424,7 +424,7 @@
                         {
                             "Id": "Section.RealShipperIdText.8",
                             "FieldName": "RealShipperIdText",
-                            "Order": 8,
+                            "order": 8,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -434,7 +434,7 @@
                             "ShowLabel": true,
                             "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('provider-editor',{ ServiceId: 3, ActionId: 1})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('provider-editor',this.Matched)\"\r\n}",
                             "PopulateField": "let shipper = this.EditForm.Entity.RealShipper;\r\nlet shipperText = \"\";\r\n\r\nif (shipper.CompanyName) shipperText += shipper.Name + \"\\n\";\r\nif (shipper.Address) shipperText += shipper.Address + \"\\n\";\r\n\r\nthis.EditForm.Entity.RealShipperDes = shipperText.trim(); // Loại bỏ khoảng trắng thừa cuối chuỗi\r\nthis.EditForm.UpdateView(false, false, \"RealShipperDes\");\r\nreturn null;",
-                            "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and (ServiceId = 3 or (ServiceId = 2 and (PartnerTypeIdsText like N'%Agent%'))))\"\r\n}",
                             "RefName": "Partner",
                             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
                             "ShowHotKey": true,
@@ -443,7 +443,7 @@
                         {
                             "Id": "Section.Pic.2",
                             "FieldName": "Pic",
-                            "Order": 2,
+                            "order": 2,
                             "ComponentType": "Input",
                             "Column": 6,
                             "Label": "PIC",
@@ -452,7 +452,7 @@
                         {
                             "Id": "Section.ShipperDes.3",
                             "FieldName": "ShipperDes",
-                            "Order": 3,
+                            "order": 3,
                             "ComponentType": "Textarea",
                             "Column": 4,
                             "RowSpan": 2,
@@ -463,7 +463,7 @@
                         {
                             "Id": "Section.ConsigneeDes.6",
                             "FieldName": "ConsigneeDes",
-                            "Order": 6,
+                            "order": 6,
                             "ComponentType": "Textarea",
                             "Column": 4,
                             "Row": 4
@@ -471,7 +471,7 @@
                         {
                             "Id": "Section.NotifyPartyDes.7",
                             "FieldName": "NotifyPartyDes",
-                            "Order": 7,
+                            "order": 7,
                             "ComponentType": "Textarea",
                             "Column": 4,
                             "Row": 4
@@ -479,7 +479,7 @@
                         {
                             "Id": "Section.RealConsigneeDes.12",
                             "FieldName": "RealConsigneeDes",
-                            "Order": 12,
+                            "order": 12,
                             "ComponentType": "Textarea",
                             "Column": 4,
                             "Row": 4,
@@ -488,7 +488,7 @@
                         {
                             "Id": "Section.Notes.10",
                             "FieldName": "Notes",
-                            "Order": 10,
+                            "order": 10,
                             "ComponentType": "Textarea",
                             "Column": 4,
                             "RowSpan": 2,
@@ -499,7 +499,7 @@
                         {
                             "Id": "Section.RealShipperDes.11",
                             "FieldName": "RealShipperDes",
-                            "Order": 11,
+                            "order": 11,
                             "ComponentType": "Textarea",
                             "Column": 4,
                             "Row": 4,
@@ -509,17 +509,17 @@
                 },
                 {
                     "Id": "Container.Section.3_3",
-                    "Order": 3,
+                    "order": 3,
                     "ComponentType": "Section",
                     "Label": "Details",
                     "ClassName": "card-body",
                     "XxlCol": 12,
                     "XxlOuterColumn": 12,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Section.ShippingMark.1",
                             "FieldName": "ShippingMark",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "Textarea",
                             "Column": 6,
                             "Row": 4,
@@ -529,7 +529,7 @@
                         {
                             "Id": "Section.DetailsGoods.2",
                             "FieldName": "DetailsGoods",
-                            "Order": 2,
+                            "order": 2,
                             "ComponentType": "Textarea",
                             "Column": 6,
                             "Row": 4,
@@ -539,7 +539,7 @@
                         {
                             "Id": "Section.DeliveryTermId.3",
                             "FieldName": "DeliveryTermId",
-                            "Order": 3,
+                            "order": 3,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -547,35 +547,35 @@
                             "Row": 100,
                             "Label": "Delivery Term",
                             "ShowLabel": true,
-                            "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"FCL/LCL; CY/CFS\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"LCL/FCL; CFS/CY\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"LCL/LCL; CFS/CFS\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"FCL/FCL; CY/C\"\r\n    }\r\n]",
+                            "query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"FCL/LCL; CY/CFS\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"LCL/FCL; CFS/CY\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"LCL/LCL; CFS/CFS\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"FCL/FCL; CY/C\"\r\n    }\r\n]",
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
                             "Id": "Section.GW.7",
                             "FieldName": "GW",
-                            "Order": 7,
+                            "order": 7,
                             "ComponentType": "Number",
                             "Column": 2,
                             "Row": 50,
-                            "Precision": 0,
+                            "precision": 0,
                             "Label": "GW",
                             "ShowLabel": true
                         },
                         {
                             "Id": "Section.CBM.8",
                             "FieldName": "CBM",
-                            "Order": 8,
+                            "order": 8,
                             "ComponentType": "Number",
                             "Column": 2,
                             "Row": 50,
-                            "Precision": 0,
+                            "precision": 0,
                             "Label": "CBM",
                             "ShowLabel": true
                         },
                         {
                             "Id": "Section.ClauseId.4",
                             "FieldName": "ClauseId",
-                            "Order": 4,
+                            "order": 4,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -583,14 +583,14 @@
                             "Row": 100,
                             "Label": "B/L Clause",
                             "ShowLabel": true,
-                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Clause Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Clause Type'\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Clause Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Clause Type'\"\r\n}",
                             "RefName": "MasterData",
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
                             "Id": "Section.Package.6",
                             "FieldName": "Package",
-                            "Order": 6,
+                            "order": 6,
                             "ComponentType": "Input",
                             "Column": 2,
                             "Row": 50,
@@ -600,7 +600,7 @@
                         {
                             "Id": "Section.EntityContainer.5",
                             "FieldName": "EntityContainer",
-                            "Order": 5,
+                            "order": 5,
                             "ComponentType": "GridView",
                             "Column": 6,
                             "RowSpan": 2,
@@ -610,21 +610,21 @@
                             "ChildStyle": "height:110px;margin-top: 1.15rem;",
                             "DefaultVal": "{\r\n    \"EntityId\": this.EditForm.Entity.Id,\r\n    \"TableName\": \"ShipmentSI\"\r\n}",
                             "CanAdd": true,
-                            "Query": "{\r\n    \"sql\": \"select * from EntityContainer as ds where EntityId = '{EntityId}'\",\r\n    \"total\": \"select count(ds.Id) as total from EntityContainer as ds where EntityId = '{EntityId}'\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select * from EntityContainer as ds where EntityId = '{EntityId}'\",\r\n    \"total\": \"select count(ds.Id) as total from EntityContainer as ds where EntityId = '{EntityId}'\"\r\n}",
                             "RefName": "EntityContainer",
                             "PreQuery": "{\r\n    \"EntityId\": this.EditForm.Entity.Id\r\n}",
-                            "Editable": true
+                            "editable": true
                         }
                     ]
                 },
                 {
                     "Id": "Container.btnSave.3",
                     "FieldName": "btnSave",
-                    "Order": 3,
+                    "order": 3,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Save",
-                    "Icon": "fal fa-save",
+                    "icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }"
@@ -634,32 +634,32 @@
         {
             "Id": "shipping_instruction_editor.Button.1",
             "FieldName": "Button",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "ClassName": "ribbon-group",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Button.btnPrint.2_4",
                     "FieldName": "btnPrint",
-                    "Order": 2,
+                    "order": 2,
                     "ComponentType": "Pdf",
                     "Column": 1,
                     "Label": "Print",
-                    "Icon": "fal fa-print",
+                    "icon": "fal fa-print",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{\r\n    \"click\": \"PrintPdf\"\r\n}",
-                    "Query": "\r\nSELECT \r\nFORMAT(si.IssueDate,'dd MMM, yy') AS isseudate,\r\nSUM( ISNULL(ct.Weight,0)) AS sumgw,\r\nSUM(ISNULL(ct.CBM,0)) AS sumcbm,\r\nSUM(ISNULL(ct.PKG,0)) AS sumpkg,\r\n  (SELECT STRING_AGG(CONCAT(contN.Name, ' x ', ROUND(inc.Quantity, 0)), ' & ') AS Containers\r\n     FROM EntityContainer inc\r\n     LEFT JOIN MasterData contN ON inc.ContainerTypeId = contN.Id\r\n     WHERE inc.EntityId = '{Id}') AS Containers\r\n\r\n FROM \r\ndbo.ShipmentSI si LEFT JOIN dbo.EntityContainer ct ON ct.EntityId=si.Id \r\nLEFT JOIN dbo.MasterData loaicont ON loaicont.Id = ct.ContainerTypeId\r\nWHERE si.Id='{Id}' \r\nGROUP BY si.Id, si.IssueDate\r\n\r\nSELECT si.Code,ISNULL(ct.ContainerNo,'') AS contno,\r\n ISNULL(ct.SealNo,0) AS sealno, \r\n ISNULL(ct.PKG,0) as PKG,\r\n ISNULL(ct.Description,'') AS Desctiption, \r\n ISNULL(ct.Weight,0)AS weightt, \r\n ISNULL(ct.CBM,0) AS cbm , ISNULL(loaicont.Name,'') AS tencont\r\n FROM dbo.EntityContainer ct  JOIN dbo.ShipmentSI si ON si.Id = ct.EntityId \r\n LEFT JOIN dbo.MasterData loaicont ON ct.ContainerTypeId=loaicont.Id \r\nWHERE si.Id='{Id}'  and loaicont.Name is not null\r\n",
+                    "query": "\r\nSELECT \r\nFORMAT(si.IssueDate,'dd MMM, yy') AS isseudate,\r\nSUM( ISNULL(ct.Weight,0)) AS sumgw,\r\nSUM(ISNULL(ct.CBM,0)) AS sumcbm,\r\nSUM(ISNULL(ct.PKG,0)) AS sumpkg,\r\n  (SELECT STRING_AGG(CONCAT(contN.Name, ' x ', ROUND(inc.Quantity, 0)), ' & ') AS Containers\r\n     FROM EntityContainer inc\r\n     LEFT JOIN MasterData contN ON inc.ContainerTypeId = contN.Id\r\n     WHERE inc.EntityId = '{Id}') AS Containers\r\n\r\n FROM \r\ndbo.ShipmentSI si LEFT JOIN dbo.EntityContainer ct ON ct.EntityId=si.Id \r\nLEFT JOIN dbo.MasterData loaicont ON loaicont.Id = ct.ContainerTypeId\r\nWHERE si.Id='{Id}' \r\nGROUP BY si.Id, si.IssueDate\r\n\r\nSELECT si.Code,ISNULL(ct.ContainerNo,'') AS contno,\r\n ISNULL(ct.SealNo,0) AS sealno, \r\n ISNULL(ct.PKG,0) as PKG,\r\n ISNULL(ct.Description,'') AS Desctiption, \r\n ISNULL(ct.Weight,0)AS weightt, \r\n ISNULL(ct.CBM,0) AS cbm , ISNULL(loaicont.Name,'') AS tencont\r\n FROM dbo.EntityContainer ct  JOIN dbo.ShipmentSI si ON si.Id = ct.EntityId \r\n LEFT JOIN dbo.MasterData loaicont ON ct.ContainerTypeId=loaicont.Id \r\nWHERE si.Id='{Id}'  and loaicont.Name is not null\r\n",
                     "Template": "<p>&nbsp;</p>\n<table style=\"width: 99.6687%; border-collapse: collapse; height: 206.25px;\" border=\"0\"><colgroup><col style=\"width: 16.5499%;\"><col style=\"width: 1.29296%;\"><col style=\"width: 49.1336%;\"><col style=\"width: 1.29199%;\"><col style=\"width: 5.94763%;\"><col style=\"width: 1.29296%;\"><col style=\"width: 11.5074%;\"><col style=\"width: 6.59412%;\"><col style=\"width: 6.33552%;\"></colgroup>\n<tbody>\n<tr style=\"height: 17.375px;\">\n<td rowspan=\"3\"><span style=\"font-size: 10pt;\">&nbsp;${CLogo}</span></td>\n<td rowspan=\"3\"><span style=\"font-size: 10pt;\">&nbsp;</span></td>\n<td style=\"text-align: center;\" colspan=\"7\" rowspan=\"3\"><span style=\"font-size: 10pt;\"><strong>${CCompanyName}</strong><br>Address: ${CAddress}<br>Hotline:<a href=\"tel:19003133\">1900 3133<br></a>Email:&nbsp;</span></td>\n</tr>\n<tr style=\"height: 17.375px;\"></tr>\n<tr style=\"height: 21px;\"></tr>\n<tr style=\"height: 16.6667px;\">\n<td><span style=\"font-size: 10pt;\">&nbsp;</span></td>\n<td><span style=\"font-size: 10pt;\">&nbsp;</span></td>\n<td style=\"text-align: center;\" colspan=\"7\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n</tr>\n<tr style=\"height: 37.3542px;\">\n<td style=\"text-align: center;\" colspan=\"9\" rowspan=\"3\">\n<div style=\"font-size: 28pt; min-width: 400px; display: inline-block; border-radius: 29px; border: 1px solid rgb(0, 0, 0); text-align: center; font-weight: 600;\">SHIPPING INSTRUCTION</div>\n</td>\n</tr>\n<tr style=\"height: 10px;\"></tr>\n<tr style=\"height: 10px;\"></tr>\n<tr style=\"height: 16.6667px;\">\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\">&nbsp;</td>\n</tr>\n<tr style=\"height: 35.8125px;\">\n<td class=\"xl67\" style=\"width: 65px; text-align: left; vertical-align: top;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>To</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>:</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;${Provider}</td>\n<td style=\"text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\"><strong>Date</strong></td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\">${isseudate}</td>\n</tr>\n<tr style=\"height: 24px;\">\n<td class=\"xl67\" style=\"width: 65px; text-align: left; vertical-align: top;\" width=\"130\" height=\"24\"><span style=\"font-size: 10pt;\"><strong>Attn</strong></span></td>\n<td style=\"width: 65px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>:</strong></span></td>\n<td style=\"text-align: left; vertical-align: top;\">${PIC}</td>\n<td style=\"width: 30.5px; text-align: left; vertical-align: top;\"><span style=\"font-size: 10pt;\"><strong>&nbsp;</strong></span></td>\n<td class=\"xl67\" style=\"width: 15.25px; text-align: left; vertical-align: top;\" width=\"61\" height=\"24\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\">&nbsp;</td>\n</tr>\n</tbody>\n</table>\n<p>&nbsp;</p>\n<p>Please issue MB/L as Booking No:&nbsp; <span style=\"font-size: 12pt;\"><strong>${Booking No}</strong></span> following details:</p>\n<p>&nbsp;</p>\n<table style=\"border-collapse: collapse; width: 100.043%; height: 127.99px;\" border=\"0\"><colgroup><col style=\"width: 17.6471%;\"><col style=\"width: 9.46292%;\"><col style=\"width: 1.27877%;\"><col style=\"width: 24.5524%;\"><col style=\"width: 1.27877%;\"><col style=\"width: 45.7801%;\"></colgroup>\n<tbody>\n<tr style=\"height: 32.3333px;\">\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\"><strong><span style=\"font-size: 13.3333px;\">1. SHIPPER:</span></strong></td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"5\"><span style=\"font-size: 13.3333px;\">${ShipperDes}</span><br><span style=\"font-size: 13.3333px;\"><br></span></td>\n</tr>\n<tr style=\"height: 16px;\">\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\"><strong>2. CONSIGNEE:</strong></td>\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\" colspan=\"5\">${ConsigneeDes}</td>\n</tr>\n<tr style=\"height: 16px;\">\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\"><strong><span style=\"font-size: 13.3333px;\">&nbsp;</span></strong></td>\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\" colspan=\"5\">&nbsp;</td>\n</tr>\n<tr style=\"height: 18.0521px;\">\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\"><strong><span style=\"font-size: 13.3333px;\">3. Notify party:</span></strong></td>\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\" colspan=\"5\">${NotifyPartyDes}</td>\n</tr>\n<tr style=\"height: 16px;\">\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\" colspan=\"2\"><strong><span style=\"font-size: 13.3333px;\">&nbsp;</span></strong></td>\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\"><strong><span style=\"font-size: 13.3333px;\">&nbsp;</span></strong></td>\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\"><strong><span style=\"font-size: 13.3333px;\">&nbsp;</span></strong></td>\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\"><strong><span style=\"font-size: 13.3333px;\">&nbsp;</span></strong></td>\n</tr>\n<tr style=\"height: 17.9375px;\">\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\" colspan=\"2\"><strong><span style=\"font-size: 13.3333px;\">4. Port of Loading</span></strong></td>\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\"><strong><span style=\"font-size: 13.3333px;\">&nbsp;</span></strong></td>\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\"><strong><span style=\"font-size: 13.3333px;\">Port of Discharge</span></strong></td>\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\">&nbsp;</td>\n<td style=\"text-align: left; vertical-align: top; border-style: hidden;\"><strong><span style=\"font-size: 13.3333px;\">&nbsp;Port of Delivery</span></strong></td>\n</tr>\n<tr style=\"height: 11.6667px;\">\n<td style=\"text-align: left; border-style: hidden;\" colspan=\"2\">&nbsp;</td>\n<td style=\"text-align: left; border-style: hidden;\">&nbsp;</td>\n<td style=\"text-align: left; border-style: hidden;\">&nbsp;</td>\n<td style=\"text-align: left; border-style: hidden;\">&nbsp;</td>\n<td style=\"text-align: left; border-style: hidden;\">&nbsp;</td>\n</tr>\n</tbody>\n</table>\n<p><strong>5. Description of goods</strong></p>\n<p>&nbsp;</p>\n<table style=\"border-collapse: collapse; width: 100.043%; height: 50px;\" border=\"1\"><colgroup><col style=\"width: 20.6097%;\"><col style=\"width: 11.8506%;\"><col style=\"width: 13.2675%;\"><col style=\"width: 27.8231%;\"><col style=\"width: 12.6234%;\"><col style=\"width: 13.7827%;\"></colgroup>\n<thead>\n<tr style=\"height: 16.6667px; text-align: center;\">\n<td><strong>Container/Seal No.</strong></td>\n<td><strong>Type</strong></td>\n<td><strong>Packages</strong></td>\n<td><strong>Description of Goods</strong></td>\n<td><strong>G.W (KGS)</strong></td>\n<td><strong>CBM</strong></td>\n</tr>\n</thead>\n<tbody data-table=\"c0\">\n<tr style=\"height: 16.6667px;\">\n<td>{contno}/{sealno}</td>\n<td style=\"text-align: center;\">{tencont}</td>\n<td style=\"text-align: center;\">{PKG}</td>\n<td>{Desctiption}</td>\n<td style=\"text-align: center;\">{weightt}</td>\n<td style=\"text-align: center;\">{cbm}</td>\n</tr>\n</tbody>\n<tfoot>\n<tr>\n<td style=\"text-align: center;\" colspan=\"2\">TOTAL: ${Containers}</td>\n<td style=\"text-align: center;\">${sumpkg}</td>\n<td style=\"text-align: center;\">&nbsp;</td>\n<td style=\"text-align: center;\">${sumgw}</td>\n<td style=\"text-align: center;\">${sumcbm}</td>\n</tr>\n</tfoot>\n</table>\n<div>&nbsp;</div>\n<div><strong>6. Freight and Charge: <span style=\"font-size: 12pt;\">${Payment term}</span></strong></div>\n<div>Please fax us the draft of MBL to check before issue the original.</div>\n<div>&nbsp;</div>\n<div>Thanks for your Co-operation.</div>\n<div>&nbsp;</div>\n<div>Brgds,</div>"
                 },
                 {
                     "Id": "Button.btnSave.3_6",
                     "FieldName": "btnSave",
-                    "Order": 3,
+                    "order": 3,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Save",
-                    "Icon": "fal fa-save",
+                    "icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }"

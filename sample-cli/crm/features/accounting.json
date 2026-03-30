@@ -2,8 +2,8 @@
     "Id": "accounting",
     "Name": "accounting",
     "Label": "Accounting",
-    "Order": 13,
-    "Icon": "fal fa-calculator-alt",
+    "order": 13,
+    "icon": "fal fa-calculator-alt",
     "IsPublic": true,
     "IgnoreEncode": true,
     "FeaturePolicies": [

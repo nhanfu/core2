@@ -2,19 +2,19 @@
     "Id": "team_group",
     "Name": "team-group",
     "Label": "Team Group",
-    "Order": 3,
-    "Icon": "fal fa-users-class",
+    "order": 3,
+    "icon": "fal fa-users-class",
     "IsMenu": true,
     "IgnoreEncode": true,
     "GridPolicies": [
         {
             "Id": "team_group.Name.1",
             "FieldName": "Name",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Input",
             "Label": "Name",
-            "Width": "177px",
-            "Editable": true,
+            "width": "177px",
+            "editable": true,
             "MinWidth": "177px",
             "MaxWidth": "177px",
             "EntityId": "MasterData"
@@ -22,11 +22,11 @@
         {
             "Id": "team_group.Code.0",
             "FieldName": "Code",
-            "Order": 0,
+            "order": 0,
             "ComponentType": "Input",
             "Label": "Code",
-            "Width": "102px",
-            "Editable": true,
+            "width": "102px",
+            "editable": true,
             "MinWidth": "102px",
             "MaxWidth": "102px",
             "EntityId": "MasterData"
@@ -34,11 +34,11 @@
         {
             "Id": "team_group.Description.2",
             "FieldName": "Description",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Input",
             "Label": "Description",
-            "Width": "172px",
-            "Editable": true,
+            "width": "172px",
+            "editable": true,
             "MinWidth": "172px",
             "MaxWidth": "172px",
             "EntityId": "MasterData"
@@ -92,19 +92,19 @@
             "TableName": "Feature"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "team_group.Container.1",
             "FieldName": "Container",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Container.MasterData.1_7",
                     "FieldName": "MasterData",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "GridView",
                     "Column": 12,
                     "Row": 50,
@@ -113,7 +113,7 @@
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "DefaultVal": "{\r\n    \"ParentId\":\"00fb006c-0000-0000-8000-71f2a4658d3c\"\r\n}",
                     "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from MasterData as ds where ds.ParentId = '00fb006c-0000-0000-8000-71f2a4658d3c'\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds where ds.ParentId = '00fb006c-0000-0000-8000-71f2a4658d3c'\"\r\n}",
+                    "query": "{\r\n    \"sql\": \"select * from MasterData as ds where ds.ParentId = '00fb006c-0000-0000-8000-71f2a4658d3c'\",\r\n    \"total\": \"select count(ds.Id) as total from MasterData as ds where ds.ParentId = '00fb006c-0000-0000-8000-71f2a4658d3c'\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "MasterData",
                     "TopEmpty": true,

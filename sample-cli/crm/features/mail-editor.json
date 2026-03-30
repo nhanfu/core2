@@ -2,9 +2,9 @@
     "Id": "mail_editor",
     "Name": "mail-editor",
     "Label": "Mail Editor",
-    "Order": 111,
-    "Style": "width: 99%",
-    "Icon": "fal fa-user",
+    "order": 111,
+    "style": "width: 99%",
+    "icon": "fal fa-user",
     "EntityId": "Feature",
     "IgnoreEncode": true,
     "FeaturePolicies": [
@@ -55,23 +55,23 @@
             "TableName": "Feature"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "mail_editor.Main.1",
             "FieldName": "Main",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Main.Container.2_1",
                     "FieldName": "Container",
-                    "Order": 2,
+                    "order": 2,
                     "ComponentType": "Section",
                     "ClassName": "card-body",
                     "XxlOuterColumn": 12,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Container.node"
                         }

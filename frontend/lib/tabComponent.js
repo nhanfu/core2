@@ -96,7 +96,7 @@ export class TabComponent extends EditableComponent {
     }
 
     countBadge() {
-        if (!this.meta.displayBadge || !this.meta.Components) {
+        if (!this.meta.displayBadge || !this.meta.components) {
             return;
         }
 
@@ -123,7 +123,7 @@ export class TabComponent extends EditableComponent {
             if (gridView) {
                 await updateBadge(gridView.meta, gridView);  // Call sequentially when a GridView is found
             } else {
-                let gridView2 = this.meta.Components.filter(x => x.componentType == "GridView")[0];
+                let gridView2 = this.meta.components.filter(x => x.componentType == "GridView")[0];
                 if (gridView2) {
                     await updateBadge(gridView2);  // Call sequentially when another GridView is found
                 }

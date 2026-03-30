@@ -2,23 +2,23 @@
     "Id": "component_editor2",
     "Name": "component-editor2",
     "Label": "Component Editor",
-    "Order": 111,
-    "Style": "width: 99%",
+    "order": 111,
+    "style": "width: 99%",
     "Script": "return {\r\n    CopyFrom: function () {\r\n        if (this.Entity.Code) {\r\n            var from = JSON.parse(JSON.stringify(this.Entity.Code));\r\n            var code = from;\r\n            code.Id = this.Entity.Id;\r\n            code.ComponentGroupId = this.Entity.ComponentGroupId;\r\n            code.FeatureId = this.Entity.FeatureId;\r\n            code.EntityId = this.Entity.EntityId;\r\n            code.ParentId = this.Entity.ParentId;\r\n            this.EditForm.Entity = code;\r\n            this.EditForm.UpdateView(true);\r\n        }\r\n    }\r\n}",
-    "Icon": "fal fa-user",
+    "icon": "fal fa-user",
     "EntityId": "Component",
     "IgnoreEncode": true,
     "GridPolicies": [
         {
             "Id": "component_editor2.Id.0",
             "FieldName": "Id",
-            "Order": 0,
+            "order": 0,
             "ComponentType": "Input",
             "Label": "Id",
             "ShowLabel": true,
-            "Width": "43px",
+            "width": "43px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "43px",
             "MaxWidth": "43px",
             "created_by": "GridPolicy",
@@ -27,14 +27,14 @@
         {
             "Id": "component_editor2.EntityId.1",
             "FieldName": "EntityId",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Input",
             "Label": "Entity",
             "ShowLabel": true,
-            "Width": "124px",
-            "Query": "{ \"sql\" : \"select * from Component as ds  where ComponentGroupId is null  and ComponentType = 'Section'\" , \"total\" : \"select count(ds.Id) as total from Component as ds   where ComponentGroupId is null  and ComponentType = 'Section'\" }",
+            "width": "124px",
+            "query": "{ \"sql\" : \"select * from Component as ds  where ComponentGroupId is null  and ComponentType = 'Section'\" , \"total\" : \"select count(ds.Id) as total from Component as ds   where ComponentGroupId is null  and ComponentType = 'Section'\" }",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "124px",
             "MaxWidth": "124px",
             "created_by": "GridPolicy",
@@ -43,15 +43,15 @@
         {
             "Id": "component_editor2.Order.2",
             "FieldName": "Order",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Number",
             "Row": 50,
-            "Precision": 0,
+            "precision": 0,
             "Label": "Order",
             "ShowLabel": true,
-            "Width": "56px",
+            "width": "56px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "56px",
             "MaxWidth": "56px",
             "created_by": "Component",
@@ -60,14 +60,14 @@
         {
             "Id": "component_editor2.Editable.3",
             "FieldName": "Editable",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Checkbox",
             "Label": "Editable",
             "ShowLabel": true,
-            "Width": "48px",
+            "width": "48px",
             "FocusSearch": true,
             "TextAlign": "center",
-            "Editable": true,
+            "editable": true,
             "MinWidth": "48px",
             "MaxWidth": "48px",
             "created_by": "GridPolicy",
@@ -76,13 +76,13 @@
         {
             "Id": "component_editor2.FieldName.4",
             "FieldName": "FieldName",
-            "Order": 4,
+            "order": 4,
             "ComponentType": "Input",
             "Label": "FieldName",
             "ShowLabel": true,
-            "Width": "121px",
+            "width": "121px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "121px",
             "MaxWidth": "121px",
             "created_by": "GridPolicy",
@@ -91,13 +91,13 @@
         {
             "Id": "component_editor2.Label.5",
             "FieldName": "Label",
-            "Order": 5,
+            "order": 5,
             "ComponentType": "Input",
             "Label": "Label",
             "ShowLabel": true,
-            "Width": "132px",
+            "width": "132px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "132px",
             "MaxWidth": "132px",
             "created_by": "GridPolicy",
@@ -106,15 +106,15 @@
         {
             "Id": "component_editor2.ComponentType.6",
             "FieldName": "ComponentType",
-            "Order": 6,
+            "order": 6,
             "ComponentType": "Select",
             "Row": 50,
             "Label": "Component Type",
             "ShowLabel": true,
-            "Width": "119px",
-            "Query": "[\r\n    {\r\n        \"Id\": \"Input\",\r\n        \"Name\": \"Input\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fal fa-keyboard mr-1'></i>Input</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Select\",\r\n        \"Name\": \"Select\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fal fa-list mr-1'></i>Select</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Textarea\",\r\n        \"Name\": \"Textarea\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fal fa-align-left mr-1'></i>Textarea</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Button\",\r\n        \"Name\": \"Button\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fal fa-hand-pointer mr-1'></i>Button</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Number\",\r\n        \"Name\": \"Number\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #17a2b8;'><i class='fal fa-hashtag mr-1'></i>Number</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Checkbox\",\r\n        \"Name\": \"Checkbox\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #6f42c1;'><i class='fal fa-check-square mr-1'></i>Checkbox</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Dropdown\",\r\n        \"Name\": \"Dropdown\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fal fa-caret-down mr-1'></i>Dropdown</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Datepicker\",\r\n        \"Name\": \"Datepicker\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #fd7e14;'><i class='fal fa-calendar-alt mr-1'></i>Datepicker</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"FileUpload\",\r\n        \"Name\": \"FileUpload\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fal fa-upload mr-1'></i>FileUpload</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"GridView\",\r\n        \"Name\": \"GridView\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fal fa-th-large mr-1'></i>GridView</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Word\",\r\n        \"Name\": \"Word\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #6c757d;'><i class='fal fa-file-word mr-1'></i>Word</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"CodeEditor\",\r\n        \"Name\": \"CodeEditor\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #17a2b8;'><i class='fal fa-code mr-1'></i>CodeEditor</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Label\",\r\n        \"Name\": \"Label\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #343a40;'><i class='fal fa-tag mr-1'></i>Label</span>\"\r\n    }\r\n]",
+            "width": "119px",
+            "query": "[\r\n    {\r\n        \"Id\": \"Input\",\r\n        \"Name\": \"Input\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fal fa-keyboard mr-1'></i>Input</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Select\",\r\n        \"Name\": \"Select\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fal fa-list mr-1'></i>Select</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Textarea\",\r\n        \"Name\": \"Textarea\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fal fa-align-left mr-1'></i>Textarea</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Button\",\r\n        \"Name\": \"Button\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fal fa-hand-pointer mr-1'></i>Button</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Number\",\r\n        \"Name\": \"Number\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #17a2b8;'><i class='fal fa-hashtag mr-1'></i>Number</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Checkbox\",\r\n        \"Name\": \"Checkbox\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #6f42c1;'><i class='fal fa-check-square mr-1'></i>Checkbox</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Dropdown\",\r\n        \"Name\": \"Dropdown\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fal fa-caret-down mr-1'></i>Dropdown</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Datepicker\",\r\n        \"Name\": \"Datepicker\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #fd7e14;'><i class='fal fa-calendar-alt mr-1'></i>Datepicker</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"FileUpload\",\r\n        \"Name\": \"FileUpload\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fal fa-upload mr-1'></i>FileUpload</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"GridView\",\r\n        \"Name\": \"GridView\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fal fa-th-large mr-1'></i>GridView</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Word\",\r\n        \"Name\": \"Word\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #6c757d;'><i class='fal fa-file-word mr-1'></i>Word</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"CodeEditor\",\r\n        \"Name\": \"CodeEditor\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #17a2b8;'><i class='fal fa-code mr-1'></i>CodeEditor</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Label\",\r\n        \"Name\": \"Label\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #343a40;'><i class='fal fa-tag mr-1'></i>Label</span>\"\r\n    }\r\n]",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "119px",
             "MaxWidth": "119px",
             "created_by": "GridPolicy",
@@ -123,14 +123,14 @@
         {
             "Id": "component_editor2.GroupName.7",
             "FieldName": "GroupName",
-            "Order": 7,
+            "order": 7,
             "ComponentType": "Input",
             "Row": 50,
             "Label": "GroupName",
             "ShowLabel": true,
-            "Width": "87px",
+            "width": "87px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "87px",
             "MaxWidth": "87px",
             "created_by": "Component",
@@ -139,13 +139,13 @@
         {
             "Id": "component_editor2.Summary.8",
             "FieldName": "Summary",
-            "Order": 8,
+            "order": 8,
             "ComponentType": "Input",
             "Label": "Summary",
             "ShowLabel": true,
-            "Width": "153px",
+            "width": "153px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "153px",
             "MaxWidth": "153px",
             "created_by": "GridPolicy",
@@ -154,14 +154,14 @@
         {
             "Id": "component_editor2.SummaryColSpan.9",
             "FieldName": "SummaryColSpan",
-            "Order": 9,
+            "order": 9,
             "ComponentType": "Number",
-            "Precision": 0,
+            "precision": 0,
             "Label": "SummaryColSpan",
             "ShowLabel": true,
-            "Width": "153px",
+            "width": "153px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "153px",
             "MaxWidth": "153px",
             "created_by": "GridPolicy",
@@ -170,14 +170,14 @@
         {
             "Id": "component_editor2.Precision.10",
             "FieldName": "Precision",
-            "Order": 10,
+            "order": 10,
             "ComponentType": "Number",
-            "Precision": 0,
+            "precision": 0,
             "Label": "Precision",
             "ShowLabel": true,
-            "Width": "126px",
+            "width": "126px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "126px",
             "MaxWidth": "126px",
             "created_by": "GridPolicy",
@@ -186,14 +186,14 @@
         {
             "Id": "component_editor2.Query.11",
             "FieldName": "Query",
-            "Order": 11,
+            "order": 11,
             "ComponentType": "Input",
             "Label": "Query",
             "ShowLabel": true,
-            "Width": "215px",
-            "Query": "{ \"sql\" : \"select * from Component as ds  where ComponentGroupId is null  and ComponentType = 'Section'\" , \"total\" : \"select count(ds.Id) as total from Component as ds   where ComponentGroupId is null  and ComponentType = 'Section'\" }",
+            "width": "215px",
+            "query": "{ \"sql\" : \"select * from Component as ds  where ComponentGroupId is null  and ComponentType = 'Section'\" , \"total\" : \"select count(ds.Id) as total from Component as ds   where ComponentGroupId is null  and ComponentType = 'Section'\" }",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "215px",
             "MaxWidth": "215px",
             "created_by": "GridPolicy",
@@ -202,13 +202,13 @@
         {
             "Id": "component_editor2.RefName.12",
             "FieldName": "RefName",
-            "Order": 12,
+            "order": 12,
             "ComponentType": "Input",
             "Label": "RefName",
             "ShowLabel": true,
-            "Width": "108px",
+            "width": "108px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "108px",
             "MaxWidth": "108px",
             "created_by": "GridPolicy",
@@ -217,13 +217,13 @@
         {
             "Id": "component_editor2.DisabledExp.13",
             "FieldName": "DisabledExp",
-            "Order": 13,
+            "order": 13,
             "ComponentType": "Input",
             "Label": "DisabledExp",
             "ShowLabel": true,
-            "Width": "219px",
+            "width": "219px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "219px",
             "MaxWidth": "219px",
             "created_by": "Component",
@@ -232,13 +232,13 @@
         {
             "Id": "component_editor2.Validation.14",
             "FieldName": "Validation",
-            "Order": 14,
+            "order": 14,
             "ComponentType": "Input",
             "Label": "Validation",
             "ShowLabel": true,
-            "Width": "188px",
+            "width": "188px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "188px",
             "MaxWidth": "188px",
             "created_by": "GridPolicy",
@@ -247,19 +247,19 @@
         {
             "Id": "component_editor2.FeatureId.15",
             "FieldName": "FeatureId",
-            "Order": 15,
+            "order": 15,
             "ComponentType": "Dropdown",
             "FormatData": "{Label}",
             "PlainText": "Select data",
             "Row": 100,
             "Label": "Feature",
             "ShowLabel": true,
-            "Width": "8px",
-            "Query": "{\r\n    \"sql\": \"select * from Feature as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Feature as ds\"\r\n}",
+            "width": "8px",
+            "query": "{\r\n    \"sql\": \"select * from Feature as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Feature as ds\"\r\n}",
             "RefName": "Feature",
             "Template": "[{ \"FieldName\" : \"Id\", \"Label\" : \"Id\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Label\", \"Label\" : \"Label\", \"ComponentType\"\r\n: \"Input\" },{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "8px",
             "MaxWidth": "8px",
             "created_by": "GridPolicy",
@@ -268,20 +268,20 @@
         {
             "Id": "component_editor2.ComponentGroupId.16",
             "FieldName": "ComponentGroupId",
-            "Order": 16,
+            "order": 16,
             "ComponentType": "Dropdown",
             "FormatData": "{Id}",
             "PlainText": "Select data",
             "Row": 100,
             "Label": "ComponentGroup",
             "ShowLabel": true,
-            "Width": "7px",
-            "Query": "{ \"sql\": \"select * from Component as ds where ComponentType in ('Section','GridView') and FeatureId = '{FeatureId}'\", \"total\": \"select count(ds.Id) as total from Component as ds where ComponentType in ('Section','GridView') and FeatureId = '{FeatureId}'\" }",
+            "width": "7px",
+            "query": "{ \"sql\": \"select * from Component as ds where ComponentType in ('Section','GridView') and FeatureId = '{FeatureId}'\", \"total\": \"select count(ds.Id) as total from Component as ds where ComponentType in ('Section','GridView') and FeatureId = '{FeatureId}'\" }",
             "RefName": "Component",
             "Template": "[{ \"FieldName\" : \"Id\", \"Label\" : \"Id\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"FieldName\", \"FieldName\" : \"FieldName\", \"ComponentType\"\r\n: \"Input\" },{ \"FieldName\" : \"FeatureId\", \"Label\" : \"Feature\", \"ComponentType\" : \"Dropdown\", \"FormatData\" : \"{Name}\", \"RefName\" : \"Feature\"  }]",
             "PreQuery": "{ \"FeatureId\": this.EditForm.Entity.Id }",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "7px",
             "MaxWidth": "7px",
             "created_by": "Component",
@@ -290,13 +290,13 @@
         {
             "Id": "component_editor2.MinWidth.17",
             "FieldName": "MinWidth",
-            "Order": 17,
+            "order": 17,
             "ComponentType": "Input",
             "Label": "MinWidth",
             "ShowLabel": true,
-            "Width": "7px",
+            "width": "7px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "7px",
             "MaxWidth": "7px",
             "created_by": "GridPolicy",
@@ -305,13 +305,13 @@
         {
             "Id": "component_editor2.Width.18",
             "FieldName": "Width",
-            "Order": 18,
+            "order": 18,
             "ComponentType": "Input",
             "Label": "Width",
             "ShowLabel": true,
-            "Width": "10px",
+            "width": "10px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "10px",
             "MaxWidth": "10px",
             "created_by": "GridPolicy",
@@ -320,13 +320,13 @@
         {
             "Id": "component_editor2.MaxWidth.19",
             "FieldName": "MaxWidth",
-            "Order": 19,
+            "order": 19,
             "ComponentType": "Input",
             "Label": "MaxWidth",
             "ShowLabel": true,
-            "Width": "7px",
+            "width": "7px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "7px",
             "MaxWidth": "7px",
             "created_by": "GridPolicy",
@@ -335,13 +335,13 @@
         {
             "Id": "component_editor2.ClassName.20",
             "FieldName": "ClassName",
-            "Order": 20,
+            "order": 20,
             "ComponentType": "Input",
             "Label": "ClassName",
             "ShowLabel": true,
-            "Width": "44px",
+            "width": "44px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "44px",
             "MaxWidth": "44px",
             "created_by": "GridPolicy",
@@ -350,14 +350,14 @@
         {
             "Id": "component_editor2.Teamplate.21",
             "FieldName": "Teamplate",
-            "Order": 21,
+            "order": 21,
             "ComponentType": "Input",
             "Label": "Teamplate",
             "ShowLabel": true,
-            "Width": "80px",
-            "Query": "{ \"sql\" : \"select * from Component as ds  where ComponentGroupId is null  and ComponentType = 'Section'\" , \"total\" : \"select count(ds.Id) as total from Component as ds   where ComponentGroupId is null  and ComponentType = 'Section'\" }",
+            "width": "80px",
+            "query": "{ \"sql\" : \"select * from Component as ds  where ComponentGroupId is null  and ComponentType = 'Section'\" , \"total\" : \"select count(ds.Id) as total from Component as ds   where ComponentGroupId is null  and ComponentType = 'Section'\" }",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "80px",
             "MaxWidth": "80px",
             "created_by": "GridPolicy",
@@ -366,14 +366,14 @@
         {
             "Id": "component_editor2.Summary.22",
             "FieldName": "Summary",
-            "Order": 22,
+            "order": 22,
             "ComponentType": "Input",
             "Column": 3,
             "Label": "Summary",
             "ShowLabel": true,
-            "Width": "57px",
+            "width": "57px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "57px",
             "MaxWidth": "57px",
             "EntityId": "GridPolicy"
@@ -381,13 +381,13 @@
         {
             "Id": "component_editor2.TextAlign.23",
             "FieldName": "TextAlign",
-            "Order": 23,
+            "order": 23,
             "ComponentType": "Input",
             "Label": "TextAlign",
             "ShowLabel": true,
-            "Width": "106px",
+            "width": "106px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "106px",
             "MaxWidth": "106px",
             "created_by": "GridPolicy",
@@ -396,15 +396,15 @@
         {
             "Id": "component_editor2.SummaryColSpan.24",
             "FieldName": "SummaryColSpan",
-            "Order": 24,
+            "order": 24,
             "ComponentType": "Number",
             "Column": 3,
-            "Precision": 0,
+            "precision": 0,
             "Label": "ColSpan",
             "ShowLabel": true,
-            "Width": "49px",
+            "width": "49px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "49px",
             "MaxWidth": "49px",
             "EntityId": "GridPolicy"
@@ -412,33 +412,33 @@
         {
             "Id": "component_editor2.Style.25",
             "FieldName": "Style",
-            "Order": 25,
+            "order": 25,
             "ComponentType": "Input",
             "Label": "Style",
             "ShowLabel": true,
-            "Width": "153px",
+            "width": "153px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "153px",
             "MaxWidth": "153px",
             "created_by": "GridPolicy",
             "EntityId": "GridPolicy"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "component_editor2.Section.12",
-            "Order": 12,
+            "order": 12,
             "ComponentType": "Section",
             "ClassName": "ribbon-group",
             "XxlCol": 10,
-            "Components": [
+            "components": [
                 {
                     "Id": "Section.btnSave.2_2",
                     "FieldName": "btnSave",
-                    "Order": 2,
+                    "order": 2,
                     "ComponentType": "Button",
-                    "Icon": "fal fa-save",
+                    "icon": "fal fa-save",
                     "ClassName": "btn",
                     "HotKey": "Ctrl-S",
                     "Events": "{\r\n    \"click\": \"SavePatch\"\r\n}"
@@ -446,9 +446,9 @@
                 {
                     "Id": "Section.btnSave.2_3",
                     "FieldName": "btnSave",
-                    "Order": 2,
+                    "order": 2,
                     "ComponentType": "Button",
-                    "Icon": "fal fa-save",
+                    "icon": "fal fa-save",
                     "ClassName": "btn",
                     "HotKey": "Ctrl-S",
                     "Events": "{\r\n    \"click\": \"SavePatch\"\r\n}"
@@ -457,27 +457,27 @@
         },
         {
             "Id": "component_editor2.Section.2",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Section",
             "Label": "Propreties",
             "ClassName": "wrapper scroll-content",
             "XxlCol": 12,
             "IsTab": true,
-            "Components": [
+            "components": [
                 {
                     "Id": "Section.Common.14",
                     "FieldName": "Common",
-                    "Order": 14,
+                    "order": 14,
                     "ComponentType": "Section",
                     "Label": "Common",
                     "ClassName": "card-body",
                     "XxlCol": 12,
                     "XxlOuterColumn": 4,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Common.FieldName.0_1",
                             "FieldName": "FieldName",
-                            "Order": 0,
+                            "order": 0,
                             "ComponentType": "Input",
                             "Column": 6,
                             "Label": "Name",
@@ -486,7 +486,7 @@
                         {
                             "Id": "Common.TabGroup.1_1",
                             "FieldName": "TabGroup",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "Input",
                             "Column": 6,
                             "Label": "Populate Name",
@@ -495,7 +495,7 @@
                         {
                             "Id": "Common.Label.2_1",
                             "FieldName": "Label",
-                            "Order": 2,
+                            "order": 2,
                             "ComponentType": "Input",
                             "Column": 6,
                             "Label": "Label",
@@ -504,33 +504,33 @@
                         {
                             "Id": "Common.ComponentType.3_1",
                             "FieldName": "ComponentType",
-                            "Order": 3,
+                            "order": 3,
                             "ComponentType": "Select",
                             "FormatData": "{Description}",
                             "Column": 4,
                             "Row": 50,
                             "Label": "Component",
                             "ShowLabel": true,
-                            "Query": "[\r\n    {\r\n        \"Id\": \"Input\",\r\n        \"Name\": \"Input\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fal fa-keyboard mr-1'></i>Input</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Select\",\r\n        \"Name\": \"Select\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fal fa-list mr-1'></i>Select</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Button\",\r\n        \"Name\": \"Button\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fal fa-hand-pointer mr-1'></i>Button</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Textarea\",\r\n        \"Name\": \"Textarea\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fal fa-align-left mr-1'></i>Textarea</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Number\",\r\n        \"Name\": \"Number\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #17a2b8;'><i class='fal fa-hashtag mr-1'></i>Number</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Checkbox\",\r\n        \"Name\": \"Checkbox\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #6f42c1;'><i class='fal fa-check-square mr-1'></i>Checkbox</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Dropdown\",\r\n        \"Name\": \"Dropdown\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fal fa-caret-down mr-1'></i>Dropdown</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Datepicker\",\r\n        \"Name\": \"Datepicker\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #fd7e14;'><i class='fal fa-calendar-alt mr-1'></i>Datepicker</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"FileUpload\",\r\n        \"Name\": \"FileUpload\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fal fa-upload mr-1'></i>FileUpload</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"GridView\",\r\n        \"Name\": \"GridView\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fal fa-th-large mr-1'></i>GridView</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Word\",\r\n        \"Name\": \"Word\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #6c757d;'><i class='fal fa-file-word mr-1'></i>Word</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"CodeEditor\",\r\n        \"Name\": \"CodeEditor\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #17a2b8;'><i class='fal fa-code mr-1'></i>CodeEditor</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Label\",\r\n        \"Name\": \"Label\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #343a40;'><i class='fal fa-tag mr-1'></i>Label</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Pdf\",\r\n        \"Name\": \"Pdf\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #0b98a7;'><i class='fal fa-file-pdf mr-1'></i>Pdf</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Chart\",\r\n        \"Name\": \"Chart\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #0b98a7;'><i class='fal fa-file-pdf mr-1'></i>Chart</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Excel\",\r\n        \"Name\": \"Excel\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #0b98a9;'><i class='fal fa-file-excel mr-1'></i>Excel</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Chat\",\r\n        \"Name\": \"Chat\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #0b98a9;'><i class='fal fa-file-excel mr-1'></i>Chat</span>\"\r\n    }\r\n]",
+                            "query": "[\r\n    {\r\n        \"Id\": \"Input\",\r\n        \"Name\": \"Input\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fal fa-keyboard mr-1'></i>Input</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Select\",\r\n        \"Name\": \"Select\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fal fa-list mr-1'></i>Select</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Button\",\r\n        \"Name\": \"Button\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fal fa-hand-pointer mr-1'></i>Button</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Textarea\",\r\n        \"Name\": \"Textarea\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fal fa-align-left mr-1'></i>Textarea</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Number\",\r\n        \"Name\": \"Number\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #17a2b8;'><i class='fal fa-hashtag mr-1'></i>Number</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Checkbox\",\r\n        \"Name\": \"Checkbox\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #6f42c1;'><i class='fal fa-check-square mr-1'></i>Checkbox</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Dropdown\",\r\n        \"Name\": \"Dropdown\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fal fa-caret-down mr-1'></i>Dropdown</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Datepicker\",\r\n        \"Name\": \"Datepicker\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #fd7e14;'><i class='fal fa-calendar-alt mr-1'></i>Datepicker</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"FileUpload\",\r\n        \"Name\": \"FileUpload\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fal fa-upload mr-1'></i>FileUpload</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"GridView\",\r\n        \"Name\": \"GridView\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fal fa-th-large mr-1'></i>GridView</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Word\",\r\n        \"Name\": \"Word\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #6c757d;'><i class='fal fa-file-word mr-1'></i>Word</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"CodeEditor\",\r\n        \"Name\": \"CodeEditor\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #17a2b8;'><i class='fal fa-code mr-1'></i>CodeEditor</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Label\",\r\n        \"Name\": \"Label\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #343a40;'><i class='fal fa-tag mr-1'></i>Label</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Pdf\",\r\n        \"Name\": \"Pdf\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #0b98a7;'><i class='fal fa-file-pdf mr-1'></i>Pdf</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Chart\",\r\n        \"Name\": \"Chart\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #0b98a7;'><i class='fal fa-file-pdf mr-1'></i>Chart</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Excel\",\r\n        \"Name\": \"Excel\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #0b98a9;'><i class='fal fa-file-excel mr-1'></i>Excel</span>\"\r\n    },\r\n    {\r\n        \"Id\": \"Chat\",\r\n        \"Name\": \"Chat\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #0b98a9;'><i class='fal fa-file-excel mr-1'></i>Chat</span>\"\r\n    }\r\n]",
                             "Template": "[\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]"
                         },
                         {
                             "Id": "Common.ReportTypeId.4_1",
                             "FieldName": "ReportTypeId",
-                            "Order": 4,
+                            "order": 4,
                             "ComponentType": "Select",
                             "FormatData": "{Name}",
                             "Column": 2,
                             "Row": 50,
                             "Label": "Size",
                             "ShowLabel": true,
-                            "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"A4\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"A4 L\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"A5\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"A5 L\"\r\n    }\r\n]",
+                            "query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"A4\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"A4 L\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"A5\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"A5 L\"\r\n    }\r\n]",
                             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]"
                         },
                         {
                             "Id": "Common.ComponentGroupId.5_1",
                             "FieldName": "ComponentGroupId",
-                            "Order": 5,
+                            "order": 5,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Id}",
                             "PlainText": "Select data",
@@ -538,7 +538,7 @@
                             "Row": 100,
                             "Label": "Group",
                             "ShowLabel": true,
-                            "Query": "{\r\n    \"sql\": \"select * from Component as ds where ComponentType = 'Section' and FeatureId = '{FeatureId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentType = 'Section' and FeatureId = '{FeatureId}'\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select * from Component as ds where ComponentType = 'Section' and FeatureId = '{FeatureId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentType = 'Section' and FeatureId = '{FeatureId}'\"\r\n}",
                             "RefName": "Component",
                             "Template": "[{ \"FieldName\" : \"Id\", \"Label\" : \"Id\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Label\", \"Label\" : \"Label\", \"ComponentType\"\r\n: \"Input\" },{ \"FieldName\" : \"FeatureId\", \"Label\" : \"Feature\", \"ComponentType\" : \"Dropdown\", \"FormatData\" : \"{Name}\", \"RefName\" : \"Feature\"  }]",
                             "PreQuery": "{\r\n    \"FeatureId\": this.Entity.FeatureId\r\n}"
@@ -546,7 +546,7 @@
                         {
                             "Id": "Common.GroupTypeId.6_1",
                             "FieldName": "GroupTypeId",
-                            "Order": 6,
+                            "order": 6,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Key}",
                             "PlainText": "Select data",
@@ -554,14 +554,14 @@
                             "Row": 100,
                             "Label": "Number Type",
                             "ShowLabel": true,
-                            "Query": "{\r\n    \"sql\": \"select * from WebConfig as ds where [Key] in ('Quantity','TotalPrice','UnitPrice','LocalUnitPrice','LocalTotalPrice')\",\r\n    \"total\": \"select count(ds.Id) as total from WebConfig as ds where [Key] in ('Quantity','TotalPrice','UnitPrice','LocalUnitPrice','LocalTotalPrice')\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select * from WebConfig as ds where [Key] in ('Quantity','TotalPrice','UnitPrice','LocalUnitPrice','LocalTotalPrice')\",\r\n    \"total\": \"select count(ds.Id) as total from WebConfig as ds where [Key] in ('Quantity','TotalPrice','UnitPrice','LocalUnitPrice','LocalTotalPrice')\"\r\n}",
                             "RefName": "WebConfig",
                             "Template": "[{ \"FieldName\" : \"Key\", \"Label\" : \"Key\", \"ComponentType\" : \"Input\" },{ \"FieldName\" : \"Value\", \"Label\" : \"Value\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
                             "Id": "Common.GroupBy.7_1",
                             "FieldName": "GroupBy",
-                            "Order": 7,
+                            "order": 7,
                             "ComponentType": "Input",
                             "Column": 3,
                             "Label": "GroupBy",
@@ -570,7 +570,7 @@
                         {
                             "Id": "Common.Icon.8_1",
                             "FieldName": "Icon",
-                            "Order": 8,
+                            "order": 8,
                             "ComponentType": "Input",
                             "Column": 3,
                             "Label": "Icon",
@@ -579,7 +579,7 @@
                         {
                             "Id": "Common.CodeId.9_1",
                             "FieldName": "CodeId",
-                            "Order": 9,
+                            "order": 9,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Label}",
                             "PlainText": "Select data",
@@ -588,7 +588,7 @@
                             "Label": "Copy From",
                             "ShowLabel": true,
                             "Events": "{\r\n    \"change\": \"CopyFrom\"\r\n}",
-                            "Query": "{\r\n    \"sql\": \"select * from Component as ds where ComponentType != 'Section' and FeatureId = '{FeatureId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentType != 'Section' and FeatureId = '{FeatureId}'\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select * from Component as ds where ComponentType != 'Section' and FeatureId = '{FeatureId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentType != 'Section' and FeatureId = '{FeatureId}'\"\r\n}",
                             "RefName": "Component",
                             "Template": "[\r\n    {\r\n        \"FieldName\": \"Label\",\r\n        \"Label\": \"Label\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"ComponentType\",\r\n        \"Label\": \"Component Type\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]",
                             "PreQuery": "{\r\n    \"FeatureId\": this.Entity.FeatureId\r\n}"
@@ -596,210 +596,210 @@
                         {
                             "Id": "Common.ExcelUrl.10",
                             "FieldName": "ExcelUrl",
-                            "Order": 10,
+                            "order": 10,
                             "ComponentType": "FileUpload",
                             "Column": 12,
                             "Label": "Excel",
                             "ShowLabel": true,
-                            "Lang": "json"
+                            "lang": "json"
                         }
                     ]
                 },
                 {
                     "Id": "Section.Section.15",
-                    "Order": 15,
+                    "order": 15,
                     "ComponentType": "Section",
                     "Label": "Config",
                     "ClassName": "card-body",
                     "XxlCol": 12,
                     "XxlOuterColumn": 4,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Section.ShowLabel.0_1",
                             "FieldName": "ShowLabel",
-                            "Order": 0,
+                            "order": 0,
                             "ComponentType": "Checkbox",
                             "Column": 2,
                             "Label": "Label",
                             "ShowLabel": true,
-                            "Style": "display: flex; justify-content: space-between;"
+                            "style": "display: flex; justify-content: space-between;"
                         },
                         {
                             "Id": "Section.Disabled.1_1",
                             "FieldName": "Disabled",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "Checkbox",
                             "Column": 2,
                             "Label": "Disabled",
                             "ShowLabel": true,
-                            "Style": "display: flex; justify-content: space-between;"
+                            "style": "display: flex; justify-content: space-between;"
                         },
                         {
                             "Id": "Section.Editable.2_1",
                             "FieldName": "Editable",
-                            "Order": 2,
+                            "order": 2,
                             "ComponentType": "Checkbox",
                             "Column": 2,
                             "Label": "Edit",
                             "ShowLabel": true,
-                            "Style": "display: flex; justify-content: space-between;"
+                            "style": "display: flex; justify-content: space-between;"
                         },
                         {
                             "Id": "Section.CanCache.3_1",
                             "FieldName": "CanCache",
-                            "Order": 3,
+                            "order": 3,
                             "ComponentType": "Checkbox",
                             "Column": 2,
                             "Label": "Cache",
                             "ShowLabel": true,
-                            "Style": "display: flex; justify-content: space-between;"
+                            "style": "display: flex; justify-content: space-between;"
                         },
                         {
                             "Id": "Section.CanSearch.4_1",
                             "FieldName": "CanSearch",
-                            "Order": 4,
+                            "order": 4,
                             "ComponentType": "Checkbox",
                             "Column": 2,
                             "Label": "Search",
                             "ShowLabel": true,
-                            "Style": "display: flex; justify-content: space-between;"
+                            "style": "display: flex; justify-content: space-between;"
                         },
                         {
                             "Id": "Section.CanAdd.5_1",
                             "FieldName": "CanAdd",
-                            "Order": 5,
+                            "order": 5,
                             "ComponentType": "Checkbox",
                             "Column": 2,
                             "Label": "Add",
                             "ShowLabel": true,
-                            "Style": "display: flex; justify-content: space-between;"
+                            "style": "display: flex; justify-content: space-between;"
                         },
                         {
                             "Id": "Section.IsMultiple.6_1",
                             "FieldName": "IsMultiple",
-                            "Order": 6,
+                            "order": 6,
                             "ComponentType": "Checkbox",
                             "Column": 2,
                             "Label": "Selecteds",
                             "ShowLabel": true,
-                            "Style": "display: flex; justify-content: space-between;"
+                            "style": "display: flex; justify-content: space-between;"
                         },
                         {
                             "Id": "Section.IsSumary.7_1",
                             "FieldName": "IsSumary",
-                            "Order": 7,
+                            "order": 7,
                             "ComponentType": "Checkbox",
                             "Column": 2,
                             "Label": "IsSumary",
                             "ShowLabel": true,
-                            "Style": "display: flex; justify-content: space-between;",
+                            "style": "display: flex; justify-content: space-between;",
                             "Summary": "Total",
                             "SummaryColSpan": 2
                         },
                         {
                             "Id": "Section.VirtualScroll.8_1",
                             "FieldName": "VirtualScroll",
-                            "Order": 8,
+                            "order": 8,
                             "ComponentType": "Checkbox",
                             "Column": 2,
                             "Label": "Virtual",
                             "ShowLabel": true,
-                            "Style": "display: flex; justify-content: space-between;"
+                            "style": "display: flex; justify-content: space-between;"
                         },
                         {
                             "Id": "Section.FocusSearch.9_1",
                             "FieldName": "FocusSearch",
-                            "Order": 9,
+                            "order": 9,
                             "ComponentType": "Checkbox",
                             "Column": 2,
                             "Label": "Enter",
                             "ShowLabel": true,
-                            "Style": "display: flex; justify-content: space-between;"
+                            "style": "display: flex; justify-content: space-between;"
                         },
                         {
                             "Id": "Section.Focus.10_1",
                             "FieldName": "Focus",
-                            "Order": 10,
+                            "order": 10,
                             "ComponentType": "Checkbox",
                             "Column": 2,
                             "Label": "Focus",
                             "ShowLabel": true,
-                            "Style": "display: flex; justify-content: space-between;"
+                            "style": "display: flex; justify-content: space-between;"
                         },
                         {
                             "Id": "Section.IsPrivate.11_1",
                             "FieldName": "IsPrivate",
-                            "Order": 11,
+                            "order": 11,
                             "ComponentType": "Checkbox",
                             "Column": 2,
                             "Label": "Private",
                             "ShowLabel": true,
-                            "Style": "display: flex; justify-content: space-between;"
+                            "style": "display: flex; justify-content: space-between;"
                         },
                         {
                             "Id": "Section.TopEmpty.12_1",
                             "FieldName": "TopEmpty",
-                            "Order": 12,
+                            "order": 12,
                             "ComponentType": "Checkbox",
                             "Column": 2,
                             "Label": "Top",
                             "ShowLabel": true,
-                            "Style": "display: flex; justify-content: space-between;"
+                            "style": "display: flex; justify-content: space-between;"
                         },
                         {
                             "Id": "Section.Visibility.13_1",
                             "FieldName": "Visibility",
-                            "Order": 13,
+                            "order": 13,
                             "ComponentType": "Checkbox",
                             "Column": 2,
                             "Label": "Visibility",
                             "ShowLabel": true,
-                            "Style": "display: flex; justify-content: space-between;"
+                            "style": "display: flex; justify-content: space-between;"
                         },
                         {
                             "Id": "Section.Active.14_1",
                             "FieldName": "Active",
-                            "Order": 14,
+                            "order": 14,
                             "ComponentType": "Checkbox",
                             "Column": 2,
                             "Label": "Active",
                             "ShowLabel": true,
-                            "Style": "display: flex; justify-content: space-between;"
+                            "style": "display: flex; justify-content: space-between;"
                         },
                         {
                             "Id": "Section.IsRealtime.15_1",
                             "FieldName": "IsRealtime",
-                            "Order": 15,
+                            "order": 15,
                             "ComponentType": "Checkbox",
                             "Column": 2,
                             "Label": "Real time",
                             "ShowLabel": true,
-                            "Style": "display: flex; justify-content: space-between;"
+                            "style": "display: flex; justify-content: space-between;"
                         },
                         {
                             "Id": "Section.Frozen.16_1",
                             "FieldName": "Frozen",
-                            "Order": 16,
+                            "order": 16,
                             "ComponentType": "Checkbox",
                             "Column": 2,
                             "Label": "Frozen",
                             "ShowLabel": true,
-                            "Style": "display: flex; justify-content: space-between;"
+                            "style": "display: flex; justify-content: space-between;"
                         },
                         {
                             "Id": "Section.ShowHotKey.17_1",
                             "FieldName": "ShowHotKey",
-                            "Order": 17,
+                            "order": 17,
                             "ComponentType": "Checkbox",
                             "Column": 2,
                             "Label": "Header",
                             "ShowLabel": true,
-                            "Style": "display: flex; justify-content: space-between;"
+                            "style": "display: flex; justify-content: space-between;"
                         },
                         {
                             "Id": "Section.Lang.18_1",
                             "FieldName": "Lang",
-                            "Order": 18,
+                            "order": 18,
                             "ComponentType": "Input",
                             "Column": 2,
                             "Label": "Lang",
@@ -808,7 +808,7 @@
                         {
                             "Id": "Section.MaxWidth.19_1",
                             "FieldName": "MaxWidth",
-                            "Order": 19,
+                            "order": 19,
                             "ComponentType": "Input",
                             "Column": 2,
                             "Label": "MaxWidth",
@@ -817,7 +817,7 @@
                         {
                             "Id": "Section.MinWidth.20_1",
                             "FieldName": "MinWidth",
-                            "Order": 20,
+                            "order": 20,
                             "ComponentType": "Input",
                             "Column": 2,
                             "Label": "MinWidth",
@@ -826,7 +826,7 @@
                         {
                             "Id": "Section.Width.21_1",
                             "FieldName": "Width",
-                            "Order": 21,
+                            "order": 21,
                             "ComponentType": "Input",
                             "Column": 2,
                             "Label": "Width",
@@ -835,7 +835,7 @@
                         {
                             "Id": "Section.TextAlign.22_1",
                             "FieldName": "TextAlign",
-                            "Order": 22,
+                            "order": 22,
                             "ComponentType": "Input",
                             "Column": 2,
                             "Label": "Text Align",
@@ -844,7 +844,7 @@
                         {
                             "Id": "Section.ClassName.23_1",
                             "FieldName": "ClassName",
-                            "Order": 23,
+                            "order": 23,
                             "ComponentType": "Input",
                             "Column": 2,
                             "Label": "ClassName",
@@ -853,7 +853,7 @@
                         {
                             "Id": "Section.GroupName.24_1",
                             "FieldName": "GroupName",
-                            "Order": 24,
+                            "order": 24,
                             "ComponentType": "Input",
                             "Column": 2,
                             "Label": "Group Name",
@@ -862,7 +862,7 @@
                         {
                             "Id": "Section.Summary.25_1",
                             "FieldName": "Summary",
-                            "Order": 25,
+                            "order": 25,
                             "ComponentType": "Input",
                             "Column": 3,
                             "Label": "Summary",
@@ -871,17 +871,17 @@
                         {
                             "Id": "Section.SummaryColSpan.26_1",
                             "FieldName": "SummaryColSpan",
-                            "Order": 26,
+                            "order": 26,
                             "ComponentType": "Number",
                             "Column": 3,
-                            "Precision": 0,
+                            "precision": 0,
                             "Label": "ColSpan",
                             "ShowLabel": true
                         },
                         {
                             "Id": "Section.OrderBy.27_1",
                             "FieldName": "OrderBy",
-                            "Order": 27,
+                            "order": 27,
                             "ComponentType": "Input",
                             "Column": 4,
                             "Label": "OrderBy",
@@ -890,93 +890,93 @@
                         {
                             "Id": "Section.Events.28_1",
                             "FieldName": "Events",
-                            "Order": 28,
+                            "order": 28,
                             "ComponentType": "CodeEditor",
                             "Column": 12,
                             "Row": 4,
                             "Label": "Events",
                             "ShowLabel": true,
-                            "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                             "RefName": "History",
                             "PreQuery": "{ \"ComponentId\": this.meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
-                            "Lang": "json"
+                            "lang": "json"
                         }
                     ]
                 },
                 {
                     "Id": "Section.Style.16",
                     "FieldName": "Style",
-                    "Order": 16,
+                    "order": 16,
                     "ComponentType": "Section",
                     "Label": "Style",
                     "ClassName": "card-body",
                     "XxlCol": 12,
                     "XxlOuterColumn": 4,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Style.Column.1",
                             "FieldName": "Column",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "Number",
                             "Column": 2,
-                            "Precision": 0,
+                            "precision": 0,
                             "Label": "Mobile",
                             "ShowLabel": true
                         },
                         {
                             "Id": "Style.RowSpan.2",
                             "FieldName": "RowSpan",
-                            "Order": 2,
+                            "order": 2,
                             "ComponentType": "Number",
                             "Column": 2,
-                            "Precision": 0,
+                            "precision": 0,
                             "Label": "RowS",
                             "ShowLabel": true
                         },
                         {
                             "Id": "Style.Row.3",
                             "FieldName": "Row",
-                            "Order": 3,
+                            "order": 3,
                             "ComponentType": "Number",
                             "Column": 2,
-                            "Precision": 0,
+                            "precision": 0,
                             "Label": "Row",
                             "ShowLabel": true
                         },
                         {
                             "Id": "Style.Offset.4",
                             "FieldName": "Offset",
-                            "Order": 4,
+                            "order": 4,
                             "ComponentType": "Number",
                             "Column": 2,
-                            "Precision": 0,
+                            "precision": 0,
                             "Label": "Offset",
                             "ShowLabel": true
                         },
                         {
                             "Id": "Style.Order.5",
                             "FieldName": "Order",
-                            "Order": 5,
+                            "order": 5,
                             "ComponentType": "Number",
                             "Column": 2,
-                            "Precision": 0,
+                            "precision": 0,
                             "Label": "Order",
                             "ShowLabel": true
                         },
                         {
                             "Id": "Style.Precision.6",
                             "FieldName": "Precision",
-                            "Order": 6,
+                            "order": 6,
                             "ComponentType": "Number",
                             "Column": 2,
-                            "Precision": 0,
+                            "precision": 0,
                             "Label": "Precision",
                             "ShowLabel": true
                         },
                         {
                             "Id": "Style.Style.7",
                             "FieldName": "Style",
-                            "Order": 7,
+                            "order": 7,
                             "ComponentType": "Input",
                             "Column": 12,
                             "Label": "Style",
@@ -985,7 +985,7 @@
                         {
                             "Id": "Style.ChildStyle.8",
                             "FieldName": "ChildStyle",
-                            "Order": 8,
+                            "order": 8,
                             "ComponentType": "Input",
                             "Column": 6,
                             "Label": "ChildStyle",
@@ -994,7 +994,7 @@
                         {
                             "Id": "Style.HotKey.10",
                             "FieldName": "HotKey",
-                            "Order": 10,
+                            "order": 10,
                             "ComponentType": "Input",
                             "Column": 2,
                             "Label": "HotKey",
@@ -1003,7 +1003,7 @@
                         {
                             "Id": "Style.RefName.11",
                             "FieldName": "RefName",
-                            "Order": 11,
+                            "order": 11,
                             "ComponentType": "Input",
                             "Column": 3,
                             "Label": "Table",
@@ -1012,27 +1012,27 @@
                         {
                             "Id": "Style.TableName.12",
                             "FieldName": "TableName",
-                            "Order": 12,
+                            "order": 12,
                             "ComponentType": "Input",
                             "Column": 3,
-                            "Precision": 0,
+                            "precision": 0,
                             "Label": "Child Table",
                             "ShowLabel": true
                         },
                         {
                             "Id": "Style.EntityName.13",
                             "FieldName": "EntityName",
-                            "Order": 13,
+                            "order": 13,
                             "ComponentType": "Input",
                             "Column": 3,
-                            "Precision": 0,
+                            "precision": 0,
                             "Label": "Child Entity",
                             "ShowLabel": true
                         },
                         {
                             "Id": "Style.PlainText.9",
                             "FieldName": "PlainText",
-                            "Order": 9,
+                            "order": 9,
                             "ComponentType": "Input",
                             "Column": 6,
                             "Label": "Plain Text",
@@ -1041,15 +1041,15 @@
                         {
                             "Id": "Style.PopulateField.14",
                             "FieldName": "PopulateField",
-                            "Order": 14,
+                            "order": 14,
                             "ComponentType": "CodeEditor",
                             "Column": 12,
                             "Label": "PopulateField",
                             "ShowLabel": true,
-                            "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                             "RefName": "History",
                             "PreQuery": "{ \"ComponentId\": this.meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
-                            "Lang": "javascript"
+                            "lang": "javascript"
                         }
                     ]
                 }
@@ -1057,20 +1057,20 @@
         },
         {
             "Id": "component_editor2.Section.7",
-            "Order": 7,
+            "order": 7,
             "ComponentType": "Section",
             "Label": "Column",
             "ClassName": "card-body",
             "XxlCol": 12,
-            "Editable": true,
+            "editable": true,
             "IsTab": true,
             "XxlOuterColumn": 6,
             "DisplayBadge": true,
-            "Components": [
+            "components": [
                 {
                     "Id": "Section.GridPolicy.0_1",
                     "FieldName": "GridPolicy",
-                    "Order": 0,
+                    "order": 0,
                     "ComponentType": "GridView",
                     "Column": 12,
                     "Row": 500,
@@ -1081,7 +1081,7 @@
                     "Events": "{\r\n    \"dblclick\": \"EditComponent\"\r\n}",
                     "DefaultVal": "{\r\n    \"FeatureId\": this.EditForm.Entity.FeatureId,\r\n    \"Visibility\": true,\r\n    \"EntityId\": this.EditForm.Entity.FieldName,\r\n    \"ComponentGroupId\": null\r\n}",
                     "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from Component as ds where ComponentGroupId is null and ComponentType != 'Section' and FeatureId = '{FeatureId}' and EntityId = '{FieldName}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds   where ComponentGroupId is null  and ComponentType != 'Section' and FeatureId = '{FeatureId}' and EntityId = '{FieldName}'\"\r\n}",
+                    "query": "{\r\n    \"sql\": \"select * from Component as ds where ComponentGroupId is null and ComponentType != 'Section' and FeatureId = '{FeatureId}' and EntityId = '{FieldName}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds   where ComponentGroupId is null  and ComponentType != 'Section' and FeatureId = '{FeatureId}' and EntityId = '{FieldName}'\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "Component",
                     "PreQuery": "{\r\n    \"FeatureId\": this.EditForm.Entity.FeatureId,\r\n    \"FieldName\": this.EditForm.Entity.FieldName\r\n}",
@@ -1093,82 +1093,82 @@
         },
         {
             "Id": "component_editor2.Section.5",
-            "Order": 5,
+            "order": 5,
             "ComponentType": "Section",
             "Label": "Template",
             "XxlCol": 12,
             "IsTab": true,
             "XxlOuterColumn": 6,
-            "Components": [
+            "components": [
                 {
                     "Id": "Section.Template.4_5",
                     "FieldName": "Template",
-                    "Order": 4,
+                    "order": 4,
                     "ComponentType": "CodeEditor",
                     "Column": 12,
                     "Label": "Component Group",
-                    "Style": "height:450px;max-height:650px;position: relative;",
-                    "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
+                    "style": "height:450px;max-height:650px;position: relative;",
+                    "query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                     "RefName": "History",
                     "PreQuery": "{ \"ComponentId\": this.meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
-                    "Lang": "json"
+                    "lang": "json"
                 }
             ]
         },
         {
             "Id": "component_editor2.Section.4",
-            "Order": 4,
+            "order": 4,
             "ComponentType": "Section",
             "Label": "Query",
             "XxlCol": 12,
             "IsTab": true,
-            "Components": [
+            "components": [
                 {
                     "Id": "Section.Query.4_1",
                     "FieldName": "Query",
-                    "Order": 4,
+                    "order": 4,
                     "ComponentType": "CodeEditor",
                     "Column": 12,
                     "Label": "Component Group",
-                    "Style": "height:450px;max-height:650px;position: relative;",
-                    "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
+                    "style": "height:450px;max-height:650px;position: relative;",
+                    "query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                     "RefName": "History",
                     "PreQuery": "{ \"ComponentId\": this.meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
-                    "Lang": "sql"
+                    "lang": "sql"
                 }
             ]
         },
         {
             "Id": "component_editor2.Section.8",
-            "Order": 8,
+            "order": 8,
             "ComponentType": "Section",
             "Label": "A4",
             "ClassName": "wrapper scroll-content",
             "XxlCol": 10,
             "IsTab": true,
-            "Components": [
+            "components": [
                 {
                     "Id": "Section.Section.18",
-                    "Order": 18,
+                    "order": 18,
                     "ComponentType": "Section",
-                    "Style": "width:217mm;",
+                    "style": "width:217mm;",
                     "XxlCol": 12,
                     "XxlOuterColumn": 4,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Section.Template.4_6",
                             "FieldName": "Template",
-                            "Order": 4,
+                            "order": 4,
                             "ComponentType": "Word",
                             "Column": 12,
                             "Row": 1,
-                            "Precision": 1280,
+                            "precision": 1280,
                             "Label": "Component Group",
-                            "Style": "Style: height:350px;max-height:350px;position: relative;",
-                            "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
+                            "style": "Style: height:350px;max-height:350px;position: relative;",
+                            "query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                             "RefName": "History",
                             "PreQuery": "{ \"ComponentId\": this.meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
-                            "Lang": "json"
+                            "lang": "json"
                         }
                     ]
                 }
@@ -1176,34 +1176,34 @@
         },
         {
             "Id": "component_editor2.Section.9",
-            "Order": 9,
+            "order": 9,
             "ComponentType": "Section",
             "Label": "A4 L",
             "ClassName": "wrapper scroll-content",
             "XxlCol": 10,
             "IsTab": true,
-            "Components": [
+            "components": [
                 {
                     "Id": "Section.Section.20",
-                    "Order": 20,
+                    "order": 20,
                     "ComponentType": "Section",
-                    "Style": "width:1134px;",
+                    "style": "width:1134px;",
                     "XxlCol": 12,
                     "XxlOuterColumn": 4,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Section.Template.4_7",
                             "FieldName": "Template",
-                            "Order": 4,
+                            "order": 4,
                             "ComponentType": "Word",
                             "Column": 12,
                             "Row": 1,
-                            "Precision": 853,
+                            "precision": 853,
                             "Label": "Component Group",
-                            "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                             "RefName": "History",
                             "PreQuery": "{ \"ComponentId\": this.meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
-                            "Lang": "json"
+                            "lang": "json"
                         }
                     ]
                 }
@@ -1211,34 +1211,34 @@
         },
         {
             "Id": "component_editor2.Section.10",
-            "Order": 10,
+            "order": 10,
             "ComponentType": "Section",
             "Label": "A5",
             "ClassName": "wrapper scroll-content",
             "XxlCol": 10,
             "IsTab": true,
-            "Components": [
+            "components": [
                 {
                     "Id": "Section.Section.22",
-                    "Order": 22,
+                    "order": 22,
                     "ComponentType": "Section",
-                    "Style": "width:155mm;",
+                    "style": "width:155mm;",
                     "XxlCol": 12,
                     "XxlOuterColumn": 4,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Section.Template.4_8",
                             "FieldName": "Template",
-                            "Order": 4,
+                            "order": 4,
                             "ComponentType": "Word",
                             "Column": 12,
                             "Row": 1,
-                            "Precision": 900,
+                            "precision": 900,
                             "Label": "Component Group",
-                            "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                             "RefName": "History",
                             "PreQuery": "{ \"ComponentId\": this.meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
-                            "Lang": "json"
+                            "lang": "json"
                         }
                     ]
                 }
@@ -1246,34 +1246,34 @@
         },
         {
             "Id": "component_editor2.Section.11",
-            "Order": 11,
+            "order": 11,
             "ComponentType": "Section",
             "Label": "A5 L",
             "ClassName": "wrapper scroll-content",
             "XxlCol": 10,
             "IsTab": true,
-            "Components": [
+            "components": [
                 {
                     "Id": "Section.Section.24",
-                    "Order": 24,
+                    "order": 24,
                     "ComponentType": "Section",
-                    "Style": "width:791px;",
+                    "style": "width:791px;",
                     "XxlCol": 12,
                     "XxlOuterColumn": 4,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Section.Template.4_9",
                             "FieldName": "Template",
-                            "Order": 4,
+                            "order": 4,
                             "ComponentType": "Word",
                             "Column": 12,
                             "Row": 1,
-                            "Precision": 640,
+                            "precision": 640,
                             "Label": "Component Group",
-                            "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                             "RefName": "History",
                             "PreQuery": "{ \"ComponentId\": this.meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
-                            "Lang": "json"
+                            "lang": "json"
                         }
                     ]
                 }
@@ -1281,77 +1281,77 @@
         },
         {
             "Id": "component_editor2.Section.3",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Section",
             "Label": "Param",
             "XxlCol": 10,
             "IsTab": true,
-            "Components": [
+            "components": [
                 {
                     "Id": "Section.DefaultVal.2",
                     "FieldName": "DefaultVal",
-                    "Order": 2,
+                    "order": 2,
                     "ComponentType": "CodeEditor",
                     "Column": 5,
                     "Label": "Default Value",
                     "ShowLabel": true,
-                    "Style": "height:450px;max-height:650px;position: relative;",
-                    "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
+                    "style": "height:450px;max-height:650px;position: relative;",
+                    "query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                     "RefName": "History",
                     "PreQuery": "{\r\n    \"ComponentId\": this.meta.Id,\r\n    \"RecordId\": this.EditForm.Entity.Id\r\n}",
-                    "Lang": "json"
+                    "lang": "json"
                 },
                 {
                     "Id": "Section.PreQuery.1",
                     "FieldName": "PreQuery",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "CodeEditor",
                     "Column": 5,
                     "Label": "Param",
                     "ShowLabel": true,
-                    "Style": "height:450px;max-height:650px;position: relative;",
-                    "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
+                    "style": "height:450px;max-height:650px;position: relative;",
+                    "query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                     "RefName": "History",
                     "PreQuery": "{\r\n    \"ComponentId\": this.meta.Id,\r\n    \"RecordId\": this.EditForm.Entity.Id\r\n}",
-                    "Lang": "json"
+                    "lang": "json"
                 }
             ]
         },
         {
             "Id": "component_editor2.Section.6",
-            "Order": 6,
+            "order": 6,
             "ComponentType": "Section",
             "Label": "Codeditor",
             "XxlCol": 10,
             "IsTab": true,
-            "Components": [
+            "components": [
                 {
                     "Id": "Section.GroupFormat.11",
                     "FieldName": "GroupFormat",
-                    "Order": 11,
+                    "order": 11,
                     "ComponentType": "CodeEditor",
                     "Column": 5,
                     "Label": "GroupFormat",
                     "ShowLabel": true,
-                    "Query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
+                    "query": "{\r\n    \"sql\": \"select * from History as ds where ComponentId = '{ComponentId}' and RecordId = '{RecordId}'\",\r\n    \"total\": \"select count(ds.Id) as total from Component as ds where ComponentId = '{ComponentId} and RecordId = '{RecordId}'\"\r\n}",
                     "RefName": "History",
                     "PreQuery": "{ \"ComponentId\": this.meta.Id,\r\n\"RecordId\": this.EditForm.Entity.Id}",
-                    "Lang": "javascript"
+                    "lang": "javascript"
                 },
                 {
                     "Id": "Section.Validation.12",
                     "FieldName": "Validation",
-                    "Order": 12,
+                    "order": 12,
                     "ComponentType": "CodeEditor",
                     "Column": 5,
                     "Label": "Validation",
                     "ShowLabel": true,
-                    "Lang": "javascript"
+                    "lang": "javascript"
                 },
                 {
                     "Id": "Section.DisabledExp.29_1",
                     "FieldName": "DisabledExp",
-                    "Order": 29,
+                    "order": 29,
                     "ComponentType": "CodeEditor",
                     "Column": 5,
                     "Label": "DisabledExp",
@@ -1360,7 +1360,7 @@
                 {
                     "Id": "Section.ShowExp.30_1",
                     "FieldName": "ShowExp",
-                    "Order": 30,
+                    "order": 30,
                     "ComponentType": "CodeEditor",
                     "Column": 5,
                     "Label": "ShowExp",
@@ -1369,7 +1369,7 @@
                 {
                     "Id": "Section.AddRowExp.31_1",
                     "FieldName": "AddRowExp",
-                    "Order": 31,
+                    "order": 31,
                     "ComponentType": "CodeEditor",
                     "Column": 5,
                     "Label": "AddRowExp",

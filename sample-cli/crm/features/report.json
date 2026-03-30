@@ -2,8 +2,8 @@
     "Id": "report",
     "Name": "report",
     "Label": "Report",
-    "Order": 16,
-    "Icon": "fal fa-chart-pie",
+    "order": 16,
+    "icon": "fal fa-chart-pie",
     "IsPublic": true,
     "IgnoreEncode": true,
     "FeaturePolicies": [

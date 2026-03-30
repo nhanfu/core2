@@ -2,18 +2,18 @@
     "Id": "table_editor",
     "Name": "table-editor",
     "Label": "Table Editor",
-    "Order": 111,
-    "Style": "width:1200px",
+    "order": 111,
+    "style": "width:1200px",
     "Script": "return {\r\n    ExecTable: async () => {\r\n        var rs = await this.Client.PostAsync(this.Entity, \"/api/feature/exec\");\r\n        this.Toast.Success(\"Update table success\");\r\n    }\r\n}",
     "EntityId": "TableName",
     "GridPolicies": [
         {
             "Id": "table_editor.COLUMN_NAME.0",
             "FieldName": "COLUMN_NAME",
-            "Order": 0,
+            "order": 0,
             "ComponentType": "Input",
             "Label": "NAME",
-            "Width": "246px",
+            "width": "246px",
             "MinWidth": "246px",
             "MaxWidth": "246px",
             "created_by": "Column",
@@ -22,10 +22,10 @@
         {
             "Id": "table_editor.IS_NULLABLE.6",
             "FieldName": "IS_NULLABLE",
-            "Order": 6,
+            "order": 6,
             "ComponentType": "Checkbox",
             "Label": "NULLABLE",
-            "Width": "165px",
+            "width": "165px",
             "FocusSearch": true,
             "MinWidth": "165px",
             "MaxWidth": "165px",
@@ -35,10 +35,10 @@
         {
             "Id": "table_editor.DATA_TYPE.1",
             "FieldName": "DATA_TYPE",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Input",
             "Label": "TYPE",
-            "Width": "105px",
+            "width": "105px",
             "MinWidth": "105px",
             "MaxWidth": "105px",
             "created_by": "Column",
@@ -47,10 +47,10 @@
         {
             "Id": "table_editor.CHARACTER_MAXIMUM_LENGTH.2",
             "FieldName": "CHARACTER_MAXIMUM_LENGTH",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Number",
             "Label": "LENGTH",
-            "Width": "122px",
+            "width": "122px",
             "MinWidth": "122px",
             "MaxWidth": "122px",
             "created_by": "Column",
@@ -59,10 +59,10 @@
         {
             "Id": "table_editor.NUMERIC_PRECISION.3",
             "FieldName": "NUMERIC_PRECISION",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Number",
             "Label": "PRECISION",
-            "Width": "122px",
+            "width": "122px",
             "MinWidth": "122px",
             "MaxWidth": "122px",
             "created_by": "Column",
@@ -71,10 +71,10 @@
         {
             "Id": "table_editor.NUMERIC_SCALE.4",
             "FieldName": "NUMERIC_SCALE",
-            "Order": 4,
+            "order": 4,
             "ComponentType": "Number",
             "Label": "SCALE",
-            "Width": "122px",
+            "width": "122px",
             "MinWidth": "122px",
             "MaxWidth": "122px",
             "created_by": "Column",
@@ -83,77 +83,77 @@
         {
             "Id": "table_editor.COLLATION_NAME.5",
             "FieldName": "COLLATION_NAME",
-            "Order": 5,
+            "order": 5,
             "ComponentType": "Input",
             "Label": "COLLATION",
-            "Width": "200px",
+            "width": "200px",
             "MinWidth": "200px",
             "MaxWidth": "200px",
             "created_by": "Column",
             "EntityId": "COLUMNS"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "table_editor.wrapper.1",
             "FieldName": "wrapper",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "wrapper.Section.1",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "Section",
                     "ClassName": "card-body",
                     "XxlCol": 12,
                     "XxlOuterColumn": 12,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Section.TABLE_SCHEMA.1",
                             "FieldName": "TABLE_SCHEMA",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "Input",
                             "Column": 6,
                             "Label": "TABLE_SCHEMA",
                             "ShowLabel": true,
-                            "Disabled": true
+                            "disabled": true
                         },
                         {
                             "Id": "Section.TABLE_NAME.2",
                             "FieldName": "TABLE_NAME",
-                            "Order": 2,
+                            "order": 2,
                             "ComponentType": "Input",
                             "Column": 6,
                             "Label": "TABLE_NAME",
                             "ShowLabel": true,
-                            "Disabled": true
+                            "disabled": true
                         }
                     ]
                 },
                 {
                     "Id": "wrapper.Section.2",
-                    "Order": 2,
+                    "order": 2,
                     "ComponentType": "Section",
                     "Label": "Table Column",
                     "ClassName": "card-body",
                     "XxlCol": 12,
                     "XxlOuterColumn": 12,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Section.COLUMNS.1",
                             "FieldName": "COLUMNS",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "GridView",
                             "Column": 12,
                             "Row": 200,
                             "ClassName": "sticky",
                             "DefaultVal": "{\r\n    \"TABLE_NAME\": this.EditForm.Entity.TABLE_NAME,\r\n}",
-                            "Query": "{\r\n    \"sql\": \"SELECT *, case when IS_NULLABLE = 'YES' then 1 else 0 end as IS_NULLABLE FROM INFORMATION_SCHEMA.COLUMNS as ds WHERE TABLE_NAME = '{TABLE_NAME}'\",\r\n    \"total\": \"select count(*) as total FROM INFORMATION_SCHEMA.COLUMNS as ds WHERE TABLE_NAME = '{TABLE_NAME}'\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"SELECT *, case when IS_NULLABLE = 'YES' then 1 else 0 end as IS_NULLABLE FROM INFORMATION_SCHEMA.COLUMNS as ds WHERE TABLE_NAME = '{TABLE_NAME}'\",\r\n    \"total\": \"select count(*) as total FROM INFORMATION_SCHEMA.COLUMNS as ds WHERE TABLE_NAME = '{TABLE_NAME}'\"\r\n}",
                             "RefName": "COLUMNS",
                             "PreQuery": "{\r\n    \"TABLE_NAME\": this.EditForm.Entity.TABLE_NAME,\r\n}",
-                            "Editable": true,
+                            "editable": true,
                             "OrderBy": "ds.ORDINAL_POSITION asc"
                         }
                     ]
@@ -161,31 +161,31 @@
                 {
                     "Id": "wrapper.ribbon_group.3",
                     "FieldName": "ribbon-group",
-                    "Order": 3,
+                    "order": 3,
                     "ComponentType": "Section",
                     "ClassName": "ribbon-group",
                     "XxlCol": 12,
                     "XxlOuterColumn": 12,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "ribbon_group.btnExec.3",
                             "FieldName": "btnExec",
-                            "Order": 3,
+                            "order": 3,
                             "ComponentType": "Button",
                             "Column": 1,
                             "Label": "Exec",
-                            "Icon": "fas fa-play",
+                            "icon": "fas fa-play",
                             "ClassName": "btn detail-button secondary-outline",
                             "Events": "{\r\n    \"click\": \"ExecTable\"\r\n}"
                         },
                         {
                             "Id": "ribbon_group.btnSave.3",
                             "FieldName": "btnSave",
-                            "Order": 3,
+                            "order": 3,
                             "ComponentType": "Button",
                             "Column": 1,
                             "Label": "Save",
-                            "Icon": "fal fa-save",
+                            "icon": "fal fa-save",
                             "ClassName": "btn detail-button primary",
                             "Events": "{\"click\":\"SavePatch\"}"
                         }
@@ -194,22 +194,22 @@
                 {
                     "Id": "wrapper.btnExec.3",
                     "FieldName": "btnExec",
-                    "Order": 3,
+                    "order": 3,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Exec",
-                    "Icon": "fas fa-play",
+                    "icon": "fas fa-play",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{\r\n    \"click\": \"ExecTable\"\r\n}"
                 },
                 {
                     "Id": "wrapper.btnSave.3",
                     "FieldName": "btnSave",
-                    "Order": 3,
+                    "order": 3,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Save",
-                    "Icon": "fal fa-save",
+                    "icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "Events": "{\"click\":\"SavePatch\"}"
                 }

@@ -2,8 +2,8 @@
     "Id": "financial_analysis",
     "Name": "financial-analysis",
     "Label": "Financial analysis",
-    "Order": 17,
-    "Icon": "fal fa-analytics",
+    "order": 17,
+    "icon": "fal fa-analytics",
     "IsPublic": true,
     "IgnoreEncode": true,
     "FeaturePolicies": [

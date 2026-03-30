@@ -2,19 +2,19 @@
     "Id": "config_code",
     "Name": "config-code",
     "Label": "Config Code",
-    "Order": 10,
-    "Icon": "fal fa-cog",
+    "order": 10,
+    "icon": "fal fa-cog",
     "IsMenu": true,
     "EntityId": "Config",
     "GridPolicies": [
         {
             "Id": "config_code.P1.2",
             "FieldName": "P1",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Input",
             "Label": "P1",
-            "Width": "111px",
-            "Editable": true,
+            "width": "111px",
+            "editable": true,
             "MinWidth": "111px",
             "MaxWidth": "111px",
             "EntityId": "Config"
@@ -22,11 +22,11 @@
         {
             "Id": "config_code.P2.3",
             "FieldName": "P2",
-            "Order": 3,
+            "order": 3,
             "ComponentType": "Input",
             "Label": "P2",
-            "Width": "115px",
-            "Editable": true,
+            "width": "115px",
+            "editable": true,
             "MinWidth": "115px",
             "MaxWidth": "115px",
             "EntityId": "Config"
@@ -34,11 +34,11 @@
         {
             "Id": "config_code.P3.4",
             "FieldName": "P3",
-            "Order": 4,
+            "order": 4,
             "ComponentType": "Input",
             "Label": "P3",
-            "Width": "123px",
-            "Editable": true,
+            "width": "123px",
+            "editable": true,
             "MinWidth": "123px",
             "MaxWidth": "123px",
             "EntityId": "Config"
@@ -46,11 +46,11 @@
         {
             "Id": "config_code.P4.5",
             "FieldName": "P4",
-            "Order": 5,
+            "order": 5,
             "ComponentType": "Input",
             "Label": "P4",
-            "Width": "143px",
-            "Editable": true,
+            "width": "143px",
+            "editable": true,
             "MinWidth": "143px",
             "MaxWidth": "143px",
             "EntityId": "Config"
@@ -58,12 +58,12 @@
         {
             "Id": "config_code.Increment.7",
             "FieldName": "Increment",
-            "Order": 7,
+            "order": 7,
             "ComponentType": "Number",
             "Label": "Increment",
-            "Width": "80px",
+            "width": "80px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "80px",
             "MaxWidth": "80px",
             "EntityId": "Config"
@@ -71,11 +71,11 @@
         {
             "Id": "config_code.P5.6",
             "FieldName": "P5",
-            "Order": 6,
+            "order": 6,
             "ComponentType": "Input",
             "Label": "P5",
-            "Width": "170px",
-            "Editable": true,
+            "width": "170px",
+            "editable": true,
             "MinWidth": "170px",
             "MaxWidth": "170px",
             "EntityId": "Config"
@@ -83,13 +83,13 @@
         {
             "Id": "config_code.RecordId.9",
             "FieldName": "RecordId",
-            "Order": 9,
+            "order": 9,
             "ComponentType": "Input",
             "Label": "Record",
-            "Disabled": true,
-            "Width": "109px",
+            "disabled": true,
+            "width": "109px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "109px",
             "MaxWidth": "109px",
             "EntityId": "Config"
@@ -97,11 +97,11 @@
         {
             "Id": "config_code.ResetTypeId.8",
             "FieldName": "ResetTypeId",
-            "Order": 8,
+            "order": 8,
             "ComponentType": "Input",
             "Label": "Reset Type",
-            "Width": "168px",
-            "Editable": true,
+            "width": "168px",
+            "editable": true,
             "MinWidth": "168px",
             "MaxWidth": "168px",
             "EntityId": "Config"
@@ -109,11 +109,11 @@
         {
             "Id": "config_code.TableName.0",
             "FieldName": "TableName",
-            "Order": 0,
+            "order": 0,
             "ComponentType": "Input",
             "Label": "Table Name",
-            "Width": "138px",
-            "Editable": true,
+            "width": "138px",
+            "editable": true,
             "MinWidth": "138px",
             "MaxWidth": "138px",
             "EntityId": "Config"
@@ -121,20 +121,20 @@
         {
             "Id": "config_code.EnumId.1",
             "FieldName": "EnumId",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Dropdown",
             "FormatData": "{Name}",
             "PlainText": "Select data",
             "Row": 100,
             "Label": "Enum",
-            "Width": "347px",
+            "width": "347px",
             "PopulateField": "this.Entity.RecordId = this.Matched ? this.Matched.Enum : null;\r\nreturn null;",
-            "Query": "{\r\n    \"sql\": \"select * from [Enum] as ds where TableName = '{TableName}'\",\r\n    \"total\": \"select count(Id) as total from Enum as ds where TableName = '{TableName}'\"\r\n}",
+            "query": "{\r\n    \"sql\": \"select * from [Enum] as ds where TableName = '{TableName}'\",\r\n    \"total\": \"select count(Id) as total from Enum as ds where TableName = '{TableName}'\"\r\n}",
             "RefName": "Enum",
             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TableName\",\r\n        \"Label\": \"TableName\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Enum\",\r\n        \"Label\": \"Enum\",\r\n        \"ComponentType\": \"Number\"\r\n    }\r\n]",
             "PreQuery": "{\r\n    \"TableName\": this.Entity.TableName\r\n}",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "347px",
             "MaxWidth": "347px",
             "OrderBy": "ds.Name asc",
@@ -187,19 +187,19 @@
             "TableName": "Feature"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "config_code.Container.1",
             "FieldName": "Container",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Container.Config.1",
                     "FieldName": "Config",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "GridView",
                     "Column": 12,
                     "Row": 50,
@@ -208,7 +208,7 @@
                     "ClassName": "sticky",
                     "ChildStyle": "height: calc(100vh - 10.5rem)",
                     "CanAdd": true,
-                    "Query": "{\r\n    \"sql\": \"select * from Config as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Config as ds\"\r\n}",
+                    "query": "{\r\n    \"sql\": \"select * from Config as ds\",\r\n    \"total\": \"select count(ds.Id) as total from Config as ds\"\r\n}",
                     "IsRealtime": true,
                     "RefName": "Config",
                     "OrderBy": "ds.TableName asc,ds.RecordId asc"

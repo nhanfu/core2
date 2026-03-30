@@ -2,7 +2,7 @@
     "Id": "sea_booking_order_editor",
     "Name": "sea-booking-order-editor",
     "Label": "Sea Booking Order Editor",
-    "Style": "width:99%;",
+    "style": "width:99%;",
     "Script": "return {\r\n    OnSave: function (form, gridview) {\r\n        var detail = this.GET(\"InquiryDetail\");\r\n        if ((detail && detail.AllListViewItem.length > 0)) {\r\n            var firstRow = detail.AllListViewItem[0];\r\n            if (firstRow) {\r\n                this.Entity.PolId = firstRow.Entity.PolId;\r\n                this.Entity.PodId = firstRow.Entity.PodId;\r\n                this.Entity.Pol = firstRow.Entity.Pol;\r\n                this.Entity.Pod = firstRow.Entity.Pod;\r\n            }\r\n        }\r\n        var detailFee = this.GET(\"DefaultFee\");\r\n        if (detailFee && detailFee.AllListViewItem.length > 0) {\r\n            detailFee.AllListViewItem.filter(x => !x.GroupRow).forEach((item, index) => {\r\n                item.Entity.Order = index;\r\n            });\r\n        }\r\n    },\r\n    SaveAs: async function (btn) {\r\n        var newEntity = JSON.parse(JSON.stringify(this.Entity));\r\n        this.Entity = newEntity;\r\n        this.Entity.CreatedOn = this.dayjs();\r\n        this.Entity.BookingDate = this.dayjs();\r\n        this.Entity.Id = this.Uuid7.NewGuid();\r\n        this.Entity.BookingNo = null;\r\n        this.Entity.StatusId = 3;\r\n        this.Entity.BookingLocalId = null;\r\n        this.Entity.BookingNoteId = null;\r\n        this.Entity.BookingOrderId = null;\r\n        var inquiryDetail = this.GET(\"InquiryDetail\");\r\n        if (inquiryDetail && inquiryDetail.AllListViewItem.length > 0) {\r\n            inquiryDetail.AllListViewItem.forEach(row => {\r\n                row.Entity.Id = this.Uuid7.NewGuid();\r\n                row.Entity.InquiryId = this.Entity.Id;\r\n                row.Entity.StatusId = 3;\r\n                row.Children.forEach(cell => {\r\n                    cell.Entity = row.Entity;\r\n                });\r\n                row.UpdateView(true);\r\n            });\r\n        }\r\n        var defaultFee = this.GET(\"DefaultFee\");\r\n        if (defaultFee && defaultFee.AllListViewItem.length > 0) {\r\n            defaultFee.AllListViewItem.forEach(row => {\r\n                row.Entity.Id = this.Uuid7.NewGuid();\r\n                row.Entity.InquiryId = this.Entity.Id;\r\n                row.Entity.StatusId = 3;\r\n                row.Children.forEach(cell => {\r\n                    cell.Entity = row.Entity;\r\n                });\r\n                row.UpdateView(true);\r\n            });\r\n        }\r\n        this.UpdateView(true);\r\n        this.Dirty = true;\r\n        this.Toast.Success(\"Save as success\");\r\n    },\r\n    ReloadSummary: function () {\r\n        if (!this.EditForm.Entity.Service) {\r\n            return;\r\n        }\r\n        var detailFee = this.GET(\"DefaultFee\");\r\n        if (detailFee && detailFee.AllListViewItem.length > 0) {\r\n            detailFee.AllListViewItem.filter(x => !x.GroupRow).forEach((item, index) => {\r\n                item.Entity.Order = index;\r\n            });\r\n        }\r\n        window.setTimeout(() => {\r\n            var detail = this.GET(\"Summary\");\r\n            detail.ReloadData();\r\n            var detail2 = this.GET(\"Summary\");\r\n            if (!detail2) {\r\n                return;\r\n            }\r\n            if (this.EditForm.Entity.Service.Name.includes('FCL')) {\r\n                detail2.HideColumn(\"MinLCL\", \"LCL\")\r\n            }\r\n            else if (this.EditForm.Entity.Service.Name.includes('LCL')) {\r\n                detail2.HideColumn(\"Cont20\", \"Cont40\", \"Cont40HC\", \"Cont45\")\r\n            }\r\n            else {\r\n                detail2.HideColumn(\"\");\r\n            }\r\n        }, 500);\r\n    },\r\n    UpdateGroupFee: function (data) {\r\n        data.Parent.Entity.GroupFee = data.Entity.Description.Group ? data.Entity.Description.Group.Name : 'Local charge';\r\n        data.Parent.UpdateView(false, false, \"GroupFee\");\r\n    },\r\n    ChangeContainer: function (dropdown) {\r\n        this.UpdateView(true, false, \"Cont20Id\", \"Cont40Id\", \"Cont45Id\", \"Cont40HCId\");\r\n    },\r\n    BeforeCreated: function (rowSection, entity) {\r\n        var inquiryDetail = this.GET(\"InquiryDetail\");\r\n        var detail = this.GET(\"DefaultFee\");\r\n        var lastItem = detail.AllListViewItem[detail.AllListViewItem.length - 1]\r\n        var first = inquiryDetail.AllListViewItem[0];\r\n        if (first != null && !lastItem) {\r\n            if (!entity.RouteId) {\r\n                entity.RouteId = (first.Entity.Pol.Code) + \" - \" + (first.Entity.Pod.Code || '');\r\n                entity.Route = {\r\n                    Name: (first.Entity.Pol.Code) + \" - \" + (first.Entity.Pod.Code || ''),\r\n                    Id: (first.Entity.Pol.Code) + \" - \" + (first.Entity.Pod.Code || ''),\r\n                };\r\n                entity.PolId = first.Entity.PolId;\r\n                entity.Pol = first.Entity.Pol;\r\n                entity.PodId = first.Entity.PodId;\r\n                entity.Pod = first.Entity.Pod;\r\n                entity.VendorId = first.Entity.VendorId;\r\n            }\r\n        }\r\n        if (detail.AllListViewItem && detail.AllListViewItem.length == 0) {\r\n            return;\r\n        }\r\n        var lastItem = detail.AllListViewItem[detail.AllListViewItem.length - 1]\r\n        entity.GroupFee = entity.GroupFee == null ? lastItem.Entity.GroupFee || '' : entity.GroupFee;\r\n        entity.RouteId = entity.RouteId == null ? lastItem.Entity.RouteId || '' : entity.RouteId;\r\n        entity.PolId = entity.PolId == null ? lastItem.Entity.PolId || '' : entity.PolId;\r\n        entity.Pol = entity.Pol == null ? lastItem.Entity.Pol || '' : entity.Pol;\r\n        entity.PodId = entity.PodId == null ? lastItem.Entity.PodId || '' : entity.PodId;\r\n        entity.Pod = entity.Pod == null ? lastItem.Entity.Pod || '' : entity.Pod;\r\n        entity.VendorId = entity.VendorId == null ? lastItem.Entity.VendorId || '' : entity.VendorId;\r\n    },\r\n    CalcPrice: function (com, entity) {\r\n        entity.TotalAmount = this.Decimal(entity.Quantity || 0).times(this.Decimal(entity.Amount || 0));\r\n        entity.AmountTax = entity.TotalAmount.times(this.Decimal(entity.Vat || 0)).div(100);\r\n        entity.TotalAmountTax = entity.TotalAmount.plus(entity.AmountTax);\r\n        var totalAmount = this.ChildCom.filter(x => x.IsListView)[0].AllListViewItem\r\n            .flatMap(x => x.Entity)\r\n            .reduce((a, b) => a.plus(b.TotalAmountTax), this.Decimal(0));\r\n        this.Entity.TotalAmount = this.Decimal(totalAmount || 0);\r\n        this.UpdateView(false, false, \"TotalAmount\");\r\n        com.Parent.UpdateView(false);\r\n    },\r\n    CheckCurrency: function (com, entity) {\r\n        com.Parent.UpdateView(false);\r\n    },\r\n    OnSaveAdd: function (form, gridview) {\r\n        this.Entity = {\r\n            Id: this.Uuid7.NewGuid(),\r\n            Code: null,\r\n            StatusId: 1\r\n        }\r\n    }\r\n}",
     "Events": "{\r\n    \"onsave\": \"OnSave\",\r\n    \"onsaveadd\": \"OnSaveAdd\",\r\n    \"saved\": \"UpdateParent\"\r\n}",
     "EntityId": "Booking",
@@ -10,18 +10,18 @@
         {
             "Id": "sea_booking_order_editor.ContainerTypeId.1",
             "FieldName": "ContainerTypeId",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Dropdown",
             "FormatData": "{Name}",
             "PlainText": "Select data",
             "Row": 100,
             "Label": "Container Type",
-            "Width": "206px",
-            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Container Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Container Type'\"\r\n}",
+            "width": "206px",
+            "query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Container Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Container Type'\"\r\n}",
             "RefName": "MasterData",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "206px",
             "MaxWidth": "206px",
             "EntityId": "EntityContainer"
@@ -29,12 +29,12 @@
         {
             "Id": "sea_booking_order_editor.Quantity.0",
             "FieldName": "Quantity",
-            "Order": 0,
+            "order": 0,
             "ComponentType": "Number",
             "Label": "Quantity",
-            "Width": "171px",
+            "width": "171px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "171px",
             "MaxWidth": "171px",
             "EntityId": "EntityContainer"
@@ -42,18 +42,18 @@
         {
             "Id": "sea_booking_order_editor.PortTransitId.0",
             "FieldName": "PortTransitId",
-            "Order": 0,
+            "order": 0,
             "ComponentType": "Dropdown",
             "FormatData": "{Name}",
             "PlainText": "Select data",
             "Row": 100,
             "Label": "Port of Transit",
-            "Width": "224px",
-            "Query": "{\r\n    \"sql\": \"select ds.* from [Terminal] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds\"\r\n}",
+            "width": "224px",
+            "query": "{\r\n    \"sql\": \"select ds.* from [Terminal] as ds\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds\"\r\n}",
             "RefName": "Terminal",
             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "224px",
             "MaxWidth": "224px",
             "EntityId": "EntityTransit"
@@ -61,13 +61,13 @@
         {
             "Id": "sea_booking_order_editor.EtaTsDate.1",
             "FieldName": "EtaTsDate",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Datepicker",
-            "Precision": 2,
+            "precision": 2,
             "Label": "ETA (TS)",
-            "Width": "206px",
+            "width": "206px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "206px",
             "MaxWidth": "206px",
             "EntityId": "EntityTransit"
@@ -75,40 +75,40 @@
         {
             "Id": "sea_booking_order_editor.EtdTsDate.2",
             "FieldName": "EtdTsDate",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Datepicker",
-            "Precision": 2,
+            "precision": 2,
             "Label": "ETD (TS)",
-            "Width": "206px",
+            "width": "206px",
             "FocusSearch": true,
-            "Editable": true,
+            "editable": true,
             "MinWidth": "206px",
             "MaxWidth": "206px",
             "EntityId": "EntityTransit"
         }
     ],
-    "Components": [
+    "components": [
         {
             "Id": "sea_booking_order_editor.Container.2",
             "FieldName": "Container",
-            "Order": 2,
+            "order": 2,
             "ComponentType": "Section",
             "ClassName": "scroll-content",
             "XxlCol": 8,
-            "Components": [
+            "components": [
                 {
                     "Id": "Container.Left.1_15",
                     "FieldName": "Left",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "Section",
                     "ClassName": "card-body",
                     "XxlCol": 12,
                     "XxlOuterColumn": 4,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Left.Pic.4_2",
                             "FieldName": "Pic",
-                            "Order": 4,
+                            "order": 4,
                             "ComponentType": "Input",
                             "Column": 6,
                             "Row": 50,
@@ -118,7 +118,7 @@
                         {
                             "Id": "Left.BookingNo.1_6",
                             "FieldName": "BookingNo",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "Input",
                             "Column": 6,
                             "Label": "Booking No",
@@ -127,7 +127,7 @@
                         {
                             "Id": "Left.CustomerId.3_6",
                             "FieldName": "CustomerId",
-                            "Order": 3,
+                            "order": 3,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -136,9 +136,9 @@
                             "Label": "Customer",
                             "ShowLabel": true,
                             "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('customer-editor',{ ServiceId : 1, TypeId : 3, ActionId : 1, SaleId: this.Token.UserId })\",\r\n    \"edit\": \"this.EditForm.OpenPopup('customer-editor',this.Matched)\"\r\n}",
-                            "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
+                            "validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
                             "PopulateField": "this.EditForm.Entity.PhoneNumber = this.Matched.ContactPhoneNumber\r\nthis.EditForm.Entity.Pic = this.Matched.ContactName;\r\nthis.EditForm.Entity.Sale = null;\r\nthis.EditForm.Entity.SaleId = this.Matched.SaleId;\r\nlet customer = this.Matched;\r\nlet customerText = `${(customer.CompanyName || '')}\\n`;\r\ncustomerText += `${(customer.Address || '')}\\n`;\r\ncustomerText += `Tell: ${(customer.PhoneNumber || '')} Fax: ${(customer.Fax || '')}\\n`;\r\ncustomerText += `Contact person:${(customer.ContactName || '')}`;\r\nif (this.EditForm.Entity.Service.Name.includes('Import')) {\r\n    this.EditForm.Entity.ConsigneeId = this.Matched.Id;\r\n    this.EditForm.Entity.ConsigneeIdText = this.Matched.Name;\r\n    this.EditForm.Entity.ConsigneeDes = customerText;\r\n}\r\nelse if (this.EditForm.Entity.Service.Name.includes('Export')) {\r\n    this.EditForm.Entity.ShipperId = this.Matched.Id;\r\n    this.EditForm.Entity.ShipperIdText = this.Matched.Name;\r\n    this.EditForm.Entity.ShipperDes = customerText;\r\n}\r\nthis.EditForm.UpdateView(false, false, \"Pic\", \"SaleId\", \"PhoneNumber\", \"ConsigneeId\", \"ConsigneeIdText\", \"ShipperId\", \"ShipperIdText\", \"ConsigneeDes\", \"ShipperDes\");\r\nreturn null;",
-                            "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 1 and TypeId in (2,3) and (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.DistributeInformationIds like N'%{TokenUserId}%'))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 1 and TypeId in (2,3) and (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.DistributeInformationIds like N'%{TokenUserId}%'))\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 1 and TypeId in (2,3) and (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.DistributeInformationIds like N'%{TokenUserId}%'))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and ServiceId = 1 and TypeId in (2,3) and (ds.IsPublic = 1 or ds.GroupId = '{TokenGroupId}' or ds.SaleId = '{TokenUserId}' or ds.InsertedBy = '{TokenUserId}' or ds.DistributeInformationIds like N'%{TokenUserId}%'))\"\r\n}",
                             "RefName": "Partner",
                             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
                             "PreQuery": "{\r\n    \"UserId\": this.Token.UserId,\r\n    \"UserName\": this.Token.UserName\r\n}",
@@ -147,7 +147,7 @@
                         {
                             "Id": "Left.BookingDate.2_4",
                             "FieldName": "BookingDate",
-                            "Order": 2,
+                            "order": 2,
                             "ComponentType": "Datepicker",
                             "Column": 6,
                             "Label": "Booking Date",
@@ -156,7 +156,7 @@
                         {
                             "Id": "Left.IncotermId.8_2",
                             "FieldName": "IncotermId",
-                            "Order": 8,
+                            "order": 8,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -164,13 +164,13 @@
                             "Row": 100,
                             "Label": "Incoterm",
                             "ShowLabel": true,
-                            "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"DDP\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"CIP\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"CPT\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"CFR\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"FAS\"\r\n    },\r\n    {\r\n        \"Id\": 6,\r\n        \"Name\": \"FCA\"\r\n    },\r\n    {\r\n        \"Id\": 7,\r\n        \"Name\": \"EXW\"\r\n    },\r\n    {\r\n        \"Id\": 8,\r\n        \"Name\": \"CIF\"\r\n    },\r\n    {\r\n        \"Id\": 9,\r\n        \"Name\": \"DPU\"\r\n    },\r\n    {\r\n        \"Id\": 10,\r\n        \"Name\": \"DAP\"\r\n    },\r\n    {\r\n        \"Id\": 11,\r\n        \"Name\": \"FOB\"\r\n    }\r\n]",
+                            "query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"DDP\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"CIP\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"CPT\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"CFR\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"FAS\"\r\n    },\r\n    {\r\n        \"Id\": 6,\r\n        \"Name\": \"FCA\"\r\n    },\r\n    {\r\n        \"Id\": 7,\r\n        \"Name\": \"EXW\"\r\n    },\r\n    {\r\n        \"Id\": 8,\r\n        \"Name\": \"CIF\"\r\n    },\r\n    {\r\n        \"Id\": 9,\r\n        \"Name\": \"DPU\"\r\n    },\r\n    {\r\n        \"Id\": 10,\r\n        \"Name\": \"DAP\"\r\n    },\r\n    {\r\n        \"Id\": 11,\r\n        \"Name\": \"FOB\"\r\n    }\r\n]",
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
                             "Id": "Left.DeliveryTerm.9_2",
                             "FieldName": "DeliveryTerm",
-                            "Order": 9,
+                            "order": 9,
                             "ComponentType": "Input",
                             "Column": 6,
                             "Label": "Delivery term",
@@ -181,16 +181,16 @@
                 {
                     "Id": "Container.Main.2_12",
                     "FieldName": "Main",
-                    "Order": 2,
+                    "order": 2,
                     "ComponentType": "Section",
                     "ClassName": "card-body",
                     "XxlCol": 12,
                     "XxlOuterColumn": 4,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Main.CommodityId.3_7",
                             "FieldName": "CommodityId",
-                            "Order": 3,
+                            "order": 3,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -198,14 +198,14 @@
                             "Row": 100,
                             "Label": "Commodity",
                             "ShowLabel": true,
-                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Commodity Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Commodity Type'\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Commodity Type'\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where  ds1.Name = N'Commodity Type'\"\r\n}",
                             "RefName": "MasterData",
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
                             "Id": "Main.ShipmentTypeId.5_7",
                             "FieldName": "ShipmentTypeId",
-                            "Order": 5,
+                            "order": 5,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -215,13 +215,13 @@
                             "ShowLabel": true,
                             "Events": "{\"change\":\"ShowHideDetail\"}",
                             "DefaultVal": "0",
-                            "Query": "[\r\n    {\r\n        \"Id\": 0,\r\n        \"Name\": \"FREE-HAND\"\r\n    },\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"NOMINATE\"\r\n    }\r\n]",
+                            "query": "[\r\n    {\r\n        \"Id\": 0,\r\n        \"Name\": \"FREE-HAND\"\r\n    },\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"NOMINATE\"\r\n    }\r\n]",
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
                             "Id": "Main.SaleId.6_4",
                             "FieldName": "SaleId",
-                            "Order": 6,
+                            "order": 6,
                             "ComponentType": "Dropdown",
                             "FormatData": "{FullName}",
                             "PlainText": "Select data",
@@ -229,14 +229,14 @@
                             "Row": 100,
                             "Label": "Sale man",
                             "ShowLabel": true,
-                            "Query": "{\r\n    \"sql\": \"select ds.* from [User] as ds where (TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 1)\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select ds.* from [User] as ds where (TypeId = 1)\",\r\n    \"total\": \"select count(ds.Id) as total from [User] as ds where (TypeId = 1)\"\r\n}",
                             "RefName": "User",
                             "Template": "[{ \"FieldName\" : \"FullName\", \"Label\" : \"Full Name\", \"ComponentType\" : \"FullName\" },\r\n{ \"FieldName\" : \"NickName\", \"Label\" : \"NickName\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"DepartmentId\", \"Label\" : \"Department\", \"ComponentType\" : \"Dropdown\", \"RefName\":\"MasterData\",\"FormatData\" : \"{Name}\" }]"
                         },
                         {
                             "Id": "Main.HblTypeId.2_1",
                             "FieldName": "HblTypeId",
-                            "Order": 2,
+                            "order": 2,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -244,13 +244,13 @@
                             "Row": 100,
                             "Label": "HBL Type",
                             "ShowLabel": true,
-                            "Query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"DRAFT\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"ORIGINAL\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"SURRENDERED\"\r\n    }\r\n]",
+                            "query": "[\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"DRAFT\"\r\n    },\r\n    {\r\n        \"Id\": 2,\r\n        \"Name\": \"ORIGINAL\"\r\n    },\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"SURRENDERED\"\r\n    }\r\n]",
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
                             "Id": "Main.HblNo.1_4",
                             "FieldName": "HblNo",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "Input",
                             "Column": 6,
                             "Label": "HBL No",
@@ -259,7 +259,7 @@
                         {
                             "Id": "Main.ServiceText.4_7",
                             "FieldName": "ServiceText",
-                            "Order": 4,
+                            "order": 4,
                             "ComponentType": "Input",
                             "Column": 6,
                             "Label": "Service",
@@ -270,17 +270,17 @@
                 {
                     "Id": "Container.Left1.5_7",
                     "FieldName": "Left1",
-                    "Order": 5,
+                    "order": 5,
                     "ComponentType": "Section",
                     "Label": "Shipment details",
                     "ClassName": "card-body",
                     "XxlCol": 12,
                     "XxlOuterColumn": 4,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Left1.ShipperId.1_1",
                             "FieldName": "ShipperId",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -290,7 +290,7 @@
                             "ShowLabel": true,
                             "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('partner-editor',{ ServiceId: 2, ActionId: 1, PartnerTypeIds: '00e318b8-0000-0000-8000-a7988356b712',PartnerTypeIdsText: 'Shipper'})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('partner-editor',thisMatched)\"\r\n}",
                             "PopulateField": "let shipper = this.EditForm.ShipmentDetail.Shipper;\r\nlet shipperText = `${(shipper.CompanyName || '')}\\n`;\r\nshipperText += `${(shipper.Address || '')}\\n`;\r\nshipperText += `Tell: ${(shipper.PhoneNumber || '')} Fax: ${(shipper.Fax || '')}\\n`;\r\nshipperText += `Contact person: ${(shipper.ContactName || '')}`;\r\nthis.EditForm.ShipmentDetail.ShipperDes = shipperText.trim();\r\nthis.EditForm.UpdateView2(false, false, \"ShipmentDetail\", false, \"ShipperDes\");\r\nreturn null;",
-                            "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and (PartnerTypeIdsText like N'%Shipper%'))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and (PartnerTypeIdsText like N'%Shipper%'))\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and (PartnerTypeIdsText like N'%Shipper%'))\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and (PartnerTypeIdsText like N'%Shipper%'))\"\r\n}",
                             "RefName": "Partner",
                             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
                             "ShowHotKey": true
@@ -298,7 +298,7 @@
                         {
                             "Id": "Left1.ConsigneeId.2_1",
                             "FieldName": "ConsigneeId",
-                            "Order": 2,
+                            "order": 2,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -308,7 +308,7 @@
                             "ShowLabel": true,
                             "Events": "{\r\n    \"add\": \"this.EditForm.OpenPopup('partner-editor',{ ServiceId: 2, ActionId: 1, PartnerTypeIds: '00e51814-0000-0000-8000-4128ce0e4c14',PartnerTypeIdsText: 'Consignee'})\",\r\n    \"edit\": \"this.EditForm.OpenPopup('partner-editor',this.Matched)\"\r\n}",
                             "PopulateField": "let shipper = this.EditForm.ShipmentDetail.Consignee;\r\nlet shipperText = `${(shipper.CompanyName || '')}\\n`;\r\nshipperText += `${(shipper.Address || '')}\\n`;\r\nshipperText += `Tell: ${(shipper.PhoneNumber || '')} Fax: ${(shipper.Fax || '')}\\n`;\r\nshipperText += `Contact person: ${(shipper.ContactName || '')}`;\r\nthis.EditForm.ShipmentDetail.ConsigneeDes = shipperText.trim();\r\nthis.EditForm.UpdateView2(false, false, \"ShipmentDetail\", false, \"ConsigneeDes\");\r\nreturn null;",
-                            "Query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and PartnerTypeIdsText like N'%Consignee%')\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and PartnerTypeIdsText like N'%Consignee%')\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select * from Partner as ds where (ActionId = 1 and IsNoDebt = 0 and PartnerTypeIdsText like N'%Consignee%')\",\r\n    \"total\": \"select count(ds.Id) as total from Partner as ds  where (ActionId = 1 and IsNoDebt = 0 and PartnerTypeIdsText like N'%Consignee%')\"\r\n}",
                             "RefName": "Partner",
                             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\",\r\n        \"MaxWidth\": \"500px\",\r\n        \"MinWidth\": \"500px\",\r\n        \"Width\": \"500px\"\r\n    },\r\n    {\r\n        \"FieldName\": \"TaxCode\",\r\n        \"Label\": \"TaxCode\",\r\n        \"ComponentType\": \"TaxCode\",\r\n        \"MaxWidth\": \"100px\",\r\n        \"MinWidth\": \"100px\",\r\n        \"Width\": \"100px\"\r\n    }\r\n]",
                             "ShowHotKey": true
@@ -316,7 +316,7 @@
                         {
                             "Id": "Left1.ShipperDes.3_1",
                             "FieldName": "ShipperDes",
-                            "Order": 3,
+                            "order": 3,
                             "ComponentType": "Textarea",
                             "Column": 6,
                             "Row": 7,
@@ -325,7 +325,7 @@
                         {
                             "Id": "Left1.ConsigneeDes.4_1",
                             "FieldName": "ConsigneeDes",
-                            "Order": 4,
+                            "order": 4,
                             "ComponentType": "Textarea",
                             "Column": 6,
                             "Row": 7,
@@ -336,26 +336,26 @@
                 {
                     "Id": "Container.Sea_Container.8_4",
                     "FieldName": "Sea Container",
-                    "Order": 8,
+                    "order": 8,
                     "ComponentType": "Section",
                     "ClassName": "card-body",
                     "XxlCol": 12,
                     "XxlOuterColumn": 4,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Sea_Container.Quantity.1_4",
                             "FieldName": "Quantity",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "Number",
                             "Column": 3,
                             "Label": "Quantity",
                             "ShowLabel": true,
-                            "Style": " height: 30px;"
+                            "style": " height: 30px;"
                         },
                         {
                             "Id": "Sea_Container.UnitId.2_4",
                             "FieldName": "UnitId",
-                            "Order": 2,
+                            "order": 2,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -363,14 +363,14 @@
                             "Row": 100,
                             "Label": "Unit",
                             "ShowLabel": true,
-                            "Query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where ds1.Name in (N'Unit Type','LTL Type','Container Type')\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where ds1.Name in (N'Unit Type','LTL Type','Container Type')\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select ds.* from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where ds1.Name in (N'Unit Type','LTL Type','Container Type')\",\r\n    \"total\": \"select count(ds.Id) as total from [MasterData] as ds left join [MasterData] ds1 on ds.ParentId = ds1.Id where ds1.Name in (N'Unit Type','LTL Type','Container Type')\"\r\n}",
                             "RefName": "MasterData",
                             "Template": "[\r\n    {\r\n        \"FieldName\": \"Name\",\r\n        \"Label\": \"Name\",\r\n        \"ComponentType\": \"Input\"\r\n    },\r\n    {\r\n        \"FieldName\": \"Description\",\r\n        \"Label\": \"Description\",\r\n        \"ComponentType\": \"Input\"\r\n    }\r\n]"
                         },
                         {
                             "Id": "Sea_Container.CBM.3",
                             "FieldName": "CBM",
-                            "Order": 3,
+                            "order": 3,
                             "ComponentType": "Number",
                             "Column": 3,
                             "Label": "CBM",
@@ -379,7 +379,7 @@
                         {
                             "Id": "Sea_Container.GW.3_4",
                             "FieldName": "GW",
-                            "Order": 3,
+                            "order": 3,
                             "ComponentType": "Number",
                             "Column": 3,
                             "Label": "GW",
@@ -388,35 +388,35 @@
                         {
                             "Id": "Sea_Container.EntityContainer.5",
                             "FieldName": "EntityContainer",
-                            "Order": 5,
+                            "order": 5,
                             "ComponentType": "GridView",
                             "Column": 12,
                             "Row": 200,
                             "ClassName": "sticky",
-                            "Style": "height: 150px;",
+                            "style": "height: 150px;",
                             "DefaultVal": "{\r\n    \"EntityId\": this.EditForm.Entity.Id,\r\n    \"TableName\": \"Booking Order\"\r\n}",
                             "CanAdd": true,
-                            "Query": "{\r\n    \"sql\": \"select * from EntityContainer as ds where EntityId = '{EntityId}'\",\r\n    \"total\": \"select count(ds.Id) as total from EntityContainer as ds where EntityId = '{EntityId}'\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select * from EntityContainer as ds where EntityId = '{EntityId}'\",\r\n    \"total\": \"select count(ds.Id) as total from EntityContainer as ds where EntityId = '{EntityId}'\"\r\n}",
                             "RefName": "EntityContainer",
                             "PreQuery": "{\r\n    \"EntityId\": this.EditForm.Entity.Id\r\n}",
-                            "Editable": true
+                            "editable": true
                         }
                     ]
                 },
                 {
                     "Id": "Container.Main1.12",
                     "FieldName": "Main1",
-                    "Order": 12,
+                    "order": 12,
                     "ComponentType": "Section",
                     "Label": "Origin",
                     "ClassName": "card-body",
                     "XxlCol": 12,
                     "XxlOuterColumn": 4,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Main1.PlaceStuffingText.9",
                             "FieldName": "PlaceStuffingText",
-                            "Order": 9,
+                            "order": 9,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -424,7 +424,7 @@
                             "Row": 100,
                             "Label": "Place of Stuffing",
                             "ShowLabel": true,
-                            "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
+                            "query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                             "RefName": "Terminal",
                             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]",
                             "TabGroup": "PlaceStuffingId"
@@ -432,7 +432,7 @@
                         {
                             "Id": "Main1.PlaceStuffingDate.10",
                             "FieldName": "PlaceStuffingDate",
-                            "Order": 10,
+                            "order": 10,
                             "ComponentType": "Datepicker",
                             "Column": 6,
                             "Label": "Date of Stuffing",
@@ -441,7 +441,7 @@
                         {
                             "Id": "Main1.ContactStuffing.11",
                             "FieldName": "ContactStuffing",
-                            "Order": 11,
+                            "order": 11,
                             "ComponentType": "Input",
                             "Column": 6,
                             "Label": "Contact Stuffing",
@@ -450,17 +450,17 @@
                         {
                             "Id": "Main1.LadenOnBoardDate.12",
                             "FieldName": "LadenOnBoardDate",
-                            "Order": 12,
+                            "order": 12,
                             "ComponentType": "Datepicker",
                             "Column": 6,
-                            "Precision": 7,
+                            "precision": 7,
                             "Label": "Laden on board",
                             "ShowLabel": true
                         },
                         {
                             "Id": "Main1.PolId.1",
                             "FieldName": "PolId",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -468,14 +468,14 @@
                             "Row": 100,
                             "Label": "Port of Loading",
                             "ShowLabel": true,
-                            "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
+                            "query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                             "RefName": "Terminal",
                             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
                             "Id": "Main1.EtdDate.2",
                             "FieldName": "EtdDate",
-                            "Order": 2,
+                            "order": 2,
                             "ComponentType": "Datepicker",
                             "Column": 6,
                             "Label": "ETD",
@@ -484,47 +484,47 @@
                         {
                             "Id": "Main1.DocsCutOffDate.14",
                             "FieldName": "DocsCutOffDate",
-                            "Order": 14,
+                            "order": 14,
                             "ComponentType": "Datepicker",
                             "Column": 6,
-                            "Precision": 7,
+                            "precision": 7,
                             "Label": "DOCS Cut-off",
                             "ShowLabel": true
                         },
                         {
                             "Id": "Main1.VgmCutOffDate.17",
                             "FieldName": "VgmCutOffDate",
-                            "Order": 17,
+                            "order": 17,
                             "ComponentType": "Datepicker",
                             "Column": 6,
-                            "Precision": 7,
+                            "precision": 7,
                             "Label": "VGM Cut-off",
                             "ShowLabel": true
                         },
                         {
                             "Id": "Main1.SiCutOffDate.16",
                             "FieldName": "SiCutOffDate",
-                            "Order": 16,
+                            "order": 16,
                             "ComponentType": "Datepicker",
                             "Column": 6,
-                            "Precision": 7,
+                            "precision": 7,
                             "Label": "SI Cut-off",
                             "ShowLabel": true
                         },
                         {
                             "Id": "Main1.CyCutOffDate.19",
                             "FieldName": "CyCutOffDate",
-                            "Order": 19,
+                            "order": 19,
                             "ComponentType": "Datepicker",
                             "Column": 6,
-                            "Precision": 7,
+                            "precision": 7,
                             "Label": "CY Cut-off",
                             "ShowLabel": true
                         },
                         {
                             "Id": "Main1.EntityTransit.3",
                             "FieldName": "EntityTransit",
-                            "Order": 3,
+                            "order": 3,
                             "ComponentType": "GridView",
                             "Column": 12,
                             "Row": 200,
@@ -532,15 +532,15 @@
                             "ClassName": "sticky",
                             "DefaultVal": "{\r\n    \"EntityId\": this.EditForm.Entity.Id,\r\n    \"TableName\": \"Booking Order\"\r\n}",
                             "CanAdd": true,
-                            "Query": "{\r\n    \"sql\": \"select * from EntityTransit as ds where EntityId = '{EntityId}'\",\r\n    \"total\": \"select count(ds.Id) as total from EntityTransit as ds where EntityId = '{EntityId}'\"\r\n}",
+                            "query": "{\r\n    \"sql\": \"select * from EntityTransit as ds where EntityId = '{EntityId}'\",\r\n    \"total\": \"select count(ds.Id) as total from EntityTransit as ds where EntityId = '{EntityId}'\"\r\n}",
                             "RefName": "EntityTransit",
                             "PreQuery": "{ \"EntityId\": this.EditForm.Entity.Id}",
-                            "Editable": true
+                            "editable": true
                         },
                         {
                             "Id": "Main1.PickupDate.6",
                             "FieldName": "PickupDate",
-                            "Order": 6,
+                            "order": 6,
                             "ComponentType": "Datepicker",
                             "Column": 6,
                             "Label": "Pickup Date",
@@ -549,7 +549,7 @@
                         {
                             "Id": "Main1.PickupId.5",
                             "FieldName": "PickupId",
-                            "Order": 5,
+                            "order": 5,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -557,14 +557,14 @@
                             "Row": 100,
                             "Label": "Pick up at",
                             "ShowLabel": true,
-                            "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
+                            "query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                             "RefName": "Terminal",
                             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
                             "Id": "Main1.Vessel.20",
                             "FieldName": "Vessel",
-                            "Order": 20,
+                            "order": 20,
                             "ComponentType": "Input",
                             "Column": 3,
                             "Label": "Feeder vessel",
@@ -573,7 +573,7 @@
                         {
                             "Id": "Main1.OceanVessel.22",
                             "FieldName": "OceanVessel",
-                            "Order": 22,
+                            "order": 22,
                             "ComponentType": "Input",
                             "Column": 3,
                             "Label": "Ocean vessel",
@@ -582,7 +582,7 @@
                         {
                             "Id": "Main1.VesselVoy.21",
                             "FieldName": "VesselVoy",
-                            "Order": 21,
+                            "order": 21,
                             "ComponentType": "Input",
                             "Column": 3,
                             "Label": "Voy",
@@ -591,7 +591,7 @@
                         {
                             "Id": "Main1.OceanVesselVoy.23",
                             "FieldName": "OceanVesselVoy",
-                            "Order": 23,
+                            "order": 23,
                             "ComponentType": "Input",
                             "Column": 3,
                             "Label": "Voy",
@@ -600,7 +600,7 @@
                         {
                             "Id": "Main1.EmptyReturnDate.24",
                             "FieldName": "EmptyReturnDate",
-                            "Order": 24,
+                            "order": 24,
                             "ComponentType": "Datepicker",
                             "Column": 6,
                             "Offset": 6,
@@ -610,7 +610,7 @@
                         {
                             "Id": "Main1.DropOffId.7",
                             "FieldName": "DropOffId",
-                            "Order": 7,
+                            "order": 7,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -618,14 +618,14 @@
                             "Row": 100,
                             "Label": "Drop off at",
                             "ShowLabel": true,
-                            "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
+                            "query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                             "RefName": "Terminal",
                             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
                             "Id": "Main1.DropOffDate.8",
                             "FieldName": "DropOffDate",
-                            "Order": 8,
+                            "order": 8,
                             "ComponentType": "Datepicker",
                             "Column": 6,
                             "Label": "Drop off date",
@@ -636,17 +636,17 @@
                 {
                     "Id": "Container.Right1.13",
                     "FieldName": "Right1",
-                    "Order": 13,
+                    "order": 13,
                     "ComponentType": "Section",
                     "Label": "Destination",
                     "ClassName": "card-body",
                     "XxlCol": 12,
                     "XxlOuterColumn": 4,
-                    "Components": [
+                    "components": [
                         {
                             "Id": "Right1.PaymentTermId.5",
                             "FieldName": "PaymentTermId",
-                            "Order": 5,
+                            "order": 5,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -654,13 +654,13 @@
                             "Row": 100,
                             "Label": "Payment term",
                             "ShowLabel": true,
-                            "Query": "[\r\n    {\r\n        \"Id\": 0,\r\n        \"Name\": \"Collect\"\r\n    },\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Prepaid\"\r\n    }\r\n]",
+                            "query": "[\r\n    {\r\n        \"Id\": 0,\r\n        \"Name\": \"Collect\"\r\n    },\r\n    {\r\n        \"Id\": 1,\r\n        \"Name\": \"Prepaid\"\r\n    }\r\n]",
                             "Template": "[{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
                             "Id": "Right1.FreightRate.6",
                             "FieldName": "FreightRate",
-                            "Order": 6,
+                            "order": 6,
                             "ComponentType": "Number",
                             "Column": 6,
                             "Label": "Freight rate",
@@ -669,7 +669,7 @@
                         {
                             "Id": "Right1.DemFree.7",
                             "FieldName": "DemFree",
-                            "Order": 7,
+                            "order": 7,
                             "ComponentType": "Number",
                             "Column": 6,
                             "Label": "DEM (free)",
@@ -678,7 +678,7 @@
                         {
                             "Id": "Right1.DetFree.8",
                             "FieldName": "DetFree",
-                            "Order": 8,
+                            "order": 8,
                             "ComponentType": "Number",
                             "Column": 6,
                             "Label": "DET (free)",
@@ -687,7 +687,7 @@
                         {
                             "Id": "Right1.DeliveryAddress.10",
                             "FieldName": "DeliveryAddress",
-                            "Order": 10,
+                            "order": 10,
                             "ComponentType": "Textarea",
                             "Column": 6,
                             "Row": 3,
@@ -697,7 +697,7 @@
                         {
                             "Id": "Right1.PickupAddress.9",
                             "FieldName": "PickupAddress",
-                            "Order": 9,
+                            "order": 9,
                             "ComponentType": "Textarea",
                             "Column": 6,
                             "Row": 3,
@@ -707,7 +707,7 @@
                         {
                             "Id": "Right1.PodId.1",
                             "FieldName": "PodId",
-                            "Order": 1,
+                            "order": 1,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -715,14 +715,14 @@
                             "Row": 100,
                             "Label": "Port of Discharge",
                             "ShowLabel": true,
-                            "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
+                            "query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                             "RefName": "Terminal",
                             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
                             "Id": "Right1.EtaDate.2",
                             "FieldName": "EtaDate",
-                            "Order": 2,
+                            "order": 2,
                             "ComponentType": "Datepicker",
                             "Column": 6,
                             "Label": "ETA",
@@ -731,7 +731,7 @@
                         {
                             "Id": "Right1.SpecialRequest.12",
                             "FieldName": "SpecialRequest",
-                            "Order": 12,
+                            "order": 12,
                             "ComponentType": "Textarea",
                             "Column": 6,
                             "Row": 3,
@@ -741,7 +741,7 @@
                         {
                             "Id": "Right1.Movement.11",
                             "FieldName": "Movement",
-                            "Order": 11,
+                            "order": 11,
                             "ComponentType": "Input",
                             "Column": 6,
                             "Label": "Movement",
@@ -750,18 +750,18 @@
                         {
                             "Id": "Right1.Remark.12",
                             "FieldName": "Remark",
-                            "Order": 12,
+                            "order": 12,
                             "ComponentType": "Word",
                             "Column": 12,
                             "Row": 1,
                             "Label": "Remark",
                             "ShowLabel": true,
-                            "Style": "height: 160px;"
+                            "style": "height: 160px;"
                         },
                         {
                             "Id": "Right1.FinalDestinationId.4",
                             "FieldName": "FinalDestinationId",
-                            "Order": 4,
+                            "order": 4,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -769,14 +769,14 @@
                             "Row": 100,
                             "Label": "Final destination",
                             "ShowLabel": true,
-                            "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
+                            "query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                             "RefName": "Terminal",
                             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                         },
                         {
                             "Id": "Right1.PlaceDeliveryId.3",
                             "FieldName": "PlaceDeliveryId",
-                            "Order": 3,
+                            "order": 3,
                             "ComponentType": "Dropdown",
                             "FormatData": "{Name}",
                             "PlainText": "Select data",
@@ -784,7 +784,7 @@
                             "Row": 100,
                             "Label": "Place of delivery",
                             "ShowLabel": true,
-                            "Query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
+                            "query": "{    \"sql\": \"select * from [Terminal] as ds\",    \"total\": \"select count(ds.Id) as total from [Terminal] as ds\"}",
                             "RefName": "Terminal",
                             "Template": "[{ \"FieldName\" : \"Code\", \"Label\" : \"Code\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Name\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" },\r\n{ \"FieldName\" : \"Address\", \"Label\" : \"Address\", \"ComponentType\" : \"Input\" }]"
                         }
@@ -793,11 +793,11 @@
                 {
                     "Id": "Container.btnDecline.3_10",
                     "FieldName": "btnDecline",
-                    "Order": 3,
+                    "order": 3,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Decline",
-                    "Icon": "fal fa-comment-alt-slash",
+                    "icon": "fal fa-comment-alt-slash",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"DeclineEntity\" }",
                     "ShowExp": "this.Entity.StatusId == 2"
@@ -805,23 +805,23 @@
                 {
                     "Id": "Container.btnSaveAdd.1_7",
                     "FieldName": "btnSaveAdd",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "Button",
                     "Column": 1,
                     "GroupFormat": "Options",
                     "Label": "Save & Add",
-                    "Icon": "fas fa-sliders-h-square",
+                    "icon": "fas fa-sliders-h-square",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"SaveAdd\" }"
                 },
                 {
                     "Id": "Container.btnSave.13_1",
                     "FieldName": "btnSave",
-                    "Order": 13,
+                    "order": 13,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Save",
-                    "Icon": "fal fa-save",
+                    "icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }"
@@ -829,11 +829,11 @@
                 {
                     "Id": "Container.btnSendEntity.2_10",
                     "FieldName": "btnSendEntity",
-                    "Order": 2,
+                    "order": 2,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Send",
-                    "Icon": "far fa-share-all",
+                    "icon": "far fa-share-all",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"SendEntity\" }",
                     "ShowExp": "this.Entity.StatusId == 1 || this.Entity.StatusId == 4"
@@ -841,23 +841,23 @@
                 {
                     "Id": "Container.btnSaveAdd.0_7",
                     "FieldName": "btnSaveAdd",
-                    "Order": 0,
+                    "order": 0,
                     "ComponentType": "Button",
                     "Column": 1,
                     "GroupFormat": "Options",
                     "Label": "Save As",
-                    "Icon": "fas fa-sliders-h-square",
+                    "icon": "fas fa-sliders-h-square",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"SaveAs\" }"
                 },
                 {
                     "Id": "Container.btnApprove.4_10",
                     "FieldName": "btnApprove",
-                    "Order": 4,
+                    "order": 4,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Approve",
-                    "Icon": "fal fa-check-circle",
+                    "icon": "fal fa-check-circle",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"ApprovedEntity\" }",
                     "ShowExp": "this.Entity.StatusId == 2"
@@ -867,30 +867,30 @@
         {
             "Id": "sea_booking_order_editor.Center.4",
             "FieldName": "Center",
-            "Order": 4,
+            "order": 4,
             "ComponentType": "Section",
             "ClassName": "title-option",
-            "Style": "margin-bottom: 0px;padding: 0;",
+            "style": "margin-bottom: 0px;padding: 0;",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Center.BookingLocalId.2_3",
                     "FieldName": "BookingLocalId",
-                    "Order": 2,
+                    "order": 2,
                     "ComponentType": "Input",
                     "Column": 6,
                     "Row": 50,
                     "Label": "Ref",
                     "ShowLabel": true,
-                    "Style": "display: flex;align-items: center;gap: 1rem;",
-                    "Disabled": true,
+                    "style": "display: flex;align-items: center;gap: 1rem;",
+                    "disabled": true,
                     "PopulateField": "this.EditForm.ShowHideDetail();\r\nreturn null;",
                     "Template": "[{ \"FieldName\" : \"Description\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 },
                 {
                     "Id": "Center.ServiceId.1_9",
                     "FieldName": "ServiceId",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "Select",
                     "FormatData": "{Description}",
                     "PlainText": "Select data",
@@ -898,11 +898,11 @@
                     "Row": 50,
                     "Label": "Service mode",
                     "ShowLabel": true,
-                    "Style": "display: flex;align-items: center;gap: 1rem;",
+                    "style": "display: flex;align-items: center;gap: 1rem;",
                     "Events": "{\"change\":\"ShowHideDetail\"}",
-                    "Validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
+                    "validation": "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
                     "PopulateField": "this.EditForm.ShowHideDetail();\r\nreturn null;",
-                    "Query": "[\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Sea Export FCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-ship mr-1'></i>Sea Export FCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Sea Import FCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-shipping-fast mr-1'></i>Sea Import FCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"Sea Export LCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fas fa-boxes mr-1'></i>Sea Export LCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 6,\r\n        \"Name\": \"Sea Import LCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fas fa-dolly mr-1'></i>Sea Import LCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 16,\r\n        \"Name\": \"Import Consol\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #17a2b8;'><i class='fas fa-warehouse mr-1'></i>Import Consol</span>\"\r\n    },\r\n    {\r\n        \"Id\": 17,\r\n        \"Name\": \"Export Consol\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #343a40;'><i class='fas fa-plane-departure mr-1'></i>Export Consol</span>\"\r\n    }\r\n]\r\n",
+                    "query": "[\r\n    {\r\n        \"Id\": 3,\r\n        \"Name\": \"Sea Export FCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #007bff;'><i class='fas fa-ship mr-1'></i>Sea Export FCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 4,\r\n        \"Name\": \"Sea Import FCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #dc3545;'><i class='fas fa-shipping-fast mr-1'></i>Sea Import FCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 5,\r\n        \"Name\": \"Sea Export LCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #28a745;'><i class='fas fa-boxes mr-1'></i>Sea Export LCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 6,\r\n        \"Name\": \"Sea Import LCL\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #ffc107;'><i class='fas fa-dolly mr-1'></i>Sea Import LCL</span>\"\r\n    },\r\n    {\r\n        \"Id\": 16,\r\n        \"Name\": \"Import Consol\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #17a2b8;'><i class='fas fa-warehouse mr-1'></i>Import Consol</span>\"\r\n    },\r\n    {\r\n        \"Id\": 17,\r\n        \"Name\": \"Export Consol\",\r\n        \"Description\": \"<span style='padding: 5px 10px; border-radius: 12px; color: white; background-color: #343a40;'><i class='fas fa-plane-departure mr-1'></i>Export Consol</span>\"\r\n    }\r\n]\r\n",
                     "Template": "[{ \"FieldName\" : \"Description\", \"Label\" : \"Name\", \"ComponentType\" : \"Input\" }]"
                 }
             ]
@@ -910,34 +910,34 @@
         {
             "Id": "sea_booking_order_editor.Button.1",
             "FieldName": "Button",
-            "Order": 1,
+            "order": 1,
             "ComponentType": "Section",
             "ClassName": "ribbon-group",
-            "Style": "margin-bottom: 0px;padding: 0;",
+            "style": "margin-bottom: 0px;padding: 0;",
             "XxlCol": 12,
-            "Components": [
+            "components": [
                 {
                     "Id": "Button.btnPrint.11",
                     "FieldName": "btnPrint",
-                    "Order": 11,
+                    "order": 11,
                     "ComponentType": "Pdf",
                     "Column": 1,
                     "GroupFormat": "Print",
                     "Label": "Print BK 2",
-                    "Icon": "fal fa-print",
+                    "icon": "fal fa-print",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{\r\n    \"click\": \"PrintPdf\"\r\n}",
-                    "Query": "SELECT \r\nCUS.Name AS CUSNAME,\r\nBK.ShipperText AS SHIPPERINFOR,\r\n\r\nFORMAT(BK.PlaceStuffingDate,'dd MMM, yy') AS STUFFINGDATE,\r\nSTUFFING.Name AS PLACEOFSTUFFING,\r\nBK.ContactStuffing AS Contact,\r\nFORMAT(bk.VgmCutOffDate, 'dd MMM, yy hh:mm') AS Closingtime,\r\nbk.FeederVessel AS FeederVesselN, \r\nbk.FeederVoy AS FeederVoyN,\r\nFORMAT(BK.EtdDate,'dd MMM, yy') AS ETD,\r\nFORMAT(BK.EtaDate,'dd MMM, yy') AS ETA,\r\nPOL.Name AS POLNAME,\r\nPOD.Name AS PODNAME,\r\nISNULL((SELECT STRING_AGG(CONCAT(ROUND(inc.Quantity, 0), ' x ', cont.Name ), ' & ') AS Containers\r\n     FROM EntityContainer inc\r\n     LEFT JOIN MasterData cont ON inc.ContainerTypeId = cont.Id\r\n     WHERE inc.EntityId = '{Id}'),'') AS ContainersQty,\r\nBK.Quantity AS Qty,\r\nUnit.Name AS UnitPKG,\r\nBK.GW AS GWIF,\r\ndropofat.Name droof,\r\npickup.Name pkat,\r\nBK.CBM AS CBMIF,\r\nCOMMO.Name AS COMMO,\r\nBK.SpecialRequest AS SPREQUEST, \r\nISNULL(HBLType.Name,'') AS HBLType,\r\nisnull(Inco.Name,'') AS Inco,\r\nHBLType.Name AS HBLType,\r\ncre.NickName AS Creater\r\nFROM dbo.Booking BK\r\nLEFT JOIN dbo.Partner CUS ON CUS.Id = BK.CustomerId\r\nLEFT JOIN dbo.Terminal STUFFING ON STUFFING.Id = BK.PlaceStuffingId\r\nLEFT JOIN dbo.Terminal POL ON POL.Id = BK.PolId \r\nLEFT JOIN dbo.Terminal POD ON POD.Id = BK.PodId\r\nLEFT JOIN dbo.Terminal pickup ON pickup.Id = BK.PickupId\r\nLEFT JOIN dbo.Terminal dropofat ON dropofat.Id = BK.DropOffId\r\nLEFT JOIN dbo.MasterData Unit ON Unit.Id = BK.UnitId \r\nLEFT JOIN dbo.MasterData COMMO ON COMMO.Id = BK.CommodityId\r\nLEFT JOIN dbo.Terminal Deli ON Deli.Id = BK.DeliveryId\r\nLEFT JOIN dbo.MasterData Inco ON Inco.Id = BK.IncotermId\r\nLEFT JOIN dbo.MasterData HBLType ON HBLType.Id = BK.HblTypeId\r\nLEFT JOIN dbo.[User] cre ON cre.Id =  '{TokenUserId}'\r\nWHERE \r\nBK.Id='{Id}'\r\n",
+                    "query": "SELECT \r\nCUS.Name AS CUSNAME,\r\nBK.ShipperText AS SHIPPERINFOR,\r\n\r\nFORMAT(BK.PlaceStuffingDate,'dd MMM, yy') AS STUFFINGDATE,\r\nSTUFFING.Name AS PLACEOFSTUFFING,\r\nBK.ContactStuffing AS Contact,\r\nFORMAT(bk.VgmCutOffDate, 'dd MMM, yy hh:mm') AS Closingtime,\r\nbk.FeederVessel AS FeederVesselN, \r\nbk.FeederVoy AS FeederVoyN,\r\nFORMAT(BK.EtdDate,'dd MMM, yy') AS ETD,\r\nFORMAT(BK.EtaDate,'dd MMM, yy') AS ETA,\r\nPOL.Name AS POLNAME,\r\nPOD.Name AS PODNAME,\r\nISNULL((SELECT STRING_AGG(CONCAT(ROUND(inc.Quantity, 0), ' x ', cont.Name ), ' & ') AS Containers\r\n     FROM EntityContainer inc\r\n     LEFT JOIN MasterData cont ON inc.ContainerTypeId = cont.Id\r\n     WHERE inc.EntityId = '{Id}'),'') AS ContainersQty,\r\nBK.Quantity AS Qty,\r\nUnit.Name AS UnitPKG,\r\nBK.GW AS GWIF,\r\ndropofat.Name droof,\r\npickup.Name pkat,\r\nBK.CBM AS CBMIF,\r\nCOMMO.Name AS COMMO,\r\nBK.SpecialRequest AS SPREQUEST, \r\nISNULL(HBLType.Name,'') AS HBLType,\r\nisnull(Inco.Name,'') AS Inco,\r\nHBLType.Name AS HBLType,\r\ncre.NickName AS Creater\r\nFROM dbo.Booking BK\r\nLEFT JOIN dbo.Partner CUS ON CUS.Id = BK.CustomerId\r\nLEFT JOIN dbo.Terminal STUFFING ON STUFFING.Id = BK.PlaceStuffingId\r\nLEFT JOIN dbo.Terminal POL ON POL.Id = BK.PolId \r\nLEFT JOIN dbo.Terminal POD ON POD.Id = BK.PodId\r\nLEFT JOIN dbo.Terminal pickup ON pickup.Id = BK.PickupId\r\nLEFT JOIN dbo.Terminal dropofat ON dropofat.Id = BK.DropOffId\r\nLEFT JOIN dbo.MasterData Unit ON Unit.Id = BK.UnitId \r\nLEFT JOIN dbo.MasterData COMMO ON COMMO.Id = BK.CommodityId\r\nLEFT JOIN dbo.Terminal Deli ON Deli.Id = BK.DeliveryId\r\nLEFT JOIN dbo.MasterData Inco ON Inco.Id = BK.IncotermId\r\nLEFT JOIN dbo.MasterData HBLType ON HBLType.Id = BK.HblTypeId\r\nLEFT JOIN dbo.[User] cre ON cre.Id =  '{TokenUserId}'\r\nWHERE \r\nBK.Id='{Id}'\r\n",
                     "Template": "<table style=\"border-collapse: collapse; width: 99.5279%; height: 959.76px; border-width: 1px; margin-left: 0px; margin-right: auto;\" border=\"1\"><colgroup><col style=\"width: 1.94217%;\"><col style=\"width: 22.0112%;\"><col style=\"width: 11.912%;\"><col style=\"width: 9.96979%;\"><col style=\"width: 14.5015%;\"><col style=\"width: 9.84031%;\"><col style=\"width: 15.0194%;\"><col style=\"width: 14.7605%;\"></colgroup>\n<tbody>\n<tr style=\"height: 16.6667px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"5\">\n<p><strong>SHIPPER</strong></p>\n<p>&nbsp;</p>\n<p>${SHIPPERINFOR}</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: center; vertical-align: middle;\" colspan=\"4\" rowspan=\"2\"><span style=\"font-size: 12pt;\"><strong>&nbsp;BOOKING NO ${Booking No}</strong></span></td>\n</tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 46px;\">\n<td style=\"text-align: center; vertical-align: middle;\" colspan=\"4\" rowspan=\"15\">\n<p>${CLogo}</p>\n<p><span style=\"font-size: 12pt;\"><strong>${CCompanyName}</strong></span></p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p style=\"font-size: 18pt; min-width: 260px; display: inline-block; border-radius: 29PX; border: 1px solid rgb(0, 0, 0); text-align: center; font-weight: 600;\">BOOKING CONFIRMATION</p>\n</td>\n</tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"5\">\n<p><strong>Consignee</strong></p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 10px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 21.5521px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"4\">\n<p><strong>PORT OF LOADING</strong></p>\n<p>&nbsp;</p>\n<p>${Port of Loading}</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 21.5521px;\"></tr>\n<tr style=\"height: 0px;\"></tr>\n<tr style=\"height: 21.5625px;\"></tr>\n<tr style=\"height: 21.5521px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"3\">\n<p><strong>PORT OF DISCHARGE</strong></p>\n<p>${Port of Discharge}</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 21.5521px;\"></tr>\n<tr style=\"height: 21.5625px;\"></tr>\n<tr style=\"height: 16.6667px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"4\">\n<p><strong>CLOSING TIME</strong></p>\n<p>&nbsp;</p>\n<p style=\"text-align: center;\">${Closingtime}&nbsp;</p>\n</td>\n<td style=\"vertical-align: top; text-align: center;\" colspan=\"2\" rowspan=\"4\">\n<p><strong>Date of Stuffing</strong></p>\n<p>&nbsp;</p>\n<p>${STUFFINGDATE}&nbsp;</p>\n</td>\n<td style=\"vertical-align: top; text-align: center;\" colspan=\"2\" rowspan=\"4\">\n<p><strong>Place of Stuffing</strong></p>\n<p>&nbsp;</p>\n<p>${PLACEOFSTUFFING}&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 33.5729px;\"></tr>\n<tr style=\"height: 27.2917px;\">\n<td style=\"text-align: left; vertical-align: middle;\" colspan=\"4\" rowspan=\"3\">\n<p><strong>VESSEL NAME / VOYAGE No.</strong></p>\n<p>&nbsp;</p>\n<p>&nbsp;${FeederVesselN} ${FeederVoyN}</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"3\">\n<p><strong>Contact</strong></p>\n<p style=\"text-align: center;\"><strong>${Contact}&nbsp;</strong></p>\n</td>\n</tr>\n<tr style=\"height: 10px;\"></tr>\n<tr style=\"height: 27.375px;\"></tr>\n<tr style=\"height: 22.5104px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"4\">\n<p><strong>DESCRIPTION OF GOODS</strong></p>\n<p>${COMMO}</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"4\">\n<p><strong>Other terms &amp; conditions</strong></p>\n<p>${Incoterm}</p>\n<p>${Delivery term}</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" rowspan=\"4\">\n<p><strong>H-B/L No.</strong></p>\n<p>&nbsp;</p>\n<p style=\"text-align: center;\">&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" rowspan=\"4\">\n<p><strong>Type B/L</strong></p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 19.375px;\"></tr>\n<tr style=\"height: 10px;\"></tr>\n<tr style=\"height: 19.3854px;\"></tr>\n<tr style=\"height: 27.3438px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"3\">\n<p><strong>No. of Container(s) or Package(s)</strong></p>\n<p>${ContainersQty} ${Qty} ${UnitPKG}</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"3\">\n<p><strong>VOLUME</strong></p>\n<p>&nbsp;${CBMIF}</p>\n<p style=\"text-align: center;\">&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"3\">\n<p><strong>GROSSWEIGHT</strong></p>\n<p>${GWIF}</p>\n</td>\n</tr>\n<tr style=\"height: 12.0417px;\"></tr>\n<tr style=\"height: 25.2812px;\"></tr>\n<tr style=\"height: 18.0521px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"5\">\n<p><strong>PICK-UP AT</strong></p>\n<p>&nbsp;${pkat}</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"5\">\n<p><strong>DROP-OF AT</strong></p>\n<p>&nbsp;${droof}</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 20.2292px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"8\" rowspan=\"7\">\n<p><strong>Remark</strong></p>\n<p>&nbsp;${Remark}</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 18.0521px;\"></tr>\n<tr style=\"height: 18.0521px;\"></tr>\n<tr style=\"height: 18.0521px;\"></tr>\n<tr style=\"height: 18.0521px;\"></tr>\n<tr style=\"height: 18.0521px;\"></tr>\n<tr style=\"height: 145.042px;\"></tr>\n</tbody>\n</table>"
                 },
                 {
                     "Id": "Button.btnDecline.3_12",
                     "FieldName": "btnDecline",
-                    "Order": 3,
+                    "order": 3,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Decline",
-                    "Icon": "fal fa-comment-alt-slash",
+                    "icon": "fal fa-comment-alt-slash",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"DeclineEntity\" }",
                     "ShowExp": "this.Entity.StatusId == 2"
@@ -945,23 +945,23 @@
                 {
                     "Id": "Button.btnSaveAdd.1_14",
                     "FieldName": "btnSaveAdd",
-                    "Order": 1,
+                    "order": 1,
                     "ComponentType": "Button",
                     "Column": 1,
                     "GroupFormat": "Options",
                     "Label": "Save & Add",
-                    "Icon": "fas fa-sliders-h-square",
+                    "icon": "fas fa-sliders-h-square",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"SaveAdd\" }"
                 },
                 {
                     "Id": "Button.btnSave.13_1",
                     "FieldName": "btnSave",
-                    "Order": 13,
+                    "order": 13,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Save",
-                    "Icon": "fal fa-save",
+                    "icon": "fal fa-save",
                     "ClassName": "btn detail-button primary",
                     "HotKey": "Ctrl-S",
                     "Events": "{ \"click\" : \"SavePatch\" }"
@@ -969,11 +969,11 @@
                 {
                     "Id": "Button.btnSendEntity.2_12",
                     "FieldName": "btnSendEntity",
-                    "Order": 2,
+                    "order": 2,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Send",
-                    "Icon": "far fa-share-all",
+                    "icon": "far fa-share-all",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"SendEntity\" }",
                     "ShowExp": "this.Entity.StatusId == 1 || this.Entity.StatusId == 4"
@@ -981,23 +981,23 @@
                 {
                     "Id": "Button.btnSaveAdd.0_15",
                     "FieldName": "btnSaveAdd",
-                    "Order": 0,
+                    "order": 0,
                     "ComponentType": "Button",
                     "Column": 1,
                     "GroupFormat": "Options",
                     "Label": "Save As",
-                    "Icon": "fas fa-sliders-h-square",
+                    "icon": "fas fa-sliders-h-square",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"SaveAs\" }"
                 },
                 {
                     "Id": "Button.btnApprove.4_12",
                     "FieldName": "btnApprove",
-                    "Order": 4,
+                    "order": 4,
                     "ComponentType": "Button",
                     "Column": 1,
                     "Label": "Approve",
-                    "Icon": "fal fa-check-circle",
+                    "icon": "fal fa-check-circle",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{ \"click\" : \"ApprovedEntity\" }",
                     "ShowExp": "this.Entity.StatusId == 2"
@@ -1005,29 +1005,29 @@
                 {
                     "Id": "Button.btnPrint.11_1",
                     "FieldName": "btnPrint",
-                    "Order": 11,
+                    "order": 11,
                     "ComponentType": "Pdf",
                     "Column": 1,
                     "GroupFormat": "Print",
                     "Label": "Print BK",
-                    "Icon": "fal fa-print",
+                    "icon": "fal fa-print",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{\r\n    \"click\": \"PrintPdf\"\r\n}",
-                    "Query": "SELECT \r\nCUS.Name AS CUSNAME,\r\nCUS.PhoneNumber AS PhoneNumber,\r\nBK.ShipperText AS SHIPPERINFOR,\r\nFORMAT(BK.BookingDate,'dd MMM, yy') AS BKDATE,\r\nBK.ConsigneeText AS CONSIGNEEINFOR,\r\nFORMAT(BK.PlaceStuffingDate,'dd MMM, yy') AS STUFFINGDATE,\r\nSTUFFING.Name AS PLACEOFSTUFFING,\r\nBK.ContactStuffing AS Contact,\r\nFORMAT(bk.VgmCutOffDate, 'dd MMM, yy hh:mm') AS Closingtime,\r\nbk.FeederVessel AS FeederVesselN, \r\nbk.FeederVoy AS FeederVoyN,\r\nFORMAT(BK.EtdDate,'dd MMM, yy') AS ETD,\r\nFORMAT(BK.EtaDate,'dd MMM, yy') AS ETA,\r\nPOL.Name AS POLNAME,\r\nPOD.Name AS PODNAME,\r\n(SELECT STRING_AGG(CONCAT(ROUND(inc.Quantity, 0), ' x ', cont.Name ), ' & ') AS Containers\r\n     FROM EntityContainer inc\r\n     LEFT JOIN MasterData cont ON inc.ContainerTypeId = cont.Id\r\n     WHERE inc.EntityId = '{Id}') AS ContainersQty,\r\nBK.Quantity AS Qty,\r\nUnit.Name AS UnitPKG,\r\nBK.GW AS GWIF,\r\nBK.CBM AS CBMIF,\r\nCOMMO.Name AS COMMO,\r\nBK.SpecialRequest AS SPREQUEST, \r\nInco.Name AS IncotermN,\r\nHBLType.Name AS HBLType,\r\ncre.NickName AS Creater\r\nFROM dbo.Booking BK\r\nLEFT JOIN dbo.Partner CUS ON CUS.Id = BK.CustomerId\r\nLEFT JOIN dbo.Terminal STUFFING ON STUFFING.Id = BK.PlaceStuffingId\r\nLEFT JOIN dbo.Terminal POL ON POL.Id = BK.PolId \r\nLEFT JOIN dbo.Terminal POD ON POD.Id = BK.PodId\r\nLEFT JOIN dbo.MasterData Unit ON Unit.Id = BK.UnitId \r\nLEFT JOIN dbo.MasterData COMMO ON COMMO.Id = BK.CommodityId\r\nLEFT JOIN dbo.Terminal Deli ON Deli.Id = BK.DeliveryId\r\nLEFT JOIN dbo.MasterData Inco ON Inco.Id = BK.IncotermId\r\nLEFT JOIN dbo.MasterData HBLType ON HBLType.Id = BK.HblTypeId\r\nLEFT JOIN dbo.[User] cre ON cre.Id =  '{TokenUserId}'\r\nWHERE \r\nBK.Id='{Id}'\r\n\r\n\r\n\r\n",
+                    "query": "SELECT \r\nCUS.Name AS CUSNAME,\r\nCUS.PhoneNumber AS PhoneNumber,\r\nBK.ShipperText AS SHIPPERINFOR,\r\nFORMAT(BK.BookingDate,'dd MMM, yy') AS BKDATE,\r\nBK.ConsigneeText AS CONSIGNEEINFOR,\r\nFORMAT(BK.PlaceStuffingDate,'dd MMM, yy') AS STUFFINGDATE,\r\nSTUFFING.Name AS PLACEOFSTUFFING,\r\nBK.ContactStuffing AS Contact,\r\nFORMAT(bk.VgmCutOffDate, 'dd MMM, yy hh:mm') AS Closingtime,\r\nbk.FeederVessel AS FeederVesselN, \r\nbk.FeederVoy AS FeederVoyN,\r\nFORMAT(BK.EtdDate,'dd MMM, yy') AS ETD,\r\nFORMAT(BK.EtaDate,'dd MMM, yy') AS ETA,\r\nPOL.Name AS POLNAME,\r\nPOD.Name AS PODNAME,\r\n(SELECT STRING_AGG(CONCAT(ROUND(inc.Quantity, 0), ' x ', cont.Name ), ' & ') AS Containers\r\n     FROM EntityContainer inc\r\n     LEFT JOIN MasterData cont ON inc.ContainerTypeId = cont.Id\r\n     WHERE inc.EntityId = '{Id}') AS ContainersQty,\r\nBK.Quantity AS Qty,\r\nUnit.Name AS UnitPKG,\r\nBK.GW AS GWIF,\r\nBK.CBM AS CBMIF,\r\nCOMMO.Name AS COMMO,\r\nBK.SpecialRequest AS SPREQUEST, \r\nInco.Name AS IncotermN,\r\nHBLType.Name AS HBLType,\r\ncre.NickName AS Creater\r\nFROM dbo.Booking BK\r\nLEFT JOIN dbo.Partner CUS ON CUS.Id = BK.CustomerId\r\nLEFT JOIN dbo.Terminal STUFFING ON STUFFING.Id = BK.PlaceStuffingId\r\nLEFT JOIN dbo.Terminal POL ON POL.Id = BK.PolId \r\nLEFT JOIN dbo.Terminal POD ON POD.Id = BK.PodId\r\nLEFT JOIN dbo.MasterData Unit ON Unit.Id = BK.UnitId \r\nLEFT JOIN dbo.MasterData COMMO ON COMMO.Id = BK.CommodityId\r\nLEFT JOIN dbo.Terminal Deli ON Deli.Id = BK.DeliveryId\r\nLEFT JOIN dbo.MasterData Inco ON Inco.Id = BK.IncotermId\r\nLEFT JOIN dbo.MasterData HBLType ON HBLType.Id = BK.HblTypeId\r\nLEFT JOIN dbo.[User] cre ON cre.Id =  '{TokenUserId}'\r\nWHERE \r\nBK.Id='{Id}'\r\n\r\n\r\n\r\n",
                     "Template": "<table style=\"border-collapse: collapse; width: 100.044%; height: 76.6667px;\" border=\"1\"><colgroup><col style=\"width: 15.9143%;\"><col style=\"width: 9.07509%;\"><col style=\"width: 12.4947%;\"><col style=\"width: 12.4947%;\"><col style=\"width: 12.4947%;\"><col style=\"width: 12.4947%;\"><col style=\"width: 14.9936%;\"><col style=\"width: 9.99575%;\"></colgroup>\n<tbody>\n<tr>\n<td rowspan=\"4\"><strong>${CLogo}</strong></td>\n<td style=\"text-align: left;\" colspan=\"7\"><strong>${CCompanyName}</strong></td>\n</tr>\n<tr>\n<td style=\"text-align: left;\" colspan=\"7\"><strong>Address: ${CAddress}</strong></td>\n</tr>\n<tr>\n<td><strong>Tel</strong></td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td><strong>Fax</strong></td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n</tr>\n<tr>\n<td><strong>Email</strong></td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td><strong>Website</strong></td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n<td>&nbsp;</td>\n</tr>\n</tbody>\n</table>\n<div style=\"mso-element: frame; mso-element-frame-width: 542.25pt; mso-element-frame-height: 69.5pt; mso-element-wrap: auto; mso-element-anchor-vertical: page; mso-element-anchor-horizontal: page; mso-element-left: 30.05pt; mso-element-top: 149.1pt; mso-height-rule: exactly;\">\n<p>&nbsp;</p>\n<table style=\"border-collapse: collapse; width: 99.9124%; height: 43.6667px; border-style: hidden; border-width: 1px; margin-left: auto; margin-right: auto;\" border=\"1\"><colgroup><col style=\"width: 100%;\"></colgroup>\n<tbody>\n<tr>\n<td style=\"text-align: center;\">\n<div style=\"font-size: 24pt; min-width: 600px; display: inline-block; border-radius: 29px; border-image: initial; font-weight: 600; vertical-align: middle; border: 1px solid;\">BOOKING NOTE</div>\n</td>\n</tr>\n</tbody>\n</table>\n</div>\n<p>&nbsp;</p>\n<table style=\"border-collapse: collapse; width: 100.044%; height: 99px;\" border=\"1\"><colgroup><col style=\"width: 12.4946%;\"><col style=\"width: 12.4946%;\"><col style=\"width: 12.4946%;\"><col style=\"width: 12.4946%;\"><col style=\"width: 12.4946%;\"><col style=\"width: 12.4946%;\"><col style=\"width: 12.4946%;\"><col style=\"width: 12.4946%;\"></colgroup>\n<tbody>\n<tr style=\"height: 33px;\">\n<td><strong>From</strong>\n<div style=\"mso-element: frame; mso-element-frame-width: 77.6pt; mso-element-frame-height: 12.75pt; mso-element-wrap: auto; mso-element-anchor-vertical: page; mso-element-anchor-horizontal: page; mso-element-left: 34.05pt; mso-element-top: 189.1pt; mso-height-rule: exactly;\">&nbsp;</div>\n</td>\n<td colspan=\"3\">&nbsp;${CCompanyName}</td>\n<td><strong>To</strong></td>\n<td colspan=\"3\">&nbsp;${Customer}</td>\n</tr>\n<tr style=\"height: 33px;\">\n<td><strong>Date</strong>\n<div style=\"mso-element: frame; mso-element-frame-width: 77.6pt; mso-element-frame-height: 12.75pt; mso-element-wrap: auto; mso-element-anchor-vertical: page; mso-element-anchor-horizontal: page; mso-element-left: 34.05pt; mso-element-top: 207.1pt; mso-height-rule: exactly;\">&nbsp;</div>\n</td>\n<td colspan=\"3\">&nbsp;${BKDATE}</td>\n<td><strong>Tel</strong></td>\n<td colspan=\"3\">&nbsp;${PhoneNumber}</td>\n</tr>\n<tr style=\"height: 33px;\">\n<td><strong>Revision</strong>\n<div style=\"mso-element: frame; mso-element-frame-width: 77.6pt; mso-element-frame-height: 12.75pt; mso-element-wrap: auto; mso-element-anchor-vertical: page; mso-element-anchor-horizontal: page; mso-element-left: 34.05pt; mso-element-top: 225.75pt; mso-height-rule: exactly;\">&nbsp;</div>\n</td>\n<td colspan=\"3\">&nbsp;</td>\n<td><strong>Booking no</strong></td>\n<td colspan=\"3\">&nbsp;<strong>${Booking No}</strong></td>\n</tr>\n</tbody>\n</table>\n<p>&nbsp;</p>\n<table style=\"border-collapse: collapse; width: 100.044%; height: 703.667px; border-width: 1px; margin-left: 0px; margin-right: auto;\" border=\"1\"><colgroup><col style=\"width: 12.237%;\"><col style=\"width: 11.8506%;\"><col style=\"width: 11.9794%;\"><col style=\"width: 11.9794%;\"><col style=\"width: 7.59983%;\"><col style=\"width: 20.3521%;\"><col style=\"width: 12.1082%;\"><col style=\"width: 11.8506%;\"></colgroup>\n<tbody>\n<tr style=\"height: 48.3333px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"2\">\n<p><strong>Shipper</strong></p>\n<p>${SHIPPERINFOR}</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\">\n<p><strong>Date of Stuffing</strong></p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>${STUFFINGDATE}</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\"><strong>Place of Stuffing</strong></td>\n</tr>\n<tr style=\"height: 48.3333px;\"></tr>\n<tr style=\"height: 20px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"2\">\n<p><strong>Consignee</strong></p>\n<p>${CONSIGNEEINFOR}</p>\n</td>\n<td style=\"vertical-align: top; text-align: center;\" colspan=\"2\" rowspan=\"2\">\n<p><strong>Contact</strong></p>\n<p>&nbsp;</p>\n<p>${Contact Stuffing}</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\">\n<p><strong>Closing Time</strong></p>\n<br>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 73.5417px;\"></tr>\n<tr style=\"height: 11.1458px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\">\n<p><strong>Vessel / Voy</strong></p>\n<p>&nbsp;${FeederVesselN}&nbsp; ${FeederVoyN}</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" rowspan=\"2\">\n<p><strong>ETD</strong></p>\n<p>${ETD}</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" rowspan=\"2\">\n<p><strong>ETA</strong></p>\n<p>${ETA}</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\">\n<p><strong>Port of Loading</strong></p>\n<p><strong>&nbsp;${</strong>Port of Loading<strong>}</strong></p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\">\n<p><strong>Port of Discharge</strong></p>\n<p><strong>&nbsp;${</strong>Port of Discharge<strong>}</strong></p>\n</td>\n</tr>\n<tr style=\"height: 37.5208px;\"></tr>\n<tr style=\"height: 33.5208px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\" rowspan=\"2\">\n<p><strong>No. of Container(s) or Package(s)</strong></p>\n<p><strong>${ContainersQty} ${Qty} ${UnitPKG}</strong></p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"3\" rowspan=\"2\">\n<p><strong>Commodity</strong></p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" rowspan=\"2\">\n<p><strong>G.W</strong></p>\n<p><strong>${GWIF}</strong></p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" rowspan=\"2\">\n<p><strong>CBM</strong></p>\n<p><strong>${CBMIF}</strong></p>\n</td>\n</tr>\n<tr style=\"height: 37.5208px;\"></tr>\n<tr style=\"height: 10px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"6\" rowspan=\"2\">\n<p><strong>Special Request</strong></p>\n<p><strong>${Special Request}</strong></p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\">\n<p><strong>Place of delivery</strong></p>\n<p><strong>${</strong>Place of delivery<strong>}</strong></p>\n</td>\n</tr>\n<tr style=\"height: 37.5208px;\"></tr>\n<tr style=\"height: 37.5208px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"2\">\n<p><strong>Service Required</strong></p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\">\n<p><strong>Payment term</strong></p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\">\n<p><strong>Freight Rate</strong></p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 37.5208px;\"></tr>\n<tr style=\"height: 37.5208px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"2\">\n<p><strong>Pick-up at</strong></p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"2\">\n<p><strong>Drop-off at</strong></p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 37.5208px;\"></tr>\n<tr style=\"height: 37.5208px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"2\">\n<p><strong>Other terms &amp; conditions</strong></p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\">\n<p><strong>H-B/L No.</strong></p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"2\"><strong>HBL Type</strong></td>\n</tr>\n<tr style=\"height: 37.5208px;\"></tr>\n<tr style=\"height: 37.5208px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"8\" rowspan=\"3\"><strong>Remark</strong><br><strong><br></strong><strong><br></strong></td>\n</tr>\n<tr style=\"height: 10px;\"></tr>\n<tr style=\"height: 73.5833px;\"></tr>\n</tbody>\n</table>"
                 },
                 {
                     "Id": "Button.btnPrint.11_2",
                     "FieldName": "btnPrint",
-                    "Order": 11,
+                    "order": 11,
                     "ComponentType": "Pdf",
                     "Column": 1,
                     "GroupFormat": "Print",
                     "Label": "Pritest",
-                    "Icon": "fal fa-print",
+                    "icon": "fal fa-print",
                     "ClassName": "btn detail-button secondary-outline",
                     "Events": "{\r\n    \"click\": \"PrintPdf\"\r\n}",
-                    "Query": "SELECT \r\nCUS.Name AS CUSNAME,\r\nBK.ShipperText AS SHIPPERINFOR,\r\n\r\nFORMAT(BK.PlaceStuffingDate,'dd MMM, yy') AS STUFFINGDATE,\r\nSTUFFING.Name AS PLACEOFSTUFFING,\r\nBK.ContactStuffing AS Contact,\r\nFORMAT(bk.VgmCutOffDate, 'dd MMM, yy hh:mm') AS Closingtime,\r\n\r\n\r\nFORMAT(BK.EtdDate,'dd MMM, yy') AS ETD,\r\nFORMAT(BK.EtaDate,'dd MMM, yy') AS ETA,\r\nPOL.Name AS POLNAME,\r\nPOD.Name AS PODNAME,\r\nISNULL((SELECT STRING_AGG(CONCAT(ROUND(inc.Quantity, 0), ' x ', cont.Name ), ' & ') AS Containers\r\n     FROM dbo.EntityContainer inc\r\n     LEFT JOIN MasterData cont ON inc.ContainerTypeId = cont.Id\r\n     WHERE inc.Id = '{Id}'),'') AS ContainersQty,\r\nBK.Quantity AS Qty,\r\nUnit.Name AS UnitPKG,\r\nBK.GW AS GWIF,\r\nBK.CBM AS CBMIF,\r\nCOMMO.Name AS COMMO,\r\nBK.SpecialRequest AS SPREQUEST, \r\nISNULL(HBLType.Name,'') AS HBLType,\r\nisnull(Inco.Name,'') AS Inco,\r\nHBLType.Name AS HBLType,\r\ncre.NickName AS Creater\r\nFROM dbo.Booking BK\r\nLEFT JOIN dbo.Partner CUS ON CUS.Id = BK.CustomerId\r\nLEFT JOIN dbo.Terminal STUFFING ON STUFFING.Id = BK.PlaceStuffingId\r\nLEFT JOIN dbo.Terminal POL ON POL.Id = BK.PolId \r\nLEFT JOIN dbo.Terminal POD ON POD.Id = BK.PodId\r\nLEFT JOIN dbo.MasterData Unit ON Unit.Id = BK.UnitId \r\nLEFT JOIN dbo.MasterData COMMO ON COMMO.Id = BK.CommodityId\r\nLEFT JOIN dbo.Terminal Deli ON Deli.Id = BK.DeliveryId\r\nLEFT JOIN dbo.MasterData Inco ON Inco.Id = BK.IncotermId\r\nLEFT JOIN dbo.MasterData HBLType ON HBLType.Id = BK.HblTypeId\r\nLEFT JOIN dbo.[User] cre ON cre.Id =  '{TokenUserId}'\r\nWHERE \r\nBK.Id='{Id}'\r\n\r\n\r\n\r\n",
+                    "query": "SELECT \r\nCUS.Name AS CUSNAME,\r\nBK.ShipperText AS SHIPPERINFOR,\r\n\r\nFORMAT(BK.PlaceStuffingDate,'dd MMM, yy') AS STUFFINGDATE,\r\nSTUFFING.Name AS PLACEOFSTUFFING,\r\nBK.ContactStuffing AS Contact,\r\nFORMAT(bk.VgmCutOffDate, 'dd MMM, yy hh:mm') AS Closingtime,\r\n\r\n\r\nFORMAT(BK.EtdDate,'dd MMM, yy') AS ETD,\r\nFORMAT(BK.EtaDate,'dd MMM, yy') AS ETA,\r\nPOL.Name AS POLNAME,\r\nPOD.Name AS PODNAME,\r\nISNULL((SELECT STRING_AGG(CONCAT(ROUND(inc.Quantity, 0), ' x ', cont.Name ), ' & ') AS Containers\r\n     FROM dbo.EntityContainer inc\r\n     LEFT JOIN MasterData cont ON inc.ContainerTypeId = cont.Id\r\n     WHERE inc.Id = '{Id}'),'') AS ContainersQty,\r\nBK.Quantity AS Qty,\r\nUnit.Name AS UnitPKG,\r\nBK.GW AS GWIF,\r\nBK.CBM AS CBMIF,\r\nCOMMO.Name AS COMMO,\r\nBK.SpecialRequest AS SPREQUEST, \r\nISNULL(HBLType.Name,'') AS HBLType,\r\nisnull(Inco.Name,'') AS Inco,\r\nHBLType.Name AS HBLType,\r\ncre.NickName AS Creater\r\nFROM dbo.Booking BK\r\nLEFT JOIN dbo.Partner CUS ON CUS.Id = BK.CustomerId\r\nLEFT JOIN dbo.Terminal STUFFING ON STUFFING.Id = BK.PlaceStuffingId\r\nLEFT JOIN dbo.Terminal POL ON POL.Id = BK.PolId \r\nLEFT JOIN dbo.Terminal POD ON POD.Id = BK.PodId\r\nLEFT JOIN dbo.MasterData Unit ON Unit.Id = BK.UnitId \r\nLEFT JOIN dbo.MasterData COMMO ON COMMO.Id = BK.CommodityId\r\nLEFT JOIN dbo.Terminal Deli ON Deli.Id = BK.DeliveryId\r\nLEFT JOIN dbo.MasterData Inco ON Inco.Id = BK.IncotermId\r\nLEFT JOIN dbo.MasterData HBLType ON HBLType.Id = BK.HblTypeId\r\nLEFT JOIN dbo.[User] cre ON cre.Id =  '{TokenUserId}'\r\nWHERE \r\nBK.Id='{Id}'\r\n\r\n\r\n\r\n",
                     "Template": "<table style=\"border-collapse: collapse; width: 99.5279%; height: 959.76px; border-width: 1px; margin-left: 0px; margin-right: auto;\" border=\"1\"><colgroup><col style=\"width: 1.94217%;\"><col style=\"width: 22.2702%;\"><col style=\"width: 11.912%;\"><col style=\"width: 9.96979%;\"><col style=\"width: 14.5015%;\"><col style=\"width: 9.84031%;\"><col style=\"width: 15.0194%;\"><col style=\"width: 14.5015%;\"></colgroup>\n<tbody>\n<tr style=\"height: 16.6667px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"5\">\n<p><strong>SHIPPER</strong></p>\n<p>&nbsp;</p>\n<p>${SHIPPERINFOR}</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: center; vertical-align: middle;\" colspan=\"4\" rowspan=\"2\"><span style=\"font-size: 12pt;\"><strong>&nbsp;BOOKING NO ${Booking No}</strong></span></td>\n</tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 46px;\">\n<td style=\"text-align: center; vertical-align: middle;\" colspan=\"4\" rowspan=\"15\">\n<p>${CLogo}</p>\n<p><span style=\"font-size: 12pt;\"><strong>${CCompanyName}</strong></span></p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p style=\"font-size: 18pt; min-width: 260px; display: inline-block; border-radius: 29PX; border: 1px solid rgb(0, 0, 0); text-align: center; font-weight: 600;\">BOOKING CONFIRMATION</p>\n</td>\n</tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"5\">\n<p><strong>Consignee</strong></p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 10px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 21.5521px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"4\">\n<p><strong>PORT OF LOADING</strong></p>\n<p>&nbsp;</p>\n<p>${Port of Loading}</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 21.5521px;\"></tr>\n<tr style=\"height: 0px;\"></tr>\n<tr style=\"height: 21.5625px;\"></tr>\n<tr style=\"height: 21.5521px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"3\">\n<p><strong>PORT OF DISCHARGE</strong></p>\n<p>&nbsp;</p>\n<p>${Port of Discharge}</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 21.5521px;\"></tr>\n<tr style=\"height: 21.5625px;\"></tr>\n<tr style=\"height: 16.6667px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"4\">\n<p><strong>CLOSING TIME</strong></p>\n<p>&nbsp;</p>\n<p style=\"text-align: center;\"><span style=\"font-size: 13pt;\">${Closingtime}</span></p>\n</td>\n<td style=\"vertical-align: top; text-align: center;\" colspan=\"2\" rowspan=\"4\">\n<p><strong>Date of Stuffing</strong></p>\n<p>&nbsp;</p>\n<p><span style=\"font-size: 13pt;\">${STUFFINGDATE}</span></p>\n</td>\n<td style=\"vertical-align: top; text-align: center;\" colspan=\"2\" rowspan=\"4\">\n<p><strong>Place of Stuffing</strong></p>\n<p>&nbsp;</p>\n<p><span style=\"font-size: 13pt;\">${PLACEOFSTUFFING}</span></p>\n</td>\n</tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 33.5729px;\"></tr>\n<tr style=\"height: 27.2917px;\">\n<td style=\"text-align: left; vertical-align: middle;\" colspan=\"4\" rowspan=\"3\">\n<p><strong>VESSEL NAME / VOYAGE No.</strong></p>\n<p>&nbsp;</p>\n<p>${Feeder vessel} / ${Voy}</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"3\">\n<p><strong>Contact</strong></p>\n<p style=\"text-align: center;\"><span style=\"font-size: 14pt;\">${Contact}</span></p>\n</td>\n</tr>\n<tr style=\"height: 10px;\"></tr>\n<tr style=\"height: 27.375px;\"></tr>\n<tr style=\"height: 22.5104px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"4\">\n<p><strong>DESCRIPTION OF GOODS</strong></p>\n<p>&nbsp;</p>\n<p>${Commodity}</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"4\">\n<p><strong>Other terms &amp; conditions</strong></p>\n<p>&nbsp;${Inco}</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" rowspan=\"4\">\n<p><strong>H-B/L No.</strong></p>\n<p>&nbsp;</p>\n<p style=\"text-align: center;\">${HBL No}</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" rowspan=\"4\">\n<p><strong>Type B/L</strong></p>\n<p>&nbsp;</p>\n<p>${HBLType}</p>\n</td>\n</tr>\n<tr style=\"height: 19.375px;\"></tr>\n<tr style=\"height: 10px;\"></tr>\n<tr style=\"height: 19.3854px;\"></tr>\n<tr style=\"height: 27.3438px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"3\">\n<p><strong>No. of Container(s) or Package(s)</strong></p>\n<p>&nbsp;</p>\n<p>${ContainersQty} - ${Quantity} ${Unit}</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"3\">\n<p><strong>VOLUME</strong></p>\n<p>&nbsp;</p>\n<p style=\"text-align: center;\">${CBM} (${Unit})</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"2\" rowspan=\"3\">\n<p><strong>GROSSWEIGHT</strong></p>\n<p>&nbsp;</p>\n<p style=\"text-align: center;\">${GW} (KGS)</p>\n</td>\n</tr>\n<tr style=\"height: 12.0417px;\"></tr>\n<tr style=\"height: 25.2812px;\"></tr>\n<tr style=\"height: 18.0521px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"5\">\n<p><strong>PICK-UP AT</strong></p>\n<p>&nbsp;</p>\n<p>${Pickup address}</p>\n<p>&nbsp;</p>\n</td>\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"4\" rowspan=\"5\">\n<p><strong>DROP-OF AT</strong></p>\n<p>&nbsp;</p>\n<p>${Delivery address}</p>\n</td>\n</tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 16.6667px;\"></tr>\n<tr style=\"height: 20.2292px;\">\n<td style=\"text-align: left; vertical-align: top;\" colspan=\"8\" rowspan=\"7\">\n<p><strong>Remark</strong></p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n</td>\n</tr>\n<tr style=\"height: 18.0521px;\"></tr>\n<tr style=\"height: 18.0521px;\"></tr>\n<tr style=\"height: 18.0521px;\"></tr>\n<tr style=\"height: 18.0521px;\"></tr>\n<tr style=\"height: 18.0521px;\"></tr>\n<tr style=\"height: 145.042px;\"></tr>\n</tbody>\n</table>"
                 }
             ]

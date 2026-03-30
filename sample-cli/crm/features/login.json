@@ -2,9 +2,9 @@
     "Id": "login",
     "Name": "login",
     "Label": "Login",
-    "Order": 111,
-    "Style": "width: 90%",
-    "Icon": "fal fa-user",
+    "order": 111,
+    "style": "width: 90%",
+    "icon": "fal fa-user",
     "EntityId": "Feature",
     "IgnoreEncode": true,
     "FeaturePolicies": [
