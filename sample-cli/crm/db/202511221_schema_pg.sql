@@ -2,7 +2,7 @@
 -- Converted from SQL Server (T-SQL) with PostgreSQL best practices
 
 -- Dictionary table
-CREATE TABLE dictionary (
+CREATE TABLE IF NOT EXISTS dictionary (
     id varchar(50) NOT NULL,
     lang_code varchar(250),
     key varchar(250),
@@ -16,7 +16,7 @@ CREATE TABLE dictionary (
 );
 
 -- FileUpload table
-CREATE TABLE file_upload (
+CREATE TABLE IF NOT EXISTS file_upload (
     id varchar(50) NOT NULL,
     entity_name varchar(250),
     record_id varchar(50),
@@ -33,7 +33,7 @@ CREATE TABLE file_upload (
 );
 
 -- History table
-CREATE TABLE history (
+CREATE TABLE IF NOT EXISTS history (
     id varchar(50) NOT NULL,
     text_content text,
     value text,
@@ -51,7 +51,7 @@ CREATE TABLE history (
 );
 
 -- MasterData table
-CREATE TABLE master_data (
+CREATE TABLE IF NOT EXISTS master_data (
     id varchar(50) NOT NULL,
     code varchar(500),
     name varchar(500),
@@ -75,7 +75,7 @@ CREATE TABLE master_data (
 );
 
 -- Partner table
-CREATE TABLE partner (
+CREATE TABLE IF NOT EXISTS partner (
     id varchar(50) NOT NULL,
     service_id int,
     type_id int,
@@ -168,7 +168,7 @@ CREATE TABLE partner (
 );
 
 -- Role table
-CREATE TABLE role (
+CREATE TABLE IF NOT EXISTS role (
     id varchar(50) NOT NULL,
     hidden boolean NOT NULL DEFAULT false,
     name varchar(250),
@@ -183,7 +183,7 @@ CREATE TABLE role (
 );
 
 -- Tenant table (fixed typo: Tanent → tenant)
-CREATE TABLE tenant (
+CREATE TABLE IF NOT EXISTS tenant (
     id varchar(50) NOT NULL,
     password varchar(250),
     company_name varchar(250),
@@ -198,7 +198,7 @@ CREATE TABLE tenant (
 );
 
 -- TaskNotification table
-CREATE TABLE task_notification (
+CREATE TABLE IF NOT EXISTS task_notification (
     id varchar(50) NOT NULL,
     read boolean NOT NULL DEFAULT false,
     icon varchar(150),
@@ -224,7 +224,7 @@ CREATE TABLE task_notification (
 );
 
 -- User table
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id varchar(50) NOT NULL,
     code varchar(250),
     email varchar(250),
@@ -284,7 +284,7 @@ CREATE TABLE users (
 );
 
 -- UserLogin table
-CREATE TABLE user_login (
+CREATE TABLE IF NOT EXISTS user_login (
     id varchar(50) NOT NULL,
     user_id varchar(50),
     access_token varchar(1500),
@@ -302,7 +302,7 @@ CREATE TABLE user_login (
 );
 
 -- UserRole table
-CREATE TABLE user_role (
+CREATE TABLE IF NOT EXISTS user_role (
     id varchar(50) NOT NULL,
     user_id varchar(50),
     role_id varchar(50),
@@ -316,7 +316,7 @@ CREATE TABLE user_role (
 );
 
 -- UserSetting table
-CREATE TABLE user_setting (
+CREATE TABLE IF NOT EXISTS user_setting (
     id varchar(50) NOT NULL,
     feature_id varchar(50),
     component_id varchar(50),

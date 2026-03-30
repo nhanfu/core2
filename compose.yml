@@ -7,7 +7,7 @@ services:
     environment:
       - POSTGRES_DB=crm
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=YourStrongPassword123!
+      - POSTGRES_PASSWORD=arbin
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -24,7 +24,7 @@ services:
       - POSTGRES_HOST=postgres
       - POSTGRES_DB=crm
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=YourStrongPassword123!
+      - POSTGRES_PASSWORD=arbin
     depends_on:
       postgres:
         condition: service_healthy
@@ -39,7 +39,7 @@ services:
     environment:
       - HOST=0.0.0.0
       - PORT=8000
-      - DATABASE_URL=postgres://postgres:YourStrongPassword123!@postgres:5432/crm
+      - DATABASE_URL=postgres://postgres:arbin@postgres:5432/crm
       - JWT_SECRET=your-super-secret-jwt-key-change-in-production
       - NODE_ENV=development
     logging:
@@ -56,8 +56,11 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - ./frontend/src:/app/src:ro
+      - ./frontend/public:/app/public:ro
+      - ./frontend/index.html:/app/index.html:ro
+      - ./frontend/vite.config.js:/app/vite.config.js:ro
+      - ./frontend/lib:/app/lib:ro
     ports:
       - "5173:5173"
     environment:

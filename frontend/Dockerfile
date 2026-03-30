@@ -1,15 +1,14 @@
-FROM denoland/deno:latest
+FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy dependency files first to leverage Docker cache
-COPY deno.json deno.lock ./
+COPY package.json ./
 
-# Copy source code
-COPY . .
+RUN npm install --include=dev
 
-# Expose port Vite uses
+ENV PATH="/app/node_modules/.bin:$PATH"
+
 EXPOSE 5173
 
-# Run Vite dev server with host flag to ensure it listens on all interfaces
-CMD ["deno", "run", "-A", "npm:vite", "--host", "0.0.0.0"]
+# Use shell form so npm run dev launches vite in same PID (tini wrapper issue)
+CMD npm run dev

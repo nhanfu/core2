@@ -1,6 +1,4 @@
-import pg from "npm:pg@8.11.3";
-
-const { Pool } = pg;
+import { Pool } from "@std/postgres";
 
 /**
  * PostgreSQL client configuration
@@ -14,9 +12,7 @@ if (!databaseUrl) {
 }
 
 // Create connection pool
-const pool = new Pool({
-  connectionString: databaseUrl,
-});
+const pool = new Pool(databaseUrl, 10);
 
 /**
  * Execute a raw SQL query and return results (SELECT queries)
@@ -24,12 +20,10 @@ const pool = new Pool({
  * @param params - Optional query parameters
  * @returns Array of result rows
  */
-export async function query(sql: string, params?: any[]): Promise<any[]> {
+export async function query<T = Record<string, unknown>>(sql: string, params?: unknown[]): Promise<T[]> {
   const client = await pool.connect();
   try {
-    const result = params
-      ? await client.query(sql, params)
-      : await client.query(sql);
+    const result = await client.queryObject<T>(sql, params ?? []);
     return result.rows;
   } finally {
     client.release();
@@ -42,15 +36,13 @@ export async function query(sql: string, params?: any[]): Promise<any[]> {
  * @param params - Optional query parameters
  * @returns Object with data and count of affected rows
  */
-export async function execute(sql: string, params?: any[]): Promise<{ data: any; count: number }> {
+export async function execute(sql: string, params?: unknown[]): Promise<{ data: unknown; count: number }> {
   const client = await pool.connect();
   try {
-    const result = params
-      ? await client.query(sql, params)
-      : await client.query(sql);
+    const result = await client.queryObject(sql, params ?? []);
     return {
       data: result.rows,
-      count: result.rowCount || 0,
+      count: result.rowCount ?? 0,
     };
   } finally {
     client.release();

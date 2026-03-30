@@ -6,7 +6,7 @@
   "imports": {
     "oak/": "https://deno.land/x/oak@v17.1.3/",
     "@oak/oak": "https://deno.land/x/oak@v17.1.3/mod.ts",
-    "pg": "https://esm.sh/pg@8.11.3",
+    "@std/postgres": "https://deno.land/x/postgres@v0.19.0/mod.ts",
     "@std/yaml": "https://deno.land/std@0.224.0/yaml/mod.ts",
     "@std/path": "https://deno.land/std@0.224.0/path/mod.ts",
     "@std/fs": "https://deno.land/std@0.224.0/fs/mod.ts",
