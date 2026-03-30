@@ -9,7 +9,7 @@
 *.user
 *.userosscache
 *.sln.docstates
-
+.claude/skills/ui-ux-pro-max/
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 

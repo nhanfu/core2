@@ -15,13 +15,13 @@ export class Client {
     static Entities = [];
     static epsilonNow = new Date(Date.now() + (1 * 60 * 1000));
     static errorMessage = "Hệ thống đang cập nhật vui lòng chờ trong 30s!";
-    static modelNamespace;
-    static entities;
-    static token;
+    static modelNamespace: string;
+    static entities: any[];
     static guidLength = 36;
     static resolveApiBase() {
-        const metaApi = document.querySelector('meta[name="api"]')?.content?.trim();
-        const envApi = import.meta.env?.VITE_API_URL?.trim();
+        const metaApi = document.querySelector('meta[name="api"]')?.textContent?.trim();
+        // @ts-ignore
+        const envApi = import.meta.env.VITE_API_URL?.trim();
         return metaApi || envApi || window.location.origin;
     }
     // @ts-ignore
@@ -41,7 +41,6 @@ export class Client {
     // @ts-ignore
     static fileFTP = import.meta.env?.VITE_FILE_FTP || "/user";
     // @ts-ignore
-    /** @type {string} */
     static apiV2 = import.meta.env?.VITE_API_V2_URL;
     static api = Client.resolveApiBase();
     // @ts-ignore
@@ -55,10 +54,10 @@ export class Client {
     _config;
     customPrefix = (() => {
         const prefixElement = Array.from(document.head.children).find(x => x instanceof HTMLMetaElement && x.name === "prefix");
-        return prefixElement?.content;
+        return prefixElement?.textContent;
     })();
 
-    static buildUrl(baseUrl, requestUrl) {
+    static buildUrl(baseUrl: string, requestUrl: string) {
         if (!baseUrl) {
             return requestUrl;
         }
@@ -76,7 +75,8 @@ export class Client {
         return `${normalizedBase}${normalizedRequest}`;
     }
 
-    constructor(entityName, ns = "", config = false) {
+    entityName: string;
+    constructor(entityName: string = "", ns = "", config = false) {
         this._nameSpace = ns;
         this._config = config;
         if (this._nameSpace && this._nameSpace.charAt(this._nameSpace.length - 1) !== '.') {
@@ -85,16 +85,13 @@ export class Client {
         this.entityName = entityName;
     }
 
-    /** @type {Client} */
-    static _instance;
-    /** @type {Client} */
+    static _instance: Client;
     static get instance() {
         if (!Client._instance) {
             Client._instance = new Client();
         }
         return Client._instance;
     }
-    /** @type {Token} */
     static get token() {
         return JSON.parse(localStorage.getItem('userInfo'));
     }
